@@ -2,6 +2,8 @@
  */
 package fr.cea.nabla.ir.ir;
 
+import org.eclipse.emf.common.util.EList;
+
 
 /**
  * <!-- begin-user-doc -->
@@ -16,6 +18,8 @@ package fr.cea.nabla.ir.ir;
  *   <li>{@link fr.cea.nabla.ir.ir.Job#getAt <em>At</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Job#isOnCycle <em>On Cycle</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Job#getCaller <em>Caller</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.Job#getPreviousJobsWithSameCaller <em>Previous Jobs With Same Caller</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.Job#getNextJobsWithSameCaller <em>Next Jobs With Same Caller</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getJob()
@@ -112,5 +116,29 @@ public interface Job extends IrAnnotable {
 	 * @generated
 	 */
 	void setCaller(JobCaller value);
+
+	/**
+	 * Returns the value of the '<em><b>Previous Jobs With Same Caller</b></em>' reference list.
+	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Job}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Previous Jobs With Same Caller</em>' reference list.
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getJob_PreviousJobsWithSameCaller()
+	 * @model
+	 * @generated
+	 */
+	EList<Job> getPreviousJobsWithSameCaller();
+
+	/**
+	 * Returns the value of the '<em><b>Next Jobs With Same Caller</b></em>' reference list.
+	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Job}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Next Jobs With Same Caller</em>' reference list.
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getJob_NextJobsWithSameCaller()
+	 * @model
+	 * @generated
+	 */
+	EList<Job> getNextJobsWithSameCaller();
 
 } // Job

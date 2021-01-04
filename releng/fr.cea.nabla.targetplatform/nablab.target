@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="NabLab Target platform" sequenceNumber="1606560060">
+<target name="NabLab Target platform" sequenceNumber="1607961409">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.sdk.feature.group" version="4.15.0.v20200305-0155"/>
@@ -12,7 +12,6 @@
       <unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.11.2.v20200224-0816"/>
       <unit id="org.eclipse.emf.mwe2.launcher.feature.group" version="2.11.2.v20200224-0816"/>
       <unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.11.2.v20200224-0816"/>
-      <unit id="org.eclipse.gmf.feature.group" version="1.12.2.201912020813"/>
       <unit id="org.eclipse.xtext.runtime.feature.group" version="2.21.0.v20200302-1509"/>
       <unit id="org.eclipse.xtext.ui.feature.group" version="2.21.0.v20200302-1509"/>
       <unit id="org.eclipse.xtext.redist.feature.group" version="2.21.0.v20200302-1509"/>
@@ -33,17 +32,26 @@
       <repository id="eclipse" location="https://download.eclipse.org/releases/2020-03"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="org.eclipse.sirius.aql.feature.group" version="6.3.0.201910180815"/>
-      <unit id="org.eclipse.sirius.runtime.feature.group" version="6.3.0.201910180815"/>
-      <unit id="org.eclipse.sirius.runtime.aql.feature.group" version="6.3.0.201910180815"/>
-      <unit id="org.eclipse.sirius.runtime.ocl.feature.group" version="6.3.0.201910180815"/>
-      <unit id="org.eclipse.sirius.runtime.ide.ui.feature.group" version="6.3.0.201910180815"/>
-      <unit id="org.eclipse.sirius.runtime.ide.eef.feature.group" version="6.3.0.201910180815"/>
-      <unit id="org.eclipse.sirius.runtime.ide.xtext.feature.group" version="6.3.0.201910180815"/>
-      <unit id="org.eclipse.sirius.properties.feature.feature.group" version="6.3.0.201910180815"/>
-      <unit id="org.eclipse.eef.sdk.feature.feature.group" version="2.1.3.201909051307"/>
-      <unit id="org.eclipse.eef.ext.widgets.reference.feature.feature.group" version="2.1.3.201909051307"/>
-      <repository id="sirius" location="https://download.eclipse.org/sirius/updates/releases/6.3.0/2019-06"/>
+      <unit id="org.eclipse.sirius.aql.feature.group" version="6.4.0.202011190936"/>
+      <unit id="org.eclipse.sirius.runtime.feature.group" version="6.4.0.202011190936"/>
+      <unit id="org.eclipse.sirius.runtime.aql.feature.group" version="6.4.0.202011190936"/>
+      <unit id="org.eclipse.sirius.runtime.ocl.feature.group" version="6.4.0.202011190936"/>
+      <unit id="org.eclipse.sirius.runtime.ide.ui.feature.group" version="6.4.0.202011190936"/>
+      <unit id="org.eclipse.sirius.runtime.ide.eef.feature.group" version="6.4.0.202011190936"/>
+      <unit id="org.eclipse.sirius.runtime.ide.xtext.feature.group" version="6.4.0.202011190936"/>
+      <unit id="org.eclipse.sirius.properties.feature.feature.group" version="6.4.0.202011190936"/>
+      <unit id="org.eclipse.eef.sdk.feature.feature.group" version="2.1.5.202008270808"/>
+      <unit id="org.eclipse.eef.ext.widgets.reference.feature.feature.group" version="2.1.5.202008270808"/>
+      <unit id="org.eclipse.sirius.diagram.elk.feature.feature.group" version="6.4.0.202011190936"/>
+      <repository id="sirius" location="https://download.eclipse.org/sirius/updates/releases/6.4.0/2020-03"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.gmf.runtime.notation.feature.group" version="1.13.0.202004160913"/>
+      <repository id="gmf-runtime-notation" location="http://download.eclipse.org/modeling/gmp/gmf-notation/updates/releases/"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.gmf.runtime.sdk.feature.group" version="1.13.0.202004160913"/>
+      <repository id="gmf-runtime-diagram" location="https://download.eclipse.org/modeling/gmp/gmf-runtime/updates/releases/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.python.pydev.feature.feature.group" version="7.4.0.201910251334"/>

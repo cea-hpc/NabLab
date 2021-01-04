@@ -39,7 +39,7 @@ implements IGraphEntityContentProvider
 	override Object[] getConnectedTo(Object entity)
 	{
 		if (entity instanceof Job)
-			entity.nextJobs.filter[x | x.caller == entity.caller]
+			entity.nextJobs.filter[x | x.caller === entity.caller]
 	}
 
 	private def hasCycle(IrRoot it)

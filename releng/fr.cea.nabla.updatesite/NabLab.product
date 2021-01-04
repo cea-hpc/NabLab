@@ -343,6 +343,7 @@ No third-party beneficiary rights are created under this Agreement.
       <feature id="org.eclipse.sirius.runtime.ocl" installMode="root"/>
       <feature id="org.eclipse.sirius.runtime.ide.ui" installMode="root"/>
       <feature id="org.eclipse.sirius.runtime.ide.xtext" installMode="root"/>
+      <feature id="org.eclipse.sirius.diagram.elk.feature" installMode="root"/>
       <feature id="org.eclipse.eef.ext.widgets.reference.feature" installMode="root"/>
       <feature id="org.eclipse.xtext.runtime" installMode="root"/>
       <feature id="org.eclipse.xtext.xbase" installMode="root"/>

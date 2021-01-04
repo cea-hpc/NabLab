@@ -69,8 +69,8 @@ import fr.cea.nabla.ir.ir.UnaryExpression;
 import fr.cea.nabla.ir.ir.Variable;
 import fr.cea.nabla.ir.ir.VariableDeclaration;
 import fr.cea.nabla.ir.ir.VectorConstant;
-
 import fr.cea.nabla.ir.ir.While;
+
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EEnum;
@@ -203,14 +203,14 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass executeTimeLoopJobEClass = null;
+	private EClass timeLoopJobEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass timeLoopJobEClass = null;
+	private EClass executeTimeLoopJobEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -702,16 +702,6 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getIrRoot_Functions() {
-		return (EReference)irRootEClass.getEStructuralFeatures().get(3);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
 	public EReference getIrRoot_Connectivities() {
 		return (EReference)irRootEClass.getEStructuralFeatures().get(2);
 	}
@@ -722,8 +712,48 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
+	public EReference getIrRoot_Functions() {
+		return (EReference)irRootEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EReference getIrRoot_Variables() {
 		return (EReference)irRootEClass.getEStructuralFeatures().get(4);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getIrRoot_Jobs() {
+		return (EReference)irRootEClass.getEStructuralFeatures().get(5);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getIrRoot_Main() {
+		return (EReference)irRootEClass.getEStructuralFeatures().get(6);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getIrRoot_Modules() {
+		return (EReference)irRootEClass.getEStructuralFeatures().get(7);
 	}
 
 	/**
@@ -774,16 +804,6 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	@Override
 	public EReference getIrRoot_TimeStepVariable() {
 		return (EReference)irRootEClass.getEStructuralFeatures().get(12);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EReference getIrRoot_Jobs() {
-		return (EReference)irRootEClass.getEStructuralFeatures().get(5);
 	}
 
 	/**
@@ -864,26 +884,6 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	@Override
 	public EReference getIrModule_Jobs() {
 		return (EReference)irModuleEClass.getEStructuralFeatures().get(4);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EReference getIrRoot_Main() {
-		return (EReference)irRootEClass.getEStructuralFeatures().get(6);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EReference getIrRoot_Modules() {
-		return (EReference)irRootEClass.getEStructuralFeatures().get(7);
 	}
 
 	/**
@@ -1162,6 +1162,16 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
+	public EAttribute getFunction_Name() {
+		return (EAttribute)functionEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EReference getFunction_ReturnType() {
 		return (EReference)functionEClass.getEStructuralFeatures().get(1);
 	}
@@ -1172,28 +1182,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getFunction_Provider() {
-		return (EReference)functionEClass.getEStructuralFeatures().get(5);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
 	public EReference getFunction_Variables() {
 		return (EReference)functionEClass.getEStructuralFeatures().get(2);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EAttribute getFunction_Name() {
-		return (EAttribute)functionEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -1214,6 +1204,16 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	@Override
 	public EReference getFunction_Body() {
 		return (EReference)functionEClass.getEStructuralFeatures().get(4);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getFunction_Provider() {
+		return (EReference)functionEClass.getEStructuralFeatures().get(5);
 	}
 
 	/**
@@ -1352,6 +1352,26 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
+	public EReference getJob_PreviousJobsWithSameCaller() {
+		return (EReference)jobEClass.getEStructuralFeatures().get(4);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getJob_NextJobsWithSameCaller() {
+		return (EReference)jobEClass.getEStructuralFeatures().get(5);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EClass getInstructionJob() {
 		return instructionJobEClass;
 	}
@@ -1364,6 +1384,26 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	@Override
 	public EReference getInstructionJob_Instruction() {
 		return (EReference)instructionJobEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EClass getTimeLoopJob() {
+		return timeLoopJobEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getTimeLoopJob_Copies() {
+		return (EReference)timeLoopJobEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -1394,26 +1434,6 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	@Override
 	public EReference getExecuteTimeLoopJob_IterationCounter() {
 		return (EReference)executeTimeLoopJobEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EClass getTimeLoopJob() {
-		return timeLoopJobEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EReference getTimeLoopJob_Copies() {
-		return (EReference)timeLoopJobEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -2732,6 +2752,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEAttribute(jobEClass, JOB__AT);
 		createEAttribute(jobEClass, JOB__ON_CYCLE);
 		createEReference(jobEClass, JOB__CALLER);
+		createEReference(jobEClass, JOB__PREVIOUS_JOBS_WITH_SAME_CALLER);
+		createEReference(jobEClass, JOB__NEXT_JOBS_WITH_SAME_CALLER);
 
 		instructionJobEClass = createEClass(INSTRUCTION_JOB);
 		createEReference(instructionJobEClass, INSTRUCTION_JOB__INSTRUCTION);
@@ -3096,6 +3118,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEAttribute(getJob_At(), ecorePackage.getEDouble(), "at", null, 1, 1, Job.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getJob_OnCycle(), ecorePackage.getEBoolean(), "onCycle", null, 1, 1, Job.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getJob_Caller(), this.getJobCaller(), this.getJobCaller_Calls(), "caller", null, 0, 1, Job.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getJob_PreviousJobsWithSameCaller(), this.getJob(), null, "previousJobsWithSameCaller", null, 0, -1, Job.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getJob_NextJobsWithSameCaller(), this.getJob(), null, "nextJobsWithSameCaller", null, 0, -1, Job.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(instructionJobEClass, InstructionJob.class, "InstructionJob", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getInstructionJob_Instruction(), this.getInstruction(), null, "instruction", null, 1, 1, InstructionJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

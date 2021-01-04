@@ -5,13 +5,16 @@ package fr.cea.nabla.ir.ir.impl;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.Job;
 import fr.cea.nabla.ir.ir.JobCaller;
+import java.util.Collection;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 
 /**
  * <!-- begin-user-doc -->
@@ -25,6 +28,8 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.JobImpl#getAt <em>At</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.JobImpl#isOnCycle <em>On Cycle</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.JobImpl#getCaller <em>Caller</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.JobImpl#getPreviousJobsWithSameCaller <em>Previous Jobs With Same Caller</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.JobImpl#getNextJobsWithSameCaller <em>Next Jobs With Same Caller</em>}</li>
  * </ul>
  *
  * @generated
@@ -99,6 +104,26 @@ public abstract class JobImpl extends IrAnnotableImpl implements Job {
 	 * @ordered
 	 */
 	protected JobCaller caller;
+
+	/**
+	 * The cached value of the '{@link #getPreviousJobsWithSameCaller() <em>Previous Jobs With Same Caller</em>}' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getPreviousJobsWithSameCaller()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<Job> previousJobsWithSameCaller;
+
+	/**
+	 * The cached value of the '{@link #getNextJobsWithSameCaller() <em>Next Jobs With Same Caller</em>}' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getNextJobsWithSameCaller()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<Job> nextJobsWithSameCaller;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -256,6 +281,32 @@ public abstract class JobImpl extends IrAnnotableImpl implements Job {
 	 * @generated
 	 */
 	@Override
+	public EList<Job> getPreviousJobsWithSameCaller() {
+		if (previousJobsWithSameCaller == null) {
+			previousJobsWithSameCaller = new EObjectResolvingEList<Job>(Job.class, this, IrPackage.JOB__PREVIOUS_JOBS_WITH_SAME_CALLER);
+		}
+		return previousJobsWithSameCaller;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EList<Job> getNextJobsWithSameCaller() {
+		if (nextJobsWithSameCaller == null) {
+			nextJobsWithSameCaller = new EObjectResolvingEList<Job>(Job.class, this, IrPackage.JOB__NEXT_JOBS_WITH_SAME_CALLER);
+		}
+		return nextJobsWithSameCaller;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case IrPackage.JOB__CALLER:
@@ -297,6 +348,10 @@ public abstract class JobImpl extends IrAnnotableImpl implements Job {
 			case IrPackage.JOB__CALLER:
 				if (resolve) return getCaller();
 				return basicGetCaller();
+			case IrPackage.JOB__PREVIOUS_JOBS_WITH_SAME_CALLER:
+				return getPreviousJobsWithSameCaller();
+			case IrPackage.JOB__NEXT_JOBS_WITH_SAME_CALLER:
+				return getNextJobsWithSameCaller();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -306,6 +361,7 @@ public abstract class JobImpl extends IrAnnotableImpl implements Job {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
@@ -320,6 +376,14 @@ public abstract class JobImpl extends IrAnnotableImpl implements Job {
 				return;
 			case IrPackage.JOB__CALLER:
 				setCaller((JobCaller)newValue);
+				return;
+			case IrPackage.JOB__PREVIOUS_JOBS_WITH_SAME_CALLER:
+				getPreviousJobsWithSameCaller().clear();
+				getPreviousJobsWithSameCaller().addAll((Collection<? extends Job>)newValue);
+				return;
+			case IrPackage.JOB__NEXT_JOBS_WITH_SAME_CALLER:
+				getNextJobsWithSameCaller().clear();
+				getNextJobsWithSameCaller().addAll((Collection<? extends Job>)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -345,6 +409,12 @@ public abstract class JobImpl extends IrAnnotableImpl implements Job {
 			case IrPackage.JOB__CALLER:
 				setCaller((JobCaller)null);
 				return;
+			case IrPackage.JOB__PREVIOUS_JOBS_WITH_SAME_CALLER:
+				getPreviousJobsWithSameCaller().clear();
+				return;
+			case IrPackage.JOB__NEXT_JOBS_WITH_SAME_CALLER:
+				getNextJobsWithSameCaller().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -365,6 +435,10 @@ public abstract class JobImpl extends IrAnnotableImpl implements Job {
 				return onCycle != ON_CYCLE_EDEFAULT;
 			case IrPackage.JOB__CALLER:
 				return caller != null;
+			case IrPackage.JOB__PREVIOUS_JOBS_WITH_SAME_CALLER:
+				return previousJobsWithSameCaller != null && !previousJobsWithSameCaller.isEmpty();
+			case IrPackage.JOB__NEXT_JOBS_WITH_SAME_CALLER:
+				return nextJobsWithSameCaller != null && !nextJobsWithSameCaller.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}

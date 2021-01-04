@@ -148,6 +148,10 @@
         lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="caller" eType="#//JobCaller"
         eOpposite="#//JobCaller/calls"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="previousJobsWithSameCaller"
+        upperBound="-1" eType="#//Job"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="nextJobsWithSameCaller"
+        upperBound="-1" eType="#//Job"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="InstructionJob" eSuperTypes="#//Job">
     <eStructuralFeatures xsi:type="ecore:EReference" name="instruction" lowerBound="1"

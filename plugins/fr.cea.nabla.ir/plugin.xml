@@ -18,4 +18,11 @@
             genModel="model/Ir.genmodel"
             uri="http://www.cea.fr/nabla/ir"/>
    </extension>
+
+   <extension point="org.eclipse.emf.ecore.extension_parser">
+      <!-- @generated Ir -->
+      <parser
+            type="nablair"
+            class="fr.cea.nabla.ir.ir.util.IrResourceFactoryImpl"/>
+   </extension>
 </plugin>

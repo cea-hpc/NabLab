@@ -110,7 +110,7 @@ class Utils
 	static def getComment(Job it)
 	'''
 		/**
-		 * Job «name» called @«at» in «caller.codeName» method.
+		 * Job «codeName» called @«at» in «caller.codeName» method.
 		 * In variables: «FOR v : inVars.sortBy[name] SEPARATOR ', '»«v.getName»«ENDFOR»
 		 * Out variables: «FOR v : outVars.sortBy[name] SEPARATOR ', '»«v.getName»«ENDFOR»
 		 */

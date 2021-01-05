@@ -130,8 +130,8 @@ class BasicValidatorTest
 		val moduleKo = parseHelper.parse('''module test;''')
 		Assert.assertNotNull(moduleKo)
 		moduleKo.assertError(NablaPackage.eINSTANCE.nablaRoot,
-			BasicValidator::ROOT_NAME,
-			BasicValidator::getRootNameMsg())
+			BasicValidator::UPPER_CASE_START_NAME,
+			BasicValidator::getUpperCaseNameMsg())
 		val moduleOk = parseHelper.parse('''module Test;''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -139,8 +139,8 @@ class BasicValidatorTest
 		val extensionKo = extensionParseHelper.parse('''extension test;''')
 		Assert.assertNotNull(extensionKo)
 		extensionKo.assertError(NablaPackage.eINSTANCE.nablaRoot,
-			BasicValidator::ROOT_NAME,
-			BasicValidator::getRootNameMsg())
+			BasicValidator::UPPER_CASE_START_NAME,
+			BasicValidator::getUpperCaseNameMsg())
 		val extensionOk = extensionParseHelper.parse('''extension Test;''')
 		Assert.assertNotNull(extensionOk)
 		extensionOk.assertNoErrors

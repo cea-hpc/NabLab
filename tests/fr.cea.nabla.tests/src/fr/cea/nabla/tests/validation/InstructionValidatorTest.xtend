@@ -126,7 +126,7 @@ class InstructionValidatorTest
 			«emptyTestModule»
 			ℾ cond;
 			ℕ a;
-			job: if (cond) { a = a + 1 ; } else { a = a -1 ; }
+			Job: if (cond) { a = a + 1 ; } else { a = a -1 ; }
 			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -140,7 +140,7 @@ class InstructionValidatorTest
 			«emptyTestModule»
 			ℕ cond;
 			ℕ a;
-			job: while (cond) { a = a + 1 ; }
+			Job: while (cond) { a = a + 1 ; }
 			''')
 		Assert.assertNotNull(moduleKo)
 		moduleKo.assertError(NablaPackage.eINSTANCE.^while,
@@ -152,7 +152,7 @@ class InstructionValidatorTest
 			«emptyTestModule»
 			ℾ cond;
 			ℕ a;
-			job: while (cond) { a = a + 1 ; }
+			Job: while (cond) { a = a + 1 ; }
 			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors

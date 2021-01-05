@@ -36,6 +36,7 @@ import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.validation.Check
 import org.eclipse.xtext.validation.CheckType
+import fr.cea.nabla.nabla.Job
 
 // Caution: OptDefinition validation with InstructionValidator
 class BasicValidator extends UnusedValidator
@@ -65,17 +66,24 @@ class BasicValidator extends UnusedValidator
 			checkExpressionValidityAndType(nbElems, NablaPackage.Literals.INTERVAL__NB_ELEMS)
 	}
 
-	// ===== NablaRoot =====
+	// ===== Names format  =====
 
-	public static val ROOT_NAME = "NablaRoot::RootName"
+	public static val UPPER_CASE_START_NAME = "UpperCaseStartName"
 
-	static def getRootNameMsg() { "Module/Extension name must start with an upper case" }
+	static def getUpperCaseNameMsg() {"Name must start with an upper case" }
 
 	@Check(CheckType.NORMAL)
-	def checkName(NablaRoot it)
+	def checkUpperCase(NablaRoot it)
 	{
 		if (!name.nullOrEmpty && Character::isLowerCase(name.charAt(0)))
-			error(getRootNameMsg(), NablaPackage.Literals.NABLA_ROOT__NAME, ROOT_NAME)
+			error(getUpperCaseNameMsg(), NablaPackage.Literals.NABLA_ROOT__NAME, UPPER_CASE_START_NAME)
+	}
+
+	@Check(CheckType.NORMAL)
+	def checkUpperCase(Job it)
+	{
+		if (!name.nullOrEmpty && Character::isLowerCase(name.charAt(0)))
+			error(getUpperCaseNameMsg(), NablaPackage.Literals.JOB__NAME, UPPER_CASE_START_NAME)
 	}
 
 	// ===== TimeIterator =====

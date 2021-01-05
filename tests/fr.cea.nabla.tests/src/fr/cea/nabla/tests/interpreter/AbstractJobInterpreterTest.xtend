@@ -30,7 +30,7 @@ abstract class AbstractJobInterpreterTest
 		'''
 		«testModuleForSimulation»
 		ℝ[2] X{nodes};
-		initT : t = 5.;
+		InitT : t = 5.;
 		'''
 		assertInterpreteInstructionJob(model)
 	}

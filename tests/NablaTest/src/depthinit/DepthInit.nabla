@@ -25,4 +25,4 @@ option ℝ δt = 1.0;
 ℝ[2] X{nodes};
 ℝ η{cells};
 
-initFromFile: ∀j∈cells(), η{j} = nextWaveHeight();
+InitFromFile: ∀j∈cells(), η{j} = nextWaveHeight();

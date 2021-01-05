@@ -276,7 +276,7 @@ Glace2d::~Glace2d()
 }
 
 /**
- * Job ComputeCjr called @1.0 in executeTimeLoopN method.
+ * Job computeCjr called @1.0 in executeTimeLoopN method.
  * In variables: X_n
  * Out variables: C
  */
@@ -301,7 +301,7 @@ void Glace2d::computeCjr() noexcept
 }
 
 /**
- * Job ComputeInternalEnergy called @1.0 in executeTimeLoopN method.
+ * Job computeInternalEnergy called @1.0 in executeTimeLoopN method.
  * In variables: E_n, uj_n
  * Out variables: e
  */
@@ -314,7 +314,7 @@ void Glace2d::computeInternalEnergy() noexcept
 }
 
 /**
- * Job IniCjrIc called @1.0 in simulate method.
+ * Job iniCjrIc called @1.0 in simulate method.
  * In variables: X_n0
  * Out variables: Cjr_ic
  */
@@ -339,7 +339,7 @@ void Glace2d::iniCjrIc() noexcept
 }
 
 /**
- * Job IniTime called @1.0 in simulate method.
+ * Job iniTime called @1.0 in simulate method.
  * In variables: 
  * Out variables: t_n0
  */
@@ -349,7 +349,7 @@ void Glace2d::iniTime() noexcept
 }
 
 /**
- * Job IniTimeStep called @1.0 in simulate method.
+ * Job iniTimeStep called @1.0 in simulate method.
  * In variables: deltatIni
  * Out variables: deltat_n0
  */
@@ -359,7 +359,7 @@ void Glace2d::iniTimeStep() noexcept
 }
 
 /**
- * Job ComputeLjr called @2.0 in executeTimeLoopN method.
+ * Job computeLjr called @2.0 in executeTimeLoopN method.
  * In variables: C
  * Out variables: l
  */
@@ -380,7 +380,7 @@ void Glace2d::computeLjr() noexcept
 }
 
 /**
- * Job ComputeV called @2.0 in executeTimeLoopN method.
+ * Job computeV called @2.0 in executeTimeLoopN method.
  * In variables: C, X_n
  * Out variables: V
  */
@@ -405,7 +405,7 @@ void Glace2d::computeV() noexcept
 }
 
 /**
- * Job Initialize called @2.0 in simulate method.
+ * Job initialize called @2.0 in simulate method.
  * In variables: Cjr_ic, X_n0, gamma, pIniZd, pIniZg, rhoIniZd, rhoIniZg, xInterface
  * Out variables: E_n, m, p, rho, uj_n
  */
@@ -459,7 +459,7 @@ void Glace2d::initialize() noexcept
 }
 
 /**
- * Job SetUpTimeLoopN called @2.0 in simulate method.
+ * Job setUpTimeLoopN called @2.0 in simulate method.
  * In variables: X_n0, deltat_n0, t_n0
  * Out variables: X_n, deltat_n, t_n
  */
@@ -473,7 +473,7 @@ void Glace2d::setUpTimeLoopN() noexcept
 }
 
 /**
- * Job ComputeDensity called @3.0 in executeTimeLoopN method.
+ * Job computeDensity called @3.0 in executeTimeLoopN method.
  * In variables: V, m
  * Out variables: rho
  */
@@ -486,7 +486,7 @@ void Glace2d::computeDensity() noexcept
 }
 
 /**
- * Job ExecuteTimeLoopN called @3.0 in simulate method.
+ * Job executeTimeLoopN called @3.0 in simulate method.
  * In variables: Ajr, Ar, C, E_n, F, Mt, V, X_n, b, bt, c, deltatCfl, deltat_n, deltat_nplus1, deltatj, e, gamma, l, m, p, rho, t_n, uj_n, ur
  * Out variables: Ajr, Ar, C, E_nplus1, F, Mt, V, X_nplus1, b, bt, c, deltat_nplus1, deltatj, e, l, p, rho, t_nplus1, uj_nplus1, ur
  */
@@ -565,7 +565,7 @@ void Glace2d::executeTimeLoopN() noexcept
 }
 
 /**
- * Job ComputeEOSp called @4.0 in executeTimeLoopN method.
+ * Job computeEOSp called @4.0 in executeTimeLoopN method.
  * In variables: e, gamma, rho
  * Out variables: p
  */
@@ -578,7 +578,7 @@ void Glace2d::computeEOSp() noexcept
 }
 
 /**
- * Job ComputeEOSc called @5.0 in executeTimeLoopN method.
+ * Job computeEOSc called @5.0 in executeTimeLoopN method.
  * In variables: gamma, p, rho
  * Out variables: c
  */
@@ -591,7 +591,7 @@ void Glace2d::computeEOSc() noexcept
 }
 
 /**
- * Job ComputeAjr called @6.0 in executeTimeLoopN method.
+ * Job computeAjr called @6.0 in executeTimeLoopN method.
  * In variables: C, c, l, rho
  * Out variables: Ajr
  */
@@ -612,7 +612,7 @@ void Glace2d::computeAjr() noexcept
 }
 
 /**
- * Job Computedeltatj called @6.0 in executeTimeLoopN method.
+ * Job computedeltatj called @6.0 in executeTimeLoopN method.
  * In variables: V, c, l
  * Out variables: deltatj
  */
@@ -635,7 +635,7 @@ void Glace2d::computedeltatj() noexcept
 }
 
 /**
- * Job ComputeAr called @7.0 in executeTimeLoopN method.
+ * Job computeAr called @7.0 in executeTimeLoopN method.
  * In variables: Ajr
  * Out variables: Ar
  */
@@ -661,7 +661,7 @@ void Glace2d::computeAr() noexcept
 }
 
 /**
- * Job ComputeBr called @7.0 in executeTimeLoopN method.
+ * Job computeBr called @7.0 in executeTimeLoopN method.
  * In variables: Ajr, C, p, uj_n
  * Out variables: b
  */
@@ -687,7 +687,7 @@ void Glace2d::computeBr() noexcept
 }
 
 /**
- * Job ComputeDt called @7.0 in executeTimeLoopN method.
+ * Job computeDt called @7.0 in executeTimeLoopN method.
  * In variables: deltatCfl, deltatj
  * Out variables: deltat_nplus1
  */
@@ -703,7 +703,7 @@ void Glace2d::computeDt() noexcept
 }
 
 /**
- * Job ComputeBoundaryConditions called @8.0 in executeTimeLoopN method.
+ * Job computeBoundaryConditions called @8.0 in executeTimeLoopN method.
  * In variables: Ar, b
  * Out variables: Mt, bt
  */
@@ -763,7 +763,7 @@ void Glace2d::computeBoundaryConditions() noexcept
 }
 
 /**
- * Job ComputeBt called @8.0 in executeTimeLoopN method.
+ * Job computeBt called @8.0 in executeTimeLoopN method.
  * In variables: b
  * Out variables: bt
  */
@@ -782,7 +782,7 @@ void Glace2d::computeBt() noexcept
 }
 
 /**
- * Job ComputeMt called @8.0 in executeTimeLoopN method.
+ * Job computeMt called @8.0 in executeTimeLoopN method.
  * In variables: Ar
  * Out variables: Mt
  */
@@ -801,7 +801,7 @@ void Glace2d::computeMt() noexcept
 }
 
 /**
- * Job ComputeTn called @8.0 in executeTimeLoopN method.
+ * Job computeTn called @8.0 in executeTimeLoopN method.
  * In variables: deltat_nplus1, t_n
  * Out variables: t_nplus1
  */
@@ -811,7 +811,7 @@ void Glace2d::computeTn() noexcept
 }
 
 /**
- * Job ComputeU called @9.0 in executeTimeLoopN method.
+ * Job computeU called @9.0 in executeTimeLoopN method.
  * In variables: Mt, bt
  * Out variables: ur
  */
@@ -824,7 +824,7 @@ void Glace2d::computeU() noexcept
 }
 
 /**
- * Job ComputeFjr called @10.0 in executeTimeLoopN method.
+ * Job computeFjr called @10.0 in executeTimeLoopN method.
  * In variables: Ajr, C, p, uj_n, ur
  * Out variables: F
  */
@@ -847,7 +847,7 @@ void Glace2d::computeFjr() noexcept
 }
 
 /**
- * Job ComputeXn called @10.0 in executeTimeLoopN method.
+ * Job computeXn called @10.0 in executeTimeLoopN method.
  * In variables: X_n, deltat_n, ur
  * Out variables: X_nplus1
  */
@@ -860,7 +860,7 @@ void Glace2d::computeXn() noexcept
 }
 
 /**
- * Job ComputeEn called @11.0 in executeTimeLoopN method.
+ * Job computeEn called @11.0 in executeTimeLoopN method.
  * In variables: E_n, F, deltat_n, m, ur
  * Out variables: E_nplus1
  */
@@ -885,7 +885,7 @@ void Glace2d::computeEn() noexcept
 }
 
 /**
- * Job ComputeUn called @11.0 in executeTimeLoopN method.
+ * Job computeUn called @11.0 in executeTimeLoopN method.
  * In variables: F, deltat_n, m, uj_n
  * Out variables: uj_nplus1
  */

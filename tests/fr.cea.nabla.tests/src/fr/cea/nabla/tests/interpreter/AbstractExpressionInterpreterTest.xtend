@@ -196,7 +196,7 @@ abstract class AbstractExpressionInterpreterTest
 		«testModuleForSimulation»
 		ℕ c;
 		ℝ[2] X{nodes};
-		j: c = card(nodes());
+		Job1: c = card(nodes());
 		'''
 		assertInterpreteCardinality(model)
 	}
@@ -274,12 +274,12 @@ abstract class AbstractExpressionInterpreterTest
 		ℝ[2] w6;
 		ℝ[2] X{nodes};
 
-		j1: w1 = h(u);
-		j2: w2 = i(u);
-		j3: w3 = i(v);
-		j4: w4 = j(u);
-		j5: w5 = j(v);
-		j6: w6 = k(u);
+		J1: w1 = h(u);
+		J2: w2 = i(u);
+		J3: w3 = i(v);
+		J4: w4 = j(u);
+		J5: w5 = j(v);
+		J6: w6 = k(u);
 		'''
 		assertInterpreteFunctionCallWithBody(model)
 	}

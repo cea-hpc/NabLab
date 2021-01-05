@@ -123,7 +123,7 @@ class ExpressionValidatorTest
 		val moduleKo1 = parseHelper.parse(
 			'''
 			«model»
-			j1: let ℝ x = test(true, 0, opt);
+			J1: let ℝ x = test(true, 0, opt);
 			'''
 		)
 		Assert.assertNotNull(moduleKo1)
@@ -139,7 +139,7 @@ class ExpressionValidatorTest
 		val moduleKo2 = parseHelper.parse(
 			'''
 			«model»
-			j1: alpha = solveBidon(alpha, opt, count);
+			J1: alpha = solveBidon(alpha, opt, count);
 			'''
 		)
 		Assert.assertNotNull(moduleKo2)
@@ -159,8 +159,8 @@ class ExpressionValidatorTest
 		val moduleOk = parseHelper.parse(
 			'''
 			«model»
-			j1: let ℝ x = test(true, 0., opt);
-			j2: alpha = solveBidon(alpha, alpha, count);
+			J1: let ℝ x = test(true, 0., opt);
+			J2: alpha = solveBidon(alpha, alpha, count);
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -177,8 +177,8 @@ class ExpressionValidatorTest
 			def sum, 0.0: ℝ, (a, b) → return a + b;
 			ℝ D{cells}; 
 			ℝ[2] E{cells}; 
-			computeU: let ℝ u = sum{c∈cells()}(D);
-			computeV: let ℝ[2] v = sum{c∈cells()}(E{c});
+			ComputeU: let ℝ u = sum{c∈cells()}(D);
+			ComputeV: let ℝ[2] v = sum{c∈cells()}(E{c});
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -199,8 +199,8 @@ class ExpressionValidatorTest
 			def sum, 0.0: x | ℝ[x], (a,b) → return a + b;
 			ℝ D{cells};
 			ℝ[2] E{cells};
-			computeU: let ℝ u = sum{c∈cells()}(D{c});
-			computeV: let ℝ[2] v = sum{c∈cells()}(E{c});
+			ComputeU: let ℝ u = sum{c∈cells()}(D{c});
+			ComputeV: let ℝ[2] v = sum{c∈cells()}(E{c});
 			'''
 		)
 		Assert.assertNotNull(moduleOk)

@@ -145,7 +145,7 @@ HeatEquation::~HeatEquation()
 }
 
 /**
- * Job ComputeOutgoingFlux called @1.0 in executeTimeLoopN method.
+ * Job computeOutgoingFlux called @1.0 in executeTimeLoopN method.
  * In variables: V, center, deltat, surface, u_n
  * Out variables: outgoingFlux
  */
@@ -173,7 +173,7 @@ void HeatEquation::computeOutgoingFlux() noexcept
 }
 
 /**
- * Job ComputeSurface called @1.0 in simulate method.
+ * Job computeSurface called @1.0 in simulate method.
  * In variables: X
  * Out variables: surface
  */
@@ -200,7 +200,7 @@ void HeatEquation::computeSurface() noexcept
 }
 
 /**
- * Job ComputeTn called @1.0 in executeTimeLoopN method.
+ * Job computeTn called @1.0 in executeTimeLoopN method.
  * In variables: deltat, t_n
  * Out variables: t_nplus1
  */
@@ -210,7 +210,7 @@ void HeatEquation::computeTn() noexcept
 }
 
 /**
- * Job ComputeV called @1.0 in simulate method.
+ * Job computeV called @1.0 in simulate method.
  * In variables: X
  * Out variables: V
  */
@@ -237,7 +237,7 @@ void HeatEquation::computeV() noexcept
 }
 
 /**
- * Job IniCenter called @1.0 in simulate method.
+ * Job iniCenter called @1.0 in simulate method.
  * In variables: X
  * Out variables: center
  */
@@ -262,7 +262,7 @@ void HeatEquation::iniCenter() noexcept
 }
 
 /**
- * Job IniF called @1.0 in simulate method.
+ * Job iniF called @1.0 in simulate method.
  * In variables: 
  * Out variables: f
  */
@@ -275,7 +275,7 @@ void HeatEquation::iniF() noexcept
 }
 
 /**
- * Job IniTime called @1.0 in simulate method.
+ * Job iniTime called @1.0 in simulate method.
  * In variables: 
  * Out variables: t_n0
  */
@@ -285,7 +285,7 @@ void HeatEquation::iniTime() noexcept
 }
 
 /**
- * Job ComputeUn called @2.0 in executeTimeLoopN method.
+ * Job computeUn called @2.0 in executeTimeLoopN method.
  * In variables: deltat, f, outgoingFlux, u_n
  * Out variables: u_nplus1
  */
@@ -298,7 +298,7 @@ void HeatEquation::computeUn() noexcept
 }
 
 /**
- * Job IniUn called @2.0 in simulate method.
+ * Job iniUn called @2.0 in simulate method.
  * In variables: PI, alpha, center
  * Out variables: u_n
  */
@@ -311,7 +311,7 @@ void HeatEquation::iniUn() noexcept
 }
 
 /**
- * Job SetUpTimeLoopN called @2.0 in simulate method.
+ * Job setUpTimeLoopN called @2.0 in simulate method.
  * In variables: t_n0
  * Out variables: t_n
  */
@@ -321,7 +321,7 @@ void HeatEquation::setUpTimeLoopN() noexcept
 }
 
 /**
- * Job ExecuteTimeLoopN called @3.0 in simulate method.
+ * Job executeTimeLoopN called @3.0 in simulate method.
  * In variables: V, center, deltat, f, outgoingFlux, surface, t_n, u_n
  * Out variables: outgoingFlux, t_nplus1, u_nplus1
  */

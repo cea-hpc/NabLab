@@ -111,7 +111,7 @@ class UniqueNameValidatorTest
 		val moduleKo1 = parseHelper.parse(
 			'''
 			«model»
-			j1: ∀r∈nodes(), ∀r∈nodes(), let d = X{r, r} * 2.0;
+			J1: ∀r∈nodes(), ∀r∈nodes(), let d = X{r, r} * 2.0;
 			''')
 		Assert.assertNotNull(moduleKo1)
 		moduleKo1.assertError(NablaPackage.eINSTANCE.spaceIterator,
@@ -121,7 +121,7 @@ class UniqueNameValidatorTest
 		val moduleOk = parseHelper.parse(
 			'''
 			«model»
-			j1: ∀r1∈nodes(), ∀r2∈nodes(), let ℝ d = X{r1, r2} * 2.0;
+			J1: ∀r1∈nodes(), ∀r2∈nodes(), let ℝ d = X{r1, r2} * 2.0;
 			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -133,7 +133,7 @@ class UniqueNameValidatorTest
 		val moduleKo = parseHelper.parse(
 			'''
 			«testModuleForSimulation»
-			j1: {
+			J1: {
 				set myNodes = nodes();
 				set myNodes = nodes();
 			}
@@ -147,7 +147,7 @@ class UniqueNameValidatorTest
 			'''
 			«testModuleForSimulation»
 			ℝ X{nodes, nodes};
-			j1: {
+			J1: {
 				set myNodes = nodes();
 				∀r1∈myNodes, ∀r2∈myNodes, let ℝ d = X{r1, r2} * 2.0;
 			}

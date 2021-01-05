@@ -178,7 +178,7 @@ public final class IterativeHeatEquation
 	}
 
 	/**
-	 * Job ComputeFaceLength called @1.0 in simulate method.
+	 * Job computeFaceLength called @1.0 in simulate method.
 	 * In variables: X
 	 * Out variables: faceLength
 	 */
@@ -205,7 +205,7 @@ public final class IterativeHeatEquation
 	}
 
 	/**
-	 * Job ComputeTn called @1.0 in executeTimeLoopN method.
+	 * Job computeTn called @1.0 in executeTimeLoopN method.
 	 * In variables: deltat, t_n
 	 * Out variables: t_nplus1
 	 */
@@ -215,7 +215,7 @@ public final class IterativeHeatEquation
 	}
 
 	/**
-	 * Job ComputeV called @1.0 in simulate method.
+	 * Job computeV called @1.0 in simulate method.
 	 * In variables: X
 	 * Out variables: V
 	 */
@@ -242,7 +242,7 @@ public final class IterativeHeatEquation
 	}
 
 	/**
-	 * Job InitD called @1.0 in simulate method.
+	 * Job initD called @1.0 in simulate method.
 	 * In variables: 
 	 * Out variables: D
 	 */
@@ -255,7 +255,7 @@ public final class IterativeHeatEquation
 	}
 
 	/**
-	 * Job InitTime called @1.0 in simulate method.
+	 * Job initTime called @1.0 in simulate method.
 	 * In variables: 
 	 * Out variables: t_n0
 	 */
@@ -265,7 +265,7 @@ public final class IterativeHeatEquation
 	}
 
 	/**
-	 * Job InitXc called @1.0 in simulate method.
+	 * Job initXc called @1.0 in simulate method.
 	 * In variables: X
 	 * Out variables: Xc
 	 */
@@ -290,7 +290,7 @@ public final class IterativeHeatEquation
 	}
 
 	/**
-	 * Job SetUpTimeLoopK called @1.0 in executeTimeLoopN method.
+	 * Job setUpTimeLoopK called @1.0 in executeTimeLoopN method.
 	 * In variables: u_n
 	 * Out variables: u_nplus1_k
 	 */
@@ -303,7 +303,7 @@ public final class IterativeHeatEquation
 	}
 
 	/**
-	 * Job UpdateU called @1.0 in executeTimeLoopK method.
+	 * Job updateU called @1.0 in executeTimeLoopK method.
 	 * In variables: alpha, u_n, u_nplus1_k
 	 * Out variables: u_nplus1_kplus1
 	 */
@@ -328,7 +328,7 @@ public final class IterativeHeatEquation
 	}
 
 	/**
-	 * Job ComputeDeltaTn called @2.0 in simulate method.
+	 * Job computeDeltaTn called @2.0 in simulate method.
 	 * In variables: D, V
 	 * Out variables: deltat
 	 */
@@ -348,7 +348,7 @@ public final class IterativeHeatEquation
 	}
 
 	/**
-	 * Job ComputeFaceConductivity called @2.0 in simulate method.
+	 * Job computeFaceConductivity called @2.0 in simulate method.
 	 * In variables: D
 	 * Out variables: faceConductivity
 	 */
@@ -384,7 +384,7 @@ public final class IterativeHeatEquation
 	}
 
 	/**
-	 * Job ComputeResidual called @2.0 in executeTimeLoopK method.
+	 * Job computeResidual called @2.0 in executeTimeLoopK method.
 	 * In variables: u_nplus1_k, u_nplus1_kplus1
 	 * Out variables: residual
 	 */
@@ -404,7 +404,7 @@ public final class IterativeHeatEquation
 	}
 
 	/**
-	 * Job ExecuteTimeLoopK called @2.0 in executeTimeLoopN method.
+	 * Job executeTimeLoopK called @2.0 in executeTimeLoopN method.
 	 * In variables: alpha, u_n, u_nplus1_k, u_nplus1_kplus1
 	 * Out variables: residual, u_nplus1_kplus1
 	 */
@@ -433,7 +433,7 @@ public final class IterativeHeatEquation
 	}
 
 	/**
-	 * Job InitU called @2.0 in simulate method.
+	 * Job initU called @2.0 in simulate method.
 	 * In variables: Xc, u0, vectOne
 	 * Out variables: u_n
 	 */
@@ -449,7 +449,7 @@ public final class IterativeHeatEquation
 	}
 
 	/**
-	 * Job SetUpTimeLoopN called @2.0 in simulate method.
+	 * Job setUpTimeLoopN called @2.0 in simulate method.
 	 * In variables: t_n0
 	 * Out variables: t_n
 	 */
@@ -459,7 +459,7 @@ public final class IterativeHeatEquation
 	}
 
 	/**
-	 * Job ComputeAlphaCoeff called @3.0 in simulate method.
+	 * Job computeAlphaCoeff called @3.0 in simulate method.
 	 * In variables: V, Xc, deltat, faceConductivity, faceLength
 	 * Out variables: alpha
 	 */
@@ -488,7 +488,7 @@ public final class IterativeHeatEquation
 	}
 
 	/**
-	 * Job TearDownTimeLoopK called @3.0 in executeTimeLoopN method.
+	 * Job tearDownTimeLoopK called @3.0 in executeTimeLoopN method.
 	 * In variables: u_nplus1_kplus1
 	 * Out variables: u_nplus1
 	 */
@@ -501,7 +501,7 @@ public final class IterativeHeatEquation
 	}
 
 	/**
-	 * Job ExecuteTimeLoopN called @4.0 in simulate method.
+	 * Job executeTimeLoopN called @4.0 in simulate method.
 	 * In variables: alpha, deltat, t_n, u_n, u_nplus1_k, u_nplus1_kplus1
 	 * Out variables: residual, t_nplus1, u_nplus1, u_nplus1_k, u_nplus1_kplus1
 	 */

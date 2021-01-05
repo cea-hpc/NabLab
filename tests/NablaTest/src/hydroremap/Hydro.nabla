@@ -25,8 +25,8 @@ option ℝ δt = 1.0;
 
 // iterate n while (n+1 < maxIter && t^{n+1} < maxTime);
 
-hj1: ∀c∈cells(), hv3{c} = hv2{c};
-hj2: ∀c∈cells(), hv5{c} = hv3{c};
-hj3: ∀c∈cells(), hv7{c} = hv4{c} + hv5{c} + hv6{c};
+Hj1: ∀c∈cells(), hv3{c} = hv2{c};
+Hj2: ∀c∈cells(), hv5{c} = hv3{c};
+Hj3: ∀c∈cells(), hv7{c} = hv4{c} + hv5{c} + hv6{c};
 
 

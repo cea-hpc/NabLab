@@ -296,7 +296,6 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 		iterate n while (n+1 < maxIter && t^{n+1} < maxTime);
 	'''
 
-	/** TODO Missing targets OpenMP and sequential C++ */
 	private def getNablagenModelContent(String nablaModuleName, HashMap<TargetType, IFolder> srcGenFoldersByLanguage)
 	'''
 		Application «nablaModuleName»;
@@ -322,26 +321,36 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 			outputPath = "«srcGenFoldersByLanguage.get(TargetType::JAVA).fullPath»";
 		}
 
-		StlThread
-		{
-			outputPath = "«srcGenFoldersByLanguage.get(TargetType::STL_THREAD).fullPath»";
-			compiler = GNU;
-		//		compiler = LLVM;
-		//		compilerPath = "$ENV{HOME}/Utils/clang-9.0.0/bin/clang++";
-		}
-
 		Kokkos
 		{
 			outputPath = "«srcGenFoldersByLanguage.get(TargetType::KOKKOS).fullPath»";
-			kokkosPath = "$ENV{HOME}/kokkos/kokkos-install";
-			compiler = GNU;
+			NABLA_CXX_COMPILER = "/usr/bin/g++";
+			NABLA_KOKKOS_PATH = "$ENV{HOME}/kokkos/kokkos-install";
 		}
 
 		KokkosTeamThread
 		{
 			outputPath = "«srcGenFoldersByLanguage.get(TargetType::KOKKOS_TEAM_THREAD).fullPath»";
-			kokkosPath = "$ENV{HOME}/kokkos/kokkos-install";
-			compiler = GNU;
+			NABLA_CXX_COMPILER = "/usr/bin/g++";
+			NABLA_KOKKOS_PATH = "$ENV{HOME}/kokkos/kokkos-install";
+		}
+
+		OpenMP
+		{
+			outputPath = "«srcGenFoldersByLanguage.get(TargetType::OPEN_MP).fullPath»";
+			NABLA_CXX_COMPILER = "/usr/bin/g++";
+		}
+
+		CppSequential
+		{
+			outputPath = "«srcGenFoldersByLanguage.get(TargetType::CPP_SEQUENTIAL).fullPath»";
+			NABLA_CXX_COMPILER = "/usr/bin/g++";
+		}
+
+		StlThread
+		{
+			outputPath = "«srcGenFoldersByLanguage.get(TargetType::STL_THREAD).fullPath»";
+			NABLA_CXX_COMPILER = "/usr/bin/g++";
 		}
 	'''
 

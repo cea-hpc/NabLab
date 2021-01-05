@@ -1,12 +1,12 @@
 package fr.cea.nabla.generator
 
-import java.io.File
-import com.google.inject.Inject
-import org.eclipse.xtext.generator.JavaIoFileSystemAccess
-import com.google.inject.Provider
-import org.eclipse.xtext.generator.IOutputConfigurationProvider
-import org.eclipse.xtext.generator.OutputConfiguration
 import com.google.common.base.Function
+import com.google.inject.Inject
+import com.google.inject.Provider
+import java.io.File
+import org.eclipse.xtext.generator.IOutputConfigurationProvider
+import org.eclipse.xtext.generator.JavaIoFileSystemAccess
+import org.eclipse.xtext.generator.OutputConfiguration
 
 import static com.google.common.collect.Maps.uniqueIndex
 
@@ -48,6 +48,14 @@ abstract class StandaloneGeneratorBase
 	{
 		if (path.startsWith(userDir))
 			path.replace(userDir, "$ENV{HOME}")
+		else
+			path
+	}
+
+	protected def formatJavaPath(String path)
+	{
+		if (path.startsWith(userDir))
+			'''System.getProperty("user.home") + "«path.replace(userDir, '')»"'''
 		else
 			path
 	}

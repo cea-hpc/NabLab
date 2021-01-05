@@ -12,7 +12,7 @@ public class BatiLib
 	{
 		// Loads the libbatilibjni.so. This is the place where our native methods reside.
 		// System.loadLibrary can be used but classpath needs to be set to the lib path before execution
-		System.load("/home/lelandaisb/workspaces/NabLab/tests/BatiLibJni/lib/libbatilibjni.so");
+		System.load(System.getProperty("user.home") + "/workspaces/NabLab/tests/BatiLibJni/lib/libbatilibjni.so");
 	}
 
 	// This is a long here (in Java) but is used as a pointer to hold the

@@ -36,7 +36,6 @@ class JniProviderGenerator extends StandaloneGeneratorBase
 		fsa.generateFile(cmakeFileName, getCmakeFileContent(nablaExt, cppProviderHome))
 	}
 
-	// TODO Replace user home directory in .so path
 	private def getJavaFileContent(NablaExtension it, String projectHome, Iterable<Function> irFunctions)
 	'''
 	«Utils.fileHeader»
@@ -53,7 +52,8 @@ class JniProviderGenerator extends StandaloneGeneratorBase
 		{
 			// Loads the lib«name.toLowerCase»jni.so. This is the place where our native methods reside.
 			// System.loadLibrary can be used but classpath needs to be set to the lib path before execution
-			System.load("«projectHome»/lib/lib«name.toLowerCase»jni.so");
+			«val soPath = projectHome + '/lib/lib' + name.toLowerCase + 'jni.so'»
+			System.load(«soPath.formatJavaPath»);
 		}
 
 		// This is a long here (in Java) but is used as a pointer to hold the

@@ -29,11 +29,11 @@ public class CartesianMesh2D
 
 	private  MeshGeometry geometry;
 
-	private  int[] innerNodes;
-	private  int[] topNodes;
-	private  int[] bottomNodes;
-	private  int[] leftNodes;
-	private  int[] rightNodes;
+	private int[] innerNodes;
+	private int[] topNodes;
+	private int[] bottomNodes;
+	private int[] leftNodes;
+	private int[] rightNodes;
 
 	private int[] innerCells;
 	private int[] outerCells;
@@ -197,18 +197,10 @@ public class CartesianMesh2D
 	public int getNbInnerVerticalFaces() { return innerVerticalFaces.length; }
 	public int[] getInnerVerticalFaces() { return innerVerticalFaces; }
 
-	// TODO: Temporary until single item is available in grammar
-	public int getNbTopLeftNode() { return 1; }
-	public int[] getTopLeftNode() { return new int[] {topLeftNode}; }
-	// TODO: Temporary until single item is available in grammar
-	public int getNbTopRightNode() { return 1; }
-	public int[] getTopRightNode() { return new int[] {topRightNode}; }
-	// TODO: Temporary until single item is available in grammar
-	public int getNbBottomLeftNode() { return 1; }
-	public int[] getBottomLeftNode() { return new int[] {bottomLeftNode}; }
-	// TODO: Temporary until single item is available in grammar
-	public int getNbBottomRightNode() { return 1; }
-	public int[] getBottomRightNode() { return new int[] {bottomRightNode}; }
+	public int getTopLeftNode() { return topLeftNode; }
+	public int getTopRightNode() { return topRightNode; }
+	public int getBottomLeftNode() { return bottomLeftNode; }
+	public int getBottomRightNode() { return bottomRightNode; }
 
 	public int[] getNodesOfCell(int cellId)
 	{

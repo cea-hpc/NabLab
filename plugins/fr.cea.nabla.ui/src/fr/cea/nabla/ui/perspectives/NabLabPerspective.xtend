@@ -20,7 +20,7 @@ class NabLabPerspective implements IPerspectiveFactory
 	static val NABLAB_PERSPECTIVE_ID = "fr.cea.nabla.ui.NabLabPerpective"
 	static val LEFT_FOLDER_ID = "left.folder"
 	static val BOTTOM_FOLDER_ID = "bottom.folder"
-	static val MODEL_EXPLORER_VIEW_ID = "org.eclipse.sirius.ui.tools.views.model.explorer"
+	static val MODEL_EXPLORER_VIEW_ID = " org.eclipse.ui.navigator.ProjectExplorer"
 	static val ERROR_LOG_VIEW = "org.eclipse.pde.runtime.LogView"
 	static val NABLA_LATEX_VIEW_ID = "fr.cea.nabla.ui.views.NablaLatexView"
 	static val NABLA_GRAPH_VIEW_ID = "fr.cea.nabla.ui.views.NablaJobGraphView"

@@ -1,18 +1,21 @@
 package fr.cea.nabla.generator.ext
 
+import com.google.inject.Inject
+import fr.cea.nabla.generator.BackendFactoryProvider
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
 import fr.cea.nabla.generator.StandaloneGeneratorBase
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.generator.cpp.CMakeUtils
-import fr.cea.nabla.ir.generator.cpp.SequentialBackend
+import fr.cea.nabla.ir.generator.cpp.LightBackend
 import fr.cea.nabla.ir.generator.java.FunctionContentProvider
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.nabla.NablaExtension
+import fr.cea.nabla.nablaext.TargetType
 import org.eclipse.core.resources.IProject
 
 class JniProviderGenerator extends StandaloneGeneratorBase
 {
-	val backend = new SequentialBackend(null, null, null, null)
+	@Inject BackendFactoryProvider backendFactoryProvider
 
 	def generate(NablaExtension nablaExt, IProject project, Iterable<Function> irFunctions, String cppProviderHome)
 	{
@@ -26,9 +29,10 @@ class JniProviderGenerator extends StandaloneGeneratorBase
 		fsa.generateFile(javaFileName, getJavaFileContent(nablaExt, projectHome, irFunctions))
 
 		// .cc
+		val backend = backendFactoryProvider.getCppBackend(TargetType::CPP_SEQUENTIAL).create
 		val sourceFileName = "src/" + nablaExt.name.toLowerCase + "_" + nablaExt.name + ".cc"
 		dispatcher.post(MessageType::Exec, "    Generating: " + sourceFileName)
-		fsa.generateFile(sourceFileName, getCppFileContent(nablaExt, irFunctions))
+		fsa.generateFile(sourceFileName, getCppFileContent(nablaExt, backend, irFunctions))
 
 		// CMakeLists.txt
 		val cmakeFileName = "src/CMakeLists.txt"
@@ -81,7 +85,7 @@ class JniProviderGenerator extends StandaloneGeneratorBase
 	}
 	'''
 
-	private def getCppFileContent(NablaExtension it, Iterable<Function> irFunctions)
+	private def getCppFileContent(NablaExtension it, LightBackend backend, Iterable<Function> irFunctions)
 	'''
 	«Utils.fileHeader»
 

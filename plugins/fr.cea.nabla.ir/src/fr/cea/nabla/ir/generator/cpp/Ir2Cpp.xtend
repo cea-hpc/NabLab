@@ -103,7 +103,7 @@ class Ir2Cpp extends CodeGenerator
 
 	class «className»
 	{
-		«IF backend instanceof KokkosTeamThreadBackend»
+		«IF kokkosTeamThread»
 		typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
 
 		«ENDIF»
@@ -151,7 +151,7 @@ class Ir2Cpp extends CodeGenerator
 		void dumpVariables(int iteration, bool useTimer=true);
 
 		«ENDIF»
-		«IF backend instanceof KokkosTeamThreadBackend»
+		«IF kokkosTeamThread»
 		/**
 		 * Utility function to get work load for each team of threads
 		 * In  : thread and number of element to use for computation
@@ -305,7 +305,7 @@ class Ir2Cpp extends CodeGenerator
 	«className»::~«className»()
 	{
 	}
-	«IF backend instanceof KokkosTeamThreadBackend»
+	«IF kokkosTeamThread»
 
 	const std::pair<size_t, size_t> «className»::computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept
 	{
@@ -501,5 +501,10 @@ class Ir2Cpp extends CodeGenerator
 			 SimpleVariable case v.const: '''const «v.cppType» «v.name»;'''
 			 default: '''«v.cppType» «v.name»;'''
 		}
+	}
+
+	private def isKokkosTeamThread()
+	{
+		backend.name == KokkosTeamThreadBackendFactory.NAME
 	}
 }

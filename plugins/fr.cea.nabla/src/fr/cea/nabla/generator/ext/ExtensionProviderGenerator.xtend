@@ -97,7 +97,6 @@ class ExtensionProviderGenerator extends StandaloneGeneratorBase
 	}
 	'''
 
-
 	private def getProject(IWorkspace ws, String projectName)
 	{
 		var project = ResourcesPlugin.workspace.root.getProject(projectName)
@@ -108,7 +107,7 @@ class ExtensionProviderGenerator extends StandaloneGeneratorBase
 			val monitor = new NullProgressMonitor
 			project.create(desc, monitor)
 			project.open(monitor)
-	
+
 			// Create src folder
 			val srcFolder = project.getFolder("src")
 			srcFolder.create(false, true, monitor)

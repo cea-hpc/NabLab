@@ -4,7 +4,9 @@
   <eClassifiers xsi:type="ecore:EClass" name="ExtensionProvider">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="extension" eType="ecore:EClass Nabla.ecore#//NablaExtension"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="targets" unique="false"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="target" unique="false"
+        upperBound="-1" eType="#//TargetType"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="compatibleTargets" unique="false"
         upperBound="-1" eType="#//TargetType"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="facadeClass" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="libHome" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>

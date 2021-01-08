@@ -112,11 +112,7 @@ class FunctionContentProvider
 				size_t s = «nativeName».size();
 				«t.jniType»Array «jniName» = env->New«t.cppType.toFirstUpper»Array(s);
 				if («jniName» == NULL) return NULL;
-				«t.jniType»* tmp = new «t.jniType»[s];
-				for (size_t i0=0; i0<s; i0++)
-					tmp[i0] = «nativeName»[i0];
-				env->Set«t.cppType.toFirstUpper»ArrayRegion(«jniName», 0, s, tmp);
-				delete tmp;
+				env->Set«t.cppType.toFirstUpper»ArrayRegion(«jniName», 0, s, «nativeName».data());
 			'''
 			default:
 			'''

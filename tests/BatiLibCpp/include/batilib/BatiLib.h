@@ -54,8 +54,8 @@ namespace batilib
 		RealArray1D<x> nextDepth3(RealArray1D<x> x0)
 		{
 			std::cout << "C++ BatiLib::nextDepth3" << std:: endl;
-			RealArray1D<0> ret;
-			ret.resize(x0.size());
+			RealArray1D<x> ret;
+			ret.initSize(x0.size());
 			for (size_t i=0 ; i<x0.size() ; ++i)
 				ret[i] = 2*x0[i];
 			return ret;
@@ -66,6 +66,7 @@ namespace batilib
 		{
 			std::cout << "C++ BatiLib::nextDepth4" << std:: endl;
 			RealArray2D<x,y> ret;
+			ret.initSize(x0.size(), x0[0].size());
 			for (size_t i=0 ; i<x0.size() ; ++i)
 				for (size_t j=0 ; j<x0[i].size() ; ++j)
 					ret[i][j] = 2*x0[i][j];

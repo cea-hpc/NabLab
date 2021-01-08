@@ -1,17 +1,20 @@
 package fr.cea.nabla.generator.ext
 
+import com.google.inject.Inject
+import fr.cea.nabla.generator.BackendFactoryProvider
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
 import fr.cea.nabla.generator.StandaloneGeneratorBase
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.generator.cpp.CMakeUtils
-import fr.cea.nabla.ir.generator.cpp.SequentialBackend
+import fr.cea.nabla.ir.generator.cpp.LightBackend
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.nabla.NablaExtension
+import fr.cea.nabla.nablaext.TargetType
 import org.eclipse.core.resources.IProject
 
 class CppProviderGenerator extends StandaloneGeneratorBase
 {
-	val backend = new SequentialBackend(null, null, null, null)
+	@Inject BackendFactoryProvider backendFactoryProvider
 
 	def generate(NablaExtension nablaExt, IProject project, Iterable<Function> irFunctions, String libcppnablaHome)
 	{
@@ -20,9 +23,10 @@ class CppProviderGenerator extends StandaloneGeneratorBase
 		val fsa = getConfiguredFileSystemAccess(projectHome, false)
 
 		// .h of interface
+		val backend = backendFactoryProvider.getCppBackend(TargetType::CPP_SEQUENTIAL).create
 		val interfaceHeaderFileName = "include/" + nablaExt.name.toLowerCase + "/I" + nablaExt.name + ".h"
 		dispatcher.post(MessageType::Exec, "    Generating: " + interfaceHeaderFileName)
-		fsa.generateFile(interfaceHeaderFileName, getInterfaceHeaderFileContent(nablaExt, irFunctions))
+		fsa.generateFile(interfaceHeaderFileName, getInterfaceHeaderFileContent(nablaExt, backend, irFunctions))
 
 		// CMakeLists.txt
 		val cmakeFileName = "src/CMakeLists.txt"
@@ -35,7 +39,7 @@ class CppProviderGenerator extends StandaloneGeneratorBase
 		if (!fsa.isFile(headerFileName))
 		{
 			dispatcher.post(MessageType::Exec, "    Generating: " + headerFileName)
-			fsa.generateFile(headerFileName, getHeaderFileContent(nablaExt, irFunctions))
+			fsa.generateFile(headerFileName, getHeaderFileContent(nablaExt, backend, irFunctions))
 		}
 
 		// .cc
@@ -47,7 +51,7 @@ class CppProviderGenerator extends StandaloneGeneratorBase
 		}
 	}
 
-	private def getInterfaceHeaderFileContent(NablaExtension it, Iterable<Function> irFunctions)
+	private def getInterfaceHeaderFileContent(NablaExtension it, LightBackend backend, Iterable<Function> irFunctions)
 	'''
 	«Utils::fileHeader»
 
@@ -82,7 +86,7 @@ class CppProviderGenerator extends StandaloneGeneratorBase
 	#endif // __«name.toUpperCase»_I«name.toUpperCase»
 	'''
 
-	private def getHeaderFileContent(NablaExtension it, Iterable<Function> irFunctions)
+	private def getHeaderFileContent(NablaExtension it, LightBackend backend, Iterable<Function> irFunctions)
 	'''
 	#ifndef __«name.toUpperCase»_«name.toUpperCase»
 	#define __«name.toUpperCase»_«name.toUpperCase»

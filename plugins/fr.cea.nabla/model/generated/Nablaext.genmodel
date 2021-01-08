@@ -19,7 +19,8 @@
     <genClasses ecoreClass="Nablaext.ecore#//ExtensionProvider">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablaext.ecore#//ExtensionProvider/name"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablaext.ecore#//ExtensionProvider/extension"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablaext.ecore#//ExtensionProvider/targets"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablaext.ecore#//ExtensionProvider/target"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablaext.ecore#//ExtensionProvider/compatibleTargets"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablaext.ecore#//ExtensionProvider/facadeClass"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablaext.ecore#//ExtensionProvider/libHome"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablaext.ecore#//ExtensionProvider/libName"/>

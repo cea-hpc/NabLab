@@ -133,11 +133,7 @@ JNIEXPORT jdoubleArray JNICALL Java_batilib_BatiLib_nextDepth3
 	size_t s = c_ret.size();
 	jdoubleArray ret = env->NewDoubleArray(s);
 	if (ret == NULL) return NULL;
-	jdouble* tmp = new jdouble[s];
-	for (size_t i0=0; i0<s; i0++)
-		tmp[i0] = c_ret[i0];
-	env->SetDoubleArrayRegion(ret, 0, s, tmp);
-	delete tmp;
+	env->SetDoubleArrayRegion(ret, 0, s, c_ret.data());
 	return ret;
 }
 
@@ -172,11 +168,7 @@ JNIEXPORT jobjectArray JNICALL Java_batilib_BatiLib_nextDepth4
 		size_t s = c_ret[i1].size();
 		jdoubleArray ret_i0 = env->NewDoubleArray(s);
 		if (ret_i0 == NULL) return NULL;
-		jdouble* tmp = new jdouble[s];
-		for (size_t i0=0; i0<s; i0++)
-			tmp[i0] = c_ret[i1][i0];
-		env->SetDoubleArrayRegion(ret_i0, 0, s, tmp);
-		delete tmp;
+		env->SetDoubleArrayRegion(ret_i0, 0, s, c_ret[i1].data());
 		env->SetObjectArrayElement(ret, i1, ret_i0);
 		env->DeleteLocalRef(ret_i0);
 	}

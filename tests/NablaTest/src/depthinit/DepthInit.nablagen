@@ -29,7 +29,7 @@ Interpreter
 Java
 {
 	outputPath = "/NablaTest/src-gen-java";
-	extension BatiLib providedBy BatiLibJni;
+	extension BatiLib providedBy BatiLibJava;
 }
 
 StlThread

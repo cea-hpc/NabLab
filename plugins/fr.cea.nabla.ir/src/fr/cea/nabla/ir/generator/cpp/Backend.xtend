@@ -14,127 +14,181 @@ import fr.cea.nabla.ir.transformers.ReplaceReductions
 import java.util.HashMap
 import org.eclipse.xtend.lib.annotations.Accessors
 
-abstract class Backend
+class LightBackend
 {
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) String name
-	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) IrTransformationStep irTransformationStep = null
-	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) Ir2Cmake ir2Cmake
-	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) TraceContentProvider traceContentProvider
-	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) IncludesContentProvider includesContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) TypeContentProvider typeContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) ExpressionContentProvider expressionContentProvider
-	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) JsonContentProvider jsonContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) ArgOrVarContentProvider argOrVarContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) InstructionContentProvider instructionContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) FunctionContentProvider functionContentProvider
+}
+
+class Backend extends LightBackend
+{
+	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) Ir2Cmake ir2Cmake
+	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) IrTransformationStep irTransformationStep = null
+	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) TraceContentProvider traceContentProvider
+	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) IncludesContentProvider includesContentProvider
+	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) JsonContentProvider jsonContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) JobCallerContentProvider jobCallerContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) JobContentProvider jobContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) MainContentProvider mainContentProvider
 }
 
-class SequentialBackend extends Backend
+abstract class BackendFactory
 {
-	/** Expected variables: NABLA_CXX_COMPILER */
-	new(String maxIterationVarName, String stopTimeVarName, String levelDBPath, HashMap<String, String> variables)
+	def LightBackend create()
 	{
-		name = 'Sequential'
+		val backend = new LightBackend()
+		initLight(backend)
+		return backend
+	}
+
+	def Backend create(String maxIterationVarName, String stopTimeVarName, String levelDBPath, HashMap<String, String> variables)
+	{
+		val backend = new Backend()
+		initLight(backend)
+		init(backend, maxIterationVarName, stopTimeVarName, levelDBPath, variables)
+		return backend
+	}
+
+	abstract def void initLight(LightBackend it)
+	abstract def void init(Backend it, String maxIterationVarName, String stopTimeVarName, String levelDBPath, HashMap<String, String> variables)
+}
+
+class SequentialBackendFactory extends BackendFactory
+{
+	public static val NAME = 'Sequential'
+
+	override initLight(LightBackend it)
+	{
+		name = NAME
+		typeContentProvider = new StlTypeContentProvider
+		argOrVarContentProvider = new StlArgOrVarContentProvider(typeContentProvider)
+		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
+		instructionContentProvider = new SequentialInstructionContentProvider(argOrVarContentProvider, expressionContentProvider)
+		functionContentProvider = new FunctionContentProvider(typeContentProvider, instructionContentProvider)
+	}
+
+	/** Expected variables: NABLA_CXX_COMPILER */
+	override init(Backend it, String maxIterationVarName, String stopTimeVarName, String levelDBPath, HashMap<String, String> variables)
+	{
 		irTransformationStep = new ReplaceReductions(true)
 		ir2Cmake = new SequentialIr2Cmake(levelDBPath, variables)
 		traceContentProvider = new TraceContentProvider(maxIterationVarName, stopTimeVarName)
 		includesContentProvider = new SequentialIncludesContentProvider(levelDBPath)
-		typeContentProvider = new StlTypeContentProvider
-		argOrVarContentProvider = new StlArgOrVarContentProvider(typeContentProvider)
-		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
 		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
-		instructionContentProvider = new SequentialInstructionContentProvider(argOrVarContentProvider, expressionContentProvider)
-		functionContentProvider = new FunctionContentProvider(typeContentProvider, instructionContentProvider)
 		jobCallerContentProvider = new JobCallerContentProvider
 		jobContentProvider = new JobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, getJobCallerContentProvider)
 		mainContentProvider = new MainContentProvider(levelDBPath, jsonContentProvider)
 	}
 }
 
-class StlThreadBackend extends Backend
+class StlThreadBackendFactory extends BackendFactory
 {
-	/** Expected variables: NABLA_CXX_COMPILER */
-	new(String maxIterationVarName, String stopTimeVarName, String levelDBPath, HashMap<String, String> variables)
+	public static val NAME = 'StlThread'
+
+	override initLight(LightBackend it)
 	{
-		name = 'StlThread'
+		name = NAME
+		typeContentProvider = new StlTypeContentProvider
+		argOrVarContentProvider = new StlArgOrVarContentProvider(typeContentProvider)
+		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
+		instructionContentProvider = new StlThreadInstructionContentProvider(argOrVarContentProvider, expressionContentProvider)
+		functionContentProvider = new FunctionContentProvider(typeContentProvider, instructionContentProvider)
+	}
+
+	/** Expected variables: NABLA_CXX_COMPILER */
+	override init(Backend it, String maxIterationVarName, String stopTimeVarName, String levelDBPath, HashMap<String, String> variables)
+	{
 		ir2Cmake = new StlIr2Cmake(levelDBPath, variables)
 		traceContentProvider = new TraceContentProvider(maxIterationVarName, stopTimeVarName)
 		includesContentProvider = new StlThreadIncludesContentProvider(levelDBPath)
-		typeContentProvider = new StlTypeContentProvider
-		argOrVarContentProvider = new StlArgOrVarContentProvider(typeContentProvider)
-		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
 		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
-		instructionContentProvider = new StlThreadInstructionContentProvider(argOrVarContentProvider, expressionContentProvider)
-		functionContentProvider = new FunctionContentProvider(typeContentProvider, instructionContentProvider)
 		jobCallerContentProvider = new JobCallerContentProvider
 		jobContentProvider = new JobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, getJobCallerContentProvider)
 		mainContentProvider = new MainContentProvider(levelDBPath, jsonContentProvider)
 	}
 }
 
-class KokkosBackend extends Backend
+class KokkosBackendFactory extends BackendFactory
 {
-	/** Expected variables: NABLA_CXX_COMPILER, NABLA_KOKKOS_PATH */
-	new(String maxIterationVarName, String stopTimeVarName, String levelDBPath, HashMap<String, String> variables)
+	public static val NAME = 'Kokkos'
+
+	override initLight(LightBackend it)
 	{
-		name = 'Kokkos'
-		ir2Cmake = new KokkosIr2Cmake(levelDBPath, variables)
-		traceContentProvider = new KokkosTraceContentProvider(maxIterationVarName, stopTimeVarName)
-		includesContentProvider = new KokkosIncludesContentProvider(levelDBPath)
+		name = NAME
 		typeContentProvider = new KokkosTypeContentProvider
 		argOrVarContentProvider = new KokkosArgOrVarContentProvider(typeContentProvider)
 		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
-		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
 		instructionContentProvider = new KokkosInstructionContentProvider(argOrVarContentProvider, expressionContentProvider)
 		functionContentProvider = new KokkosFunctionContentProvider(typeContentProvider, instructionContentProvider)
+	}
+
+	/** Expected variables: NABLA_CXX_COMPILER, NABLA_KOKKOS_PATH */
+	override init(Backend it, String maxIterationVarName, String stopTimeVarName, String levelDBPath, HashMap<String, String> variables)
+	{
+		ir2Cmake = new KokkosIr2Cmake(levelDBPath, variables)
+		traceContentProvider = new KokkosTraceContentProvider(maxIterationVarName, stopTimeVarName)
+		includesContentProvider = new KokkosIncludesContentProvider(levelDBPath)
+		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
 		jobCallerContentProvider = new JobCallerContentProvider
 		jobContentProvider = new KokkosJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, getJobCallerContentProvider)
 		mainContentProvider = new KokkosMainContentProvider(levelDBPath, jsonContentProvider)
 	}
 }
 
-class KokkosTeamThreadBackend extends Backend
+class KokkosTeamThreadBackendFactory extends BackendFactory
 {
-	/** Expected variables: NABLA_CXX_COMPILER, NABLA_KOKKOS_PATH */
-	new(String maxIterationVarName, String stopTimeVarName, String levelDBPath, HashMap<String, String> variables)
+	public static val NAME = 'Kokkos Team Thread'
+
+	override initLight(LightBackend it)
 	{
-		name = 'Kokkos Team Thread'
-		ir2Cmake = new KokkosIr2Cmake(levelDBPath, variables)
-		traceContentProvider = new KokkosTraceContentProvider(maxIterationVarName, stopTimeVarName)
-		includesContentProvider = new KokkosIncludesContentProvider(levelDBPath)
+		name = NAME
 		typeContentProvider = new KokkosTypeContentProvider
 		argOrVarContentProvider = new KokkosArgOrVarContentProvider(typeContentProvider)
 		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
-		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
 		instructionContentProvider = new KokkosTeamThreadInstructionContentProvider(argOrVarContentProvider, expressionContentProvider)
 		functionContentProvider = new KokkosFunctionContentProvider(typeContentProvider, instructionContentProvider)
+	}
+
+	/** Expected variables: NABLA_CXX_COMPILER, NABLA_KOKKOS_PATH */
+	override init(Backend it, String maxIterationVarName, String stopTimeVarName, String levelDBPath, HashMap<String, String> variables)
+	{
+		ir2Cmake = new KokkosIr2Cmake(levelDBPath, variables)
+		traceContentProvider = new KokkosTraceContentProvider(maxIterationVarName, stopTimeVarName)
+		includesContentProvider = new KokkosIncludesContentProvider(levelDBPath)
+		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
 		jobCallerContentProvider = new KokkosTeamThreadJobCallerContentProvider
 		jobContentProvider = new KokkosTeamThreadJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, getJobCallerContentProvider)
 		mainContentProvider = new KokkosMainContentProvider(levelDBPath, jsonContentProvider)
 	}
 }
 
-class OpenMpBackend extends Backend
+class OpenMpBackendFactory extends BackendFactory
 {
-	/** Expected variables: NABLA_CXX_COMPILER */
-	new(String maxIterationVarName, String stopTimeVarName, String levelDBPath, HashMap<String, String> variables)
+	public static val NAME = 'OpenMP'
+
+	override initLight(LightBackend it)
 	{
-		name = 'OpenMP'
-		ir2Cmake = new OpenMpCmake(levelDBPath, variables)
-		traceContentProvider = new TraceContentProvider(maxIterationVarName, stopTimeVarName)
-		includesContentProvider = new OpenMpIncludesContentProvider(levelDBPath)
+		name = NAME
 		typeContentProvider = new StlTypeContentProvider
 		argOrVarContentProvider = new StlArgOrVarContentProvider(typeContentProvider)
 		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
-		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
 		instructionContentProvider = new OpenMpInstructionContentProvider(argOrVarContentProvider, expressionContentProvider)
 		functionContentProvider = new FunctionContentProvider(typeContentProvider, instructionContentProvider)
+	}
+
+	/** Expected variables: NABLA_CXX_COMPILER */
+	override init(Backend it, String maxIterationVarName, String stopTimeVarName, String levelDBPath, HashMap<String, String> variables)
+	{
+		ir2Cmake = new OpenMpCmake(levelDBPath, variables)
+		traceContentProvider = new TraceContentProvider(maxIterationVarName, stopTimeVarName)
+		includesContentProvider = new OpenMpIncludesContentProvider(levelDBPath)
+		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
 		jobCallerContentProvider = new JobCallerContentProvider
 		jobContentProvider = new JobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, getJobCallerContentProvider)
 		mainContentProvider = new MainContentProvider(levelDBPath, jsonContentProvider)
 	}
 }
-

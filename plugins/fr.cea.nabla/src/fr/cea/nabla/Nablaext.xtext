@@ -18,7 +18,8 @@ generate nablaext "http://www.cea.fr/nabla/Nablaext"
 
 ExtensionProvider: 'ExtensionProvider' name=ID ':' extension=[nabla::NablaExtension]
 '{'
-	'targets' '=' targets+=TargetType (',' targets+=TargetType)* ';'
+	'target' '=' target+=TargetType ';'
+	('compatibleTargets' '=' compatibleTargets+=TargetType (',' compatibleTargets+=TargetType)* ';')?
 	'facadeClass' '=' facadeClass = STRING ';'
 	'libHome' '=' libHome=STRING ';' // includes in libHome/include, libs in libHome/lib
 	'libName' '=' libName=STRING ';'

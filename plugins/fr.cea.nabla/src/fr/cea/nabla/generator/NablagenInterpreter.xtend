@@ -13,11 +13,6 @@ import com.google.inject.Inject
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
 import fr.cea.nabla.generator.ir.Nablagen2Ir
 import fr.cea.nabla.ir.generator.cpp.Ir2Cpp
-import fr.cea.nabla.ir.generator.cpp.KokkosBackend
-import fr.cea.nabla.ir.generator.cpp.KokkosTeamThreadBackend
-import fr.cea.nabla.ir.generator.cpp.OpenMpBackend
-import fr.cea.nabla.ir.generator.cpp.SequentialBackend
-import fr.cea.nabla.ir.generator.cpp.StlThreadBackend
 import fr.cea.nabla.ir.generator.java.Ir2Java
 import fr.cea.nabla.ir.generator.json.Ir2Json
 import fr.cea.nabla.ir.ir.IrRoot
@@ -47,6 +42,7 @@ class NablagenInterpreter extends StandaloneGeneratorBase
 {
 	@Inject Nablagen2Ir nablagen2Ir
 	@Inject NablaIrWriter irWriter
+	@Inject BackendFactoryProvider backendFactoryProvider
 
 	def IrRoot buildIr(NablagenRoot ngen, String projectDir, boolean forInterpreter)
 	{
@@ -166,15 +162,12 @@ class NablagenInterpreter extends StandaloneGeneratorBase
 	{
 		val levelDBPath = if (levelDB === null) null else levelDB.levelDBPath
 
-		switch type
+		if (type == TargetType::JAVA)
+			new Ir2Java
+		else
 		{
-			case JAVA: return new Ir2Java
-			case CPP_SEQUENTIAL: new Ir2Cpp(new File(baseDir + outputDir), new SequentialBackend(iterationMax, timeMax, levelDBPath, vars))
-			case STL_THREAD: new Ir2Cpp(new File(baseDir + outputDir), new StlThreadBackend(iterationMax , timeMax, levelDBPath, vars))
-			case OPEN_MP: new Ir2Cpp(new File(baseDir + outputDir), new OpenMpBackend(iterationMax , timeMax, levelDBPath, vars))
-			case KOKKOS: new Ir2Cpp(new File(baseDir + outputDir), new KokkosBackend(iterationMax , timeMax, levelDBPath, vars))
-			case KOKKOS_TEAM_THREAD: new Ir2Cpp(new File(baseDir + outputDir), new KokkosTeamThreadBackend(iterationMax , timeMax, levelDBPath, vars))
-			default: throw new RuntimeException("Unsupported language " + class.name)
+			val backendFactory = backendFactoryProvider.getCppBackend(type)
+			new Ir2Cpp(new File(baseDir + outputDir), backendFactory.create(iterationMax, timeMax, levelDBPath, vars))
 		}
 	}
 

@@ -31,6 +31,8 @@ import org.eclipse.sirius.ui.business.api.session.SessionEditorInput
 import org.eclipse.sirius.ui.business.api.session.SessionUIManager
 import org.eclipse.sirius.viewpoint.DRepresentation
 import org.eclipse.sirius.viewpoint.description.RepresentationDescription
+import fr.cea.nabla.ui.views.OpenSiriusJobsGraph
+import fr.cea.nabla.ir.JobExtensions
 
 @SuppressWarnings("restriction")
 class NablaSiriusServices
@@ -176,7 +178,7 @@ class NablaSiriusServices
 		}
 		else if (object instanceof Job)
 		{
-			return object.name
+			return JobExtensions.getDiagramDisplayName(object)
 		}
 		return 'Sirius Diagram'
 	}

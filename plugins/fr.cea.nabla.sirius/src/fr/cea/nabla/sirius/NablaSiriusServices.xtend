@@ -9,6 +9,7 @@
  *******************************************************************************/
  package fr.cea.nabla.sirius
 
+import fr.cea.nabla.ir.JobExtensions
 import fr.cea.nabla.ir.ir.IrAnnotable
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
@@ -31,8 +32,6 @@ import org.eclipse.sirius.ui.business.api.session.SessionEditorInput
 import org.eclipse.sirius.ui.business.api.session.SessionUIManager
 import org.eclipse.sirius.viewpoint.DRepresentation
 import org.eclipse.sirius.viewpoint.description.RepresentationDescription
-import fr.cea.nabla.ui.views.OpenSiriusJobsGraph
-import fr.cea.nabla.ir.JobExtensions
 
 @SuppressWarnings("restriction")
 class NablaSiriusServices
@@ -127,13 +126,16 @@ class NablaSiriusServices
 		var IrAnnotable annotable = null
 		if (diagramTarget instanceof Job)
 		{
-			val root = diagramTarget.caller.eContainer
-			if (root instanceof IrRoot)
+			val parent = diagramTarget.caller.eContainer
+			if (parent instanceof IrRoot)
 			{
-				annotable = root as IrRoot
+				annotable = parent as IrRoot
+			} else
+			{
+				annotable = diagramTarget.caller as JobCaller
 			}
 		}
-		if (annotable instanceof IrRoot) {
+		if (annotable instanceof IrAnnotable) {
 			var session = SessionManager.INSTANCE.getSession(annotable)
 			if (session !== null)
 			{

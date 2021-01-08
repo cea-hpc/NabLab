@@ -264,8 +264,8 @@ class OpenSiriusJobsGraph extends AbstractHandler
 
 		if (representation !== null)
 		{
-			saveSession(session)
 			DialectUIManager.INSTANCE.openEditor(session, representation, new NullProgressMonitor)
+			saveSession(session)
 		}
 	}
 
@@ -280,6 +280,7 @@ class OpenSiriusJobsGraph extends AbstractHandler
 				if (editorRepresentation !== null && diagramName.equals(editorRepresentation.name))
 				{
 					DialectUIManager.INSTANCE.refreshEditor(editor, new NullProgressMonitor)
+					saveSession(session)
 					return
 				}
 			}	
@@ -296,6 +297,7 @@ class OpenSiriusJobsGraph extends AbstractHandler
 				DialectUIManager.INSTANCE.refreshEditor(editor, new NullProgressMonitor)
 			}
 		}
+		saveSession(session)
 	}
 
 	def protected IrRoot getSemanticRoot(Session session)

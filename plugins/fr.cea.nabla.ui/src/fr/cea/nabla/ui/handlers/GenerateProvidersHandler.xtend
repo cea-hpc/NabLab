@@ -4,9 +4,9 @@ import com.google.inject.Inject
 import com.google.inject.Provider
 import com.google.inject.Singleton
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
+import fr.cea.nabla.generator.UnzipHelper
 import fr.cea.nabla.generator.ext.ExtensionProviderGenerator
 import fr.cea.nabla.ir.Utils
-import fr.cea.nabla.ir.generator.cpp.UnzipHelper
 import fr.cea.nabla.nabla.NablaExtension
 import java.io.File
 import org.eclipse.core.resources.IFile
@@ -50,9 +50,9 @@ class GenerateProvidersHandler extends AbstractGenerateHandler
 				val nablaExt = emfResource.contents.filter(NablaExtension).head
 				shell.display.syncExec([shell.cursor = shell.display.getSystemCursor(SWT.CURSOR_WAIT)])
 				// TODO share lib with examples
-				val libcppnablaHome = new File(project.workspace.root.location.toString)
-				UnzipHelper.unzipLibCppNabla(libcppnablaHome)
-				generator.generate(nablaExt, project, libcppnablaHome.absolutePath + '/' + UnzipHelper.DirectoryName)
+				val libCppNablaDir = new File(project.workspace.root.location.toString)
+				UnzipHelper.unzipLibCppNabla(libCppNablaDir)
+				generator.generate(nablaExt, project, libCppNablaDir.absolutePath + '/' + UnzipHelper.CppResourceName)
 				shell.display.syncExec([shell.cursor = null])
 				val endTime = System.currentTimeMillis
 				consoleFactory.printConsole(MessageType.Exec, "Code generation ended in " + (endTime-startTime)/1000.0 + "s")

@@ -3,7 +3,7 @@ cp $2 . # Copy cpplib to tmp dir
 unzip -nq libcppnabla.zip # Unzip cppdir
 cd $3 # cd module folder
 cp -r $4 . # Copy levelDBRef
-cmake . -DNABLAB_TEST_SUITE_FLAGS="-O2" > CMake.log 2>&1 # Configure
+cmake . -D LIBCPPNABLA_DIR=$1/libcppnabla -D NABLAB_TEST_SUITE_FLAGS="-O2" > CMake.log 2>&1 # Configure
 [ $? -eq 0 ] || exit 10 # Configure error
 #make -n > printMakeCommand.txt
 make > make.log 2>&1 # Compile

@@ -19,7 +19,6 @@ import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.ir.transformers.IrTransformationStep
-import java.io.File
 import java.util.HashMap
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
@@ -32,6 +31,7 @@ import static extension fr.cea.nabla.ir.generator.cpp.Ir2CppUtils.*
 class Ir2Cpp extends CodeGenerator
 {
 	val Backend backend
+	val String libCppNablaDir
 
 	val extension ArgOrVarContentProvider argOrVarContentProvider
 	val extension ExpressionContentProvider expressionContentProvider
@@ -39,19 +39,17 @@ class Ir2Cpp extends CodeGenerator
 	val extension FunctionContentProvider functionContentProvider
 	val extension JobCallerContentProvider jobCallerContentProvider
 
-	new(File outputDirectory, Backend backend)
+	new(Backend backend, String libCppNablaDir)
 	{
 		super(backend.name)
 		this.backend = backend
+		this.libCppNablaDir = libCppNablaDir
 
 		argOrVarContentProvider = backend.argOrVarContentProvider
 		expressionContentProvider = backend.expressionContentProvider
 		jsonContentProvider = backend.jsonContentProvider
 		jobCallerContentProvider = backend.getJobCallerContentProvider
 		functionContentProvider = backend.functionContentProvider
-
-		// check if c++ resources are available in the output folder
-		UnzipHelper::unzipLibCppNabla(outputDirectory)
 	}
 
 	override getFileContentsByName(IrRoot ir)
@@ -62,7 +60,7 @@ class Ir2Cpp extends CodeGenerator
 			fileContents.put(module.className + '.h', module.headerFileContent)
 			fileContents.put(module.className + '.cc', module.sourceFileContent)
 		}
-		fileContents.put('CMakeLists.txt', backend.ir2Cmake.getContentFor(ir))
+		fileContents.put('CMakeLists.txt', backend.ir2Cmake.getContentFor(ir, libCppNablaDir))
 		return fileContents
 	}
 

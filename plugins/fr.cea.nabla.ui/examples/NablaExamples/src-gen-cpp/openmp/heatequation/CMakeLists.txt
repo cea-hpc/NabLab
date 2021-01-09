@@ -2,8 +2,10 @@
 
 cmake_minimum_required(VERSION 3.10)
 
-set(LIBCPPNABLA ${CMAKE_CURRENT_SOURCE_DIR}/../libcppnabla)
+set(LIBCPPNABLA_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../../libcppnabla CACHE STRING "")
 set(NABLA_CXX_COMPILER /usr/bin/g++)
+
+project(HeatEquationProject CXX)
 
 set(CMAKE_CXX_COMPILER ${NABLA_CXX_COMPILER} CACHE STRING "")
 
@@ -17,11 +19,8 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 	endif()
 endif()
 
-project(HeatEquationProject CXX)
-
-set(LIBCPPNABLA_BACKEND "NONE")
 find_package(OpenMP)
-add_subdirectory(${LIBCPPNABLA} ${LIBCPPNABLA})
+add_subdirectory(${LIBCPPNABLA_DIR} ${CMAKE_CURRENT_BINARY_DIR}/libcppnabla EXCLUDE_FROM_ALL)
 
 
 add_executable(heatequation HeatEquation.cc)

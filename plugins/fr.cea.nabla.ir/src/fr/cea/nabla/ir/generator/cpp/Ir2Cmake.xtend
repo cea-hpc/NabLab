@@ -9,26 +9,26 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.cpp
 
+import fr.cea.nabla.ir.ir.ExtensionProvider
 import fr.cea.nabla.ir.ir.IrRoot
 import java.util.HashMap
 
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
-import fr.cea.nabla.ir.ir.ExtensionProvider
 
 abstract class Ir2Cmake
 {
 	protected String levelDBPath
 	protected HashMap<String, String> variables
 
-	abstract def CharSequence getLibraryBackend(IrRoot ir)
-	abstract def Iterable<String> getTargetLinkLibraries(IrRoot ir)
+	protected def CharSequence getLibraryBackend(IrRoot ir) { '''''' }
+	protected def Iterable<String> getTargetLinkLibraries(IrRoot ir) { #[] }
 
-	def getContentFor(IrRoot it)
+	def getContentFor(IrRoot it, String libCppNablaDir)
 	'''
 		«CMakeUtils.fileHeader»
 
-		set(LIBCPPNABLA ${CMAKE_CURRENT_SOURCE_DIR}/../libcppnabla)
+		set(LIBCPPNABLA_DIR «libCppNablaDir» CACHE STRING "")
 		«FOR entry : variables.entrySet»
 		set(«entry.key» «entry.value»)
 		«ENDFOR»
@@ -37,14 +37,14 @@ abstract class Ir2Cmake
 		set(«ep.extensionName.toUpperCase»_HOME «ep.libHome»)
 		«ENDFOR»
 
-		«CMakeUtils.setCompiler»
-
 		project(«name»Project CXX)
 
+		«CMakeUtils.setCompiler»
+
 		«libraryBackend»
-		add_subdirectory(${LIBCPPNABLA} ${LIBCPPNABLA})
+		add_subdirectory(${LIBCPPNABLA_DIR} ${CMAKE_CURRENT_BINARY_DIR}/libcppnabla EXCLUDE_FROM_ALL)
 		«FOR ep : externalProviders»
-		add_subdirectory(${«ep.extensionName.toUpperCase»_HOME}/src ${«ep.extensionName.toUpperCase»_HOME}/lib)
+		add_subdirectory(${«ep.extensionName.toUpperCase»_HOME}/src ${CMAKE_CURRENT_BINARY_DIR}/«ep.extensionName.toLowerCase» EXCLUDE_FROM_ALL)
 		«ENDFOR»
 
 		«IF !levelDBPath.nullOrEmpty»
@@ -84,9 +84,6 @@ class StlIr2Cmake extends Ir2Cmake
 		this.variables = variables
 	}
 
-	override getLibraryBackend(IrRoot ir)
-	'''set(LIBCPPNABLA_BACKEND "STL")'''
-
 	override getTargetLinkLibraries(IrRoot ir)
 	{
 		#["cppnablastl", "pthread"]
@@ -101,11 +98,6 @@ class KokkosIr2Cmake extends Ir2Cmake
 		this.variables = variables
 	}
 
-	override getLibraryBackend(IrRoot ir)
-	'''
-		set(LIBCPPNABLA_BACKEND "KOKKOS")
-	'''
-
 	override getTargetLinkLibraries(IrRoot ir)
 	{
 		#["cppnablakokkos"]
@@ -118,17 +110,6 @@ class SequentialIr2Cmake extends Ir2Cmake
 	{
 		this.levelDBPath = levelDBPath
 		this.variables = variables
-	}
-
-	override getLibraryBackend(IrRoot ir)
-	{
-		if (ir.linearAlgebra)
-			'''
-				# libcppnabla for linear algebra
-				set(LIBCPPNABLA_BACKEND "STL")
-			'''
-		else
-			'''set(LIBCPPNABLA_BACKEND "NONE")'''
 	}
 
 	override getTargetLinkLibraries(IrRoot ir)
@@ -149,19 +130,9 @@ class OpenMpCmake extends Ir2Cmake
 	}
 
 	override getLibraryBackend(IrRoot ir)
-	{
-		if (ir.linearAlgebra)
-			'''
-				# libcppnabla for linear algebra
-				set(LIBCPPNABLA_BACKEND "STL")
-				find_package(OpenMP)
-			'''
-		else
-			'''
-				set(LIBCPPNABLA_BACKEND "NONE")
-				find_package(OpenMP)
-			'''
-	}
+	'''
+		find_package(OpenMP)
+	'''
 
 	override getTargetLinkLibraries(IrRoot ir)
 	{

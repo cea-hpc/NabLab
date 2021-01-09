@@ -163,11 +163,20 @@ class NablagenInterpreter extends StandaloneGeneratorBase
 		val levelDBPath = if (levelDB === null) null else levelDB.levelDBPath
 
 		if (type == TargetType::JAVA)
+		{
+			//UnzipHelper::unzipLibJavaNabla(new File(baseDir))
 			new Ir2Java
+		}
 		else
 		{
 			val backendFactory = backendFactoryProvider.getCppBackend(type)
-			new Ir2Cpp(new File(baseDir + outputDir), backendFactory.create(iterationMax, timeMax, levelDBPath, vars))
+			UnzipHelper::unzipLibCppNabla(new File(baseDir))
+			// The libcppnabla is unzipped in baseDir/libCppNabla but it is transformed to a relative
+			// directory for the CMakeLists.txt in order to have always the same generated file.
+			var relativeBaseDir = outputDir.replaceAll("[^/]+", "..") + "/" + UnzipHelper.CppResourceName
+			relativeBaseDir = (relativeBaseDir.startsWith("/") ? ".." : "../") + relativeBaseDir
+			relativeBaseDir = "${CMAKE_CURRENT_SOURCE_DIR}/" + relativeBaseDir
+			new Ir2Cpp(backendFactory.create(iterationMax, timeMax, levelDBPath, vars), relativeBaseDir)
 		}
 	}
 

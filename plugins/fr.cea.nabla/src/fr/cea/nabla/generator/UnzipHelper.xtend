@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-package fr.cea.nabla.ir.generator.cpp
+package fr.cea.nabla.generator
 
 import java.io.File
 import java.io.FileInputStream
@@ -19,18 +19,29 @@ import org.eclipse.core.runtime.Platform
 
 class UnzipHelper
 {
-	public static val DirectoryName = "libcppnabla"
+	public static val CppResourceName = "libcppnabla"
+	public static val JavaResourceName = "libjavanabla"
 
 	def static void unzipLibCppNabla(File outputDirectory)
 	{
+		unzipResource(outputDirectory, CppResourceName)
+	}
+
+	def static void unzipLibJavaNabla(File outputDirectory)
+	{
+		unzipResource(outputDirectory, JavaResourceName)
+	}
+
+	def static void unzipResource(File outputDirectory, String resourceName)
+	{
 		// check if c++ resources are available in the output folder
 		if (outputDirectory.exists && outputDirectory.isDirectory &&
-			!outputDirectory.list.contains(DirectoryName) && Platform.isRunning)
+			!outputDirectory.list.contains(resourceName) && Platform.isRunning)
 		{
 			// c++ resources not available => unzip them
 			// For JunitTests, launched from dev environment, copy is not possible
 			val bundle = Platform.getBundle("fr.cea.nabla.ir")
-			val cppResourcesUrl = bundle.getEntry("cppresources/libcppnabla.zip")
+			val cppResourcesUrl = bundle.getEntry("resources/" + resourceName + ".zip")
 			val tmpURI = FileLocator.toFileURL(cppResourcesUrl)
 			// need to use a 3-arg constructor in order to properly escape file system chars
 			val zipFileUri = new URI(tmpURI.protocol, tmpURI.path, null)

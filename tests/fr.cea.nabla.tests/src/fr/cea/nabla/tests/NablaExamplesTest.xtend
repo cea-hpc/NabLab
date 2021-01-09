@@ -53,7 +53,7 @@ class NablaExamplesTest
 		val wsPath = testProjectPath + "/../../"
 		examplesProjectSubPath = "plugins/fr.cea.nabla.ui/examples/NablaExamples/"
 		examplesProjectPath = wsPath + examplesProjectSubPath
-		cppLibPath = wsPath + "plugins/fr.cea.nabla.ir/cppresources/libcppnabla.zip"
+		cppLibPath = wsPath + "plugins/fr.cea.nabla.ir/resources/libcppnabla.zip"
 		javaLibPath = wsPath + "plugins/fr.cea.nabla.javalib/bin/:" + wsPath + "plugins/fr.cea.nabla.javalib/target/*"
 		commonMath3Path = wsPath + "plugins/commons-math3/*"
 		levelDBPath = wsPath + "plugins/leveldb/*"
@@ -221,7 +221,7 @@ class NablaExamplesTest
 		var pb = new ProcessBuilder("/bin/bash",
 			System.getProperty("user.dir") + "/src/fr/cea/nabla/tests/executeCppNablaExample.sh",
 			outputDir, // output src-gen path
-			cppLibPath, // cpp lib zip	 path
+			cppLibPath, // cpp lib zip path
 			packageName,
 			levelDBRef,
 			jsonFile,

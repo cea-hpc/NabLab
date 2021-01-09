@@ -80,7 +80,7 @@ class SequentialBackendFactory extends BackendFactory
 		includesContentProvider = new SequentialIncludesContentProvider(levelDBPath)
 		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
 		jobCallerContentProvider = new JobCallerContentProvider
-		jobContentProvider = new JobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, getJobCallerContentProvider)
+		jobContentProvider = new JobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider)
 		mainContentProvider = new MainContentProvider(levelDBPath, jsonContentProvider)
 	}
 }
@@ -107,7 +107,7 @@ class StlThreadBackendFactory extends BackendFactory
 		includesContentProvider = new StlThreadIncludesContentProvider(levelDBPath)
 		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
 		jobCallerContentProvider = new JobCallerContentProvider
-		jobContentProvider = new JobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, getJobCallerContentProvider)
+		jobContentProvider = new JobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider)
 		mainContentProvider = new MainContentProvider(levelDBPath, jsonContentProvider)
 	}
 }
@@ -134,7 +134,7 @@ class KokkosBackendFactory extends BackendFactory
 		includesContentProvider = new KokkosIncludesContentProvider(levelDBPath)
 		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
 		jobCallerContentProvider = new JobCallerContentProvider
-		jobContentProvider = new KokkosJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, getJobCallerContentProvider)
+		jobContentProvider = new KokkosJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider)
 		mainContentProvider = new KokkosMainContentProvider(levelDBPath, jsonContentProvider)
 	}
 }
@@ -161,7 +161,7 @@ class KokkosTeamThreadBackendFactory extends BackendFactory
 		includesContentProvider = new KokkosIncludesContentProvider(levelDBPath)
 		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
 		jobCallerContentProvider = new KokkosTeamThreadJobCallerContentProvider
-		jobContentProvider = new KokkosTeamThreadJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, getJobCallerContentProvider)
+		jobContentProvider = new KokkosTeamThreadJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider)
 		mainContentProvider = new KokkosMainContentProvider(levelDBPath, jsonContentProvider)
 	}
 }
@@ -188,7 +188,7 @@ class OpenMpBackendFactory extends BackendFactory
 		includesContentProvider = new OpenMpIncludesContentProvider(levelDBPath)
 		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
 		jobCallerContentProvider = new JobCallerContentProvider
-		jobContentProvider = new JobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, getJobCallerContentProvider)
+		jobContentProvider = new JobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider)
 		mainContentProvider = new MainContentProvider(levelDBPath, jsonContentProvider)
 	}
 }

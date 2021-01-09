@@ -25,7 +25,7 @@ class ExtensionProviderGenerator extends StandaloneGeneratorBase
 	 * in the project source folder. Cpp and Jni projects are generated in
 	 * the same workspace in XCpp and XJni directories.
 	 */
-	def generate(NablaExtension nablaExt, IProject project, String libcppnablaHome)
+	def generate(NablaExtension nablaExt, IProject project, String libCppNablaDir)
 	{
 		val irFunctions = nablaExt.functions.map[x | 
 			val irFunction = irFactory.toIrFunction(x)
@@ -35,7 +35,7 @@ class ExtensionProviderGenerator extends StandaloneGeneratorBase
 
 		// Generate C++ extension provider project
 		val cppProject = getProject(project.workspace, nablaExt.name + "Cpp")
-		cppProviderGenerator.generate(nablaExt, cppProject, irFunctions, libcppnablaHome.formatCMakePath)
+		cppProviderGenerator.generate(nablaExt, cppProject, irFunctions, libCppNablaDir.formatCMakePath)
 		cppProject.refreshLocal(IResource::DEPTH_INFINITE, null)
 
 		// Generate Jni extension provider project

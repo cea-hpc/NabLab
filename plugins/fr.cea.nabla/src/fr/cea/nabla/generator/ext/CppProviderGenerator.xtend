@@ -16,7 +16,7 @@ class CppProviderGenerator extends StandaloneGeneratorBase
 {
 	@Inject BackendFactoryProvider backendFactoryProvider
 
-	def generate(NablaExtension nablaExt, IProject project, Iterable<Function> irFunctions, String libcppnablaHome)
+	def generate(NablaExtension nablaExt, IProject project, Iterable<Function> irFunctions, String libCppNablaDir)
 	{
 		val projectHome = project.location.toString
 		dispatcher.post(MessageType::Exec, "Starting C++ extension provider generator in: " + projectHome)
@@ -31,7 +31,7 @@ class CppProviderGenerator extends StandaloneGeneratorBase
 		// CMakeLists.txt
 		val cmakeFileName = "src/CMakeLists.txt"
 		dispatcher.post(MessageType::Exec, "    Generating: " + cmakeFileName)
-		fsa.generateFile(cmakeFileName, getCmakeFileContent(nablaExt, libcppnablaHome))
+		fsa.generateFile(cmakeFileName, getCmakeFileContent(nablaExt, libCppNablaDir))
 
 		// Generates .h and .cc if they does not exists
 		// .h
@@ -132,14 +132,16 @@ class CppProviderGenerator extends StandaloneGeneratorBase
 	}
 	'''
 
-	private def getCmakeFileContent(NablaExtension it, String libcppnablaHome)
+	private def getCmakeFileContent(NablaExtension it, String libCppNablaDir)
 	'''
 	«CMakeUtils.fileHeader»
 
-	set(LIBCPPNABLA_DIR «libcppnablaHome»)
-	«CMakeUtils.setCompiler»
+	set(LIBCPPNABLA_DIR «libCppNablaDir» CACHE STRING "")
 
 	project(«name» CXX)
+
+	«CMakeUtils.setCompiler»
+
 	MESSAGE(STATUS "Building library «name.toLowerCase»")
 
 	add_subdirectory(${LIBCPPNABLA_DIR} ${LIBCPPNABLA_DIR})

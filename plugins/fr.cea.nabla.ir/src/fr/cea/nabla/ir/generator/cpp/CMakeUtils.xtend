@@ -9,6 +9,9 @@ class CMakeUtils
 	cmake_minimum_required(VERSION 3.10)
 	'''
 
+	/**
+	 * Must be done after the project() command to work (CMAKE_CXX_COMPILER_ID not defined before)
+	 */
 	static def setCompiler()
 	'''
 	set(CMAKE_CXX_COMPILER ${NABLA_CXX_COMPILER} CACHE STRING "")

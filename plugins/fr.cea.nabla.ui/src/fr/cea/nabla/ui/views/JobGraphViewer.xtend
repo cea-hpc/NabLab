@@ -9,6 +9,8 @@
  *******************************************************************************/
 package fr.cea.nabla.ui.views
 
+import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
+import fr.cea.nabla.ui.NabLabConsoleFactory
 import org.eclipse.swt.SWT
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.zest.core.viewers.GraphViewer
@@ -18,10 +20,13 @@ import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm
 
 class JobGraphViewer extends GraphViewer
 {
-	new(Composite composite)
+	NabLabConsoleFactory consoleFactory
+
+	new(Composite composite, NabLabConsoleFactory console)
 	{
 		super(composite, SWT.BORDER)
 		configure
+		consoleFactory = console
 	}
 
 	override getZoomManager() { super.zoomManager }
@@ -34,4 +39,13 @@ class JobGraphViewer extends GraphViewer
 		connectionStyle = ZestStyles::CONNECTIONS_DIRECTED
 		setLayoutAlgorithm(new TreeLayoutAlgorithm(LayoutStyles::NO_LAYOUT_NODE_RESIZING), true)
 	}
+	
+	override protected inputChanged(Object input, Object oldInput) {
+		val start = System.nanoTime()
+		super.inputChanged(input, oldInput)
+		val stop = System.nanoTime()
+		consoleFactory.printConsole(MessageType.End, "IR displayed (" + ((stop - start) / 1000000) + " ms)")
+		
+	}
+	
 }

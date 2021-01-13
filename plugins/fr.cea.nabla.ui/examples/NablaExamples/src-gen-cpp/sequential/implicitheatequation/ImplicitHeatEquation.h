@@ -19,6 +19,8 @@ using namespace nablalib;
 
 /******************** Free functions declarations ********************/
 
+namespace ImplicitHeatEquationFuncs
+{
 template<size_t x>
 double norm(RealArray1D<x> a);
 template<size_t x>
@@ -29,6 +31,7 @@ RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b);
 double minR0(double a, double b);
 double sumR0(double a, double b);
 double prodR0(double a, double b);
+}
 
 /******************** Module declaration ********************/
 

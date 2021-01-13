@@ -8,6 +8,8 @@ using namespace nablalib;
 
 /******************** Free functions definitions ********************/
 
+namespace Glace2dFuncs
+{
 KOKKOS_INLINE_FUNCTION
 double det(RealArray2D<2,2> a)
 {
@@ -36,7 +38,7 @@ template<size_t x>
 KOKKOS_INLINE_FUNCTION
 double norm(RealArray1D<x> a)
 {
-	return std::sqrt(dot(a, a));
+	return std::sqrt(Glace2dFuncs::dot(a, a));
 }
 
 template<size_t l>
@@ -66,7 +68,7 @@ RealArray1D<x> matVectProduct(RealArray2D<x,y> a, RealArray1D<y> b)
 		{
 			tmp[iy] = a[ix][iy];
 		}
-		result[ix] = dot(tmp, b);
+		result[ix] = Glace2dFuncs::dot(tmp, b);
 	}
 	return result;
 }
@@ -86,7 +88,7 @@ double trace(RealArray2D<l,l> a)
 KOKKOS_INLINE_FUNCTION
 RealArray2D<2,2> inverse(RealArray2D<2,2> a)
 {
-	const double alpha(1.0 / det(a));
+	const double alpha(1.0 / Glace2dFuncs::det(a));
 	return {a[1][1] * alpha, -a[0][1] * alpha, -a[1][0] * alpha, a[0][0] * alpha};
 }
 
@@ -114,6 +116,7 @@ KOKKOS_INLINE_FUNCTION
 double minR0(double a, double b)
 {
 	return std::min(a, b);
+}
 }
 
 /******************** Options definition ********************/
@@ -301,7 +304,7 @@ void Glace2d::computeCjr() noexcept
 				const Id rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCell)%nbNodesOfCell]);
 				const size_t rPlus1Nodes(rPlus1Id);
 				const size_t rMinus1Nodes(rMinus1Id);
-				C(jCells,rNodesOfCellJ) = 0.5 * perp(X_n(rPlus1Nodes) - X_n(rMinus1Nodes));
+				C(jCells,rNodesOfCellJ) = 0.5 * Glace2dFuncs::perp(X_n(rPlus1Nodes) - X_n(rMinus1Nodes));
 			}
 		}
 	});
@@ -316,7 +319,7 @@ void Glace2d::computeInternalEnergy() noexcept
 {
 	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& jCells)
 	{
-		e(jCells) = E_n(jCells) - 0.5 * dot(uj_n(jCells), uj_n(jCells));
+		e(jCells) = E_n(jCells) - 0.5 * Glace2dFuncs::dot(uj_n(jCells), uj_n(jCells));
 	});
 }
 
@@ -339,7 +342,7 @@ void Glace2d::iniCjrIc() noexcept
 				const Id rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCell)%nbNodesOfCell]);
 				const size_t rPlus1Nodes(rPlus1Id);
 				const size_t rMinus1Nodes(rMinus1Id);
-				Cjr_ic(jCells,rNodesOfCellJ) = 0.5 * perp(X_n0(rPlus1Nodes) - X_n0(rMinus1Nodes));
+				Cjr_ic(jCells,rNodesOfCellJ) = 0.5 * Glace2dFuncs::perp(X_n0(rPlus1Nodes) - X_n0(rMinus1Nodes));
 			}
 		}
 	});
@@ -380,7 +383,7 @@ void Glace2d::computeLjr() noexcept
 			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
 			for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 			{
-				l(jCells,rNodesOfCellJ) = norm(C(jCells,rNodesOfCellJ));
+				l(jCells,rNodesOfCellJ) = Glace2dFuncs::norm(C(jCells,rNodesOfCellJ));
 			}
 		}
 	});
@@ -404,7 +407,7 @@ void Glace2d::computeV() noexcept
 			{
 				const Id rId(nodesOfCellJ[rNodesOfCellJ]);
 				const size_t rNodes(rId);
-				reduction0 = sumR0(reduction0, dot(C(jCells,rNodesOfCellJ), X_n(rNodes)));
+				reduction0 = Glace2dFuncs::sumR0(reduction0, Glace2dFuncs::dot(C(jCells,rNodesOfCellJ), X_n(rNodes)));
 			}
 		}
 		V(jCells) = 0.5 * reduction0;
@@ -431,7 +434,7 @@ void Glace2d::initialize() noexcept
 			{
 				const Id rId(nodesOfCellJ[rNodesOfCellJ]);
 				const size_t rNodes(rId);
-				reduction0 = sumR1(reduction0, X_n0(rNodes));
+				reduction0 = Glace2dFuncs::sumR1(reduction0, X_n0(rNodes));
 			}
 		}
 		const RealArray1D<2> center(0.25 * reduction0);
@@ -453,7 +456,7 @@ void Glace2d::initialize() noexcept
 			{
 				const Id rId(nodesOfCellJ[rNodesOfCellJ]);
 				const size_t rNodes(rId);
-				reduction1 = sumR0(reduction1, dot(Cjr_ic(jCells,rNodesOfCellJ), X_n0(rNodes)));
+				reduction1 = Glace2dFuncs::sumR0(reduction1, Glace2dFuncs::dot(Cjr_ic(jCells,rNodesOfCellJ), X_n0(rNodes)));
 			}
 		}
 		const double V_ic(0.5 * reduction1);
@@ -610,7 +613,7 @@ void Glace2d::computeAjr() noexcept
 			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
 			for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 			{
-				Ajr(jCells,rNodesOfCellJ) = ((rho(jCells) * c(jCells)) / l(jCells,rNodesOfCellJ)) * tensProduct(C(jCells,rNodesOfCellJ), C(jCells,rNodesOfCellJ));
+				Ajr(jCells,rNodesOfCellJ) = ((rho(jCells) * c(jCells)) / l(jCells,rNodesOfCellJ)) * Glace2dFuncs::tensProduct(C(jCells,rNodesOfCellJ), C(jCells,rNodesOfCellJ));
 			}
 		}
 	});
@@ -632,7 +635,7 @@ void Glace2d::computedeltatj() noexcept
 			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
 			for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 			{
-				reduction0 = sumR0(reduction0, l(jCells,rNodesOfCellJ));
+				reduction0 = Glace2dFuncs::sumR0(reduction0, l(jCells,rNodesOfCellJ));
 			}
 		}
 		deltatj(jCells) = 2.0 * V(jCells) / (c(jCells) * reduction0);
@@ -658,7 +661,7 @@ void Glace2d::computeAr() noexcept
 				const Id jId(cellsOfNodeR[jCellsOfNodeR]);
 				const size_t jCells(jId);
 				const size_t rNodesOfCellJ(utils::indexOf(mesh->getNodesOfCell(jId), rId));
-				reduction0 = sumR2(reduction0, Ajr(jCells,rNodesOfCellJ));
+				reduction0 = Glace2dFuncs::sumR2(reduction0, Ajr(jCells,rNodesOfCellJ));
 			}
 		}
 		Ar(rNodes) = reduction0;
@@ -684,7 +687,7 @@ void Glace2d::computeBr() noexcept
 				const Id jId(cellsOfNodeR[jCellsOfNodeR]);
 				const size_t jCells(jId);
 				const size_t rNodesOfCellJ(utils::indexOf(mesh->getNodesOfCell(jId), rId));
-				reduction0 = sumR1(reduction0, p(jCells) * C(jCells,rNodesOfCellJ) + matVectProduct(Ajr(jCells,rNodesOfCellJ), uj_n(jCells)));
+				reduction0 = Glace2dFuncs::sumR1(reduction0, p(jCells) * C(jCells,rNodesOfCellJ) + Glace2dFuncs::matVectProduct(Ajr(jCells,rNodesOfCellJ), uj_n(jCells)));
 			}
 		}
 		b(rNodes) = reduction0;
@@ -701,8 +704,8 @@ void Glace2d::computeDt() noexcept
 	double reduction0;
 	Kokkos::parallel_reduce(nbCells, KOKKOS_LAMBDA(const size_t& jCells, double& accu)
 	{
-		accu = minR0(accu, deltatj(jCells));
-	}, KokkosJoiner<double>(reduction0, numeric_limits<double>::max(), &minR0));
+		accu = Glace2dFuncs::minR0(accu, deltatj(jCells));
+	}, KokkosJoiner<double>(reduction0, numeric_limits<double>::max(), &Glace2dFuncs::minR0));
 	deltat_nplus1 = options.deltatCfl * reduction0;
 }
 
@@ -722,10 +725,10 @@ void Glace2d::computeBoundaryConditions() noexcept
 			const Id rId(topNodes[rTopNodes]);
 			const size_t rNodes(rId);
 			const RealArray1D<2> N({0.0, 1.0});
-			const RealArray2D<2,2> NxN(tensProduct(N, N));
+			const RealArray2D<2,2> NxN(Glace2dFuncs::tensProduct(N, N));
 			const RealArray2D<2,2> IcP(I - NxN);
-			bt(rNodes) = matVectProduct(IcP, b(rNodes));
-			Mt(rNodes) = IcP * (Ar(rNodes) * IcP) + NxN * trace(Ar(rNodes));
+			bt(rNodes) = Glace2dFuncs::matVectProduct(IcP, b(rNodes));
+			Mt(rNodes) = IcP * (Ar(rNodes) * IcP) + NxN * Glace2dFuncs::trace(Ar(rNodes));
 		});
 	}
 	{
@@ -736,10 +739,10 @@ void Glace2d::computeBoundaryConditions() noexcept
 			const Id rId(bottomNodes[rBottomNodes]);
 			const size_t rNodes(rId);
 			const RealArray1D<2> N({0.0, -1.0});
-			const RealArray2D<2,2> NxN(tensProduct(N, N));
+			const RealArray2D<2,2> NxN(Glace2dFuncs::tensProduct(N, N));
 			const RealArray2D<2,2> IcP(I - NxN);
-			bt(rNodes) = matVectProduct(IcP, b(rNodes));
-			Mt(rNodes) = IcP * (Ar(rNodes) * IcP) + NxN * trace(Ar(rNodes));
+			bt(rNodes) = Glace2dFuncs::matVectProduct(IcP, b(rNodes));
+			Mt(rNodes) = IcP * (Ar(rNodes) * IcP) + NxN * Glace2dFuncs::trace(Ar(rNodes));
 		});
 	}
 	{
@@ -823,7 +826,7 @@ void Glace2d::computeU() noexcept
 {
 	Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const size_t& rNodes)
 	{
-		ur(rNodes) = matVectProduct(inverse(Mt(rNodes)), bt(rNodes));
+		ur(rNodes) = Glace2dFuncs::matVectProduct(Glace2dFuncs::inverse(Mt(rNodes)), bt(rNodes));
 	});
 }
 
@@ -844,7 +847,7 @@ void Glace2d::computeFjr() noexcept
 			{
 				const Id rId(nodesOfCellJ[rNodesOfCellJ]);
 				const size_t rNodes(rId);
-				F(jCells,rNodesOfCellJ) = p(jCells) * C(jCells,rNodesOfCellJ) + matVectProduct(Ajr(jCells,rNodesOfCellJ), (uj_n(jCells) - ur(rNodes)));
+				F(jCells,rNodesOfCellJ) = p(jCells) * C(jCells,rNodesOfCellJ) + Glace2dFuncs::matVectProduct(Ajr(jCells,rNodesOfCellJ), (uj_n(jCells) - ur(rNodes)));
 			}
 		}
 	});
@@ -881,7 +884,7 @@ void Glace2d::computeEn() noexcept
 			{
 				const Id rId(nodesOfCellJ[rNodesOfCellJ]);
 				const size_t rNodes(rId);
-				reduction0 = sumR0(reduction0, dot(F(jCells,rNodesOfCellJ), ur(rNodes)));
+				reduction0 = Glace2dFuncs::sumR0(reduction0, Glace2dFuncs::dot(F(jCells,rNodesOfCellJ), ur(rNodes)));
 			}
 		}
 		E_nplus1(jCells) = E_n(jCells) - (deltat_n / m(jCells)) * reduction0;
@@ -904,7 +907,7 @@ void Glace2d::computeUn() noexcept
 			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
 			for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 			{
-				reduction0 = sumR1(reduction0, F(jCells,rNodesOfCellJ));
+				reduction0 = Glace2dFuncs::sumR1(reduction0, F(jCells,rNodesOfCellJ));
 			}
 		}
 		uj_nplus1(jCells) = uj_n(jCells) - (deltat_n / m(jCells)) * reduction0;

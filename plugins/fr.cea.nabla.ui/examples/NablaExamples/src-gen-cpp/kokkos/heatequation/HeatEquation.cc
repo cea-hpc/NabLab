@@ -8,6 +8,8 @@ using namespace nablalib;
 
 /******************** Free functions definitions ********************/
 
+namespace HeatEquationFuncs
+{
 KOKKOS_INLINE_FUNCTION
 double det(RealArray1D<2> a, RealArray1D<2> b)
 {
@@ -18,7 +20,7 @@ template<size_t x>
 KOKKOS_INLINE_FUNCTION
 double norm(RealArray1D<x> a)
 {
-	return std::sqrt(dot(a, a));
+	return std::sqrt(HeatEquationFuncs::dot(a, a));
 }
 
 template<size_t x>
@@ -44,6 +46,7 @@ KOKKOS_INLINE_FUNCTION
 double sumR0(double a, double b)
 {
 	return a + b;
+}
 }
 
 /******************** Options definition ********************/
@@ -159,8 +162,8 @@ void HeatEquation::computeOutgoingFlux() noexcept
 				const size_t j2Cells(j2Id);
 				const Id cfId(mesh->getCommonFace(j1Id, j2Id));
 				const size_t cfFaces(cfId);
-				double reduction1((u_n(j2Cells) - u_n(j1Cells)) / norm(center(j2Cells) - center(j1Cells)) * surface(cfFaces));
-				reduction0 = sumR0(reduction0, reduction1);
+				double reduction1((u_n(j2Cells) - u_n(j1Cells)) / HeatEquationFuncs::norm(center(j2Cells) - center(j1Cells)) * surface(cfFaces));
+				reduction0 = HeatEquationFuncs::sumR0(reduction0, reduction1);
 			}
 		}
 		outgoingFlux(j1Cells) = deltat / V(j1Cells) * reduction0;
@@ -187,7 +190,7 @@ void HeatEquation::computeSurface() noexcept
 				const Id rPlus1Id(nodesOfFaceF[(rNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace]);
 				const size_t rNodes(rId);
 				const size_t rPlus1Nodes(rPlus1Id);
-				reduction0 = sumR0(reduction0, norm(X(rNodes) - X(rPlus1Nodes)));
+				reduction0 = HeatEquationFuncs::sumR0(reduction0, HeatEquationFuncs::norm(X(rNodes) - X(rPlus1Nodes)));
 			}
 		}
 		surface(fFaces) = 0.5 * reduction0;
@@ -224,7 +227,7 @@ void HeatEquation::computeV() noexcept
 				const Id rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
 				const size_t rNodes(rId);
 				const size_t rPlus1Nodes(rPlus1Id);
-				reduction0 = sumR0(reduction0, det(X(rNodes), X(rPlus1Nodes)));
+				reduction0 = HeatEquationFuncs::sumR0(reduction0, HeatEquationFuncs::det(X(rNodes), X(rPlus1Nodes)));
 			}
 		}
 		V(jCells) = 0.5 * reduction0;
@@ -249,7 +252,7 @@ void HeatEquation::iniCenter() noexcept
 			{
 				const Id rId(nodesOfCellJ[rNodesOfCellJ]);
 				const size_t rNodes(rId);
-				reduction0 = sumR1(reduction0, X(rNodes));
+				reduction0 = HeatEquationFuncs::sumR1(reduction0, X(rNodes));
 			}
 		}
 		center(jCells) = 0.25 * reduction0;

@@ -21,6 +21,8 @@ using namespace nablalib;
 
 /******************** Free functions declarations ********************/
 
+namespace IterativeHeatEquationFuncs
+{
 KOKKOS_INLINE_FUNCTION
 bool check(bool a);
 template<size_t x>
@@ -42,6 +44,7 @@ KOKKOS_INLINE_FUNCTION
 double prodR0(double a, double b);
 KOKKOS_INLINE_FUNCTION
 double maxR0(double a, double b);
+}
 
 /******************** Module declaration ********************/
 

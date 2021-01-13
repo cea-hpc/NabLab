@@ -28,7 +28,7 @@ import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.typing.ArgOrVarTypeProvider
 import fr.cea.nabla.typing.NablaSimpleType
-import java.util.ArrayList
+import java.util.LinkedHashSet
 import org.eclipse.xtext.EcoreUtil2
 
 @Singleton
@@ -54,7 +54,7 @@ class IrArgOrVarFactory
 	 */
 	def Iterable<Variable> createIrVariables(Var v, Iterable<TimeLoopJob> tlJobs)
 	{
-		val createdVariables = new ArrayList<Variable>
+		val createdVariables = new LinkedHashSet<Variable>
 
 		// Find all v references with time iterators
 		val nablaModule = EcoreUtil2.getContainerOfType(v, NablaModule)
@@ -66,6 +66,7 @@ class IrArgOrVarFactory
 		else
 		{
 			// Fill time loop variables for all iterators
+			val boolean existsInitTi = existsInitTimeIteratorRef(vRefsWithTimeIterators)
 			for (vRefsWithTimeIterator : vRefsWithTimeIterators)
 			{
 				for (tiRef : vRefsWithTimeIterator.timeIterators)
@@ -91,7 +92,7 @@ class IrArgOrVarFactory
 					{
 						if (initTiVar !== null)
 							tiSetUpJob.copies += toIrCopy(initTiVar, currentTiVar)
-						else if (parentTi !== null) // inner time iterator
+						else if (parentTi !== null && !existsInitTi) // inner time iterator
 						{
 							val parentCurrentTiVar = createIrTimeVariable(v, parentTi, currentTimeIteratorName)
 							tiSetUpJob.copies += toIrCopy(parentCurrentTiVar, currentTiVar)
@@ -191,5 +192,13 @@ class IrArgOrVarFactory
 			SimpleVar : toIrSimpleVariable(v, name) => [const = false]
 			ConnectivityVar : toIrConnectivityVariable(v, name) => [linearAlgebra = v.linearAlgebra]
 		}
+	}
+
+	private def existsInitTimeIteratorRef(Iterable<ArgOrVarRef> l)
+	{
+		for (argOrVarRef : l)
+			if (argOrVarRef.timeIterators.exists[x | x instanceof InitTimeIteratorRef])
+				return true
+		return false
 	}
 }

@@ -11,7 +11,7 @@ package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
 import fr.cea.nabla.ir.ir.IrFactory
-import fr.cea.nabla.nabla.NablaModule
+import fr.cea.nabla.nabla.Job
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.resource.ILocationInFileProvider
 
@@ -21,7 +21,7 @@ class IrAnnotationHelper
 {
 	@Inject ILocationInFileProvider locationProvider
 
-	def dispatch toIrAnnotation(NablaModule it)
+	def dispatch toIrAnnotation(Job it)
 	{
 		val annotation = createIrAnnot
 		annotation.details.put(ANNOTATION_URI_DETAIL, eResource.URI.toString)

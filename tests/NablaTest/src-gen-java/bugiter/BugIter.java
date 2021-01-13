@@ -229,18 +229,14 @@ public final class BugIter
 
 	/**
 	 * Job SetUpTimeLoopK called @2.0 in executeTimeLoopN method.
-	 * In variables: v_n, v_nplus1_k0
-	 * Out variables: v_nplus1_k, v_nplus1_k
+	 * In variables: v_nplus1_k0
+	 * Out variables: v_nplus1_k
 	 */
 	protected void setUpTimeLoopK()
 	{
 		IntStream.range(0, v_nplus1_k.length).parallel().forEach(i1 -> 
 		{
 			v_nplus1_k[i1] = v_nplus1_k0[i1];
-		});
-		IntStream.range(0, v_nplus1_k.length).parallel().forEach(i1 -> 
-		{
-			v_nplus1_k[i1] = v_n[i1];
 		});
 	}
 
@@ -284,7 +280,7 @@ public final class BugIter
 
 	/**
 	 * Job ExecuteTimeLoopN called @3.0 in simulate method.
-	 * In variables: deltat, t_n, u_n, v_n, v_nplus1, v_nplus1_k, v_nplus1_k0, v_nplus1_kplus1, w_n, w_nplus1, w_nplus1_l, w_nplus1_l0, w_nplus1_lplus1
+	 * In variables: deltat, t_n, u_n, v_nplus1, v_nplus1_k, v_nplus1_k0, v_nplus1_kplus1, w_nplus1, w_nplus1_l, w_nplus1_l0, w_nplus1_lplus1
 	 * Out variables: t_nplus1, u_nplus1, v_nplus1, v_nplus1_k, v_nplus1_k0, v_nplus1_kplus1, w_nplus1, w_nplus1_l, w_nplus1_l0, w_nplus1_lplus1
 	 */
 	protected void executeTimeLoopN()
@@ -356,18 +352,14 @@ public final class BugIter
 
 	/**
 	 * Job SetUpTimeLoopL called @6.0 in executeTimeLoopN method.
-	 * In variables: w_n, w_nplus1_l0
-	 * Out variables: w_nplus1_l, w_nplus1_l
+	 * In variables: w_nplus1_l0
+	 * Out variables: w_nplus1_l
 	 */
 	protected void setUpTimeLoopL()
 	{
 		IntStream.range(0, w_nplus1_l.length).parallel().forEach(i1 -> 
 		{
 			w_nplus1_l[i1] = w_nplus1_l0[i1];
-		});
-		IntStream.range(0, w_nplus1_l.length).parallel().forEach(i1 -> 
-		{
-			w_nplus1_l[i1] = w_n[i1];
 		});
 	}
 

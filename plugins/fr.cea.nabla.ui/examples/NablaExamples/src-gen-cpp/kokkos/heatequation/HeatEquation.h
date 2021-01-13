@@ -21,6 +21,8 @@ using namespace nablalib;
 
 /******************** Free functions declarations ********************/
 
+namespace HeatEquationFuncs
+{
 KOKKOS_INLINE_FUNCTION
 double det(RealArray1D<2> a, RealArray1D<2> b);
 template<size_t x>
@@ -34,6 +36,7 @@ KOKKOS_INLINE_FUNCTION
 RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b);
 KOKKOS_INLINE_FUNCTION
 double sumR0(double a, double b);
+}
 
 /******************** Module declaration ********************/
 

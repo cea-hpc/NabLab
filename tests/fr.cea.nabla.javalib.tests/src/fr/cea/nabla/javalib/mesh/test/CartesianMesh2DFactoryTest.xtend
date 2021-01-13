@@ -98,10 +98,10 @@ class CartesianMesh2DFactoryTest
 		assertArrayEquals(#[9, 11, 13, 15, 18, 20, 22, 24], mesh.innerHorizontalFaces)
 		assertArrayEquals(#[3, 5, 7, 12, 14, 16, 21, 23, 25], mesh.innerVerticalFaces)
 
-		assertEquals(0, mesh.bottomLeftNode.get(0))
-		assertEquals(4, mesh.bottomRightNode.get(0))
-		assertEquals(15, mesh.topLeftNode.get(0))
-		assertEquals(19, mesh.topRightNode.get(0))
+		assertEquals(0, mesh.bottomLeftNode)
+		assertEquals(4, mesh.bottomRightNode)
+		assertEquals(15, mesh.topLeftNode)
+		assertEquals(19, mesh.topRightNode)
 	}
 
 	@Test

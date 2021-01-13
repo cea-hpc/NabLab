@@ -87,18 +87,10 @@ public:
 	size_t getNbInnerVerticalFaces() const noexcept { return m_inner_vertical_faces.size(); }
 	vector<Id> getInnerVerticalFaces() const noexcept { return m_inner_vertical_faces; }
 
-	// TODO: Temporary until single item is available in grammar
-	size_t getNbTopLeftNode() const noexcept { return 1; }
-	vector<Id> getTopLeftNode() const noexcept { return vector<Id>({ m_top_left_node}); }
-	// TODO: Temporary until single item is available in grammar
-	size_t getNbTopRightNode() const noexcept { return 1; }
-	vector<Id> getTopRightNode() const noexcept { return vector<Id>({ m_top_right_node}); }
-	// TODO: Temporary until single item is available in grammar
-	size_t getNbBottomLeftNode() const noexcept { return 1; }
-	vector<Id> getBottomLeftNode() const noexcept { return vector<Id>({ m_bottom_left_node}); }
-	// TODO: Temporary until single item is available in grammar
-	size_t getNbBottomRightNode() const noexcept { return 1; }
-	vector<Id> getBottomRightNode() const noexcept { return vector<Id>({ m_bottom_right_node}); }
+	Id getTopLeftNode() const noexcept { return m_top_left_node; }
+	Id getTopRightNode() const noexcept { return m_top_right_node; }
+	Id getBottomLeftNode() const noexcept { return m_bottom_left_node; }
+	Id getBottomRightNode() const noexcept { return m_bottom_right_node; }
 
 	const array<Id, 4>& getNodesOfCell(const Id& cellId) const noexcept;
 	const array<Id, 2>& getNodesOfFace(const Id& faceId) const noexcept;
@@ -141,7 +133,7 @@ public:
 	Id index2IdNode(const size_t& i, const size_t& j) const noexcept;
 	pair<size_t, size_t> id2IndexCell(const Id& k) const noexcept;
 	pair<size_t, size_t> id2IndexNode(const Id& k) const noexcept;
-  
+
 	bool isInnerEdge(const Edge& e) const noexcept;
 	bool isVerticalEdge(const Edge& e) const noexcept;
 	bool isHorizontalEdge(const Edge& e) const noexcept;

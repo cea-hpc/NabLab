@@ -88,7 +88,7 @@ class Nabla2Ir
 			}
 
 		// Job creation
-		nablaModule.jobs.forEach[x | jobs += x.toIrInstructionJob]
+		nablaModule.jobs.forEach[x | jobs += x.toIrInstructionJob => [ it.caller = null ]]
 	}
 
 	/**

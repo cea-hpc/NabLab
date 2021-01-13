@@ -21,6 +21,8 @@ using namespace nablalib;
 
 /******************** Free functions declarations ********************/
 
+namespace Glace2dFuncs
+{
 KOKKOS_INLINE_FUNCTION
 double det(RealArray2D<2,2> a);
 KOKKOS_INLINE_FUNCTION
@@ -52,6 +54,7 @@ KOKKOS_INLINE_FUNCTION
 RealArray2D<x,x> sumR2(RealArray2D<x,x> a, RealArray2D<x,x> b);
 KOKKOS_INLINE_FUNCTION
 double minR0(double a, double b);
+}
 
 /******************** Module declaration ********************/
 

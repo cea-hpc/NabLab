@@ -19,6 +19,8 @@ using namespace nablalib;
 
 /******************** Free functions declarations ********************/
 
+namespace IterativeHeatEquationFuncs
+{
 bool check(bool a);
 template<size_t x>
 double norm(RealArray1D<x> a);
@@ -31,6 +33,7 @@ double minR0(double a, double b);
 double sumR0(double a, double b);
 double prodR0(double a, double b);
 double maxR0(double a, double b);
+}
 
 /******************** Module declaration ********************/
 

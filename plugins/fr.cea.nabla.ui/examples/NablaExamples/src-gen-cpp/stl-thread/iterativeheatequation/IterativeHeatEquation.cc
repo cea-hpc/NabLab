@@ -8,6 +8,8 @@ using namespace nablalib;
 
 /******************** Free functions definitions ********************/
 
+namespace IterativeHeatEquationFuncs
+{
 bool check(bool a)
 {
 	if (a) 
@@ -19,7 +21,7 @@ bool check(bool a)
 template<size_t x>
 double norm(RealArray1D<x> a)
 {
-	return std::sqrt(dot(a, a));
+	return std::sqrt(IterativeHeatEquationFuncs::dot(a, a));
 }
 
 template<size_t x>
@@ -62,6 +64,7 @@ double prodR0(double a, double b)
 double maxR0(double a, double b)
 {
 	return std::max(a, b);
+}
 }
 
 /******************** Options definition ********************/
@@ -191,7 +194,7 @@ void IterativeHeatEquation::computeFaceLength() noexcept
 				const Id pPlus1Id(nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace]);
 				const size_t pNodes(pId);
 				const size_t pPlus1Nodes(pPlus1Id);
-				reduction0 = sumR0(reduction0, norm(X[pNodes] - X[pPlus1Nodes]));
+				reduction0 = IterativeHeatEquationFuncs::sumR0(reduction0, IterativeHeatEquationFuncs::norm(X[pNodes] - X[pPlus1Nodes]));
 			}
 		}
 		faceLength[fFaces] = 0.5 * reduction0;
@@ -228,7 +231,7 @@ void IterativeHeatEquation::computeV() noexcept
 				const Id pPlus1Id(nodesOfCellJ[(pNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
 				const size_t pNodes(pId);
 				const size_t pPlus1Nodes(pPlus1Id);
-				reduction0 = sumR0(reduction0, det(X[pNodes], X[pPlus1Nodes]));
+				reduction0 = IterativeHeatEquationFuncs::sumR0(reduction0, IterativeHeatEquationFuncs::det(X[pNodes], X[pPlus1Nodes]));
 			}
 		}
 		V[jCells] = 0.5 * reduction0;
@@ -276,7 +279,7 @@ void IterativeHeatEquation::initXc() noexcept
 			{
 				const Id pId(nodesOfCellC[pNodesOfCellC]);
 				const size_t pNodes(pId);
-				reduction0 = sumR1(reduction0, X[pNodes]);
+				reduction0 = IterativeHeatEquationFuncs::sumR1(reduction0, X[pNodes]);
 			}
 		}
 		Xc[cCells] = 0.25 * reduction0;
@@ -312,7 +315,7 @@ void IterativeHeatEquation::updateU() noexcept
 			{
 				const Id dId(neighbourCellsC[dNeighbourCellsC]);
 				const size_t dCells(dId);
-				reduction0 = sumR0(reduction0, alpha[cCells][dCells] * u_nplus1_k[dCells]);
+				reduction0 = IterativeHeatEquationFuncs::sumR0(reduction0, alpha[cCells][dCells] * u_nplus1_k[dCells]);
 			}
 		}
 		u_nplus1_kplus1[cCells] = u_n[cCells] + alpha[cCells][cCells] * u_nplus1_k[cCells] + reduction0;
@@ -329,9 +332,9 @@ void IterativeHeatEquation::computeDeltaTn() noexcept
 	double reduction0;
 	reduction0 = parallel::parallel_reduce(nbCells, numeric_limits<double>::max(), [&](double& accu, const size_t& cCells)
 		{
-			return (accu = minR0(accu, V[cCells] / D[cCells]));
+			return (accu = IterativeHeatEquationFuncs::minR0(accu, V[cCells] / D[cCells]));
 		},
-		&minR0);
+		&IterativeHeatEquationFuncs::minR0);
 	deltat = reduction0 * 0.1;
 }
 
@@ -353,7 +356,7 @@ void IterativeHeatEquation::computeFaceConductivity() noexcept
 			{
 				const Id c1Id(cellsOfFaceF[c1CellsOfFaceF]);
 				const size_t c1Cells(c1Id);
-				reduction0 = prodR0(reduction0, D[c1Cells]);
+				reduction0 = IterativeHeatEquationFuncs::prodR0(reduction0, D[c1Cells]);
 			}
 		}
 		double reduction1(0.0);
@@ -364,7 +367,7 @@ void IterativeHeatEquation::computeFaceConductivity() noexcept
 			{
 				const Id c2Id(cellsOfFaceF[c2CellsOfFaceF]);
 				const size_t c2Cells(c2Id);
-				reduction1 = sumR0(reduction1, D[c2Cells]);
+				reduction1 = IterativeHeatEquationFuncs::sumR0(reduction1, D[c2Cells]);
 			}
 		}
 		faceConductivity[fFaces] = 2.0 * reduction0 / reduction1;
@@ -381,9 +384,9 @@ void IterativeHeatEquation::computeResidual() noexcept
 	double reduction0;
 	reduction0 = parallel::parallel_reduce(nbCells, -numeric_limits<double>::max(), [&](double& accu, const size_t& jCells)
 		{
-			return (accu = maxR0(accu, std::abs(u_nplus1_kplus1[jCells] - u_nplus1_k[jCells])));
+			return (accu = IterativeHeatEquationFuncs::maxR0(accu, std::abs(u_nplus1_kplus1[jCells] - u_nplus1_k[jCells])));
 		},
-		&maxR0);
+		&IterativeHeatEquationFuncs::maxR0);
 	residual = reduction0;
 }
 
@@ -405,7 +408,7 @@ void IterativeHeatEquation::executeTimeLoopK() noexcept
 		
 	
 		// Evaluate loop condition with variables at time n
-		continueLoop = (residual > options.epsilon && check(k + 1 < options.maxIterationsK));
+		continueLoop = (residual > options.epsilon && IterativeHeatEquationFuncs::check(k + 1 < options.maxIterationsK));
 	
 		if (continueLoop)
 		{
@@ -426,7 +429,7 @@ void IterativeHeatEquation::initU() noexcept
 {
 	parallel::parallel_exec(nbCells, [&](const size_t& cCells)
 	{
-		if (norm(Xc[cCells] - vectOne) < 0.5) 
+		if (IterativeHeatEquationFuncs::norm(Xc[cCells] - vectOne) < 0.5) 
 			u_n[cCells] = options.u0;
 		else
 			u_n[cCells] = 0.0;
@@ -463,7 +466,7 @@ void IterativeHeatEquation::computeAlphaCoeff() noexcept
 				const size_t dCells(dId);
 				const Id fId(mesh->getCommonFace(cId, dId));
 				const size_t fFaces(fId);
-				const double alphaExtraDiag(deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / norm(Xc[cCells] - Xc[dCells]));
+				const double alphaExtraDiag(deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / IterativeHeatEquationFuncs::norm(Xc[cCells] - Xc[dCells]));
 				alpha[cCells][dCells] = alphaExtraDiag;
 				alphaDiag = alphaDiag + alphaExtraDiag;
 			}

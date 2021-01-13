@@ -16,7 +16,7 @@ import org.eclipse.swt.SWT
 import org.eclipse.swt.widgets.Shell
 
 @Singleton
-class GenerateSimulatorHandler extends AbstractGenerateHandler
+class GenerateApplicationHandler extends AbstractGenerateHandler
 {
 	@Inject Provider<ResourceSet> resourceSetProvider
 	@Inject Provider<NablagenInterpreter> interpreterProvider

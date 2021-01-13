@@ -22,7 +22,7 @@ import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
-import static extension fr.cea.nabla.ir.generator.cpp.Ir2CppUtils.*
+import static extension fr.cea.nabla.ir.generator.cpp.CppGeneratorUtils.*
 
 @Data
 abstract class ArgOrVarContentProvider

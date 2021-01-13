@@ -2,14 +2,12 @@
  */
 package fr.cea.nabla.ir.ir.impl;
 
+import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
+
 import fr.cea.nabla.ir.ir.ExtensionProvider;
 import fr.cea.nabla.ir.ir.IrPackage;
-
-import org.eclipse.emf.common.notify.Notification;
-
-import org.eclipse.emf.ecore.EClass;
-
-import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 /**
  * <!-- begin-user-doc -->
@@ -21,9 +19,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ExtensionProviderImpl#getExtensionName <em>Extension Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ExtensionProviderImpl#getProviderName <em>Provider Name</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.ExtensionProviderImpl#getFacadeClass <em>Facade Class</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.ExtensionProviderImpl#getLibHome <em>Lib Home</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.ExtensionProviderImpl#getLibName <em>Lib Name</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.ExtensionProviderImpl#getProjectRoot <em>Project Root</em>}</li>
  * </ul>
  *
  * @generated
@@ -70,64 +66,24 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 	protected String providerName = PROVIDER_NAME_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getFacadeClass() <em>Facade Class</em>}' attribute.
+	 * The default value of the '{@link #getProjectRoot() <em>Project Root</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getFacadeClass()
+	 * @see #getProjectRoot()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String FACADE_CLASS_EDEFAULT = null;
+	protected static final String PROJECT_ROOT_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getFacadeClass() <em>Facade Class</em>}' attribute.
+	 * The cached value of the '{@link #getProjectRoot() <em>Project Root</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getFacadeClass()
+	 * @see #getProjectRoot()
 	 * @generated
 	 * @ordered
 	 */
-	protected String facadeClass = FACADE_CLASS_EDEFAULT;
-
-	/**
-	 * The default value of the '{@link #getLibHome() <em>Lib Home</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getLibHome()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final String LIB_HOME_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getLibHome() <em>Lib Home</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getLibHome()
-	 * @generated
-	 * @ordered
-	 */
-	protected String libHome = LIB_HOME_EDEFAULT;
-
-	/**
-	 * The default value of the '{@link #getLibName() <em>Lib Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getLibName()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final String LIB_NAME_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getLibName() <em>Lib Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getLibName()
-	 * @generated
-	 * @ordered
-	 */
-	protected String libName = LIB_NAME_EDEFAULT;
+	protected String projectRoot = PROJECT_ROOT_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -200,8 +156,8 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 	 * @generated
 	 */
 	@Override
-	public String getFacadeClass() {
-		return facadeClass;
+	public String getProjectRoot() {
+		return projectRoot;
 	}
 
 	/**
@@ -210,57 +166,11 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 	 * @generated
 	 */
 	@Override
-	public void setFacadeClass(String newFacadeClass) {
-		String oldFacadeClass = facadeClass;
-		facadeClass = newFacadeClass;
+	public void setProjectRoot(String newProjectRoot) {
+		String oldProjectRoot = projectRoot;
+		projectRoot = newProjectRoot;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.EXTENSION_PROVIDER__FACADE_CLASS, oldFacadeClass, facadeClass));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public String getLibHome() {
-		return libHome;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public void setLibHome(String newLibHome) {
-		String oldLibHome = libHome;
-		libHome = newLibHome;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.EXTENSION_PROVIDER__LIB_HOME, oldLibHome, libHome));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public String getLibName() {
-		return libName;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public void setLibName(String newLibName) {
-		String oldLibName = libName;
-		libName = newLibName;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.EXTENSION_PROVIDER__LIB_NAME, oldLibName, libName));
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.EXTENSION_PROVIDER__PROJECT_ROOT, oldProjectRoot, projectRoot));
 	}
 
 	/**
@@ -275,12 +185,8 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 				return getExtensionName();
 			case IrPackage.EXTENSION_PROVIDER__PROVIDER_NAME:
 				return getProviderName();
-			case IrPackage.EXTENSION_PROVIDER__FACADE_CLASS:
-				return getFacadeClass();
-			case IrPackage.EXTENSION_PROVIDER__LIB_HOME:
-				return getLibHome();
-			case IrPackage.EXTENSION_PROVIDER__LIB_NAME:
-				return getLibName();
+			case IrPackage.EXTENSION_PROVIDER__PROJECT_ROOT:
+				return getProjectRoot();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -299,14 +205,8 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 			case IrPackage.EXTENSION_PROVIDER__PROVIDER_NAME:
 				setProviderName((String)newValue);
 				return;
-			case IrPackage.EXTENSION_PROVIDER__FACADE_CLASS:
-				setFacadeClass((String)newValue);
-				return;
-			case IrPackage.EXTENSION_PROVIDER__LIB_HOME:
-				setLibHome((String)newValue);
-				return;
-			case IrPackage.EXTENSION_PROVIDER__LIB_NAME:
-				setLibName((String)newValue);
+			case IrPackage.EXTENSION_PROVIDER__PROJECT_ROOT:
+				setProjectRoot((String)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -326,14 +226,8 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 			case IrPackage.EXTENSION_PROVIDER__PROVIDER_NAME:
 				setProviderName(PROVIDER_NAME_EDEFAULT);
 				return;
-			case IrPackage.EXTENSION_PROVIDER__FACADE_CLASS:
-				setFacadeClass(FACADE_CLASS_EDEFAULT);
-				return;
-			case IrPackage.EXTENSION_PROVIDER__LIB_HOME:
-				setLibHome(LIB_HOME_EDEFAULT);
-				return;
-			case IrPackage.EXTENSION_PROVIDER__LIB_NAME:
-				setLibName(LIB_NAME_EDEFAULT);
+			case IrPackage.EXTENSION_PROVIDER__PROJECT_ROOT:
+				setProjectRoot(PROJECT_ROOT_EDEFAULT);
 				return;
 		}
 		super.eUnset(featureID);
@@ -351,12 +245,8 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 				return EXTENSION_NAME_EDEFAULT == null ? extensionName != null : !EXTENSION_NAME_EDEFAULT.equals(extensionName);
 			case IrPackage.EXTENSION_PROVIDER__PROVIDER_NAME:
 				return PROVIDER_NAME_EDEFAULT == null ? providerName != null : !PROVIDER_NAME_EDEFAULT.equals(providerName);
-			case IrPackage.EXTENSION_PROVIDER__FACADE_CLASS:
-				return FACADE_CLASS_EDEFAULT == null ? facadeClass != null : !FACADE_CLASS_EDEFAULT.equals(facadeClass);
-			case IrPackage.EXTENSION_PROVIDER__LIB_HOME:
-				return LIB_HOME_EDEFAULT == null ? libHome != null : !LIB_HOME_EDEFAULT.equals(libHome);
-			case IrPackage.EXTENSION_PROVIDER__LIB_NAME:
-				return LIB_NAME_EDEFAULT == null ? libName != null : !LIB_NAME_EDEFAULT.equals(libName);
+			case IrPackage.EXTENSION_PROVIDER__PROJECT_ROOT:
+				return PROJECT_ROOT_EDEFAULT == null ? projectRoot != null : !PROJECT_ROOT_EDEFAULT.equals(projectRoot);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -375,12 +265,8 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 		result.append(extensionName);
 		result.append(", providerName: ");
 		result.append(providerName);
-		result.append(", facadeClass: ");
-		result.append(facadeClass);
-		result.append(", libHome: ");
-		result.append(libHome);
-		result.append(", libName: ");
-		result.append(libName);
+		result.append(", projectRoot: ");
+		result.append(projectRoot);
 		result.append(')');
 		return result.toString();
 	}

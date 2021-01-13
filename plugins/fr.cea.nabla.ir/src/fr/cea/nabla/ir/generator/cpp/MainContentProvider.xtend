@@ -20,10 +20,9 @@ import static extension fr.cea.nabla.ir.generator.Utils.*
 @Data
 class MainContentProvider
 {
-	val String levelDBPath
 	val extension JsonContentProvider jsonContentProvider
 
-	def getContentFor(IrModule it)
+	def getContentFor(IrModule it, String levelDBPath)
 	'''
 		string dataFile;
 		int ret = 0;
@@ -104,10 +103,10 @@ class MainContentProvider
 @Data
 class KokkosMainContentProvider extends MainContentProvider
 {
-	override getContentFor(IrModule it)
+	override getContentFor(IrModule it, String levelDBPath)
 	'''
 		Kokkos::initialize(argc, argv);
-		«super.getContentFor(it)»
+		«super.getContentFor(it, levelDBPath)»
 		// simulator must be deleted before calling finalize
 		Kokkos::finalize();
 	'''

@@ -1,0 +1,35 @@
+/*
+ * This file contains the providers for the BatiLib NabLab extension.
+ * The list is ordered: the first ExtensionProvider is the default one for the specified target.
+ * For example, if you entered two StlThread ExtensionProvider instances,
+ * the first one in the following list will be the default one during NabLab
+ * code generation for the target StlThread.
+ */
+
+/*
+ * C++ Extension Provider
+ *   - source files (.h and .cc) expected in projectRoot/BatiLibCpp/src
+ *   - library file expected in projectRoot/BatiLibCpp/lib
+ *
+ * Build instructions:
+ *   - go into the projectRoot/BatiLibCpp project directory and create a lib directory to build the project: mkdir lib; cd lib
+ *   - start cmake with in setting your compiler and compile: cmake -D CMAKE_CXX_COMPILER=/usr/bin/g++ ../src; make
+ */
+ExtensionProvider BatiLibCpp : BatiLib
+{
+	target = CppSequential;
+	// projectRoot is the parent directory of the BatiLibCpp project. $ENV and other CMake keywords can be used."
+	projectRoot = "$ENV{HOME}/workspaces/runtime-EclipseApplication";
+}
+
+/* 
+ * Java Extension Provider
+ *   - source files (.h and .cc) expected in projectRoot/BatiLibJava/src
+ *   - jar file expected in projectRoot/BatiLibJava/lib
+ */
+ExtensionProvider BatiLibJava : BatiLib
+{
+	target = Java;
+	// projectRoot is the parent directory of the BatiLibJava project. $ENV and other CMake keywords can be used."
+	projectRoot = "$ENV{HOME}/workspaces/runtime-EclipseApplication";
+}

@@ -17,6 +17,9 @@ package fr.cea.nabla.validation
  */
 class NablaextValidator extends AbstractNablaextValidator {
 	
+	// TODO All providers extends same extension
+	// TODO name starts with capital
+
 //	public static val INVALID_NAME = 'invalidName'
 //
 //	@Check

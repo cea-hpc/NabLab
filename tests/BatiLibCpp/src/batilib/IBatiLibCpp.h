@@ -1,7 +1,7 @@
 /*** GENERATED FILE - DO NOT OVERWRITE ***/
 
-#ifndef __BATILIB_IBATILIB
-#define __BATILIB_IBATILIB
+#ifndef __BATILIB_IBATILIBCPP
+#define __BATILIB_IBATILIBCPP
 
 #include <iostream>
 #include <string>
@@ -11,13 +11,13 @@ using namespace nablalib;
 
 namespace batilib
 {
-	class IBatiLib
+	class IBatiLibCpp
 	{
 	public:
 		virtual void jsonInit(const char* jsonContent) = 0;
 
 		/* 
-		 * Here are the other methods to implement in BatiLib class.
+		 * Here are the other methods to implement in Sequential class.
 		 * Some of them can be templates. Therefore they can not be virtual.
 		 *
 
@@ -38,4 +38,4 @@ namespace batilib
 	};
 }
 
-#endif // __BATILIB_IBATILIB
+#endif // __BATILIB_IBATILIBCPP

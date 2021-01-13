@@ -1,24 +1,15 @@
-/*******************************************************************************
- * Copyright (c) 2020 CEA
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
- * Contributors: see AUTHORS file
- *******************************************************************************/
-#ifndef __BATILIB_BATILIB
-#define __BATILIB_BATILIB
+#ifndef __BATILIB_BATILIBCPP
+#define __BATILIB_BATILIBCPP
 
 #include <iostream>
 #include <string>
-#include "batilib/IBatiLib.h"
+#include "batilib/IBatiLibCpp.h"
 
 using namespace nablalib;
 
 namespace batilib
 {
-	class BatiLib : public IBatiLib
+	class BatiLibCpp : public IBatiLibCpp
 	{
 	public:
 		void jsonInit(const char* jsonContent) override;
@@ -79,4 +70,4 @@ namespace batilib
 	};
 }
 
-#endif // __BATILIB_BATILIB
+#endif // __BATILIB_BATILIBCPP

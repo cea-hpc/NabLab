@@ -10,7 +10,8 @@
 package fr.cea.nabla.ir.generator.json
 
 import fr.cea.nabla.ir.Utils
-import fr.cea.nabla.ir.generator.CodeGenerator
+import fr.cea.nabla.ir.generator.ApplicationGenerator
+import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.interpreter.Context
 import fr.cea.nabla.ir.interpreter.IrInterpreter
 import fr.cea.nabla.ir.ir.IrModule
@@ -22,22 +23,26 @@ import java.util.logging.Level
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.Utils.getInstanceName
 
-class Ir2Json extends CodeGenerator 
+class JsonGenerator implements ApplicationGenerator
 {
-	val extension NablaValueExtensions nve = new NablaValueExtensions
+	val extension NablaValueExtensions nve
 	val boolean levelDB
 
 	new(boolean levelDB)
 	{
-		super('Json')
+		this.nve = new NablaValueExtensions
 		this.levelDB = levelDB
 	}
 
-	override getFileContentsByName(IrRoot ir)
+	override getName() { 'Json' }
+
+	override getIrTransformationStep() { null }
+
+	override getGenerationContents(IrRoot ir)
 	{
 		// Create the interpreter and interprete option values
 		val context = ir.interpreteDefinitions
-		#{ ir.name + 'Default.json' -> getJsonFileContent(context, ir) }
+		#{ new GenerationContent(ir.name + 'Default.json', getJsonFileContent(context, ir), false) }
 	}
 
 	private def getJsonFileContent(Context context, IrRoot rootModel)

@@ -16,7 +16,7 @@ import fr.cea.nabla.ir.ir.PrimitiveType
 
 import static extension fr.cea.nabla.ir.Utils.getInstanceName
 
-class Ir2JavaUtils 
+class JavaGeneratorUtils
 {
 	static def getCodeName(Function it)
 	{

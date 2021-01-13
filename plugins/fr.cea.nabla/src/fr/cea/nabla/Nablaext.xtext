@@ -16,13 +16,13 @@ import "http://www.cea.fr/nabla/Nabla" as nabla
 
 generate nablaext "http://www.cea.fr/nabla/Nablaext"
 
+NablaextRoot:
+	providers += ExtensionProvider+;
+
 ExtensionProvider: 'ExtensionProvider' name=ID ':' extension=[nabla::NablaExtension]
 '{'
-	'target' '=' target+=TargetType ';'
-	('compatibleTargets' '=' compatibleTargets+=TargetType (',' compatibleTargets+=TargetType)* ';')?
-	'facadeClass' '=' facadeClass = STRING ';'
-	'libHome' '=' libHome=STRING ';' // includes in libHome/include, libs in libHome/lib
-	'libName' '=' libName=STRING ';'
+	'target' '=' target=TargetType ';'
+	'projectRoot' '=' projectRoot=STRING ';'
 '}';
 
 enum TargetType: Java | CppSequential | StlThread | OpenMP | Kokkos | KokkosTeamThread;

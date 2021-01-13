@@ -17,7 +17,7 @@ import static extension fr.cea.nabla.ir.Utils.getInstanceName
 import static extension fr.cea.nabla.ir.Utils.getIrModule
 import static extension fr.cea.nabla.ir.generator.Utils.getClassName
 
-class Ir2CppUtils 
+class CppGeneratorUtils 
 {
 	static def getCodeName(Function it)
 	{

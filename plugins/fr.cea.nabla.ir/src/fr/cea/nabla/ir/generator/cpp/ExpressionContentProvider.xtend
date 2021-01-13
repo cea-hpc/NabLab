@@ -35,7 +35,7 @@ import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
-import static extension fr.cea.nabla.ir.generator.cpp.Ir2CppUtils.*
+import static extension fr.cea.nabla.ir.generator.cpp.CppGeneratorUtils.*
 
 @Data
 class ExpressionContentProvider

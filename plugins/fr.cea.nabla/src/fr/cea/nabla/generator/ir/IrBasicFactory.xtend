@@ -72,7 +72,7 @@ class IrBasicFactory
 	{
 		extensionName = extName
 		// TODO Remove this line after libraries refactoring
-		if (extensionName == "LinearAlgebra") facadeClass = "LinearAlgebraFunctions"
+		if (extensionName == "LinearAlgebra") providerName = "LinearAlgebraFunctions"
 	}
 
 	/** 

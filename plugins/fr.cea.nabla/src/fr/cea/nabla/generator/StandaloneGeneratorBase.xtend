@@ -9,6 +9,8 @@ import org.eclipse.xtext.generator.JavaIoFileSystemAccess
 import org.eclipse.xtext.generator.OutputConfiguration
 
 import static com.google.common.collect.Maps.uniqueIndex
+import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
+import fr.cea.nabla.ir.generator.GenerationContent
 
 abstract class StandaloneGeneratorBase
 {
@@ -58,5 +60,18 @@ abstract class StandaloneGeneratorBase
 			'''System.getProperty("user.home") + "«path.replace(userDir, '')»"'''
 		else
 			path
+	}
+
+	protected def generate(JavaIoFileSystemAccess fsa, Iterable<GenerationContent> generationContents, String relativeBaseDir)
+	{
+		for (gc : generationContents)
+		{
+			val fullFileName = (relativeBaseDir.nullOrEmpty ? gc.fileName : relativeBaseDir + '/' + gc.fileName)
+			if ( !(fsa.isFile(fullFileName) && gc.generateOnce) )
+			{
+				dispatcher.post(MessageType::Exec, "    Generating: " + fullFileName)
+				fsa.generateFile(fullFileName, gc.fileContent)
+			}
+		}
 	}
 }

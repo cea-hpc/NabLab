@@ -3,6 +3,8 @@ package fr.cea.nabla.ir.interpreter
 import fr.cea.nabla.ir.ir.ExtensionProvider
 import java.util.HashMap
 
+import static extension fr.cea.nabla.ir.generator.ExtensionProviderExtensions.*
+
 /**
  * Native library (.so) can only be loaded once.
  * Consequently, JNI classes, containing the static loadLibrary instruction,
@@ -32,6 +34,6 @@ class ProviderClassCache
 	private def getProviderClassName(ExtensionProvider it)
 	{
 		if (extensionName == "LinearAlgebra") "fr.cea.nabla.javalib.types.LinearAlgebraFunctions" 
-		else facadeClass
+		else namespaceName + '.' + className
 	}
 }

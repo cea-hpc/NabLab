@@ -34,6 +34,8 @@ import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.emf.ecore.util.EcoreUtil
 
+import static extension fr.cea.nabla.ir.generator.ExtensionProviderExtensions.*
+
 @Singleton
 class NablagenRunner
 {
@@ -108,18 +110,18 @@ class NablagenRunner
 		val urls = new ArrayList<URL>
 		for (p : providers)
 		{
-			if (!p.libHome.nullOrEmpty)
+			if (!p.projectRoot.nullOrEmpty)
 			{
-				var libHome = p.libHome
-				var matcher = pattern.matcher(libHome)
+				var expandedProjectHome = p.projectRoot
+				var matcher = pattern.matcher(expandedProjectHome)
 				while (matcher.find())
 				{
 					val envVarName = matcher.group(1)
 					val envVar = System.getenv(envVarName)
-					libHome = matcher.replaceFirst(envVar)
-					matcher = pattern.matcher(libHome)
+					expandedProjectHome = matcher.replaceFirst(envVar)
+					matcher = pattern.matcher(expandedProjectHome)
 				}
-				urls += new URL("file://" + libHome + "/lib/" + p.libName)
+				urls += new URL("file://" + expandedProjectHome + "/lib/" + p.libName + ".jar")
 			}
 		}
 		return urls

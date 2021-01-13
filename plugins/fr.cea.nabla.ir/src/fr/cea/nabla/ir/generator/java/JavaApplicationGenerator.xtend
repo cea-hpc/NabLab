@@ -10,7 +10,8 @@
 package fr.cea.nabla.ir.generator.java
 
 import fr.cea.nabla.ir.Utils
-import fr.cea.nabla.ir.generator.CodeGenerator
+import fr.cea.nabla.ir.generator.ApplicationGenerator
+import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.Function
@@ -18,13 +19,14 @@ import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.Variable
-import java.util.HashMap
+import java.util.ArrayList
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.Utils.getInstanceName
+import static extension fr.cea.nabla.ir.generator.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
@@ -32,15 +34,17 @@ import static extension fr.cea.nabla.ir.generator.java.FunctionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.JobContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.JsonContentProvider.*
 
-class Ir2Java extends CodeGenerator
+class JavaApplicationGenerator implements ApplicationGenerator
 {
-	new() { super('Java') }
+	override getName() { 'Java' }
 
-	override getFileContentsByName(IrRoot ir)
+	override getIrTransformationStep() { null }
+
+	override getGenerationContents(IrRoot ir)
 	{
-		val fileContents = new HashMap<String, CharSequence>
+		val fileContents = new ArrayList<GenerationContent>
 		for (module : ir.modules)
-			fileContents.put(module.className + '.java', module.fileContent)
+			fileContents += new GenerationContent(module.className + '.java', module.fileContent, false)
 		return fileContents
 	}
 
@@ -82,7 +86,7 @@ class Ir2Java extends CodeGenerator
 				public «v.javaType» «v.name»;
 				«ENDFOR»
 				«FOR v : extensionProviders»
-				public «v.facadeClass» «v.instanceName»;
+				public «v.namespaceName».«v.className» «v.instanceName»;
 				«ENDFOR»
 				public String «Utils.NonRegressionNameAndValue.key»;
 
@@ -105,7 +109,7 @@ class Ir2Java extends CodeGenerator
 					«FOR v : extensionProviders»
 					«val vName = v.instanceName»
 					// «vName»
-					«vName» = new «v.facadeClass»();
+					«vName» = new «v.namespaceName».«v.className»();
 					if (o.has("«vName»"))
 						«vName».jsonInit(o.get("«vName»").toString());
 					«ENDFOR»

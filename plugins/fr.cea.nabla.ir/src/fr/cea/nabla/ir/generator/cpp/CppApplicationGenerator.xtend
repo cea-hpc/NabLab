@@ -10,7 +10,8 @@
 package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.Utils
-import fr.cea.nabla.ir.generator.CodeGenerator
+import fr.cea.nabla.ir.generator.ApplicationGenerator
+import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.Function
@@ -18,55 +19,39 @@ import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.Variable
-import fr.cea.nabla.ir.transformers.IrTransformationStep
+import java.util.ArrayList
 import java.util.HashMap
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.Utils.getInstanceName
+import static extension fr.cea.nabla.ir.generator.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
-import static extension fr.cea.nabla.ir.generator.cpp.Ir2CppUtils.*
+import static extension fr.cea.nabla.ir.generator.cpp.CppGeneratorUtils.*
 
-class Ir2Cpp extends CodeGenerator
+class CppApplicationGenerator extends CppGenerator implements ApplicationGenerator
 {
-	val Backend backend
-	val String libCppNablaDir
+	val String levelDBPath
+	val HashMap<String, String> cMakeVars
 
-	val extension ArgOrVarContentProvider argOrVarContentProvider
-	val extension ExpressionContentProvider expressionContentProvider
-	val extension JsonContentProvider jsonContentProvider
-	val extension FunctionContentProvider functionContentProvider
-	val extension JobCallerContentProvider jobCallerContentProvider
-
-	new(Backend backend, String libCppNablaDir)
+	new(Backend backend, String libCppNablaDir, String levelDBPath, HashMap<String, String> cMakeVars)
 	{
-		super(backend.name)
-		this.backend = backend
-		this.libCppNablaDir = libCppNablaDir
-
-		argOrVarContentProvider = backend.argOrVarContentProvider
-		expressionContentProvider = backend.expressionContentProvider
-		jsonContentProvider = backend.jsonContentProvider
-		jobCallerContentProvider = backend.getJobCallerContentProvider
-		functionContentProvider = backend.functionContentProvider
+		super(backend, libCppNablaDir)
+		this.levelDBPath = levelDBPath
+		this.cMakeVars = cMakeVars
 	}
 
-	override getFileContentsByName(IrRoot ir)
+	override getGenerationContents(IrRoot ir)
 	{
-		val fileContents = new HashMap<String, CharSequence>
+		val fileContents = new ArrayList<GenerationContent>
 		for (module : ir.modules)
 		{
-			fileContents.put(module.className + '.h', module.headerFileContent)
-			fileContents.put(module.className + '.cc', module.sourceFileContent)
+			fileContents += new GenerationContent(module.className + '.h', module.headerFileContent, false)
+			fileContents += new GenerationContent(module.className + '.cc', module.sourceFileContent, false)
 		}
-		fileContents.put('CMakeLists.txt', backend.ir2Cmake.getContentFor(ir, libCppNablaDir))
+		fileContents += new GenerationContent('CMakeLists.txt', backend.getIrRoot2CMake.getContentFor(ir, libCppNablaDir, levelDBPath, cMakeVars), false)
 		return fileContents
-	}
-
-	override IrTransformationStep getIrTransformationStep()
-	{
-		backend.irTransformationStep
 	}
 
 	private def getHeaderFileContent(IrModule it)
@@ -76,7 +61,7 @@ class Ir2Cpp extends CodeGenerator
 	#ifndef «name.toUpperCase»_H_
 	#define «name.toUpperCase»_H_
 
-	«backend.includesContentProvider.getContentFor(it)»
+	«backend.includesContentProvider.getContentFor(it, levelDBPath)»
 
 	using namespace nablalib;
 	«IF main && irRoot.modules.size > 1»
@@ -92,7 +77,7 @@ class Ir2Cpp extends CodeGenerator
 	namespace «className»Funcs
 	{
 	«FOR f : bodyFunctions»
-		«f.declarationContent»;
+		«functionContentProvider.getDeclarationContent(f)»;
 	«ENDFOR»
 	}
 	«ENDIF»
@@ -110,10 +95,10 @@ class Ir2Cpp extends CodeGenerator
 		{
 			«IF postProcessing !== null»std::string «Utils.OutputPathNameAndValue.key»;«ENDIF»
 			«FOR v : options»
-			«v.cppType» «v.name»;
+			«typeContentProvider.getCppType(v)» «v.name»;
 			«ENDFOR»
 			«FOR v : extensionProviders»
-			«v.facadeClass» «v.instanceName»;
+			«v.namespaceName»::«v.className» «v.instanceName»;
 			«ENDFOR»
 			«IF levelDB»std::string «Utils.NonRegressionNameAndValue.key»;«ENDIF»
 
@@ -217,7 +202,7 @@ class Ir2Cpp extends CodeGenerator
 	namespace «className»Funcs
 	{
 	«FOR f : bodyFunctions SEPARATOR '\n'»
-		«f.definitionContent»
+		«functionContentProvider.getDefinitionContent(f)»
 	«ENDFOR»
 	}
 	«ENDIF»
@@ -236,12 +221,12 @@ class Ir2Cpp extends CodeGenerator
 		«val opName = Utils.OutputPathNameAndValue.key»
 		// «opName»
 		assert(o.HasMember("«opName»"));
-		const rapidjson::Value& «opName.jsonName» = o["«opName»"];
-		assert(«opName.jsonName».IsString());
-		«opName» = «opName.jsonName».GetString();
+		const rapidjson::Value& «jsonContentProvider.getJsonName(opName)» = o["«opName»"];
+		assert(«jsonContentProvider.getJsonName(opName)».IsString());
+		«opName» = «jsonContentProvider.getJsonName(opName)».GetString();
 		«ENDIF»
 		«FOR v : options»
-		«v.jsonContent»
+		«jsonContentProvider.getJsonContent(v)»
 		«ENDFOR»
 		«FOR v : extensionProviders»
 		«val vName = v.instanceName»
@@ -258,9 +243,9 @@ class Ir2Cpp extends CodeGenerator
 		// Non regression
 		«val nrName = Utils.NonRegressionNameAndValue.key»
 		assert(o.HasMember("«nrName»"));
-		const rapidjson::Value& «nrName.jsonName» = o["«nrName»"];
-		assert(«nrName.jsonName».IsString());
-		«nrName» = «nrName.jsonName».GetString();
+		const rapidjson::Value& «jsonContentProvider.getJsonName(nrName)» = o["«nrName»"];
+		assert(«jsonContentProvider.getJsonName(nrName)».IsString());
+		«nrName» = «jsonContentProvider.getJsonName(nrName)».GetString();
 		«ENDIF»
 	}
 
@@ -274,17 +259,17 @@ class Ir2Cpp extends CodeGenerator
 	, options(aOptions)
 	«IF postProcessing !== null», writer("«irRoot.name»", options.«Utils.OutputPathNameAndValue.key»)«ENDIF»
 	«FOR v : variablesWithDefaultValue.filter[x | !x.constExpr]»
-	, «v.name»(«v.defaultValue.content»)
+	, «v.name»(«expressionContentProvider.getContent(v.defaultValue)»)
 	«ENDFOR»
 	«FOR v : variables.filter(ConnectivityVariable)»
-	, «v.name»(«v.cstrInit»)
+	, «v.name»(«argOrVarContentProvider.getCstrInit(v)»)
 	«ENDFOR»
 	{
 		«val dynamicArrayVariables = variables.filter[!option && !type.baseTypeStatic]»
 		«IF !dynamicArrayVariables.empty»
 			// Allocate dynamic arrays (RealArrays with at least a dynamic dimension)
 			«FOR v : dynamicArrayVariables»
-				«v.initCppTypeContent»
+				«argOrVarContentProvider.initCppTypeContent(v)»
 			«ENDFOR»
 
 		«ENDIF»
@@ -351,7 +336,7 @@ class Ir2Cpp extends CodeGenerator
 			«val nodeVariables = outputVarsByConnectivities.get("node")»
 			«IF !nodeVariables.nullOrEmpty»
 				«FOR v : nodeVariables»
-					writer.write«FOR s : v.type.base.sizes BEFORE '<' SEPARATOR ',' AFTER '>'»«s.content»«ENDFOR»("«v.outputName»", «v.name»);
+					writer.write«FOR s : v.type.base.sizes BEFORE '<' SEPARATOR ',' AFTER '>'»«expressionContentProvider.getContent(s)»«ENDFOR»("«v.outputName»", «v.name»);
 				«ENDFOR»
 			«ENDIF»
 			writer.closeNodeData();
@@ -359,7 +344,7 @@ class Ir2Cpp extends CodeGenerator
 			«val cellVariables = outputVarsByConnectivities.get("cell")»
 			«IF !cellVariables.nullOrEmpty»
 				«FOR v : cellVariables»
-					writer.write«FOR s : v.type.base.sizes BEFORE '<' SEPARATOR ',' AFTER '>'»«s.content»«ENDFOR»("«v.outputName»", «v.name»);
+					writer.write«FOR s : v.type.base.sizes BEFORE '<' SEPARATOR ',' AFTER '>'»«expressionContentProvider.getContent(s)»«ENDFOR»("«v.outputName»", «v.name»);
 				«ENDFOR»
 			«ENDIF»
 			writer.closeCellData();
@@ -378,12 +363,12 @@ class Ir2Cpp extends CodeGenerator
 	{
 		«backend.traceContentProvider.getBeginOfSimuTrace(it)»
 
-		«irRoot.main.callsHeader»
-		«irRoot.main.callsContent»
+		«jobCallerContentProvider.getCallsHeader(irRoot.main)»
+		«jobCallerContentProvider.getCallsContent(irRoot.main)»
 		«backend.traceContentProvider.getEndOfSimuTrace(linearAlgebra)»
 	}
 	«IF levelDB»
-	
+
 	void «className»::createDB(const std::string& db_name)
 	{
 		// Creating data base
@@ -472,7 +457,7 @@ class Ir2Cpp extends CodeGenerator
 
 	int main(int argc, char* argv[]) 
 	{
-		«backend.mainContentProvider.getContentFor(it)»
+		«backend.mainContentProvider.getContentFor(it, levelDBPath)»
 		return ret;
 	}
 	«ENDIF»
@@ -488,21 +473,21 @@ class Ir2Cpp extends CodeGenerator
 
 	private def isLevelDB(IrModule it)
 	{
-		main && !backend.includesContentProvider.levelDBPath.nullOrEmpty
+		main && !levelDBPath.nullOrEmpty
 	}
 
 	private def CharSequence getVariableDeclaration(Variable v)
 	{
 		switch (v)
 		{
-			 SimpleVariable case v.constExpr: '''static constexpr «v.cppType» «v.name» = «v.defaultValue.content»;'''
-			 SimpleVariable case v.const: '''const «v.cppType» «v.name»;'''
-			 default: '''«v.cppType» «v.name»;'''
+			 SimpleVariable case v.constExpr: '''static constexpr «typeContentProvider.getCppType(v)» «v.name» = «expressionContentProvider.getContent(v.defaultValue)»;'''
+			 SimpleVariable case v.const: '''const «typeContentProvider.getCppType(v)» «v.name»;'''
+			 default: '''«typeContentProvider.getCppType(v)» «v.name»;'''
 		}
 	}
 
 	private def isKokkosTeamThread()
 	{
-		backend.name == KokkosTeamThreadBackendFactory.NAME
+		backend instanceof KokkosTeamThreadBackend
 	}
 }

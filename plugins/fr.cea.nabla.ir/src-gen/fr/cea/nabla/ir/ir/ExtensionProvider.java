@@ -2,7 +2,6 @@
  */
 package fr.cea.nabla.ir.ir;
 
-
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Extension Provider</b></em>'.
@@ -14,9 +13,7 @@ package fr.cea.nabla.ir.ir;
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.ExtensionProvider#getExtensionName <em>Extension Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.ExtensionProvider#getProviderName <em>Provider Name</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.ExtensionProvider#getFacadeClass <em>Facade Class</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.ExtensionProvider#getLibHome <em>Lib Home</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.ExtensionProvider#getLibName <em>Lib Name</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.ExtensionProvider#getProjectRoot <em>Project Root</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getExtensionProvider()
@@ -69,69 +66,25 @@ public interface ExtensionProvider extends IrAnnotable {
 	void setProviderName(String value);
 
 	/**
-	 * Returns the value of the '<em><b>Facade Class</b></em>' attribute.
+	 * Returns the value of the '<em><b>Project Root</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Facade Class</em>' attribute.
-	 * @see #setFacadeClass(String)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getExtensionProvider_FacadeClass()
+	 * @return the value of the '<em>Project Root</em>' attribute.
+	 * @see #setProjectRoot(String)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getExtensionProvider_ProjectRoot()
 	 * @model required="true"
 	 * @generated
 	 */
-	String getFacadeClass();
+	String getProjectRoot();
 
 	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.ExtensionProvider#getFacadeClass <em>Facade Class</em>}' attribute.
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.ExtensionProvider#getProjectRoot <em>Project Root</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Facade Class</em>' attribute.
-	 * @see #getFacadeClass()
+	 * @param value the new value of the '<em>Project Root</em>' attribute.
+	 * @see #getProjectRoot()
 	 * @generated
 	 */
-	void setFacadeClass(String value);
-
-	/**
-	 * Returns the value of the '<em><b>Lib Home</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Lib Home</em>' attribute.
-	 * @see #setLibHome(String)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getExtensionProvider_LibHome()
-	 * @model required="true"
-	 * @generated
-	 */
-	String getLibHome();
-
-	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.ExtensionProvider#getLibHome <em>Lib Home</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Lib Home</em>' attribute.
-	 * @see #getLibHome()
-	 * @generated
-	 */
-	void setLibHome(String value);
-
-	/**
-	 * Returns the value of the '<em><b>Lib Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Lib Name</em>' attribute.
-	 * @see #setLibName(String)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getExtensionProvider_LibName()
-	 * @model required="true"
-	 * @generated
-	 */
-	String getLibName();
-
-	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.ExtensionProvider#getLibName <em>Lib Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Lib Name</em>' attribute.
-	 * @see #getLibName()
-	 * @generated
-	 */
-	void setLibName(String value);
+	void setProjectRoot(String value);
 
 } // ExtensionProvider

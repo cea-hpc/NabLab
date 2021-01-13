@@ -733,7 +733,7 @@
     </handler>
  </extension>
 
-	<!-- Property tester to check that content of Nabla file is Extension -->
+	<!-- Property tester to check that content of Nabla file is Extension and nablaext file does not exists -->
 	<extension point="org.eclipse.core.expressions.propertyTesters">
 		<propertyTester
 			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.propertytesters.NablaFileContentPropertyTester"
@@ -744,7 +744,7 @@
 		</propertyTester>
 	</extension>
 
-	<!-- Generate menus for nablagen (simulator generation) and nabla file (provider generation) -->
+	<!-- Generate menus for nablagen (simulator generation), nabla file (nablaext file generation) and nablaext file (provider generation) -->
 	<extension
 		id="fr.cea.nabla.ui.menus"
 		name="fr.cea.nabla.ui.menus"
@@ -757,9 +757,9 @@
 				visible="true">
 			</separator>
 			<command
-				commandId="fr.cea.nabla.GenerateSimulatorCommand"
+				commandId="fr.cea.nabla.GenerateApplicationCommand"
 				icon="icons/Nablagen.gif"
-				label="Generate Code"
+				label="Generate application"
 				style="push">
 				<visibleWhen checkEnabled="false">
 					<with variable="activeMenuSelection">
@@ -773,9 +773,9 @@
 				</visibleWhen>
 			</command>
 			<command
-				commandId="fr.cea.nabla.GenerateProvidersCommand"
+				commandId="fr.cea.nabla.GenerateNablaextFileCommand"
 				icon="icons/NabLab.gif"
-				label="Generate Extension Providers"
+				label="Generate nablaext file"
 				style="push">
 				<visibleWhen checkEnabled="false">
 					<with variable="activeMenuSelection">
@@ -788,6 +788,22 @@
 					</with>
 				</visibleWhen>
 			</command>
+			<command
+				commandId="fr.cea.nabla.GenerateProvidersCommand"
+				icon="icons/Nablaext.gif"
+				label="Generate extension providers"
+				style="push">
+				<visibleWhen checkEnabled="false">
+					<with variable="activeMenuSelection">
+						<count value="1"/>
+						<iterate>
+							<adapt type="org.eclipse.core.resources.IResource">
+								<test property="org.eclipse.core.resources.extension" value="nablaext"/>
+							</adapt>
+						</iterate>
+					</with>
+				</visibleWhen>
+			</command>
 			<separator
 				name="fr.cea.nabla.endseparator"
 				visible="true">
@@ -795,27 +811,32 @@
 		</menuContribution>
 	</extension>
 
-	<!-- Generate commands for nablagen (simulator generation) and nabla file (provider generation) -->
+	<!-- Generate commands for nablagen (simulator generation), nabla file (nablaext file generation) and nablaext file (provider generation) -->
 	<extension
 		id="fr.cea.nabla.ui.commands"
 		name="fr.cea.nabla.ui.commands"
 		point="org.eclipse.ui.commands">
 		<command 
-			defaultHandler="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.handlers.GenerateSimulatorHandler"
-			id="fr.cea.nabla.GenerateSimulatorCommand"
-			name="Generate Code">
+			defaultHandler="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.handlers.GenerateApplicationHandler"
+			id="fr.cea.nabla.GenerateApplicationCommand"
+			name="Generate application">
 		</command>
 		<command 
+			id="fr.cea.nabla.GenerateNablaextFileCommand"
+			name="Generate nablaext file">
+		</command>
+		<command 
+			defaultHandler="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.handlers.GenerateProvidersHandler"
 			id="fr.cea.nabla.GenerateProvidersCommand"
-			name="Generate Extension Providers">
+			name="Generate extension providers">
 		</command>
 	</extension>
 
-	<!-- Generate handler for nabla file. Not a default command handler to disable the menu when file content is not NablaExtension -->
+	<!-- Generate handler for nabla file. Not a default command handler to disable the menu when it is not an extension (module) or file already exists -->
 	<extension point="org.eclipse.ui.handlers">
 		<handler
-			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.handlers.GenerateProvidersHandler"
-			commandId="fr.cea.nabla.GenerateProvidersCommand">
+			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.handlers.GenerateNablaextFileHandler"
+			commandId="fr.cea.nabla.GenerateNablaextFileCommand">
 			<enabledWhen>
 				<with variable="selection">
 					<iterate>

@@ -14,7 +14,7 @@ import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.SimpleVariable
 
 import static extension fr.cea.nabla.ir.generator.java.InstructionContentProvider.*
-import static extension fr.cea.nabla.ir.generator.java.Ir2JavaUtils.*
+import static extension fr.cea.nabla.ir.generator.java.JavaGeneratorUtils.*
 
 class FunctionContentProvider
 {

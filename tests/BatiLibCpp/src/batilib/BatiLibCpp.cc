@@ -1,23 +1,12 @@
-/*******************************************************************************
- * Copyright (c) 2020 CEA
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
- * Contributors: see AUTHORS file
- *******************************************************************************/
-#include "batilib/BatiLib.h"
-#include <string>
+#include "batilib/BatiLibCpp.h"
 #include <rapidjson/document.h>
 #include <rapidjson/istreamwrapper.h>
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
 
-namespace  batilib
+namespace batilib
 {
-
-void BatiLib::jsonInit(const char* jsonContent)
+void BatiLibCpp::jsonInit(const char* jsonContent)
 {
 	std::cout << "C++ BatiLib::jsonInit" << std:: endl;
 
@@ -44,5 +33,4 @@ void BatiLib::jsonInit(const char* jsonContent)
 	}
 	std::cout << "   fileName : " << fileName << std:: endl;
 }
-
 }

@@ -1,23 +1,15 @@
-/*******************************************************************************
- * Copyright (c) 2020 CEA
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
- * Contributors: see AUTHORS file
- *******************************************************************************/
 package batilib;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-public class JBatiLib
+public class BatiLibJava implements IBatiLibJava
 {
 	private double depth = 4.3;
 	private String fileName = "";
 
+	@Override
 	public void jsonInit(final String jsonContent)
 	{
 		System.out.println("Java BatiLib::jsonInit");
@@ -44,12 +36,14 @@ public class JBatiLib
 		System.out.println("   fileName : " + fileName);
 	}
 
+	@Override
 	public double nextWaveHeight()
 	{
 		System.out.println("Java BatiLib::nextWaveHeight");
 		return 1.0;
 	}
 
+	@Override
 	public double nextDepth1(double x0, double[] x1)
 	{
 		System.out.println("Java BatiLib::nextDepth1");
@@ -59,7 +53,8 @@ public class JBatiLib
 		return sum;
 	}
 
-	double nextDepth2(double x0, double[][] x1)
+	@Override
+	public double nextDepth2(double x0, double[][] x1)
 	{
 		System.out.println("Java BatiLib::nextDepth2");
 		double sum = x0;
@@ -69,7 +64,8 @@ public class JBatiLib
 		return sum;
 	}
 
-	double[] nextDepth3(double[] x0)
+	@Override
+	public double[] nextDepth3(double[] x0)
 	{
 		System.out.println("Java BatiLib::nextDepth3");
 		double[] ret = new double[x0.length];
@@ -78,7 +74,8 @@ public class JBatiLib
 		return ret;
 	}
 
-	double[][] nextDepth4(double[][] x0)
+	@Override
+	public double[][] nextDepth4(double[][] x0)
 	{
 		System.out.println("Java BatiLib::nextDepth4");
 		double[][] ret = new double[x0.length][x0[0].length];

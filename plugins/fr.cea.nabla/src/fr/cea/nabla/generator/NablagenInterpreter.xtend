@@ -12,9 +12,10 @@ package fr.cea.nabla.generator
 import com.google.inject.Inject
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
 import fr.cea.nabla.generator.ir.Nablagen2Ir
-import fr.cea.nabla.ir.generator.cpp.Ir2Cpp
-import fr.cea.nabla.ir.generator.java.Ir2Java
-import fr.cea.nabla.ir.generator.json.Ir2Json
+import fr.cea.nabla.ir.generator.GenerationContent
+import fr.cea.nabla.ir.generator.cpp.CppApplicationGenerator
+import fr.cea.nabla.ir.generator.java.JavaApplicationGenerator
+import fr.cea.nabla.ir.generator.json.JsonGenerator
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.transformers.CompositeTransformationStep
 import fr.cea.nabla.ir.transformers.FillJobHLTs
@@ -32,9 +33,7 @@ import java.io.File
 import java.util.ArrayList
 import java.util.HashMap
 import java.util.List
-import java.util.Map
 import org.eclipse.emf.ecore.util.EcoreUtil
-import org.eclipse.xtext.generator.JavaIoFileSystemAccess
 
 import static extension fr.cea.nabla.LatexLabelServices.*
 
@@ -42,7 +41,7 @@ class NablagenInterpreter extends StandaloneGeneratorBase
 {
 	@Inject Nablagen2Ir nablagen2Ir
 	@Inject NablaIrWriter irWriter
-	@Inject BackendFactoryProvider backendFactoryProvider
+	@Inject BackendFactory backendFactory
 
 	def IrRoot buildIr(NablagenRoot ngen, String projectDir, boolean forInterpreter)
 	{
@@ -70,14 +69,14 @@ class NablagenInterpreter extends StandaloneGeneratorBase
 			{
 				// LaTeX generation must be done here because it needs NabLab model
 				dispatcher.post(MessageType::Exec, 'Nabla -> Latex')
-				val texContentsByName = new HashMap<String, CharSequence>
+				val texContents = new ArrayList<GenerationContent>
 				if (ngen.mainModule !== null && ngen.mainModule.type !== null)
-					texContentsByName.put(ngen.mainModule.type.name + ".tex", ngen.mainModule.type.latexContent)
+					texContents += new GenerationContent(ngen.mainModule.type.name + ".tex", ngen.mainModule.type.latexContent, false)
 				for (adModule : ngen.additionalModules)
 					if (adModule.type !== null)
-						texContentsByName.put(adModule.type.name + ".tex", adModule.type.latexContent)
+						texContents += new GenerationContent(adModule.type.name + ".tex", adModule.type.latexContent, false)
 				var fsa = getConfiguredFileSystemAccess(projectDir, true)
-				generate(fsa, texContentsByName, ir)
+				generate(fsa, texContents, ir.name.toLowerCase)
 			}
 
 			return ir
@@ -103,10 +102,10 @@ class NablagenInterpreter extends StandaloneGeneratorBase
 		try
 		{
 			dispatcher.post(MessageType::Exec, "Starting Json code generator")
-			val ir2Json = new Ir2Json(levelDB!==null)
-			val jsonFileContentsByName = ir2Json.getFileContentsByName(ir)
+			val ir2Json = new JsonGenerator(levelDB!==null)
+			val jsonGenerationContent = ir2Json.getGenerationContents(ir)
 			var fsa = getConfiguredFileSystemAccess(projectDir, true)
-			generate(fsa, jsonFileContentsByName, ir)
+			generate(fsa, jsonGenerationContent, ir.name.toLowerCase)
 
 			val baseDir =  projectDir + "/.."
 			for (target : targets)
@@ -123,15 +122,15 @@ class NablagenInterpreter extends StandaloneGeneratorBase
 				fsa = getConfiguredFileSystemAccess(outputFolderName, false)
 
 				// Apply IR transformations dedicated to this target (if necessary)
-				if (g.needIrTransformation)
+				if (g.irTransformationStep !== null)
 				{
 					val duplicatedIr = EcoreUtil::copy(ir)
 					g.irTransformationStep.transformIr(duplicatedIr, [msg | dispatcher.post(MessageType::Exec, msg)])
-					generate(fsa, g.getFileContentsByName(duplicatedIr), ir)
+					generate(fsa, g.getGenerationContents(duplicatedIr), ir.name.toLowerCase)
 				}
 				else
 				{
-					generate(fsa, g.getFileContentsByName(ir), ir)
+					generate(fsa, g.getGenerationContents(ir), ir.name.toLowerCase)
 				}
 			}
 		}
@@ -147,17 +146,6 @@ class NablagenInterpreter extends StandaloneGeneratorBase
 		}
 	}
 
-	private def generate(JavaIoFileSystemAccess fsa, Map<String, CharSequence> fileContentsByName, IrRoot ir)
-	{
-		for (fileName : fileContentsByName.keySet)
-		{
-			val fullFileName = ir.name.toLowerCase + '/' + fileName
-			val fileContent = fileContentsByName.get(fileName)
-			dispatcher.post(MessageType::Exec, "    Generating: " + fullFileName)
-			fsa.generateFile(fullFileName, fileContent)
-		}
-	}
-
 	private def getCodeGenerator(Target it, String baseDir, String iterationMax, String timeMax, LevelDB levelDB)
 	{
 		val levelDBPath = if (levelDB === null) null else levelDB.levelDBPath
@@ -165,18 +153,20 @@ class NablagenInterpreter extends StandaloneGeneratorBase
 		if (type == TargetType::JAVA)
 		{
 			//UnzipHelper::unzipLibJavaNabla(new File(baseDir))
-			new Ir2Java
+			new JavaApplicationGenerator
 		}
 		else
 		{
-			val backendFactory = backendFactoryProvider.getCppBackend(type)
+			val backend = backendFactory.getCppBackend(type)
+			backend.traceContentProvider.maxIterationsVarName = iterationMax
+			backend.traceContentProvider.stopTimeVarName = timeMax
 			UnzipHelper::unzipLibCppNabla(new File(baseDir))
 			// The libcppnabla is unzipped in baseDir/libCppNabla but it is transformed to a relative
 			// directory for the CMakeLists.txt in order to have always the same generated file.
 			var relativeBaseDir = outputDir.replaceAll("[^/]+", "..") + "/" + UnzipHelper.CppResourceName
 			relativeBaseDir = (relativeBaseDir.startsWith("/") ? ".." : "../") + relativeBaseDir
 			relativeBaseDir = "${CMAKE_CURRENT_SOURCE_DIR}/" + relativeBaseDir
-			new Ir2Cpp(backendFactory.create(iterationMax, timeMax, levelDBPath, vars), relativeBaseDir)
+			new CppApplicationGenerator(backend, relativeBaseDir, levelDBPath, vars)
 		}
 	}
 
@@ -235,9 +225,9 @@ class NablagenInterpreter extends StandaloneGeneratorBase
 			if (extensionConfig.provider === null)
 				throw new RuntimeException("Missing " + targetType.literal + " provider for extension: " + irProvider.extensionName)
 
-			irProvider.facadeClass = extensionConfig.provider.facadeClass
-			irProvider.libHome = extensionConfig.provider.libHome
-			irProvider.libName = extensionConfig.provider.libName
+			irProvider.extensionName = extensionConfig.extension.name
+			irProvider.providerName = extensionConfig.provider.name
+			irProvider.projectRoot = extensionConfig.provider.projectRoot
 		}
 	}
 }

@@ -11,15 +11,10 @@ package fr.cea.nabla.ir.generator
 
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.transformers.IrTransformationStep
-import java.util.Map
-import org.eclipse.xtend.lib.annotations.Data
 
-@Data
-abstract class CodeGenerator
+interface ApplicationGenerator
 {
-	val String name
-
-	def boolean needIrTransformation() { irTransformationStep !== null }
-	def IrTransformationStep getIrTransformationStep() { null }
-	def Map<String, CharSequence> getFileContentsByName(IrRoot ir)
+	def String getName()
+	def IrTransformationStep getIrTransformationStep()
+	def Iterable<GenerationContent> getGenerationContents(IrRoot ir)
 }

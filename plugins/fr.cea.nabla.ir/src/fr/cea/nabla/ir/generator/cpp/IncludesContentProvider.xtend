@@ -11,34 +11,28 @@ package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.ir.IrModule
 import java.util.LinkedHashSet
-import org.eclipse.xtend.lib.annotations.Accessors
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
+import static extension fr.cea.nabla.ir.generator.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 
 abstract class IncludesContentProvider
 {
-	protected def Iterable<String> getAdditionalSystemIncludes(IrModule m) { #[] }
-	protected def Iterable<String> getAdditionalUserIncludes(IrModule m) { #[] }
-	@Accessors val String levelDBPath
+	protected def Iterable<String> getAdditionalSystemIncludes(IrModule m, String levelDBPath) { #[] }
+	protected def Iterable<String> getAdditionalUserIncludes(IrModule m, String levelDBPath) { #[] }
 
-	new(String levelDBPath)
-	{
-		this.levelDBPath = levelDBPath
-	}
-
-	def getContentFor(IrModule m)
+	def getContentFor(IrModule m, String levelDBPath)
 	'''
-	«FOR include : getSystemIncludesFor(m)»
+	«FOR include : getSystemIncludesFor(m, levelDBPath)»
 	#include <«include»>
 	«ENDFOR»
-	«FOR include : getUserIncludesFor(m)»
+	«FOR include : getUserIncludesFor(m, levelDBPath)»
 	#include "«include»"
 	«ENDFOR»
 	'''
 
-	private def getSystemIncludesFor(IrModule m)
+	private def getSystemIncludesFor(IrModule m, String levelDBPath)
 	{
 		val systemIncludes = new LinkedHashSet<String>
 
@@ -53,12 +47,12 @@ abstract class IncludesContentProvider
 			systemIncludes += "leveldb/db.h"
 			systemIncludes += "leveldb/write_batch.h"
 		}
-		systemIncludes += m.additionalSystemIncludes
+		systemIncludes += getAdditionalSystemIncludes(m, levelDBPath)
 
 		return systemIncludes
 	}
 
-	private def getUserIncludesFor(IrModule m)
+	private def getUserIncludesFor(IrModule m, String levelDBPath)
 	{
 		val userIncludes = new LinkedHashSet<String>
 		userIncludes += "mesh/CartesianMesh2DFactory.h"
@@ -67,25 +61,20 @@ abstract class IncludesContentProvider
 		userIncludes +=  "utils/Timer.h"
 		userIncludes +=  "types/Types.h"
 
-		for (extensionProvider : m.extensionProviders.filter[x | x.extensionName != "LinearAlgebra"])
-			userIncludes += extensionProvider.facadeClass.replace("::", "/") + ".h"
+		for (provider : m.extensionProviders.filter[x | x.extensionName != "LinearAlgebra"])
+			userIncludes += provider.namespaceName + '/' + provider.className + ".h"
 
 		if (!m.main)
 			userIncludes += m.irRoot.name.toLowerCase + "/" + m.irRoot.mainModule.className + ".h"
 
-		userIncludes += m.additionalUserIncludes
+		userIncludes += getAdditionalUserIncludes(m, levelDBPath)
 		return userIncludes
 	}
 }
 
 class StlThreadIncludesContentProvider extends IncludesContentProvider
 {
-	new(String levelDBPath)
-	{
-		super(levelDBPath)
-	}
-
-	override getAdditionalUserIncludes(IrModule m)
+	override getAdditionalUserIncludes(IrModule m, String levelDBPath)
 	{
 		val includes = new LinkedHashSet<String>
 		if (m.irRoot.postProcessing !== null) includes += "mesh/stl/PvdFileWriter2D.h"
@@ -98,17 +87,12 @@ class StlThreadIncludesContentProvider extends IncludesContentProvider
 
 class KokkosIncludesContentProvider extends IncludesContentProvider
 {
-	new(String levelDBPath)
-	{
-		super(levelDBPath)
-	}
-
-	override getAdditionalSystemIncludes(IrModule m)
+	override getAdditionalSystemIncludes(IrModule m, String levelDBPath)
 	{
 		#["Kokkos_Core.hpp", "Kokkos_hwloc.hpp"]
 	}
 
-	override getAdditionalUserIncludes(IrModule m)
+	override getAdditionalUserIncludes(IrModule m, String levelDBPath)
 	{
 		val includes = new LinkedHashSet<String>
 		if (m.irRoot.postProcessing !== null) includes += "mesh/kokkos/PvdFileWriter2D.h"
@@ -121,12 +105,7 @@ class KokkosIncludesContentProvider extends IncludesContentProvider
 
 class SequentialIncludesContentProvider extends IncludesContentProvider
 {
-	new(String levelDBPath)
-	{
-		super(levelDBPath)
-	}
-
-	override getAdditionalUserIncludes(IrModule m)
+	override getAdditionalUserIncludes(IrModule m, String levelDBPath)
 	{
 		val includes = new LinkedHashSet<String>
 		if (m.irRoot.postProcessing !== null) includes += "mesh/stl/PvdFileWriter2D.h"
@@ -138,17 +117,12 @@ class SequentialIncludesContentProvider extends IncludesContentProvider
 
 class OpenMpIncludesContentProvider extends IncludesContentProvider
 {
-	new(String levelDBPath)
-	{
-		super(levelDBPath)
-	}
-
-	override getAdditionalSystemIncludes(IrModule m)
+	override getAdditionalSystemIncludes(IrModule m, String levelDBPath)
 	{
 		#["omp.h"]
 	}
 
-	override getAdditionalUserIncludes(IrModule m)
+	override getAdditionalUserIncludes(IrModule m, String levelDBPath)
 	{
 		val includes = new LinkedHashSet<String>
 		if (m.irRoot.postProcessing !== null) includes += "mesh/stl/PvdFileWriter2D.h"

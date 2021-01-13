@@ -505,31 +505,13 @@ public interface IrPackage extends EPackage {
 	int EXTENSION_PROVIDER__PROVIDER_NAME = IR_ANNOTABLE_FEATURE_COUNT + 1;
 
 	/**
-	 * The feature id for the '<em><b>Facade Class</b></em>' attribute.
+	 * The feature id for the '<em><b>Project Root</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int EXTENSION_PROVIDER__FACADE_CLASS = IR_ANNOTABLE_FEATURE_COUNT + 2;
-
-	/**
-	 * The feature id for the '<em><b>Lib Home</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EXTENSION_PROVIDER__LIB_HOME = IR_ANNOTABLE_FEATURE_COUNT + 3;
-
-	/**
-	 * The feature id for the '<em><b>Lib Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EXTENSION_PROVIDER__LIB_NAME = IR_ANNOTABLE_FEATURE_COUNT + 4;
+	int EXTENSION_PROVIDER__PROJECT_ROOT = IR_ANNOTABLE_FEATURE_COUNT + 2;
 
 	/**
 	 * The number of structural features of the '<em>Extension Provider</em>' class.
@@ -538,7 +520,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EXTENSION_PROVIDER_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 5;
+	int EXTENSION_PROVIDER_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 3;
 
 	/**
 	 * The number of operations of the '<em>Extension Provider</em>' class.
@@ -4717,37 +4699,15 @@ public interface IrPackage extends EPackage {
 	EAttribute getExtensionProvider_ProviderName();
 
 	/**
-	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.ExtensionProvider#getFacadeClass <em>Facade Class</em>}'.
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.ExtensionProvider#getProjectRoot <em>Project Root</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Facade Class</em>'.
-	 * @see fr.cea.nabla.ir.ir.ExtensionProvider#getFacadeClass()
+	 * @return the meta object for the attribute '<em>Project Root</em>'.
+	 * @see fr.cea.nabla.ir.ir.ExtensionProvider#getProjectRoot()
 	 * @see #getExtensionProvider()
 	 * @generated
 	 */
-	EAttribute getExtensionProvider_FacadeClass();
-
-	/**
-	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.ExtensionProvider#getLibHome <em>Lib Home</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Lib Home</em>'.
-	 * @see fr.cea.nabla.ir.ir.ExtensionProvider#getLibHome()
-	 * @see #getExtensionProvider()
-	 * @generated
-	 */
-	EAttribute getExtensionProvider_LibHome();
-
-	/**
-	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.ExtensionProvider#getLibName <em>Lib Name</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Lib Name</em>'.
-	 * @see fr.cea.nabla.ir.ir.ExtensionProvider#getLibName()
-	 * @see #getExtensionProvider()
-	 * @generated
-	 */
-	EAttribute getExtensionProvider_LibName();
+	EAttribute getExtensionProvider_ProjectRoot();
 
 	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.ArgOrVar <em>Arg Or Var</em>}'.
@@ -6808,28 +6768,12 @@ public interface IrPackage extends EPackage {
 		EAttribute EXTENSION_PROVIDER__PROVIDER_NAME = eINSTANCE.getExtensionProvider_ProviderName();
 
 		/**
-		 * The meta object literal for the '<em><b>Facade Class</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Project Root</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute EXTENSION_PROVIDER__FACADE_CLASS = eINSTANCE.getExtensionProvider_FacadeClass();
-
-		/**
-		 * The meta object literal for the '<em><b>Lib Home</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute EXTENSION_PROVIDER__LIB_HOME = eINSTANCE.getExtensionProvider_LibHome();
-
-		/**
-		 * The meta object literal for the '<em><b>Lib Name</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute EXTENSION_PROVIDER__LIB_NAME = eINSTANCE.getExtensionProvider_LibName();
+		EAttribute EXTENSION_PROVIDER__PROJECT_ROOT = eINSTANCE.getExtensionProvider_ProjectRoot();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.ArgOrVarImpl <em>Arg Or Var</em>}' class.

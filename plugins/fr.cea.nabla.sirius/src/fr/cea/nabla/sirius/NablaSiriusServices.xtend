@@ -9,6 +9,7 @@
  *******************************************************************************/
  package fr.cea.nabla.sirius
 
+import fr.cea.nabla.ir.JobExtensions
 import fr.cea.nabla.ir.ir.IrAnnotable
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
@@ -125,13 +126,16 @@ class NablaSiriusServices
 		var IrAnnotable annotable = null
 		if (diagramTarget instanceof Job)
 		{
-			val root = diagramTarget.caller.eContainer
-			if (root instanceof IrRoot)
+			val parent = diagramTarget.caller.eContainer
+			if (parent instanceof IrRoot)
 			{
-				annotable = root as IrRoot
+				annotable = parent as IrRoot
+			} else
+			{
+				annotable = diagramTarget.caller as JobCaller
 			}
 		}
-		if (annotable instanceof IrRoot) {
+		if (annotable instanceof IrAnnotable) {
 			var session = SessionManager.INSTANCE.getSession(annotable)
 			if (session !== null)
 			{
@@ -176,7 +180,7 @@ class NablaSiriusServices
 		}
 		else if (object instanceof Job)
 		{
-			return object.name
+			return JobExtensions.getDiagramDisplayName(object)
 		}
 		return 'Sirius Diagram'
 	}

@@ -17,7 +17,7 @@ abstract class Backend
 {
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) String name
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) IrTransformationStep irTransformationStep = null
-	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) IrRoot2Cmake irRoot2CMake
+	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) CMakeContentProvider cmakeContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) TypeContentProvider typeContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) ExpressionContentProvider expressionContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) ArgOrVarContentProvider argOrVarContentProvider
@@ -38,7 +38,7 @@ class SequentialBackend extends Backend
 	{
 		name = 'Sequential'
 		irTransformationStep = new ReplaceReductions(true)
-		setIrRoot2CMake = new SequentialCmake
+		cmakeContentProvider = new SequentialCMakeContentProvider
 		typeContentProvider = new StlTypeContentProvider
 		argOrVarContentProvider = new StlArgOrVarContentProvider(typeContentProvider)
 		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
@@ -59,7 +59,7 @@ class StlThreadBackend extends Backend
 	new()
 	{
 		name = 'StlThread'
-		setIrRoot2CMake = new StlCmake
+		cmakeContentProvider = new StlCMakeContentProvider
 		typeContentProvider = new StlTypeContentProvider
 		argOrVarContentProvider = new StlArgOrVarContentProvider(typeContentProvider)
 		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
@@ -80,7 +80,7 @@ class KokkosBackend extends Backend
 	new()
 	{
 		name = 'Kokkos'
-		setIrRoot2CMake = new KokkosCmake
+		cmakeContentProvider = new KokkosCMakeContentProvider
 		typeContentProvider = new KokkosTypeContentProvider
 		argOrVarContentProvider = new KokkosArgOrVarContentProvider(typeContentProvider)
 		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
@@ -101,7 +101,7 @@ class KokkosTeamThreadBackend extends Backend
 	new()
 	{
 		name = 'Kokkos Team Thread'
-		setIrRoot2CMake = new KokkosCmake
+		cmakeContentProvider = new KokkosCMakeContentProvider
 		typeContentProvider = new KokkosTypeContentProvider
 		argOrVarContentProvider = new KokkosArgOrVarContentProvider(typeContentProvider)
 		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
@@ -122,7 +122,7 @@ class OpenMpBackend extends Backend
 	new()
 	{
 		name = 'OpenMP'
-		setIrRoot2CMake = new OpenMpCmake
+		cmakeContentProvider = new OpenMpCMakeContentProvider
 		typeContentProvider = new StlTypeContentProvider
 		argOrVarContentProvider = new StlArgOrVarContentProvider(typeContentProvider)
 		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)

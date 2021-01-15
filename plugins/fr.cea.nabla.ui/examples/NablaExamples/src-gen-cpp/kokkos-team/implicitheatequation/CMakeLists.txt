@@ -20,7 +20,9 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 	endif()
 endif()
 
-add_subdirectory(${LIBCPPNABLA_DIR} ${CMAKE_CURRENT_BINARY_DIR}/libcppnabla EXCLUDE_FROM_ALL)
+if(NOT TARGET cppnabla)
+	add_subdirectory(${LIBCPPNABLA_DIR} ${CMAKE_BINARY_DIR}/libcppnabla EXCLUDE_FROM_ALL)
+endif()
 
 
 add_executable(implicitheatequation ImplicitHeatEquation.cc)

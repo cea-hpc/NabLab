@@ -1,4 +1,4 @@
-INFO:  Start interpreting IterativeHeatEquation module  
+INFO:   Start interpreting IterativeHeatEquation module 
 FINE:  [1] t: 0.00000 - deltat: 0.00025 
 FINE: 	 [1] t: 0.00000 - deltat: 0.00025 
 FINE: 	 [2] t: 0.00000 - deltat: 0.00025 
@@ -3267,4 +3267,4 @@ FINE: 	 [3] t: 0.10000 - deltat: 0.00025
 FINE: 	 [4] t: 0.10000 - deltat: 0.00025 
 INFO: 	 Nb iteration k = 4 
 INFO:  Nb iteration n = 401 
-INFO:  End interpreting 
+INFO:   End interpreting 

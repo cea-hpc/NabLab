@@ -14,7 +14,7 @@
 #include "utils/Utils.h"
 #include "utils/Timer.h"
 #include "types/Types.h"
-#include "batilib/BatiLib.h"
+#include "batilib/BatiLibCpp.h"
 #include "utils/stl/Parallel.h"
 
 using namespace nablalib;
@@ -29,7 +29,7 @@ public:
 		double maxTime;
 		int maxIter;
 		double deltat;
-		batilib::BatiLib batiLib;
+		batilib::BatiLibCpp batiLib;
 
 		void jsonInit(const char* jsonContent);
 	};

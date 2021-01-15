@@ -55,7 +55,7 @@ class GenerateApplicationHandler extends AbstractGenerateHandler
 
 				consoleFactory.printConsole(MessageType.Exec, "Starting code generation")
 				shell.display.syncExec([shell.cursor = shell.display.getSystemCursor(SWT.CURSOR_WAIT)])
-				interpreter.generateCode(ir, ngen.targets, ngen.mainModule.iterationMax.name, ngen.mainModule.timeMax.name, baseDir, ngen.levelDB)
+				interpreter.generateCode(ir, ngen.genTargets, ngen.mainModule.iterationMax.name, ngen.mainModule.timeMax.name, baseDir, ngen.levelDB)
 				shell.display.syncExec([shell.cursor = null])
 				val afterGenerationTime = System.currentTimeMillis
 				consoleFactory.printConsole(MessageType.Exec, "Code generation ended in " + (afterGenerationTime-afterConvertionTime)/1000.0 + "s")

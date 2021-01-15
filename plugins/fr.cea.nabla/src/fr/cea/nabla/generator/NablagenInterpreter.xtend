@@ -10,8 +10,10 @@
 package fr.cea.nabla.generator
 
 import com.google.inject.Inject
+import com.google.inject.Provider
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
 import fr.cea.nabla.generator.ir.Nablagen2Ir
+import fr.cea.nabla.generator.providers.JniProviderGenerator
 import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.generator.cpp.CppApplicationGenerator
 import fr.cea.nabla.ir.generator.java.JavaApplicationGenerator
@@ -24,16 +26,20 @@ import fr.cea.nabla.ir.transformers.OptimizeConnectivities
 import fr.cea.nabla.ir.transformers.ReplaceReductions
 import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
 import fr.cea.nabla.nabla.NablaModule
+import fr.cea.nabla.nablaext.ExtensionProvider
 import fr.cea.nabla.nablaext.TargetType
-import fr.cea.nabla.nablagen.ExtensionConfig
+import fr.cea.nabla.nablagen.GenTarget
 import fr.cea.nabla.nablagen.LevelDB
+import fr.cea.nabla.nablagen.NablagenPackage
 import fr.cea.nabla.nablagen.NablagenRoot
 import fr.cea.nabla.nablagen.Target
 import java.io.File
 import java.util.ArrayList
 import java.util.HashMap
 import java.util.List
+import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.util.EcoreUtil
+import org.eclipse.xtext.scoping.IScopeProvider
 
 import static extension fr.cea.nabla.LatexLabelServices.*
 
@@ -42,6 +48,8 @@ class NablagenInterpreter extends StandaloneGeneratorBase
 	@Inject Nablagen2Ir nablagen2Ir
 	@Inject NablaIrWriter irWriter
 	@Inject BackendFactory backendFactory
+	@Inject IScopeProvider scopeProvider
+	@Inject Provider<JniProviderGenerator> jniGeneratorProvider
 
 	def IrRoot buildIr(NablagenRoot ngen, String projectDir, boolean forInterpreter)
 	{
@@ -60,10 +68,14 @@ class NablagenInterpreter extends StandaloneGeneratorBase
 
 			if (forInterpreter)
 			{
-				if (ngen.interpreterConfig === null)
+				if (ngen.interpreterTarget === null)
 					dispatcher.post(MessageType::Warning, 'No interpreter configuration found in nablagen file => default classpath used')
 				else
-					setExtensionProviders(TargetType::JAVA, ngen.interpreterConfig.extensionConfigs, ir)
+				{
+					val ok = setExtensionProviders(ir, projectDir + '/..', ngen.interpreterTarget, TargetType::JAVA)
+					if (!ok)
+						throw new RuntimeException("Can not build an IR for interpretation: missing providers")
+				}
 			}
 			else
 			{
@@ -97,7 +109,7 @@ class NablagenInterpreter extends StandaloneGeneratorBase
 		}
 	}
 
-	def void generateCode(IrRoot ir, List<Target> targets, String iterationMaxVarName, String timeMaxVarName, String projectDir, LevelDB levelDB)
+	def void generateCode(IrRoot ir, List<GenTarget> targets, String iterationMaxVarName, String timeMaxVarName, String projectDir, LevelDB levelDB)
 	{
 		try
 		{
@@ -111,26 +123,31 @@ class NablagenInterpreter extends StandaloneGeneratorBase
 			for (target : targets)
 			{
 				// Set provider extension for the target
-				setExtensionProviders(target.type, target.extensionConfigs, ir)
-
-				// Create code generator
-				val g = getCodeGenerator(target, baseDir, iterationMaxVarName, timeMaxVarName, levelDB)
-				dispatcher.post(MessageType::Exec, "Starting " + g.name + " code generator")
-
-				// Configure fsa with target output folder
-				val outputFolderName = baseDir + target.outputDir
-				fsa = getConfiguredFileSystemAccess(outputFolderName, false)
-
-				// Apply IR transformations dedicated to this target (if necessary)
-				if (g.irTransformationStep !== null)
+				if (setExtensionProviders(ir, baseDir, target, target.type))
 				{
-					val duplicatedIr = EcoreUtil::copy(ir)
-					g.irTransformationStep.transformIr(duplicatedIr, [msg | dispatcher.post(MessageType::Exec, msg)])
-					generate(fsa, g.getGenerationContents(duplicatedIr), ir.name.toLowerCase)
+					// Create code generator
+					val g = getCodeGenerator(target, baseDir, iterationMaxVarName, timeMaxVarName, levelDB)
+					dispatcher.post(MessageType::Exec, "Starting " + g.name + " code generator")
+
+					// Configure fsa with target output folder
+					val outputFolderName = baseDir + target.outputDir
+					fsa = getConfiguredFileSystemAccess(outputFolderName, false)
+
+					// Apply IR transformations dedicated to this target (if necessary)
+					if (g.irTransformationStep !== null)
+					{
+						val duplicatedIr = EcoreUtil::copy(ir)
+						g.irTransformationStep.transformIr(duplicatedIr, [msg | dispatcher.post(MessageType::Exec, msg)])
+						generate(fsa, g.getGenerationContents(duplicatedIr), ir.name.toLowerCase)
+					}
+					else
+					{
+						generate(fsa, g.getGenerationContents(ir), ir.name.toLowerCase)
+					}
 				}
 				else
 				{
-					generate(fsa, g.getGenerationContents(ir), ir.name.toLowerCase)
+					dispatcher.post(MessageType::Warning, "Generation ignored for target: " + target.type.literal)
 				}
 			}
 		}
@@ -146,7 +163,7 @@ class NablagenInterpreter extends StandaloneGeneratorBase
 		}
 	}
 
-	private def getCodeGenerator(Target it, String baseDir, String iterationMax, String timeMax, LevelDB levelDB)
+	private def getCodeGenerator(GenTarget it, String baseDir, String iterationMax, String timeMax, LevelDB levelDB)
 	{
 		val levelDBPath = if (levelDB === null) null else levelDB.levelDBPath
 
@@ -170,7 +187,7 @@ class NablagenInterpreter extends StandaloneGeneratorBase
 		}
 	}
 
-	private def getVars(Target it)
+	private def getVars(GenTarget it)
 	{
 		val result = new HashMap<String, String>
 		variables.forEach[x | result.put(x.key, x.value)]
@@ -214,21 +231,63 @@ class NablagenInterpreter extends StandaloneGeneratorBase
 		\end{document}
 	'''
 
-	private def void setExtensionProviders(TargetType targetType, Iterable<ExtensionConfig> configs, IrRoot ir)
+	private def boolean setExtensionProviders(IrRoot ir, String baseDir, Target target, TargetType type)
 	{
+		val jniGenerator = jniGeneratorProvider.get
+
+		// Browse IrRoot model providers which need to be filled with Nablaext providers
 		for (irProvider : ir.providers.filter[x | x.extensionName != "Math" && x.extensionName != "LinearAlgebra"])
 		{
-			val extensionConfig = configs.findFirst[x | x.extension.name == irProvider.extensionName]
-			if (extensionConfig === null)
-				throw new RuntimeException("Missing nablagen configuration for extension: " + irProvider.extensionName)
+			val extensionConfig = target.extensionConfigs.findFirst[x | x.extension.name == irProvider.extensionName]
+			val provider = (extensionConfig === null ? getDefaultProvider(target, type, irProvider.extensionName) : extensionConfig.provider)
+			if (provider === null)
+			{
+				dispatcher.post(MessageType::Error, 'No provider found for extension: ' + irProvider.extensionName)
+				return false
+			}
 
-			if (extensionConfig.provider === null)
-				throw new RuntimeException("Missing " + targetType.literal + " provider for extension: " + irProvider.extensionName)
-
-			irProvider.extensionName = extensionConfig.extension.name
-			irProvider.providerName = extensionConfig.provider.name
-			irProvider.projectRoot = extensionConfig.provider.projectRoot
+			irProvider.providerName = provider.name
+			irProvider.projectRoot = provider.projectRoot
+			if (provider.target != type)
+			{
+				dispatcher.post(MessageType::Warning, 'The target of the provider differs from target: ' + provider.target.literal + " != " + type.literal)
+				if (type == TargetType::JAVA)
+				{
+					irProvider.providerName = irProvider.providerName + 'Jni'
+					irProvider.projectRoot = baseDir + "/" + irProvider.providerName
+					jniGenerator.generate(baseDir, irProvider.providerName, provider)
+				}
+			}
 		}
+
+		// JNI providers are generated for interpreter and Java code.
+		// When some JNI providers are generated, a root CMake is created
+		jniGenerator.generateGlobalCMakeIfNecessary(ir, target, baseDir)
+		return true
+	}
+
+	private def ExtensionProvider getDefaultProvider(EObject context, TargetType type, String extensionName)
+	{
+		val providerDescriptionScope = scopeProvider.getScope(context, NablagenPackage.Literals.EXTENSION_CONFIG__PROVIDER)
+		for (providerDescription : providerDescriptionScope.allElements)
+		{
+			var o = providerDescription.EObjectOrProxy
+			if (o !== null)
+			{
+				var ExtensionProvider provider
+				if (o.eIsProxy)
+					provider = context.eResource.resourceSet.getEObject(providerDescription.EObjectURI, true) as ExtensionProvider
+				else
+					provider = o as ExtensionProvider
+
+				if (provider.extension.name == extensionName && provider.target == type)
+				{
+					dispatcher.post(MessageType::Warning, 'Default provider found for extension ' + extensionName + ': ' + provider.name)
+					return provider
+				}
+			}
+		}
+		return null
 	}
 }
 

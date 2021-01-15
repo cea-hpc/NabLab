@@ -1,4 +1,4 @@
-package fr.cea.nabla.ir.generator.cpp
+package fr.cea.nabla.ir.generator
 
 class CMakeUtils
 {

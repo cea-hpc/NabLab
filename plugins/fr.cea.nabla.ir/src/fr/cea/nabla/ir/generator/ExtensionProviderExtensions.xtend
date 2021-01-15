@@ -10,4 +10,12 @@ class ExtensionProviderExtensions
 	static def getProjectName(ExtensionProvider it) { providerName }
 	static def getProjectHome(ExtensionProvider it) { projectRoot + '/' + projectName }
 	static def getLibName(ExtensionProvider it) { providerName.toLowerCase }
+
+	static def getNsClassName(ExtensionProvider it, String separator)
+	{
+		if (extensionName == "LinearAlgebra")
+			className
+		else
+			namespaceName + separator + className
+	}
 }

@@ -9,6 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.cpp
 
+import fr.cea.nabla.ir.generator.CMakeUtils
 import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.generator.ProviderGenerator
 import fr.cea.nabla.ir.generator.Utils
@@ -140,7 +141,7 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 
 	MESSAGE(STATUS "Building library «provider.libName»")
 
-	add_subdirectory(${LIBCPPNABLA_DIR} ${CMAKE_CURRENT_BINARY_DIR}/libcppnabla EXCLUDE_FROM_ALL)
+	add_subdirectory(${LIBCPPNABLA_DIR} ${CMAKE_BINARY_DIR}/libcppnabla EXCLUDE_FROM_ALL)
 
 	add_library(«provider.libName» SHARED «provider.namespaceName.toLowerCase»/«provider.className».cc)
 	target_include_directories(«provider.libName» PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

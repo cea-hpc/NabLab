@@ -12,12 +12,12 @@
         eType="#//ExtensionConfig" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="vtkOutput" eType="#//VtkOutput"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="interpreterConfig" eType="#//InterpreterConfig"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="interpreterTarget" eType="#//InterpreterTarget"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="levelDB" eType="#//LevelDB"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="targets" upperBound="-1"
-        eType="#//Target" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="genTargets" upperBound="-1"
+        eType="#//GenTarget" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="NablagenModule">
     <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="ecore:EClass Nabla.ecore#//NablaModule"/>
@@ -56,17 +56,16 @@
   <eClassifiers xsi:type="ecore:EClass" name="LevelDB">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="levelDBPath" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="InterpreterConfig">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="extensionConfigs" upperBound="-1"
-        eType="#//ExtensionConfig" containment="true"/>
-  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Target">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="ecore:EEnum Nablaext.ecore#//TargetType"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="outputDir" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="extensionConfigs" upperBound="-1"
         eType="#//ExtensionConfig" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="variables" upperBound="-1"
         eType="#//TargetVar" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="InterpreterTarget" eSuperTypes="#//Target"/>
+  <eClassifiers xsi:type="ecore:EClass" name="GenTarget" eSuperTypes="#//Target">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="ecore:EEnum Nablaext.ecore#//TargetType"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ExtensionConfig">
     <eStructuralFeatures xsi:type="ecore:EReference" name="extension" eType="ecore:EClass Nabla.ecore#//NablaExtension"/>

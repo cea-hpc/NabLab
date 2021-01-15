@@ -50,7 +50,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 			fileContents += new GenerationContent(module.className + '.h', module.headerFileContent, false)
 			fileContents += new GenerationContent(module.className + '.cc', module.sourceFileContent, false)
 		}
-		fileContents += new GenerationContent('CMakeLists.txt', backend.getIrRoot2CMake.getContentFor(ir, libCppNablaDir, levelDBPath, cMakeVars), false)
+		fileContents += new GenerationContent('CMakeLists.txt', backend.cmakeContentProvider.getContentFor(ir, libCppNablaDir, levelDBPath, cMakeVars), false)
 		return fileContents
 	}
 
@@ -95,10 +95,10 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		{
 			«IF postProcessing !== null»std::string «Utils.OutputPathNameAndValue.key»;«ENDIF»
 			«FOR v : options»
-			«typeContentProvider.getCppType(v)» «v.name»;
+			«argOrVarContentProvider.getCppType(v)» «v.name»;
 			«ENDFOR»
 			«FOR v : extensionProviders»
-			«v.namespaceName»::«v.className» «v.instanceName»;
+			«v.getNsClassName('::')» «v.instanceName»;
 			«ENDFOR»
 			«IF levelDB»std::string «Utils.NonRegressionNameAndValue.key»;«ENDIF»
 
@@ -480,9 +480,9 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	{
 		switch (v)
 		{
-			 SimpleVariable case v.constExpr: '''static constexpr «typeContentProvider.getCppType(v)» «v.name» = «expressionContentProvider.getContent(v.defaultValue)»;'''
-			 SimpleVariable case v.const: '''const «typeContentProvider.getCppType(v)» «v.name»;'''
-			 default: '''«typeContentProvider.getCppType(v)» «v.name»;'''
+			 SimpleVariable case v.constExpr: '''static constexpr «argOrVarContentProvider.getCppType(v)» «v.name» = «expressionContentProvider.getContent(v.defaultValue)»;'''
+			 SimpleVariable case v.const: '''const «argOrVarContentProvider.getCppType(v)» «v.name»;'''
+			 default: '''«argOrVarContentProvider.getCppType(v)» «v.name»;'''
 		}
 	}
 

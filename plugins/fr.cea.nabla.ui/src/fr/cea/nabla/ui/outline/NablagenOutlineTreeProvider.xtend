@@ -9,11 +9,11 @@
  *******************************************************************************/
 package fr.cea.nabla.ui.outline
 
+import fr.cea.nabla.nablagen.GenTarget
 import fr.cea.nabla.nablagen.LevelDB
 import fr.cea.nabla.nablagen.NablagenModule
 import fr.cea.nabla.nablagen.NablagenRoot
 import fr.cea.nabla.nablagen.OutputVar
-import fr.cea.nabla.nablagen.Target
 import fr.cea.nabla.ui.NablaUiUtils
 import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider
 
@@ -43,9 +43,9 @@ class NablagenOutlineTreeProvider extends DefaultOutlineTreeProvider
 	def _isLeaf(LevelDB it) { true }
 	def _text(LevelDB it) { 'LevelDB activated' }
 
-	def _isLeaf(Target it) { true }
+	def _isLeaf(GenTarget it) { true }
 
-	def _text(Target it)
+	def _text(GenTarget it)
 	{
 		switch type
 		{
@@ -59,7 +59,7 @@ class NablagenOutlineTreeProvider extends DefaultOutlineTreeProvider
 		}
 	}
 
-	def _image(Target it)
+	def _image(GenTarget it)
 	{
 		switch type
 		{

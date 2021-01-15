@@ -45,7 +45,7 @@ class GenerateProvidersHandler extends AbstractGenerateHandler
 
 				val startTime = System.currentTimeMillis
 				val nablaextRoot = emfResource.contents.filter(NablaextRoot).head
-				generator.generate(nablaextRoot.providers, project)
+				if (nablaextRoot !== null) generator.generate(nablaextRoot.providers, project)
 				val endTime = System.currentTimeMillis
 				consoleFactory.printConsole(MessageType.Exec, "Code generation ended in " + (endTime-startTime)/1000.0 + "s")
 

@@ -20,7 +20,7 @@ endif()
 
 MESSAGE(STATUS "Building library batilibcpp")
 
-add_subdirectory(${LIBCPPNABLA_DIR} ${CMAKE_CURRENT_BINARY_DIR}/libcppnabla EXCLUDE_FROM_ALL)
+add_subdirectory(${LIBCPPNABLA_DIR} ${CMAKE_BINARY_DIR}/libcppnabla EXCLUDE_FROM_ALL)
 
 add_library(batilibcpp SHARED batilib/BatiLibCpp.cc)
 target_include_directories(batilibcpp PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

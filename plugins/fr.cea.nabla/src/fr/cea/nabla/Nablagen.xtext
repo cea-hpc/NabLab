@@ -24,9 +24,9 @@ NablagenRoot:
 	additionalModules+=AdditionalModule*
 	extensionConfigs+=ExtensionConfig*
 	(vtkOutput=VtkOutput)?
-	(interpreterConfig=InterpreterConfig)?
+	(interpreterTarget=InterpreterTarget)?
 	(levelDB=LevelDB)?
-	targets+=Target*;
+	genTargets+=GenTarget*;
 
 NablagenModule: MainModule | AdditionalModule;
 
@@ -67,13 +67,17 @@ LevelDB:
 		'levelDBPath' '=' levelDBPath=STRING ';'
 	'}';
 
-InterpreterConfig:
-	{InterpreterConfig} 'Interpreter'
+Target: InterpreterTarget | GenTarget;
+
+InterpreterTarget:
+	'Interpreter'
 	'{'
+		'outputPath' '=' outputDir=STRING ';'
 		extensionConfigs+=ExtensionConfig*
+		variables+=TargetVar*
 	'}';
 
-Target: type=TargetType
+GenTarget: type=TargetType
 	'{'
 		'outputPath' '=' outputDir=STRING ';'
 		extensionConfigs+=ExtensionConfig*

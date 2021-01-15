@@ -74,7 +74,7 @@ class JavaAndCppProviderGenerator extends StandaloneGeneratorBase
 				fsa.generateFile(project.name + "/build.properties", buildProperties)
 				val packageName = provider.extension.name.toLowerCase
 				fsa.generateFile(project.name + "/META-INF/MANIFEST.MF", getManifestContent(project.name, packageName))
-				fsa.generateFile(project.name + "/build.xml", getAntFile(project.name, packageName))
+				fsa.generateFile(project.name + "/build.xml", getAntFile(project.name, project.name.toLowerCase))
 				fsa.generateFile(project.name + "/.externalToolBuilders/CreateJar.launch", getCreateJarToolFile(project.name))
 				desc = ws.loadProjectDescription(new Path(location + "/" + project.name + "/.project"))
 			}

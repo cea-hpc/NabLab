@@ -9,7 +9,7 @@ abstract class CppGenerator
 
 	def String getName() { backend.name }
 	def IrTransformationStep getIrTransformationStep() { backend.irTransformationStep }
-	def IrRoot2Cmake getIrRoot2CMake() { backend.getIrRoot2CMake }
+	def CMakeContentProvider getIrRoot2CMake() { backend.cmakeContentProvider }
 	def TypeContentProvider getTypeContentProvider() { backend.typeContentProvider }
 	def ExpressionContentProvider getExpressionContentProvider() { backend.expressionContentProvider }
 	def ArgOrVarContentProvider getArgOrVarContentProvider() { backend.argOrVarContentProvider }

@@ -1,4 +1,4 @@
-INFO:  Start interpreting Glace2d module  
+INFO:   Start interpreting Glace2d module 
 FINE:  [1] t: 0.00000 - deltat: 0.00001 
 FINE:  [2] t: 0.00239 - deltat: 0.00239 
 FINE:  [3] t: 0.00478 - deltat: 0.00239 
@@ -148,4 +148,4 @@ FINE:  [146] t: 0.19601 - deltat: 0.00135
 FINE:  [147] t: 0.19736 - deltat: 0.00135 
 FINE:  [148] t: 0.19870 - deltat: 0.00135 
 INFO:  Nb iteration n = 148 
-INFO:  End interpreting 
+INFO:   End interpreting 

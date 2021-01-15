@@ -1,4 +1,4 @@
-INFO:  Start interpreting HeatEquation module  
+INFO:   Start interpreting HeatEquation module 
 FINE:  [1] t: 0.00000 - deltat: 0.00100 
 FINE:  [2] t: 0.00100 - deltat: 0.00100 
 FINE:  [3] t: 0.00200 - deltat: 0.00100 
@@ -100,4 +100,4 @@ FINE:  [98] t: 0.09700 - deltat: 0.00100
 FINE:  [99] t: 0.09800 - deltat: 0.00100 
 FINE:  [100] t: 0.09900 - deltat: 0.00100 
 INFO:  Nb iteration n = 100 
-INFO:  End interpreting 
+INFO:   End interpreting 

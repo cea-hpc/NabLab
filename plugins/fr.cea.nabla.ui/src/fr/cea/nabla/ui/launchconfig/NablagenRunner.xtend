@@ -121,7 +121,8 @@ class NablagenRunner
 					expandedProjectHome = matcher.replaceFirst(envVar)
 					matcher = pattern.matcher(expandedProjectHome)
 				}
-				urls += new URL("file://" + expandedProjectHome + "/lib/" + p.libName + ".jar")
+				val urlText = "file://" + expandedProjectHome + "/" + p.providerName + "/lib/" + p.libName + ".jar"
+				urls += new URL(urlText)
 			}
 		}
 		return urls

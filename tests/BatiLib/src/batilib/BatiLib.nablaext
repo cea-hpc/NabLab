@@ -19,7 +19,7 @@ ExtensionProvider BatiLibCpp : BatiLib
 {
 	target = CppSequential;
 	// projectRoot is the parent directory of the BatiLibCpp project. $ENV and other CMake keywords can be used."
-	projectRoot = "$ENV{HOME}/workspaces/runtime-EclipseApplication";
+	projectRoot = "$ENV{HOME}/workspaces/NabLab/tests";
 }
 
 /* 
@@ -31,5 +31,5 @@ ExtensionProvider BatiLibJava : BatiLib
 {
 	target = Java;
 	// projectRoot is the parent directory of the BatiLibJava project. $ENV and other CMake keywords can be used."
-	projectRoot = "$ENV{HOME}/workspaces/runtime-EclipseApplication";
+	projectRoot = "$ENV{HOME}/workspaces/NabLab/tests";
 }

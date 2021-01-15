@@ -13,7 +13,7 @@ import com.google.common.collect.PeekingIterator
 import com.google.gson.Gson
 import com.google.inject.Inject
 import fr.cea.nabla.nablaext.TargetType
-import fr.cea.nabla.nablagen.Target
+import fr.cea.nabla.nablagen.GenTarget
 import java.io.File
 import java.nio.file.Files
 import org.apache.commons.io.FileUtils
@@ -158,9 +158,9 @@ class NablaExamplesTest
 		compilationHelper.generateCode(model, genmodel, tmp.toPath.toString)
 
 		var nbErrors = 0
-		for (target : compilationHelper.getNgen(model, genmodel).targets)
+		for (genTarget : compilationHelper.getNgen(model, genmodel).genTargets)
 		{
-			(!testExecute(target, moduleName, tmp.toString) ? nbErrors++)
+			(!testExecute(genTarget, moduleName, tmp.toString) ? nbErrors++)
 		}
 		(nbErrors > 0 ? Assert.fail(nbErrors + " error(s) !"))
 	}
@@ -195,7 +195,7 @@ class NablaExamplesTest
 		'''
 	}
 
-	private def testExecute(Target target, String moduleName, String tmp)
+	private def testExecute(GenTarget target, String moduleName, String tmp)
 	{
 		val testProjectPath = System.getProperty("user.dir")
 		val packageName = moduleName.toLowerCase
@@ -206,12 +206,12 @@ class NablaExamplesTest
 
 		print("\tStarting " + target.type.literal)
 		if (target.type == TargetType::JAVA)
-			testExecuteJava(outputDir, packageName, levelDBRef, jsonFile, moduleName, tmp)
+			testExecuteJava(outputDir, packageName, levelDBRef, jsonFile, moduleName)
 		else
-			testExecuteCpp(outputDir, packageName, levelDBRef, jsonFile, moduleName, tmp)
+			testExecuteCpp(outputDir, packageName, levelDBRef, jsonFile, moduleName)
 	}
 
-	private def testExecuteCpp(String outputDir, String packageName, String levelDBRef, String jsonFile, String moduleName, String tmp)
+	private def testExecuteCpp(String outputDir, String packageName, String levelDBRef, String jsonFile, String moduleName)
 	{
 //		println("$2= " + cppLibPath)
 //		println("$3= " + packageName)
@@ -254,7 +254,7 @@ class NablaExamplesTest
 		return true
 	}
 
-	private def testExecuteJava(String outputDir, String packageName, String levelDBRef, String jsonFile, String moduleName, String tmp)
+	private def testExecuteJava(String outputDir, String packageName, String levelDBRef, String jsonFile, String moduleName)
 	{
 		val gsonPath = Gson.protectionDomain.codeSource.location.toString
 		val guavaPath = PeekingIterator.protectionDomain.codeSource.location.toString
@@ -292,13 +292,13 @@ class NablaExamplesTest
 			println(" -> Ok")
 		if (exitVal.equals(10))
 		{
-			val logPath = simplifyPath(tmp + "/Java/" + packageName + "/javac.err")
+			val logPath = simplifyPath(outputDir + "/" + packageName + "/javac.err")
 			println(" -> Compile Error. See " + logPath)
 			return false
 		}
 		if (exitVal.equals(20))
 		{
-			val logPath = simplifyPath(tmp + "/Java/" + packageName + "/exec.err")
+			val logPath = simplifyPath(outputDir + "/" + packageName + "/exec.err")
 			println(" -> Execute Error. See " + logPath)
 			return false
 		}

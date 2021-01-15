@@ -86,7 +86,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 				public «v.javaType» «v.name»;
 				«ENDFOR»
 				«FOR v : extensionProviders»
-				public «v.namespaceName».«v.className» «v.instanceName»;
+				public «v.getNsClassName('.')» «v.instanceName»;
 				«ENDFOR»
 				public String «Utils.NonRegressionNameAndValue.key»;
 
@@ -109,7 +109,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 					«FOR v : extensionProviders»
 					«val vName = v.instanceName»
 					// «vName»
-					«vName» = new «v.namespaceName».«v.className»();
+					«vName» = new «v.getNsClassName('.')»();
 					if (o.has("«vName»"))
 						«vName».jsonInit(o.get("«vName»").toString());
 					«ENDFOR»

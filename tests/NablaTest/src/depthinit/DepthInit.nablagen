@@ -23,13 +23,16 @@ MainModule DepthInit depthInit
 
 Interpreter
 {
-	extension BatiLib providedBy BatiLibJni;
+	outputPath = "/NablaTest/src-interpreter";
+	extension BatiLib providedBy BatiLibJava;
 }
 
 Java
 {
 	outputPath = "/NablaTest/src-gen-java";
-	extension BatiLib providedBy BatiLibJava;
+	extension BatiLib providedBy BatiLibCpp;
+	NABLA_CXX_COMPILER = "/usr/bin/g++";
+	JAVA_HOME = "/usr/lib/jvm/java-11-openjdk-amd64";
 }
 
 StlThread

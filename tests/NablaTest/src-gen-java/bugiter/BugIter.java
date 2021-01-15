@@ -158,7 +158,7 @@ public final class BugIter
 	}
 
 	/**
-	 * Job ComputeTn called @1.0 in executeTimeLoopN method.
+	 * Job computeTn called @1.0 in executeTimeLoopN method.
 	 * In variables: deltat, t_n
 	 * Out variables: t_nplus1
 	 */
@@ -168,7 +168,7 @@ public final class BugIter
 	}
 
 	/**
-	 * Job IniTime called @1.0 in simulate method.
+	 * Job iniTime called @1.0 in simulate method.
 	 * In variables: 
 	 * Out variables: t_n0
 	 */
@@ -178,7 +178,7 @@ public final class BugIter
 	}
 
 	/**
-	 * Job IniU called @1.0 in simulate method.
+	 * Job iniU called @1.0 in simulate method.
 	 * In variables: 
 	 * Out variables: u_n
 	 */
@@ -191,7 +191,7 @@ public final class BugIter
 	}
 
 	/**
-	 * Job IniV called @1.0 in executeTimeLoopN method.
+	 * Job iniV called @1.0 in executeTimeLoopN method.
 	 * In variables: u_n
 	 * Out variables: v_nplus1_k0
 	 */
@@ -204,7 +204,7 @@ public final class BugIter
 	}
 
 	/**
-	 * Job UpdateV called @1.0 in executeTimeLoopK method.
+	 * Job updateV called @1.0 in executeTimeLoopK method.
 	 * In variables: v_nplus1_k
 	 * Out variables: v_nplus1_kplus1
 	 */
@@ -217,7 +217,7 @@ public final class BugIter
 	}
 
 	/**
-	 * Job UpdateW called @1.0 in executeTimeLoopL method.
+	 * Job updateW called @1.0 in executeTimeLoopL method.
 	 * In variables: w_nplus1_l
 	 * Out variables: w_nplus1_lplus1
 	 */
@@ -230,7 +230,7 @@ public final class BugIter
 	}
 
 	/**
-	 * Job SetUpTimeLoopK called @2.0 in executeTimeLoopN method.
+	 * Job setUpTimeLoopK called @2.0 in executeTimeLoopN method.
 	 * In variables: v_nplus1_k0
 	 * Out variables: v_nplus1_k
 	 */
@@ -243,7 +243,7 @@ public final class BugIter
 	}
 
 	/**
-	 * Job SetUpTimeLoopN called @2.0 in simulate method.
+	 * Job setUpTimeLoopN called @2.0 in simulate method.
 	 * In variables: t_n0
 	 * Out variables: t_n
 	 */
@@ -253,7 +253,7 @@ public final class BugIter
 	}
 
 	/**
-	 * Job ExecuteTimeLoopK called @3.0 in executeTimeLoopN method.
+	 * Job executeTimeLoopK called @3.0 in executeTimeLoopN method.
 	 * In variables: v_nplus1_k
 	 * Out variables: v_nplus1_kplus1
 	 */
@@ -281,7 +281,7 @@ public final class BugIter
 	}
 
 	/**
-	 * Job ExecuteTimeLoopN called @3.0 in simulate method.
+	 * Job executeTimeLoopN called @3.0 in simulate method.
 	 * In variables: deltat, t_n, u_n, v_nplus1, v_nplus1_k, v_nplus1_k0, v_nplus1_kplus1, w_nplus1, w_nplus1_l, w_nplus1_l0, w_nplus1_lplus1
 	 * Out variables: t_nplus1, u_nplus1, v_nplus1, v_nplus1_k, v_nplus1_k0, v_nplus1_kplus1, w_nplus1, w_nplus1_l, w_nplus1_l0, w_nplus1_lplus1
 	 */
@@ -327,7 +327,7 @@ public final class BugIter
 	}
 
 	/**
-	 * Job TearDownTimeLoopK called @4.0 in executeTimeLoopN method.
+	 * Job tearDownTimeLoopK called @4.0 in executeTimeLoopN method.
 	 * In variables: v_nplus1_kplus1
 	 * Out variables: v_nplus1
 	 */
@@ -340,7 +340,7 @@ public final class BugIter
 	}
 
 	/**
-	 * Job IniW called @5.0 in executeTimeLoopN method.
+	 * Job iniW called @5.0 in executeTimeLoopN method.
 	 * In variables: v_nplus1
 	 * Out variables: w_nplus1_l0
 	 */
@@ -353,7 +353,7 @@ public final class BugIter
 	}
 
 	/**
-	 * Job SetUpTimeLoopL called @6.0 in executeTimeLoopN method.
+	 * Job setUpTimeLoopL called @6.0 in executeTimeLoopN method.
 	 * In variables: w_nplus1_l0
 	 * Out variables: w_nplus1_l
 	 */
@@ -366,7 +366,7 @@ public final class BugIter
 	}
 
 	/**
-	 * Job ExecuteTimeLoopL called @7.0 in executeTimeLoopN method.
+	 * Job executeTimeLoopL called @7.0 in executeTimeLoopN method.
 	 * In variables: w_nplus1_l
 	 * Out variables: w_nplus1_lplus1
 	 */
@@ -394,7 +394,7 @@ public final class BugIter
 	}
 
 	/**
-	 * Job TearDownTimeLoopL called @8.0 in executeTimeLoopN method.
+	 * Job tearDownTimeLoopL called @8.0 in executeTimeLoopN method.
 	 * In variables: w_nplus1_lplus1
 	 * Out variables: w_nplus1
 	 */
@@ -407,7 +407,7 @@ public final class BugIter
 	}
 
 	/**
-	 * Job UpdateU called @9.0 in executeTimeLoopN method.
+	 * Job updateU called @9.0 in executeTimeLoopN method.
 	 * In variables: w_nplus1
 	 * Out variables: u_nplus1
 	 */

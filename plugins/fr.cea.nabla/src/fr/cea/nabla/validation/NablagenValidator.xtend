@@ -61,7 +61,7 @@ class NablagenValidator extends AbstractNablagenValidator
 	@Check(CheckType.FAST)
 	def void checkCppMandatoryVariables(NablagenRoot it)
 	{
-		if (targets.exists[x | x.type != TargetType::JAVA] && (mainModule !== null && mainModule.iterationMax === null || mainModule.timeMax === null))
+		if (genTargets.exists[x | x.type != TargetType::JAVA] && (mainModule !== null && mainModule.iterationMax === null || mainModule.timeMax === null))
 			error(getCppMandatoryVariablesMsg(), NablagenPackage.Literals::NABLAGEN_ROOT__MAIN_MODULE, CPP_MANDATORY_VARIABLES)
 	}
 

@@ -84,7 +84,7 @@ class IrInterpreter
 
 	def interprete(String jsonContent)
 	{
-		context.logInfo(" Start interpreting " + ir.name + " module ")
+		context.logInfo("  Start interpreting " + ir.name + " module")
 
 		// Start initialising the variables with default values
 		interpreteOptionsDefaultValues
@@ -137,7 +137,7 @@ class IrInterpreter
 		}
 
 		context.logVariables("At the end")
-		context.logInfo(" End interpreting")
+		context.logInfo("  End interpreting")
 
 		return context
 	}

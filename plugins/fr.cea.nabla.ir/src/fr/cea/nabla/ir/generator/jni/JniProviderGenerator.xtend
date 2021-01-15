@@ -1,10 +1,10 @@
 package fr.cea.nabla.ir.generator.jni
 
+import fr.cea.nabla.ir.generator.CMakeUtils
 import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.generator.ProviderGenerator
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.generator.cpp.Backend
-import fr.cea.nabla.ir.generator.cpp.CMakeUtils
 import fr.cea.nabla.ir.generator.java.FunctionContentProvider
 import fr.cea.nabla.ir.ir.ExtensionProvider
 import fr.cea.nabla.ir.ir.Function
@@ -28,11 +28,11 @@ class JniProviderGenerator implements ProviderGenerator
 		val fileContents = new ArrayList<GenerationContent>
 
 		// .java
-		val javaFileName = provider.jniClassName + ".java"
+		val javaFileName = provider.namespaceName + "/" + provider.jniClassName + ".java"
 		fileContents += new GenerationContent(javaFileName, getJavaFileContent(provider, functions), false)
 
 		// .cc
-		val sourceFileName = provider.jniClassName + ".cc"
+		val sourceFileName =  provider.namespaceName + "_" +provider.jniClassName + ".cc"
 		fileContents += new GenerationContent(sourceFileName, getCppFileContent(provider, functions), false)
 
 		// CMakeLists.txt
@@ -56,7 +56,7 @@ class JniProviderGenerator implements ProviderGenerator
 	{
 		static
 		{
-			System.loadLibrary(«provider.libName»);
+			System.loadLibrary("«provider.jniLibName»");
 		}
 
 		// This is a long here (in Java) but is used as a pointer to hold the
@@ -156,19 +156,21 @@ class JniProviderGenerator implements ProviderGenerator
 	'''
 	«CMakeUtils::fileHeader»
 
-	set(BIN_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../bin)
 	set(«provider.extensionName.toUpperCase»_DIR «provider.projectHome»)
 
 	if(NOT DEFINED JAVA_HOME)
-		message(FATAL_ERROR "JAVA_HOME variable undefined")
-		message(STATUS "You can launch cmake with -D option, for example: cmake -D JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 ../src")
+		message(FATAL_ERROR "JAVA_HOME variable undefined.\n"
+			"You can launch cmake with -D option, for example: "
+			"cmake -D JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 ../src")
 	endif()
 
 	project(«provider.jniProjectName» CXX)
 
 	MESSAGE(STATUS "Building library «provider.jniLibName»")
 
-	add_subdirectory(${«provider.extensionName.toUpperCase»_DIR}/src ${«provider.extensionName.toUpperCase»_DIR}/lib)
+	«CMakeUtils.setCompiler»
+
+	add_subdirectory(${«provider.extensionName.toUpperCase»_DIR}/src ${CMAKE_BINARY_DIR}/«provider.projectName»)
 
 	# The lib«provider.jniLibName».so library
 	add_library(«provider.jniLibName» SHARED «provider.namespaceName»_«provider.jniClassName».cc «provider.namespaceName»_«provider.jniClassName».h)
@@ -180,19 +182,19 @@ class JniProviderGenerator implements ProviderGenerator
 
 	# Generation of «provider.jniClassName».h from «provider.jniClassName».java
 	add_custom_command(
-		OUTPUT «provider.namespaceName»_«provider.jniClassName».h
-		COMMENT "Generate «provider.jniClassName».h from «provider.jniClassName».java
-		COMMAND ${JAVA_HOME}/bin/javac -h ${CMAKE_CURRENT_SOURCE_DIR} -d ${BIN_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/«provider.namespaceName»/«provider.jniClassName».java
+		OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/«provider.namespaceName»_«provider.jniClassName».h
+		COMMENT "Generate «provider.jniClassName».h from «provider.jniClassName».java"
+		COMMAND ${JAVA_HOME}/bin/javac -h ${CMAKE_CURRENT_SOURCE_DIR} -d ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/«provider.namespaceName»/«provider.jniClassName».java
 		DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/«provider.namespaceName»/«provider.jniClassName».java)
 
 	# The «provider.jniLibName».jar
-	add_custom_target(«provider.jniLibName»jar ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/«provider.jniLibName».jar)
+	add_custom_target(«provider.jniLibName»jar ALL DEPENDS «provider.jniLibName».jar)
 	add_custom_command(
-		OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/«provider.jniLibName».jar
+		OUTPUT «provider.jniLibName».jar
 		COMMENT "Built «provider.jniLibName».jar"
-		WORKING_DIRECTORY ${BIN_DIR}
-		COMMAND ${JAVA_HOME}/bin/jar cvf ${CMAKE_CURRENT_BINARY_DIR}/«provider.jniLibName».jar «provider.namespaceName»/«provider.jniClassName».class
-		DEPENDS ${INCLUDE_DIR}/«provider.namespaceName»_«provider.jniClassName».h)
+		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+		COMMAND ${JAVA_HOME}/bin/jar cvf «provider.jniLibName».jar «provider.namespaceName»/«provider.jniClassName».class
+		DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/«provider.namespaceName»_«provider.jniClassName».h)
 
 	«CMakeUtils.fileFooter»
 	'''

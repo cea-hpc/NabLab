@@ -9,6 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.cpp
 
+import fr.cea.nabla.ir.generator.CMakeUtils
 import fr.cea.nabla.ir.ir.IrRoot
 import java.util.HashMap
 
@@ -16,7 +17,7 @@ import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.generator.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 
-abstract class IrRoot2Cmake
+abstract class CMakeContentProvider
 {
 	protected def CharSequence getLibraryBackend(IrRoot ir) { '''''' }
 	protected def Iterable<String> getTargetLinkLibraries(IrRoot ir) { #[] }
@@ -39,10 +40,12 @@ abstract class IrRoot2Cmake
 		«CMakeUtils.setCompiler»
 
 		«libraryBackend»
-		add_subdirectory(${LIBCPPNABLA_DIR} ${CMAKE_CURRENT_BINARY_DIR}/libcppnabla EXCLUDE_FROM_ALL)
 		«FOR ep : externalProviders»
-		add_subdirectory(${«ep.extensionName.toUpperCase»_HOME}/src ${CMAKE_CURRENT_BINARY_DIR}/«ep.extensionName.toLowerCase» EXCLUDE_FROM_ALL)
+		add_subdirectory(${«ep.extensionName.toUpperCase»_HOME}/src ${CMAKE_BINARY_DIR}/«ep.projectName» EXCLUDE_FROM_ALL)
 		«ENDFOR»
+		if(NOT TARGET cppnabla)
+			add_subdirectory(${LIBCPPNABLA_DIR} ${CMAKE_BINARY_DIR}/libcppnabla EXCLUDE_FROM_ALL)
+		endif()
 
 		«IF !levelDBPath.nullOrEmpty»
 		set(CMAKE_FIND_ROOT_PATH «levelDBPath»)
@@ -63,7 +66,7 @@ abstract class IrRoot2Cmake
 	'''
 }
 
-class StlCmake extends IrRoot2Cmake
+class StlCMakeContentProvider extends CMakeContentProvider
 {
 	override getTargetLinkLibraries(IrRoot ir)
 	{
@@ -71,7 +74,7 @@ class StlCmake extends IrRoot2Cmake
 	}
 }
 
-class KokkosCmake extends IrRoot2Cmake
+class KokkosCMakeContentProvider extends CMakeContentProvider
 {
 	override getTargetLinkLibraries(IrRoot ir)
 	{
@@ -79,7 +82,7 @@ class KokkosCmake extends IrRoot2Cmake
 	}
 }
 
-class SequentialCmake extends IrRoot2Cmake
+class SequentialCMakeContentProvider extends CMakeContentProvider
 {
 	override getTargetLinkLibraries(IrRoot ir)
 	{
@@ -90,7 +93,7 @@ class SequentialCmake extends IrRoot2Cmake
 	}
 }
 
-class OpenMpCmake extends IrRoot2Cmake
+class OpenMpCMakeContentProvider extends CMakeContentProvider
 {
 	override getLibraryBackend(IrRoot ir)
 	'''

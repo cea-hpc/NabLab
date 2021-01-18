@@ -770,13 +770,22 @@ public interface IrPackage extends EPackage {
 	int CONNECTIVITY_VARIABLE__DEFAULT_VALUE = VARIABLE_FEATURE_COUNT + 1;
 
 	/**
+	 * The feature id for the '<em><b>Linear Algebra</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CONNECTIVITY_VARIABLE__LINEAR_ALGEBRA = VARIABLE_FEATURE_COUNT + 2;
+
+	/**
 	 * The number of structural features of the '<em>Connectivity Variable</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CONNECTIVITY_VARIABLE_FEATURE_COUNT = VARIABLE_FEATURE_COUNT + 2;
+	int CONNECTIVITY_VARIABLE_FEATURE_COUNT = VARIABLE_FEATURE_COUNT + 3;
 
 	/**
 	 * The number of operations of the '<em>Connectivity Variable</em>' class.
@@ -4743,6 +4752,17 @@ public interface IrPackage extends EPackage {
 	EReference getConnectivityVariable_DefaultValue();
 
 	/**
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.ConnectivityVariable#isLinearAlgebra <em>Linear Algebra</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Linear Algebra</em>'.
+	 * @see fr.cea.nabla.ir.ir.ConnectivityVariable#isLinearAlgebra()
+	 * @see #getConnectivityVariable()
+	 * @generated
+	 */
+	EAttribute getConnectivityVariable_LinearAlgebra();
+
+	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.Function <em>Function</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -6735,6 +6755,14 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EReference CONNECTIVITY_VARIABLE__DEFAULT_VALUE = eINSTANCE.getConnectivityVariable_DefaultValue();
+
+		/**
+		 * The meta object literal for the '<em><b>Linear Algebra</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute CONNECTIVITY_VARIABLE__LINEAR_ALGEBRA = eINSTANCE.getConnectivityVariable_LinearAlgebra();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.FunctionImpl <em>Function</em>}' class.

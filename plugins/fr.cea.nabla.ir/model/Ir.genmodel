@@ -84,6 +84,7 @@
     <genClasses ecoreClass="Ir.ecore#//ConnectivityVariable">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ConnectivityVariable/type"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ConnectivityVariable/defaultValue"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ConnectivityVariable/linearAlgebra"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//Function">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Function/name"/>

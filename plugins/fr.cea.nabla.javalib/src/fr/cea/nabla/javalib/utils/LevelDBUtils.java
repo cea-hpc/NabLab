@@ -119,6 +119,11 @@ public class LevelDBUtils
 		return bytes(String.valueOf(d));
 	}
 
+	public static byte[] serialize(final boolean b)
+	{
+		return bytes(Boolean.toString(b));
+	}
+
 	public static byte[] serialize(final double[] data1d)
 	{
 		StringBuilder sb = new StringBuilder();

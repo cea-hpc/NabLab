@@ -1074,6 +1074,16 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
+	public EAttribute getConnectivityVariable_LinearAlgebra() {
+		return (EAttribute)connectivityVariableEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EClass getFunction() {
 		return functionEClass;
 	}
@@ -2642,6 +2652,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		connectivityVariableEClass = createEClass(CONNECTIVITY_VARIABLE);
 		createEReference(connectivityVariableEClass, CONNECTIVITY_VARIABLE__TYPE);
 		createEReference(connectivityVariableEClass, CONNECTIVITY_VARIABLE__DEFAULT_VALUE);
+		createEAttribute(connectivityVariableEClass, CONNECTIVITY_VARIABLE__LINEAR_ALGEBRA);
 
 		functionEClass = createEClass(FUNCTION);
 		createEAttribute(functionEClass, FUNCTION__NAME);
@@ -2999,6 +3010,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEClass(connectivityVariableEClass, ConnectivityVariable.class, "ConnectivityVariable", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getConnectivityVariable_Type(), this.getConnectivityType(), null, "type", null, 1, 1, ConnectivityVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getConnectivityVariable_DefaultValue(), this.getArgOrVarRef(), null, "defaultValue", null, 0, 1, ConnectivityVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getConnectivityVariable_LinearAlgebra(), ecorePackage.getEBoolean(), "linearAlgebra", "false", 1, 1, ConnectivityVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(functionEClass, Function.class, "Function", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getFunction_Name(), ecorePackage.getEString(), "name", null, 1, 1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

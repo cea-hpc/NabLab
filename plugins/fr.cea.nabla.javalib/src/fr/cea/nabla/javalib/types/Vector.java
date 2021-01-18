@@ -17,9 +17,12 @@ public class Vector
 	private Object lock = new Object();
 	private org.apache.commons.math3.linear.RealVector nativeVector;
 
+	public final int length;
+
 	public Vector(org.apache.commons.math3.linear.RealVector nativeVector)
 	{
 		this.nativeVector = nativeVector;
+		this.length = nativeVector.getDimension();
 	}
 
 	public static Vector createDenseVector(int size)

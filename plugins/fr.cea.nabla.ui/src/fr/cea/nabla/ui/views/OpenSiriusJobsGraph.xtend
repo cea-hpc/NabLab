@@ -124,8 +124,6 @@ class OpenSiriusJobsGraph extends AbstractHandler
 		{
 			val nablagen2Ir = nablagen2IrProvider.get // force a new instance to ensure a new IR
 			ir = nablagen2Ir.toIrRoot(ngen)
-
-			// IR -> IR
 			val description = 'Minimal IR->IR transformations to check job cycles'
 			val t = new CompositeTransformationStep(description, #[new ReplaceReductions(false), new FillJobHLTs, new ComputePreviousAndNextJobs])
 			t.transformIr(ir, [msg | consoleFactory.printConsole(MessageType.Exec, msg)])

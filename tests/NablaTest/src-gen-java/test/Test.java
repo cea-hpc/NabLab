@@ -131,7 +131,7 @@ public final class Test
 	}
 
 	/**
-	 * Job ComputeE1 called @1.0 in executeTimeLoopN method.
+	 * Job computeE1 called @1.0 in executeTimeLoopN method.
 	 * In variables: e_n
 	 * Out variables: e1
 	 */
@@ -144,7 +144,7 @@ public final class Test
 	}
 
 	/**
-	 * Job ComputeE2 called @1.0 in executeTimeLoopK method.
+	 * Job computeE2 called @1.0 in executeTimeLoopK method.
 	 * In variables: e2_nplus1_k
 	 * Out variables: e2_nplus1_kplus1
 	 */
@@ -157,7 +157,7 @@ public final class Test
 	}
 
 	/**
-	 * Job InitE called @1.0 in simulate method.
+	 * Job initE called @1.0 in simulate method.
 	 * In variables: 
 	 * Out variables: e_n0
 	 */
@@ -170,7 +170,7 @@ public final class Test
 	}
 
 	/**
-	 * Job InitTime called @1.0 in simulate method.
+	 * Job initTime called @1.0 in simulate method.
 	 * In variables: 
 	 * Out variables: t_n0
 	 */
@@ -180,7 +180,7 @@ public final class Test
 	}
 
 	/**
-	 * Job UpdateT called @1.0 in executeTimeLoopN method.
+	 * Job updateT called @1.0 in executeTimeLoopN method.
 	 * In variables: deltat, t_n
 	 * Out variables: t_nplus1
 	 */
@@ -190,7 +190,7 @@ public final class Test
 	}
 
 	/**
-	 * Job InitE2 called @2.0 in executeTimeLoopN method.
+	 * Job initE2 called @2.0 in executeTimeLoopN method.
 	 * In variables: e1
 	 * Out variables: e2_nplus1_k0
 	 */
@@ -203,7 +203,7 @@ public final class Test
 	}
 
 	/**
-	 * Job SetUpTimeLoopN called @2.0 in simulate method.
+	 * Job setUpTimeLoopN called @2.0 in simulate method.
 	 * In variables: e_n0, t_n0
 	 * Out variables: e_n, t_n
 	 */
@@ -217,7 +217,7 @@ public final class Test
 	}
 
 	/**
-	 * Job ExecuteTimeLoopN called @3.0 in simulate method.
+	 * Job executeTimeLoopN called @3.0 in simulate method.
 	 * In variables: deltat, e1, e2_nplus1, e2_nplus1_k, e2_nplus1_k0, e2_nplus1_kplus1, e_n, t_n
 	 * Out variables: e1, e2_nplus1, e2_nplus1_k, e2_nplus1_k0, e2_nplus1_kplus1, e_nplus1, t_nplus1
 	 */
@@ -257,7 +257,7 @@ public final class Test
 	}
 
 	/**
-	 * Job SetUpTimeLoopK called @3.0 in executeTimeLoopN method.
+	 * Job setUpTimeLoopK called @3.0 in executeTimeLoopN method.
 	 * In variables: e2_nplus1_k0
 	 * Out variables: e2_nplus1_k
 	 */
@@ -270,7 +270,7 @@ public final class Test
 	}
 
 	/**
-	 * Job ExecuteTimeLoopK called @4.0 in executeTimeLoopN method.
+	 * Job executeTimeLoopK called @4.0 in executeTimeLoopN method.
 	 * In variables: e2_nplus1_k
 	 * Out variables: e2_nplus1_kplus1
 	 */
@@ -298,7 +298,7 @@ public final class Test
 	}
 
 	/**
-	 * Job TearDownTimeLoopK called @5.0 in executeTimeLoopN method.
+	 * Job tearDownTimeLoopK called @5.0 in executeTimeLoopN method.
 	 * In variables: e2_nplus1_kplus1
 	 * Out variables: e2_nplus1
 	 */
@@ -311,7 +311,7 @@ public final class Test
 	}
 
 	/**
-	 * Job UpdateE called @6.0 in executeTimeLoopN method.
+	 * Job updateE called @6.0 in executeTimeLoopN method.
 	 * In variables: e2_nplus1
 	 * Out variables: e_nplus1
 	 */

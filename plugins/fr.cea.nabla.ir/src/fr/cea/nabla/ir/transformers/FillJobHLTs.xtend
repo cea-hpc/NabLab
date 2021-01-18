@@ -41,7 +41,7 @@ class FillJobHLTs extends IrTransformationStep
 	 */
 	override transform(IrRoot ir)
 	{
-		trace('IR -> IR: ' + description)
+		trace('    IR -> IR: ' + description)
 		if (ir.jobs.empty) return true
 
 		// check that IrModule has no job cycles (except timestep cycles)

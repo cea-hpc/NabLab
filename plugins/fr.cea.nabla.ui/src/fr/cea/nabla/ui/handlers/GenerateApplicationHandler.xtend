@@ -35,6 +35,7 @@ class GenerateApplicationHandler extends AbstractGenerateHandler
 			try
 			{
 				consoleFactory.clearAndActivateConsole
+				shell.display.syncExec([shell.cursor = shell.display.getSystemCursor(SWT.CURSOR_WAIT)])
 				consoleFactory.printConsole(MessageType.Start, "Starting generation process for: " + nablagenFile.name)
 				consoleFactory.printConsole(MessageType.Exec, "Loading nablagen and nabla resources")
 				val plaftormUri = URI::createPlatformResourceURI(project.name + '/' + nablagenFile.projectRelativePath, true)
@@ -44,24 +45,10 @@ class GenerateApplicationHandler extends AbstractGenerateHandler
 				val emfResource = resourceSet.createResource(plaftormUri)
 				EcoreUtil::resolveAll(resourceSet)
 				emfResource.load(null)
-
-				consoleFactory.printConsole(MessageType.Exec, "Starting NabLab to IR model transformation")
-				val startTime = System.currentTimeMillis
-				val baseDir = project.location.toString
 				val ngen = emfResource.contents.filter(NablagenRoot).head
-				val ir = interpreter.buildIr(ngen, baseDir, false)
-				val afterConvertionTime = System.currentTimeMillis
-				consoleFactory.printConsole(MessageType.Exec, "NabLab to IR model transformation ended in " + (afterConvertionTime-startTime)/1000.0 + "s")
-
-				consoleFactory.printConsole(MessageType.Exec, "Starting code generation")
-				shell.display.syncExec([shell.cursor = shell.display.getSystemCursor(SWT.CURSOR_WAIT)])
-				interpreter.generateCode(ir, ngen.genTargets, ngen.mainModule.iterationMax.name, ngen.mainModule.timeMax.name, baseDir, ngen.levelDB)
-				shell.display.syncExec([shell.cursor = null])
-				val afterGenerationTime = System.currentTimeMillis
-				consoleFactory.printConsole(MessageType.Exec, "Code generation ended in " + (afterGenerationTime-afterConvertionTime)/1000.0 + "s")
-				consoleFactory.printConsole(MessageType.Exec, "Total time: " + (afterGenerationTime-startTime)/1000.0 + "s");
-
+				interpreter.generateCode(ngen, project.location.toString)
 				project.refreshLocal(IResource::DEPTH_INFINITE, null)
+				shell.display.syncExec([shell.cursor = null])
 				consoleFactory.printConsole(MessageType.End, "Generation ended successfully for: " + nablagenFile.name)
 			}
 			catch (Exception e)

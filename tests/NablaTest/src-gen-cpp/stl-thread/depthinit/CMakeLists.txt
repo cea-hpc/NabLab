@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.10)
 
 set(LIBCPPNABLA_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../../libcppnabla CACHE STRING "")
 set(NABLA_CXX_COMPILER /usr/bin/g++)
-set(BATILIB_HOME $ENV{HOME}/workspaces/NabLab/tests/BatiLibCpp)
+set(BATILIB_HOME $ENV{HOME}/workspaces/NabLab/tests/BatiLibCpp/BatiLibCpp)
 
 project(DepthInitProject CXX)
 

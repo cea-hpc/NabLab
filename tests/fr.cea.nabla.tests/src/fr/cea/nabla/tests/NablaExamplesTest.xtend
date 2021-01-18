@@ -13,7 +13,7 @@ import com.google.common.collect.PeekingIterator
 import com.google.gson.Gson
 import com.google.inject.Inject
 import fr.cea.nabla.nablaext.TargetType
-import fr.cea.nabla.nablagen.GenTarget
+import fr.cea.nabla.nablagen.Target
 import java.io.File
 import java.nio.file.Files
 import org.apache.commons.io.FileUtils
@@ -158,9 +158,9 @@ class NablaExamplesTest
 		compilationHelper.generateCode(model, genmodel, tmp.toPath.toString)
 
 		var nbErrors = 0
-		for (genTarget : compilationHelper.getNgen(model, genmodel).genTargets)
+		for (target : compilationHelper.getNgen(model, genmodel).targets.filter[!interpreter])
 		{
-			(!testExecute(genTarget, moduleName, tmp.toString) ? nbErrors++)
+			(!testExecute(target, moduleName, tmp.toString) ? nbErrors++)
 		}
 		(nbErrors > 0 ? Assert.fail(nbErrors + " error(s) !"))
 	}
@@ -195,7 +195,7 @@ class NablaExamplesTest
 		'''
 	}
 
-	private def testExecute(GenTarget target, String moduleName, String tmp)
+	private def testExecute(Target target, String moduleName, String tmp)
 	{
 		val testProjectPath = System.getProperty("user.dir")
 		val packageName = moduleName.toLowerCase

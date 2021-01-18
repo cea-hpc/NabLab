@@ -56,7 +56,7 @@ class CompilationChainHelper
 		val interpreter = interpreterProvider.get
 		val projectDir = pluginsPath + "fr.cea.nabla.ui/examples/NablaExamples"
 		val ngen = getNgen(model, genModel)
-		return interpreter.buildIr(ngen, projectDir, true)
+		return interpreter.buildInterpreterIr(ngen, projectDir)
 	}
 
 	def getNgen(CharSequence model, CharSequence genModel)
@@ -93,7 +93,6 @@ class CompilationChainHelper
 	{
 		val interpreter = interpreterProvider.get
 		val ngen = getNgen(model, genModel)
-		val ir = interpreter.buildIr(ngen, projectDir, false)
-		interpreter.generateCode(ir, ngen.genTargets, ngen.mainModule.iterationMax.name, ngen.mainModule.timeMax.name, projectDir, ngen.levelDB)
+		interpreter.generateCode(ngen, projectDir)
 	}
 }

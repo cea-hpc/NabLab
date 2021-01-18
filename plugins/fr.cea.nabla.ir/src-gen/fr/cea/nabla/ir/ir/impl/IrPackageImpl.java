@@ -972,8 +972,18 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EAttribute getExtensionProvider_ProjectRoot() {
+	public EAttribute getExtensionProvider_ProjectDir() {
 		return (EAttribute)extensionProviderEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getExtensionProvider_InstallDir() {
+		return (EAttribute)extensionProviderEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -2685,7 +2695,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		extensionProviderEClass = createEClass(EXTENSION_PROVIDER);
 		createEAttribute(extensionProviderEClass, EXTENSION_PROVIDER__EXTENSION_NAME);
 		createEAttribute(extensionProviderEClass, EXTENSION_PROVIDER__PROVIDER_NAME);
-		createEAttribute(extensionProviderEClass, EXTENSION_PROVIDER__PROJECT_ROOT);
+		createEAttribute(extensionProviderEClass, EXTENSION_PROVIDER__PROJECT_DIR);
+		createEAttribute(extensionProviderEClass, EXTENSION_PROVIDER__INSTALL_DIR);
 
 		argOrVarEClass = createEClass(ARG_OR_VAR);
 		createEAttribute(argOrVarEClass, ARG_OR_VAR__NAME);
@@ -3049,7 +3060,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEClass(extensionProviderEClass, ExtensionProvider.class, "ExtensionProvider", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getExtensionProvider_ExtensionName(), ecorePackage.getEString(), "extensionName", null, 1, 1, ExtensionProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getExtensionProvider_ProviderName(), ecorePackage.getEString(), "providerName", null, 1, 1, ExtensionProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getExtensionProvider_ProjectRoot(), ecorePackage.getEString(), "projectRoot", null, 1, 1, ExtensionProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getExtensionProvider_ProjectDir(), ecorePackage.getEString(), "projectDir", null, 1, 1, ExtensionProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getExtensionProvider_InstallDir(), ecorePackage.getEString(), "installDir", null, 1, 1, ExtensionProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(argOrVarEClass, ArgOrVar.class, "ArgOrVar", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getArgOrVar_Name(), ecorePackage.getEString(), "name", null, 1, 1, ArgOrVar.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

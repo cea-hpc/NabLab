@@ -8,7 +8,6 @@
  * Contributors: see AUTHORS file
  *******************************************************************************/
 
-[WriteIr]
 Application DepthInit;
 
 MainModule DepthInit depthInit
@@ -23,14 +22,16 @@ MainModule DepthInit depthInit
 
 Interpreter
 {
-	outputPath = "/NablaTest/src-interpreter";
-	extension BatiLib providedBy BatiLibJava;
+	outputPath = "/NablaTest/src-gen-interpreter";
+	extension BatiLib providedBy BatiLibCpp;
+	NABLA_CXX_COMPILER = "/usr/bin/g++";
+	JAVA_HOME = "/usr/lib/jvm/java-11-openjdk-amd64";
 }
 
 Java
 {
 	outputPath = "/NablaTest/src-gen-java";
-	extension BatiLib providedBy BatiLibCpp;
+	extension BatiLib providedBy BatiLibJava;
 	NABLA_CXX_COMPILER = "/usr/bin/g++";
 	JAVA_HOME = "/usr/lib/jvm/java-11-openjdk-amd64";
 }

@@ -28,6 +28,7 @@ import org.eclipse.xtext.validation.CheckType
  *
  * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#validation
  */
+ // TODO A unique interpreter
 class NablagenValidator extends AbstractNablagenValidator
 {
 	@Inject extension ArgOrVarTypeProvider
@@ -61,7 +62,7 @@ class NablagenValidator extends AbstractNablagenValidator
 	@Check(CheckType.FAST)
 	def void checkCppMandatoryVariables(NablagenRoot it)
 	{
-		if (genTargets.exists[x | x.type != TargetType::JAVA] && (mainModule !== null && mainModule.iterationMax === null || mainModule.timeMax === null))
+		if (targets.exists[x | x.type != TargetType::JAVA] && (mainModule !== null && mainModule.iterationMax === null || mainModule.timeMax === null))
 			error(getCppMandatoryVariablesMsg(), NablagenPackage.Literals::NABLAGEN_ROOT__MAIN_MODULE, CPP_MANDATORY_VARIABLES)
 	}
 

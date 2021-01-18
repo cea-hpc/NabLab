@@ -9,6 +9,5 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="lib" path="/BatiLibJava/lib/batilibjava.jar"/>
-	<classpathentry kind="lib" path="src-gen-java/depthinit/build/BatiLibCppJni/batilibcppjni.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

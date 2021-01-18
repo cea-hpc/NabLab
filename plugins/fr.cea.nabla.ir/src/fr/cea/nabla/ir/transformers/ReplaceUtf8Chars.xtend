@@ -50,7 +50,7 @@ class ReplaceUtf8Chars extends IrTransformationStep
 
 	override transform(IrRoot ir)
 	{
-		trace('IR -> IR: ' + description)
+		trace('    IR -> IR: ' + description)
 		ir.eAllContents.filter(Variable).forEach[x | x.name = x.name.noUtf8]
 		ir.eAllContents.filter(ReductionInstruction).forEach[x | x.result.name = x.result.name.noUtf8]
 		ir.connectivities.forEach[x | x.name = x.name.noUtf8]

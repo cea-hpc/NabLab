@@ -7,7 +7,6 @@ import fr.cea.nabla.generator.StandaloneGeneratorBase
 import fr.cea.nabla.ir.generator.CMakeUtils
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.nablaext.ExtensionProvider
-import fr.cea.nabla.nablaext.TargetType
 import fr.cea.nabla.nablagen.Target
 import fr.cea.nabla.nablagen.TargetVar
 import java.util.ArrayList
@@ -18,13 +17,14 @@ class JniProviderGenerator extends StandaloneGeneratorBase
 	@Inject extension ProvidersUtils
 	val jniProviderHomes = new ArrayList<String>
 
-	def generate(String baseDir, String projectDir, ExtensionProvider provider)
+	def generate(String baseDir, String providerDir, String installDir, ExtensionProvider provider)
 	{
 		val fsa = getConfiguredFileSystemAccess(baseDir, false)
-		jniProviderHomes += baseDir + '/' + projectDir
+		jniProviderHomes += baseDir + '/' + providerDir
 		dispatcher.post(MessageType::Exec, "Generating JNI extension provider: " + provider.name + "Jni")
-		val generator = getCodeGenerator(provider.target)
-		generate(fsa, generator.getGenerationContents(provider.toIrExtensionProvider, provider.extension.irFunctions), projectDir + '/src')
+		val backend = backendFactory.getCppBackend(provider.target)
+		val generator = new fr.cea.nabla.ir.generator.jni.JniProviderGenerator(backend)
+		generate(fsa, generator.getGenerationContents(toIrExtensionProvider(provider, installDir), provider.extension.irFunctions), providerDir + '/src')
 	}
 
 	def generateGlobalCMakeIfNecessary(IrRoot ir, Target target, String baseDir)
@@ -36,12 +36,6 @@ class JniProviderGenerator extends StandaloneGeneratorBase
 			dispatcher.post(MessageType::Exec, "    Generating: " + fullFileName)
 			fsa.generateFile(fullFileName, getCMakeContent(ir.name, jniProviderHomes, target.variables))
 		}
-	}
-
-	private def getCodeGenerator(TargetType targetType)
-	{
-		val backend = backendFactory.getCppBackend(targetType)
-		new fr.cea.nabla.ir.generator.jni.JniProviderGenerator(backend)
 	}
 
 	private def getCMakeContent(String projectName, Iterable<String> jniProviderHomes, Iterable<TargetVar> variables)
@@ -59,13 +53,6 @@ class JniProviderGenerator extends StandaloneGeneratorBase
 		«FOR jniProvider : jniProviderHomes»
 		«val jniProviderName = jniProvider.split('/').last»
 		add_subdirectory(«jniProvider»/src ${CMAKE_BINARY_DIR}/«jniProviderName»)
-		«ENDFOR»
-
-		message(STATUS "Do not forget '-Djava.library.path=${CMAKE_BINARY_DIR}' before executing java")
-
-		«FOR jniProvider : jniProviderHomes»
-		«val jniProviderName = jniProvider.split('/').last»
-		ADD_CUSTOM_TARGET(link_jni_so ALL COMMAND ${CMAKE_COMMAND} -E create_symlink ./«jniProviderName»/lib«jniProviderName.toLowerCase».so ${CMAKE_BINARY_DIR}/lib«jniProviderName.toLowerCase».so)
 		«ENDFOR»
 
 		«CMakeUtils.fileFooter»

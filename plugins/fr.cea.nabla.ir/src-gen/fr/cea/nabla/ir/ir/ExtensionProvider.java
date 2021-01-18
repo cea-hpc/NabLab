@@ -13,7 +13,8 @@ package fr.cea.nabla.ir.ir;
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.ExtensionProvider#getExtensionName <em>Extension Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.ExtensionProvider#getProviderName <em>Provider Name</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.ExtensionProvider#getProjectRoot <em>Project Root</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.ExtensionProvider#getProjectDir <em>Project Dir</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.ExtensionProvider#getInstallDir <em>Install Dir</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getExtensionProvider()
@@ -66,25 +67,47 @@ public interface ExtensionProvider extends IrAnnotable {
 	void setProviderName(String value);
 
 	/**
-	 * Returns the value of the '<em><b>Project Root</b></em>' attribute.
+	 * Returns the value of the '<em><b>Project Dir</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Project Root</em>' attribute.
-	 * @see #setProjectRoot(String)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getExtensionProvider_ProjectRoot()
+	 * @return the value of the '<em>Project Dir</em>' attribute.
+	 * @see #setProjectDir(String)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getExtensionProvider_ProjectDir()
 	 * @model required="true"
 	 * @generated
 	 */
-	String getProjectRoot();
+	String getProjectDir();
 
 	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.ExtensionProvider#getProjectRoot <em>Project Root</em>}' attribute.
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.ExtensionProvider#getProjectDir <em>Project Dir</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Project Root</em>' attribute.
-	 * @see #getProjectRoot()
+	 * @param value the new value of the '<em>Project Dir</em>' attribute.
+	 * @see #getProjectDir()
 	 * @generated
 	 */
-	void setProjectRoot(String value);
+	void setProjectDir(String value);
+
+	/**
+	 * Returns the value of the '<em><b>Install Dir</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Install Dir</em>' attribute.
+	 * @see #setInstallDir(String)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getExtensionProvider_InstallDir()
+	 * @model required="true"
+	 * @generated
+	 */
+	String getInstallDir();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.ExtensionProvider#getInstallDir <em>Install Dir</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Install Dir</em>' attribute.
+	 * @see #getInstallDir()
+	 * @generated
+	 */
+	void setInstallDir(String value);
 
 } // ExtensionProvider

@@ -26,6 +26,8 @@ add_library(batilibcpp SHARED batilib/BatiLibCpp.cc)
 target_include_directories(batilibcpp PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(batilibcpp PUBLIC cppnabla)
 
+INSTALL(TARGETS batilibcpp DESTINATION ${CMAKE_SOURCE_DIR}/lib)
+
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 	include(${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 endif()

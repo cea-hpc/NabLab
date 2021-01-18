@@ -22,8 +22,9 @@ NablaextRoot:
 ExtensionProvider: 'ExtensionProvider' name=ID ':' extension=[nabla::NablaExtension]
 '{'
 	'target' '=' target=TargetType ';'
-	'projectRoot' '=' projectRoot=STRING ';'
+	'projectDir' '=' projectDir=STRING ';'
 '}';
 
+// Java must be the first enum literal to be the default value for interpreter
 enum TargetType: Java | CppSequential | StlThread | OpenMP | Kokkos | KokkosTeamThread;
 

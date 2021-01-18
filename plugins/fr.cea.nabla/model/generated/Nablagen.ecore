@@ -2,7 +2,6 @@
 <ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="nablagen" nsURI="http://www.cea.fr/nabla/Nablagen" nsPrefix="nablagen">
   <eClassifiers xsi:type="ecore:EClass" name="NablagenRoot">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="writeIR" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="mainModule" eType="#//MainModule"
         containment="true"/>
@@ -12,12 +11,10 @@
         eType="#//ExtensionConfig" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="vtkOutput" eType="#//VtkOutput"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="interpreterTarget" eType="#//InterpreterTarget"
-        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="levelDB" eType="#//LevelDB"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="genTargets" upperBound="-1"
-        eType="#//GenTarget" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="targets" upperBound="-1"
+        eType="#//Target" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="NablagenModule">
     <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="ecore:EClass Nabla.ecore#//NablaModule"/>
@@ -57,15 +54,14 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="levelDBPath" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Target">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="writeIR" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="interpreter" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="ecore:EEnum Nablaext.ecore#//TargetType"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="outputDir" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="extensionConfigs" upperBound="-1"
         eType="#//ExtensionConfig" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="variables" upperBound="-1"
         eType="#//TargetVar" containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="InterpreterTarget" eSuperTypes="#//Target"/>
-  <eClassifiers xsi:type="ecore:EClass" name="GenTarget" eSuperTypes="#//Target">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="ecore:EEnum Nablaext.ecore#//TargetType"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ExtensionConfig">
     <eStructuralFeatures xsi:type="ecore:EReference" name="extension" eType="ecore:EClass Nabla.ecore#//NablaExtension"/>

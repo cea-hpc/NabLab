@@ -21,10 +21,6 @@ endif()
 
 add_subdirectory(/home/lelandaisb/workspaces/NabLab/tests/NablaTest/../BatiLibCppJni/src ${CMAKE_BINARY_DIR}/BatiLibCppJni)
 
-message(STATUS "Do not forget '-Djava.library.path=${CMAKE_BINARY_DIR}' before executing java")
-
-ADD_CUSTOM_TARGET(link_jni_so ALL COMMAND ${CMAKE_COMMAND} -E create_symlink ./BatiLibCppJni/libbatilibcppjni.so ${CMAKE_BINARY_DIR}/libbatilibcppjni.so)
-
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 	include(${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 endif()

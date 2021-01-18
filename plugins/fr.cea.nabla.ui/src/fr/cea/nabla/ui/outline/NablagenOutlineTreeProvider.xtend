@@ -9,11 +9,11 @@
  *******************************************************************************/
 package fr.cea.nabla.ui.outline
 
-import fr.cea.nabla.nablagen.GenTarget
 import fr.cea.nabla.nablagen.LevelDB
 import fr.cea.nabla.nablagen.NablagenModule
 import fr.cea.nabla.nablagen.NablagenRoot
 import fr.cea.nabla.nablagen.OutputVar
+import fr.cea.nabla.nablagen.Target
 import fr.cea.nabla.ui.NablaUiUtils
 import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider
 
@@ -43,13 +43,13 @@ class NablagenOutlineTreeProvider extends DefaultOutlineTreeProvider
 	def _isLeaf(LevelDB it) { true }
 	def _text(LevelDB it) { 'LevelDB activated' }
 
-	def _isLeaf(GenTarget it) { true }
+	def _isLeaf(Target it) { true }
 
-	def _text(GenTarget it)
+	def _text(Target it)
 	{
 		switch type
 		{
-			case JAVA: 'Multi-thread Java'
+			case JAVA: if (interpreter) 'Interpreter' else 'Multi-thread Java'
 			case KOKKOS: 'Kokkos C++'
 			case KOKKOS_TEAM_THREAD: 'Kokkos C++ with teams of threads'
 			case OPEN_MP: 'OpenMP C++'
@@ -59,7 +59,7 @@ class NablagenOutlineTreeProvider extends DefaultOutlineTreeProvider
 		}
 	}
 
-	def _image(GenTarget it)
+	def _image(Target it)
 	{
 		switch type
 		{

@@ -505,13 +505,22 @@ public interface IrPackage extends EPackage {
 	int EXTENSION_PROVIDER__PROVIDER_NAME = IR_ANNOTABLE_FEATURE_COUNT + 1;
 
 	/**
-	 * The feature id for the '<em><b>Project Root</b></em>' attribute.
+	 * The feature id for the '<em><b>Project Dir</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int EXTENSION_PROVIDER__PROJECT_ROOT = IR_ANNOTABLE_FEATURE_COUNT + 2;
+	int EXTENSION_PROVIDER__PROJECT_DIR = IR_ANNOTABLE_FEATURE_COUNT + 2;
+
+	/**
+	 * The feature id for the '<em><b>Install Dir</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXTENSION_PROVIDER__INSTALL_DIR = IR_ANNOTABLE_FEATURE_COUNT + 3;
 
 	/**
 	 * The number of structural features of the '<em>Extension Provider</em>' class.
@@ -520,7 +529,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EXTENSION_PROVIDER_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 3;
+	int EXTENSION_PROVIDER_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 4;
 
 	/**
 	 * The number of operations of the '<em>Extension Provider</em>' class.
@@ -4699,15 +4708,26 @@ public interface IrPackage extends EPackage {
 	EAttribute getExtensionProvider_ProviderName();
 
 	/**
-	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.ExtensionProvider#getProjectRoot <em>Project Root</em>}'.
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.ExtensionProvider#getProjectDir <em>Project Dir</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Project Root</em>'.
-	 * @see fr.cea.nabla.ir.ir.ExtensionProvider#getProjectRoot()
+	 * @return the meta object for the attribute '<em>Project Dir</em>'.
+	 * @see fr.cea.nabla.ir.ir.ExtensionProvider#getProjectDir()
 	 * @see #getExtensionProvider()
 	 * @generated
 	 */
-	EAttribute getExtensionProvider_ProjectRoot();
+	EAttribute getExtensionProvider_ProjectDir();
+
+	/**
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.ExtensionProvider#getInstallDir <em>Install Dir</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Install Dir</em>'.
+	 * @see fr.cea.nabla.ir.ir.ExtensionProvider#getInstallDir()
+	 * @see #getExtensionProvider()
+	 * @generated
+	 */
+	EAttribute getExtensionProvider_InstallDir();
 
 	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.ArgOrVar <em>Arg Or Var</em>}'.
@@ -6768,12 +6788,20 @@ public interface IrPackage extends EPackage {
 		EAttribute EXTENSION_PROVIDER__PROVIDER_NAME = eINSTANCE.getExtensionProvider_ProviderName();
 
 		/**
-		 * The meta object literal for the '<em><b>Project Root</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Project Dir</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute EXTENSION_PROVIDER__PROJECT_ROOT = eINSTANCE.getExtensionProvider_ProjectRoot();
+		EAttribute EXTENSION_PROVIDER__PROJECT_DIR = eINSTANCE.getExtensionProvider_ProjectDir();
+
+		/**
+		 * The meta object literal for the '<em><b>Install Dir</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute EXTENSION_PROVIDER__INSTALL_DIR = eINSTANCE.getExtensionProvider_InstallDir();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.ArgOrVarImpl <em>Arg Or Var</em>}' class.

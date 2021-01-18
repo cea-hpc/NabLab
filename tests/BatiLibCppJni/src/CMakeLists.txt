@@ -52,6 +52,9 @@ add_custom_command(
 	COMMAND ${JAVA_HOME}/bin/jar cvf batilibcppjni.jar batilib/BatiLibCppJni.class
 	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/batilib_BatiLibCppJni.h)
 
+INSTALL(TARGETS batilibcppjni DESTINATION ${CMAKE_SOURCE_DIR}/lib)
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/batilibcppjni.jar DESTINATION ${CMAKE_SOURCE_DIR}/lib)
+
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 	include(${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 endif()

@@ -18,15 +18,13 @@ import "http://www.cea.fr/nabla/Nablaext" as nablaext
 generate nablagen "http://www.cea.fr/nabla/Nablagen"
 
 NablagenRoot: 
-	(writeIR?='[WriteIr]')?
 	'Application' name=ID ';'
 	mainModule=MainModule
 	additionalModules+=AdditionalModule*
 	extensionConfigs+=ExtensionConfig*
 	(vtkOutput=VtkOutput)?
-	(interpreterTarget=InterpreterTarget)?
 	(levelDB=LevelDB)?
-	genTargets+=GenTarget*;
+	targets+=Target*;
 
 NablagenModule: MainModule | AdditionalModule;
 
@@ -67,17 +65,18 @@ LevelDB:
 		'levelDBPath' '=' levelDBPath=STRING ';'
 	'}';
 
-Target: InterpreterTarget | GenTarget;
-
-InterpreterTarget:
-	'Interpreter'
-	'{'
-		'outputPath' '=' outputDir=STRING ';'
-		extensionConfigs+=ExtensionConfig*
-		variables+=TargetVar*
-	'}';
-
-GenTarget: type=TargetType
+/*
+ * Java is the first enum literal i.e. the default value for interpreter.
+ * Thanks to this, interpreter is considered as a Target.
+ * 
+ * Validation checks that there is a unique interpreter.
+ * If multiple interpreter configurations are needed, the launcher
+ * should integrate the outputPath as a new launch parameter
+ * to identify which interpreter to launch.
+ */
+Target:
+	(writeIR?='[WriteIr]')?
+	(interpreter?='Interpreter' | type=TargetType)
 	'{'
 		'outputPath' '=' outputDir=STRING ';'
 		extensionConfigs+=ExtensionConfig*

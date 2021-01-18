@@ -21,14 +21,12 @@ import fr.cea.nabla.ir.generator.json.JsonGenerator
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.transformers.CompositeTransformationStep
 import fr.cea.nabla.ir.transformers.FillJobHLTs
-import fr.cea.nabla.ir.transformers.IrTransformationStep
 import fr.cea.nabla.ir.transformers.OptimizeConnectivities
 import fr.cea.nabla.ir.transformers.ReplaceReductions
 import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nablaext.ExtensionProvider
 import fr.cea.nabla.nablaext.TargetType
-import fr.cea.nabla.nablagen.GenTarget
 import fr.cea.nabla.nablagen.LevelDB
 import fr.cea.nabla.nablagen.NablagenPackage
 import fr.cea.nabla.nablagen.NablagenRoot
@@ -36,7 +34,6 @@ import fr.cea.nabla.nablagen.Target
 import java.io.File
 import java.util.ArrayList
 import java.util.HashMap
-import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.xtext.scoping.IScopeProvider
@@ -51,44 +48,22 @@ class NablagenInterpreter extends StandaloneGeneratorBase
 	@Inject IScopeProvider scopeProvider
 	@Inject Provider<JniProviderGenerator> jniGeneratorProvider
 
-	def IrRoot buildIr(NablagenRoot ngen, String projectDir, boolean forInterpreter)
+	/**
+	 * Validation checks that there is one interpreter target max.
+	 * Consequently, no need to identify the interpreter.
+	 * If several interpreter are needed, the outputPath can be used as an id.
+	 */
+	def IrRoot buildInterpreterIr(NablagenRoot ngen, String projectDir)
 	{
 		try
 		{
-			// Nabla -> IR
-			dispatcher.post(MessageType::Exec, 'Nabla -> IR')
-			val ir = nablagen2Ir.toIrRoot(ngen)
-			getCommonIrTransformation(forInterpreter).transformIr(ir, [msg | dispatcher.post(MessageType::Exec, msg)])
+			val ir = buildIr(ngen, true)
 
-			if (ngen.writeIR)
+			val target = ngen.targets.findFirst[x | x.interpreter]
+			if (target !== null)
 			{
-				val fileName = irWriter.createAndSaveResource(getConfiguredFileSystemAccess(projectDir, true), ir)
-				dispatcher.post(MessageType::Exec, 'Resource saved: ' + fileName)
-			}
-
-			if (forInterpreter)
-			{
-				if (ngen.interpreterTarget === null)
-					dispatcher.post(MessageType::Warning, 'No interpreter configuration found in nablagen file => default classpath used')
-				else
-				{
-					val ok = setExtensionProviders(ir, projectDir + '/..', ngen.interpreterTarget, TargetType::JAVA)
-					if (!ok)
-						throw new RuntimeException("Can not build an IR for interpretation: missing providers")
-				}
-			}
-			else
-			{
-				// LaTeX generation must be done here because it needs NabLab model
-				dispatcher.post(MessageType::Exec, 'Nabla -> Latex')
-				val texContents = new ArrayList<GenerationContent>
-				if (ngen.mainModule !== null && ngen.mainModule.type !== null)
-					texContents += new GenerationContent(ngen.mainModule.type.name + ".tex", ngen.mainModule.type.latexContent, false)
-				for (adModule : ngen.additionalModules)
-					if (adModule.type !== null)
-						texContents += new GenerationContent(adModule.type.name + ".tex", adModule.type.latexContent, false)
-				var fsa = getConfiguredFileSystemAccess(projectDir, true)
-				generate(fsa, texContents, ir.name.toLowerCase)
+				val ok = setExtensionProviders(ir, projectDir + '/..', target, false)
+				if (!ok) throw new RuntimeException("Can not build an IR for interpretation: missing providers")
 			}
 
 			return ir
@@ -109,47 +84,77 @@ class NablagenInterpreter extends StandaloneGeneratorBase
 		}
 	}
 
-	def void generateCode(IrRoot ir, List<GenTarget> targets, String iterationMaxVarName, String timeMaxVarName, String projectDir, LevelDB levelDB)
+	def void generateCode(NablagenRoot ngen, String projectDir)
 	{
 		try
 		{
-			dispatcher.post(MessageType::Exec, "Starting Json code generator")
-			val ir2Json = new JsonGenerator(levelDB!==null)
-			val jsonGenerationContent = ir2Json.getGenerationContents(ir)
+			val ir = buildIr(ngen, false)
+
+			dispatcher.post(MessageType.Exec, "Starting code generation")
+			val startTime = System.currentTimeMillis
+
+			// LaTeX generation needs the NabLab model (not IR model)
+			dispatcher.post(MessageType::Exec, 'Starting LaTeX code generator')
+			val texContents = new ArrayList<GenerationContent>
+			if (ngen.mainModule !== null && ngen.mainModule.type !== null)
+				texContents += new GenerationContent(ngen.mainModule.type.name + ".tex", ngen.mainModule.type.latexContent, false)
+			for (adModule : ngen.additionalModules)
+				if (adModule.type !== null)
+					texContents += new GenerationContent(adModule.type.name + ".tex", adModule.type.latexContent, false)
 			var fsa = getConfiguredFileSystemAccess(projectDir, true)
+			generate(fsa, texContents, ir.name.toLowerCase)
+
+			dispatcher.post(MessageType::Exec, "Starting Json code generator")
+			val ir2Json = new JsonGenerator(ngen.levelDB!==null)
+			val jsonGenerationContent = ir2Json.getGenerationContents(ir)
 			generate(fsa, jsonGenerationContent, ir.name.toLowerCase)
 
 			val baseDir =  projectDir + "/.."
-			for (target : targets)
+			for (target : ngen.targets)
 			{
-				// Set provider extension for the target
-				if (setExtensionProviders(ir, baseDir, target, target.type))
+				dispatcher.post(MessageType::Exec, "Starting " + target.name + " code generator: " + target.outputDir)
+
+				// Configure fsa with target output folder
+				val outputFolderName = baseDir + target.outputDir
+				fsa = getConfiguredFileSystemAccess(outputFolderName, false)
+				if (target.writeIR)
 				{
-					// Create code generator
-					val g = getCodeGenerator(target, baseDir, iterationMaxVarName, timeMaxVarName, levelDB)
-					dispatcher.post(MessageType::Exec, "Starting " + g.name + " code generator")
+					val fileName = irWriter.createAndSaveResource(fsa, ir)
+					dispatcher.post(MessageType::Exec, '    Resource saved: ' + fileName)
+				}
 
-					// Configure fsa with target output folder
-					val outputFolderName = baseDir + target.outputDir
-					fsa = getConfiguredFileSystemAccess(outputFolderName, false)
-
-					// Apply IR transformations dedicated to this target (if necessary)
-					if (g.irTransformationStep !== null)
+				// Set provider extension for the target
+				// No need to duplicate IR. All providers are set for each target.
+				if (setExtensionProviders(ir, baseDir, target, true))
+				{
+					if (!target.interpreter)
 					{
-						val duplicatedIr = EcoreUtil::copy(ir)
-						g.irTransformationStep.transformIr(duplicatedIr, [msg | dispatcher.post(MessageType::Exec, msg)])
-						generate(fsa, g.getGenerationContents(duplicatedIr), ir.name.toLowerCase)
-					}
-					else
-					{
-						generate(fsa, g.getGenerationContents(ir), ir.name.toLowerCase)
+						// Create code generator
+						val iterationMax = ngen.mainModule.iterationMax.name
+						val timeMax = ngen.mainModule.timeMax.name
+						val g = getCodeGenerator(target, baseDir, iterationMax, timeMax, ngen.levelDB)
+	
+						// Apply IR transformations dedicated to this target (if necessary)
+						if (g.irTransformationStep !== null)
+						{
+							val duplicatedIr = EcoreUtil::copy(ir)
+							g.irTransformationStep.transformIr(duplicatedIr, [msg | dispatcher.post(MessageType::Exec, msg)])
+							generate(fsa, g.getGenerationContents(duplicatedIr), ir.name.toLowerCase)
+						}
+						else
+						{
+							generate(fsa, g.getGenerationContents(ir), ir.name.toLowerCase)
+						}
 					}
 				}
 				else
 				{
-					dispatcher.post(MessageType::Warning, "Generation ignored for target: " + target.type.literal)
+					dispatcher.post(MessageType::Warning, "    Generation ignored for: " + target.name)
 				}
 			}
+
+			val endTime = System.currentTimeMillis
+			dispatcher.post(MessageType.Exec, "Code generation ended in " + (endTime-startTime)/1000.0 + "s")
 		}
 		catch(Exception e)
 		{
@@ -163,7 +168,23 @@ class NablagenInterpreter extends StandaloneGeneratorBase
 		}
 	}
 
-	private def getCodeGenerator(GenTarget it, String baseDir, String iterationMax, String timeMax, LevelDB levelDB)
+	private def IrRoot buildIr(NablagenRoot ngen, boolean replaceAllReductions)
+	{
+		dispatcher.post(MessageType.Exec, "Starting NabLab to IR model transformation")
+		val startTime = System.currentTimeMillis
+		val ir = nablagen2Ir.toIrRoot(ngen)
+		val commonTransformation = new CompositeTransformationStep('Common transformations', #[
+			new ReplaceUtf8Chars, 
+			new OptimizeConnectivities(#['cells', 'nodes', 'faces']),
+			new ReplaceReductions(replaceAllReductions),
+			new FillJobHLTs])
+		commonTransformation.transformIr(ir, [msg | dispatcher.post(MessageType::Exec, msg)])
+		val endTime = System.currentTimeMillis
+		dispatcher.post(MessageType.Exec, "NabLab to IR model transformation ended in " + (endTime-startTime)/1000.0 + "s")
+		return ir
+	}
+
+	private def getCodeGenerator(Target it, String baseDir, String iterationMax, String timeMax, LevelDB levelDB)
 	{
 		val levelDBPath = if (levelDB === null) null else levelDB.levelDBPath
 
@@ -187,22 +208,11 @@ class NablagenInterpreter extends StandaloneGeneratorBase
 		}
 	}
 
-	private def getVars(GenTarget it)
+	private def getVars(Target it)
 	{
 		val result = new HashMap<String, String>
 		variables.forEach[x | result.put(x.key, x.value)]
 		return result
-	}
-
-	private def getCommonIrTransformation(boolean replaceAllReductions)
-	{
-		val description = 'IR->IR transformations shared by all generators'
-		val transformations = new ArrayList<IrTransformationStep>
-		transformations += new ReplaceUtf8Chars
-		transformations += new OptimizeConnectivities(#['cells', 'nodes', 'faces'])
-		transformations += new ReplaceReductions(replaceAllReductions)
-		transformations += new FillJobHLTs
-		new CompositeTransformationStep(description, transformations)
 	}
 
 	private def getLatexContent(NablaModule m)
@@ -231,7 +241,7 @@ class NablagenInterpreter extends StandaloneGeneratorBase
 		\end{document}
 	'''
 
-	private def boolean setExtensionProviders(IrRoot ir, String baseDir, Target target, TargetType type)
+	private def boolean setExtensionProviders(IrRoot ir, String baseDir, Target target, boolean generateJniProviders)
 	{
 		val jniGenerator = jniGeneratorProvider.get
 
@@ -239,30 +249,34 @@ class NablagenInterpreter extends StandaloneGeneratorBase
 		for (irProvider : ir.providers.filter[x | x.extensionName != "Math" && x.extensionName != "LinearAlgebra"])
 		{
 			val extensionConfig = target.extensionConfigs.findFirst[x | x.extension.name == irProvider.extensionName]
-			val provider = (extensionConfig === null ? getDefaultProvider(target, type, irProvider.extensionName) : extensionConfig.provider)
+			val provider = (extensionConfig === null ? getDefaultProvider(target, target.type, irProvider.extensionName) : extensionConfig.provider)
 			if (provider === null)
 			{
-				dispatcher.post(MessageType::Error, 'No provider found for extension: ' + irProvider.extensionName)
+				dispatcher.post(MessageType::Error, '    No provider found for extension: ' + irProvider.extensionName)
 				return false
 			}
 
 			irProvider.providerName = provider.name
-			irProvider.projectRoot = provider.projectRoot
-			if (provider.target != type)
+			irProvider.projectDir = provider.projectDir
+			irProvider.installDir = baseDir + target.outputDir + '/' + ir.name.toLowerCase + '/lib'
+			if (provider.target != target.type)
 			{
-				dispatcher.post(MessageType::Warning, 'The target of the provider differs from target: ' + provider.target.literal + " != " + type.literal)
-				if (type == TargetType::JAVA)
+				dispatcher.post(MessageType::Warning, '    The target of the provider differs from target: ' + provider.target.literal + " != " + target.type.literal)
+				if (target.type == TargetType::JAVA)
 				{
 					irProvider.providerName = irProvider.providerName + 'Jni'
-					irProvider.projectRoot = baseDir + "/" + irProvider.providerName
-					jniGenerator.generate(baseDir, irProvider.providerName, provider)
+					irProvider.projectDir = baseDir + "/" + irProvider.providerName
+					if (generateJniProviders)
+						jniGenerator.generate(baseDir, irProvider.providerName, irProvider.installDir, provider)
 				}
 			}
 		}
 
-		// JNI providers are generated for interpreter and Java code.
-		// When some JNI providers are generated, a root CMake is created
-		jniGenerator.generateGlobalCMakeIfNecessary(ir, target, baseDir)
+		if (generateJniProviders)
+			// JNI providers are generated for interpreter and Java code.
+			// When some JNI providers are generated, a root CMake is created
+			jniGenerator.generateGlobalCMakeIfNecessary(ir, target, baseDir)
+
 		return true
 	}
 
@@ -282,12 +296,14 @@ class NablagenInterpreter extends StandaloneGeneratorBase
 
 				if (provider.extension.name == extensionName && provider.target == type)
 				{
-					dispatcher.post(MessageType::Warning, 'Default provider found for extension ' + extensionName + ': ' + provider.name)
+					dispatcher.post(MessageType::Warning, '    Default provider found for extension ' + extensionName + ': ' + provider.name)
 					return provider
 				}
 			}
 		}
 		return null
 	}
+
+	private def getName(Target it) { (interpreter ? 'interpreter' : type.literal) }
 }
 

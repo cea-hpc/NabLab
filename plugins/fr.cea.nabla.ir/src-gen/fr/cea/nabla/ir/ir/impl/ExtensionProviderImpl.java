@@ -19,7 +19,8 @@ import fr.cea.nabla.ir.ir.IrPackage;
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ExtensionProviderImpl#getExtensionName <em>Extension Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ExtensionProviderImpl#getProviderName <em>Provider Name</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.ExtensionProviderImpl#getProjectRoot <em>Project Root</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.ExtensionProviderImpl#getProjectDir <em>Project Dir</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.ExtensionProviderImpl#getInstallDir <em>Install Dir</em>}</li>
  * </ul>
  *
  * @generated
@@ -66,24 +67,44 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 	protected String providerName = PROVIDER_NAME_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getProjectRoot() <em>Project Root</em>}' attribute.
+	 * The default value of the '{@link #getProjectDir() <em>Project Dir</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getProjectRoot()
+	 * @see #getProjectDir()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String PROJECT_ROOT_EDEFAULT = null;
+	protected static final String PROJECT_DIR_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getProjectRoot() <em>Project Root</em>}' attribute.
+	 * The cached value of the '{@link #getProjectDir() <em>Project Dir</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getProjectRoot()
+	 * @see #getProjectDir()
 	 * @generated
 	 * @ordered
 	 */
-	protected String projectRoot = PROJECT_ROOT_EDEFAULT;
+	protected String projectDir = PROJECT_DIR_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getInstallDir() <em>Install Dir</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getInstallDir()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String INSTALL_DIR_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getInstallDir() <em>Install Dir</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getInstallDir()
+	 * @generated
+	 * @ordered
+	 */
+	protected String installDir = INSTALL_DIR_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -156,8 +177,8 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 	 * @generated
 	 */
 	@Override
-	public String getProjectRoot() {
-		return projectRoot;
+	public String getProjectDir() {
+		return projectDir;
 	}
 
 	/**
@@ -166,11 +187,34 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 	 * @generated
 	 */
 	@Override
-	public void setProjectRoot(String newProjectRoot) {
-		String oldProjectRoot = projectRoot;
-		projectRoot = newProjectRoot;
+	public void setProjectDir(String newProjectDir) {
+		String oldProjectDir = projectDir;
+		projectDir = newProjectDir;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.EXTENSION_PROVIDER__PROJECT_ROOT, oldProjectRoot, projectRoot));
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.EXTENSION_PROVIDER__PROJECT_DIR, oldProjectDir, projectDir));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public String getInstallDir() {
+		return installDir;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setInstallDir(String newInstallDir) {
+		String oldInstallDir = installDir;
+		installDir = newInstallDir;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.EXTENSION_PROVIDER__INSTALL_DIR, oldInstallDir, installDir));
 	}
 
 	/**
@@ -185,8 +229,10 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 				return getExtensionName();
 			case IrPackage.EXTENSION_PROVIDER__PROVIDER_NAME:
 				return getProviderName();
-			case IrPackage.EXTENSION_PROVIDER__PROJECT_ROOT:
-				return getProjectRoot();
+			case IrPackage.EXTENSION_PROVIDER__PROJECT_DIR:
+				return getProjectDir();
+			case IrPackage.EXTENSION_PROVIDER__INSTALL_DIR:
+				return getInstallDir();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -205,8 +251,11 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 			case IrPackage.EXTENSION_PROVIDER__PROVIDER_NAME:
 				setProviderName((String)newValue);
 				return;
-			case IrPackage.EXTENSION_PROVIDER__PROJECT_ROOT:
-				setProjectRoot((String)newValue);
+			case IrPackage.EXTENSION_PROVIDER__PROJECT_DIR:
+				setProjectDir((String)newValue);
+				return;
+			case IrPackage.EXTENSION_PROVIDER__INSTALL_DIR:
+				setInstallDir((String)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -226,8 +275,11 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 			case IrPackage.EXTENSION_PROVIDER__PROVIDER_NAME:
 				setProviderName(PROVIDER_NAME_EDEFAULT);
 				return;
-			case IrPackage.EXTENSION_PROVIDER__PROJECT_ROOT:
-				setProjectRoot(PROJECT_ROOT_EDEFAULT);
+			case IrPackage.EXTENSION_PROVIDER__PROJECT_DIR:
+				setProjectDir(PROJECT_DIR_EDEFAULT);
+				return;
+			case IrPackage.EXTENSION_PROVIDER__INSTALL_DIR:
+				setInstallDir(INSTALL_DIR_EDEFAULT);
 				return;
 		}
 		super.eUnset(featureID);
@@ -245,8 +297,10 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 				return EXTENSION_NAME_EDEFAULT == null ? extensionName != null : !EXTENSION_NAME_EDEFAULT.equals(extensionName);
 			case IrPackage.EXTENSION_PROVIDER__PROVIDER_NAME:
 				return PROVIDER_NAME_EDEFAULT == null ? providerName != null : !PROVIDER_NAME_EDEFAULT.equals(providerName);
-			case IrPackage.EXTENSION_PROVIDER__PROJECT_ROOT:
-				return PROJECT_ROOT_EDEFAULT == null ? projectRoot != null : !PROJECT_ROOT_EDEFAULT.equals(projectRoot);
+			case IrPackage.EXTENSION_PROVIDER__PROJECT_DIR:
+				return PROJECT_DIR_EDEFAULT == null ? projectDir != null : !PROJECT_DIR_EDEFAULT.equals(projectDir);
+			case IrPackage.EXTENSION_PROVIDER__INSTALL_DIR:
+				return INSTALL_DIR_EDEFAULT == null ? installDir != null : !INSTALL_DIR_EDEFAULT.equals(installDir);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -265,8 +319,10 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 		result.append(extensionName);
 		result.append(", providerName: ");
 		result.append(providerName);
-		result.append(", projectRoot: ");
-		result.append(projectRoot);
+		result.append(", projectDir: ");
+		result.append(projectDir);
+		result.append(", installDir: ");
+		result.append(installDir);
 		result.append(')');
 		return result.toString();
 	}

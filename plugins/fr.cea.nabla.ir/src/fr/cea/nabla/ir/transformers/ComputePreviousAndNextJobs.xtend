@@ -26,7 +26,7 @@ class ComputePreviousAndNextJobs extends IrTransformationStep
 
 	override protected boolean transform(IrRoot ir)
 	{
-		trace('IR -> IR: ' + description)
+		trace('    IR -> IR: ' + description)
 		if (ir.main !== null)
 		{
 			computePreviousAndNextJobsWithSameCaller(ir.main)

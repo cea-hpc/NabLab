@@ -10,7 +10,7 @@ public class BatiLibCppJni
 {
 	static
 	{
-		System.loadLibrary("batilibcppjni");
+		System.load("/home/lelandaisb/workspaces/NabLab/tests/NablaTest/../NablaTest/src-gen-interpreter/depthinit/lib/libbatilibcppjni.so");
 	}
 
 	// This is a long here (in Java) but is used as a pointer to hold the

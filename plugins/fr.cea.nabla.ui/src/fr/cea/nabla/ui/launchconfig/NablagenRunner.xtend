@@ -68,15 +68,12 @@ class NablagenRunner
 				EcoreUtil::resolveAll(resourceSet)
 				emfResource.load(null)
 
-				consoleFactory.printConsole(MessageType.Exec, "Starting NabLab to IR model transformation")
-				val startTime = System.currentTimeMillis
 				val baseDir = nablagenFile.project.location.toString
 				val ngen = emfResource.contents.filter(NablagenRoot).head
-				val ir = ngenInterpreter.buildIr(ngen, baseDir, true)
-				val afterConvertionTime = System.currentTimeMillis
-				consoleFactory.printConsole(MessageType.Exec, "NabLab to IR model transformation ended in " + (afterConvertionTime-startTime)/1000.0 + "s")
+				val ir = ngenInterpreter.buildInterpreterIr(ngen, baseDir)
 
 				consoleFactory.printConsole(MessageType.Exec, "Starting code interpretation")
+				val startTime = System.currentTimeMillis
 				val handler = new NabLabConsoleHandler(consoleFactory)
 				handler.level = Level.FINE
 				val irInterpreter = new IrInterpreter(ir, handler)
@@ -85,11 +82,9 @@ class NablagenRunner
 				if (jsonFile === null || !jsonFile.exists) throw new RuntimeException("Invalid file: " + jsonFile.fullPath)
 				val jsonContent = new BufferedReader(new InputStreamReader(jsonFile.contents)).lines().collect(Collectors.joining("\n"))
 				irInterpreter.interprete(jsonContent)
+				val endTime = System.currentTimeMillis
+				consoleFactory.printConsole(MessageType.Exec, "Code interpretation ended in " + (endTime-startTime)/1000.0 + "s")
 
-				val afterGenerationTime = System.currentTimeMillis
-				consoleFactory.printConsole(MessageType.Exec, "Code interpretation ended in " + (afterGenerationTime-afterConvertionTime)/1000.0 + "s")
-
-				consoleFactory.printConsole(MessageType.Exec, "Total time: " + (afterGenerationTime-startTime)/1000.0 + "s");
 				nablagenFile.project.refreshLocal(IResource::DEPTH_INFINITE, null)
 				consoleFactory.printConsole(MessageType.End, "Interpretation ended successfully for: " + nablagenFile.name)
 			}
@@ -110,18 +105,18 @@ class NablagenRunner
 		val urls = new ArrayList<URL>
 		for (p : providers)
 		{
-			if (!p.projectRoot.nullOrEmpty)
+			if (!p.installDir.nullOrEmpty)
 			{
-				var expandedProjectHome = p.projectRoot
-				var matcher = pattern.matcher(expandedProjectHome)
+				var expandedInstallDir = p.installDir
+				var matcher = pattern.matcher(expandedInstallDir)
 				while (matcher.find())
 				{
 					val envVarName = matcher.group(1)
 					val envVar = System.getenv(envVarName)
-					expandedProjectHome = matcher.replaceFirst(envVar)
-					matcher = pattern.matcher(expandedProjectHome)
+					expandedInstallDir = matcher.replaceFirst(envVar)
+					matcher = pattern.matcher(expandedInstallDir)
 				}
-				val urlText = "file://" + expandedProjectHome + "/" + p.providerName + "/lib/" + p.libName + ".jar"
+				val urlText = "file://" + expandedInstallDir + "/" + p.libName + ".jar"
 				urls += new URL(urlText)
 			}
 		}

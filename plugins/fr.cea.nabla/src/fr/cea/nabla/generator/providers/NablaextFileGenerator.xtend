@@ -30,30 +30,28 @@ class NablaextFileGenerator extends StandaloneGeneratorBase
 
 	/*
 	 * C++ Extension Provider
-	 *   - source files (.h and .cc) expected in projectRoot/«name»Cpp/src
-	 *   - library file expected in projectRoot/«name»Cpp/lib
+	 * Source files (.h and .cc) in projectDir/«name»Cpp/src
 	 *
 	 * Build instructions:
-	 *   - go into the projectRoot/«name»Cpp project directory and create a lib directory to build the project: mkdir lib; cd lib
+	 *   - go into the projectDir/«name»Cpp project directory and create a lib directory to build the project: mkdir lib; cd lib
 	 *   - start cmake with in setting your compiler and compile: cmake -D CMAKE_CXX_COMPILER=/usr/bin/g++ ../src; make
 	 */
 	ExtensionProvider «name»Cpp : «name»
 	{
 		target = «TargetType::CPP_SEQUENTIAL.literal»;
-		// projectRoot is the parent directory of the «name»Cpp project. $ENV and other CMake keywords can be used."
-		projectRoot = "«workspaceRoot»";
+		// projectDir is the parent directory of the «name»Cpp project. $ENV and other CMake keywords can be used."
+		projectDir = "«workspaceRoot»/«name»Cpp";
 	}
 
 	/* 
 	 * Java Extension Provider
-	 *   - source files (.h and .cc) expected in projectRoot/«name»Java/src
-	 *   - jar file expected in projectRoot/«name»Java/lib
+	 * Source files (.h and .cc) in projectDir/«name»Java/src
 	 */
 	ExtensionProvider «name»Java : «name»
 	{
 		target = «TargetType::JAVA.literal»;
-		// projectRoot is the parent directory of the «name»Java project. $ENV and other CMake keywords can be used."
-		projectRoot = "«workspaceRoot»";
+		// projectDir is the parent directory of the «name»Java project. $ENV and other CMake keywords can be used."
+		projectDir = "«workspaceRoot»/«name»Java";
 	}
 	'''
 }

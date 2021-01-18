@@ -8,7 +8,7 @@ class ExtensionProviderExtensions
 	static def getClassName(ExtensionProvider it) { providerName }
 	static def getInterfaceName(ExtensionProvider it) { 'I' + providerName }
 	static def getProjectName(ExtensionProvider it) { providerName }
-	static def getProjectHome(ExtensionProvider it) { projectRoot + '/' + projectName }
+	static def getProjectHome(ExtensionProvider it) { projectDir + '/' + projectName }
 	static def getLibName(ExtensionProvider it) { providerName.toLowerCase }
 
 	static def getNsClassName(ExtensionProvider it, String separator)

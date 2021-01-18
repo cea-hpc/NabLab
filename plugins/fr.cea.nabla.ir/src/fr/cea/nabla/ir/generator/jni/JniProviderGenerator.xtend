@@ -32,7 +32,7 @@ class JniProviderGenerator implements ProviderGenerator
 		fileContents += new GenerationContent(javaFileName, getJavaFileContent(provider, functions), false)
 
 		// .cc
-		val sourceFileName =  provider.namespaceName + "_" +provider.jniClassName + ".cc"
+		val sourceFileName =  provider.namespaceName + "_" + provider.jniClassName + ".cc"
 		fileContents += new GenerationContent(sourceFileName, getCppFileContent(provider, functions), false)
 
 		// CMakeLists.txt
@@ -56,7 +56,7 @@ class JniProviderGenerator implements ProviderGenerator
 	{
 		static
 		{
-			System.loadLibrary("«provider.jniLibName»");
+			System.load("«provider.installDir»/lib«provider.jniLibName».so");
 		}
 
 		// This is a long here (in Java) but is used as a pointer to hold the
@@ -156,7 +156,7 @@ class JniProviderGenerator implements ProviderGenerator
 	'''
 	«CMakeUtils::fileHeader»
 
-	set(«provider.extensionName.toUpperCase»_DIR «provider.projectHome»)
+	set(«provider.extensionName.toUpperCase»_DIR «provider.projectDir»)
 
 	if(NOT DEFINED JAVA_HOME)
 		message(FATAL_ERROR "JAVA_HOME variable undefined.\n"
@@ -195,6 +195,9 @@ class JniProviderGenerator implements ProviderGenerator
 		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 		COMMAND ${JAVA_HOME}/bin/jar cvf «provider.jniLibName».jar «provider.namespaceName»/«provider.jniClassName».class
 		DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/«provider.namespaceName»_«provider.jniClassName».h)
+
+	INSTALL(TARGETS «provider.jniLibName» DESTINATION ${CMAKE_SOURCE_DIR}/lib)
+	INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/«provider.jniLibName».jar DESTINATION ${CMAKE_SOURCE_DIR}/lib)
 
 	«CMakeUtils.fileFooter»
 	'''

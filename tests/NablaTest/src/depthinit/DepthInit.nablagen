@@ -32,8 +32,6 @@ Java
 {
 	outputPath = "/NablaTest/src-gen-java";
 	extension BatiLib providedBy BatiLibJava;
-	NABLA_CXX_COMPILER = "/usr/bin/g++";
-	JAVA_HOME = "/usr/lib/jvm/java-11-openjdk-amd64";
 }
 
 StlThread

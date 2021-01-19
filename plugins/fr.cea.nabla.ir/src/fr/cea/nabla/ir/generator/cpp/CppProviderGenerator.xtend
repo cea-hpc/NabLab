@@ -143,11 +143,10 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 
 	add_subdirectory(${LIBCPPNABLA_DIR} ${CMAKE_BINARY_DIR}/libcppnabla EXCLUDE_FROM_ALL)
 
-	add_library(«provider.libName» SHARED «provider.namespaceName.toLowerCase»/«provider.className».cc)
+	add_library(«provider.libName» «provider.namespaceName.toLowerCase»/«provider.className».cc)
+	set_property(TARGET «provider.libName» PROPERTY POSITION_INDEPENDENT_CODE ON)
 	target_include_directories(«provider.libName» PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 	target_link_libraries(«provider.libName» PUBLIC cppnabla)
-
-	INSTALL(TARGETS «provider.libName» DESTINATION ${CMAKE_SOURCE_DIR}/lib)
 
 	«CMakeUtils.fileFooter»
 	'''

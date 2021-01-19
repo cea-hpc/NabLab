@@ -22,11 +22,10 @@ MESSAGE(STATUS "Building library batilibcpp")
 
 add_subdirectory(${LIBCPPNABLA_DIR} ${CMAKE_BINARY_DIR}/libcppnabla EXCLUDE_FROM_ALL)
 
-add_library(batilibcpp SHARED batilib/BatiLibCpp.cc)
+add_library(batilibcpp batilib/BatiLibCpp.cc)
+set_property(TARGET batilibcpp PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_include_directories(batilibcpp PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(batilibcpp PUBLIC cppnabla)
-
-INSTALL(TARGETS batilibcpp DESTINATION ${CMAKE_SOURCE_DIR}/lib)
 
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 	include(${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)

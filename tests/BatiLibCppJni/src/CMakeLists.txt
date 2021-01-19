@@ -38,7 +38,7 @@ target_link_libraries(batilibcppjni PUBLIC batilibcpp)
 
 # Generation of BatiLibCppJni.h from BatiLibCppJni.java
 add_custom_command(
-	OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/batilib_BatiLibCppJni.h
+	OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/batilib_BatiLibCppJni.h batilib/BatiLibCppJni.class
 	COMMENT "Generate BatiLibCppJni.h from BatiLibCppJni.java"
 	COMMAND ${JAVA_HOME}/bin/javac -h ${CMAKE_CURRENT_SOURCE_DIR} -d ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/batilib/BatiLibCppJni.java
 	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/batilib/BatiLibCppJni.java)

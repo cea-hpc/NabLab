@@ -9,21 +9,14 @@
  *******************************************************************************/
 package fr.cea.nabla.ir
 
-import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.Arg
 import fr.cea.nabla.ir.ir.ArgOrVar
-import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.ConnectivityVariable
-import fr.cea.nabla.ir.ir.Function
-import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrType
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.Variable
-import org.eclipse.emf.ecore.EObject
-
-import static extension fr.cea.nabla.ir.Utils.*
 
 class ArgOrVarExtensions
 {
@@ -52,39 +45,8 @@ class ArgOrVarExtensions
 		(it instanceof Variable && eContainer instanceof IrModule)
 	}
 
-	static def isLinearAlgebra(Function it)
-	{
-		containsLinearAlgebra
-	}
-
 	static def isLinearAlgebra(ArgOrVar it)
 	{
-		if (it instanceof ConnectivityVariable)
-		{
-			val references = irModule.eAllContents.filter(ArgOrVarRef).filter[x | x.target == it]
-			references.exists[x | x.eContainer.containsLinearAlgebra]
-		}
-		else
-			false
-	}
-
-	private static def dispatch boolean containsLinearAlgebra(EObject it)
-	{
-		false
-	}
-
-	private static def dispatch boolean containsLinearAlgebra(Affectation it)
-	{
-		right.containsLinearAlgebra
-	}
-
-	private static def dispatch boolean containsLinearAlgebra(FunctionCall it)
-	{
-		function.containsLinearAlgebra
-	}
-
-	private static def dispatch boolean containsLinearAlgebra(Function it)
-	{
-		provider.extensionName == 'LinearAlgebra'
+		(it instanceof ConnectivityVariable && (it as ConnectivityVariable).linearAlgebra)
 	}
 }

@@ -182,7 +182,7 @@ class JniProviderGenerator implements ProviderGenerator
 
 	# Generation of «provider.jniClassName».h from «provider.jniClassName».java
 	add_custom_command(
-		OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/«provider.namespaceName»_«provider.jniClassName».h
+		OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/«provider.namespaceName»_«provider.jniClassName».h «provider.namespaceName»/«provider.jniClassName».class
 		COMMENT "Generate «provider.jniClassName».h from «provider.jniClassName».java"
 		COMMAND ${JAVA_HOME}/bin/javac -h ${CMAKE_CURRENT_SOURCE_DIR} -d ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/«provider.namespaceName»/«provider.jniClassName».java
 		DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/«provider.namespaceName»/«provider.jniClassName».java)

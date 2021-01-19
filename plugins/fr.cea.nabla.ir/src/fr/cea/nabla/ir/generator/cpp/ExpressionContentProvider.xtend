@@ -119,14 +119,11 @@ class ExpressionContentProvider
 				// 3 args either means no precond with x0, or precond without x0
 				case 3: '''«function.codeName»(«args.get(0).content», «args.get(1).content», «args.get(2).cppLinearAlgebraHelper»)'''
 				// 4 args either means no precond with x0 and iteration threshold, or precond with x0
-				case 4: '''«function.codeName»(«args.get(0).content», «args.get(1).content», «args.get(2).cppLinearAlgebraHelper»,
-				                               «args.get(3).cppLinearAlgebraHelper»)'''
+				case 4: '''«function.codeName»(«args.get(0).content», «args.get(1).content», «args.get(2).cppLinearAlgebraHelper», «args.get(3).cppLinearAlgebraHelper»)'''
 				// 5 args either no precond with everything, or precond with x0 and iteration threshold
-				case 5: '''«function.codeName»(«args.get(0).content», «args.get(1).content», «args.get(2).cppLinearAlgebraHelper»,
-				                               «args.get(3).cppLinearAlgebraHelper», «args.get(4).content»)'''
+				case 5: '''«function.codeName»(«args.get(0).content», «args.get(1).content», «args.get(2).cppLinearAlgebraHelper», «args.get(3).cppLinearAlgebraHelper», «args.get(4).content»)'''
 				// 6 args means precond with everything
-				case 6: '''«function.codeName»(«args.get(0).content», «args.get(1).content», «args.get(2).content»,
-				                               «args.get(3).cppLinearAlgebraHelper», «args.get(4).content», «args.get(5).content»)'''
+				case 6: '''«function.codeName»(«args.get(0).content», «args.get(1).content», «args.get(2).content», «args.get(3).cppLinearAlgebraHelper», «args.get(4).content», «args.get(5).content»)'''
 				default: throw new RuntimeException("Wrong numbers of arguments for solveLinearSystem")
 			}
 		else
@@ -134,7 +131,7 @@ class ExpressionContentProvider
 	}
 
 	def dispatch CharSequence getContent(ArgOrVarRef it)
-	'''«codeName»«iteratorsContent»«FOR d:indices BEFORE '['  SEPARATOR '][' AFTER ']'»«d.content»«ENDFOR»'''
+	'''«codeName»«iteratorsContent»«FOR d:indices»[«d.content»]«ENDFOR»'''
 
 	private def CharSequence getCodeName(ArgOrVarRef it)
 	{

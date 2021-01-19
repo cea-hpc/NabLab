@@ -18,7 +18,6 @@ import static fr.cea.nabla.ir.interpreter.IrTypeExtensions.*
 import static fr.cea.nabla.ir.interpreter.NablaValueFactory.*
 import static fr.cea.nabla.ir.interpreter.NablaValueSetter.*
 
-import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 
 class VariableValueFactory

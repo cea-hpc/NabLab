@@ -44,8 +44,8 @@ class FunctionCallHelper
 				switch dimension
 				{
 					case 0: typeof(double)
-					case 1: if (!linearAlgebra) typeof(double[]) else typeof(Vector)
-					case 2: if (!linearAlgebra) typeof(double[][]) else typeof(Matrix)
+					case 1: if (linearAlgebra) typeof(Vector) else typeof(double[])
+					case 2: if (linearAlgebra) typeof(Matrix) else typeof(double[][])
 					default: throw new RuntimeException("Dimension not implemented: " + dimension) 
 				}
 			}

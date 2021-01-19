@@ -569,7 +569,7 @@
 				minimized="false"
 				ratio="0.6"
 				relationship="bottom"
-				relative="org.eclipse.sirius.ui.tools.views.model.explorer">
+				relative="org.eclipse.ui.navigator.ProjectExplorer">
 			</view>
 			<hiddenToolBarItem
 				id="org.eclipse.jdt.ui.navigate.open.type">

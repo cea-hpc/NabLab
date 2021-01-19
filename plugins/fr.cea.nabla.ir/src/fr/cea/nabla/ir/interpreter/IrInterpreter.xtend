@@ -201,7 +201,8 @@ class IrInterpreter
 
 			for (function : functionsByProvider.get(provider))
 			{
-				val javaTypes = function.inArgs.map[a | FunctionCallHelper.getJavaType(a.type.primitive, a.type.dimension, function.linearAlgebra)]
+				val isLinearAlgebra = (provider.providerName == 'LinearAlgebraFunctions')
+				val javaTypes = function.inArgs.map[a | FunctionCallHelper.getJavaType(a.type.primitive, a.type.dimension, isLinearAlgebra)]
 				val method = providerClass.getDeclaredMethod(function.name, javaTypes)
 				method.setAccessible(true)
 				context.functionToMethod.put(function, new Pair(providerInstance, method))

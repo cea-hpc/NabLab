@@ -13,8 +13,6 @@ import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.SimpleVariable
 
-import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
-
 class IrRootExtensions
 {
 	static def getOptions(IrRoot it)

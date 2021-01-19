@@ -15,6 +15,7 @@ import fr.cea.nabla.ir.ir.BaseTypeConstant
 import fr.cea.nabla.ir.ir.BinaryExpression
 import fr.cea.nabla.ir.ir.BoolConstant
 import fr.cea.nabla.ir.ir.Cardinality
+import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.ContractedIf
 import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IntConstant
@@ -26,6 +27,7 @@ import fr.cea.nabla.ir.ir.RealConstant
 import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.ir.VectorConstant
 
+import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.Utils.*
@@ -112,7 +114,19 @@ class ExpressionContentProvider
 	'''«function.codeName»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
 
 	static def dispatch CharSequence getContent(ArgOrVarRef it)
-	'''«codeName»«FOR r : iterators BEFORE '[' SEPARATOR '][' AFTER ']'»«r.name»«ENDFOR»«FOR d:indices»[«d.content»]«ENDFOR»'''
+	{
+		var argOrVarContent = codeName
+		if (target.linearAlgebra)
+			if (target instanceof ConnectivityVariable
+				&& (target as ConnectivityVariable).type.connectivities.size  === 2
+				&& iterators.size === 2)
+				argOrVarContent += ".get("+iterators.map[name].join(', ')+")"+ indices.map[".get("+content+")"].join
+			else
+				argOrVarContent += iterators.map[".get("+name+")"].join + indices.map[".get("+content+")"].join
+		else
+			argOrVarContent += iterators.map["["+name+"]"].join + indices.map["["+content+"]"].join
+		return argOrVarContent
+	}
 
 	private static def getCodeName(ArgOrVarRef it)
 	{

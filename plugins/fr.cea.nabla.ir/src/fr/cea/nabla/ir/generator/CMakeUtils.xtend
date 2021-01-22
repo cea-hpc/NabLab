@@ -2,6 +2,16 @@ package fr.cea.nabla.ir.generator
 
 class CMakeUtils
 {
+	static val userDir = System.getProperty("user.home")
+
+	static def formatCMakePath(String path)
+	{
+		if (path.startsWith(userDir))
+			path.replace(userDir, "$ENV{HOME}")
+		else
+			path
+	}
+
 	static def getFileHeader()
 	'''
 	### GENERATED FILE - DO NOT OVERWRITE ###

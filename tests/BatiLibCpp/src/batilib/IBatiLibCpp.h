@@ -1,13 +1,13 @@
 /*** GENERATED FILE - DO NOT OVERWRITE ***/
 
 #ifndef __BATILIB_IBATILIBCPP
-#define __BATILIB_IBATILIBCPP
+#define __BATILIB__IBATILIBCPP
 
 #include <iostream>
 #include <string>
-#include "types/Types.h"
+#include "nablalib/types/Types.h"
 
-using namespace nablalib;
+using namespace nablalib::types;
 
 namespace batilib
 {
@@ -38,4 +38,4 @@ namespace batilib
 	};
 }
 
-#endif // __BATILIB_IBATILIBCPP
+#endif // __BATILIB__IBATILIBCPP

@@ -21,6 +21,9 @@ import fr.cea.nabla.ir.ir.IrPackage;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ExtensionProviderImpl#getProviderName <em>Provider Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ExtensionProviderImpl#getProjectDir <em>Project Dir</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ExtensionProviderImpl#getInstallDir <em>Install Dir</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.ExtensionProviderImpl#getFacadeClass <em>Facade Class</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.ExtensionProviderImpl#getFacadeNamespace <em>Facade Namespace</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.ExtensionProviderImpl#getLibName <em>Lib Name</em>}</li>
  * </ul>
  *
  * @generated
@@ -105,6 +108,66 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 	 * @ordered
 	 */
 	protected String installDir = INSTALL_DIR_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getFacadeClass() <em>Facade Class</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getFacadeClass()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String FACADE_CLASS_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getFacadeClass() <em>Facade Class</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getFacadeClass()
+	 * @generated
+	 * @ordered
+	 */
+	protected String facadeClass = FACADE_CLASS_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getFacadeNamespace() <em>Facade Namespace</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getFacadeNamespace()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String FACADE_NAMESPACE_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getFacadeNamespace() <em>Facade Namespace</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getFacadeNamespace()
+	 * @generated
+	 * @ordered
+	 */
+	protected String facadeNamespace = FACADE_NAMESPACE_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getLibName() <em>Lib Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getLibName()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String LIB_NAME_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getLibName() <em>Lib Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getLibName()
+	 * @generated
+	 * @ordered
+	 */
+	protected String libName = LIB_NAME_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -223,6 +286,75 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 	 * @generated
 	 */
 	@Override
+	public String getFacadeClass() {
+		return facadeClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setFacadeClass(String newFacadeClass) {
+		String oldFacadeClass = facadeClass;
+		facadeClass = newFacadeClass;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.EXTENSION_PROVIDER__FACADE_CLASS, oldFacadeClass, facadeClass));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public String getFacadeNamespace() {
+		return facadeNamespace;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setFacadeNamespace(String newFacadeNamespace) {
+		String oldFacadeNamespace = facadeNamespace;
+		facadeNamespace = newFacadeNamespace;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.EXTENSION_PROVIDER__FACADE_NAMESPACE, oldFacadeNamespace, facadeNamespace));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public String getLibName() {
+		return libName;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setLibName(String newLibName) {
+		String oldLibName = libName;
+		libName = newLibName;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.EXTENSION_PROVIDER__LIB_NAME, oldLibName, libName));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case IrPackage.EXTENSION_PROVIDER__EXTENSION_NAME:
@@ -233,6 +365,12 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 				return getProjectDir();
 			case IrPackage.EXTENSION_PROVIDER__INSTALL_DIR:
 				return getInstallDir();
+			case IrPackage.EXTENSION_PROVIDER__FACADE_CLASS:
+				return getFacadeClass();
+			case IrPackage.EXTENSION_PROVIDER__FACADE_NAMESPACE:
+				return getFacadeNamespace();
+			case IrPackage.EXTENSION_PROVIDER__LIB_NAME:
+				return getLibName();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -256,6 +394,15 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 				return;
 			case IrPackage.EXTENSION_PROVIDER__INSTALL_DIR:
 				setInstallDir((String)newValue);
+				return;
+			case IrPackage.EXTENSION_PROVIDER__FACADE_CLASS:
+				setFacadeClass((String)newValue);
+				return;
+			case IrPackage.EXTENSION_PROVIDER__FACADE_NAMESPACE:
+				setFacadeNamespace((String)newValue);
+				return;
+			case IrPackage.EXTENSION_PROVIDER__LIB_NAME:
+				setLibName((String)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -281,6 +428,15 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 			case IrPackage.EXTENSION_PROVIDER__INSTALL_DIR:
 				setInstallDir(INSTALL_DIR_EDEFAULT);
 				return;
+			case IrPackage.EXTENSION_PROVIDER__FACADE_CLASS:
+				setFacadeClass(FACADE_CLASS_EDEFAULT);
+				return;
+			case IrPackage.EXTENSION_PROVIDER__FACADE_NAMESPACE:
+				setFacadeNamespace(FACADE_NAMESPACE_EDEFAULT);
+				return;
+			case IrPackage.EXTENSION_PROVIDER__LIB_NAME:
+				setLibName(LIB_NAME_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -301,6 +457,12 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 				return PROJECT_DIR_EDEFAULT == null ? projectDir != null : !PROJECT_DIR_EDEFAULT.equals(projectDir);
 			case IrPackage.EXTENSION_PROVIDER__INSTALL_DIR:
 				return INSTALL_DIR_EDEFAULT == null ? installDir != null : !INSTALL_DIR_EDEFAULT.equals(installDir);
+			case IrPackage.EXTENSION_PROVIDER__FACADE_CLASS:
+				return FACADE_CLASS_EDEFAULT == null ? facadeClass != null : !FACADE_CLASS_EDEFAULT.equals(facadeClass);
+			case IrPackage.EXTENSION_PROVIDER__FACADE_NAMESPACE:
+				return FACADE_NAMESPACE_EDEFAULT == null ? facadeNamespace != null : !FACADE_NAMESPACE_EDEFAULT.equals(facadeNamespace);
+			case IrPackage.EXTENSION_PROVIDER__LIB_NAME:
+				return LIB_NAME_EDEFAULT == null ? libName != null : !LIB_NAME_EDEFAULT.equals(libName);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -323,6 +485,12 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 		result.append(projectDir);
 		result.append(", installDir: ");
 		result.append(installDir);
+		result.append(", facadeClass: ");
+		result.append(facadeClass);
+		result.append(", facadeNamespace: ");
+		result.append(facadeNamespace);
+		result.append(", libName: ");
+		result.append(libName);
 		result.append(')');
 		return result.toString();
 	}

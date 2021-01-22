@@ -228,7 +228,7 @@ class UnusedValidatorTest
 		val modelKo = 
 			'''
 			«emptyTestModule»
-			def f: x | ℝ[x] → ℝ;
+			def f: x | ℝ[x] → ℝ, (a) → return 1.0;
 			let ℝ[2] orig = [0.0 , 0.0];
 		'''
 		val moduleKo = parseHelper.parse(modelKo)

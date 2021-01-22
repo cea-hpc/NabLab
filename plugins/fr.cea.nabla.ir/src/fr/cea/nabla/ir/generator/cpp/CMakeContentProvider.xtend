@@ -14,7 +14,6 @@ import fr.cea.nabla.ir.ir.IrRoot
 import java.util.HashMap
 
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
-import static extension fr.cea.nabla.ir.generator.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 
 abstract class CMakeContentProvider
@@ -26,13 +25,13 @@ abstract class CMakeContentProvider
 	'''
 		«CMakeUtils.fileHeader»
 
-		set(LIBCPPNABLA_DIR «libCppNablaDir» CACHE STRING "")
+		set(LIBCPPNABLA_DIR «CMakeUtils.formatCMakePath(libCppNablaDir)» CACHE STRING "")
 		«FOR entry : variables.entrySet»
 		set(«entry.key» «entry.value»)
 		«ENDFOR»
-		«val externalProviders = providers.filter[x | x.extensionName != "Math" && x.extensionName != "LinearAlgebra"]»
+		«val externalProviders = providers.filter[x | x.extensionName != "Math"]»
 		«FOR ep : externalProviders»
-		set(«ep.extensionName.toUpperCase»_HOME «ep.projectHome»)
+		set(«ep.extensionName.toUpperCase»_DIR «CMakeUtils.formatCMakePath(ep.projectDir)»)
 		«ENDFOR»
 
 		project(«name»Project CXX)
@@ -41,10 +40,10 @@ abstract class CMakeContentProvider
 
 		«libraryBackend»
 		«FOR ep : externalProviders»
-		add_subdirectory(${«ep.extensionName.toUpperCase»_HOME}/src ${CMAKE_BINARY_DIR}/«ep.projectName» EXCLUDE_FROM_ALL)
+		add_subdirectory(${«ep.extensionName.toUpperCase»_DIR}/src ${CMAKE_BINARY_DIR}/«ep.providerName» EXCLUDE_FROM_ALL)
 		«ENDFOR»
 		if(NOT TARGET cppnabla)
-			add_subdirectory(${LIBCPPNABLA_DIR} ${CMAKE_BINARY_DIR}/libcppnabla EXCLUDE_FROM_ALL)
+			add_subdirectory(${LIBCPPNABLA_DIR}/src ${CMAKE_BINARY_DIR}/«CppGeneratorUtils::CppLibName» EXCLUDE_FROM_ALL)
 		endif()
 
 		«IF !levelDBPath.nullOrEmpty»

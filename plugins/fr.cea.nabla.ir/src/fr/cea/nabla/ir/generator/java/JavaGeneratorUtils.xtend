@@ -18,6 +18,8 @@ import static extension fr.cea.nabla.ir.Utils.getInstanceName
 
 class JavaGeneratorUtils
 {
+	public static val JavaLibName = "LibJavaNabla"
+
 	static def getCodeName(Function it)
 	{
 		if (body === null)

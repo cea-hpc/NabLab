@@ -6,7 +6,6 @@
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
 
-using namespace nablalib;
 
 /******************** Free functions definitions ********************/
 
@@ -558,9 +557,9 @@ void Glace2d::executeTimeLoopN() noexcept
 			std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __RED__ << "none" << __RESET__ << "} ";
 		
 		// Progress
-		std::cout << utils::progress_bar(n, options.maxIterations, t_n, options.stopTime, 25);
-		std::cout << __BOLD__ << __CYAN__ << utils::Timer::print(
-			utils::eta(n, options.maxIterations, t_n, options.stopTime, deltat_n, globalTimer), true)
+		std::cout << progress_bar(n, options.maxIterations, t_n, options.stopTime, 25);
+		std::cout << __BOLD__ << __CYAN__ << Timer::print(
+			eta(n, options.maxIterations, t_n, options.stopTime, deltat_n, globalTimer), true)
 			<< __RESET__ << "\r";
 		std::cout.flush();
 	
@@ -664,7 +663,7 @@ void Glace2d::computeAr() noexcept
 			{
 				const Id jId(cellsOfNodeR[jCellsOfNodeR]);
 				const size_t jCells(jId);
-				const size_t rNodesOfCellJ(utils::indexOf(mesh->getNodesOfCell(jId), rId));
+				const size_t rNodesOfCellJ(indexOf(mesh->getNodesOfCell(jId), rId));
 				reduction0 = Glace2dFuncs::sumR2(reduction0, Ajr[jCells][rNodesOfCellJ]);
 			}
 		}
@@ -691,7 +690,7 @@ void Glace2d::computeBr() noexcept
 			{
 				const Id jId(cellsOfNodeR[jCellsOfNodeR]);
 				const size_t jCells(jId);
-				const size_t rNodesOfCellJ(utils::indexOf(mesh->getNodesOfCell(jId), rId));
+				const size_t rNodesOfCellJ(indexOf(mesh->getNodesOfCell(jId), rId));
 				reduction0 = Glace2dFuncs::sumR1(reduction0, p[jCells] * C[jCells][rNodesOfCellJ] + Glace2dFuncs::matVectProduct(Ajr[jCells][rNodesOfCellJ], uj_n[jCells]));
 			}
 		}

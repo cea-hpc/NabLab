@@ -12,10 +12,13 @@ package fr.cea.nabla.tests
 import com.google.common.collect.PeekingIterator
 import com.google.gson.Gson
 import com.google.inject.Inject
+import fr.cea.nabla.generator.UnzipHelper
+import fr.cea.nabla.ir.generator.cpp.CppGeneratorUtils
 import fr.cea.nabla.nablaext.TargetType
 import fr.cea.nabla.nablagen.Target
 import java.io.File
 import java.nio.file.Files
+import java.nio.file.Paths
 import org.apache.commons.io.FileUtils
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
@@ -149,9 +152,10 @@ class NablaExamplesTest
 
 		val tmp = new File(Files.createTempDirectory("nablaTest-" + moduleName) + "/NablaExamples")
 		println(tmp)
+
 		// We have to create output dir. Simpliest is to copy all NablaExamples tree in tmpDir
 		val sourceLocation= new File(examplesProjectPath)
-		FileUtils.copyDirectory(sourceLocation, tmp);
+		FileUtils.copyDirectory(sourceLocation, tmp)
 
 		val packageName = moduleName.toLowerCase
 		val model = readFileAsString(tmp + "/src/" + packageName + "/" + moduleName + ".nabla")
@@ -160,6 +164,15 @@ class NablaExamplesTest
 		// Adapt genModel for LevelDBPath & KokkosPath & tmpOutputDir
 		genmodel = genmodel.adaptedGenModel(kokkosPath, levelDBPath)
 		compilationHelper.generateCode(model, genmodel, tmp.toPath.toString)
+
+		// unzip libcppnabla
+		val cppZipFile = new File(cppLibPath)
+		val destDir = new File(tmp + '/..')
+		UnzipHelper.unzip(cppZipFile.toURI, destDir.toURI)
+		val cmakePath = Paths.get(destDir.path, CppGeneratorUtils::CppLibName, 'src', 'CMakeLists.txt')
+		var cmakeContent = Files.readString(cmakePath)
+		cmakeContent = cmakeContent.replaceAll(" -O3 ", " -O2 ")
+		Files.writeString(cmakePath, cmakeContent)
 
 		var nbErrors = 0
 		for (target : compilationHelper.getNgen(model, genmodel).targets.filter[!interpreter])
@@ -225,7 +238,6 @@ class NablaExamplesTest
 		var pb = new ProcessBuilder("/bin/bash",
 			System.getProperty("user.dir") + "/src/fr/cea/nabla/tests/executeCppNablaExample.sh",
 			outputDir, // output src-gen path
-			cppLibPath, // cpp lib zip path
 			packageName,
 			levelDBRef,
 			jsonFile,

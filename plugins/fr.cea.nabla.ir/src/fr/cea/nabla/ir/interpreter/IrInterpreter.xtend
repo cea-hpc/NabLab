@@ -39,7 +39,7 @@ import static extension fr.cea.nabla.ir.interpreter.NablaValueExtensions.*
 
 class IrInterpreter
 {
-	public static String ITERATION_VARIABLE_NAME = "InterpreterIteration"
+	public static val ITERATION_VARIABLE_NAME = "InterpreterIteration"
 
 	@Accessors URL[] classloaderUrls
 	@Accessors val Context context
@@ -85,6 +85,8 @@ class IrInterpreter
 	def interprete(String jsonContent)
 	{
 		context.logInfo("  Start interpreting " + ir.name + " module")
+//		context.logInfo("     " + classloaderUrls.size + " URL(s) provided to class loader")
+//		classloaderUrls.forEach[x | context.logInfo("       " + x.toString)]
 
 		// Start initialising the variables with default values
 		interpreteOptionsDefaultValues
@@ -103,7 +105,9 @@ class IrInterpreter
 		// Read options in Json
 		for (m : context.ir.modules)
 			if (jsonObject.has(m.name))
-				jsonInit(m, jsonObject.get(m.name), classLoader)
+				init(classLoader, m, jsonObject.get(m.name))
+			else
+				init(classLoader, m, null)
 
 		// Interprete variables that are not options
 		for (v : ir.variables.filter[!option])
@@ -152,12 +156,12 @@ class IrInterpreter
 		levelDBcompareResult
 	}
 
-	private def jsonInit(IrModule m, JsonElement jsonElt, ClassLoader classLoader)
+	private def init(ClassLoader classLoader, IrModule m, JsonElement jsonElt)
 	{
-		val jsonOptions = jsonElt.asJsonObject
+		val jsonOptions = (jsonElt === null ? null : jsonElt.asJsonObject)
 		for (v : m.options)
 		{
-			if (jsonOptions.has(v.name))
+			if (jsonOptions !== null && jsonOptions.has(v.name))
 			{
 				val vValue = context.getVariableValue(v)
 				val jsonOpt = jsonOptions.get(v.name)
@@ -166,14 +170,10 @@ class IrInterpreter
 			else
 			{
 				if (v.defaultValue === null)
-				{
 					// v is not present in json file and is mandatory
 					throw new IllegalStateException("Mandatory option missing in Json file: " + v.name)
-				}
 				else
-				{
 					context.setVariableValue(v, interprete(v.defaultValue, context))
-				}
 			}
 		}
 
@@ -192,7 +192,7 @@ class IrInterpreter
 			{
 				providerClass = ProviderClassCache.Instance.getClass(provider, classLoader)
 				providerInstance = providerClass.constructor.newInstance
-				if (jsonOptions.has(provider.instanceName))
+				if (jsonOptions !== null && jsonOptions.has(provider.instanceName))
 				{
 					val jsonInit = providerClass.getDeclaredMethod("jsonInit", String)
 					jsonInit.invoke(providerInstance, jsonOptions.get(provider.instanceName).toString)
@@ -201,7 +201,7 @@ class IrInterpreter
 
 			for (function : functionsByProvider.get(provider))
 			{
-				val isLinearAlgebra = (provider.providerName == 'LinearAlgebraFunctions')
+				val isLinearAlgebra = (provider.extensionName == 'LinearAlgebra')
 				val javaTypes = function.inArgs.map[a | FunctionCallHelper.getJavaType(a.type.primitive, a.type.dimension, isLinearAlgebra)]
 				val method = providerClass.getDeclaredMethod(function.name, javaTypes)
 				method.setAccessible(true)

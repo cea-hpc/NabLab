@@ -17,6 +17,7 @@ import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.NablaModule
+import fr.cea.nabla.nabla.NablaRoot
 import fr.cea.nabla.nabla.OptionDeclaration
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.SimpleVar
@@ -59,8 +60,8 @@ class ArgOrVarExtensions
 		// Only SimpleVar defined with a value can be const
 		if (eContainer !== null && eContainer instanceof SimpleVarDeclaration && (eContainer as SimpleVarDeclaration).value !== null)
 		{
-			val module = EcoreUtil2::getContainerOfType(it, NablaModule)
-			module.eAllContents.filter(Affectation).forall[x | x.left.target !== it]
+			val root = EcoreUtil2::getContainerOfType(it, NablaRoot)
+			root.eAllContents.filter(Affectation).forall[x | x.left.target !== it]
 		}
 		else
 			false

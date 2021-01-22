@@ -11,12 +11,12 @@ package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.ir.Arg
 import fr.cea.nabla.ir.ir.Expression
+import fr.cea.nabla.ir.ir.ExtensionProvider
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.PrimitiveType
 import org.eclipse.xtend.lib.annotations.Data
-import fr.cea.nabla.ir.ir.ExtensionProvider
 
-import static extension fr.cea.nabla.ir.generator.ExtensionProviderExtensions.*
+import static fr.cea.nabla.ir.generator.ExtensionProviderExtensions.*
 
 @Data
 class FunctionContentProvider
@@ -39,12 +39,12 @@ class FunctionContentProvider
 		}
 	'''
 
-	def getJniDefinitionContent(ExtensionProvider provider, Function it)
+	def getJniDefinitionContent(Function it, ExtensionProvider provider, String cppFullClassName)
 	'''
-	JNIEXPORT «returnType.jniType» JNICALL Java_«provider.namespaceName»_«provider.className»Jni_«name»
+	JNIEXPORT «returnType.jniType» JNICALL Java_«getNsPrefix(provider, '.', '_')»«provider.facadeClass»_«name»
 	(JNIEnv *env, jobject self«FOR a : inArgs», «a.type.jniType» «a.name»«ENDFOR»)
 	{
-		«provider.namespaceName»::«provider.className»* _self = getObject(env, self);
+		«cppFullClassName»* _self = getObject(env, self);
 		«FOR a : inArgs»
 		// «a.name» to c_«a.name»
 		«getJniInArgContent(a)»

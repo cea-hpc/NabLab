@@ -6,7 +6,6 @@
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
 
-using namespace nablalib;
 
 /******************** Free functions definitions ********************/
 
@@ -183,7 +182,7 @@ IterativeHeatEquation::~IterativeHeatEquation()
  */
 void IterativeHeatEquation::computeFaceLength() noexcept
 {
-	parallel::parallel_exec(nbFaces, [&](const size_t& fFaces)
+	parallel_exec(nbFaces, [&](const size_t& fFaces)
 	{
 		const Id fId(fFaces);
 		double reduction0(0.0);
@@ -220,7 +219,7 @@ void IterativeHeatEquation::computeTn() noexcept
  */
 void IterativeHeatEquation::computeV() noexcept
 {
-	parallel::parallel_exec(nbCells, [&](const size_t& jCells)
+	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
 		const Id jId(jCells);
 		double reduction0(0.0);
@@ -247,7 +246,7 @@ void IterativeHeatEquation::computeV() noexcept
  */
 void IterativeHeatEquation::initD() noexcept
 {
-	parallel::parallel_exec(nbCells, [&](const size_t& cCells)
+	parallel_exec(nbCells, [&](const size_t& cCells)
 	{
 		D[cCells] = 1.0;
 	});
@@ -270,7 +269,7 @@ void IterativeHeatEquation::initTime() noexcept
  */
 void IterativeHeatEquation::initXc() noexcept
 {
-	parallel::parallel_exec(nbCells, [&](const size_t& cCells)
+	parallel_exec(nbCells, [&](const size_t& cCells)
 	{
 		const Id cId(cCells);
 		RealArray1D<2> reduction0({0.0, 0.0});
@@ -306,7 +305,7 @@ void IterativeHeatEquation::setUpTimeLoopK() noexcept
  */
 void IterativeHeatEquation::updateU() noexcept
 {
-	parallel::parallel_exec(nbCells, [&](const size_t& cCells)
+	parallel_exec(nbCells, [&](const size_t& cCells)
 	{
 		const Id cId(cCells);
 		double reduction0(0.0);
@@ -332,7 +331,7 @@ void IterativeHeatEquation::updateU() noexcept
 void IterativeHeatEquation::computeDeltaTn() noexcept
 {
 	double reduction0;
-	reduction0 = parallel::parallel_reduce(nbCells, numeric_limits<double>::max(), [&](double& accu, const size_t& cCells)
+	reduction0 = parallel_reduce(nbCells, numeric_limits<double>::max(), [&](double& accu, const size_t& cCells)
 		{
 			return (accu = IterativeHeatEquationFuncs::minR0(accu, V[cCells] / D[cCells]));
 		},
@@ -347,7 +346,7 @@ void IterativeHeatEquation::computeDeltaTn() noexcept
  */
 void IterativeHeatEquation::computeFaceConductivity() noexcept
 {
-	parallel::parallel_exec(nbFaces, [&](const size_t& fFaces)
+	parallel_exec(nbFaces, [&](const size_t& fFaces)
 	{
 		const Id fId(fFaces);
 		double reduction0(1.0);
@@ -384,7 +383,7 @@ void IterativeHeatEquation::computeFaceConductivity() noexcept
 void IterativeHeatEquation::computeResidual() noexcept
 {
 	double reduction0;
-	reduction0 = parallel::parallel_reduce(nbCells, -numeric_limits<double>::max(), [&](double& accu, const size_t& jCells)
+	reduction0 = parallel_reduce(nbCells, -numeric_limits<double>::max(), [&](double& accu, const size_t& jCells)
 		{
 			return (accu = IterativeHeatEquationFuncs::maxR0(accu, std::abs(u_nplus1_kplus1[jCells] - u_nplus1_k[jCells])));
 		},
@@ -429,7 +428,7 @@ void IterativeHeatEquation::executeTimeLoopK() noexcept
  */
 void IterativeHeatEquation::initU() noexcept
 {
-	parallel::parallel_exec(nbCells, [&](const size_t& cCells)
+	parallel_exec(nbCells, [&](const size_t& cCells)
 	{
 		if (IterativeHeatEquationFuncs::norm(Xc[cCells] - vectOne) < 0.5) 
 			u_n[cCells] = options.u0;
@@ -455,7 +454,7 @@ void IterativeHeatEquation::setUpTimeLoopN() noexcept
  */
 void IterativeHeatEquation::computeAlphaCoeff() noexcept
 {
-	parallel::parallel_exec(nbCells, [&](const size_t& cCells)
+	parallel_exec(nbCells, [&](const size_t& cCells)
 	{
 		const Id cId(cCells);
 		double alphaDiag(0.0);
@@ -534,9 +533,9 @@ void IterativeHeatEquation::executeTimeLoopN() noexcept
 			std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __RED__ << "none" << __RESET__ << "} ";
 		
 		// Progress
-		std::cout << utils::progress_bar(n, options.maxIterations, t_n, options.stopTime, 25);
-		std::cout << __BOLD__ << __CYAN__ << utils::Timer::print(
-			utils::eta(n, options.maxIterations, t_n, options.stopTime, deltat, globalTimer), true)
+		std::cout << progress_bar(n, options.maxIterations, t_n, options.stopTime, 25);
+		std::cout << __BOLD__ << __CYAN__ << Timer::print(
+			eta(n, options.maxIterations, t_n, options.stopTime, deltat, globalTimer), true)
 			<< __RESET__ << "\r";
 		std::cout.flush();
 	

@@ -3,21 +3,20 @@ package fr.cea.nabla.generator
 import com.google.common.base.Function
 import com.google.inject.Inject
 import com.google.inject.Provider
+import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
+import fr.cea.nabla.ir.generator.GenerationContent
 import java.io.File
 import org.eclipse.xtext.generator.IOutputConfigurationProvider
 import org.eclipse.xtext.generator.JavaIoFileSystemAccess
 import org.eclipse.xtext.generator.OutputConfiguration
 
 import static com.google.common.collect.Maps.uniqueIndex
-import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
-import fr.cea.nabla.ir.generator.GenerationContent
 
 abstract class StandaloneGeneratorBase
 {
 	@Inject protected Provider<JavaIoFileSystemAccess> fsaProvider
 	@Inject protected IOutputConfigurationProvider outputConfigurationProvider
 	@Inject protected NablaGeneratorMessageDispatcher dispatcher
-	val userDir = System.getProperty("user.home")
 
 	protected def getConfiguredFileSystemAccess(String absoluteBasePath, boolean keepSrcGen)
 	{
@@ -44,22 +43,6 @@ abstract class StandaloneGeneratorBase
 		{
 			override apply(OutputConfiguration from) { return from.name }
 		})
-	}
-
-	protected def formatCMakePath(String path)
-	{
-		if (path.startsWith(userDir))
-			path.replace(userDir, "$ENV{HOME}")
-		else
-			path
-	}
-
-	protected def formatJavaPath(String path)
-	{
-		if (path.startsWith(userDir))
-			'''System.getProperty("user.home") + "«path.replace(userDir, '')»"'''
-		else
-			path
 	}
 
 	protected def generate(JavaIoFileSystemAccess fsa, Iterable<GenerationContent> generationContents, String relativeBaseDir)

@@ -21,12 +21,13 @@ import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.Variable
 import java.util.ArrayList
 
+import static fr.cea.nabla.ir.generator.ExtensionProviderExtensions.*
+
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.Utils.getInstanceName
-import static extension fr.cea.nabla.ir.generator.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
@@ -86,7 +87,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 				public «v.javaType» «v.name»;
 				«ENDFOR»
 				«FOR v : extensionProviders»
-				public «v.getNsClassName('.')» «v.instanceName»;
+				public «getNsPrefix(v, '.', '.')»«v.facadeClass» «v.instanceName»;
 				«ENDFOR»
 				public String «Utils.NonRegressionNameAndValue.key»;
 
@@ -109,7 +110,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 					«FOR v : extensionProviders»
 					«val vName = v.instanceName»
 					// «vName»
-					«vName» = new «v.getNsClassName('.')»();
+					«vName» = new «getNsPrefix(v, '.', '.')»«v.facadeClass»();
 					if (o.has("«vName»"))
 						«vName».jsonInit(o.get("«vName»").toString());
 					«ENDFOR»

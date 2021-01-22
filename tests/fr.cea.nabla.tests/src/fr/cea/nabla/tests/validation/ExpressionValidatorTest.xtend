@@ -113,8 +113,8 @@ class ExpressionValidatorTest
 			'''
 			«emptyTestModule»
 			«defaultConnectivities»
-			def test: ℾ × ℝ × ℝ[2] → ℝ;
-			def solveBidon: x | ℝ[x] × ℝ[x] × ℕ → ℝ[x];
+			def test: ℾ × ℝ × ℝ[2] → ℝ, (a, b, c) → return b;
+			def solveBidon: x | ℝ[x] × ℝ[x] × ℕ → ℝ[x], (a, b, c) → return b;
 			let ℝ[2] opt = [0., 1.];
 			let ℕ count = 1;
 			ℝ alpha{cells};

@@ -16,7 +16,7 @@ import fr.cea.nabla.NablagenStandaloneSetup
 import fr.cea.nabla.generator.NablagenInterpreter
 import fr.cea.nabla.ir.interpreter.IrInterpreter
 import fr.cea.nabla.ir.ir.IrRoot
-import fr.cea.nabla.nabla.NablaModule
+import fr.cea.nabla.nabla.NablaRoot
 import fr.cea.nabla.nablagen.NablagenRoot
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -28,6 +28,8 @@ import org.eclipse.xtext.testing.XtextRunner
 import org.eclipse.xtext.testing.util.ParseHelper
 import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.junit.runner.RunWith
+import fr.cea.nabla.NablaextStandaloneSetup
+import fr.cea.nabla.nablaext.NablaextRoot
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
@@ -39,11 +41,15 @@ class CompilationChainHelper
 
 	val nablaSetup = new NablaStandaloneSetup
 	val nablaInjector = nablaSetup.createInjectorAndDoEMFRegistration
-	val ParseHelper<NablaModule> nablaParseHelper = nablaInjector.getInstance(ParseHelper)
+	val ParseHelper<NablaRoot> nablaParseHelper = nablaInjector.getInstance(ParseHelper)
 
 	val nablagenSetup = new NablagenStandaloneSetup
 	val nablagenInjector = nablagenSetup.createInjectorAndDoEMFRegistration
 	val ParseHelper<NablagenRoot> nablagenParseHelper = nablagenInjector.getInstance(ParseHelper)
+
+	val nablaextSetup = new NablaextStandaloneSetup
+	val nablaextInjector = nablaextSetup.createInjectorAndDoEMFRegistration
+	val ParseHelper<NablaextRoot> nablaextParseHelper = nablaextInjector.getInstance(ParseHelper)
 
 	val testProjectPath = System.getProperty("user.dir")
 	val pluginsPath = testProjectPath + "/../../plugins/"
@@ -63,18 +69,22 @@ class CompilationChainHelper
 	{
 		val rs = resourceSetProvider.get
 
-		// Read MathFunctions
-		val mathFunctionsPath = pluginsPath + "fr.cea.nabla/nablalib/mathfunctions.nabla"
-		nablaParseHelper.parse(new String(Files.readAllBytes(Paths.get(mathFunctionsPath))), rs)
+		// Read Math
+		val mathPath = pluginsPath + "fr.cea.nabla/nablalib/math.nabla"
+		nablaParseHelper.parse(new String(Files.readAllBytes(Paths.get(mathPath))), rs)
 
-		// Read LinearAlgebraFunctions
-		val linearAlgebraFunctionsPath = pluginsPath + "fr.cea.nabla/nablalib/linearalgebrafunctions.nabla"
-		nablaParseHelper.parse(new String(Files.readAllBytes(Paths.get(linearAlgebraFunctionsPath))), rs)
+		// Read LinearAlgebra
+		val linearAlgebraPath = pluginsPath + "fr.cea.nabla/nablalib/linearalgebra.nabla"
+		nablaParseHelper.parse(new String(Files.readAllBytes(Paths.get(linearAlgebraPath))), rs)
 
-		val nablaModule = nablaParseHelper.parse(model, rs)
-		nablaModule.assertNoErrors
+		// Read LinearAlgebra.ext
+		val linearAlgebraExtPath = pluginsPath + "fr.cea.nabla/nablalib/linearalgebra.nablaext"
+		nablaextParseHelper.parse(new String(Files.readAllBytes(Paths.get(linearAlgebraExtPath))), rs)
 
-		rs.resources.add(nablaModule.eResource)
+		val nablaRoot = nablaParseHelper.parse(model, rs)
+		nablaRoot.assertNoErrors
+		rs.resources.add(nablaRoot.eResource)
+
 		val ngen = nablagenParseHelper.parse(genModel, rs)
 		ngen.assertNoErrors
 

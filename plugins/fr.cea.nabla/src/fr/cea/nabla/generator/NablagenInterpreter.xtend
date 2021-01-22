@@ -16,6 +16,7 @@ import fr.cea.nabla.generator.ir.Nablagen2Ir
 import fr.cea.nabla.generator.providers.JniProviderGenerator
 import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.generator.cpp.CppApplicationGenerator
+import fr.cea.nabla.ir.generator.cpp.CppGeneratorUtils
 import fr.cea.nabla.ir.generator.java.JavaApplicationGenerator
 import fr.cea.nabla.ir.generator.json.JsonGenerator
 import fr.cea.nabla.ir.ir.IrRoot
@@ -60,11 +61,14 @@ class NablagenInterpreter extends StandaloneGeneratorBase
 			val ir = buildIr(ngen, true)
 
 			val target = ngen.targets.findFirst[x | x.interpreter]
-			if (target !== null)
-			{
-				val ok = setExtensionProviders(ir, projectDir + '/..', target, false)
-				if (!ok) throw new RuntimeException("Can not build an IR for interpretation: missing providers")
-			}
+			val baseDir = projectDir + '/..'
+			var ok = false
+			if (target === null)
+				ok = setDefaultInterpreterProviders(ngen, ir, baseDir)
+			else
+				ok = setExtensionProviders(ir, baseDir, target, false)
+
+			if (!ok) throw new RuntimeException("Can not build an IR for interpretation: missing providers")
 
 			return ir
 		}
@@ -89,7 +93,6 @@ class NablagenInterpreter extends StandaloneGeneratorBase
 		try
 		{
 			val ir = buildIr(ngen, false)
-
 			dispatcher.post(MessageType.Exec, "Starting code generation")
 			val startTime = System.currentTimeMillis
 
@@ -190,7 +193,9 @@ class NablagenInterpreter extends StandaloneGeneratorBase
 
 		if (type == TargetType::JAVA)
 		{
-			//UnzipHelper::unzipLibJavaNabla(new File(baseDir))
+			// libjavanabla.jar is on the classpath of the runtime
+			// no need to unzip (if the classloader is an URLClassLoader, it seems to work ?)
+			// UnzipHelper::unzipLibJavaNabla(new File(baseDir))
 			new JavaApplicationGenerator
 		}
 		else
@@ -199,12 +204,7 @@ class NablagenInterpreter extends StandaloneGeneratorBase
 			backend.traceContentProvider.maxIterationsVarName = iterationMax
 			backend.traceContentProvider.stopTimeVarName = timeMax
 			UnzipHelper::unzipLibCppNabla(new File(baseDir))
-			// The libcppnabla is unzipped in baseDir/libCppNabla but it is transformed to a relative
-			// directory for the CMakeLists.txt in order to have always the same generated file.
-			var relativeBaseDir = outputDir.replaceAll("[^/]+", "..") + "/" + UnzipHelper.CppResourceName
-			relativeBaseDir = (relativeBaseDir.startsWith("/") ? ".." : "../") + relativeBaseDir
-			relativeBaseDir = "${CMAKE_CURRENT_SOURCE_DIR}/" + relativeBaseDir
-			new CppApplicationGenerator(backend, relativeBaseDir, levelDBPath, vars)
+			new CppApplicationGenerator(backend, baseDir + '/' + CppGeneratorUtils.CppLibName, levelDBPath, vars)
 		}
 	}
 
@@ -241,12 +241,39 @@ class NablagenInterpreter extends StandaloneGeneratorBase
 		\end{document}
 	'''
 
+	private def boolean setDefaultInterpreterProviders(EObject ngenContext, IrRoot ir, String baseDir)
+	{
+		// libjavanabla.jar is on the classpath of the runtime
+		// no need to unzip (if the classloader is an URLClassLoader, it seems to work ?)
+		// UnzipHelper::unzipLibJavaNabla(new File(baseDir))
+
+		// Browse IrRoot model providers which need to be filled with Nablaext providers
+		for (irProvider : ir.providers.filter[x | x.extensionName != "Math"])
+		{
+			val provider = getDefaultProvider(ngenContext, TargetType::JAVA, irProvider.extensionName)
+			if (provider === null)
+			{
+				dispatcher.post(MessageType::Error, '    No provider found for extension: ' + irProvider.extensionName)
+				return false
+			}
+
+			irProvider.providerName = provider.name
+			irProvider.projectDir = baseDir + provider.projectDir
+			irProvider.installDir = irProvider.projectDir + '/lib'
+			irProvider.facadeClass = provider.facadeClass
+			irProvider.facadeNamespace = provider.facadeNamespace
+			irProvider.libName = provider.libName
+		}
+
+		return true
+	}
+
 	private def boolean setExtensionProviders(IrRoot ir, String baseDir, Target target, boolean generateJniProviders)
 	{
 		val jniGenerator = jniGeneratorProvider.get
 
 		// Browse IrRoot model providers which need to be filled with Nablaext providers
-		for (irProvider : ir.providers.filter[x | x.extensionName != "Math" && x.extensionName != "LinearAlgebra"])
+		for (irProvider : ir.providers.filter[x | x.extensionName != "Math"])
 		{
 			val extensionConfig = target.extensionConfigs.findFirst[x | x.extension.name == irProvider.extensionName]
 			val provider = (extensionConfig === null ? getDefaultProvider(target, target.type, irProvider.extensionName) : extensionConfig.provider)
@@ -257,17 +284,23 @@ class NablagenInterpreter extends StandaloneGeneratorBase
 			}
 
 			irProvider.providerName = provider.name
-			irProvider.projectDir = provider.projectDir
-			irProvider.installDir = baseDir + target.outputDir + '/' + ir.name.toLowerCase + '/lib'
-			if (provider.target != target.type)
+			irProvider.projectDir = baseDir + provider.projectDir
+			if (provider.target == TargetType::JAVA)
+				irProvider.installDir = irProvider.projectDir + '/lib'
+			else
+				irProvider.installDir = baseDir + target.outputDir + '/' + ir.name.toLowerCase + '/lib'
+			irProvider.facadeClass = provider.facadeClass
+			irProvider.facadeNamespace = provider.facadeNamespace
+			irProvider.libName = provider.libName
+			if (provider.target != target.type && !provider.compatibleTargets.contains(target.type))
 			{
 				dispatcher.post(MessageType::Warning, '    The target of the provider differs from target: ' + provider.target.literal + " != " + target.type.literal)
 				if (target.type == TargetType::JAVA)
 				{
-					irProvider.providerName = irProvider.providerName + 'Jni'
-					irProvider.projectDir = baseDir + "/" + irProvider.providerName
 					if (generateJniProviders)
-						jniGenerator.generate(baseDir, irProvider.providerName, irProvider.installDir, provider)
+						jniGenerator.generateAndTransformProvider(backendFactory.getCppBackend(provider.target), provider.extension, irProvider)
+					else
+						jniGenerator.convertToJni(irProvider)
 				}
 			}
 		}
@@ -280,9 +313,9 @@ class NablagenInterpreter extends StandaloneGeneratorBase
 		return true
 	}
 
-	private def ExtensionProvider getDefaultProvider(EObject context, TargetType type, String extensionName)
+	private def ExtensionProvider getDefaultProvider(EObject ngenContext, TargetType type, String extensionName)
 	{
-		val providerDescriptionScope = scopeProvider.getScope(context, NablagenPackage.Literals.EXTENSION_CONFIG__PROVIDER)
+		val providerDescriptionScope = scopeProvider.getScope(ngenContext, NablagenPackage.Literals.EXTENSION_CONFIG__PROVIDER)
 		for (providerDescription : providerDescriptionScope.allElements)
 		{
 			var o = providerDescription.EObjectOrProxy
@@ -290,11 +323,11 @@ class NablagenInterpreter extends StandaloneGeneratorBase
 			{
 				var ExtensionProvider provider
 				if (o.eIsProxy)
-					provider = context.eResource.resourceSet.getEObject(providerDescription.EObjectURI, true) as ExtensionProvider
+					provider = ngenContext.eResource.resourceSet.getEObject(providerDescription.EObjectURI, true) as ExtensionProvider
 				else
 					provider = o as ExtensionProvider
 
-				if (provider.extension.name == extensionName && provider.target == type)
+				if (provider.extension.name == extensionName && (provider.target == type || provider.compatibleTargets.contains(type)))
 				{
 					dispatcher.post(MessageType::Warning, '    Default provider found for extension ' + extensionName + ': ' + provider.name)
 					return provider

@@ -17,6 +17,7 @@ import org.eclipse.core.resources.IResource
 import org.eclipse.core.resources.IWorkspace
 import org.eclipse.core.runtime.NullProgressMonitor
 import org.eclipse.core.runtime.Path
+import fr.cea.nabla.ir.generator.cpp.CppGeneratorUtils
 
 class JavaAndCppProviderGenerator extends StandaloneGeneratorBase
 {
@@ -26,9 +27,10 @@ class JavaAndCppProviderGenerator extends StandaloneGeneratorBase
 	def generate(Iterable<ExtensionProvider> providers, IProject project)
 	{
 		var Iterable<Function> functions = null
+		val baseDir = project.workspace.root.location.toString
 		for (provider : providers)
 		{
-			val generator = getCodeGenerator(provider.target, project.workspace.root.location.toString)
+			val generator = getCodeGenerator(provider.target, baseDir)
 			val providerProject = getProject(project.workspace, provider)
 			dispatcher.post(MessageType::Exec, "Generating extension provider project: " + providerProject.location.toString)
 			val fsa = getConfiguredFileSystemAccess(providerProject.location.toString + '/src', false)
@@ -38,7 +40,8 @@ class JavaAndCppProviderGenerator extends StandaloneGeneratorBase
 				// A validator ensures all providers are for the same extension.
 				functions = provider.extension.irFunctions
 			}
-			generate(fsa, generator.getGenerationContents(provider.toIrExtensionProvider, functions), '')
+			val installDir = '' // unused to generate JNI functions
+			generate(fsa, generator.getGenerationContents(toIrExtensionProvider(provider, baseDir, installDir), functions), '')
 			providerProject.refreshLocal(IResource::DEPTH_INFINITE, null)
 		}
 	}
@@ -54,14 +57,14 @@ class JavaAndCppProviderGenerator extends StandaloneGeneratorBase
 		{
 			val backend = backendFactory.getCppBackend(targetType)
 			UnzipHelper::unzipLibCppNabla(new File(baseDir))
-			val libCppNablaDir = baseDir + '/' + UnzipHelper.CppResourceName
-			new CppProviderGenerator(backend, libCppNablaDir.formatCMakePath)
+			val libCppNablaDir = baseDir + '/' + CppGeneratorUtils.CppLibName
+			new CppProviderGenerator(backend, libCppNablaDir)
 		}
 	}
 
 	private def getProject(IWorkspace ws, ExtensionProvider provider)
 	{
-		var project = ws.root.getProject(provider.name)
+		var project = ws.root.getProject(provider.projectDir)
 		var IProjectDescription desc
 		if (!project.exists)
 		{
@@ -72,11 +75,10 @@ class JavaAndCppProviderGenerator extends StandaloneGeneratorBase
 				fsa.generateFile(project.name + "/.project", getDotProjectContent(project.name))
 				fsa.generateFile(project.name + "/.classpath", dotClassPath)
 				fsa.generateFile(project.name + "/build.properties", buildProperties)
-				val packageName = provider.extension.name.toLowerCase
-				fsa.generateFile(project.name + "/META-INF/MANIFEST.MF", getManifestContent(project.name, packageName))
-				fsa.generateFile(project.name + "/build.xml", getAntFile(project.name, project.name.toLowerCase))
-				fsa.generateFile(project.name + "/.externalToolBuilders/CreateJar.launch", getCreateJarToolFile(project.name))
-				desc = ws.loadProjectDescription(new Path(location + "/" + project.name + "/.project"))
+				fsa.generateFile(project.name + "/META-INF/MANIFEST.MF", getManifestContent(project.name, provider.facadeNamespace))
+				fsa.generateFile(project.name + "/build.xml", getAntFile(project.name, provider.libName))
+				fsa.generateFile(project.name + "/.externalToolBuilders/CreateJar.launch", getCreateJarToolFile(project.name, provider.projectDir))
+				desc = ws.loadProjectDescription(new Path(location + provider.projectDir + "/.project"))
 			}
 			else
 			{
@@ -177,7 +179,7 @@ class JavaAndCppProviderGenerator extends StandaloneGeneratorBase
 		</project>
 	'''
 
-	private def getCreateJarToolFile(String projectName)
+	private def getCreateJarToolFile(String projectName, String projectDir)
 	'''
 	<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 	<launchConfiguration type="org.eclipse.ant.AntBuilderLaunchConfigurationType">
@@ -187,7 +189,7 @@ class JavaAndCppProviderGenerator extends StandaloneGeneratorBase
 		<stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.ant.ui.AntClasspathProvider"/>
 		<booleanAttribute key="org.eclipse.jdt.launching.DEFAULT_CLASSPATH" value="true"/>
 		<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="«projectName»"/>
-		<stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="${workspace_loc:/«projectName»/build.xml}"/>
+		<stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="${workspace_loc:«projectDir»/build.xml}"/>
 		<stringAttribute key="org.eclipse.ui.externaltools.ATTR_RUN_BUILD_KINDS" value=""/>
 		<booleanAttribute key="org.eclipse.ui.externaltools.ATTR_TRIGGERS_CONFIGURED" value="true"/>
 	</launchConfiguration>

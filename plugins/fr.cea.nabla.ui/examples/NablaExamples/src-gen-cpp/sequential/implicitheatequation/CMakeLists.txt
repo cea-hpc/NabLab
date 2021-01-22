@@ -2,8 +2,9 @@
 
 cmake_minimum_required(VERSION 3.10)
 
-set(LIBCPPNABLA_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../../libcppnabla CACHE STRING "")
+set(LIBCPPNABLA_DIR $ENV{HOME}/workspaces/NabLab/tests/fr.cea.nabla.tests/../../plugins/fr.cea.nabla.ui/examples/NablaExamples//../LibCppNabla CACHE STRING "")
 set(NABLA_CXX_COMPILER /usr/bin/g++)
+set(LINEARALGEBRA_DIR $ENV{HOME}/workspaces/NabLab/tests/fr.cea.nabla.tests/../../plugins/fr.cea.nabla.ui/examples/NablaExamples//../LibCppNabla)
 
 project(ImplicitHeatEquationProject CXX)
 
@@ -19,14 +20,15 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 	endif()
 endif()
 
+add_subdirectory(${LINEARALGEBRA_DIR}/src ${CMAKE_BINARY_DIR}/LibCppNablaStl EXCLUDE_FROM_ALL)
 if(NOT TARGET cppnabla)
-	add_subdirectory(${LIBCPPNABLA_DIR} ${CMAKE_BINARY_DIR}/libcppnabla EXCLUDE_FROM_ALL)
+	add_subdirectory(${LIBCPPNABLA_DIR}/src ${CMAKE_BINARY_DIR}/LibCppNabla EXCLUDE_FROM_ALL)
 endif()
 
 
 add_executable(implicitheatequation ImplicitHeatEquation.cc)
 target_include_directories(implicitheatequation PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
-target_link_libraries(implicitheatequation PUBLIC cppnabla cppnablastl pthread)
+target_link_libraries(implicitheatequation PUBLIC cppnabla cppnablastl pthread cppnablastl)
 
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 	include(${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)

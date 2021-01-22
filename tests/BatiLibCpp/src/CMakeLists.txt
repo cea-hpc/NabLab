@@ -2,7 +2,7 @@
 
 cmake_minimum_required(VERSION 3.10)
 
-set(LIBCPPNABLA_DIR $ENV{HOME}/workspaces/runtime-EclipseApplication/libcppnabla CACHE STRING "")
+set(LIBCPPNABLA_DIR $ENV{HOME}/workspaces/runtime-EclipseApplication/LibCppNabla CACHE STRING "")
 
 project(BatiLibCpp CXX)
 
@@ -18,14 +18,14 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 	endif()
 endif()
 
-MESSAGE(STATUS "Building library batilibcpp")
+MESSAGE(STATUS "Building library batilib")
 
-add_subdirectory(${LIBCPPNABLA_DIR} ${CMAKE_BINARY_DIR}/libcppnabla EXCLUDE_FROM_ALL)
+add_subdirectory(${LIBCPPNABLA_DIR} ${CMAKE_BINARY_DIR}/LibCppNabla EXCLUDE_FROM_ALL)
 
-add_library(batilibcpp batilib/BatiLibCpp.cc)
-set_property(TARGET batilibcpp PROPERTY POSITION_INDEPENDENT_CODE ON)
-target_include_directories(batilibcpp PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(batilibcpp PUBLIC cppnabla)
+add_library(batilib batilib/BatiLibCpp.cc)
+set_property(TARGET batilib PROPERTY POSITION_INDEPENDENT_CODE ON)
+target_include_directories(batilib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(batilib PUBLIC cppnabla)
 
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 	include(${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)

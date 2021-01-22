@@ -3,33 +3,37 @@
     	
     <storageModule moduleId="org.eclipse.cdt.core.settings">
         		
-        <cconfiguration id="cdt.managedbuild.config.gnu.lib.release.367401388">
+        <cconfiguration id="de.marw.cmake.cdt.lsp.config.cmake.1679311623">
             			
-            <storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.config.gnu.lib.release.367401388" moduleId="org.eclipse.cdt.core.settings" name="Release">
+            <storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="de.marw.cmake.cdt.lsp.config.cmake.1679311623" moduleId="org.eclipse.cdt.core.settings" name="Default">
                 				
-                <externalSettings>
-                    					
-                    <externalSetting>
-                        						
-                        <entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/fr.cea.nabla.cpplib"/>
-                        						
-                        <entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/fr.cea.nabla.cpplib/Release"/>
-                        						
-                        <entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/fr.cea.nabla.cpplib"/>
-                        						
-                        <entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/fr.cea.nabla.cpplib/lib"/>
-                        						
-                        <entry flags="RESOLVED" kind="libraryFile" name="fr.cea.nabla.cpplib" srcPrefixMapping="" srcRootPath=""/>
-                        					
-                    </externalSetting>
-                    				
-                </externalSettings>
+                <externalSettings/>
                 				
                 <extensions>
                     					
+                    <extension id="org.eclipse.cdt.core.MachO64" point="org.eclipse.cdt.core.BinaryParser"/>
+                    					
+                    <extension id="org.eclipse.cdt.core.Cygwin_PE" point="org.eclipse.cdt.core.BinaryParser"/>
+                    					
+                    <extension id="org.eclipse.cdt.core.PE" point="org.eclipse.cdt.core.BinaryParser"/>
+                    					
                     <extension id="org.eclipse.cdt.core.GNU_ELF" point="org.eclipse.cdt.core.BinaryParser"/>
                     					
+                    <extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
+                    					
                     <extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+                    					
+                    <extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+                    					
+                    <extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+                    					
+                    <extension id="org.eclipse.cdt.core.MakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+                    					
+                    <extension id="org.eclipse.cdt.core.VCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+                    					
+                    <extension id="org.eclipse.cdt.core.CWDLocator" point="org.eclipse.cdt.core.ErrorParser"/>
+                    					
+                    <extension id="org.eclipse.cdt.autotools.core.ErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
                     					
                     <extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
                     				
@@ -39,57 +43,33 @@
             			
             <storageModule moduleId="cdtBuildSystem" version="4.0.0">
                 				
-                <configuration artifactExtension="a" artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.staticLib" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.staticLib,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.release" cleanCommand="rm -rf" description="" id="cdt.managedbuild.config.gnu.lib.release.367401388" name="Release" parent="cdt.managedbuild.config.gnu.lib.release">
+                <configuration artifactName="${ProjName}" buildArtefactType="de.marw.cmake.cdt.lsp.buildArtefactType.cmake" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=de.marw.cmake.cdt.lsp.buildArtefactType.cmake" description="Default coming from cmake" id="de.marw.cmake.cdt.lsp.config.cmake.1679311623" name="Default" parent="de.marw.cmake.cdt.lsp.config.cmake">
                     					
-                    <folderInfo id="cdt.managedbuild.config.gnu.lib.release.367401388." name="/" resourcePath="">
+                    <folderInfo id="de.marw.cmake.cdt.lsp.config.cmake.1679311623." name="/" resourcePath="">
                         						
-                        <toolChain id="cdt.managedbuild.toolchain.gnu.lib.release.1919758647" name="Linux GCC" superClass="cdt.managedbuild.toolchain.gnu.lib.release">
+                        <toolChain id="de.marw.cmake.cdt.lsp.config.cmake.toolChain.1788828266" name="CMake driven" superClass="de.marw.cmake.cdt.lsp.config.cmake.toolChain">
                             							
-                            <targetPlatform id="cdt.managedbuild.target.gnu.platform.lib.release.1288331312" name="Debug Platform" superClass="cdt.managedbuild.target.gnu.platform.lib.release"/>
+                            <targetPlatform id="de.marw.cmake.cdt.lsp.targetPlatform.cmake.394206421" name="Any Platform" superClass="de.marw.cmake.cdt.lsp.targetPlatform.cmake"/>
                             							
-                            <builder buildPath="/fr.cea.nabla.cpplib/lib" id="de.marw.cdt.cmake.core.genscriptbuilder.2022329800" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="CMake Builder" parallelBuildOn="false" superClass="de.marw.cdt.cmake.core.genscriptbuilder"/>
+                            <builder arguments="" autoBuildTarget="all" buildPath="${workspace_loc:/fr.cea.nabla.cpplib/lib}" cleanBuildTarget="clean" command="make" enableAutoBuild="false" enableCleanBuild="true" enabledIncrementalBuild="true" id="de.marw.cmake.cdt.lsp.builder.portable.1039761844" incrementalBuildTarget="all" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="CMake Builder" parallelBuildOn="true" parallelizationNumber="unlimited" superClass="de.marw.cmake.cdt.lsp.builder.portable"/>
                             							
-                            <tool id="cdt.managedbuild.tool.gnu.archiver.lib.release.600725774" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.lib.release"/>
-                            							
-                            <tool id="cdt.managedbuild.tool.gnu.cpp.compiler.lib.release.1385578731" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.lib.release">
+                            <tool id="de.marw.cmake.cdt.lsp.toolchain.tool.dummy.1222161107" name="CMake driven Languages Proxy" superClass="de.marw.cmake.cdt.lsp.toolchain.tool.dummy">
                                 								
-                                <option id="gnu.cpp.compiler.lib.release.option.optimization.level.23652387" name="Optimization Level" superClass="gnu.cpp.compiler.lib.release.option.optimization.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.optimization.level.most" valueType="enumerated"/>
+                                <option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="de.marw.cmake.option.dummy.391526332" superClass="de.marw.cmake.option.dummy" valueType="includePath">
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/fr.cea.nabla.cpplib/src}&quot;"/>
+                                    								
+                                </option>
                                 								
-                                <option id="gnu.cpp.compiler.lib.release.option.debugging.level.397743629" name="Debug Level" superClass="gnu.cpp.compiler.lib.release.option.debugging.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.debugging.level.none" valueType="enumerated"/>
+                                <inputType id="de.marw.cmake.cdt.lsp.inputType.c.1058059406" superClass="de.marw.cmake.cdt.lsp.inputType.c"/>
                                 								
-                                <inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.756784563" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
-                                							
-                            </tool>
-                            							
-                            <tool id="cdt.managedbuild.tool.gnu.c.compiler.lib.release.1581584094" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.lib.release">
-                                								
-                                <option defaultValue="gnu.c.optimization.level.most" id="gnu.c.compiler.lib.release.option.optimization.level.1330194189" name="Optimization Level" superClass="gnu.c.compiler.lib.release.option.optimization.level" useByScannerDiscovery="false" valueType="enumerated"/>
-                                								
-                                <option id="gnu.c.compiler.lib.release.option.debugging.level.461165493" name="Debug Level" superClass="gnu.c.compiler.lib.release.option.debugging.level" useByScannerDiscovery="false" value="gnu.c.debugging.level.none" valueType="enumerated"/>
-                                								
-                                <inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1960318053" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
-                                							
-                            </tool>
-                            							
-                            <tool id="cdt.managedbuild.tool.gnu.c.linker.base.982051827" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base"/>
-                            							
-                            <tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.391020866" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base"/>
-                            							
-                            <tool id="cdt.managedbuild.tool.gnu.assembler.lib.release.123831903" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.lib.release">
-                                								
-                                <inputType id="cdt.managedbuild.tool.gnu.assembler.input.1662681307" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
+                                <inputType id="de.marw.cmake.cdt.lsp.inputType.cpp.915372846" superClass="de.marw.cmake.cdt.lsp.inputType.cpp"/>
                                 							
                             </tool>
                             						
                         </toolChain>
                         					
                     </folderInfo>
-                    					
-                    <sourceEntries>
-                        						
-                        <entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src"/>
-                        					
-                    </sourceEntries>
                     				
                 </configuration>
                 			
@@ -97,9 +77,25 @@
             			
             <storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
             			
-            <storageModule buildDir="lib" moduleId="de.marw.cdt.cmake.core.settings">
+            <storageModule buildDir="/lib" moduleId="de.marw.cdt.cmake.core.settings">
                 				
-                <options/>
+                <options debugOutput="true" trace="true"/>
+                				
+                <linux command="cmake ../src" generator="UnixMakefiles">
+                    					
+                    <defs/>
+                    					
+                    <undefs/>
+                    				
+                </linux>
+                				
+                <win32 command="cmake" generator="MinGWMakefiles" use-default="true">
+                    					
+                    <defs/>
+                    					
+                    <undefs/>
+                    				
+                </win32>
                 				
                 <defs/>
                 				
@@ -113,25 +109,7 @@
     	
     <storageModule moduleId="cdtBuildSystem" version="4.0.0">
         		
-        <project id="fr.cea.nabla.cpplib.cdt.managedbuild.target.gnu.lib.1530930469" name="Static Library" projectType="cdt.managedbuild.target.gnu.lib"/>
-        	
-    </storageModule>
-    	
-    <storageModule moduleId="scannerConfiguration">
-        		
-        <autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-        		
-        <scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.lib.release.367401388;cdt.managedbuild.config.gnu.lib.release.367401388.;cdt.managedbuild.tool.gnu.cpp.compiler.lib.release.1385578731;cdt.managedbuild.tool.gnu.cpp.compiler.input.756784563">
-            			
-            <autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-            		
-        </scannerConfigBuildInfo>
-        		
-        <scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.lib.release.367401388;cdt.managedbuild.config.gnu.lib.release.367401388.;cdt.managedbuild.tool.gnu.c.compiler.lib.release.1581584094;cdt.managedbuild.tool.gnu.c.compiler.input.1960318053">
-            			
-            <autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-            		
-        </scannerConfigBuildInfo>
+        <project id="fr.cea.nabla.cpplib.de.marw.cmake.cdt.lsp.projectType.2138853980" name="CMake driven" projectType="de.marw.cmake.cdt.lsp.projectType"/>
         	
     </storageModule>
     	
@@ -139,11 +117,31 @@
     	
     <storageModule moduleId="refreshScope" versionNumber="2">
         		
-        <configuration configurationName="Release">
+        <configuration configurationName="Default">
             			
             <resource resourceType="PROJECT" workspacePath="/fr.cea.nabla.cpplib"/>
             		
         </configuration>
+        	
+    </storageModule>
+    	
+    <storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
+    	
+    <storageModule moduleId="scannerConfiguration">
+        		
+        <autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+        		
+        <scannerConfigBuildInfo instanceId="de.marw.cmake.cdt.lsp.config.cmake.1679311623;de.marw.cmake.cdt.lsp.config.cmake.1679311623.;de.marw.cmake.cdt.lsp.toolchain.tool.dummy.1222161107;de.marw.cmake.cdt.lsp.inputType.c.1058059406">
+            			
+            <autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+            		
+        </scannerConfigBuildInfo>
+        		
+        <scannerConfigBuildInfo instanceId="de.marw.cmake.cdt.lsp.config.cmake.1679311623;de.marw.cmake.cdt.lsp.config.cmake.1679311623.;de.marw.cmake.cdt.lsp.toolchain.tool.dummy.1222161107;de.marw.cmake.cdt.lsp.inputType.cpp.915372846">
+            			
+            <autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+            		
+        </scannerConfigBuildInfo>
         	
     </storageModule>
     	

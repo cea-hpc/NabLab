@@ -34,8 +34,6 @@ import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.emf.ecore.util.EcoreUtil
 
-import static extension fr.cea.nabla.ir.generator.ExtensionProviderExtensions.*
-
 @Singleton
 class NablagenRunner
 {
@@ -47,7 +45,9 @@ class NablagenRunner
 	package def launch(IFile nablagenFile, IFile jsonFile)
 	{
 		val ngenInterpreter = ngenInterpreterProvider.get
+		// TODO Bug si interpreter lancé et ensuite générateur : plus d'affichage
 		consoleFactory.openConsole
+		consoleFactory.clearAndActivateConsole
 		val traceFunction = [MessageType type, String msg | consoleFactory.printConsole(type, msg)]
 		dispatcher.traceListeners += traceFunction
 
@@ -55,7 +55,6 @@ class NablagenRunner
 		([
 			try
 			{
-				consoleFactory.clearAndActivateConsole
 				consoleFactory.printConsole(MessageType.Start, "Starting interpretation process for: " + nablagenFile.name)
 				consoleFactory.printConsole(MessageType.Exec, "Loading nablagen and nabla resources")
 

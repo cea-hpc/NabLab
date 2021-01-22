@@ -71,8 +71,6 @@ class IrBasicFactory
 	def create IrFactory::eINSTANCE.createExtensionProvider toIrExtensionProvider(String extName)
 	{
 		extensionName = extName
-		// TODO Remove this line after libraries refactoring
-		if (extensionName == "LinearAlgebra") providerName = "LinearAlgebraFunctions"
 	}
 
 	/** 

@@ -992,6 +992,36 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
+	public EAttribute getExtensionProvider_FacadeClass() {
+		return (EAttribute)extensionProviderEClass.getEStructuralFeatures().get(4);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getExtensionProvider_FacadeNamespace() {
+		return (EAttribute)extensionProviderEClass.getEStructuralFeatures().get(5);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getExtensionProvider_LibName() {
+		return (EAttribute)extensionProviderEClass.getEStructuralFeatures().get(6);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EClass getArgOrVar() {
 		return argOrVarEClass;
 	}
@@ -2707,6 +2737,9 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEAttribute(extensionProviderEClass, EXTENSION_PROVIDER__PROVIDER_NAME);
 		createEAttribute(extensionProviderEClass, EXTENSION_PROVIDER__PROJECT_DIR);
 		createEAttribute(extensionProviderEClass, EXTENSION_PROVIDER__INSTALL_DIR);
+		createEAttribute(extensionProviderEClass, EXTENSION_PROVIDER__FACADE_CLASS);
+		createEAttribute(extensionProviderEClass, EXTENSION_PROVIDER__FACADE_NAMESPACE);
+		createEAttribute(extensionProviderEClass, EXTENSION_PROVIDER__LIB_NAME);
 
 		argOrVarEClass = createEClass(ARG_OR_VAR);
 		createEAttribute(argOrVarEClass, ARG_OR_VAR__NAME);
@@ -3073,6 +3106,9 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEAttribute(getExtensionProvider_ProviderName(), ecorePackage.getEString(), "providerName", null, 1, 1, ExtensionProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getExtensionProvider_ProjectDir(), ecorePackage.getEString(), "projectDir", null, 1, 1, ExtensionProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getExtensionProvider_InstallDir(), ecorePackage.getEString(), "installDir", null, 1, 1, ExtensionProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getExtensionProvider_FacadeClass(), ecorePackage.getEString(), "facadeClass", null, 1, 1, ExtensionProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getExtensionProvider_FacadeNamespace(), ecorePackage.getEString(), "facadeNamespace", null, 1, 1, ExtensionProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getExtensionProvider_LibName(), ecorePackage.getEString(), "libName", null, 1, 1, ExtensionProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(argOrVarEClass, ArgOrVar.class, "ArgOrVar", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getArgOrVar_Name(), ecorePackage.getEString(), "name", null, 1, 1, ArgOrVar.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

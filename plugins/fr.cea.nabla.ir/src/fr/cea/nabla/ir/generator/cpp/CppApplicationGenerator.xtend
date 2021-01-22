@@ -62,9 +62,8 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	#define «name.toUpperCase»_H_
 
 	«backend.includesContentProvider.getContentFor(it, levelDBPath)»
-
-	using namespace nablalib;
 	«IF main && irRoot.modules.size > 1»
+
 		«FOR m : irRoot.modules.filter[x | x !== it]»
 			class «m.className»;
 		«ENDFOR»
@@ -98,7 +97,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 			«argOrVarContentProvider.getCppType(v)» «v.name»;
 			«ENDFOR»
 			«FOR v : extensionProviders»
-			«v.getNsClassName('::')» «v.instanceName»;
+			«getNsPrefix(v, '::', '::')»«v.facadeClass» «v.instanceName»;
 			«ENDFOR»
 			«IF levelDB»std::string «Utils.NonRegressionNameAndValue.key»;«ENDIF»
 
@@ -164,9 +163,9 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 
 		«ENDIF»
 		// Timers
-		utils::Timer globalTimer;
-		utils::Timer cpuTimer;
-		utils::Timer ioTimer;
+		Timer globalTimer;
+		Timer cpuTimer;
+		Timer ioTimer;
 
 	public:
 		// Global variables
@@ -193,7 +192,6 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		«ENDFOR»
 	«ENDIF»
 
-	using namespace nablalib;
 	«val bodyFunctions = functions.filter(Function).filter[body !== null]»
 	«IF !bodyFunctions.empty»
 

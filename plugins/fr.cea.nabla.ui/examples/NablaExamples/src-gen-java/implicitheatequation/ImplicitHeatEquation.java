@@ -31,7 +31,7 @@ public final class ImplicitHeatEquation
 		public double u0;
 		public double stopTime;
 		public int maxIterations;
-		public LinearAlgebraFunctions linearAlgebra;
+		public fr.cea.nabla.javalib.types.LinearAlgebra linearAlgebra;
 		public String nonRegression;
 
 		public void jsonInit(final String jsonContent)
@@ -77,7 +77,7 @@ public final class ImplicitHeatEquation
 			else
 				maxIterations = 500000000;
 			// linearAlgebra
-			linearAlgebra = new LinearAlgebraFunctions();
+			linearAlgebra = new fr.cea.nabla.javalib.types.LinearAlgebra();
 			if (o.has("linearAlgebra"))
 				linearAlgebra.jsonInit(o.get("linearAlgebra").toString());
 			// Non regression

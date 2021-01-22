@@ -10,8 +10,8 @@
 package fr.cea.nabla.tests.validation
 
 import com.google.inject.Inject
-import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
+import fr.cea.nabla.nabla.NablaRoot
 import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.tests.NablaInjectorProvider
 import fr.cea.nabla.tests.TestUtils
@@ -30,10 +30,33 @@ import org.junit.runner.RunWith
 @InjectWith(typeof(NablaInjectorProvider))
 class FunctionOrReductionValidatorTest
 {
-	@Inject ParseHelper<NablaModule> parseHelper
+	@Inject ParseHelper<NablaRoot> parseHelper
 	@Inject extension ValidationUtils
 	@Inject extension TestUtils
 	@Inject extension ValidationTestHelper
+
+	@Test
+	def void testCheckEmptyBody()
+	{
+		val moduleKo = parseHelper.parse(
+		'''
+		module Test;
+
+		def f: ℝ → ℝ;
+		''')
+		Assert.assertNotNull(moduleKo)
+		moduleKo.assertError(NablaPackage.eINSTANCE.functionOrReduction,
+			FunctionOrReductionValidator::EMPTY_BODY,
+			FunctionOrReductionValidator::getEmptyBodyMsg())
+
+		val moduleOk = parseHelper.parse(
+		'''
+		module Test;
+
+		def f: ℝ → ℝ, (a) → { return 1.0; }
+		''')
+		Assert.assertNotNull(moduleOk)
+	}
 
 	@Test
 	def void testCheckForbiddenReturn()
@@ -126,7 +149,7 @@ class FunctionOrReductionValidatorTest
 	{
 		val modulekO = parseHelper.parse(
 		'''
-		«emptyTestModule»
+		extension Test;
 		def f: x | ℝ[x+1] → ℝ[x];
 		''')
 		Assert.assertNotNull(modulekO)
@@ -137,7 +160,7 @@ class FunctionOrReductionValidatorTest
 
 		val moduleOk = parseHelper.parse(
 		'''
-		«emptyTestModule»
+		extension Test;
 		def f: x | ℝ[x] → ℝ[x+1];
 		''')
 		Assert.assertNotNull(moduleOk)
@@ -201,7 +224,7 @@ class FunctionOrReductionValidatorTest
 	{
 		val modulekO = parseHelper.parse(
 			'''
-			«emptyTestModule»
+			extension Test;
 			def g: ℝ[2] → ℝ;
 			def g: x | ℝ[x] → ℝ;
 			''')
@@ -213,7 +236,7 @@ class FunctionOrReductionValidatorTest
 
 		val moduleOk = parseHelper.parse(
 			'''
-			«emptyTestModule»
+			extension Test;
 			def g: ℝ → ℝ;
 			def g: x | ℝ[x] → ℝ;
 			''')

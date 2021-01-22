@@ -11,20 +11,17 @@ class ProvidersUtils
 {
 	@Inject IrFunctionFactory irFunctionFactory
 
-	def toIrExtensionProvider(ExtensionProvider provider, String installDir)
-	{
-		val p = provider.toIrExtensionProvider
-		p.installDir = installDir
-		return p
-	}
-
-	def toIrExtensionProvider(ExtensionProvider provider)
+	def toIrExtensionProvider(ExtensionProvider provider, String wsDir, String installationDir)
 	{
 		IrFactory::eINSTANCE.createExtensionProvider =>
 		[
 			extensionName = provider.extension.name
 			providerName = provider.name
-			projectDir = provider.projectDir
+			projectDir = wsDir + provider.projectDir
+			installDir = installationDir
+			facadeClass= provider.facadeClass
+			facadeNamespace = provider.facadeNamespace
+			libName = provider.libName
 		]
 	}
 

@@ -3,7 +3,7 @@ package fr.cea.nabla.ir.interpreter
 import fr.cea.nabla.ir.ir.ExtensionProvider
 import java.util.HashMap
 
-import static extension fr.cea.nabla.ir.generator.ExtensionProviderExtensions.*
+import static fr.cea.nabla.ir.generator.ExtensionProviderExtensions.*
 
 /**
  * Native library (.so) can only be loaded once.
@@ -15,6 +15,7 @@ class ProviderClassCache
 {
 	val classByProviderNames = new HashMap<String, Class<?>>
 	public static val Instance = new ProviderClassCache
+	public static val JNI_LIBRARY_PATH = "nabla.jni.library.path"
 
 	private new()
 	{
@@ -25,15 +26,10 @@ class ProviderClassCache
 		var c = classByProviderNames.get(p.extensionName)
 		if (c === null)
 		{
-			c = Class.forName(p.providerClassName, true, cl)
+			System.setProperty(JNI_LIBRARY_PATH, p.installDir)
+			c = Class.forName(getNsPrefix(p, '.', '.') + p.facadeClass, true, cl)
 			classByProviderNames.put(p.extensionName, c)
 		}
 		return c
-	}
-
-	private def getProviderClassName(ExtensionProvider it)
-	{
-		if (extensionName == "LinearAlgebra") "fr.cea.nabla.javalib.types.LinearAlgebraFunctions" 
-		else namespaceName + '.' + className
 	}
 }

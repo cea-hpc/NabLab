@@ -67,10 +67,10 @@ class TraceContentProvider
 
 		// Progress
 		«IF maxIterationsVar !== null && stopTimeVarName !== null»
-		std::cout << utils::progress_bar(«iterationVarName», «maxIterationsVar.codeName», «ir.timeVariable.codeName», «stopTimeVar.codeName», 25);
+		std::cout << progress_bar(«iterationVarName», «maxIterationsVar.codeName», «ir.timeVariable.codeName», «stopTimeVar.codeName», 25);
 		«ENDIF»
-		std::cout << __BOLD__ << __CYAN__ << utils::Timer::print(
-			utils::eta(«iterationVarName», «maxIterationsVar.codeName», «ir.timeVariable.codeName», «stopTimeVar.codeName», «ir.timeStepVariable.codeName», globalTimer), true)
+		std::cout << __BOLD__ << __CYAN__ << Timer::print(
+			eta(«iterationVarName», «maxIterationsVar.codeName», «ir.timeVariable.codeName», «stopTimeVar.codeName», «ir.timeStepVariable.codeName», globalTimer), true)
 			<< __RESET__ << "\r";
 		std::cout.flush();
 		«ENDIF»

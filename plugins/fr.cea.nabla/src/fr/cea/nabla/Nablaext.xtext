@@ -22,7 +22,11 @@ NablaextRoot:
 ExtensionProvider: 'ExtensionProvider' name=ID ':' extension=[nabla::NablaExtension]
 '{'
 	'target' '=' target=TargetType ';'
+	('compatibleTargets' '=' compatibleTargets+=TargetType (',' compatibleTargets+=TargetType)* ';')?
 	'projectDir' '=' projectDir=STRING ';'
+	'facadeClass' '=' facadeClass=STRING ';'
+	'facadeNamespace' '=' facadeNamespace=STRING ';'
+	'libName' '=' libName=STRING ';'
 '}';
 
 // Java must be the first enum literal to be the default value for interpreter

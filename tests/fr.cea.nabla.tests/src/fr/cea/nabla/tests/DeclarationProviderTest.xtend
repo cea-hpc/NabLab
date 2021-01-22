@@ -32,12 +32,17 @@ import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
+import fr.cea.nabla.nabla.NablaRoot
+import fr.cea.nabla.nabla.NablaExtension
+import com.google.inject.Provider
+import org.eclipse.emf.ecore.resource.ResourceSet
 
 @RunWith(typeof(XtextRunner))
 @InjectWith(typeof(NablaInjectorProvider))
 class DeclarationProviderTest 
 {
-	@Inject extension ParseHelper<NablaModule>
+	@Inject Provider<ResourceSet> resourceSetProvider
+	@Inject ParseHelper<NablaRoot> parserHelper
 	@Inject extension DeclarationProvider
 	@Inject extension ValidationTestHelper
 	@Inject extension NablaModuleExtensions
@@ -46,14 +51,9 @@ class DeclarationProviderTest
 	@Test
 	def void testFunctions() 
 	{
-		val model =
+		val nablaextModel =
 		'''
-		module Test;
-
-		itemtypes { cell, node }
-
-		connectivity cells: → {cell};
-		connectivity nodes: → {node};
+		extension MyLibOfFunctions;
 
 		def f: → ℕ;
 		def f: ℕ → ℕ;
@@ -63,6 +63,18 @@ class DeclarationProviderTest
 		def g: a | ℝ[a] → ℝ[a];
 		def g: a, b | ℝ[a, b] → ℝ[a*b];
 		def g: a, b | ℝ[a] × ℝ[b] → ℝ[a+b];
+		'''
+
+		val nablaModel =
+		'''
+		module Test;
+
+		with MyLibOfFunctions.*;
+
+		itemtypes { cell, node }
+
+		connectivity cells: → {cell};
+		connectivity nodes: → {node};
 
 		ℝ a{cells};
 		ℝ x{cells};
@@ -97,7 +109,9 @@ class DeclarationProviderTest
 		J10: { a = g(x2); } // Wrong arguments : ℝ²{cells}
 		'''
 
-		val module = model.parse
+		val rs = resourceSetProvider.get
+		val nablaExt = parserHelper.parse(nablaextModel, rs) as NablaExtension
+		val module = parserHelper.parse(nablaModel, rs) as NablaModule
 		Assert.assertNotNull(module)
 		Assert.assertEquals(4, module.validate.filter(i | i.severity == Severity.ERROR).size)
 		module.assertError(NablaPackage.eINSTANCE.functionCall,
@@ -111,7 +125,7 @@ class DeclarationProviderTest
 		ExpressionValidator::FUNCTION_CALL_ARGS,
 		ExpressionValidator::getFunctionCallArgsMsg(#[new NablaConnectivityType(#[cells], new NSTRealScalar).label, new NablaConnectivityType(#[cells], new NSTRealScalar).label]))
 
-		val fFunctions = module.functions.filter[x | x.name == 'f']
+		val fFunctions = nablaExt.functions.filter[x | x.name == 'f']
 		val j0Fdecl = getFunctionDeclarationOfJob(module, 0)
 		Assert.assertEquals(fFunctions.get(0), j0Fdecl.model)
 		val j1Fdecl = getFunctionDeclarationOfJob(module, 1)
@@ -123,7 +137,7 @@ class DeclarationProviderTest
 		val j4Fdecl = getFunctionDeclarationOfJob(module, 4)
 		Assert.assertNull(j4Fdecl)
 
-		val gFunctions = module.functions.filter(Function).filter[x | x.name == 'g']
+		val gFunctions = nablaExt.functions.filter(Function).filter[x | x.name == 'g']
 		val j5Gdecl = getFunctionDeclarationOfJob(module, 5)
 		Assert.assertEquals(gFunctions.get(0), j5Gdecl.model)
 		Assert.assertEquals(new NSTRealArray1D(createIntConstant(2)), j5Gdecl.returnType)
@@ -153,9 +167,9 @@ class DeclarationProviderTest
 		itemtypes { node }
 		connectivity nodes: → {node};
 
-		def f: ℝ → ℝ;
-		def f: ℝ[2] → ℝ[2];
-		def g: x | ℝ[x] → ℝ[x];
+		def f: ℝ → ℝ, (a) → return a;
+		def f: ℝ[2] → ℝ[2], (a) → return a;
+		def g: x | ℝ[x] → ℝ[x], (a) → return a;
 
 		def h: ℝ[2] → ℝ[2], (a) → {
 			return f(a) + g(a);
@@ -172,16 +186,16 @@ class DeclarationProviderTest
 		}
 		'''
 
-		val module = model.parse
+		val module = parserHelper.parse(model)
 		Assert.assertNotNull(module)
 		Assert.assertEquals(1, module.validate.filter(i | i.severity == Severity.ERROR).size)
 		module.assertError(NablaPackage.eINSTANCE.functionCall, ExpressionValidator::FUNCTION_CALL_ARGS, ExpressionValidator::getFunctionCallArgsMsg(#["ℝ[a]"]))
 
 		Assert.assertEquals(4, module.validate.filter(i | i.severity == Severity.WARNING).size)
 		module.assertWarning(NablaPackage.eINSTANCE.connectivity, UnusedValidator::UNUSED, 46, 5, BasicValidator::getUnusedMsg(NablaPackage.Literals.CONNECTIVITY, 'nodes'))
-		module.assertWarning(NablaPackage.eINSTANCE.function, UnusedValidator::UNUSED, 127, 1, BasicValidator::getUnusedMsg(NablaPackage.Literals.FUNCTION, 'h'))
-		module.assertWarning(NablaPackage.eINSTANCE.function, UnusedValidator::UNUSED, 179, 1, BasicValidator::getUnusedMsg(NablaPackage.Literals.FUNCTION, 'i'))
-		module.assertWarning(NablaPackage.eINSTANCE.function, UnusedValidator::UNUSED, 252, 1, BasicValidator::getUnusedMsg(NablaPackage.Literals.FUNCTION, 'j'))
+		module.assertWarning(NablaPackage.eINSTANCE.function, UnusedValidator::UNUSED, 175, 1, BasicValidator::getUnusedMsg(NablaPackage.Literals.FUNCTION, 'h'))
+		module.assertWarning(NablaPackage.eINSTANCE.function, UnusedValidator::UNUSED, 227, 1, BasicValidator::getUnusedMsg(NablaPackage.Literals.FUNCTION, 'i'))
+		module.assertWarning(NablaPackage.eINSTANCE.function, UnusedValidator::UNUSED, 300, 1, BasicValidator::getUnusedMsg(NablaPackage.Literals.FUNCTION, 'j'))
 
 		val functions = module.functions
 		val h = functions.findFirst[name == 'h']
@@ -222,7 +236,7 @@ class DeclarationProviderTest
 		J2: { let ℝ x = f{j ∈ cells()}(bidon{j}); } // Wrong arguments : ℕ
 		'''
 
-		val module = model.parse
+		val module = parserHelper.parse(model) as NablaModule
 		Assert.assertNotNull(module)
 		Assert.assertEquals(1, module.validate.filter(i | i.severity == Severity.ERROR).size)
 		module.assertError(NablaPackage.eINSTANCE.reductionCall,

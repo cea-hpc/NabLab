@@ -6,7 +6,6 @@
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
 
-using namespace nablalib;
 
 /******************** Free functions definitions ********************/
 
@@ -282,7 +281,7 @@ Glace2d::~Glace2d()
  */
 void Glace2d::computeCjr() noexcept
 {
-	parallel::parallel_exec(nbCells, [&](const size_t& jCells)
+	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
 		const Id jId(jCells);
 		{
@@ -307,7 +306,7 @@ void Glace2d::computeCjr() noexcept
  */
 void Glace2d::computeInternalEnergy() noexcept
 {
-	parallel::parallel_exec(nbCells, [&](const size_t& jCells)
+	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
 		e[jCells] = E_n[jCells] - 0.5 * Glace2dFuncs::dot(uj_n[jCells], uj_n[jCells]);
 	});
@@ -320,7 +319,7 @@ void Glace2d::computeInternalEnergy() noexcept
  */
 void Glace2d::iniCjrIc() noexcept
 {
-	parallel::parallel_exec(nbCells, [&](const size_t& jCells)
+	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
 		const Id jId(jCells);
 		{
@@ -365,7 +364,7 @@ void Glace2d::iniTimeStep() noexcept
  */
 void Glace2d::computeLjr() noexcept
 {
-	parallel::parallel_exec(nbCells, [&](const size_t& jCells)
+	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
 		const Id jId(jCells);
 		{
@@ -386,7 +385,7 @@ void Glace2d::computeLjr() noexcept
  */
 void Glace2d::computeV() noexcept
 {
-	parallel::parallel_exec(nbCells, [&](const size_t& jCells)
+	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
 		const Id jId(jCells);
 		double reduction0(0.0);
@@ -411,7 +410,7 @@ void Glace2d::computeV() noexcept
  */
 void Glace2d::initialize() noexcept
 {
-	parallel::parallel_exec(nbCells, [&](const size_t& jCells)
+	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
 		const Id jId(jCells);
 		double rho_ic;
@@ -479,7 +478,7 @@ void Glace2d::setUpTimeLoopN() noexcept
  */
 void Glace2d::computeDensity() noexcept
 {
-	parallel::parallel_exec(nbCells, [&](const size_t& jCells)
+	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
 		rho[jCells] = m[jCells] / V[jCells];
 	});
@@ -551,9 +550,9 @@ void Glace2d::executeTimeLoopN() noexcept
 			std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __RED__ << "none" << __RESET__ << "} ";
 		
 		// Progress
-		std::cout << utils::progress_bar(n, options.maxIterations, t_n, options.stopTime, 25);
-		std::cout << __BOLD__ << __CYAN__ << utils::Timer::print(
-			utils::eta(n, options.maxIterations, t_n, options.stopTime, deltat_n, globalTimer), true)
+		std::cout << progress_bar(n, options.maxIterations, t_n, options.stopTime, 25);
+		std::cout << __BOLD__ << __CYAN__ << Timer::print(
+			eta(n, options.maxIterations, t_n, options.stopTime, deltat_n, globalTimer), true)
 			<< __RESET__ << "\r";
 		std::cout.flush();
 	
@@ -571,7 +570,7 @@ void Glace2d::executeTimeLoopN() noexcept
  */
 void Glace2d::computeEOSp() noexcept
 {
-	parallel::parallel_exec(nbCells, [&](const size_t& jCells)
+	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
 		p[jCells] = (options.gamma - 1.0) * rho[jCells] * e[jCells];
 	});
@@ -584,7 +583,7 @@ void Glace2d::computeEOSp() noexcept
  */
 void Glace2d::computeEOSc() noexcept
 {
-	parallel::parallel_exec(nbCells, [&](const size_t& jCells)
+	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
 		c[jCells] = std::sqrt(options.gamma * p[jCells] / rho[jCells]);
 	});
@@ -597,7 +596,7 @@ void Glace2d::computeEOSc() noexcept
  */
 void Glace2d::computeAjr() noexcept
 {
-	parallel::parallel_exec(nbCells, [&](const size_t& jCells)
+	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
 		const Id jId(jCells);
 		{
@@ -618,7 +617,7 @@ void Glace2d::computeAjr() noexcept
  */
 void Glace2d::computedeltatj() noexcept
 {
-	parallel::parallel_exec(nbCells, [&](const size_t& jCells)
+	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
 		const Id jId(jCells);
 		double reduction0(0.0);
@@ -641,7 +640,7 @@ void Glace2d::computedeltatj() noexcept
  */
 void Glace2d::computeAr() noexcept
 {
-	parallel::parallel_exec(nbNodes, [&](const size_t& rNodes)
+	parallel_exec(nbNodes, [&](const size_t& rNodes)
 	{
 		const Id rId(rNodes);
 		RealArray2D<2,2> reduction0({0.0, 0.0,  0.0, 0.0});
@@ -652,7 +651,7 @@ void Glace2d::computeAr() noexcept
 			{
 				const Id jId(cellsOfNodeR[jCellsOfNodeR]);
 				const size_t jCells(jId);
-				const size_t rNodesOfCellJ(utils::indexOf(mesh->getNodesOfCell(jId), rId));
+				const size_t rNodesOfCellJ(indexOf(mesh->getNodesOfCell(jId), rId));
 				reduction0 = Glace2dFuncs::sumR2(reduction0, Ajr[jCells][rNodesOfCellJ]);
 			}
 		}
@@ -667,7 +666,7 @@ void Glace2d::computeAr() noexcept
  */
 void Glace2d::computeBr() noexcept
 {
-	parallel::parallel_exec(nbNodes, [&](const size_t& rNodes)
+	parallel_exec(nbNodes, [&](const size_t& rNodes)
 	{
 		const Id rId(rNodes);
 		RealArray1D<2> reduction0({0.0, 0.0});
@@ -678,7 +677,7 @@ void Glace2d::computeBr() noexcept
 			{
 				const Id jId(cellsOfNodeR[jCellsOfNodeR]);
 				const size_t jCells(jId);
-				const size_t rNodesOfCellJ(utils::indexOf(mesh->getNodesOfCell(jId), rId));
+				const size_t rNodesOfCellJ(indexOf(mesh->getNodesOfCell(jId), rId));
 				reduction0 = Glace2dFuncs::sumR1(reduction0, p[jCells] * C[jCells][rNodesOfCellJ] + Glace2dFuncs::matVectProduct(Ajr[jCells][rNodesOfCellJ], uj_n[jCells]));
 			}
 		}
@@ -694,7 +693,7 @@ void Glace2d::computeBr() noexcept
 void Glace2d::computeDt() noexcept
 {
 	double reduction0;
-	reduction0 = parallel::parallel_reduce(nbCells, numeric_limits<double>::max(), [&](double& accu, const size_t& jCells)
+	reduction0 = parallel_reduce(nbCells, numeric_limits<double>::max(), [&](double& accu, const size_t& jCells)
 		{
 			return (accu = Glace2dFuncs::minR0(accu, deltatj[jCells]));
 		},
@@ -713,7 +712,7 @@ void Glace2d::computeBoundaryConditions() noexcept
 	{
 		const auto topNodes(mesh->getTopNodes());
 		const size_t nbTopNodes(topNodes.size());
-		parallel::parallel_exec(nbTopNodes, [&](const size_t& rTopNodes)
+		parallel_exec(nbTopNodes, [&](const size_t& rTopNodes)
 		{
 			const Id rId(topNodes[rTopNodes]);
 			const size_t rNodes(rId);
@@ -727,7 +726,7 @@ void Glace2d::computeBoundaryConditions() noexcept
 	{
 		const auto bottomNodes(mesh->getBottomNodes());
 		const size_t nbBottomNodes(bottomNodes.size());
-		parallel::parallel_exec(nbBottomNodes, [&](const size_t& rBottomNodes)
+		parallel_exec(nbBottomNodes, [&](const size_t& rBottomNodes)
 		{
 			const Id rId(bottomNodes[rBottomNodes]);
 			const size_t rNodes(rId);
@@ -741,7 +740,7 @@ void Glace2d::computeBoundaryConditions() noexcept
 	{
 		const auto leftNodes(mesh->getLeftNodes());
 		const size_t nbLeftNodes(leftNodes.size());
-		parallel::parallel_exec(nbLeftNodes, [&](const size_t& rLeftNodes)
+		parallel_exec(nbLeftNodes, [&](const size_t& rLeftNodes)
 		{
 			const Id rId(leftNodes[rLeftNodes]);
 			const size_t rNodes(rId);
@@ -752,7 +751,7 @@ void Glace2d::computeBoundaryConditions() noexcept
 	{
 		const auto rightNodes(mesh->getRightNodes());
 		const size_t nbRightNodes(rightNodes.size());
-		parallel::parallel_exec(nbRightNodes, [&](const size_t& rRightNodes)
+		parallel_exec(nbRightNodes, [&](const size_t& rRightNodes)
 		{
 			const Id rId(rightNodes[rRightNodes]);
 			const size_t rNodes(rId);
@@ -772,7 +771,7 @@ void Glace2d::computeBt() noexcept
 	{
 		const auto innerNodes(mesh->getInnerNodes());
 		const size_t nbInnerNodes(innerNodes.size());
-		parallel::parallel_exec(nbInnerNodes, [&](const size_t& rInnerNodes)
+		parallel_exec(nbInnerNodes, [&](const size_t& rInnerNodes)
 		{
 			const Id rId(innerNodes[rInnerNodes]);
 			const size_t rNodes(rId);
@@ -791,7 +790,7 @@ void Glace2d::computeMt() noexcept
 	{
 		const auto innerNodes(mesh->getInnerNodes());
 		const size_t nbInnerNodes(innerNodes.size());
-		parallel::parallel_exec(nbInnerNodes, [&](const size_t& rInnerNodes)
+		parallel_exec(nbInnerNodes, [&](const size_t& rInnerNodes)
 		{
 			const Id rId(innerNodes[rInnerNodes]);
 			const size_t rNodes(rId);
@@ -817,7 +816,7 @@ void Glace2d::computeTn() noexcept
  */
 void Glace2d::computeU() noexcept
 {
-	parallel::parallel_exec(nbNodes, [&](const size_t& rNodes)
+	parallel_exec(nbNodes, [&](const size_t& rNodes)
 	{
 		ur[rNodes] = Glace2dFuncs::matVectProduct(Glace2dFuncs::inverse(Mt[rNodes]), bt[rNodes]);
 	});
@@ -830,7 +829,7 @@ void Glace2d::computeU() noexcept
  */
 void Glace2d::computeFjr() noexcept
 {
-	parallel::parallel_exec(nbCells, [&](const size_t& jCells)
+	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
 		const Id jId(jCells);
 		{
@@ -853,7 +852,7 @@ void Glace2d::computeFjr() noexcept
  */
 void Glace2d::computeXn() noexcept
 {
-	parallel::parallel_exec(nbNodes, [&](const size_t& rNodes)
+	parallel_exec(nbNodes, [&](const size_t& rNodes)
 	{
 		X_nplus1[rNodes] = X_n[rNodes] + deltat_n * ur[rNodes];
 	});
@@ -866,7 +865,7 @@ void Glace2d::computeXn() noexcept
  */
 void Glace2d::computeEn() noexcept
 {
-	parallel::parallel_exec(nbCells, [&](const size_t& jCells)
+	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
 		const Id jId(jCells);
 		double reduction0(0.0);
@@ -891,7 +890,7 @@ void Glace2d::computeEn() noexcept
  */
 void Glace2d::computeUn() noexcept
 {
-	parallel::parallel_exec(nbCells, [&](const size_t& jCells)
+	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
 		const Id jId(jCells);
 		RealArray1D<2> reduction0({0.0, 0.0});

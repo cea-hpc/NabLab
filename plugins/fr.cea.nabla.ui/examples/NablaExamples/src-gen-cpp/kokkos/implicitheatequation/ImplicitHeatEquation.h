@@ -11,16 +11,21 @@
 #include <cmath>
 #include <Kokkos_Core.hpp>
 #include <Kokkos_hwloc.hpp>
-#include "mesh/CartesianMesh2DFactory.h"
-#include "mesh/CartesianMesh2D.h"
-#include "utils/Utils.h"
-#include "utils/Timer.h"
-#include "types/Types.h"
-#include "mesh/kokkos/PvdFileWriter2D.h"
-#include "utils/kokkos/Parallel.h"
-#include "linearalgebra/kokkos/LinearAlgebraFunctions.h"
+#include "nablalib/mesh/CartesianMesh2DFactory.h"
+#include "nablalib/mesh/CartesianMesh2D.h"
+#include "nablalib/utils/Utils.h"
+#include "nablalib/utils/Timer.h"
+#include "nablalib/types/Types.h"
+#include "nablalib/linearalgebra/kokkos/LinearAlgebra.h"
+#include "nablalib/mesh/kokkos/PvdFileWriter2D.h"
+#include "nablalib/utils/kokkos/Parallel.h"
 
-using namespace nablalib;
+using namespace nablalib::mesh;
+using namespace nablalib::utils;
+using namespace nablalib::types;
+using namespace nablalib::mesh::kokkos;
+using namespace nablalib::utils::kokkos;
+using namespace nablalib::linearalgebra::kokkos;
 
 /******************** Free functions declarations ********************/
 
@@ -57,7 +62,7 @@ public:
 		double u0;
 		double stopTime;
 		int maxIterations;
-		LinearAlgebraFunctions linearAlgebra;
+		nablalib::linearalgebra::kokkos::LinearAlgebra linearAlgebra;
 
 		void jsonInit(const char* jsonContent);
 	};
@@ -105,9 +110,9 @@ private:
 	PvdFileWriter2D writer;
 
 	// Timers
-	utils::Timer globalTimer;
-	utils::Timer cpuTimer;
-	utils::Timer ioTimer;
+	Timer globalTimer;
+	Timer cpuTimer;
+	Timer ioTimer;
 
 public:
 	// Global variables

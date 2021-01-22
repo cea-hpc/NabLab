@@ -60,8 +60,8 @@ class ExpressionTypeProviderTest
 	def reduceMin, ℝ.MaxValue: ℝ, (a, b) → return a;
 
 	def perp: ℝ[2] → ℝ[2], (a) → return a;
-	def norm: x | ℝ[x] → ℝ;
-	def solveLinearSystem: x | ℝ[x, x] × ℝ[x] → ℝ[x];
+	def norm: x | ℝ[x] → ℝ, (a) → return 1.0;
+	def solveLinearSystem: x | ℝ[x, x] × ℝ[x] → ℝ[x], (a, b) → return b;
 
 	option ℝ X_EDGE_LENGTH = 1.;
 	option ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;

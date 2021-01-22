@@ -1,11 +1,11 @@
-#ifndef __BATILIB_BATILIBCPP
-#define __BATILIB_BATILIBCPP
+#ifndef __BATILIB__BATILIBCPP
+#define __BATILIB__BATILIBCPP
 
 #include <iostream>
 #include <string>
 #include "batilib/IBatiLibCpp.h"
 
-using namespace nablalib;
+using namespace nablalib::types;
 
 namespace batilib
 {
@@ -70,4 +70,4 @@ namespace batilib
 	};
 }
 
-#endif // __BATILIB_BATILIBCPP
+#endif // __BATILIB__BATILIBCPP

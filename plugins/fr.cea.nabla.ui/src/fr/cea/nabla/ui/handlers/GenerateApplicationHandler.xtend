@@ -12,7 +12,6 @@ import org.eclipse.core.resources.IResource
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.emf.ecore.util.EcoreUtil
-import org.eclipse.swt.SWT
 import org.eclipse.swt.widgets.Shell
 
 @Singleton
@@ -27,6 +26,7 @@ class GenerateApplicationHandler extends AbstractGenerateHandler
 		val project = nablagenFile.project
 
 		consoleFactory.openConsole
+		consoleFactory.clearAndActivateConsole
 		val traceFunction = [MessageType type, String msg | consoleFactory.printConsole(type, msg)]
 		dispatcher.traceListeners += traceFunction
 
@@ -34,8 +34,6 @@ class GenerateApplicationHandler extends AbstractGenerateHandler
 		([
 			try
 			{
-				consoleFactory.clearAndActivateConsole
-				shell.display.syncExec([shell.cursor = shell.display.getSystemCursor(SWT.CURSOR_WAIT)])
 				consoleFactory.printConsole(MessageType.Start, "Starting generation process for: " + nablagenFile.name)
 				consoleFactory.printConsole(MessageType.Exec, "Loading nablagen and nabla resources")
 				val plaftormUri = URI::createPlatformResourceURI(project.name + '/' + nablagenFile.projectRelativePath, true)
@@ -48,12 +46,10 @@ class GenerateApplicationHandler extends AbstractGenerateHandler
 				val ngen = emfResource.contents.filter(NablagenRoot).head
 				interpreter.generateCode(ngen, project.location.toString)
 				project.refreshLocal(IResource::DEPTH_INFINITE, null)
-				shell.display.syncExec([shell.cursor = null])
 				consoleFactory.printConsole(MessageType.End, "Generation ended successfully for: " + nablagenFile.name)
 			}
 			catch (Exception e)
 			{
-				shell.display.syncExec([shell.cursor = null])
 				consoleFactory.printConsole(MessageType.Error, "Generation failed for: " + nablagenFile.name)
 				consoleFactory.printConsole(MessageType.Error, e.message)
 				consoleFactory.printConsole(MessageType.Error, Utils.getStackTrace(e))

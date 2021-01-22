@@ -6,7 +6,6 @@
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
 
-using namespace nablalib;
 
 /******************** Free functions definitions ********************/
 
@@ -146,7 +145,7 @@ HeatEquation::~HeatEquation()
  */
 void HeatEquation::computeOutgoingFlux() noexcept
 {
-	parallel::parallel_exec(nbCells, [&](const size_t& j1Cells)
+	parallel_exec(nbCells, [&](const size_t& j1Cells)
 	{
 		const Id j1Id(j1Cells);
 		double reduction0(0.0);
@@ -174,7 +173,7 @@ void HeatEquation::computeOutgoingFlux() noexcept
  */
 void HeatEquation::computeSurface() noexcept
 {
-	parallel::parallel_exec(nbFaces, [&](const size_t& fFaces)
+	parallel_exec(nbFaces, [&](const size_t& fFaces)
 	{
 		const Id fId(fFaces);
 		double reduction0(0.0);
@@ -211,7 +210,7 @@ void HeatEquation::computeTn() noexcept
  */
 void HeatEquation::computeV() noexcept
 {
-	parallel::parallel_exec(nbCells, [&](const size_t& jCells)
+	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
 		const Id jId(jCells);
 		double reduction0(0.0);
@@ -238,7 +237,7 @@ void HeatEquation::computeV() noexcept
  */
 void HeatEquation::iniCenter() noexcept
 {
-	parallel::parallel_exec(nbCells, [&](const size_t& jCells)
+	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
 		const Id jId(jCells);
 		RealArray1D<2> reduction0({0.0, 0.0});
@@ -263,7 +262,7 @@ void HeatEquation::iniCenter() noexcept
  */
 void HeatEquation::iniF() noexcept
 {
-	parallel::parallel_exec(nbCells, [&](const size_t& jCells)
+	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
 		f[jCells] = 0.0;
 	});
@@ -286,7 +285,7 @@ void HeatEquation::iniTime() noexcept
  */
 void HeatEquation::computeUn() noexcept
 {
-	parallel::parallel_exec(nbCells, [&](const size_t& jCells)
+	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
 		u_nplus1[jCells] = f[jCells] * deltat + u_n[jCells] + outgoingFlux[jCells];
 	});
@@ -299,7 +298,7 @@ void HeatEquation::computeUn() noexcept
  */
 void HeatEquation::iniUn() noexcept
 {
-	parallel::parallel_exec(nbCells, [&](const size_t& jCells)
+	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
 		u_n[jCells] = std::cos(2 * options.PI * options.alpha * center[jCells][0]);
 	});
@@ -360,9 +359,9 @@ void HeatEquation::executeTimeLoopN() noexcept
 			std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __RED__ << "none" << __RESET__ << "} ";
 		
 		// Progress
-		std::cout << utils::progress_bar(n, options.maxIterations, t_n, options.stopTime, 25);
-		std::cout << __BOLD__ << __CYAN__ << utils::Timer::print(
-			utils::eta(n, options.maxIterations, t_n, options.stopTime, deltat, globalTimer), true)
+		std::cout << progress_bar(n, options.maxIterations, t_n, options.stopTime, 25);
+		std::cout << __BOLD__ << __CYAN__ << Timer::print(
+			eta(n, options.maxIterations, t_n, options.stopTime, deltat, globalTimer), true)
 			<< __RESET__ << "\r";
 		std::cout.flush();
 	

@@ -31,7 +31,7 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 		val fileContents = new ArrayList<GenerationContent>
 
 		// .h of interface
-		val interfaceHeaderFileName = provider.namespaceName + '/' + provider.interfaceName + ".h"
+		val interfaceHeaderFileName = getNsPrefix(provider, '::', '/') + provider.interfaceName + ".h"
 		fileContents += new GenerationContent(interfaceHeaderFileName, getInterfaceHeaderFileContent(provider, functions), false)
 
 		// CMakeLists.txt
@@ -40,11 +40,11 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 
 		// Generates .h and .cc if they does not exists
 		// .h
-		val headerFileName = provider.namespaceName + '/' + provider.className + ".h"
+		val headerFileName = getNsPrefix(provider, '::', '/') + provider.facadeClass + ".h"
 		fileContents += new GenerationContent(headerFileName, getHeaderFileContent(provider, functions), true)
 
 		// .cc
-		val sourceFileName = provider.namespaceName + '/' + provider.className + ".cc"
+		val sourceFileName = getNsPrefix(provider, '::', '/') + provider.facadeClass + ".cc"
 		fileContents += new GenerationContent(sourceFileName, getSourceFileContent(provider, functions), true)
 
 		return fileContents
@@ -54,17 +54,19 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 	'''
 	«Utils::fileHeader»
 
-	#ifndef __«provider.namespaceName.toUpperCase»_«provider.interfaceName.toUpperCase»
-	#define __«provider.namespaceName.toUpperCase»_«provider.interfaceName.toUpperCase»
+	#ifndef __«getNsPrefix(provider, '::', '_').toUpperCase»«provider.interfaceName.toUpperCase»
+	#define __«getNsPrefix(provider, '::', '_').toUpperCase»_«provider.interfaceName.toUpperCase»
 
 	#include <iostream>
 	#include <string>
-	#include "types/Types.h"
+	#include "nablalib/types/Types.h"
 
-	using namespace nablalib;
+	using namespace nablalib::types;
 
-	namespace «provider.namespaceName»
+	«IF !provider.facadeNamespace.nullOrEmpty»
+	namespace «provider.facadeNamespace»
 	{
+	«ENDIF»
 		class «provider.interfaceName»
 		{
 		public:
@@ -80,25 +82,29 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 			«ENDFOR»
 			*/
 		};
+	«IF !provider.facadeNamespace.nullOrEmpty»
 	}
+	«ENDIF»
 
-	#endif // __«provider.namespaceName.toUpperCase»_«provider.interfaceName.toUpperCase»
+	#endif // __«getNsPrefix(provider, '::', '_').toUpperCase»_«provider.interfaceName.toUpperCase»
 	'''
 
 	private def getHeaderFileContent(ExtensionProvider provider, Iterable<Function> irFunctions)
 	'''
-	#ifndef __«provider.namespaceName.toUpperCase»_«provider.className.toUpperCase»
-	#define __«provider.namespaceName.toUpperCase»_«provider.className.toUpperCase»
+	#ifndef __«getNsPrefix(provider, '::', '_').toUpperCase»_«provider.facadeClass.toUpperCase»
+	#define __«getNsPrefix(provider, '::', '_').toUpperCase»_«provider.facadeClass.toUpperCase»
 
 	#include <iostream>
 	#include <string>
-	#include "«provider.namespaceName.toLowerCase»/«provider.interfaceName».h"
+	#include "«getNsPrefix(provider, '::', '/')»«provider.interfaceName».h"
 
-	using namespace nablalib;
+	using namespace nablalib::types;
 
-	namespace «provider.namespaceName»
+	«IF !provider.facadeNamespace.nullOrEmpty»
+	namespace «provider.facadeNamespace»
 	{
-		class «provider.className» : public «provider.interfaceName»
+	«ENDIF»
+		class «provider.facadeClass» : public «provider.interfaceName»
 		{
 		public:
 			void jsonInit(const char* jsonContent) override;
@@ -110,40 +116,46 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 			}
 			«ENDFOR»
 		};
+	«IF !provider.facadeNamespace.nullOrEmpty»
 	}
+	«ENDIF»
 
-	#endif // __«provider.namespaceName.toUpperCase»_«provider.className.toUpperCase»
+	#endif // __«getNsPrefix(provider, '::', '_').toUpperCase»_«provider.facadeClass.toUpperCase»
 	'''
 
 	private def getSourceFileContent(ExtensionProvider provider, Iterable<Function> irFunctions)
 	'''
-	#include "«provider.namespaceName.toLowerCase»/«provider.className».h"
+	#include "«getNsPrefix(provider, '::', '/')»«provider.facadeClass».h"
 	#include <string>
 
-	namespace «provider.namespaceName»
+	«IF !provider.facadeNamespace.nullOrEmpty»
+	namespace «provider.facadeNamespace»
 	{
-	void «provider.className»::jsonInit(const char* jsonContent)
+	«ENDIF»
+	void «provider.facadeClass»::jsonInit(const char* jsonContent)
 	{
 		// Your code here
 	}
+	«IF !provider.facadeNamespace.nullOrEmpty»
 	}
+	«ENDIF»
 	'''
 
 	private def getCMakeFileContent(ExtensionProvider provider, String libCppNablaDir)
 	'''
 	«CMakeUtils.fileHeader»
 
-	set(LIBCPPNABLA_DIR «libCppNablaDir» CACHE STRING "")
+	set(LIBCPPNABLA_DIR «CMakeUtils.formatCMakePath(libCppNablaDir)» CACHE STRING "")
 
-	project(«provider.projectName» CXX)
+	project(«provider.providerName» CXX)
 
 	«CMakeUtils.setCompiler»
 
 	MESSAGE(STATUS "Building library «provider.libName»")
 
-	add_subdirectory(${LIBCPPNABLA_DIR} ${CMAKE_BINARY_DIR}/libcppnabla EXCLUDE_FROM_ALL)
+	add_subdirectory(${LIBCPPNABLA_DIR}/src ${CMAKE_BINARY_DIR}/«CppGeneratorUtils::CppLibName» EXCLUDE_FROM_ALL)
 
-	add_library(«provider.libName» «provider.namespaceName.toLowerCase»/«provider.className».cc)
+	add_library(«provider.libName» «getNsPrefix(provider, '::', '/')»«provider.facadeClass».cc)
 	set_property(TARGET «provider.libName» PROPERTY POSITION_INDEPENDENT_CODE ON)
 	target_include_directories(«provider.libName» PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 	target_link_libraries(«provider.libName» PUBLIC cppnabla)

@@ -25,6 +25,7 @@ class GenerateProvidersHandler extends AbstractGenerateHandler
 		val project = nablaextFile.project
 
 		consoleFactory.openConsole
+		consoleFactory.clearAndActivateConsole
 		val traceFunction = [MessageType type, String msg | consoleFactory.printConsole(type, msg)]
 		dispatcher.traceListeners += traceFunction
 
@@ -32,7 +33,6 @@ class GenerateProvidersHandler extends AbstractGenerateHandler
 		([
 			try
 			{
-				consoleFactory.clearAndActivateConsole
 				consoleFactory.printConsole(MessageType.Start, "Starting generation process for: " + nablaextFile.name)
 				consoleFactory.printConsole(MessageType.Exec, "Loading nabla resources")
 				val plaftormUri = URI::createPlatformResourceURI(project.name + '/' + nablaextFile.projectRelativePath, true)

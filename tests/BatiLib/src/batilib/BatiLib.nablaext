@@ -8,26 +8,32 @@
 
 /*
  * C++ Extension Provider
- * Source files (.h and .cc) in projectDir/BatiLibCpp/src
+ * Source files (.h and .cc) in <projectDir>/src
  *
  * Build instructions:
- *   - go into the projectDir/BatiLibCpp project directory and create a lib directory to build the project: mkdir lib; cd lib
+ *   - go into the <projectDir> directory and create a lib directory to build the project: mkdir lib; cd lib
  *   - start cmake with in setting your compiler and compile: cmake -D CMAKE_CXX_COMPILER=/usr/bin/g++ ../src; make
  */
 ExtensionProvider BatiLibCpp : BatiLib
 {
 	target = CppSequential;
-	// projectDir is the parent directory of the BatiLibCpp project. $ENV and other CMake keywords can be used."
-	projectDir = "$ENV{HOME}/workspaces/NabLab/tests/BatiLibCpp";
+	// projectDir is the parent directory of the BatiLibCpp project relative to the NabLab workspace."
+	projectDir = "/BatiLibCpp";
+	facadeClass = "BatiLibCpp";
+	facadeNamespace = "batilib";
+	libName = "batilib";
 }
 
 /* 
  * Java Extension Provider
- * Source files (.h and .cc) in projectDir/BatiLibJava/src
+ * Source files (.h and .cc) in <projectDir>/src
  */
 ExtensionProvider BatiLibJava : BatiLib
 {
 	target = Java;
-	// projectDir is the parent directory of the BatiLibJava project. $ENV and other CMake keywords can be used."
-	projectDir = "$ENV{HOME}/workspaces/NabLab/tests/BatiLibJava";
+	// projectDir is the parent directory of the BatiLibJava project relative to the NabLab workspace."
+	projectDir = "/BatiLibJava";
+	facadeClass = "BatiLibJava";
+	facadeNamespace = "batilib";
+	libName = "batilib";
 }

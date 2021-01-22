@@ -23,7 +23,11 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablaext.ecore#//ExtensionProvider/name"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablaext.ecore#//ExtensionProvider/extension"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablaext.ecore#//ExtensionProvider/target"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablaext.ecore#//ExtensionProvider/compatibleTargets"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablaext.ecore#//ExtensionProvider/projectDir"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablaext.ecore#//ExtensionProvider/facadeClass"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablaext.ecore#//ExtensionProvider/facadeNamespace"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablaext.ecore#//ExtensionProvider/libName"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

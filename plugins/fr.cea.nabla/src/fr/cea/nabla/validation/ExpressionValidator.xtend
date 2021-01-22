@@ -69,9 +69,9 @@ class ExpressionValidator extends ArgOrVarRefValidator
 	static def getBaseTypeConstantTypeMsg() { "Only integer constant allowed for initialization" }
 	static def getFunctionCallConnectivityArgMsg() { "Connectivity type arguments must be scalar" }
 	static def getFunctionCallMixedArgsMsg() { "Can not mix array types in arguments (connectivity and simple types)" }
-	static def getFunctionCallArgsMsg(List<String> inTypes) { "No candidate function found. Wrong arguments : " + inTypes.join(', ') }
+	static def getFunctionCallArgsMsg(List<String> inTypes) { "No candidate function found. Wrong arguments: " + inTypes.join(', ') }
 	static def getReductionCallOnConnectivitiesVariableMsg() { "No reduction on connectivities variable" }
-	static def getReductionCallArgsMsg(String inType) { "No candidate reduction found. Wrong arguments : " + inType }
+	static def getReductionCallArgsMsg(String inType) { "No candidate reduction found. Wrong arguments: " + inType }
 	static def getBinaryOpTypeMsg(String op, String leftType, String rightType) { "Binary operator " + op + " undefined on types " + leftType + " and " + rightType }
 	static def getVectorConstantSizeMsg(int size) { "Unsupported vector size: " + size }
 	static def getVectorConstantInconsistentTypeMsg() { "All values must have the same type" }

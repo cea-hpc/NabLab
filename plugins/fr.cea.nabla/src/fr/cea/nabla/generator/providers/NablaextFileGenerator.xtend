@@ -15,10 +15,10 @@ class NablaextFileGenerator extends StandaloneGeneratorBase
 		val fsa = getConfiguredFileSystemAccess(projectHome + "/src/" + nablaExt.name.toLowerCase, false)
 		var fileName = nablaExt.name + ".nablaext"
 		dispatcher.post(MessageType::Exec, "    Generating: " + fileName)
-		fsa.generateFile(fileName, getContent(nablaExt, project.workspace.root.location.toString.formatCMakePath))
+		fsa.generateFile(fileName, getContent(nablaExt))
 	}
 
-	private def getContent(NablaExtension it, String workspaceRoot)
+	private def getContent(NablaExtension it)
 	'''
 	/*
 	 * This file contains the providers for the «name» NabLab extension.
@@ -30,28 +30,36 @@ class NablaextFileGenerator extends StandaloneGeneratorBase
 
 	/*
 	 * C++ Extension Provider
-	 * Source files (.h and .cc) in projectDir/«name»Cpp/src
+	 * Source files (.h and .cc) in <projectDir>/src
 	 *
 	 * Build instructions:
-	 *   - go into the projectDir/«name»Cpp project directory and create a lib directory to build the project: mkdir lib; cd lib
+	 *   - go into the <projectDir> directory and create a lib directory to build the project: mkdir lib; cd lib
 	 *   - start cmake with in setting your compiler and compile: cmake -D CMAKE_CXX_COMPILER=/usr/bin/g++ ../src; make
 	 */
 	ExtensionProvider «name»Cpp : «name»
 	{
 		target = «TargetType::CPP_SEQUENTIAL.literal»;
-		// projectDir is the parent directory of the «name»Cpp project. $ENV and other CMake keywords can be used."
-		projectDir = "«workspaceRoot»/«name»Cpp";
+		// compatibleTargets can be added here
+		// projectDir is the parent directory of the «name»Cpp project relative to the NabLab workspace."
+		projectDir = "/«name»Cpp";
+		facadeClass = "«name»Cpp";
+		facadeNamespace = "«name.toLowerCase»";
+		libName = "«name.toLowerCase»";
 	}
 
 	/* 
 	 * Java Extension Provider
-	 * Source files (.h and .cc) in projectDir/«name»Java/src
+	 * Source files (.h and .cc) in <projectDir>/src
 	 */
 	ExtensionProvider «name»Java : «name»
 	{
 		target = «TargetType::JAVA.literal»;
-		// projectDir is the parent directory of the «name»Java project. $ENV and other CMake keywords can be used."
-		projectDir = "«workspaceRoot»/«name»Java";
+		// compatibleTargets can be added here
+		// projectDir is the parent directory of the «name»Java project relative to the NabLab workspace."
+		projectDir = "/«name»Java";
+		facadeClass = "«name»Java";
+		facadeNamespace = "«name.toLowerCase»";
+		libName = "«name.toLowerCase»";
 	}
 	'''
 }

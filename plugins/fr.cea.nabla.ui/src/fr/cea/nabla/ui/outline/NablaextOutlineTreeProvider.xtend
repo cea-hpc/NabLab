@@ -17,6 +17,7 @@ import fr.cea.nabla.nablaext.ExtensionProvider
  *
  * See https://www.eclipse.org/Xtext/documentation/310_eclipse_support.html#outline
  */
+ // TODO Revoir l'outline du nablaext inspiré de celle du nablagen
 class NablaextOutlineTreeProvider extends DefaultOutlineTreeProvider
 {
 	def _text(ExtensionProvider it) { "Extension provider " + name }

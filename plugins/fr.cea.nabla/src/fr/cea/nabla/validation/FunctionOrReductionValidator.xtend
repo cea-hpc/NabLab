@@ -32,6 +32,7 @@ import java.util.HashSet
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.validation.Check
 import org.eclipse.xtext.validation.CheckType
+import fr.cea.nabla.nabla.NablaRoot
 
 class FunctionOrReductionValidator extends BasicValidator
 {
@@ -39,6 +40,7 @@ class FunctionOrReductionValidator extends BasicValidator
 	@Inject extension BaseTypeTypeProvider
 	@Inject extension ExpressionTypeProvider
 
+	public static val EMPTY_BODY = "Functions::EmptyBody"
 	public static val FORBIDDEN_RETURN = "Functions::Forbidden"
 	public static val MISSING_RETURN = "Functions::Missing"
 	public static val UNREACHABLE_CODE = "Functions::UnreachableCode"
@@ -52,6 +54,7 @@ class FunctionOrReductionValidator extends BasicValidator
 	public static val REDUCTION_SEED_TYPE = "Functions::ReductionSeedType"
 	public static val REDUCTION_TYPES_COMPATIBILITY = "Functions::ReductionTypesCompatibility"
 
+	static def getEmptyBodyMsg() { "Extern functions (with no body) not allowed in modules, create an extension" }
 	static def getForbiddenReturnMsg() { "Return instruction only allowed in functions" }
 	static def getMissingReturnMsg() { "Function/Reduction must end with a return instruction" }
 	static def getUnreachableReturnMsg() { "Unreachable code" }
@@ -63,6 +66,13 @@ class FunctionOrReductionValidator extends BasicValidator
 	static def getReductionIncompatibleTypesMsg() { "Declaration conflicts" }
 	static def getReductionSeedTypeMsg() { "Seed type must be scalar" }
 	static def getReductionTypesCompatibilityMsg(String seedType, String type) { "Seed type and reduction type are incompatible: " + seedType + " and " + type }
+
+	@Check(CheckType.NORMAL)
+	def checkEmptyBody(Function it)
+	{
+		if (external && eContainer instanceof NablaModule)
+			error(getEmptyBodyMsg(), NablaPackage.Literals.FUNCTION_OR_REDUCTION__NAME, EMPTY_BODY)
+	}
 
 	@Check(CheckType.NORMAL)
 	def checkForbiddenReturn(Return it)
@@ -130,8 +140,8 @@ class FunctionOrReductionValidator extends BasicValidator
 			return
 		}
 
-		val module = EcoreUtil2.getContainerOfType(it, NablaModule)
-		val otherFunctionArgs = module.functions.filter[x | x.name == name && x !== it]
+		val root = EcoreUtil2.getContainerOfType(it, NablaRoot)
+		val otherFunctionArgs = root.functions.filter[x | x.name == name && x !== it]
 		val conflictingFunctionArg = otherFunctionArgs.findFirst[x | !areCompatible(x.typeDeclaration, typeDeclaration)]
 		if (conflictingFunctionArg !== null)
 			error(getFunctionIncompatibleInTypesMsg(), NablaPackage.Literals::FUNCTION_OR_REDUCTION__NAME, FUNCTION_INCOMPATIBLE_IN_TYPES)
@@ -177,8 +187,8 @@ class FunctionOrReductionValidator extends BasicValidator
 	@Check(CheckType.NORMAL)
 	def checkReductionIncompatibleTypes(Reduction it)
 	{
-		val module = EcoreUtil2.getContainerOfType(it, NablaModule)
-		val otherReductionArgs = module.reductions.filter[x | x.name == name && x !== it]
+		val root = EcoreUtil2.getContainerOfType(it, NablaRoot)
+		val otherReductionArgs = root.reductions.filter[x | x.name == name && x !== it]
 		val conflictingReductionArg = otherReductionArgs.findFirst[x | !areCompatible(x.typeDeclaration.type, typeDeclaration.type)]
 		if (conflictingReductionArg !== null)
 			error(getReductionIncompatibleTypesMsg(), NablaPackage.Literals::REDUCTION__TYPE_DECLARATION, REDUCTION_INCOMPATIBLE_TYPES)

@@ -19,6 +19,8 @@ import static extension fr.cea.nabla.ir.generator.Utils.getClassName
 
 class CppGeneratorUtils 
 {
+	public static val CppLibName = "LibCppNabla"
+
 	static def getCodeName(Function it)
 	{
 		if (body === null)

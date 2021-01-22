@@ -3,7 +3,7 @@ package fr.cea.nabla.ir.interpreter
 import fr.cea.nabla.ir.ir.ExtensionProvider
 import java.util.HashMap
 
-import static fr.cea.nabla.ir.generator.ExtensionProviderExtensions.*
+import static fr.cea.nabla.ir.ExtensionProviderExtensions.*
 
 /**
  * Native library (.so) can only be loaded once.

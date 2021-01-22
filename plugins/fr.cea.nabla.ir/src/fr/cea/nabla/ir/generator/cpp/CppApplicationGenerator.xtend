@@ -14,7 +14,7 @@ import fr.cea.nabla.ir.generator.ApplicationGenerator
 import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
-import fr.cea.nabla.ir.ir.Function
+import fr.cea.nabla.ir.ir.InternFunction
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.SimpleVariable
@@ -22,11 +22,12 @@ import fr.cea.nabla.ir.ir.Variable
 import java.util.ArrayList
 import java.util.HashMap
 
+import static fr.cea.nabla.ir.ExtensionProviderExtensions.*
+
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.Utils.getInstanceName
-import static extension fr.cea.nabla.ir.generator.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.cpp.CppGeneratorUtils.*
 
@@ -68,14 +69,14 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 			class «m.className»;
 		«ENDFOR»
 	«ENDIF»
-	«val bodyFunctions = functions.filter(Function).filter[body !== null]»
-	«IF !bodyFunctions.empty»
+	«val internFunctions = functions.filter(InternFunction)»
+	«IF !internFunctions.empty»
 
 	/******************** Free functions declarations ********************/
 
 	namespace «className»Funcs
 	{
-	«FOR f : bodyFunctions»
+	«FOR f : internFunctions»
 		«functionContentProvider.getDeclarationContent(f)»;
 	«ENDFOR»
 	}
@@ -192,14 +193,14 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		«ENDFOR»
 	«ENDIF»
 
-	«val bodyFunctions = functions.filter(Function).filter[body !== null]»
-	«IF !bodyFunctions.empty»
+	«val internFunctions = functions.filter(InternFunction)»
+	«IF !internFunctions.empty»
 
 	/******************** Free functions definitions ********************/
 
 	namespace «className»Funcs
 	{
-	«FOR f : bodyFunctions SEPARATOR '\n'»
+	«FOR f : internFunctions SEPARATOR '\n'»
 		«functionContentProvider.getDefinitionContent(f)»
 	«ENDFOR»
 	}

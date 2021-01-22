@@ -45,7 +45,6 @@ class NablagenRunner
 	package def launch(IFile nablagenFile, IFile jsonFile)
 	{
 		val ngenInterpreter = ngenInterpreterProvider.get
-		// TODO Bug si interpreter lancé et ensuite générateur : plus d'affichage
 		consoleFactory.openConsole
 		consoleFactory.clearAndActivateConsole
 		val traceFunction = [MessageType type, String msg | consoleFactory.printConsole(type, msg)]

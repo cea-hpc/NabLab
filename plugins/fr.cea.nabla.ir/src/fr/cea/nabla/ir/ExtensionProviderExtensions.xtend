@@ -1,4 +1,4 @@
-package fr.cea.nabla.ir.generator
+package fr.cea.nabla.ir
 
 import fr.cea.nabla.ir.ir.ExtensionProvider
 

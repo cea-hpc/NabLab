@@ -116,6 +116,14 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createFunctionAdapter();
 			}
 			@Override
+			public Adapter caseInternFunction(InternFunction object) {
+				return createInternFunctionAdapter();
+			}
+			@Override
+			public Adapter caseExternFunction(ExternFunction object) {
+				return createExternFunctionAdapter();
+			}
+			@Override
 			public Adapter caseConnectivity(Connectivity object) {
 				return createConnectivityAdapter();
 			}
@@ -516,6 +524,34 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createFunctionAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.InternFunction <em>Intern Function</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.InternFunction
+	 * @generated
+	 */
+	public Adapter createInternFunctionAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.ExternFunction <em>Extern Function</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.ExternFunction
+	 * @generated
+	 */
+	public Adapter createExternFunctionAdapter() {
 		return null;
 	}
 

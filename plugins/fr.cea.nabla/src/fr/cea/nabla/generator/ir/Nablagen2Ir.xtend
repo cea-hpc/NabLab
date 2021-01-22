@@ -14,6 +14,7 @@ import com.google.inject.Provider
 import fr.cea.nabla.ir.IrModuleExtensions
 import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.ConnectivityVariable
+import fr.cea.nabla.ir.ir.ExternFunction
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
@@ -26,9 +27,9 @@ import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.TimeIteratorBlock
 import fr.cea.nabla.nablagen.NablagenModule
+import fr.cea.nabla.nablagen.NablagenRoot
 import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.xtext.EcoreUtil2
-import fr.cea.nabla.nablagen.NablagenRoot
 
 class Nablagen2Ir
 {
@@ -77,6 +78,10 @@ class Nablagen2Ir
 		nodeCoordVariable = getCurrentIrVariable(mainIrModule, ngen.mainModule.nodeCoord) as ConnectivityVariable
 		timeVariable = getCurrentIrVariable(mainIrModule, ngen.mainModule.time) as SimpleVariable
 		timeStepVariable = getCurrentIrVariable(mainIrModule, ngen.mainModule.timeStep) as SimpleVariable
+
+		// set providers
+		for (f : functions.filter(ExternFunction))
+			providers += f.provider
 
 		// post processing
 		if (ngen.vtkOutput !== null)

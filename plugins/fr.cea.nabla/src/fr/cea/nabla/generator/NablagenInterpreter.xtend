@@ -248,6 +248,7 @@ class NablagenInterpreter extends StandaloneGeneratorBase
 		// UnzipHelper::unzipLibJavaNabla(new File(baseDir))
 
 		// Browse IrRoot model providers which need to be filled with Nablaext providers
+		// TODO Traiter la lib Math comme LinearAlgebra, en vrai provider
 		for (irProvider : ir.providers.filter[x | x.extensionName != "Math"])
 		{
 			val provider = getDefaultProvider(ngenContext, TargetType::JAVA, irProvider.extensionName)

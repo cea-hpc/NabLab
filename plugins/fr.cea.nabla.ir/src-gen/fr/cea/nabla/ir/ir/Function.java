@@ -17,12 +17,10 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link fr.cea.nabla.ir.ir.Function#getReturnType <em>Return Type</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Function#getVariables <em>Variables</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Function#getInArgs <em>In Args</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.Function#getBody <em>Body</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.Function#getProvider <em>Provider</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getFunction()
- * @model
+ * @model abstract="true"
  * @generated
  */
 public interface Function extends IrAnnotable {
@@ -93,49 +91,5 @@ public interface Function extends IrAnnotable {
 	 * @generated
 	 */
 	EList<Arg> getInArgs();
-
-	/**
-	 * Returns the value of the '<em><b>Body</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Body</em>' containment reference.
-	 * @see #setBody(Instruction)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getFunction_Body()
-	 * @model containment="true" resolveProxies="true"
-	 * @generated
-	 */
-	Instruction getBody();
-
-	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Function#getBody <em>Body</em>}' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Body</em>' containment reference.
-	 * @see #getBody()
-	 * @generated
-	 */
-	void setBody(Instruction value);
-
-	/**
-	 * Returns the value of the '<em><b>Provider</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Provider</em>' reference.
-	 * @see #setProvider(ExtensionProvider)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getFunction_Provider()
-	 * @model
-	 * @generated
-	 */
-	ExtensionProvider getProvider();
-
-	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Function#getProvider <em>Provider</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Provider</em>' reference.
-	 * @see #getProvider()
-	 * @generated
-	 */
-	void setProvider(ExtensionProvider value);
 
 } // Function

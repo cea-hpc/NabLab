@@ -16,7 +16,8 @@ import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.PrimitiveType
 import org.eclipse.xtend.lib.annotations.Data
 
-import static fr.cea.nabla.ir.generator.ExtensionProviderExtensions.*
+import static fr.cea.nabla.ir.ExtensionProviderExtensions.*
+import fr.cea.nabla.ir.ir.InternFunction
 
 @Data
 class FunctionContentProvider
@@ -31,7 +32,7 @@ class FunctionContentProvider
 		«IF macro !== null»«macro»«ENDIF»
 		«returnType.cppType» «name»(«FOR a : inArgs SEPARATOR ', '»«a.type.cppType» «a.name»«ENDFOR»)'''
 
-	def getDefinitionContent(Function it)
+	def getDefinitionContent(InternFunction it)
 	'''
 		«getDeclarationContent»
 		{

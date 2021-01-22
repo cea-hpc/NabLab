@@ -12,7 +12,7 @@ package fr.cea.nabla.ir.generator.cpp
 import fr.cea.nabla.ir.ir.IrModule
 import java.util.LinkedHashSet
 
-import static fr.cea.nabla.ir.generator.ExtensionProviderExtensions.*
+import static fr.cea.nabla.ir.ExtensionProviderExtensions.*
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*

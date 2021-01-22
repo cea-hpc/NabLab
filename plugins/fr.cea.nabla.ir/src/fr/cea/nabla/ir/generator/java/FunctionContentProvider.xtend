@@ -11,6 +11,7 @@ package fr.cea.nabla.ir.generator.java
 
 import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.Function
+import fr.cea.nabla.ir.ir.InternFunction
 import fr.cea.nabla.ir.ir.SimpleVariable
 
 import static extension fr.cea.nabla.ir.generator.java.InstructionContentProvider.*
@@ -18,7 +19,7 @@ import static extension fr.cea.nabla.ir.generator.java.JavaGeneratorUtils.*
 
 class FunctionContentProvider
 {
-	static def getContent(Function it)
+	static def getContent(InternFunction it)
 	'''
 		private «headerContent»
 		{

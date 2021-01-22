@@ -11,7 +11,7 @@ import fr.cea.nabla.ir.ir.ExtensionProvider
 import fr.cea.nabla.ir.ir.Function
 import java.util.ArrayList
 
-import static fr.cea.nabla.ir.generator.ExtensionProviderExtensions.*
+import static fr.cea.nabla.ir.ExtensionProviderExtensions.*
 
 class JniProviderGenerator implements ProviderGenerator
 {

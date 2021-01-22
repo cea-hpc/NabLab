@@ -7,7 +7,7 @@ import fr.cea.nabla.ir.ir.ExtensionProvider
 import fr.cea.nabla.ir.ir.Function
 import java.util.ArrayList
 
-import static extension fr.cea.nabla.ir.generator.ExtensionProviderExtensions.*
+import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 
 class JavaProviderGenerator implements ProviderGenerator
 {

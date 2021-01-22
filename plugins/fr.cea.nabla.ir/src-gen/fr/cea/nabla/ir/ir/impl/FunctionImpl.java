@@ -4,9 +4,7 @@ package fr.cea.nabla.ir.ir.impl;
 
 import fr.cea.nabla.ir.ir.Arg;
 import fr.cea.nabla.ir.ir.BaseType;
-import fr.cea.nabla.ir.ir.ExtensionProvider;
 import fr.cea.nabla.ir.ir.Function;
-import fr.cea.nabla.ir.ir.Instruction;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.SimpleVariable;
 
@@ -37,13 +35,11 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getReturnType <em>Return Type</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getVariables <em>Variables</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getInArgs <em>In Args</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getBody <em>Body</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getProvider <em>Provider</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class FunctionImpl extends IrAnnotableImpl implements Function {
+public abstract class FunctionImpl extends IrAnnotableImpl implements Function {
 	/**
 	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -93,26 +89,6 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * @ordered
 	 */
 	protected EList<Arg> inArgs;
-
-	/**
-	 * The cached value of the '{@link #getBody() <em>Body</em>}' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getBody()
-	 * @generated
-	 * @ordered
-	 */
-	protected Instruction body;
-
-	/**
-	 * The cached value of the '{@link #getProvider() <em>Provider</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getProvider()
-	 * @generated
-	 * @ordered
-	 */
-	protected ExtensionProvider provider;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -207,51 +183,24 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * @generated
 	 */
 	@Override
-	public ExtensionProvider getProvider() {
-		if (provider != null && provider.eIsProxy()) {
-			InternalEObject oldProvider = (InternalEObject)provider;
-			provider = (ExtensionProvider)eResolveProxy(oldProvider);
-			if (provider != oldProvider) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.FUNCTION__PROVIDER, oldProvider, provider));
-			}
-		}
-		return provider;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public ExtensionProvider basicGetProvider() {
-		return provider;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public void setProvider(ExtensionProvider newProvider) {
-		ExtensionProvider oldProvider = provider;
-		provider = newProvider;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.FUNCTION__PROVIDER, oldProvider, provider));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
 	public EList<SimpleVariable> getVariables() {
 		if (variables == null) {
 			variables = new EObjectContainmentEList.Resolving<SimpleVariable>(SimpleVariable.class, this, IrPackage.FUNCTION__VARIABLES);
 		}
 		return variables;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EList<Arg> getInArgs() {
+		if (inArgs == null) {
+			inArgs = new EObjectContainmentEList.Resolving<Arg>(Arg.class, this, IrPackage.FUNCTION__IN_ARGS);
+		}
+		return inArgs;
 	}
 
 	/**
@@ -283,87 +232,6 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * @generated
 	 */
 	@Override
-	public EList<Arg> getInArgs() {
-		if (inArgs == null) {
-			inArgs = new EObjectContainmentEList.Resolving<Arg>(Arg.class, this, IrPackage.FUNCTION__IN_ARGS);
-		}
-		return inArgs;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Instruction getBody() {
-		if (body != null && body.eIsProxy()) {
-			InternalEObject oldBody = (InternalEObject)body;
-			body = (Instruction)eResolveProxy(oldBody);
-			if (body != oldBody) {
-				InternalEObject newBody = (InternalEObject)body;
-				NotificationChain msgs = oldBody.eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.FUNCTION__BODY, null, null);
-				if (newBody.eInternalContainer() == null) {
-					msgs = newBody.eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.FUNCTION__BODY, null, msgs);
-				}
-				if (msgs != null) msgs.dispatch();
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.FUNCTION__BODY, oldBody, body));
-			}
-		}
-		return body;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Instruction basicGetBody() {
-		return body;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public NotificationChain basicSetBody(Instruction newBody, NotificationChain msgs) {
-		Instruction oldBody = body;
-		body = newBody;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.FUNCTION__BODY, oldBody, newBody);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
-		return msgs;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public void setBody(Instruction newBody) {
-		if (newBody != body) {
-			NotificationChain msgs = null;
-			if (body != null)
-				msgs = ((InternalEObject)body).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.FUNCTION__BODY, null, msgs);
-			if (newBody != null)
-				msgs = ((InternalEObject)newBody).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.FUNCTION__BODY, null, msgs);
-			msgs = basicSetBody(newBody, msgs);
-			if (msgs != null) msgs.dispatch();
-		}
-		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.FUNCTION__BODY, newBody, newBody));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case IrPackage.FUNCTION__RETURN_TYPE:
@@ -372,8 +240,6 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 				return ((InternalEList<?>)getVariables()).basicRemove(otherEnd, msgs);
 			case IrPackage.FUNCTION__IN_ARGS:
 				return ((InternalEList<?>)getInArgs()).basicRemove(otherEnd, msgs);
-			case IrPackage.FUNCTION__BODY:
-				return basicSetBody(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -395,12 +261,6 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 				return getVariables();
 			case IrPackage.FUNCTION__IN_ARGS:
 				return getInArgs();
-			case IrPackage.FUNCTION__BODY:
-				if (resolve) return getBody();
-				return basicGetBody();
-			case IrPackage.FUNCTION__PROVIDER:
-				if (resolve) return getProvider();
-				return basicGetProvider();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -428,12 +288,6 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 				getInArgs().clear();
 				getInArgs().addAll((Collection<? extends Arg>)newValue);
 				return;
-			case IrPackage.FUNCTION__BODY:
-				setBody((Instruction)newValue);
-				return;
-			case IrPackage.FUNCTION__PROVIDER:
-				setProvider((ExtensionProvider)newValue);
-				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -458,12 +312,6 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 			case IrPackage.FUNCTION__IN_ARGS:
 				getInArgs().clear();
 				return;
-			case IrPackage.FUNCTION__BODY:
-				setBody((Instruction)null);
-				return;
-			case IrPackage.FUNCTION__PROVIDER:
-				setProvider((ExtensionProvider)null);
-				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -484,10 +332,6 @@ public class FunctionImpl extends IrAnnotableImpl implements Function {
 				return variables != null && !variables.isEmpty();
 			case IrPackage.FUNCTION__IN_ARGS:
 				return inArgs != null && !inArgs.isEmpty();
-			case IrPackage.FUNCTION__BODY:
-				return body != null;
-			case IrPackage.FUNCTION__PROVIDER:
-				return provider != null;
 		}
 		return super.eIsSet(featureID);
 	}

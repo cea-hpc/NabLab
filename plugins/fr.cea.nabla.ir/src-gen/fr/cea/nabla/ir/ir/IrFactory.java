@@ -94,13 +94,22 @@ public interface IrFactory extends EFactory {
 	ConnectivityVariable createConnectivityVariable();
 
 	/**
-	 * Returns a new object of class '<em>Function</em>'.
+	 * Returns a new object of class '<em>Intern Function</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Function</em>'.
+	 * @return a new object of class '<em>Intern Function</em>'.
 	 * @generated
 	 */
-	Function createFunction();
+	InternFunction createInternFunction();
+
+	/**
+	 * Returns a new object of class '<em>Extern Function</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Extern Function</em>'.
+	 * @generated
+	 */
+	ExternFunction createExternFunction();
 
 	/**
 	 * Returns a new object of class '<em>Connectivity</em>'.

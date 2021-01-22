@@ -22,6 +22,7 @@ import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.IntConstant
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
+import fr.cea.nabla.nabla.NablaRoot
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.Return
 import fr.cea.nabla.nabla.SimpleVar
@@ -32,7 +33,6 @@ import java.util.HashSet
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.validation.Check
 import org.eclipse.xtext.validation.CheckType
-import fr.cea.nabla.nabla.NablaRoot
 
 class FunctionOrReductionValidator extends BasicValidator
 {

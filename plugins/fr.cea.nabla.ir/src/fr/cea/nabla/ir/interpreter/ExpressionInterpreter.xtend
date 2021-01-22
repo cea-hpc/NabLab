@@ -17,9 +17,11 @@ import fr.cea.nabla.ir.ir.BoolConstant
 import fr.cea.nabla.ir.ir.Cardinality
 import fr.cea.nabla.ir.ir.ContractedIf
 import fr.cea.nabla.ir.ir.Expression
+import fr.cea.nabla.ir.ir.ExternFunction
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IntConstant
+import fr.cea.nabla.ir.ir.InternFunction
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.MaxConstant
 import fr.cea.nabla.ir.ir.MinConstant
@@ -209,35 +211,39 @@ class ExpressionInterpreter
 	{
 		context.logFinest("Interprete FunctionCall " + function.name)
 		val argValues = args.map[x|interprete(x, context)]
-		if (function.body === null)
+		val f = function
+		switch f
 		{
-			// Use method cache instead of resolving on each iteration
-			val javaValues = argValues.map[x|FunctionCallHelper.getJavaValue(x)].toArray
-			val result = invokeMethod(context, function, javaValues)
-			return FunctionCallHelper.createNablaValue(result)
-		}
-		else
-		{
-			val innerContext = new Context(context)
-			for (iArg : 0..<args.length)
+			ExternFunction:
 			{
-				// set DimensionSymbol values with argument types
-				val callerArg = args.get(iArg)
-				val calleeArg = function.inArgs.get(iArg)
-				val callerArgTypeSizes = getIntSizes(callerArg.type, context)
-				for (iSize : 0..<callerArgTypeSizes.length)
-				{
-					val callerArgTypeTypeSize = callerArgTypeSizes.get(iSize)
-					val calleeArgTypeDimension = calleeArg.type.sizes.get(iSize)
-					if (calleeArgTypeDimension instanceof ArgOrVarRef)
-						if (calleeArgTypeDimension.target instanceof SimpleVariable)
-							innerContext.addVariableValue(calleeArgTypeDimension.target, new NV0Int(callerArgTypeTypeSize))
-				}
-
-				// set argument value
-				innerContext.addVariableValue(calleeArg, argValues.get(iArg))
+				// Use method cache instead of resolving on each iteration
+				val javaValues = argValues.map[x|FunctionCallHelper.getJavaValue(x)].toArray
+				val result = invokeMethod(context, f, javaValues)
+				return FunctionCallHelper.createNablaValue(result)
 			}
-			return interprete(function.body, innerContext)
+			InternFunction:
+			{
+				val innerContext = new Context(context)
+				for (iArg : 0..<args.length)
+				{
+					// set DimensionSymbol values with argument types
+					val callerArg = args.get(iArg)
+					val calleeArg = f.inArgs.get(iArg)
+					val callerArgTypeSizes = getIntSizes(callerArg.type, context)
+					for (iSize : 0..<callerArgTypeSizes.length)
+					{
+						val callerArgTypeTypeSize = callerArgTypeSizes.get(iSize)
+						val calleeArgTypeDimension = calleeArg.type.sizes.get(iSize)
+						if (calleeArgTypeDimension instanceof ArgOrVarRef)
+							if (calleeArgTypeDimension.target instanceof SimpleVariable)
+								innerContext.addVariableValue(calleeArgTypeDimension.target, new NV0Int(callerArgTypeTypeSize))
+					}
+	
+					// set argument value
+					innerContext.addVariableValue(calleeArg, argValues.get(iArg))
+				}
+				return interprete(f.body, innerContext)
+			}
 		}
 	}
 

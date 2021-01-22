@@ -11,7 +11,8 @@ package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityType
-import fr.cea.nabla.ir.ir.Function
+import fr.cea.nabla.ir.ir.ExternFunction
+import fr.cea.nabla.ir.ir.InternFunction
 
 import static extension fr.cea.nabla.ir.Utils.getInstanceName
 import static extension fr.cea.nabla.ir.Utils.getIrModule
@@ -21,13 +22,15 @@ class CppGeneratorUtils
 {
 	public static val CppLibName = "LibCppNabla"
 
-	static def getCodeName(Function it)
+	static def dispatch getCodeName(InternFunction it)
 	{
-		if (body === null)
-			if (provider.extensionName == "Math") 'std::' + name
-			else 'options.' + provider.instanceName + '.' + name
-		else
-			irModule.className + 'Funcs::' + name
+		irModule.className + 'Funcs::' + name
+	}
+
+	static def dispatch getCodeName(ExternFunction it)
+	{
+		if (provider.extensionName == "Math") 'std::' + name
+		else 'options.' + provider.instanceName + '.' + name
 	}
 
 	static def dispatch boolean isBaseTypeStatic(ConnectivityType it)

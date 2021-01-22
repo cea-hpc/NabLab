@@ -13,6 +13,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import fr.cea.nabla.ir.Utils
+import fr.cea.nabla.ir.ir.ExternFunction
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
@@ -177,7 +178,7 @@ class IrInterpreter
 			}
 		}
 
-		val functionsByProvider = m.functions.filter[body === null].groupBy[provider]
+		val functionsByProvider = m.functions.filter(ExternFunction).groupBy[provider]
 		for (provider : functionsByProvider.keySet)
 		{
 			var Class<?> providerClass

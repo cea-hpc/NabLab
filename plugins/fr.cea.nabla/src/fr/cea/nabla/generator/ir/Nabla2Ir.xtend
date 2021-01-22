@@ -14,10 +14,12 @@ import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.TimeLoopJob
+import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.FunctionOrReduction
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.OptionDeclaration
+import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.SimpleVarDeclaration
 import fr.cea.nabla.nabla.VarGroupDeclaration
@@ -63,7 +65,12 @@ class Nabla2Ir
 
 	private def create IrFactory::eINSTANCE.createIrModule toIrModule(NablaModule nablaModule)
 	{
-		nablaModule.allUsedFunctionAndReductions.forEach[x | functions += x.toIrFunction]
+		for (f : nablaModule.allUsedFunctionAndReductions)
+			switch f
+			{
+				Function: functions += f.toIrFunction
+				Reduction: functions += f.toIrFunction
+			}
 
 		// Time loop jobs creation
 		if (nablaModule.iteration !== null)
@@ -93,6 +100,7 @@ class Nabla2Ir
 
 	/**
 	 * Need to be recursive if a function/reduction use a function/reduction
+	 * coming from a NablaExtension (not in eAllContents of the NablaModule).
 	 */
 	private def LinkedHashSet<FunctionOrReduction> getAllUsedFunctionAndReductions(EObject it)
 	{

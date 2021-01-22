@@ -14,7 +14,6 @@ import com.google.inject.Singleton
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.nabla.Function
-import fr.cea.nabla.nabla.FunctionOrReduction
 import fr.cea.nabla.nabla.NablaRoot
 import fr.cea.nabla.nabla.Reduction
 import org.eclipse.xtext.EcoreUtil2
@@ -27,42 +26,50 @@ class IrFunctionFactory
 	@Inject extension IrArgOrVarFactory
 	@Inject extension IrInstructionFactory
 
-	def dispatch create IrFactory::eINSTANCE.createFunction toIrFunction(Function f)
+	def toIrFunction(Function f)
 	{
-		annotations += f.toIrAnnotation
-		name = f.name
-		provider = f.nablaRootName.toIrExtensionProvider
-		f.variables.forEach[x | variables += x.toIrVariable as SimpleVariable]
-		if (f.external)
-		{
-			// f is external. No inArgs only inArgTypes
-			for (i : 0..<f.typeDeclaration.inTypes.size)
-				inArgs += toIrArg(f.typeDeclaration.inTypes.get(i), "x" + i)
-		}
-		else
-		{
-			// f is internal, it has a inArgs and a body
-			f.inArgs.forEach[x | inArgs += toIrArg(x, x.name)]
-			body = f.body.toIrInstruction
-		}
-		returnType = f.typeDeclaration.returnType.toIrBaseType
+		if (f.external) f.toIrExternFunction
+		else f.toIrInternFunction
 	}
 
-	def dispatch create IrFactory::eINSTANCE.createFunction toIrFunction(Reduction f)
+	def create IrFactory::eINSTANCE.createInternFunction toIrFunction(Reduction f)
 	{
 		val t = f.typeDeclaration.type
 		annotations += f.toIrAnnotation
 		// build a unique name with name and type
 		name = f.name.toFirstLower + t.primitive.getName().charAt(0) + t.sizes.size
-		provider = f.nablaRootName.toIrExtensionProvider
 		f.variables.forEach[x | variables += x.toIrVariable as SimpleVariable]
 		f.inArgs.forEach[x | inArgs += toIrArg(x, x.name)]
 		returnType = t.toIrBaseType
 		body = f.body.toIrInstruction
 	}
 
-	private def getNablaRootName(FunctionOrReduction it)
+	private def getIrProvider(Function it)
 	{
-		EcoreUtil2.getContainerOfType(it, NablaRoot).name
+		val nablaRootName = EcoreUtil2.getContainerOfType(it, NablaRoot).name
+		nablaRootName.toIrExtensionProvider
+	}
+
+	private def create IrFactory::eINSTANCE.createInternFunction toIrInternFunction(Function f)
+	{
+		annotations += f.toIrAnnotation
+		name = f.name
+		f.variables.forEach[x | variables += x.toIrVariable as SimpleVariable]
+		// f is internal, it has a inArgs and a body
+		f.inArgs.forEach[x | inArgs += toIrArg(x, x.name)]
+		body = f.body.toIrInstruction
+		returnType = f.typeDeclaration.returnType.toIrBaseType
+	}
+
+	private def create IrFactory::eINSTANCE.createExternFunction toIrExternFunction(Function f)
+	{
+		annotations += f.toIrAnnotation
+		name = f.name
+		provider = f.irProvider
+		f.variables.forEach[x | variables += x.toIrVariable as SimpleVariable]
+		// f is external. No inArgs only inArgTypes
+		for (i : 0..<f.typeDeclaration.inTypes.size)
+			inArgs += toIrArg(f.typeDeclaration.inTypes.get(i), "x" + i)
+		returnType = f.typeDeclaration.returnType.toIrBaseType
 	}
 }

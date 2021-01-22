@@ -14,14 +14,14 @@ import fr.cea.nabla.ir.generator.ApplicationGenerator
 import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityVariable
-import fr.cea.nabla.ir.ir.Function
+import fr.cea.nabla.ir.ir.InternFunction
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.Variable
 import java.util.ArrayList
 
-import static fr.cea.nabla.ir.generator.ExtensionProviderExtensions.*
+import static fr.cea.nabla.ir.ExtensionProviderExtensions.*
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
@@ -189,7 +189,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 
 				«j.content»
 			«ENDFOR»
-			«FOR f : functions.filter(Function).filter[body !== null]»
+			«FOR f : functions.filter(InternFunction)»
 
 				«f.content»
 			«ENDFOR»

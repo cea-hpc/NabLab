@@ -11,7 +11,8 @@ package fr.cea.nabla.ir.generator.java
 
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityType
-import fr.cea.nabla.ir.ir.Function
+import fr.cea.nabla.ir.ir.ExternFunction
+import fr.cea.nabla.ir.ir.InternFunction
 import fr.cea.nabla.ir.ir.PrimitiveType
 
 import static extension fr.cea.nabla.ir.Utils.getInstanceName
@@ -20,19 +21,22 @@ class JavaGeneratorUtils
 {
 	public static val JavaLibName = "LibJavaNabla"
 
-	static def getCodeName(Function it)
+	static def dispatch getCodeName(InternFunction it)
 	{
-		if (body === null)
-			if (provider.extensionName == "Math")
-			{
-				if (name == 'erf')
-					// no erf function in java Math
-					'org.apache.commons.math3.special.Erf.erf'
-				else
-					'Math.' + name
-			}
-			else 'options.' + provider.instanceName + '.' + name
-		else name
+		name
+	}
+
+	static def dispatch getCodeName(ExternFunction it)
+	{
+		if (provider.extensionName == "Math")
+		{
+			if (name == 'erf')
+				// no erf function in java Math
+				'org.apache.commons.math3.special.Erf.erf'
+			else
+				'Math.' + name
+		}
+		else 'options.' + provider.instanceName + '.' + name
 	}
 
 	static def dispatch String getJavaType(BaseType it)

@@ -280,7 +280,7 @@ class NablagenInterpreter extends StandaloneGeneratorBase
 			val provider = (extensionConfig === null ? getDefaultProvider(target, target.type, irProvider.extensionName) : extensionConfig.provider)
 			if (provider === null)
 			{
-				dispatcher.post(MessageType::Error, '    No provider found for extension: ' + irProvider.extensionName)
+				dispatcher.post(MessageType::Warning, '    No provider found for extension: ' + irProvider.extensionName)
 				return false
 			}
 

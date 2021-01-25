@@ -2,8 +2,6 @@
 
 cmake_minimum_required(VERSION 3.10)
 
-set(NABLA_CXX_COMPILER /usr/bin/g++)
-set(JAVA_HOME /usr/lib/jvm/java-11-openjdk-amd64)
 
 project(DepthInitProject LANGUAGES NONE)
 
@@ -19,7 +17,7 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 	endif()
 endif()
 
-add_subdirectory($ENV{HOME}/workspaces/NabLab/tests/NablaTest/../BatiLibCppJni/src ${CMAKE_BINARY_DIR}/BatiLibCppJni)
+add_subdirectory($ENV{HOME}/workspaces/NabLab/tests/DepthInit/../BatiLibCppJni/src ${CMAKE_BINARY_DIR}/BatiLibCppJni)
 
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 	include(${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)

@@ -12,5 +12,4 @@ Require-Bundle: fr.cea.nabla,
  fr.cea.nabla.javalib,
  org.eclipse.xtext.xbase.lib,
  com.google.gson,
- leveldb;bundle-version="0.13.0",
- BatiLib
+ leveldb;bundle-version="0.13.0"

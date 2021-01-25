@@ -22,6 +22,7 @@ import fr.cea.nabla.nablagen.NablagenRoot
 import fr.cea.nabla.ui.NabLabConsoleFactory
 import fr.cea.nabla.ui.internal.NablaActivator
 import java.io.IOException
+import java.util.ArrayList
 import java.util.Collections
 import javax.inject.Provider
 import org.eclipse.core.commands.AbstractHandler
@@ -291,11 +292,26 @@ class OpenSiriusJobsGraph extends AbstractHandler
 		for (representation : representations) {
 			var editor = DialectUIManager.INSTANCE.openEditor(session, representation, new NullProgressMonitor)
 			if (editor instanceof DialectEditor)
-			{			
+			{
 				DialectUIManager.INSTANCE.refreshEditor(editor, new NullProgressMonitor)
+				unselectAllElements(session, representation)
 			}
 		}
 		saveSession(session)
+	}
+
+	def protected void unselectAllElements(Session session, DRepresentation representation)
+	{
+		session.transactionalEditingDomain.commandStack.execute(
+			new RecordingCommand(session.transactionalEditingDomain)
+			{
+				override protected doExecute()
+				{
+					representation.uiState.elementsToSelect.clear
+					representation.uiState.elementsToSelect.addAll(new ArrayList<EObject>())
+				}
+			}
+		)
 	}
 
 	def protected IrRoot getSemanticRoot(Session session)

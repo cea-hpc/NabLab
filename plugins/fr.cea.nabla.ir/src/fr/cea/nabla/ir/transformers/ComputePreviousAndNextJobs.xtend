@@ -47,14 +47,14 @@ class ComputePreviousAndNextJobs extends IrTransformationStep
 	}
 
 	protected def void computePreviousAndNextJobsWithSameCaller(Job job) {
-		val previousJobs = jobDependencies.getPreviousJobs(job)
-		val previousJobsWithSameCaller = previousJobs.filter[x | x.caller === job.caller]
-		job.previousJobsWithSameCaller.addAll(previousJobsWithSameCaller)
-		if (!previousJobsWithSameCaller.isEmpty)
+		val nextJobs = jobDependencies.getNextJobs(job)
+		val nextJobsWithSameCaller = nextJobs.filter[x | x.caller === job.caller]
+		job.nextJobsWithSameCaller.addAll(nextJobsWithSameCaller)
+		if (!nextJobsWithSameCaller.isEmpty)
 		{
-			val nextJobs = jobDependencies.getNextJobs(job)
-			val nextJobsWithSameCaller = nextJobs.filter[x | x.caller === job.caller]
-			job.nextJobsWithSameCaller.addAll(nextJobsWithSameCaller)
+			val previousJobs = jobDependencies.getPreviousJobs(job)
+			val previousJobsWithSameCaller = previousJobs.filter[x | x.caller === job.caller]
+			job.previousJobsWithSameCaller.addAll(previousJobsWithSameCaller)
 		}
 	}
 }

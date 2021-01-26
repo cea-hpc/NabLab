@@ -32,6 +32,7 @@ import org.eclipse.sirius.ui.business.api.session.SessionEditorInput
 import org.eclipse.sirius.ui.business.api.session.SessionUIManager
 import org.eclipse.sirius.viewpoint.DRepresentation
 import org.eclipse.sirius.viewpoint.description.RepresentationDescription
+import java.util.ArrayList
 
 @SuppressWarnings("restriction")
 class NablaSiriusServices
@@ -87,6 +88,7 @@ class NablaSiriusServices
 					var uri = URI.createURI(sessionURI.toString + "#" + uid);
 					var uriEditorInput = new SessionEditorInput(uri, parentDiagram.name, session)
 					((editor as DDiagramEditorImpl)).setInput(uriEditorInput)
+					unselectAllElements(session, nablaIrDiagramOnJob)
 				}
 				saveSession(session)
 			}
@@ -152,14 +154,29 @@ class NablaSiriusServices
 						}
 						var sessionURI = session.sessionResource.URI
 						var uid = nablaIrDiagramOnJob.uid
-						var uri = URI.createURI(sessionURI.toString + "#" + uid);
+						var uri = URI.createURI(sessionURI.toString + "#" + uid)
 						var uriEditorInput = new SessionEditorInput(uri, annotable.name, session)
 						((editor as DDiagramEditorImpl)).setInput(uriEditorInput)
+						unselectAllElements(session, nablaIrDiagramOnJob)
 					}
 					saveSession(session)
 				}
 			}
 		}
+	}
+
+	def void unselectAllElements(Session session, DRepresentation representation)
+	{
+		session.transactionalEditingDomain.commandStack.execute(
+			new RecordingCommand(session.transactionalEditingDomain)
+			{
+				override protected doExecute()
+				{
+					representation.uiState.elementsToSelect.clear
+					representation.uiState.elementsToSelect.addAll(new ArrayList<EObject>())
+				}
+			}
+		)
 	}
 
 	def private DRepresentation getExistingDiagram(Session session, IrAnnotable irAnnotable)

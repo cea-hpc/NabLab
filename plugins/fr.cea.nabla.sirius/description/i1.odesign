@@ -8,7 +8,7 @@
         </layoutOptions>
         <layoutOptions xsi:type="description_1:EnumLayoutOption" id="org.eclipse.elk.direction">
           <targets>PARENT</targets>
-          <value name="UP"/>
+          <value name="DOWN"/>
         </layoutOptions>
         <layoutOptions xsi:type="description_1:EnumLayoutOption" id="org.eclipse.elk.edgeRouting">
           <targets>PARENT</targets>
@@ -31,10 +31,13 @@
           <values name="PORTS"/>
           <values name="MINIMUM_SIZE"/>
         </layoutOptions>
+        <layoutOptions xsi:type="description_1:BooleanLayoutOption" id="org.eclipse.elk.partitioning.activate" value="true">
+          <targets>PARENT</targets>
+        </layoutOptions>
       </layout>
       <defaultLayer name="Default">
-        <edgeMappings name="NID.Job2Job" deletionDescription="//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@toolSections.0/@ownedTools[name='NID.Delete.Element']" sourceMapping="//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@containerMappings[name='NID.JobNode']" targetMapping="//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@containerMappings[name='NID.JobNode']" targetFinderExpression="feature:previousJobsWithSameCaller">
-          <style sourceArrow="InputArrow" targetArrow="NoDecoration">
+        <edgeMappings name="NID.Job2Job" deletionDescription="//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@toolSections.0/@ownedTools[name='NID.Delete.Element']" sourceMapping="//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@containerMappings[name='NID.JobNode']" targetMapping="//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@containerMappings[name='NID.JobNode']" targetFinderExpression="feature:nextJobsWithSameCaller">
+          <style>
             <strokeColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='gray']"/>
             <centerLabelStyleDescription labelSize="10" showIcon="false">
               <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
@@ -64,20 +67,20 @@
             <backgroundColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='white']"/>
             <foregroundColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='white']"/>
           </style>
-          <conditionnalStyles predicateExpression="aql:self.previousJobsWithSameCaller->isEmpty()">
-            <style xsi:type="style:FlatContainerStyleDescription" arcWidth="15" arcHeight="15" borderSizeComputationExpression="1" labelSize="10" showIcon="false" labelExpression="aql:self.getDiagramDisplayName()" tooltipExpression="aql:self.getTooltip()" roundedCorner="true">
-              <borderColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
-              <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
-              <backgroundColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='light_green']"/>
-              <foregroundColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='light_green']"/>
-            </style>
-          </conditionnalStyles>
           <conditionnalStyles predicateExpression="aql:self.nextJobsWithSameCaller->isEmpty()">
             <style xsi:type="style:FlatContainerStyleDescription" arcWidth="15" arcHeight="15" borderSizeComputationExpression="1" labelSize="10" showIcon="false" labelExpression="aql:self.getDiagramDisplayName()" tooltipExpression="aql:self.getTooltip()" roundedCorner="true">
               <borderColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
               <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
               <backgroundColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='light_orange']"/>
               <foregroundColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='light_orange']"/>
+            </style>
+          </conditionnalStyles>
+          <conditionnalStyles predicateExpression="aql:self.previousJobsWithSameCaller->isEmpty()">
+            <style xsi:type="style:FlatContainerStyleDescription" arcWidth="15" arcHeight="15" borderSizeComputationExpression="1" labelSize="10" showIcon="false" labelExpression="aql:self.getDiagramDisplayName()" tooltipExpression="aql:self.getTooltip()" roundedCorner="true">
+              <borderColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
+              <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
+              <backgroundColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='light_green']"/>
+              <foregroundColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='light_green']"/>
             </style>
           </conditionnalStyles>
           <conditionnalStyles predicateExpression="feature:onCycle">

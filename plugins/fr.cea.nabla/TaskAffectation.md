@@ -37,6 +37,8 @@ Cela permettra de laisser passer le solve mais pas le reste. Dans ce cas particu
 Si une affectation directe de deux ConnectivityVariable de type LinearAlgebra est faite par l'utilisateur il y aura aliasing mais ce cas n'a pas été rencontré
 et il semble rare.
 
+Q : que veut dire "l'expression à droite de l'affectation est LinearAlgebra". Jai testé que l'expression est un appel de fonction de type LinearAlgebra. Problème, que se passe-t'il si l'utilisateur veur définir son propre solveur ou tout autre méthode qui renvoit un tableau type connectivity ?
+
 **Copie lors de l'affectation**
 
 Dans le cas où la variable affectée (partie gauche de l'affectation) a un type avec une liste BaseType.sizes non vide (tableau),

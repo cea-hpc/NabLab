@@ -16,6 +16,7 @@ import org.eclipse.sirius.diagram.DDiagram
 import org.eclipse.sirius.diagram.elk.ElkDiagramLayoutConnector
 import org.eclipse.sirius.diagram.elk.GmfLayoutCommand
 import org.eclipse.sirius.diagram.elk.IELKLayoutExtension
+import fr.cea.nabla.ir.ir.Job
 
 class NablaIrElkLayoutExtension implements IELKLayoutExtension
 {
@@ -67,11 +68,27 @@ class NablaIrElkLayoutExtension implements IELKLayoutExtension
 	def protected void beforeElkLayout_NablaIrDiagram(LayoutMapping layoutMapping, DDiagram dDiagram)
 	{
 		layoutMapping.layoutGraph.containedEdges.stream.forEach([edge|edge.sections.clear])
+		
 		layoutMapping.layoutGraph.children.forEach([ n |
 			{
 				var minimumSize = n.getProperty(CoreOptions.NODE_SIZE_MINIMUM)
 				minimumSize.y = 10.0
+				n.setProperty(CoreOptions.PARTITIONING_PARTITION, getLevel(dDiagram, n.labels.get(0).text, layoutMapping.graphMap.get(n)))
 			}
 		])
+	}
+
+	def protected Integer getLevel(DDiagram dDiagram, String nodeName, Object value)
+	{
+		for (node : dDiagram.containers) {
+			if (nodeName.equals(node.name))
+			{
+				val semantic = node.target
+				if (semantic instanceof Job) {
+					return semantic.at.intValue
+				}
+			}
+		}
+		return 1
 	}
 }

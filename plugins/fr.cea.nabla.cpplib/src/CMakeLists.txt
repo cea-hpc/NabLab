@@ -36,7 +36,6 @@ add_library(cppnabla
     nablalib/types/MultiArray.cc
     nablalib/utils/Timer.cc nablalib/utils/Utils.cc)
 target_include_directories(cppnabla PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_directories(cppnabla PUBLIC)
 target_link_libraries(cppnabla PUBLIC stdc++fs)
 target_compile_options(cppnabla PUBLIC -fPIC -g -Wall -O3 --std=c++17 -mtune=native)
 
@@ -44,8 +43,6 @@ target_compile_options(cppnabla PUBLIC -fPIC -g -Wall -O3 --std=c++17 -mtune=nat
 add_library(cppnablastl 
     nablalib/linearalgebra/stl/LinearAlgebra.cc nablalib/linearalgebra/stl/Matrix.cc nablalib/utils/stl/Serializer.cc)
 target_include_directories(cppnablastl PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_directories(cppnablastl PUBLIC)
-target_link_libraries(cppnablastl PUBLIC)
 target_compile_options(cppnablastl PUBLIC -fPIC -g -Wall -O3 --std=c++17 -mtune=native)
 
 ### LIBCPPNABLAKOKKOS
@@ -62,7 +59,6 @@ if(TARGET Kokkos::kokkos AND TARGET Kokkos::kokkoskernels)
   add_library(cppnablakokkos
       nablalib/linearalgebra/kokkos/LinearAlgebra.cc nablalib/linearalgebra/kokkos/Matrix.cc nablalib/utils/kokkos/Serializer.cc)
   target_include_directories(cppnablakokkos PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-  target_link_directories(cppnablakokkos PUBLIC)
   target_link_libraries(cppnablakokkos PUBLIC Kokkos::kokkos Kokkos::kokkoskernels)
   target_compile_options(cppnablakokkos PUBLIC -fPIC -g -Wall -O3 --std=c++17 -fopenmp -mtune=native)
 else()

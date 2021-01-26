@@ -2,7 +2,7 @@
 
 cmake_minimum_required(VERSION 3.10)
 
-set(LIBCPPNABLA_DIR $ENV{HOME}/workspaces/NabLab/tests/fr.cea.nabla.tests/../../plugins/fr.cea.nabla.ui/examples/NablaExamples//../LibCppNabla CACHE STRING "")
+set(LIBCPPNABLA_DIR $ENV{HOME}/workspaces/NabLabLinearAlgebra/tests/fr.cea.nabla.tests/../../plugins/fr.cea.nabla.ui/examples/NablaExamples//../LibCppNabla CACHE STRING "")
 set(NABLA_KOKKOS_PATH $ENV{HOME}/kokkos/kokkos-install)
 set(NABLA_CXX_COMPILER /usr/bin/g++)
 

@@ -19,6 +19,8 @@ import org.eclipse.core.runtime.NullProgressMonitor
 import org.eclipse.core.runtime.Path
 import fr.cea.nabla.ir.generator.cpp.CppGeneratorUtils
 
+// TODO générer les fichiers dans le même projet que l'extension
+// TODO Dégriser le menu de génération du nablaext et faire du generate once
 class JavaAndCppProviderGenerator extends StandaloneGeneratorBase
 {
 	@Inject BackendFactory backendFactory

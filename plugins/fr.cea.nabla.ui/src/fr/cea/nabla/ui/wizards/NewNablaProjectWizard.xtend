@@ -157,9 +157,17 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 				srcGenCppFolder.create(false, true, monitor)
 
 				// Create all src-gen-cpp subfolders
+				val srcGenSequentialFolder = srcGenCppFolder.getFolder("sequential")
+				srcGenSequentialFolder.create(false, true, monitor)
+				srcGenFoldersByLanguage.put(TargetType::CPP_SEQUENTIAL, srcGenSequentialFolder)
+
 				val srcGenStlThreadFolder = srcGenCppFolder.getFolder("stl-thread")
 				srcGenStlThreadFolder.create(false, true, monitor)
 				srcGenFoldersByLanguage.put(TargetType::STL_THREAD, srcGenStlThreadFolder)
+
+				val srcGenOpenMpFolder = srcGenCppFolder.getFolder("openmp")
+				srcGenOpenMpFolder.create(false, true, monitor)
+				srcGenFoldersByLanguage.put(TargetType::OPEN_MP, srcGenOpenMpFolder)
 
 				val srcGenKokkosFolder = srcGenCppFolder.getFolder("kokkos")
 				srcGenKokkosFolder.create(false, true, monitor)
@@ -321,6 +329,24 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 			outputPath = "«srcGenFoldersByLanguage.get(TargetType::JAVA).fullPath»";
 		}
 
+		CppSequential
+		{
+			outputPath = "«srcGenFoldersByLanguage.get(TargetType::CPP_SEQUENTIAL).fullPath»";
+			NABLA_CXX_COMPILER = "/usr/bin/g++";
+		}
+
+		StlThread
+		{
+			outputPath = "«srcGenFoldersByLanguage.get(TargetType::STL_THREAD).fullPath»";
+			NABLA_CXX_COMPILER = "/usr/bin/g++";
+		}
+
+		OpenMP
+		{
+			outputPath = "«srcGenFoldersByLanguage.get(TargetType::OPEN_MP).fullPath»";
+			NABLA_CXX_COMPILER = "/usr/bin/g++";
+		}
+
 		Kokkos
 		{
 			outputPath = "«srcGenFoldersByLanguage.get(TargetType::KOKKOS).fullPath»";
@@ -333,24 +359,6 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 			outputPath = "«srcGenFoldersByLanguage.get(TargetType::KOKKOS_TEAM_THREAD).fullPath»";
 			NABLA_CXX_COMPILER = "/usr/bin/g++";
 			NABLA_KOKKOS_PATH = "$ENV{HOME}/kokkos/kokkos-install";
-		}
-
-		OpenMP
-		{
-			outputPath = "«srcGenFoldersByLanguage.get(TargetType::OPEN_MP).fullPath»";
-			NABLA_CXX_COMPILER = "/usr/bin/g++";
-		}
-
-		CppSequential
-		{
-			outputPath = "«srcGenFoldersByLanguage.get(TargetType::CPP_SEQUENTIAL).fullPath»";
-			NABLA_CXX_COMPILER = "/usr/bin/g++";
-		}
-
-		StlThread
-		{
-			outputPath = "«srcGenFoldersByLanguage.get(TargetType::STL_THREAD).fullPath»";
-			NABLA_CXX_COMPILER = "/usr/bin/g++";
 		}
 	'''
 

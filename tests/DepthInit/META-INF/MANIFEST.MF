@@ -3,4 +3,11 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Extensions
 Bundle-SymbolicName: DepthInit
 Bundle-Version: 1.0.0.qualifier
-Require-Bundle: BatiLib
+Bundle-Vendor: CEA
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Automatic-Module-Name: NablaExamples
+Require-Bundle: BatiLib,
+ BatiLibJava,
+ com.google.gson,
+ fr.cea.nabla.javalib,
+ leveldb;bundle-version="0.13.0"

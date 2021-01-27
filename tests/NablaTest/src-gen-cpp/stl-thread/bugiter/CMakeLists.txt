@@ -2,7 +2,7 @@
 
 cmake_minimum_required(VERSION 3.10)
 
-set(LIBCPPNABLA_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../../libcppnabla CACHE STRING "")
+set(LIBCPPNABLA_DIR $ENV{HOME}/workspaces/NabLab/tests/NablaTest/../LibCppNabla CACHE STRING "")
 set(NABLA_CXX_COMPILER /usr/bin/g++)
 
 project(BugIterProject CXX)
@@ -20,7 +20,7 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 endif()
 
 if(NOT TARGET cppnabla)
-	add_subdirectory(${LIBCPPNABLA_DIR} ${CMAKE_BINARY_DIR}/libcppnabla EXCLUDE_FROM_ALL)
+	add_subdirectory(${LIBCPPNABLA_DIR}/src ${CMAKE_BINARY_DIR}/LibCppNabla EXCLUDE_FROM_ALL)
 endif()
 
 

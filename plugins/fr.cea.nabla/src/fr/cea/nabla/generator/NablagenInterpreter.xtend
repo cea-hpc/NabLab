@@ -120,11 +120,6 @@ class NablagenInterpreter extends StandaloneGeneratorBase
 				// Configure fsa with target output folder
 				val outputFolderName = baseDir + target.outputDir
 				fsa = getConfiguredFileSystemAccess(outputFolderName, false)
-				if (target.writeIR)
-				{
-					val fileName = irWriter.createAndSaveResource(fsa, ir)
-					dispatcher.post(MessageType::Exec, '    Resource saved: ' + fileName)
-				}
 
 				// Set provider extension for the target
 				// No need to duplicate IR. All providers are set for each target.
@@ -138,22 +133,25 @@ class NablagenInterpreter extends StandaloneGeneratorBase
 						val g = getCodeGenerator(target, baseDir, iterationMax, timeMax, ngen.levelDB)
 	
 						// Apply IR transformations dedicated to this target (if necessary)
+						var IrRoot genIr = ir
 						if (g.irTransformationStep !== null)
 						{
-							val duplicatedIr = EcoreUtil::copy(ir)
-							g.irTransformationStep.transformIr(duplicatedIr, [msg | dispatcher.post(MessageType::Exec, msg)])
-							generate(fsa, g.getGenerationContents(duplicatedIr), ir.name.toLowerCase)
+							genIr = EcoreUtil::copy(ir)
+							g.irTransformationStep.transformIr(genIr, [msg | dispatcher.post(MessageType::Exec, msg)])
 						}
-						else
+						if (target.writeIR)
 						{
-							generate(fsa, g.getGenerationContents(ir), ir.name.toLowerCase)
+							val fileName = irWriter.createAndSaveResource(fsa, genIr)
+							dispatcher.post(MessageType::Exec, '    Resource saved: ' + fileName)
 						}
+						generate(fsa, g.getGenerationContents(genIr), ir.name.toLowerCase)
 					}
 				}
 				else
 				{
 					dispatcher.post(MessageType::Warning, "    Generation ignored for: " + target.name)
 				}
+
 			}
 
 			val endTime = System.currentTimeMillis

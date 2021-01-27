@@ -2,10 +2,10 @@
 
 cmake_minimum_required(VERSION 3.10)
 
-set(LIBCPPNABLA_DIR $ENV{HOME}/workspaces/NabLab/plugins/fr.cea.nabla.ui/examples/NablaExamples/../LibCppNabla CACHE STRING "")
 set(NABLA_CXX_COMPILER /usr/bin/g++)
+set(JAVA_HOME /usr/lib/jvm/java-11-openjdk-amd64)
 
-project(HeatEquationProject CXX)
+project(DepthInitProject LANGUAGES NONE)
 
 set(CMAKE_CXX_COMPILER ${NABLA_CXX_COMPILER} CACHE STRING "")
 
@@ -19,15 +19,7 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 	endif()
 endif()
 
-find_package(OpenMP)
-if(NOT TARGET cppnabla)
-	add_subdirectory(${LIBCPPNABLA_DIR}/src ${CMAKE_BINARY_DIR}/LibCppNabla EXCLUDE_FROM_ALL)
-endif()
-
-
-add_executable(heatequation HeatEquation.cc)
-target_include_directories(heatequation PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
-target_link_libraries(heatequation PUBLIC cppnabla OpenMP::OpenMP_CXX)
+add_subdirectory($ENV{HOME}/workspaces/NabLab/tests/DepthInit/../BatiLibCppJni/src ${CMAKE_BINARY_DIR}/BatiLibCppJni)
 
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 	include(${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)

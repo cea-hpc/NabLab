@@ -103,9 +103,8 @@ class StlThreadIncludesContentProvider extends IncludesContentProvider
 	override getUserNs(IrModule m, String levelDBPath)
 	{
 		val userNs = super.getUserNs(m, levelDBPath)
-		userNs += "nablalib::mesh::stl"
+		if (m.irRoot.postProcessing !== null) userNs += "nablalib::mesh::stl"
 		userNs +=  "nablalib::utils::stl"
-		if (m.linearAlgebra) userNs += "nablalib::linearalgebra::stl"
 		return userNs
 	}
 }
@@ -132,9 +131,8 @@ class KokkosIncludesContentProvider extends IncludesContentProvider
 	override getUserNs(IrModule m, String levelDBPath)
 	{
 		val userNs = super.getUserNs(m, levelDBPath)
-		userNs += "nablalib::mesh::kokkos"
+		if (m.irRoot.postProcessing !== null) userNs += "nablalib::mesh::kokkos"
 		userNs +=  "nablalib::utils::kokkos"
-		if (m.linearAlgebra) userNs += "nablalib::linearalgebra::kokkos"
 		return userNs
 	}
 }
@@ -152,37 +150,19 @@ class SequentialIncludesContentProvider extends IncludesContentProvider
 	override getUserNs(IrModule m, String levelDBPath)
 	{
 		val userNs = super.getUserNs(m, levelDBPath)
-		userNs += "nablalib::mesh::stl"
-		if (m.linearAlgebra) userNs += "nablalib::linearalgebra::stl"
-		if (!levelDBPath.nullOrEmpty) userNs +=  "nablalib::utils::stl"
+		if (m.irRoot.postProcessing !== null) userNs += "nablalib::mesh::stl"
+		if (!levelDBPath.nullOrEmpty) userNs += "nablalib::utils::stl"
 		return userNs
 	}
 }
 
-class OpenMpIncludesContentProvider extends IncludesContentProvider
+class OpenMpIncludesContentProvider extends SequentialIncludesContentProvider
 {
 	override getSystemIncludes(IrModule m, String levelDBPath)
 	{
 		val includes = super.getSystemIncludes(m, levelDBPath)
 		includes += "omp.h"
 		return includes
-	}
-
-	override getUserIncludes(IrModule m, String levelDBPath)
-	{
-		val includes = super.getUserIncludes(m, levelDBPath)
-		if (m.irRoot.postProcessing !== null) includes += "nablalib/mesh/stl/PvdFileWriter2D.h"
-		if (!levelDBPath.nullOrEmpty) includes += "nablalib/utils/stl/Serializer.h"
-		return includes
-	}
-
-	override getUserNs(IrModule m, String levelDBPath)
-	{
-		val userNs = super.getUserNs(m, levelDBPath)
-		userNs += "nablalib::mesh::stl"
-		if (m.linearAlgebra) userNs += "nablalib::linearalgebra::stl"
-		if (!levelDBPath.nullOrEmpty) userNs +=  "nablalib::utils::stl"
-		return userNs
 	}
 }
 

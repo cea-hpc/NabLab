@@ -98,8 +98,8 @@ class StlTypeContentProvider extends TypeContentProvider
 	{
 		switch dimension
 		{
-			case 1: return 'VectorType'
-			case 2: return 'NablaSparseMatrix'
+			case 1: return 'nablalib::linearalgebra::stl::VectorType'
+			case 2: return 'nablalib::linearalgebra::stl::NablaSparseMatrix'
 			default: throw new RuntimeException("Unsupported dimension: " + dimension)
 		}
 	}
@@ -116,8 +116,8 @@ class KokkosTypeContentProvider extends TypeContentProvider
 	{
 		switch dimension
 		{
-			case 1: return 'VectorType'
-			case 2: return 'NablaSparseMatrix'
+			case 1: return 'nablalib::linearalgebra::kokkos::VectorType'
+			case 2: return 'nablalib::linearalgebra::kokkos::NablaSparseMatrix'
 			default: throw new RuntimeException("Unsupported dimension: " + dimension)
 		}
 	}

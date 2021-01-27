@@ -6,7 +6,6 @@
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
 
-using namespace nablalib;
 
 /******************** Options definition ********************/
 
@@ -42,7 +41,7 @@ R1::~R1()
  */
 void R1::rj1() noexcept
 {
-	parallel::parallel_exec(nbCells, [&](const size_t& cCells)
+	parallel_exec(nbCells, [&](const size_t& cCells)
 	{
 		mainModule->hv4[cCells] = mainModule->hv1[cCells];
 	});
@@ -55,7 +54,7 @@ void R1::rj1() noexcept
  */
 void R1::rj2() noexcept
 {
-	parallel::parallel_exec(nbCells, [&](const size_t& cCells)
+	parallel_exec(nbCells, [&](const size_t& cCells)
 	{
 		rv3[cCells] = mainModule->hv4[cCells];
 	});

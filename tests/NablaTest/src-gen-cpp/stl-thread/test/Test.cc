@@ -6,7 +6,6 @@
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
 
-using namespace nablalib;
 
 /******************** Options definition ********************/
 
@@ -85,7 +84,7 @@ Test::~Test()
  */
 void Test::computeE1() noexcept
 {
-	parallel::parallel_exec(nbCells, [&](const size_t& cCells)
+	parallel_exec(nbCells, [&](const size_t& cCells)
 	{
 		e1[cCells] = e_n[cCells] + 3.0;
 	});
@@ -98,7 +97,7 @@ void Test::computeE1() noexcept
  */
 void Test::computeE2() noexcept
 {
-	parallel::parallel_exec(nbCells, [&](const size_t& cCells)
+	parallel_exec(nbCells, [&](const size_t& cCells)
 	{
 		e2_nplus1_kplus1[cCells] = e2_nplus1_k[cCells] + 0.4;
 	});
@@ -111,7 +110,7 @@ void Test::computeE2() noexcept
  */
 void Test::initE() noexcept
 {
-	parallel::parallel_exec(nbCells, [&](const size_t& cCells)
+	parallel_exec(nbCells, [&](const size_t& cCells)
 	{
 		e_n0[cCells] = 0.0;
 	});
@@ -144,7 +143,7 @@ void Test::updateT() noexcept
  */
 void Test::initE2() noexcept
 {
-	parallel::parallel_exec(nbCells, [&](const size_t& cCells)
+	parallel_exec(nbCells, [&](const size_t& cCells)
 	{
 		e2_nplus1_k0[cCells] = e1[cCells];
 	});
@@ -207,9 +206,9 @@ void Test::executeTimeLoopN() noexcept
 			std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __RED__ << "none" << __RESET__ << "} ";
 		
 		// Progress
-		std::cout << utils::progress_bar(n, options.maxIter, t_n, options.maxTime, 25);
-		std::cout << __BOLD__ << __CYAN__ << utils::Timer::print(
-			utils::eta(n, options.maxIter, t_n, options.maxTime, options.deltat, globalTimer), true)
+		std::cout << progress_bar(n, options.maxIter, t_n, options.maxTime, 25);
+		std::cout << __BOLD__ << __CYAN__ << Timer::print(
+			eta(n, options.maxIter, t_n, options.maxTime, options.deltat, globalTimer), true)
 			<< __RESET__ << "\r";
 		std::cout.flush();
 	
@@ -276,7 +275,7 @@ void Test::tearDownTimeLoopK() noexcept
  */
 void Test::updateE() noexcept
 {
-	parallel::parallel_exec(nbCells, [&](const size_t& cCells)
+	parallel_exec(nbCells, [&](const size_t& cCells)
 	{
 		e_nplus1[cCells] = e2_nplus1[cCells] - 3;
 	});

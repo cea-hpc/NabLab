@@ -53,8 +53,8 @@ class NablaExamplesTest
 	def static void setup()
 	{
 		val testProjectPath = System.getProperty("user.dir")
-		val wsPath = testProjectPath + "/../../"
-		examplesProjectSubPath = "plugins/fr.cea.nabla.ui/examples/NablaExamples/"
+		val wsPath = testProjectPath.replace("tests/fr.cea.nabla.tests", "")
+		examplesProjectSubPath = "plugins/fr.cea.nabla.ui/examples/NablaExamples"
 		examplesProjectPath = wsPath + examplesProjectSubPath
 		cppLibPath = wsPath + "plugins/fr.cea.nabla.ir/resources/libcppnabla.zip"
 		javaLibPath = wsPath + "plugins/fr.cea.nabla.javalib/bin/:" + wsPath + "plugins/fr.cea.nabla.javalib/target/*"
@@ -126,8 +126,8 @@ class NablaExamplesTest
 	private def testGenerateModule(String moduleName)
 	{
 		val packageName = moduleName.toLowerCase
-		val model = readFileAsString(examplesProjectPath + "src/" + packageName + "/" + moduleName + ".nabla")
-		var genmodel = readFileAsString(examplesProjectPath + "src/" + packageName + "/" + moduleName + ".nablagen")
+		val model = readFileAsString(examplesProjectPath + "/src/" + packageName + "/" + moduleName + ".nabla")
+		var genmodel = readFileAsString(examplesProjectPath + "/src/" + packageName + "/" + moduleName + ".nablagen")
 		compilationHelper.generateCode(model, genmodel, examplesProjectPath)
 		testNoGitDiff("/" + packageName) // Add "/" to avoid a false positiv on explicitheatequation fail or implicitheatequation
 	}
@@ -219,7 +219,7 @@ class NablaExamplesTest
 		val outputDir = tmp + "/.." + target.outputDir
 		val targetName = outputDir.split("/").last
 		val levelDBRef = testProjectPath + "/results/compiler/" + targetName + "/" + packageName + "/" + moduleName + "DB.ref"
-		val jsonFile = examplesProjectPath + "src/" + packageName + "/" + moduleName + ".json"
+		val jsonFile = examplesProjectPath + "/src/" + packageName + "/" + moduleName + ".json"
 
 		print("\tStarting " + target.type.literal)
 		if (target.type == TargetType::JAVA)

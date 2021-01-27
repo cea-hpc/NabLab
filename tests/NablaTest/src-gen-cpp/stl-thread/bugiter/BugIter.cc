@@ -6,7 +6,6 @@
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
 
-using namespace nablalib;
 
 /******************** Options definition ********************/
 
@@ -126,7 +125,7 @@ void BugIter::iniTime() noexcept
  */
 void BugIter::iniU() noexcept
 {
-	parallel::parallel_exec(nbCells, [&](const size_t& cCells)
+	parallel_exec(nbCells, [&](const size_t& cCells)
 	{
 		u_n[cCells] = 0.0;
 	});
@@ -139,7 +138,7 @@ void BugIter::iniU() noexcept
  */
 void BugIter::iniV() noexcept
 {
-	parallel::parallel_exec(nbCells, [&](const size_t& cCells)
+	parallel_exec(nbCells, [&](const size_t& cCells)
 	{
 		v_nplus1_k0[cCells] = u_n[cCells] + 1;
 	});
@@ -152,7 +151,7 @@ void BugIter::iniV() noexcept
  */
 void BugIter::updateV() noexcept
 {
-	parallel::parallel_exec(nbCells, [&](const size_t& cCells)
+	parallel_exec(nbCells, [&](const size_t& cCells)
 	{
 		v_nplus1_kplus1[cCells] = v_nplus1_k[cCells] + 1.5;
 	});
@@ -165,7 +164,7 @@ void BugIter::updateV() noexcept
  */
 void BugIter::updateW() noexcept
 {
-	parallel::parallel_exec(nbCells, [&](const size_t& cCells)
+	parallel_exec(nbCells, [&](const size_t& cCells)
 	{
 		w_nplus1_lplus1[cCells] = w_nplus1_l[cCells] + 2.5;
 	});
@@ -270,9 +269,9 @@ void BugIter::executeTimeLoopN() noexcept
 			std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __RED__ << "none" << __RESET__ << "} ";
 		
 		// Progress
-		std::cout << utils::progress_bar(n, options.maxIter, t_n, options.maxTime, 25);
-		std::cout << __BOLD__ << __CYAN__ << utils::Timer::print(
-			utils::eta(n, options.maxIter, t_n, options.maxTime, options.deltat, globalTimer), true)
+		std::cout << progress_bar(n, options.maxIter, t_n, options.maxTime, 25);
+		std::cout << __BOLD__ << __CYAN__ << Timer::print(
+			eta(n, options.maxIter, t_n, options.maxTime, options.deltat, globalTimer), true)
 			<< __RESET__ << "\r";
 		std::cout.flush();
 	
@@ -299,7 +298,7 @@ void BugIter::tearDownTimeLoopK() noexcept
  */
 void BugIter::iniW() noexcept
 {
-	parallel::parallel_exec(nbCells, [&](const size_t& cCells)
+	parallel_exec(nbCells, [&](const size_t& cCells)
 	{
 		w_nplus1_l0[cCells] = v_nplus1[cCells];
 	});
@@ -363,7 +362,7 @@ void BugIter::tearDownTimeLoopL() noexcept
  */
 void BugIter::updateU() noexcept
 {
-	parallel::parallel_exec(nbCells, [&](const size_t& cCells)
+	parallel_exec(nbCells, [&](const size_t& cCells)
 	{
 		u_nplus1[cCells] = w_nplus1[cCells];
 	});

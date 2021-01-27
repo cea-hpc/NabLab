@@ -17,6 +17,7 @@
 ExtensionProvider BatiLibCpp : BatiLib
 {
 	target = CppSequential;
+	// compatibleTargets can be added here
 	// projectDir is the parent directory of the BatiLibCpp project relative to the NabLab workspace."
 	projectDir = "/BatiLibCpp";
 	facadeClass = "BatiLibCpp";
@@ -31,6 +32,7 @@ ExtensionProvider BatiLibCpp : BatiLib
 ExtensionProvider BatiLibJava : BatiLib
 {
 	target = Java;
+	// compatibleTargets can be added here
 	// projectDir is the parent directory of the BatiLibJava project relative to the NabLab workspace."
 	projectDir = "/BatiLibJava";
 	facadeClass = "BatiLibJava";

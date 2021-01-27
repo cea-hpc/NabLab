@@ -1,18 +1,16 @@
 /*** GENERATED FILE - DO NOT OVERWRITE ***/
 
-#include "hydroremap/H.h"
+#include "depthinit/DepthInit.h"
 #include <rapidjson/document.h>
 #include <rapidjson/istreamwrapper.h>
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
-#include "hydroremap/R1.h"
-#include "hydroremap/R2.h"
 
 
 /******************** Options definition ********************/
 
 void
-H::Options::jsonInit(const char* jsonContent)
+DepthInit::Options::jsonInit(const char* jsonContent)
 {
 	rapidjson::Document document;
 	assert(!document.Parse(jsonContent).HasParseError());
@@ -46,23 +44,25 @@ H::Options::jsonInit(const char* jsonContent)
 	}
 	else
 		deltat = 1.0;
+	// batiLib
+	if (o.HasMember("batiLib"))
+	{
+		rapidjson::StringBuffer strbuf;
+		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
+		o["batiLib"].Accept(writer);
+		batiLib.jsonInit(strbuf.GetString());
+	}
 }
 
 /******************** Module definition ********************/
 
-H::H(CartesianMesh2D* aMesh, Options& aOptions)
+DepthInit::DepthInit(CartesianMesh2D* aMesh, Options& aOptions)
 : mesh(aMesh)
-, nbNodes(mesh->getNbNodes())
 , nbCells(mesh->getNbCells())
+, nbNodes(mesh->getNbNodes())
 , options(aOptions)
 , X(nbNodes)
-, hv1(nbCells)
-, hv2(nbCells)
-, hv3(nbCells)
-, hv4(nbCells)
-, hv5(nbCells)
-, hv6(nbCells)
-, hv7(nbCells)
+, eta(nbCells)
 {
 	// Copy node coordinates
 	const auto& gNodes = mesh->getGeometry()->getNodes();
@@ -73,64 +73,32 @@ H::H(CartesianMesh2D* aMesh, Options& aOptions)
 	}
 }
 
-H::~H()
+DepthInit::~DepthInit()
 {
 }
 
 /**
- * Job hj1 called @1.0 in simulate method.
- * In variables: hv2
- * Out variables: hv3
+ * Job initFromFile called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: eta
  */
-void H::hj1() noexcept
+void DepthInit::initFromFile() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& cCells)
+	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
-		hv3[cCells] = hv2[cCells];
-	});
+		eta[jCells] = options.batiLib.nextWaveHeight();
+	}
 }
 
-/**
- * Job hj2 called @2.0 in simulate method.
- * In variables: hv3
- * Out variables: hv5
- */
-void H::hj2() noexcept
+void DepthInit::simulate()
 {
-	parallel_exec(nbCells, [&](const size_t& cCells)
-	{
-		hv5[cCells] = hv3[cCells];
-	});
-}
-
-/**
- * Job hj3 called @4.0 in simulate method.
- * In variables: hv4, hv5, hv6
- * Out variables: hv7
- */
-void H::hj3() noexcept
-{
-	parallel_exec(nbCells, [&](const size_t& cCells)
-	{
-		hv7[cCells] = hv4[cCells] + hv5[cCells] + hv6[cCells];
-	});
-}
-
-void H::simulate()
-{
-	std::cout << "\n" << __BLUE_BKG__ << __YELLOW__ << __BOLD__ <<"\tStarting HydroRemap ..." << __RESET__ << "\n\n";
+	std::cout << "\n" << __BLUE_BKG__ << __YELLOW__ << __BOLD__ <<"\tStarting DepthInit ..." << __RESET__ << "\n\n";
 	
 	std::cout << "[" << __GREEN__ << "TOPOLOGY" << __RESET__ << "]  HWLOC unavailable cannot get topological informations" << std::endl;
 	
 	std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    " << __BOLD__ << "Disabled" << __RESET__ << std::endl;
 
-	hj1(); // @1.0
-	r1->rj1(); // @1.0
-	hj2(); // @2.0
-	r2->rj1(); // @2.0
-	r1->rj2(); // @2.0
-	r2->rj2(); // @3.0
-	hj3(); // @4.0
+	initFromFile(); // @1.0
 	
 	std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << globalTimer.print() << __RESET__ << std::endl;
 }
@@ -147,7 +115,7 @@ int main(int argc, char* argv[])
 	else
 	{
 		std::cerr << "[ERROR] Wrong number of arguments. Expecting 1 arg: dataFile." << std::endl;
-		std::cerr << "(HydroRemap.json)" << std::endl;
+		std::cerr << "(DepthInit.json)" << std::endl;
 		return -1;
 	}
 	
@@ -170,43 +138,21 @@ int main(int argc, char* argv[])
 	CartesianMesh2D* mesh = meshFactory.create();
 	
 	// Module instanciation(s)
-	H::Options hOptions;
-	if (d.HasMember("h"))
+	DepthInit::Options depthInitOptions;
+	if (d.HasMember("depthInit"))
 	{
 		rapidjson::StringBuffer strbuf;
 		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
-		d["h"].Accept(writer);
-		hOptions.jsonInit(strbuf.GetString());
+		d["depthInit"].Accept(writer);
+		depthInitOptions.jsonInit(strbuf.GetString());
 	}
-	H* h = new H(mesh, hOptions);
-	R1::Options r1Options;
-	if (d.HasMember("r1"))
-	{
-		rapidjson::StringBuffer strbuf;
-		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
-		d["r1"].Accept(writer);
-		r1Options.jsonInit(strbuf.GetString());
-	}
-	R1* r1 = new R1(mesh, r1Options);
-	r1->setMainModule(h);
-	R2::Options r2Options;
-	if (d.HasMember("r2"))
-	{
-		rapidjson::StringBuffer strbuf;
-		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
-		d["r2"].Accept(writer);
-		r2Options.jsonInit(strbuf.GetString());
-	}
-	R2* r2 = new R2(mesh, r2Options);
-	r2->setMainModule(h);
+	DepthInit* depthInit = new DepthInit(mesh, depthInitOptions);
 	
 	// Start simulation
 	// Simulator must be a pointer when a finalize is needed at the end (Kokkos, omp...)
-	h->simulate();
+	depthInit->simulate();
 	
-	delete r2;
-	delete r1;
-	delete h;
+	delete depthInit;
 	delete mesh;
 	return ret;
 }

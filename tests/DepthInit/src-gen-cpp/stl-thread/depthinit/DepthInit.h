@@ -1,7 +1,7 @@
 /*** GENERATED FILE - DO NOT OVERWRITE ***/
 
-#ifndef R2_H_
-#define R2_H_
+#ifndef DEPTHINIT_H_
+#define DEPTHINIT_H_
 
 #include <fstream>
 #include <iomanip>
@@ -14,7 +14,7 @@
 #include "nablalib/utils/Utils.h"
 #include "nablalib/utils/Timer.h"
 #include "nablalib/types/Types.h"
-#include "hydroremap/H.h"
+#include "batilib/BatiLibCpp.h"
 #include "nablalib/utils/stl/Parallel.h"
 
 using namespace nablalib::mesh;
@@ -24,38 +24,32 @@ using namespace nablalib::utils::stl;
 
 /******************** Module declaration ********************/
 
-class R2
+class DepthInit
 {
 public:
 	struct Options
 	{
+		double maxTime;
+		int maxIter;
+		double deltat;
+		batilib::BatiLibCpp batiLib;
 
 		void jsonInit(const char* jsonContent);
 	};
 
-	R2(CartesianMesh2D* aMesh, Options& aOptions);
-	~R2();
-
-	inline void setMainModule(H* value)
-	{
-		mainModule = value,
-		mainModule->setR2(this);
-	}
+	DepthInit(CartesianMesh2D* aMesh, Options& aOptions);
+	~DepthInit();
 
 	void simulate();
-	void rj1() noexcept;
-	void rj2() noexcept;
+	void initFromFile() noexcept;
 
 private:
 	// Mesh and mesh variables
 	CartesianMesh2D* mesh;
-	size_t nbNodes, nbCells;
+	size_t nbCells, nbNodes;
 
 	// User options
 	Options& options;
-
-	// Main module
-	H* mainModule;
 
 	// Timers
 	Timer globalTimer;
@@ -64,7 +58,9 @@ private:
 
 public:
 	// Global variables
-	std::vector<double> rv2;
+	static constexpr double t = 0.0;
+	std::vector<RealArray1D<2>> X;
+	std::vector<double> eta;
 };
 
 #endif

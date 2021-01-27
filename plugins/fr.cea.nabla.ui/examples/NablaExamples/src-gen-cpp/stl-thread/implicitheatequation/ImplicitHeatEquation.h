@@ -23,7 +23,6 @@ using namespace nablalib::utils;
 using namespace nablalib::types;
 using namespace nablalib::mesh::stl;
 using namespace nablalib::utils::stl;
-using namespace nablalib::linearalgebra::stl;
 
 /******************** Free functions declarations ********************/
 
@@ -103,13 +102,13 @@ public:
 	double t_n0;
 	std::vector<RealArray1D<2>> X;
 	std::vector<RealArray1D<2>> Xc;
-	VectorType u_n;
-	VectorType u_nplus1;
+	nablalib::linearalgebra::stl::VectorType u_n;
+	nablalib::linearalgebra::stl::VectorType u_nplus1;
 	std::vector<double> V;
 	std::vector<double> D;
 	std::vector<double> faceLength;
 	std::vector<double> faceConductivity;
-	NablaSparseMatrix alpha;
+	nablalib::linearalgebra::stl::NablaSparseMatrix alpha;
 };
 
 #endif

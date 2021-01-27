@@ -25,7 +25,6 @@ using namespace nablalib::utils;
 using namespace nablalib::types;
 using namespace nablalib::mesh::kokkos;
 using namespace nablalib::utils::kokkos;
-using namespace nablalib::linearalgebra::kokkos;
 
 /******************** Free functions declarations ********************/
 
@@ -125,13 +124,13 @@ public:
 	double t_n0;
 	Kokkos::View<RealArray1D<2>*> X;
 	Kokkos::View<RealArray1D<2>*> Xc;
-	VectorType u_n;
-	VectorType u_nplus1;
+	nablalib::linearalgebra::kokkos::VectorType u_n;
+	nablalib::linearalgebra::kokkos::VectorType u_nplus1;
 	Kokkos::View<double*> V;
 	Kokkos::View<double*> D;
 	Kokkos::View<double*> faceLength;
 	Kokkos::View<double*> faceConductivity;
-	NablaSparseMatrix alpha;
+	nablalib::linearalgebra::kokkos::NablaSparseMatrix alpha;
 };
 
 #endif

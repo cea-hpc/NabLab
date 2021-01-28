@@ -96,6 +96,8 @@ public final class Test
 	protected double[] e_n;
 	protected double[] e_nplus1;
 	protected double[] e_n0;
+	protected double[] v;
+	protected double[][] M;
 
 	public Test(CartesianMesh2D aMesh, Options aOptions)
 	{
@@ -120,6 +122,8 @@ public final class Test
 		e_n = new double[nbCells];
 		e_nplus1 = new double[nbCells];
 		e_n0 = new double[nbCells];
+		v = new double[nbCells];
+		M = new double[nbCells][nbCells];
 
 		// Copy node coordinates
 		double[][] gNodes = mesh.getGeometry().getNodes();
@@ -405,6 +409,8 @@ public final class Test
 			batch.put(bytes("e_n"), LevelDBUtils.serialize(e_n));
 			batch.put(bytes("e_nplus1"), LevelDBUtils.serialize(e_nplus1));
 			batch.put(bytes("e_n0"), LevelDBUtils.serialize(e_n0));
+			batch.put(bytes("v"), LevelDBUtils.serialize(v));
+			batch.put(bytes("M"), LevelDBUtils.serialize(M));
 
 			db.write(batch);
 		}

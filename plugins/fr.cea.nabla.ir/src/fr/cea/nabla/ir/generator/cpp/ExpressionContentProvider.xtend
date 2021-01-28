@@ -104,7 +104,7 @@ class ExpressionContentProvider
 	def dispatch CharSequence getContent(Cardinality it)
 	{
 		if (container.connectivity.multiple)
-			'''«container.uniqueName».size()'''
+			container.getNbElemsVar
 		else
 			'''1'''
 	}

@@ -64,6 +64,10 @@ Test::Test(CartesianMesh2D* aMesh, Options& aOptions)
 , e_nplus1(nbCells)
 , e_n0(nbCells)
 {
+	// Allocate dynamic arrays (RealArrays with at least a dynamic dimension)
+	v.initSize(nbCells);
+	M.initSize(nbCells, nbCells);
+
 	// Copy node coordinates
 	const auto& gNodes = mesh->getGeometry()->getNodes();
 	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)

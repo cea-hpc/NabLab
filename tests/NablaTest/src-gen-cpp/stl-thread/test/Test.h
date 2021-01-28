@@ -82,6 +82,8 @@ public:
 	std::vector<double> e_n;
 	std::vector<double> e_nplus1;
 	std::vector<double> e_n0;
+	RealArray1D<0> v;
+	RealArray2D<0,0> M;
 };
 
 #endif

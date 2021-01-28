@@ -54,7 +54,7 @@ class InstructionContentProvider
 	static def dispatch CharSequence getContent(Affectation it)
 	'''
 		«IF left.target.linearAlgebra && !(left.iterators.empty && left.indices.empty)»
-			«left.target.codeName».set(«FOR r : left.iterators SEPARATOR ', ' AFTER ', '»«r.name»«ENDFOR»«FOR d : left.indices SEPARATOR ', ' AFTER ', '»«d»«ENDFOR»«right.content»);
+			«left.target.codeName».set(«FOR r : left.iterators SEPARATOR ', ' AFTER ', '»«r.name»«ENDFOR»«FOR d : left.indices SEPARATOR ', ' AFTER ', '»«d.content»«ENDFOR»«right.content»);
 		«ELSE»
 			«left.content» = «right.content»;
 		«ENDIF»

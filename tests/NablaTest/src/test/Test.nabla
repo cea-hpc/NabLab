@@ -22,6 +22,9 @@ option ℝ δt = 1.0;
 ℝ t;
 ℝ[2] X{nodes};
 ℝ e1{cells}, e2{cells}, e{cells};
+// Just to test allocations...
+ℝ[card(cells())] v;
+ℝ[card(cells()), card(cells())] M;
 
 iterate n while (n+1 < maxIter && t^{n+1} < maxTime), k while (k+1 < 10);
 

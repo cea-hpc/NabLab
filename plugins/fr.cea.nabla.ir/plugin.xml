@@ -22,7 +22,7 @@
    <extension point="org.eclipse.emf.ecore.extension_parser">
       <!-- @generated Ir -->
       <parser
-            type="nablair"
+            type="nir"
             class="fr.cea.nabla.ir.ir.util.IrResourceFactoryImpl"/>
    </extension>
 </plugin>

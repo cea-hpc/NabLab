@@ -33,7 +33,7 @@
             id="fr.cea.nabla.nabla.presentation.NablaEditorID"
             name="%_UI_NablaEditor_label"
             icon="icons/full/obj16/NablaModelFile.gif"
-            extensions="nabla"
+            extensions="n"
             class="fr.cea.nabla.nabla.presentation.NablaEditor"
             contributorClass="fr.cea.nabla.nabla.presentation.NablaActionBarContributor">
       </editor>
@@ -61,7 +61,7 @@
             id="fr.cea.nabla.nablagen.presentation.NablagenEditorID"
             name="%_UI_NablagenEditor_label"
             icon="icons/full/obj16/NablagenModelFile.gif"
-            extensions="nablagen"
+            extensions="ngen"
             class="fr.cea.nabla.nablagen.presentation.NablagenEditor"
             contributorClass="fr.cea.nabla.nablagen.presentation.NablagenActionBarContributor">
       </editor>

@@ -7,7 +7,7 @@
     copyrightFields="false" editPluginID="fr.cea.nabla.edit" editorPluginID="fr.cea.nabla.editor"
     runtimeVersion="2.20" usedGenPackages="Nabla.genmodel#//nabla">
   <genPackages prefix="Nablagen" basePackage="fr.cea.nabla" disposableProviderFactory="true"
-      fileExtensions="nablagen" ecorePackage="Nablagen.ecore#/">
+      fileExtensions="ngen" ecorePackage="Nablagen.ecore#/">
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="Nablagen.ecore#//TargetType">
       <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//TargetType/Java"/>
       <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//TargetType/CppSequential"/>

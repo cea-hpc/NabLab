@@ -178,9 +178,9 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 				srcGenFoldersByLanguage.put(TargetType::KOKKOS_TEAM_THREAD, srcGenKokkosTeamFolder)
 
 				// Create nabla and nablagen models
-				val nablaFile = modulesFolder.getFile(newProjectPage.moduleName + ".nabla")
+				val nablaFile = modulesFolder.getFile(newProjectPage.moduleName + ".n")
 				createFile(nablaFile, getNablaModelContent(newProjectPage.moduleName), monitor)
-				val nablagenFile = modulesFolder.getFile(newProjectPage.moduleName + ".nablagen")
+				val nablagenFile = modulesFolder.getFile(newProjectPage.moduleName + ".ngen")
 				createFile(nablagenFile, getNablagenModelContent(newProjectPage.moduleName, srcGenFoldersByLanguage), monitor)
 
 				// Create META-INF folder and MANIFEST

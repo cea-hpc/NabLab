@@ -10,7 +10,7 @@ class NablagenFileGenerator extends StandaloneGeneratorBase
 	def generate(NablaExtension nablaExt, String genDir)
 	{
 		val fsa = getConfiguredFileSystemAccess(genDir, false)
-		var fileName = nablaExt.name + ".nablagen"
+		var fileName = nablaExt.name + ".ngen"
 		// generated only once
 		if ( !(fsa.isFile(fileName) ))
 		{
@@ -36,7 +36,6 @@ class NablagenFileGenerator extends StandaloneGeneratorBase
 	{
 		target = «TargetType::CPP_SEQUENTIAL.literal»;
 		// compatibleTargets can be added here
-		// outputDir is the parent directory of the «name»Cpp project relative to the NabLab workspace."
 		outputDir = "/«name»/src-cpp";
 		facadeClass = "«name»Cpp";
 		facadeNamespace = "«name.toLowerCase»";
@@ -50,7 +49,6 @@ class NablagenFileGenerator extends StandaloneGeneratorBase
 	{
 		target = «TargetType::JAVA.literal»;
 		// compatibleTargets can be added here
-		// outputDir is the parent directory of the «name»Java project relative to the NabLab workspace."
 		outputDir = "/«name»/src-java";
 		facadeClass = "«name»Java";
 		facadeNamespace = "«name.toLowerCase»";

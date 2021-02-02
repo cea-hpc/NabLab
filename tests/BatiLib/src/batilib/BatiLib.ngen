@@ -13,7 +13,6 @@ Provider BatiLibCpp : BatiLib
 {
 	target = CppSequential;
 	// compatibleTargets can be added here
-	// outputDir is the parent directory of the BatiLibCpp project relative to the NabLab workspace."
 	outputDir = "/BatiLib/src-cpp";
 	facadeClass = "BatiLibCpp";
 	facadeNamespace = "batilib";
@@ -27,7 +26,6 @@ Provider BatiLibJava : BatiLib
 {
 	target = Java;
 	// compatibleTargets can be added here
-	// outputDir is the parent directory of the BatiLibJava project relative to the NabLab workspace."
 	outputDir = "/BatiLib/src-java";
 	facadeClass = "BatiLibJava";
 	facadeNamespace = "batilib";

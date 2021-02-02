@@ -67,15 +67,15 @@ class CompilationChainHelper
 		val rs = resourceSetProvider.get
 
 		// Read math.nabla
-		val mathPath = pluginsPath + "fr.cea.nabla/nablalib/math.nabla"
+		val mathPath = pluginsPath + "fr.cea.nabla/nablalib/math.n"
 		nablaParseHelper.parse(new String(Files.readAllBytes(Paths.get(mathPath))), rs)
 
-		// Read linearalgebra.nabla
-		val linearAlgebraPath = pluginsPath + "fr.cea.nabla/nablalib/linearalgebra.nabla"
+		// Read linearalgebra.n
+		val linearAlgebraPath = pluginsPath + "fr.cea.nabla/nablalib/linearalgebra.n"
 		nablaParseHelper.parse(new String(Files.readAllBytes(Paths.get(linearAlgebraPath))), rs)
 
-		// Read linearalgebra.nablagen
-		val linearAlgebraGenPath = pluginsPath + "fr.cea.nabla/nablalib/linearalgebra.nablagen"
+		// Read linearalgebra.ngen
+		val linearAlgebraGenPath = pluginsPath + "fr.cea.nabla/nablalib/linearalgebra.ngen"
 		nablagenParseHelper.parse(new String(Files.readAllBytes(Paths.get(linearAlgebraGenPath))), rs)
 
 		val nablaRoot = nablaParseHelper.parse(model, rs)

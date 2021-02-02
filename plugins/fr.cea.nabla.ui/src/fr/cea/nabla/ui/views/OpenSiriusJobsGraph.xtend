@@ -12,6 +12,7 @@ package fr.cea.nabla.ui.views
 import com.google.inject.Inject
 import com.google.inject.Singleton
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
+import fr.cea.nabla.generator.NablaIrWriter
 import fr.cea.nabla.generator.ir.NablagenApplication2Ir
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.transformers.CompositeTransformationStep
@@ -167,7 +168,7 @@ class OpenSiriusJobsGraph extends AbstractHandler
 
 	def protected boolean addOrUpdateResource(Session session, IrRoot irRoot, String projectSessionName)
 	{
-		val irResourceURI = URI.createURI(URIQuery.INMEMORY_URI_SCHEME + ":/" + projectSessionName + "/" + projectSessionName + ".nablair")
+		val irResourceURI = URI.createURI(URIQuery.INMEMORY_URI_SCHEME + ":/" + projectSessionName + "/" + projectSessionName + "." + NablaIrWriter.IrExtension)
 		
 		var isNewResource = false
 		val irResource = session.transactionalEditingDomain.resourceSet.getResource(irResourceURI, false)

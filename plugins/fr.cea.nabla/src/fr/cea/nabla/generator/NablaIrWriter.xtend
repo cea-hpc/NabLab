@@ -18,7 +18,7 @@ import org.eclipse.xtext.resource.SaveOptions
 
 class NablaIrWriter
 {
-	static val IrExtension = 'nablair'
+	public static val IrExtension = 'nir'
 
 	def createAndSaveResource(IFileSystemAccess2 fsa, IrRoot ir)
 	{

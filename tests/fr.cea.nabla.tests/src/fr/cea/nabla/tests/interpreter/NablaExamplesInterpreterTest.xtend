@@ -110,9 +110,9 @@ class NablaExamplesInterpreterTest
 	private def void testInterpreteModule(String moduleName)
 	{
 		println("\ntest" + moduleName)
-		val modelFile = String.format("%1$ssrc/%2$s/%3$s.nabla", examplesProjectPath, moduleName.toLowerCase, moduleName)
+		val modelFile = String.format("%1$ssrc/%2$s/%3$s.n", examplesProjectPath, moduleName.toLowerCase, moduleName)
 		val model = readFileAsString(modelFile)
-		val genmodelFile = String.format("%1$ssrc/%2$s/%3$s.nablagen", examplesProjectPath, moduleName.toLowerCase, moduleName)
+		val genmodelFile = String.format("%1$ssrc/%2$s/%3$s.ngen", examplesProjectPath, moduleName.toLowerCase, moduleName)
 		val genmodel = readFileAsString(genmodelFile)
 		// We use the example json datafile provided by example source code
 		val jsonOptionsFile = String.format("%1$ssrc/%2$s/%3$s.json", examplesProjectPath, moduleName.toLowerCase, moduleName)

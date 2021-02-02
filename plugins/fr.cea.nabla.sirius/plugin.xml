@@ -22,7 +22,7 @@
            allPopups="false"
            locationURI="toolbar:org.eclipse.sirius.diagram.ui.tabbar?after=additions">
         <command
-              commandId="fr.cea.nabla.sirius.nablair.back.to.parent.diagram.command"
+              commandId="fr.cea.nabla.sirius.nir.back.to.parent.diagram.command"
               icon="icons/backToParentDiagram.gif"
               style="push"
               tooltip="Back to parent diagram">
@@ -36,7 +36,7 @@
                  <with
                        variable="selection">
                        <iterate ifEmpty="false" operator="or">
-                          <test property="fr.cea.nabla.sirius.nablair.property.tester.isNotRootDiagram"/>
+                          <test property="fr.cea.nabla.sirius.nir.property.tester.isNotRootDiagram"/>
                        </iterate>
                  </with>
               </and>
@@ -48,7 +48,7 @@
         point="org.eclipse.ui.commands">
      <command
            defaultHandler="fr.cea.nabla.sirius.BackToParentNablaIrDiagramCommand"
-           id="fr.cea.nabla.sirius.nablair.back.to.parent.diagram.command"
+           id="fr.cea.nabla.sirius.nir.back.to.parent.diagram.command"
            name="BackToParentNablaIrDiagramCommand">
      </command>
   </extension>
@@ -56,8 +56,8 @@
         point="org.eclipse.core.expressions.propertyTesters">
      <propertyTester
            class="fr.cea.nabla.sirius.BackToParentNablaIrDiagramPropertyTester"
-           id="fr.cea.nabla.sirius.nablair.property.tester.no.root.diagram"
-           namespace="fr.cea.nabla.sirius.nablair.property.tester"
+           id="fr.cea.nabla.sirius.nir.property.tester.no.root.diagram"
+           namespace="fr.cea.nabla.sirius.nir.property.tester"
            properties="isNotRootDiagram"
            type="org.eclipse.gmf.runtime.diagram.ui.editparts.IGraphicalEditPart">
      </propertyTester>

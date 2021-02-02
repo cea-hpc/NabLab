@@ -7,7 +7,7 @@
 			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:org.eclipse.xtext.ui.editor.XtextEditor"
 			contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
 			default="true"
-			extensions="nabla"
+			extensions="n"
 			id="fr.cea.nabla.Nabla"
 			name="Nabla Editor">
 		</editor>
@@ -207,7 +207,7 @@
 	<extension point="org.eclipse.core.contenttype.contentTypes">
 		<content-type
 			base-type="org.eclipse.core.runtime.text"
-			file-extensions="nabla"
+			file-extensions="n"
 			id="fr.cea.nabla.Nabla.contenttype"
 			name="Nabla File"
 			priority="normal">
@@ -218,13 +218,13 @@
 		point="org.eclipse.emf.ecore.extension_parser">
 		<parser
 			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:org.eclipse.xtext.resource.IResourceFactory"
-			type="nabla">
+			type="n">
 		</parser>
 	</extension>
 	<extension point="org.eclipse.xtext.extension_resourceServiceProvider">
 		<resourceServiceProvider
 			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:org.eclipse.xtext.ui.resource.IResourceUIServiceProvider"
-			uriExtension="nabla">
+			uriExtension="n">
 		</resourceServiceProvider>
 	</extension>
 	<!-- marker definitions for fr.cea.nabla.Nabla -->
@@ -252,7 +252,7 @@
 	<extension point="org.eclipse.xtext.builder.participant">
 		<participant
 			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:org.eclipse.xtext.builder.IXtextBuilderParticipant"
-			fileExtensions="nabla"/>
+			fileExtensions="n"/>
 	</extension>
 	<extension point="org.eclipse.ui.preferencePages">
 		<page
@@ -395,7 +395,7 @@
 	<extension point="org.eclipse.compare.contentViewers">
 		<viewer id="fr.cea.nabla.Nabla.compare.contentViewers"
 			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:org.eclipse.xtext.ui.compare.InjectableViewerCreator"
-			extensions="nabla">
+			extensions="n">
 		</viewer>
 		<contentTypeBinding
 			contentTypeId="fr.cea.nabla.Nabla.contenttype"
@@ -404,7 +404,7 @@
 	<extension point="org.eclipse.compare.contentMergeViewers">
 		<viewer id="fr.cea.nabla.Nabla.compare.contentMergeViewers"
 			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:org.eclipse.xtext.ui.compare.InjectableViewerCreator"
-			extensions="nabla" label="Nabla Compare">
+			extensions="n" label="Nabla Compare">
 		</viewer>
 		<contentTypeBinding
 			contentTypeId="fr.cea.nabla.Nabla.contenttype"
@@ -413,12 +413,12 @@
 	<extension point="org.eclipse.ui.editors.documentProviders">
 		<provider id="fr.cea.nabla.Nabla.editors.documentProviders"
 			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:org.eclipse.xtext.ui.editor.model.XtextDocumentProvider"
-			extensions="nabla">
+			extensions="n">
 		</provider>
 	</extension>
 	<extension point="org.eclipse.team.core.fileTypes">
 		<fileTypes
-			extension="nabla"
+			extension="n"
 			type="text">
 		</fileTypes>
 	</extension>
@@ -428,7 +428,7 @@
 			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.ui.editor.XtextEditor"
 			contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
 			default="true"
-			extensions="nablagen"
+			extensions="ngen"
 			id="fr.cea.nabla.Nablagen"
 			name="Nablagen Editor">
 		</editor>
@@ -628,7 +628,7 @@
 	<extension point="org.eclipse.core.contenttype.contentTypes">
 		<content-type
 			base-type="org.eclipse.core.runtime.text"
-			file-extensions="nablagen"
+			file-extensions="ngen"
 			id="fr.cea.nabla.Nablagen.contenttype"
 			name="Nablagen File"
 			priority="normal">
@@ -639,13 +639,13 @@
 		point="org.eclipse.emf.ecore.extension_parser">
 		<parser
 			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.resource.IResourceFactory"
-			type="nablagen">
+			type="ngen">
 		</parser>
 	</extension>
 	<extension point="org.eclipse.xtext.extension_resourceServiceProvider">
 		<resourceServiceProvider
 			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.ui.resource.IResourceUIServiceProvider"
-			uriExtension="nablagen">
+			uriExtension="ngen">
 		</resourceServiceProvider>
 	</extension>
 	<!-- marker definitions for fr.cea.nabla.Nablagen -->
@@ -673,7 +673,7 @@
 	<extension point="org.eclipse.xtext.builder.participant">
 		<participant
 			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.builder.IXtextBuilderParticipant"
-			fileExtensions="nablagen"/>
+			fileExtensions="ngen"/>
 	</extension>
 	<extension point="org.eclipse.ui.preferencePages">
 		<page
@@ -816,7 +816,7 @@
 	<extension point="org.eclipse.compare.contentViewers">
 		<viewer id="fr.cea.nabla.Nablagen.compare.contentViewers"
 			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.ui.compare.InjectableViewerCreator"
-			extensions="nablagen">
+			extensions="ngen">
 		</viewer>
 		<contentTypeBinding
 			contentTypeId="fr.cea.nabla.Nablagen.contenttype"
@@ -825,7 +825,7 @@
 	<extension point="org.eclipse.compare.contentMergeViewers">
 		<viewer id="fr.cea.nabla.Nablagen.compare.contentMergeViewers"
 			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.ui.compare.InjectableViewerCreator"
-			extensions="nablagen" label="Nablagen Compare">
+			extensions="ngen" label="Nablagen Compare">
 		</viewer>
 		<contentTypeBinding
 			contentTypeId="fr.cea.nabla.Nablagen.contenttype"
@@ -834,12 +834,12 @@
 	<extension point="org.eclipse.ui.editors.documentProviders">
 		<provider id="fr.cea.nabla.Nablagen.editors.documentProviders"
 			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.ui.editor.model.XtextDocumentProvider"
-			extensions="nablagen">
+			extensions="ngen">
 		</provider>
 	</extension>
 	<extension point="org.eclipse.team.core.fileTypes">
 		<fileTypes
-			extension="nablagen"
+			extension="ngen"
 			type="text">
 		</fileTypes>
 	</extension>

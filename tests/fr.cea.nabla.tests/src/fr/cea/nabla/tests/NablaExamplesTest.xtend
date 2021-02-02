@@ -126,8 +126,8 @@ class NablaExamplesTest
 	private def testGenerateModule(String moduleName)
 	{
 		val packageName = moduleName.toLowerCase
-		val model = readFileAsString(examplesProjectPath + "/src/" + packageName + "/" + moduleName + ".nabla")
-		var genmodel = readFileAsString(examplesProjectPath + "/src/" + packageName + "/" + moduleName + ".nablagen")
+		val model = readFileAsString(examplesProjectPath + "/src/" + packageName + "/" + moduleName + ".n")
+		var genmodel = readFileAsString(examplesProjectPath + "/src/" + packageName + "/" + moduleName + ".ngen")
 		compilationHelper.generateCode(model, genmodel, examplesProjectPath)
 		testNoGitDiff("/" + packageName) // Add "/" to avoid a false positiv on explicitheatequation fail or implicitheatequation
 	}
@@ -158,8 +158,8 @@ class NablaExamplesTest
 		FileUtils.copyDirectory(sourceLocation, tmp)
 
 		val packageName = moduleName.toLowerCase
-		val model = readFileAsString(tmp + "/src/" + packageName + "/" + moduleName + ".nabla")
-		var genmodel = readFileAsString(tmp + "/src/" + packageName + "/" + moduleName + ".nablagen")
+		val model = readFileAsString(tmp + "/src/" + packageName + "/" + moduleName + ".n")
+		var genmodel = readFileAsString(tmp + "/src/" + packageName + "/" + moduleName + ".ngen")
 
 		// Adapt genModel for LevelDBPath & KokkosPath & tmpOutputDir
 		genmodel = genmodel.adaptedGenModel(kokkosPath, levelDBPath)

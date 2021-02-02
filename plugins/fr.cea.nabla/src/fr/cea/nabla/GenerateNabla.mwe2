@@ -46,7 +46,7 @@ Workflow {
 
 		language = StandardLanguage {
 			name = "fr.cea.nabla.Nabla"
-			fileExtensions = "nabla"
+			fileExtensions = "n"
 
 			serializer = {
 				generateStub = false
@@ -72,7 +72,7 @@ Workflow {
 
 		language = StandardLanguage {
 			name = "fr.cea.nabla.Nablagen"
-			fileExtensions = "nablagen"
+			fileExtensions = "ngen"
 			referencedResource = "platform:/resource/fr.cea.nabla/src/fr/cea/nabla/Nabla.xtext"
 
 			serializer = {

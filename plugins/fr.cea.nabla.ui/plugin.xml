@@ -17,7 +17,7 @@
 			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.NablaDslEditor"
 			contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
 			default="true"
-			extensions="nabla"
+			extensions="n"
 			icon="icons/NabLab.gif"
 			id="fr.cea.nabla.Nabla"
 			name="Nabla Editor">
@@ -26,7 +26,7 @@
 			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.ui.editor.XtextEditor"
 			contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
 			default="true"
-			extensions="nablagen"
+			extensions="ngen"
 			icon="icons/Nablagen.gif"
 			id="fr.cea.nabla.Nablagen"
 			name="Nablagen Editor">
@@ -227,7 +227,7 @@
 	<extension point="org.eclipse.core.contenttype.contentTypes">
 		<content-type
 			base-type="org.eclipse.core.runtime.text"
-			file-extensions="nabla"
+			file-extensions="n"
 			id="fr.cea.nabla.Nabla.contenttype"
 			name="Nabla File"
 			priority="normal">
@@ -238,21 +238,21 @@
 		point="org.eclipse.emf.ecore.extension_parser">
 		<parser
 			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:org.eclipse.xtext.resource.IResourceFactory"
-			type="nabla">
+			type="n">
 		</parser>
 		<parser
 			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.resource.IResourceFactory"
-			type="nablagen">
+			type="ngen">
 		</parser>
 	</extension>
 	<extension point="org.eclipse.xtext.extension_resourceServiceProvider">
 		<resourceServiceProvider
 			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:org.eclipse.xtext.ui.resource.IResourceUIServiceProvider"
-			uriExtension="nabla">
+			uriExtension="n">
 		</resourceServiceProvider>
 		<resourceServiceProvider
 			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.ui.resource.IResourceUIServiceProvider"
-			uriExtension="nablagen">
+			uriExtension="ngen">
 		</resourceServiceProvider>
 	</extension>
 	<!-- marker definitions for fr.cea.nabla.Nabla -->
@@ -429,7 +429,7 @@
 	<extension point="org.eclipse.compare.contentViewers">
 		<viewer id="fr.cea.nabla.Nabla.compare.contentViewers"
 			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:org.eclipse.xtext.ui.compare.InjectableViewerCreator"
-			extensions="nabla">
+			extensions="n">
 		</viewer>
 		<contentTypeBinding
 			contentTypeId="fr.cea.nabla.Nabla.contenttype"
@@ -438,7 +438,7 @@
 	<extension point="org.eclipse.compare.contentMergeViewers">
 		<viewer id="fr.cea.nabla.Nabla.compare.contentMergeViewers"
 			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:org.eclipse.xtext.ui.compare.InjectableViewerCreator"
-			extensions="nabla" label="Nabla Compare">
+			extensions="n" label="Nabla Compare">
 		</viewer>
 		<contentTypeBinding
 			contentTypeId="fr.cea.nabla.Nabla.contenttype"
@@ -447,12 +447,12 @@
 	<extension point="org.eclipse.ui.editors.documentProviders">
 		<provider id="fr.cea.nabla.Nabla.editors.documentProviders"
 			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:org.eclipse.xtext.ui.editor.model.XtextDocumentProvider"
-			extensions="nabla">
+			extensions="n">
 		</provider>
 	</extension>
 	<extension point="org.eclipse.team.core.fileTypes">
 		<fileTypes
-			extension="nabla"
+			extension="n"
 			type="text">
 		</fileTypes>
 	</extension>
@@ -485,7 +485,7 @@
 		point="org.eclipse.debug.ui.launchShortcuts">
 		<shortcut
 			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:fr.cea.nabla.ui.launchconfig.NablagenShortcut"
-			icon="icons/NabLab.gif"
+			icon="icons/Nablagen.gif"
 			id="fr.cea.nabla.ui.launchconfig.NablagenShortcut"
 			label="Start Interpretation"
 			modes="run">
@@ -496,7 +496,7 @@
 						<iterate>
 							<adapt type="org.eclipse.core.resources.IResource">
 								<and>
-									<test property="org.eclipse.core.resources.extension" value="nablagen">
+									<test property="org.eclipse.core.resources.extension" value="ngen">
 									</test>
 								</and>
 							</adapt>
@@ -743,7 +743,7 @@
 						<count value="1"/>
 						<iterate>
 							<adapt type="org.eclipse.core.resources.IResource">
-								<test property="org.eclipse.core.resources.extension" value="nablagen"/>
+								<test property="org.eclipse.core.resources.extension" value="ngen"/>
 							</adapt>
 						</iterate>
 					</with>
@@ -759,7 +759,7 @@
 						<count value="1"/>
 						<iterate>
 							<adapt type="org.eclipse.core.resources.IResource">
-								<test property="org.eclipse.core.resources.extension" value="nabla"/>
+								<test property="org.eclipse.core.resources.extension" value="n"/>
 							</adapt>
 						</iterate>
 					</with>
@@ -797,7 +797,7 @@
 				<with variable="selection">
 					<iterate>
 						<adapt type="org.eclipse.core.resources.IResource">
-							<test property="org.eclipse.core.resources.extension" value="nabla"/>
+							<test property="org.eclipse.core.resources.extension" value="n"/>
 						</adapt>
 						<and/>
 						<test

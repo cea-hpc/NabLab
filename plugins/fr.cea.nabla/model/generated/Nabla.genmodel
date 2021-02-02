@@ -7,7 +7,7 @@
     copyrightFields="false" editPluginID="fr.cea.nabla.edit" editorPluginID="fr.cea.nabla.editor"
     runtimeVersion="2.20">
   <genPackages prefix="Nabla" basePackage="fr.cea.nabla" disposableProviderFactory="true"
-      fileExtensions="nabla" ecorePackage="Nabla.ecore#/">
+      fileExtensions="n" ecorePackage="Nabla.ecore#/">
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="Nabla.ecore#//PrimitiveType">
       <genEnumLiterals ecoreEnumLiteral="Nabla.ecore#//PrimitiveType/Int"/>
       <genEnumLiterals ecoreEnumLiteral="Nabla.ecore#//PrimitiveType/Real"/>

@@ -23,7 +23,7 @@
   <modelPluginVariables>org.eclipse.xtext.xbase.lib</modelPluginVariables>
   <modelPluginVariables>org.eclipse.emf.ecore.xcore.lib</modelPluginVariables>
   <genPackages prefix="Ir" basePackage="fr.cea.nabla.ir" resource="XMI" disposableProviderFactory="true"
-      fileExtensions="nablair" ecorePackage="Ir.ecore#/">
+      fileExtensions="nir" ecorePackage="Ir.ecore#/">
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="Ir.ecore#//PrimitiveType">
       <genEnumLiterals ecoreEnumLiteral="Ir.ecore#//PrimitiveType/Int"/>
       <genEnumLiterals ecoreEnumLiteral="Ir.ecore#//PrimitiveType/Real"/>

@@ -63,7 +63,7 @@ class NablagenShortcut implements ILaunchShortcut
 					val configuration = type.newInstance(null, file.name)
 					configuration.setAttribute(NablagenLaunchConstants.PROJECT, file.project.name)
 					configuration.setAttribute(NablagenLaunchConstants.NGEN_FILE_LOCATION, file.projectRelativePath.toPortableString)
-					configuration.setAttribute(NablagenLaunchConstants.JSON_FILE_LOCATION, file.projectRelativePath.toPortableString.replace(".nablagen", ".json"))
+					configuration.setAttribute(NablagenLaunchConstants.JSON_FILE_LOCATION, file.projectRelativePath.toPortableString.replace(".ngen", ".json"))
 
 					// save and return new configuration
 					configuration.doSave

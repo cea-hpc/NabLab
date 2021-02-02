@@ -28,7 +28,7 @@ class SourceFileContentProvider extends BaseWorkbenchContentProvider implements 
 		super.getChildren(element).filter[x | x.candidate]
 	}
 
-	/** Return true if o is not a file or a file with the 'nablagen' extension */
+	/** Return true if o is not a file or a file with the 'ngen' extension */
 	private def boolean isCandidate(Object o)
 	{
 		if (o instanceof IFile)

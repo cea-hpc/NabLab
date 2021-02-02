@@ -31,7 +31,7 @@ import org.eclipse.ui.model.WorkbenchLabelProvider
 
 class NablagenLaunchConfigurationTab extends AbstractLaunchConfigurationTab
 {
-	public static val NablagenFileExtension = 'nablagen'
+	public static val NablagenFileExtension = 'ngen'
 	public static val JsonFileExtension = 'json'
 	boolean fDisableUpdate = false
 
@@ -139,7 +139,7 @@ class NablagenProjectSelectionAdapter extends SelectionAdapter
 	{
 		val dialog = new ElementTreeSelectionDialog(parent.shell, new WorkbenchLabelProvider, new ProjectContentProvider)
 		dialog.setTitle("Select Project")
-		dialog.setMessage("Select the project hosting your nablagen file:")
+		dialog.setMessage("Select the project hosting your ngen file:")
 		dialog.setInput(ResourcesPlugin.workspace.root)
 		if (dialog.open == Window.OK)
 			fTxtProject.setText((dialog.firstResult as IResource).name)
@@ -160,8 +160,8 @@ class NablagenFileSelectionAdapter extends SelectionAdapter
 	override void widgetSelected(SelectionEvent e)
 	{
 		val dialog = new ElementTreeSelectionDialog(parent.shell, new WorkbenchLabelProvider, new SourceFileContentProvider(NablagenLaunchConfigurationTab::NablagenFileExtension))
-		dialog.setTitle("Select Nablagen File")
-		dialog.setMessage("Select the nablagen file to execute:")
+		dialog.setTitle("Select 'ngen' File")
+		dialog.setMessage("Select the ngen file to execute:")
 		dialog.setInput(ResourcesPlugin.workspace.root)
 		if (dialog.open == Window.OK)
 			fNablagenFile.setText((dialog.firstResult as IFile).projectRelativePath.toPortableString)
@@ -182,7 +182,7 @@ class JsonFileSelectionAdapter extends SelectionAdapter
 	override void widgetSelected(SelectionEvent e)
 	{
 		val dialog = new ElementTreeSelectionDialog(parent.shell, new WorkbenchLabelProvider, new SourceFileContentProvider(NablagenLaunchConfigurationTab::JsonFileExtension))
-		dialog.setTitle("Select Json Data File")
+		dialog.setTitle("Select 'json' Data File")
 		dialog.setMessage("Select the json data file containing the user options:")
 		dialog.setInput(ResourcesPlugin.workspace.root)
 		if (dialog.open == Window.OK)

@@ -24,7 +24,7 @@ import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.nablagen.AdditionalModule
-import fr.cea.nabla.nablagen.NablagenRoot
+import fr.cea.nabla.nablagen.NablagenApplication
 import fr.cea.nabla.nablagen.NablagenModule
 import fr.cea.nabla.nablagen.NablagenPackage
 import fr.cea.nabla.nablagen.OutputVar
@@ -63,9 +63,9 @@ class NablagenScopeProvider extends AbstractNablagenScopeProvider
 			case NablagenPackage.Literals.NABLAGEN_MODULE__TYPE:
 			{
 				val existingScope = super.getScope(context, r)
-				val ngen = EcoreUtil2.getContainerOfType(context, NablagenRoot)
-				if (context instanceof AdditionalModule && ngen !== null && ngen.mainModule !== null && ngen.mainModule.type !== null)
-					new FilteringScope(existingScope, [e | e.name.toString != ngen.mainModule.type.name])
+				val ngenApp = EcoreUtil2.getContainerOfType(context, NablagenApplication)
+				if (context instanceof AdditionalModule && ngenApp !== null && ngenApp.mainModule !== null && ngenApp.mainModule.type !== null)
+					new FilteringScope(existingScope, [e | e.name.toString != ngenApp.mainModule.type.name])
 				else
 					existingScope
 			}
@@ -87,17 +87,17 @@ class NablagenScopeProvider extends AbstractNablagenScopeProvider
 			}
 			case NablagenPackage.Literals.VAR_LINK__MAIN_MODULE:
 			{
-				val ngen = EcoreUtil2.getContainerOfType(context, NablagenRoot)
-				if (ngen !== null && ngen.mainModule !== null)
-					Scopes::scopeFor(#[ngen.mainModule])
+				val ngenApp = EcoreUtil2.getContainerOfType(context, NablagenApplication)
+				if (ngenApp !== null && ngenApp.mainModule !== null)
+					Scopes::scopeFor(#[ngenApp.mainModule])
 				else
 					IScope.NULLSCOPE
 			}
 			case NablagenPackage.Literals.VAR_LINK__MAIN_VARIABLE:
 			{
-				val ngen = EcoreUtil2.getContainerOfType(context, NablagenRoot)
-				if (ngen !== null && ngen.mainModule !== null && ngen.mainModule.type !== null)
-					Scopes::scopeFor(ngen.mainModule.type.allVars.filter(Var))
+				val ngenApp = EcoreUtil2.getContainerOfType(context, NablagenApplication)
+				if (ngenApp !== null && ngenApp.mainModule !== null && ngenApp.mainModule.type !== null)
+					Scopes::scopeFor(ngenApp.mainModule.type.allVars.filter(Var))
 				else
 					IScope.NULLSCOPE
 			}

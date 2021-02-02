@@ -14,11 +14,11 @@ import com.google.inject.Provider
 import com.google.inject.Singleton
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
-import fr.cea.nabla.generator.NablagenInterpreter
+import fr.cea.nabla.generator.ir.IrRootBuilder
 import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.ir.interpreter.IrInterpreter
 import fr.cea.nabla.ir.ir.ExtensionProvider
-import fr.cea.nabla.nablagen.NablagenRoot
+import fr.cea.nabla.nablagen.NablagenApplication
 import fr.cea.nabla.ui.NabLabConsoleFactory
 import fr.cea.nabla.ui.NabLabConsoleHandler
 import java.io.BufferedReader
@@ -38,13 +38,12 @@ import org.eclipse.emf.ecore.util.EcoreUtil
 class NablagenRunner
 {
 	@Inject Provider<ResourceSet> resourceSetProvider
-	@Inject Provider<NablagenInterpreter> ngenInterpreterProvider
+	@Inject Provider<IrRootBuilder> irRootBuilderProvider
 	@Inject NabLabConsoleFactory consoleFactory
 	@Inject NablaGeneratorMessageDispatcher dispatcher
 
 	package def launch(IFile nablagenFile, IFile jsonFile)
 	{
-		val ngenInterpreter = ngenInterpreterProvider.get
 		consoleFactory.openConsole
 		consoleFactory.clearAndActivateConsole
 		val traceFunction = [MessageType type, String msg | consoleFactory.printConsole(type, msg)]
@@ -67,23 +66,30 @@ class NablagenRunner
 				emfResource.load(null)
 
 				val baseDir = nablagenFile.project.location.toString
-				val ngen = emfResource.contents.filter(NablagenRoot).head
-				val ir = ngenInterpreter.buildInterpreterIr(ngen, baseDir)
-
-				consoleFactory.printConsole(MessageType.Exec, "Starting code interpretation")
-				val startTime = System.currentTimeMillis
-				val handler = new NabLabConsoleHandler(consoleFactory)
-				handler.level = Level.FINE
-				val irInterpreter = new IrInterpreter(ir, handler)
-				irInterpreter.classloaderUrls = buildUrls(ir.providers)
-				if (jsonFile === null || !jsonFile.exists) throw new RuntimeException("Invalid file: " + jsonFile.fullPath)
-				val jsonContent = new BufferedReader(new InputStreamReader(jsonFile.contents)).lines().collect(Collectors.joining("\n"))
-				irInterpreter.interprete(jsonContent)
-				val endTime = System.currentTimeMillis
-				consoleFactory.printConsole(MessageType.Exec, "Code interpretation ended in " + (endTime-startTime)/1000.0 + "s")
-
-				nablagenFile.project.refreshLocal(IResource::DEPTH_INFINITE, null)
-				consoleFactory.printConsole(MessageType.End, "Interpretation ended successfully for: " + nablagenFile.name)
+				val ngenApp = emfResource.contents.filter(NablagenApplication).head
+				if (ngenApp === null)
+				{
+					consoleFactory.printConsole(MessageType.Error, "Interpretation only possible on Application content")
+				}
+				else
+				{
+					val ir = irRootBuilderProvider.get.buildInterpreterIr(ngenApp, baseDir)
+	
+					consoleFactory.printConsole(MessageType.Exec, "Starting code interpretation")
+					val startTime = System.currentTimeMillis
+					val handler = new NabLabConsoleHandler(consoleFactory)
+					handler.level = Level.FINE
+					val irInterpreter = new IrInterpreter(ir, handler)
+					irInterpreter.classloaderUrls = buildUrls(ir.providers)
+					if (jsonFile === null || !jsonFile.exists) throw new RuntimeException("Invalid file: " + jsonFile.fullPath)
+					val jsonContent = new BufferedReader(new InputStreamReader(jsonFile.contents)).lines().collect(Collectors.joining("\n"))
+					irInterpreter.interprete(jsonContent)
+					val endTime = System.currentTimeMillis
+					consoleFactory.printConsole(MessageType.Exec, "Code interpretation ended in " + (endTime-startTime)/1000.0 + "s")
+	
+					nablagenFile.project.refreshLocal(IResource::DEPTH_INFINITE, null)
+					consoleFactory.printConsole(MessageType.End, "Interpretation ended successfully for: " + nablagenFile.name)
+				}
 			}
 			catch (Exception e)
 			{

@@ -13,3 +13,4 @@ Require-Bundle: fr.cea.nabla,
    commons-math3,
    leveldb
 Export-Package: batilib
+Bundle-Vendor: CEA

@@ -16,6 +16,7 @@ import fr.cea.nabla.nablagen.OutputVar
 import fr.cea.nabla.nablagen.Target
 import fr.cea.nabla.ui.NablaUiUtils
 import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider
+import fr.cea.nabla.nablagen.NablagenProvider
 
 /**
  * Customization of the default outline structure.
@@ -31,8 +32,12 @@ class NablagenOutlineTreeProvider extends DefaultOutlineTreeProvider
 
 	def _text(NablagenRoot it)
 	{
-		'Generation options "' + eResource.URI.lastSegment + '"'
+		'Generation file "' + eResource.URI.lastSegment + '"'
 	}
+
+	def _image(NablagenProvider it) { null }
+	def _isLeaf(NablagenProvider it) { true }
+	def _text(NablagenProvider it) { name + " : " + extension?.name }
 
 	def _isLeaf(NablagenModule it) { true }
 	def _text(NablagenModule it) { name }

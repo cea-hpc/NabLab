@@ -12,11 +12,12 @@ package fr.cea.nabla.validation
 import com.google.inject.Inject
 import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.NablaModule
-import fr.cea.nabla.nablaext.TargetType
 import fr.cea.nabla.nablagen.AdditionalModule
+import fr.cea.nabla.nablagen.NablagenApplication
 import fr.cea.nabla.nablagen.NablagenModule
 import fr.cea.nabla.nablagen.NablagenPackage
-import fr.cea.nabla.nablagen.NablagenRoot
+import fr.cea.nabla.nablagen.NablagenProvider
+import fr.cea.nabla.nablagen.TargetType
 import fr.cea.nabla.nablagen.VarLink
 import fr.cea.nabla.typing.ArgOrVarTypeProvider
 import java.util.HashSet
@@ -28,28 +29,36 @@ import org.eclipse.xtext.validation.CheckType
  *
  * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#validation
  */
- // TODO A unique interpreter
+// TODO A unique interpreter
+// TODO All providers extends same extension
 class NablagenValidator extends AbstractNablagenValidator
 {
 	@Inject extension ArgOrVarTypeProvider
 
-	public static val NGEN_APPLICATION_NAME = "NablagenValidator::ApplicationName"
+	public static val NGEN_ELEMENT_NAME = "NablagenValidator::ElementName"
 	public static val NGEN_MODULE_NAME = "NablagenValidator::ModuleName"
 	public static val CPP_MANDATORY_VARIABLES = "NablagenValidator::CppMandatoryVariables"
 	public static val CONNECTIVITY_CONSISTENCY = "NablagenValidator::ConnectivityConsistency"
 	public static val VAR_LINK_MAIN_VAR_TYPE = "NablagenValidator::VarLinkMainVarType"
 
-	static def getNgenApplicationNameMsg() { "Application name must start with an upper case" }
+	static def getNgenElementNameMsg() { "Application/Provider name must start with an upper case" }
 	static def getNgenModuleNameMsg() { "Nabla module instance name must start with a lower case" }
 	static def getCppMandatoryVariablesMsg() { "'iterationMax' and 'timeMax' simulation variables must be defined (after timeStep) when using C++ code generator" }
 	static def getConnectivityConsistencyMsg(String a, String b) { "Connectivities with same name must be identical: " + a + " \u2260 " + b}
 	static def getVarLinkMainVarTypeMsg(String v1Type, String v2Type) { "Variables must have the same type: " + v1Type + " \u2260 " + v2Type }
 
 	@Check(CheckType.FAST)
-	def checkName(NablagenRoot it)
+	def checkName(NablagenApplication it)
 	{
 		if (!name.nullOrEmpty && Character::isLowerCase(name.charAt(0)))
-			error(getNgenApplicationNameMsg(), NablagenPackage.Literals.NABLAGEN_ROOT__NAME, NGEN_APPLICATION_NAME)
+			error(getNgenElementNameMsg(), NablagenPackage.Literals.NABLAGEN_APPLICATION__NAME, NGEN_ELEMENT_NAME)
+	}
+
+	@Check(CheckType.FAST)
+	def checkName(NablagenProvider it)
+	{
+		if (!name.nullOrEmpty && Character::isLowerCase(name.charAt(0)))
+			error(getNgenElementNameMsg(), NablagenPackage.Literals.NABLAGEN_PROVIDER__NAME, NGEN_ELEMENT_NAME)
 	}
 
 	@Check(CheckType.FAST)
@@ -60,21 +69,21 @@ class NablagenValidator extends AbstractNablagenValidator
 	}
 
 	@Check(CheckType.FAST)
-	def void checkCppMandatoryVariables(NablagenRoot it)
+	def void checkCppMandatoryVariables(NablagenApplication it)
 	{
 		if (targets.exists[x | x.type != TargetType::JAVA] && (mainModule !== null && mainModule.iterationMax === null || mainModule.timeMax === null))
-			error(getCppMandatoryVariablesMsg(), NablagenPackage.Literals::NABLAGEN_ROOT__MAIN_MODULE, CPP_MANDATORY_VARIABLES)
+			error(getCppMandatoryVariablesMsg(), NablagenPackage.Literals::NABLAGEN_APPLICATION__MAIN_MODULE, CPP_MANDATORY_VARIABLES)
 	}
 
 	@Check(CheckType.FAST)
 	def void checkConnectivityConsistency(AdditionalModule it)
 	{
 		// Look for all referenced NablaModule 
-		val root = eContainer as NablagenRoot
+		val ngenApp = eContainer as NablagenApplication
 		val otherNablaModules = new HashSet<NablaModule>
-		if (root.mainModule.type !== null && root.mainModule.type !== type)
-			otherNablaModules += root.mainModule.type
-		for (am : root.additionalModules)
+		if (ngenApp.mainModule.type !== null && ngenApp.mainModule.type !== type)
+			otherNablaModules += ngenApp.mainModule.type
+		for (am : ngenApp.additionalModules)
 			if (am !== it && am.type !== null && am.type !== type)
 				otherNablaModules += am.type
 

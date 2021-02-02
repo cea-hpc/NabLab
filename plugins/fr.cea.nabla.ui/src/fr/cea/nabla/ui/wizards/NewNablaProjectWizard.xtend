@@ -9,7 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ui.wizards
 
-import fr.cea.nabla.nablaext.TargetType
+import fr.cea.nabla.nablagen.TargetType
 import fr.cea.nabla.ui.NablaUiUtils
 import fr.cea.nabla.ui.internal.NablaActivator
 import java.io.ByteArrayInputStream

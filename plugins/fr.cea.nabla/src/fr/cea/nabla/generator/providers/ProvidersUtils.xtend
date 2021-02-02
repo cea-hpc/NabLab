@@ -5,19 +5,19 @@ import fr.cea.nabla.generator.ir.IrFunctionFactory
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
 import fr.cea.nabla.nabla.NablaExtension
-import fr.cea.nabla.nablaext.ExtensionProvider
+import fr.cea.nabla.nablagen.NablagenProvider
 
 class ProvidersUtils
 {
 	@Inject IrFunctionFactory irFunctionFactory
 
-	def toIrExtensionProvider(ExtensionProvider provider, String wsDir, String installationDir)
+	def toIrExtensionProvider(NablagenProvider provider, String baseDir, String installationDir)
 	{
 		IrFactory::eINSTANCE.createExtensionProvider =>
 		[
 			extensionName = provider.extension.name
 			providerName = provider.name
-			projectDir = wsDir + provider.projectDir
+			projectDir = baseDir + provider.outputDir
 			installDir = installationDir
 			facadeClass= provider.facadeClass
 			facadeNamespace = provider.facadeNamespace

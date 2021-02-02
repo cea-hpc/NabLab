@@ -13,10 +13,12 @@ import com.google.inject.Inject
 import com.google.inject.Provider
 import fr.cea.nabla.NablaStandaloneSetup
 import fr.cea.nabla.NablagenStandaloneSetup
-import fr.cea.nabla.generator.NablagenInterpreter
+import fr.cea.nabla.generator.application.NablagenApplicationGenerator
+import fr.cea.nabla.generator.ir.IrRootBuilder
 import fr.cea.nabla.ir.interpreter.IrInterpreter
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.nabla.NablaRoot
+import fr.cea.nabla.nablagen.NablagenApplication
 import fr.cea.nabla.nablagen.NablagenRoot
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -28,15 +30,14 @@ import org.eclipse.xtext.testing.XtextRunner
 import org.eclipse.xtext.testing.util.ParseHelper
 import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.junit.runner.RunWith
-import fr.cea.nabla.NablaextStandaloneSetup
-import fr.cea.nabla.nablaext.NablaextRoot
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
 class CompilationChainHelper
 {
 	@Inject extension ValidationTestHelper
-	@Inject Provider<NablagenInterpreter> interpreterProvider
+	@Inject Provider<NablagenApplicationGenerator> ngenAppGeneratorProvider
+	@Inject Provider<IrRootBuilder> irRootBuilderProvider
 	@Inject Provider<ResourceSet> resourceSetProvider
 
 	val nablaSetup = new NablaStandaloneSetup
@@ -47,10 +48,6 @@ class CompilationChainHelper
 	val nablagenInjector = nablagenSetup.createInjectorAndDoEMFRegistration
 	val ParseHelper<NablagenRoot> nablagenParseHelper = nablagenInjector.getInstance(ParseHelper)
 
-	val nablaextSetup = new NablaextStandaloneSetup
-	val nablaextInjector = nablaextSetup.createInjectorAndDoEMFRegistration
-	val ParseHelper<NablaextRoot> nablaextParseHelper = nablaextInjector.getInstance(ParseHelper)
-
 	val testProjectPath = System.getProperty("user.dir")
 	val pluginsPath = testProjectPath + "/../../plugins/"
 
@@ -59,36 +56,36 @@ class CompilationChainHelper
 	 */
 	def getIrForInterpretation(CharSequence model, CharSequence genModel)
 	{
-		val interpreter = interpreterProvider.get
+		val irRootBuilder = irRootBuilderProvider.get
 		val projectDir = pluginsPath + "fr.cea.nabla.ui/examples/NablaExamples"
-		val ngen = getNgen(model, genModel)
-		return interpreter.buildInterpreterIr(ngen, projectDir)
+		val ngen = getNgenApp(model, genModel)
+		return irRootBuilder.buildInterpreterIr(ngen, projectDir)
 	}
 
-	def getNgen(CharSequence model, CharSequence genModel)
+	def getNgenApp(CharSequence model, CharSequence genModel)
 	{
 		val rs = resourceSetProvider.get
 
-		// Read Math
+		// Read math.nabla
 		val mathPath = pluginsPath + "fr.cea.nabla/nablalib/math.nabla"
 		nablaParseHelper.parse(new String(Files.readAllBytes(Paths.get(mathPath))), rs)
 
-		// Read LinearAlgebra
+		// Read linearalgebra.nabla
 		val linearAlgebraPath = pluginsPath + "fr.cea.nabla/nablalib/linearalgebra.nabla"
 		nablaParseHelper.parse(new String(Files.readAllBytes(Paths.get(linearAlgebraPath))), rs)
 
-		// Read LinearAlgebra.ext
-		val linearAlgebraExtPath = pluginsPath + "fr.cea.nabla/nablalib/linearalgebra.nablaext"
-		nablaextParseHelper.parse(new String(Files.readAllBytes(Paths.get(linearAlgebraExtPath))), rs)
+		// Read linearalgebra.nablagen
+		val linearAlgebraGenPath = pluginsPath + "fr.cea.nabla/nablalib/linearalgebra.nablagen"
+		nablagenParseHelper.parse(new String(Files.readAllBytes(Paths.get(linearAlgebraGenPath))), rs)
 
 		val nablaRoot = nablaParseHelper.parse(model, rs)
 		nablaRoot.assertNoErrors
 		rs.resources.add(nablaRoot.eResource)
 
-		val ngen = nablagenParseHelper.parse(genModel, rs)
-		ngen.assertNoErrors
+		val ngenApp = nablagenParseHelper.parse(genModel, rs) as NablagenApplication
+		ngenApp.assertNoErrors
 
-		return ngen
+		return ngenApp
 	}
 
 	def getInterpreterContext(IrRoot ir, String jsonContent)
@@ -101,8 +98,8 @@ class CompilationChainHelper
 
 	def void generateCode(CharSequence model, CharSequence genModel, String projectDir)
 	{
-		val interpreter = interpreterProvider.get
-		val ngen = getNgen(model, genModel)
-		interpreter.generateCode(ngen, projectDir)
+		val generator = ngenAppGeneratorProvider.get
+		val ngen = getNgenApp(model, genModel)
+		generator.generateApplication(ngen, projectDir)
 	}
 }

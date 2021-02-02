@@ -25,6 +25,10 @@ class JavaProviderGenerator implements ProviderGenerator
 		val classFileName = getNsPrefix(provider, '.', '/') + provider.facadeClass + ".java"
 		fileContents += new GenerationContent(classFileName, getClassFileContent(provider, functions), true)
 
+		// Generates build.xml Ant file
+//		val antFileName = "build.xml"
+//		fileContents += new GenerationContent(antFileName, getAntFile(provider.providerName, provider.libName), true)
+
 		return fileContents
 	}
 
@@ -68,4 +72,22 @@ class JavaProviderGenerator implements ProviderGenerator
 		«ENDFOR»
 	}
 	'''
+//
+//	private def getAntFile(String projectName, String jarName)
+//	'''
+//	<?xml version="1.0" ?>
+//	<project name="«projectName»" default="jar">
+//		<property environment="env"/>
+//		<path id="classpath">
+//			<fileset dir="/${env.ECLIPSE_HOME}/plugins" includes="**/*.jar"/>
+//		</path>
+//		<target name="build">
+//			<mkdir dir="build"/>
+//			<javac includeantruntime="false" srcdir="." destdir="./build" classpathref="classpath"/>
+//		</target>
+//		<target name="jar" depends="build">
+//			<jar jarfile="lib/«jarName».jar" basedir="build/" includes="**/*.class" />
+//		</target>
+//	</project>
+//	'''
 }

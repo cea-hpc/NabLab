@@ -6,7 +6,7 @@ import fr.cea.nabla.ir.generator.cpp.KokkosTeamThreadBackend
 import fr.cea.nabla.ir.generator.cpp.OpenMpBackend
 import fr.cea.nabla.ir.generator.cpp.SequentialBackend
 import fr.cea.nabla.ir.generator.cpp.StlThreadBackend
-import fr.cea.nabla.nablaext.TargetType
+import fr.cea.nabla.nablagen.TargetType
 
 class BackendFactory
 {

@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Automatic-Module-Name: BatiLibJava
-Bundle-ManifestVersion: 2
-Bundle-Name: BatiLibJava
-Bundle-SymbolicName: BatiLibJava
-Bundle-Version: 1.0.0.qualifier
-Export-Package: batilib
-Require-Bundle: com.google.gson
-Bundle-RequiredExecutionEnvironment: JavaSE-11

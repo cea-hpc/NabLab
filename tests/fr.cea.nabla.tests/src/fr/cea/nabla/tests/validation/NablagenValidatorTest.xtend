@@ -114,8 +114,8 @@ class NablagenValidatorTest
 		val koNgenModel = ngenModel.replace("Application HydroRemap", "Application hydroRemap")
 		assertNgen(koNgenModel, 
 			NablagenPackage.eINSTANCE.nablagenRoot,
-			NablagenValidator::NGEN_APPLICATION_NAME, 
-			NablagenValidator::getNgenApplicationNameMsg(),
+			NablagenValidator::NGEN_ELEMENT_NAME, 
+			NablagenValidator::getNgenElementNameMsg(),
 			ngenModel)
 	}
 

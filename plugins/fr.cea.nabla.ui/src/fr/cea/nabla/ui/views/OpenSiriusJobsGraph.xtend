@@ -12,13 +12,13 @@ package fr.cea.nabla.ui.views
 import com.google.inject.Inject
 import com.google.inject.Singleton
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
-import fr.cea.nabla.generator.ir.Nablagen2Ir
+import fr.cea.nabla.generator.ir.NablagenApplication2Ir
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.transformers.CompositeTransformationStep
 import fr.cea.nabla.ir.transformers.ComputePreviousAndNextJobs
 import fr.cea.nabla.ir.transformers.FillJobHLTs
 import fr.cea.nabla.ir.transformers.ReplaceReductions
-import fr.cea.nabla.nablagen.NablagenRoot
+import fr.cea.nabla.nablagen.NablagenApplication
 import fr.cea.nabla.ui.NabLabConsoleFactory
 import fr.cea.nabla.ui.internal.NablaActivator
 import java.io.IOException
@@ -61,7 +61,7 @@ class OpenSiriusJobsGraph extends AbstractHandler
 
 	@Inject NabLabConsoleFactory consoleFactory
 	@Inject EObjectAtOffsetHelper eObjectAtOffsetHelper
-	@Inject Provider<Nablagen2Ir> nablagen2IrProvider
+	@Inject Provider<NablagenApplication2Ir> ngenApplicationToIrProvider
 
 	override execute(ExecutionEvent event) throws ExecutionException
 	{
@@ -81,8 +81,8 @@ class OpenSiriusJobsGraph extends AbstractHandler
 						val selectedNablagenObject = xtextEditor.document.readOnly([state | eObjectAtOffsetHelper.resolveContainedElementAt(state, textSelection.offset)])
 						if (selectedNablagenObject !== null)
 						{
-							val ngen = EcoreUtil2.getContainerOfType(selectedNablagenObject, NablagenRoot)
-							if (ngen !== null) displayIrModuleFrom(ngen)
+							val ngenApp = EcoreUtil2.getContainerOfType(selectedNablagenObject, NablagenApplication)
+							if (ngenApp !== null) displayIrModuleFrom(ngenApp)
 						}
 					}
 				}
@@ -91,9 +91,9 @@ class OpenSiriusJobsGraph extends AbstractHandler
 		return null
 	}
 
-	def protected void displayIrModuleFrom(NablagenRoot ngen)
+	def protected void displayIrModuleFrom(NablagenApplication ngenApp)
 	{
-		val IrRoot irRoot = convertIrModuleFrom(ngen)
+		val IrRoot irRoot = convertIrModuleFrom(ngenApp)
 		if (irRoot !== null)
 		{
 			val start = System.nanoTime()
@@ -115,7 +115,7 @@ class OpenSiriusJobsGraph extends AbstractHandler
 		}
 	}
 
-	def protected IrRoot convertIrModuleFrom(NablagenRoot ngen)
+	def protected IrRoot convertIrModuleFrom(NablagenApplication ngenApp)
 	{
 		val start = System.nanoTime()
 		var IrRoot ir = null
@@ -123,8 +123,8 @@ class OpenSiriusJobsGraph extends AbstractHandler
 
 		try
 		{
-			val nablagen2Ir = nablagen2IrProvider.get // force a new instance to ensure a new IR
-			ir = nablagen2Ir.toIrRoot(ngen)
+			val nablagen2Ir = ngenApplicationToIrProvider.get // force a new instance to ensure a new IR
+			ir = nablagen2Ir.toIrRoot(ngenApp)
 			val description = 'Minimal IR->IR transformations to check job cycles'
 			val t = new CompositeTransformationStep(description, #[new ReplaceReductions(false), new FillJobHLTs, new ComputePreviousAndNextJobs])
 			t.transformIr(ir, [msg | consoleFactory.printConsole(MessageType.Exec, msg)])

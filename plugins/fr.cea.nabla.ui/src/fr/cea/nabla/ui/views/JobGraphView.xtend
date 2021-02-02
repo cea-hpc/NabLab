@@ -11,14 +11,14 @@ package fr.cea.nabla.ui.views
 
 import com.google.inject.Inject
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
-import fr.cea.nabla.generator.ir.Nablagen2Ir
+import fr.cea.nabla.generator.ir.NablagenApplication2Ir
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.JobCaller
 import fr.cea.nabla.ir.transformers.CompositeTransformationStep
 import fr.cea.nabla.ir.transformers.FillJobHLTs
 import fr.cea.nabla.ir.transformers.ReplaceReductions
-import fr.cea.nabla.nablagen.NablagenRoot
+import fr.cea.nabla.nablagen.NablagenApplication
 import fr.cea.nabla.ui.NabLabConsoleFactory
 import fr.cea.nabla.ui.NablaUiUtils
 import javax.inject.Provider
@@ -41,15 +41,15 @@ class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 {
 	@Inject NotifyViewsHandler notifyViewsHandler
 	@Inject NabLabConsoleFactory consoleFactory
-	@Inject Provider<Nablagen2Ir> nablagen2IrProvider
+	@Inject Provider<NablagenApplication2Ir> ngenApplicationToIrProvider
 
 	// F1 key pressed in NablaDslEditor
 	val keyNotificationListener =
 		[EObject selectedNablagenObject |
 			if (selectedNablagenObject !== null)
 			{
-				val ngen = EcoreUtil2.getContainerOfType(selectedNablagenObject, NablagenRoot)
-				if (ngen !== null) busyExec([displayIrFrom(ngen)])
+				val ngenApp = EcoreUtil2.getContainerOfType(selectedNablagenObject, NablagenApplication)
+				if (ngenApp !== null) busyExec([displayIrFrom(ngenApp)])
 			}
 		]
 
@@ -122,7 +122,7 @@ class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 		])
 	}
 
-	private def void displayIrFrom(NablagenRoot ngen)
+	private def void displayIrFrom(NablagenApplication ngenApp)
 	{
 		val start = System.nanoTime()
 		var IrRoot ir = null
@@ -130,8 +130,8 @@ class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 
 		try
 		{
-			val nablagen2Ir = nablagen2IrProvider.get // force a new instance to ensure a new IR
-			ir = nablagen2Ir.toIrRoot(ngen)
+			val nablagen2Ir = ngenApplicationToIrProvider.get // force a new instance to ensure a new IR
+			ir = nablagen2Ir.toIrRoot(ngenApp)
 			val description = 'Minimal IR->IR transformations to check job cycles'
 			val t = new CompositeTransformationStep(description, #[new ReplaceReductions(false), new FillJobHLTs])
 			t.transformIr(ir, [msg | consoleFactory.printConsole(MessageType.Exec, msg)])

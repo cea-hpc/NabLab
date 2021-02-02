@@ -14,8 +14,8 @@ import com.google.gson.Gson
 import com.google.inject.Inject
 import fr.cea.nabla.generator.UnzipHelper
 import fr.cea.nabla.ir.generator.cpp.CppGeneratorUtils
-import fr.cea.nabla.nablaext.TargetType
 import fr.cea.nabla.nablagen.Target
+import fr.cea.nabla.nablagen.TargetType
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -175,7 +175,7 @@ class NablaExamplesTest
 		Files.writeString(cmakePath, cmakeContent)
 
 		var nbErrors = 0
-		for (target : compilationHelper.getNgen(model, genmodel).targets.filter[!interpreter])
+		for (target : compilationHelper.getNgenApp(model, genmodel).targets.filter[!interpreter])
 		{
 			(!testExecute(target, moduleName, tmp.toString) ? nbErrors++)
 		}

@@ -14,9 +14,9 @@ import com.google.inject.Provider
 import fr.cea.nabla.NablaStandaloneSetup
 import fr.cea.nabla.NablagenStandaloneSetup
 import fr.cea.nabla.nabla.NablaModule
+import fr.cea.nabla.nablagen.NablagenApplication
 import fr.cea.nabla.nablagen.NablagenModule
 import fr.cea.nabla.nablagen.NablagenPackage
-import fr.cea.nabla.nablagen.NablagenRoot
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.emf.ecore.resource.ResourceSet
@@ -118,11 +118,11 @@ class NablagenScopeProviderTest
 
 	val nablagenSetup = new NablagenStandaloneSetup
 	val nablagenInjector = nablagenSetup.createInjectorAndDoEMFRegistration
-	val ParseHelper<NablagenRoot> nablagenParseHelper = nablagenInjector.getInstance(ParseHelper)
+	val ParseHelper<NablagenApplication> nagenAppParseHelper = nablagenInjector.getInstance(ParseHelper)
 
 	NablaModule nablaHydro
 	NablaModule nablaRemap
-	NablagenRoot ngen
+	NablagenApplication ngenApp
 
 	@Before
 	def void readModels()
@@ -132,15 +132,15 @@ class NablagenScopeProviderTest
 		Assert.assertNotNull(nablaHydro)
 		nablaRemap = nablaParseHelper.parse(nablaRemapModel, rs)
 		Assert.assertNotNull(nablaRemap)
-		ngen = nablagenParseHelper.parse(ngenModel, rs)
-		Assert.assertNotNull(ngen)
+		ngenApp = nagenAppParseHelper.parse(ngenModel, rs)
+		Assert.assertNotNull(ngenApp)
 	}
 
 	@Test
 	def void testScopeProviderForMainModuleNodeCoord()
 	{
 		val eref = NablagenPackage::eINSTANCE.mainModule_NodeCoord
-		val o = ngen.mainModule
+		val o = ngenApp.mainModule
 		o.assertScope(eref, "X")
 	}
 
@@ -148,7 +148,7 @@ class NablagenScopeProviderTest
 	def void testScopeProviderForMainModuleTime()
 	{
 		val eref = NablagenPackage::eINSTANCE.mainModule_Time
-		val o = ngen.mainModule
+		val o = ngenApp.mainModule
 		o.assertScope(eref, "maxTime, t, δt")
 	}
 
@@ -156,7 +156,7 @@ class NablagenScopeProviderTest
 	def void testScopeProviderForMainModuleTimeStep()
 	{
 		val eref = NablagenPackage::eINSTANCE.mainModule_TimeStep
-		val o = ngen.mainModule
+		val o = ngenApp.mainModule
 		o.assertScope(eref, "maxTime, t, δt")
 	}
 
@@ -164,7 +164,7 @@ class NablagenScopeProviderTest
 	def void testScopeProviderForMainModuleIterationMax()
 	{
 		val eref = NablagenPackage::eINSTANCE.mainModule_IterationMax
-		val o = ngen.mainModule
+		val o = ngenApp.mainModule
 		o.assertScope(eref, "maxIter, n")
 	}
 
@@ -172,7 +172,7 @@ class NablagenScopeProviderTest
 	def void testScopeProviderForMainModuleTimeMax()
 	{
 		val eref = NablagenPackage::eINSTANCE.mainModule_TimeMax
-		val o = ngen.mainModule
+		val o = ngenApp.mainModule
 		o.assertScope(eref, "maxTime, t, δt")
 	}
 
@@ -180,7 +180,7 @@ class NablagenScopeProviderTest
 	def void testScopeProviderForVtkOutputPeriodReferenceVar()
 	{
 		val eref = NablagenPackage::eINSTANCE.vtkOutput_PeriodReferenceVar
-		val o = ngen.vtkOutput
+		val o = ngenApp.vtkOutput
 		o.assertScope(eref, "maxTime, maxIter, t, δt, n")
 	}
 
@@ -188,7 +188,7 @@ class NablagenScopeProviderTest
 	def void testScopeProviderForOutputVarVarRef()
 	{
 		val eref = NablagenPackage::eINSTANCE.outputVar_VarRef
-		val o = ngen.vtkOutput.vars
+		val o = ngenApp.vtkOutput.vars
 		o.get(0).assertScope(eref, "X, hv1, hv2, hv3, hv4, hv5, hv6, hv7")
 		o.get(1).assertScope(eref, "X, rv1, rv2, rv3")
 	}
@@ -197,11 +197,11 @@ class NablagenScopeProviderTest
 	def void testScopeProviderForNablagenModuleType()
 	{
 		val eref = NablagenPackage::eINSTANCE.nablagenModule_Type
-		var NablagenModule o = ngen.mainModule
+		var NablagenModule o = ngenApp.mainModule
 		o.assertScope(eref, "Hydro, Remap")
-		o = ngen.additionalModules.get(0)
+		o = ngenApp.additionalModules.get(0)
 		o.assertScope(eref, "Remap")
-		o = ngen.additionalModules.get(1)
+		o = ngenApp.additionalModules.get(1)
 		o.assertScope(eref, "Remap")
 	}
 
@@ -209,9 +209,9 @@ class NablagenScopeProviderTest
 	def void testVarLinkAdditionalModule()
 	{
 		val eref = NablagenPackage::eINSTANCE.varLink_AdditionalModule
-		val r1 = ngen.additionalModules.get(0)
+		val r1 = ngenApp.additionalModules.get(0)
 		r1.varLinks.forEach[x | x.assertScope(eref, "r1")]
-		val r2 = ngen.additionalModules.get(1)
+		val r2 = ngenApp.additionalModules.get(1)
 		r2.varLinks.forEach[x | x.assertScope(eref, "r2")]
 	}
 
@@ -219,7 +219,7 @@ class NablagenScopeProviderTest
 	def void testVarLinkAdditionalVariable()
 	{
 		val eref = NablagenPackage::eINSTANCE.varLink_AdditionalVariable
-		for (r : ngen.additionalModules)
+		for (r : ngenApp.additionalModules)
 			for (v : r.varLinks)
 				v.assertScope(eref, "X, rv1, rv2, rv3")
 	}
@@ -228,7 +228,7 @@ class NablagenScopeProviderTest
 	def void testVarLinkMainModule()
 	{
 		val eref = NablagenPackage::eINSTANCE.varLink_MainModule
-		for (r : ngen.additionalModules)
+		for (r : ngenApp.additionalModules)
 			for (v : r.varLinks)
 				v.assertScope(eref, "h")
 	}
@@ -237,7 +237,7 @@ class NablagenScopeProviderTest
 	def void testVarLinkMainVariable()
 	{
 		val eref = NablagenPackage::eINSTANCE.varLink_MainVariable
-		for (r : ngen.additionalModules)
+		for (r : ngenApp.additionalModules)
 			for (v : r.varLinks)
 				v.assertScope(eref, "maxTime, maxIter, t, δt, X, hv1, hv2, hv3, hv4, hv5, hv6, hv7")
 	}

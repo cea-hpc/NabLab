@@ -9,7 +9,6 @@ Bundle-Vendor: CEA
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: fr.cea.nabla.nabla.provider,
- fr.cea.nabla.nablaext.provider,
  fr.cea.nabla.nablagen.provider
 Require-Bundle: org.eclipse.core.runtime,
  fr.cea.nabla;visibility:=reexport,

@@ -27,7 +27,7 @@ class JniProviderGenerator implements ProviderGenerator
 	static def void convertToJni(ExtensionProvider it)
 	{
 		providerName = providerName + JNI
-		projectDir = projectDir + JNI
+		projectDir = projectDir + '-' + JNI.toLowerCase
 		facadeClass = facadeClass + JNI
 		facadeNamespace = facadeNamespace.replace('::', '.')
 		libName = libName + JNI.toLowerCase
@@ -192,7 +192,7 @@ class JniProviderGenerator implements ProviderGenerator
 
 	«CMakeUtils.setCompiler»
 
-	add_subdirectory(${«provider.extensionName.toUpperCase»_DIR}/src ${CMAKE_BINARY_DIR}/«cppProjectName»)
+	add_subdirectory(${«provider.extensionName.toUpperCase»_DIR} ${CMAKE_BINARY_DIR}/«cppProjectName»)
 
 	# The lib«provider.libName».so library
 	add_library(«provider.libName» SHARED «getNsPrefix(provider, '.', '_')»«provider.facadeClass».cc «getNsPrefix(provider, '.', '_')»«provider.facadeClass».h)

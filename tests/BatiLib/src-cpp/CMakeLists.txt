@@ -20,7 +20,7 @@ endif()
 
 MESSAGE(STATUS "Building library batilib")
 
-add_subdirectory(${LIBCPPNABLA_DIR}/src ${CMAKE_BINARY_DIR}/LibCppNabla EXCLUDE_FROM_ALL)
+add_subdirectory(${LIBCPPNABLA_DIR} ${CMAKE_BINARY_DIR}/LibCppNabla EXCLUDE_FROM_ALL)
 
 add_library(batilib batilib/BatiLibCpp.cc)
 set_property(TARGET batilib PROPERTY POSITION_INDEPENDENT_CODE ON)

@@ -169,7 +169,7 @@ class NablaExamplesTest
 		val cppZipFile = new File(cppLibPath)
 		val destDir = new File(tmp + '/..')
 		UnzipHelper.unzip(cppZipFile.toURI, destDir.toURI)
-		val cmakePath = Paths.get(destDir.path, CppGeneratorUtils::CppLibName, 'src', 'CMakeLists.txt')
+		val cmakePath = Paths.get(destDir.path, CppGeneratorUtils::CppLibName, 'CMakeLists.txt')
 		var cmakeContent = Files.readString(cmakePath)
 		cmakeContent = cmakeContent.replaceAll(" -O3 ", " -O2 ")
 		Files.writeString(cmakePath, cmakeContent)

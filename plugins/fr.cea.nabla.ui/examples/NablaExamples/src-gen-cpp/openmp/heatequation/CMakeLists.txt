@@ -21,7 +21,7 @@ endif()
 
 find_package(OpenMP)
 if(NOT TARGET cppnabla)
-	add_subdirectory(${LIBCPPNABLA_DIR}/src ${CMAKE_BINARY_DIR}/LibCppNabla EXCLUDE_FROM_ALL)
+	add_subdirectory(${LIBCPPNABLA_DIR} ${CMAKE_BINARY_DIR}/LibCppNabla EXCLUDE_FROM_ALL)
 endif()
 
 

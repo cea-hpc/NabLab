@@ -12,7 +12,7 @@
 Provider BatiLibCpp : BatiLib
 {
 	target = CppSequential;
-	// compatibleTargets can be added here
+	compatibleTargets = StlThread;
 	outputDir = "/BatiLib/src-cpp";
 	facadeClass = "BatiLibCpp";
 	facadeNamespace = "batilib";

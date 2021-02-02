@@ -6,7 +6,6 @@
 CPP_ZIP=libcppnabla.zip
 CPP_DIR=LibCppNabla
 rm -f ${CPP_ZIP}
-mkdir ${CPP_DIR}
 cp -R ../../fr.cea.nabla.cpplib/src ${CPP_DIR}
 zip -r ${CPP_ZIP} ${CPP_DIR}
 rm -rf ${CPP_DIR}

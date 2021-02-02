@@ -12,27 +12,25 @@ import fr.cea.nabla.nablagen.Target
 import fr.cea.nabla.nablagen.TargetVar
 import java.nio.file.Files
 import java.nio.file.Paths
-import java.util.ArrayList
+import java.util.HashSet
 
 class JniProviderGenerator extends StandaloneGeneratorBase
 {
-	public static val JNI = 'Jni'
-
 	@Inject extension ProvidersUtils
-	val jniProviderHomes = new ArrayList<String>
+	val jniProviders = new HashSet<ExtensionProvider>
 
 	def generateAndTransformProvider(Backend backend, NablaExtension ext, ExtensionProvider provider)
 	{
 		// The generator transforms the C++ provider in a JNI provider
 		val generator = new fr.cea.nabla.ir.generator.jni.JniProviderGenerator(backend)
 		val content = generator.getGenerationContents(provider, ext.irFunctions)
-		jniProviderHomes += provider.projectDir
+		jniProviders += provider
 
-		dispatcher.post(MessageType::Exec, "Generating JNI extension provider project: " + provider.providerName)
+		dispatcher.post(MessageType::Exec, "Generating JNI code generator: " + provider.projectDir)
 		val pph = Paths.get(provider.projectDir)
 		if (!Files.exists(pph)) Files.createDirectories(pph)
 		val fsa = getConfiguredFileSystemAccess(provider.projectDir, false)
-		generate(fsa, content, '/src')
+		generate(fsa, content, '')
 	}
 
 	def void convertToJni(ExtensionProvider provider)
@@ -42,16 +40,16 @@ class JniProviderGenerator extends StandaloneGeneratorBase
 
 	def generateGlobalCMakeIfNecessary(IrRoot ir, Target target, String baseDir)
 	{
-		if (!jniProviderHomes.empty)
+		if (!jniProviders.empty)
 		{
 			val fsa = getConfiguredFileSystemAccess(baseDir + target.outputDir, false)
 			val fullFileName = ir.name.toLowerCase + '/CMakeLists.txt'
 			dispatcher.post(MessageType::Exec, "    Generating: " + fullFileName)
-			fsa.generateFile(fullFileName, getCMakeContent(ir.name, jniProviderHomes, target.variables))
+			fsa.generateFile(fullFileName, getCMakeContent(ir.name, target.variables))
 		}
 	}
 
-	private def getCMakeContent(String projectName, Iterable<String> jniProviderHomes, Iterable<TargetVar> variables)
+	private def getCMakeContent(String projectName, Iterable<TargetVar> variables)
 	'''
 		«CMakeUtils.fileHeader»
 
@@ -63,9 +61,8 @@ class JniProviderGenerator extends StandaloneGeneratorBase
 
 		«CMakeUtils.setCompiler»
 
-		«FOR jniProvider : jniProviderHomes»
-		«val jniProviderName = jniProvider.split('/').last»
-		add_subdirectory(«CMakeUtils.formatCMakePath(jniProvider)»/src ${CMAKE_BINARY_DIR}/«jniProviderName»)
+		«FOR jniProvider : jniProviders»
+		add_subdirectory(«CMakeUtils.formatCMakePath(jniProvider.projectDir)» ${CMAKE_BINARY_DIR}/«jniProvider.providerName»)
 		«ENDFOR»
 
 		«CMakeUtils.fileFooter»

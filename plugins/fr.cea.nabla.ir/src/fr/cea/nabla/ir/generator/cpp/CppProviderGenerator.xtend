@@ -153,7 +153,7 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 
 	MESSAGE(STATUS "Building library «provider.libName»")
 
-	add_subdirectory(${LIBCPPNABLA_DIR}/src ${CMAKE_BINARY_DIR}/«CppGeneratorUtils::CppLibName» EXCLUDE_FROM_ALL)
+	add_subdirectory(${LIBCPPNABLA_DIR} ${CMAKE_BINARY_DIR}/«CppGeneratorUtils::CppLibName» EXCLUDE_FROM_ALL)
 
 	add_library(«provider.libName» «getNsPrefix(provider, '::', '/')»«provider.facadeClass».cc)
 	set_property(TARGET «provider.libName» PROPERTY POSITION_INDEPENDENT_CODE ON)

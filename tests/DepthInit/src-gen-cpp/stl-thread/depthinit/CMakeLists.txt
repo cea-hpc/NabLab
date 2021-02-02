@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.10)
 
 set(LIBCPPNABLA_DIR $ENV{HOME}/workspaces/NabLab/tests/DepthInit/../LibCppNabla CACHE STRING "")
 set(NABLA_CXX_COMPILER /usr/bin/g++)
-set(BATILIB_DIR $ENV{HOME}/workspaces/NabLab/tests/DepthInit/../BatiLibCpp)
+set(BATILIB_DIR $ENV{HOME}/workspaces/NabLab/tests/DepthInit/../BatiLib/src-cpp)
 
 project(DepthInitProject CXX)
 
@@ -20,9 +20,9 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 	endif()
 endif()
 
-add_subdirectory(${BATILIB_DIR}/src ${CMAKE_BINARY_DIR}/BatiLibCpp EXCLUDE_FROM_ALL)
+add_subdirectory(${BATILIB_DIR} ${CMAKE_BINARY_DIR}/BatiLibCpp EXCLUDE_FROM_ALL)
 if(NOT TARGET cppnabla)
-	add_subdirectory(${LIBCPPNABLA_DIR}/src ${CMAKE_BINARY_DIR}/LibCppNabla EXCLUDE_FROM_ALL)
+	add_subdirectory(${LIBCPPNABLA_DIR} ${CMAKE_BINARY_DIR}/LibCppNabla EXCLUDE_FROM_ALL)
 endif()
 
 

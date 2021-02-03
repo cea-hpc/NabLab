@@ -10,20 +10,22 @@
 package fr.cea.nabla.tests
 
 import com.google.inject.Inject
+import com.google.inject.Provider
 import fr.cea.nabla.NablaModuleExtensions
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
+import fr.cea.nabla.nabla.NablaExtension
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
+import fr.cea.nabla.nabla.NablaRoot
 import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.overloading.DeclarationProvider
 import fr.cea.nabla.typing.NSTRealArray1D
 import fr.cea.nabla.typing.NSTRealScalar
 import fr.cea.nabla.typing.NablaConnectivityType
-import fr.cea.nabla.validation.BasicValidator
 import fr.cea.nabla.validation.ExpressionValidator
-import fr.cea.nabla.validation.UnusedValidator
+import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.xtext.diagnostics.Severity
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
@@ -32,10 +34,6 @@ import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
-import fr.cea.nabla.nabla.NablaRoot
-import fr.cea.nabla.nabla.NablaExtension
-import com.google.inject.Provider
-import org.eclipse.emf.ecore.resource.ResourceSet
 
 @RunWith(typeof(XtextRunner))
 @InjectWith(typeof(NablaInjectorProvider))
@@ -162,10 +160,7 @@ class DeclarationProviderTest
 	{
 		val model =
 		'''
-		module Test;
-
-		itemtypes { node }
-		connectivity nodes: → {node};
+		extension Test;
 
 		def f: ℝ → ℝ, (a) → return a;
 		def f: ℝ[2] → ℝ[2], (a) → return a;
@@ -186,18 +181,12 @@ class DeclarationProviderTest
 		}
 		'''
 
-		val module = parserHelper.parse(model)
-		Assert.assertNotNull(module)
-		Assert.assertEquals(1, module.validate.filter(i | i.severity == Severity.ERROR).size)
-		module.assertError(NablaPackage.eINSTANCE.functionCall, ExpressionValidator::FUNCTION_CALL_ARGS, ExpressionValidator::getFunctionCallArgsMsg(#["ℝ[a]"]))
+		val ext = parserHelper.parse(model)
+		Assert.assertNotNull(ext)
+		Assert.assertEquals(1, ext.validate.filter(i | i.severity == Severity.ERROR).size)
+		ext.assertError(NablaPackage.eINSTANCE.functionCall, ExpressionValidator::FUNCTION_CALL_ARGS, ExpressionValidator::getFunctionCallArgsMsg(#["ℝ[a]"]))
 
-		Assert.assertEquals(4, module.validate.filter(i | i.severity == Severity.WARNING).size)
-		module.assertWarning(NablaPackage.eINSTANCE.connectivity, UnusedValidator::UNUSED, 46, 5, BasicValidator::getUnusedMsg(NablaPackage.Literals.CONNECTIVITY, 'nodes'))
-		module.assertWarning(NablaPackage.eINSTANCE.function, UnusedValidator::UNUSED, 175, 1, BasicValidator::getUnusedMsg(NablaPackage.Literals.FUNCTION, 'h'))
-		module.assertWarning(NablaPackage.eINSTANCE.function, UnusedValidator::UNUSED, 227, 1, BasicValidator::getUnusedMsg(NablaPackage.Literals.FUNCTION, 'i'))
-		module.assertWarning(NablaPackage.eINSTANCE.function, UnusedValidator::UNUSED, 300, 1, BasicValidator::getUnusedMsg(NablaPackage.Literals.FUNCTION, 'j'))
-
-		val functions = module.functions
+		val functions = ext.functions
 		val h = functions.findFirst[name == 'h']
 		val hfCall = h.body.eAllContents.filter(FunctionCall).toList.get(0)
 		Assert.assertEquals(functions.get(1), hfCall.declaration.model)

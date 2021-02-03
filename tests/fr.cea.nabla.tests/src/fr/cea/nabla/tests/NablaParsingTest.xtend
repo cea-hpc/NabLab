@@ -10,7 +10,7 @@
 package fr.cea.nabla.tests
 
 import com.google.inject.Inject
-import fr.cea.nabla.nabla.NablaModule
+import fr.cea.nabla.nabla.NablaRoot
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.eclipse.xtext.testing.util.ParseHelper
@@ -23,13 +23,13 @@ import org.junit.runner.RunWith
 class NablaParsingTest
 {
 	@Inject
-	ParseHelper<NablaModule> parseHelper
+	ParseHelper<NablaRoot> parseHelper
 
 	@Test
 	def void loadModel()
 	{
 		val result = parseHelper.parse('''
-			module Test;
+			extension Test;
 		''')
 		Assert.assertNotNull(result)
 		val errors = result.eResource.errors

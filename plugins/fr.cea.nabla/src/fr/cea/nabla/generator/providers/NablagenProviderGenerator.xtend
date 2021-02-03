@@ -13,8 +13,6 @@ import fr.cea.nabla.nablagen.NablagenProviderList
 import fr.cea.nabla.nablagen.TargetType
 import java.io.File
 
-// TODO générer les fichiers dans le même projet que l'extension
-// TODO Dégriser le menu de génération du nablaext et faire du generate once
 class NablagenProviderGenerator extends StandaloneGeneratorBase
 {
 	@Inject BackendFactory backendFactory

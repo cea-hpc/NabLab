@@ -41,6 +41,7 @@ abstract class AbstractOptionsInterpreterTest
 	let ℝ δt = 0.001;
 
 	ℝ[2] X{nodes};
+	J: let ℝ s = 3.33;
 	'''
 
 	val modelWithMandatoryOptions =
@@ -62,6 +63,7 @@ abstract class AbstractOptionsInterpreterTest
 	let ℝ δt = 0.001;
 
 	ℝ[2] X{nodes};
+	J: let ℝ s = 3.33;
 	'''
 
 	@Test

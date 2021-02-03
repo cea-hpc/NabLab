@@ -98,7 +98,6 @@ class ExpressionValidator extends ArgOrVarRefValidator
 	{
 		val inTypes = args.map[typeFor]
 
-		// if only connectivity types, their base type must be scalar
 		var containsConnectivityType = false
 		var containsSimpleArrayType = false
 		for (i : 0..<inTypes.size)
@@ -109,6 +108,7 @@ class ExpressionValidator extends ArgOrVarRefValidator
 				if (inType instanceof NablaConnectivityType)
 				{
 					containsConnectivityType = true
+					// if connectivity types, their base type must be scalar
 					if (! (inType.simple instanceof NSTScalar))
 						error(getFunctionCallConnectivityArgMsg(), NablaPackage.Literals::FUNCTION_CALL__ARGS, i, FUNCTION_CALL_CONNECTIVITY_ARG)
 				}

@@ -45,6 +45,7 @@ abstract class AbstractBinaryOperationsInterpreterTest
 		let ℾ b12 = true < false; // -> false
 
 		ℝ[2] X{nodes};
+		«emptyJob»
 		'''
 		assertGetValueOfNV0Bool_NV0Bool(model)
 	}
@@ -81,6 +82,7 @@ abstract class AbstractBinaryOperationsInterpreterTest
 		let ℕ n6 = 7 % 3; // -> 1
 
 		ℝ[2] X{nodes};
+		«emptyJob»
 		'''
 		assertGetValueOfNV0Int_NV0Int(model)
 	}
@@ -116,6 +118,7 @@ abstract class AbstractBinaryOperationsInterpreterTest
 		let ℝ n5 = 7 / 2.; // -> 3.5.
 
 		ℝ[2] X{nodes};
+		«emptyJob»
 		'''
 		assertGetValueOfNV0Int_NV0Real(model)
 	}
@@ -131,6 +134,7 @@ abstract class AbstractBinaryOperationsInterpreterTest
 		let ℕ[2] n3 = 3 * n1;
 
 		ℝ[2] X{nodes};
+		«emptyJob»
 		'''
 		assertGetValueOfNV0Int_NV1Int(model)
 	}

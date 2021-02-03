@@ -107,6 +107,11 @@ class TestUtils
 		with Math.*;
 	'''
 
+	def getEmptyJob()
+	'''
+		J: let ℝ s = 3.33;
+	'''
+
 	def getTestModuleForSimulation()
 	'''
 		«emptyTestModule»

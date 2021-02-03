@@ -183,7 +183,7 @@ class JniProviderGenerator implements ProviderGenerator
 	if(NOT DEFINED JAVA_HOME)
 		message(FATAL_ERROR "JAVA_HOME variable undefined.\n"
 			"You can launch cmake with -D option, for example: "
-			"cmake -D JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 ../src")
+			"cmake -D JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 ..")
 	endif()
 
 	project(«provider.providerName» CXX)

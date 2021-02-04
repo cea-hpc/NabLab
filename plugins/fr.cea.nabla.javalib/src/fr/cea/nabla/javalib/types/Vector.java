@@ -59,4 +59,17 @@ public class Vector
 	{
 		return nativeVector.toArray(); 
 	}
+
+	@Override
+	public String toString()
+	{
+		StringBuilder sb = new StringBuilder("");
+		for (int i = 0; i < nativeVector.getDimension(); i++)
+		{
+			sb.append(nativeVector.getEntry(i));
+			sb.append(" ");
+		}
+		return sb.toString();
+	}
+
 }

@@ -53,6 +53,7 @@ public class Matrix
 		synchronized(lock) { nativeMatrix.addToEntry(i, j, increment); }
 	}
 
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("");
@@ -64,5 +65,4 @@ public class Matrix
 			}
 		return sb.toString();
 	}
-
 }

@@ -134,7 +134,7 @@ public class LevelDBUtils
 
 	public static byte[] serialize(final Vector vector)
 	{
-		return serialize(vector.toArray());
+		return bytes(vector.toString());
 	}
 
 	public static byte[] serialize(final double[][] data2d)

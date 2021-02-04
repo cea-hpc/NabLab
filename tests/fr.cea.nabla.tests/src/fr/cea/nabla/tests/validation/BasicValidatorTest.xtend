@@ -25,12 +25,13 @@ import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 import fr.cea.nabla.nabla.NablaExtension
+import fr.cea.nabla.nabla.NablaRoot
 
 @RunWith(typeof(XtextRunner))
 @InjectWith(typeof(NablaInjectorProvider))
 class BasicValidatorTest
 {
-	@Inject ParseHelper<NablaModule> parseHelper
+	@Inject ParseHelper<NablaRoot> parseHelper
 	@Inject ParseHelper<NablaExtension> extensionParseHelper
 	@Inject extension ValidationUtils
 	@Inject extension TestUtils
@@ -44,8 +45,7 @@ class BasicValidatorTest
 	{
 		val moduleKo = parseHelper.parse(
 			'''
-			«emptyTestModule»
-			«defaultConnectivities»
+			extension Test;
 			def g: → ℝ, () →
 			{
 				ℝ[4] n;
@@ -59,8 +59,7 @@ class BasicValidatorTest
 
 		val moduleOk = parseHelper.parse(
 			'''
-			«emptyTestModule»
-			«defaultConnectivities»
+			extension Test;
 			def g: → ℝ, () →
 			{
 				ℝ[4] n;
@@ -77,8 +76,7 @@ class BasicValidatorTest
 	{
 		val moduleKo1 = parseHelper.parse(
 			'''
-			«emptyTestModule»
-			«defaultConnectivities»
+			extension Test;
 			def g: → ℝ, () →
 			{
 				ℝ[4] n;
@@ -92,8 +90,7 @@ class BasicValidatorTest
 
 		val moduleKo2 = parseHelper.parse(
 			'''
-			«emptyTestModule»
-			«defaultConnectivities»
+			extension Test;
 			def g: → ℝ, () →
 			{
 				let ℝ x = 6.7;
@@ -109,8 +106,7 @@ class BasicValidatorTest
 
 		val moduleOk = parseHelper.parse(
 			'''
-			«emptyTestModule»
-			«defaultConnectivities»
+			extension Test;
 			def g: → ℝ, () →
 			{
 				ℝ[4] n;
@@ -127,12 +123,12 @@ class BasicValidatorTest
 	@Test
 	def void testCheckName()
 	{
-		val moduleKo = parseHelper.parse('''module test;''')
+		val moduleKo = parseHelper.parse('''extension test;''')
 		Assert.assertNotNull(moduleKo)
 		moduleKo.assertError(NablaPackage.eINSTANCE.nablaRoot,
 			BasicValidator::UPPER_CASE_START_NAME,
 			BasicValidator::getUpperCaseNameMsg())
-		val moduleOk = parseHelper.parse('''module Test;''')
+		val moduleOk = parseHelper.parse('''extension Test;''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 
@@ -217,6 +213,7 @@ class BasicValidatorTest
 			«emptyTestModule»
 			ℝ[3] x;
 			iterate n while(∑{x∈[0;3[}(x[i]]));
+			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleKo1)
@@ -229,6 +226,7 @@ class BasicValidatorTest
 			«emptyTestModule»
 			ℝ[3] x;
 			iterate n while(x[0]);
+			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleKo2)
@@ -241,6 +239,7 @@ class BasicValidatorTest
 			«emptyTestModule»
 			ℝ[3] x;
 			iterate n while(x[0] > 0.0);
+			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -326,6 +325,7 @@ class BasicValidatorTest
 			'''
 			«emptyTestModule»
 			ℝ[1, 2, 3] a;
+			«emptyJob»
 			''')
 
 		Assert.assertNotNull(moduleKo)
@@ -337,6 +337,7 @@ class BasicValidatorTest
 			'''
 			«emptyTestModule»
 			ℝ[1, 2] a;
+			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -352,6 +353,7 @@ class BasicValidatorTest
 			let ℝ x = 2.2;
 			ℝ[1.1] a;
 			ℕ[x] b;
+			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -370,6 +372,7 @@ class BasicValidatorTest
 			let ℕ x = 2;
 			ℝ[2] a;
 			ℕ[x] b;
+			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -390,7 +393,7 @@ class BasicValidatorTest
 			IniX1: ∀j∈cells(), ∀r∈nodes(j), X{r} = orig;
 			IniX2: ∀r∈nodes(), ∀j∈nodesOfCell(r), X{r} = orig;
 			'''
-		)
+		) as NablaModule
 		Assert.assertNotNull(moduleKo)
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.connectivityCall,
@@ -423,6 +426,7 @@ class BasicValidatorTest
 			'''
 			«testModuleForSimulation»
 			ℝ[2] X{nodesOfCell};
+			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -434,6 +438,7 @@ class BasicValidatorTest
 			'''
 			«testModuleForSimulation»
 			ℝ[2] X{nodes};
+			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -452,6 +457,7 @@ class BasicValidatorTest
 			connectivity nodes: → {node};
 			connectivity leftNode: node → node;
 			ℝ[2] X{nodes};
+			«emptyJob»
 			'''
 
 		val moduleKo = parseHelper.parse(

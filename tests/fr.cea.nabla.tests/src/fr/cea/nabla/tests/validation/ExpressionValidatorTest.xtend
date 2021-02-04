@@ -52,6 +52,7 @@ class ExpressionValidatorTest
 			let ℾ bool = ℾ(1);
 			let ℝ real = ℝ(true);
 			let ℝ[2] realOne = ℝ[2](one);
+			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -75,6 +76,7 @@ class ExpressionValidatorTest
 			let ℾ bool = ℾ(true);
 			let ℝ real = ℝ(1.2);
 			let ℝ[2] realOne = ℝ[2](1.0);
+			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -89,6 +91,7 @@ class ExpressionValidatorTest
 			«emptyTestModule»
 			let ℕ two = 2;
 			let ℝ[2] realOne = ℝ[two](1.0);
+			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -100,6 +103,7 @@ class ExpressionValidatorTest
 			'''
 			«emptyTestModule»
 			let ℝ[2] realOne = ℝ[2](1.0);
+			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -217,6 +221,7 @@ class ExpressionValidatorTest
 			let ℝ U = 1.1;
 			let ℕ V = 2;
 			let ℝ W = (cond ? U : V);
+			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -239,6 +244,7 @@ class ExpressionValidatorTest
 			let ℝ U = 0.0;
 			let ℝ V = 1.1;
 			let ℝ W = (cond ? U : V);
+			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -253,6 +259,7 @@ class ExpressionValidatorTest
 			«emptyTestModule»
 			let ℝ cond = 0.0;
 			let ℾ ok = !cond; 
+			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -267,6 +274,7 @@ class ExpressionValidatorTest
 			«emptyTestModule»
 			let ℾ cond = true;
 			let ℾ ok = !cond; 
+			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -282,6 +290,7 @@ class ExpressionValidatorTest
 			let ℾ  a = true; 
 			let ℝ b = 0.0;
 			let ℝ c = a * b;
+			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -299,6 +308,7 @@ class ExpressionValidatorTest
 			let ℝ a = 1.1;
 			let ℝ b = 0.0;
 			let ℝ c = a * b;
+			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -314,6 +324,7 @@ class ExpressionValidatorTest
 			let ℾ a = true; 
 			let ℝ b = 0.0;
 			let ℝ c = a / b;
+			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -331,6 +342,7 @@ class ExpressionValidatorTest
 			let ℝ a = 1.1;
 			let ℝ b = 0.0;
 			let ℝ c = a / b;
+			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -346,6 +358,7 @@ class ExpressionValidatorTest
 			let ℾ a = true; 
 			let ℕ b = 0;
 			let ℝ c = a + b;
+			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -363,6 +376,7 @@ class ExpressionValidatorTest
 			let ℝ a = 1.1;
 			let ℕ b = 0;
 			let ℝ c = a + b;
+			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -378,6 +392,7 @@ class ExpressionValidatorTest
 			let ℝ[2] a = ℝ[2](0.0);
 			let ℝ[3] b = ℝ[3](0.0);
 			let ℝ[2] c = a - b;
+			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -396,6 +411,7 @@ class ExpressionValidatorTest
 			let ℝ[2] a = ℝ[2](0.0);
 			let ℝ[2] b = ℝ[2](1.1);
 			let ℝ[2] c = a - b;
+			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -411,6 +427,7 @@ class ExpressionValidatorTest
 			let ℝ a = 0.0;
 			let ℝ[2] b = ℝ[2](1.1);
 			let ℾ c = a > b;
+			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -428,6 +445,7 @@ class ExpressionValidatorTest
 			let ℝ a = 0.0;
 			let ℝ b = 1.1;
 			let ℾ c = a > b;
+			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -443,6 +461,7 @@ class ExpressionValidatorTest
 			let ℝ a = 0.0;
 			let ℝ[2] b = ℝ[2](1.1);
 			let ℾ c = a == b;
+			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -460,6 +479,7 @@ class ExpressionValidatorTest
 			let ℝ a = 0.0; 
 			let ℝ b = 1.1;
 			let ℾ c = a == b;
+			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -475,6 +495,7 @@ class ExpressionValidatorTest
 			let ℝ a = 0.0;
 			let ℝ[2] b = ℝ[2](1.1);
 			let ℕ c = a % b;
+			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -493,6 +514,7 @@ class ExpressionValidatorTest
 			let ℕ a = 0;
 			let ℕ b = 1;
 			let ℕ c = a % b;
+			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -508,6 +530,7 @@ class ExpressionValidatorTest
 			let ℕ a = 0;
 			let ℝ b = 1.1; 
 			let ℾ c = a && b;
+			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -526,6 +549,7 @@ class ExpressionValidatorTest
 			let ℾ a = true;
 			let ℾ b = false; 
 			let ℾ c = a && b;
+			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -541,6 +565,7 @@ class ExpressionValidatorTest
 			let ℕ a = 0;
 			let ℝ b = 1.1;
 			let ℾ c = a || b;
+			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -559,6 +584,7 @@ class ExpressionValidatorTest
 			let ℾ a = true;
 			let ℾ b = false;
 			let ℾ c = a || b;
+			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -572,6 +598,7 @@ class ExpressionValidatorTest
 			'''
 			«emptyTestModule»
 			let ℕ[1] V = [0];
+			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -583,6 +610,7 @@ class ExpressionValidatorTest
 			'''
 			«emptyTestModule»
 			letℕ[2] V = [0, 1];
+			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -595,6 +623,7 @@ class ExpressionValidatorTest
 			'''
 			«emptyTestModule»
 			let ℕ[2] V = [0, 3.4];
+			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -606,6 +635,7 @@ class ExpressionValidatorTest
 			'''
 			«emptyTestModule»
 			let ℕ[2] V = [0, 3];
+			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleOk)

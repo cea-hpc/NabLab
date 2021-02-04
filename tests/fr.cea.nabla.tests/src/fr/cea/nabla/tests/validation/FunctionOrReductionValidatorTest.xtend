@@ -172,7 +172,7 @@ class FunctionOrReductionValidatorTest
 	{
 		val modulekO = parseHelper.parse(
 		'''
-		«emptyTestModule»
+		extension Test;
 		def sum, 0.0: x,y | ℝ[x+y], (a,b) → return a + b;
 		''')
 		Assert.assertNotNull(modulekO)
@@ -183,7 +183,7 @@ class FunctionOrReductionValidatorTest
 
 		val moduleOk = parseHelper.parse(
 		'''
-		«emptyTestModule»
+		extension Test;
 		def sum, 0.0: x | ℝ[x], (a,b) → return a + b;
 		''')
 		Assert.assertNotNull(moduleOk)
@@ -248,11 +248,7 @@ class FunctionOrReductionValidatorTest
 	def void testFunctionReturnType()
 	{
 		val model = '''
-		module Test;
-
-		itemtypes { node }
-		connectivity nodes: → {node};
-
+		extension Test;
 		def f: ℝ → ℝ, (a) → { return 1; }
 		def g: ℝ → ℝ, (a) → { return 1.0; }
 		'''
@@ -267,7 +263,7 @@ class FunctionOrReductionValidatorTest
 	{
 		val modulekO = parseHelper.parse(
 			'''
-			«emptyTestModule»
+			extension Test;
 			def f: x | ℝ → ℝ[x];
 			''')
 		Assert.assertNotNull(modulekO)
@@ -277,7 +273,7 @@ class FunctionOrReductionValidatorTest
 
 		val moduleOk = parseHelper.parse(
 			'''
-			«emptyTestModule»
+			extension Test;
 			def f: x | ℝ[x] → ℝ[x];
 			def g: y | ℝ[y] → ℝ[x, y];
 			''')
@@ -290,7 +286,7 @@ class FunctionOrReductionValidatorTest
 	{
 		val modulekO = parseHelper.parse(
 			'''
-			«emptyTestModule»
+			extension Test;
 			def g, 0.0: ℝ[2], (a, b) → return a;
 			def g, 0.0: x | ℝ[x], (a, b) → return a;
 			'''
@@ -302,7 +298,7 @@ class FunctionOrReductionValidatorTest
 
 		val moduleOk = parseHelper.parse(
 			'''
-			«emptyTestModule»
+			extension Test;
 			def g, 0.0: ℝ, (a, b) → return a;
 			def g, 0.0: x | ℝ[x], (a, b) → return a;
 			''')
@@ -315,7 +311,7 @@ class FunctionOrReductionValidatorTest
 	{
 		val moduleKo = parseHelper.parse(
 			'''
-			«emptyTestModule»
+			extension Test;
 			def sum1, [0.0, 0.0]: ℝ[2], (a, b) → return a + b;
 			def sum1, 0.0: ℕ, (a, b) → return a + b;
 			'''
@@ -332,7 +328,7 @@ class FunctionOrReductionValidatorTest
 
 		val moduleOk = parseHelper.parse(
 			'''
-			«emptyTestModule»
+			extension Test;
 			def sum1, 0.0: ℝ[2], (a, b) → return a + b;
 			def sum1, 0: ℕ, (a, b) → return a + b;
 			'''

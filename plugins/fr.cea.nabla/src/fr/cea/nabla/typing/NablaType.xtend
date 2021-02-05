@@ -193,3 +193,27 @@ class NSTRealArray2D extends NSTArray2D
 	override getPrimitive() { PrimitiveType::REAL}
 }
 
+@Data
+abstract class NablaLinearAlgebraType extends NablaType
+{
+}
+
+@Data
+class NLATVector extends NablaLinearAlgebraType
+{
+	val Expression size
+
+	override getLabel() { 'Vector[' + size.label +  ']' }
+	override getPrimitive() { PrimitiveType::REAL }
+}
+
+@Data
+class NLATMatrix extends NablaLinearAlgebraType
+{
+	val Expression nbRows
+	val Expression nbCols
+
+	override getLabel() { 'Matrix['  + nbRows.label + ',' + nbCols.label +  ']' }
+	override getPrimitive() { PrimitiveType::REAL }
+}
+

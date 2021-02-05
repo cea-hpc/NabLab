@@ -23,6 +23,7 @@ import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.SimpleVarDeclaration
 import fr.cea.nabla.nabla.Var
+import fr.cea.nabla.nabla.VarDeclaration
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import org.eclipse.xtext.EcoreUtil2
 
@@ -51,6 +52,17 @@ class ArgOrVarExtensions
 			}
 			Reduction:
 				fOrR.typeDeclaration.type
+		}
+	}
+
+	def int getDimension(ArgOrVar it)
+	{
+		switch it
+		{
+			Arg: type.sizes.size
+			SimpleVar case eContainer instanceof VarDeclaration: (eContainer as VarDeclaration).type.sizes.size
+			ConnectivityVar: type.sizes.size + supports.size
+			default: 1
 		}
 	}
 

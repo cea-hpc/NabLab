@@ -35,26 +35,13 @@ class ArgOrVarTypeProvider
 		switch c
 		{
 			FunctionOrReduction, Interval, SpaceIterator: new NSTIntScalar
-			VarDeclaration case c.type !== null:
-			{
-				if (linearAlgebra)
-				{
-					// LinearAlgebra -> dimension 1 or 2
-					if (dimension == 1)
-						new NLATVector(c.type.sizes.get(0))
-					else if (dimension == 2)
-						new NLATMatrix(c.type.sizes.get(0), c.type.sizes.get(1))
-				}
-				else
-					c.type.typeFor
-			}
+			VarDeclaration case c.type !== null: c.type.typeFor
 			default: null
 		}
 	}
 
 	def dispatch NablaType getTypeFor(ConnectivityVar it)
 	{
-		println(name + " linearAlebgra ? " + linearAlgebra + " dimension ? " + dimension)
 		if (linearAlgebra)
 		{
 			if (dimension == 1)
@@ -69,7 +56,7 @@ class ArgOrVarTypeProvider
 			}
 		}
 		else
-			new NablaConnectivityType(supports, type.typeFor)
+			new NablaConnectivityType(supports, type.typeFor as NablaSimpleType)
 	}
 
 	private def getCardinality(Connectivity c)

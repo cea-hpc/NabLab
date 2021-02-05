@@ -16,10 +16,11 @@ import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.Instruction
 import fr.cea.nabla.nabla.Job
-import fr.cea.nabla.nabla.NablaModule
+import fr.cea.nabla.nabla.NablaRoot
 import fr.cea.nabla.typing.ArgOrVarTypeProvider
 import fr.cea.nabla.typing.ExpressionTypeProvider
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.jface.internal.text.html.HTMLPrinter
 import org.eclipse.jface.text.IRegion
 import org.eclipse.jface.text.ITextViewer
 import org.eclipse.xtext.resource.EObjectAtOffsetHelper
@@ -27,6 +28,8 @@ import org.eclipse.xtext.ui.editor.XtextSourceViewer
 import org.eclipse.xtext.ui.editor.hover.html.DefaultEObjectHoverProvider
 import org.eclipse.xtext.ui.editor.hover.html.XtextBrowserInformationControlInput
 import org.eclipse.xtext.ui.editor.model.IXtextDocument
+import fr.cea.nabla.nabla.BaseType
+import fr.cea.nabla.typing.BaseTypeTypeProvider
 
 /**
  * Xtext supports hovers only for identifying features of model artifacts, i.e. the name of an object or crosslinks to other objects.
@@ -37,6 +40,7 @@ class NablaEObjectHoverProvider extends DefaultEObjectHoverProvider
 {
 	@Inject extension ExpressionTypeProvider
 	@Inject extension ArgOrVarTypeProvider
+	@Inject extension BaseTypeTypeProvider
 	@Inject EObjectAtOffsetHelper eObjectAtOffsetHelper
 	EObject resolvedContainedObject
 
@@ -66,8 +70,8 @@ class NablaEObjectHoverProvider extends DefaultEObjectHoverProvider
 			else
 			{
 				val buffer = new StringBuilder(displayableObject.buildLabel)
-				org.eclipse.jface.internal.text.html.HTMLPrinter.insertPageProlog(buffer, 0, getStyleSheet())
-				org.eclipse.jface.internal.text.html.HTMLPrinter.addPageEpilog(buffer)
+				HTMLPrinter.insertPageProlog(buffer, 0, getStyleSheet())
+				HTMLPrinter.addPageEpilog(buffer)
 				return new XtextBrowserInformationControlInput(prev, object, buffer.toString(), labelProvider)
 			}
 		}
@@ -91,7 +95,7 @@ class NablaEObjectHoverProvider extends DefaultEObjectHoverProvider
 		switch o
 		{
 			Expression, ArgOrVar, Function: o
-			NablaModule, Job, Instruction: null
+			NablaRoot, Job, Instruction: null
 			case (o.eContainer === null): null
 			default: o.eContainer.firstDisplayableObject
 		}
@@ -108,7 +112,7 @@ class NablaEObjectHoverProvider extends DefaultEObjectHoverProvider
 		{
 			Expression: LabelServices.getLabel(o)
 			ArgOrVar: o.name
-			Function: o.name
+			Function: o.name + '(' + o.typeDeclaration.inTypes.map[typeText].join(', ') + ')'
 		}
 	}
 
@@ -118,7 +122,8 @@ class NablaEObjectHoverProvider extends DefaultEObjectHoverProvider
 		{
 			Expression: o.typeFor?.label
 			ArgOrVar: o.typeFor?.label
-			Function: LabelServices.getLabel(o.typeDeclaration.returnType)
+			Function: o.typeDeclaration.returnType.typeFor?.label
+			BaseType: o.typeFor?.label
 		}
 	}
 }

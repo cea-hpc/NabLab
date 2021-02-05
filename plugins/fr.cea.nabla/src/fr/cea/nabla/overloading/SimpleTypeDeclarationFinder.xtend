@@ -122,9 +122,9 @@ class SimpleTypeDeclarationFinder implements IDeclarationFinder
 	{
 		switch argType.sizes.size
 		{
-			case 0: argType.typeFor
-			case 1: getArray1DTypeFor(argType.primitive, argType.sizes.get(0).replaceValuesAndCompact)
-			case 2: getArray2DTypeFor(argType.primitive, argType.sizes.get(0).replaceValuesAndCompact, argType.sizes.get(1).replaceValuesAndCompact)
+			case 0: argType.typeFor as NablaSimpleType
+			case 1: getNSTArray1DFor(argType.primitive, argType.sizes.get(0).replaceValuesAndCompact)
+			case 2: getNSTArray2DFor(argType.primitive, argType.sizes.get(0).replaceValuesAndCompact, argType.sizes.get(1).replaceValuesAndCompact)
 			default: throw new RuntimeException("Unmanaged array sizes:" + argType.sizes.size)
 		}
 	}

@@ -170,7 +170,7 @@ class ExpressionTypeProvider
 		else null
 	}
 
-	private def NablaType getTypeForVar(NablaSimpleType t, int nbIndices)
+	private def NablaType getTypeForVar(NablaType t, int nbIndices)
 	{
 		switch t
 		{

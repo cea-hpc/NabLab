@@ -3,13 +3,12 @@ package fr.cea.nabla
 import com.google.inject.Inject
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.Arg
-import fr.cea.nabla.nabla.ArgOrVar
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
-import fr.cea.nabla.nabla.FunctionOrReduction
+import fr.cea.nabla.nabla.FunctionTypeDeclaration
 import fr.cea.nabla.nabla.NablaRoot
 import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.nabla.SimpleVar
@@ -26,29 +25,34 @@ class LinearAlgebraUtils
 	{
 		switch o
 		{
+			case null: false
 			Affectation: o.right.linearAlgebra
 			FunctionCall: o.function.linearAlgebra
 			Function: o.nablaRoot.name == 'LinearAlgebra'
-			Var case o.typeEligibleFor: o.nablaRoot.eAllContents.filter(ArgOrVarRef).exists[x | x.target == o && x.eContainer.isLinearAlgebra]
-			Arg case o.typeEligibleFor: (o.eContainer as FunctionOrReduction).linearAlgebra
-			default: false 
+			Var case o.linearAlgebraEligible: o.nablaRoot.eAllContents.filter(ArgOrVarRef).exists[x | x.target == o && x.eContainer.isLinearAlgebra]
+			Arg case o.linearAlgebraEligible: o.eContainer.linearAlgebra
+			BaseType case o.linearAlgebraEligible: o.eContainer.linearAlgebra
+			FunctionTypeDeclaration: o.eContainer.linearAlgebra
+			default: false
 		}
 	}
 	
-	private def boolean isTypeEligibleFor(ArgOrVar it)
+	private def boolean isLinearAlgebraEligible(EObject it)
 	{
 		switch it
 		{
-			Arg: isLinearAlgebraEligible(type, dimension)
-			SimpleVar case eContainer instanceof VarDeclaration: isLinearAlgebraEligible((eContainer as VarDeclaration).type, dimension)
-			ConnectivityVar: isLinearAlgebraEligible(type, dimension)
+			case null: false
+			Arg: isLinearAlgebraEligible(type.primitive, dimension)
+			SimpleVar case eContainer instanceof VarDeclaration: isLinearAlgebraEligible((eContainer as VarDeclaration).type.primitive, dimension)
+			ConnectivityVar: isLinearAlgebraEligible(type.primitive, dimension)
+			BaseType: isLinearAlgebraEligible(primitive, sizes.size)
 			default: false
 		}
 	}
 
-	private def boolean isLinearAlgebraEligible(BaseType bt, int dimension)
+	private def boolean isLinearAlgebraEligible(PrimitiveType p, int dimension)
 	{
-		bt.primitive == PrimitiveType::REAL && (dimension == 1 || dimension == 2)
+		p == PrimitiveType::REAL && (dimension == 1 || dimension == 2)
 	}
 
 	private def getNablaRoot(EObject o)

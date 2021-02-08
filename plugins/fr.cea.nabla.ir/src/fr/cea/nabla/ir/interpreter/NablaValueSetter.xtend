@@ -131,7 +131,7 @@ class NablaValueSetter
 	private static def dispatch subSet(NV1Bool it, int indice, NV0Bool value) { data.set(indice, value.data) }
 	private static def dispatch subSet(NV1Int it, int indice, NV0Int value) { data.set(indice, value.data) }
 	private static def dispatch subSet(NV1Real it, int indice, NV0Real value) { data.set(indice, value.data) }
-	private static def dispatch subSet(NVVector it, int indice, NV0Real value) { data.set(indice, value.data) }
+	private static def dispatch subSet(NVVector it, int indice, NV0Real value) { linearAlgebra.setValue(data, indice, value.data) }
 
 	private static def dispatch subSet(NV2Bool it, int indice, NV1Bool value)
 	{
@@ -199,7 +199,7 @@ class NablaValueSetter
 	private static def dispatch subSet(NV2Bool it, int i, int j, NV0Bool value) { data.get(i).set(j, value.data) }
 	private static def dispatch subSet(NV2Int it, int i, int j, NV0Int value) { data.get(i).set(j, value.data) }
 	private static def dispatch subSet(NV2Real it, int i, int j, NV0Real value) { data.get(i).set(j, value.data) }
-	private static def dispatch subSet(NVMatrix it, int i, int j, NV0Real value) { data.set(i, j, value.data) }
+	private static def dispatch subSet(NVMatrix it, int i, int j, NV0Real value) { linearAlgebra.setValue(data, i, j, value.data) }
 
 	private static def dispatch subSet(NV3Bool it, int i, int j, NV1Bool value)
 	{

@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-package fr.cea.nabla.javalib.types;
+package fr.cea.nabla.javalib;
 
 public class ArrayOperations 
 {

@@ -16,8 +16,8 @@ import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.ir.ir.ExternFunction
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
+import fr.cea.nabla.javalib.LevelDBUtils
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
-import fr.cea.nabla.javalib.utils.LevelDBUtils
 import java.io.File
 import java.net.URL
 import java.net.URLClassLoader
@@ -199,12 +199,14 @@ class IrInterpreter
 					val jsonInit = providerClass.getDeclaredMethod("jsonInit", String)
 					jsonInit.invoke(providerInstance, jsonOptions.get(provider.instanceName).toString)
 				}
+
+				if (provider.extensionName == 'LinearAlgebra')
+					context.linearAlgebra = InterpretableLinearAlgebra.createInstance(providerClass)
 			}
 
 			for (function : functionsByProvider.get(provider))
 			{
-				val isLinearAlgebra = (provider.extensionName == 'LinearAlgebra')
-				val javaTypes = function.inArgs.map[a | FunctionCallHelper.getJavaType(a.type.primitive, a.type.dimension, isLinearAlgebra)]
+				val javaTypes = function.inArgs.map[a | FunctionCallHelper.getJavaType(a.type.primitive, a.type.dimension, context.linearAlgebra)]
 				val method = providerClass.getDeclaredMethod(function.name, javaTypes)
 				method.setAccessible(true)
 				context.functionToMethod.put(function, new Pair(providerInstance, method))

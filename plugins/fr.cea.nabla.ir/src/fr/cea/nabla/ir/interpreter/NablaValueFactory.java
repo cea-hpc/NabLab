@@ -10,12 +10,10 @@
 package fr.cea.nabla.ir.interpreter;
 
 import fr.cea.nabla.ir.ir.PrimitiveType;
-import fr.cea.nabla.javalib.types.Matrix;
-import fr.cea.nabla.javalib.types.Vector;
 
 public class NablaValueFactory
 {
-	static NablaValue createValue(PrimitiveType p )
+	static NablaValue createValue(PrimitiveType p)
 	{
 		NablaValue result = null;
 		switch (p)
@@ -27,30 +25,38 @@ public class NablaValueFactory
 		return result;
 	}
 
-	static NablaValue createValue(PrimitiveType p , int size, boolean linearAlgebra)
+	static NablaValue createValue(PrimitiveType p , int size, InterpretableLinearAlgebra linearAlgebra)
 	{
-		NablaValue result = null;
 		switch (p)
 		{
-			case BOOL: result = new NV1Bool(new boolean[size]); break;
-			case INT: result = new NV1Int(new int[size]); break;
-			case REAL: if (!linearAlgebra) result = new NV1Real(new double[size]);
-						else result = new NVVector(Vector.createDenseVector(size)); break;
+			case BOOL: return new NV1Bool(new boolean[size]);
+			case INT: return new NV1Int(new int[size]);
+			case REAL:
+			{
+				if (linearAlgebra == null)
+					return new NV1Real(new double[size]);
+				else
+					return new NVVector(linearAlgebra.createVector(size), linearAlgebra);
+			}
+			default: return null;
 		}
-		return result;
 	}
 
-	static NablaValue createValue(PrimitiveType p, int size1, int size2, boolean linearAlgebra)
-	{ 
-		NablaValue result = null;
+	static NablaValue createValue(PrimitiveType p, int nbRows, int nbCols, InterpretableLinearAlgebra linearAlgebra)
+	{
 		switch (p)
 		{
-			case BOOL: result = new NV2Bool(new boolean[size1][size2]); break;
-			case INT: result = new NV2Int(new int[size1][size2]); break;
-			case REAL: if (!linearAlgebra) result = new NV2Real(new double[size1][size2]);
-			else result = new NVMatrix(Matrix.createDenseMatrix(size1, size2)); break;
+			case BOOL: return new NV2Bool(new boolean[nbRows][nbCols]);
+			case INT: return new NV2Int(new int[nbRows][nbCols]);
+			case REAL:
+			{
+				if (linearAlgebra == null)
+					return new NV2Real(new double[nbRows][nbCols]);
+				else
+					return new NVMatrix(linearAlgebra.createMatrix(nbRows, nbCols), linearAlgebra);
+			}
+			default: return null;
 		}
-		return result;
 	}
 
 	static NablaValue createValue(PrimitiveType p, int size1, int size2, int size3)

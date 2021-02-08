@@ -17,9 +17,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import fr.cea.nabla.javalib.types.*;
+import fr.cea.nabla.javalib.*;
 import fr.cea.nabla.javalib.mesh.*;
-import fr.cea.nabla.javalib.utils.*;
 
 @SuppressWarnings("all")
 public final class DepthInit

@@ -36,23 +36,26 @@ class Context
 	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) val HashMap<Function, Pair<Object,Method>> functionToMethod 
 	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) val IrRoot ir
 	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) CartesianMesh2DMeshWrapper meshWrapper
+	@Accessors InterpretableLinearAlgebra linearAlgebra
 
 	new(IrRoot ir, Logger logger)
 	{
 		this.outerContext = null
-		this.ir = ir
 		this.logger = logger
-		this.meshWrapper = null
 		this.functionToMethod = new HashMap<Function, Pair<Object,Method>>
+		this.ir = ir
+		this.meshWrapper = null
+		this.linearAlgebra = null
 	}
 
 	new(Context outerContext)
 	{
 		this.outerContext = outerContext
-		this.ir = outerContext.ir
 		this.logger = outerContext.logger
-		this.meshWrapper = outerContext.meshWrapper
 		this.functionToMethod = outerContext.functionToMethod
+		this.ir = outerContext.ir
+		this.meshWrapper = outerContext.meshWrapper
+		this.linearAlgebra = outerContext.linearAlgebra
 	}
 
 	def HashMap<Connectivity, Integer> getConnectivitySizes()

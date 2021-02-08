@@ -44,12 +44,13 @@ class VariableValueFactory
 	{
 		if (defaultValue === null)
 		{
+			val contextLA = (linearAlgebra ? context.linearAlgebra : null)
 			val sizes = getIntSizes(type, context)
 			val p = type.primitive
 			switch sizes.size
 			{
-				case 1: createValue(p, sizes.get(0), linearAlgebra)
-				case 2: createValue(p, sizes.get(0), sizes.get(1), linearAlgebra)
+				case 1: createValue(p, sizes.get(0), contextLA)
+				case 2: createValue(p, sizes.get(0), sizes.get(1), contextLA)
 				case 3: createValue(p, sizes.get(0), sizes.get(1), sizes.get(2))
 				case 4: createValue(p, sizes.get(0), sizes.get(1), sizes.get(2), sizes.get(3))
 				default: throw new RuntimeException("Dimension not yet implemented: " + sizes.size + " for variable " + name)

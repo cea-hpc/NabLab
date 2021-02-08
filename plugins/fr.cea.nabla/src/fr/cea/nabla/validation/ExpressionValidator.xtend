@@ -35,7 +35,6 @@ import fr.cea.nabla.typing.NablaConnectivityType
 import java.util.List
 import org.eclipse.xtext.validation.Check
 import org.eclipse.xtext.validation.CheckType
-import fr.cea.nabla.typing.NablaSimpleType
 
 class ExpressionValidator extends ArgOrVarRefValidator
 {
@@ -44,8 +43,6 @@ class ExpressionValidator extends ArgOrVarRefValidator
 
 	public static val BASE_TYPE_CONSTANT_VALUE = "Expressions::BaseTypeConstantValue"
 	public static val BASE_TYPE_CONSTANT_TYPE = "Expressions::BaseTypeConstantType"
-	public static val FUNCTION_CALL_CONNECTIVITY_ARG = "Expressions::FunctionCallConnectivityArg"
-	public static val FUNCTION_CALL_MIXED_ARGS = "Expressions::FunctionCallMixedArgs"
 	public static val FUNCTION_CALL_ARGS = "Expressions::FunctionCallArgs"
 	public static val REDUCTION_CALL_ON_CONNECTIVITIES_VARIABLE = "Expressions::ReductionCallOnConnectivitiesVariable"
 	public static val REDUCTION_CALL_ARGS = "Expressions::ReductionArgs"
@@ -67,8 +64,6 @@ class ExpressionValidator extends ArgOrVarRefValidator
 
 	static def getBaseTypeConstantValueMsg(String expectedTypeName) { "Initialization value must be of type " + expectedTypeName }
 	static def getBaseTypeConstantTypeMsg() { "Only integer constant allowed for initialization" }
-	static def getFunctionCallConnectivityArgMsg() { "Connectivity type arguments must be scalar" }
-	static def getFunctionCallMixedArgsMsg() { "Can not mix array types in arguments (connectivity and simple types)" }
 	static def getFunctionCallArgsMsg(List<String> inTypes) { "No candidate function found. Wrong arguments: " + inTypes.join(', ') }
 	static def getReductionCallOnConnectivitiesVariableMsg() { "No reduction on connectivities variable" }
 	static def getReductionCallArgsMsg(String inType) { "No candidate reduction found. Wrong arguments: " + inType }
@@ -97,31 +92,6 @@ class ExpressionValidator extends ArgOrVarRefValidator
 	def checkFunctionCallArgs(FunctionCall it)
 	{
 		val inTypes = args.map[typeFor]
-
-		var containsConnectivityType = false
-		var containsSimpleArrayType = false
-		for (i : 0..<inTypes.size)
-		{
-			val inType = inTypes.get(i)
-			if (inType !== null)
-			{
-				if (inType instanceof NablaConnectivityType)
-				{
-					containsConnectivityType = true
-					// if connectivity types, their base type must be scalar
-					if (! (inType.simple instanceof NSTScalar))
-						error(getFunctionCallConnectivityArgMsg(), NablaPackage.Literals::FUNCTION_CALL__ARGS, i, FUNCTION_CALL_CONNECTIVITY_ARG)
-				}
-				else if ((inType as NablaSimpleType).dimension > 0)
-					containsSimpleArrayType = true
-			}
-		}
-
-		// can not mix connectivity and simple type arguments
-		if (containsConnectivityType && containsSimpleArrayType)
-			error(getFunctionCallMixedArgsMsg(), NablaPackage.Literals::FUNCTION_CALL__ARGS, FUNCTION_CALL_MIXED_ARGS)
-
-		// check if the candidate function
 		if (typeFor === null)
 			error(getFunctionCallArgsMsg(inTypes.map[label]), NablaPackage.Literals::FUNCTION_CALL__FUNCTION, FUNCTION_CALL_ARGS)
 	}

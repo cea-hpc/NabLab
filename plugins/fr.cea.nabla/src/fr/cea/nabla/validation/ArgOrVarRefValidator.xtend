@@ -18,9 +18,6 @@ import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
-import fr.cea.nabla.typing.ArgOrVarTypeProvider
-import fr.cea.nabla.typing.NablaConnectivityType
-import fr.cea.nabla.typing.NablaSimpleType
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.validation.Check
 import org.eclipse.xtext.validation.CheckType
@@ -28,7 +25,6 @@ import org.eclipse.xtext.validation.CheckType
 class ArgOrVarRefValidator extends InstructionValidator
 {
 	@Inject extension ValidationUtils
-	@Inject extension ArgOrVarTypeProvider
 	@Inject extension SpaceIteratorExtensions
 	@Inject extension ArgOrVarExtensions
 
@@ -47,9 +43,9 @@ class ArgOrVarRefValidator extends InstructionValidator
 	def checkIndicesNumber(ArgOrVarRef it)
 	{
 		if (target === null || target.eIsProxy) return
-		val vTypeSize = target.typeFor
-		val dimension = if (vTypeSize instanceof NablaConnectivityType) vTypeSize.simple.dimension 
-			else (vTypeSize as NablaSimpleType).dimension
+		val dimension =	if (target instanceof ConnectivityVar) (target as ConnectivityVar).type.sizes.size 
+			else target.dimension
+
 		if (indices.size > 0 && indices.size != dimension)
 			error(getIndicesNumberMsg(dimension, indices.size), NablaPackage.Literals::ARG_OR_VAR_REF__INDICES, INDICES_NUMBER)
 	}

@@ -17,5 +17,5 @@ import org.eclipse.xtend.lib.annotations.Data
 class ReductionDeclaration
 {
 	val Reduction model
-	val NablaSimpleType type // no reduction on ConnectivityVar => SimpleType only
+	val NablaSimpleType type
 }

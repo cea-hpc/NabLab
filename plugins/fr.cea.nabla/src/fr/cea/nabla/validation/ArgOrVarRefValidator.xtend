@@ -45,9 +45,8 @@ class ArgOrVarRefValidator extends InstructionValidator
 		if (target === null || target.eIsProxy) return
 		val dimension =	if (target instanceof ConnectivityVar) (target as ConnectivityVar).type.sizes.size 
 			else target.dimension
-
 		if (indices.size > 0 && indices.size != dimension)
-			error(getIndicesNumberMsg(dimension, indices.size), NablaPackage.Literals::ARG_OR_VAR_REF__INDICES, INDICES_NUMBER)
+			error(getIndicesNumberMsg(dimension, indices.size), NablaPackage.Literals::ARG_OR_VAR_REF__INDICES, INDICES_NUMBER)			
 	}
 
 	@Check(CheckType.NORMAL)
@@ -56,7 +55,6 @@ class ArgOrVarRefValidator extends InstructionValidator
 		if (target instanceof ConnectivityVar)
 		{
 			val dimensions = (target as ConnectivityVar).supports
-
 			if (spaceIterators.size >  0 && spaceIterators.size != dimensions.size)
 				error(getSpaceIteratorNumberMsg(dimensions.size, spaceIterators.size), NablaPackage.Literals::ARG_OR_VAR_REF__SPACE_ITERATORS, SPACE_ITERATOR_NUMBER)
 			else

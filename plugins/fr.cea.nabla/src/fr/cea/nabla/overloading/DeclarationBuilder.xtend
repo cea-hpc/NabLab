@@ -9,6 +9,8 @@
  *******************************************************************************/
 package fr.cea.nabla.overloading
 
+import com.google.inject.Inject
+import fr.cea.nabla.LinearAlgebraUtils
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.Expression
@@ -18,45 +20,52 @@ import fr.cea.nabla.nabla.IntConstant
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.typing.BaseTypeTypeProvider
+import fr.cea.nabla.typing.NLATMatrix
+import fr.cea.nabla.typing.NLATVector
 import fr.cea.nabla.typing.NSTArray1D
 import fr.cea.nabla.typing.NSTArray2D
 import fr.cea.nabla.typing.NSTScalar
 import fr.cea.nabla.typing.NablaSimpleType
+import fr.cea.nabla.typing.NablaType
 import java.util.HashMap
 import org.eclipse.emf.ecore.util.EcoreUtil
 
-class SimpleTypeDeclarationFinder implements IDeclarationFinder
+class DeclarationBuilder
 {
-	val extension BaseTypeTypeProvider baseTypeTP
+	@Inject extension LinearAlgebraUtils
+	@Inject extension BaseTypeTypeProvider
 
-	val Iterable<NablaSimpleType> callerInTypes
 	val sizeVarValues = new HashMap<SimpleVar, Expression>
 	val transformers = #[new ReplaceKnownSizeValues(sizeVarValues), new ApplyPossibleBinaryOperations]
 
-	new(BaseTypeTypeProvider baseTypeTP, Iterable<NablaSimpleType> callerInTypes)
+	def ReductionDeclaration tryToBuildDeclaration(Reduction r, NablaType callerInType)
 	{
-		this.baseTypeTP = baseTypeTP
-		this.callerInTypes = callerInTypes
+		var ReductionDeclaration declaration = null
+		val calleeInType = r.typeDeclaration.type.typeFor
+		if (calleeInType !== null && callerInType !== null && calleeInType.class == callerInType.class)
+		{
+			val match = sizesMatch(r, calleeInType.sizeExpressions, callerInType.sizeExpressions)
+			if (match)
+			{
+				val type = r.typeDeclaration.type.computeExpressionType
+				if (type instanceof NablaSimpleType)
+					declaration = new ReductionDeclaration(r, type as NablaSimpleType)		
+			}
+		}
+		return declaration
 	}
 
-	override ReductionDeclaration findReduction(Iterable<Reduction> candidates)
+	def FunctionDeclaration tryToBuildDeclaration(Function f, Iterable<NablaType> callerInTypes)
 	{
-		val r = candidates.findFirst[x | sizesMatch(x, x.typeDeclaration.type.sizes, callerInTypes.head.sizeExpressions)]
-		if (r === null) return null
-
-		val type = r.typeDeclaration.type.computeExpressionType
-		return new ReductionDeclaration(r, type)
-	}
-
-	override FunctionDeclaration findFunction(Iterable<Function> candidates)
-	{
-		val f = candidates.findFirst[x |
-			for (i : 0..<x.typeDeclaration.inTypes.size)
-				if (!sizesMatch(x, x.typeDeclaration.inTypes.get(i).sizes, callerInTypes.get(i).sizeExpressions))
-					return false
-			return true
-		]
-		if (f === null) return null
+		for (i : 0..<f.typeDeclaration.inTypes.size)
+		{
+			val calleeIemeType = f.typeDeclaration.inTypes.get(i).typeFor
+			val callerIemeType = callerInTypes.get(i)
+			if (calleeIemeType !== null && callerIemeType !== null && calleeIemeType.class != callerIemeType.class) 
+				return null
+			if (!sizesMatch(f, calleeIemeType.sizeExpressions, callerIemeType.sizeExpressions))
+				return null
+		}
 
 		val inTypes = f.typeDeclaration.inTypes.map[computeExpressionType]
 		val returnType = f.typeDeclaration.returnType.computeExpressionType
@@ -64,20 +73,21 @@ class SimpleTypeDeclarationFinder implements IDeclarationFinder
 		return fd
 	}
 
-	private def  Iterable<Expression> getSizeExpressions(NablaSimpleType it)
+	private def  Iterable<Expression> getSizeExpressions(NablaType it)
 	{
 		switch it
 		{
 			NSTScalar: #[]
 			NSTArray1D: #[size]
 			NSTArray2D: #[nbRows, nbCols]
+			NLATVector: #[size]
+			NLATMatrix: #[nbRows, nbCols]
+			default: throw new RuntimeException("Unmanaged type for function/reduction: " + toString)
 		}
 	}
 
 	private def boolean sizesMatch(FunctionOrReduction f, Iterable<Expression> expectedSizes, Iterable<Expression> actualSizes)
 	{
-		if (expectedSizes.size != actualSizes.size) return false
-
 		for (i : 0..<expectedSizes.size)
 		{
 			val actualSize = actualSizes.get(i)
@@ -118,13 +128,15 @@ class SimpleTypeDeclarationFinder implements IDeclarationFinder
 		return true
 	}
 
-	private def NablaSimpleType computeExpressionType(BaseType argType)
+	private def NablaType computeExpressionType(BaseType argType)
 	{
 		switch argType.sizes.size
 		{
 			case 0: argType.typeFor as NablaSimpleType
-			case 1: getNSTArray1DFor(argType.primitive, argType.sizes.get(0).replaceValuesAndCompact)
-			case 2: getNSTArray2DFor(argType.primitive, argType.sizes.get(0).replaceValuesAndCompact, argType.sizes.get(1).replaceValuesAndCompact)
+			case 1: if (argType.linearAlgebra) new NLATVector(argType.sizes.get(0).replaceValuesAndCompact)
+					else getNSTArray1DFor(argType.primitive, argType.sizes.get(0).replaceValuesAndCompact)
+			case 2: if (argType.linearAlgebra) new NLATMatrix(argType.sizes.get(0).replaceValuesAndCompact, argType.sizes.get(1).replaceValuesAndCompact)
+					else getNSTArray2DFor(argType.primitive, argType.sizes.get(0).replaceValuesAndCompact, argType.sizes.get(1).replaceValuesAndCompact)
 			default: throw new RuntimeException("Unmanaged array sizes:" + argType.sizes.size)
 		}
 	}

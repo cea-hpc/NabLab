@@ -205,6 +205,24 @@ class NLATVector extends NablaLinearAlgebraType
 
 	override getLabel() { 'Vector[' + size.label +  ']' }
 	override getPrimitive() { PrimitiveType::REAL }
+
+	override equals(Object obj)
+	{
+		if (this === obj) return true
+		if (obj === null) return false
+		if (getClass() != obj.getClass()) return false
+		if (!super.equals(obj)) return false
+
+		val other = obj as NLATVector
+		if (this.size === null)
+		{
+			if (other.size !== null) return false
+		}
+		else
+			if (!EcoreUtil::equals(this.size, other.size))
+				return false
+		return true
+	}
 }
 
 @Data
@@ -215,5 +233,31 @@ class NLATMatrix extends NablaLinearAlgebraType
 
 	override getLabel() { 'Matrix['  + nbRows.label + ',' + nbCols.label +  ']' }
 	override getPrimitive() { PrimitiveType::REAL }
+
+	override equals(Object obj)
+	{
+		if (this === obj) return true
+		if (obj === null) return false
+		if (getClass() != obj.getClass()) return false
+		if (!super.equals(obj)) return false
+
+		val other = obj as NLATMatrix
+		if (this.nbRows === null)
+		{
+			if (other.nbRows !== null) return false
+		}
+		else
+			if (!EcoreUtil::equals(this.nbRows, other.nbRows))
+				return false;
+
+		if (this.nbCols === null)
+		{
+			if (other.nbCols !== null) return false
+		}
+		else
+			if (!EcoreUtil::equals(this.nbCols, other.nbCols))
+				return false
+		return true
+	}
 }
 

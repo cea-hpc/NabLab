@@ -43,9 +43,9 @@ class ArgOrVarRefValidatorTest
 			'''
 			«emptyTestModule»
 			let ℕ[2,2] a = ℕ[2,2](0);
-			let ℕ[2] b = a[0];
+			let ℕ[2] b = a[0]; // Wrong number of args
 			let ℕ[2] c = ℕ[2](0);
-			let ℕ d = c[0,1];
+			let ℕ d = c[0,1]; // Wrong number of args
 			'''
 		)
 		Assert.assertNotNull(moduleKo)

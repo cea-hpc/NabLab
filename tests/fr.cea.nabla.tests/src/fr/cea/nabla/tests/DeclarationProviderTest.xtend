@@ -77,6 +77,7 @@ class DeclarationProviderTest
 		ℝ a{cells};
 		ℝ x{cells};
 		ℝ[2] x2{cells};
+		ℝ[3] t;
 
 		// --- TEST DE F ---
 		J0: { let ℕ y = f(); }
@@ -102,7 +103,7 @@ class DeclarationProviderTest
 				let ℝ[3] c = [3.3, 4.4, 5.5];
 				let ℝ[5] y = g(b, c);
 		}
-		J8: { a = g(x); }
+		J8: { let ℝ[3] gt = g(t); }
 		J9: { a = g(x, x); } // Wrong arguments : ℝ{cells}, ℝ{cells}
 		J10: { a = g(x2); } // Wrong arguments : ℝ²{cells}
 		'''
@@ -111,7 +112,7 @@ class DeclarationProviderTest
 		val nablaExt = parserHelper.parse(nablaextModel, rs) as NablaExtension
 		val module = parserHelper.parse(nablaModel, rs) as NablaModule
 		Assert.assertNotNull(module)
-		Assert.assertEquals(4, module.validate.filter(i | i.severity == Severity.ERROR).size)
+		Assert.assertEquals(3, module.validate.filter(i | i.severity == Severity.ERROR).size)
 		module.assertError(NablaPackage.eINSTANCE.functionCall,
 		ExpressionValidator::FUNCTION_CALL_ARGS,
 		ExpressionValidator::getFunctionCallArgsMsg(#[PrimitiveType::REAL.literal, PrimitiveType::BOOL.literal]))
@@ -147,10 +148,9 @@ class DeclarationProviderTest
 		Assert.assertEquals(new NSTRealArray1D(createIntConstant(5)), j7Gdecl.returnType)
 		val j8Gdecl = getFunctionDeclarationOfJob(module, 8)
 		Assert.assertEquals(gFunctions.get(0), j8Gdecl.model)
-		Assert.assertEquals(new NablaConnectivityType(#[cells], new NSTRealScalar), j8Gdecl.returnType)
+		Assert.assertEquals(new NSTRealArray1D(createIntConstant(3)), j8Gdecl.returnType)
 		val j9Gdecl = getFunctionDeclarationOfJob(module, 9)
-		Assert.assertEquals(gFunctions.get(2), j9Gdecl.model)
-		Assert.assertNull(j9Gdecl.returnType)
+		Assert.assertNull(j9Gdecl)
 		val j10Gdecl = getFunctionDeclarationOfJob(module, 10)
 		Assert.assertNull(j10Gdecl)
 	}

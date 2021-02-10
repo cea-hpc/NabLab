@@ -19,7 +19,6 @@ import fr.cea.nabla.tests.TestUtils
 import fr.cea.nabla.typing.ArgOrVarTypeProvider
 import fr.cea.nabla.typing.NSTRealArray1D
 import fr.cea.nabla.typing.NSTRealScalar
-import fr.cea.nabla.typing.NablaConnectivityType
 import fr.cea.nabla.validation.ExpressionValidator
 import fr.cea.nabla.validation.ValidationUtils
 import org.eclipse.xtext.testing.InjectWith
@@ -118,21 +117,20 @@ class ExpressionValidatorTest
 			«emptyTestModule»
 			«defaultConnectivities»
 			def test: ℾ × ℝ × ℝ[2] → ℝ, (a, b, c) → return b;
-			def solveBidon: x | ℝ[x] × ℝ[x] × ℕ → ℝ[x], (a, b, c) → return b;
 			let ℝ[2] opt = [0., 1.];
 			let ℕ count = 1;
 			ℝ alpha{cells};
 			'''
 
-		val moduleKo1 = parseHelper.parse(
+		val moduleKo = parseHelper.parse(
 			'''
 			«model»
 			J1: let ℝ x = test(true, 0, opt);
 			'''
 		)
-		Assert.assertNotNull(moduleKo1)
+		Assert.assertNotNull(moduleKo)
 
-		moduleKo1.assertError(NablaPackage.eINSTANCE.functionCall,
+		moduleKo.assertError(NablaPackage.eINSTANCE.functionCall,
 			ExpressionValidator::FUNCTION_CALL_ARGS,
 			ExpressionValidator::getFunctionCallArgsMsg(
 				#[PrimitiveType::BOOL.literal,
@@ -140,31 +138,10 @@ class ExpressionValidatorTest
 				new NSTRealArray1D(createIntConstant(2)).label]
 		))
 
-		val moduleKo2 = parseHelper.parse(
-			'''
-			«model»
-			J1: alpha = solveBidon(alpha, opt, count);
-			'''
-		)
-		Assert.assertNotNull(moduleKo2)
-
-		moduleKo2.assertError(NablaPackage.eINSTANCE.functionCall,
-			ExpressionValidator::FUNCTION_CALL_MIXED_ARGS,
-			ExpressionValidator::getFunctionCallMixedArgsMsg())
- 		val cells = moduleKo2.getConnectivityByName("cells")
-		moduleKo2.assertError(NablaPackage.eINSTANCE.functionCall,
-			ExpressionValidator::FUNCTION_CALL_ARGS,
-			ExpressionValidator::getFunctionCallArgsMsg(
-				#[new NablaConnectivityType(#[cells], new NSTRealScalar).label,
-				new NSTRealArray1D(createIntConstant(2)).label,
-				PrimitiveType::INT.literal]
-		))
-
 		val moduleOk = parseHelper.parse(
 			'''
 			«model»
 			J1: let ℝ x = test(true, 0., opt);
-			J2: alpha = solveBidon(alpha, alpha, count);
 			'''
 		)
 		Assert.assertNotNull(moduleOk)

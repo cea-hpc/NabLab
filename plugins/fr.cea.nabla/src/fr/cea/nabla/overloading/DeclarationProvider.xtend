@@ -19,11 +19,12 @@ import fr.cea.nabla.typing.ExpressionTypeProvider
 import fr.cea.nabla.typing.NablaType
 import java.util.List
 import org.eclipse.xtext.EcoreUtil2
+import com.google.inject.Provider
 
 class DeclarationProvider 
 {
 	@Inject extension ExpressionTypeProvider
-	@Inject DeclarationBuilder declarationBuilder
+	@Inject Provider<DeclarationBuilder> declarationBuilderProvider
 
 	/**
 	 * Return the ReductionDeclaration instance containing
@@ -34,6 +35,7 @@ class DeclarationProvider
 		val argType = arg.typeFor
 		for (c : getCandidates(reduction, argType))
 		{
+			val declarationBuilder = declarationBuilderProvider.get
 			val declaration = declarationBuilder.tryToBuildDeclaration(c, argType)
 			if (declaration !== null) return declaration
 		}
@@ -49,6 +51,7 @@ class DeclarationProvider
 		val argTypes = args.map[typeFor]
 		for (c : getCandidates(function, argTypes))
 		{
+			val declarationBuilder = declarationBuilderProvider.get
 			val declaration = declarationBuilder.tryToBuildDeclaration(c, argTypes)
 			if (declaration !== null) return declaration
 		}

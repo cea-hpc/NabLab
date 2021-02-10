@@ -165,6 +165,12 @@ class TestUtils
 		]
 	}
 
+	def createCardExpression(Connectivity c)
+	{
+		val connectivityCall = NablaFactory.eINSTANCE.createConnectivityCall => [ connectivity = c ]
+		NablaFactory.eINSTANCE.createCardinality => [ container = connectivityCall ]	
+	}
+
 	static def simplifyPath(String path)
 	{
 		path.replace("NablaExamples/../NablaExamples/", "NablaExamples/")

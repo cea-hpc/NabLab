@@ -108,7 +108,6 @@ class DeclarationBuilder
 
 					// Consequently, it is a SimpleVar
 					val simpleVar = expectedSize.target as SimpleVar
-
 					val dimVarValue = sizeVarValues.get(simpleVar)
 					if (dimVarValue === null)
 					{
@@ -124,7 +123,6 @@ class DeclarationBuilder
 				default: return false
 			}
 		}
-
 		return true
 	}
 

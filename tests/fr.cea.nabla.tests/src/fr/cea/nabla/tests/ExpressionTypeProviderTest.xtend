@@ -10,14 +10,19 @@
 package fr.cea.nabla.tests
 
 import com.google.inject.Inject
+import com.google.inject.Provider
 import fr.cea.nabla.ArgOrVarExtensions
 import fr.cea.nabla.NablaModuleExtensions
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.Job
+import fr.cea.nabla.nabla.NablaExtension
 import fr.cea.nabla.nabla.NablaModule
+import fr.cea.nabla.nabla.NablaRoot
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.typing.ArgOrVarTypeProvider
 import fr.cea.nabla.typing.ExpressionTypeProvider
+import fr.cea.nabla.typing.NLATMatrix
+import fr.cea.nabla.typing.NLATVector
 import fr.cea.nabla.typing.NSTBoolScalar
 import fr.cea.nabla.typing.NSTIntArray1D
 import fr.cea.nabla.typing.NSTIntArray2D
@@ -27,6 +32,8 @@ import fr.cea.nabla.typing.NSTRealArray2D
 import fr.cea.nabla.typing.NSTRealScalar
 import fr.cea.nabla.typing.NablaConnectivityType
 import fr.cea.nabla.typing.NablaType
+import org.eclipse.emf.ecore.resource.ResourceSet
+import org.eclipse.xtext.diagnostics.Severity
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.eclipse.xtext.testing.util.ParseHelper
@@ -39,7 +46,8 @@ import org.junit.runner.RunWith
 @InjectWith(NablaInjectorProvider)
 class ExpressionTypeProviderTest 
 {
-	@Inject extension ParseHelper<NablaModule>
+	@Inject Provider<ResourceSet> resourceSetProvider
+	@Inject ParseHelper<NablaRoot> parseHelper
 	@Inject extension ValidationTestHelper
 	@Inject extension ExpressionTypeProvider
 	@Inject extension ArgOrVarTypeProvider
@@ -47,9 +55,18 @@ class ExpressionTypeProviderTest
 	@Inject extension NablaModuleExtensions
 	@Inject extension TestUtils
 
-	val model = 
+	val nablaextModel =
+	'''
+	extension LinearAlgebra;
+
+	def solveLinearSystem: x | ℝ[x, x] × ℝ[x] → ℝ[x], (a, b) → return b;
+	'''
+
+	val nablaModel =
 	'''
 	module Test;
+
+	with LinearAlgebra.*;
 
 	itemtypes { node, cell }
 
@@ -61,7 +78,6 @@ class ExpressionTypeProviderTest
 
 	def perp: ℝ[2] → ℝ[2], (a) → return a;
 	def norm: x | ℝ[x] → ℝ, (a) → return 1.0;
-	def solveLinearSystem: x | ℝ[x, x] × ℝ[x] → ℝ[x], (a, b) → return b;
 
 	option ℝ X_EDGE_LENGTH = 1.;
 	option ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
@@ -131,20 +147,18 @@ class ExpressionTypeProviderTest
 	}
 	'''
 
-	@Test 
-	def testCorrectParsing()
-	{
-		model.parse.assertNoErrors
-	}
-
 	//TODO : add a BinaryOperationsTypeProviderTest to cover all cases
 	@Test 
 	def void testGetTypeFor() 
 	{
- 		val module = model.parse
+		val rs = resourceSetProvider.get
+		parseHelper.parse(nablaextModel, rs) as NablaExtension
+		val module = parseHelper.parse(nablaModel, rs) as NablaModule
+		Assert.assertNotNull(module)
+		Assert.assertEquals(0, module.validate.filter(i | i.severity == Severity.ERROR).size)
+
  		val cells = module.getConnectivityByName("cells")
  		val nodesOfCell = module.getConnectivityByName("nodesOfCell")
-		val updateU = module.getJobByName("UpdateU")
 		val computeV = module.getJobByName("ComputeV")
 		val computeX = module.getJobByName("ComputeX")
 
@@ -188,13 +202,13 @@ class ExpressionTypeProviderTest
 		assertTypesFor(new NSTIntArray1D(createIntConstant(2)), module, "i2")
 
 		assertTypesFor(new NablaConnectivityType(#[cells], new NSTIntScalar), module, "s")
-		assertTypesFor(new NablaConnectivityType(#[cells], new NSTRealScalar), module, "u")
+
 		assertTypesFor(new NablaConnectivityType(#[cells], new NSTRealScalar), module, "v")
 		assertTypesFor(new NablaConnectivityType(#[cells, nodesOfCell], new NSTRealArray1D(createIntConstant(2))), module, "w")
 		assertTypesFor(new NablaConnectivityType(#[cells, nodesOfCell], new NSTRealScalar), module, "x")
-		assertTypesFor(new NablaConnectivityType(#[cells, cells], new NSTRealScalar), module, "α")
 
-		assertTypesFor(new NablaConnectivityType(#[cells], new NSTRealScalar), updateU, "u")
+		assertTypesFor(new NLATMatrix(createCardExpression(cells), createCardExpression(cells)), module, "α")
+		assertTypesFor(new NLATVector(createCardExpression(cells)), module, "u")
 
 		assertTypesFor(new NSTRealScalar, computeV, "v")
 

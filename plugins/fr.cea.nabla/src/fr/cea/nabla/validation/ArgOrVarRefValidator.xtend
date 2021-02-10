@@ -21,23 +21,27 @@ import fr.cea.nabla.nabla.VarGroupDeclaration
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.validation.Check
 import org.eclipse.xtext.validation.CheckType
+import fr.cea.nabla.typing.ExpressionTypeProvider
 
 class ArgOrVarRefValidator extends InstructionValidator
 {
 	@Inject extension ValidationUtils
 	@Inject extension SpaceIteratorExtensions
 	@Inject extension ArgOrVarExtensions
+	@Inject extension ExpressionTypeProvider
 
 	public static val INDICES_NUMBER = "ArgOrVarRef::IndicesNumber"
 	public static val SPACE_ITERATOR_NUMBER = "ArgOrVarRef::SpaceIteratorNumber"
 	public static val SPACE_ITERATOR_TYPE = "ArgOrVarRef::SpaceIteratorType"
 	public static val REQUIRED_TIME_ITERATOR = 'ArgOrVarRef::RequiredTimeIterator'
 	public static val ILLEGAL_TIME_ITERATOR = 'ArgOrVarRef::IllegalTimeIterator'
+	public static val NULL_TYPE = 'ArgOrVarRef::NullType'
 
 	static def getIndicesNumberMsg(int expectedSize, int actualSize) { "Wrong number of indices. Expected " + expectedSize + ", but was " + actualSize }
 	static def getSpaceIteratorNumberMsg(int expectedSize, int actualSize) { "Wrong number of space iterators. Expected " + expectedSize + ", but was " + actualSize }
 	static def getRequiredTimeIteratorMsg() { "Time iterator must be specified" }
 	static def getIllegalTimeIteratorMsg() { "Time iterators only allowed on global variables with no default value" }
+	static def getNullTypeMsg() { "Null type: check iterators/indices" }
 
 	@Check(CheckType.NORMAL)
 	def checkIndicesNumber(ArgOrVarRef it)
@@ -111,5 +115,12 @@ class ArgOrVarRefValidator extends InstructionValidator
 	{
 		for (i : 0..<indices.size)
 			checkExpressionValidityAndType(indices.get(i), NablaPackage.Literals.ARG_OR_VAR_REF__INDICES, i)
+	}
+
+	@Check(CheckType.NORMAL)
+	def checkNullType(ArgOrVarRef it)
+	{
+		if (typeFor === null)
+			error(getNullTypeMsg(), NablaPackage.Literals::ARG_OR_VAR_REF__TARGET, NULL_TYPE)
 	}
 }

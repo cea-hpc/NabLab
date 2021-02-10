@@ -247,4 +247,33 @@ class ArgOrVarRefValidatorTest
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
+
+	@Test
+	def void testCheckNullType()
+	{
+		val moduleKo = parseHelper.parse(
+			'''
+			«testModuleForSimulation»
+			ℝ[2] X{nodes};
+			ℝ x{nodes};
+			InitY : y = X[1]; // wrong syntax. Precise space iterator before indice
+			'''
+		)
+		Assert.assertNotNull(moduleKo)
+
+		moduleKo.assertError(NablaPackage.eINSTANCE.argOrVarRef,
+			ArgOrVarRefValidator::NULL_TYPE,
+			ArgOrVarRefValidator::getNullTypeMsg())
+
+		val moduleOk =  parseHelper.parse(
+			'''
+			«testModuleForSimulation»
+			ℝ[2] X{nodes};
+			ℝ y{nodes};
+			InitY : ∀r ∈nodes(), y{r} = X{r}[1];
+			'''
+		)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
 }

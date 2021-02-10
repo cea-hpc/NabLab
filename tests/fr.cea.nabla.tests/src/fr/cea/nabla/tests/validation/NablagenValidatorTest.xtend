@@ -117,6 +117,8 @@ class NablagenValidatorTest
 			NablagenValidator::NGEN_ELEMENT_NAME, 
 			NablagenValidator::getNgenElementNameMsg(),
 			ngenModel)
+		val okNgen = readModelsAndGetNgen(nablaHydroModel, nablaRemapModel, ngenModel)
+		vth.assertNoErrors(okNgen)
 	}
 
 	@Test
@@ -128,6 +130,29 @@ class NablagenValidatorTest
 			NablagenValidator::NGEN_MODULE_NAME,
 			NablagenValidator::getNgenModuleNameMsg(),
 			ngenModel)
+		val okNgen = readModelsAndGetNgen(nablaHydroModel, nablaRemapModel, ngenModel)
+		vth.assertNoErrors(okNgen)
+	}
+
+	@Test
+	def void testUniqueInterpreter()
+	{
+		val interpreter =
+		'''
+			Interpreter
+			{
+				outputPath = "/src-gen-interpreter";
+			}
+		'''
+		val koNgenModel = ngenModel.concat(interpreter).concat(interpreter)
+		assertNgen(koNgenModel,
+			NablagenPackage.eINSTANCE.target,
+			NablagenValidator::NGEN_UNIQUE_INTERPRETER,
+			NablagenValidator::getNgenUniqueInterpreterMsg(),
+			ngenModel)
+		val okNgenModel = ngenModel.concat(interpreter)
+		val okNgen = readModelsAndGetNgen(nablaHydroModel, nablaRemapModel, okNgenModel)
+		vth.assertNoErrors(okNgen)
 	}
 
 	@Test

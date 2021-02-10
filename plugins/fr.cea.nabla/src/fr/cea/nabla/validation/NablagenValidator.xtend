@@ -23,13 +23,14 @@ import fr.cea.nabla.typing.ArgOrVarTypeProvider
 import java.util.HashSet
 import org.eclipse.xtext.validation.Check
 import org.eclipse.xtext.validation.CheckType
+import fr.cea.nabla.nablagen.Target
+import org.eclipse.xtext.EcoreUtil2
 
 /**
  * This class contains custom validation rules. 
  *
  * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#validation
  */
-// TODO A unique interpreter
 // TODO All providers extends same extension
 class NablagenValidator extends AbstractNablagenValidator
 {
@@ -37,12 +38,14 @@ class NablagenValidator extends AbstractNablagenValidator
 
 	public static val NGEN_ELEMENT_NAME = "NablagenValidator::ElementName"
 	public static val NGEN_MODULE_NAME = "NablagenValidator::ModuleName"
+	public static val NGEN_UNIQUE_INTERPRETER = "NablagenValidator::UniqueInterpreter"
 	public static val CPP_MANDATORY_VARIABLES = "NablagenValidator::CppMandatoryVariables"
 	public static val CONNECTIVITY_CONSISTENCY = "NablagenValidator::ConnectivityConsistency"
 	public static val VAR_LINK_MAIN_VAR_TYPE = "NablagenValidator::VarLinkMainVarType"
 
 	static def getNgenElementNameMsg() { "Application/Provider name must start with an upper case" }
 	static def getNgenModuleNameMsg() { "Nabla module instance name must start with a lower case" }
+	static def getNgenUniqueInterpreterMsg() { "Only one interpreter target allowed" }
 	static def getCppMandatoryVariablesMsg() { "'iterationMax' and 'timeMax' simulation variables must be defined (after timeStep) when using C++ code generator" }
 	static def getConnectivityConsistencyMsg(String a, String b) { "Connectivities with same name must be identical: " + a + " \u2260 " + b}
 	static def getVarLinkMainVarTypeMsg(String v1Type, String v2Type) { "Variables must have the same type: " + v1Type + " \u2260 " + v2Type }
@@ -59,6 +62,17 @@ class NablagenValidator extends AbstractNablagenValidator
 	{
 		if (!name.nullOrEmpty && Character::isLowerCase(name.charAt(0)))
 			error(getNgenElementNameMsg(), NablagenPackage.Literals.NABLAGEN_PROVIDER__NAME, NGEN_ELEMENT_NAME)
+	}
+
+	@Check(CheckType.FAST)
+	def checkUniqueInterpreter(Target it)
+	{
+		if (interpreter)
+		{
+			val app = EcoreUtil2.getContainerOfType(it, NablagenApplication)
+			if (app !== null && app.targets.exists[x | x.interpreter && x !== it])
+				error(getNgenUniqueInterpreterMsg(), NablagenPackage.Literals.TARGET__INTERPRETER, NGEN_UNIQUE_INTERPRETER)
+		}
 	}
 
 	@Check(CheckType.FAST)

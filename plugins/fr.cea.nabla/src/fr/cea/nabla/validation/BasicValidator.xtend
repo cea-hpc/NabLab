@@ -46,6 +46,23 @@ class BasicValidator extends UnusedValidator
 	@Inject extension ExpressionExtensions
 	@Inject extension ExpressionTypeProvider
 
+	// ===== Module ====
+
+	/**
+	 * A module must have at least one variable or job or iterate.
+	 * That is a way to differentiate between modules and extensions.
+	 */
+	public static val MODULE_BASE = "Module::ModuleBase"
+
+	static def getModuleBaseMsg() { "Module must contains at least a variable declaration, a job definition or an iterate instruction"}
+
+	@Check(CheckType.NORMAL)
+	def void checkModuleBase(NablaModule it)
+	{
+		if (declarations.empty && iteration === null && jobs.empty)
+			error(getModuleBaseMsg(), NablaPackage.Literals.NABLA_ROOT__NAME, MODULE_BASE);
+	}
+
 	// ===== Interval ====
 
 	public static val ZERO_FROM = "Interval::ZeroFrom"

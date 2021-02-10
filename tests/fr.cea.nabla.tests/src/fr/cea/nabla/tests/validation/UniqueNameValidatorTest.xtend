@@ -60,7 +60,6 @@ class UniqueNameValidatorTest
 			'''
 			«emptyTestModule»
 			ℝ a, a;
-			«emptyJob»
 			''')
 		Assert.assertNotNull(rootKo)
 		rootKo.assertError(NablaPackage.eINSTANCE.^var,
@@ -71,7 +70,6 @@ class UniqueNameValidatorTest
 			'''
 			«emptyTestModule»
 			ℝ a;
-			«emptyJob»
 			''')
 		Assert.assertNotNull(rootOk)
 		rootOk.assertNoErrors
@@ -85,7 +83,6 @@ class UniqueNameValidatorTest
 			«emptyTestModule»
 			ℝ a;
 			ℝ a;
-			«emptyJob»
 			''')
 		Assert.assertNotNull(rootKo)
 		rootKo.assertError(NablaPackage.eINSTANCE.argOrVar,
@@ -96,7 +93,6 @@ class UniqueNameValidatorTest
 			'''
 			«emptyTestModule»
 			ℝ a;
-			«emptyJob»
 			''')
 		Assert.assertNotNull(rootOk)
 		rootOk.assertNoErrors
@@ -168,7 +164,7 @@ class UniqueNameValidatorTest
 			module Test;
 			itemtypes { node, node }
 			connectivity nodes: → {node};
-			«emptyJob»
+			ℝ[2] X{nodes};
 			''')
 		Assert.assertNotNull(rootKo)
 		rootKo.assertError(NablaPackage.eINSTANCE.itemType,
@@ -180,7 +176,7 @@ class UniqueNameValidatorTest
 			module Test;
 			itemtypes { node }
 			connectivity nodes: → {node};
-			«emptyJob»
+			ℝ[2] X{nodes};
 			''')
 		Assert.assertNotNull(rootOk)
 		rootOk.assertNoErrors
@@ -195,7 +191,7 @@ class UniqueNameValidatorTest
 			itemtypes { node }
 			connectivity nodes: → {node};
 			connectivity nodes: → {node};
-			«emptyJob»
+			ℝ[2] X{nodes};
 			''')
 		Assert.assertNotNull(rootKo)
 		rootKo.assertError(NablaPackage.eINSTANCE.connectivity,
@@ -207,7 +203,7 @@ class UniqueNameValidatorTest
 			module Test;
 			itemtypes { node }
 			connectivity nodes: → {node};
-			«emptyJob»
+			ℝ[2] X{nodes};
 			''')
 		Assert.assertNotNull(rootOk)
 		rootOk.assertNoErrors
@@ -246,7 +242,6 @@ class UniqueNameValidatorTest
 			'''
 			«emptyTestModule»
 			iterate n while (true), n while (true);
-			«emptyJob»
 			''')
 		Assert.assertNotNull(rootKo)
 		rootKo.assertError(NablaPackage.eINSTANCE.timeIterator,
@@ -258,7 +253,6 @@ class UniqueNameValidatorTest
 			«emptyTestModule»
 			ℕ n;
 			iterate n while (true), m while (true);
-			«emptyJob»
 			''')
 		Assert.assertNotNull(rootKo2)
 		rootKo2.assertError(NablaPackage.eINSTANCE.argOrVar,
@@ -269,7 +263,6 @@ class UniqueNameValidatorTest
 			'''
 			«emptyTestModule»
 			iterate n while (true), m while (true);
-			«emptyJob»
 			''')
 		Assert.assertNotNull(rootOk)
 		rootOk.assertNoErrors

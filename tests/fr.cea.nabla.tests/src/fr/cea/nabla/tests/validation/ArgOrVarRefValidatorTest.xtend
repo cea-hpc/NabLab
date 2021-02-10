@@ -63,7 +63,6 @@ class ArgOrVarRefValidatorTest
 			«emptyTestModule»
 			let ℕ[2,2] a = ℕ[2,2](0);
 			let ℕ b = a[0,0];
-			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -224,7 +223,6 @@ class ArgOrVarRefValidatorTest
 			let ℕ[2] a = ℕ[2](0);
 			let ℝ b = 1.2;
 			let ℕ o = a[b];
-			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleKo2)
@@ -241,7 +239,6 @@ class ArgOrVarRefValidatorTest
 			let ℕ m = a[2];
 			let ℕ o = a[b];
 			let ℕ p = a[b + 4];
-			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleOk)

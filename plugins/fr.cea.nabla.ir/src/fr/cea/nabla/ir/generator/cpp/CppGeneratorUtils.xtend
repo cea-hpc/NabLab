@@ -42,4 +42,8 @@ class CppGeneratorUtils
 	{ 
 		sizes.empty || sizes.forall[x | x.constExpr]
 	}
+
+	//TODO ajouter isBaseTypeStatic(LinearAlgebraType) ?
+	// renvoit false ?
+	// Mettre tout ca dans IrTypeExtensions ?
 }

@@ -17,6 +17,7 @@ import fr.cea.nabla.ir.ir.IrType
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.Variable
+import fr.cea.nabla.ir.ir.LinearAlgebraType
 
 class ArgOrVarExtensions
 {
@@ -45,8 +46,9 @@ class ArgOrVarExtensions
 		(it instanceof Variable && eContainer instanceof IrModule)
 	}
 
+	//TODO Verifier si tj utilisé
 	static def isLinearAlgebra(ArgOrVar it)
 	{
-		(it instanceof ConnectivityVariable && (it as ConnectivityVariable).linearAlgebra)
+		it.type instanceof LinearAlgebraType
 	}
 }

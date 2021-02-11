@@ -9,8 +9,10 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.interpreter
 
-import fr.cea.nabla.ir.ir.ConnectivityVariable
-import fr.cea.nabla.ir.ir.SimpleVariable
+import fr.cea.nabla.ir.ir.BaseType
+import fr.cea.nabla.ir.ir.ConnectivityType
+import fr.cea.nabla.ir.ir.Expression
+import fr.cea.nabla.ir.ir.LinearAlgebraType
 
 import static fr.cea.nabla.ir.interpreter.BaseTypeValueFactory.*
 import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
@@ -22,7 +24,7 @@ import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 
 class VariableValueFactory
 {
-	static def dispatch NablaValue createValue(SimpleVariable it, Context context)
+	static def dispatch NablaValue createValue(BaseType type, Expression defaultValue, Context context)
 	{
 		if (type.sizes.empty)
 		{
@@ -40,7 +42,7 @@ class VariableValueFactory
 		}
 	}
 
-	static def dispatch NablaValue createValue(ConnectivityVariable it, Context context)
+	static def dispatch NablaValue createValue(ConnectivityType type, Expression defaultValue, Context context)
 	{
 		if (defaultValue === null)
 		{
@@ -48,11 +50,29 @@ class VariableValueFactory
 			val p = type.primitive
 			switch sizes.size
 			{
-				case 1: createValue(p, sizes.get(0), linearAlgebra)
-				case 2: createValue(p, sizes.get(0), sizes.get(1), linearAlgebra)
+				case 1: createValue(p, sizes.get(0), false)
+				case 2: createValue(p, sizes.get(0), sizes.get(1), false)
 				case 3: createValue(p, sizes.get(0), sizes.get(1), sizes.get(2))
 				case 4: createValue(p, sizes.get(0), sizes.get(1), sizes.get(2), sizes.get(3))
-				default: throw new RuntimeException("Dimension not yet implemented: " + sizes.size + " for variable " + name)
+				default: throw new RuntimeException("Dimension not yet implemented: " + sizes.size)
+			}
+		}
+		else
+			interprete(defaultValue, context)
+	}
+
+	static def dispatch NablaValue createValue(LinearAlgebraType type, Expression defaultValue, Context context)
+	{
+		//TODO pas de default value sur LinearAlgebraType ?
+		if (defaultValue === null)
+		{
+			val sizes = getIntSizes(type, context)
+			val p = type.primitive
+			switch sizes.size
+			{
+				case 1: createValue(p, sizes.get(0), true)
+				case 2: createValue(p, sizes.get(0), sizes.get(1), true)
+				default: throw new RuntimeException("Dimension not yet implemented: " + sizes.size)
 			}
 		}
 		else

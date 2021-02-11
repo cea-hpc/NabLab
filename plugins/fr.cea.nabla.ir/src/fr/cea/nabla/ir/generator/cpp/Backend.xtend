@@ -20,7 +20,6 @@ abstract class Backend
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) CMakeContentProvider cmakeContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) TypeContentProvider typeContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) ExpressionContentProvider expressionContentProvider
-	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) ArgOrVarContentProvider argOrVarContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) InstructionContentProvider instructionContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) FunctionContentProvider functionContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) TraceContentProvider traceContentProvider
@@ -40,9 +39,8 @@ class SequentialBackend extends Backend
 		irTransformationStep = new ReplaceReductions(true)
 		cmakeContentProvider = new SequentialCMakeContentProvider
 		typeContentProvider = new StlTypeContentProvider
-		argOrVarContentProvider = new StlArgOrVarContentProvider(typeContentProvider)
-		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
-		instructionContentProvider = new SequentialInstructionContentProvider(argOrVarContentProvider, expressionContentProvider)
+		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
+		instructionContentProvider = new SequentialInstructionContentProvider(typeContentProvider, expressionContentProvider)
 		functionContentProvider = new FunctionContentProvider(typeContentProvider, instructionContentProvider)
 		traceContentProvider = new TraceContentProvider
 		includesContentProvider = new SequentialIncludesContentProvider
@@ -61,9 +59,8 @@ class StlThreadBackend extends Backend
 		name = 'StlThread'
 		cmakeContentProvider = new StlCMakeContentProvider
 		typeContentProvider = new StlTypeContentProvider
-		argOrVarContentProvider = new StlArgOrVarContentProvider(typeContentProvider)
-		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
-		instructionContentProvider = new StlThreadInstructionContentProvider(argOrVarContentProvider, expressionContentProvider)
+		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
+		instructionContentProvider = new StlThreadInstructionContentProvider(typeContentProvider, expressionContentProvider)
 		functionContentProvider = new FunctionContentProvider(typeContentProvider, instructionContentProvider)
 		traceContentProvider = new TraceContentProvider
 		includesContentProvider = new StlThreadIncludesContentProvider
@@ -82,9 +79,8 @@ class KokkosBackend extends Backend
 		name = 'Kokkos'
 		cmakeContentProvider = new KokkosCMakeContentProvider
 		typeContentProvider = new KokkosTypeContentProvider
-		argOrVarContentProvider = new KokkosArgOrVarContentProvider(typeContentProvider)
-		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
-		instructionContentProvider = new KokkosInstructionContentProvider(argOrVarContentProvider, expressionContentProvider)
+		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
+		instructionContentProvider = new KokkosInstructionContentProvider(typeContentProvider, expressionContentProvider)
 		functionContentProvider = new KokkosFunctionContentProvider(typeContentProvider, instructionContentProvider)
 		traceContentProvider = new KokkosTraceContentProvider
 		includesContentProvider = new KokkosIncludesContentProvider
@@ -103,9 +99,8 @@ class KokkosTeamThreadBackend extends Backend
 		name = 'Kokkos Team Thread'
 		cmakeContentProvider = new KokkosCMakeContentProvider
 		typeContentProvider = new KokkosTypeContentProvider
-		argOrVarContentProvider = new KokkosArgOrVarContentProvider(typeContentProvider)
-		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
-		instructionContentProvider = new KokkosTeamThreadInstructionContentProvider(argOrVarContentProvider, expressionContentProvider)
+		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
+		instructionContentProvider = new KokkosTeamThreadInstructionContentProvider(typeContentProvider, expressionContentProvider)
 		functionContentProvider = new KokkosFunctionContentProvider(typeContentProvider, instructionContentProvider)
 		traceContentProvider = new KokkosTraceContentProvider
 		includesContentProvider = new KokkosIncludesContentProvider
@@ -124,9 +119,8 @@ class OpenMpBackend extends Backend
 		name = 'OpenMP'
 		cmakeContentProvider = new OpenMpCMakeContentProvider
 		typeContentProvider = new StlTypeContentProvider
-		argOrVarContentProvider = new StlArgOrVarContentProvider(typeContentProvider)
-		expressionContentProvider = new ExpressionContentProvider(argOrVarContentProvider)
-		instructionContentProvider = new OpenMpInstructionContentProvider(argOrVarContentProvider, expressionContentProvider)
+		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
+		instructionContentProvider = new OpenMpInstructionContentProvider(typeContentProvider, expressionContentProvider)
 		functionContentProvider = new FunctionContentProvider(typeContentProvider, instructionContentProvider)
 		traceContentProvider = new TraceContentProvider
 		includesContentProvider = new OpenMpIncludesContentProvider

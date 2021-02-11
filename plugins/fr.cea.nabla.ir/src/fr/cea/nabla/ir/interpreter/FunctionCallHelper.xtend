@@ -12,10 +12,17 @@ package fr.cea.nabla.ir.interpreter
 import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.javalib.types.Matrix
 import fr.cea.nabla.javalib.types.Vector
+import fr.cea.nabla.ir.ir.BaseType
+import fr.cea.nabla.ir.ir.ConnectivityType
+import fr.cea.nabla.ir.ir.LinearAlgebraType
 
 class FunctionCallHelper
 {
-	static def Class<?> getJavaType(PrimitiveType primitive, int dimension, boolean linearAlgebra)
+	static def dispatch Class<?> getJavaType(BaseType it) { getJavaType(primitive, sizes.size, false )}
+	static def dispatch Class<?> getJavaType(ConnectivityType it) { getJavaType(base.primitive, (connectivities+base.sizes).size, false )}
+	static def dispatch Class<?> getJavaType(LinearAlgebraType it) { getJavaType(PrimitiveType::REAL, sizes.size, true )}
+
+	private static def Class<?> getJavaType(PrimitiveType primitive, int dimension, boolean linearAlgebra)
 	{
 		switch (primitive)
 		{

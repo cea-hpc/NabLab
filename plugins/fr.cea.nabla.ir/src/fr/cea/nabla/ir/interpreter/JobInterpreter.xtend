@@ -9,7 +9,6 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.interpreter
 
-import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.IrRoot
@@ -132,10 +131,10 @@ class JobInterpreter
 			val vtkFileContent = new VtkFileContent(iteration, time, coord, quads);
 
 			//TODO deal with linearAlgebra
-			val connectivityVars = ppInfo.outputVariables.filter(ConnectivityVariable)
-			for (v : connectivityVars.filter(v | v.type.connectivities.head.returnType.name == "cell"))
+			val connectivityVars = ppInfo.outputVariables
+			for (v : connectivityVars.filter(v | v.support.name == "cell"))
 			{
-				val value = context.getVariableValue(v)
+				val value = context.getVariableValue(v.target)
 				switch value
 				{
 					NV1Real: vtkFileContent.addCellVariable(v.outputName, value.data)
@@ -143,9 +142,9 @@ class JobInterpreter
 					default: throw new RuntimeException("Vtk writer not yet implemented for type: " + value.class.name)
 				}
 			}
-			for (v : connectivityVars.filter(v | v.type.connectivities.head.returnType.name == "node"))
+			for (v : connectivityVars.filter(v | v.support.name == "node"))
 			{
-				val value = context.getVariableValue(v)
+				val value = context.getVariableValue(v.target)
 				switch value
 				{
 					NV1Real: vtkFileContent.addNodeVariable(v.outputName, value.data)

@@ -13,18 +13,18 @@ import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.TimeLoopJob
+import fr.cea.nabla.ir.ir.Variable
+import java.util.ArrayList
+import java.util.List
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.JobCallerExtensions.*
 import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
-import static extension fr.cea.nabla.ir.generator.java.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.InstructionContentProvider.*
-import java.util.List
-import fr.cea.nabla.ir.ir.Variable
-import java.util.ArrayList
+import static extension fr.cea.nabla.ir.generator.java.IrTypeExtensions.*
 
 class JobContentProvider 
 {
@@ -67,7 +67,7 @@ class JobContentProvider
 			{
 				// Switch variables to prepare next iteration
 				«FOR copy : copies»
-					«copy.destination.javaType» tmp_«copy.destination.name» = «copy.destination.name»;
+					«copy.destination.type.javaType» tmp_«copy.destination.name» = «copy.destination.name»;
 					«copy.destination.name» = «copy.source.name»;
 					«copy.source.name» = tmp_«copy.destination.name»;
 				«ENDFOR»

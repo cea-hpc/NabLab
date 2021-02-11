@@ -13,6 +13,7 @@ package fr.cea.nabla.ir.ir;
  * </p>
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.ArgOrVar#getName <em>Name</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.ArgOrVar#getType <em>Type</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getArgOrVar()
@@ -41,5 +42,27 @@ public interface ArgOrVar extends IrAnnotable {
 	 * @generated
 	 */
 	void setName(String value);
+
+	/**
+	 * Returns the value of the '<em><b>Type</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Type</em>' containment reference.
+	 * @see #setType(IrType)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getArgOrVar_Type()
+	 * @model containment="true" resolveProxies="true" required="true"
+	 * @generated
+	 */
+	IrType getType();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.ArgOrVar#getType <em>Type</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Type</em>' containment reference.
+	 * @see #getType()
+	 * @generated
+	 */
+	void setType(IrType value);
 
 } // ArgOrVar

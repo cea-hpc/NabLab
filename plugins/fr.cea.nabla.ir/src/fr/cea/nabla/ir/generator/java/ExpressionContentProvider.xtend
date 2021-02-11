@@ -15,10 +15,10 @@ import fr.cea.nabla.ir.ir.BaseTypeConstant
 import fr.cea.nabla.ir.ir.BinaryExpression
 import fr.cea.nabla.ir.ir.BoolConstant
 import fr.cea.nabla.ir.ir.Cardinality
-import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.ContractedIf
 import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IntConstant
+import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.MaxConstant
 import fr.cea.nabla.ir.ir.MinConstant
 import fr.cea.nabla.ir.ir.Parenthesis
@@ -27,11 +27,11 @@ import fr.cea.nabla.ir.ir.RealConstant
 import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.ir.VectorConstant
 
-import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
+import static extension fr.cea.nabla.ir.generator.java.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.java.JavaGeneratorUtils.*
 
 class ExpressionContentProvider
@@ -113,13 +113,13 @@ class ExpressionContentProvider
 	static def dispatch CharSequence getContent(FunctionCall it) 
 	'''«function.codeName»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
 
+	//TODO voir comment on peut décaler ça dans un IrTypeExtensions (formatIterators + formatIndices)
 	static def dispatch CharSequence getContent(ArgOrVarRef it)
 	{
 		var argOrVarContent = codeName
-		if (target.linearAlgebra)
-			if (target instanceof ConnectivityVariable
-				&& (target as ConnectivityVariable).type.connectivities.size  === 2
-				&& iterators.size === 2)
+		val t = target.type
+		if (t instanceof LinearAlgebraType)
+			if ((t as LinearAlgebraType).sizes.size == 2 && iterators.size === 2)
 				argOrVarContent += ".get("+iterators.map[name].join(', ')+")"+ indices.map[".get("+content+")"].join
 			else
 				argOrVarContent += iterators.map[".get("+name+")"].join + indices.map[".get("+content+")"].join

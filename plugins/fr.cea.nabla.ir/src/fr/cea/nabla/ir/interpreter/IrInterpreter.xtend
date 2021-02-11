@@ -34,9 +34,9 @@ import static org.iq80.leveldb.impl.Iq80DBFactory.factory
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
-import static extension fr.cea.nabla.ir.IrTypeExtensions.getDimension
 import static extension fr.cea.nabla.ir.Utils.getInstanceName
 import static extension fr.cea.nabla.ir.interpreter.NablaValueExtensions.*
+import fr.cea.nabla.ir.ir.SimpleVariable
 
 // TODO trapper les exceptions quand pas le jar, et pas le so dans le cas des JNI
 class IrInterpreter
@@ -81,7 +81,7 @@ class IrInterpreter
 	def interpreteOptionsDefaultValues()
 	{
 		for (v : ir.options)
-			context.addVariableValue(v, createValue(v, context))
+			context.addVariableValue(v, createValue(v.type, v.defaultValue, context))
 	}
 
 	def interprete(String jsonContent)
@@ -113,7 +113,7 @@ class IrInterpreter
 
 		// Interprete variables that are not options
 		for (v : ir.variables.filter[!option])
-			context.addVariableValue(v, createValue(v, context))
+			context.addVariableValue(v, createValue(v.type, v instanceof SimpleVariable?(v as SimpleVariable).defaultValue:null, context))
 
 		// Copy Node Cooords
 		context.addVariableValue(ir.initNodeCoordVariable, new NV2Real(context.meshWrapper.nodes))
@@ -203,8 +203,7 @@ class IrInterpreter
 
 			for (function : functionsByProvider.get(provider))
 			{
-				val isLinearAlgebra = (provider.extensionName == 'LinearAlgebra')
-				val javaTypes = function.inArgs.map[a | FunctionCallHelper.getJavaType(a.type.primitive, a.type.dimension, isLinearAlgebra)]
+				val javaTypes = function.inArgs.map[a | FunctionCallHelper.getJavaType(a.type)]
 				val method = providerClass.getDeclaredMethod(function.name, javaTypes)
 				method.setAccessible(true)
 				context.functionToMethod.put(function, new Pair(providerInstance, method))

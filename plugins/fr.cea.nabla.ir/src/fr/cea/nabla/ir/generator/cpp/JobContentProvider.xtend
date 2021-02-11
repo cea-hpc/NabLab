@@ -18,7 +18,6 @@ import fr.cea.nabla.ir.ir.Variable
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Data
 
-import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.JobCallerExtensions.*
 import static extension fr.cea.nabla.ir.JobExtensions.*

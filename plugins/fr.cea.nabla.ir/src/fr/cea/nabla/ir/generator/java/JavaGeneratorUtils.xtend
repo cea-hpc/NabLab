@@ -9,8 +9,6 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.java
 
-import fr.cea.nabla.ir.ir.BaseType
-import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.ExternFunction
 import fr.cea.nabla.ir.ir.InternFunction
 import fr.cea.nabla.ir.ir.PrimitiveType
@@ -39,21 +37,7 @@ class JavaGeneratorUtils
 		else 'options.' + provider.instanceName + '.' + name
 	}
 
-	static def dispatch String getJavaType(BaseType it)
-	{
-		if (it === null) return 'null'
-		var ret = primitive.javaType
-		for (s : sizes) ret += '[]'
-		return ret
-	}
-
-	static def dispatch String getJavaType(ConnectivityType it)
-	{
-		if (it === null) return 'null'
-		base.javaType + connectivities.map['[]'].join
-	}
-
-	static def dispatch String getJavaType(PrimitiveType t)
+	static def String getJavaType(PrimitiveType t)
 	{
 		if (t === null) return 'null'
 		switch t

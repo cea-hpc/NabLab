@@ -25,6 +25,7 @@ class IrBasicFactory
 	@Inject extension IrAnnotationHelper
 	@Inject extension IrExpressionFactory
 
+//TODO vérifier que ces fonctions sont tjs utilisées
 	// No create method to ensure a new instance every time (for n+1 time variables)
 	def fr.cea.nabla.ir.ir.BaseType toIrBaseType(BaseType t)
 	{

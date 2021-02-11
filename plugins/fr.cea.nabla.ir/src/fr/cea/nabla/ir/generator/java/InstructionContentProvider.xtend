@@ -11,7 +11,6 @@ package fr.cea.nabla.ir.generator.java
 
 import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.ConnectivityCall
-import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.Exit
 import fr.cea.nabla.ir.ir.If
 import fr.cea.nabla.ir.ir.Instruction
@@ -31,8 +30,8 @@ import fr.cea.nabla.ir.ir.While
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
-import static extension fr.cea.nabla.ir.generator.java.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
+import static extension fr.cea.nabla.ir.generator.java.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.java.ItemIndexAndIdValueContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.JavaGeneratorUtils.*
 
@@ -40,7 +39,7 @@ class InstructionContentProvider
 {
 	static def dispatch CharSequence getContent(VariableDeclaration it)
 	'''
-		«IF variable.const»final «ENDIF»«variable.javaType» «variable.name»«variable.defaultValueContent»;
+		«IF variable.const»final «ENDIF»«variable.type.javaType» «variable.name»«variable.defaultValueContent»;
 	'''
 
 	static def dispatch CharSequence getContent(InstructionBlock it)
@@ -62,7 +61,7 @@ class InstructionContentProvider
 
 	static def dispatch CharSequence getContent(ReductionInstruction it)
 	'''
-		«result.javaType» «result.name»«result.defaultValueContent»;
+		«result.type.javaType» «result.name»«result.defaultValueContent»;
 		«iterationBlock.defineInterval('''
 		«result.name» = IntStream.range(0, «iterationBlock.nbElems»).boxed().parallel().reduce
 		(
@@ -149,16 +148,13 @@ class InstructionContentProvider
 		«ENDFOR»
 	'''
 
-	private static def dispatch getDefaultValueContent(SimpleVariable it)
+	private static def getDefaultValueContent(SimpleVariable it)
 	{
 		if (defaultValue === null)
-			javaAllocation
+			type.javaAllocation
 		else
 			''' = «defaultValue.content»'''
 	}
-
-	private static def dispatch getDefaultValueContent(ConnectivityVariable it)
-	'''«IF defaultValue !== null» = «defaultValue.content»«ENDIF»'''
 
 	// ### IterationBlock Extensions ###
 	private static def dispatch defineInterval(Iterator it, CharSequence innerContent)

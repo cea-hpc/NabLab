@@ -27,7 +27,7 @@ import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.typing.ArgOrVarTypeProvider
-import fr.cea.nabla.typing.NablaSimpleType
+import fr.cea.nabla.typing.BaseTypeTypeProvider
 import java.util.LinkedHashSet
 import org.eclipse.xtext.EcoreUtil2
 
@@ -38,10 +38,9 @@ class IrArgOrVarFactory
 	@Inject extension TimeIteratorExtensions
 	@Inject extension IrExpressionFactory
 	@Inject extension IrJobFactory
-	@Inject extension IrBasicFactory
 	@Inject extension IrAnnotationHelper
 	@Inject extension ArgOrVarTypeProvider
-	@Inject extension LinearAlgebraUtils
+	@Inject extension BaseTypeTypeProvider
 	@Inject NablaType2IrType nablaType2IrType
 
 	/**
@@ -138,21 +137,21 @@ class IrArgOrVarFactory
 	{
 		annotations += nablaType.toIrAnnotation
 		name = nablaName
-		type = nablaType.toIrBaseType
+		type = nablaType2IrType.toIrType(nablaType.typeFor)
 	}
 
 	def create IrFactory::eINSTANCE.createArg toIrArg(Arg v, String varName)
 	{
 		annotations += v.toIrAnnotation
 		name = varName
-		type = v.type.toIrBaseType
+		type = nablaType2IrType.toIrType(v.typeFor)
 	}
 
 	def create IrFactory::eINSTANCE.createSimpleVariable toIrSimpleVariable(SimpleVar v, String varName)
 	{
 		annotations += v.toIrAnnotation
 		name = varName
-		type = nablaType2IrType.toIrBaseType(v.typeFor as NablaSimpleType)
+		type = nablaType2IrType.toIrType(v.typeFor)
 		const = v.const
 		constExpr = v.constExpr
 		option = false
@@ -164,8 +163,7 @@ class IrArgOrVarFactory
 	{
 		annotations += v.toIrAnnotation
 		name = varName
-		type = toIrConnectivityType(v.type, v.supports)
-		linearAlgebra = v.linearAlgebra
+		type = nablaType2IrType.toIrType(v.typeFor)
 	}
 
 	def create IrFactory::eINSTANCE.createSimpleVariable toIrIterationCounter(TimeIterator t)

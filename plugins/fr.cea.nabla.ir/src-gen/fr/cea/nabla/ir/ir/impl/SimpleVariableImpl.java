@@ -2,7 +2,6 @@
  */
 package fr.cea.nabla.ir.ir.impl;
 
-import fr.cea.nabla.ir.ir.BaseType;
 import fr.cea.nabla.ir.ir.Expression;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.SimpleVariable;
@@ -23,7 +22,6 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.SimpleVariableImpl#getType <em>Type</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.SimpleVariableImpl#getDefaultValue <em>Default Value</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.SimpleVariableImpl#isConst <em>Const</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.SimpleVariableImpl#isConstExpr <em>Const Expr</em>}</li>
@@ -33,16 +31,6 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * @generated
  */
 public class SimpleVariableImpl extends VariableImpl implements SimpleVariable {
-	/**
-	 * The cached value of the '{@link #getType() <em>Type</em>}' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getType()
-	 * @generated
-	 * @ordered
-	 */
-	protected BaseType type;
-
 	/**
 	 * The cached value of the '{@link #getDefaultValue() <em>Default Value</em>}' containment reference.
 	 * <!-- begin-user-doc -->
@@ -130,74 +118,6 @@ public class SimpleVariableImpl extends VariableImpl implements SimpleVariable {
 	@Override
 	protected EClass eStaticClass() {
 		return IrPackage.Literals.SIMPLE_VARIABLE;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public BaseType getType() {
-		if (type != null && type.eIsProxy()) {
-			InternalEObject oldType = (InternalEObject)type;
-			type = (BaseType)eResolveProxy(oldType);
-			if (type != oldType) {
-				InternalEObject newType = (InternalEObject)type;
-				NotificationChain msgs = oldType.eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.SIMPLE_VARIABLE__TYPE, null, null);
-				if (newType.eInternalContainer() == null) {
-					msgs = newType.eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.SIMPLE_VARIABLE__TYPE, null, msgs);
-				}
-				if (msgs != null) msgs.dispatch();
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.SIMPLE_VARIABLE__TYPE, oldType, type));
-			}
-		}
-		return type;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public BaseType basicGetType() {
-		return type;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public NotificationChain basicSetType(BaseType newType, NotificationChain msgs) {
-		BaseType oldType = type;
-		type = newType;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.SIMPLE_VARIABLE__TYPE, oldType, newType);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
-		return msgs;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public void setType(BaseType newType) {
-		if (newType != type) {
-			NotificationChain msgs = null;
-			if (type != null)
-				msgs = ((InternalEObject)type).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.SIMPLE_VARIABLE__TYPE, null, msgs);
-			if (newType != null)
-				msgs = ((InternalEObject)newType).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.SIMPLE_VARIABLE__TYPE, null, msgs);
-			msgs = basicSetType(newType, msgs);
-			if (msgs != null) msgs.dispatch();
-		}
-		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.SIMPLE_VARIABLE__TYPE, newType, newType));
 	}
 
 	/**
@@ -322,8 +242,6 @@ public class SimpleVariableImpl extends VariableImpl implements SimpleVariable {
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case IrPackage.SIMPLE_VARIABLE__TYPE:
-				return basicSetType(null, msgs);
 			case IrPackage.SIMPLE_VARIABLE__DEFAULT_VALUE:
 				return basicSetDefaultValue(null, msgs);
 		}
@@ -338,9 +256,6 @@ public class SimpleVariableImpl extends VariableImpl implements SimpleVariable {
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case IrPackage.SIMPLE_VARIABLE__TYPE:
-				if (resolve) return getType();
-				return basicGetType();
 			case IrPackage.SIMPLE_VARIABLE__DEFAULT_VALUE:
 				return getDefaultValue();
 			case IrPackage.SIMPLE_VARIABLE__CONST:
@@ -361,9 +276,6 @@ public class SimpleVariableImpl extends VariableImpl implements SimpleVariable {
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case IrPackage.SIMPLE_VARIABLE__TYPE:
-				setType((BaseType)newValue);
-				return;
 			case IrPackage.SIMPLE_VARIABLE__DEFAULT_VALUE:
 				setDefaultValue((Expression)newValue);
 				return;
@@ -388,9 +300,6 @@ public class SimpleVariableImpl extends VariableImpl implements SimpleVariable {
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case IrPackage.SIMPLE_VARIABLE__TYPE:
-				setType((BaseType)null);
-				return;
 			case IrPackage.SIMPLE_VARIABLE__DEFAULT_VALUE:
 				setDefaultValue((Expression)null);
 				return;
@@ -415,8 +324,6 @@ public class SimpleVariableImpl extends VariableImpl implements SimpleVariable {
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case IrPackage.SIMPLE_VARIABLE__TYPE:
-				return type != null;
 			case IrPackage.SIMPLE_VARIABLE__DEFAULT_VALUE:
 				return defaultValue != null;
 			case IrPackage.SIMPLE_VARIABLE__CONST:

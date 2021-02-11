@@ -11,7 +11,6 @@ package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.ConnectivityCall
-import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.Exit
 import fr.cea.nabla.ir.ir.If
 import fr.cea.nabla.ir.ir.Instruction
@@ -33,13 +32,13 @@ import org.eclipse.xtend.lib.annotations.Data
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
-import static extension fr.cea.nabla.ir.generator.cpp.ItemIndexAndIdValueContentProvider.*
 import static extension fr.cea.nabla.ir.generator.cpp.CppGeneratorUtils.*
+import static extension fr.cea.nabla.ir.generator.cpp.ItemIndexAndIdValueContentProvider.*
 
 @Data
 abstract class InstructionContentProvider
 {
-	protected val extension ArgOrVarContentProvider
+	protected val extension TypeContentProvider
 	protected val extension ExpressionContentProvider
 	protected abstract def CharSequence getReductionContent(ReductionInstruction it)
 	protected abstract def CharSequence getParallelLoopContent(Loop it)
@@ -47,10 +46,10 @@ abstract class InstructionContentProvider
 	def dispatch CharSequence getContent(VariableDeclaration it)
 	'''
 		«IF variable.type.baseTypeStatic»
-			«IF variable.const»const «ENDIF»«variable.cppType» «variable.name»«variable.defaultValueContent»;
+			«IF variable.const»const «ENDIF»«variable.type.cppType» «variable.name»«variable.defaultValueContent»;
 		«ELSE»
-			«IF variable.const»const «ENDIF»«variable.cppType» «variable.name»;
-			«variable.initCppTypeContent»
+			«IF variable.const»const «ENDIF»«variable.type.cppType» «variable.name»;
+			«initCppTypeContent(variable.name, variable.type)»
 		«ENDIF»
 	'''
 
@@ -144,10 +143,7 @@ abstract class InstructionContentProvider
 		}
 	'''
 
-	protected def dispatch getDefaultValueContent(SimpleVariable it)
-	'''«IF defaultValue !== null»(«defaultValue.content»)«ENDIF»'''
-	
-	protected def dispatch getDefaultValueContent(ConnectivityVariable it)
+	protected def getDefaultValueContent(SimpleVariable it)
 	'''«IF defaultValue !== null»(«defaultValue.content»)«ENDIF»'''
 
 	// ### IterationBlock Extensions ###
@@ -202,9 +198,9 @@ class StlThreadInstructionContentProvider extends InstructionContentProvider
 {
 	override getReductionContent(ReductionInstruction it)
 	'''
-		«result.cppType» «result.name»;
+		«result.type.cppType» «result.name»;
 		«iterationBlock.defineInterval('''
-		«result.name» = parallel_reduce(«iterationBlock.nbElems», «result.defaultValue.content», [&](«result.cppType»& accu, const size_t& «iterationBlock.indexName»)
+		«result.name» = parallel_reduce(«iterationBlock.nbElems», «result.defaultValue.content», [&](«result.type.cppType»& accu, const size_t& «iterationBlock.indexName»)
 			{
 				«FOR innerInstruction : innerInstructions»
 				«innerInstruction.content»
@@ -228,15 +224,15 @@ class KokkosInstructionContentProvider extends InstructionContentProvider
 {
 	override getReductionContent(ReductionInstruction it)
 	'''
-		«result.cppType» «result.name»;
+		«result.type.cppType» «result.name»;
 		«iterationBlock.defineInterval('''
-		Kokkos::parallel_reduce(«firstArgument», KOKKOS_LAMBDA(const size_t& «iterationBlock.indexName», «result.cppType»& accu)
+		Kokkos::parallel_reduce(«firstArgument», KOKKOS_LAMBDA(const size_t& «iterationBlock.indexName», «result.type.cppType»& accu)
 		{
 			«FOR innerInstruction : innerInstructions»
 			«innerInstruction.content»
 			«ENDFOR»
 			accu = «binaryFunction.codeName»(accu, «lambda.content»);
-		}, KokkosJoiner<«result.cppType»>(«result.name», «result.defaultValue.content», &«binaryFunction.codeName»));''')»
+		}, KokkosJoiner<«result.type.cppType»>(«result.name», «result.defaultValue.content», &«binaryFunction.codeName»));''')»
 	'''
 
 	override getParallelLoopContent(Loop it)
@@ -287,7 +283,7 @@ class OpenMpInstructionContentProvider extends InstructionContentProvider
 {
 	override getReductionContent(ReductionInstruction it)
 	'''
-		«result.cppType» «result.name»(«result.defaultValue.content»);
+		«result.type.cppType» «result.name»(«result.defaultValue.content»);
 		#pragma omp parallel for reduction(min:«result.name»)
 		«iterationBlock.defineInterval('''
 		for (size_t «iterationBlock.indexName»=0; «iterationBlock.indexName»<«iterationBlock.nbElems»; «iterationBlock.indexName»++)

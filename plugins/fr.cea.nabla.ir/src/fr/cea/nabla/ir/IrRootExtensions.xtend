@@ -9,9 +9,10 @@
  *******************************************************************************/
 package fr.cea.nabla.ir
 
-import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.SimpleVariable
+
+import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 
 class IrRootExtensions
 {
@@ -27,6 +28,6 @@ class IrRootExtensions
 
 	static def isLinearAlgebra(IrRoot it)
 	{
-		variables.filter(ConnectivityVariable).exists[x | x.linearAlgebra]
+		variables.exists[v | v.linearAlgebra]
 	}
 }

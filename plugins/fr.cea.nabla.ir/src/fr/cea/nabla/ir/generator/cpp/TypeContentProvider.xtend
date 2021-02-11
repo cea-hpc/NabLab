@@ -13,27 +13,37 @@ import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.Expression
+import fr.cea.nabla.ir.ir.IrType
+import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.PrimitiveType
+import java.util.ArrayList
+import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
+
+import static extension fr.cea.nabla.ir.generator.Utils.*
 
 abstract class TypeContentProvider
 {
 	@Accessors extension ExpressionContentProvider expressionContentProvider
 
 	protected abstract def String getCppType(BaseType baseType, Iterable<Connectivity> connectivities)
+	protected abstract def CharSequence getCstrInit(String varName, IrType type)
 	protected abstract def String getLinearAlgebraType(int dimension)
+	protected abstract def CharSequence formatIterators(IrType type, List<String> iterators)
 
-	def dispatch String getCppType(BaseType it)
+	def String getCppType(IrType it)
 	{
-		if (it === null)
-			'null'
-		else if (sizes.empty)
-			primitive.cppType
-		else
-			getCppArrayType(primitive, sizes)
+		switch it
+		{
+			case null: "null"
+			BaseType case sizes.empty: primitive.cppType
+			BaseType: getCppArrayType(primitive, sizes)
+			ConnectivityType: getCppType(base, connectivities)
+			LinearAlgebraType: getLinearAlgebraType(sizes.size)
+		}
 	}
 
-	def dispatch String getCppType(PrimitiveType it)
+	def String getCppType(PrimitiveType it)
 	{
 		switch it
 		{
@@ -44,29 +54,48 @@ abstract class TypeContentProvider
 		}
  	}
 
-	def dispatch String getCppType(ConnectivityType it)
+	def String getJniType(IrType it)
 	{
-		getCppType(base, connectivities)
+		switch it
+		{
+			case null: "null"
+			BaseType case sizes.empty: primitive.jniType
+			BaseType case sizes.size == 1: primitive.jniType + "Array"
+			BaseType: "jobjectArray"
+			LinearAlgebraType: "jobject"
+			default: throw new RuntimeException("Ooops. Can not be there, normally...")
+		}
 	}
 
-
-	def String getJniType(BaseType it)
+	def String getJniType(PrimitiveType it)
 	{
-		if (it === null) 'null'
-		else if (sizes.empty) primitive.jniType
-		else if (sizes.size == 1) primitive.jniType + "Array"
-		else "jobjectArray"
-	}
-
-	def String getJniType(PrimitiveType t)
-	{
-		if (t === null) return 'null'
-		switch t
+		//TODO un peu chelou le coup du null...
+		if (it === null) return 'null'
+		switch it
 		{
 			case null: 'void'
 			case BOOL: 'jboolean'
 			case INT: 'jint'
 			case REAL: 'jdouble'
+		}
+	}
+
+	def isMatrix(IrType t)
+	{
+		switch t
+		{
+			LinearAlgebraType: t.sizes.size == 2
+			default: false
+		}
+	}
+
+	def initCppTypeContent(String name, IrType t)
+	{
+		switch t
+		{
+			BaseType: '''«name».initSize(«t.sizes.map[x | expressionContentProvider.getContent(x)].join(', ')»);'''
+			ConnectivityType: initCppType(name, t, new ArrayList<String>, t.connectivities)
+			LinearAlgebraType: throw new RuntimeException('Not implemented')
 		}
 	}
 
@@ -84,6 +113,22 @@ abstract class TypeContentProvider
 		if (e.constExpr) e.content
 		else '0'
 	}
+
+	private def CharSequence initCppType(String name, ConnectivityType t, List<String> accessors, Iterable<Connectivity> connectivities)
+	{
+		//TODO comment peut-on avoir un ConnectivityType avec connectivities empty ?
+		if (connectivities.empty)
+			'''«name»«formatIterators(t, accessors)».initSize(«t.base.sizes.map[x | expressionContentProvider.getContent(x)].join(', ')»);'''
+		else
+		{
+			val indexName = "i" + connectivities.size
+			accessors += indexName
+			'''
+				for (size_t «indexName»=0; «indexName»<«connectivities.head.nbElemsVar»; «indexName»++)
+					«initCppType(name, t, accessors, connectivities.tail)»
+			'''
+		}
+	}
 }
 
 class StlTypeContentProvider extends TypeContentProvider
@@ -92,6 +137,30 @@ class StlTypeContentProvider extends TypeContentProvider
 	{
 		if (connectivities.empty) baseType.cppType
 		else 'std::vector<' + getCppType(baseType, connectivities.tail) + '>'
+	}
+
+	override protected getCstrInit(String varName, IrType type)
+	{
+		switch type
+		{
+			LinearAlgebraType case (type.sizes.size == 1):
+				'''«expressionContentProvider.getContent(type.sizes.get(0))»'''
+			LinearAlgebraType case (type.sizes.size == 2):
+				'''"«varName»", «expressionContentProvider.getContent(type.sizes.get(0))», «expressionContentProvider.getContent(type.sizes.get(1))»'''
+			ConnectivityType:
+				getCstrInit(type.base, type.connectivities)
+			default:
+				throw new RuntimeException("Ooops. Can not be there, normally...")
+		}
+	}
+
+	override protected formatIterators(IrType type, List<String> iterators)
+	{
+		switch type
+		{
+			LinearAlgebraType case (type.sizes.size == 2): '''«FOR i : iterators BEFORE '(' SEPARATOR ',' AFTER ')'»«i»«ENDFOR»'''
+			default: '''«FOR i : iterators BEFORE '[' SEPARATOR '][' AFTER ']'»«i»«ENDFOR»'''
+		}
 	}
 
 	override protected getLinearAlgebraType(int dimension) 
@@ -103,6 +172,17 @@ class StlTypeContentProvider extends TypeContentProvider
 			default: throw new RuntimeException("Unsupported dimension: " + dimension)
 		}
 	}
+
+	private def CharSequence getCstrInit(BaseType baseType, Iterable<Connectivity> connectivities)
+	{
+		switch connectivities.size
+		{
+			case 0: throw new RuntimeException("Ooops. Can not be there, normally...")
+			case 1: connectivities.get(0).nbElemsVar
+			default: '''«connectivities.get(0).nbElemsVar», «getCppType(baseType, connectivities.tail)»(«getCstrInit(baseType, connectivities.tail)»)''' 
+		}
+	}
+
 }
 
 class KokkosTypeContentProvider extends TypeContentProvider
@@ -111,6 +191,23 @@ class KokkosTypeContentProvider extends TypeContentProvider
 	{
 		'Kokkos::View<' + baseType.cppType + connectivities.map['*'].join + '>'
 	}
+
+	override protected getCstrInit(String varName, IrType type)
+	{
+		switch type
+		{
+			LinearAlgebraType:
+				// specific initialization for matrices
+				'''"«varName»", «FOR s : type.sizes SEPARATOR ', '»«expressionContentProvider.getContent(s)»«ENDFOR»'''
+			ConnectivityType:
+				'''"«varName»", «FOR c : type.connectivities SEPARATOR ', '»«c.nbElemsVar»«ENDFOR»'''
+			default:
+				throw new RuntimeException("Ooops. Can not be there, normally...")
+		}
+	}
+
+	override protected formatIterators(IrType type, List<String> iterators)
+	'''«FOR i : iterators BEFORE '(' SEPARATOR ',' AFTER ')'»«i»«ENDFOR»'''
 
 	override protected getLinearAlgebraType(int dimension) 
 	{

@@ -51,10 +51,12 @@ import fr.cea.nabla.ir.ir.IterationBlock;
 import fr.cea.nabla.ir.ir.Iterator;
 import fr.cea.nabla.ir.ir.Job;
 import fr.cea.nabla.ir.ir.JobCaller;
+import fr.cea.nabla.ir.ir.LinearAlgebraType;
 import fr.cea.nabla.ir.ir.Loop;
 import fr.cea.nabla.ir.ir.MaxConstant;
 import fr.cea.nabla.ir.ir.MinConstant;
 import fr.cea.nabla.ir.ir.Parenthesis;
+import fr.cea.nabla.ir.ir.PostProcessedVariable;
 import fr.cea.nabla.ir.ir.PostProcessing;
 import fr.cea.nabla.ir.ir.PrimitiveType;
 import fr.cea.nabla.ir.ir.RealConstant;
@@ -150,6 +152,13 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	private EClass variableEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass postProcessedVariableEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -563,6 +572,13 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	private EClass itemIndexValueEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass linearAlgebraTypeEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -1058,8 +1074,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EClass getArg() {
-		return argEClass;
+	public EReference getArgOrVar_Type() {
+		return (EReference)argOrVarEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -1068,8 +1084,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getArg_Type() {
-		return (EReference)argEClass.getEStructuralFeatures().get(0);
+	public EClass getArg() {
+		return argEClass;
 	}
 
 	/**
@@ -1088,8 +1104,38 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EAttribute getVariable_OutputName() {
-		return (EAttribute)variableEClass.getEStructuralFeatures().get(0);
+	public EClass getPostProcessedVariable() {
+		return postProcessedVariableEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getPostProcessedVariable_Target() {
+		return (EReference)postProcessedVariableEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getPostProcessedVariable_OutputName() {
+		return (EAttribute)postProcessedVariableEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getPostProcessedVariable_Support() {
+		return (EReference)postProcessedVariableEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -1108,7 +1154,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getSimpleVariable_Type() {
+	public EReference getSimpleVariable_DefaultValue() {
 		return (EReference)simpleVariableEClass.getEStructuralFeatures().get(0);
 	}
 
@@ -1118,18 +1164,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getSimpleVariable_DefaultValue() {
-		return (EReference)simpleVariableEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
 	public EAttribute getSimpleVariable_Const() {
-		return (EAttribute)simpleVariableEClass.getEStructuralFeatures().get(2);
+		return (EAttribute)simpleVariableEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -1139,7 +1175,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 */
 	@Override
 	public EAttribute getSimpleVariable_ConstExpr() {
-		return (EAttribute)simpleVariableEClass.getEStructuralFeatures().get(3);
+		return (EAttribute)simpleVariableEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -1149,7 +1185,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 */
 	@Override
 	public EAttribute getSimpleVariable_Option() {
-		return (EAttribute)simpleVariableEClass.getEStructuralFeatures().get(4);
+		return (EAttribute)simpleVariableEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -1160,36 +1196,6 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	@Override
 	public EClass getConnectivityVariable() {
 		return connectivityVariableEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EReference getConnectivityVariable_Type() {
-		return (EReference)connectivityVariableEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EReference getConnectivityVariable_DefaultValue() {
-		return (EReference)connectivityVariableEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EAttribute getConnectivityVariable_LinearAlgebra() {
-		return (EAttribute)connectivityVariableEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -2698,6 +2704,26 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
+	public EClass getLinearAlgebraType() {
+		return linearAlgebraTypeEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getLinearAlgebraType_Sizes() {
+		return (EReference)linearAlgebraTypeEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EEnum getPrimitiveType() {
 		return primitiveTypeEEnum;
 	}
@@ -2779,24 +2805,24 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 
 		argOrVarEClass = createEClass(ARG_OR_VAR);
 		createEAttribute(argOrVarEClass, ARG_OR_VAR__NAME);
+		createEReference(argOrVarEClass, ARG_OR_VAR__TYPE);
 
 		argEClass = createEClass(ARG);
-		createEReference(argEClass, ARG__TYPE);
 
 		variableEClass = createEClass(VARIABLE);
-		createEAttribute(variableEClass, VARIABLE__OUTPUT_NAME);
+
+		postProcessedVariableEClass = createEClass(POST_PROCESSED_VARIABLE);
+		createEReference(postProcessedVariableEClass, POST_PROCESSED_VARIABLE__TARGET);
+		createEAttribute(postProcessedVariableEClass, POST_PROCESSED_VARIABLE__OUTPUT_NAME);
+		createEReference(postProcessedVariableEClass, POST_PROCESSED_VARIABLE__SUPPORT);
 
 		simpleVariableEClass = createEClass(SIMPLE_VARIABLE);
-		createEReference(simpleVariableEClass, SIMPLE_VARIABLE__TYPE);
 		createEReference(simpleVariableEClass, SIMPLE_VARIABLE__DEFAULT_VALUE);
 		createEAttribute(simpleVariableEClass, SIMPLE_VARIABLE__CONST);
 		createEAttribute(simpleVariableEClass, SIMPLE_VARIABLE__CONST_EXPR);
 		createEAttribute(simpleVariableEClass, SIMPLE_VARIABLE__OPTION);
 
 		connectivityVariableEClass = createEClass(CONNECTIVITY_VARIABLE);
-		createEReference(connectivityVariableEClass, CONNECTIVITY_VARIABLE__TYPE);
-		createEReference(connectivityVariableEClass, CONNECTIVITY_VARIABLE__DEFAULT_VALUE);
-		createEAttribute(connectivityVariableEClass, CONNECTIVITY_VARIABLE__LINEAR_ALGEBRA);
 
 		functionEClass = createEClass(FUNCTION);
 		createEAttribute(functionEClass, FUNCTION__NAME);
@@ -2975,6 +3001,9 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEReference(connectivityTypeEClass, CONNECTIVITY_TYPE__CONNECTIVITIES);
 		createEReference(connectivityTypeEClass, CONNECTIVITY_TYPE__BASE);
 
+		linearAlgebraTypeEClass = createEClass(LINEAR_ALGEBRA_TYPE);
+		createEReference(linearAlgebraTypeEClass, LINEAR_ALGEBRA_TYPE__SIZES);
+
 		containerEClass = createEClass(CONTAINER);
 
 		connectivityCallEClass = createEClass(CONNECTIVITY_CALL);
@@ -3095,6 +3124,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		irTypeEClass.getESuperTypes().add(this.getIrAnnotable());
 		baseTypeEClass.getESuperTypes().add(this.getIrType());
 		connectivityTypeEClass.getESuperTypes().add(this.getIrType());
+		linearAlgebraTypeEClass.getESuperTypes().add(this.getIrType());
 		containerEClass.getESuperTypes().add(this.getIrAnnotable());
 		connectivityCallEClass.getESuperTypes().add(this.getContainer());
 		setRefEClass.getESuperTypes().add(this.getContainer());
@@ -3138,7 +3168,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEReference(getIrModule_Jobs(), this.getJob(), null, "jobs", null, 0, -1, IrModule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(postProcessingEClass, PostProcessing.class, "PostProcessing", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getPostProcessing_OutputVariables(), this.getVariable(), null, "outputVariables", null, 0, -1, PostProcessing.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getPostProcessing_OutputVariables(), this.getPostProcessedVariable(), null, "outputVariables", null, 0, -1, PostProcessing.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getPostProcessing_PeriodReference(), this.getSimpleVariable(), null, "periodReference", null, 1, 1, PostProcessing.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getPostProcessing_PeriodValue(), this.getSimpleVariable(), null, "periodValue", null, 1, 1, PostProcessing.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getPostProcessing_LastDumpVariable(), this.getSimpleVariable(), null, "lastDumpVariable", null, 1, 1, PostProcessing.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3154,24 +3184,24 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 
 		initEClass(argOrVarEClass, ArgOrVar.class, "ArgOrVar", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getArgOrVar_Name(), ecorePackage.getEString(), "name", null, 1, 1, ArgOrVar.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getArgOrVar_Type(), this.getIrType(), null, "type", null, 1, 1, ArgOrVar.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(argEClass, Arg.class, "Arg", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getArg_Type(), this.getBaseType(), null, "type", null, 1, 1, Arg.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(variableEClass, Variable.class, "Variable", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getVariable_OutputName(), ecorePackage.getEString(), "outputName", null, 0, 1, Variable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(postProcessedVariableEClass, PostProcessedVariable.class, "PostProcessedVariable", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getPostProcessedVariable_Target(), this.getVariable(), null, "target", null, 1, 1, PostProcessedVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getPostProcessedVariable_OutputName(), ecorePackage.getEString(), "outputName", null, 1, 1, PostProcessedVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getPostProcessedVariable_Support(), this.getItemType(), null, "support", null, 0, 1, PostProcessedVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(simpleVariableEClass, SimpleVariable.class, "SimpleVariable", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getSimpleVariable_Type(), this.getBaseType(), null, "type", null, 1, 1, SimpleVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getSimpleVariable_DefaultValue(), this.getExpression(), null, "defaultValue", null, 0, 1, SimpleVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getSimpleVariable_Const(), ecorePackage.getEBoolean(), "const", "false", 1, 1, SimpleVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getSimpleVariable_ConstExpr(), ecorePackage.getEBoolean(), "constExpr", null, 1, 1, SimpleVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getSimpleVariable_Option(), ecorePackage.getEBoolean(), "option", null, 1, 1, SimpleVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(connectivityVariableEClass, ConnectivityVariable.class, "ConnectivityVariable", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getConnectivityVariable_Type(), this.getConnectivityType(), null, "type", null, 1, 1, ConnectivityVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getConnectivityVariable_DefaultValue(), this.getArgOrVarRef(), null, "defaultValue", null, 0, 1, ConnectivityVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getConnectivityVariable_LinearAlgebra(), ecorePackage.getEBoolean(), "linearAlgebra", "false", 1, 1, ConnectivityVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(functionEClass, Function.class, "Function", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getFunction_Name(), ecorePackage.getEString(), "name", null, 1, 1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3349,6 +3379,9 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEClass(connectivityTypeEClass, ConnectivityType.class, "ConnectivityType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getConnectivityType_Connectivities(), this.getConnectivity(), null, "connectivities", null, 0, -1, ConnectivityType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getConnectivityType_Base(), this.getBaseType(), null, "base", null, 1, 1, ConnectivityType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(linearAlgebraTypeEClass, LinearAlgebraType.class, "LinearAlgebraType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getLinearAlgebraType_Sizes(), this.getExpression(), null, "sizes", null, 0, -1, LinearAlgebraType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(containerEClass, fr.cea.nabla.ir.ir.Container.class, "Container", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 

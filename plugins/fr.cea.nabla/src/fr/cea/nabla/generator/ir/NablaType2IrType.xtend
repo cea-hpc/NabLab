@@ -20,6 +20,10 @@ import fr.cea.nabla.typing.NSTScalar
 import fr.cea.nabla.typing.NablaConnectivityType
 import fr.cea.nabla.typing.NablaSimpleType
 import fr.cea.nabla.typing.NablaType
+import fr.cea.nabla.typing.NablaLinearAlgebraType
+import fr.cea.nabla.ir.ir.LinearAlgebraType
+import fr.cea.nabla.typing.NLATVector
+import fr.cea.nabla.typing.NLATMatrix
 
 class NablaType2IrType 
 {
@@ -33,6 +37,7 @@ class NablaType2IrType
 			case null: null // Undefined type
 			NablaSimpleType: t.toIrBaseType
 			NablaConnectivityType: t.toIrConnectivityType
+			NablaLinearAlgebraType: t.toIrLinearAlgebraType
 		}
 	}
 
@@ -69,6 +74,23 @@ class NablaType2IrType
 		[
 			base = t.simple.toIrBaseType
 			t.supports.forEach[x | connectivities += x.toIrConnectivity]
+		]
+	}
+	
+	private def dispatch LinearAlgebraType toIrLinearAlgebraType(NLATVector t)
+	{
+		IrFactory.eINSTANCE.createLinearAlgebraType =>
+		[
+			sizes += t.size.toIrExpression
+		]
+	}
+
+	private def dispatch LinearAlgebraType toIrLinearAlgebraType(NLATMatrix t)
+	{
+		IrFactory.eINSTANCE.createLinearAlgebraType =>
+		[
+			sizes += t.nbRows.toIrExpression
+			sizes += t.nbCols.toIrExpression
 		]
 	}
 }

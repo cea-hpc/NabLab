@@ -12,11 +12,14 @@ package fr.cea.nabla.ir.generator.cpp
 import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.ir.generator.ApplicationGenerator
 import fr.cea.nabla.ir.generator.GenerationContent
+import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.Connectivity
+import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.InternFunction
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
+import fr.cea.nabla.ir.ir.IrType
 import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.Variable
 import java.util.ArrayList
@@ -95,7 +98,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		{
 			«IF postProcessing !== null»std::string «Utils.OutputPathNameAndValue.key»;«ENDIF»
 			«FOR v : options»
-			«argOrVarContentProvider.getCppType(v)» «v.name»;
+			«typeContentProvider.getCppType(v.type)» «v.name»;
 			«ENDFOR»
 			«FOR v : extensionProviders»
 			«getNsPrefix(v, '::', '::')»«v.facadeClass» «v.instanceName»;
@@ -225,7 +228,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		«opName» = «jsonContentProvider.getJsonName(opName)».GetString();
 		«ENDIF»
 		«FOR v : options»
-		«jsonContentProvider.getJsonContent(v)»
+		«jsonContentProvider.getJsonContent(v.name, v.type as BaseType, v.defaultValue)»
 		«ENDFOR»
 		«FOR v : extensionProviders»
 		«val vName = v.instanceName»
@@ -261,21 +264,21 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	, «v.name»(«expressionContentProvider.getContent(v.defaultValue)»)
 	«ENDFOR»
 	«FOR v : variables.filter(ConnectivityVariable)»
-	, «v.name»(«argOrVarContentProvider.getCstrInit(v)»)
+	, «v.name»(«typeContentProvider.getCstrInit(v.name, v.type)»)
 	«ENDFOR»
 	{
 		«val dynamicArrayVariables = variables.filter[!option && !type.baseTypeStatic]»
 		«IF !dynamicArrayVariables.empty»
 			// Allocate dynamic arrays (RealArrays with at least a dynamic dimension)
 			«FOR v : dynamicArrayVariables»
-				«argOrVarContentProvider.initCppTypeContent(v)»
+				«typeContentProvider.initCppTypeContent(v.name, v.type)»
 			«ENDFOR»
 
 		«ENDIF»
 		«IF main»
 		// Copy node coordinates
 		const auto& gNodes = mesh->getGeometry()->getNodes();
-		«val iterator = backend.argOrVarContentProvider.formatIterators(irRoot.initNodeCoordVariable, #["rNodes"])»
+		«val iterator = backend.typeContentProvider.formatIterators(irRoot.initNodeCoordVariable.type, #["rNodes"])»
 		for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
 		{
 			«irRoot.initNodeCoordVariable.name»«iterator»[0] = gNodes[rNodes][0];
@@ -330,12 +333,12 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 			}
 			auto quads = mesh->getGeometry()->getQuads();
 			writer.startVtpFile(iteration, «irRoot.timeVariable.name», nbNodes, «irRoot.nodeCoordVariable.name».data(), nbCells, quads.data());
-			«val outputVarsByConnectivities = irRoot.postProcessing.outputVariables.filter(ConnectivityVariable).groupBy(x | x.type.connectivities.head.returnType.name)»
+			«val outputVarsByConnectivities = irRoot.postProcessing.outputVariables.groupBy(x | x.support.name)»
 			writer.openNodeData();
 			«val nodeVariables = outputVarsByConnectivities.get("node")»
 			«IF !nodeVariables.nullOrEmpty»
 				«FOR v : nodeVariables»
-					writer.write«FOR s : v.type.base.sizes BEFORE '<' SEPARATOR ',' AFTER '>'»«expressionContentProvider.getContent(s)»«ENDFOR»("«v.outputName»", «v.name»);
+					«writeMethodName(v.target.type)»("«v.outputName»", «v.target.name»);
 				«ENDFOR»
 			«ENDIF»
 			writer.closeNodeData();
@@ -343,7 +346,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 			«val cellVariables = outputVarsByConnectivities.get("cell")»
 			«IF !cellVariables.nullOrEmpty»
 				«FOR v : cellVariables»
-					writer.write«FOR s : v.type.base.sizes BEFORE '<' SEPARATOR ',' AFTER '>'»«expressionContentProvider.getContent(s)»«ENDFOR»("«v.outputName»", «v.name»);
+					«writeMethodName(v.target.type)»("«v.outputName»", «v.target.name»);
 				«ENDFOR»
 			«ENDIF»
 			writer.closeCellData();
@@ -479,14 +482,25 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	{
 		switch (v)
 		{
-			 SimpleVariable case v.constExpr: '''static constexpr «argOrVarContentProvider.getCppType(v)» «v.name» = «expressionContentProvider.getContent(v.defaultValue)»;'''
-			 SimpleVariable case v.const: '''const «argOrVarContentProvider.getCppType(v)» «v.name»;'''
-			 default: '''«argOrVarContentProvider.getCppType(v)» «v.name»;'''
+			 SimpleVariable case v.constExpr: '''static constexpr «typeContentProvider.getCppType(v.type)» «v.name» = «expressionContentProvider.getContent(v.defaultValue)»;'''
+			 SimpleVariable case v.const: '''const «typeContentProvider.getCppType(v.type)» «v.name»;'''
+			 default: '''«typeContentProvider.getCppType(v.type)» «v.name»;'''
 		}
 	}
 
 	private def isKokkosTeamThread()
 	{
 		backend instanceof KokkosTeamThreadBackend
+	}
+
+	private def writeMethodName(IrType type)
+	{
+		switch type
+		{
+			ConnectivityType:
+				'''writer.write«FOR s : type.base.sizes BEFORE '<' SEPARATOR ',' AFTER '>'»«expressionContentProvider.getContent(s)»«ENDFOR»'''
+			default:
+				'''writer.write'''
+		}
 	}
 }

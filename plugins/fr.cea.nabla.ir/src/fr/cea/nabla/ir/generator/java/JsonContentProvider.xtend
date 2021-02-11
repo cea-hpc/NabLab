@@ -9,55 +9,54 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.java
 
+import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.PrimitiveType
-import fr.cea.nabla.ir.ir.SimpleVariable
 import org.eclipse.xtend.lib.annotations.Data
 
-import static extension fr.cea.nabla.ir.generator.java.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
+import static extension fr.cea.nabla.ir.generator.java.IrTypeExtensions.*
 
 @Data
 class JsonContentProvider
 {
-	static def getJsonName(SimpleVariable it) { name.jsonName }
 	static def getJsonName(String varName) { 'valueof_' + varName }
 
-	static def getJsonContent(SimpleVariable it)
+	static def getJsonContent(String name, BaseType type, Expression defaultValue)
 	'''
 		// «name»
 		«IF defaultValue === null»
 			assert(o.has("«name»"));
-			final JsonElement «jsonName» = o.get("«name»");
-			«getJsonContent(it, type.sizes, #[])»
+			final JsonElement «name.jsonName» = o.get("«name»");
+			«getJsonContent(name, type, type.sizes, #[])»
 		«ELSE»
 			if (o.has("«name»"))
 			{
 				final JsonElement «name.jsonName» = o.get("«name»");
-				«getJsonContent(it, type.sizes, #[])»
+				«getJsonContent(name, type, type.sizes, #[])»
 			}
 			else
 				«name» = «defaultValue.content»;
 		«ENDIF»
 	'''
 
-	private static def CharSequence getJsonContent(SimpleVariable v, Iterable<Expression> sizes, String[] indices)
+	private static def CharSequence getJsonContent(String name, BaseType type, Iterable<Expression> sizes, String[] indices)
 	{
-		val primitive = v.type.primitive
+		val primitive = type.primitive
 		if (sizes.empty)
 		'''
-			assert(«v.jsonName»«FOR i : indices».getAsJsonArray().get(«i»)«ENDFOR».isJsonPrimitive());
-			«v.name»«FOR i : indices»[«i»]«ENDFOR» = «v.jsonName»«FOR i : indices».getAsJsonArray().get(«i»)«ENDFOR».getAsJsonPrimitive().getAs«primitive.jsonType»();
+			assert(«name.jsonName»«FOR i : indices».getAsJsonArray().get(«i»)«ENDFOR».isJsonPrimitive());
+			«name»«FOR i : indices»[«i»]«ENDFOR» = «name.jsonName»«FOR i : indices».getAsJsonArray().get(«i»)«ENDFOR».getAsJsonPrimitive().getAs«primitive.jsonType»();
 		'''
 		else
 		'''
-			assert(«v.jsonName»«FOR i : indices».getAsJsonArray().get(«i»)«ENDFOR».isJsonArray());
-			assert(«v.jsonName».getAsJsonArray()«FOR i : indices».get(«i»).getAsJsonArray()«ENDFOR».size() == «sizes.head.content»);
-			«IF indices.empty»«v.name»«v.javaAllocation»;«ENDIF»
+			assert(«name.jsonName»«FOR i : indices».getAsJsonArray().get(«i»)«ENDFOR».isJsonArray());
+			assert(«name.jsonName».getAsJsonArray()«FOR i : indices».get(«i»).getAsJsonArray()«ENDFOR».size() == «sizes.head.content»);
+			«IF indices.empty»«name»«type.javaAllocation»;«ENDIF»
 			«val indexName = 'i' + sizes.size»
 			for (int «indexName»=0 ; «indexName»<«sizes.head.content» ; «indexName»++)
 			{
-				«getJsonContent(v, sizes.tail, indices + #[indexName])»
+				«getJsonContent(name, type, sizes.tail, indices + #[indexName])»
 			}
 		'''
 	}

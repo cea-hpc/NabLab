@@ -12,7 +12,6 @@ abstract class CppGenerator
 	def CMakeContentProvider getIrRoot2CMake() { backend.cmakeContentProvider }
 	def TypeContentProvider getTypeContentProvider() { backend.typeContentProvider }
 	def ExpressionContentProvider getExpressionContentProvider() { backend.expressionContentProvider }
-	def ArgOrVarContentProvider getArgOrVarContentProvider() { backend.argOrVarContentProvider }
 	def InstructionContentProvider getInstructionContentProvider() { backend.instructionContentProvider }
 	def FunctionContentProvider getFunctionContentProvider() { backend.functionContentProvider }
 	def TraceContentProvider getTraceContentProvider() { backend.traceContentProvider }

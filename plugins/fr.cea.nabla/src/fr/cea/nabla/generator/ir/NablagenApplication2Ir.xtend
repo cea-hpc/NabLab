@@ -13,6 +13,7 @@ import com.google.inject.Inject
 import com.google.inject.Provider
 import fr.cea.nabla.ir.IrModuleExtensions
 import fr.cea.nabla.ir.ir.ArgOrVarRef
+import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.ExternFunction
 import fr.cea.nabla.ir.ir.IrFactory
@@ -93,12 +94,15 @@ class NablagenApplication2Ir
 			for (outputVar : ngenApp.vtkOutput.vars)
 			{
 				val v = getCurrentIrVariable(mainIrModule, outputVar.varRef)
-				v.outputName = outputVar.varName
-				postProcessing.outputVariables += v
+				postProcessing.outputVariables += IrFactory.eINSTANCE.createPostProcessedVariable =>
+				[
+					target = v
+					outputName = outputVar.varName
+					support = outputVar.varRef.supports.head.returnType.toIrItemType
+				]
 			}
-
 			// Create a variable to store the last write time
-			val periodVariableType = postProcessing.periodReference.type
+			val periodVariableType = postProcessing.periodReference.type as BaseType
 			postProcessing.lastDumpVariable = IrFactory.eINSTANCE.createSimpleVariable =>
 			[
 				name = "lastDump"

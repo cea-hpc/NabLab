@@ -26,7 +26,7 @@ import org.eclipse.emf.common.util.EList;
 public interface PostProcessing extends IrAnnotable {
 	/**
 	 * Returns the value of the '<em><b>Output Variables</b></em>' reference list.
-	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Variable}.
+	 * The list contents are of type {@link fr.cea.nabla.ir.ir.PostProcessedVariable}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Output Variables</em>' reference list.
@@ -34,7 +34,7 @@ public interface PostProcessing extends IrAnnotable {
 	 * @model
 	 * @generated
 	 */
-	EList<Variable> getOutputVariables();
+	EList<PostProcessedVariable> getOutputVariables();
 
 	/**
 	 * Returns the value of the '<em><b>Period Reference</b></em>' reference.

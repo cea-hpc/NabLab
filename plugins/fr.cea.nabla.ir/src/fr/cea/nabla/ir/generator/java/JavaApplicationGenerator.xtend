@@ -12,11 +12,12 @@ package fr.cea.nabla.ir.generator.java
 import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.ir.generator.ApplicationGenerator
 import fr.cea.nabla.ir.generator.GenerationContent
+import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.Connectivity
-import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.InternFunction
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
+import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.Variable
 import java.util.ArrayList
@@ -29,9 +30,9 @@ import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.Utils.getInstanceName
 import static extension fr.cea.nabla.ir.generator.Utils.*
-import static extension fr.cea.nabla.ir.generator.java.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.FunctionContentProvider.*
+import static extension fr.cea.nabla.ir.generator.java.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.java.JobContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.JsonContentProvider.*
 
@@ -84,7 +85,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 				public String «Utils.OutputPathNameAndValue.key»;
 				«ENDIF»
 				«FOR v : options»
-				public «v.javaType» «v.name»;
+				public «v.type.javaType» «v.name»;
 				«ENDFOR»
 				«FOR v : extensionProviders»
 				public «getNsPrefix(v, '.', '.')»«v.facadeClass» «v.instanceName»;
@@ -105,7 +106,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 					«opName» = «opName.jsonName».getAsJsonPrimitive().getAsString();
 					«ENDIF»
 					«FOR v : options»
-					«v.jsonContent»
+					«getJsonContent(v.name, v.type as BaseType, v.defaultValue)»
 					«ENDFOR»
 					«FOR v : extensionProviders»
 					«val vName = v.instanceName»
@@ -146,7 +147,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 			«ENDIF»
 			// Global variables
 			«FOR v : variables.filter[!option]»
-			protected «IF v instanceof SimpleVariable && (v as SimpleVariable).const»final «ENDIF»«v.javaType» «v.name»;
+			protected «IF v instanceof SimpleVariable && (v as SimpleVariable).const»final «ENDIF»«v.type.javaType» «v.name»;
 			«ENDFOR»
 
 			public «className»(«javaMeshClassName» aMesh, Options aOptions)
@@ -168,11 +169,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 
 				// Allocate arrays
 				«FOR v : variables.filter[!option && defaultValue === null && !type.scalar]»
-					«IF v.linearAlgebra»
-						«v.name» = «(v as ConnectivityVariable).linearAlgebraDefinition»;
-					«ELSE»
-						«v.name»«v.javaAllocation»;
-					«ENDIF»
+						«v.name»«v.type.javaAllocation»;
 				«ENDFOR»
 				«IF main»
 
@@ -254,8 +251,8 @@ class JavaApplicationGenerator implements ApplicationGenerator
 				if (!writer.isDisabled())
 				{
 					VtkFileContent content = new VtkFileContent(iteration, «irRoot.timeVariable.name», «irRoot.nodeCoordVariable.name», mesh.getGeometry().getQuads());
-					«FOR v : postProcessing.outputVariables.filter(ConnectivityVariable)»
-					content.add«v.type.connectivities.head.returnType.name.toFirstUpper»Variable("«v.outputName»", «v.name»«IF v.linearAlgebra».toArray()«ENDIF»);
+					«FOR v : postProcessing.outputVariables»
+					content.add«v.support.name.toFirstUpper»Variable("«v.outputName»", «v.target.name»«IF v.target.type instanceof LinearAlgebraType».toArray()«ENDIF»);
 					«ENDFOR»
 					writer.writeFile(content);
 					«postProcessing.lastDumpVariable.name» = «postProcessing.periodReference.name»;
@@ -315,16 +312,6 @@ class JavaApplicationGenerator implements ApplicationGenerator
 			'''mesh.getNb«c.name.toFirstUpper»()'''
 		else
 			'''CartesianMesh2D.MaxNb«c.name.toFirstUpper»'''
-	}
-
-	private def getLinearAlgebraDefinition(ConnectivityVariable v)
-	{
-		switch v.type.connectivities.size
-		{
-			case 1: 'Vector.createDenseVector(' + v.type.connectivities.get(0).nbElemsVar + ')'
-			case 2: 'Matrix.createDenseMatrix(' + v.type.connectivities.map[nbElemsVar].join(', ') + ')'
-			default: throw new RuntimeException("Not implemented exception")
-		}
 	}
 
 	private def String getJavaMeshClassName(IrModule it)

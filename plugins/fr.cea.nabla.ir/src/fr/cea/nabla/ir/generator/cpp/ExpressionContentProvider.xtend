@@ -15,7 +15,6 @@ import fr.cea.nabla.ir.ir.BaseTypeConstant
 import fr.cea.nabla.ir.ir.BinaryExpression
 import fr.cea.nabla.ir.ir.BoolConstant
 import fr.cea.nabla.ir.ir.Cardinality
-import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.ContractedIf
 import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.FunctionCall
@@ -26,7 +25,6 @@ import fr.cea.nabla.ir.ir.MinConstant
 import fr.cea.nabla.ir.ir.Parenthesis
 import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.RealConstant
-import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.ir.VectorConstant
 import org.eclipse.xtend.lib.annotations.Data
@@ -40,12 +38,12 @@ import static extension fr.cea.nabla.ir.generator.cpp.CppGeneratorUtils.*
 @Data
 class ExpressionContentProvider
 {
-	val extension ArgOrVarContentProvider argContentProvider
+	val extension TypeContentProvider typeContentProvider
 
-	new(ArgOrVarContentProvider argContentProvider)
+	new(TypeContentProvider typeContentProvider)
 	{
-		this.argContentProvider = argContentProvider
-		this.argContentProvider.typeContentProvider.expressionContentProvider = this
+		this.typeContentProvider = typeContentProvider
+		this.typeContentProvider.expressionContentProvider = this
 	}
 
 	def dispatch CharSequence getContent(ContractedIf it) 
@@ -140,7 +138,7 @@ class ExpressionContentProvider
 		val varModule = target.irModule
 		if (argOrVarRefModule !== varModule) result = 'mainModule->' + result
 		// operator() on matrix must use constant object
-		if (target.matrix && !iterators.empty && eContainingFeature !== IrPackage.Literals.AFFECTATION__LEFT)
+		if (target.type.matrix && !iterators.empty && eContainingFeature !== IrPackage.Literals.AFFECTATION__LEFT)
 			result = '''std::cref(«result»)'''
 		return result
 	}
@@ -151,10 +149,12 @@ class ExpressionContentProvider
 
 	private def getIteratorsContent(ArgOrVarRef it)
 	{
-		if (iterators.empty || target instanceof SimpleVariable) return ''
-		val array = target as ConnectivityVariable
-		if (array.type.connectivities.size < iterators.size) return ''
-		formatIterators(array, iterators.map[name])
+		if (iterators.empty) return ''
+		formatIterators(target.type, iterators.map[name])
+//		if (iterators.empty || target instanceof SimpleVariable) return ''
+//		val array = target as ConnectivityVariable
+//		if (array.type.connectivities.size < iterators.size) return ''
+//		formatIterators(array, iterators.map[name])
 	}
 
 	private def CharSequence initArray(int[] sizes, CharSequence value)

@@ -129,6 +129,12 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case IrPackage.POST_PROCESSED_VARIABLE: {
+				PostProcessedVariable postProcessedVariable = (PostProcessedVariable)theEObject;
+				T result = casePostProcessedVariable(postProcessedVariable);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			case IrPackage.SIMPLE_VARIABLE: {
 				SimpleVariable simpleVariable = (SimpleVariable)theEObject;
 				T result = caseSimpleVariable(simpleVariable);
@@ -527,6 +533,14 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case IrPackage.LINEAR_ALGEBRA_TYPE: {
+				LinearAlgebraType linearAlgebraType = (LinearAlgebraType)theEObject;
+				T result = caseLinearAlgebraType(linearAlgebraType);
+				if (result == null) result = caseIrType(linearAlgebraType);
+				if (result == null) result = caseIrAnnotable(linearAlgebraType);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			case IrPackage.CONTAINER: {
 				Container container = (Container)theEObject;
 				T result = caseContainer(container);
@@ -730,6 +744,21 @@ public class IrSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseVariable(Variable object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Post Processed Variable</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Post Processed Variable</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T casePostProcessedVariable(PostProcessedVariable object) {
 		return null;
 	}
 
@@ -1615,6 +1644,21 @@ public class IrSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseItemIndexValue(ItemIndexValue object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Linear Algebra Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Linear Algebra Type</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseLinearAlgebraType(LinearAlgebraType object) {
 		return null;
 	}
 

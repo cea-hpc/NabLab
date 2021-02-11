@@ -77,25 +77,22 @@
     </genClasses>
     <genClasses image="false" ecoreClass="Ir.ecore#//ArgOrVar">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ArgOrVar/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ArgOrVar/type"/>
     </genClasses>
-    <genClasses ecoreClass="Ir.ecore#//Arg">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Arg/type"/>
-    </genClasses>
-    <genClasses image="false" ecoreClass="Ir.ecore#//Variable">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Variable/outputName"/>
+    <genClasses ecoreClass="Ir.ecore#//Arg"/>
+    <genClasses image="false" ecoreClass="Ir.ecore#//Variable"/>
+    <genClasses ecoreClass="Ir.ecore#//PostProcessedVariable">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//PostProcessedVariable/target"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//PostProcessedVariable/outputName"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//PostProcessedVariable/support"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//SimpleVariable">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//SimpleVariable/type"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//SimpleVariable/defaultValue"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//SimpleVariable/const"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//SimpleVariable/constExpr"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//SimpleVariable/option"/>
     </genClasses>
-    <genClasses ecoreClass="Ir.ecore#//ConnectivityVariable">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ConnectivityVariable/type"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ConnectivityVariable/defaultValue"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ConnectivityVariable/linearAlgebra"/>
-    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//ConnectivityVariable"/>
     <genClasses ecoreClass="Ir.ecore#//Function">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Function/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Function/returnType"/>
@@ -265,6 +262,9 @@
     <genClasses ecoreClass="Ir.ecore#//ConnectivityType">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//ConnectivityType/connectivities"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ConnectivityType/base"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//LinearAlgebraType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//LinearAlgebraType/sizes"/>
     </genClasses>
     <genClasses image="false" ecoreClass="Ir.ecore#//Container"/>
     <genClasses ecoreClass="Ir.ecore#//ConnectivityCall">

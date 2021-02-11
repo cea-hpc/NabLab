@@ -3,10 +3,9 @@
 package fr.cea.nabla.ir.ir.impl;
 
 import fr.cea.nabla.ir.ir.IrPackage;
+import fr.cea.nabla.ir.ir.PostProcessedVariable;
 import fr.cea.nabla.ir.ir.PostProcessing;
 import fr.cea.nabla.ir.ir.SimpleVariable;
-import fr.cea.nabla.ir.ir.Variable;
-
 import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -45,7 +44,7 @@ public class PostProcessingImpl extends IrAnnotableImpl implements PostProcessin
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<Variable> outputVariables;
+	protected EList<PostProcessedVariable> outputVariables;
 
 	/**
 	 * The cached value of the '{@link #getPeriodReference() <em>Period Reference</em>}' reference.
@@ -102,9 +101,9 @@ public class PostProcessingImpl extends IrAnnotableImpl implements PostProcessin
 	 * @generated
 	 */
 	@Override
-	public EList<Variable> getOutputVariables() {
+	public EList<PostProcessedVariable> getOutputVariables() {
 		if (outputVariables == null) {
-			outputVariables = new EObjectResolvingEList<Variable>(Variable.class, this, IrPackage.POST_PROCESSING__OUTPUT_VARIABLES);
+			outputVariables = new EObjectResolvingEList<PostProcessedVariable>(PostProcessedVariable.class, this, IrPackage.POST_PROCESSING__OUTPUT_VARIABLES);
 		}
 		return outputVariables;
 	}
@@ -263,7 +262,7 @@ public class PostProcessingImpl extends IrAnnotableImpl implements PostProcessin
 		switch (featureID) {
 			case IrPackage.POST_PROCESSING__OUTPUT_VARIABLES:
 				getOutputVariables().clear();
-				getOutputVariables().addAll((Collection<? extends Variable>)newValue);
+				getOutputVariables().addAll((Collection<? extends PostProcessedVariable>)newValue);
 				return;
 			case IrPackage.POST_PROCESSING__PERIOD_REFERENCE:
 				setPeriodReference((SimpleVariable)newValue);

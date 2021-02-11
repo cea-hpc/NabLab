@@ -76,6 +76,15 @@ public interface IrFactory extends EFactory {
 	Arg createArg();
 
 	/**
+	 * Returns a new object of class '<em>Post Processed Variable</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Post Processed Variable</em>'.
+	 * @generated
+	 */
+	PostProcessedVariable createPostProcessedVariable();
+
+	/**
 	 * Returns a new object of class '<em>Simple Variable</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -524,6 +533,15 @@ public interface IrFactory extends EFactory {
 	 * @generated
 	 */
 	ItemIndexValue createItemIndexValue();
+
+	/**
+	 * Returns a new object of class '<em>Linear Algebra Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Linear Algebra Type</em>'.
+	 * @generated
+	 */
+	LinearAlgebraType createLinearAlgebraType();
 
 	/**
 	 * Returns the package supported by this factory.

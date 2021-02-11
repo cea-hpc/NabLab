@@ -45,6 +45,7 @@ class NablagenValidator extends AbstractNablagenValidator
 	public static val UNIQUE_INTERPRETER = "NablagenValidator::UniqueInterpreter"
 	public static val CPP_MANDATORY_VARIABLES = "NablagenValidator::CppMandatoryVariables"
 	public static val CONNECTIVITY_CONSISTENCY = "NablagenValidator::ConnectivityConsistency"
+	public static val NO_TIME_ITERATOR_DEFINITION = "NablagenValidator::NoTimeIteratorDefinition"
 	public static val VAR_LINK_MAIN_VAR_TYPE = "NablagenValidator::VarLinkMainVarType"
 	public static val PROVIDER_FOR_EACH_EXTENSION = "NablagenValidator::ProviderForEachExtension"
 
@@ -53,6 +54,7 @@ class NablagenValidator extends AbstractNablagenValidator
 	static def getUniqueInterpreterMsg() { "Only one interpreter target allowed" }
 	static def getCppMandatoryVariablesMsg() { "'iterationMax' and 'timeMax' simulation variables must be defined (after timeStep) when using C++ code generator" }
 	static def getConnectivityConsistencyMsg(String a, String b) { "Connectivities with same name must be identical: " + a + " \u2260 " + b}
+	static def getNoTimeIteratorDefinitionMsg() { "Iterate keyword not allowed in additional module" }
 	static def getVarLinkMainVarTypeMsg(String v1Type, String v2Type) { "Variables must have the same type: " + v1Type + " \u2260 " + v2Type }
 	static def getProviderForEachExtensionMsg(String extensionName) { "No provider found for extension: " + extensionName }
 
@@ -113,6 +115,13 @@ class NablagenValidator extends AbstractNablagenValidator
 				for (b : nablaModule.connectivities)
 					if (!areConsistent(a, b))
 						error(getConnectivityConsistencyMsg(a.msgId, b.msgId), NablagenPackage.Literals::NABLAGEN_MODULE__NAME, CONNECTIVITY_CONSISTENCY)
+	}
+
+	@Check(CheckType.FAST)
+	def void checkNoTimeIteratorDefinition(AdditionalModule it)
+	{
+		if (type.iteration !== null)
+			error(getNoTimeIteratorDefinitionMsg(), NablagenPackage.Literals::NABLAGEN_MODULE__NAME, NO_TIME_ITERATOR_DEFINITION)
 	}
 
 	@Check(CheckType.FAST)

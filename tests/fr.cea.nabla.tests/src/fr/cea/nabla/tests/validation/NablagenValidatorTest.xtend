@@ -189,6 +189,19 @@ class NablagenValidatorTest
 	}
 
 	@Test
+	def void testCheckNoTimeIteratorDefinition()
+	{
+		val koHydroModel = nablaRemapModel.replace("rj1: ", "iterate n while (true);\nrj1: ")
+		val koNgen = readModelsAndGetNgen(koHydroModel, nablaRemapModel, ngenModel)
+		vth.assertError(koNgen,
+			NablagenPackage.eINSTANCE.nablagenModule,
+			NablagenValidator::NO_TIME_ITERATOR_DEFINITION,
+			NablagenValidator::getNoTimeIteratorDefinitionMsg())
+		val okNgen = readModelsAndGetNgen(nablaHydroModel, nablaRemapModel, ngenModel)
+		vth.assertNoErrors(okNgen)
+	}
+
+	@Test
 	def void testCheckVarLinkMainVarType()
 	{
 		val koNgenModel = ngenModel.replace("r1.X = h.X;", "r1.X = h.t;")

@@ -10,14 +10,16 @@
 package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.ir.Arg
+import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.ExtensionProvider
 import fr.cea.nabla.ir.ir.Function
+import fr.cea.nabla.ir.ir.InternFunction
+import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.PrimitiveType
 import org.eclipse.xtend.lib.annotations.Data
 
 import static fr.cea.nabla.ir.ExtensionProviderExtensions.*
-import fr.cea.nabla.ir.ir.InternFunction
 
 @Data
 class FunctionContentProvider
@@ -60,18 +62,27 @@ class FunctionContentProvider
 
 	private def getJniInArgContent(Arg it)
 	{
-		val dim = type.sizes.size
-		val nativeVarName = 'c_' + name
-		if (dim == 0)
-			'''
-				«type.primitive.cppType» «nativeVarName» = «name»;
-			'''
-		else
-			// can not call TypeContentProvider.getCppArrayType: expression sizes must be 0. Why ?
-			'''
-				«type.primitive.getName()»Array«type.sizes.size»D<«type.sizes.map[0].join(',')»> «nativeVarName»;
-				«getJniInArrayContent(name, nativeVarName, type.primitive, type.sizes)»
-			'''
+		val t = type
+		switch t
+		{
+			BaseType:
+			{
+				val dim = t.sizes.size
+				val nativeVarName = 'c_' + name
+				if (dim == 0)
+					'''
+						«t.primitive.cppType» «nativeVarName» = «name»;
+					'''
+				else
+					// can not call TypeContentProvider.getCppArrayType: expression sizes must be 0. Why ?
+					'''
+						«t.primitive.getName()»Array«t.sizes.size»D<«t.sizes.map[0].join(',')»> «nativeVarName»;
+						«getJniInArrayContent(name, nativeVarName, t.primitive, t.sizes)»
+					'''
+			}
+			LinearAlgebraType: throw new RuntimeException("Not yet implemented")
+			default: throw new RuntimeException("Ooops. Can not be there, normally...")
+		}
 	}
 
 	private def CharSequence getJniInArrayContent(String jniName, String nativeName, PrimitiveType t, Iterable<Expression> sizes)

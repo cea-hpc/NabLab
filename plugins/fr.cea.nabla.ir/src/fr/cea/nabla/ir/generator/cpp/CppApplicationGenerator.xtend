@@ -15,7 +15,6 @@ import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityType
-import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.InternFunction
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
@@ -32,7 +31,6 @@ import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.Utils.getInstanceName
 import static extension fr.cea.nabla.ir.generator.Utils.*
-import static extension fr.cea.nabla.ir.generator.cpp.CppGeneratorUtils.*
 
 class CppApplicationGenerator extends CppGenerator implements ApplicationGenerator
 {
@@ -263,11 +261,11 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	«FOR v : variablesWithDefaultValue.filter[x | !x.constExpr]»
 	, «v.name»(«expressionContentProvider.getContent(v.defaultValue)»)
 	«ENDFOR»
-	«FOR v : variables.filter(ConnectivityVariable)»
+	«FOR v : variables.filter[needStaticAllocation]»
 	, «v.name»(«typeContentProvider.getCstrInit(v.name, v.type)»)
 	«ENDFOR»
 	{
-		«val dynamicArrayVariables = variables.filter[!option && !type.baseTypeStatic]»
+		«val dynamicArrayVariables = variables.filter[needDynamicAllocation]»
 		«IF !dynamicArrayVariables.empty»
 			// Allocate dynamic arrays (RealArrays with at least a dynamic dimension)
 			«FOR v : dynamicArrayVariables»
@@ -486,6 +484,17 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 			 SimpleVariable case v.const: '''const «typeContentProvider.getCppType(v.type)» «v.name»;'''
 			 default: '''«typeContentProvider.getCppType(v.type)» «v.name»;'''
 		}
+	}
+
+	/** BaseType never need explicit static allocation: it is either scalar or MultiArray default cstr */
+	private def needStaticAllocation(Variable v)
+	{
+		!(v.type instanceof BaseType) && typeContentProvider.isBaseTypeStatic(v.type)
+	}
+
+	private def needDynamicAllocation(Variable v)
+	{
+		!typeContentProvider.isBaseTypeStatic(v.type)
 	}
 
 	private def isKokkosTeamThread()

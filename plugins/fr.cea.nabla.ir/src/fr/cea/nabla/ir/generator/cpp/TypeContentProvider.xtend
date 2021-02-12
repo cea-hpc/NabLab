@@ -69,8 +69,6 @@ abstract class TypeContentProvider
 
 	def String getJniType(PrimitiveType it)
 	{
-		//TODO un peu chelou le coup du null...
-		if (it === null) return 'null'
 		switch it
 		{
 			case null: 'void'
@@ -80,11 +78,11 @@ abstract class TypeContentProvider
 		}
 	}
 
-	def isMatrix(IrType t)
+	def isMatrix(IrType it)
 	{
-		switch t
+		switch it
 		{
-			LinearAlgebraType: t.sizes.size == 2
+			LinearAlgebraType: it.sizes.size == 2
 			default: false
 		}
 	}
@@ -95,7 +93,18 @@ abstract class TypeContentProvider
 		{
 			BaseType: '''«name».initSize(«t.sizes.map[x | expressionContentProvider.getContent(x)].join(', ')»);'''
 			ConnectivityType: initCppType(name, t, new ArrayList<String>, t.connectivities)
-			LinearAlgebraType: throw new RuntimeException('Not implemented')
+			LinearAlgebraType: '''«name».initSize(«t.sizes.map[x | expressionContentProvider.getContent(x)].join(', ')»);'''
+		}
+	}
+
+	def boolean isBaseTypeStatic(IrType it)
+	{
+		switch it
+		{
+			BaseType: sizes.empty || sizes.forall[x | x.constExpr]
+			ConnectivityType: base.baseTypeStatic
+			LinearAlgebraType: sizes.empty || sizes.forall[x | x.constExpr]
+			default: throw new RuntimeException("Unhandled parameter")
 		}
 	}
 
@@ -116,7 +125,6 @@ abstract class TypeContentProvider
 
 	private def CharSequence initCppType(String name, ConnectivityType t, List<String> accessors, Iterable<Connectivity> connectivities)
 	{
-		//TODO comment peut-on avoir un ConnectivityType avec connectivities empty ?
 		if (connectivities.empty)
 			'''«name»«formatIterators(t, accessors)».initSize(«t.base.sizes.map[x | expressionContentProvider.getContent(x)].join(', ')»);'''
 		else

@@ -11,19 +11,20 @@ package fr.cea.nabla.ir.interpreter
 
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityType
+import fr.cea.nabla.ir.ir.IrType
+import fr.cea.nabla.ir.ir.LinearAlgebraType
 
 import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
 
 class IrTypeExtensions
 {
-	static def dispatch int[] getIntSizes(BaseType it, Context context)
+	static def int[] getIntSizes(IrType it, Context context)
 	{
-		interpreteDimensionExpressions(sizes, context)
-	}
-
-	static def dispatch int[] getIntSizes(ConnectivityType it, Context context)
-	{ 
-		//context.showConnectivitySizes("Connectivities size")
-		connectivities.map[x | context.connectivitySizes.get(x)] + getIntSizes(base, context)
+		switch it
+		{
+			BaseType: interpreteDimensionExpressions(it.sizes, context)
+			ConnectivityType: it.connectivities.map[x | context.connectivitySizes.get(x)] + getIntSizes(it.base, context)
+			LinearAlgebraType: interpreteDimensionExpressions(it.sizes, context)
+		}
 	}
 }

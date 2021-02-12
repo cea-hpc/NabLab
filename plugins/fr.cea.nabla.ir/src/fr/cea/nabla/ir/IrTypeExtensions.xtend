@@ -27,6 +27,8 @@ import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.ir.VectorConstant
 
 import static extension fr.cea.nabla.ir.Utils.*
+import fr.cea.nabla.ir.ir.LinearAlgebraType
+import fr.cea.nabla.ir.ir.PrimitiveType
 
 class IrTypeExtensions
 {
@@ -62,6 +64,7 @@ class IrTypeExtensions
 		{
 			ConnectivityType: t.base.primitive
 			BaseType: t.primitive
+			LinearAlgebraType: PrimitiveType.REAL
 		}
 	}
 

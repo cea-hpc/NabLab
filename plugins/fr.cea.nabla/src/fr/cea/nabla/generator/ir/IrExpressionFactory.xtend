@@ -44,6 +44,8 @@ import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VectorConstant
 import fr.cea.nabla.overloading.DeclarationProvider
 import fr.cea.nabla.typing.ExpressionTypeProvider
+import fr.cea.nabla.nabla.ConnectivityCall
+import fr.cea.nabla.nabla.ItemSetRef
 
 class IrExpressionFactory
 {
@@ -200,7 +202,14 @@ class IrExpressionFactory
 		[ 
 			annotations += e.toIrAnnotation
 			container = e.container.toIrContainer
-			constExpr = false
+			// cardinality of a connectivity with no arg generates a constant
+			val eCont = e.container
+			constExpr = switch eCont
+			{
+				ConnectivityCall: eCont.args.empty
+				ItemSetRef: eCont.target.value.args.empty
+				default: false
+			}
 		]
 	}
 

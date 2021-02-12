@@ -22,7 +22,9 @@ import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IntConstant
 import fr.cea.nabla.ir.ir.InternFunction
+import fr.cea.nabla.ir.ir.IrType
 import fr.cea.nabla.ir.ir.Iterator
+import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.MaxConstant
 import fr.cea.nabla.ir.ir.MinConstant
 import fr.cea.nabla.ir.ir.Parenthesis
@@ -232,11 +234,11 @@ class ExpressionInterpreter
 					val callerArgTypeSizes = getIntSizes(callerArg.type, context)
 					for (iSize : 0..<callerArgTypeSizes.length)
 					{
-						val callerArgTypeTypeSize = callerArgTypeSizes.get(iSize)
+						val callerArgTypeSize = callerArgTypeSizes.get(iSize)
 						val calleeArgTypeDimension = calleeArg.type.sizes.get(iSize)
 						if (calleeArgTypeDimension instanceof ArgOrVarRef)
 							if (calleeArgTypeDimension.target instanceof SimpleVariable)
-								innerContext.addVariableValue(calleeArgTypeDimension.target, new NV0Int(callerArgTypeTypeSize))
+								innerContext.addVariableValue(calleeArgTypeDimension.target, new NV0Int(callerArgTypeSize))
 					}
 	
 					// set argument value
@@ -345,5 +347,15 @@ class ExpressionInterpreter
 		val providerInstance = pair.key
 		val method = pair.value
 		return method.invoke(providerInstance, args)
+	}
+
+	private static def getSizes(IrType it)
+	{
+		switch it
+		{
+			BaseType: sizes
+			LinearAlgebraType: sizes
+			default: throw new RuntimeException("Unsuported argument")
+		}
 	}
 }

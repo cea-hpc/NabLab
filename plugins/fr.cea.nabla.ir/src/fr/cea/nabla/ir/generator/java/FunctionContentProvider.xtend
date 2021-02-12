@@ -11,9 +11,9 @@ package fr.cea.nabla.ir.generator.java
 
 import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.BaseType
-import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.InternFunction
+import fr.cea.nabla.ir.ir.IrType
 import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.SimpleVariable
 
@@ -51,7 +51,13 @@ class FunctionContentProvider
 		throw new RuntimeException("No arg corresponding to dimension symbol " + v.name)
 	}
 
-	private static def dispatch getSizes(BaseType it) { sizes }
-	private static def dispatch getSizes(LinearAlgebraType it) { sizes }
-	private static def dispatch getSizes(ConnectivityType it) { throw new RuntimeException("No function call with ConnectivityType") }
+	private static def getSizes(IrType it)
+	{
+		switch it
+		{
+			BaseType: sizes
+			LinearAlgebraType: sizes
+			default: throw new RuntimeException("Unsuported argument")
+		}
+	}
 }

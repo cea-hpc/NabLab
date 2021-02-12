@@ -46,7 +46,6 @@ class ArgOrVarExtensions
 		(it instanceof Variable && eContainer instanceof IrModule)
 	}
 
-	//TODO Verifier si tj utilisé
 	static def isLinearAlgebra(ArgOrVar it)
 	{
 		it.type instanceof LinearAlgebraType

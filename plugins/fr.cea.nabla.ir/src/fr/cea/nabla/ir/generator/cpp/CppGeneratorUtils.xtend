@@ -9,8 +9,6 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.cpp
 
-import fr.cea.nabla.ir.ir.BaseType
-import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.ExternFunction
 import fr.cea.nabla.ir.ir.InternFunction
 
@@ -32,18 +30,4 @@ class CppGeneratorUtils
 		if (provider.extensionName == "Math") 'std::' + name
 		else 'options.' + provider.instanceName + '.' + name
 	}
-
-	static def dispatch boolean isBaseTypeStatic(ConnectivityType it)
-	{ 
-		base.baseTypeStatic
-	}
-
-	static def dispatch boolean isBaseTypeStatic(BaseType it)
-	{ 
-		sizes.empty || sizes.forall[x | x.constExpr]
-	}
-
-	//TODO ajouter isBaseTypeStatic(LinearAlgebraType) ?
-	// renvoit false ?
-	// Mettre tout ca dans IrTypeExtensions ?
 }

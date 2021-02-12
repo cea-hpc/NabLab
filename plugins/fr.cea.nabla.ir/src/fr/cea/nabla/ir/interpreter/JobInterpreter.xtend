@@ -130,9 +130,8 @@ class JobInterpreter
 			val quads = context.meshWrapper.quads
 			val vtkFileContent = new VtkFileContent(iteration, time, coord, quads);
 
-			//TODO deal with linearAlgebra
-			val connectivityVars = ppInfo.outputVariables
-			for (v : connectivityVars.filter(v | v.support.name == "cell"))
+			val outputVars = ppInfo.outputVariables
+			for (v : outputVars.filter(v | v.support.name == "cell"))
 			{
 				val value = context.getVariableValue(v.target)
 				switch value
@@ -142,7 +141,7 @@ class JobInterpreter
 					default: throw new RuntimeException("Vtk writer not yet implemented for type: " + value.class.name)
 				}
 			}
-			for (v : connectivityVars.filter(v | v.support.name == "node"))
+			for (v : outputVars.filter(v | v.support.name == "node"))
 			{
 				val value = context.getVariableValue(v.target)
 				switch value

@@ -1,4 +1,4 @@
-package fr.cea.nabla.javalib.utils;
+package fr.cea.nabla.javalib;
 
 import static org.iq80.leveldb.impl.Iq80DBFactory.asString;
 import static org.iq80.leveldb.impl.Iq80DBFactory.bytes;
@@ -10,8 +10,8 @@ import java.io.IOException;
 import org.iq80.leveldb.DB;
 import org.iq80.leveldb.DBIterator;
 
-import fr.cea.nabla.javalib.types.Matrix;
-import fr.cea.nabla.javalib.types.Vector;
+import fr.cea.nabla.javalib.linearalgebra.Matrix;
+import fr.cea.nabla.javalib.linearalgebra.Vector;
 
 import org.apache.commons.io.FileUtils;
 
@@ -134,7 +134,7 @@ public class LevelDBUtils
 
 	public static byte[] serialize(final Vector vector)
 	{
-		return serialize(vector.toArray());
+		return serialize(vector.getNativeVector().toArray());
 	}
 
 	public static byte[] serialize(final double[][] data2d)

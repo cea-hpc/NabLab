@@ -38,6 +38,45 @@ class BasicValidatorTest
 	@Inject extension ValidationTestHelper
 	@Inject extension NablaModuleExtensions
 
+	// ===== Module ====
+
+	@Test
+	def void testCheckModuleBase()
+	{
+		val moduleKo = parseHelper.parse(
+			'''
+			module Test;
+			def g: → ℝ, () → return 3.0;
+			''')
+		moduleKo.assertError(NablaPackage.eINSTANCE.nablaRoot,
+			BasicValidator::MODULE_BASE,
+			BasicValidator::getModuleBaseMsg())
+
+		val moduleOk = parseHelper.parse(
+			'''
+			module Test;
+			ℝ a;
+			''')
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+
+		val moduleOk2 = parseHelper.parse(
+			'''
+			module Test;
+			iterate n while (true);
+			''')
+		Assert.assertNotNull(moduleOk2)
+		moduleOk2.assertNoErrors
+
+		val moduleOk3 = parseHelper.parse(
+			'''
+			module Test;
+			J: let ℝ x = 3.3;
+			''')
+		Assert.assertNotNull(moduleOk3)
+		moduleOk3.assertNoErrors
+	}
+
 	// ===== Interval =====
 
 	@Test
@@ -213,7 +252,6 @@ class BasicValidatorTest
 			«emptyTestModule»
 			ℝ[3] x;
 			iterate n while(∑{x∈[0;3[}(x[i]]));
-			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleKo1)
@@ -226,7 +264,6 @@ class BasicValidatorTest
 			«emptyTestModule»
 			ℝ[3] x;
 			iterate n while(x[0]);
-			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleKo2)
@@ -239,7 +276,6 @@ class BasicValidatorTest
 			«emptyTestModule»
 			ℝ[3] x;
 			iterate n while(x[0] > 0.0);
-			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -325,7 +361,6 @@ class BasicValidatorTest
 			'''
 			«emptyTestModule»
 			ℝ[1, 2, 3] a;
-			«emptyJob»
 			''')
 
 		Assert.assertNotNull(moduleKo)
@@ -337,7 +372,6 @@ class BasicValidatorTest
 			'''
 			«emptyTestModule»
 			ℝ[1, 2] a;
-			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -353,7 +387,6 @@ class BasicValidatorTest
 			let ℝ x = 2.2;
 			ℝ[1.1] a;
 			ℕ[x] b;
-			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -372,7 +405,6 @@ class BasicValidatorTest
 			let ℕ x = 2;
 			ℝ[2] a;
 			ℕ[x] b;
-			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -426,7 +458,6 @@ class BasicValidatorTest
 			'''
 			«testModuleForSimulation»
 			ℝ[2] X{nodesOfCell};
-			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleKo)
@@ -438,7 +469,6 @@ class BasicValidatorTest
 			'''
 			«testModuleForSimulation»
 			ℝ[2] X{nodes};
-			«emptyJob»
 			'''
 		)
 		Assert.assertNotNull(moduleOk)
@@ -457,7 +487,6 @@ class BasicValidatorTest
 			connectivity nodes: → {node};
 			connectivity leftNode: node → node;
 			ℝ[2] X{nodes};
-			«emptyJob»
 			'''
 
 		val moduleKo = parseHelper.parse(

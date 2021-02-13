@@ -50,11 +50,29 @@ abstract class StandaloneGeneratorBase
 		for (gc : generationContents)
 		{
 			val fullFileName = (relativeBaseDir.nullOrEmpty ? gc.fileName : relativeBaseDir + '/' + gc.fileName)
-			if ( !(fsa.isFile(fullFileName) && gc.generateOnce) )
+			// no generation if file already exists and generateOnce is true
+			val isFileAndExists = fsa.isFile(fullFileName)
+			if ( !(isFileAndExists && gc.generateOnce) )
 			{
-				dispatcher.post(MessageType::Exec, "    Generating: " + fullFileName)
-				fsa.generateFile(fullFileName, gc.fileContent)
+				if (isFileAndExists && isEqual(gc.fileContent, fsa, fullFileName))
+				{
+					// No generation if generated content is identical to file content.
+					// Usefull to optimize compilation.
+					dispatcher.post(MessageType::Exec, "    Generation and file contents identical => no overwrite: " + fullFileName)
+				}
+				else
+				{
+					dispatcher.post(MessageType::Exec, "    Generating: " + fullFileName)
+					fsa.generateFile(fullFileName, gc.fileContent)
+				}
 			}
 		}
+	}
+
+	/** Can be optimized in case of big files in using a BufferedReader to read the file */
+	private def boolean isEqual(CharSequence newContent, JavaIoFileSystemAccess fsa, String fullFileName)
+	{
+		val oldContent = fsa.readTextFile(fullFileName)
+		return (CharSequence.compare(newContent, oldContent) == 0)
 	}
 }

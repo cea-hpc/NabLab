@@ -67,11 +67,7 @@ class InstructionValidator extends FunctionOrReductionValidator
 			val leftType = left.typeFor
 			val rightType = right.typeFor
 			if (!checkExpectedType(rightType, leftType))
-			{
-				println("left : " + leftType)
-				println("right : " + rightType)
 				error(getTypeMsg(rightType.label, leftType.label), NablaPackage.Literals.AFFECTATION__RIGHT, AFFECTATION_TYPE)
-			}
 		}
 	}
 

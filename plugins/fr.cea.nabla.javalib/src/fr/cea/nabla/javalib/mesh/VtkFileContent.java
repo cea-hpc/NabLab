@@ -11,6 +11,8 @@ package fr.cea.nabla.javalib.mesh;
 
 import java.util.LinkedHashMap;
 
+import fr.cea.nabla.javalib.linearalgebra.Vector;
+
 public class VtkFileContent
 {
 	private  int iteration;
@@ -23,7 +25,7 @@ public class VtkFileContent
 	private  LinkedHashMap<String, double[][]> cellVectors = new LinkedHashMap<String, double[][]>();
 	private  LinkedHashMap<String, double[][]> nodeVectors = new LinkedHashMap<String, double[][]>();
 
-	public VtkFileContent( int iteration,  double time,  double[][] nodes,  Quad[] cells)
+	public VtkFileContent(int iteration, double time, double[][] nodes, Quad[] cells)
 	{
 		this.iteration = iteration;
 		this.time = time;
@@ -31,10 +33,12 @@ public class VtkFileContent
 		this.cells = cells;
 	}
 
-	public void addCellVariable( String name,  double[] data) { cellScalars.put(name, data); }
-	public void addCellVariable( String name,  double[][] data) { cellVectors.put(name, data); }
-	public void addNodeVariable( String name,  double[] data) { nodeScalars.put(name, data); }
-	public void addNodeVariable( String name,  double[][] data) { nodeVectors.put(name, data); }
+	public void addCellVariable(String name, double[] data) { cellScalars.put(name, data); }
+	public void addCellVariable(String name, Vector data) { cellScalars.put(name, data.getNativeVector().toArray()); }
+	public void addCellVariable(String name, double[][] data) { cellVectors.put(name, data); }
+	public void addNodeVariable(String name, double[] data) { nodeScalars.put(name, data); }
+	public void addNodeVariable(String name, Vector data) { nodeScalars.put(name, data.getNativeVector().toArray()); }
+	public void addNodeVariable(String name, double[][] data) { nodeVectors.put(name, data); }
 
 	protected boolean hasCellData()
 	{

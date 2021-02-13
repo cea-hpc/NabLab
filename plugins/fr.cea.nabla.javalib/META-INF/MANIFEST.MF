@@ -5,9 +5,9 @@ Bundle-Name: fr.cea.nabla.javalib
 Bundle-SymbolicName: fr.cea.nabla.javalib
 Bundle-Version: 0.3.3.qualifier
 Bundle-ClassPath: .
-Export-Package: fr.cea.nabla.javalib.mesh,
- fr.cea.nabla.javalib.types,
- fr.cea.nabla.javalib.utils
+Export-Package: fr.cea.nabla.javalib,
+ fr.cea.nabla.javalib.linearalgebra,
+ fr.cea.nabla.javalib.mesh
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Vendor: CEA
 Require-Bundle: commons-math3;bundle-version="3.6.1",

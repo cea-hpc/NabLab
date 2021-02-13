@@ -33,7 +33,7 @@ NablaModule:
 	declarations+=VarDeclaration*
 	// Only one block of iteration (don't know how to manage several blocks on node variable X)
 	(iteration=TimeIteratorDefinition)?
-	jobs+=Job+; // at least one job to differ from NablaExtension
+	jobs+=Job*;
 
 Import: 'with' importedNamespace=QualifiedNameWithWildcard ';';
 

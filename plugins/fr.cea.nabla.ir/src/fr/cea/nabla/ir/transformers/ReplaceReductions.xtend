@@ -25,8 +25,6 @@ import org.eclipse.emf.ecore.util.EcoreUtil
 
 import static fr.cea.nabla.ir.transformers.IrTransformationUtils.*
 
-import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
-
 class ReplaceReductions extends IrTransformationStep
 {
 	val boolean replaceAllReductions

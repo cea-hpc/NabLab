@@ -219,9 +219,9 @@ class ExpressionInterpreter
 			ExternFunction:
 			{
 				// Use method cache instead of resolving on each iteration
-				val javaValues = argValues.map[x|FunctionCallHelper.getJavaValue(x)].toArray
+				val javaValues = argValues.map[x|FunctionCallHelper.getJavaValue(x, context.linearAlgebra)].toArray
 				val result = invokeMethod(context, f, javaValues)
-				return FunctionCallHelper.createNablaValue(result)
+				return FunctionCallHelper.createNablaValue(result, context.linearAlgebra)
 			}
 			InternFunction:
 			{

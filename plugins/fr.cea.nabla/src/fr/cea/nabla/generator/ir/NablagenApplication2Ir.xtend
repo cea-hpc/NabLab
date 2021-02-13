@@ -45,11 +45,6 @@ class NablagenApplication2Ir
 		name = ngenApp.name
 		main = IrFactory::eINSTANCE.createJobCaller
 
-		// create language extension providers
-		ngenApp.mainModule.type.imports.forEach[x | providers += x.importedNamespace.moduleName.toIrExtensionProvider]
-		for (adModule : ngenApp.additionalModules)
-			adModule.type.imports.forEach[x | providers += x.importedNamespace.moduleName.toIrExtensionProvider]
-
 		// create modules
 		val nabla2ir = nabla2IrProvider.get
 		createIrModule(it, nabla2ir, ngenApp.mainModule)
@@ -197,13 +192,5 @@ class NablagenApplication2Ir
 			case BOOL: f.createBoolConstant => [ value = false ]
 			default: f.createMinConstant => [ type = f.createBaseType => [ primitive = t] ]
 		}
-	}
-
-	private def getModuleName(String qualifiedNameWithWildcards)
-	{
-		if (qualifiedNameWithWildcards.contains('.'))
-			qualifiedNameWithWildcards.split('\\.').head
-		else
-			qualifiedNameWithWildcards
 	}
 }

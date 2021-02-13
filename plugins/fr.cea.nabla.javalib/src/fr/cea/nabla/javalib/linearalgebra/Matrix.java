@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-package fr.cea.nabla.javalib.types;
+package fr.cea.nabla.javalib.linearalgebra;
 
 import org.apache.commons.math3.linear.AbstractRealMatrix;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
@@ -53,6 +53,7 @@ public class Matrix
 		synchronized(lock) { nativeMatrix.addToEntry(i, j, increment); }
 	}
 
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("");
@@ -64,5 +65,4 @@ public class Matrix
 			}
 		return sb.toString();
 	}
-
 }

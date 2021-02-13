@@ -35,8 +35,7 @@ class NablagenExtensionHelper
 		// Browse IrRoot model providers which need to be filled with Nablaext providers
 		for (irProvider : ir.providers.filter[x | x.extensionName != "Math"])
 		{
-			val extensionConfig = target.extensionConfigs.findFirst[x | x.extension.name == irProvider.extensionName]
-			val provider = (extensionConfig === null ? getDefaultProvider(target, target.type, irProvider.extensionName) : extensionConfig.provider)
+			val provider = getTargetProvider(target, irProvider.extensionName)
 			if (provider === null)
 			{
 				dispatcher.post(MessageType::Warning, '    No provider found for extension: ' + irProvider.extensionName)
@@ -71,6 +70,12 @@ class NablagenExtensionHelper
 			jniGenerator.generateGlobalCMakeIfNecessary(ir, target, baseDir)
 
 		return true
+	}
+
+	def getTargetProvider(Target target, String extensionName)
+	{
+		val extensionConfig = target.extensionConfigs.findFirst[x | x.extension.name == extensionName]
+		(extensionConfig === null ? getDefaultProvider(target, target.type, extensionName) : extensionConfig.provider)
 	}
 
 	def NablagenProvider getDefaultProvider(EObject ngenContext, TargetType type, String extensionName)

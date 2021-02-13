@@ -9,8 +9,6 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.interpreter
 
-import fr.cea.nabla.javalib.types.Matrix
-import fr.cea.nabla.javalib.types.Vector
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtend.lib.annotations.Data
 
@@ -18,7 +16,7 @@ interface NablaValue { }
 
 class NV0Bool implements NablaValue
 {
-	@Accessors boolean data 
+	@Accessors boolean data
 	new(boolean data) { this.data = data }
 
 	override boolean equals(Object obj)
@@ -60,7 +58,7 @@ class NV0Int implements NablaValue
 
 class NV0Real implements NablaValue
 {
-	@Accessors double data 
+	@Accessors double data
 	new(double data) { this.data = data }
 
 	override boolean equals(Object obj)
@@ -80,8 +78,8 @@ class NV0Real implements NablaValue
 }
 
 @Data class NV1Bool implements NablaValue
-{ 
-	boolean[] data
+{
+	val boolean[] data
 
 	override String toString()
 	{
@@ -90,8 +88,8 @@ class NV0Real implements NablaValue
 }
 
 @Data class NV1Int implements NablaValue
-{ 
-	int[] data
+{
+	val int[] data
 
 	override String toString()
 	{
@@ -100,32 +98,18 @@ class NV0Real implements NablaValue
 }
 
 @Data class NV1Real implements NablaValue
-{ 
-	double[] data
+{
+	val double[] data
 
 	override String toString()
 	{
 		'[' + data.join(', ') + ']'
 	}
 }
-class NVVector implements NablaValue
-{
-	@Accessors Vector data
-
-	new(Vector data)
-	{
-		this.data = data
-	}
-
-	override String toString()
-	{
-		data.toArray.map[d | d].toString
-	}
-}
 
 @Data class NV2Bool implements NablaValue
-{ 
-	boolean[][] data
+{
+	val boolean[][] data
 
 	override String toString()
 	{
@@ -134,8 +118,8 @@ class NVVector implements NablaValue
 }
 
 @Data class NV2Int implements NablaValue
-{ 
-	int[][] data
+{
+	val int[][] data
 
 	override String toString()
 	{
@@ -145,7 +129,7 @@ class NVVector implements NablaValue
 
 @Data class NV2Real implements NablaValue
 {
-	double[][] data
+	val double[][] data
 
 	override String toString()
 	{
@@ -153,24 +137,9 @@ class NVVector implements NablaValue
 	}
 }
 
-class NVMatrix implements NablaValue
-{
-	@Accessors Matrix data
-
-	new(Matrix data)
-	{
-		this.data = data
-	}
-
-	override String toString()
-	{
-		data.toString
-	}
-}
-
 @Data class NV3Bool implements NablaValue
-{ 
-	boolean[][][] data
+{
+	val boolean[][][] data
 
 	override String toString()
 	{
@@ -180,7 +149,7 @@ class NVMatrix implements NablaValue
 
 @Data class NV3Int implements NablaValue
 {
-	int[][][] data
+	val int[][][] data
 
 	override String toString()
 	{
@@ -190,7 +159,7 @@ class NVMatrix implements NablaValue
 
 @Data class NV3Real implements NablaValue
 {
-	double[][][] data
+	val double[][][] data
 
 	override String toString()
 	{
@@ -200,7 +169,7 @@ class NVMatrix implements NablaValue
 
 @Data class NV4Bool implements NablaValue
 {
-	boolean[][][][] data
+	val boolean[][][][] data
 
 	override String toString()
 	{
@@ -210,7 +179,7 @@ class NVMatrix implements NablaValue
 
 @Data class NV4Int implements NablaValue
 {
-	int[][][][] data
+	val int[][][][] data
 
 	override String toString()
 	{
@@ -220,12 +189,43 @@ class NVMatrix implements NablaValue
 
 @Data class NV4Real implements NablaValue
 {
-	double[][][][] data
+	val double[][][][] data
 
 	override String toString()
 	{
 		data.map[d | d.map[ dd | dd.map[ddd | ddd.map[dddd | dddd]]]].toString
 	}
+}
+
+class NVVector implements NablaValue
+{
+	@Accessors Object data
+	@Accessors val InterpretableLinearAlgebra linearAlgebra
+
+	new(Object data, InterpretableLinearAlgebra linearAlgebra)
+	{
+		this.data = data
+		this.linearAlgebra = linearAlgebra
+	}
+
+	override toString()
+	{
+		data.toString();
+	}
+}
+
+class NVMatrix implements NablaValue
+{
+	@Accessors Object data
+	@Accessors val InterpretableLinearAlgebra linearAlgebra
+
+	new(Object data, InterpretableLinearAlgebra linearAlgebra)
+	{
+		this.data = data
+		this.linearAlgebra = linearAlgebra
+	}
+
+	override toString() { data.toString }
 }
 
 /*

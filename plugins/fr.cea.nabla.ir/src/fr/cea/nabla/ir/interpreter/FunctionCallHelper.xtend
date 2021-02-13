@@ -9,20 +9,25 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.interpreter
 
-import fr.cea.nabla.ir.ir.PrimitiveType
-import fr.cea.nabla.javalib.types.Matrix
-import fr.cea.nabla.javalib.types.Vector
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityType
+import fr.cea.nabla.ir.ir.IrType
 import fr.cea.nabla.ir.ir.LinearAlgebraType
+import fr.cea.nabla.ir.ir.PrimitiveType
 
 class FunctionCallHelper
 {
-	static def dispatch Class<?> getJavaType(BaseType it) { getJavaType(primitive, sizes.size, false )}
-	static def dispatch Class<?> getJavaType(ConnectivityType it) { getJavaType(base.primitive, (connectivities+base.sizes).size, false )}
-	static def dispatch Class<?> getJavaType(LinearAlgebraType it) { getJavaType(PrimitiveType::REAL, sizes.size, true )}
+	static def Class<?> getJavaType(IrType it, InterpretableLinearAlgebra linearAlgebra) 
+	{
+		switch it
+		{
+			BaseType: getJavaType(primitive, sizes.size, linearAlgebra)
+			ConnectivityType: getJavaType(base.primitive, (connectivities+base.sizes).size, linearAlgebra)
+			LinearAlgebraType: getJavaType(PrimitiveType::REAL, sizes.size, linearAlgebra)
+		}
+	}
 
-	private static def Class<?> getJavaType(PrimitiveType primitive, int dimension, boolean linearAlgebra)
+	private static def Class<?> getJavaType(PrimitiveType primitive, int dimension, InterpretableLinearAlgebra linearAlgebra)
 	{
 		switch (primitive)
 		{
@@ -51,36 +56,54 @@ class FunctionCallHelper
 				switch dimension
 				{
 					case 0: typeof(double)
-					case 1: if (linearAlgebra) typeof(Vector) else typeof(double[])
-					case 2: if (linearAlgebra) typeof(Matrix) else typeof(double[][])
+					case 1: (linearAlgebra === null ? typeof(double[]) : linearAlgebra.vectorType)
+					case 2: (linearAlgebra === null ? typeof(double[][]) : linearAlgebra.matrixType)
 					default: throw new RuntimeException("Dimension not implemented: " + dimension) 
 				}
 			}
 		}
 	}
 
-	static def dispatch Object getJavaValue(NV0Bool it) { data }
-	static def dispatch Object getJavaValue(NV1Bool it) { data }
-	static def dispatch Object getJavaValue(NV2Bool it) { data }
-	static def dispatch Object getJavaValue(NV0Int it) { data }
-	static def dispatch Object getJavaValue(NV1Int it) { data }
-	static def dispatch Object getJavaValue(NV2Int it) { data }
-	static def dispatch Object getJavaValue(NV0Real it) { data }
-	static def dispatch Object getJavaValue(NV1Real it) { data }
-	static def dispatch Object getJavaValue(NVVector it) { data }
-	static def dispatch Object getJavaValue(NV2Real it) { data }
-	static def dispatch Object getJavaValue(NVMatrix it) { data }
+	static def Object getJavaValue(NablaValue v, InterpretableLinearAlgebra linearAlgebra)
+	{
+		switch v
+		{
+			NV0Bool: v.data
+			NV1Bool: v.data
+			NV2Bool: v.data
+			NV0Int: v.data
+			NV1Int: v.data
+			NV2Int: v.data
+			NV0Real: v.data
+			NV1Real: v.data
+			NV2Real: v.data
+			NVVector: v.data
+			NVMatrix: v.data
+		}
+	}
 
-	static def dispatch createNablaValue(Object x) { throw new RuntimeException('Not yet implemented') }
-	static def dispatch createNablaValue(Boolean x) { new NV0Bool(x) }
-	static def dispatch createNablaValue(boolean[] x) { new NV1Bool(x) }
-	static def dispatch createNablaValue(boolean[][] x) { new NV2Bool(x) }
-	static def dispatch createNablaValue(Integer x) { new NV0Int(x) }
-	static def dispatch createNablaValue(int[] x) { new NV1Int(x) }
-	static def dispatch createNablaValue(int[][] x) { new NV2Int(x) }
-	static def dispatch createNablaValue(Double x) { new NV0Real(x) }
-	static def dispatch createNablaValue(double[] x) { new NV1Real(x) }
-	static def dispatch createNablaValue(Vector x) { new NVVector(x) }
-	static def dispatch createNablaValue(double[][] x) { new NV2Real(x) }
-	static def dispatch createNablaValue(Matrix x) { new NVMatrix(x) }
+	static def NablaValue createNablaValue(Object o, InterpretableLinearAlgebra linearAlgebra)
+	{
+		switch o
+		{
+			Boolean: new NV0Bool(o)
+			boolean[]: new NV1Bool(o)
+			boolean[][]: new NV2Bool(o)
+			Integer: new NV0Int(o)
+			int[]: new NV1Int(o)
+			int[][]: new NV2Int(o)
+			Double: new NV0Real(o)
+			double[]: new NV1Real(o)
+			double[][]: new NV2Real(o)
+			default:
+			{
+				if (o.class == linearAlgebra.vectorType)
+					new NVVector(o, linearAlgebra)
+				else if (o.class == linearAlgebra.matrixType)
+					new NVMatrix(o ,linearAlgebra)
+				else
+					throw new RuntimeException('Not yet implemented')
+			}
+		}
+	}
 }

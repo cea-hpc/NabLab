@@ -33,6 +33,6 @@ Provider LibJavaNabla : LinearAlgebra
 	target = Java;
 	outputDir = "/LibJavaNabla";
 	facadeClass = "LinearAlgebra";
-	facadeNamespace = "fr.cea.nabla.javalib.types";
+	facadeNamespace = "fr.cea.nabla.javalib.linearalgebra";
 	libName = "libjavanabla";
 }

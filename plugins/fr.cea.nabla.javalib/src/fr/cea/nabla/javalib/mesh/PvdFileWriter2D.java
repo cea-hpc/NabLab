@@ -26,7 +26,7 @@ public class PvdFileWriter2D extends FileWriter
 	}
 
 	@Override
-	public void writeFile( VtkFileContent it) {
+	public void writeFile(VtkFileContent it) {
 		if (!isDisabled())
 		{
 			NumberFormat formatter = new DecimalFormat("#0.######");     

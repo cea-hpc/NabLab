@@ -177,7 +177,6 @@ class InstructionValidatorTest
 			def mySum, 0: ℕ, (a, b) → return a + b;
 			let ℕ[3] coef = [2, 3, 4];
 			let ℕ c = mySum{k∈[0;3[}(coef[k]);
-			«emptyJob»
 			''')
 		Assert.assertNotNull(moduleKo2)
 		moduleKo2.assertError(NablaPackage.eINSTANCE.simpleVarDeclaration,
@@ -189,7 +188,6 @@ class InstructionValidatorTest
 			«emptyTestModule»
 			let ℕ coef = 2;
 			let ℝ DOUBLE_LENGTH = 0.1 * coef;
-			«emptyJob»
 			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors

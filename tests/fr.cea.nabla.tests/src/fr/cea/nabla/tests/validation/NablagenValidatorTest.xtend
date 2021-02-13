@@ -4,7 +4,7 @@ import com.google.inject.Inject
 import com.google.inject.Provider
 import fr.cea.nabla.NablaStandaloneSetup
 import fr.cea.nabla.NablagenStandaloneSetup
-import fr.cea.nabla.nabla.NablaModule
+import fr.cea.nabla.nabla.NablaRoot
 import fr.cea.nabla.nablagen.NablagenPackage
 import fr.cea.nabla.nablagen.NablagenRoot
 import fr.cea.nabla.tests.NablagenInjectorProvider
@@ -63,8 +63,8 @@ class NablagenValidatorTest
 	ℝ[2] X{nodes};
 	ℝ rv1{cells}, rv2{cells}, rv3{cells};
 
-	rj1: ∀c∈cells(), rv2{c} = rv1{c};
-	rj2: ∀c∈cells(), rv3{c} = rv2{c};
+	Rj1: ∀c∈cells(), rv2{c} = rv1{c};
+	Rj2: ∀c∈cells(), rv3{c} = rv2{c};
 	'''
 
 	val ngenModel = 
@@ -102,7 +102,7 @@ class NablagenValidatorTest
 
 	val nablaSetup = new NablaStandaloneSetup
 	val nablaInjector = nablaSetup.createInjectorAndDoEMFRegistration
-	val ParseHelper<NablaModule> nablaParseHelper = nablaInjector.getInstance(ParseHelper)
+	val ParseHelper<NablaRoot> nablaParseHelper = nablaInjector.getInstance(ParseHelper)
 
 	val nablagenSetup = new NablagenStandaloneSetup
 	val nablagenInjector = nablagenSetup.createInjectorAndDoEMFRegistration
@@ -117,10 +117,12 @@ class NablagenValidatorTest
 			NablagenValidator::NGEN_ELEMENT_NAME, 
 			NablagenValidator::getNgenElementNameMsg(),
 			ngenModel)
+		val okNgen = readModelsAndGetNgen(nablaHydroModel, nablaRemapModel, ngenModel)
+		vth.assertNoErrors(okNgen)
 	}
 
 	@Test
-	def void testNgenModuleName()
+	def void testCheckNgenModuleName()
 	{
 		val koNgenModel = ngenModel.replace("MainModule Hydro h", "MainModule Hydro H").replace("h.", "H.")
 		assertNgen(koNgenModel,
@@ -128,10 +130,33 @@ class NablagenValidatorTest
 			NablagenValidator::NGEN_MODULE_NAME,
 			NablagenValidator::getNgenModuleNameMsg(),
 			ngenModel)
+		val okNgen = readModelsAndGetNgen(nablaHydroModel, nablaRemapModel, ngenModel)
+		vth.assertNoErrors(okNgen)
 	}
 
 	@Test
-	def void testCppMandatoryVariables()
+	def void testCheckUniqueInterpreter()
+	{
+		val interpreter =
+		'''
+			Interpreter
+			{
+				outputPath = "/src-gen-interpreter";
+			}
+		'''
+		val koNgenModel = ngenModel.concat(interpreter).concat(interpreter)
+		assertNgen(koNgenModel,
+			NablagenPackage.eINSTANCE.target,
+			NablagenValidator::UNIQUE_INTERPRETER,
+			NablagenValidator::getUniqueInterpreterMsg(),
+			ngenModel)
+		val okNgenModel = ngenModel.concat(interpreter)
+		val okNgen = readModelsAndGetNgen(nablaHydroModel, nablaRemapModel, okNgenModel)
+		vth.assertNoErrors(okNgen)
+	}
+
+	@Test
+	def void testCheckCppMandatoryVariables()
 	{
 		val koNgenModel = ngenModel.concat('OpenMP
 			{
@@ -151,7 +176,7 @@ class NablagenValidatorTest
 	}
 
 	@Test
-	def void testConnectivityConsistency()
+	def void testCheckConnectivityConsistency()
 	{
 		val koHydroModel = nablaHydroModel.replace("→ {cell}", "→ {node}")
 		val koNgen = readModelsAndGetNgen(koHydroModel, nablaRemapModel, ngenModel)
@@ -164,7 +189,20 @@ class NablagenValidatorTest
 	}
 
 	@Test
-	def void testVarLinkMainVarType()
+	def void testCheckNoTimeIteratorDefinition()
+	{
+		val koRemapModel = nablaRemapModel.replace("Rj1: ", "iterate n while (true);\nRj1: ")
+		val koNgen = readModelsAndGetNgen(nablaHydroModel, koRemapModel, ngenModel)
+		vth.assertError(koNgen,
+			NablagenPackage.eINSTANCE.nablagenModule,
+			NablagenValidator::NO_TIME_ITERATOR_DEFINITION,
+			NablagenValidator::getNoTimeIteratorDefinitionMsg())
+		val okNgen = readModelsAndGetNgen(nablaHydroModel, nablaRemapModel, ngenModel)
+		vth.assertNoErrors(okNgen)
+	}
+
+	@Test
+	def void testCheckVarLinkMainVarType()
 	{
 		val koNgenModel = ngenModel.replace("r1.X = h.X;", "r1.X = h.t;")
 		assertNgen(koNgenModel,
@@ -174,6 +212,82 @@ class NablagenValidatorTest
 			ngenModel)
 		val okNgen = readModelsAndGetNgen(nablaHydroModel, nablaRemapModel, ngenModel)
 		vth.assertNoErrors(okNgen)
+	}
+
+	@Test
+	def void testCheckProviderForEachExtension()
+	{
+		val batiLibModel =
+		'''
+			extension BatiLib;
+			def nextWaveHeight: → ℝ;
+		'''
+		val depthInitModel =
+		'''
+			module DepthInit;
+
+			with BatiLib.*;
+			itemtypes { cell, node }
+			connectivity cells: → {cell};
+			connectivity nodes: → {node};
+
+			let ℝ t = 0.0;
+			option ℝ maxTime = 0.1;
+			option ℕ maxIter = 500;
+			option ℝ δt = 1.0;
+			ℝ[2] X{nodes};
+			ℝ η{cells};
+
+			InitFromFile: ∀j∈cells(), η{j} = nextWaveHeight();
+		'''
+		val appNgenModel =
+		'''
+			Application DepthInit;
+
+			MainModule DepthInit depthInit
+			{
+				meshClassName = "CartesianMesh2D";
+				nodeCoord = X;
+				time = t;
+				timeStep = δt;
+				iterationMax = maxIter;
+				timeMax = maxTime;
+			}
+
+			Java
+			{
+				outputPath = "/DepthInit/src-gen-java";
+			}
+		'''
+
+		val rs = resourceSetProvider.get
+		val batiLib = nablaParseHelper.parse(batiLibModel, rs)
+		Assert.assertNotNull(batiLib)
+		val depthInit = nablaParseHelper.parse(depthInitModel, rs)
+		Assert.assertNotNull(depthInit)
+		val appNgen = nablagenParseHelper.parse(appNgenModel, rs)
+		Assert.assertNotNull(appNgen)
+
+		// Warning: no provider for BatiLib
+		vth.assertWarning(appNgen, NablagenPackage.eINSTANCE.target, NablagenValidator.PROVIDER_FOR_EACH_EXTENSION, NablagenValidator.getProviderForEachExtensionMsg("BatiLib"))
+
+		// Nablagen for a Java provider that will become the default provider
+		val providerNgenModel =
+		'''
+			Provider BatiLibJava : BatiLib
+			{
+				target = Java;
+				// compatibleTargets can be added here
+				outputDir = "/BatiLib/src-java";
+				facadeClass = "BatiLibJava";
+				facadeNamespace = "batilib";
+				libName = "batilib";
+			}
+		'''
+		val providerNgen = nablagenParseHelper.parse(providerNgenModel, rs)
+		Assert.assertNotNull(providerNgen)
+
+		vth.assertNoIssues(appNgen)
 	}
 
 	private def void assertNgen(String koNgenModel, EClass objectType, String code, String msg, String okNgenModel)

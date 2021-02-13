@@ -7,7 +7,9 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-package fr.cea.nabla.javalib.types;
+package fr.cea.nabla.javalib.linearalgebra;
+
+import java.util.Arrays;
 
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.OpenMapRealVector;
@@ -35,28 +37,29 @@ public class Vector
 		return new Vector(new OpenMapRealVector(size));
 	}
 
-	public org.apache.commons.math3.linear.RealVector getNativeVector() 
+	public org.apache.commons.math3.linear.RealVector getNativeVector()
 	{
-		return nativeVector; 
+		return nativeVector;
 	}
 
-	public double get(int i) 
+	public double get(int i)
 	{
-		return nativeVector.getEntry(i); 
+		return nativeVector.getEntry(i);
 	}
 
-	public void set(int i, double value) 
+	public void set(int i, double value)
 	{
 		synchronized(lock) { nativeVector.setEntry(i, value); }
 	}
 
 	public void add(int i, double increment) 
 	{
-		synchronized(lock) { nativeVector.addToEntry(i, increment); } 
+		synchronized(lock) { nativeVector.addToEntry(i, increment); }
 	}
 
-	public double[] toArray() 
+	@Override
+	public String toString()
 	{
-		return nativeVector.toArray(); 
+		return Arrays.toString(nativeVector.toArray());
 	}
 }

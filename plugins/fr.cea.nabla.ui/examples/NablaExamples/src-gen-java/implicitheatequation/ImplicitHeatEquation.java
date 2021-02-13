@@ -17,9 +17,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import fr.cea.nabla.javalib.types.*;
+import fr.cea.nabla.javalib.*;
 import fr.cea.nabla.javalib.mesh.*;
-import fr.cea.nabla.javalib.utils.*;
+import fr.cea.nabla.javalib.linearalgebra.Matrix;
+import fr.cea.nabla.javalib.linearalgebra.Vector;
 
 @SuppressWarnings("all")
 public final class ImplicitHeatEquation
@@ -31,7 +32,7 @@ public final class ImplicitHeatEquation
 		public double u0;
 		public double stopTime;
 		public int maxIterations;
-		public fr.cea.nabla.javalib.types.LinearAlgebra linearAlgebra;
+		public fr.cea.nabla.javalib.linearalgebra.LinearAlgebra linearAlgebra;
 		public String nonRegression;
 
 		public void jsonInit(final String jsonContent)
@@ -77,7 +78,7 @@ public final class ImplicitHeatEquation
 			else
 				maxIterations = 500000000;
 			// linearAlgebra
-			linearAlgebra = new fr.cea.nabla.javalib.types.LinearAlgebra();
+			linearAlgebra = new fr.cea.nabla.javalib.linearalgebra.LinearAlgebra();
 			if (o.has("linearAlgebra"))
 				linearAlgebra.jsonInit(o.get("linearAlgebra").toString());
 			// Non regression
@@ -533,7 +534,7 @@ public final class ImplicitHeatEquation
 		if (!writer.isDisabled())
 		{
 			VtkFileContent content = new VtkFileContent(iteration, t_n, X, mesh.getGeometry().getQuads());
-			content.addCellVariable("Temperature", u_n.toArray());
+			content.addCellVariable("Temperature", u_n);
 			writer.writeFile(content);
 			lastDump = n;
 		}

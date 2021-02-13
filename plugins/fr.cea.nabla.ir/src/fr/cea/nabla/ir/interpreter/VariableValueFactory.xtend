@@ -49,8 +49,8 @@ class VariableValueFactory
 		val p = type.primitive
 		switch sizes.size
 		{
-			case 1: createValue(p, sizes.get(0), false)
-			case 2: createValue(p, sizes.get(0), sizes.get(1), false)
+			case 1: createValue(p, sizes.get(0), null)
+			case 2: createValue(p, sizes.get(0), sizes.get(1), null)
 			case 3: createValue(p, sizes.get(0), sizes.get(1), sizes.get(2))
 			case 4: createValue(p, sizes.get(0), sizes.get(1), sizes.get(2), sizes.get(3))
 			default: throw new RuntimeException("Dimension not yet implemented: " + sizes.size)
@@ -63,8 +63,8 @@ class VariableValueFactory
 		val p = PrimitiveType.REAL
 		switch sizes.size
 		{
-			case 1: createValue(p, sizes.get(0), true)
-			case 2: createValue(p, sizes.get(0), sizes.get(1), true)
+			case 1: createValue(p, sizes.get(0), context.linearAlgebra)
+			case 2: createValue(p, sizes.get(0), sizes.get(1), context.linearAlgebra)
 			default: throw new RuntimeException("Dimension not yet implemented: " + sizes.size)
 		}
 	}

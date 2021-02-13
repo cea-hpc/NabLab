@@ -11,9 +11,12 @@ package fr.cea.nabla
 
 import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.ConnectivityCall
+import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.ItemSetRef
+import fr.cea.nabla.nabla.NablaRoot
 import fr.cea.nabla.nabla.SpaceIteratorRef
 import java.util.List
+import org.eclipse.xtext.EcoreUtil2
 
 import static extension fr.cea.nabla.SpaceIteratorRefExtensions.*
 
@@ -32,5 +35,10 @@ class UniqueNameHelper
 	static def getUniqueName(Connectivity c, List<SpaceIteratorRef> args)
 	{
 		c.name + args.map[x | x.name.toFirstUpper].join('')
+	}
+
+	static def getUniqueExtensionName(Function it)
+	{
+		EcoreUtil2.getContainerOfType(it, NablaRoot).name
 	}
 }

@@ -16,8 +16,9 @@ import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.ir.ir.ExternFunction
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
+import fr.cea.nabla.ir.ir.SimpleVariable
+import fr.cea.nabla.javalib.LevelDBUtils
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
-import fr.cea.nabla.javalib.utils.LevelDBUtils
 import java.io.File
 import java.net.URL
 import java.net.URLClassLoader
@@ -36,7 +37,6 @@ import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.Utils.getInstanceName
 import static extension fr.cea.nabla.ir.interpreter.NablaValueExtensions.*
-import fr.cea.nabla.ir.ir.SimpleVariable
 
 // TODO trapper les exceptions quand pas le jar, et pas le so dans le cas des JNI
 class IrInterpreter
@@ -199,11 +199,14 @@ class IrInterpreter
 					val jsonInit = providerClass.getDeclaredMethod("jsonInit", String)
 					jsonInit.invoke(providerInstance, jsonOptions.get(provider.instanceName).toString)
 				}
+
+				if (provider.extensionName == 'LinearAlgebra')
+					context.linearAlgebra = InterpretableLinearAlgebra.createInstance(providerClass)
 			}
 
 			for (function : functionsByProvider.get(provider))
 			{
-				val javaTypes = function.inArgs.map[a | FunctionCallHelper.getJavaType(a.type)]
+				val javaTypes = function.inArgs.map[a | FunctionCallHelper.getJavaType(a.type, context.linearAlgebra)]
 				val method = providerClass.getDeclaredMethod(function.name, javaTypes)
 				method.setAccessible(true)
 				context.functionToMethod.put(function, new Pair(providerInstance, method))

@@ -38,4 +38,3 @@ StlThread
 	outputPath = "/DepthInit/src-gen-cpp/stl-thread";
 	NABLA_CXX_COMPILER = "/usr/bin/g++";
 }
-

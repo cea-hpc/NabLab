@@ -17,7 +17,6 @@ import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.InternFunction
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
-import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.Variable
 import java.util.ArrayList
@@ -72,9 +71,12 @@ class JavaApplicationGenerator implements ApplicationGenerator
 		import com.google.gson.JsonObject;
 		import com.google.gson.JsonParser;
 
-		import fr.cea.nabla.javalib.types.*;
+		import fr.cea.nabla.javalib.*;
 		import fr.cea.nabla.javalib.mesh.*;
-		import fr.cea.nabla.javalib.utils.*;
+		«IF linearAlgebra»
+		import fr.cea.nabla.javalib.linearalgebra.Matrix;
+		import fr.cea.nabla.javalib.linearalgebra.Vector;
+		«ENDIF»
 
 		@SuppressWarnings("all")
 		public final class «className»
@@ -252,7 +254,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 				{
 					VtkFileContent content = new VtkFileContent(iteration, «irRoot.timeVariable.name», «irRoot.nodeCoordVariable.name», mesh.getGeometry().getQuads());
 					«FOR v : postProcessing.outputVariables»
-					content.add«v.support.name.toFirstUpper»Variable("«v.outputName»", «v.target.name»«IF v.target.type instanceof LinearAlgebraType».toArray()«ENDIF»);
+					content.add«v.support.name.toFirstUpper»Variable("«v.outputName»", «v.target.name»);
 					«ENDFOR»
 					writer.writeFile(content);
 					«postProcessing.lastDumpVariable.name» = «postProcessing.periodReference.name»;

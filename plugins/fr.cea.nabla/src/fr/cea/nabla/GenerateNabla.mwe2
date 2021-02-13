@@ -9,8 +9,6 @@
  *******************************************************************************/
 module fr.cea.nabla.GenerateNabla
 
-// TODO Validate additional modules have no iterate
-
 import org.eclipse.xtext.xtext.generator.*
 import org.eclipse.xtext.xtext.generator.model.project.*
 

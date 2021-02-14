@@ -13,7 +13,6 @@ import fr.cea.nabla.ir.interpreter.Context
 import fr.cea.nabla.ir.interpreter.NV0Real
 import fr.cea.nabla.ir.interpreter.NablaValue
 import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.ConnectivityCall
@@ -130,7 +129,7 @@ class TestUtils
 	// Interpreter asserts
 	def assertVariableDefaultValue(IrModule irModule, Context context, String variableName, NablaValue value)
 	{
-		Assert.assertEquals(value, (irModule.getVariableByName(variableName) as SimpleVariable).defaultValue.interprete(context))
+		Assert.assertEquals(value, irModule.getVariableByName(variableName).defaultValue.interprete(context))
 	}
 
 	def dispatch assertVariableValueInContext(IrModule irModule, Context context, String variableName, NablaValue value)

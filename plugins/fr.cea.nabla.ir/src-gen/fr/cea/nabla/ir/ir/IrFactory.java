@@ -58,6 +58,15 @@ public interface IrFactory extends EFactory {
 	PostProcessing createPostProcessing();
 
 	/**
+	 * Returns a new object of class '<em>Post Processed Variable</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Post Processed Variable</em>'.
+	 * @generated
+	 */
+	PostProcessedVariable createPostProcessedVariable();
+
+	/**
 	 * Returns a new object of class '<em>Extension Provider</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -76,31 +85,13 @@ public interface IrFactory extends EFactory {
 	Arg createArg();
 
 	/**
-	 * Returns a new object of class '<em>Post Processed Variable</em>'.
+	 * Returns a new object of class '<em>Variable</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Post Processed Variable</em>'.
+	 * @return a new object of class '<em>Variable</em>'.
 	 * @generated
 	 */
-	PostProcessedVariable createPostProcessedVariable();
-
-	/**
-	 * Returns a new object of class '<em>Simple Variable</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Simple Variable</em>'.
-	 * @generated
-	 */
-	SimpleVariable createSimpleVariable();
-
-	/**
-	 * Returns a new object of class '<em>Connectivity Variable</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Connectivity Variable</em>'.
-	 * @generated
-	 */
-	ConnectivityVariable createConnectivityVariable();
+	Variable createVariable();
 
 	/**
 	 * Returns a new object of class '<em>Intern Function</em>'.
@@ -472,6 +463,15 @@ public interface IrFactory extends EFactory {
 	ConnectivityType createConnectivityType();
 
 	/**
+	 * Returns a new object of class '<em>Linear Algebra Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Linear Algebra Type</em>'.
+	 * @generated
+	 */
+	LinearAlgebraType createLinearAlgebraType();
+
+	/**
 	 * Returns a new object of class '<em>Connectivity Call</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -533,15 +533,6 @@ public interface IrFactory extends EFactory {
 	 * @generated
 	 */
 	ItemIndexValue createItemIndexValue();
-
-	/**
-	 * Returns a new object of class '<em>Linear Algebra Type</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Linear Algebra Type</em>'.
-	 * @generated
-	 */
-	LinearAlgebraType createLinearAlgebraType();
 
 	/**
 	 * Returns the package supported by this factory.

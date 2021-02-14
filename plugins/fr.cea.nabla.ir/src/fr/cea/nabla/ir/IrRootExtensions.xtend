@@ -10,7 +10,6 @@
 package fr.cea.nabla.ir
 
 import fr.cea.nabla.ir.ir.IrRoot
-import fr.cea.nabla.ir.ir.SimpleVariable
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 
@@ -18,7 +17,7 @@ class IrRootExtensions
 {
 	static def getOptions(IrRoot it)
 	{
-		variables.filter(SimpleVariable).filter[option]
+		variables.filter[option]
 	}
 
 	static def getMainModule(IrRoot it)

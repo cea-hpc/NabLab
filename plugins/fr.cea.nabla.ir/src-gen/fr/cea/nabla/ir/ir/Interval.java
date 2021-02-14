@@ -26,12 +26,12 @@ public interface Interval extends IterationBlock {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Index</em>' containment reference.
-	 * @see #setIndex(SimpleVariable)
+	 * @see #setIndex(Variable)
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getInterval_Index()
 	 * @model containment="true" resolveProxies="true" required="true"
 	 * @generated
 	 */
-	SimpleVariable getIndex();
+	Variable getIndex();
 
 	/**
 	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Interval#getIndex <em>Index</em>}' containment reference.
@@ -41,7 +41,7 @@ public interface Interval extends IterationBlock {
 	 * @see #getIndex()
 	 * @generated
 	 */
-	void setIndex(SimpleVariable value);
+	void setIndex(Variable value);
 
 	/**
 	 * Returns the value of the '<em><b>Nb Elems</b></em>' containment reference.

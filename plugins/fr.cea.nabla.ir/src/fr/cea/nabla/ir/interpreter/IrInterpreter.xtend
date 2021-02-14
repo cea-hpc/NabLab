@@ -16,7 +16,6 @@ import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.ir.ir.ExternFunction
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
-import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.javalib.LevelDBUtils
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
 import java.io.File
@@ -32,7 +31,6 @@ import static fr.cea.nabla.ir.interpreter.VariableValueFactory.*
 import static org.iq80.leveldb.impl.Iq80DBFactory.bytes
 import static org.iq80.leveldb.impl.Iq80DBFactory.factory
 
-import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.Utils.getInstanceName
@@ -113,7 +111,7 @@ class IrInterpreter
 
 		// Interprete variables that are not options
 		for (v : ir.variables.filter[!option])
-			context.addVariableValue(v, createValue(v.type, v instanceof SimpleVariable?(v as SimpleVariable).defaultValue:null, context))
+			context.addVariableValue(v, createValue(v.type, v.defaultValue, context))
 
 		// Copy Node Cooords
 		context.addVariableValue(ir.initNodeCoordVariable, new NV2Real(context.meshWrapper.nodes))

@@ -13,7 +13,6 @@ import fr.cea.nabla.ir.ir.ExtensionProvider
 import fr.cea.nabla.ir.ir.ExternFunction
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
-import fr.cea.nabla.ir.ir.SimpleVariable
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 
@@ -47,12 +46,12 @@ class IrModuleExtensions
 
 	static def getOptions(IrModule it)
 	{
-		variables.filter(SimpleVariable).filter[option]
+		variables.filter[option]
 	}
 
 	static def getVariablesWithDefaultValue(IrModule it)
 	{
-		variables.filter(SimpleVariable).filter[x | !x.option && x.defaultValue !== null]
+		variables.filter[x | !x.option && x.defaultValue !== null]
 	}
 
 	static def isLinearAlgebra(IrModule it)

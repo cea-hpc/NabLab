@@ -48,12 +48,12 @@ public interface ExecuteTimeLoopJob extends TimeLoopJob, JobCaller {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Iteration Counter</em>' reference.
-	 * @see #setIterationCounter(SimpleVariable)
+	 * @see #setIterationCounter(Variable)
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getExecuteTimeLoopJob_IterationCounter()
 	 * @model required="true"
 	 * @generated
 	 */
-	SimpleVariable getIterationCounter();
+	Variable getIterationCounter();
 
 	/**
 	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.ExecuteTimeLoopJob#getIterationCounter <em>Iteration Counter</em>}' reference.
@@ -63,6 +63,6 @@ public interface ExecuteTimeLoopJob extends TimeLoopJob, JobCaller {
 	 * @see #getIterationCounter()
 	 * @generated
 	 */
-	void setIterationCounter(SimpleVariable value);
+	void setIterationCounter(Variable value);
 
 } // ExecuteTimeLoopJob

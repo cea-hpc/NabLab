@@ -6,8 +6,7 @@ import fr.cea.nabla.ir.ir.Arg;
 import fr.cea.nabla.ir.ir.BaseType;
 import fr.cea.nabla.ir.ir.Function;
 import fr.cea.nabla.ir.ir.IrPackage;
-import fr.cea.nabla.ir.ir.SimpleVariable;
-
+import fr.cea.nabla.ir.ir.Variable;
 import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -78,7 +77,7 @@ public abstract class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<SimpleVariable> variables;
+	protected EList<Variable> variables;
 
 	/**
 	 * The cached value of the '{@link #getInArgs() <em>In Args</em>}' containment reference list.
@@ -183,9 +182,9 @@ public abstract class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * @generated
 	 */
 	@Override
-	public EList<SimpleVariable> getVariables() {
+	public EList<Variable> getVariables() {
 		if (variables == null) {
-			variables = new EObjectContainmentEList.Resolving<SimpleVariable>(SimpleVariable.class, this, IrPackage.FUNCTION__VARIABLES);
+			variables = new EObjectContainmentEList.Resolving<Variable>(Variable.class, this, IrPackage.FUNCTION__VARIABLES);
 		}
 		return variables;
 	}
@@ -282,7 +281,7 @@ public abstract class FunctionImpl extends IrAnnotableImpl implements Function {
 				return;
 			case IrPackage.FUNCTION__VARIABLES:
 				getVariables().clear();
-				getVariables().addAll((Collection<? extends SimpleVariable>)newValue);
+				getVariables().addAll((Collection<? extends Variable>)newValue);
 				return;
 			case IrPackage.FUNCTION__IN_ARGS:
 				getInArgs().clear();

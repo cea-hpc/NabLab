@@ -9,36 +9,22 @@
  *******************************************************************************/
 package fr.cea.nabla.ir
 
-import fr.cea.nabla.ir.ir.Arg
 import fr.cea.nabla.ir.ir.ArgOrVar
-import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.ir.IrType
 import fr.cea.nabla.ir.ir.Iterator
-import fr.cea.nabla.ir.ir.SimpleVariable
-import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.ir.ir.LinearAlgebraType
+import fr.cea.nabla.ir.ir.Variable
 
 class ArgOrVarExtensions
 {
 	static def isIteratorCounter(ArgOrVar it)
 	{
-		it instanceof SimpleVariable && eContainer instanceof Iterator
-	}
-
-	static def IrType getType(ArgOrVar it)
-	{
-		switch it
-		{
-			Arg: type
-			SimpleVariable: type
-			ConnectivityVariable: type
-		}
+		eContainer instanceof Iterator
 	}
 
 	static def isOption(ArgOrVar it)
 	{
-		(it instanceof SimpleVariable && (it as SimpleVariable).option)
+		(it instanceof Variable && (it as Variable).option)
 	}
 
 	static def isGlobal(ArgOrVar it)

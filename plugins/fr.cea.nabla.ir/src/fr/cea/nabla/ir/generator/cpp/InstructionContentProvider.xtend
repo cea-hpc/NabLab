@@ -24,7 +24,6 @@ import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.Return
 import fr.cea.nabla.ir.ir.SetDefinition
-import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.VariableDeclaration
 import fr.cea.nabla.ir.ir.While
 import org.eclipse.xtend.lib.annotations.Data
@@ -46,7 +45,7 @@ abstract class InstructionContentProvider
 	def dispatch CharSequence getContent(VariableDeclaration it)
 	'''
 		«IF variable.type.baseTypeStatic»
-			«IF variable.const»const «ENDIF»«variable.type.cppType» «variable.name»«variable.defaultValueContent»;
+			«IF variable.const»const «ENDIF»«variable.type.cppType» «variable.name»«IF variable.defaultValue !== null»(«variable.defaultValue.content»)«ENDIF»;
 		«ELSE»
 			«IF variable.const»const «ENDIF»«variable.type.cppType» «variable.name»;
 			«initCppTypeContent(variable.name, variable.type)»
@@ -142,9 +141,6 @@ abstract class InstructionContentProvider
 			«body.innerContent»
 		}
 	'''
-
-	protected def getDefaultValueContent(SimpleVariable it)
-	'''«IF defaultValue !== null»(«defaultValue.content»)«ENDIF»'''
 
 	// ### IterationBlock Extensions ###
 	protected def dispatch defineInterval(Iterator it, CharSequence innerContent)

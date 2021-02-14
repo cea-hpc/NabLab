@@ -29,8 +29,8 @@ import fr.cea.nabla.ir.ir.MaxConstant
 import fr.cea.nabla.ir.ir.MinConstant
 import fr.cea.nabla.ir.ir.Parenthesis
 import fr.cea.nabla.ir.ir.RealConstant
-import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.UnaryExpression
+import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.ir.ir.VectorConstant
 import java.util.Arrays
 
@@ -237,7 +237,7 @@ class ExpressionInterpreter
 						val callerArgTypeSize = callerArgTypeSizes.get(iSize)
 						val calleeArgTypeDimension = calleeArg.type.sizes.get(iSize)
 						if (calleeArgTypeDimension instanceof ArgOrVarRef)
-							if (calleeArgTypeDimension.target instanceof SimpleVariable)
+							if (calleeArgTypeDimension.target instanceof Variable)
 								innerContext.addVariableValue(calleeArgTypeDimension.target, new NV0Int(callerArgTypeSize))
 					}
 	

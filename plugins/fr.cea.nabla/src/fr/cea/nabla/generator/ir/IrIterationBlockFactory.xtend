@@ -15,7 +15,6 @@ import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IterationBlock
 import fr.cea.nabla.ir.ir.Iterator
-import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.nabla.Interval
 import fr.cea.nabla.nabla.SpaceIterator
 import java.util.ArrayList
@@ -41,14 +40,14 @@ class IrIterationBlockFactory
 	{
 		annotations += b.toIrAnnotation
 		index = b.toIrIndex
-		if (b.counter !== null) counter = toIrVariable(b.counter) as SimpleVariable
+		if (b.counter !== null) counter = toIrVariable(b.counter)
 		container = toIrContainer(b.container)
 	}
 
 	def dispatch IterationBlock create IrFactory::eINSTANCE.createInterval toIrIterationBlock(Interval b)
 	{
 		annotations += b.toIrAnnotation
-		index = b.index.toIrVariable as SimpleVariable
+		index = b.index.toIrVariable
 		nbElems = b.nbElems.toIrExpression
 	}
 

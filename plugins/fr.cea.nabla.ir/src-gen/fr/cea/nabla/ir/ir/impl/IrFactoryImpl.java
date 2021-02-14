@@ -61,11 +61,10 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.IR_ROOT: return createIrRoot();
 			case IrPackage.IR_MODULE: return createIrModule();
 			case IrPackage.POST_PROCESSING: return createPostProcessing();
+			case IrPackage.POST_PROCESSED_VARIABLE: return createPostProcessedVariable();
 			case IrPackage.EXTENSION_PROVIDER: return createExtensionProvider();
 			case IrPackage.ARG: return createArg();
-			case IrPackage.POST_PROCESSED_VARIABLE: return createPostProcessedVariable();
-			case IrPackage.SIMPLE_VARIABLE: return createSimpleVariable();
-			case IrPackage.CONNECTIVITY_VARIABLE: return createConnectivityVariable();
+			case IrPackage.VARIABLE: return createVariable();
 			case IrPackage.INTERN_FUNCTION: return createInternFunction();
 			case IrPackage.EXTERN_FUNCTION: return createExternFunction();
 			case IrPackage.CONNECTIVITY: return createConnectivity();
@@ -222,31 +221,20 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * @generated
 	 */
 	@Override
+	public Variable createVariable() {
+		VariableImpl variable = new VariableImpl();
+		return variable;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public PostProcessedVariable createPostProcessedVariable() {
 		PostProcessedVariableImpl postProcessedVariable = new PostProcessedVariableImpl();
 		return postProcessedVariable;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public SimpleVariable createSimpleVariable() {
-		SimpleVariableImpl simpleVariable = new SimpleVariableImpl();
-		return simpleVariable;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public ConnectivityVariable createConnectivityVariable() {
-		ConnectivityVariableImpl connectivityVariable = new ConnectivityVariableImpl();
-		return connectivityVariable;
 	}
 
 	/**

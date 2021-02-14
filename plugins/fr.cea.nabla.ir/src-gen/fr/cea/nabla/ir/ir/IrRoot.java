@@ -178,12 +178,12 @@ public interface IrRoot extends IrAnnotable {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Init Node Coord Variable</em>' reference.
-	 * @see #setInitNodeCoordVariable(ConnectivityVariable)
+	 * @see #setInitNodeCoordVariable(Variable)
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrRoot_InitNodeCoordVariable()
 	 * @model required="true"
 	 * @generated
 	 */
-	ConnectivityVariable getInitNodeCoordVariable();
+	Variable getInitNodeCoordVariable();
 
 	/**
 	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.IrRoot#getInitNodeCoordVariable <em>Init Node Coord Variable</em>}' reference.
@@ -193,19 +193,19 @@ public interface IrRoot extends IrAnnotable {
 	 * @see #getInitNodeCoordVariable()
 	 * @generated
 	 */
-	void setInitNodeCoordVariable(ConnectivityVariable value);
+	void setInitNodeCoordVariable(Variable value);
 
 	/**
 	 * Returns the value of the '<em><b>Node Coord Variable</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Node Coord Variable</em>' reference.
-	 * @see #setNodeCoordVariable(ConnectivityVariable)
+	 * @see #setNodeCoordVariable(Variable)
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrRoot_NodeCoordVariable()
 	 * @model required="true"
 	 * @generated
 	 */
-	ConnectivityVariable getNodeCoordVariable();
+	Variable getNodeCoordVariable();
 
 	/**
 	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.IrRoot#getNodeCoordVariable <em>Node Coord Variable</em>}' reference.
@@ -215,19 +215,19 @@ public interface IrRoot extends IrAnnotable {
 	 * @see #getNodeCoordVariable()
 	 * @generated
 	 */
-	void setNodeCoordVariable(ConnectivityVariable value);
+	void setNodeCoordVariable(Variable value);
 
 	/**
 	 * Returns the value of the '<em><b>Time Variable</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Time Variable</em>' reference.
-	 * @see #setTimeVariable(SimpleVariable)
+	 * @see #setTimeVariable(Variable)
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrRoot_TimeVariable()
 	 * @model required="true"
 	 * @generated
 	 */
-	SimpleVariable getTimeVariable();
+	Variable getTimeVariable();
 
 	/**
 	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.IrRoot#getTimeVariable <em>Time Variable</em>}' reference.
@@ -237,19 +237,19 @@ public interface IrRoot extends IrAnnotable {
 	 * @see #getTimeVariable()
 	 * @generated
 	 */
-	void setTimeVariable(SimpleVariable value);
+	void setTimeVariable(Variable value);
 
 	/**
 	 * Returns the value of the '<em><b>Time Step Variable</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Time Step Variable</em>' reference.
-	 * @see #setTimeStepVariable(SimpleVariable)
+	 * @see #setTimeStepVariable(Variable)
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrRoot_TimeStepVariable()
 	 * @model required="true"
 	 * @generated
 	 */
-	SimpleVariable getTimeStepVariable();
+	Variable getTimeStepVariable();
 
 	/**
 	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.IrRoot#getTimeStepVariable <em>Time Step Variable</em>}' reference.
@@ -259,7 +259,7 @@ public interface IrRoot extends IrAnnotable {
 	 * @see #getTimeStepVariable()
 	 * @generated
 	 */
-	void setTimeStepVariable(SimpleVariable value);
+	void setTimeStepVariable(Variable value);
 
 	/**
 	 * Returns the value of the '<em><b>Post Processing</b></em>' containment reference.

@@ -28,7 +28,7 @@ class ReductionCallExtensions
 	@Inject extension NablaType2IrType
 	@Inject extension IrExpressionFactory
 
-	def create IrFactory::eINSTANCE.createSimpleVariable toIrLocalVariable(ReductionCall rc)
+	def create IrFactory::eINSTANCE.createVariable toIrLocalVariable(ReductionCall rc)
 	{
 		annotations += rc.toIrAnnotation
 		name = "reduction" + rc.number

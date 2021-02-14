@@ -99,6 +99,12 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case IrPackage.POST_PROCESSED_VARIABLE: {
+				PostProcessedVariable postProcessedVariable = (PostProcessedVariable)theEObject;
+				T result = casePostProcessedVariable(postProcessedVariable);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			case IrPackage.EXTENSION_PROVIDER: {
 				ExtensionProvider extensionProvider = (ExtensionProvider)theEObject;
 				T result = caseExtensionProvider(extensionProvider);
@@ -126,30 +132,6 @@ public class IrSwitch<T> extends Switch<T> {
 				T result = caseVariable(variable);
 				if (result == null) result = caseArgOrVar(variable);
 				if (result == null) result = caseIrAnnotable(variable);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case IrPackage.POST_PROCESSED_VARIABLE: {
-				PostProcessedVariable postProcessedVariable = (PostProcessedVariable)theEObject;
-				T result = casePostProcessedVariable(postProcessedVariable);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case IrPackage.SIMPLE_VARIABLE: {
-				SimpleVariable simpleVariable = (SimpleVariable)theEObject;
-				T result = caseSimpleVariable(simpleVariable);
-				if (result == null) result = caseVariable(simpleVariable);
-				if (result == null) result = caseArgOrVar(simpleVariable);
-				if (result == null) result = caseIrAnnotable(simpleVariable);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case IrPackage.CONNECTIVITY_VARIABLE: {
-				ConnectivityVariable connectivityVariable = (ConnectivityVariable)theEObject;
-				T result = caseConnectivityVariable(connectivityVariable);
-				if (result == null) result = caseVariable(connectivityVariable);
-				if (result == null) result = caseArgOrVar(connectivityVariable);
-				if (result == null) result = caseIrAnnotable(connectivityVariable);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -759,36 +741,6 @@ public class IrSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T casePostProcessedVariable(PostProcessedVariable object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Simple Variable</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Simple Variable</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseSimpleVariable(SimpleVariable object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Connectivity Variable</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Connectivity Variable</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseConnectivityVariable(ConnectivityVariable object) {
 		return null;
 	}
 

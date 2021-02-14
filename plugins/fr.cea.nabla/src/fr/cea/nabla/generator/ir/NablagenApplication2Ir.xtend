@@ -14,13 +14,11 @@ import com.google.inject.Provider
 import fr.cea.nabla.ir.IrModuleExtensions
 import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.BaseType
-import fr.cea.nabla.ir.ir.ConnectivityVariable
 import fr.cea.nabla.ir.ir.ExternFunction
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.PrimitiveType
-import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.TimeLoopJob
 import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.nabla.ArgOrVar
@@ -70,10 +68,10 @@ class NablagenApplication2Ir
 
 		// set simulation variables
 		meshClassName= ngenApp.mainModule.meshClassName
-		initNodeCoordVariable = getInitIrVariable(mainIrModule, ngenApp.mainModule.nodeCoord) as ConnectivityVariable
-		nodeCoordVariable = getCurrentIrVariable(mainIrModule, ngenApp.mainModule.nodeCoord) as ConnectivityVariable
-		timeVariable = getCurrentIrVariable(mainIrModule, ngenApp.mainModule.time) as SimpleVariable
-		timeStepVariable = getCurrentIrVariable(mainIrModule, ngenApp.mainModule.timeStep) as SimpleVariable
+		initNodeCoordVariable = getInitIrVariable(mainIrModule, ngenApp.mainModule.nodeCoord)
+		nodeCoordVariable = getCurrentIrVariable(mainIrModule, ngenApp.mainModule.nodeCoord)
+		timeVariable = getCurrentIrVariable(mainIrModule, ngenApp.mainModule.time)
+		timeStepVariable = getCurrentIrVariable(mainIrModule, ngenApp.mainModule.timeStep)
 
 		// set providers
 		for (f : functions.filter(ExternFunction))
@@ -84,7 +82,7 @@ class NablagenApplication2Ir
 		{
 			postProcessing = IrFactory.eINSTANCE.createPostProcessing
 			val periodReferenceVar = getCurrentIrVariable(mainIrModule, ngenApp.vtkOutput.periodReferenceVar)
-			postProcessing.periodReference = periodReferenceVar as SimpleVariable
+			postProcessing.periodReference = periodReferenceVar
 
 			for (outputVar : ngenApp.vtkOutput.vars)
 			{
@@ -98,7 +96,7 @@ class NablagenApplication2Ir
 			}
 			// Create a variable to store the last write time
 			val periodVariableType = postProcessing.periodReference.type as BaseType
-			postProcessing.lastDumpVariable = IrFactory.eINSTANCE.createSimpleVariable =>
+			postProcessing.lastDumpVariable = IrFactory.eINSTANCE.createVariable =>
 			[
 				name = "lastDump"
 				type = EcoreUtil::copy(periodVariableType)
@@ -112,7 +110,7 @@ class NablagenApplication2Ir
 			variables.add(pos, postProcessing.lastDumpVariable)
 
 			// Create an option to store the output period
-			postProcessing.periodValue = IrFactory.eINSTANCE.createSimpleVariable =>
+			postProcessing.periodValue = IrFactory.eINSTANCE.createVariable =>
 			[
 				name = "outputPeriod"
 				type = EcoreUtil::copy(periodVariableType)

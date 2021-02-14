@@ -20,7 +20,6 @@ import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.JobCaller
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ReductionInstruction
-import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.Variable
 import org.eclipse.emf.ecore.EObject
 
@@ -69,12 +68,12 @@ class Utils
 
 	static def getCodeName(ArgOrVar it)
 	{
-		if (it instanceof SimpleVariable && (it as SimpleVariable).option)
-			'options.' + name
-		else if (iteratorCounter)
-			(eContainer as Iterator).index.name
-		else
-			name
+		switch it
+		{
+			Variable case option: 'options.' + name
+			case iteratorCounter: (eContainer as Iterator).index.name
+			default: name
+		}
 	}
 
 	static def getDbKey(Variable it)

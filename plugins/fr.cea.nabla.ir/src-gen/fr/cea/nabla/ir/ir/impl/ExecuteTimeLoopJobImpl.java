@@ -7,7 +7,7 @@ import fr.cea.nabla.ir.ir.Expression;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.Job;
 import fr.cea.nabla.ir.ir.JobCaller;
-import fr.cea.nabla.ir.ir.SimpleVariable;
+import fr.cea.nabla.ir.ir.Variable;
 import java.util.Collection;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -63,7 +63,7 @@ public class ExecuteTimeLoopJobImpl extends TimeLoopJobImpl implements ExecuteTi
 	 * @generated
 	 * @ordered
 	 */
-	protected SimpleVariable iterationCounter;
+	protected Variable iterationCounter;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -171,10 +171,10 @@ public class ExecuteTimeLoopJobImpl extends TimeLoopJobImpl implements ExecuteTi
 	 * @generated
 	 */
 	@Override
-	public SimpleVariable getIterationCounter() {
+	public Variable getIterationCounter() {
 		if (iterationCounter != null && iterationCounter.eIsProxy()) {
 			InternalEObject oldIterationCounter = (InternalEObject)iterationCounter;
-			iterationCounter = (SimpleVariable)eResolveProxy(oldIterationCounter);
+			iterationCounter = (Variable)eResolveProxy(oldIterationCounter);
 			if (iterationCounter != oldIterationCounter) {
 				if (eNotificationRequired())
 					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.EXECUTE_TIME_LOOP_JOB__ITERATION_COUNTER, oldIterationCounter, iterationCounter));
@@ -188,7 +188,7 @@ public class ExecuteTimeLoopJobImpl extends TimeLoopJobImpl implements ExecuteTi
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public SimpleVariable basicGetIterationCounter() {
+	public Variable basicGetIterationCounter() {
 		return iterationCounter;
 	}
 
@@ -198,8 +198,8 @@ public class ExecuteTimeLoopJobImpl extends TimeLoopJobImpl implements ExecuteTi
 	 * @generated
 	 */
 	@Override
-	public void setIterationCounter(SimpleVariable newIterationCounter) {
-		SimpleVariable oldIterationCounter = iterationCounter;
+	public void setIterationCounter(Variable newIterationCounter) {
+		Variable oldIterationCounter = iterationCounter;
 		iterationCounter = newIterationCounter;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.EXECUTE_TIME_LOOP_JOB__ITERATION_COUNTER, oldIterationCounter, iterationCounter));
@@ -273,7 +273,7 @@ public class ExecuteTimeLoopJobImpl extends TimeLoopJobImpl implements ExecuteTi
 				setWhileCondition((Expression)newValue);
 				return;
 			case IrPackage.EXECUTE_TIME_LOOP_JOB__ITERATION_COUNTER:
-				setIterationCounter((SimpleVariable)newValue);
+				setIterationCounter((Variable)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -294,7 +294,7 @@ public class ExecuteTimeLoopJobImpl extends TimeLoopJobImpl implements ExecuteTi
 				setWhileCondition((Expression)null);
 				return;
 			case IrPackage.EXECUTE_TIME_LOOP_JOB__ITERATION_COUNTER:
-				setIterationCounter((SimpleVariable)null);
+				setIterationCounter((Variable)null);
 				return;
 		}
 		super.eUnset(featureID);

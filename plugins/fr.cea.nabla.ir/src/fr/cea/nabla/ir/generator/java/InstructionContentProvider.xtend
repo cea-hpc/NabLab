@@ -23,7 +23,7 @@ import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.Return
 import fr.cea.nabla.ir.ir.SetDefinition
-import fr.cea.nabla.ir.ir.SimpleVariable
+import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.ir.ir.VariableDeclaration
 import fr.cea.nabla.ir.ir.While
 
@@ -148,12 +148,10 @@ class InstructionContentProvider
 		«ENDFOR»
 	'''
 
-	private static def getDefaultValueContent(SimpleVariable it)
+	private static def getDefaultValueContent(Variable it)
 	{
-		if (defaultValue === null)
-			type.javaAllocation
-		else
-			''' = «defaultValue.content»'''
+		if (defaultValue === null) type.javaAllocation
+		else ''' = «defaultValue.content»'''
 	}
 
 	// ### IterationBlock Extensions ###

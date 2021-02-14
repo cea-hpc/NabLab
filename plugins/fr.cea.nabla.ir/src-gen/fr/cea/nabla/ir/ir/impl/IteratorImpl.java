@@ -5,8 +5,7 @@ package fr.cea.nabla.ir.ir.impl;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.ItemIndex;
 import fr.cea.nabla.ir.ir.Iterator;
-import fr.cea.nabla.ir.ir.SimpleVariable;
-
+import fr.cea.nabla.ir.ir.Variable;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 
@@ -59,7 +58,7 @@ public class IteratorImpl extends IterationBlockImpl implements Iterator {
 	 * @generated
 	 * @ordered
 	 */
-	protected SimpleVariable counter;
+	protected Variable counter;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -222,10 +221,10 @@ public class IteratorImpl extends IterationBlockImpl implements Iterator {
 	 * @generated
 	 */
 	@Override
-	public SimpleVariable getCounter() {
+	public Variable getCounter() {
 		if (counter != null && counter.eIsProxy()) {
 			InternalEObject oldCounter = (InternalEObject)counter;
-			counter = (SimpleVariable)eResolveProxy(oldCounter);
+			counter = (Variable)eResolveProxy(oldCounter);
 			if (counter != oldCounter) {
 				InternalEObject newCounter = (InternalEObject)counter;
 				NotificationChain msgs = oldCounter.eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.ITERATOR__COUNTER, null, null);
@@ -245,7 +244,7 @@ public class IteratorImpl extends IterationBlockImpl implements Iterator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public SimpleVariable basicGetCounter() {
+	public Variable basicGetCounter() {
 		return counter;
 	}
 
@@ -254,8 +253,8 @@ public class IteratorImpl extends IterationBlockImpl implements Iterator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetCounter(SimpleVariable newCounter, NotificationChain msgs) {
-		SimpleVariable oldCounter = counter;
+	public NotificationChain basicSetCounter(Variable newCounter, NotificationChain msgs) {
+		Variable oldCounter = counter;
 		counter = newCounter;
 		if (eNotificationRequired()) {
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.ITERATOR__COUNTER, oldCounter, newCounter);
@@ -270,7 +269,7 @@ public class IteratorImpl extends IterationBlockImpl implements Iterator {
 	 * @generated
 	 */
 	@Override
-	public void setCounter(SimpleVariable newCounter) {
+	public void setCounter(Variable newCounter) {
 		if (newCounter != counter) {
 			NotificationChain msgs = null;
 			if (counter != null)
@@ -338,7 +337,7 @@ public class IteratorImpl extends IterationBlockImpl implements Iterator {
 				setContainer((fr.cea.nabla.ir.ir.Container)newValue);
 				return;
 			case IrPackage.ITERATOR__COUNTER:
-				setCounter((SimpleVariable)newValue);
+				setCounter((Variable)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -359,7 +358,7 @@ public class IteratorImpl extends IterationBlockImpl implements Iterator {
 				setContainer((fr.cea.nabla.ir.ir.Container)null);
 				return;
 			case IrPackage.ITERATOR__COUNTER:
-				setCounter((SimpleVariable)null);
+				setCounter((Variable)null);
 				return;
 		}
 		super.eUnset(featureID);

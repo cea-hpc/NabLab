@@ -122,16 +122,15 @@ class IrArgOrVarFactory
 		val name = v.name + timeSuffix
 		switch v
 		{
-			SimpleVar : toIrSimpleVariable(v, name)
-			ConnectivityVar : toIrConnectivityVariable(v, name)
+			SimpleVar : toIrVariable(v, name)
+			ConnectivityVar : toIrVariable(v, name)
 			Arg: toIrArg(v, name)
 			TimeIterator: toIrIterationCounter(v)
 		}
 	}
 
-	// fonctions générales retournent des Var
-	def dispatch Variable toIrVariable(SimpleVar v) { toIrSimpleVariable(v, v.name) }
-	def dispatch Variable toIrVariable(ConnectivityVar v) { toIrConnectivityVariable(v, v.name) }
+	def dispatch Variable toIrVariable(SimpleVar v) { toIrVariable(v, v.name) }
+	def dispatch Variable toIrVariable(ConnectivityVar v) { toIrVariable(v, v.name) }
 
 	def create IrFactory::eINSTANCE.createArg toIrArg(BaseType nablaType, String nablaName)
 	{
@@ -147,7 +146,7 @@ class IrArgOrVarFactory
 		type = nablaType2IrType.toIrType(v.typeFor)
 	}
 
-	def create IrFactory::eINSTANCE.createSimpleVariable toIrSimpleVariable(SimpleVar v, String varName)
+	def create IrFactory::eINSTANCE.createVariable toIrVariable(SimpleVar v, String varName)
 	{
 		annotations += v.toIrAnnotation
 		name = varName
@@ -159,14 +158,17 @@ class IrArgOrVarFactory
 		if (value !== null) defaultValue = value.toIrExpression
 	}
 
-	def create IrFactory::eINSTANCE.createConnectivityVariable toIrConnectivityVariable(ConnectivityVar v, String varName)
+	def create IrFactory::eINSTANCE.createVariable toIrVariable(ConnectivityVar v, String varName)
 	{
 		annotations += v.toIrAnnotation
 		name = varName
 		type = nablaType2IrType.toIrType(v.typeFor)
+		const = false
+		constExpr = false
+		option = false
 	}
 
-	def create IrFactory::eINSTANCE.createSimpleVariable toIrIterationCounter(TimeIterator t)
+	def create IrFactory::eINSTANCE.createVariable toIrIterationCounter(TimeIterator t)
 	{
 		annotations += t.toIrAnnotation
 		name = t.name
@@ -187,8 +189,8 @@ class IrArgOrVarFactory
 		val name = v.name + getIrVarTimeSuffix(ti, timeIteratorSuffix)
 		return switch v
 		{
-			SimpleVar : toIrSimpleVariable(v, name) => [const = false]
-			ConnectivityVar : toIrConnectivityVariable(v, name)
+			SimpleVar : toIrVariable(v, name) => [const = false]
+			ConnectivityVar : toIrVariable(v, name)
 		}
 	}
 

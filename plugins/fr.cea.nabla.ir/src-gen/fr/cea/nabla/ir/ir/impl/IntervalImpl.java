@@ -5,8 +5,7 @@ package fr.cea.nabla.ir.ir.impl;
 import fr.cea.nabla.ir.ir.Expression;
 import fr.cea.nabla.ir.ir.Interval;
 import fr.cea.nabla.ir.ir.IrPackage;
-import fr.cea.nabla.ir.ir.SimpleVariable;
-
+import fr.cea.nabla.ir.ir.Variable;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 
@@ -38,7 +37,7 @@ public class IntervalImpl extends IterationBlockImpl implements Interval {
 	 * @generated
 	 * @ordered
 	 */
-	protected SimpleVariable index;
+	protected Variable index;
 
 	/**
 	 * The cached value of the '{@link #getNbElems() <em>Nb Elems</em>}' containment reference.
@@ -75,10 +74,10 @@ public class IntervalImpl extends IterationBlockImpl implements Interval {
 	 * @generated
 	 */
 	@Override
-	public SimpleVariable getIndex() {
+	public Variable getIndex() {
 		if (index != null && index.eIsProxy()) {
 			InternalEObject oldIndex = (InternalEObject)index;
-			index = (SimpleVariable)eResolveProxy(oldIndex);
+			index = (Variable)eResolveProxy(oldIndex);
 			if (index != oldIndex) {
 				InternalEObject newIndex = (InternalEObject)index;
 				NotificationChain msgs = oldIndex.eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.INTERVAL__INDEX, null, null);
@@ -98,7 +97,7 @@ public class IntervalImpl extends IterationBlockImpl implements Interval {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public SimpleVariable basicGetIndex() {
+	public Variable basicGetIndex() {
 		return index;
 	}
 
@@ -107,8 +106,8 @@ public class IntervalImpl extends IterationBlockImpl implements Interval {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetIndex(SimpleVariable newIndex, NotificationChain msgs) {
-		SimpleVariable oldIndex = index;
+	public NotificationChain basicSetIndex(Variable newIndex, NotificationChain msgs) {
+		Variable oldIndex = index;
 		index = newIndex;
 		if (eNotificationRequired()) {
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.INTERVAL__INDEX, oldIndex, newIndex);
@@ -123,7 +122,7 @@ public class IntervalImpl extends IterationBlockImpl implements Interval {
 	 * @generated
 	 */
 	@Override
-	public void setIndex(SimpleVariable newIndex) {
+	public void setIndex(Variable newIndex) {
 		if (newIndex != index) {
 			NotificationChain msgs = null;
 			if (index != null)
@@ -248,7 +247,7 @@ public class IntervalImpl extends IterationBlockImpl implements Interval {
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case IrPackage.INTERVAL__INDEX:
-				setIndex((SimpleVariable)newValue);
+				setIndex((Variable)newValue);
 				return;
 			case IrPackage.INTERVAL__NB_ELEMS:
 				setNbElems((Expression)newValue);
@@ -266,7 +265,7 @@ public class IntervalImpl extends IterationBlockImpl implements Interval {
 	public void eUnset(int featureID) {
 		switch (featureID) {
 			case IrPackage.INTERVAL__INDEX:
-				setIndex((SimpleVariable)null);
+				setIndex((Variable)null);
 				return;
 			case IrPackage.INTERVAL__NB_ELEMS:
 				setNbElems((Expression)null);

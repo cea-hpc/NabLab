@@ -3,7 +3,7 @@
 package fr.cea.nabla.ir.ir.impl;
 
 import fr.cea.nabla.ir.ir.IrPackage;
-import fr.cea.nabla.ir.ir.SimpleVariable;
+import fr.cea.nabla.ir.ir.Variable;
 import fr.cea.nabla.ir.ir.VariableDeclaration;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -36,7 +36,7 @@ public class VariableDeclarationImpl extends InstructionImpl implements Variable
 	 * @generated
 	 * @ordered
 	 */
-	protected SimpleVariable variable;
+	protected Variable variable;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -63,10 +63,10 @@ public class VariableDeclarationImpl extends InstructionImpl implements Variable
 	 * @generated
 	 */
 	@Override
-	public SimpleVariable getVariable() {
+	public Variable getVariable() {
 		if (variable != null && variable.eIsProxy()) {
 			InternalEObject oldVariable = (InternalEObject)variable;
-			variable = (SimpleVariable)eResolveProxy(oldVariable);
+			variable = (Variable)eResolveProxy(oldVariable);
 			if (variable != oldVariable) {
 				InternalEObject newVariable = (InternalEObject)variable;
 				NotificationChain msgs = oldVariable.eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.VARIABLE_DECLARATION__VARIABLE, null, null);
@@ -86,7 +86,7 @@ public class VariableDeclarationImpl extends InstructionImpl implements Variable
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public SimpleVariable basicGetVariable() {
+	public Variable basicGetVariable() {
 		return variable;
 	}
 
@@ -95,8 +95,8 @@ public class VariableDeclarationImpl extends InstructionImpl implements Variable
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetVariable(SimpleVariable newVariable, NotificationChain msgs) {
-		SimpleVariable oldVariable = variable;
+	public NotificationChain basicSetVariable(Variable newVariable, NotificationChain msgs) {
+		Variable oldVariable = variable;
 		variable = newVariable;
 		if (eNotificationRequired()) {
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.VARIABLE_DECLARATION__VARIABLE, oldVariable, newVariable);
@@ -111,7 +111,7 @@ public class VariableDeclarationImpl extends InstructionImpl implements Variable
 	 * @generated
 	 */
 	@Override
-	public void setVariable(SimpleVariable newVariable) {
+	public void setVariable(Variable newVariable) {
 		if (newVariable != variable) {
 			NotificationChain msgs = null;
 			if (variable != null)
@@ -163,7 +163,7 @@ public class VariableDeclarationImpl extends InstructionImpl implements Variable
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case IrPackage.VARIABLE_DECLARATION__VARIABLE:
-				setVariable((SimpleVariable)newValue);
+				setVariable((Variable)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -178,7 +178,7 @@ public class VariableDeclarationImpl extends InstructionImpl implements Variable
 	public void eUnset(int featureID) {
 		switch (featureID) {
 			case IrPackage.VARIABLE_DECLARATION__VARIABLE:
-				setVariable((SimpleVariable)null);
+				setVariable((Variable)null);
 				return;
 		}
 		super.eUnset(featureID);

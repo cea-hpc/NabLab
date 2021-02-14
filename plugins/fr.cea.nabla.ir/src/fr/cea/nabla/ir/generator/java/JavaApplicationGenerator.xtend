@@ -17,13 +17,11 @@ import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.InternFunction
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
-import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.Variable
 import java.util.ArrayList
 
 import static fr.cea.nabla.ir.ExtensionProviderExtensions.*
 
-import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
@@ -149,7 +147,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 			«ENDIF»
 			// Global variables
 			«FOR v : variables.filter[!option]»
-			protected «IF v instanceof SimpleVariable && (v as SimpleVariable).const»final «ENDIF»«v.type.javaType» «v.name»;
+			protected «IF v instanceof Variable && (v as Variable).const»final «ENDIF»«v.type.javaType» «v.name»;
 			«ENDFOR»
 
 			public «className»(«javaMeshClassName» aMesh, Options aOptions)
@@ -319,14 +317,5 @@ class JavaApplicationGenerator implements ApplicationGenerator
 	private def String getJavaMeshClassName(IrModule it)
 	{
 		meshClassName.replace('::', '.')
-	}
-
-	private def getDefaultValue(Variable v)
-	{
-		switch v
-		{
-			SimpleVariable : v.defaultValue
-			default : null
-		}
 	}
 }

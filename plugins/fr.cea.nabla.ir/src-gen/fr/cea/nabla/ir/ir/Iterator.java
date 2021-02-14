@@ -71,12 +71,12 @@ public interface Iterator extends IterationBlock {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Counter</em>' containment reference.
-	 * @see #setCounter(SimpleVariable)
+	 * @see #setCounter(Variable)
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getIterator_Counter()
 	 * @model containment="true" resolveProxies="true"
 	 * @generated
 	 */
-	SimpleVariable getCounter();
+	Variable getCounter();
 
 	/**
 	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Iterator#getCounter <em>Counter</em>}' containment reference.
@@ -86,6 +86,6 @@ public interface Iterator extends IterationBlock {
 	 * @see #getCounter()
 	 * @generated
 	 */
-	void setCounter(SimpleVariable value);
+	void setCounter(Variable value);
 
 } // Iterator

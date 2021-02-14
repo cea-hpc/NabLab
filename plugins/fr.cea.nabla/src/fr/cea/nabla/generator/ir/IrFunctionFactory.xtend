@@ -13,7 +13,6 @@ import com.google.inject.Inject
 import com.google.inject.Singleton
 import fr.cea.nabla.UniqueNameHelper
 import fr.cea.nabla.ir.ir.IrFactory
-import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.Reduction
 
@@ -37,7 +36,7 @@ class IrFunctionFactory
 		annotations += f.toIrAnnotation
 		// build a unique name with name and type
 		name = f.name.toFirstLower + t.primitive.getName().charAt(0) + t.sizes.size
-		f.variables.forEach[x | variables += x.toIrVariable as SimpleVariable]
+		f.variables.forEach[x | variables += x.toIrVariable]
 		f.inArgs.forEach[x | inArgs += toIrArg(x, x.name)]
 		returnType = t.toIrBaseType
 		body = f.body.toIrInstruction
@@ -47,7 +46,7 @@ class IrFunctionFactory
 	{
 		annotations += f.toIrAnnotation
 		name = f.name
-		f.variables.forEach[x | variables += x.toIrVariable as SimpleVariable]
+		f.variables.forEach[x | variables += x.toIrVariable]
 		// f is internal, it has a inArgs and a body
 		f.inArgs.forEach[x | inArgs += toIrArg(x, x.name)]
 		body = f.body.toIrInstruction
@@ -59,7 +58,7 @@ class IrFunctionFactory
 		annotations += f.toIrAnnotation
 		name = f.name
 		provider = UniqueNameHelper.getUniqueExtensionName(f).toIrExtensionProvider
-		f.variables.forEach[x | variables += x.toIrVariable as SimpleVariable]
+		f.variables.forEach[x | variables += x.toIrVariable]
 		// f is external. No inArgs only inArgTypes
 		for (i : 0..<f.typeDeclaration.inTypes.size)
 			inArgs += toIrArg(f.typeDeclaration.inTypes.get(i), "x" + i)

@@ -13,13 +13,14 @@ import com.google.inject.Inject
 import fr.cea.nabla.ir.ir.ArgOrVar
 import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.IrFactory
-import fr.cea.nabla.ir.ir.SimpleVariable
+import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.nabla.And
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.BaseTypeConstant
 import fr.cea.nabla.nabla.BoolConstant
 import fr.cea.nabla.nabla.Cardinality
 import fr.cea.nabla.nabla.Comparison
+import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.ContractedIf
 import fr.cea.nabla.nabla.CurrentTimeIteratorRef
 import fr.cea.nabla.nabla.Div
@@ -27,6 +28,7 @@ import fr.cea.nabla.nabla.Equality
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.InitTimeIteratorRef
 import fr.cea.nabla.nabla.IntConstant
+import fr.cea.nabla.nabla.ItemSetRef
 import fr.cea.nabla.nabla.MaxConstant
 import fr.cea.nabla.nabla.MinConstant
 import fr.cea.nabla.nabla.Minus
@@ -44,8 +46,6 @@ import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VectorConstant
 import fr.cea.nabla.overloading.DeclarationProvider
 import fr.cea.nabla.typing.ExpressionTypeProvider
-import fr.cea.nabla.nabla.ConnectivityCall
-import fr.cea.nabla.nabla.ItemSetRef
 
 class IrExpressionFactory
 {
@@ -248,7 +248,7 @@ class IrExpressionFactory
 
 	private def boolean isConstExpr(ArgOrVar v)
 	{
-		if (v instanceof SimpleVariable)
+		if (v instanceof Variable)
 			v.constExpr
 		else
 			false

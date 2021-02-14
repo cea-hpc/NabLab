@@ -19,14 +19,12 @@ import fr.cea.nabla.ir.ir.InternFunction
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.IrType
-import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.Variable
 import java.util.ArrayList
 import java.util.HashMap
 
 import static fr.cea.nabla.ir.ExtensionProviderExtensions.*
 
-import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.Utils.getInstanceName
@@ -478,11 +476,11 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 
 	private def CharSequence getVariableDeclaration(Variable v)
 	{
-		switch (v)
+		switch v
 		{
-			 SimpleVariable case v.constExpr: '''static constexpr «typeContentProvider.getCppType(v.type)» «v.name» = «expressionContentProvider.getContent(v.defaultValue)»;'''
-			 SimpleVariable case v.const: '''const «typeContentProvider.getCppType(v.type)» «v.name»;'''
-			 default: '''«typeContentProvider.getCppType(v.type)» «v.name»;'''
+			Variable case v.constExpr: '''static constexpr «typeContentProvider.getCppType(v.type)» «v.name» = «expressionContentProvider.getContent(v.defaultValue)»;'''
+			Variable case v.const: '''const «typeContentProvider.getCppType(v.type)» «v.name»;'''
+			default: '''«typeContentProvider.getCppType(v.type)» «v.name»;'''
 		}
 	}
 

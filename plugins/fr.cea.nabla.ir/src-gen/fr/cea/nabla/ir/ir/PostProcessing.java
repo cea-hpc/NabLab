@@ -41,12 +41,12 @@ public interface PostProcessing extends IrAnnotable {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Period Reference</em>' reference.
-	 * @see #setPeriodReference(SimpleVariable)
+	 * @see #setPeriodReference(Variable)
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getPostProcessing_PeriodReference()
 	 * @model required="true"
 	 * @generated
 	 */
-	SimpleVariable getPeriodReference();
+	Variable getPeriodReference();
 
 	/**
 	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.PostProcessing#getPeriodReference <em>Period Reference</em>}' reference.
@@ -56,19 +56,19 @@ public interface PostProcessing extends IrAnnotable {
 	 * @see #getPeriodReference()
 	 * @generated
 	 */
-	void setPeriodReference(SimpleVariable value);
+	void setPeriodReference(Variable value);
 
 	/**
 	 * Returns the value of the '<em><b>Period Value</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Period Value</em>' reference.
-	 * @see #setPeriodValue(SimpleVariable)
+	 * @see #setPeriodValue(Variable)
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getPostProcessing_PeriodValue()
 	 * @model required="true"
 	 * @generated
 	 */
-	SimpleVariable getPeriodValue();
+	Variable getPeriodValue();
 
 	/**
 	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.PostProcessing#getPeriodValue <em>Period Value</em>}' reference.
@@ -78,19 +78,19 @@ public interface PostProcessing extends IrAnnotable {
 	 * @see #getPeriodValue()
 	 * @generated
 	 */
-	void setPeriodValue(SimpleVariable value);
+	void setPeriodValue(Variable value);
 
 	/**
 	 * Returns the value of the '<em><b>Last Dump Variable</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Last Dump Variable</em>' reference.
-	 * @see #setLastDumpVariable(SimpleVariable)
+	 * @see #setLastDumpVariable(Variable)
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getPostProcessing_LastDumpVariable()
 	 * @model required="true"
 	 * @generated
 	 */
-	SimpleVariable getLastDumpVariable();
+	Variable getLastDumpVariable();
 
 	/**
 	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.PostProcessing#getLastDumpVariable <em>Last Dump Variable</em>}' reference.
@@ -100,6 +100,6 @@ public interface PostProcessing extends IrAnnotable {
 	 * @see #getLastDumpVariable()
 	 * @generated
 	 */
-	void setLastDumpVariable(SimpleVariable value);
+	void setLastDumpVariable(Variable value);
 
 } // PostProcessing

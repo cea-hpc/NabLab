@@ -38,13 +38,13 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="meshClassName" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="initNodeCoordVariable"
-        lowerBound="1" eType="#//ConnectivityVariable"/>
+        lowerBound="1" eType="#//Variable"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="nodeCoordVariable" lowerBound="1"
-        eType="#//ConnectivityVariable"/>
+        eType="#//Variable"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="timeVariable" lowerBound="1"
-        eType="#//SimpleVariable"/>
+        eType="#//Variable"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="timeStepVariable" lowerBound="1"
-        eType="#//SimpleVariable"/>
+        eType="#//Variable"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="postProcessing" eType="#//PostProcessing"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="providers" upperBound="-1"
@@ -65,11 +65,18 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="outputVariables" upperBound="-1"
         eType="#//PostProcessedVariable"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="periodReference" lowerBound="1"
-        eType="#//SimpleVariable"/>
+        eType="#//Variable"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="periodValue" lowerBound="1"
-        eType="#//SimpleVariable"/>
+        eType="#//Variable"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="lastDumpVariable" lowerBound="1"
-        eType="#//SimpleVariable"/>
+        eType="#//Variable"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PostProcessedVariable">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" lowerBound="1"
+        eType="#//Variable"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="outputName" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="support" eType="#//ItemType"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ExtensionProvider" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="extensionName" lowerBound="1"
@@ -93,15 +100,7 @@
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Arg" eSuperTypes="#//ArgOrVar"/>
-  <eClassifiers xsi:type="ecore:EClass" name="Variable" abstract="true" eSuperTypes="#//ArgOrVar"/>
-  <eClassifiers xsi:type="ecore:EClass" name="PostProcessedVariable">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="target" lowerBound="1"
-        eType="#//Variable"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="outputName" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="support" eType="#//ItemType"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="SimpleVariable" eSuperTypes="#//Variable">
+  <eClassifiers xsi:type="ecore:EClass" name="Variable" eSuperTypes="#//ArgOrVar">
     <eStructuralFeatures xsi:type="ecore:EReference" name="defaultValue" eType="#//Expression"
         containment="true" resolveProxies="false"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="const" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
@@ -111,14 +110,13 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="option" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ConnectivityVariable" eSuperTypes="#//Variable"/>
   <eClassifiers xsi:type="ecore:EClass" name="Function" abstract="true" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" unique="false" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="returnType" eType="#//BaseType"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="variables" upperBound="-1"
-        eType="#//SimpleVariable" containment="true"/>
+        eType="#//Variable" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="inArgs" upperBound="-1"
         eType="#//Arg" containment="true"/>
   </eClassifiers>
@@ -170,7 +168,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="whileCondition" lowerBound="1"
         eType="#//Expression" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="iterationCounter" lowerBound="1"
-        eType="#//SimpleVariable"/>
+        eType="#//Variable"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="SetUpTimeLoopJob" eSuperTypes="#//TimeLoopJob"/>
   <eClassifiers xsi:type="ecore:EClass" name="TearDownTimeLoopJob" eSuperTypes="#//TimeLoopJob"/>
@@ -189,7 +187,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="VariableDeclaration" eSuperTypes="#//Instruction">
     <eStructuralFeatures xsi:type="ecore:EReference" name="variable" lowerBound="1"
-        eType="#//SimpleVariable" containment="true"/>
+        eType="#//Variable" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Affectation" eSuperTypes="#//Instruction">
     <eStructuralFeatures xsi:type="ecore:EReference" name="left" lowerBound="1" eType="#//ArgOrVarRef"
@@ -210,7 +208,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="lambda" lowerBound="1"
         eType="#//Expression" containment="true" resolveProxies="false"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="result" lowerBound="1"
-        eType="#//SimpleVariable" containment="true" resolveProxies="false"/>
+        eType="#//Variable" containment="true" resolveProxies="false"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Loop" eSuperTypes="#//IterableInstruction">
     <eStructuralFeatures xsi:type="ecore:EReference" name="body" lowerBound="1" eType="#//Instruction"
@@ -263,11 +261,11 @@
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="container" lowerBound="1"
         eType="#//Container" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="counter" eType="#//SimpleVariable"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="counter" eType="#//Variable"
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Interval" eSuperTypes="#//IterationBlock">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="index" lowerBound="1" eType="#//SimpleVariable"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="index" lowerBound="1" eType="#//Variable"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="nbElems" lowerBound="1"
         eType="#//Expression" containment="true"/>

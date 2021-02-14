@@ -12,7 +12,6 @@ package fr.cea.nabla.generator.ir
 import com.google.inject.Inject
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.ir.SimpleVariable
 import fr.cea.nabla.ir.ir.TimeLoopJob
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
@@ -84,7 +83,7 @@ class Nabla2Ir
 				OptionDeclaration:
 				{
 					val options = createIrVariables(d.variable, tlJobs)
-					options.filter(SimpleVariable).forEach[option = true]
+					options.forEach[option = true]
 					variables += options
 				}
 				SimpleVarDeclaration:

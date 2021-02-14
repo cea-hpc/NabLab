@@ -3,7 +3,6 @@
 package fr.cea.nabla.ir.ir.impl;
 
 import fr.cea.nabla.ir.ir.Connectivity;
-import fr.cea.nabla.ir.ir.ConnectivityVariable;
 import fr.cea.nabla.ir.ir.ExtensionProvider;
 import fr.cea.nabla.ir.ir.Function;
 import fr.cea.nabla.ir.ir.IrModule;
@@ -13,7 +12,6 @@ import fr.cea.nabla.ir.ir.ItemType;
 import fr.cea.nabla.ir.ir.Job;
 import fr.cea.nabla.ir.ir.JobCaller;
 import fr.cea.nabla.ir.ir.PostProcessing;
-import fr.cea.nabla.ir.ir.SimpleVariable;
 import fr.cea.nabla.ir.ir.Variable;
 
 import java.util.Collection;
@@ -178,7 +176,7 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 	 * @generated
 	 * @ordered
 	 */
-	protected ConnectivityVariable initNodeCoordVariable;
+	protected Variable initNodeCoordVariable;
 
 	/**
 	 * The cached value of the '{@link #getNodeCoordVariable() <em>Node Coord Variable</em>}' reference.
@@ -188,7 +186,7 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 	 * @generated
 	 * @ordered
 	 */
-	protected ConnectivityVariable nodeCoordVariable;
+	protected Variable nodeCoordVariable;
 
 	/**
 	 * The cached value of the '{@link #getTimeVariable() <em>Time Variable</em>}' reference.
@@ -198,7 +196,7 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 	 * @generated
 	 * @ordered
 	 */
-	protected SimpleVariable timeVariable;
+	protected Variable timeVariable;
 
 	/**
 	 * The cached value of the '{@link #getTimeStepVariable() <em>Time Step Variable</em>}' reference.
@@ -208,7 +206,7 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 	 * @generated
 	 * @ordered
 	 */
-	protected SimpleVariable timeStepVariable;
+	protected Variable timeStepVariable;
 
 	/**
 	 * The cached value of the '{@link #getPostProcessing() <em>Post Processing</em>}' containment reference.
@@ -353,10 +351,10 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 	 * @generated
 	 */
 	@Override
-	public ConnectivityVariable getInitNodeCoordVariable() {
+	public Variable getInitNodeCoordVariable() {
 		if (initNodeCoordVariable != null && initNodeCoordVariable.eIsProxy()) {
 			InternalEObject oldInitNodeCoordVariable = (InternalEObject)initNodeCoordVariable;
-			initNodeCoordVariable = (ConnectivityVariable)eResolveProxy(oldInitNodeCoordVariable);
+			initNodeCoordVariable = (Variable)eResolveProxy(oldInitNodeCoordVariable);
 			if (initNodeCoordVariable != oldInitNodeCoordVariable) {
 				if (eNotificationRequired())
 					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.IR_ROOT__INIT_NODE_COORD_VARIABLE, oldInitNodeCoordVariable, initNodeCoordVariable));
@@ -370,7 +368,7 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ConnectivityVariable basicGetInitNodeCoordVariable() {
+	public Variable basicGetInitNodeCoordVariable() {
 		return initNodeCoordVariable;
 	}
 
@@ -380,8 +378,8 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 	 * @generated
 	 */
 	@Override
-	public void setInitNodeCoordVariable(ConnectivityVariable newInitNodeCoordVariable) {
-		ConnectivityVariable oldInitNodeCoordVariable = initNodeCoordVariable;
+	public void setInitNodeCoordVariable(Variable newInitNodeCoordVariable) {
+		Variable oldInitNodeCoordVariable = initNodeCoordVariable;
 		initNodeCoordVariable = newInitNodeCoordVariable;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IR_ROOT__INIT_NODE_COORD_VARIABLE, oldInitNodeCoordVariable, initNodeCoordVariable));
@@ -393,10 +391,10 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 	 * @generated
 	 */
 	@Override
-	public ConnectivityVariable getNodeCoordVariable() {
+	public Variable getNodeCoordVariable() {
 		if (nodeCoordVariable != null && nodeCoordVariable.eIsProxy()) {
 			InternalEObject oldNodeCoordVariable = (InternalEObject)nodeCoordVariable;
-			nodeCoordVariable = (ConnectivityVariable)eResolveProxy(oldNodeCoordVariable);
+			nodeCoordVariable = (Variable)eResolveProxy(oldNodeCoordVariable);
 			if (nodeCoordVariable != oldNodeCoordVariable) {
 				if (eNotificationRequired())
 					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.IR_ROOT__NODE_COORD_VARIABLE, oldNodeCoordVariable, nodeCoordVariable));
@@ -410,7 +408,7 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ConnectivityVariable basicGetNodeCoordVariable() {
+	public Variable basicGetNodeCoordVariable() {
 		return nodeCoordVariable;
 	}
 
@@ -420,8 +418,8 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 	 * @generated
 	 */
 	@Override
-	public void setNodeCoordVariable(ConnectivityVariable newNodeCoordVariable) {
-		ConnectivityVariable oldNodeCoordVariable = nodeCoordVariable;
+	public void setNodeCoordVariable(Variable newNodeCoordVariable) {
+		Variable oldNodeCoordVariable = nodeCoordVariable;
 		nodeCoordVariable = newNodeCoordVariable;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IR_ROOT__NODE_COORD_VARIABLE, oldNodeCoordVariable, nodeCoordVariable));
@@ -433,10 +431,10 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 	 * @generated
 	 */
 	@Override
-	public SimpleVariable getTimeVariable() {
+	public Variable getTimeVariable() {
 		if (timeVariable != null && timeVariable.eIsProxy()) {
 			InternalEObject oldTimeVariable = (InternalEObject)timeVariable;
-			timeVariable = (SimpleVariable)eResolveProxy(oldTimeVariable);
+			timeVariable = (Variable)eResolveProxy(oldTimeVariable);
 			if (timeVariable != oldTimeVariable) {
 				if (eNotificationRequired())
 					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.IR_ROOT__TIME_VARIABLE, oldTimeVariable, timeVariable));
@@ -450,7 +448,7 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public SimpleVariable basicGetTimeVariable() {
+	public Variable basicGetTimeVariable() {
 		return timeVariable;
 	}
 
@@ -460,8 +458,8 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 	 * @generated
 	 */
 	@Override
-	public void setTimeVariable(SimpleVariable newTimeVariable) {
-		SimpleVariable oldTimeVariable = timeVariable;
+	public void setTimeVariable(Variable newTimeVariable) {
+		Variable oldTimeVariable = timeVariable;
 		timeVariable = newTimeVariable;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IR_ROOT__TIME_VARIABLE, oldTimeVariable, timeVariable));
@@ -473,10 +471,10 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 	 * @generated
 	 */
 	@Override
-	public SimpleVariable getTimeStepVariable() {
+	public Variable getTimeStepVariable() {
 		if (timeStepVariable != null && timeStepVariable.eIsProxy()) {
 			InternalEObject oldTimeStepVariable = (InternalEObject)timeStepVariable;
-			timeStepVariable = (SimpleVariable)eResolveProxy(oldTimeStepVariable);
+			timeStepVariable = (Variable)eResolveProxy(oldTimeStepVariable);
 			if (timeStepVariable != oldTimeStepVariable) {
 				if (eNotificationRequired())
 					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.IR_ROOT__TIME_STEP_VARIABLE, oldTimeStepVariable, timeStepVariable));
@@ -490,7 +488,7 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public SimpleVariable basicGetTimeStepVariable() {
+	public Variable basicGetTimeStepVariable() {
 		return timeStepVariable;
 	}
 
@@ -500,8 +498,8 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 	 * @generated
 	 */
 	@Override
-	public void setTimeStepVariable(SimpleVariable newTimeStepVariable) {
-		SimpleVariable oldTimeStepVariable = timeStepVariable;
+	public void setTimeStepVariable(Variable newTimeStepVariable) {
+		Variable oldTimeStepVariable = timeStepVariable;
 		timeStepVariable = newTimeStepVariable;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IR_ROOT__TIME_STEP_VARIABLE, oldTimeStepVariable, timeStepVariable));
@@ -797,16 +795,16 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 				setMeshClassName((String)newValue);
 				return;
 			case IrPackage.IR_ROOT__INIT_NODE_COORD_VARIABLE:
-				setInitNodeCoordVariable((ConnectivityVariable)newValue);
+				setInitNodeCoordVariable((Variable)newValue);
 				return;
 			case IrPackage.IR_ROOT__NODE_COORD_VARIABLE:
-				setNodeCoordVariable((ConnectivityVariable)newValue);
+				setNodeCoordVariable((Variable)newValue);
 				return;
 			case IrPackage.IR_ROOT__TIME_VARIABLE:
-				setTimeVariable((SimpleVariable)newValue);
+				setTimeVariable((Variable)newValue);
 				return;
 			case IrPackage.IR_ROOT__TIME_STEP_VARIABLE:
-				setTimeStepVariable((SimpleVariable)newValue);
+				setTimeStepVariable((Variable)newValue);
 				return;
 			case IrPackage.IR_ROOT__POST_PROCESSING:
 				setPostProcessing((PostProcessing)newValue);
@@ -855,16 +853,16 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 				setMeshClassName(MESH_CLASS_NAME_EDEFAULT);
 				return;
 			case IrPackage.IR_ROOT__INIT_NODE_COORD_VARIABLE:
-				setInitNodeCoordVariable((ConnectivityVariable)null);
+				setInitNodeCoordVariable((Variable)null);
 				return;
 			case IrPackage.IR_ROOT__NODE_COORD_VARIABLE:
-				setNodeCoordVariable((ConnectivityVariable)null);
+				setNodeCoordVariable((Variable)null);
 				return;
 			case IrPackage.IR_ROOT__TIME_VARIABLE:
-				setTimeVariable((SimpleVariable)null);
+				setTimeVariable((Variable)null);
 				return;
 			case IrPackage.IR_ROOT__TIME_STEP_VARIABLE:
-				setTimeStepVariable((SimpleVariable)null);
+				setTimeStepVariable((Variable)null);
 				return;
 			case IrPackage.IR_ROOT__POST_PROCESSING:
 				setPostProcessing((PostProcessing)null);

@@ -14,5 +14,4 @@ package fr.cea.nabla.ir.ir;
  * @generated
  */
 public interface Arg extends ArgOrVar {
-
 } // Arg

@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Copyright (c) 2020 CEA
+ * This program and the accompanying materials are made available under the 
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * Contributors: see AUTHORS file
+ *******************************************************************************/
 package fr.cea.nabla
 
 import com.google.inject.Inject
@@ -9,6 +18,7 @@ import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.FunctionTypeDeclaration
+import fr.cea.nabla.nabla.NablaExtension
 import fr.cea.nabla.nabla.NablaRoot
 import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.nabla.SimpleVar
@@ -20,23 +30,37 @@ import org.eclipse.xtext.EcoreUtil2
 class LinearAlgebraUtils
 {
 	@Inject extension ArgOrVarExtensions
-		
-	def boolean isLinearAlgebra(EObject o)
+
+	def NablaExtension getLinearAlgebraExtension(EObject o)
 	{
 		switch o
 		{
-			case null: false
-			Affectation: o.right.linearAlgebra
-			FunctionCall: o.function.linearAlgebra
-			Function: o.nablaRoot.name == 'LinearAlgebra'
-			Var case o.linearAlgebraEligible: o.nablaRoot.eAllContents.filter(ArgOrVarRef).exists[x | x.target == o && x.eContainer.isLinearAlgebra]
-			Arg case o.linearAlgebraEligible: o.eContainer.linearAlgebra
-			BaseType case o.linearAlgebraEligible: o.eContainer.linearAlgebra
-			FunctionTypeDeclaration: o.eContainer.linearAlgebra
-			default: false
+			case null: return null
+			Affectation: return o.right.linearAlgebraExtension
+			FunctionCall: return o.function.linearAlgebraExtension
+			Function:
+			{
+				val ext = EcoreUtil2.getContainerOfType(o, NablaExtension)
+				if (ext !== null && ext.linearAlgebra) ext
+				else null
+			}
+			Var case o.linearAlgebraEligible:
+			{
+				val refsOfO = o.nablaRoot.eAllContents.filter[x | x instanceof ArgOrVarRef && (x as ArgOrVarRef).target == o]
+				for (refOfO : refsOfO.toIterable)
+				{
+					val la = refOfO.eContainer.linearAlgebraExtension
+					if (la !== null) return la
+				}
+				return null
+			}
+			Arg case o.linearAlgebraEligible: return o.eContainer.linearAlgebraExtension
+			BaseType case o.linearAlgebraEligible: return o.eContainer.linearAlgebraExtension
+			FunctionTypeDeclaration: return o.eContainer.linearAlgebraExtension
+			default: return null
 		}
 	}
-	
+
 	private def boolean isLinearAlgebraEligible(EObject it)
 	{
 		switch it

@@ -19,7 +19,9 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//NablaRoot/reductions"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//NablaRoot/functions"/>
     </genClasses>
-    <genClasses ecoreClass="Nabla.ecore#//NablaExtension"/>
+    <genClasses ecoreClass="Nabla.ecore#//NablaExtension">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//NablaExtension/linearAlgebra"/>
+    </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//NablaModule">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//NablaModule/itemTypes"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//NablaModule/connectivities"/>

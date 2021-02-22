@@ -10,6 +10,7 @@
 package fr.cea.nabla.overloading
 
 import com.google.inject.Inject
+import com.google.inject.Provider
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.NablaRoot
@@ -19,7 +20,6 @@ import fr.cea.nabla.typing.ExpressionTypeProvider
 import fr.cea.nabla.typing.NablaType
 import java.util.List
 import org.eclipse.xtext.EcoreUtil2
-import com.google.inject.Provider
 
 class DeclarationProvider 
 {

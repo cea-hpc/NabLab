@@ -14,16 +14,16 @@ import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrType
+import fr.cea.nabla.ir.ir.LinearAlgebraType
+import fr.cea.nabla.typing.NLATMatrix
+import fr.cea.nabla.typing.NLATVector
 import fr.cea.nabla.typing.NSTArray1D
 import fr.cea.nabla.typing.NSTArray2D
 import fr.cea.nabla.typing.NSTScalar
 import fr.cea.nabla.typing.NablaConnectivityType
+import fr.cea.nabla.typing.NablaLinearAlgebraType
 import fr.cea.nabla.typing.NablaSimpleType
 import fr.cea.nabla.typing.NablaType
-import fr.cea.nabla.typing.NablaLinearAlgebraType
-import fr.cea.nabla.ir.ir.LinearAlgebraType
-import fr.cea.nabla.typing.NLATVector
-import fr.cea.nabla.typing.NLATMatrix
 
 class NablaType2IrType 
 {
@@ -81,6 +81,7 @@ class NablaType2IrType
 	{
 		IrFactory.eINSTANCE.createLinearAlgebraType =>
 		[
+			provider = t.nablaExtension.toIrExtensionProvider
 			sizes += t.size.toIrExpression
 		]
 	}
@@ -89,6 +90,7 @@ class NablaType2IrType
 	{
 		IrFactory.eINSTANCE.createLinearAlgebraType =>
 		[
+			provider = t.nablaExtension.toIrExtensionProvider
 			sizes += t.nbRows.toIrExpression
 			sizes += t.nbCols.toIrExpression
 		]

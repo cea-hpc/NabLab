@@ -18,6 +18,7 @@ import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.ItemType
 import fr.cea.nabla.nabla.PrimitiveType
 import java.util.List
+import fr.cea.nabla.nabla.NablaExtension
 
 @Singleton
 class IrBasicFactory
@@ -69,9 +70,9 @@ class IrBasicFactory
 		i.name.toIrItemType => [annotations += i.toIrAnnotation]
 	}
 
-	def create IrFactory::eINSTANCE.createExtensionProvider toIrExtensionProvider(String extName)
+	def create IrFactory::eINSTANCE.createExtensionProvider toIrExtensionProvider(NablaExtension ext)
 	{
-		extensionName = extName
+		extensionName = ext.name
 	}
 
 	/** 

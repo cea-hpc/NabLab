@@ -10,10 +10,10 @@
 package fr.cea.nabla.validation
 
 import com.google.inject.Inject
-import fr.cea.nabla.UniqueNameHelper
 import fr.cea.nabla.generator.NablagenExtensionHelper
 import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.FunctionCall
+import fr.cea.nabla.nabla.NablaExtension
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaRoot
 import fr.cea.nabla.nablagen.AdditionalModule
@@ -183,6 +183,13 @@ class NablagenValidator extends AbstractNablagenValidator
 	private def getExtensionNames(NablaRoot it)
 	{
 		val usedFunctions = eAllContents.filter(FunctionCall).map[function].filter[external]
-		usedFunctions.toIterable.map[x | UniqueNameHelper.getUniqueExtensionName(x)]
+		val extensionNames = new HashSet<String>
+		for (f : usedFunctions.toIterable)
+		{
+			val ext = EcoreUtil2.getContainerOfType(f, NablaExtension)
+			if (ext !== null)
+				extensionNames += ext.name
+		}
+		return extensionNames
 	}
 }

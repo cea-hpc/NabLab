@@ -4005,13 +4005,22 @@ public interface IrPackage extends EPackage {
 	int LINEAR_ALGEBRA_TYPE__SIZES = IR_TYPE_FEATURE_COUNT + 0;
 
 	/**
+	 * The feature id for the '<em><b>Provider</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LINEAR_ALGEBRA_TYPE__PROVIDER = IR_TYPE_FEATURE_COUNT + 1;
+
+	/**
 	 * The number of structural features of the '<em>Linear Algebra Type</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int LINEAR_ALGEBRA_TYPE_FEATURE_COUNT = IR_TYPE_FEATURE_COUNT + 1;
+	int LINEAR_ALGEBRA_TYPE_FEATURE_COUNT = IR_TYPE_FEATURE_COUNT + 2;
 
 	/**
 	 * The number of operations of the '<em>Linear Algebra Type</em>' class.
@@ -6440,6 +6449,17 @@ public interface IrPackage extends EPackage {
 	EReference getLinearAlgebraType_Sizes();
 
 	/**
+	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.LinearAlgebraType#getProvider <em>Provider</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Provider</em>'.
+	 * @see fr.cea.nabla.ir.ir.LinearAlgebraType#getProvider()
+	 * @see #getLinearAlgebraType()
+	 * @generated
+	 */
+	EReference getLinearAlgebraType_Provider();
+
+	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.Container <em>Container</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -8283,6 +8303,14 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EReference LINEAR_ALGEBRA_TYPE__SIZES = eINSTANCE.getLinearAlgebraType_Sizes();
+
+		/**
+		 * The meta object literal for the '<em><b>Provider</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference LINEAR_ALGEBRA_TYPE__PROVIDER = eINSTANCE.getLinearAlgebraType_Provider();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.ContainerImpl <em>Container</em>}' class.

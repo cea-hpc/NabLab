@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-extension LinearAlgebra;
+linearalgebra extension LinearAlgebra;
 
 /*
  *  Initial guess API is not provided for JAVA backend

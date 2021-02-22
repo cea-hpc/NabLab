@@ -3,11 +3,13 @@
 package fr.cea.nabla.ir.ir.impl;
 
 import fr.cea.nabla.ir.ir.Expression;
+import fr.cea.nabla.ir.ir.ExtensionProvider;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.LinearAlgebraType;
 
 import java.util.Collection;
 
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.common.util.EList;
@@ -15,6 +17,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
@@ -27,6 +30,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * </p>
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.LinearAlgebraTypeImpl#getSizes <em>Sizes</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.LinearAlgebraTypeImpl#getProvider <em>Provider</em>}</li>
  * </ul>
  *
  * @generated
@@ -41,6 +45,16 @@ public class LinearAlgebraTypeImpl extends IrTypeImpl implements LinearAlgebraTy
 	 * @ordered
 	 */
 	protected EList<Expression> sizes;
+
+	/**
+	 * The cached value of the '{@link #getProvider() <em>Provider</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getProvider()
+	 * @generated
+	 * @ordered
+	 */
+	protected ExtensionProvider provider;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -80,6 +94,46 @@ public class LinearAlgebraTypeImpl extends IrTypeImpl implements LinearAlgebraTy
 	 * @generated
 	 */
 	@Override
+	public ExtensionProvider getProvider() {
+		if (provider != null && provider.eIsProxy()) {
+			InternalEObject oldProvider = (InternalEObject)provider;
+			provider = (ExtensionProvider)eResolveProxy(oldProvider);
+			if (provider != oldProvider) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.LINEAR_ALGEBRA_TYPE__PROVIDER, oldProvider, provider));
+			}
+		}
+		return provider;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public ExtensionProvider basicGetProvider() {
+		return provider;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setProvider(ExtensionProvider newProvider) {
+		ExtensionProvider oldProvider = provider;
+		provider = newProvider;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.LINEAR_ALGEBRA_TYPE__PROVIDER, oldProvider, provider));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case IrPackage.LINEAR_ALGEBRA_TYPE__SIZES:
@@ -98,6 +152,9 @@ public class LinearAlgebraTypeImpl extends IrTypeImpl implements LinearAlgebraTy
 		switch (featureID) {
 			case IrPackage.LINEAR_ALGEBRA_TYPE__SIZES:
 				return getSizes();
+			case IrPackage.LINEAR_ALGEBRA_TYPE__PROVIDER:
+				if (resolve) return getProvider();
+				return basicGetProvider();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -115,6 +172,9 @@ public class LinearAlgebraTypeImpl extends IrTypeImpl implements LinearAlgebraTy
 				getSizes().clear();
 				getSizes().addAll((Collection<? extends Expression>)newValue);
 				return;
+			case IrPackage.LINEAR_ALGEBRA_TYPE__PROVIDER:
+				setProvider((ExtensionProvider)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -130,6 +190,9 @@ public class LinearAlgebraTypeImpl extends IrTypeImpl implements LinearAlgebraTy
 			case IrPackage.LINEAR_ALGEBRA_TYPE__SIZES:
 				getSizes().clear();
 				return;
+			case IrPackage.LINEAR_ALGEBRA_TYPE__PROVIDER:
+				setProvider((ExtensionProvider)null);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -144,6 +207,8 @@ public class LinearAlgebraTypeImpl extends IrTypeImpl implements LinearAlgebraTy
 		switch (featureID) {
 			case IrPackage.LINEAR_ALGEBRA_TYPE__SIZES:
 				return sizes != null && !sizes.isEmpty();
+			case IrPackage.LINEAR_ALGEBRA_TYPE__PROVIDER:
+				return provider != null;
 		}
 		return super.eIsSet(featureID);
 	}

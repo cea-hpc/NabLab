@@ -57,7 +57,7 @@ class ExpressionTypeProviderTest
 
 	val nablaextModel =
 	'''
-	extension LinearAlgebra;
+	linearalgebra extension LinearAlgebra;
 
 	def solveLinearSystem: x | ℝ[x, x] × ℝ[x] → ℝ[x], (a, b) → return b;
 	'''
@@ -152,7 +152,7 @@ class ExpressionTypeProviderTest
 	def void testGetTypeFor() 
 	{
 		val rs = resourceSetProvider.get
-		parseHelper.parse(nablaextModel, rs) as NablaExtension
+		val ext = parseHelper.parse(nablaextModel, rs) as NablaExtension
 		val module = parseHelper.parse(nablaModel, rs) as NablaModule
 		Assert.assertNotNull(module)
 		Assert.assertEquals(0, module.validate.filter(i | i.severity == Severity.ERROR).size)
@@ -207,8 +207,8 @@ class ExpressionTypeProviderTest
 		assertTypesFor(new NablaConnectivityType(#[cells, nodesOfCell], new NSTRealArray1D(createIntConstant(2))), module, "w")
 		assertTypesFor(new NablaConnectivityType(#[cells, nodesOfCell], new NSTRealScalar), module, "x")
 
-		assertTypesFor(new NLATMatrix(createCardExpression(cells), createCardExpression(cells)), module, "α")
-		assertTypesFor(new NLATVector(createCardExpression(cells)), module, "u")
+		assertTypesFor(new NLATMatrix(ext, createCardExpression(cells), createCardExpression(cells)), module, "α")
+		assertTypesFor(new NLATVector(ext, createCardExpression(cells)), module, "u")
 
 		assertTypesFor(new NSTRealScalar, computeV, "v")
 

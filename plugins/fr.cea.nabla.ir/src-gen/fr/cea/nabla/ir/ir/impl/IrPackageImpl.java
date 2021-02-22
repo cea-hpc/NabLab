@@ -2688,6 +2688,16 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
+	public EReference getLinearAlgebraType_Provider() {
+		return (EReference)linearAlgebraTypeEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EEnum getPrimitiveType() {
 		return primitiveTypeEEnum;
 	}
@@ -2963,6 +2973,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 
 		linearAlgebraTypeEClass = createEClass(LINEAR_ALGEBRA_TYPE);
 		createEReference(linearAlgebraTypeEClass, LINEAR_ALGEBRA_TYPE__SIZES);
+		createEReference(linearAlgebraTypeEClass, LINEAR_ALGEBRA_TYPE__PROVIDER);
 
 		containerEClass = createEClass(CONTAINER);
 
@@ -3336,6 +3347,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 
 		initEClass(linearAlgebraTypeEClass, LinearAlgebraType.class, "LinearAlgebraType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getLinearAlgebraType_Sizes(), this.getExpression(), null, "sizes", null, 0, -1, LinearAlgebraType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getLinearAlgebraType_Provider(), this.getExtensionProvider(), null, "provider", null, 1, 1, LinearAlgebraType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(containerEClass, fr.cea.nabla.ir.ir.Container.class, "Container", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 

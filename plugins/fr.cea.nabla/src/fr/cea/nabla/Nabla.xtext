@@ -18,7 +18,7 @@ generate nabla "http://www.cea.fr/nabla/Nabla"
 NablaRoot: NablaExtension | NablaModule;
 
 NablaExtension:
-	'extension' name=QualifiedName ';'
+	(linearAlgebra?='linearalgebra')? 'extension' name=QualifiedName ';'
 	imports+=Import*
 	reductions+=Reduction*
 	functions+=Function*;

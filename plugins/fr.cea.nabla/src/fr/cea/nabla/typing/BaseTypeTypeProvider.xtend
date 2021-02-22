@@ -11,10 +11,10 @@ package fr.cea.nabla.typing
 
 import com.google.inject.Inject
 import fr.cea.nabla.ExpressionExtensions
+import fr.cea.nabla.LinearAlgebraUtils
 import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.PrimitiveType
-import fr.cea.nabla.LinearAlgebraUtils
 
 class BaseTypeTypeProvider
 {
@@ -33,10 +33,14 @@ class BaseTypeTypeProvider
 				// if the label is null, the expression is not consistent
 				if (size === null || !size.reductionLess)
 					null
-				else if (linearAlgebra)
-					new NLATVector(sizes.get(0))
 				else
-					getNSTArray1DFor(primitive, sizes.get(0))
+				{
+					val laExtension = linearAlgebraExtension
+					if (laExtension === null)
+						getNSTArray1DFor(primitive, sizes.get(0))
+					else
+						new NLATVector(laExtension, sizes.get(0))
+				}
 			}
 			case 2:
 			{
@@ -44,10 +48,14 @@ class BaseTypeTypeProvider
 				val nbCols = sizes.get(1)
 				if (nbRows === null || nbCols === null || !nbRows.reductionLess || !nbCols.reductionLess)
 					null
-				else if (linearAlgebra)
-					new NLATMatrix(sizes.get(0), sizes.get(1))
 				else
-					getNSTArray2DFor(primitive, nbRows, nbCols)
+				{
+					val laExtension = linearAlgebraExtension
+					if (laExtension === null)
+						getNSTArray2DFor(primitive, nbRows, nbCols)
+					else
+						new NLATMatrix(laExtension, sizes.get(0), sizes.get(1))
+				}
 			}
 			default: null
 		}

@@ -12,6 +12,7 @@ package fr.cea.nabla.typing
 import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.IntConstant
+import fr.cea.nabla.nabla.NablaExtension
 import fr.cea.nabla.nabla.PrimitiveType
 import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.xtend.lib.annotations.Data
@@ -201,6 +202,7 @@ abstract class NablaLinearAlgebraType extends NablaType
 @Data
 class NLATVector extends NablaLinearAlgebraType
 {
+	val NablaExtension nablaExtension
 	val Expression size
 
 	override getLabel() { 'Vector[' + size.label +  ']' }
@@ -228,6 +230,7 @@ class NLATVector extends NablaLinearAlgebraType
 @Data
 class NLATMatrix extends NablaLinearAlgebraType
 {
+	val NablaExtension nablaExtension
 	val Expression nbRows
 	val Expression nbCols
 

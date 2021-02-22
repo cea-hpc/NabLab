@@ -367,6 +367,8 @@
   <eClassifiers xsi:type="ecore:EClass" name="LinearAlgebraType" eSuperTypes="#//IrType">
     <eStructuralFeatures xsi:type="ecore:EReference" name="sizes" upperBound="-1"
         eType="#//Expression" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="provider" lowerBound="1"
+        eType="#//ExtensionProvider"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Container" abstract="true" eSuperTypes="#//IrAnnotable"/>
   <eClassifiers xsi:type="ecore:EClass" name="ConnectivityCall" eSuperTypes="#//Container">

@@ -42,21 +42,22 @@ class ArgOrVarTypeProvider
 
 	def dispatch NablaType getTypeFor(ConnectivityVar it)
 	{
-		if (linearAlgebra)
+		val laExtension = linearAlgebraExtension
+		if (laExtension === null)
+			new NablaConnectivityType(supports, type.typeFor as NablaSimpleType)
+		else
 		{
 			if (dimension == 1)
 				// Dimension == 1 && ConnectivityVar -> dimension = supports.size
-				new NLATVector(getCardinality(supports.get(0)))
+				new NLATVector(laExtension, getCardinality(supports.get(0)))
 			else if (dimension == 2)
 			{
 				if (supports.size > 1)
-					new NLATMatrix(getCardinality(supports.get(0)), getCardinality(supports.get(1)))
+					new NLATMatrix(laExtension, getCardinality(supports.get(0)), getCardinality(supports.get(1)))
 				else
-					new NLATMatrix(getCardinality(supports.get(0)),	type.getSizes.get(0))
+					new NLATMatrix(laExtension, getCardinality(supports.get(0)),	type.getSizes.get(0))
 			}
 		}
-		else
-			new NablaConnectivityType(supports, type.typeFor as NablaSimpleType)
 	}
 
 	private def getCardinality(Connectivity c)

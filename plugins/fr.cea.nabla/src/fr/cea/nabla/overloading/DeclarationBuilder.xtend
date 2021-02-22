@@ -131,10 +131,22 @@ class DeclarationBuilder
 		switch argType.sizes.size
 		{
 			case 0: argType.typeFor as NablaSimpleType
-			case 1: if (argType.linearAlgebra) new NLATVector(argType.sizes.get(0).replaceValuesAndCompact)
-					else getNSTArray1DFor(argType.primitive, argType.sizes.get(0).replaceValuesAndCompact)
-			case 2: if (argType.linearAlgebra) new NLATMatrix(argType.sizes.get(0).replaceValuesAndCompact, argType.sizes.get(1).replaceValuesAndCompact)
-					else getNSTArray2DFor(argType.primitive, argType.sizes.get(0).replaceValuesAndCompact, argType.sizes.get(1).replaceValuesAndCompact)
+			case 1:
+			{
+				val laExtension = argType.linearAlgebraExtension
+				if (laExtension === null)
+					getNSTArray1DFor(argType.primitive, argType.sizes.get(0).replaceValuesAndCompact)
+				else
+					new NLATVector(laExtension, argType.sizes.get(0).replaceValuesAndCompact)
+			}
+			case 2:
+			{
+				val laExtension = argType.linearAlgebraExtension
+				if (laExtension === null)
+					getNSTArray2DFor(argType.primitive, argType.sizes.get(0).replaceValuesAndCompact, argType.sizes.get(1).replaceValuesAndCompact)
+				else
+					new NLATMatrix(laExtension, argType.sizes.get(0).replaceValuesAndCompact, argType.sizes.get(1).replaceValuesAndCompact)
+			}
 			default: throw new RuntimeException("Unmanaged array sizes:" + argType.sizes.size)
 		}
 	}

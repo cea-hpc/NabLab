@@ -113,8 +113,7 @@ class IrRootBuilder
 			irProvider.providerName = provider.name
 			irProvider.projectDir = baseDir + provider.outputDir
 			irProvider.installDir = irProvider.projectDir + '/lib'
-			irProvider.facadeClass = provider.facadeClass
-			irProvider.facadeNamespace = provider.facadeNamespace
+			irProvider.namespace = provider.namespace
 			irProvider.libName = provider.libName
 		}
 

@@ -31,9 +31,9 @@ import static fr.cea.nabla.ir.interpreter.VariableValueFactory.*
 import static org.iq80.leveldb.impl.Iq80DBFactory.bytes
 import static org.iq80.leveldb.impl.Iq80DBFactory.factory
 
+import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
-import static extension fr.cea.nabla.ir.Utils.getInstanceName
 import static extension fr.cea.nabla.ir.interpreter.NablaValueExtensions.*
 
 // TODO trapper les exceptions quand pas le jar, et pas le so dans le cas des JNI

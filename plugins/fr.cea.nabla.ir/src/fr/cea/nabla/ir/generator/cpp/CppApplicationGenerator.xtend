@@ -23,11 +23,9 @@ import fr.cea.nabla.ir.ir.Variable
 import java.util.ArrayList
 import java.util.HashMap
 
-import static fr.cea.nabla.ir.ExtensionProviderExtensions.*
-
+import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
-import static extension fr.cea.nabla.ir.Utils.getInstanceName
 import static extension fr.cea.nabla.ir.generator.Utils.*
 
 class CppApplicationGenerator extends CppGenerator implements ApplicationGenerator
@@ -97,7 +95,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 			«typeContentProvider.getCppType(v.type)» «v.name»;
 			«ENDFOR»
 			«FOR v : extensionProviders»
-			«getNsPrefix(v, '::')»«v.facadeClass» «v.instanceName»;
+			«getNsPrefix(v, '::')»«v.className» «v.instanceName»;
 			«ENDFOR»
 			«IF levelDB»std::string «Utils.NonRegressionNameAndValue.key»;«ENDIF»
 

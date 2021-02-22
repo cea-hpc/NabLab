@@ -1,15 +1,15 @@
-#ifndef __BATILIB__BATILIBCPP
-#define __BATILIB__BATILIBCPP
+#ifndef __BATILIB__BATILIB
+#define __BATILIB__BATILIB
 
 #include <iostream>
 #include <string>
-#include "batilib/IBatiLibCpp.h"
+#include "batilib/IBatiLib.h"
 
 using namespace nablalib::types;
 
 namespace batilib
 {
-	class BatiLibCpp : public IBatiLibCpp
+	class BatiLib : public IBatiLib
 	{
 	public:
 		void jsonInit(const char* jsonContent) override;
@@ -70,4 +70,4 @@ namespace batilib
 	};
 }
 
-#endif // __BATILIB__BATILIBCPP
+#endif // __BATILIB__BATILIB

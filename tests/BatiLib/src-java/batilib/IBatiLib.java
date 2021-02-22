@@ -2,7 +2,7 @@
 
 package batilib;
 
-public interface IBatiLibJava
+public interface IBatiLib
 {
 	public void jsonInit(String jsonContent);
 	public double nextWaveHeight();

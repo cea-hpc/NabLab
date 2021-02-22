@@ -13,7 +13,7 @@ import fr.cea.nabla.ir.ir.ExternFunction
 import fr.cea.nabla.ir.ir.InternFunction
 import fr.cea.nabla.ir.ir.PrimitiveType
 
-import static extension fr.cea.nabla.ir.Utils.getInstanceName
+import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 
 class JavaGeneratorUtils
 {

@@ -41,11 +41,11 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 
 		// Generates .h and .cc if they does not exists
 		// .h
-		val headerFileName = pathPrefix + provider.facadeClass + ".h"
+		val headerFileName = pathPrefix + provider.className + ".h"
 		fileContents += new GenerationContent(headerFileName, getHeaderFileContent(provider, functions), true)
 
 		// .cc
-		val sourceFileName = pathPrefix + provider.facadeClass + ".cc"
+		val sourceFileName = pathPrefix + provider.className + ".cc"
 		fileContents += new GenerationContent(sourceFileName, getSourceFileContent(provider, functions), true)
 
 		return fileContents
@@ -65,8 +65,8 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 
 	using namespace nablalib::types;
 
-	«IF !provider.facadeNamespace.nullOrEmpty»
-	namespace «provider.facadeNamespace»
+	«IF !provider.namespace.nullOrEmpty»
+	namespace «provider.namespace»
 	{
 	«ENDIF»
 		class «provider.interfaceName»
@@ -84,7 +84,7 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 			«ENDFOR»
 			*/
 		};
-	«IF !provider.facadeNamespace.nullOrEmpty»
+	«IF !provider.namespace.nullOrEmpty»
 	}
 	«ENDIF»
 
@@ -94,7 +94,7 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 	private def getHeaderFileContent(ExtensionProvider provider, Iterable<Function> irFunctions)
 	'''
 	«val pathPrefix = getNsPrefix(provider, '::').replace('::', '/')»
-	«val defineName = '__' + getNsPrefix(provider, '::').replace('::', '_').toUpperCase + '_' + provider.facadeClass.toUpperCase»
+	«val defineName = '__' + getNsPrefix(provider, '::').replace('::', '_').toUpperCase + '_' + provider.className.toUpperCase»
 	#ifndef «defineName»
 	#define «defineName»
 
@@ -104,11 +104,11 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 
 	using namespace nablalib::types;
 
-	«IF !provider.facadeNamespace.nullOrEmpty»
-	namespace «provider.facadeNamespace»
+	«IF !provider.namespace.nullOrEmpty»
+	namespace «provider.namespace»
 	{
 	«ENDIF»
-		class «provider.facadeClass» : public «provider.interfaceName»
+		class «provider.className» : public «provider.interfaceName»
 		{
 		public:
 			void jsonInit(const char* jsonContent) override;
@@ -120,7 +120,7 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 			}
 			«ENDFOR»
 		};
-	«IF !provider.facadeNamespace.nullOrEmpty»
+	«IF !provider.namespace.nullOrEmpty»
 	}
 	«ENDIF»
 
@@ -130,18 +130,18 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 	private def getSourceFileContent(ExtensionProvider provider, Iterable<Function> irFunctions)
 	'''
 	«val pathPrefix = getNsPrefix(provider, '::').replace('::', '/')»
-	#include "«pathPrefix»«provider.facadeClass».h"
+	#include "«pathPrefix»«provider.className».h"
 	#include <string>
 
-	«IF !provider.facadeNamespace.nullOrEmpty»
-	namespace «provider.facadeNamespace»
+	«IF !provider.namespace.nullOrEmpty»
+	namespace «provider.namespace»
 	{
 	«ENDIF»
-	void «provider.facadeClass»::jsonInit(const char* jsonContent)
+	void «provider.className»::jsonInit(const char* jsonContent)
 	{
 		// Your code here
 	}
-	«IF !provider.facadeNamespace.nullOrEmpty»
+	«IF !provider.namespace.nullOrEmpty»
 	}
 	«ENDIF»
 	'''
@@ -161,7 +161,7 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 
 	add_subdirectory(${LIBCPPNABLA_DIR} ${CMAKE_BINARY_DIR}/«CppGeneratorUtils::CppLibName» EXCLUDE_FROM_ALL)
 
-	add_library(«provider.libName» «pathPrefix»«provider.facadeClass».cc)
+	add_library(«provider.libName» «pathPrefix»«provider.className».cc)
 	set_property(TARGET «provider.libName» PROPERTY POSITION_INDEPENDENT_CODE ON)
 	target_include_directories(«provider.libName» PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 	target_link_libraries(«provider.libName» PUBLIC cppnabla)

@@ -6,14 +6,24 @@ class ExtensionProviderExtensions
 {
 	static def getInterfaceName(ExtensionProvider it)
 	{
-		'I' + facadeClass
+		'I' + extensionName
+	}
+
+	static def getClassName(ExtensionProvider it)
+	{
+		extensionName
 	}
 
 	static def getNsPrefix(ExtensionProvider it, String separator)
 	{
-		if (facadeNamespace.nullOrEmpty)
-			facadeClass
+		if (namespace.nullOrEmpty)
+			''
 		else
-			facadeNamespace + separator
+			namespace + separator
+	}
+
+	static def String getInstanceName(ExtensionProvider it)
+	{
+		extensionName.toFirstLower
 	}
 }

@@ -20,8 +20,8 @@ import java.util.ArrayList
 import java.util.logging.ConsoleHandler
 import java.util.logging.Level
 
+import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
-import static extension fr.cea.nabla.ir.Utils.getInstanceName
 
 class JsonGenerator implements ApplicationGenerator
 {

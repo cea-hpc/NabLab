@@ -12,7 +12,7 @@ package fr.cea.nabla.ir.interpreter
 import fr.cea.nabla.ir.ir.ExtensionProvider
 import java.util.HashMap
 
-import static fr.cea.nabla.ir.ExtensionProviderExtensions.*
+import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 
 /**
  * Native library (.so) can only be loaded once.
@@ -36,7 +36,7 @@ class ProviderClassCache
 		if (c === null)
 		{
 			System.setProperty(JNI_LIBRARY_PATH, p.installDir)
-			c = Class.forName(getNsPrefix(p, '.') + p.facadeClass, true, cl)
+			c = Class.forName(getNsPrefix(p, '.') + p.className, true, cl)
 			classByProviderNames.put(p.extensionName, c)
 		}
 		return c

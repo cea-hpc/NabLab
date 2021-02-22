@@ -4,7 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-public class BatiLibJava implements IBatiLibJava
+public class BatiLib implements IBatiLib
 {
 	private double depth = 4.3;
 	private String fileName = "";

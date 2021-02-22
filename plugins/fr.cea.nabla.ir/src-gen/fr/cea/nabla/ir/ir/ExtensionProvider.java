@@ -16,8 +16,7 @@ package fr.cea.nabla.ir.ir;
  *   <li>{@link fr.cea.nabla.ir.ir.ExtensionProvider#getProviderName <em>Provider Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.ExtensionProvider#getProjectDir <em>Project Dir</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.ExtensionProvider#getInstallDir <em>Install Dir</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.ExtensionProvider#getFacadeClass <em>Facade Class</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.ExtensionProvider#getFacadeNamespace <em>Facade Namespace</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.ExtensionProvider#getNamespace <em>Namespace</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.ExtensionProvider#getLibName <em>Lib Name</em>}</li>
  * </ul>
  *
@@ -115,48 +114,26 @@ public interface ExtensionProvider extends IrAnnotable {
 	void setInstallDir(String value);
 
 	/**
-	 * Returns the value of the '<em><b>Facade Class</b></em>' attribute.
+	 * Returns the value of the '<em><b>Namespace</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Facade Class</em>' attribute.
-	 * @see #setFacadeClass(String)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getExtensionProvider_FacadeClass()
+	 * @return the value of the '<em>Namespace</em>' attribute.
+	 * @see #setNamespace(String)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getExtensionProvider_Namespace()
 	 * @model required="true"
 	 * @generated
 	 */
-	String getFacadeClass();
+	String getNamespace();
 
 	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.ExtensionProvider#getFacadeClass <em>Facade Class</em>}' attribute.
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.ExtensionProvider#getNamespace <em>Namespace</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Facade Class</em>' attribute.
-	 * @see #getFacadeClass()
+	 * @param value the new value of the '<em>Namespace</em>' attribute.
+	 * @see #getNamespace()
 	 * @generated
 	 */
-	void setFacadeClass(String value);
-
-	/**
-	 * Returns the value of the '<em><b>Facade Namespace</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Facade Namespace</em>' attribute.
-	 * @see #setFacadeNamespace(String)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getExtensionProvider_FacadeNamespace()
-	 * @model required="true"
-	 * @generated
-	 */
-	String getFacadeNamespace();
-
-	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.ExtensionProvider#getFacadeNamespace <em>Facade Namespace</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Facade Namespace</em>' attribute.
-	 * @see #getFacadeNamespace()
-	 * @generated
-	 */
-	void setFacadeNamespace(String value);
+	void setNamespace(String value);
 
 	/**
 	 * Returns the value of the '<em><b>Lib Name</b></em>' attribute.

@@ -12,7 +12,7 @@ package fr.cea.nabla.ir.generator.cpp
 import fr.cea.nabla.ir.ir.ExternFunction
 import fr.cea.nabla.ir.ir.InternFunction
 
-import static extension fr.cea.nabla.ir.Utils.getInstanceName
+import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.getInstanceName
 import static extension fr.cea.nabla.ir.Utils.getIrModule
 import static extension fr.cea.nabla.ir.generator.Utils.getClassName
 

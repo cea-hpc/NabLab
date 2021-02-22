@@ -76,8 +76,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ExtensionProvider/providerName"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ExtensionProvider/projectDir"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ExtensionProvider/installDir"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ExtensionProvider/facadeClass"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ExtensionProvider/facadeNamespace"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ExtensionProvider/namespace"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ExtensionProvider/libName"/>
     </genClasses>
     <genClasses image="false" ecoreClass="Ir.ecore#//ArgOrVar">

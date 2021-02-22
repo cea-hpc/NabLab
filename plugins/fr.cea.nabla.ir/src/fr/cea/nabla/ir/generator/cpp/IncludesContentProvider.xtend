@@ -12,8 +12,7 @@ package fr.cea.nabla.ir.generator.cpp
 import fr.cea.nabla.ir.ir.IrModule
 import java.util.LinkedHashSet
 
-import static fr.cea.nabla.ir.ExtensionProviderExtensions.*
-
+import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
@@ -66,7 +65,7 @@ abstract class IncludesContentProvider
 		userIncludes +=  "nablalib/types/Types.h"
 
 		for (provider : m.extensionProviders)
-			userIncludes += getNsPrefix(provider, '::').replace('::', '/') + provider.facadeClass + ".h"
+			userIncludes += getNsPrefix(provider, '::').replace('::', '/') + provider.className + ".h"
 
 		if (!m.main)
 			userIncludes += m.irRoot.name.toLowerCase + "/" + m.irRoot.mainModule.className + ".h"

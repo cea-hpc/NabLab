@@ -19,7 +19,7 @@ import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.PrimitiveType
 import org.eclipse.xtend.lib.annotations.Data
 
-import static fr.cea.nabla.ir.ExtensionProviderExtensions.*
+import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 
 @Data
 class FunctionContentProvider
@@ -44,7 +44,7 @@ class FunctionContentProvider
 
 	def getJniDefinitionContent(Function it, ExtensionProvider provider, String cppFullClassName)
 	'''
-	JNIEXPORT «returnType.jniType» JNICALL Java_«getNsPrefix(provider, '.').replace('.', '_')»«provider.facadeClass»_«name»
+	JNIEXPORT «returnType.jniType» JNICALL Java_«getNsPrefix(provider, '.').replace('.', '_')»«provider.className»_«name»
 	(JNIEnv *env, jobject self«FOR a : inArgs», «a.type.jniType» «a.name»«ENDFOR»)
 	{
 		«cppFullClassName»* _self = getObject(env, self);

@@ -26,8 +26,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//NablagenProvider/target"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//NablagenProvider/compatibleTargets"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//NablagenProvider/outputDir"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//NablagenProvider/facadeClass"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//NablagenProvider/facadeNamespace"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//NablagenProvider/namespace"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//NablagenProvider/libName"/>
     </genClasses>
     <genClasses ecoreClass="Nablagen.ecore#//NablagenApplication">

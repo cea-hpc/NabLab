@@ -28,8 +28,7 @@ class ProvidersUtils
 			providerName = provider.name
 			projectDir = baseDir + provider.outputDir
 			installDir = installationDir
-			facadeClass= provider.facadeClass
-			facadeNamespace = provider.facadeNamespace
+			namespace = provider.namespace
 			libName = provider.libName
 		]
 	}

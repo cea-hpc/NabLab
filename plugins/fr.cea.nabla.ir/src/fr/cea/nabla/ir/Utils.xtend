@@ -11,7 +11,6 @@ package fr.cea.nabla.ir
 
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import fr.cea.nabla.ir.ir.ExtensionProvider
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
 import java.io.PrintWriter
@@ -79,10 +78,5 @@ class Utils
 		val nrName = Utils.NonRegressionNameAndValue.key
 		jsonOptions.addProperty(nrName, value)
 		return gson.toJson(jsonObject)
-	}
-
-	static def String getInstanceName(ExtensionProvider it)
-	{
-		extensionName.toFirstLower
 	}
 }

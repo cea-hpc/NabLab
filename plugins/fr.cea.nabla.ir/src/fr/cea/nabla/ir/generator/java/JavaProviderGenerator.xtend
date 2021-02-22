@@ -32,7 +32,7 @@ class JavaProviderGenerator implements ProviderGenerator
 		fileContents += new GenerationContent(interfaceFileName, getInterfaceFileContent(provider, functions), false)
 
 		// Generates class if it does not exists
-		val classFileName = pathPrefix + provider.facadeClass + ".java"
+		val classFileName = pathPrefix + provider.className + ".java"
 		fileContents += new GenerationContent(classFileName, getClassFileContent(provider, functions), true)
 
 		return fileContents
@@ -42,8 +42,8 @@ class JavaProviderGenerator implements ProviderGenerator
 	'''
 	«Utils::fileHeader»
 
-	«IF !provider.facadeNamespace.nullOrEmpty»
-	package «provider.facadeNamespace»;
+	«IF !provider.namespace.nullOrEmpty»
+	package «provider.namespace»;
 
 	«ENDIF»
 	public interface «provider.interfaceName»
@@ -57,11 +57,11 @@ class JavaProviderGenerator implements ProviderGenerator
 
 	private def getClassFileContent(ExtensionProvider provider, Iterable<Function> irFunctions)
 	'''
-	«IF !provider.facadeNamespace.nullOrEmpty»
-	package «provider.facadeNamespace»;
+	«IF !provider.namespace.nullOrEmpty»
+	package «provider.namespace»;
 
 	«ENDIF»
-	public class «provider.facadeClass» implements «provider.interfaceName»
+	public class «provider.className» implements «provider.interfaceName»
 	{
 		@Override
 		public void jsonInit(String jsonContent)

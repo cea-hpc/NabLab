@@ -49,8 +49,7 @@ class NablagenExtensionHelper
 				irProvider.installDir = irProvider.projectDir + '/lib'
 			else
 				irProvider.installDir = baseDir + target.outputDir + '/' + ir.name.toLowerCase + '/lib'
-			irProvider.facadeClass = provider.facadeClass
-			irProvider.facadeNamespace = provider.facadeNamespace
+			irProvider.namespace = provider.namespace
 			irProvider.libName = provider.libName
 			if (provider.target != target.type && !provider.compatibleTargets.contains(target.type))
 			{
@@ -63,8 +62,7 @@ class NablagenExtensionHelper
 					val jniProvider = irProvider
 					jniProvider.providerName = cppProvider.providerName + JNI
 					jniProvider.projectDir = baseDir + target.outputDir + '/' + jniProvider.providerName.toLowerCase
-					jniProvider.facadeClass = cppProvider.facadeClass + JNI
-					jniProvider.facadeNamespace = cppProvider.facadeNamespace.replace('::', '.')
+					jniProvider.namespace = cppProvider.namespace.replace('::', '.')
 					jniProvider.libName = cppProvider.libName + JNI.toLowerCase
 
 					if (generateJniProviders)

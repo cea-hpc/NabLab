@@ -1,4 +1,4 @@
-#include "batilib/BatiLibCpp.h"
+#include "batilib/BatiLib.h"
 #include <rapidjson/document.h>
 #include <rapidjson/istreamwrapper.h>
 #include <rapidjson/stringbuffer.h>
@@ -6,7 +6,7 @@
 
 namespace batilib
 {
-void BatiLibCpp::jsonInit(const char* jsonContent)
+void BatiLib::jsonInit(const char* jsonContent)
 {
 	std::cout << "C++ BatiLib::jsonInit" << std:: endl;
 

@@ -13,8 +13,7 @@ Provider LibCppNablaStl : LinearAlgebra
 	target = StlThread;
 	compatibleTargets = CppSequential, OpenMP;
 	outputDir = "/LibCppNabla";
-	facadeClass = "LinearAlgebra";
-	facadeNamespace = "nablalib::linearalgebra::stl";
+	namespace = "nablalib::linearalgebra::stl";
 	libName = "cppnablastl";
 }
 
@@ -23,8 +22,7 @@ Provider LibCppNablaKokkos : LinearAlgebra
 	target = Kokkos;
 	compatibleTargets = KokkosTeamThread;
 	outputDir = "/LibCppNabla";
-	facadeClass = "LinearAlgebra";
-	facadeNamespace = "nablalib::linearalgebra::kokkos";
+	namespace = "nablalib::linearalgebra::kokkos";
 	libName = "cppnablakokkos";
 }
 
@@ -32,7 +30,6 @@ Provider LibJavaNabla : LinearAlgebra
 {
 	target = Java;
 	outputDir = "/LibJavaNabla";
-	facadeClass = "LinearAlgebra";
-	facadeNamespace = "fr.cea.nabla.javalib.linearalgebra";
+	namespace = "fr.cea.nabla.javalib.linearalgebra";
 	libName = "libjavanabla";
 }

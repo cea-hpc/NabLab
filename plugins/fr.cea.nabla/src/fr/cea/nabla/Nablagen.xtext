@@ -26,8 +26,7 @@ NablagenProvider:
 		'target' '=' target=TargetType ';'
 		('compatibleTargets' '=' compatibleTargets+=TargetType (',' compatibleTargets+=TargetType)* ';')?
 		'outputDir' '=' outputDir=STRING ';'
-		'facadeClass' '=' facadeClass=STRING ';'
-		'facadeNamespace' '=' facadeNamespace=STRING ';'
+		'namespace' '=' namespace=STRING ';'
 		'libName' '=' libName=STRING ';'
 	'}';
 

@@ -14,8 +14,7 @@ Provider BatiLibCpp : BatiLib
 	target = CppSequential;
 	compatibleTargets = StlThread;
 	outputDir = "/BatiLib/src-cpp";
-	facadeClass = "BatiLibCpp";
-	facadeNamespace = "batilib";
+	namespace = "batilib";
 	libName = "batilib";
 }
 
@@ -27,7 +26,6 @@ Provider BatiLibJava : BatiLib
 	target = Java;
 	// compatibleTargets can be added here
 	outputDir = "/BatiLib/src-java";
-	facadeClass = "BatiLibJava";
-	facadeNamespace = "batilib";
+	namespace = "batilib";
 	libName = "batilib";
 }

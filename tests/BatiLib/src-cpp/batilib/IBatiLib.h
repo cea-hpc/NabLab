@@ -1,7 +1,7 @@
 /*** GENERATED FILE - DO NOT OVERWRITE ***/
 
-#ifndef __BATILIB_IBATILIBCPP
-#define __BATILIB__IBATILIBCPP
+#ifndef __BATILIB__IBATILIB
+#define __BATILIB__IBATILIB
 
 #include <iostream>
 #include <string>
@@ -11,7 +11,7 @@ using namespace nablalib::types;
 
 namespace batilib
 {
-	class IBatiLibCpp
+	class IBatiLib
 	{
 	public:
 		virtual void jsonInit(const char* jsonContent) = 0;
@@ -38,4 +38,4 @@ namespace batilib
 	};
 }
 
-#endif // __BATILIB__IBATILIBCPP
+#endif // __BATILIB__IBATILIB

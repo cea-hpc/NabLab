@@ -40,48 +40,36 @@ import static extension fr.cea.nabla.ir.generator.Utils.*
 
 class InstructionInterpreter
 {
-
 	// Switch to more efficient dispatch (also clearer for profiling)
-	static def NablaValue interprete(Instruction it, Context context)
+	static def NablaValue interprete(Instruction i, Context context)
 	{
-		if (it instanceof Loop) {
-			return interpreteLoop(context)
-		} else if (it instanceof ReductionInstruction) {
-			return interpreteReductionInstruction(context)
-		} else if (it instanceof Affectation) {
-			return interpreteAffectation(context)
-		} else if (it instanceof If) {
-			return interpreteIf(context)
-		} else if (it instanceof InstructionBlock) {
-			return interpreteInstructionBlock(context)
-		} else if (it instanceof While) {
-			return interpreteWhile(context)
-		} else if (it instanceof Return) {
-			return interpreteReturn(context)
-		} else if (it instanceof Exit) {
-			return interpreteExit(context)
-		} else if (it instanceof VariableDeclaration) {
-			return interpreteVariableDeclaration(context)
-		} else if (it instanceof ItemIdDefinition) {
-			return interpreteItemIdDefinition(context)
-		} else if (it instanceof ItemIndexDefinition) {
-			return interpreteItemIndexDefinition(context)
-		} else if (it instanceof SetDefinition) {
-			return interpreteSetDefinition(context)
-		} else {
-			throw new IllegalArgumentException("Unhandled parameter types: " +
-				Arrays.<Object>asList(it, context).toString());
+		switch i
+		{
+			Loop: interpreteLoop(i, context)
+			ReductionInstruction: interpreteReductionInstruction(i, context)
+			Affectation: interpreteAffectation(i, context)
+			If: interpreteIf(i, context)
+			InstructionBlock: interpreteInstructionBlock(i, context)
+			While: interpreteWhile(i, context)
+			Return: interpreteReturn(i, context)
+			Exit: interpreteExit(i, context)
+			VariableDeclaration: interpreteVariableDeclaration(i, context)
+			ItemIdDefinition: interpreteItemIdDefinition(i, context)
+			ItemIndexDefinition: interpreteItemIndexDefinition(i, context)
+			SetDefinition: interpreteSetDefinition(i, context)
+			default: throw new IllegalArgumentException("Unhandled parameter types: " +
+				Arrays.<Object>asList(i, context).toString())
 		}
 	}
 
-	static def NablaValue interpreteVariableDeclaration(VariableDeclaration it, Context context)
+	private static def NablaValue interpreteVariableDeclaration(VariableDeclaration it, Context context)
 	{
 		context.logFinest("Interprete VarDefinition")
 		context.addVariableValue(variable, createValue(variable.type, variable.defaultValue, context))
 		return null
 	}
 
-	static def NablaValue interpreteInstructionBlock(InstructionBlock it, Context context)
+	private static def NablaValue interpreteInstructionBlock(InstructionBlock it, Context context)
 	{
 		context.logFinest("Interprete InstructionBlock")
 		val innerContext = new Context(context)
@@ -94,7 +82,7 @@ class InstructionInterpreter
 		return null
 	}
 
-	static def NablaValue interpreteAffectation(Affectation it, Context context)
+	private static def NablaValue interpreteAffectation(Affectation it, Context context)
 	{
 		context.logFinest("Interprete Affectation")
 		val rightValue = interprete(right, context)
@@ -106,13 +94,13 @@ class InstructionInterpreter
 		return null
 	}
 
-	static def NablaValue interpreteReductionInstruction(ReductionInstruction it, Context context)
+	private static def NablaValue interpreteReductionInstruction(ReductionInstruction it, Context context)
 	{
 		// All reductionInstruction have been replaced by specific Ir Transformation Step
 		throw new RuntimeException('Wrong path...')
 	}
 
-	static def NablaValue interpreteLoop(Loop it, Context context)
+	private static def NablaValue interpreteLoop(Loop it, Context context)
 	{
 		val b = iterationBlock
 		switch b
@@ -161,7 +149,7 @@ class InstructionInterpreter
 		return null
 	}
 
-	static def NablaValue interpreteIf(If it, Context context)
+	private static def NablaValue interpreteIf(If it, Context context)
 	{
 		context.logFinest("Interprete If")
 		val cond = interprete(condition, context) as NV0Bool
@@ -169,7 +157,7 @@ class InstructionInterpreter
 		else if (elseInstruction !== null) return interprete(elseInstruction, context)
 	}
 
-	static def NablaValue interpreteItemIndexDefinition(ItemIndexDefinition it, Context context)
+	private static def NablaValue interpreteItemIndexDefinition(ItemIndexDefinition it, Context context)
 	{
 		context.logFinest("Interprete ItemIndexDefinition")
 		val idValue = context.getIdValue(value.id)
@@ -183,7 +171,7 @@ class InstructionInterpreter
 		return null
 	}
 
-	static def NablaValue interpreteItemIdDefinition(ItemIdDefinition it, Context context)
+	private static def NablaValue interpreteItemIdDefinition(ItemIdDefinition it, Context context)
 	{
 		context.logFinest("Interprete ItemIdDefinition")
 		val idValue = getIdValue(value, context)
@@ -191,7 +179,7 @@ class InstructionInterpreter
 		return null
 	}
 
-	static def NablaValue interpreteSetDefinition(SetDefinition it, Context context)
+	private static def NablaValue interpreteSetDefinition(SetDefinition it, Context context)
 	{
 		context.logFinest("Interprete Return")
 		if (value.connectivity.multiple)
@@ -200,7 +188,7 @@ class InstructionInterpreter
 		return null
 	}
 
-	static def NablaValue interpreteWhile(While it, Context context)
+	private static def NablaValue interpreteWhile(While it, Context context)
 	{
 		context.logFinest("Interprete While")
 		var cond = interprete(condition, context) as NV0Bool
@@ -212,13 +200,13 @@ class InstructionInterpreter
 		return null
 	}
 
-	static def NablaValue interpreteReturn(Return it, Context context)
+	private static def NablaValue interpreteReturn(Return it, Context context)
 	{
 		context.logFinest("Interprete Return")
 		return interprete(expression, context)
 	}
 
-	static def NablaValue interpreteExit(Exit it, Context context)
+	private static def NablaValue interpreteExit(Exit it, Context context)
 	{
 		context.logFinest("Interprete Exit")
 		throw new RuntimeException(message)

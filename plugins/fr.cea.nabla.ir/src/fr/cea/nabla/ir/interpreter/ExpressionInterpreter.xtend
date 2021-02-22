@@ -47,42 +47,44 @@ class ExpressionInterpreter
 {
 
 	// Switch to more efficient dispatch (also clearer for profiling)
-	static def NablaValue interprete(Expression it, Context context) {
-		if (it instanceof ArgOrVarRef) {
-			return interpreteArgOrVarRef(context)
-		} else if (it instanceof BaseTypeConstant) {
-			return interpreteBaseTypeConstant(context)
-		} else if (it instanceof BinaryExpression) {
-			return interpreteBinaryExpression(context)
-		} else if (it instanceof BoolConstant) {
-			return interpreteBoolConstant(context)
-		} else if (it instanceof ContractedIf) {
-			return interpreteContractedIf(context)
-		} else if (it instanceof FunctionCall) {
-			return interpreteFunctionCall(context)
-		} else if (it instanceof IntConstant) {
-			return interpreteIntConstant(context)
-		} else if (it instanceof MaxConstant) {
-			return interpreteMaxConstant(context)
-		} else if (it instanceof MinConstant) {
-			return interpreteMinConstant(context)
-		} else if (it instanceof Parenthesis) {
-			return interpreteParenthesis(context)
-		} else if (it instanceof RealConstant) {
-			return interpreteRealConstant(context)
-		} else if (it instanceof UnaryExpression) {
-			return interpreteUnaryExpression(context)
-		} else if (it instanceof VectorConstant) {
-			return interpreteVectorConstant(context)
-		} else if (it instanceof Cardinality) {
-			return interpreteCardinality(context)
-		} else {
-			throw new IllegalArgumentException("Unhandled parameter types: " +
-				Arrays.<Object>asList(it, context).toString())
+	static def NablaValue interprete(Expression e, Context context)
+	{
+		switch e
+		{
+			ArgOrVarRef: interpreteArgOrVarRef(e, context)
+			BaseTypeConstant: interpreteBaseTypeConstant(e, context)
+			BinaryExpression: interpreteBinaryExpression(e, context)
+			BoolConstant: interpreteBoolConstant(e, context)
+			ContractedIf: interpreteContractedIf(e, context)
+			FunctionCall: interpreteFunctionCall(e, context)
+			IntConstant: interpreteIntConstant(e, context)
+			MaxConstant: interpreteMaxConstant(e, context)
+			MinConstant: interpreteMinConstant(e, context)
+			Parenthesis: interpreteParenthesis(e, context)
+			RealConstant: interpreteRealConstant(e, context)
+			UnaryExpression: interpreteUnaryExpression(e, context)
+			VectorConstant: interpreteVectorConstant(e, context)
+			Cardinality: interpreteCardinality(e, context)
+			default: throw new IllegalArgumentException("Unhandled parameter types: " +
+				Arrays.<Object>asList(e, context).toString())
 		}
 	}
 
-	static def NablaValue interpreteContractedIf(ContractedIf it, Context context)
+	static def int[] interpreteDimensionExpressions(Iterable<Expression> dimensionExpressions, Context context)
+	{
+		val values = newIntArrayOfSize(dimensionExpressions.size)
+		for (i : 0..<dimensionExpressions.size)
+		{
+			val value = interprete(dimensionExpressions.get(i), context)
+			if (value instanceof NV0Int)
+				values.set(i, value.data)
+			else
+				throw new RuntimeException("Unsupported type for Dimension: " + value.class)
+		}
+		return values
+	}
+
+	private static def NablaValue interpreteContractedIf(ContractedIf it, Context context)
 	{
 		context.logFinest("Interprete ContractedIf")
 		val condValue = condition.interprete(context)
@@ -90,7 +92,7 @@ class ExpressionInterpreter
 		else elseExpression.interprete(context)
 	}
 
-	static def NablaValue interpreteBinaryExpression(BinaryExpression it, Context context)
+	private static def NablaValue interpreteBinaryExpression(BinaryExpression it, Context context)
 	{
 		context.logFinest("Interprete BinaryExpression")
 		val lValue = left.interprete(context)
@@ -98,7 +100,7 @@ class ExpressionInterpreter
 		BinaryOperationsInterpreter::getValueOf(lValue, rValue, operator)
 	}
 
-	static def NablaValue interpreteUnaryExpression(UnaryExpression it, Context context)
+	private static def NablaValue interpreteUnaryExpression(UnaryExpression it, Context context)
 	{
 		context.logFinest("Interprete UnaryExpression")
 		val eValue = expression.interprete(context)
@@ -122,31 +124,31 @@ class ExpressionInterpreter
 		}
 	}
 
-	static def NablaValue interpreteParenthesis(Parenthesis it, Context context)
+	private static def NablaValue interpreteParenthesis(Parenthesis it, Context context)
 	{
 		context.logFinest("Interprete Parenthesis")
 		expression.interprete(context)
 	}
 
-	static def NablaValue interpreteIntConstant(IntConstant it, Context context)
+	private static def NablaValue interpreteIntConstant(IntConstant it, Context context)
 	{
 		context.logFinest("Interprete IntConstant")
 		new NV0Int(value)
 	}
 
-	static def NablaValue interpreteRealConstant(RealConstant it, Context context)
+	private static def NablaValue interpreteRealConstant(RealConstant it, Context context)
 	{
 		context.logFinest("Interprete RealConstant")
 		new NV0Real(value)
 	}
 
-	static def NablaValue interpreteBoolConstant(BoolConstant it, Context context)
+	private static def NablaValue interpreteBoolConstant(BoolConstant it, Context context)
 	{
 		context.logFinest("Interprete BoolConstant")
 		new NV0Bool(value)
 	}
 
-	static def NablaValue interpreteMinConstant(MinConstant it, Context context)
+	private static def NablaValue interpreteMinConstant(MinConstant it, Context context)
 	{
 		context.logFinest("Interprete MinConstant")
 		val t = type as BaseType
@@ -159,7 +161,7 @@ class ExpressionInterpreter
 		}
 	}
 
-	static def NablaValue interpreteMaxConstant(MaxConstant it, Context context)
+	private static def NablaValue interpreteMaxConstant(MaxConstant it, Context context)
 	{
 		context.logFinest("Interprete MaxConstant")
 		val t = type as BaseType
@@ -171,7 +173,7 @@ class ExpressionInterpreter
 		}
 	}
 
-	static def NablaValue interpreteBaseTypeConstant(BaseTypeConstant it, Context context)
+	private static def NablaValue interpreteBaseTypeConstant(BaseTypeConstant it, Context context)
 	{
 		context.logFinest("Interprete BaseTypeConstant")
 		val expressionValue = value.interprete(context)
@@ -186,7 +188,7 @@ class ExpressionInterpreter
 		}
 	}
 
-	static def NablaValue interpreteVectorConstant(VectorConstant it, Context context)
+	private static def NablaValue interpreteVectorConstant(VectorConstant it, Context context)
 	{
 		context.logFinest("Interprete VectorConstant")
 		val expressionValues = values.map[x | interprete(x, context)]
@@ -197,7 +199,7 @@ class ExpressionInterpreter
 		return value
 	}
 
-	static def NablaValue interpreteCardinality(Cardinality it, Context context)
+	private static def NablaValue interpreteCardinality(Cardinality it, Context context)
 	{
 		context.logFinest("Interprete Cardinality")
 		if (container.connectivity.multiple)
@@ -209,7 +211,7 @@ class ExpressionInterpreter
 			new NV0Int(1)
 	}
 
-	static def NablaValue interpreteFunctionCall(FunctionCall it, Context context)
+	private static def NablaValue interpreteFunctionCall(FunctionCall it, Context context)
 	{
 		context.logFinest("Interprete FunctionCall " + function.name)
 		val argValues = args.map[x|interprete(x, context)]
@@ -249,7 +251,7 @@ class ExpressionInterpreter
 		}
 	}
 
-	static def NablaValue interpreteArgOrVarRef(ArgOrVarRef it, Context context)
+	private static def NablaValue interpreteArgOrVarRef(ArgOrVarRef it, Context context)
 	{
 		context.logFinest("Interprete VarRef " + target.name)
 		val value = if (target.iteratorCounter)
@@ -262,20 +264,6 @@ class ExpressionInterpreter
 		iterators.forEach[x|allIndices.add(context.getIndexValue(x))]
 		allIndices.addAll(interpreteDimensionExpressions(indices, context))
 		getValue(value, allIndices)
-	}
-
-	static def int[] interpreteDimensionExpressions(Iterable<Expression> dimensionExpressions, Context context)
-	{
-		val values = newIntArrayOfSize(dimensionExpressions.size)
-		for (i : 0..<dimensionExpressions.size)
-		{
-			val value = interprete(dimensionExpressions.get(i), context)
-			if (value instanceof NV0Int)
-				values.set(i, value.data)
-			else
-				throw new RuntimeException("Unsupported type for Dimension: " + value.class)
-		}
-		return values
 	}
 
 	private static def dispatch NablaValue buildArrayValue(int size, NV0Bool value)

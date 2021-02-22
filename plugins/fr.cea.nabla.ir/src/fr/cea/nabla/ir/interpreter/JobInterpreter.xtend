@@ -35,28 +35,26 @@ class JobInterpreter
 	}
 
 	// Switch to more efficient dispatch (also clearer for profiling)
-	def void interprete(Job it, Context context)
+	def void interprete(Job j, Context context)
 	{
-		if (it instanceof ExecuteTimeLoopJob) {
-			interpreteExecuteTimeLoopJob(context)
-		} else if (it instanceof InstructionJob) {
-			interpreteInstructionJob(context)
-		} else if (it instanceof TimeLoopJob) {
-			interpreteTimeLoopJob(context)
-		} else {
-			throw new IllegalArgumentException("Unhandled parameter types: " +
-				Arrays.<Object>asList(it, context).toString())
+		switch j
+		{
+			ExecuteTimeLoopJob: interpreteExecuteTimeLoopJob(j, context)
+			InstructionJob: interpreteInstructionJob(j, context)
+			TimeLoopJob: interpreteTimeLoopJob(j, context)
+			default: throw new IllegalArgumentException("Unhandled parameter types: " +
+				Arrays.<Object>asList(j, context).toString())
 		}
 	}
 
-	def void interpreteInstructionJob(InstructionJob it, Context context)
+	private def void interpreteInstructionJob(InstructionJob it, Context context)
 	{
 		context.logFiner("Interprete InstructionJob " + name + " @ " + at)
 		val innerContext = new Context(context)
 		interprete(instruction, innerContext)
 	}
 
-	def void interpreteExecuteTimeLoopJob(ExecuteTimeLoopJob it, Context context)
+	private def void interpreteExecuteTimeLoopJob(ExecuteTimeLoopJob it, Context context)
 	{
 		context.logFiner("Interprete TimeLoopJob " + name + " @ " + at)
 		val ppInfo = context.ir.postProcessing
@@ -108,7 +106,7 @@ class JobInterpreter
 		context.logVariables(msg)
 	}
 
-	def void interpreteTimeLoopJob(TimeLoopJob it, Context context)
+	private def void interpreteTimeLoopJob(TimeLoopJob it, Context context)
 	{
 		context.logFiner("Interprete TimeLoopCopyJob " + name + " @ " + at)
 

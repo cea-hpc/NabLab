@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Copyright (c) 2020 CEA
+ * This program and the accompanying materials are made available under the 
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * Contributors: see AUTHORS file
+ *******************************************************************************/
 package fr.cea.nabla.ir.generator.java
 
 import fr.cea.nabla.ir.generator.GenerationContent
@@ -16,18 +25,15 @@ class JavaProviderGenerator implements ProviderGenerator
 	override getGenerationContents(ExtensionProvider provider, Iterable<Function> functions)
 	{
 		val fileContents = new ArrayList<GenerationContent>
+		val pathPrefix = getNsPrefix(provider, '.').replace('.', '/')
 
 		// interface
-		val interfaceFileName = getNsPrefix(provider, '.', '/') + provider.interfaceName + ".java"
+		val interfaceFileName = pathPrefix + provider.interfaceName + ".java"
 		fileContents += new GenerationContent(interfaceFileName, getInterfaceFileContent(provider, functions), false)
 
 		// Generates class if it does not exists
-		val classFileName = getNsPrefix(provider, '.', '/') + provider.facadeClass + ".java"
+		val classFileName = pathPrefix + provider.facadeClass + ".java"
 		fileContents += new GenerationContent(classFileName, getClassFileContent(provider, functions), true)
-
-		// Generates build.xml Ant file
-//		val antFileName = "build.xml"
-//		fileContents += new GenerationContent(antFileName, getAntFile(provider.providerName, provider.libName), true)
 
 		return fileContents
 	}

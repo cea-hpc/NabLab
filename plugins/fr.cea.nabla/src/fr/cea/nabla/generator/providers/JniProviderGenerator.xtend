@@ -28,23 +28,18 @@ class JniProviderGenerator extends StandaloneGeneratorBase
 	@Inject extension ProvidersUtils
 	val jniProviders = new HashSet<ExtensionProvider>
 
-	def generateAndTransformProvider(Backend backend, NablaExtension ext, ExtensionProvider provider)
+	def generateAndTransformProvider(Backend backend, NablaExtension ext, ExtensionProvider cppProvider, ExtensionProvider jniProvider)
 	{
 		// The generator transforms the C++ provider in a JNI provider
 		val generator = new fr.cea.nabla.ir.generator.jni.JniProviderGenerator(backend)
-		val content = generator.getGenerationContents(provider, ext.irFunctions)
-		jniProviders += provider
+		val content = generator.getGenerationContents(cppProvider, jniProvider, ext.irFunctions)
+		jniProviders += jniProvider
 
-		dispatcher.post(MessageType::Exec, "Generating JNI code generator: " + provider.projectDir)
-		val pph = Paths.get(provider.projectDir)
+		dispatcher.post(MessageType::Exec, "Generating JNI code generator: " + jniProvider.projectDir)
+		val pph = Paths.get(jniProvider.projectDir)
 		if (!Files.exists(pph)) Files.createDirectories(pph)
-		val fsa = getConfiguredFileSystemAccess(provider.projectDir, false)
+		val fsa = getConfiguredFileSystemAccess(jniProvider.projectDir, false)
 		generate(fsa, content, '')
-	}
-
-	def void convertToJni(ExtensionProvider provider)
-	{
-		fr.cea.nabla.ir.generator.jni.JniProviderGenerator.convertToJni(provider)
 	}
 
 	def generateGlobalCMakeIfNecessary(IrRoot ir, Target target, String baseDir)

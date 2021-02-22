@@ -97,7 +97,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 			«typeContentProvider.getCppType(v.type)» «v.name»;
 			«ENDFOR»
 			«FOR v : extensionProviders»
-			«getNsPrefix(v, '::', '::')»«v.facadeClass» «v.instanceName»;
+			«getNsPrefix(v, '::')»«v.facadeClass» «v.instanceName»;
 			«ENDFOR»
 			«IF levelDB»std::string «Utils.NonRegressionNameAndValue.key»;«ENDIF»
 

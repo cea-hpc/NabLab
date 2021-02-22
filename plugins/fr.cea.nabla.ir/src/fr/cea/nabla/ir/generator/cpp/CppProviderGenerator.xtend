@@ -29,9 +29,10 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 	override getGenerationContents(ExtensionProvider provider, Iterable<Function> functions)
 	{
 		val fileContents = new ArrayList<GenerationContent>
+		val pathPrefix = getNsPrefix(provider, '::').replace('::', '/')
 
 		// .h of interface
-		val interfaceHeaderFileName = getNsPrefix(provider, '::', '/') + provider.interfaceName + ".h"
+		val interfaceHeaderFileName = pathPrefix + provider.interfaceName + ".h"
 		fileContents += new GenerationContent(interfaceHeaderFileName, getInterfaceHeaderFileContent(provider, functions), false)
 
 		// CMakeLists.txt
@@ -40,11 +41,11 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 
 		// Generates .h and .cc if they does not exists
 		// .h
-		val headerFileName = getNsPrefix(provider, '::', '/') + provider.facadeClass + ".h"
+		val headerFileName = pathPrefix + provider.facadeClass + ".h"
 		fileContents += new GenerationContent(headerFileName, getHeaderFileContent(provider, functions), true)
 
 		// .cc
-		val sourceFileName = getNsPrefix(provider, '::', '/') + provider.facadeClass + ".cc"
+		val sourceFileName = pathPrefix + provider.facadeClass + ".cc"
 		fileContents += new GenerationContent(sourceFileName, getSourceFileContent(provider, functions), true)
 
 		return fileContents
@@ -52,10 +53,11 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 
 	private def getInterfaceHeaderFileContent(ExtensionProvider provider, Iterable<Function> irFunctions)
 	'''
+	«val defineName = '__' + getNsPrefix(provider, '::').replace('::', '_').toUpperCase + '_' + provider.interfaceName.toUpperCase»
 	«Utils::fileHeader»
 
-	#ifndef __«getNsPrefix(provider, '::', '_').toUpperCase»«provider.interfaceName.toUpperCase»
-	#define __«getNsPrefix(provider, '::', '_').toUpperCase»_«provider.interfaceName.toUpperCase»
+	#ifndef «defineName»
+	#define «defineName»
 
 	#include <iostream>
 	#include <string>
@@ -86,17 +88,19 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 	}
 	«ENDIF»
 
-	#endif // __«getNsPrefix(provider, '::', '_').toUpperCase»_«provider.interfaceName.toUpperCase»
+	#endif // «defineName»
 	'''
 
 	private def getHeaderFileContent(ExtensionProvider provider, Iterable<Function> irFunctions)
 	'''
-	#ifndef __«getNsPrefix(provider, '::', '_').toUpperCase»_«provider.facadeClass.toUpperCase»
-	#define __«getNsPrefix(provider, '::', '_').toUpperCase»_«provider.facadeClass.toUpperCase»
+	«val pathPrefix = getNsPrefix(provider, '::').replace('::', '/')»
+	«val defineName = '__' + getNsPrefix(provider, '::').replace('::', '_').toUpperCase + '_' + provider.facadeClass.toUpperCase»
+	#ifndef «defineName»
+	#define «defineName»
 
 	#include <iostream>
 	#include <string>
-	#include "«getNsPrefix(provider, '::', '/')»«provider.interfaceName».h"
+	#include "«pathPrefix»«provider.interfaceName».h"
 
 	using namespace nablalib::types;
 
@@ -120,12 +124,13 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 	}
 	«ENDIF»
 
-	#endif // __«getNsPrefix(provider, '::', '_').toUpperCase»_«provider.facadeClass.toUpperCase»
+	#endif // «defineName»
 	'''
 
 	private def getSourceFileContent(ExtensionProvider provider, Iterable<Function> irFunctions)
 	'''
-	#include "«getNsPrefix(provider, '::', '/')»«provider.facadeClass».h"
+	«val pathPrefix = getNsPrefix(provider, '::').replace('::', '/')»
+	#include "«pathPrefix»«provider.facadeClass».h"
 	#include <string>
 
 	«IF !provider.facadeNamespace.nullOrEmpty»
@@ -143,6 +148,7 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 
 	private def getCMakeFileContent(ExtensionProvider provider, String libCppNablaDir)
 	'''
+	«val pathPrefix = getNsPrefix(provider, '::').replace('::', '/')»
 	«CMakeUtils.fileHeader»
 
 	set(LIBCPPNABLA_DIR «CMakeUtils.formatCMakePath(libCppNablaDir)» CACHE STRING "")
@@ -155,7 +161,7 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 
 	add_subdirectory(${LIBCPPNABLA_DIR} ${CMAKE_BINARY_DIR}/«CppGeneratorUtils::CppLibName» EXCLUDE_FROM_ALL)
 
-	add_library(«provider.libName» «getNsPrefix(provider, '::', '/')»«provider.facadeClass».cc)
+	add_library(«provider.libName» «pathPrefix»«provider.facadeClass».cc)
 	set_property(TARGET «provider.libName» PROPERTY POSITION_INDEPENDENT_CODE ON)
 	target_include_directories(«provider.libName» PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 	target_link_libraries(«provider.libName» PUBLIC cppnabla)

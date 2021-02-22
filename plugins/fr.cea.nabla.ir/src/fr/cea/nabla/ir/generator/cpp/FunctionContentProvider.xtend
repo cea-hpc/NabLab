@@ -44,7 +44,7 @@ class FunctionContentProvider
 
 	def getJniDefinitionContent(Function it, ExtensionProvider provider, String cppFullClassName)
 	'''
-	JNIEXPORT «returnType.jniType» JNICALL Java_«getNsPrefix(provider, '.', '_')»«provider.facadeClass»_«name»
+	JNIEXPORT «returnType.jniType» JNICALL Java_«getNsPrefix(provider, '.').replace('.', '_')»«provider.facadeClass»_«name»
 	(JNIEnv *env, jobject self«FOR a : inArgs», «a.type.jniType» «a.name»«ENDFOR»)
 	{
 		«cppFullClassName»* _self = getObject(env, self);
@@ -63,24 +63,26 @@ class FunctionContentProvider
 	private def getJniInArgContent(Arg it)
 	{
 		val t = type
+		val nativeVarName = 'c_' + name
 		switch t
 		{
 			BaseType:
 			{
 				val dim = t.sizes.size
-				val nativeVarName = 'c_' + name
 				if (dim == 0)
 					'''
 						«t.primitive.cppType» «nativeVarName» = «name»;
 					'''
 				else
-					// can not call TypeContentProvider.getCppArrayType: expression sizes must be 0. Why ?
 					'''
 						«t.primitive.getName()»Array«t.sizes.size»D<«t.sizes.map[0].join(',')»> «nativeVarName»;
 						«getJniInArrayContent(name, nativeVarName, t.primitive, t.sizes)»
 					'''
 			}
-			LinearAlgebraType: throw new RuntimeException("Not yet implemented")
+			LinearAlgebraType:
+			'''
+				auto «nativeVarName» = reinterpret_cast<«t.cppType»>(«name»);
+			'''
 			default: throw new RuntimeException("Ooops. Can not be there, normally...")
 		}
 	}

@@ -19,7 +19,7 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 	endif()
 endif()
 
-add_subdirectory($ENV{HOME}/workspaces/NabLab/tests/DepthInit/../BatiLib/src-cpp-jni ${CMAKE_BINARY_DIR}/BatiLibCppJni)
+add_subdirectory($ENV{HOME}/workspaces/NabLab/tests/DepthInit/../DepthInit/src-gen-interpreter/batilibcppjni ${CMAKE_BINARY_DIR}/BatiLibCppJNI)
 
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 	include(${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)

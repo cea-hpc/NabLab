@@ -36,7 +36,7 @@ class ProviderClassCache
 		if (c === null)
 		{
 			System.setProperty(JNI_LIBRARY_PATH, p.installDir)
-			c = Class.forName(getNsPrefix(p, '.', '.') + p.facadeClass, true, cl)
+			c = Class.forName(getNsPrefix(p, '.') + p.facadeClass, true, cl)
 			classByProviderNames.put(p.extensionName, c)
 		}
 		return c

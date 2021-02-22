@@ -66,7 +66,7 @@ abstract class IncludesContentProvider
 		userIncludes +=  "nablalib/types/Types.h"
 
 		for (provider : m.extensionProviders)
-			userIncludes += getNsPrefix(provider, '::', '/') + provider.facadeClass + ".h"
+			userIncludes += getNsPrefix(provider, '::').replace('::', '/') + provider.facadeClass + ".h"
 
 		if (!m.main)
 			userIncludes += m.irRoot.name.toLowerCase + "/" + m.irRoot.mainModule.className + ".h"

@@ -1,8 +1,16 @@
+/*******************************************************************************
+ * Copyright (c) 2020 CEA
+ * This program and the accompanying materials are made available under the 
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * Contributors: see AUTHORS file
+ *******************************************************************************/
 package fr.cea.nabla.ir.generator.jni
 
 import fr.cea.nabla.ir.generator.CMakeUtils
 import fr.cea.nabla.ir.generator.GenerationContent
-import fr.cea.nabla.ir.generator.ProviderGenerator
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.generator.cpp.Backend
 import fr.cea.nabla.ir.generator.java.FunctionContentProvider
@@ -13,10 +21,13 @@ import java.util.ArrayList
 
 import static fr.cea.nabla.ir.ExtensionProviderExtensions.*
 
-class JniProviderGenerator implements ProviderGenerator
+/**
+ * JniProviderGenerator does not implement ProviderGenerator
+ * because it is not called from a provider definition
+ * but only during application generation.
+ */
+class JniProviderGenerator
 {
-	public static val JNI = "Jni"
-
 	val Backend cppBackend
 
 	new(Backend cppBackend)
@@ -24,40 +35,22 @@ class JniProviderGenerator implements ProviderGenerator
 		this.cppBackend = cppBackend
 	}
 
-	static def void convertToJni(ExtensionProvider it)
+	def getGenerationContents(ExtensionProvider cppProvider, ExtensionProvider jniProvider, Iterable<Function> functions)
 	{
-		providerName = providerName + JNI
-		projectDir = projectDir + '-' + JNI.toLowerCase
-		facadeClass = facadeClass + JNI
-		facadeNamespace = facadeNamespace.replace('::', '.')
-		libName = libName + JNI.toLowerCase
-	}
-
-	override getName() { JNI.toUpperCase }
-
-	override getGenerationContents(ExtensionProvider provider, Iterable<Function> functions)
-	{
-		// the provider represents a C++ project
-		// extract the needed infos and transform it to JNI provider
-		val cppLibName = provider.libName
-		val cppFullClassName = getNsPrefix(provider, '.', '::') + provider.facadeClass
-		val cppProjectDir = provider.projectDir
-		val cppProjectName = provider.providerName
-		provider.convertToJni
-
+		val cppFullClassName = getNsPrefix(cppProvider, '::') + cppProvider.facadeClass
 		val fileContents = new ArrayList<GenerationContent>
 
 		// .java
-		val javaFileName = provider.facadeNamespace + "/" + provider.facadeClass + ".java"
-		fileContents += new GenerationContent(javaFileName, getJavaFileContent(provider, functions), false)
+		val javaFileName = jniProvider.facadeNamespace + "/" + jniProvider.facadeClass + ".java"
+		fileContents += new GenerationContent(javaFileName, getJavaFileContent(jniProvider, functions), false)
 
 		// .cc
-		val sourceFileName =  provider.facadeNamespace + "_" + provider.facadeClass + ".cc"
-		fileContents += new GenerationContent(sourceFileName, getCppFileContent(provider, functions, cppFullClassName), false)
+		val sourceFileName =  jniProvider.facadeNamespace + "_" + jniProvider.facadeClass + ".cc"
+		fileContents += new GenerationContent(sourceFileName, getCppFileContent(jniProvider, functions, cppFullClassName), false)
 
 		// CMakeLists.txt
 		val cmakeFileName = "CMakeLists.txt"
-		fileContents += new GenerationContent(cmakeFileName, getCMakeFileContent(provider, cppProjectName, cppProjectDir, cppLibName), false)
+		fileContents += new GenerationContent(cmakeFileName, getCMakeFileContent(jniProvider, cppProvider.providerName, cppProvider.projectDir, cppProvider.libName), false)
 
 		return fileContents
 	}
@@ -110,14 +103,15 @@ class JniProviderGenerator implements ProviderGenerator
 	'''
 	«Utils.fileHeader»
 
-	#include "«getNsPrefix(provider, '.', '_')»«provider.facadeClass».h"
+	«val nsPrefix = getNsPrefix(provider, '.').replace('.', '_')»
+	#include "«nsPrefix»«provider.facadeClass».h"
 	#include "«cppFullClassName.replace('::', '/')».h"
 
 	#ifdef __cplusplus
 	extern "C" {
 	#endif
 
-	JNIEXPORT jlong JNICALL Java_«getNsPrefix(provider, '.', '_')»«provider.facadeClass»_nativeNew
+	JNIEXPORT jlong JNICALL Java_«nsPrefix»«provider.facadeClass»_nativeNew
 	(JNIEnv *env, jobject self)
 	{
 		// Here we allocate our new object and return
@@ -156,7 +150,7 @@ class JniProviderGenerator implements ProviderGenerator
 	// return it as reference (not by value). This is safe
 	// since, as a Java String object the JVM can deallocate
 	// it when is not being used anymore.
-	JNIEXPORT void JNICALL Java_«getNsPrefix(provider, '.', '_')»«provider.facadeClass»_jsonInit
+	JNIEXPORT void JNICALL Java_«nsPrefix»«provider.facadeClass»_jsonInit
 	(JNIEnv *env, jobject self, jstring jsonContent)
 	{
 		«cppFullClassName»* _self = getObject(env, self);
@@ -176,6 +170,8 @@ class JniProviderGenerator implements ProviderGenerator
 
 	private def getCMakeFileContent(ExtensionProvider provider, String cppProjectName, String cppProjectDir, String cppLibName)
 	'''
+	«val nsPrefix = getNsPrefix(provider, '.').replace('.', '_')»
+	«val pathPrefix = getNsPrefix(provider, '.').replace('.', '/')»
 	«CMakeUtils::fileHeader»
 
 	set(«provider.extensionName.toUpperCase»_DIR «CMakeUtils.formatCMakePath(cppProjectDir)»)
@@ -195,7 +191,7 @@ class JniProviderGenerator implements ProviderGenerator
 	add_subdirectory(${«provider.extensionName.toUpperCase»_DIR} ${CMAKE_BINARY_DIR}/«cppProjectName»)
 
 	# The lib«provider.libName».so library
-	add_library(«provider.libName» SHARED «getNsPrefix(provider, '.', '_')»«provider.facadeClass».cc «getNsPrefix(provider, '.', '_')»«provider.facadeClass».h)
+	add_library(«provider.libName» SHARED «nsPrefix»«provider.facadeClass».cc «nsPrefix»«provider.facadeClass».h)
 	target_include_directories(«provider.libName»
 		PUBLIC ${INCLUDE_DIR}
 		PUBLIC ${JAVA_HOME}/include
@@ -204,10 +200,10 @@ class JniProviderGenerator implements ProviderGenerator
 
 	# Generation of «provider.facadeClass».h from «provider.facadeClass».java
 	add_custom_command(
-		OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/«getNsPrefix(provider, '.', '_')»«provider.facadeClass».h «getNsPrefix(provider, '.', '/')»«provider.facadeClass».class
+		OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/«nsPrefix»«provider.facadeClass».h «pathPrefix»«provider.facadeClass».class
 		COMMENT "Generate «provider.facadeClass».h from «provider.facadeClass».java"
-		COMMAND ${JAVA_HOME}/bin/javac -h ${CMAKE_CURRENT_SOURCE_DIR} -d ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/«getNsPrefix(provider, '.', '/')»«provider.facadeClass».java
-		DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/«getNsPrefix(provider, '.', '/')»«provider.facadeClass».java)
+		COMMAND ${JAVA_HOME}/bin/javac -h ${CMAKE_CURRENT_SOURCE_DIR} -d ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/«pathPrefix»«provider.facadeClass».java
+		DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/«pathPrefix»«provider.facadeClass».java)
 
 	# The «provider.libName».jar
 	add_custom_target(«provider.libName»jar ALL DEPENDS «provider.libName».jar)
@@ -215,8 +211,8 @@ class JniProviderGenerator implements ProviderGenerator
 		OUTPUT «provider.libName».jar
 		COMMENT "Built «provider.libName».jar"
 		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-		COMMAND ${JAVA_HOME}/bin/jar cvf «provider.libName».jar «getNsPrefix(provider, '.', '/')»«provider.facadeClass».class
-		DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/«getNsPrefix(provider, '.', '_')»«provider.facadeClass».h)
+		COMMAND ${JAVA_HOME}/bin/jar cvf «provider.libName».jar «pathPrefix»«provider.facadeClass».class
+		DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/«nsPrefix»«provider.facadeClass».h)
 
 	INSTALL(TARGETS «provider.libName» DESTINATION ${CMAKE_SOURCE_DIR}/lib)
 	INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/«provider.libName».jar DESTINATION ${CMAKE_SOURCE_DIR}/lib)

@@ -19,6 +19,7 @@ import fr.cea.nabla.nablagen.NablagenProvider
 import fr.cea.nabla.nablagen.Target
 import fr.cea.nabla.nablagen.TargetType
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.xtext.scoping.IScopeProvider
 
 class NablagenExtensionHelper
@@ -56,10 +57,18 @@ class NablagenExtensionHelper
 				dispatcher.post(MessageType::Warning, '    The target of the provider differs from target: ' + provider.target.literal + " != " + target.type.literal)
 				if (target.type == TargetType::JAVA)
 				{
+					// transform c++ provider to JNI provider
+					val JNI = 'JNI'
+					val cppProvider = EcoreUtil.copy(irProvider)
+					val jniProvider = irProvider
+					jniProvider.providerName = cppProvider.providerName + JNI
+					jniProvider.projectDir = baseDir + target.outputDir + '/' + jniProvider.providerName.toLowerCase
+					jniProvider.facadeClass = cppProvider.facadeClass + JNI
+					jniProvider.facadeNamespace = cppProvider.facadeNamespace.replace('::', '.')
+					jniProvider.libName = cppProvider.libName + JNI.toLowerCase
+
 					if (generateJniProviders)
-						jniGenerator.generateAndTransformProvider(backendFactory.getCppBackend(provider.target), provider.extension, irProvider)
-					else
-						jniGenerator.convertToJni(irProvider)
+						jniGenerator.generateAndTransformProvider(backendFactory.getCppBackend(provider.target), provider.extension, cppProvider, jniProvider)
 				}
 			}
 		}

@@ -32,7 +32,7 @@ endif()
 
 ### LIBCPPNABLA
 add_library(cppnabla 
-    nablalib/mesh/CartesianMesh2D.cc nablalib/mesh/CartesianMesh2DFactory.cc nablalib/mesh/AbstractPvdFileWriter2D.cc
+    nablalib/mesh/CartesianMesh2D.cc nablalib/mesh/CartesianMesh2DFactory.cc nablalib/mesh/PvdFileWriter2D.cc
     nablalib/types/MultiArray.cc
     nablalib/utils/Timer.cc nablalib/utils/Utils.cc)
 target_include_directories(cppnabla PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

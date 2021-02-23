@@ -8,13 +8,14 @@
  * Contributors: see AUTHORS file
  *******************************************************************************/
 #include <experimental/filesystem>
-#include "nablalib/mesh/AbstractPvdFileWriter2D.h"
+
+#include "PvdFileWriter2D.h"
 
 using namespace std;
 
 namespace nablalib::mesh
 {
-AbstractPvdFileWriter2D::AbstractPvdFileWriter2D(const string& moduleName, const string& directoryName)
+PvdFileWriter2D::PvdFileWriter2D(const string& moduleName, const string& directoryName)
 : m_module_name(moduleName)
 , m_directory_name(directoryName)
 , m_state(closed)
@@ -23,10 +24,10 @@ AbstractPvdFileWriter2D::AbstractPvdFileWriter2D(const string& moduleName, const
 		experimental::filesystem::create_directory(m_directory_name);
 }
 
-AbstractPvdFileWriter2D::~AbstractPvdFileWriter2D() {}
+PvdFileWriter2D::~PvdFileWriter2D() {}
 
 void
-AbstractPvdFileWriter2D::startVtpFile(
+PvdFileWriter2D::startVtpFile(
 		const int& iteration,
 		const double& time,
 		const size_t& nbNodes,
@@ -71,7 +72,7 @@ AbstractPvdFileWriter2D::startVtpFile(
 }
 
 void
-AbstractPvdFileWriter2D::openNodeData()
+PvdFileWriter2D::openNodeData()
 {
 	if (isDisabled()) return;
 	changeState(ready, onNodes);
@@ -79,7 +80,7 @@ AbstractPvdFileWriter2D::openNodeData()
 }
 
 void
-AbstractPvdFileWriter2D::openCellData()
+PvdFileWriter2D::openCellData()
 {
 	if (isDisabled()) return;
 	changeState(nodesFinished, onCells);
@@ -87,7 +88,41 @@ AbstractPvdFileWriter2D::openCellData()
 }
 
 void
-AbstractPvdFileWriter2D::closeNodeData()
+PvdFileWriter2D::openNodeArray(const string& name, const int& arraySize)
+{
+	if (isDisabled()) return;
+	changeState(onNodes, onNodeArray);
+	m_vtp_writer << "				<DataArray Name=\"" + name + "\" type=\"Float32\" NumberOfComponents=\"" + to_string(arraySize) + "\" format=\"ascii\">" << endl;
+}
+
+void
+PvdFileWriter2D::openCellArray(const string& name, const int& arraySize)
+{
+	if (isDisabled()) return;
+	changeState(onCells, onCellArray);
+	m_vtp_writer << "				<DataArray Name=\"" + name + "\" type=\"Float32\" NumberOfComponents=\"" + to_string(arraySize) + "\" format=\"ascii\">" << endl;
+}
+
+void
+PvdFileWriter2D::closeNodeArray()
+{
+	if (isDisabled()) return;
+	changeState(onNodeArray, onNodes);
+	m_vtp_writer << endl;
+	m_vtp_writer << "				</DataArray>" << endl;
+}
+
+void
+PvdFileWriter2D::closeCellArray()
+{
+	if (isDisabled()) return;
+	changeState(onCellArray, onCells);
+	m_vtp_writer << endl;
+	m_vtp_writer << "				</DataArray>" << endl;
+}
+
+void
+PvdFileWriter2D::closeNodeData()
 {
 	if (isDisabled()) return;
 	changeState(onNodes, nodesFinished);
@@ -95,7 +130,7 @@ AbstractPvdFileWriter2D::closeNodeData()
 }
 
 void
-AbstractPvdFileWriter2D::closeCellData()
+PvdFileWriter2D::closeCellData()
 {
 	if (isDisabled()) return;
 	changeState(onCells, cellsFinished);
@@ -103,7 +138,7 @@ AbstractPvdFileWriter2D::closeCellData()
 }
 
 void
-AbstractPvdFileWriter2D::closeVtpFile()
+PvdFileWriter2D::closeVtpFile()
 {
 	if (isDisabled()) return;
 	changeState(cellsFinished, closed);
@@ -125,7 +160,7 @@ AbstractPvdFileWriter2D::closeVtpFile()
 }
 
 void
-AbstractPvdFileWriter2D::changeState(const State& expectedState, const State& newState)
+PvdFileWriter2D::changeState(const State& expectedState, const State& newState)
 {
 	if (m_state != expectedState)
 	{

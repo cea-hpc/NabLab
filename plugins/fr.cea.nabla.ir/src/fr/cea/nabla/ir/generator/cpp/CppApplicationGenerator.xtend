@@ -14,11 +14,9 @@ import fr.cea.nabla.ir.generator.ApplicationGenerator
 import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.Connectivity
-import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.InternFunction
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
-import fr.cea.nabla.ir.ir.IrType
 import fr.cea.nabla.ir.ir.Variable
 import java.util.ArrayList
 import java.util.HashMap
@@ -26,6 +24,7 @@ import java.util.HashMap
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
+import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 
 class CppApplicationGenerator extends CppGenerator implements ApplicationGenerator
@@ -332,7 +331,9 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 			«val nodeVariables = outputVarsByConnectivities.get("node")»
 			«IF !nodeVariables.nullOrEmpty»
 				«FOR v : nodeVariables»
-					«writeMethodName(v.target.type)»("«v.outputName»", «v.target.name»);
+					writer.openNodeArray("«v.outputName»", «v.target.type.sizesSize»);
+					for (size_t r=0 ; r<nbNodes ; ++r) writer.write(«v.target.name»«typeContentProvider.formatIterators(v.target.type, #["r"])»);
+					writer.closeNodeArray();
 				«ENDFOR»
 			«ENDIF»
 			writer.closeNodeData();
@@ -340,7 +341,9 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 			«val cellVariables = outputVarsByConnectivities.get("cell")»
 			«IF !cellVariables.nullOrEmpty»
 				«FOR v : cellVariables»
-					«writeMethodName(v.target.type)»("«v.outputName»", «v.target.name»);
+					writer.openCellArray("«v.outputName»", «v.target.type.sizesSize»);
+					for (size_t j=0 ; j<nbCells ; ++j) writer.write(«v.target.name»«typeContentProvider.formatIterators(v.target.type, #["j"])»);
+					writer.closeCellArray();
 				«ENDFOR»
 			«ENDIF»
 			writer.closeCellData();
@@ -496,16 +499,5 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	private def isKokkosTeamThread()
 	{
 		backend instanceof KokkosTeamThreadBackend
-	}
-
-	private def writeMethodName(IrType type)
-	{
-		switch type
-		{
-			ConnectivityType:
-				'''writer.write«FOR s : type.base.sizes BEFORE '<' SEPARATOR ',' AFTER '>'»«expressionContentProvider.getContent(s)»«ENDFOR»'''
-			default:
-				'''writer.write'''
-		}
 	}
 }

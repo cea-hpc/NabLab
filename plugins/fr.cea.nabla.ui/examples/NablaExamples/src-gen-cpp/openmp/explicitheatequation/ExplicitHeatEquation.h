@@ -12,15 +12,14 @@
 #include <omp.h>
 #include "nablalib/mesh/CartesianMesh2DFactory.h"
 #include "nablalib/mesh/CartesianMesh2D.h"
+#include "nablalib/mesh/PvdFileWriter2D.h"
 #include "nablalib/utils/Utils.h"
 #include "nablalib/utils/Timer.h"
 #include "nablalib/types/Types.h"
-#include "nablalib/mesh/stl/PvdFileWriter2D.h"
 
 using namespace nablalib::mesh;
 using namespace nablalib::utils;
 using namespace nablalib::types;
-using namespace nablalib::mesh::stl;
 
 /******************** Free functions declarations ********************/
 

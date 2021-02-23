@@ -159,7 +159,7 @@ class ExpressionContentProvider
 
 	private def CharSequence initArray(int[] sizes, CharSequence value)
 	'''«FOR size : sizes SEPARATOR ",  "»«FOR i : 0..<size SEPARATOR ', '»«value»«ENDFOR»«ENDFOR»'''
-	
+
 	// Simple helper to add pointer information to VectorType variable for LinearAlgebra cases
 	private def getCppLinearAlgebraHelper(Expression expr) 
 	{

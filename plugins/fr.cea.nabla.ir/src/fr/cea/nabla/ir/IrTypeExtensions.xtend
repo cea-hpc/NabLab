@@ -19,39 +19,55 @@ import fr.cea.nabla.ir.ir.ContractedIf
 import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IntConstant
 import fr.cea.nabla.ir.ir.IrType
+import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.MaxConstant
 import fr.cea.nabla.ir.ir.MinConstant
 import fr.cea.nabla.ir.ir.Parenthesis
+import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.RealConstant
 import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.ir.VectorConstant
 
 import static extension fr.cea.nabla.ir.Utils.*
-import fr.cea.nabla.ir.ir.LinearAlgebraType
-import fr.cea.nabla.ir.ir.PrimitiveType
 
 class IrTypeExtensions
 {
-	static def dispatch String getLabel(ConnectivityType it)
+	static def String getLabel(IrType it)
 	{
-		if (it === null) null
-		else base.label + '{' + connectivities.map[name].join(',') + '}'
+		switch it
+		{
+			case null: null
+			BaseType case sizes.empty: primitive.literal
+			BaseType case sizes.forall[x | x instanceof IntConstant]: primitive.literal + sizes.map[x | (x as IntConstant).value.utfExponent].join('\u02E3')
+			BaseType: primitive.literal + '[' + sizes.map[expressionLabel].join(',') + ']'
+			ConnectivityType: base.label + '{' + connectivities.map[name].join(',') + '}'
+			LinearAlgebraType case sizes.size == 1: 'Vector[' + sizes.head.expressionLabel + ']'
+			LinearAlgebraType case sizes.size == 2: 'Matrix[' + sizes.map[expressionLabel].join(',') + ']'
+			default: null
+		}
 	}
 
-	static def dispatch String getLabel(BaseType it)
+	static def int getDimension(IrType it)
 	{
-		if (it === null)
-			'Undefined'
-		else if (sizes.empty) 
-			primitive.literal
-		else if (sizes.forall[x | x instanceof IntConstant])
-			primitive.literal + sizes.map[x | (x as IntConstant).value.utfExponent].join('\u02E3')
-		else
-			primitive.literal + '[' + sizes.map[expressionLabel].join(',') + ']'
+		switch it
+		{
+			BaseType: sizes.size
+			ConnectivityType: base.sizes.size + connectivities.size
+			LinearAlgebraType: sizes.size
+			default: 0
+		}
 	}
 
-	static def dispatch int getDimension(BaseType it) { sizes.size }
-	static def dispatch int getDimension(ConnectivityType it) { base.sizes.size + connectivities.size }
+	static def int getSizesSize(IrType it)
+	{
+		switch it
+		{
+			BaseType: sizes.size
+			ConnectivityType: base.sizes.size
+			LinearAlgebraType: sizes.size
+			default: 0
+		}
+	}
 
 	static def isScalar(IrType t)
 	{

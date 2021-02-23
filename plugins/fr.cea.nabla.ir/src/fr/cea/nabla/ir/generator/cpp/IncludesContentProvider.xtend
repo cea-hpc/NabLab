@@ -60,6 +60,7 @@ abstract class IncludesContentProvider
 		val userIncludes = new LinkedHashSet<String>
 		userIncludes += "nablalib/mesh/CartesianMesh2DFactory.h"
 		userIncludes += "nablalib/mesh/CartesianMesh2D.h"
+		if (m.irRoot.postProcessing !== null) userIncludes += "nablalib/mesh/PvdFileWriter2D.h"
 		userIncludes +=  "nablalib/utils/Utils.h"
 		userIncludes +=  "nablalib/utils/Timer.h"
 		userIncludes +=  "nablalib/types/Types.h"
@@ -93,7 +94,6 @@ class StlThreadIncludesContentProvider extends IncludesContentProvider
 	override getUserIncludes(IrModule m, String levelDBPath)
 	{
 		val includes = super.getUserIncludes(m, levelDBPath)
-		if (m.irRoot.postProcessing !== null) includes += "nablalib/mesh/stl/PvdFileWriter2D.h"
 		includes += "nablalib/utils/stl/Parallel.h"
 		if (!levelDBPath.nullOrEmpty) includes += "nablalib/utils/stl/Serializer.h"
 		return includes
@@ -102,7 +102,6 @@ class StlThreadIncludesContentProvider extends IncludesContentProvider
 	override getUserNs(IrModule m, String levelDBPath)
 	{
 		val userNs = super.getUserNs(m, levelDBPath)
-		if (m.irRoot.postProcessing !== null) userNs += "nablalib::mesh::stl"
 		userNs +=  "nablalib::utils::stl"
 		return userNs
 	}
@@ -121,7 +120,6 @@ class KokkosIncludesContentProvider extends IncludesContentProvider
 	override getUserIncludes(IrModule m, String levelDBPath)
 	{
 		val includes = super.getUserIncludes(m, levelDBPath)
-		if (m.irRoot.postProcessing !== null) includes += "nablalib/mesh/kokkos/PvdFileWriter2D.h"
 		includes += "nablalib/utils/kokkos/Parallel.h"
 		if (!levelDBPath.nullOrEmpty) includes += "nablalib/utils/kokkos/Serializer.h"
 		return includes
@@ -130,7 +128,6 @@ class KokkosIncludesContentProvider extends IncludesContentProvider
 	override getUserNs(IrModule m, String levelDBPath)
 	{
 		val userNs = super.getUserNs(m, levelDBPath)
-		if (m.irRoot.postProcessing !== null) userNs += "nablalib::mesh::kokkos"
 		userNs +=  "nablalib::utils::kokkos"
 		return userNs
 	}
@@ -141,7 +138,6 @@ class SequentialIncludesContentProvider extends IncludesContentProvider
 	override getUserIncludes(IrModule m, String levelDBPath)
 	{
 		val includes = super.getUserIncludes(m, levelDBPath)
-		if (m.irRoot.postProcessing !== null) includes += "nablalib/mesh/stl/PvdFileWriter2D.h"
 		if (!levelDBPath.nullOrEmpty) includes += "nablalib/utils/stl/Serializer.h"
 		return includes
 	}
@@ -149,7 +145,6 @@ class SequentialIncludesContentProvider extends IncludesContentProvider
 	override getUserNs(IrModule m, String levelDBPath)
 	{
 		val userNs = super.getUserNs(m, levelDBPath)
-		if (m.irRoot.postProcessing !== null) userNs += "nablalib::mesh::stl"
 		if (!levelDBPath.nullOrEmpty) userNs += "nablalib::utils::stl"
 		return userNs
 	}

@@ -391,7 +391,9 @@ void HeatEquation::dumpVariables(int iteration, bool useTimer)
 		writer.openNodeData();
 		writer.closeNodeData();
 		writer.openCellData();
-		writer.write("Temperature", u_n);
+		writer.openCellArray("Temperature", 0);
+		for (size_t j=0 ; j<nbCells ; ++j) writer.write(u_n(j));
+		writer.closeCellArray();
 		writer.closeCellData();
 		writer.closeVtpFile();
 		lastDump = n;

@@ -36,7 +36,6 @@ import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.interpreter.NablaValueExtensions.*
 
-// TODO trapper les exceptions quand pas le jar, et pas le so dans le cas des JNI
 class IrInterpreter
 {
 	public static val ITERATION_VARIABLE_NAME = "InterpreterIteration"

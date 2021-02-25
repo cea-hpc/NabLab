@@ -140,6 +140,13 @@ class InstructionValidator extends FunctionOrReductionValidator
 		}
 	}
 
+	/**
+	 * Inline functions are generated as simple functions (not methods of class)
+	 * to be call in option initializations (before class instanciation).
+	 * Extern functions are holded by a provider, i.e. LinearAlgebra.
+	 * The provider is an option that can be initialized by a json data file.
+	 * Consequently, it can not be called in a free function.
+	 */
 	@Check(CheckType.NORMAL)
 	def checkExternFunctionCallInFunctionBody(FunctionCall it)
 	{

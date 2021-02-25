@@ -12,6 +12,8 @@ package fr.cea.nabla.ir.interpreter
 import fr.cea.nabla.ir.ir.ExtensionProvider
 import java.util.HashMap
 
+import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
+
 /**
  * Native library (.so) can only be loaded once.
  * Consequently, JNI classes, containing the static loadLibrary instruction,
@@ -32,15 +34,22 @@ class ExtensionProviderCache
 		var c = classByProviders.get(p)
 		if (c === null)
 		{
-			c = switch p
+			try
 			{
-				case p.extensionName == "Math": 
+				c = switch p
 				{
-					p.namespace = "java.lang"
-					new StaticExtensionProviderHelper(p, cl)
+					case p.extensionName == "Math":
+					{
+						p.namespace = "java.lang"
+						new StaticExtensionProviderHelper(p, cl)
+					}
+					case p.linearAlgebra: new LinearAlgebraExtensionProviderHelper(p, cl)
+					default: new DefaultExtensionProviderHelper(p, cl)
 				}
-				case p.linearAlgebra: new LinearAlgebraExtensionProviderHelper(p, cl)
-				default: new DefaultExtensionProviderHelper(p, cl)
+			}
+			catch (ClassNotFoundException e)
+			{
+				throw new ExtensionProviderNotFoundException(p)
 			}
 			classByProviders.put(p, c)
 		}
@@ -50,5 +59,18 @@ class ExtensionProviderCache
 	def ExtensionProviderHelper get(ExtensionProvider p)
 	{
 		classByProviders.get(p)
+	}
+}
+
+class ExtensionProviderNotFoundException extends Exception
+{
+	new(ExtensionProvider p)
+	{
+		super(p.buildMessage)
+	}
+
+	private def static String buildMessage(ExtensionProvider p)
+	{
+		'Class ' + p.className + ' not found for provider ' + p.providerName + ': compile and install your provider (make; make install)'
 	}
 }

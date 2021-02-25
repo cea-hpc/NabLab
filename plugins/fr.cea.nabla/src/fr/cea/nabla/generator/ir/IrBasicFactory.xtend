@@ -11,14 +11,12 @@ package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
 import com.google.inject.Singleton
-import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.ItemType
-import fr.cea.nabla.nabla.PrimitiveType
-import java.util.List
 import fr.cea.nabla.nabla.NablaExtension
+import fr.cea.nabla.nabla.PrimitiveType
 
 @Singleton
 class IrBasicFactory
@@ -26,7 +24,6 @@ class IrBasicFactory
 	@Inject extension IrAnnotationHelper
 	@Inject extension IrExpressionFactory
 
-//TODO vérifier que ces fonctions sont tjs utilisées
 	// No create method to ensure a new instance every time (for n+1 time variables)
 	def fr.cea.nabla.ir.ir.BaseType toIrBaseType(BaseType t)
 	{
@@ -34,16 +31,6 @@ class IrBasicFactory
 		[
 			primitive = t.primitive.toIrPrimitiveType
 			t.sizes.forEach[x | sizes += x.toIrExpression]
-		]
-	}
-
-	// No create method to ensure a new instance every time (for n+1 time variables)
-	def ConnectivityType toIrConnectivityType(BaseType t, List<? extends Connectivity> supports)
-	{
-		IrFactory::eINSTANCE.createConnectivityType =>
-		[
-			base = t.toIrBaseType
-			supports.forEach[x | connectivities += x.toIrConnectivity]
 		]
 	}
 

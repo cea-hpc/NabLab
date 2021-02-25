@@ -115,6 +115,7 @@ class IrRootBuilder
 			irProvider.installDir = irProvider.projectDir + '/lib'
 			irProvider.namespace = provider.namespace
 			irProvider.libName = provider.libName
+			irProvider.linearAlgebra = provider.extension.linearAlgebra
 		}
 
 		return true

@@ -336,10 +336,10 @@ void ExplicitHeatEquation::updateU(const member_type& teamMember) noexcept
 				{
 					const Id dId(neighbourCellsC[dNeighbourCellsC]);
 					const size_t dCells(dId);
-					reduction0 = ExplicitHeatEquationFuncs::sumR0(reduction0, alpha(cCells,dCells) * u_n(dCells));
+					reduction0 = ExplicitHeatEquationFuncs::sumR0(reduction0, alpha(cCells, dCells) * u_n(dCells));
 				}
 			}
-			u_nplus1(cCells) = alpha(cCells,cCells) * u_n(cCells) + reduction0;
+			u_nplus1(cCells) = alpha(cCells, cCells) * u_n(cCells) + reduction0;
 		});
 	}
 }
@@ -462,11 +462,11 @@ void ExplicitHeatEquation::computeAlphaCoeff(const member_type& teamMember) noex
 					const Id fId(mesh->getCommonFace(cId, dId));
 					const size_t fFaces(fId);
 					const double alphaExtraDiag(deltat / V(cCells) * (faceLength(fFaces) * faceConductivity(fFaces)) / ExplicitHeatEquationFuncs::norm(Xc(cCells) - Xc(dCells)));
-					alpha(cCells,dCells) = alphaExtraDiag;
+					alpha(cCells, dCells) = alphaExtraDiag;
 					alphaDiag = alphaDiag + alphaExtraDiag;
 				}
 			}
-			alpha(cCells,cCells) = 1 - alphaDiag;
+			alpha(cCells, cCells) = 1 - alphaDiag;
 		});
 	}
 }
@@ -552,7 +552,8 @@ void ExplicitHeatEquation::dumpVariables(int iteration, bool useTimer)
 		writer.closeNodeData();
 		writer.openCellData();
 		writer.openCellArray("Temperature", 0);
-		for (size_t j=0 ; j<nbCells ; ++j) writer.write(u_n(j));
+		for (size_t i=0 ; i<nbCells ; ++i)
+			writer.write(u_n(i));
 		writer.closeCellArray();
 		writer.closeCellData();
 		writer.closeVtpFile();

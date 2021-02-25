@@ -40,7 +40,9 @@ abstract class CMakeContentProvider
 
 		«libraryBackend»
 		«FOR ep : externalProviders»
-		add_subdirectory(${«ep.extensionName.toUpperCase»_DIR} ${CMAKE_BINARY_DIR}/«ep.providerName» EXCLUDE_FROM_ALL)
+		if(NOT TARGET «ep.libName»)
+			add_subdirectory(${«ep.extensionName.toUpperCase»_DIR} ${CMAKE_BINARY_DIR}/«ep.providerName» EXCLUDE_FROM_ALL)
+		endif()
 		«ENDFOR»
 		if(NOT TARGET cppnabla)
 			add_subdirectory(${LIBCPPNABLA_DIR} ${CMAKE_BINARY_DIR}/«CppGeneratorUtils::CppLibName» EXCLUDE_FROM_ALL)

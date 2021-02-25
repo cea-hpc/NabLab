@@ -14,7 +14,7 @@ import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.generator.cpp.Backend
 import fr.cea.nabla.ir.generator.java.FunctionContentProvider
-import fr.cea.nabla.ir.interpreter.ProviderClassCache
+import fr.cea.nabla.ir.interpreter.DefaultExtensionProviderHelper
 import fr.cea.nabla.ir.ir.ExtensionProvider
 import fr.cea.nabla.ir.ir.Function
 import java.util.ArrayList
@@ -71,7 +71,7 @@ class JniProviderGenerator
 	{
 		static
 		{
-			System.load(System.getProperty("«ProviderClassCache.JNI_LIBRARY_PATH»") + "/lib«provider.libName».so");
+			System.load(System.getProperty("«DefaultExtensionProviderHelper.JNI_LIBRARY_PATH»") + "/lib«provider.libName».so");
 		}
 
 		// This is a long here (in Java) but is used as a pointer to hold the

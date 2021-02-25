@@ -404,9 +404,9 @@ void ImplicitHeatEquation::initU(const member_type& teamMember) noexcept
 		{
 			int cCells(cCellsTeam + teamWork.first);
 			if (ImplicitHeatEquationFuncs::norm(Xc(cCells) - vectOne) < 0.5) 
-				u_n(cCells) = options.u0;
+				u_n.setValue(cCells, options.u0);
 			else
-				u_n(cCells) = 0.0;
+				u_n.setValue(cCells, 0.0);
 		});
 	}
 }
@@ -448,11 +448,11 @@ void ImplicitHeatEquation::computeAlphaCoeff(const member_type& teamMember) noex
 					const Id fId(mesh->getCommonFace(cId, dId));
 					const size_t fFaces(fId);
 					const double alphaExtraDiag(-deltat / V(cCells) * (faceLength(fFaces) * faceConductivity(fFaces)) / ImplicitHeatEquationFuncs::norm(Xc(cCells) - Xc(dCells)));
-					alpha(cCells,dCells) = alphaExtraDiag;
+					alpha.setValue(cCells, dCells, alphaExtraDiag);
 					alphaDiag = alphaDiag + alphaExtraDiag;
 				}
 			}
-			alpha(cCells,cCells) = 1 - alphaDiag;
+			alpha.setValue(cCells, cCells, 1 - alphaDiag);
 		});
 	}
 }
@@ -530,7 +530,8 @@ void ImplicitHeatEquation::dumpVariables(int iteration, bool useTimer)
 		writer.closeNodeData();
 		writer.openCellData();
 		writer.openCellArray("Temperature", 1);
-		for (size_t j=0 ; j<nbCells ; ++j) writer.write(u_n(j));
+		for (size_t i=0 ; i<nbCells ; ++i)
+			writer.write(u_n.getValue(i));
 		writer.closeCellArray();
 		writer.closeCellData();
 		writer.closeVtpFile();

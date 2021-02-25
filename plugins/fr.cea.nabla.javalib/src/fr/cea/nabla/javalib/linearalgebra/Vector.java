@@ -12,54 +12,58 @@ package fr.cea.nabla.javalib.linearalgebra;
 import java.util.Arrays;
 
 import org.apache.commons.math3.linear.ArrayRealVector;
-import org.apache.commons.math3.linear.OpenMapRealVector;
+import org.apache.commons.math3.linear.RealVector;
+//import org.apache.commons.math3.linear.OpenMapRealVector;
 
 public class Vector 
 {
-	private Object lock = new Object();
-	private org.apache.commons.math3.linear.RealVector nativeVector;
+	private final Object lock = new Object();
+	private final RealVector data;
+	private final String name;
 
-	public final int length;
-
-	public Vector(org.apache.commons.math3.linear.RealVector nativeVector)
+	public Vector(final String name, final int size)
 	{
-		this.nativeVector = nativeVector;
-		this.length = nativeVector.getDimension();
+		this.name = name;
+		// Dense
+		this.data = new ArrayRealVector(size);
+		// Sparse
+		// this.data = new OpenMapRealVector(size);
 	}
 
-	public static Vector createDenseVector(int size)
+	public Vector(final String name, final RealVector data)
 	{
-		return new Vector(new ArrayRealVector(size));
+		this.name = name;
+		this.data = data;
 	}
 
-	public static Vector createSparseVector(int size)
+	public String getName()
 	{
-		return new Vector(new OpenMapRealVector(size));
+		return name;
 	}
 
-	public org.apache.commons.math3.linear.RealVector getNativeVector()
+	public RealVector getData()
 	{
-		return nativeVector;
+		return data;
 	}
 
-	public double get(int i)
+	public int getSize()
 	{
-		return nativeVector.getEntry(i);
+		return data.getDimension();
 	}
 
-	public void set(int i, double value)
+	public double getValue(int i)
 	{
-		synchronized(lock) { nativeVector.setEntry(i, value); }
+		return data.getEntry(i);
 	}
 
-	public void add(int i, double increment) 
+	public void setValue(int i, double value)
 	{
-		synchronized(lock) { nativeVector.addToEntry(i, increment); }
+		synchronized(lock) { data.setEntry(i, value); }
 	}
 
 	@Override
 	public String toString()
 	{
-		return Arrays.toString(nativeVector.toArray());
+		return Arrays.toString(data.toArray());
 	}
 }

@@ -945,7 +945,8 @@ void Glace2d::dumpVariables(int iteration, bool useTimer)
 		writer.closeNodeData();
 		writer.openCellData();
 		writer.openCellArray("Density", 0);
-		for (size_t j=0 ; j<nbCells ; ++j) writer.write(rho[j]);
+		for (size_t i=0 ; i<nbCells ; ++i)
+			writer.write(rho[i]);
 		writer.closeCellArray();
 		writer.closeCellData();
 		writer.closeVtpFile();

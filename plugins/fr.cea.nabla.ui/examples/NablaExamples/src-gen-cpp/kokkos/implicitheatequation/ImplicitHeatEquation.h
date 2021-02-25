@@ -123,13 +123,13 @@ public:
 	double t_n0;
 	Kokkos::View<RealArray1D<2>*> X;
 	Kokkos::View<RealArray1D<2>*> Xc;
-	nablalib::linearalgebra::kokkos::VectorType u_n;
-	nablalib::linearalgebra::kokkos::VectorType u_nplus1;
+	nablalib::linearalgebra::kokkos::Vector u_n;
+	nablalib::linearalgebra::kokkos::Vector u_nplus1;
 	Kokkos::View<double*> V;
 	Kokkos::View<double*> D;
 	Kokkos::View<double*> faceLength;
 	Kokkos::View<double*> faceConductivity;
-	nablalib::linearalgebra::kokkos::NablaSparseMatrix alpha;
+	nablalib::linearalgebra::kokkos::Matrix alpha;
 };
 
 #endif

@@ -30,6 +30,7 @@ class ProvidersUtils
 			installDir = installationDir
 			namespace = provider.namespace
 			libName = provider.libName
+			linearAlgebra = provider.extension.linearAlgebra
 		]
 	}
 

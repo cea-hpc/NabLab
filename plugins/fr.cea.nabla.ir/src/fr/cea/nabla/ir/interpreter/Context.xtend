@@ -14,12 +14,10 @@ import fr.cea.nabla.ir.ir.ArgOrVar
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityCall
 import fr.cea.nabla.ir.ir.Container
-import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.ItemId
 import fr.cea.nabla.ir.ir.ItemIndex
 import fr.cea.nabla.ir.ir.SetRef
-import java.lang.reflect.Method
 import java.util.HashMap
 import java.util.logging.Logger
 import org.eclipse.xtend.lib.annotations.Accessors
@@ -32,30 +30,23 @@ class Context
 	val setValues = new HashMap<String, int[]>
 	val indexValues = new HashMap<ItemIndex, Integer>
 	val idValues = new HashMap<ItemId, Integer>
-	// the pair is composed of [provider instance, method instance]
-	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) val HashMap<Function, Pair<Object,Method>> functionToMethod 
 	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) val IrRoot ir
 	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) CartesianMesh2DMeshWrapper meshWrapper
-	@Accessors InterpretableLinearAlgebra linearAlgebra
 
 	new(IrRoot ir, Logger logger)
 	{
 		this.outerContext = null
 		this.logger = logger
-		this.functionToMethod = new HashMap<Function, Pair<Object,Method>>
 		this.ir = ir
 		this.meshWrapper = null
-		this.linearAlgebra = null
 	}
 
 	new(Context outerContext)
 	{
 		this.outerContext = outerContext
 		this.logger = outerContext.logger
-		this.functionToMethod = outerContext.functionToMethod
 		this.ir = outerContext.ir
 		this.meshWrapper = outerContext.meshWrapper
-		this.linearAlgebra = outerContext.linearAlgebra
 	}
 
 	def HashMap<Connectivity, Integer> getConnectivitySizes()

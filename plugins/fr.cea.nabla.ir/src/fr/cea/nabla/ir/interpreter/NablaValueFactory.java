@@ -25,7 +25,7 @@ public class NablaValueFactory
 		return result;
 	}
 
-	static NablaValue createValue(PrimitiveType p , int size, InterpretableLinearAlgebra linearAlgebra)
+	static NablaValue createValue(PrimitiveType p, String name, int size, ExtensionProviderHelper provider)
 	{
 		switch (p)
 		{
@@ -33,16 +33,16 @@ public class NablaValueFactory
 			case INT: return new NV1Int(new int[size]);
 			case REAL:
 			{
-				if (linearAlgebra == null)
-					return new NV1Real(new double[size]);
+				if (provider != null && provider instanceof LinearAlgebraExtensionProviderHelper)
+					return new NVVector(name, size, (LinearAlgebraExtensionProviderHelper)provider);
 				else
-					return new NVVector(linearAlgebra.createVector(size), linearAlgebra);
+					return new NV1Real(new double[size]);
 			}
 			default: return null;
 		}
 	}
 
-	static NablaValue createValue(PrimitiveType p, int nbRows, int nbCols, InterpretableLinearAlgebra linearAlgebra)
+	static NablaValue createValue(PrimitiveType p, String name, int nbRows, int nbCols, ExtensionProviderHelper provider)
 	{
 		switch (p)
 		{
@@ -50,10 +50,10 @@ public class NablaValueFactory
 			case INT: return new NV2Int(new int[nbRows][nbCols]);
 			case REAL:
 			{
-				if (linearAlgebra == null)
-					return new NV2Real(new double[nbRows][nbCols]);
+				if (provider != null && provider instanceof LinearAlgebraExtensionProviderHelper)
+					return new NVMatrix(name, nbRows, nbCols, (LinearAlgebraExtensionProviderHelper)provider);
 				else
-					return new NVMatrix(linearAlgebra.createMatrix(nbRows, nbCols), linearAlgebra);
+					return new NV2Real(new double[nbRows][nbCols]);
 			}
 			default: return null;
 		}

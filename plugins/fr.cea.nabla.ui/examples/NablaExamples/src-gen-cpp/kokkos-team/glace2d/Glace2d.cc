@@ -334,7 +334,7 @@ void Glace2d::computeCjr(const member_type& teamMember) noexcept
 					const Id rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCell)%nbNodesOfCell]);
 					const size_t rPlus1Nodes(rPlus1Id);
 					const size_t rMinus1Nodes(rMinus1Id);
-					C(jCells,rNodesOfCellJ) = 0.5 * Glace2dFuncs::perp(X_n(rPlus1Nodes) - X_n(rMinus1Nodes));
+					C(jCells, rNodesOfCellJ) = 0.5 * Glace2dFuncs::perp(X_n(rPlus1Nodes) - X_n(rMinus1Nodes));
 				}
 			}
 		});
@@ -386,7 +386,7 @@ void Glace2d::iniCjrIc(const member_type& teamMember) noexcept
 					const Id rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCell)%nbNodesOfCell]);
 					const size_t rPlus1Nodes(rPlus1Id);
 					const size_t rMinus1Nodes(rMinus1Id);
-					Cjr_ic(jCells,rNodesOfCellJ) = 0.5 * Glace2dFuncs::perp(X_n0(rPlus1Nodes) - X_n0(rMinus1Nodes));
+					Cjr_ic(jCells, rNodesOfCellJ) = 0.5 * Glace2dFuncs::perp(X_n0(rPlus1Nodes) - X_n0(rMinus1Nodes));
 				}
 			}
 		});
@@ -434,7 +434,7 @@ void Glace2d::computeLjr(const member_type& teamMember) noexcept
 				const size_t nbNodesOfCellJ(nodesOfCellJ.size());
 				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 				{
-					l(jCells,rNodesOfCellJ) = Glace2dFuncs::norm(C(jCells,rNodesOfCellJ));
+					l(jCells, rNodesOfCellJ) = Glace2dFuncs::norm(C(jCells, rNodesOfCellJ));
 				}
 			}
 		});
@@ -465,7 +465,7 @@ void Glace2d::computeV(const member_type& teamMember) noexcept
 				{
 					const Id rId(nodesOfCellJ[rNodesOfCellJ]);
 					const size_t rNodes(rId);
-					reduction0 = Glace2dFuncs::sumR0(reduction0, Glace2dFuncs::dot(C(jCells,rNodesOfCellJ), X_n(rNodes)));
+					reduction0 = Glace2dFuncs::sumR0(reduction0, Glace2dFuncs::dot(C(jCells, rNodesOfCellJ), X_n(rNodes)));
 				}
 			}
 			V(jCells) = 0.5 * reduction0;
@@ -521,7 +521,7 @@ void Glace2d::initialize(const member_type& teamMember) noexcept
 				{
 					const Id rId(nodesOfCellJ[rNodesOfCellJ]);
 					const size_t rNodes(rId);
-					reduction1 = Glace2dFuncs::sumR0(reduction1, Glace2dFuncs::dot(Cjr_ic(jCells,rNodesOfCellJ), X_n0(rNodes)));
+					reduction1 = Glace2dFuncs::sumR0(reduction1, Glace2dFuncs::dot(Cjr_ic(jCells, rNodesOfCellJ), X_n0(rNodes)));
 				}
 			}
 			const double V_ic(0.5 * reduction1);
@@ -766,7 +766,7 @@ void Glace2d::computeAjr(const member_type& teamMember) noexcept
 				const size_t nbNodesOfCellJ(nodesOfCellJ.size());
 				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 				{
-					Ajr(jCells,rNodesOfCellJ) = ((rho(jCells) * c(jCells)) / l(jCells,rNodesOfCellJ)) * Glace2dFuncs::tensProduct(C(jCells,rNodesOfCellJ), C(jCells,rNodesOfCellJ));
+					Ajr(jCells, rNodesOfCellJ) = ((rho(jCells) * c(jCells)) / l(jCells, rNodesOfCellJ)) * Glace2dFuncs::tensProduct(C(jCells, rNodesOfCellJ), C(jCells, rNodesOfCellJ));
 				}
 			}
 		});
@@ -795,7 +795,7 @@ void Glace2d::computedeltatj(const member_type& teamMember) noexcept
 				const size_t nbNodesOfCellJ(nodesOfCellJ.size());
 				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 				{
-					reduction0 = Glace2dFuncs::sumR0(reduction0, l(jCells,rNodesOfCellJ));
+					reduction0 = Glace2dFuncs::sumR0(reduction0, l(jCells, rNodesOfCellJ));
 				}
 			}
 			deltatj(jCells) = 2.0 * V(jCells) / (c(jCells) * reduction0);
@@ -828,7 +828,7 @@ void Glace2d::computeAr(const member_type& teamMember) noexcept
 					const Id jId(cellsOfNodeR[jCellsOfNodeR]);
 					const size_t jCells(jId);
 					const size_t rNodesOfCellJ(indexOf(mesh->getNodesOfCell(jId), rId));
-					reduction0 = Glace2dFuncs::sumR2(reduction0, Ajr(jCells,rNodesOfCellJ));
+					reduction0 = Glace2dFuncs::sumR2(reduction0, Ajr(jCells, rNodesOfCellJ));
 				}
 			}
 			Ar(rNodes) = reduction0;
@@ -861,7 +861,7 @@ void Glace2d::computeBr(const member_type& teamMember) noexcept
 					const Id jId(cellsOfNodeR[jCellsOfNodeR]);
 					const size_t jCells(jId);
 					const size_t rNodesOfCellJ(indexOf(mesh->getNodesOfCell(jId), rId));
-					reduction0 = Glace2dFuncs::sumR1(reduction0, p(jCells) * C(jCells,rNodesOfCellJ) + Glace2dFuncs::matVectProduct(Ajr(jCells,rNodesOfCellJ), uj_n(jCells)));
+					reduction0 = Glace2dFuncs::sumR1(reduction0, p(jCells) * C(jCells, rNodesOfCellJ) + Glace2dFuncs::matVectProduct(Ajr(jCells, rNodesOfCellJ), uj_n(jCells)));
 				}
 			}
 			b(rNodes) = reduction0;
@@ -1077,7 +1077,7 @@ void Glace2d::computeFjr(const member_type& teamMember) noexcept
 				{
 					const Id rId(nodesOfCellJ[rNodesOfCellJ]);
 					const size_t rNodes(rId);
-					F(jCells,rNodesOfCellJ) = p(jCells) * C(jCells,rNodesOfCellJ) + Glace2dFuncs::matVectProduct(Ajr(jCells,rNodesOfCellJ), (uj_n(jCells) - ur(rNodes)));
+					F(jCells, rNodesOfCellJ) = p(jCells) * C(jCells, rNodesOfCellJ) + Glace2dFuncs::matVectProduct(Ajr(jCells, rNodesOfCellJ), (uj_n(jCells) - ur(rNodes)));
 				}
 			}
 		});
@@ -1128,7 +1128,7 @@ void Glace2d::computeEn(const member_type& teamMember) noexcept
 				{
 					const Id rId(nodesOfCellJ[rNodesOfCellJ]);
 					const size_t rNodes(rId);
-					reduction0 = Glace2dFuncs::sumR0(reduction0, Glace2dFuncs::dot(F(jCells,rNodesOfCellJ), ur(rNodes)));
+					reduction0 = Glace2dFuncs::sumR0(reduction0, Glace2dFuncs::dot(F(jCells, rNodesOfCellJ), ur(rNodes)));
 				}
 			}
 			E_nplus1(jCells) = E_n(jCells) - (deltat_n / m(jCells)) * reduction0;
@@ -1158,7 +1158,7 @@ void Glace2d::computeUn(const member_type& teamMember) noexcept
 				const size_t nbNodesOfCellJ(nodesOfCellJ.size());
 				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 				{
-					reduction0 = Glace2dFuncs::sumR1(reduction0, F(jCells,rNodesOfCellJ));
+					reduction0 = Glace2dFuncs::sumR1(reduction0, F(jCells, rNodesOfCellJ));
 				}
 			}
 			uj_nplus1(jCells) = uj_n(jCells) - (deltat_n / m(jCells)) * reduction0;
@@ -1181,7 +1181,8 @@ void Glace2d::dumpVariables(int iteration, bool useTimer)
 		writer.closeNodeData();
 		writer.openCellData();
 		writer.openCellArray("Density", 0);
-		for (size_t j=0 ; j<nbCells ; ++j) writer.write(rho(j));
+		for (size_t i=0 ; i<nbCells ; ++i)
+			writer.write(rho(i));
 		writer.closeCellArray();
 		writer.closeCellData();
 		writer.closeVtpFile();

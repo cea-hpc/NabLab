@@ -24,7 +24,7 @@ import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.InstructionContentProvider.*
-import static extension fr.cea.nabla.ir.generator.java.IrTypeExtensions.*
+import static extension fr.cea.nabla.ir.generator.java.TypeContentProvider.*
 
 class JobContentProvider 
 {

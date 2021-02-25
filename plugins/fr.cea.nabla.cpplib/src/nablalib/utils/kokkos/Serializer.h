@@ -11,6 +11,7 @@
 #define NABLALIB_UTILS_KOKKOS_SERIALIZER_H_
 
 #include "nablalib/linearalgebra/kokkos/Matrix.h"
+#include "nablalib/linearalgebra/kokkos/Vector.h"
 
 using namespace nablalib::linearalgebra::kokkos;
 
@@ -73,7 +74,8 @@ std::string serialize(const Kokkos::View<T***>& v) {
 
 
 std::string serialize(const SparseMatrixType& M);
-std::string serialize(const NablaSparseMatrix& M);
+std::string serialize(const Matrix& M);
+std::string serialize(const Vector& v);
 
 }
 

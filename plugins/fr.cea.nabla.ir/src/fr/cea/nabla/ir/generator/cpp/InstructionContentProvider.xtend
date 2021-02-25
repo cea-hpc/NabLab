@@ -61,7 +61,12 @@ abstract class InstructionContentProvider
 		}'''
 
 	def dispatch CharSequence getContent(Affectation it)
-	'''«left.content» = «right.content»;'''
+	{
+		if (left.target.linearAlgebra && !(left.iterators.empty && left.indices.empty))
+			'''«left.codeName».setValue(«formatIteratorsAndIndices(left.target.type, left.iterators, left.indices)», «right.content»);'''
+		else
+			'''«left.content» = «right.content»;'''
+	}
 
 	def dispatch CharSequence getContent(ReductionInstruction it)
 	{

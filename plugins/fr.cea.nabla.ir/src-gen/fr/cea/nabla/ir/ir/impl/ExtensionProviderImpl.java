@@ -23,6 +23,7 @@ import fr.cea.nabla.ir.ir.IrPackage;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ExtensionProviderImpl#getInstallDir <em>Install Dir</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ExtensionProviderImpl#getNamespace <em>Namespace</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ExtensionProviderImpl#getLibName <em>Lib Name</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.ExtensionProviderImpl#isLinearAlgebra <em>Linear Algebra</em>}</li>
  * </ul>
  *
  * @generated
@@ -147,6 +148,26 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 	 * @ordered
 	 */
 	protected String libName = LIB_NAME_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #isLinearAlgebra() <em>Linear Algebra</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isLinearAlgebra()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean LINEAR_ALGEBRA_EDEFAULT = false;
+
+	/**
+	 * The cached value of the '{@link #isLinearAlgebra() <em>Linear Algebra</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isLinearAlgebra()
+	 * @generated
+	 * @ordered
+	 */
+	protected boolean linearAlgebra = LINEAR_ALGEBRA_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -311,6 +332,29 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 	 * @generated
 	 */
 	@Override
+	public boolean isLinearAlgebra() {
+		return linearAlgebra;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setLinearAlgebra(boolean newLinearAlgebra) {
+		boolean oldLinearAlgebra = linearAlgebra;
+		linearAlgebra = newLinearAlgebra;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.EXTENSION_PROVIDER__LINEAR_ALGEBRA, oldLinearAlgebra, linearAlgebra));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case IrPackage.EXTENSION_PROVIDER__EXTENSION_NAME:
@@ -325,6 +369,8 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 				return getNamespace();
 			case IrPackage.EXTENSION_PROVIDER__LIB_NAME:
 				return getLibName();
+			case IrPackage.EXTENSION_PROVIDER__LINEAR_ALGEBRA:
+				return isLinearAlgebra();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -354,6 +400,9 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 				return;
 			case IrPackage.EXTENSION_PROVIDER__LIB_NAME:
 				setLibName((String)newValue);
+				return;
+			case IrPackage.EXTENSION_PROVIDER__LINEAR_ALGEBRA:
+				setLinearAlgebra((Boolean)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -385,6 +434,9 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 			case IrPackage.EXTENSION_PROVIDER__LIB_NAME:
 				setLibName(LIB_NAME_EDEFAULT);
 				return;
+			case IrPackage.EXTENSION_PROVIDER__LINEAR_ALGEBRA:
+				setLinearAlgebra(LINEAR_ALGEBRA_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -409,6 +461,8 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 				return NAMESPACE_EDEFAULT == null ? namespace != null : !NAMESPACE_EDEFAULT.equals(namespace);
 			case IrPackage.EXTENSION_PROVIDER__LIB_NAME:
 				return LIB_NAME_EDEFAULT == null ? libName != null : !LIB_NAME_EDEFAULT.equals(libName);
+			case IrPackage.EXTENSION_PROVIDER__LINEAR_ALGEBRA:
+				return linearAlgebra != LINEAR_ALGEBRA_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -435,6 +489,8 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 		result.append(namespace);
 		result.append(", libName: ");
 		result.append(libName);
+		result.append(", linearAlgebra: ");
+		result.append(linearAlgebra);
 		result.append(')');
 		return result.toString();
 	}

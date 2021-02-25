@@ -17,11 +17,11 @@ namespace nablalib::linearalgebra::kokkos
  * Simple pretty printing function for Sparse Matrix
  */
  std::string
- LinearAlgebra::print(const NablaSparseMatrix& M) {
-   if (!M.m_matrix) {
+ LinearAlgebra::print(const Matrix& M) {
+   if (!M.m_data) {
      std::stringstream ss;
-     for (auto i(0); i < M.m_nb_row; ++i) {
-       for (auto j(0); j < M.m_nb_col; ++j) {
+     for (auto i(0); i < M.m_nb_rows; ++i) {
+       for (auto j(0); j < M.m_nb_cols; ++j) {
          if (j == 0)
            ss << "|";
          auto pos_line(std::find_if(M.m_building_struct.begin(), M.m_building_struct.end(),
@@ -37,33 +37,33 @@ namespace nablalib::linearalgebra::kokkos
          } else {
            ss << std::setprecision(2) << std::setw(6) << "0";
          }
-         if (j == M.m_nb_col - 1)
+         if (j == M.m_nb_cols - 1)
            ss << "|";
        }
        ss << std::endl;
      }
      return std::string(ss.str());
    } else {
-     return print(*M.m_matrix);
+     return print(*M.m_data);
    }
  }  
 
 /*
- * Matlab style printing function for Kokkos Sparse Matrix
+ * Matlab style printing function for Sparse Matrix
  */
 std::string
-LinearAlgebra::printMatlabStyle(const NablaSparseMatrix& M, std::string A) {
-  if (!M.m_matrix) {
+LinearAlgebra::printMatlabStyle(const Matrix& M, std::string A) {
+  if (!M.m_data) {
     std::stringstream ss;
-    ss << "\n"<< A <<" = sparse(" << M.m_nb_row << ", " << M.m_nb_col << ");\n";
-    for (auto i(0); i < M.m_nb_row; ++i) {
-      for (auto j(0); j < M.m_nb_col; ++j) {
-        ss <<  A << "(" << i+1 << ", " << j+1 << ") = "  << std::setprecision(15) << M(i, j) << ";\n";
+    ss << "\n"<< A <<" = sparse(" << M.m_nb_rows << ", " << M.m_nb_cols << ");\n";
+    for (auto i(0); i < M.m_nb_rows; ++i) {
+      for (auto j(0); j < M.m_nb_cols; ++j) {
+        ss <<  A << "(" << i+1 << ", " << j+1 << ") = "  << std::setprecision(15) << M.getValue(i, j) << ";\n";
       }
     }
     return std::string(ss.str());
   } else {
-    return printMatlabStyle(*M.m_matrix, A);
+    return printMatlabStyle(*M.m_data, A);
   } 
 }
 
@@ -104,7 +104,7 @@ LinearAlgebra::getMatrixElement(const SparseMatrixType& M, const size_t& i, cons
 }
 
 /*
- * Simple pretty printing function for Nabla Sparse Matrix
+ * Matlab style printing function for Kokkos Sparse Matrix
  */
 std::string
 LinearAlgebra::printMatlabStyle(const SparseMatrixType& M, std::string A) {
@@ -118,6 +118,22 @@ LinearAlgebra::printMatlabStyle(const SparseMatrixType& M, std::string A) {
     }
   }
   return std::string(ss.str());
+}
+
+/*
+ * Simple pretty printing function for Nabla Vector
+ */
+std::string
+LinearAlgebra::print(const Vector& v) {
+  return print(v.m_data);
+}
+
+/*
+ * Matlab style pretty printing function for Nabla Vector
+ */
+std::string
+LinearAlgebra::printMatlabStyle(const Vector& v, std::string A) {
+  return printMatlabStyle(v.m_data, A);
 }
 
 /*
@@ -161,7 +177,7 @@ LinearAlgebra::printMatlabStyle(const VectorType& v, std::string A) {
  */
 VectorType
 LinearAlgebra::CGSolve(const SparseMatrixType& A, const VectorType& b, const VectorType& x0,
-                                const size_t max_it, const double tolerance) {
+                       const size_t max_it, const double tolerance) {
 
   size_t it(0);
   double norm_res(0.0);
@@ -239,8 +255,8 @@ LinearAlgebra::CGSolve(const SparseMatrixType& A, const VectorType& b, const Vec
  */
 VectorType
 LinearAlgebra::CGSolve(const SparseMatrixType& A, const VectorType& b,
-                                const SparseMatrixType& C_minus_1, const VectorType& x0,
-                                const size_t max_it, const double tolerance) {
+                       const SparseMatrixType& C_minus_1, const VectorType& x0,
+                       const size_t max_it, const double tolerance) {
   
   size_t it(0);
   double norm_res(0.0);
@@ -325,17 +341,21 @@ LinearAlgebra::CGSolve(const SparseMatrixType& A, const VectorType& b,
  * \param tolerance: [in] Convergence threshold (default = 1.e-8)
  * \return: Solution vector
  */
-VectorType
-LinearAlgebra::solveLinearSystem(NablaSparseMatrix& A, const VectorType& b,
-                                          VectorType* x0, const size_t max_it, const double tolerance)
+Vector
+LinearAlgebra::solveLinearSystem(Matrix& A, const Vector& b,
+                                 Vector* x0, const size_t max_it, const double tolerance)
 {
   if (!x0) {
-    VectorType default_x0("x0", b.extent(0));
-    for (size_t i(0); i < b.extent(0); ++i)
+    VectorType default_x0("x0", b.m_data.extent(0));
+    for (size_t i(0); i < b.m_data.extent(0); ++i)
       default_x0(i) = 0.0;
-    return CGSolve(A.crsMatrix(), b, default_x0, max_it, tolerance);
+    VectorType res = CGSolve(A.crsMatrix(), b.m_data, default_x0, max_it, tolerance);
+    Vector v(res);
+    return v;
   } else {
-    return CGSolve(A.crsMatrix(), b, *x0, max_it, tolerance);
+	VectorType res = CGSolve(A.crsMatrix(), b.m_data, x0->m_data, max_it, tolerance);
+    Vector v(res);
+    return v;
   }
 }
 
@@ -350,17 +370,21 @@ LinearAlgebra::solveLinearSystem(NablaSparseMatrix& A, const VectorType& b,
  * \param tolerance: [in] Convergence threshold (default = 1.e-8)
  * \return: Solution vector
  */
-VectorType
-LinearAlgebra::solveLinearSystem(NablaSparseMatrix& A, const VectorType& b, NablaSparseMatrix& C_minus_1,
-                                          VectorType* x0, const size_t max_it, const double tolerance)
+Vector
+LinearAlgebra::solveLinearSystem(Matrix& A, const Vector& b, Matrix& C_minus_1,
+                                 Vector* x0, const size_t max_it, const double tolerance)
 {
   if (!x0) {
-    VectorType default_x0("x0", b.extent(0));
-    for (size_t i(0); i < b.extent(0); ++i)
+    VectorType default_x0("x0", b.m_data.extent(0));
+    for (size_t i(0); i < b.m_data.extent(0); ++i)
       default_x0(i) = 0.0;
-    return CGSolve(A.crsMatrix(), b, C_minus_1.crsMatrix(), default_x0, max_it, tolerance);
+    VectorType res = CGSolve(A.crsMatrix(), b.m_data, C_minus_1.crsMatrix(), default_x0, max_it, tolerance);
+    Vector v(res);
+    return v;
   } else {
-    return CGSolve(A.crsMatrix(), b, C_minus_1.crsMatrix(), *x0, max_it, tolerance);
+    VectorType res = CGSolve(A.crsMatrix(), b.m_data, C_minus_1.crsMatrix(), x0->m_data, max_it, tolerance);
+    Vector v(res);
+    return v;
   }
 }
   

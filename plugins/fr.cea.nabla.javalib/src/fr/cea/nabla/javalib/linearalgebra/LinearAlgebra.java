@@ -22,8 +22,8 @@ public class LinearAlgebra
 
 	public Vector solveLinearSystem(Matrix a, Vector b)
 	{
-		final RealVector x = solveLinearSystem(a.getNativeMatrix(), b.getNativeVector());
-		return new Vector(x);
+		final RealVector x = solveLinearSystem(a.getData(), b.getData());
+		return new Vector(b.getName() + "_plus1", x);
 	}
 
 	public RealVector solveLinearSystem(AbstractRealMatrix a, RealVector b)

@@ -17,17 +17,17 @@ import fr.cea.nabla.ir.ir.PrimitiveType
 
 class FunctionCallHelper
 {
-	static def Class<?> getJavaType(IrType it, InterpretableLinearAlgebra linearAlgebra) 
+	static def Class<?> getJavaType(IrType it, ExtensionProviderHelper provider) 
 	{
 		switch it
 		{
-			BaseType: getJavaType(primitive, sizes.size, linearAlgebra)
-			ConnectivityType: getJavaType(base.primitive, (connectivities+base.sizes).size, linearAlgebra)
-			LinearAlgebraType: getJavaType(PrimitiveType::REAL, sizes.size, linearAlgebra)
+			BaseType: getJavaType(primitive, sizes.size, provider)
+			ConnectivityType: getJavaType(base.primitive, (connectivities+base.sizes).size, provider)
+			LinearAlgebraType: getJavaType(PrimitiveType::REAL, sizes.size, provider)
 		}
 	}
 
-	private static def Class<?> getJavaType(PrimitiveType primitive, int dimension, InterpretableLinearAlgebra linearAlgebra)
+	private static def Class<?> getJavaType(PrimitiveType primitive, int dimension, ExtensionProviderHelper provider)
 	{
 		switch (primitive)
 		{
@@ -56,15 +56,15 @@ class FunctionCallHelper
 				switch dimension
 				{
 					case 0: typeof(double)
-					case 1: (linearAlgebra === null ? typeof(double[]) : linearAlgebra.vectorType)
-					case 2: (linearAlgebra === null ? typeof(double[][]) : linearAlgebra.matrixType)
+					case 1: (provider instanceof LinearAlgebraExtensionProviderHelper ? provider.vectorClass : typeof(double[]))
+					case 2: (provider instanceof LinearAlgebraExtensionProviderHelper ? provider.matrixClass : typeof(double[][]))
 					default: throw new RuntimeException("Dimension not implemented: " + dimension) 
 				}
 			}
 		}
 	}
 
-	static def Object getJavaValue(NablaValue v, InterpretableLinearAlgebra linearAlgebra)
+	static def Object getJavaValue(NablaValue v)
 	{
 		switch v
 		{
@@ -82,7 +82,7 @@ class FunctionCallHelper
 		}
 	}
 
-	static def NablaValue createNablaValue(Object o, InterpretableLinearAlgebra linearAlgebra)
+	static def NablaValue createNablaValue(Object o, ExtensionProviderHelper provider)
 	{
 		switch o
 		{
@@ -95,14 +95,11 @@ class FunctionCallHelper
 			Double: new NV0Real(o)
 			double[]: new NV1Real(o)
 			double[][]: new NV2Real(o)
-			default:
+			default: switch provider
 			{
-				if (o.class == linearAlgebra.vectorType)
-					new NVVector(o, linearAlgebra)
-				else if (o.class == linearAlgebra.matrixType)
-					new NVMatrix(o ,linearAlgebra)
-				else
-					throw new RuntimeException('Not yet implemented')
+				LinearAlgebraExtensionProviderHelper case provider.vectorClass == o.class: new NVVector(o, provider)
+				LinearAlgebraExtensionProviderHelper case provider.matrixClass == o.class: new NVMatrix(o, provider)
+				default: throw new RuntimeException('Not yet implemented')
 			}
 		}
 	}

@@ -11,6 +11,7 @@
 #define NABLALIB_UTILS_STL_SERIALIZER_H_
 
 #include "nablalib/linearalgebra/stl/Matrix.h"
+#include "nablalib/linearalgebra/stl/Vector.h"
 
 using namespace nablalib::linearalgebra::stl;
 
@@ -29,7 +30,8 @@ namespace nablalib::utils::stl
    */
 
   std::string serialize(const SparseMatrixType& M);
-  std::string serialize(const NablaSparseMatrix& M);
+  std::string serialize(const Matrix& M);
+  std::string serialize(const Vector& v);
 }
 
 #endif // NABLALIB_UTILS_STL_SERIALIZER_H_

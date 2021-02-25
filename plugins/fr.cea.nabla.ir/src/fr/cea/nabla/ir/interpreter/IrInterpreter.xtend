@@ -79,7 +79,7 @@ class IrInterpreter
 	def interpreteOptionsDefaultValues()
 	{
 		for (v : ir.options)
-			context.addVariableValue(v, createValue(v.type, v.defaultValue, context))
+			context.addVariableValue(v, createValue(v.type, v.name, v.defaultValue, context))
 	}
 
 	def interprete(String jsonContent)
@@ -111,7 +111,7 @@ class IrInterpreter
 
 		// Interprete variables that are not options
 		for (v : ir.variables.filter[!option])
-			context.addVariableValue(v, createValue(v.type, v.defaultValue, context))
+			context.addVariableValue(v, createValue(v.type, v.name, v.defaultValue, context))
 
 		// Copy Node Cooords
 		context.addVariableValue(ir.initNodeCoordVariable, new NV2Real(context.meshWrapper.nodes))
@@ -180,35 +180,10 @@ class IrInterpreter
 		val functionsByProvider = m.functions.filter(ExternFunction).groupBy[provider]
 		for (provider : functionsByProvider.keySet)
 		{
-			var Class<?> providerClass
-			var Object providerInstance
-
-			if (provider.extensionName == "Math")
-			{
-				providerClass = Class.forName('java.lang.Math', true, classLoader)
-				providerInstance = null // static functions
-			}
-			else
-			{
-				providerClass = ProviderClassCache.Instance.getClass(provider, classLoader)
-				providerInstance = providerClass.constructor.newInstance
-				if (jsonOptions !== null && jsonOptions.has(provider.instanceName))
-				{
-					val jsonInit = providerClass.getDeclaredMethod("jsonInit", String)
-					jsonInit.invoke(providerInstance, jsonOptions.get(provider.instanceName).toString)
-				}
-
-				if (provider.extensionName == 'LinearAlgebra')
-					context.linearAlgebra = InterpretableLinearAlgebra.createInstance(providerClass)
-			}
-
-			for (function : functionsByProvider.get(provider))
-			{
-				val javaTypes = function.inArgs.map[a | FunctionCallHelper.getJavaType(a.type, context.linearAlgebra)]
-				val method = providerClass.getDeclaredMethod(function.name, javaTypes)
-				method.setAccessible(true)
-				context.functionToMethod.put(function, new Pair(providerInstance, method))
-			}
+			val providerHelper = ExtensionProviderCache.Instance.get(provider, classLoader)
+			if (jsonOptions !== null && jsonOptions.has(provider.instanceName))
+				providerHelper.jsonInit(jsonOptions.get(provider.instanceName).toString)
+			providerHelper.initFunctions(functionsByProvider.get(provider))
 		}
 	}
 

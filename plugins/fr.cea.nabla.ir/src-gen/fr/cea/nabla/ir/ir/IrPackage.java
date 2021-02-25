@@ -596,13 +596,22 @@ public interface IrPackage extends EPackage {
 	int EXTENSION_PROVIDER__LIB_NAME = IR_ANNOTABLE_FEATURE_COUNT + 5;
 
 	/**
+	 * The feature id for the '<em><b>Linear Algebra</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXTENSION_PROVIDER__LINEAR_ALGEBRA = IR_ANNOTABLE_FEATURE_COUNT + 6;
+
+	/**
 	 * The number of structural features of the '<em>Extension Provider</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int EXTENSION_PROVIDER_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 6;
+	int EXTENSION_PROVIDER_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 7;
 
 	/**
 	 * The number of operations of the '<em>Extension Provider</em>' class.
@@ -4941,6 +4950,17 @@ public interface IrPackage extends EPackage {
 	EAttribute getExtensionProvider_LibName();
 
 	/**
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.ExtensionProvider#isLinearAlgebra <em>Linear Algebra</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Linear Algebra</em>'.
+	 * @see fr.cea.nabla.ir.ir.ExtensionProvider#isLinearAlgebra()
+	 * @see #getExtensionProvider()
+	 * @generated
+	 */
+	EAttribute getExtensionProvider_LinearAlgebra();
+
+	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.ArgOrVar <em>Arg Or Var</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -7051,6 +7071,14 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute EXTENSION_PROVIDER__LIB_NAME = eINSTANCE.getExtensionProvider_LibName();
+
+		/**
+		 * The meta object literal for the '<em><b>Linear Algebra</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute EXTENSION_PROVIDER__LINEAR_ALGEBRA = eINSTANCE.getExtensionProvider_LinearAlgebra();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.ArgOrVarImpl <em>Arg Or Var</em>}' class.

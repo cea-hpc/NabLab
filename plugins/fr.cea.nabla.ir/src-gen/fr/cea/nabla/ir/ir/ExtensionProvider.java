@@ -18,6 +18,7 @@ package fr.cea.nabla.ir.ir;
  *   <li>{@link fr.cea.nabla.ir.ir.ExtensionProvider#getInstallDir <em>Install Dir</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.ExtensionProvider#getNamespace <em>Namespace</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.ExtensionProvider#getLibName <em>Lib Name</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.ExtensionProvider#isLinearAlgebra <em>Linear Algebra</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getExtensionProvider()
@@ -156,5 +157,27 @@ public interface ExtensionProvider extends IrAnnotable {
 	 * @generated
 	 */
 	void setLibName(String value);
+
+	/**
+	 * Returns the value of the '<em><b>Linear Algebra</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Linear Algebra</em>' attribute.
+	 * @see #setLinearAlgebra(boolean)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getExtensionProvider_LinearAlgebra()
+	 * @model required="true"
+	 * @generated
+	 */
+	boolean isLinearAlgebra();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.ExtensionProvider#isLinearAlgebra <em>Linear Algebra</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Linear Algebra</em>' attribute.
+	 * @see #isLinearAlgebra()
+	 * @generated
+	 */
+	void setLinearAlgebra(boolean value);
 
 } // ExtensionProvider

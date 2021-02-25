@@ -11,6 +11,7 @@
 #define NABLALIB_LINEARALGEBRA_STL_LINEARALGEBRA_H_
 
 #include "nablalib/linearalgebra/stl/Matrix.h"
+#include "nablalib/linearalgebra/stl/Vector.h"
 
 namespace nablalib::linearalgebra::stl
 {
@@ -27,11 +28,11 @@ class LinearAlgebra
   CGInfo m_info;
 
   void jsonInit(const char* jsonContent) {}
-  std::string print(const NablaSparseMatrix& M);
-  std::string printMatlabStyle(const NablaSparseMatrix& M, std::string A);
+  std::string print(const Matrix& M);
+  std::string printMatlabStyle(const Matrix& M, std::string A);
 
-  std::string print(const VectorType& v);
-  std::string printMatlabStyle(const VectorType& v, std::string A);
+  std::string print(const Vector& v);
+  std::string printMatlabStyle(const Vector& v, std::string A);
 
   VectorType CGSolve(const SparseMatrixType& A, const VectorType& b, const VectorType& x0,
                      const size_t max_it = 200, const double tolerance = std::numeric_limits<double>::epsilon());
@@ -39,10 +40,10 @@ class LinearAlgebra
                      const SparseMatrixType& C_minus_1, const VectorType& x0,
                      const size_t max_it, const double tolerance);
 
-  VectorType solveLinearSystem(NablaSparseMatrix& A, const VectorType& b,
-                               VectorType* x0 = nullptr, const size_t max_it = 100, const double tolerance = 1.e-8);
-  VectorType solveLinearSystem(NablaSparseMatrix& A, const VectorType& b, NablaSparseMatrix& C_minus_1,
-                               VectorType* x0 = nullptr, const size_t max_it = 100, const double tolerance = 1.e-8);
+  Vector solveLinearSystem(Matrix& A, const Vector& b,
+                           Vector* x0 = nullptr, const size_t max_it = 100, const double tolerance = 1.e-8);
+  Vector solveLinearSystem(Matrix& A, const Vector& b, Matrix& C_minus_1,
+                           Vector* x0 = nullptr, const size_t max_it = 100, const double tolerance = 1.e-8);
 };
 
 }

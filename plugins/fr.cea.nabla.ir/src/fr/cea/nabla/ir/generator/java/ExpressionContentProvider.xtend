@@ -18,7 +18,6 @@ import fr.cea.nabla.ir.ir.Cardinality
 import fr.cea.nabla.ir.ir.ContractedIf
 import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IntConstant
-import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.MaxConstant
 import fr.cea.nabla.ir.ir.MinConstant
 import fr.cea.nabla.ir.ir.Parenthesis
@@ -27,12 +26,13 @@ import fr.cea.nabla.ir.ir.RealConstant
 import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.ir.VectorConstant
 
+import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
-import static extension fr.cea.nabla.ir.generator.java.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.java.JavaGeneratorUtils.*
+import static extension fr.cea.nabla.ir.generator.java.TypeContentProvider.*
 
 class ExpressionContentProvider
 {
@@ -113,22 +113,15 @@ class ExpressionContentProvider
 	static def dispatch CharSequence getContent(FunctionCall it) 
 	'''«function.codeName»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
 
-	//TODO voir comment on peut décaler ça dans un IrTypeExtensions (formatIterators + formatIndices)
 	static def dispatch CharSequence getContent(ArgOrVarRef it)
 	{
-		var argOrVarContent = codeName
-		val t = target.type
-		if (t instanceof LinearAlgebraType)
-			if ((t as LinearAlgebraType).sizes.size == 2 && iterators.size === 2)
-				argOrVarContent += ".get("+iterators.map[name].join(', ')+")"+ indices.map[".get("+content+")"].join
-			else
-				argOrVarContent += iterators.map[".get("+name+")"].join + indices.map[".get("+content+")"].join
+		if (target.linearAlgebra && !(iterators.empty && indices.empty))
+			'''«codeName».getValue(«formatIteratorsAndIndices(target.type, iterators, indices)»)'''
 		else
-			argOrVarContent += iterators.map["["+name+"]"].join + indices.map["["+content+"]"].join
-		return argOrVarContent
+			'''«codeName»«formatIteratorsAndIndices(target.type, iterators, indices)»'''
 	}
 
-	private static def getCodeName(ArgOrVarRef it)
+	static def getCodeName(ArgOrVarRef it)
 	{
 		val argOrVarRefModule = irModule
 		val varModule = target.irModule

@@ -200,12 +200,23 @@ class NV0Real implements NablaValue
 class NVVector implements NablaValue
 {
 	@Accessors Object data
-	@Accessors val InterpretableLinearAlgebra linearAlgebra
+	@Accessors val LinearAlgebraExtensionProviderHelper provider
 
-	new(Object data, InterpretableLinearAlgebra linearAlgebra)
+	new(String name, int size, LinearAlgebraExtensionProviderHelper provider)
+	{
+		this.data = provider.vectorCstr.newInstance(name, size)
+		this.provider = provider
+	}
+
+	new(Object data, LinearAlgebraExtensionProviderHelper provider)
 	{
 		this.data = data
-		this.linearAlgebra = linearAlgebra
+		this.provider = provider
+	}
+
+	def void setValue(int i, double value)
+	{
+		provider.vectorSetValueMethod.invoke(data, i, value)
 	}
 
 	override toString()
@@ -217,12 +228,23 @@ class NVVector implements NablaValue
 class NVMatrix implements NablaValue
 {
 	@Accessors Object data
-	@Accessors val InterpretableLinearAlgebra linearAlgebra
+	@Accessors val LinearAlgebraExtensionProviderHelper provider
 
-	new(Object data, InterpretableLinearAlgebra linearAlgebra)
+	new(String name, int nbRows, int nbCols, LinearAlgebraExtensionProviderHelper provider)
+	{
+		this.data = provider.matrixCstr.newInstance(name, nbRows, nbCols)
+		this.provider = provider
+	}
+
+	new(Object data, LinearAlgebraExtensionProviderHelper provider)
 	{
 		this.data = data
-		this.linearAlgebra = linearAlgebra
+		this.provider = provider
+	}
+
+	def void setValue(int i, int j, double value)
+	{
+		provider.matrixSetValueMethod.invoke(data, i, j, value)
 	}
 
 	override toString() { data.toString }

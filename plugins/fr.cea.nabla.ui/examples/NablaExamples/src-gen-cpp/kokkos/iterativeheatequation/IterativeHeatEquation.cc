@@ -324,10 +324,10 @@ void IterativeHeatEquation::updateU() noexcept
 			{
 				const Id dId(neighbourCellsC[dNeighbourCellsC]);
 				const size_t dCells(dId);
-				reduction0 = IterativeHeatEquationFuncs::sumR0(reduction0, alpha(cCells,dCells) * u_nplus1_k(dCells));
+				reduction0 = IterativeHeatEquationFuncs::sumR0(reduction0, alpha(cCells, dCells) * u_nplus1_k(dCells));
 			}
 		}
-		u_nplus1_kplus1(cCells) = u_n(cCells) + alpha(cCells,cCells) * u_nplus1_k(cCells) + reduction0;
+		u_nplus1_kplus1(cCells) = u_n(cCells) + alpha(cCells, cCells) * u_nplus1_k(cCells) + reduction0;
 	});
 }
 
@@ -474,11 +474,11 @@ void IterativeHeatEquation::computeAlphaCoeff() noexcept
 				const Id fId(mesh->getCommonFace(cId, dId));
 				const size_t fFaces(fId);
 				const double alphaExtraDiag(deltat / V(cCells) * (faceLength(fFaces) * faceConductivity(fFaces)) / IterativeHeatEquationFuncs::norm(Xc(cCells) - Xc(dCells)));
-				alpha(cCells,dCells) = alphaExtraDiag;
+				alpha(cCells, dCells) = alphaExtraDiag;
 				alphaDiag = alphaDiag + alphaExtraDiag;
 			}
 		}
-		alpha(cCells,cCells) = -alphaDiag;
+		alpha(cCells, cCells) = -alphaDiag;
 	});
 }
 
@@ -566,7 +566,8 @@ void IterativeHeatEquation::dumpVariables(int iteration, bool useTimer)
 		writer.closeNodeData();
 		writer.openCellData();
 		writer.openCellArray("Temperature", 0);
-		for (size_t j=0 ; j<nbCells ; ++j) writer.write(u_n(j));
+		for (size_t i=0 ; i<nbCells ; ++i)
+			writer.write(u_n(i));
 		writer.closeCellArray();
 		writer.closeCellData();
 		writer.closeVtpFile();

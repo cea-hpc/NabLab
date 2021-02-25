@@ -15,15 +15,14 @@ import static fr.cea.nabla.ir.interpreter.IrTypeExtensions.*
 
 class BaseTypeValueFactory
 {
-	static def NablaValue createValue(BaseType t, Context context, boolean isLinearAlgebra)
+	static def NablaValue createValue(BaseType t, String name, Context context)
 	{
 		val sizes = getIntSizes(t, context)
-		val contextLA = (isLinearAlgebra ? context.linearAlgebra : null)
 		switch sizes.size
 		{
 			case 0: NablaValueFactory::createValue(t.primitive)
-			case 1: NablaValueFactory::createValue(t.primitive, sizes.get(0), contextLA)
-			case 2: NablaValueFactory::createValue(t.primitive, sizes.get(0), sizes.get(1), contextLA)
+			case 1: NablaValueFactory::createValue(t.primitive, name, sizes.get(0), null)
+			case 2: NablaValueFactory::createValue(t.primitive, name, sizes.get(0), sizes.get(1), null)
 			default: throw new RuntimeException('Dimension not supported: ' + sizes.size)
 		}
 	}

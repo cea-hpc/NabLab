@@ -197,6 +197,6 @@ class IrInstructionFactory
 	private def isNablaLibFunction(FunctionOrReduction it) 
 	{
 		val r = EcoreUtil2.getContainerOfType(it, NablaExtension)
-		return (r.name == 'LinearAlgebra' || r.name == 'Math')
+		return (r.name == "LinearAlgebra" || r.name == "Math")
 	}
 }

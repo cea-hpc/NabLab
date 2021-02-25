@@ -458,7 +458,8 @@ void ExplicitHeatEquation::dumpVariables(int iteration, bool useTimer)
 		writer.closeNodeData();
 		writer.openCellData();
 		writer.openCellArray("Temperature", 0);
-		for (size_t j=0 ; j<nbCells ; ++j) writer.write(u_n[j]);
+		for (size_t i=0 ; i<nbCells ; ++i)
+			writer.write(u_n[i]);
 		writer.closeCellArray();
 		writer.closeCellData();
 		writer.closeVtpFile();

@@ -11,7 +11,6 @@ package fr.cea.nabla.ir.generator.java
 
 import fr.cea.nabla.ir.ir.ExternFunction
 import fr.cea.nabla.ir.ir.InternFunction
-import fr.cea.nabla.ir.ir.PrimitiveType
 
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 
@@ -35,17 +34,5 @@ class JavaGeneratorUtils
 				'Math.' + name
 		}
 		else 'options.' + provider.instanceName + '.' + name
-	}
-
-	static def String getJavaType(PrimitiveType t)
-	{
-		if (t === null) return 'null'
-		switch t
-		{
-			case null: 'void'
-			case BOOL: 'boolean'
-			case INT: 'int'
-			case REAL: 'double'
-		}
 	}
 }

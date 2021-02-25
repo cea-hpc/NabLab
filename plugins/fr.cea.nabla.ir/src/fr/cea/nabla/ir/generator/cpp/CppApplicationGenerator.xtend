@@ -14,9 +14,11 @@ import fr.cea.nabla.ir.generator.ApplicationGenerator
 import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.Connectivity
+import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.InternFunction
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
+import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.Variable
 import java.util.ArrayList
 import java.util.HashMap
@@ -257,7 +259,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	, «v.name»(«expressionContentProvider.getContent(v.defaultValue)»)
 	«ENDFOR»
 	«FOR v : variables.filter[needStaticAllocation]»
-	, «v.name»(«typeContentProvider.getCstrInit(v.name, v.type)»)
+	, «v.name»(«typeContentProvider.getCstrInit(v.type, v.name)»)
 	«ENDFOR»
 	{
 		«val dynamicArrayVariables = variables.filter[needDynamicAllocation]»
@@ -271,7 +273,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		«IF main»
 		// Copy node coordinates
 		const auto& gNodes = mesh->getGeometry()->getNodes();
-		«val iterator = backend.typeContentProvider.formatIterators(irRoot.initNodeCoordVariable.type, #["rNodes"])»
+		«val iterator = backend.typeContentProvider.formatIterators(irRoot.initNodeCoordVariable.type as ConnectivityType, #["rNodes"])»
 		for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
 		{
 			«irRoot.initNodeCoordVariable.name»«iterator»[0] = gNodes[rNodes][0];
@@ -332,7 +334,8 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 			«IF !nodeVariables.nullOrEmpty»
 				«FOR v : nodeVariables»
 					writer.openNodeArray("«v.outputName»", «v.target.type.sizesSize»);
-					for (size_t r=0 ; r<nbNodes ; ++r) writer.write(«v.target.name»«typeContentProvider.formatIterators(v.target.type, #["r"])»);
+					for (size_t i=0 ; i<nbNodes ; ++i)
+						writer.write(«v.target.writeCallContent»);
 					writer.closeNodeArray();
 				«ENDFOR»
 			«ENDIF»
@@ -342,7 +345,8 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 			«IF !cellVariables.nullOrEmpty»
 				«FOR v : cellVariables»
 					writer.openCellArray("«v.outputName»", «v.target.type.sizesSize»);
-					for (size_t j=0 ; j<nbCells ; ++j) writer.write(«v.target.name»«typeContentProvider.formatIterators(v.target.type, #["j"])»);
+					for (size_t i=0 ; i<nbCells ; ++i)
+						writer.write(«v.target.writeCallContent»);
 					writer.closeCellArray();
 				«ENDFOR»
 			«ENDIF»
@@ -499,5 +503,16 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	private def isKokkosTeamThread()
 	{
 		backend instanceof KokkosTeamThreadBackend
+	}
+
+	private def getWriteCallContent(Variable v)
+	{
+		val t = v.type
+		switch t
+		{
+			ConnectivityType: '''«v.name»«typeContentProvider.formatIterators(t, #["i"])»'''
+			LinearAlgebraType: '''«v.name».getValue(i)'''
+			default: throw new RuntimeException("Unexpected type: " + class.name)
+		}
 	}
 }

@@ -14,8 +14,9 @@ import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.PrimitiveType
 import org.eclipse.xtend.lib.annotations.Data
 
+import static fr.cea.nabla.ir.generator.java.TypeContentProvider.*
+
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
-import static extension fr.cea.nabla.ir.generator.java.IrTypeExtensions.*
 
 @Data
 class JsonContentProvider
@@ -52,7 +53,7 @@ class JsonContentProvider
 		'''
 			assert(«name.jsonName»«FOR i : indices».getAsJsonArray().get(«i»)«ENDFOR».isJsonArray());
 			assert(«name.jsonName».getAsJsonArray()«FOR i : indices».get(«i»).getAsJsonArray()«ENDFOR».size() == «sizes.head.content»);
-			«IF indices.empty»«name»«type.javaAllocation»;«ENDIF»
+			«IF indices.empty»«name»«getJavaAllocation(type, name)»;«ENDIF»
 			«val indexName = 'i' + sizes.size»
 			for (int «indexName»=0 ; «indexName»<«sizes.head.content» ; «indexName»++)
 			{

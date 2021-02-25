@@ -12,45 +12,15 @@
 namespace nablalib::linearalgebra::stl
 {
 
-NablaSparseMatrix::NablaSparseMatrixHelper& NablaSparseMatrix::NablaSparseMatrixHelper::
-operator=(double val) {
-  if (!m_matrix.m_matrix) {
-    std::lock_guard<std::mutex> guard(m_matrix.m_mutex);
-    
-	  auto& row_i(m_matrix.m_building_struct[m_row]);
-	  auto pos(std::find_if(row_i.begin(), row_i.end(),
-						              [&](const std::pair<int, double>& j){return (j.first == m_col);}));
-	  if (pos == row_i.end()) {
-	    row_i.emplace_back(m_col, val);
-	    m_matrix.m_nb_nnz++;
-	  } else {
-	    pos->second = val;
-	  }
-  } else {
-	  int offset(m_matrix.findCrsOffset(m_row, m_col));
-	  if (offset == -1) {
-	    // FIXME: Attention, il y a un elmt "invisible" sur 1a derniere ligne (l'elmt "past the end" qui indique la fin de la crs), si on tombe dessus on a un pb...
-	    std::cerr << "Error, can't assign " << val << " at (" << m_row << ", " << m_col << ") for matrix "
-				        << m_matrix.m_name << " after it was build." << std::endl;
-	    std::terminate();
-	  } else {
-      std::lock_guard<std::mutex> guard(m_matrix.m_mutex);
-	    m_matrix.m_matrix->row(m_row).value(offset) = val;
-	  }
-  }
-  return *this;
-}
+Matrix::
+Matrix(const std::string name, const int rows, const int cols)
+  : m_name(name), m_nb_rows(rows), m_nb_cols(cols), m_nb_nnz(0), m_matrix(nullptr) {}
 
 
-NablaSparseMatrix::
-NablaSparseMatrix(const std::string name, const int rows, const int cols)
-  : m_name(name), m_nb_row(rows), m_nb_col(cols), m_nb_nnz(0), m_matrix(nullptr) {}
-
-
-NablaSparseMatrix::
-NablaSparseMatrix(const std::string name, const int rows, const int cols,
-                  std::initializer_list<std::tuple<int, int, double>> init_list)
-  : m_name(name), m_nb_row(rows), m_nb_col(cols), m_nb_nnz(init_list.size()), m_matrix(nullptr)
+Matrix::
+Matrix(const std::string name, const int rows, const int cols,
+       std::initializer_list<std::tuple<int, int, double>> init_list)
+  : m_name(name), m_nb_rows(rows), m_nb_cols(cols), m_nb_nnz(init_list.size()), m_matrix(nullptr)
 {
   std::for_each(init_list.begin(), init_list.end(),
       [&](const std::tuple<int, int, double>& i){
@@ -58,15 +28,15 @@ NablaSparseMatrix(const std::string name, const int rows, const int cols,
 }
 
 
-NablaSparseMatrix::
-~NablaSparseMatrix()
+Matrix::
+~Matrix()
 {
   if (m_matrix)
     delete m_matrix;
 }
 
 
-void NablaSparseMatrix::
+void Matrix::
 build()
 {
   if (m_matrix)
@@ -80,12 +50,12 @@ build()
 	                        return (a.first < b.first);});
 
   // Containers to build matrix
-  std::vector<int> row_map(static_cast<size_t>(m_nb_row + 1));
+  std::vector<int> row_map(static_cast<size_t>(m_nb_rows + 1));
   std::vector<int> col_ind(static_cast<size_t>(m_nb_nnz));
   std::vector<double> val(static_cast<size_t>(m_nb_nnz));
 
   int offset(0);
-  for (int row_i(0); row_i < m_nb_row; ++row_i) {
+  for (int row_i(0); row_i < m_nb_rows; ++row_i) {
     row_map.at(row_i) = offset;
     auto pos(m_building_struct.find(row_i));
     if (pos != m_building_struct.end()) {
@@ -96,15 +66,15 @@ build()
       }
     }
   }
-  row_map.at(m_nb_row) = offset; // past end index
-  m_matrix = new SparseMatrixType(m_nb_row, m_nb_col, m_nb_nnz, std::move(val), std::move(row_map), std::move(col_ind));
+  row_map.at(m_nb_rows) = offset; // past end index
+  m_matrix = new SparseMatrixType(m_nb_rows, m_nb_cols, m_nb_nnz, std::move(val), std::move(row_map), std::move(col_ind));
   
   // clearing temp struct
   m_building_struct.clear();
 
   // std::cout << " OK:" << std::endl;
   // std::cout << "row map = {";
-  // for (auto i(0); i < m_nb_row + 1; ++i)
+  // for (auto i(0); i < m_nb_rows + 1; ++i)
     // std::cout << row_map.at(i) << " ";
   // std::cout << "}" << std::endl;
   // std::cout << "col ind = {";
@@ -118,7 +88,7 @@ build()
 }
 
 
-SparseMatrixType& NablaSparseMatrix::
+SparseMatrixType& Matrix::
 crsMatrix()
 {
   if (!m_matrix && !m_building_struct.empty())
@@ -127,17 +97,24 @@ crsMatrix()
 }
 
 
-NablaSparseMatrix::NablaSparseMatrixHelper NablaSparseMatrix::
-operator()(const int row, const int col)
+const int Matrix::
+getNbRows() const
 {
-  assert(row < m_nb_row && col < m_nb_col);
-  return NablaSparseMatrix::NablaSparseMatrixHelper(*this, row, col);
+  return m_nb_rows;
 }
 
 
-double NablaSparseMatrix::operator()(const int row, const int col) const
+const int Matrix::
+getNbCols() const
 {
-  assert(row < m_nb_row && col < m_nb_col);
+  return m_nb_cols;
+}
+
+
+double Matrix::
+getValue(const int row, const int col) const
+{
+  assert(row < m_nb_rows && col < m_nb_cols);
   if (!m_matrix) {
     if (m_building_struct.find(row) == m_building_struct.end()) {
 	    return 0.;
@@ -159,7 +136,38 @@ double NablaSparseMatrix::operator()(const int row, const int col) const
 }
 
 
-int NablaSparseMatrix::
+void Matrix::
+setValue(const int row, const int col, double value)
+{
+  assert(row < m_nb_rows && col < m_nb_cols);
+  if (!m_matrix) {
+    std::lock_guard<std::mutex> guard(m_mutex);
+
+	  auto& row_i(m_building_struct[row]);
+	  auto pos(std::find_if(row_i.begin(), row_i.end(),
+						              [&](const std::pair<int, double>& j){return (j.first == col);}));
+	  if (pos == row_i.end()) {
+	    row_i.emplace_back(col, value);
+	    m_nb_nnz++;
+	  } else {
+	    pos->second = value;
+	  }
+  } else {
+	  int offset(findCrsOffset(row, col));
+	  if (offset == -1) {
+	    // FIXME: Attention, il y a un elmt "invisible" sur 1a derniere ligne (l'elmt "past the end" qui indique la fin de la crs), si on tombe dessus on a un pb...
+	    std::cerr << "Error, can't assign " << value << " at (" << row << ", " << col << ") for matrix "
+				        << m_name << " after it was build." << std::endl;
+	    std::terminate();
+	  } else {
+      std::lock_guard<std::mutex> guard(m_mutex);
+	    m_matrix->row(row).value(offset) = value;
+	  }
+  }
+}
+
+
+int Matrix::
 findCrsOffset(const int& i, const int& j) const
 {
   int offset(-1);

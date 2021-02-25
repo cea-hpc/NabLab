@@ -29,6 +29,7 @@ import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.ir.VectorConstant
 import org.eclipse.xtend.lib.annotations.Data
 
+import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.Utils.*
@@ -62,7 +63,7 @@ class ExpressionContentProvider
 	def dispatch CharSequence getContent(RealConstant it) '''«value»'''
 	def dispatch CharSequence getContent(BoolConstant it) '''«value»'''
 
-	def dispatch CharSequence getContent(MinConstant it) 
+	def dispatch CharSequence getContent(MinConstant it)
 	{
 		val t = type
 		switch t
@@ -74,7 +75,7 @@ class ExpressionContentProvider
 		}
 	}
 
-	def dispatch CharSequence getContent(MaxConstant it) 
+	def dispatch CharSequence getContent(MaxConstant it)
 	{
 		val t = type
 		switch t
@@ -129,9 +130,14 @@ class ExpressionContentProvider
 	}
 
 	def dispatch CharSequence getContent(ArgOrVarRef it)
-	'''«codeName»«iteratorsContent»«FOR d:indices»[«d.content»]«ENDFOR»'''
+	{
+		if (target.linearAlgebra && !(iterators.empty && indices.empty))
+			'''«codeName».getValue(«formatIteratorsAndIndices(target.type, iterators, indices)»)'''
+		else
+			'''«codeName»«formatIteratorsAndIndices(target.type, iterators, indices)»'''
+	}
 
-	private def CharSequence getCodeName(ArgOrVarRef it)
+	def CharSequence getCodeName(ArgOrVarRef it)
 	{
 		var result = target.codeName
 		val argOrVarRefModule = irModule
@@ -146,16 +152,6 @@ class ExpressionContentProvider
 	private def dispatch CharSequence getInnerContent(Expression it) { content }
 	private def dispatch CharSequence getInnerContent(VectorConstant it)
 	'''«FOR v : values SEPARATOR ', '»«v.innerContent»«ENDFOR»'''
-
-	private def getIteratorsContent(ArgOrVarRef it)
-	{
-		if (iterators.empty) return ''
-		formatIterators(target.type, iterators.map[name])
-//		if (iterators.empty || target instanceof SimpleVariable) return ''
-//		val array = target as ConnectivityVariable
-//		if (array.type.connectivities.size < iterators.size) return ''
-//		formatIterators(array, iterators.map[name])
-	}
 
 	private def CharSequence initArray(int[] sizes, CharSequence value)
 	'''«FOR size : sizes SEPARATOR ",  "»«FOR i : 0..<size SEPARATOR ', '»«value»«ENDFOR»«ENDFOR»'''

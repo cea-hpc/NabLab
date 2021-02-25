@@ -25,11 +25,11 @@ import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 
 class VariableValueFactory
 {
-	static def dispatch NablaValue createValue(BaseType type, Expression defaultValue, Context context)
+	static def dispatch NablaValue createValue(BaseType type, String name, Expression defaultValue, Context context)
 	{
 		if (type.sizes.empty)
 		{
-			val nv = createValue(type, context, false)
+			val nv = createValue(type, name, context)
 			if (defaultValue !== null)
 				setValue(nv, #[], interprete(defaultValue, context))
 			return nv
@@ -37,34 +37,35 @@ class VariableValueFactory
 		else
 		{
 			if (defaultValue === null)
-				createValue(type, context, false)
+				createValue(type, name, context)
 			else
 				interprete(defaultValue, context)
 		}
 	}
 
-	static def dispatch NablaValue createValue(ConnectivityType type, Expression defaultValue, Context context)
+	static def dispatch NablaValue createValue(ConnectivityType type, String name, Expression defaultValue, Context context)
 	{
 		val sizes = getIntSizes(type, context)
 		val p = type.primitive
 		switch sizes.size
 		{
-			case 1: createValue(p, sizes.get(0), null)
-			case 2: createValue(p, sizes.get(0), sizes.get(1), null)
+			case 1: createValue(p, name, sizes.get(0), null)
+			case 2: createValue(p, name, sizes.get(0), sizes.get(1), null)
 			case 3: createValue(p, sizes.get(0), sizes.get(1), sizes.get(2))
 			case 4: createValue(p, sizes.get(0), sizes.get(1), sizes.get(2), sizes.get(3))
 			default: throw new RuntimeException("Dimension not yet implemented: " + sizes.size)
 		}
 	}
 
-	static def dispatch NablaValue createValue(LinearAlgebraType type, Expression defaultValue, Context context)
+	static def dispatch NablaValue createValue(LinearAlgebraType type, String name, Expression defaultValue, Context context)
 	{
 		val sizes = getIntSizes(type, context)
 		val p = PrimitiveType.REAL
+		val provider = ExtensionProviderCache.Instance.get(type.provider)
 		switch sizes.size
 		{
-			case 1: createValue(p, sizes.get(0), context.linearAlgebra)
-			case 2: createValue(p, sizes.get(0), sizes.get(1), context.linearAlgebra)
+			case 1: createValue(p, name, sizes.get(0), provider)
+			case 2: createValue(p, name, sizes.get(0), sizes.get(1), provider)
 			default: throw new RuntimeException("Dimension not yet implemented: " + sizes.size)
 		}
 	}

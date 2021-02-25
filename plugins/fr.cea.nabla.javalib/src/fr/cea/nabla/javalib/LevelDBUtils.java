@@ -134,7 +134,7 @@ public class LevelDBUtils
 
 	public static byte[] serialize(final Vector vector)
 	{
-		return serialize(vector.getNativeVector().toArray());
+		return serialize(vector.getData().toArray());
 	}
 
 	public static byte[] serialize(final double[][] data2d)
@@ -151,7 +151,7 @@ public class LevelDBUtils
 
 	public static byte[] serialize(final Matrix matrix)
 	{
-		return bytes(matrix.getNativeMatrix().toString());
+		return bytes(matrix.getData().toString());
 	}
 
 	public static byte[] serialize(final double[][][] data3d)

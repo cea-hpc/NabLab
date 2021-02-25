@@ -41,7 +41,7 @@ target_compile_options(cppnabla PUBLIC -fPIC -g -Wall -O3 --std=c++17 -mtune=nat
 
 ### LIBCPPNABLASTL
 add_library(cppnablastl 
-    nablalib/linearalgebra/stl/LinearAlgebra.cc nablalib/linearalgebra/stl/Matrix.cc nablalib/utils/stl/Serializer.cc)
+    nablalib/linearalgebra/stl/LinearAlgebra.cc nablalib/linearalgebra/stl/Vector.cc nablalib/linearalgebra/stl/Matrix.cc nablalib/utils/stl/Serializer.cc)
 target_include_directories(cppnablastl PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_compile_options(cppnablastl PUBLIC -fPIC -g -Wall -O3 --std=c++17 -mtune=native)
 
@@ -57,7 +57,7 @@ find_package(KokkosKernels)
 if(TARGET Kokkos::kokkos AND TARGET Kokkos::kokkoskernels)
   message(STATUS "Kokkos::kokkos/Kokkos::kokkoskernels found")
   add_library(cppnablakokkos
-      nablalib/linearalgebra/kokkos/LinearAlgebra.cc nablalib/linearalgebra/kokkos/Matrix.cc nablalib/utils/kokkos/Serializer.cc)
+      nablalib/linearalgebra/kokkos/LinearAlgebra.cc nablalib/linearalgebra/kokkos/Vector.cc nablalib/linearalgebra/kokkos/Matrix.cc nablalib/utils/kokkos/Serializer.cc)
   target_include_directories(cppnablakokkos PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
   target_link_libraries(cppnablakokkos PUBLIC Kokkos::kokkos Kokkos::kokkoskernels)
   target_compile_options(cppnablakokkos PUBLIC -fPIC -g -Wall -O3 --std=c++17 -fopenmp -mtune=native)

@@ -18,7 +18,6 @@ import fr.cea.nabla.ir.ir.Cardinality
 import fr.cea.nabla.ir.ir.ContractedIf
 import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.ExternFunction
-import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IntConstant
 import fr.cea.nabla.ir.ir.InternFunction
@@ -193,7 +192,7 @@ class ExpressionInterpreter
 		context.logFinest("Interprete VectorConstant")
 		val expressionValues = values.map[x | interprete(x, context)]
 		val t = type as BaseType
-		val value = BaseTypeValueFactory.createValue(t, context, false)
+		val value = BaseTypeValueFactory.createValue(t, "O", context)
 		for (i : 0..<expressionValues.length)
 			setValue(value, #[i], expressionValues.get(i))
 		return value
@@ -220,10 +219,8 @@ class ExpressionInterpreter
 		{
 			ExternFunction:
 			{
-				// Use method cache instead of resolving on each iteration
-				val javaValues = argValues.map[x|FunctionCallHelper.getJavaValue(x, context.linearAlgebra)].toArray
-				val result = invokeMethod(context, f, javaValues)
-				return FunctionCallHelper.createNablaValue(result, context.linearAlgebra)
+				val provider = ExtensionProviderCache.Instance.get(f.provider)
+				return provider.invokeMethod(f, argValues)
 			}
 			InternFunction:
 			{
@@ -327,14 +324,6 @@ class ExpressionInterpreter
 			for (j : 0..<a.nbCols)
 				res.get(i).set(j, -a.data.get(i).get(j))
 		return new NV2Real(res)
-	}
-
-	private static def Object invokeMethod(Context context, Function it, Object[] args)
-	{
-		val pair = context.functionToMethod.get(it)
-		val providerInstance = pair.key
-		val method = pair.value
-		return method.invoke(providerInstance, args)
 	}
 
 	private static def getSizes(IrType it)

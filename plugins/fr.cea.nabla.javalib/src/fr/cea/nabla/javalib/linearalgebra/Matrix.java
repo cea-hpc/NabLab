@@ -11,56 +11,61 @@ package fr.cea.nabla.javalib.linearalgebra;
 
 import org.apache.commons.math3.linear.AbstractRealMatrix;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
-import org.apache.commons.math3.linear.OpenMapRealMatrix;
+//import org.apache.commons.math3.linear.OpenMapRealMatrix;
 
 public class Matrix
 {
-	private Object lock = new Object();
-	private AbstractRealMatrix nativeMatrix;
+	private final Object lock = new Object();
+	private final AbstractRealMatrix data;
+	private final String name;
 
-	public Matrix(AbstractRealMatrix nativeMatrix)
+	public Matrix(final String name, final int nbRows, final int nbCols)
 	{
-		this.nativeMatrix = nativeMatrix;
+		this.name = name;
+		// Dense
+		this.data = new Array2DRowRealMatrix(nbRows, nbCols);
+		// Sparse
+		// this.data = new OpenMapRealMatrix(nbRows, nbCols)
 	}
 
-	public static Matrix createDenseMatrix(int nbRows, int nbCols)
+	public String getName()
 	{
-		return new Matrix(new Array2DRowRealMatrix(nbRows, nbCols));
+		return name;
 	}
 
-	public static Matrix createSparseMatrix(int nbRows, int nbCols)
+	public AbstractRealMatrix getData()
 	{
-		return new Matrix(new OpenMapRealMatrix(nbRows, nbCols));
+		return data; 
 	}
 
-	public AbstractRealMatrix getNativeMatrix()
+	int getNbRows()
 	{
-		return nativeMatrix; 
+		return data.getRowDimension();
 	}
 
-	public double get(int i, int j)
+	int getNbCols()
 	{
-		return nativeMatrix.getEntry(i, j); 
+		return data.getColumnDimension();
 	}
 
-	public void set(int i, int j, double value)
+	public double getValue(int i, int j)
 	{
-		synchronized(lock) { nativeMatrix.setEntry(i, j, value); }
+		return data.getEntry(i, j); 
 	}
 
-	public void add(int i, int j, double increment)
+	public void setValue(int i, int j, double value)
 	{
-		synchronized(lock) { nativeMatrix.addToEntry(i, j, increment); }
+		synchronized(lock) { data.setEntry(i, j, value); }
 	}
 
 	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("");
-		for (int i = 0; i < nativeMatrix.getColumnDimension(); i++)
-			for (int j = 0; j < nativeMatrix.getRowDimension(); j ++)
+		for (int i = 0; i < data.getColumnDimension(); i++)
+			for (int j = 0; j < data.getRowDimension(); j ++)
 			{
-				sb.append(nativeMatrix.getEntry(i, j));
+				sb.append(data.getEntry(i, j));
 				sb.append(" ");
 			}
 		return sb.toString();

@@ -65,7 +65,7 @@ class InstructionInterpreter
 	private static def NablaValue interpreteVariableDeclaration(VariableDeclaration it, Context context)
 	{
 		context.logFinest("Interprete VarDefinition")
-		context.addVariableValue(variable, createValue(variable.type, variable.defaultValue, context))
+		context.addVariableValue(variable, createValue(variable.type, variable.name, variable.defaultValue, context))
 		return null
 	}
 

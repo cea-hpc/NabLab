@@ -31,9 +31,9 @@ import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
-import static extension fr.cea.nabla.ir.generator.java.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.java.ItemIndexAndIdValueContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.JavaGeneratorUtils.*
+import static extension fr.cea.nabla.ir.generator.java.TypeContentProvider.*
 
 class InstructionContentProvider 
 {
@@ -51,13 +51,12 @@ class InstructionContentProvider
 		}'''
 
 	static def dispatch CharSequence getContent(Affectation it)
-	'''
-		«IF left.target.linearAlgebra && !(left.iterators.empty && left.indices.empty)»
-			«left.target.codeName».set(«FOR r : left.iterators SEPARATOR ', ' AFTER ', '»«r.name»«ENDFOR»«FOR d : left.indices SEPARATOR ', ' AFTER ', '»«d.content»«ENDFOR»«right.content»);
-		«ELSE»
-			«left.content» = «right.content»;
-		«ENDIF»
-	'''
+	{
+		if (left.target.linearAlgebra && !(left.iterators.empty && left.indices.empty))
+			'''«left.codeName».setValue(«formatIteratorsAndIndices(left.target.type, left.iterators, left.indices)», «right.content»);'''
+		else
+			'''«left.content» = «right.content»;'''
+	}
 
 	static def dispatch CharSequence getContent(ReductionInstruction it)
 	'''
@@ -150,7 +149,7 @@ class InstructionContentProvider
 
 	private static def getDefaultValueContent(Variable it)
 	{
-		if (defaultValue === null) type.javaAllocation
+		if (defaultValue === null) getJavaAllocation(type, name)
 		else ''' = «defaultValue.content»'''
 	}
 

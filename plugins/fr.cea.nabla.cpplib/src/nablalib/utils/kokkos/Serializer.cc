@@ -28,11 +28,11 @@ std::string serialize(const SparseMatrixType& M) {
   return std::string(ss.str());
 }
 
-std::string serialize(const NablaSparseMatrix& M) {
-  if (!M.m_matrix) {
+std::string serialize(const Matrix& M) {
+  if (!M.m_data) {
     std::stringstream ss;
-    for (auto i(0); i < M.m_nb_row; ++i) {
-      for (auto j(0); j < M.m_nb_col; ++j) {
+    for (auto i(0); i < M.m_nb_rows; ++i) {
+      for (auto j(0); j < M.m_nb_cols; ++j) {
         auto pos_line(std::find_if(M.m_building_struct.begin(), M.m_building_struct.end(),
                                    [&](const std::pair<int, std::list<std::pair<int, double>>>& line)
                                    {return (line.first == i);}));
@@ -51,8 +51,12 @@ std::string serialize(const NablaSparseMatrix& M) {
     }
     return std::string(ss.str());
   } else {
-    return serialize(*M.m_matrix);
+    return serialize(*M.m_data);
   }
+}
+
+std::string serialize(const Vector& v) {
+	return serialize(v.m_data);
 }
 
 }

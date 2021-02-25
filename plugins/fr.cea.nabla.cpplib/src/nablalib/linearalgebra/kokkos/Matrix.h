@@ -31,60 +31,42 @@
 #include "KokkosSparse.hpp"
 #include "KokkosBlas.hpp"
 
-
 namespace nablalib::linearalgebra::kokkos
 {
 
 typedef KokkosSparse::CrsMatrix<double, int, Kokkos::OpenMP, void, int> SparseMatrixType;
-typedef Kokkos::View<double*> VectorType;
 
 // TODO: templatiser la classe pour passer nb_row, nb_col, nb_nnz en tpl arg,
 // calculable dans une passe d'IR pour passer toutes les a1loc en static
-class NablaSparseMatrix
+class Matrix
 {
-  // Friend of forwardly-declared class NablasparseMatrixHelper
-  friend class NablaSparseMatrixHelper;
-
-  /******************************************** Internal Helper Class ********************************************/
-  class NablaSparseMatrixHelper {
-   public:
-    explicit NablaSparseMatrixHelper(NablaSparseMatrix& m, const int i, const int j) : m_matrix(m), m_row(i), m_col(j) {}
-	  ~NablaSparseMatrixHelper() = default;
-
-	NablaSparseMatrixHelper& operator=(double val);
-
-   private:
-    NablaSparseMatrix& m_matrix;
-	  const int m_row;
-	  const int m_col;
-  };
-  /***************************************************************************************************************/
-
  public:
-  NablaSparseMatrix(const std::string name, const int rows, const int cols);
-  explicit NablaSparseMatrix(const std::string name, const int rows, const int cols,
-                             std::initializer_list<std::tuple<int, int, double>> init_list);
-  ~NablaSparseMatrix();
+  Matrix(const std::string name, const int rows, const int cols);
+  explicit Matrix(const std::string name, const int rows, const int cols,
+                  std::initializer_list<std::tuple<int, int, double>> init_list);
+  ~Matrix();
 
   // explicit build
   void build();
   // implicit build and accessor
   SparseMatrixType& crsMatrix();
+  const int getNbRows() const;
+  const int getNbCols() const;
   // getter
-  double operator()(const int row, const int col) const;
+  double getValue(const int row, const int col) const;
   // setter
-  NablaSparseMatrixHelper operator()(const int row, const int col);
-  
- //private:
+  void setValue(const int row, const int col, double value);
+
+// private:
   int findCrsOffset(const int& i, const int& j) const;
 
   // Attributes
   std::map<int, std::list<std::pair<int, double>>> m_building_struct;
   const std::string m_name;
-  const int m_nb_row;
-  const int m_nb_col;
+  const int m_nb_rows;
+  const int m_nb_cols;
   int m_nb_nnz;
-  SparseMatrixType* m_matrix;
+  SparseMatrixType* m_data;
   std::mutex m_mutex;
 };
 

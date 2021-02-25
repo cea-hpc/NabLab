@@ -27,9 +27,9 @@ import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.FunctionContentProvider.*
-import static extension fr.cea.nabla.ir.generator.java.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.java.JobContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.JsonContentProvider.*
+import static extension fr.cea.nabla.ir.generator.java.TypeContentProvider.*
 
 class JavaApplicationGenerator implements ApplicationGenerator
 {
@@ -69,10 +69,6 @@ class JavaApplicationGenerator implements ApplicationGenerator
 
 		import fr.cea.nabla.javalib.*;
 		import fr.cea.nabla.javalib.mesh.*;
-		«IF linearAlgebra»
-		import fr.cea.nabla.javalib.linearalgebra.Matrix;
-		import fr.cea.nabla.javalib.linearalgebra.Vector;
-		«ENDIF»
 
 		@SuppressWarnings("all")
 		public final class «className»
@@ -167,7 +163,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 
 				// Allocate arrays
 				«FOR v : variables.filter[!option && defaultValue === null && !type.scalar]»
-						«v.name»«v.type.javaAllocation»;
+						«v.name»«getJavaAllocation(v.type, v.name)»;
 				«ENDFOR»
 				«IF main»
 

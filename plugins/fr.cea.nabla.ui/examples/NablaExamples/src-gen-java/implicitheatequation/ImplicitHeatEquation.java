@@ -19,8 +19,6 @@ import com.google.gson.JsonParser;
 
 import fr.cea.nabla.javalib.*;
 import fr.cea.nabla.javalib.mesh.*;
-import fr.cea.nabla.javalib.linearalgebra.Matrix;
-import fr.cea.nabla.javalib.linearalgebra.Vector;
 
 @SuppressWarnings("all")
 public final class ImplicitHeatEquation
@@ -108,13 +106,13 @@ public final class ImplicitHeatEquation
 	protected double t_n0;
 	protected double[][] X;
 	protected double[][] Xc;
-	protected Vector u_n;
-	protected Vector u_nplus1;
+	protected fr.cea.nabla.javalib.linearalgebra.Vector u_n;
+	protected fr.cea.nabla.javalib.linearalgebra.Vector u_nplus1;
 	protected double[] V;
 	protected double[] D;
 	protected double[] faceLength;
 	protected double[] faceConductivity;
-	protected Matrix alpha;
+	protected fr.cea.nabla.javalib.linearalgebra.Matrix alpha;
 
 	public ImplicitHeatEquation(CartesianMesh2D aMesh, Options aOptions)
 	{
@@ -140,13 +138,13 @@ public final class ImplicitHeatEquation
 		// Allocate arrays
 		X = new double[nbNodes][2];
 		Xc = new double[nbCells][2];
-		u_n = Vector.createDenseVector(nbCells);
-		u_nplus1 = Vector.createDenseVector(nbCells);
+		u_n = new fr.cea.nabla.javalib.linearalgebra.Vector("u_n", nbCells);
+		u_nplus1 = new fr.cea.nabla.javalib.linearalgebra.Vector("u_nplus1", nbCells);
 		V = new double[nbCells];
 		D = new double[nbCells];
 		faceLength = new double[nbFaces];
 		faceConductivity = new double[nbFaces];
-		alpha = Matrix.createDenseMatrix(nbCells, nbCells);
+		alpha = new fr.cea.nabla.javalib.linearalgebra.Matrix("alpha", nbCells, nbCells);
 
 		// Copy node coordinates
 		double[][] gNodes = mesh.getGeometry().getNodes();
@@ -345,9 +343,9 @@ public final class ImplicitHeatEquation
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
 			if (norm(ArrayOperations.minus(Xc[cCells], vectOne)) < 0.5)
-				u_n.set(cCells, options.u0);
+				u_n.setValue(cCells, options.u0);
 			else
-				u_n.set(cCells, 0.0);
+				u_n.setValue(cCells, 0.0);
 		});
 	}
 
@@ -382,11 +380,11 @@ public final class ImplicitHeatEquation
 					final int fId = mesh.getCommonFace(cId, dId);
 					final int fFaces = fId;
 					final double alphaExtraDiag = -deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / norm(ArrayOperations.minus(Xc[cCells], Xc[dCells]));
-					alpha.set(cCells, dCells, alphaExtraDiag);
+					alpha.setValue(cCells, dCells, alphaExtraDiag);
 					alphaDiag = alphaDiag + alphaExtraDiag;
 				}
 			}
-			alpha.set(cCells, cCells, 1 - alphaDiag);
+			alpha.setValue(cCells, cCells, 1 - alphaDiag);
 		});
 	}
 
@@ -417,7 +415,7 @@ public final class ImplicitHeatEquation
 				double tmp_t_n = t_n;
 				t_n = t_nplus1;
 				t_nplus1 = tmp_t_n;
-				Vector tmp_u_n = u_n;
+				fr.cea.nabla.javalib.linearalgebra.Vector tmp_u_n = u_n;
 				u_n = u_nplus1;
 				u_nplus1 = tmp_u_n;
 			} 

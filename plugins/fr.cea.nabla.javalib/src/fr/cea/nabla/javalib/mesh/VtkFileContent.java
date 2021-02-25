@@ -34,10 +34,10 @@ public class VtkFileContent
 	}
 
 	public void addCellVariable(String name, double[] data) { cellScalars.put(name, data); }
-	public void addCellVariable(String name, Vector data) { cellScalars.put(name, data.getNativeVector().toArray()); }
+	public void addCellVariable(String name, Vector data) { cellScalars.put(name, data.getData().toArray()); }
 	public void addCellVariable(String name, double[][] data) { cellVectors.put(name, data); }
 	public void addNodeVariable(String name, double[] data) { nodeScalars.put(name, data); }
-	public void addNodeVariable(String name, Vector data) { nodeScalars.put(name, data.getNativeVector().toArray()); }
+	public void addNodeVariable(String name, Vector data) { nodeScalars.put(name, data.getData().toArray()); }
 	public void addNodeVariable(String name, double[][] data) { nodeVectors.put(name, data); }
 
 	protected boolean hasCellData()

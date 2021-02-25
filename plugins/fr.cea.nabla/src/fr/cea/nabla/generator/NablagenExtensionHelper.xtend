@@ -51,6 +51,7 @@ class NablagenExtensionHelper
 				irProvider.installDir = baseDir + target.outputDir + '/' + ir.name.toLowerCase + '/lib'
 			irProvider.namespace = provider.namespace
 			irProvider.libName = provider.libName
+			irProvider.linearAlgebra = provider.extension.linearAlgebra
 			if (provider.target != target.type && !provider.compatibleTargets.contains(target.type))
 			{
 				dispatcher.post(MessageType::Warning, '    The target of the provider differs from target: ' + provider.target.literal + " != " + target.type.literal)

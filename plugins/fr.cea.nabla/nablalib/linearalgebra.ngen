@@ -8,7 +8,7 @@
  * Contributors: see AUTHORS file
  *******************************************************************************/
 
-Provider LibCppNablaStl : LinearAlgebra
+Provider LibCppNablaLinearAlgebraStl : LinearAlgebra
 {
 	target = StlThread;
 	compatibleTargets = CppSequential, OpenMP;
@@ -17,7 +17,7 @@ Provider LibCppNablaStl : LinearAlgebra
 	libName = "cppnablastl";
 }
 
-Provider LibCppNablaKokkos : LinearAlgebra
+Provider LibCppNablaLinearAlgebraKokkos : LinearAlgebra
 {
 	target = Kokkos;
 	compatibleTargets = KokkosTeamThread;
@@ -26,7 +26,7 @@ Provider LibCppNablaKokkos : LinearAlgebra
 	libName = "cppnablakokkos";
 }
 
-Provider LibJavaNabla : LinearAlgebra
+Provider LibJavaNablaLinearAlgebra : LinearAlgebra
 {
 	target = Java;
 	outputDir = "/LibJavaNabla";

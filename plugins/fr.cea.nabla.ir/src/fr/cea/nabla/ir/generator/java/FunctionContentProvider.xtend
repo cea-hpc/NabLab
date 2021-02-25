@@ -18,7 +18,7 @@ import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.Variable
 
 import static extension fr.cea.nabla.ir.generator.java.InstructionContentProvider.*
-import static extension fr.cea.nabla.ir.generator.java.IrTypeExtensions.*
+import static extension fr.cea.nabla.ir.generator.java.TypeContentProvider.*
 
 class FunctionContentProvider
 {

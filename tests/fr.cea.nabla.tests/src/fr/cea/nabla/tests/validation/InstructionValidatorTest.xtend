@@ -10,8 +10,8 @@
 package fr.cea.nabla.tests.validation
 
 import com.google.inject.Inject
-import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
+import fr.cea.nabla.nabla.NablaRoot
 import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.tests.NablaInjectorProvider
 import fr.cea.nabla.tests.TestUtils
@@ -29,7 +29,7 @@ import org.junit.runner.RunWith
 @InjectWith(typeof(NablaInjectorProvider))
 class InstructionValidatorTest 
 {
-	@Inject ParseHelper<NablaModule> parseHelper
+	@Inject ParseHelper<NablaRoot> parseHelper
 	@Inject extension ValidationUtils
 	@Inject extension ValidationTestHelper
 	@Inject extension TestUtils
@@ -159,7 +159,7 @@ class InstructionValidatorTest
 	}
 
 	@Test
-	def void testVarTypeForSimpleVarDeclaration()
+	def void testCheckVarTypeForSimpleVarDeclaration()
 	{
 		val moduleKo1 = parseHelper.parse(
 			'''
@@ -194,7 +194,7 @@ class InstructionValidatorTest
 	}
 
 	@Test
-	def void testVarTypeForOption()
+	def void testCheckVarTypeForOption()
 	{
 		val moduleKo1 = parseHelper.parse(
 			'''
@@ -240,6 +240,40 @@ class InstructionValidatorTest
 					U{j} = e * alpha * 4;
 			}
 			ComputeV: V = U;
+			''')
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+
+	@Test
+	def void testCheckExternFunctionCallInFunctionBody()
+	{
+		val moduleKo = parseHelper.parse(
+			'''
+			extension Test;
+			def f: → ℝ;
+			def g: → ℝ, () →
+			{
+				ℝ[4] n;
+				∀ i∈[0;4[, n[i] = 0.0;
+				return f();
+			}
+			''')
+		Assert.assertNotNull(moduleKo)
+		moduleKo.assertError(NablaPackage.eINSTANCE.functionCall,
+			InstructionValidator::EXTERN_FUNCTION_CALL_IN_FUNCTION_BODY,
+			InstructionValidator::getExternFunctionCallInFunctionBodyMsg())
+
+		val moduleOk = parseHelper.parse(
+			'''
+			extension Test;
+			def f: → ℝ;
+			def g: → ℝ, () →
+			{
+				ℝ[4] n;
+				∀ i∈[0;4[, n[i] = 0.0;
+				return 4.0;
+			}
 			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors

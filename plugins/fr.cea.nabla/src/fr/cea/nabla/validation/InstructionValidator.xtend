@@ -27,6 +27,9 @@ import fr.cea.nabla.typing.BaseTypeTypeProvider
 import fr.cea.nabla.typing.ExpressionTypeProvider
 import org.eclipse.xtext.validation.Check
 import org.eclipse.xtext.validation.CheckType
+import fr.cea.nabla.nabla.FunctionCall
+import fr.cea.nabla.nabla.Function
+import org.eclipse.xtext.EcoreUtil2
 
 class InstructionValidator extends FunctionOrReductionValidator
 {
@@ -42,10 +45,12 @@ class InstructionValidator extends FunctionOrReductionValidator
 	public static val CONDITION_BOOL = "Instructions::ConditionBool"
 	public static val GLOBAL_VAR_VALUE = "Instructions::GlobalVarValue"
 	public static val OPTION_DEFAULT_VALUE = "Instructions::OptionDefaultValue"
+	public static val EXTERN_FUNCTION_CALL_IN_FUNCTION_BODY = "Instructions::ExternFunctionCallInFunctionBody"
 
 	static def getLocalConnectivityVarMsg() { "Local variables not allowed on connectivities"}
 	static def getGlobalVarValueMsg() { "Assignment with reduction, external function or card not allowed in options and global variables" }
 	static def getOptionDefaultValueMsg() { "Option default value can not depend on variables" }
+	static def getExternFunctionCallInFunctionBodyMsg() { "An external function can not be call in an inline function" }
 
 	@Check(CheckType.NORMAL)
 	def checkLocalConnectivitityVar(VarGroupDeclaration it)
@@ -127,6 +132,17 @@ class InstructionValidator extends FunctionOrReductionValidator
 				else if (value.containsVariable)
 					error(getOptionDefaultValueMsg(), NablaPackage.Literals::OPTION_DECLARATION__VALUE, OPTION_DEFAULT_VALUE)
 			}
+		}
+	}
+
+	@Check(CheckType.NORMAL)
+	def checkExternFunctionCallInFunctionBody(FunctionCall it)
+	{
+		if (function.external)
+		{
+			val function = EcoreUtil2.getContainerOfType(eContainer, Function)
+			if (function !== null)
+				error(getExternFunctionCallInFunctionBodyMsg(), NablaPackage.Literals.FUNCTION_CALL__FUNCTION, EXTERN_FUNCTION_CALL_IN_FUNCTION_BODY)
 		}
 	}
 

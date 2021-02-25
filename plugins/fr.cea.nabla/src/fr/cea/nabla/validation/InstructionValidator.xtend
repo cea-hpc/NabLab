@@ -16,6 +16,8 @@ import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.Expression
+import fr.cea.nabla.nabla.Function
+import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.If
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
@@ -25,11 +27,10 @@ import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.nabla.While
 import fr.cea.nabla.typing.BaseTypeTypeProvider
 import fr.cea.nabla.typing.ExpressionTypeProvider
+import fr.cea.nabla.typing.NablaConnectivityType
+import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.validation.Check
 import org.eclipse.xtext.validation.CheckType
-import fr.cea.nabla.nabla.FunctionCall
-import fr.cea.nabla.nabla.Function
-import org.eclipse.xtext.EcoreUtil2
 
 class InstructionValidator extends FunctionOrReductionValidator
 {
@@ -41,6 +42,7 @@ class InstructionValidator extends FunctionOrReductionValidator
 
 	public static val LOCAL_CONNECTIVITY_VAR = "Instructions::LocalConnectivityVar"
 	public static val AFFECTATION_TYPE = "Instructions::AffectationType"
+	public static val AFFECTATION_ON_CONNECTIVITY_TYPE = "Instructions::AffectationOnConnectivityType"
 	public static val SIMPLE_VAR_TYPE = "Instructions::SimpleVarType"
 	public static val CONDITION_BOOL = "Instructions::ConditionBool"
 	public static val GLOBAL_VAR_VALUE = "Instructions::GlobalVarValue"
@@ -48,6 +50,7 @@ class InstructionValidator extends FunctionOrReductionValidator
 	public static val EXTERN_FUNCTION_CALL_IN_FUNCTION_BODY = "Instructions::ExternFunctionCallInFunctionBody"
 
 	static def getLocalConnectivityVarMsg() { "Local variables not allowed on connectivities"}
+	static def getAffectationOnConnectivityTypeMsg() { "Assignment not allowed on connectivity variables: use loop instead" }
 	static def getGlobalVarValueMsg() { "Assignment with reduction, external function or card not allowed in options and global variables" }
 	static def getOptionDefaultValueMsg() { "Option default value can not depend on variables" }
 	static def getExternFunctionCallInFunctionBodyMsg() { "An external function can not be call in an inline function" }
@@ -73,6 +76,8 @@ class InstructionValidator extends FunctionOrReductionValidator
 			val rightType = right.typeFor
 			if (!checkExpectedType(rightType, leftType))
 				error(getTypeMsg(rightType.label, leftType.label), NablaPackage.Literals.AFFECTATION__RIGHT, AFFECTATION_TYPE)
+			if (leftType instanceof NablaConnectivityType)
+				error(getAffectationOnConnectivityTypeMsg(), NablaPackage.Literals.AFFECTATION__LEFT, AFFECTATION_ON_CONNECTIVITY_TYPE)
 		}
 	}
 

@@ -90,6 +90,9 @@ class InstructionValidatorTest
 		moduleKo.assertError(NablaPackage.eINSTANCE.affectation,
 			InstructionValidator::AFFECTATION_TYPE,
 			getTypeMsg("ℕ{cells}", "ℕ{nodes}"))
+		moduleKo.assertError(NablaPackage.eINSTANCE.affectation,
+			InstructionValidator::AFFECTATION_ON_CONNECTIVITY_TYPE,
+			InstructionValidator.getAffectationOnConnectivityTypeMsg)
 
 		val moduleOk = parseHelper.parse(
 			'''
@@ -100,7 +103,7 @@ class InstructionValidatorTest
 					let ℕ e = 1;
 					U{j} = e * 4;
 			}
-			ComputeV: V = U;
+			ComputeV: ∀ j∈cells(), V{j} = U{j};
 			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -233,13 +236,6 @@ class InstructionValidatorTest
 			'''
 			«testModuleForSimulation»
 			option ℕ alpha = 1;
-			ℕ U{cells}; 
-			ℕ V{cells};
-			ComputeU: ∀ j∈cells(), {
-					let ℕ e = 1;
-					U{j} = e * alpha * 4;
-			}
-			ComputeV: V = U;
 			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors

@@ -25,6 +25,7 @@ import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.nabla.While
 import fr.cea.nabla.typing.BaseTypeTypeProvider
 import fr.cea.nabla.typing.ExpressionTypeProvider
+import fr.cea.nabla.typing.NablaConnectivityType
 import org.eclipse.xtext.validation.Check
 import org.eclipse.xtext.validation.CheckType
 
@@ -38,6 +39,7 @@ class InstructionValidator extends FunctionOrReductionValidator
 
 	public static val LOCAL_CONNECTIVITY_VAR = "Instructions::LocalConnectivityVar"
 	public static val AFFECTATION_TYPE = "Instructions::AffectationType"
+	public static val AFFECTATION_CONNECTIVITY_TYPE = "Instructions::AffectationOnConnectivityType"
 	public static val SIMPLE_VAR_TYPE = "Instructions::SimpleVarType"
 	public static val CONDITION_BOOL = "Instructions::ConditionBool"
 	public static val GLOBAL_VAR_VALUE = "Instructions::GlobalVarValue"
@@ -46,6 +48,7 @@ class InstructionValidator extends FunctionOrReductionValidator
 	static def getLocalConnectivityVarMsg() { "Local variables not allowed on connectivities"}
 	static def getGlobalVarValueMsg() { "Assignment with reduction, external function or card not allowed in options and global variables" }
 	static def getOptionDefaultValueMsg() { "Option default value can not depend on variables" }
+	static def getAffectationOnConnectivityTypeMsg() { "Assignment not allowed on connectivity variables: use loop instead" }
 
 	@Check(CheckType.NORMAL)
 	def checkLocalConnectivitityVar(VarGroupDeclaration it)
@@ -68,6 +71,8 @@ class InstructionValidator extends FunctionOrReductionValidator
 			val rightType = right.typeFor
 			if (!checkExpectedType(rightType, leftType))
 				error(getTypeMsg(rightType.label, leftType.label), NablaPackage.Literals.AFFECTATION__RIGHT, AFFECTATION_TYPE)
+			if (leftType instanceof NablaConnectivityType)
+				error(getAffectationOnConnectivityTypeMsg(), NablaPackage.Literals.AFFECTATION__LEFT, AFFECTATION_CONNECTIVITY_TYPE)				
 		}
 	}
 

@@ -119,7 +119,6 @@ class JobContentProvider
 	{
 		val lengthCall = (v.linearAlgebra ? ".getSize()" : ".length")
 		if (indexNames.size === 0)
-			if (v.linearAlgebra)
 			return v.name + lengthCall
 		else
 			if (v.linearAlgebra)

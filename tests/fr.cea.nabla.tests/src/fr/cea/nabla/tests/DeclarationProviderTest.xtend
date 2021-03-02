@@ -74,7 +74,7 @@ class DeclarationProviderTest
 		connectivity cells: → {cell};
 		connectivity nodes: → {node};
 
-		ℝ a{cells};
+		ℝ[card(cells())] a;
 		ℝ x{cells};
 		ℝ[2] x2{cells};
 		ℝ[3] t;

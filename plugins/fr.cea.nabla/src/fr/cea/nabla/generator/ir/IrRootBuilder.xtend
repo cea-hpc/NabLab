@@ -17,6 +17,7 @@ import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.transformers.CompositeTransformationStep
 import fr.cea.nabla.ir.transformers.FillJobHLTs
 import fr.cea.nabla.ir.transformers.OptimizeConnectivities
+import fr.cea.nabla.ir.transformers.ReplaceAffectations
 import fr.cea.nabla.ir.transformers.ReplaceReductions
 import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
 import fr.cea.nabla.nablagen.NablagenApplication
@@ -86,6 +87,7 @@ class IrRootBuilder
 			new ReplaceUtf8Chars, 
 			new OptimizeConnectivities(#['cells', 'nodes', 'faces']),
 			new ReplaceReductions(replaceAllReductions),
+			new ReplaceAffectations,
 			new FillJobHLTs])
 		commonTransformation.transformIr(ir, [msg | dispatcher.post(MessageType::Exec, msg)])
 		val endTime = System.currentTimeMillis

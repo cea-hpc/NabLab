@@ -156,7 +156,7 @@ class InstructionContentProvider
 	// ### IterationBlock Extensions ###
 	private static def dispatch defineInterval(Iterator it, CharSequence innerContent)
 	{
-		if (container.connectivity.indexEqualId)
+		if (container.connectivityCall.connectivity.indexEqualId)
 			innerContent
 		else
 		{
@@ -180,8 +180,8 @@ class InstructionContentProvider
 
 	private static def dispatch getNbElems(Iterator it)
 	{
-		if (container.connectivity.indexEqualId)
-			container.connectivity.nbElemsVar
+		if (container.connectivityCall.connectivity.indexEqualId)
+			container.connectivityCall.connectivity.nbElemsVar
 		else
 			'nb' + container.uniqueName.toFirstUpper
 	}

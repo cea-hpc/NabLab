@@ -82,24 +82,22 @@ class JobContentProvider
 	private static def dispatch CharSequence getInnerContent(TimeLoopJob it)
 	'''
 		«FOR copy : copies»
-			«copy(copy.destination, copy.source, copy.destination.type.dimension, true, new ArrayList<String>(), null)»
+			«copy(copy.destination, copy.source, copy.destination.type.dimension, true, new ArrayList<CharSequence>(), null)»
 		«ENDFOR»
 	'''
 
-	private static def CharSequence copy(Variable left, Variable right, int dimension, boolean firstLoop, List<String> indexNames, String newIndexName)
+	private static def CharSequence copy(Variable left, Variable right, int dimension, boolean firstLoop, List<CharSequence> indexNames, String newIndexName)
 	{
 		if (newIndexName !== null)
 			indexNames += newIndexName
 		if (dimension == 0)
-			if (left.linearAlgebra && indexNames.size === 1)
-				left.name + ".set(" + indexNames.get(0) + ", " + right.name + "[" + indexNames.get(0) + "]);"
-			else if (left.linearAlgebra && indexNames.size === 2)
-				left.name + " .set(" + indexNames.get(0) + ", " + indexNames.get(1) + ", " + right.name + "[" + indexNames.get(0) + "][" + indexNames.get(1) + "]);"
+			if (left.linearAlgebra)
+				'''«left.name».setValue(«formatIteratorsAndIndices(left.type, indexNames)», «formatIteratorsAndIndices(right.type, indexNames)»;'''
 			else
-				left.name + indexNames.map[s|"["+s+"]"].join + " = " + right.name + indexNames.map[s|"["+s+"]"].join + ";"
+				'''«left.name»«formatIteratorsAndIndices(left.type, indexNames)» = «right.name»«formatIteratorsAndIndices(right.type, indexNames)»;'''
 		else
 		{
-			var indexName = 'i' + dimension
+			var indexName = '''i«dimension»'''
 			if (firstLoop)
 			'''
 				IntStream.range(0, «length(left, indexNames)»).parallel().forEach(«indexName» -> 
@@ -115,7 +113,7 @@ class JobContentProvider
 		}
 	}
 
-	private static def CharSequence length(Variable v, List<String> indexNames)
+	private static def CharSequence length(Variable v, Iterable<CharSequence> indexNames)
 	{
 		val lengthCall = (v.linearAlgebra ? ".getSize()" : ".length")
 		if (indexNames.size === 0)

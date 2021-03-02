@@ -12,15 +12,16 @@ package fr.cea.nabla.ir
 import fr.cea.nabla.ir.ir.ConnectivityCall
 import fr.cea.nabla.ir.ir.SetRef
 import fr.cea.nabla.ir.ir.Container
+import fr.cea.nabla.ir.ir.Connectivity
 
 class ContainerExtensions 
 {
-	static def getConnectivity(Container it)
+	static def getConnectivityCall(Container it)
 	{
 		switch it
 		{
-			ConnectivityCall: connectivity
-			SetRef: target.value.connectivity
+			ConnectivityCall: it
+			SetRef: target.value
 		}
 	}
 
@@ -31,6 +32,19 @@ class ContainerExtensions
 			ConnectivityCall: connectivity.name + args.map[x | x.itemName.toFirstUpper].join('')
 			SetRef: target.name
 		}
+	}
+
+	static def getNbElemsVar(Container it)
+	{
+		if (connectivityCall.args.empty)
+			connectivityCall.connectivity.nbElemsVar
+		else
+			'nb' + uniqueName.toFirstUpper
+	}
+
+	static def getNbElemsVar(Connectivity it)
+	{
+		'nb' + name.toFirstUpper
 	}
 
 	static def getAccessor(ConnectivityCall it)

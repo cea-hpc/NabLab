@@ -22,7 +22,7 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 endif()
 
 if(NOT TARGET cppnablakokkos)
-	add_subdirectory(${LINEARALGEBRA_DIR} ${CMAKE_BINARY_DIR}/LibCppNablaLinearAlgebraKokkos EXCLUDE_FROM_ALL)
+	add_subdirectory(${LINEARALGEBRA_DIR} ${CMAKE_BINARY_DIR}/LinearAlgebraKokkos EXCLUDE_FROM_ALL)
 endif()
 if(NOT TARGET cppnabla)
 	add_subdirectory(${LIBCPPNABLA_DIR} ${CMAKE_BINARY_DIR}/LibCppNabla EXCLUDE_FROM_ALL)

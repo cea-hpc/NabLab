@@ -201,7 +201,7 @@ class ExpressionInterpreter
 	private static def NablaValue interpreteCardinality(Cardinality it, Context context)
 	{
 		context.logFinest("Interprete Cardinality")
-		if (container.connectivity.multiple)
+		if (container.connectivityCall.connectivity.multiple)
 		{
 			val container = context.getContainerValue(container)
 			new NV0Int(container.size)

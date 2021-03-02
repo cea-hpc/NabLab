@@ -16,7 +16,6 @@ import fr.cea.nabla.ir.ir.ItemIndexValue
 import fr.cea.nabla.ir.ir.SetRef
 
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
-import static extension fr.cea.nabla.ir.generator.Utils.*
 
 class ItemIndexAndIdValueContentProvider 
 {
@@ -30,7 +29,7 @@ class ItemIndexAndIdValueContentProvider
 
 	static def dispatch getContent(ItemIdValueIterator it)
 	{
-		if (iterator.container.connectivity.indexEqualId) indexValue
+		if (iterator.container.connectivityCall.connectivity.indexEqualId) indexValue
 		else iterator.container.uniqueName + '[' + indexValue + ']'
 	}
 
@@ -47,7 +46,7 @@ class ItemIndexAndIdValueContentProvider
 	private static def getIndexValue(ItemIdValueIterator it)
 	{
 		val index = iterator.index.name
-		val nbElems = iterator.container.connectivity.nbElemsVar
+		val nbElems = iterator.container.connectivityCall.connectivity.nbElemsVar
 		switch shift
 		{
 			case shift < 0: '''(«index»«shift»+«nbElems»)%«nbElems»'''

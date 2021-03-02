@@ -19,8 +19,8 @@ import fr.cea.nabla.ir.ir.PrimitiveType
 
 import static fr.cea.nabla.ir.ExtensionProviderExtensions.*
 
+import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
-import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
 
 class TypeContentProvider
@@ -54,7 +54,7 @@ class TypeContentProvider
 		formatIteratorsAndIndices(it, iterators.map[name] + indices.map[content])
 	}
 
-	private static def formatIteratorsAndIndices(IrType it, Iterable<CharSequence> iteratorsAndIndices)
+	static def formatIteratorsAndIndices(IrType it, Iterable<CharSequence> iteratorsAndIndices)
 	{
 		switch it
 		{

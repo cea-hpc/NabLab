@@ -23,7 +23,7 @@ import org.eclipse.xtend.lib.annotations.Accessors
 
 import static fr.cea.nabla.ir.ExtensionProviderExtensions.*
 
-import static extension fr.cea.nabla.ir.generator.Utils.*
+import static extension fr.cea.nabla.ir.ContainerExtensions.*
 
 abstract class TypeContentProvider
 {

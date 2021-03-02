@@ -104,8 +104,14 @@ class ExpressionContentProvider
 
 	static def dispatch CharSequence getContent(Cardinality it)
 	{
-		if (container.connectivity.multiple)
-			container.getNbElemsVar
+		val call = container.connectivityCall
+		if (call.connectivity.multiple)
+		{
+			if (call.args.empty)
+				call.connectivity.nbElemsVar
+			else
+				'''mesh.«call.accessor».length'''
+		}
 		else
 			'''1'''
 	}

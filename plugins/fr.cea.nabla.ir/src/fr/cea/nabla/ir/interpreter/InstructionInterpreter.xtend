@@ -224,7 +224,7 @@ class InstructionInterpreter
 
 	private static dispatch def getIdValue(ItemIdValueIterator it, Context context)
 	{
-		if (iterator.container.connectivity.indexEqualId)
+		if (iterator.container.connectivityCall.connectivity.indexEqualId)
 			getIndexValue(context)
 		else
 		{
@@ -240,7 +240,7 @@ class InstructionInterpreter
 			return iteratorRefIndex
 		else
 		{
-			val nbElems = context.connectivitySizes.get(iterator.container.connectivity)
+			val nbElems = context.connectivitySizes.get(iterator.container.connectivityCall.connectivity)
 			return (iteratorRefIndex + shift + nbElems)%nbElems
 		}
 	}

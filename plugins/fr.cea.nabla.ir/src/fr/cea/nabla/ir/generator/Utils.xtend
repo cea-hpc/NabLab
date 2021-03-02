@@ -11,9 +11,6 @@ package fr.cea.nabla.ir.generator
 
 import fr.cea.nabla.ir.DefaultVarDependencies
 import fr.cea.nabla.ir.ir.ArgOrVar
-import fr.cea.nabla.ir.ir.Connectivity
-import fr.cea.nabla.ir.ir.ConnectivityCall
-import fr.cea.nabla.ir.ir.Container
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Iterator
@@ -21,7 +18,6 @@ import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.JobCaller
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ReductionInstruction
-import fr.cea.nabla.ir.ir.SetRef
 import fr.cea.nabla.ir.ir.Variable
 import org.eclipse.emf.ecore.EObject
 
@@ -92,21 +88,6 @@ class Utils
 			v.name
 		else
 			vModule.name + separator + v.name
-	}
-
-	static def getNbElemsVar(Connectivity it)
-	{
-		'nb' + name.toFirstUpper
-	}
-
-	static def getNbElemsVar(Container it)
-	{
-		val cName = switch it
-		{
-			ConnectivityCall: connectivity.name
-			SetRef: target.value.connectivity.name
-		}
-		return 'nb' + cName.toFirstUpper
 	}
 
 	static def getComment(Job it)

@@ -11,27 +11,26 @@ package fr.cea.nabla.ir
 
 import fr.cea.nabla.ir.ir.ConnectivityCall
 import fr.cea.nabla.ir.ir.SetRef
+import fr.cea.nabla.ir.ir.Container
 
 class ContainerExtensions 
 {
-	static def dispatch getConnectivity(ConnectivityCall it)
+	static def getConnectivity(Container it)
 	{
-		connectivity
+		switch it
+		{
+			ConnectivityCall: connectivity
+			SetRef: target.value.connectivity
+		}
 	}
 
-	static def dispatch getConnectivity(SetRef it)
+	static def getUniqueName(Container it)
 	{
-		target.value.connectivity
-	}
-
-	static def dispatch getUniqueName(ConnectivityCall it)
-	{
-		connectivity.name + args.map[x | x.itemName.toFirstUpper].join('')
-	}
-
-	static def dispatch getUniqueName(SetRef it)
-	{
-		target.name
+		switch it
+		{
+			ConnectivityCall: connectivity.name + args.map[x | x.itemName.toFirstUpper].join('')
+			SetRef: target.name
+		}
 	}
 
 	static def getAccessor(ConnectivityCall it)

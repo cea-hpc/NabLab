@@ -667,7 +667,13 @@ void Glace2d::computeAr() noexcept
 				reduction0 = Glace2dFuncs::sumR2(reduction0, Ajr[jCells][rNodesOfCellJ]);
 			}
 		}
-		Ar[rNodes] = reduction0;
+		for (size_t i1=0; i1<2; i1++)
+		{
+			for (size_t i2=0; i2<2; i2++)
+			{
+				Ar[rNodes][i1][i2] = reduction0[i1][i2];
+			}
+		}
 	}
 }
 
@@ -694,7 +700,10 @@ void Glace2d::computeBr() noexcept
 				reduction0 = Glace2dFuncs::sumR1(reduction0, p[jCells] * C[jCells][rNodesOfCellJ] + Glace2dFuncs::matVectProduct(Ajr[jCells][rNodesOfCellJ], uj_n[jCells]));
 			}
 		}
-		b[rNodes] = reduction0;
+		for (size_t i1=0; i1<2; i1++)
+		{
+			b[rNodes][i1] = reduction0[i1];
+		}
 	}
 }
 
@@ -760,7 +769,13 @@ void Glace2d::computeBoundaryConditions() noexcept
 		{
 			const Id rId(leftNodes[rLeftNodes]);
 			const size_t rNodes(rId);
-			Mt[rNodes] = I;
+			for (size_t i1=0; i1<2; i1++)
+			{
+				for (size_t i2=0; i2<2; i2++)
+				{
+					Mt[rNodes][i1][i2] = I[i1][i2];
+				}
+			}
 			bt[rNodes] = {0.0, 0.0};
 		}
 	}
@@ -772,7 +787,13 @@ void Glace2d::computeBoundaryConditions() noexcept
 		{
 			const Id rId(rightNodes[rRightNodes]);
 			const size_t rNodes(rId);
-			Mt[rNodes] = I;
+			for (size_t i1=0; i1<2; i1++)
+			{
+				for (size_t i2=0; i2<2; i2++)
+				{
+					Mt[rNodes][i1][i2] = I[i1][i2];
+				}
+			}
 			bt[rNodes] = {0.0, 0.0};
 		}
 	}
@@ -793,7 +814,10 @@ void Glace2d::computeBt() noexcept
 		{
 			const Id rId(innerNodes[rInnerNodes]);
 			const size_t rNodes(rId);
-			bt[rNodes] = b[rNodes];
+			for (size_t i1=0; i1<2; i1++)
+			{
+				bt[rNodes][i1] = b[rNodes][i1];
+			}
 		}
 	}
 }
@@ -813,7 +837,13 @@ void Glace2d::computeMt() noexcept
 		{
 			const Id rId(innerNodes[rInnerNodes]);
 			const size_t rNodes(rId);
-			Mt[rNodes] = Ar[rNodes];
+			for (size_t i1=0; i1<2; i1++)
+			{
+				for (size_t i2=0; i2<2; i2++)
+				{
+					Mt[rNodes][i1][i2] = Ar[rNodes][i1][i2];
+				}
+			}
 		}
 	}
 }

@@ -28,11 +28,12 @@ class ReplaceAffectations  extends IrTransformationStep
 
 		for (affectation : affectations.toList)
 		{
-			// left and right have same type and left cannot be ConnectivityType
-			if (affectation.left.type instanceof BaseType && !(affectation.left.type as BaseType).sizes.empty)
+			// we know that left and right have same type and left cannot be ConnectivityType
+			// For arrays (sizes  not empty), we generate loops
+			if (affectation.left.type instanceof BaseType)
 			{
 				val baseType = affectation.left.type as BaseType
-				if (!baseType.sizes.empty &&  affectation.right instanceof ArgOrVarRef)
+				if (!baseType.sizes.empty && affectation.right instanceof ArgOrVarRef)
 				{
 					val loop = createLoop(affectation.left, affectation.right as ArgOrVarRef, baseType.sizes, 1)
 					replace(affectation, #[loop])

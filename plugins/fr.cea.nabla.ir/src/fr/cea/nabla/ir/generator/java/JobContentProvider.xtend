@@ -92,7 +92,7 @@ class JobContentProvider
 			indexNames += newIndexName
 		if (dimension == 0)
 			if (left.linearAlgebra)
-				'''«left.name».setValue(«formatIteratorsAndIndices(left.type, indexNames)», «formatIteratorsAndIndices(right.type, indexNames)»;'''
+				'''«left.name».setValue(«formatIteratorsAndIndices(left.type, indexNames)», «formatIteratorsAndIndices(right.type, indexNames)»);'''
 			else
 				'''«left.name»«formatIteratorsAndIndices(left.type, indexNames)» = «right.name»«formatIteratorsAndIndices(right.type, indexNames)»;'''
 		else

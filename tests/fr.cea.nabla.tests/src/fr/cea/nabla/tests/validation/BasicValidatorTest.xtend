@@ -157,17 +157,29 @@ class BasicValidatorTest
 		moduleOk.assertNoErrors
 	}
 
-	// ===== NablaModule =====
+	// ===== Names format =====
 
 	@Test
-	def void testCheckName()
+	def void testCheckUpperCaseRoot()
 	{
-		val moduleKo = parseHelper.parse('''extension test;''')
+		val moduleKo = parseHelper.parse(
+			'''
+			module test;
+			ℝ u;
+			iterate n while(true);
+			ComputeUinit: u^{n=0} = 0.0;
+			''')
 		Assert.assertNotNull(moduleKo)
 		moduleKo.assertError(NablaPackage.eINSTANCE.nablaRoot,
 			BasicValidator::UPPER_CASE_START_NAME,
 			BasicValidator::getUpperCaseNameMsg())
-		val moduleOk = parseHelper.parse('''extension Test;''')
+		val moduleOk = parseHelper.parse(
+			'''
+			module Test;
+			ℝ u;
+			iterate n while(true);
+			ComputeUinit: u^{n=0} = 0.0;
+			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 
@@ -179,6 +191,66 @@ class BasicValidatorTest
 		val extensionOk = extensionParseHelper.parse('''extension Test;''')
 		Assert.assertNotNull(extensionOk)
 		extensionOk.assertNoErrors
+	}
+
+	@Test
+	def void testCheckUpperCaseJob()
+	{
+		val moduleKo = parseHelper.parse(
+			'''
+			module Test;
+			ℝ u;
+			iterate n while(true);
+			computeUinit: u^{n=0} = 0.0;
+			''')
+		Assert.assertNotNull(moduleKo)
+		moduleKo.assertError(NablaPackage.eINSTANCE.job,
+			BasicValidator::UPPER_CASE_START_NAME,
+			BasicValidator::getUpperCaseNameMsg())
+
+		val moduleOk = parseHelper.parse(
+			'''
+			module Test;
+			ℝ u;
+			iterate n while(true);
+			ComputeUinit: u^{n=0} = 0.0;
+			''')
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+
+	@Test
+	def void testCheckLowerCaseFunction()
+	{
+		val moduleKo = parseHelper.parse(
+			'''
+			extension Test;
+			def ∑, 0.0: ℝ, (a, b) → return a + b;
+			def G: → ℝ, () →
+			{
+				ℝ[4] n;
+				∀ i∈[0;3[, n[i] = 0.0;
+				return 4.0;
+			}
+			''')
+		Assert.assertNotNull(moduleKo)
+		moduleKo.assertError(NablaPackage.eINSTANCE.functionOrReduction,
+			BasicValidator::LOWER_CASE_START_NAME,
+			BasicValidator::getLowerCaseNameMsg())
+
+		val moduleOk = parseHelper.parse(
+			'''
+			extension Test;
+			def ∑, 0.0: ℝ, (a, b) → return a + b;
+			def g: → ℝ, () →
+			{
+				ℝ[4] n;
+				∀ i∈[0;3[, n[i] = 0.0;
+				return 4.0;
+			}
+			''')
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
 	}
 
 	// ===== TimeIterator =====

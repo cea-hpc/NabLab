@@ -874,17 +874,17 @@ public final class Glace2d
 		});
 	}
 
-	private double det(double[][] a)
+	private static double det(double[][] a)
 	{
 		return a[0][0] * a[1][1] - a[0][1] * a[1][0];
 	}
 
-	private double[] perp(double[] a)
+	private static double[] perp(double[] a)
 	{
 		return new double[] {a[1], -a[0]};
 	}
 
-	private double dot(double[] a, double[] b)
+	private static double dot(double[] a, double[] b)
 	{
 		final int x = a.length;
 		double result = 0.0;
@@ -895,13 +895,13 @@ public final class Glace2d
 		return result;
 	}
 
-	private double norm(double[] a)
+	private static double norm(double[] a)
 	{
 		final int x = a.length;
 		return Math.sqrt(dot(a, a));
 	}
 
-	private double[][] tensProduct(double[] a, double[] b)
+	private static double[][] tensProduct(double[] a, double[] b)
 	{
 		final int l = a.length;
 		double[][] result = new double[l][l];
@@ -915,7 +915,7 @@ public final class Glace2d
 		return result;
 	}
 
-	private double[] matVectProduct(double[][] a, double[] b)
+	private static double[] matVectProduct(double[][] a, double[] b)
 	{
 		final int x = a.length;
 		final int y = a[0].length;
@@ -932,7 +932,7 @@ public final class Glace2d
 		return result;
 	}
 
-	private double trace(double[][] a)
+	private static double trace(double[][] a)
 	{
 		final int l = a.length;
 		double result = 0.0;
@@ -943,30 +943,30 @@ public final class Glace2d
 		return result;
 	}
 
-	private double[][] inverse(double[][] a)
+	private static double[][] inverse(double[][] a)
 	{
 		final double alpha = 1.0 / det(a);
 		return new double[][] {new double[] {a[1][1] * alpha, -a[0][1] * alpha}, new double[] {-a[1][0] * alpha, a[0][0] * alpha}};
 	}
 
-	private double[] sumR1(double[] a, double[] b)
+	private static double[] sumR1(double[] a, double[] b)
 	{
 		final int x = a.length;
 		return ArrayOperations.plus(a, b);
 	}
 
-	private double sumR0(double a, double b)
+	private static double sumR0(double a, double b)
 	{
 		return a + b;
 	}
 
-	private double[][] sumR2(double[][] a, double[][] b)
+	private static double[][] sumR2(double[][] a, double[][] b)
 	{
 		final int x = a.length;
 		return ArrayOperations.plus(a, b);
 	}
 
-	private double minR0(double a, double b)
+	private static double minR0(double a, double b)
 	{
 		return Math.min(a, b);
 	}

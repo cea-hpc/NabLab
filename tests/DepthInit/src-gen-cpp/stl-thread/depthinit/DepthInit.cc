@@ -7,6 +7,16 @@
 #include <rapidjson/writer.h>
 
 
+/******************** Free functions definitions ********************/
+
+namespace DepthInitFuncs
+{
+double two()
+{
+	return 2.0;
+}
+}
+
 /******************** Options definition ********************/
 
 void
@@ -86,7 +96,7 @@ void DepthInit::initFromFile() noexcept
 {
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
-		eta[jCells] = options.batiLib.nextWaveHeight();
+		eta[jCells] = DepthInitFuncs::two() * options.batiLib.nextWaveHeight();
 	}
 }
 

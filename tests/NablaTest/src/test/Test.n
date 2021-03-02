@@ -17,11 +17,12 @@ connectivity cells: → {cell};
 // Simulation options
 option ℝ maxTime = 0.1;
 option ℕ maxIter = 500;
-
 option ℝ δt = 1.0;
+
 ℝ t;
 ℝ[2] X{nodes};
 ℝ e1{cells}, e2{cells}, e{cells};
+
 // Just to test allocations...
 ℝ[card(cells())] v;
 ℝ[card(cells()), card(cells())] M;

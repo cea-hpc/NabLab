@@ -124,8 +124,13 @@ public final class DepthInit
 	{
 		for (int jCells=0; jCells<nbCells; jCells++)
 		{
-			eta[jCells] = options.batiLib.nextWaveHeight();
+			eta[jCells] = two() * options.batiLib.nextWaveHeight();
 		}
+	}
+
+	private static double two()
+	{
+		return 2.0;
 	}
 
 	public void simulate()

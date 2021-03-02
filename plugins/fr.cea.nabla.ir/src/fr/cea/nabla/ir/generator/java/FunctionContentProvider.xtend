@@ -24,7 +24,7 @@ class FunctionContentProvider
 {
 	static def getContent(InternFunction it)
 	'''
-		private «headerContent»
+		private static «headerContent»
 		{
 			«FOR dimVar : variables»
 			final int «dimVar.name» = «getSizeOf(dimVar)»;
@@ -34,7 +34,7 @@ class FunctionContentProvider
 	'''
 
 	static def getHeaderContent(Function it)
-	'''«returnType.javaType» «name.toFirstLower»(«FOR a : inArgs SEPARATOR ', '»«a.type.javaType» «a.name»«ENDFOR»)'''
+	'''«returnType.javaType» «name»(«FOR a : inArgs SEPARATOR ', '»«a.type.javaType» «a.name»«ENDFOR»)'''
 
 	private static def getSizeOf(Function it, Variable v)
 	{

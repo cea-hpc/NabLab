@@ -37,6 +37,7 @@ import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.validation.Check
 import org.eclipse.xtext.validation.CheckType
 import fr.cea.nabla.nabla.Job
+import fr.cea.nabla.nabla.FunctionOrReduction
 
 // Caution: OptDefinition validation with InstructionValidator
 class BasicValidator extends UnusedValidator
@@ -86,8 +87,10 @@ class BasicValidator extends UnusedValidator
 	// ===== Names format  =====
 
 	public static val UPPER_CASE_START_NAME = "UpperCaseStartName"
+	public static val LOWER_CASE_START_NAME = "LowerCaseStartName"
 
 	static def getUpperCaseNameMsg() {"Name must start with an upper case" }
+	static def getLowerCaseNameMsg() {"Name must start with a lower case" }
 
 	@Check(CheckType.NORMAL)
 	def checkUpperCase(NablaRoot it)
@@ -101,6 +104,13 @@ class BasicValidator extends UnusedValidator
 	{
 		if (!name.nullOrEmpty && Character::isLowerCase(name.charAt(0)))
 			error(getUpperCaseNameMsg(), NablaPackage.Literals.JOB__NAME, UPPER_CASE_START_NAME)
+	}
+
+	@Check(CheckType.NORMAL)
+	def checkLowerCase(FunctionOrReduction it)
+	{
+		if (!name.nullOrEmpty && Character::isUpperCase(name.charAt(0)))
+			error(getLowerCaseNameMsg(), NablaPackage.Literals.FUNCTION_OR_REDUCTION__NAME, LOWER_CASE_START_NAME)
 	}
 
 	// ===== TimeIterator =====

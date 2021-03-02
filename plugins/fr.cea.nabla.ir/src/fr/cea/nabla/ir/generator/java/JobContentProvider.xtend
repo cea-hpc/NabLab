@@ -117,12 +117,14 @@ class JobContentProvider
 
 	private static def CharSequence length(Variable v, List<String> indexNames)
 	{
+		val lengthCall = (v.linearAlgebra ? ".getSize()" : ".length")
 		if (indexNames.size === 0)
-			return v.name + ".length"
+			if (v.linearAlgebra)
+			return v.name + lengthCall
 		else
 			if (v.linearAlgebra)
-				return v.name + indexNames.map[s | ".get(" + s + ")"].join + ".length"
+				return v.name + indexNames.map[s | ".get(" + s + ")"].join + lengthCall
 			else
-				return v.name + indexNames.map[s | "[" + s + "]"].join + ".length"
+				return v.name + indexNames.map[s | "[" + s + "]"].join + lengthCall
 	}
 }

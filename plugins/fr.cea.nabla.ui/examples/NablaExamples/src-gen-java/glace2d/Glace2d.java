@@ -619,7 +619,13 @@ public final class Glace2d
 					reduction0 = sumR2(reduction0, Ajr[jCells][rNodesOfCellJ]);
 				}
 			}
-			Ar[rNodes] = reduction0;
+			for (int i1=0; i1<2; i1++)
+			{
+				for (int i2=0; i2<2; i2++)
+				{
+					Ar[rNodes][i1][i2] = reduction0[i1][i2];
+				}
+			}
 		});
 	}
 
@@ -645,7 +651,10 @@ public final class Glace2d
 					reduction0 = sumR1(reduction0, ArrayOperations.plus(ArrayOperations.multiply(p[jCells], C[jCells][rNodesOfCellJ]), matVectProduct(Ajr[jCells][rNodesOfCellJ], uj_n[jCells])));
 				}
 			}
-			b[rNodes] = reduction0;
+			for (int i1=0; i1<2; i1++)
+			{
+				b[rNodes][i1] = reduction0[i1];
+			}
 		});
 	}
 
@@ -712,7 +721,13 @@ public final class Glace2d
 			{
 				final int rId = leftNodes[rLeftNodes];
 				final int rNodes = rId;
-				Mt[rNodes] = I;
+				for (int i1=0; i1<2; i1++)
+				{
+					for (int i2=0; i2<2; i2++)
+					{
+						Mt[rNodes][i1][i2] = I[i1][i2];
+					}
+				}
 				bt[rNodes] = new double[] {0.0, 0.0};
 			});
 		}
@@ -723,7 +738,13 @@ public final class Glace2d
 			{
 				final int rId = rightNodes[rRightNodes];
 				final int rNodes = rId;
-				Mt[rNodes] = I;
+				for (int i1=0; i1<2; i1++)
+				{
+					for (int i2=0; i2<2; i2++)
+					{
+						Mt[rNodes][i1][i2] = I[i1][i2];
+					}
+				}
 				bt[rNodes] = new double[] {0.0, 0.0};
 			});
 		}
@@ -743,7 +764,10 @@ public final class Glace2d
 			{
 				final int rId = innerNodes[rInnerNodes];
 				final int rNodes = rId;
-				bt[rNodes] = b[rNodes];
+				for (int i1=0; i1<2; i1++)
+				{
+					bt[rNodes][i1] = b[rNodes][i1];
+				}
 			});
 		}
 	}
@@ -762,7 +786,13 @@ public final class Glace2d
 			{
 				final int rId = innerNodes[rInnerNodes];
 				final int rNodes = rId;
-				Mt[rNodes] = Ar[rNodes];
+				for (int i1=0; i1<2; i1++)
+				{
+					for (int i2=0; i2<2; i2++)
+					{
+						Mt[rNodes][i1][i2] = Ar[rNodes][i1][i2];
+					}
+				}
 			});
 		}
 	}

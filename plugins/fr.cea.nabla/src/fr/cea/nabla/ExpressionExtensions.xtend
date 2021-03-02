@@ -14,7 +14,9 @@ import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.Cardinality
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.FunctionCall
+import fr.cea.nabla.nabla.NablaExtension
 import fr.cea.nabla.nabla.ReductionCall
+import org.eclipse.xtext.EcoreUtil2
 
 class ExpressionExtensions
 {
@@ -39,7 +41,11 @@ class ExpressionExtensions
 		switch e
 		{
 			ReductionCall, Cardinality: false
-			FunctionCall: !e.function.external
+			FunctionCall:
+			{
+				val nablaExt = EcoreUtil2.getContainerOfType(e.function, NablaExtension)
+				! ((nablaExt !== null) && e.function.external && (nablaExt.name != "Math"))
+			}
 			ArgOrVarRef: e.timeIterators.empty && e.spaceIterators.empty && e.target.nablaEvaluable
 			default: true
 		}

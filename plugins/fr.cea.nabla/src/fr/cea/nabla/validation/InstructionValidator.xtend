@@ -19,6 +19,7 @@ import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.If
+import fr.cea.nabla.nabla.NablaExtension
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.OptionDeclaration
@@ -53,7 +54,7 @@ class InstructionValidator extends FunctionOrReductionValidator
 	static def getAffectationOnConnectivityTypeMsg() { "Assignment not allowed on connectivity variables: use loop instead" }
 	static def getGlobalVarValueMsg() { "Assignment with reduction, external function or card not allowed in options and global variables" }
 	static def getOptionDefaultValueMsg() { "Option default value can not depend on variables" }
-	static def getExternFunctionCallInFunctionBodyMsg() { "An external function can not be call in an inline function" }
+	static def getExternFunctionCallInFunctionBodyMsg() { "External function can not be called in inline function" }
 
 	@Check(CheckType.NORMAL)
 	def checkLocalConnectivitityVar(VarGroupDeclaration it)
@@ -150,7 +151,8 @@ class InstructionValidator extends FunctionOrReductionValidator
 	@Check(CheckType.NORMAL)
 	def checkExternFunctionCallInFunctionBody(FunctionCall it)
 	{
-		if (function.external)
+		val nablaExt = EcoreUtil2.getContainerOfType(function, NablaExtension)
+		if ((nablaExt !== null) && function.external && (nablaExt.name != "Math"))
 		{
 			val function = EcoreUtil2.getContainerOfType(eContainer, Function)
 			if (function !== null)

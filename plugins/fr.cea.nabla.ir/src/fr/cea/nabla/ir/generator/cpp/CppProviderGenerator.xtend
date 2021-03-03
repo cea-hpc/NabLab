@@ -59,11 +59,7 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 	#ifndef «defineName»
 	#define «defineName»
 
-	#include <iostream>
-	#include <string>
-	#include "nablalib/types/Types.h"
-
-	using namespace nablalib::types;
+	«backend.includesContentProvider.getContentFor(false, false)»
 
 	«IF !provider.namespace.nullOrEmpty»
 	namespace «provider.namespace»
@@ -98,11 +94,7 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 	#ifndef «defineName»
 	#define «defineName»
 
-	#include <iostream>
-	#include <string>
 	#include "«pathPrefix»«provider.interfaceName».h"
-
-	using namespace nablalib::types;
 
 	«IF !provider.namespace.nullOrEmpty»
 	namespace «provider.namespace»

@@ -38,7 +38,7 @@ class SequentialBackend extends Backend
 		name = 'Sequential'
 		irTransformationStep = new ReplaceReductions(true)
 		cmakeContentProvider = new SequentialCMakeContentProvider
-		typeContentProvider = new StlTypeContentProvider
+		typeContentProvider = new StlThreadTypeContentProvider
 		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
 		instructionContentProvider = new SequentialInstructionContentProvider(typeContentProvider, expressionContentProvider)
 		functionContentProvider = new FunctionContentProvider(typeContentProvider, instructionContentProvider)
@@ -46,7 +46,7 @@ class SequentialBackend extends Backend
 		includesContentProvider = new SequentialIncludesContentProvider
 		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
 		jobCallerContentProvider = new JobCallerContentProvider
-		jobContentProvider = new JobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider)
+		jobContentProvider = new StlThreadJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider)
 		mainContentProvider = new MainContentProvider(jsonContentProvider)
 	}
 }
@@ -57,8 +57,8 @@ class StlThreadBackend extends Backend
 	new()
 	{
 		name = 'StlThread'
-		cmakeContentProvider = new StlCMakeContentProvider
-		typeContentProvider = new StlTypeContentProvider
+		cmakeContentProvider = new StlThreadCMakeContentProvider
+		typeContentProvider = new StlThreadTypeContentProvider
 		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
 		instructionContentProvider = new StlThreadInstructionContentProvider(typeContentProvider, expressionContentProvider)
 		functionContentProvider = new FunctionContentProvider(typeContentProvider, instructionContentProvider)
@@ -66,7 +66,7 @@ class StlThreadBackend extends Backend
 		includesContentProvider = new StlThreadIncludesContentProvider
 		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
 		jobCallerContentProvider = new JobCallerContentProvider
-		jobContentProvider = new JobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider)
+		jobContentProvider = new StlThreadJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider)
 		mainContentProvider = new MainContentProvider(jsonContentProvider)
 	}
 }
@@ -118,7 +118,7 @@ class OpenMpBackend extends Backend
 	{
 		name = 'OpenMP'
 		cmakeContentProvider = new OpenMpCMakeContentProvider
-		typeContentProvider = new StlTypeContentProvider
+		typeContentProvider = new StlThreadTypeContentProvider
 		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
 		instructionContentProvider = new OpenMpInstructionContentProvider(typeContentProvider, expressionContentProvider)
 		functionContentProvider = new FunctionContentProvider(typeContentProvider, instructionContentProvider)
@@ -126,7 +126,7 @@ class OpenMpBackend extends Backend
 		includesContentProvider = new OpenMpIncludesContentProvider
 		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
 		jobCallerContentProvider = new JobCallerContentProvider
-		jobContentProvider = new JobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider)
+		jobContentProvider = new StlThreadJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider)
 		mainContentProvider = new MainContentProvider(jsonContentProvider)
 	}
 }

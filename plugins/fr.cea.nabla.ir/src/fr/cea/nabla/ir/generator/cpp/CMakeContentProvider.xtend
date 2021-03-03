@@ -67,7 +67,7 @@ abstract class CMakeContentProvider
 	'''
 }
 
-class StlCMakeContentProvider extends CMakeContentProvider
+class StlThreadCMakeContentProvider extends CMakeContentProvider
 {
 	override getTargetLinkLibraries(IrRoot ir)
 	{

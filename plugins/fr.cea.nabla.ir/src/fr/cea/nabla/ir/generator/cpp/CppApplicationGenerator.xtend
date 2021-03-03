@@ -61,7 +61,14 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	#ifndef «name.toUpperCase»_H_
 	#define «name.toUpperCase»_H_
 
-	«backend.includesContentProvider.getContentFor(it, levelDBPath)»
+	«backend.includesContentProvider.getContentFor(!levelDBPath.nullOrEmpty, (irRoot.postProcessing !== null))»
+	«FOR provider : extensionProviders»
+	#include "«getNsPrefix(provider, '::').replace('::', '/')»«provider.className».h"
+	«ENDFOR»
+	«IF !main»
+	#include "«irRoot.name.toLowerCase»/«irRoot.mainModule.className».h"
+	«ENDIF»
+
 	«IF main && irRoot.modules.size > 1»
 
 		«FOR m : irRoot.modules.filter[x | x !== it]»

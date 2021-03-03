@@ -166,7 +166,7 @@ abstract class TypeContentProvider
 	}
 }
 
-class StlTypeContentProvider extends TypeContentProvider
+class StlThreadTypeContentProvider extends TypeContentProvider
 {
 	override getCppType(BaseType baseType, Iterable<Connectivity> connectivities) 
 	{

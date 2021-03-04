@@ -149,6 +149,7 @@ class ExpressionContentProvider
 		val argOrVarRefModule = irModule
 		val varModule = target.irModule
 		if (argOrVarRefModule !== varModule) result = 'mainModule->' + result
+		//TODO check this ?
 		// operator() on matrix must use constant object
 		if (target.type.matrix && !iterators.empty && eContainingFeature !== IrPackage.Literals.AFFECTATION__LEFT)
 			result = '''std::cref(«result»)'''

@@ -295,7 +295,7 @@ public final class IterativeHeatEquation
 	 */
 	protected void setUpTimeLoopK()
 	{
-		IntStream.range(0, u_nplus1_k.length).parallel().forEach(i1 -> 
+		IntStream.range(0, u_nplus1_k.length).parallel().forEach(i1 ->
 		{
 			u_nplus1_k[i1] = u_n[i1];
 		});
@@ -493,7 +493,7 @@ public final class IterativeHeatEquation
 	 */
 	protected void tearDownTimeLoopK()
 	{
-		IntStream.range(0, u_nplus1.length).parallel().forEach(i1 -> 
+		IntStream.range(0, u_nplus1.length).parallel().forEach(i1 ->
 		{
 			u_nplus1[i1] = u_nplus1_kplus1[i1];
 		});

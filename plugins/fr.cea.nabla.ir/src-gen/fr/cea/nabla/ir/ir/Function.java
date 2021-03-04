@@ -51,12 +51,12 @@ public interface Function extends IrAnnotable {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Return Type</em>' containment reference.
-	 * @see #setReturnType(BaseType)
+	 * @see #setReturnType(IrType)
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getFunction_ReturnType()
 	 * @model containment="true" resolveProxies="true"
 	 * @generated
 	 */
-	BaseType getReturnType();
+	IrType getReturnType();
 
 	/**
 	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Function#getReturnType <em>Return Type</em>}' containment reference.
@@ -66,7 +66,7 @@ public interface Function extends IrAnnotable {
 	 * @see #getReturnType()
 	 * @generated
 	 */
-	void setReturnType(BaseType value);
+	void setReturnType(IrType value);
 
 	/**
 	 * Returns the value of the '<em><b>Variables</b></em>' containment reference list.

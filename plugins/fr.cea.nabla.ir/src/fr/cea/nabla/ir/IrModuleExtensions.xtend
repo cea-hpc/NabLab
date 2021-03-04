@@ -10,7 +10,6 @@
 package fr.cea.nabla.ir
 
 import fr.cea.nabla.ir.ir.ExtensionProvider
-import fr.cea.nabla.ir.ir.ExternFunction
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
 
@@ -25,18 +24,18 @@ class IrModuleExtensions
 
 	static def getPostProcessing(IrModule it)
 	{
-		if (main) irRoot.postProcessing
+		if (main) getIrRoot.postProcessing
 		else null
 	}
 
 	static def getMeshClassName(IrModule it)
 	{
-		irRoot.meshClassName
+		getIrRoot.meshClassName
 	}
 
 	static def ExtensionProvider[] getExtensionProviders(IrModule it)
 	{
-		functions.filter(ExternFunction).filter[x | x.provider.extensionName != "Math"].map[x | x.provider].toSet
+		providers.filter[x | x.extensionName != "Math"]
 	}
 
 	static def getJobByName(IrModule it, String jobName)

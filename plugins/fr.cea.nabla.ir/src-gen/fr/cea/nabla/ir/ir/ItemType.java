@@ -27,7 +27,7 @@ public interface ItemType extends IrAnnotable {
 	 * @return the value of the '<em>Name</em>' attribute.
 	 * @see #setName(String)
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getItemType_Name()
-	 * @model unique="false" required="true"
+	 * @model required="true"
 	 * @generated
 	 */
 	String getName();

@@ -44,19 +44,19 @@ class JsonContentProvider
 		val primitive = type.primitive
 		if (sizes.empty)
 		'''
-			assert(«name.jsonName»«FOR i : indices»[«i»]«ENDFOR».Is«primitive.jsonType»());
-			«name»«FOR i : indices»[«i»]«ENDFOR» = «name.jsonName»«FOR i : indices»[«i»]«ENDFOR».Get«primitive.jsonType»();
-		'''
+				assert(«name.jsonName»«FOR i : indices»[«i»]«ENDFOR».Is«primitive.jsonType»());
+				«name»«FOR i : indices»[«i»]«ENDFOR» = «name.jsonName»«FOR i : indices»[«i»]«ENDFOR».Get«primitive.jsonType»();
+			'''
 		else
 		'''
-			assert(«name.jsonName»«FOR i : indices»[«i»]«ENDFOR».IsArray());
-			assert(«name.jsonName»«FOR i : indices»[«i»]«ENDFOR».Size() == «sizes.head.content»);
-			«val indexName = 'i' + sizes.size»
-			for (size_t «indexName»=0 ; «indexName»<«sizes.head.content» ; «indexName»++)
-			{
-				«getJsonContent(name, type, sizes.tail, indices + #[indexName])»
-			}
-		'''
+				assert(«name.jsonName»«FOR i : indices»[«i»]«ENDFOR».IsArray());
+				assert(«name.jsonName»«FOR i : indices»[«i»]«ENDFOR».Size() == «sizes.head.content»);
+				«val indexName = 'i' + sizes.size»
+				for (size_t «indexName»=0 ; «indexName»<«sizes.head.content» ; «indexName»++)
+				{
+					«getJsonContent(name, type, sizes.tail, indices + #[indexName])»
+				}
+			'''
 	}
 
 	private def getJsonType(PrimitiveType t)

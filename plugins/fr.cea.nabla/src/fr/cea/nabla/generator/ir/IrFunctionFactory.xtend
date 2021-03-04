@@ -11,6 +11,7 @@ package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
 import com.google.inject.Singleton
+import fr.cea.nabla.LinearAlgebraUtils
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.NablaExtension
@@ -24,6 +25,8 @@ class IrFunctionFactory
 	@Inject extension IrBasicFactory
 	@Inject extension IrArgOrVarFactory
 	@Inject extension IrInstructionFactory
+	@Inject extension IrExpressionFactory
+	@Inject extension LinearAlgebraUtils
 
 	def toIrFunction(Function f)
 	{
@@ -43,7 +46,7 @@ class IrFunctionFactory
 		body = f.body.toIrInstruction
 	}
 
-	private def create IrFactory::eINSTANCE.createInternFunction toIrInternFunction(Function f)
+	def create IrFactory::eINSTANCE.createInternFunction toIrInternFunction(Function f)
 	{
 		annotations += f.toIrAnnotation
 		name = f.name
@@ -51,10 +54,10 @@ class IrFunctionFactory
 		// f is internal, it has a inArgs and a body
 		f.inArgs.forEach[x | inArgs += toIrArg(x, x.name)]
 		body = f.body.toIrInstruction
-		returnType = f.typeDeclaration.returnType.toIrBaseType
+		returnType = f.toIrReturnType
 	}
 
-	private def create IrFactory::eINSTANCE.createExternFunction toIrExternFunction(Function f)
+	def create IrFactory::eINSTANCE.createExternFunction toIrExternFunction(Function f)
 	{
 		annotations += f.toIrAnnotation
 		name = f.name
@@ -64,6 +67,23 @@ class IrFunctionFactory
 		// f is external. No inArgs only inArgTypes
 		for (i : 0..<f.typeDeclaration.inTypes.size)
 			inArgs += toIrArg(f.typeDeclaration.inTypes.get(i), "x" + i)
-		returnType = f.typeDeclaration.returnType.toIrBaseType
+		returnType = f.toIrReturnType
+	}
+
+	private def toIrReturnType(Function f)
+	{
+		val la = f.linearAlgebraExtension
+		if (la === null)
+		{
+			f.typeDeclaration.returnType.toIrBaseType
+		}
+		else
+		{
+			IrFactory.eINSTANCE.createLinearAlgebraType =>
+			[
+				provider = la.toIrExtensionProvider
+				f.typeDeclaration.returnType.sizes.forEach[x | sizes += x.toIrExpression]
+			]
+		}
 	}
 }

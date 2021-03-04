@@ -187,22 +187,13 @@ public interface IrPackage extends EPackage {
 	int IR_ROOT__CONNECTIVITIES = IR_ANNOTABLE_FEATURE_COUNT + 2;
 
 	/**
-	 * The feature id for the '<em><b>Functions</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int IR_ROOT__FUNCTIONS = IR_ANNOTABLE_FEATURE_COUNT + 3;
-
-	/**
 	 * The feature id for the '<em><b>Variables</b></em>' reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int IR_ROOT__VARIABLES = IR_ANNOTABLE_FEATURE_COUNT + 4;
+	int IR_ROOT__VARIABLES = IR_ANNOTABLE_FEATURE_COUNT + 3;
 
 	/**
 	 * The feature id for the '<em><b>Jobs</b></em>' reference list.
@@ -211,7 +202,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_ROOT__JOBS = IR_ANNOTABLE_FEATURE_COUNT + 5;
+	int IR_ROOT__JOBS = IR_ANNOTABLE_FEATURE_COUNT + 4;
 
 	/**
 	 * The feature id for the '<em><b>Main</b></em>' containment reference.
@@ -220,7 +211,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_ROOT__MAIN = IR_ANNOTABLE_FEATURE_COUNT + 6;
+	int IR_ROOT__MAIN = IR_ANNOTABLE_FEATURE_COUNT + 5;
 
 	/**
 	 * The feature id for the '<em><b>Modules</b></em>' containment reference list.
@@ -229,7 +220,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_ROOT__MODULES = IR_ANNOTABLE_FEATURE_COUNT + 7;
+	int IR_ROOT__MODULES = IR_ANNOTABLE_FEATURE_COUNT + 6;
 
 	/**
 	 * The feature id for the '<em><b>Mesh Class Name</b></em>' attribute.
@@ -238,7 +229,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_ROOT__MESH_CLASS_NAME = IR_ANNOTABLE_FEATURE_COUNT + 8;
+	int IR_ROOT__MESH_CLASS_NAME = IR_ANNOTABLE_FEATURE_COUNT + 7;
 
 	/**
 	 * The feature id for the '<em><b>Init Node Coord Variable</b></em>' reference.
@@ -247,7 +238,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_ROOT__INIT_NODE_COORD_VARIABLE = IR_ANNOTABLE_FEATURE_COUNT + 9;
+	int IR_ROOT__INIT_NODE_COORD_VARIABLE = IR_ANNOTABLE_FEATURE_COUNT + 8;
 
 	/**
 	 * The feature id for the '<em><b>Node Coord Variable</b></em>' reference.
@@ -256,7 +247,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_ROOT__NODE_COORD_VARIABLE = IR_ANNOTABLE_FEATURE_COUNT + 10;
+	int IR_ROOT__NODE_COORD_VARIABLE = IR_ANNOTABLE_FEATURE_COUNT + 9;
 
 	/**
 	 * The feature id for the '<em><b>Time Variable</b></em>' reference.
@@ -265,7 +256,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_ROOT__TIME_VARIABLE = IR_ANNOTABLE_FEATURE_COUNT + 11;
+	int IR_ROOT__TIME_VARIABLE = IR_ANNOTABLE_FEATURE_COUNT + 10;
 
 	/**
 	 * The feature id for the '<em><b>Time Step Variable</b></em>' reference.
@@ -274,7 +265,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_ROOT__TIME_STEP_VARIABLE = IR_ANNOTABLE_FEATURE_COUNT + 12;
+	int IR_ROOT__TIME_STEP_VARIABLE = IR_ANNOTABLE_FEATURE_COUNT + 11;
 
 	/**
 	 * The feature id for the '<em><b>Post Processing</b></em>' containment reference.
@@ -283,7 +274,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_ROOT__POST_PROCESSING = IR_ANNOTABLE_FEATURE_COUNT + 13;
+	int IR_ROOT__POST_PROCESSING = IR_ANNOTABLE_FEATURE_COUNT + 12;
 
 	/**
 	 * The feature id for the '<em><b>Providers</b></em>' containment reference list.
@@ -292,7 +283,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_ROOT__PROVIDERS = IR_ANNOTABLE_FEATURE_COUNT + 14;
+	int IR_ROOT__PROVIDERS = IR_ANNOTABLE_FEATURE_COUNT + 13;
 
 	/**
 	 * The number of structural features of the '<em>Root</em>' class.
@@ -301,7 +292,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_ROOT_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 15;
+	int IR_ROOT_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 14;
 
 	/**
 	 * The number of operations of the '<em>Root</em>' class.
@@ -377,13 +368,22 @@ public interface IrPackage extends EPackage {
 	int IR_MODULE__JOBS = IR_ANNOTABLE_FEATURE_COUNT + 4;
 
 	/**
+	 * The feature id for the '<em><b>Providers</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IR_MODULE__PROVIDERS = IR_ANNOTABLE_FEATURE_COUNT + 5;
+
+	/**
 	 * The number of structural features of the '<em>Module</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int IR_MODULE_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 5;
+	int IR_MODULE_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 6;
 
 	/**
 	 * The number of operations of the '<em>Module</em>' class.
@@ -414,7 +414,7 @@ public interface IrPackage extends EPackage {
 	int POST_PROCESSING__ANNOTATIONS = IR_ANNOTABLE__ANNOTATIONS;
 
 	/**
-	 * The feature id for the '<em><b>Output Variables</b></em>' reference list.
+	 * The feature id for the '<em><b>Output Variables</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -605,13 +605,22 @@ public interface IrPackage extends EPackage {
 	int EXTENSION_PROVIDER__LINEAR_ALGEBRA = IR_ANNOTABLE_FEATURE_COUNT + 6;
 
 	/**
+	 * The feature id for the '<em><b>Functions</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXTENSION_PROVIDER__FUNCTIONS = IR_ANNOTABLE_FEATURE_COUNT + 7;
+
+	/**
 	 * The number of structural features of the '<em>Extension Provider</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int EXTENSION_PROVIDER_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 7;
+	int EXTENSION_PROVIDER_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 8;
 
 	/**
 	 * The number of operations of the '<em>Extension Provider</em>' class.
@@ -1034,7 +1043,7 @@ public interface IrPackage extends EPackage {
 	int EXTERN_FUNCTION__IN_ARGS = FUNCTION__IN_ARGS;
 
 	/**
-	 * The feature id for the '<em><b>Provider</b></em>' reference.
+	 * The feature id for the '<em><b>Provider</b></em>' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -4580,17 +4589,6 @@ public interface IrPackage extends EPackage {
 	EReference getIrRoot_Connectivities();
 
 	/**
-	 * Returns the meta object for the reference list '{@link fr.cea.nabla.ir.ir.IrRoot#getFunctions <em>Functions</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Functions</em>'.
-	 * @see fr.cea.nabla.ir.ir.IrRoot#getFunctions()
-	 * @see #getIrRoot()
-	 * @generated
-	 */
-	EReference getIrRoot_Functions();
-
-	/**
 	 * Returns the meta object for the reference list '{@link fr.cea.nabla.ir.ir.IrRoot#getVariables <em>Variables</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -4777,6 +4775,17 @@ public interface IrPackage extends EPackage {
 	EReference getIrModule_Jobs();
 
 	/**
+	 * Returns the meta object for the reference list '{@link fr.cea.nabla.ir.ir.IrModule#getProviders <em>Providers</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference list '<em>Providers</em>'.
+	 * @see fr.cea.nabla.ir.ir.IrModule#getProviders()
+	 * @see #getIrModule()
+	 * @generated
+	 */
+	EReference getIrModule_Providers();
+
+	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.PostProcessing <em>Post Processing</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -4787,10 +4796,10 @@ public interface IrPackage extends EPackage {
 	EClass getPostProcessing();
 
 	/**
-	 * Returns the meta object for the reference list '{@link fr.cea.nabla.ir.ir.PostProcessing#getOutputVariables <em>Output Variables</em>}'.
+	 * Returns the meta object for the containment reference list '{@link fr.cea.nabla.ir.ir.PostProcessing#getOutputVariables <em>Output Variables</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Output Variables</em>'.
+	 * @return the meta object for the containment reference list '<em>Output Variables</em>'.
 	 * @see fr.cea.nabla.ir.ir.PostProcessing#getOutputVariables()
 	 * @see #getPostProcessing()
 	 * @generated
@@ -4959,6 +4968,17 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getExtensionProvider_LinearAlgebra();
+
+	/**
+	 * Returns the meta object for the containment reference list '{@link fr.cea.nabla.ir.ir.ExtensionProvider#getFunctions <em>Functions</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Functions</em>'.
+	 * @see fr.cea.nabla.ir.ir.ExtensionProvider#getFunctions()
+	 * @see #getExtensionProvider()
+	 * @generated
+	 */
+	EReference getExtensionProvider_Functions();
 
 	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.ArgOrVar <em>Arg Or Var</em>}'.
@@ -5142,10 +5162,10 @@ public interface IrPackage extends EPackage {
 	EClass getExternFunction();
 
 	/**
-	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.ExternFunction#getProvider <em>Provider</em>}'.
+	 * Returns the meta object for the container reference '{@link fr.cea.nabla.ir.ir.ExternFunction#getProvider <em>Provider</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Provider</em>'.
+	 * @return the meta object for the container reference '<em>Provider</em>'.
 	 * @see fr.cea.nabla.ir.ir.ExternFunction#getProvider()
 	 * @see #getExternFunction()
 	 * @generated
@@ -6793,14 +6813,6 @@ public interface IrPackage extends EPackage {
 		EReference IR_ROOT__CONNECTIVITIES = eINSTANCE.getIrRoot_Connectivities();
 
 		/**
-		 * The meta object literal for the '<em><b>Functions</b></em>' reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference IR_ROOT__FUNCTIONS = eINSTANCE.getIrRoot_Functions();
-
-		/**
 		 * The meta object literal for the '<em><b>Variables</b></em>' reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -6939,6 +6951,14 @@ public interface IrPackage extends EPackage {
 		EReference IR_MODULE__JOBS = eINSTANCE.getIrModule_Jobs();
 
 		/**
+		 * The meta object literal for the '<em><b>Providers</b></em>' reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference IR_MODULE__PROVIDERS = eINSTANCE.getIrModule_Providers();
+
+		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.PostProcessingImpl <em>Post Processing</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -6949,7 +6969,7 @@ public interface IrPackage extends EPackage {
 		EClass POST_PROCESSING = eINSTANCE.getPostProcessing();
 
 		/**
-		 * The meta object literal for the '<em><b>Output Variables</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Output Variables</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -7079,6 +7099,14 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute EXTENSION_PROVIDER__LINEAR_ALGEBRA = eINSTANCE.getExtensionProvider_LinearAlgebra();
+
+		/**
+		 * The meta object literal for the '<em><b>Functions</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference EXTENSION_PROVIDER__FUNCTIONS = eINSTANCE.getExtensionProvider_Functions();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.ArgOrVarImpl <em>Arg Or Var</em>}' class.
@@ -7229,7 +7257,7 @@ public interface IrPackage extends EPackage {
 		EClass EXTERN_FUNCTION = eINSTANCE.getExternFunction();
 
 		/**
-		 * The meta object literal for the '<em><b>Provider</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>Provider</b></em>' container reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated

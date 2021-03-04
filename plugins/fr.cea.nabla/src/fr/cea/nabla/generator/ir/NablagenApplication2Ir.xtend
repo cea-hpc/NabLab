@@ -15,6 +15,7 @@ import fr.cea.nabla.ir.IrModuleExtensions
 import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ExternFunction
+import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
@@ -74,8 +75,12 @@ class NablagenApplication2Ir
 		timeStepVariable = getCurrentIrVariable(mainIrModule, ngenApp.mainModule.timeStep)
 
 		// set providers
-		for (f : functions.filter(ExternFunction))
-			providers += f.provider
+		for (m : modules)
+		{
+			val externFunctions = eAllContents.filter(FunctionCall).map[function].filter(ExternFunction).toList
+			m.providers += externFunctions.map[provider].toSet
+			providers += m.providers
+		}
 
 		// post processing
 		if (ngenApp.vtkOutput !== null)
@@ -133,7 +138,6 @@ class NablagenApplication2Ir
 		val m = nabla2ir.createIrModule(ngenModule)
 		root.modules += m
 		root.variables += m.variables
-		root.functions += m.functions
 		root.jobs += m.jobs
 	}
 

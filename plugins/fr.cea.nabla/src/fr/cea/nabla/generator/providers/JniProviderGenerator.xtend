@@ -9,7 +9,6 @@
  *******************************************************************************/
 package fr.cea.nabla.generator.providers
 
-import com.google.inject.Inject
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
 import fr.cea.nabla.generator.StandaloneGeneratorBase
 import fr.cea.nabla.ir.generator.CMakeUtils
@@ -25,14 +24,13 @@ import java.util.HashSet
 
 class JniProviderGenerator extends StandaloneGeneratorBase
 {
-	@Inject extension ProvidersUtils
 	val jniProviders = new HashSet<ExtensionProvider>
 
 	def generateAndTransformProvider(Backend backend, NablaExtension ext, ExtensionProvider cppProvider, ExtensionProvider jniProvider)
 	{
 		// The generator transforms the C++ provider in a JNI provider
 		val generator = new fr.cea.nabla.ir.generator.jni.JniProviderGenerator(backend)
-		val content = generator.getGenerationContents(cppProvider, jniProvider, ext.irFunctions)
+		val content = generator.getGenerationContents(cppProvider, jniProvider)
 		jniProviders += jniProvider
 
 		dispatcher.post(MessageType::Exec, "Generating JNI code generator: " + jniProvider.projectDir)

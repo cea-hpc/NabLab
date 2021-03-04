@@ -330,8 +330,8 @@ class ExpressionInterpreter
 	{
 		switch it
 		{
-			BaseType: sizes
-			LinearAlgebraType: sizes
+			BaseType: getSizes
+			LinearAlgebraType: getSizes
 			default: throw new RuntimeException("Unsuported argument")
 		}
 	}

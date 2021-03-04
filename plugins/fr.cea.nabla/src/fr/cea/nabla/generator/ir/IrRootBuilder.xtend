@@ -48,7 +48,6 @@ class IrRootBuilder
 				ok = setDefaultInterpreterProviders(ngenApp, ir, baseDir)
 			else
 				ok = ngenExtHelper.setExtensionProviders(ir, baseDir, target, false)
-
 			if (!ok) throw new RuntimeException("Can not build an IR for interpretation: missing providers")
 
 			return ir

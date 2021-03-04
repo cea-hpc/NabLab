@@ -66,21 +66,21 @@ class MainContentProvider
 		«name»->simulate();
 		«IF !levelDBPath.nullOrEmpty»
 
-		«val nrName = Utils.NonRegressionNameAndValue.key»
-		«val dbName = irRoot.name + "DB"»
-		// Non regression testing
-		if («name»Options.«nrName» == "«Utils.NonRegressionValues.CreateReference.toString»")
-			«name»->createDB("«dbName».ref");
-		if («name»Options.«nrName» == "«Utils.NonRegressionValues.CompareToReference.toString»") {
-			«name»->createDB("«dbName».current");
-			if (!compareDB("«dbName».current", "«dbName».ref"))
-				ret = 1;
-			leveldb::DestroyDB("«dbName».current", leveldb::Options());
-		}
+			«val nrName = Utils.NonRegressionNameAndValue.key»
+			«val dbName = irRoot.name + "DB"»
+			// Non regression testing
+			if («name»Options.«nrName» == "«Utils.NonRegressionValues.CreateReference.toString»")
+				«name»->createDB("«dbName».ref");
+			if («name»Options.«nrName» == "«Utils.NonRegressionValues.CompareToReference.toString»") {
+				«name»->createDB("«dbName».current");
+				if (!compareDB("«dbName».current", "«dbName».ref"))
+					ret = 1;
+				leveldb::DestroyDB("«dbName».current", leveldb::Options());
+			}
 		«ENDIF»
 
 		«FOR m : irRoot.modules.reverseView»
-		delete «m.name»;
+			delete «m.name»;
 		«ENDFOR»
 		delete mesh;
 	'''

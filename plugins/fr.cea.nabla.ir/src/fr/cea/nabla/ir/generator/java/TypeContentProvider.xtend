@@ -45,7 +45,7 @@ class TypeContentProvider
 			BaseType case scalar: ''''''
 			BaseType: ''' = new «primitive.javaType»«formatIteratorsAndIndices(it, sizes.map[content])»'''
 			ConnectivityType: ''' = new «primitive.javaType»«formatIteratorsAndIndices(it, connectivities.map[nbElemsVar] + base.sizes.map[content])»'''
-			LinearAlgebraType: ''' = new «javaType»("«name»", «formatIteratorsAndIndices(it, sizes.map[content])»)'''
+			LinearAlgebraType: ''' = new «getJavaType»("«name»", «formatIteratorsAndIndices(it, sizes.map[content])»)'''
 		}
 	}
 

@@ -36,10 +36,10 @@ class ContainerExtensions
 
 	static def getNbElemsVar(Container it)
 	{
-		if (connectivityCall.args.empty)
-			connectivityCall.connectivity.nbElemsVar
+		if (getConnectivityCall.args.empty)
+			getConnectivityCall.connectivity.nbElemsVar
 		else
-			'nb' + uniqueName.toFirstUpper
+			'nb' + getUniqueName.toFirstUpper
 	}
 
 	static def getNbElemsVar(Connectivity it)

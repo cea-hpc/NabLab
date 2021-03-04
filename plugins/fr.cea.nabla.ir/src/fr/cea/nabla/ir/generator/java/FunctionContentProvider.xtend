@@ -24,10 +24,10 @@ class FunctionContentProvider
 {
 	static def getContent(InternFunction it)
 	'''
-		private static «headerContent»
+		private static «getHeaderContent»
 		{
 			«FOR dimVar : variables»
-			final int «dimVar.name» = «getSizeOf(dimVar)»;
+				final int «dimVar.name» = «getSizeOf(dimVar)»;
 			«ENDFOR»
 			«body.innerContent»
 		}
@@ -55,8 +55,8 @@ class FunctionContentProvider
 	{
 		switch it
 		{
-			BaseType: sizes
-			LinearAlgebraType: sizes
+			BaseType: getSizes
+			LinearAlgebraType: getSizes
 			default: throw new RuntimeException("Unsuported argument")
 		}
 	}

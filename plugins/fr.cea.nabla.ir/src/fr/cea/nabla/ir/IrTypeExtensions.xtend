@@ -37,12 +37,12 @@ class IrTypeExtensions
 		switch it
 		{
 			case null: null
-			BaseType case sizes.empty: primitive.literal
-			BaseType case sizes.forall[x | x instanceof IntConstant]: primitive.literal + sizes.map[x | (x as IntConstant).value.utfExponent].join('\u02E3')
-			BaseType: primitive.literal + '[' + sizes.map[expressionLabel].join(',') + ']'
+			BaseType case sizes.empty: getPrimitive.literal
+			BaseType case sizes.forall[x | x instanceof IntConstant]: getPrimitive.literal + sizes.map[x | (x as IntConstant).value.utfExponent].join('\u02E3')
+			BaseType: getPrimitive.literal + '[' + sizes.map[getExpressionLabel].join(',') + ']'
 			ConnectivityType: base.label + '{' + connectivities.map[name].join(',') + '}'
 			LinearAlgebraType case sizes.size == 1: 'Vector[' + sizes.head.expressionLabel + ']'
-			LinearAlgebraType case sizes.size == 2: 'Matrix[' + sizes.map[expressionLabel].join(',') + ']'
+			LinearAlgebraType case sizes.size == 2: 'Matrix[' + sizes.map[getExpressionLabel].join(',') + ']'
 			default: null
 		}
 	}
@@ -94,8 +94,8 @@ class IrTypeExtensions
 	private static def dispatch String getExpressionLabel(MinConstant it) { '-\u221E' }
 	private static def dispatch String getExpressionLabel(MaxConstant it) { '-\u221E' }
 	private static def dispatch String getExpressionLabel(BaseTypeConstant it) { type?.label + '(' + value?.expressionLabel + ')' }
-	private static def dispatch String getExpressionLabel(VectorConstant it) { '[' + values.map[expressionLabel].join(',') + ']' }
-	private static def dispatch String getExpressionLabel(FunctionCall it) { function.name + '(' + args.map[expressionLabel].join(',') + ')' }
+	private static def dispatch String getExpressionLabel(VectorConstant it) { '[' + values.map[getExpressionLabel].join(',') + ']' }
+	private static def dispatch String getExpressionLabel(FunctionCall it) { function.name + '(' + args.map[getExpressionLabel].join(',') + ')' }
 	private static def dispatch String getExpressionLabel(ArgOrVarRef it)
 	{
 		var label = target.name

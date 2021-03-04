@@ -3,11 +3,17 @@
 package fr.cea.nabla.ir.ir.impl;
 
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.NotificationChain;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-
+import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
+import org.eclipse.emf.ecore.util.InternalEList;
 import fr.cea.nabla.ir.ir.ExtensionProvider;
+import fr.cea.nabla.ir.ir.ExternFunction;
 import fr.cea.nabla.ir.ir.IrPackage;
+import java.util.Collection;
 
 /**
  * <!-- begin-user-doc -->
@@ -24,6 +30,7 @@ import fr.cea.nabla.ir.ir.IrPackage;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ExtensionProviderImpl#getNamespace <em>Namespace</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ExtensionProviderImpl#getLibName <em>Lib Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ExtensionProviderImpl#isLinearAlgebra <em>Linear Algebra</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.ExtensionProviderImpl#getFunctions <em>Functions</em>}</li>
  * </ul>
  *
  * @generated
@@ -168,6 +175,16 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 	 * @ordered
 	 */
 	protected boolean linearAlgebra = LINEAR_ALGEBRA_EDEFAULT;
+
+	/**
+	 * The cached value of the '{@link #getFunctions() <em>Functions</em>}' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getFunctions()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<ExternFunction> functions;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -355,6 +372,48 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 	 * @generated
 	 */
 	@Override
+	public EList<ExternFunction> getFunctions() {
+		if (functions == null) {
+			functions = new EObjectContainmentWithInverseEList<ExternFunction>(ExternFunction.class, this, IrPackage.EXTENSION_PROVIDER__FUNCTIONS, IrPackage.EXTERN_FUNCTION__PROVIDER);
+		}
+		return functions;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case IrPackage.EXTENSION_PROVIDER__FUNCTIONS:
+				return ((InternalEList<InternalEObject>)(InternalEList<?>)getFunctions()).basicAdd(otherEnd, msgs);
+		}
+		return super.eInverseAdd(otherEnd, featureID, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case IrPackage.EXTENSION_PROVIDER__FUNCTIONS:
+				return ((InternalEList<?>)getFunctions()).basicRemove(otherEnd, msgs);
+		}
+		return super.eInverseRemove(otherEnd, featureID, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case IrPackage.EXTENSION_PROVIDER__EXTENSION_NAME:
@@ -371,6 +430,8 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 				return getLibName();
 			case IrPackage.EXTENSION_PROVIDER__LINEAR_ALGEBRA:
 				return isLinearAlgebra();
+			case IrPackage.EXTENSION_PROVIDER__FUNCTIONS:
+				return getFunctions();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -380,6 +441,7 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
@@ -403,6 +465,10 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 				return;
 			case IrPackage.EXTENSION_PROVIDER__LINEAR_ALGEBRA:
 				setLinearAlgebra((Boolean)newValue);
+				return;
+			case IrPackage.EXTENSION_PROVIDER__FUNCTIONS:
+				getFunctions().clear();
+				getFunctions().addAll((Collection<? extends ExternFunction>)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -437,6 +503,9 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 			case IrPackage.EXTENSION_PROVIDER__LINEAR_ALGEBRA:
 				setLinearAlgebra(LINEAR_ALGEBRA_EDEFAULT);
 				return;
+			case IrPackage.EXTENSION_PROVIDER__FUNCTIONS:
+				getFunctions().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -463,6 +532,8 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 				return LIB_NAME_EDEFAULT == null ? libName != null : !LIB_NAME_EDEFAULT.equals(libName);
 			case IrPackage.EXTENSION_PROVIDER__LINEAR_ALGEBRA:
 				return linearAlgebra != LINEAR_ALGEBRA_EDEFAULT;
+			case IrPackage.EXTENSION_PROVIDER__FUNCTIONS:
+				return functions != null && !functions.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}

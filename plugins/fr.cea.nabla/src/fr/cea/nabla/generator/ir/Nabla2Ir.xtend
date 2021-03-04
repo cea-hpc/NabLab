@@ -67,7 +67,7 @@ class Nabla2Ir
 		for (f : nablaModule.allUsedFunctionAndReductions)
 			switch f
 			{
-				Function: functions += f.toIrFunction
+				Function case !f.external: functions += f.toIrInternFunction
 				Reduction: functions += f.toIrFunction
 			}
 

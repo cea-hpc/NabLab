@@ -32,7 +32,7 @@ class Utils
 
 	static def getFileHeader()
 	'''
-	/*** GENERATED FILE - DO NOT OVERWRITE ***/
+		/*** GENERATED FILE - DO NOT OVERWRITE ***/
 	'''
 
 	static def getClassName(IrModule it)
@@ -58,9 +58,9 @@ class Utils
 			else
 				caller.irModule
 		if (jobModule === callerModule)
-			codeName
+			getCodeName
 		else
-			jobModule.name + '.' + codeName
+			jobModule.name + '.' + getCodeName
 	}
 
 	static def getCodeName(ArgOrVar it)
@@ -93,7 +93,7 @@ class Utils
 	static def getComment(Job it)
 	'''
 		/**
-		 * Job «codeName» called @«at» in «caller.codeName» method.
+		 * Job «getCodeName» called @«at» in «caller.codeName» method.
 		 * In variables: «FOR v : inVars.sortBy[name] SEPARATOR ', '»«v.getName»«ENDFOR»
 		 * Out variables: «FOR v : outVars.sortBy[name] SEPARATOR ', '»«v.getName»«ENDFOR»
 		 */

@@ -2,6 +2,8 @@
  */
 package fr.cea.nabla.ir.ir;
 
+import org.eclipse.emf.common.util.EList;
+
 
 /**
  * <!-- begin-user-doc -->
@@ -19,6 +21,7 @@ package fr.cea.nabla.ir.ir;
  *   <li>{@link fr.cea.nabla.ir.ir.ExtensionProvider#getNamespace <em>Namespace</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.ExtensionProvider#getLibName <em>Lib Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.ExtensionProvider#isLinearAlgebra <em>Linear Algebra</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.ExtensionProvider#getFunctions <em>Functions</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getExtensionProvider()
@@ -179,5 +182,19 @@ public interface ExtensionProvider extends IrAnnotable {
 	 * @generated
 	 */
 	void setLinearAlgebra(boolean value);
+
+	/**
+	 * Returns the value of the '<em><b>Functions</b></em>' containment reference list.
+	 * The list contents are of type {@link fr.cea.nabla.ir.ir.ExternFunction}.
+	 * It is bidirectional and its opposite is '{@link fr.cea.nabla.ir.ir.ExternFunction#getProvider <em>Provider</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Functions</em>' containment reference list.
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getExtensionProvider_Functions()
+	 * @see fr.cea.nabla.ir.ir.ExternFunction#getProvider
+	 * @model opposite="provider" containment="true"
+	 * @generated
+	 */
+	EList<ExternFunction> getFunctions();
 
 } // ExtensionProvider

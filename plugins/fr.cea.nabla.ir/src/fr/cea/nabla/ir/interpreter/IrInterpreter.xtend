@@ -13,7 +13,6 @@ import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import fr.cea.nabla.ir.Utils
-import fr.cea.nabla.ir.ir.ExternFunction
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.javalib.LevelDBUtils
@@ -176,13 +175,12 @@ class IrInterpreter
 			}
 		}
 
-		val functionsByProvider = m.functions.filter(ExternFunction).groupBy[provider]
-		for (provider : functionsByProvider.keySet)
+		for (provider : m.providers)
 		{
 			val providerHelper = ExtensionProviderCache.Instance.get(provider, classLoader)
 			if (jsonOptions !== null && jsonOptions.has(provider.instanceName))
 				providerHelper.jsonInit(jsonOptions.get(provider.instanceName).toString)
-			providerHelper.initFunctions(functionsByProvider.get(provider))
+			providerHelper.initFunctions(provider.functions)
 		}
 	}
 

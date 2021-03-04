@@ -50,12 +50,12 @@ class JsonGenerator implements ApplicationGenerator
 		{
 			"_comment": "GENERATED FILE - DO NOT OVERWRITE",
 			«FOR irModule : rootModel.modules»
-			"«irModule.name.toFirstLower»":
-			{
-				«FOR jsonValue : getJsonValues(context, irModule) SEPARATOR ","»
-				"«jsonValue.key»":«jsonValue.value»
-				«ENDFOR»
-			},
+				"«irModule.name.toFirstLower»":
+				{
+					«FOR jsonValue : getJsonValues(context, irModule) SEPARATOR ","»
+						"«jsonValue.key»":«jsonValue.value»
+					«ENDFOR»
+				},
 			«ENDFOR»
 			"mesh":
 			{

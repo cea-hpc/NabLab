@@ -9,30 +9,33 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.cpp
 
+import fr.cea.nabla.ir.generator.JniNameMangler
 import fr.cea.nabla.ir.ir.Arg
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.ExtensionProvider
+import fr.cea.nabla.ir.ir.ExternFunction
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.InternFunction
+import fr.cea.nabla.ir.ir.IrType
 import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.PrimitiveType
 import org.eclipse.xtend.lib.annotations.Data
 
-import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
-
 @Data
 class FunctionContentProvider
 {
-	protected val extension TypeContentProvider typeContentProvider
-	protected val extension InstructionContentProvider instructionContentProvider
+	protected val extension TypeContentProvider
+	protected val extension ExpressionContentProvider
+	protected val extension InstructionContentProvider
+
 	protected def String getMacro() { null }
 
 	def getDeclarationContent(Function it)
 	'''
-		«FOR v : variables BEFORE "template<" SEPARATOR ", " AFTER ">"»size_t «v.name»«ENDFOR»
-		«IF macro !== null»«macro»«ENDIF»
-		«returnType.cppType» «name»(«FOR a : inArgs SEPARATOR ', '»«a.type.cppType» «a.name»«ENDFOR»)'''
+	«FOR v : variables BEFORE "template<" SEPARATOR ", " AFTER ">"»size_t «v.name»«ENDFOR»
+	«IF macro !== null»«macro»«ENDIF»
+	«returnType.cppType» «name»(«FOR a : inArgs SEPARATOR ', '»«a.type.cppType» «a.name»«ENDFOR»)'''
 
 	def getDefinitionContent(InternFunction it)
 	'''
@@ -42,22 +45,22 @@ class FunctionContentProvider
 		}
 	'''
 
-	def getJniDefinitionContent(Function it, ExtensionProvider provider, String cppFullClassName)
+	def getJniDefinitionContent(ExternFunction it, ExtensionProvider provider, String cppFullClassName)
 	'''
-	JNIEXPORT «returnType.jniType» JNICALL Java_«getNsPrefix(provider, '.').replace('.', '_')»«provider.className»_«name»
-	(JNIEnv *env, jobject self«FOR a : inArgs», «a.type.jniType» «a.name»«ENDFOR»)
-	{
-		«cppFullClassName»* _self = getObject(env, self);
-		«FOR a : inArgs»
-		// «a.name» to c_«a.name»
-		«getJniInArgContent(a)»
-		«ENDFOR»
-		// native method call
-		auto c_ret = _self->«name»(«FOR a : inArgs SEPARATOR ', '»c_«a.name»«ENDFOR»);
-		// c_ret to ret
-		«getJniReturnContent("ret", "c_ret", returnType.primitive, returnType.sizes)»
-		return ret;
-	}
+		JNIEXPORT «returnType.jniType» JNICALL «JniNameMangler.getJniFunctionName(provider, it)»
+		(JNIEnv *env, jobject self«FOR a : inArgs», «a.type.jniType» «a.name»«ENDFOR»)
+		{
+			«cppFullClassName»* _self = getObject(env, self);
+			«FOR a : inArgs»
+				// «a.name» to c_«a.name»
+				«getJniInArgContent(a)»
+			«ENDFOR»
+			// native method call
+			auto c_ret = _self->«name»(«FOR a : inArgs SEPARATOR ', '»c_«a.name»«ENDFOR»);
+			// c_ret to ret
+			«getJniReturnContent(returnType)»
+			return ret;
+		}
 	'''
 
 	private def getJniInArgContent(Arg it)
@@ -81,7 +84,7 @@ class FunctionContentProvider
 			}
 			LinearAlgebraType:
 			'''
-				auto «nativeVarName» = reinterpret_cast<«t.cppType»>(«name»);
+				auto& «nativeVarName» = *get«t.vectorOrMatrix»(env, self);
 			'''
 			default: throw new RuntimeException("Ooops. Can not be there, normally...")
 		}
@@ -92,27 +95,40 @@ class FunctionContentProvider
 		val dim = sizes.size
 		if (dim == 1)
 		'''
-			jsize «jniName»_size = env->GetArrayLength(«jniName»);
-			«nativeName».resize(«jniName»_size);
-			«t.jniType»* «jniName»_body = env->Get«t.cppType.toFirstUpper»ArrayElements(«jniName», JNI_FALSE);
-			for (jsize i0=0; i0<«jniName»_size; i0++)
-				«nativeName»[i0] = «jniName»_body[i0];
-			env->Release«t.cppType.toFirstUpper»ArrayElements(«jniName», «jniName»_body, JNI_FALSE);
-		'''
+				jsize «jniName»_size = env->GetArrayLength(«jniName»);
+				«nativeName».resize(«jniName»_size);
+				«t.jniType»* «jniName»_body = env->Get«t.cppType.toFirstUpper»ArrayElements(«jniName», JNI_FALSE);
+				for (jsize i0=0; i0<«jniName»_size; i0++)
+					«nativeName»[i0] = «jniName»_body[i0];
+				env->Release«t.cppType.toFirstUpper»ArrayElements(«jniName», «jniName»_body, JNI_FALSE);
+			'''
 		else
 		'''
-			jsize «jniName»_size = env->GetArrayLength(«jniName»);
-			«nativeName».resize(«jniName»_size);
-			«val indexName = 'i' + (dim-1).toString»
-			for (jsize «indexName»=0; «indexName»<«jniName»_size; «indexName»++)
-			{
-				«val innerJniName = jniName + '_i' + (dim-2).toString»
-				«val innerJniType = (dim-1 == 1 ? t.jniType : 'jobject')»
-				auto «innerJniName» = reinterpret_cast<«innerJniType»Array>(env->GetObjectArrayElement(«jniName», «indexName»));
-				«getJniInArrayContent(innerJniName, nativeName + "[" + indexName + "]", t, sizes.tail)»
-				env->DeleteLocalRef(«innerJniName»);
-			}
-		'''
+				jsize «jniName»_size = env->GetArrayLength(«jniName»);
+				«nativeName».resize(«jniName»_size);
+				«val indexName = 'i' + (dim-1).toString»
+				for (jsize «indexName»=0; «indexName»<«jniName»_size; «indexName»++)
+				{
+					«val innerJniName = jniName + '_i' + (dim-2).toString»
+					«val innerJniType = (dim-1 == 1 ? t.jniType : 'jobject')»
+					auto «innerJniName» = reinterpret_cast<«innerJniType»Array>(env->GetObjectArrayElement(«jniName», «indexName»));
+					«getJniInArrayContent(innerJniName, nativeName + "[" + indexName + "]", t, sizes.tail)»
+					env->DeleteLocalRef(«innerJniName»);
+				}
+			'''
+	}
+
+	private def getJniReturnContent(IrType t)
+	{
+		switch t
+		{
+			BaseType: getJniReturnContent("ret", "c_ret", t.primitive, t.sizes)
+			LinearAlgebraType: 
+			'''
+				auto ret = newJava«t.vectorOrMatrix»(env, self, &c_ret);
+			'''
+			default: throw new RuntimeException("Ooops. Can not be there, normally...")
+		}
 	}
 
 	private def CharSequence getJniReturnContent(String jniName, String nativeName, PrimitiveType t, Iterable<Expression> sizes)
@@ -160,6 +176,12 @@ class FunctionContentProvider
 			}
 		else
 			'Object'
+	}
+
+	private def getVectorOrMatrix(LinearAlgebraType it)
+	{
+		if (sizes.size == 1) "Vector"
+		else "Matrix"
 	}
 }
 

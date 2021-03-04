@@ -21,19 +21,19 @@ abstract class IncludesContentProvider
 {
 	def getContentFor(IrModule m, String levelDBPath)
 	'''
-	«FOR include : getSystemIncludes(m, levelDBPath)»
-	#include <«include»>
-	«ENDFOR»
-	«FOR include : getUserIncludes(m, levelDBPath)»
-	#include "«include»"
-	«ENDFOR»
+		«FOR include : getSystemIncludes(m, levelDBPath)»
+			#include <«include»>
+		«ENDFOR»
+		«FOR include : getUserIncludes(m, levelDBPath)»
+			#include "«include»"
+		«ENDFOR»
 
-	«FOR ns : getSystemNs(m, levelDBPath)»
-	using namespace «ns»;
-	«ENDFOR»
-	«FOR ns : getUserNs(m, levelDBPath)»
-	using namespace «ns»;
-	«ENDFOR»
+		«FOR ns : getSystemNs(m, levelDBPath)»
+			using namespace «ns»;
+		«ENDFOR»
+		«FOR ns : getUserNs(m, levelDBPath)»
+			using namespace «ns»;
+		«ENDFOR»
 	'''
 
 	protected def getSystemIncludes(IrModule m, String levelDBPath)

@@ -31,13 +31,14 @@ class ProvidersUtils
 			namespace = provider.namespace
 			libName = provider.libName
 			linearAlgebra = provider.extension.linearAlgebra
+			functions += provider.extension.irFunctions
 		]
 	}
 
-	def getIrFunctions(NablaExtension it)
+	private def getIrFunctions(NablaExtension it)
 	{
-		functions.map[x | 
-			val irFunction = irFunctionFactory.toIrFunction(x)
+		functions.filter[external].map[x | 
+			val irFunction = irFunctionFactory.toIrExternFunction(x)
 			irFunction.name = ReplaceUtf8Chars.getNoUtf8(irFunction.name)
 			return irFunction
 		]

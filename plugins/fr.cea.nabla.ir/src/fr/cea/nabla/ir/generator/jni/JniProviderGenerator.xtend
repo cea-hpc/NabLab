@@ -11,12 +11,12 @@ package fr.cea.nabla.ir.generator.jni
 
 import fr.cea.nabla.ir.generator.CMakeUtils
 import fr.cea.nabla.ir.generator.GenerationContent
+import fr.cea.nabla.ir.generator.JniNameMangler
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.generator.cpp.Backend
 import fr.cea.nabla.ir.generator.java.FunctionContentProvider
 import fr.cea.nabla.ir.interpreter.DefaultExtensionProviderHelper
 import fr.cea.nabla.ir.ir.ExtensionProvider
-import fr.cea.nabla.ir.ir.Function
 import java.util.ArrayList
 
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
@@ -35,18 +35,17 @@ class JniProviderGenerator
 		this.cppBackend = cppBackend
 	}
 
-	def getGenerationContents(ExtensionProvider cppProvider, ExtensionProvider jniProvider, Iterable<Function> functions)
+	def getGenerationContents(ExtensionProvider cppProvider, ExtensionProvider jniProvider)
 	{
-		val cppFullClassName = getNsPrefix(cppProvider, '::') + cppProvider.className
 		val fileContents = new ArrayList<GenerationContent>
 
 		// .java
-		val javaFileName = jniProvider.namespace + "/" + jniProvider.className + ".java"
-		fileContents += new GenerationContent(javaFileName, getJavaFileContent(jniProvider, functions), false)
+		val javaFileName = getNsPrefix(jniProvider, '.').replace('.', '/') + jniProvider.className + ".java"
+		fileContents += new GenerationContent(javaFileName, getJavaFileContent(jniProvider), false)
 
 		// .cc
-		val sourceFileName =  jniProvider.namespace + "_" + jniProvider.className + ".cc"
-		fileContents += new GenerationContent(sourceFileName, getCppFileContent(jniProvider, functions, cppFullClassName), false)
+		val sourceFileName =  getNsPrefix(jniProvider, '.').replace('.', '_') + jniProvider.className + ".cc"
+		fileContents += new GenerationContent(sourceFileName, getCppFileContent(jniProvider, cppProvider), false)
 
 		// CMakeLists.txt
 		val cmakeFileName = "CMakeLists.txt"
@@ -55,7 +54,7 @@ class JniProviderGenerator
 		return fileContents
 	}
 
-	private def getJavaFileContent(ExtensionProvider provider, Iterable<Function> functions)
+	private def getJavaFileContent(ExtensionProvider provider)
 	'''
 	«Utils.fileHeader»
 
@@ -64,7 +63,7 @@ class JniProviderGenerator
 	 * Principle: a java long attribute to keep the link to the C++ object
 	 */
 	«IF !provider.namespace.nullOrEmpty»
-	package «provider.namespace»;
+		package «provider.namespace»;
 
 	«ENDIF»
 	public class «provider.className»
@@ -89,29 +88,33 @@ class JniProviderGenerator
 		// native object.
 		public «provider.className»()
 		{
-			nativeObjectPointer = nativeNew();	
+		nativeObjectPointer = nativeNew();	
 		}
 
 		public native void jsonInit(String jsonContent);
-		«FOR f : functions»
+		«FOR f : provider.functions»
 		public native «FunctionContentProvider.getHeaderContent(f)»;
 		«ENDFOR»
 	}
 	'''
 
-	private def getCppFileContent(ExtensionProvider provider, Iterable<Function> functions, String cppFullClassName)
+	private def getCppFileContent(ExtensionProvider jniProvider, ExtensionProvider cppProvider)
 	'''
 	«Utils.fileHeader»
 
-	«val nsPrefix = getNsPrefix(provider, '.').replace('.', '_')»
-	#include "«nsPrefix»«provider.className».h"
+	«val cppFullClassName = getNsPrefix(cppProvider, '::') + cppProvider.className»
+	#include "«JniNameMangler.getJniClassName(jniProvider)».h"
+	«IF jniProvider.linearAlgebra»
+		#include "«getNsPrefix(jniProvider, '.').replace('.', '_')»Vector.h"
+		#include "«getNsPrefix(jniProvider, '.').replace('.', '_')»Matrix.h"
+	«ENDIF»
 	#include "«cppFullClassName.replace('::', '/')».h"
-
+	
 	#ifdef __cplusplus
 	extern "C" {
 	#endif
 
-	JNIEXPORT jlong JNICALL Java_«nsPrefix»«provider.className»_nativeNew
+	JNIEXPORT jlong JNICALL «JniNameMangler.getJniFunctionName(jniProvider, 'nativeNew')»
 	(JNIEnv *env, jobject self)
 	{
 		// Here we allocate our new object and return
@@ -120,6 +123,64 @@ class JniProviderGenerator
 		return reinterpret_cast<jlong>(o);
 	}
 
+	static jlong getLongField
+	(JNIEnv *env, jobject self)
+	{
+		jclass cls = env->GetObjectClass(self);
+		if (!cls)
+			env->FatalError("GetObjectClass failed");
+	
+		jfieldID nativeObjectPointerID = env->GetFieldID(cls, "nativeObjectPointer", "J");
+		if (!nativeObjectPointerID)
+			env->FatalError("GetFieldID failed");
+
+		return env->GetLongField(self, nativeObjectPointerID);
+	}
+
+	«IF jniProvider.linearAlgebra»
+		static jobject newJObject
+		(JNIEnv *env, jobject self, jlong cppPtr, const char* javaClassName)
+		{
+			jclass cls = env->FindClass(javaClassName);
+			if (!cls)
+				env->FatalError("FindClass failed");
+
+		jmethodID cid = env->GetMethodID(cls, "<init>", "(J)V");
+		if (!cid)
+			env->FatalError("Cstr failed");
+
+		return env->NewObject(cls, cid, cppPtr);
+		}
+
+		static «getNsPrefix(cppProvider, '::')»Vector* getVector
+		(JNIEnv *env, jobject self)
+		{
+			jlong nativeObjectPointer = getLongField(env, self);
+			return reinterpret_cast<«getNsPrefix(cppProvider, '::')»Vector*>(nativeObjectPointer);
+		}
+
+		static jobject newJavaVector
+		(JNIEnv *env, jobject self, «getNsPrefix(cppProvider, '::')»Vector* cppVector)
+		{
+			jlong cppPtr = reinterpret_cast<jlong>(cppVector);
+			return newJObject(env, self, cppPtr, "Vector");
+		}
+
+		static «getNsPrefix(cppProvider, '::')»Matrix* getMatrix
+		(JNIEnv *env, jobject self)
+		{
+			jlong nativeObjectPointer = getLongField(env, self);
+			return reinterpret_cast<«getNsPrefix(cppProvider, '::')»Matrix*>(nativeObjectPointer);
+		}
+
+		static jobject newJavaMatrix
+		(JNIEnv *env, jobject self, «getNsPrefix(cppProvider, '::')»Matrix* cppMatrix)
+		{
+			jlong cppPtr = reinterpret_cast<jlong>(cppMatrix);
+			return newJObject(env, self, cppPtr, "Matrix");
+		}
+
+	«ENDIF»
 	// This function is a helper providing the boiler
 	// plate code to return the native object from
 	// Java object. The "nativeObjectPointer" is reached
@@ -130,15 +191,7 @@ class JniProviderGenerator
 	static «cppFullClassName»* getObject
 	(JNIEnv *env, jobject self)
 	{
-		jclass cls = env->GetObjectClass(self);
-		if (!cls)
-			env->FatalError("GetObjectClass failed");
-
-		jfieldID nativeObjectPointerID = env->GetFieldID(cls, "nativeObjectPointer", "J");
-		if (!nativeObjectPointerID)
-			env->FatalError("GetFieldID failed");
-
-		jlong nativeObjectPointer = env->GetLongField(self, nativeObjectPointerID);
+		jlong nativeObjectPointer = getLongField(env, self);
 		return reinterpret_cast<«cppFullClassName»*>(nativeObjectPointer);
 	}
 
@@ -150,7 +203,7 @@ class JniProviderGenerator
 	// return it as reference (not by value). This is safe
 	// since, as a Java String object the JVM can deallocate
 	// it when is not being used anymore.
-	JNIEXPORT void JNICALL Java_«nsPrefix»«provider.className»_jsonInit
+	JNIEXPORT void JNICALL «JniNameMangler.getJniFunctionName(jniProvider, 'jsonInit')»
 	(JNIEnv *env, jobject self, jstring jsonContent)
 	{
 		«cppFullClassName»* _self = getObject(env, self);
@@ -158,9 +211,9 @@ class JniProviderGenerator
 		_self->jsonInit(nativeJsonContent);
 		env->ReleaseStringUTFChars(jsonContent, nativeJsonContent);
 	}
-	«FOR f : functions»
+	«FOR f : jniProvider.functions»
 
-	«cppBackend.functionContentProvider.getJniDefinitionContent(f, provider, cppFullClassName)»
+		«cppBackend.functionContentProvider.getJniDefinitionContent(f, jniProvider, cppFullClassName)»
 	«ENDFOR»
 
 	#ifdef __cplusplus
@@ -202,7 +255,7 @@ class JniProviderGenerator
 	add_custom_command(
 		OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/«nsPrefix»«provider.className».h «pathPrefix»«provider.className».class
 		COMMENT "Generate «provider.className».h from «provider.className».java"
-		COMMAND ${JAVA_HOME}/bin/javac -h ${CMAKE_CURRENT_SOURCE_DIR} -d ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/«pathPrefix»«provider.className».java
+		COMMAND ${JAVA_HOME}/bin/javac -h ${CMAKE_CURRENT_SOURCE_DIR} -d ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/«pathPrefix»*.java
 		DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/«pathPrefix»«provider.className».java)
 
 	# The «provider.libName».jar
@@ -211,7 +264,7 @@ class JniProviderGenerator
 		OUTPUT «provider.libName».jar
 		COMMENT "Built «provider.libName».jar"
 		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-		COMMAND ${JAVA_HOME}/bin/jar cvf «provider.libName».jar «pathPrefix»«provider.className».class
+		COMMAND ${JAVA_HOME}/bin/jar cvf «provider.libName».jar «pathPrefix»*.class
 		DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/«nsPrefix»«provider.className».h)
 
 	INSTALL(TARGETS «provider.libName» DESTINATION ${CMAKE_SOURCE_DIR}/lib)

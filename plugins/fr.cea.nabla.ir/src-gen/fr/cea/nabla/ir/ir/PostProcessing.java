@@ -25,13 +25,13 @@ import org.eclipse.emf.common.util.EList;
  */
 public interface PostProcessing extends IrAnnotable {
 	/**
-	 * Returns the value of the '<em><b>Output Variables</b></em>' reference list.
+	 * Returns the value of the '<em><b>Output Variables</b></em>' containment reference list.
 	 * The list contents are of type {@link fr.cea.nabla.ir.ir.PostProcessedVariable}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Output Variables</em>' reference list.
+	 * @return the value of the '<em>Output Variables</em>' containment reference list.
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getPostProcessing_OutputVariables()
-	 * @model
+	 * @model containment="true" resolveProxies="true"
 	 * @generated
 	 */
 	EList<PostProcessedVariable> getOutputVariables();

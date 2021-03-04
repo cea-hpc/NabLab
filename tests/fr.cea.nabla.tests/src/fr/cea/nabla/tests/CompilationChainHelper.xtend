@@ -92,8 +92,8 @@ class CompilationChainHelper
 	{
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
-		val moduleInterpreter = new IrInterpreter(ir, handler)
-		return moduleInterpreter.interprete(jsonContent)
+		val interpreter = new IrInterpreter(ir, handler)
+		return interpreter.interprete(jsonContent)
 	}
 
 	def void generateCode(CharSequence model, CharSequence genModel, String projectDir)

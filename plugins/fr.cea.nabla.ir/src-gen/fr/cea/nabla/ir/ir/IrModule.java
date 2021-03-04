@@ -18,6 +18,7 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getFunctions <em>Functions</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getVariables <em>Variables</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getJobs <em>Jobs</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.IrModule#getProviders <em>Providers</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule()
@@ -71,7 +72,7 @@ public interface IrModule extends IrAnnotable {
 
 	/**
 	 * Returns the value of the '<em><b>Functions</b></em>' containment reference list.
-	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Function}.
+	 * The list contents are of type {@link fr.cea.nabla.ir.ir.InternFunction}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Functions</em>' containment reference list.
@@ -79,7 +80,7 @@ public interface IrModule extends IrAnnotable {
 	 * @model containment="true"
 	 * @generated
 	 */
-	EList<Function> getFunctions();
+	EList<InternFunction> getFunctions();
 
 	/**
 	 * Returns the value of the '<em><b>Variables</b></em>' containment reference list.
@@ -104,5 +105,17 @@ public interface IrModule extends IrAnnotable {
 	 * @generated
 	 */
 	EList<Job> getJobs();
+
+	/**
+	 * Returns the value of the '<em><b>Providers</b></em>' reference list.
+	 * The list contents are of type {@link fr.cea.nabla.ir.ir.ExtensionProvider}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Providers</em>' reference list.
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrModule_Providers()
+	 * @model
+	 * @generated
+	 */
+	EList<ExtensionProvider> getProviders();
 
 } // IrModule

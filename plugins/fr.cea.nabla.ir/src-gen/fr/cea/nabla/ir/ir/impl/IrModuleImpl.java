@@ -2,7 +2,8 @@
  */
 package fr.cea.nabla.ir.ir.impl;
 
-import fr.cea.nabla.ir.ir.Function;
+import fr.cea.nabla.ir.ir.ExtensionProvider;
+import fr.cea.nabla.ir.ir.InternFunction;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
@@ -11,6 +12,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 import fr.cea.nabla.ir.ir.IrModule;
 import fr.cea.nabla.ir.ir.IrPackage;
@@ -31,6 +33,7 @@ import java.util.Collection;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getFunctions <em>Functions</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getVariables <em>Variables</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getJobs <em>Jobs</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl#getProviders <em>Providers</em>}</li>
  * </ul>
  *
  * @generated
@@ -84,7 +87,7 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<Function> functions;
+	protected EList<InternFunction> functions;
 
 	/**
 	 * The cached value of the '{@link #getVariables() <em>Variables</em>}' containment reference list.
@@ -105,6 +108,16 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 	 * @ordered
 	 */
 	protected EList<Job> jobs;
+
+	/**
+	 * The cached value of the '{@link #getProviders() <em>Providers</em>}' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getProviders()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<ExtensionProvider> providers;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -177,9 +190,9 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 	 * @generated
 	 */
 	@Override
-	public EList<Function> getFunctions() {
+	public EList<InternFunction> getFunctions() {
 		if (functions == null) {
-			functions = new EObjectContainmentEList<Function>(Function.class, this, IrPackage.IR_MODULE__FUNCTIONS);
+			functions = new EObjectContainmentEList<InternFunction>(InternFunction.class, this, IrPackage.IR_MODULE__FUNCTIONS);
 		}
 		return functions;
 	}
@@ -208,6 +221,19 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 			jobs = new EObjectContainmentEList<Job>(Job.class, this, IrPackage.IR_MODULE__JOBS);
 		}
 		return jobs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EList<ExtensionProvider> getProviders() {
+		if (providers == null) {
+			providers = new EObjectResolvingEList<ExtensionProvider>(ExtensionProvider.class, this, IrPackage.IR_MODULE__PROVIDERS);
+		}
+		return providers;
 	}
 
 	/**
@@ -246,6 +272,8 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 				return getVariables();
 			case IrPackage.IR_MODULE__JOBS:
 				return getJobs();
+			case IrPackage.IR_MODULE__PROVIDERS:
+				return getProviders();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -267,7 +295,7 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 				return;
 			case IrPackage.IR_MODULE__FUNCTIONS:
 				getFunctions().clear();
-				getFunctions().addAll((Collection<? extends Function>)newValue);
+				getFunctions().addAll((Collection<? extends InternFunction>)newValue);
 				return;
 			case IrPackage.IR_MODULE__VARIABLES:
 				getVariables().clear();
@@ -276,6 +304,10 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 			case IrPackage.IR_MODULE__JOBS:
 				getJobs().clear();
 				getJobs().addAll((Collection<? extends Job>)newValue);
+				return;
+			case IrPackage.IR_MODULE__PROVIDERS:
+				getProviders().clear();
+				getProviders().addAll((Collection<? extends ExtensionProvider>)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -304,6 +336,9 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 			case IrPackage.IR_MODULE__JOBS:
 				getJobs().clear();
 				return;
+			case IrPackage.IR_MODULE__PROVIDERS:
+				getProviders().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -326,6 +361,8 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 				return variables != null && !variables.isEmpty();
 			case IrPackage.IR_MODULE__JOBS:
 				return jobs != null && !jobs.isEmpty();
+			case IrPackage.IR_MODULE__PROVIDERS:
+				return providers != null && !providers.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}

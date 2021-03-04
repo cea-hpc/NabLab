@@ -44,11 +44,11 @@ class InstructionContentProvider
 
 	static def dispatch CharSequence getContent(InstructionBlock it)
 	'''
-		{
-			«FOR i : instructions»
+	{
+		«FOR i : instructions»
 			«i.content»
-			«ENDFOR»
-		}'''
+		«ENDFOR»
+	}'''
 
 	static def dispatch CharSequence getContent(Affectation it)
 	{
@@ -81,9 +81,9 @@ class InstructionContentProvider
 		iterationBlock.defineInterval(
 		'''
 			«IF parallelLoop»
-			IntStream.range(0, «iterationBlock.nbElems»).parallel().forEach(«iterationBlock.indexName» -> 
+				IntStream.range(0, «iterationBlock.nbElems»).parallel().forEach(«iterationBlock.indexName» -> 
 			«ELSE»
-			for (int «iterationBlock.indexName»=0; «iterationBlock.indexName»<«iterationBlock.nbElems»; «iterationBlock.indexName»++)
+				for (int «iterationBlock.indexName»=0; «iterationBlock.indexName»<«iterationBlock.nbElems»; «iterationBlock.indexName»++)
 			«ENDIF»
 			{
 				«body.innerContent»
@@ -137,13 +137,13 @@ class InstructionContentProvider
 
 	static def dispatch getInnerContent(Instruction it)
 	{ 
-		content
+		getContent
 	}
 
 	static def dispatch getInnerContent(InstructionBlock it)
 	'''
 		«FOR i : instructions»
-		«i.content»
+			«i.content»
 		«ENDFOR»
 	'''
 
@@ -161,11 +161,11 @@ class InstructionContentProvider
 		else
 		{
 			'''
-			{
-				«IF container instanceof ConnectivityCall»«getSetDefinitionContent(container.uniqueName, container as ConnectivityCall)»«ENDIF»
-				final int «nbElems» = «container.uniqueName».length;
-				«innerContent»
-			}
+				{
+					«IF container instanceof ConnectivityCall»«getSetDefinitionContent(container.uniqueName, container as ConnectivityCall)»«ENDIF»
+					final int «getNbElems» = «container.uniqueName».length;
+					«innerContent»
+				}
 			'''
 		}
 	}
@@ -188,7 +188,7 @@ class InstructionContentProvider
 
 	private static def dispatch getNbElems(Interval it)
 	{
-		nbElems.content
+		getNbElems.content
 	}
 
 	private static def getSetDefinitionContent(String setName, ConnectivityCall call)

@@ -27,11 +27,11 @@ abstract class CMakeContentProvider
 
 		set(LIBCPPNABLA_DIR «CMakeUtils.formatCMakePath(libCppNablaDir)» CACHE STRING "")
 		«FOR entry : variables.entrySet»
-		set(«entry.key» «entry.value»)
+			set(«entry.key» «entry.value»)
 		«ENDFOR»
 		«val externalProviders = providers.filter[x | x.extensionName != "Math"]»
 		«FOR ep : externalProviders»
-		set(«ep.extensionName.toUpperCase»_DIR «CMakeUtils.formatCMakePath(ep.projectDir)»)
+			set(«ep.extensionName.toUpperCase»_DIR «CMakeUtils.formatCMakePath(ep.projectDir)»)
 		«ENDFOR»
 
 		project(«name»Project CXX)
@@ -40,23 +40,23 @@ abstract class CMakeContentProvider
 
 		«libraryBackend»
 		«FOR ep : externalProviders»
-		if(NOT TARGET «ep.libName»)
-			add_subdirectory(${«ep.extensionName.toUpperCase»_DIR} ${CMAKE_BINARY_DIR}/«ep.providerName» EXCLUDE_FROM_ALL)
-		endif()
+			if(NOT TARGET «ep.libName»)
+				add_subdirectory(${«ep.extensionName.toUpperCase»_DIR} ${CMAKE_BINARY_DIR}/«ep.providerName» EXCLUDE_FROM_ALL)
+			endif()
 		«ENDFOR»
 		if(NOT TARGET cppnabla)
 			add_subdirectory(${LIBCPPNABLA_DIR} ${CMAKE_BINARY_DIR}/«CppGeneratorUtils::CppLibName» EXCLUDE_FROM_ALL)
 		endif()
 
 		«IF !levelDBPath.nullOrEmpty»
-		set(CMAKE_FIND_ROOT_PATH «levelDBPath»)
-		find_package(leveldb)
-		find_package(Threads REQUIRED)
-		if(TARGET leveldb::leveldb)
-			message(STATUS "levelDB found")
-		else()
-			message(STATUS "levelDB NOT found !!!")
-		endif()
+			set(CMAKE_FIND_ROOT_PATH «levelDBPath»)
+			find_package(leveldb)
+			find_package(Threads REQUIRED)
+			if(TARGET leveldb::leveldb)
+				message(STATUS "levelDB found")
+			else()
+				message(STATUS "levelDB NOT found !!!")
+			endif()
 		«ENDIF»
 
 		add_executable(«name.toLowerCase»«FOR m : modules» «m.className + '.cc'»«ENDFOR»)

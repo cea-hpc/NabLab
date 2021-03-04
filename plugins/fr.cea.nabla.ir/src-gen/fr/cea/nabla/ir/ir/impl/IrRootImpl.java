@@ -4,7 +4,6 @@ package fr.cea.nabla.ir.ir.impl;
 
 import fr.cea.nabla.ir.ir.Connectivity;
 import fr.cea.nabla.ir.ir.ExtensionProvider;
-import fr.cea.nabla.ir.ir.Function;
 import fr.cea.nabla.ir.ir.IrModule;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.IrRoot;
@@ -41,7 +40,6 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getName <em>Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getItemTypes <em>Item Types</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getConnectivities <em>Connectivities</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getFunctions <em>Functions</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getVariables <em>Variables</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getJobs <em>Jobs</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getMain <em>Main</em>}</li>
@@ -97,16 +95,6 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 	 * @ordered
 	 */
 	protected EList<Connectivity> connectivities;
-
-	/**
-	 * The cached value of the '{@link #getFunctions() <em>Functions</em>}' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getFunctions()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<Function> functions;
 
 	/**
 	 * The cached value of the '{@link #getVariables() <em>Variables</em>}' reference list.
@@ -281,19 +269,6 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 			itemTypes = new EObjectContainmentEList.Resolving<ItemType>(ItemType.class, this, IrPackage.IR_ROOT__ITEM_TYPES);
 		}
 		return itemTypes;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EList<Function> getFunctions() {
-		if (functions == null) {
-			functions = new EObjectEList<Function>(Function.class, this, IrPackage.IR_ROOT__FUNCTIONS);
-		}
-		return functions;
 	}
 
 	/**
@@ -718,8 +693,6 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 				return getItemTypes();
 			case IrPackage.IR_ROOT__CONNECTIVITIES:
 				return getConnectivities();
-			case IrPackage.IR_ROOT__FUNCTIONS:
-				return getFunctions();
 			case IrPackage.IR_ROOT__VARIABLES:
 				return getVariables();
 			case IrPackage.IR_ROOT__JOBS:
@@ -771,10 +744,6 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 			case IrPackage.IR_ROOT__CONNECTIVITIES:
 				getConnectivities().clear();
 				getConnectivities().addAll((Collection<? extends Connectivity>)newValue);
-				return;
-			case IrPackage.IR_ROOT__FUNCTIONS:
-				getFunctions().clear();
-				getFunctions().addAll((Collection<? extends Function>)newValue);
 				return;
 			case IrPackage.IR_ROOT__VARIABLES:
 				getVariables().clear();
@@ -834,9 +803,6 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 			case IrPackage.IR_ROOT__CONNECTIVITIES:
 				getConnectivities().clear();
 				return;
-			case IrPackage.IR_ROOT__FUNCTIONS:
-				getFunctions().clear();
-				return;
 			case IrPackage.IR_ROOT__VARIABLES:
 				getVariables().clear();
 				return;
@@ -888,8 +854,6 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 				return itemTypes != null && !itemTypes.isEmpty();
 			case IrPackage.IR_ROOT__CONNECTIVITIES:
 				return connectivities != null && !connectivities.isEmpty();
-			case IrPackage.IR_ROOT__FUNCTIONS:
-				return functions != null && !functions.isEmpty();
 			case IrPackage.IR_ROOT__VARIABLES:
 				return variables != null && !variables.isEmpty();
 			case IrPackage.IR_ROOT__JOBS:

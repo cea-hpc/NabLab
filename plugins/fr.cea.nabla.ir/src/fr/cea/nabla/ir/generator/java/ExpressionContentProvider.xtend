@@ -122,9 +122,9 @@ class ExpressionContentProvider
 	static def dispatch CharSequence getContent(ArgOrVarRef it)
 	{
 		if (target.linearAlgebra && !(iterators.empty && indices.empty))
-			'''«codeName».getValue(«formatIteratorsAndIndices(target.type, iterators, indices)»)'''
+			'''«getCodeName».getValue(«formatIteratorsAndIndices(target.type, iterators, indices)»)'''
 		else
-			'''«codeName»«formatIteratorsAndIndices(target.type, iterators, indices)»'''
+			'''«getCodeName»«formatIteratorsAndIndices(target.type, iterators, indices)»'''
 	}
 
 	static def getCodeName(ArgOrVarRef it)

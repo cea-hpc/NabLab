@@ -13,7 +13,6 @@ import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.generator.ProviderGenerator
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.ExtensionProvider
-import fr.cea.nabla.ir.ir.Function
 import java.util.ArrayList
 
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
@@ -22,23 +21,23 @@ class JavaProviderGenerator implements ProviderGenerator
 {
 	override getName() { 'Java' }
 
-	override getGenerationContents(ExtensionProvider provider, Iterable<Function> functions)
+	override getGenerationContents(ExtensionProvider provider)
 	{
 		val fileContents = new ArrayList<GenerationContent>
 		val pathPrefix = getNsPrefix(provider, '.').replace('.', '/')
 
 		// interface
 		val interfaceFileName = pathPrefix + provider.interfaceName + ".java"
-		fileContents += new GenerationContent(interfaceFileName, getInterfaceFileContent(provider, functions), false)
+		fileContents += new GenerationContent(interfaceFileName, getInterfaceFileContent(provider), false)
 
 		// Generates class if it does not exists
 		val classFileName = pathPrefix + provider.className + ".java"
-		fileContents += new GenerationContent(classFileName, getClassFileContent(provider, functions), true)
+		fileContents += new GenerationContent(classFileName, getClassFileContent(provider), true)
 
 		return fileContents
 	}
 
-	private def getInterfaceFileContent(ExtensionProvider provider, Iterable<Function> irFunctions)
+	private def getInterfaceFileContent(ExtensionProvider provider)
 	'''
 	«Utils::fileHeader»
 
@@ -49,13 +48,13 @@ class JavaProviderGenerator implements ProviderGenerator
 	public interface «provider.interfaceName»
 	{
 		public void jsonInit(String jsonContent);
-		«FOR f : irFunctions»
+		«FOR f : provider.functions»
 		public «FunctionContentProvider.getHeaderContent(f)»;
 		«ENDFOR»
 	}
 	'''
 
-	private def getClassFileContent(ExtensionProvider provider, Iterable<Function> irFunctions)
+	private def getClassFileContent(ExtensionProvider provider)
 	'''
 	«IF !provider.namespace.nullOrEmpty»
 	package «provider.namespace»;
@@ -68,7 +67,7 @@ class JavaProviderGenerator implements ProviderGenerator
 		{
 			// Your code here
 		}
-		«FOR f : irFunctions»
+		«FOR f : provider.functions»
 
 		@Override
 		public «FunctionContentProvider.getHeaderContent(f)»

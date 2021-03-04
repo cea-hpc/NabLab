@@ -10,6 +10,7 @@ import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
 
+import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
@@ -17,7 +18,8 @@ import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
-import org.eclipse.emf.ecore.util.EObjectResolvingEList;
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
  * <!-- begin-user-doc -->
@@ -37,7 +39,7 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
  */
 public class PostProcessingImpl extends IrAnnotableImpl implements PostProcessing {
 	/**
-	 * The cached value of the '{@link #getOutputVariables() <em>Output Variables</em>}' reference list.
+	 * The cached value of the '{@link #getOutputVariables() <em>Output Variables</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getOutputVariables()
@@ -103,7 +105,7 @@ public class PostProcessingImpl extends IrAnnotableImpl implements PostProcessin
 	@Override
 	public EList<PostProcessedVariable> getOutputVariables() {
 		if (outputVariables == null) {
-			outputVariables = new EObjectResolvingEList<PostProcessedVariable>(PostProcessedVariable.class, this, IrPackage.POST_PROCESSING__OUTPUT_VARIABLES);
+			outputVariables = new EObjectContainmentEList.Resolving<PostProcessedVariable>(PostProcessedVariable.class, this, IrPackage.POST_PROCESSING__OUTPUT_VARIABLES);
 		}
 		return outputVariables;
 	}
@@ -226,6 +228,20 @@ public class PostProcessingImpl extends IrAnnotableImpl implements PostProcessin
 		lastDumpVariable = newLastDumpVariable;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.POST_PROCESSING__LAST_DUMP_VARIABLE, oldLastDumpVariable, lastDumpVariable));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case IrPackage.POST_PROCESSING__OUTPUT_VARIABLES:
+				return ((InternalEList<?>)getOutputVariables()).basicRemove(otherEnd, msgs);
+		}
+		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**

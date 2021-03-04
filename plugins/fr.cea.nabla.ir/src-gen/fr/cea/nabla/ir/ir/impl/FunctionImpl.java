@@ -3,9 +3,9 @@
 package fr.cea.nabla.ir.ir.impl;
 
 import fr.cea.nabla.ir.ir.Arg;
-import fr.cea.nabla.ir.ir.BaseType;
 import fr.cea.nabla.ir.ir.Function;
 import fr.cea.nabla.ir.ir.IrPackage;
+import fr.cea.nabla.ir.ir.IrType;
 import fr.cea.nabla.ir.ir.Variable;
 import java.util.Collection;
 
@@ -67,7 +67,7 @@ public abstract class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * @generated
 	 * @ordered
 	 */
-	protected BaseType returnType;
+	protected IrType returnType;
 
 	/**
 	 * The cached value of the '{@link #getVariables() <em>Variables</em>}' containment reference list.
@@ -114,10 +114,10 @@ public abstract class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * @generated
 	 */
 	@Override
-	public BaseType getReturnType() {
+	public IrType getReturnType() {
 		if (returnType != null && returnType.eIsProxy()) {
 			InternalEObject oldReturnType = (InternalEObject)returnType;
-			returnType = (BaseType)eResolveProxy(oldReturnType);
+			returnType = (IrType)eResolveProxy(oldReturnType);
 			if (returnType != oldReturnType) {
 				InternalEObject newReturnType = (InternalEObject)returnType;
 				NotificationChain msgs = oldReturnType.eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.FUNCTION__RETURN_TYPE, null, null);
@@ -137,7 +137,7 @@ public abstract class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public BaseType basicGetReturnType() {
+	public IrType basicGetReturnType() {
 		return returnType;
 	}
 
@@ -146,8 +146,8 @@ public abstract class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetReturnType(BaseType newReturnType, NotificationChain msgs) {
-		BaseType oldReturnType = returnType;
+	public NotificationChain basicSetReturnType(IrType newReturnType, NotificationChain msgs) {
+		IrType oldReturnType = returnType;
 		returnType = newReturnType;
 		if (eNotificationRequired()) {
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.FUNCTION__RETURN_TYPE, oldReturnType, newReturnType);
@@ -162,7 +162,7 @@ public abstract class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * @generated
 	 */
 	@Override
-	public void setReturnType(BaseType newReturnType) {
+	public void setReturnType(IrType newReturnType) {
 		if (newReturnType != returnType) {
 			NotificationChain msgs = null;
 			if (returnType != null)
@@ -277,7 +277,7 @@ public abstract class FunctionImpl extends IrAnnotableImpl implements Function {
 				setName((String)newValue);
 				return;
 			case IrPackage.FUNCTION__RETURN_TYPE:
-				setReturnType((BaseType)newValue);
+				setReturnType((IrType)newValue);
 				return;
 			case IrPackage.FUNCTION__VARIABLES:
 				getVariables().clear();
@@ -303,7 +303,7 @@ public abstract class FunctionImpl extends IrAnnotableImpl implements Function {
 				setName(NAME_EDEFAULT);
 				return;
 			case IrPackage.FUNCTION__RETURN_TYPE:
-				setReturnType((BaseType)null);
+				setReturnType((IrType)null);
 				return;
 			case IrPackage.FUNCTION__VARIABLES:
 				getVariables().clear();

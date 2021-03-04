@@ -16,7 +16,6 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getName <em>Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getItemTypes <em>Item Types</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getConnectivities <em>Connectivities</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getFunctions <em>Functions</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getVariables <em>Variables</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getJobs <em>Jobs</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getMain <em>Main</em>}</li>
@@ -80,18 +79,6 @@ public interface IrRoot extends IrAnnotable {
 	 * @generated
 	 */
 	EList<Connectivity> getConnectivities();
-
-	/**
-	 * Returns the value of the '<em><b>Functions</b></em>' reference list.
-	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Function}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Functions</em>' reference list.
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrRoot_Functions()
-	 * @model resolveProxies="false"
-	 * @generated
-	 */
-	EList<Function> getFunctions();
 
 	/**
 	 * Returns the value of the '<em><b>Variables</b></em>' reference list.

@@ -17,7 +17,6 @@ import fr.cea.nabla.generator.UnzipHelper
 import fr.cea.nabla.ir.generator.cpp.CppGeneratorUtils
 import fr.cea.nabla.ir.generator.cpp.CppProviderGenerator
 import fr.cea.nabla.ir.generator.java.JavaProviderGenerator
-import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.nablagen.NablagenProviderList
 import fr.cea.nabla.nablagen.TargetType
 import java.io.File
@@ -29,7 +28,6 @@ class NablagenProviderGenerator extends StandaloneGeneratorBase
 
 	def generateProviders(NablagenProviderList providerList, String projectDir)
 	{
-		var Iterable<Function> functions = null
 		val baseDir =  projectDir + "/.."
 		val startTime = System.currentTimeMillis
 
@@ -39,14 +37,8 @@ class NablagenProviderGenerator extends StandaloneGeneratorBase
 			val outputFolderName = baseDir + provider.outputDir
 			dispatcher.post(MessageType::Exec, "Starting " + provider.target.literal + " code generator: " + provider.outputDir)
 			val fsa = getConfiguredFileSystemAccess(outputFolderName, false)
-			if (functions === null)
-			{
-				// Functions are calculated only once.
-				// A validator ensures all providers are for the same extension.
-				functions = provider.extension.irFunctions
-			}
 			val installDir = '' // unused to generate JNI functions
-			generate(fsa, generator.getGenerationContents(toIrExtensionProvider(provider, baseDir, installDir), functions), '')
+			generate(fsa, generator.getGenerationContents(toIrExtensionProvider(provider, baseDir, installDir)), '')
 		}
 
 		val endTime = System.currentTimeMillis

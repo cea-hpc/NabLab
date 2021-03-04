@@ -472,9 +472,9 @@ void Glace2d::setUpTimeLoopN() noexcept
 {
 	t_n = t_n0;
 	deltat_n = deltat_n0;
-	for (size_t i2(0) ; i2<X_n.size() ; i2++)
-		for (size_t i1(0) ; i1<X_n[i2].size() ; i1++)
-			X_n[i2][i1] = X_n0[i2][i1];
+	for (size_t i1(0) ; i1<X_n.size() ; i1++)
+		for (size_t i2(0) ; i2<X_n[i1].size() ; i2++)
+			X_n[i1][i2] = X_n0[i1][i2];
 }
 
 /**

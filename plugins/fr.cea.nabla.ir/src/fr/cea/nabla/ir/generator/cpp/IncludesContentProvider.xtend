@@ -13,7 +13,7 @@ import java.util.LinkedHashSet
 
 abstract class IncludesContentProvider
 {
-	def getContentFor(boolean hasLevelDB, boolean hasPostProcessing)
+	def getIncludes(boolean hasLevelDB, boolean hasPostProcessing)
 	'''
 	«FOR include : getSystemIncludes(hasLevelDB)»
 	#include <«include»>
@@ -21,7 +21,10 @@ abstract class IncludesContentProvider
 	«FOR include : getUserIncludes(hasLevelDB, hasPostProcessing)»
 	#include "«include»"
 	«ENDFOR»
+	'''
 
+	def getUsings(boolean hasLevelDB)
+	'''
 	«FOR ns : getSystemNs(hasLevelDB)»
 	using namespace «ns»;
 	«ENDFOR»

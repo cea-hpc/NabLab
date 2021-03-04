@@ -36,7 +36,7 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 		fileContents += new GenerationContent(interfaceHeaderFileName, getInterfaceHeaderFileContent(provider, functions), false)
 
 		// CMakeLists.txt
-		val cmakeFileName = "CMakeLists.txt"
+		val cmakeFileName = pathPrefix + "CMakeLists.txt"
 		fileContents += new GenerationContent(cmakeFileName, getCMakeFileContent(provider, libCppNablaDir), false)
 
 		// Generates .h and .cc if they does not exists
@@ -59,7 +59,9 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 	#ifndef «defineName»
 	#define «defineName»
 
-	«backend.includesContentProvider.getContentFor(false, false)»
+	«backend.includesContentProvider.getIncludes(false, false)»
+
+	«backend.includesContentProvider.getUsings(false)»
 
 	«IF !provider.namespace.nullOrEmpty»
 	namespace «provider.namespace»
@@ -140,7 +142,6 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 
 	private def getCMakeFileContent(ExtensionProvider provider, String libCppNablaDir)
 	'''
-	«val pathPrefix = getNsPrefix(provider, '::').replace('::', '/')»
 	«CMakeUtils.fileHeader»
 
 	set(LIBCPPNABLA_DIR «CMakeUtils.formatCMakePath(libCppNablaDir)» CACHE STRING "")
@@ -151,11 +152,13 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 
 	MESSAGE(STATUS "Building library «provider.libName»")
 
-	add_subdirectory(${LIBCPPNABLA_DIR} ${CMAKE_BINARY_DIR}/«CppGeneratorUtils::CppLibName» EXCLUDE_FROM_ALL)
+	if(NOT TARGET cppnabla)
+		add_subdirectory(${LIBCPPNABLA_DIR} ${CMAKE_BINARY_DIR}/«CppGeneratorUtils::CppLibName» EXCLUDE_FROM_ALL)
+	endif()
 
-	add_library(«provider.libName» «pathPrefix»«provider.className».cc)
+	add_library(«provider.libName» «provider.className».cc)
 	set_property(TARGET «provider.libName» PROPERTY POSITION_INDEPENDENT_CODE ON)
-	target_include_directories(«provider.libName» PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+	target_include_directories(«provider.libName» PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
 	target_link_libraries(«provider.libName» PUBLIC cppnabla)
 
 	«CMakeUtils.fileFooter»

@@ -31,7 +31,7 @@ endif()
 
 add_executable(implicitheatequation ImplicitHeatEquation.cc)
 target_include_directories(implicitheatequation PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
-target_link_libraries(implicitheatequation PUBLIC cppnabla cppnablakokkos cppnablakokkos)
+target_link_libraries(implicitheatequation PUBLIC cppnabla cppnablakokkos)
 
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 	include(${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)

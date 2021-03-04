@@ -12,6 +12,7 @@ package fr.cea.nabla.ir.generator.cpp
 import fr.cea.nabla.ir.generator.CMakeUtils
 import fr.cea.nabla.ir.ir.IrRoot
 import java.util.HashMap
+import java.util.LinkedHashSet
 
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
@@ -29,9 +30,8 @@ abstract class CMakeContentProvider
 		«FOR entry : variables.entrySet»
 		set(«entry.key» «entry.value»)
 		«ENDFOR»
-		«val externalProviders = providers.filter[x | x.extensionName != "Math"]»
 		«FOR ep : externalProviders»
-		set(«ep.extensionName.toUpperCase»_DIR «CMakeUtils.formatCMakePath(ep.projectDir)»)
+		set(«ep.extensionName.toUpperCase»_DIR «CMakeUtils.formatCMakePath(ep.projectDir)»«IF !ep.namespace.nullOrEmpty && !ep.linearAlgebra»/«ep.namespace.replace('::', '/')»«ENDIF»)
 		«ENDFOR»
 
 		project(«name»Project CXX)
@@ -61,10 +61,24 @@ abstract class CMakeContentProvider
 
 		add_executable(«name.toLowerCase»«FOR m : modules» «m.className + '.cc'»«ENDFOR»)
 		target_include_directories(«name.toLowerCase» PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
-		target_link_libraries(«name.toLowerCase» PUBLIC cppnabla«FOR tll : targetLinkLibraries» «tll»«ENDFOR»«IF !levelDBPath.nullOrEmpty» leveldb::leveldb Threads::Threads«ENDIF»«FOR ep : externalProviders» «ep.libName»«ENDFOR»)
+		target_link_libraries(«name.toLowerCase» PUBLIC cppnabla«FOR l : getTargetLinkLibs(it, (!levelDBPath.nullOrEmpty)) BEFORE " " SEPARATOR " "»«l»«ENDFOR»)
 
 		«CMakeUtils.fileFooter»
 	'''
+
+	private def getTargetLinkLibs(IrRoot it, boolean hasLevelDB)
+	{
+		val libs = new LinkedHashSet<String>
+		libs.addAll(targetLinkLibraries)
+		if (hasLevelDB) libs += "leveldb::leveldb Threads::Threads"
+		externalProviders.forEach[p | libs += p.libName]
+		return libs
+	}
+
+	private def getExternalProviders(IrRoot it)
+	{
+		providers.filter[x | x.extensionName != "Math"]
+	}
 }
 
 class StlThreadCMakeContentProvider extends CMakeContentProvider

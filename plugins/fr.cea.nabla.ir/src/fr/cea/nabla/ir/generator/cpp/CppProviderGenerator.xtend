@@ -35,7 +35,7 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 		fileContents += new GenerationContent(interfaceHeaderFileName, getInterfaceHeaderFileContent(provider), false)
 
 		// CMakeLists.txt
-		val cmakeFileName = "CMakeLists.txt"
+		val cmakeFileName = pathPrefix + "CMakeLists.txt"
 		fileContents += new GenerationContent(cmakeFileName, getCMakeFileContent(provider, libCppNablaDir), false)
 
 		// Generates .h and .cc if they does not exists
@@ -52,78 +52,72 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 
 	private def getInterfaceHeaderFileContent(ExtensionProvider provider)
 	'''
-	«val defineName = '__' + getNsPrefix(provider, '::').replace('::', '_').toUpperCase + '_' + provider.interfaceName.toUpperCase»
-	«Utils::fileHeader»
-	
-	#ifndef «defineName»
-	#define «defineName»
-	
-	#include <iostream>
-	#include <string>
-	#include "nablalib/types/Types.h"
-	
-	using namespace nablalib::types;
-	
-	«IF !provider.namespace.nullOrEmpty»
+		«val defineName = '__' + getNsPrefix(provider, '::').replace('::', '_').toUpperCase + '_' + provider.interfaceName.toUpperCase»
+		«Utils::fileHeader»
+
+		#ifndef «defineName»
+		#define «defineName»
+
+		«backend.includesContentProvider.getIncludes(false, false)»
+
+		«backend.includesContentProvider.getUsings(false)»
+
+		«IF !provider.namespace.nullOrEmpty»
 		namespace «provider.namespace»
 		{
-	«ENDIF»
+		«ENDIF»
 		class «provider.interfaceName»
 		{
 		public:
-		virtual void jsonInit(const char* jsonContent) = 0;
+			virtual void jsonInit(const char* jsonContent) = 0;
 	
 			/* 
-	 * Here are the other methods to implement in «name» class.
-	 * Some of them can be templates. Therefore they can not be virtual.
-	 *
+			 * Here are the other methods to implement in «name» class.
+			 * Some of them can be templates. Therefore they can not be virtual.
+			 *
 			«FOR f : provider.functions»
 
-		«backend.functionContentProvider.getDeclarationContent(f)»;
+				«backend.functionContentProvider.getDeclarationContent(f)»;
 			«ENDFOR»
 			*/
 		};
-	«IF !provider.namespace.nullOrEmpty»
+		«IF !provider.namespace.nullOrEmpty»
 		}
-	«ENDIF»
+		«ENDIF»
 
-	#endif // «defineName»
+		#endif // «defineName»
 	'''
 
 	private def getHeaderFileContent(ExtensionProvider provider)
 	'''
-	«val pathPrefix = getNsPrefix(provider, '::').replace('::', '/')»
-	«val defineName = '__' + getNsPrefix(provider, '::').replace('::', '_').toUpperCase + '_' + provider.className.toUpperCase»
-	#ifndef «defineName»
-	#define «defineName»
-	
-	#include <iostream>
-	#include <string>
-	#include "«pathPrefix»«provider.interfaceName».h"
-	
-	using namespace nablalib::types;
-	
-	«IF !provider.namespace.nullOrEmpty»
+		«val pathPrefix = getNsPrefix(provider, '::').replace('::', '/')»
+		«val defineName = '__' + getNsPrefix(provider, '::').replace('::', '_').toUpperCase + '_' + provider.className.toUpperCase»
+		#ifndef «defineName»
+		#define «defineName»
+
+		#include "«pathPrefix»«provider.interfaceName».h"
+
+		«IF !provider.namespace.nullOrEmpty»
 		namespace «provider.namespace»
 		{
-	«ENDIF»
+		«ENDIF»
 		class «provider.className» : public «provider.interfaceName»
 		{
 		public:
-		void jsonInit(const char* jsonContent) override;
-		«FOR f : provider.functions»
+			void jsonInit(const char* jsonContent) override;
+			«FOR f : provider.functions»
 
-		«backend.functionContentProvider.getDeclarationContent(f)»
-		{
-			// Your code here
-		}
+			«backend.functionContentProvider.getDeclarationContent(f)»
+			{
+				// Your code here
+			}
 			«ENDFOR»
 		};
-	«IF !provider.namespace.nullOrEmpty»
+		«IF !provider.namespace.nullOrEmpty»
 		}
-	«ENDIF»
-	
-	#endif // «defineName»
+		«ENDIF»
+
+		#endif // «defineName»
 	'''
 
 	private def getSourceFileContent(ExtensionProvider provider)
@@ -131,7 +125,7 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 		«val pathPrefix = getNsPrefix(provider, '::').replace('::', '/')»
 		#include "«pathPrefix»«provider.className».h"
 		#include <string>
-		
+
 		«IF !provider.namespace.nullOrEmpty»
 			namespace «provider.namespace»
 			{
@@ -147,24 +141,25 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 
 	private def getCMakeFileContent(ExtensionProvider provider, String libCppNablaDir)
 	'''
-		«val pathPrefix = getNsPrefix(provider, '::').replace('::', '/')»
 		«CMakeUtils.fileHeader»
-		
+
 		set(LIBCPPNABLA_DIR «CMakeUtils.formatCMakePath(libCppNablaDir)» CACHE STRING "")
-		
+
 		project(«provider.providerName» CXX)
-		
+
 		«CMakeUtils.setCompiler»
-		
+
 		MESSAGE(STATUS "Building library «provider.libName»")
-		
-		add_subdirectory(${LIBCPPNABLA_DIR} ${CMAKE_BINARY_DIR}/«CppGeneratorUtils::CppLibName» EXCLUDE_FROM_ALL)
-		
-		add_library(«provider.libName» «pathPrefix»«provider.className».cc)
+
+		if(NOT TARGET cppnabla)
+			add_subdirectory(${LIBCPPNABLA_DIR} ${CMAKE_BINARY_DIR}/«CppGeneratorUtils::CppLibName» EXCLUDE_FROM_ALL)
+		endif()
+
+		add_library(«provider.libName» «provider.className».cc)
 		set_property(TARGET «provider.libName» PROPERTY POSITION_INDEPENDENT_CODE ON)
-		target_include_directories(«provider.libName» PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+		target_include_directories(«provider.libName» PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
 		target_link_libraries(«provider.libName» PUBLIC cppnabla)
-		
+
 		«CMakeUtils.fileFooter»
 	'''
 }

@@ -443,10 +443,10 @@ public final class Glace2d
 	{
 		t_n = t_n0;
 		deltat_n = deltat_n0;
-		IntStream.range(0, X_n.length).parallel().forEach(i2 -> 
+		IntStream.range(0, X_n.length).parallel().forEach(i1 ->
 		{
-			for (int i1=0 ; i1<X_n[i2].length ; i1++)
-				X_n[i2][i1] = X_n0[i2][i1];
+			for (int i2=0 ; i2<X_n[i1].length ; i2++)
+				X_n[i1][i2] = X_n0[i1][i2];
 		});
 	}
 

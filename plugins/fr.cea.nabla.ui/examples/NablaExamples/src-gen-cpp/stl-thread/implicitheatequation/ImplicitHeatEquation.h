@@ -15,8 +15,8 @@
 #include "nablalib/utils/Utils.h"
 #include "nablalib/utils/Timer.h"
 #include "nablalib/types/Types.h"
-#include "nablalib/linearalgebra/stl/LinearAlgebra.h"
 #include "nablalib/utils/stl/Parallel.h"
+#include "nablalib/linearalgebra/stl/LinearAlgebra.h"
 
 using namespace nablalib::mesh;
 using namespace nablalib::utils;

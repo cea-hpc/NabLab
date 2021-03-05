@@ -9,34 +9,31 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.cpp
 
-import fr.cea.nabla.ir.ir.IrModule
 import java.util.LinkedHashSet
-
-import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
-import static extension fr.cea.nabla.ir.IrModuleExtensions.*
-import static extension fr.cea.nabla.ir.IrRootExtensions.*
-import static extension fr.cea.nabla.ir.generator.Utils.*
 
 abstract class IncludesContentProvider
 {
-	def getContentFor(IrModule m, String levelDBPath)
+	def getIncludes(boolean hasLevelDB, boolean hasPostProcessing)
 	'''
-		«FOR include : getSystemIncludes(m, levelDBPath)»
-			#include <«include»>
+		«FOR include : getSystemIncludes(hasLevelDB)»
+		#include <«include»>
 		«ENDFOR»
-		«FOR include : getUserIncludes(m, levelDBPath)»
-			#include "«include»"
+		«FOR include : getUserIncludes(hasLevelDB, hasPostProcessing)»
+		#include "«include»"
 		«ENDFOR»
+		'''
 
-		«FOR ns : getSystemNs(m, levelDBPath)»
-			using namespace «ns»;
+		def getUsings(boolean hasLevelDB)
+		'''
+		«FOR ns : getSystemNs(hasLevelDB)»
+		using namespace «ns»;
 		«ENDFOR»
-		«FOR ns : getUserNs(m, levelDBPath)»
-			using namespace «ns»;
+		«FOR ns : getUserNs(hasLevelDB)»
+		using namespace «ns»;
 		«ENDFOR»
 	'''
 
-	protected def getSystemIncludes(IrModule m, String levelDBPath)
+	protected def getSystemIncludes(boolean hasLevelDB)
 	{
 		val systemIncludes = new LinkedHashSet<String>
 
@@ -46,7 +43,7 @@ abstract class IncludesContentProvider
 		systemIncludes += "limits"
 		systemIncludes += "utility"
 		systemIncludes += "cmath"
-		if (!levelDBPath.nullOrEmpty)
+		if (hasLevelDB)
 		{
 			systemIncludes += "leveldb/db.h"
 			systemIncludes += "leveldb/write_batch.h"
@@ -55,31 +52,24 @@ abstract class IncludesContentProvider
 		return systemIncludes
 	}
 
-	protected def getUserIncludes(IrModule m, String levelDBPath)
+	protected def getUserIncludes(boolean hasLevelDB, boolean hasPostProcessing)
 	{
 		val userIncludes = new LinkedHashSet<String>
 		userIncludes += "nablalib/mesh/CartesianMesh2DFactory.h"
 		userIncludes += "nablalib/mesh/CartesianMesh2D.h"
-		if (m.irRoot.postProcessing !== null) userIncludes += "nablalib/mesh/PvdFileWriter2D.h"
+		if (hasPostProcessing) userIncludes += "nablalib/mesh/PvdFileWriter2D.h"
 		userIncludes +=  "nablalib/utils/Utils.h"
 		userIncludes +=  "nablalib/utils/Timer.h"
 		userIncludes +=  "nablalib/types/Types.h"
-
-		for (provider : m.extensionProviders)
-			userIncludes += getNsPrefix(provider, '::').replace('::', '/') + provider.className + ".h"
-
-		if (!m.main)
-			userIncludes += m.irRoot.name.toLowerCase + "/" + m.irRoot.mainModule.className + ".h"
-
 		return userIncludes
 	}
 
-	protected def getSystemNs(IrModule m, String levelDBPath)
+	protected def getSystemNs(boolean hasLevelDB)
 	{
 		return #[]
 	}
 
-	protected def getUserNs(IrModule m, String levelDBPath)
+	protected def getUserNs(boolean hasLevelDB)
 	{
 		val userNs = new LinkedHashSet<String>
 		userNs += "nablalib::mesh"
@@ -91,17 +81,17 @@ abstract class IncludesContentProvider
 
 class StlThreadIncludesContentProvider extends IncludesContentProvider
 {
-	override getUserIncludes(IrModule m, String levelDBPath)
+	override getUserIncludes(boolean hasLevelDB, boolean hasPostProcessing)
 	{
-		val includes = super.getUserIncludes(m, levelDBPath)
+		val includes = super.getUserIncludes(hasLevelDB, hasPostProcessing)
 		includes += "nablalib/utils/stl/Parallel.h"
-		if (!levelDBPath.nullOrEmpty) includes += "nablalib/utils/stl/Serializer.h"
+		if (hasLevelDB) includes += "nablalib/utils/stl/Serializer.h"
 		return includes
 	}
 
-	override getUserNs(IrModule m, String levelDBPath)
+	override getUserNs(boolean hasLevelDB)
 	{
-		val userNs = super.getUserNs(m, levelDBPath)
+		val userNs = super.getUserNs(hasLevelDB)
 		userNs +=  "nablalib::utils::stl"
 		return userNs
 	}
@@ -109,25 +99,25 @@ class StlThreadIncludesContentProvider extends IncludesContentProvider
 
 class KokkosIncludesContentProvider extends IncludesContentProvider
 {
-	override getSystemIncludes(IrModule m, String levelDBPath)
+	override getSystemIncludes(boolean hasLevelDB)
 	{
-		val includes = super.getSystemIncludes(m, levelDBPath)
+		val includes = super.getSystemIncludes(hasLevelDB)
 		includes += "Kokkos_Core.hpp"
 		includes += "Kokkos_hwloc.hpp"
 		return includes
 	}
 
-	override getUserIncludes(IrModule m, String levelDBPath)
+	override getUserIncludes(boolean hasLevelDB, boolean hasPostProcessing)
 	{
-		val includes = super.getUserIncludes(m, levelDBPath)
+		val includes = super.getUserIncludes(hasLevelDB, hasPostProcessing)
 		includes += "nablalib/utils/kokkos/Parallel.h"
-		if (!levelDBPath.nullOrEmpty) includes += "nablalib/utils/kokkos/Serializer.h"
+		if (hasLevelDB) includes += "nablalib/utils/kokkos/Serializer.h"
 		return includes
 	}
 
-	override getUserNs(IrModule m, String levelDBPath)
+	override getUserNs(boolean hasLevelDB)
 	{
-		val userNs = super.getUserNs(m, levelDBPath)
+		val userNs = super.getUserNs(hasLevelDB)
 		userNs +=  "nablalib::utils::kokkos"
 		return userNs
 	}
@@ -135,26 +125,26 @@ class KokkosIncludesContentProvider extends IncludesContentProvider
 
 class SequentialIncludesContentProvider extends IncludesContentProvider
 {
-	override getUserIncludes(IrModule m, String levelDBPath)
+	override getUserIncludes(boolean hasLevelDB, boolean hasPostProcessing)
 	{
-		val includes = super.getUserIncludes(m, levelDBPath)
-		if (!levelDBPath.nullOrEmpty) includes += "nablalib/utils/stl/Serializer.h"
+		val includes = super.getUserIncludes(hasLevelDB, hasPostProcessing)
+		if (hasLevelDB) includes += "nablalib/utils/stl/Serializer.h"
 		return includes
 	}
 
-	override getUserNs(IrModule m, String levelDBPath)
+	override getUserNs(boolean hasLevelDB)
 	{
-		val userNs = super.getUserNs(m, levelDBPath)
-		if (!levelDBPath.nullOrEmpty) userNs += "nablalib::utils::stl"
+		val userNs = super.getUserNs(hasLevelDB)
+		if (hasLevelDB) userNs += "nablalib::utils::stl"
 		return userNs
 	}
 }
 
 class OpenMpIncludesContentProvider extends SequentialIncludesContentProvider
 {
-	override getSystemIncludes(IrModule m, String levelDBPath)
+	override getSystemIncludes(boolean hasLevelDB)
 	{
-		val includes = super.getSystemIncludes(m, levelDBPath)
+		val includes = super.getSystemIncludes(hasLevelDB)
 		includes += "omp.h"
 		return includes
 	}

@@ -10,27 +10,31 @@
 package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.ir.BaseType
+import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
 import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.Job
+import fr.cea.nabla.ir.ir.LinearAlgebraType
+import fr.cea.nabla.ir.ir.TimeLoopCopy
 import fr.cea.nabla.ir.ir.TimeLoopJob
-import fr.cea.nabla.ir.ir.Variable
+import java.util.ArrayList
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Data
 
-import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.JobCallerExtensions.*
 import static extension fr.cea.nabla.ir.JobExtensions.*
 import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 
 @Data
-class JobContentProvider
+abstract class JobContentProvider
 {
 	protected val TraceContentProvider traceContentProvider
 	protected val extension ExpressionContentProvider
 	protected val extension InstructionContentProvider
 	protected val extension JobCallerContentProvider
+
+	protected def abstract CharSequence copyConnectivityType(String leftName, String rightName, int dimension, List<CharSequence> indexNames)
 
 	def getDeclarationContent(Job it)
 	'''
@@ -44,11 +48,6 @@ class JobContentProvider
 			«innerContent»
 		}
 	'''
-
-	def copy(Variable source, Variable destination)
-	{
-		copy(destination.name, source.name, destination.type.dimension)
-	}
 
 	protected def dispatch CharSequence getInnerContent(InstructionJob it)
 	'''
@@ -108,24 +107,62 @@ class JobContentProvider
 
 	protected def dispatch CharSequence getInnerContent(TimeLoopJob it)
 	'''
-		«FOR copy : copies»
-			«copy(copy.source, copy.destination)»
+		«FOR c  : copies»
+			«c.content»
 		«ENDFOR»
 	'''
 
-	protected def CharSequence copy(String left, String right, int dimension)
+	protected def getContent(TimeLoopCopy it)
+	{
+		// c.destination.type == c.source.type
+		val t = source.type
+		switch t
+		{
+			BaseType: copyBaseType(destination.name, source.name, t.sizes.size, new ArrayList<CharSequence>())
+			ConnectivityType: copyConnectivityType(destination.name, source.name, t.connectivities.size + t.base.sizes.size, new ArrayList<CharSequence>())
+			LinearAlgebraType: copyLinearAlgebraType(destination.name, source.name, t.sizes.size, new ArrayList<CharSequence>())
+		}
+	}
+
+	protected def CharSequence copyBaseType(String leftName, String rightName, int dimension, List<CharSequence> indexNames)
 	{
 		if (dimension == 0)
-			'''«left» = «right»;'''
+			'''«leftName»«FOR i : indexNames»[«i»]«ENDFOR» = «rightName»«FOR i : indexNames»[«i»]«ENDFOR»;'''
 		else
 		{
-			val indexName = 'i' + dimension
-			val suffix = '[' + indexName + ']'
+			val length = '''«leftName»«FOR i : indexNames»[«i»]«ENDFOR».size()'''
+			var indexName = '''i«indexNames.size + 1»'''
+			indexNames += indexName
 			'''
-				for (size_t «indexName»(0) ; «indexName»<«left».size() ; «indexName»++)
-					«copy(left + suffix, right + suffix, dimension-1)»
+				for (size_t «indexName»(0) ; «indexName»<«length» ; «indexName»++)
+					«copyBaseType(leftName, rightName, dimension-1, indexNames)»
 			'''
 		}
+	}
+
+	protected def CharSequence copyLinearAlgebraType(String leftName, String rightName, int dimension, List<CharSequence> indexNames)
+	{
+		if (dimension == 0)
+			'''«leftName».setValue(«FOR i : indexNames SEPARATOR ', '»«i»«ENDFOR», «rightName».getValue(«FOR i : indexNames SEPARATOR ', '»«i»«ENDFOR»));'''
+		else
+		{
+			val length = '''«leftName»«FOR i : indexNames BEFORE '.getValue(' SEPARATOR ', ' AFTER ')'»«i»«ENDFOR».getSize()'''
+			var indexName = '''i«indexNames.size + 1»'''
+			indexNames += indexName
+			'''
+				for (size_t «indexName»(0) ; «indexName»<«length» ; «indexName»++)
+					«copyLinearAlgebraType(leftName, rightName, dimension-1, indexNames)»
+			'''
+		}
+	}
+}
+
+@Data
+class StlThreadJobContentProvider extends JobContentProvider
+{
+	override protected copyConnectivityType(String leftName, String rightName, int dimension, List<CharSequence> indexNames)
+	{
+		copyBaseType(leftName, rightName, dimension, indexNames)
 	}
 }
 
@@ -146,15 +183,10 @@ class KokkosJobContentProvider extends JobContentProvider
 		}
 	'''
 
-	override copy(Variable source, Variable destination)
-	{
-		if (destination.type instanceof BaseType)
-			copy(destination.name, source.name, (destination.type as BaseType).sizes.size)
-		else
-			'''deep_copy(«destination.name», «source.name»);'''
-	}
-
 	protected def List<String> getArguments(Job it) { #[] }
+
+	override protected copyConnectivityType(String leftName, String rightName, int dimension, List<CharSequence> indexNames)
+	'''deep_copy(«leftName», «rightName»);'''
 }
 
 @Data

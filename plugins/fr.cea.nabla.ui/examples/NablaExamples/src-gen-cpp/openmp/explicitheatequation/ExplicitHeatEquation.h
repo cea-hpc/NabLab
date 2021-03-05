@@ -23,7 +23,7 @@ using namespace nablalib::types;
 
 /******************** Free functions declarations ********************/
 
-namespace ExplicitHeatEquationFuncs
+namespace explicitheatequationfreefuncs
 {
 template<size_t x>
 double norm(RealArray1D<x> a);

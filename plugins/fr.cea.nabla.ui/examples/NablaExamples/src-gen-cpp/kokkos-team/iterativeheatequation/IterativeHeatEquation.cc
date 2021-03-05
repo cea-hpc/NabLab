@@ -1,6 +1,6 @@
 /*** GENERATED FILE - DO NOT OVERWRITE ***/
 
-#include "iterativeheatequation/IterativeHeatEquation.h"
+#include "IterativeHeatEquation.h"
 #include <rapidjson/document.h>
 #include <rapidjson/istreamwrapper.h>
 #include <rapidjson/stringbuffer.h>
@@ -9,7 +9,7 @@
 
 /******************** Free functions definitions ********************/
 
-namespace IterativeHeatEquationFuncs
+namespace iterativeheatequationfreefuncs
 {
 KOKKOS_INLINE_FUNCTION
 bool check(bool a)
@@ -24,7 +24,7 @@ template<size_t x>
 KOKKOS_INLINE_FUNCTION
 double norm(RealArray1D<x> a)
 {
-	return std::sqrt(IterativeHeatEquationFuncs::dot(a, a));
+	return std::sqrt(iterativeheatequationfreefuncs::dot(a, a));
 }
 
 template<size_t x>
@@ -233,7 +233,7 @@ void IterativeHeatEquation::computeFaceLength(const member_type& teamMember) noe
 					const Id pPlus1Id(nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace]);
 					const size_t pNodes(pId);
 					const size_t pPlus1Nodes(pPlus1Id);
-					reduction0 = IterativeHeatEquationFuncs::sumR0(reduction0, IterativeHeatEquationFuncs::norm(X(pNodes) - X(pPlus1Nodes)));
+					reduction0 = iterativeheatequationfreefuncs::sumR0(reduction0, iterativeheatequationfreefuncs::norm(X(pNodes) - X(pPlus1Nodes)));
 				}
 			}
 			faceLength(fFaces) = 0.5 * reduction0;
@@ -277,7 +277,7 @@ void IterativeHeatEquation::computeV(const member_type& teamMember) noexcept
 					const Id pPlus1Id(nodesOfCellJ[(pNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
 					const size_t pNodes(pId);
 					const size_t pPlus1Nodes(pPlus1Id);
-					reduction0 = IterativeHeatEquationFuncs::sumR0(reduction0, IterativeHeatEquationFuncs::det(X(pNodes), X(pPlus1Nodes)));
+					reduction0 = iterativeheatequationfreefuncs::sumR0(reduction0, iterativeheatequationfreefuncs::det(X(pNodes), X(pPlus1Nodes)));
 				}
 			}
 			V(jCells) = 0.5 * reduction0;
@@ -339,7 +339,7 @@ void IterativeHeatEquation::initXc(const member_type& teamMember) noexcept
 				{
 					const Id pId(nodesOfCellC[pNodesOfCellC]);
 					const size_t pNodes(pId);
-					reduction0 = IterativeHeatEquationFuncs::sumR1(reduction0, X(pNodes));
+					reduction0 = iterativeheatequationfreefuncs::sumR1(reduction0, X(pNodes));
 				}
 			}
 			Xc(cCells) = 0.25 * reduction0;
@@ -381,7 +381,7 @@ void IterativeHeatEquation::updateU(const member_type& teamMember) noexcept
 				{
 					const Id dId(neighbourCellsC[dNeighbourCellsC]);
 					const size_t dCells(dId);
-					reduction0 = IterativeHeatEquationFuncs::sumR0(reduction0, alpha(cCells, dCells) * u_nplus1_k(dCells));
+					reduction0 = iterativeheatequationfreefuncs::sumR0(reduction0, alpha(cCells, dCells) * u_nplus1_k(dCells));
 				}
 			}
 			u_nplus1_kplus1(cCells) = u_n(cCells) + alpha(cCells, cCells) * u_nplus1_k(cCells) + reduction0;
@@ -399,8 +399,8 @@ void IterativeHeatEquation::computeDeltaTn(const member_type& teamMember) noexce
 	double reduction0;
 	Kokkos::parallel_reduce(Kokkos::TeamThreadRange(teamMember, nbCells), KOKKOS_LAMBDA(const size_t& cCells, double& accu)
 	{
-		accu = IterativeHeatEquationFuncs::minR0(accu, V(cCells) / D(cCells));
-	}, KokkosJoiner<double>(reduction0, numeric_limits<double>::max(), &IterativeHeatEquationFuncs::minR0));
+		accu = iterativeheatequationfreefuncs::minR0(accu, V(cCells) / D(cCells));
+	}, KokkosJoiner<double>(reduction0, numeric_limits<double>::max(), &iterativeheatequationfreefuncs::minR0));
 	deltat = reduction0 * 0.1;
 }
 
@@ -428,7 +428,7 @@ void IterativeHeatEquation::computeFaceConductivity(const member_type& teamMembe
 				{
 					const Id c1Id(cellsOfFaceF[c1CellsOfFaceF]);
 					const size_t c1Cells(c1Id);
-					reduction0 = IterativeHeatEquationFuncs::prodR0(reduction0, D(c1Cells));
+					reduction0 = iterativeheatequationfreefuncs::prodR0(reduction0, D(c1Cells));
 				}
 			}
 			double reduction1(0.0);
@@ -439,7 +439,7 @@ void IterativeHeatEquation::computeFaceConductivity(const member_type& teamMembe
 				{
 					const Id c2Id(cellsOfFaceF[c2CellsOfFaceF]);
 					const size_t c2Cells(c2Id);
-					reduction1 = IterativeHeatEquationFuncs::sumR0(reduction1, D(c2Cells));
+					reduction1 = iterativeheatequationfreefuncs::sumR0(reduction1, D(c2Cells));
 				}
 			}
 			faceConductivity(fFaces) = 2.0 * reduction0 / reduction1;
@@ -457,8 +457,8 @@ void IterativeHeatEquation::computeResidual(const member_type& teamMember) noexc
 	double reduction0;
 	Kokkos::parallel_reduce(Kokkos::TeamThreadRange(teamMember, nbCells), KOKKOS_LAMBDA(const size_t& jCells, double& accu)
 	{
-		accu = IterativeHeatEquationFuncs::maxR0(accu, std::abs(u_nplus1_kplus1(jCells) - u_nplus1_k(jCells)));
-	}, KokkosJoiner<double>(reduction0, -numeric_limits<double>::max(), &IterativeHeatEquationFuncs::maxR0));
+		accu = iterativeheatequationfreefuncs::maxR0(accu, std::abs(u_nplus1_kplus1(jCells) - u_nplus1_k(jCells)));
+	}, KokkosJoiner<double>(reduction0, -numeric_limits<double>::max(), &iterativeheatequationfreefuncs::maxR0));
 	residual = reduction0;
 }
 
@@ -494,7 +494,7 @@ void IterativeHeatEquation::executeTimeLoopK() noexcept
 		
 	
 		// Evaluate loop condition with variables at time n
-		continueLoop = (residual > options.epsilon && IterativeHeatEquationFuncs::check(k + 1 < options.maxIterationsK));
+		continueLoop = (residual > options.epsilon && iterativeheatequationfreefuncs::check(k + 1 < options.maxIterationsK));
 	
 		if (continueLoop)
 		{
@@ -521,7 +521,7 @@ void IterativeHeatEquation::initU(const member_type& teamMember) noexcept
 		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& cCellsTeam)
 		{
 			int cCells(cCellsTeam + teamWork.first);
-			if (IterativeHeatEquationFuncs::norm(Xc(cCells) - vectOne) < 0.5) 
+			if (iterativeheatequationfreefuncs::norm(Xc(cCells) - vectOne) < 0.5) 
 				u_n(cCells) = options.u0;
 			else
 				u_n(cCells) = 0.0;
@@ -565,7 +565,7 @@ void IterativeHeatEquation::computeAlphaCoeff(const member_type& teamMember) noe
 					const size_t dCells(dId);
 					const Id fId(mesh->getCommonFace(cId, dId));
 					const size_t fFaces(fId);
-					const double alphaExtraDiag(deltat / V(cCells) * (faceLength(fFaces) * faceConductivity(fFaces)) / IterativeHeatEquationFuncs::norm(Xc(cCells) - Xc(dCells)));
+					const double alphaExtraDiag(deltat / V(cCells) * (faceLength(fFaces) * faceConductivity(fFaces)) / iterativeheatequationfreefuncs::norm(Xc(cCells) - Xc(dCells)));
 					alpha(cCells, dCells) = alphaExtraDiag;
 					alphaDiag = alphaDiag + alphaExtraDiag;
 				}

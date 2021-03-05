@@ -15,14 +15,20 @@ import fr.cea.nabla.ir.ir.InternFunction
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.getInstanceName
 import static extension fr.cea.nabla.ir.Utils.getIrModule
 import static extension fr.cea.nabla.ir.generator.Utils.getClassName
+import fr.cea.nabla.ir.ir.IrModule
 
-class CppGeneratorUtils 
+class CppGeneratorUtils
 {
 	public static val CppLibName = "LibCppNabla"
 
+	static def getFreeFunctionNs(IrModule it)
+	{
+		className.toLowerCase + "freefuncs"
+	}
+
 	static def dispatch getCodeName(InternFunction it)
 	{
-		irModule.className + 'Funcs::' + name
+		irModule.freeFunctionNs + '::' + name
 	}
 
 	static def dispatch getCodeName(ExternFunction it)

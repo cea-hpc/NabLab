@@ -23,9 +23,7 @@ if(NOT TARGET cppnabla)
 	add_subdirectory(${LIBCPPNABLA_DIR} ${CMAKE_BINARY_DIR}/LibCppNabla EXCLUDE_FROM_ALL)
 endif()
 
-
 add_executable(heatequation HeatEquation.cc)
-target_include_directories(heatequation PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
 target_link_libraries(heatequation PUBLIC cppnabla)
 
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)

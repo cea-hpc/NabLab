@@ -23,7 +23,7 @@ using namespace nablalib::types;
 
 /******************** Free functions declarations ********************/
 
-namespace HeatEquationFuncs
+namespace heatequationfreefuncs
 {
 double det(RealArray1D<2> a, RealArray1D<2> b);
 template<size_t x>

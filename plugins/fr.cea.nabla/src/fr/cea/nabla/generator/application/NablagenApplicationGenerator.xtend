@@ -47,6 +47,7 @@ class NablagenApplicationGenerator extends StandaloneGeneratorBase
 		try
 		{
 			val ir = irRootBuilder.buildGeneratorGenericIr(ngenApp)
+			val applicationDir = ir.name.toLowerCase
 			dispatcher.post(MessageType.Exec, "Starting code generation")
 			val startTime = System.currentTimeMillis
 
@@ -59,12 +60,12 @@ class NablagenApplicationGenerator extends StandaloneGeneratorBase
 				if (adModule.type !== null)
 					texContents += new GenerationContent(adModule.type.name + ".tex", adModule.type.latexContent, false)
 			var fsa = getConfiguredFileSystemAccess(projectDir, true)
-			generate(fsa, texContents, ir.name.toLowerCase)
+			generate(fsa, texContents, applicationDir)
 
 			dispatcher.post(MessageType::Exec, "Starting Json code generator")
 			val ir2Json = new JsonGenerator(ngenApp.levelDB!==null)
 			val jsonGenerationContent = ir2Json.getGenerationContents(ir)
-			generate(fsa, jsonGenerationContent, ir.name.toLowerCase)
+			generate(fsa, jsonGenerationContent, applicationDir)
 
 			val baseDir =  projectDir + "/.."
 			for (target : ngenApp.targets)
@@ -98,7 +99,7 @@ class NablagenApplicationGenerator extends StandaloneGeneratorBase
 							val fileName = irWriter.createAndSaveResource(fsa, genIr)
 							dispatcher.post(MessageType::Exec, '    Resource saved: ' + fileName)
 						}
-						generate(fsa, g.getGenerationContents(genIr), ir.name.toLowerCase)
+						generate(fsa, g.getGenerationContents(genIr), applicationDir)
 					}
 				}
 				else

@@ -24,7 +24,7 @@ using namespace nablalib::utils::stl;
 
 /******************** Free functions declarations ********************/
 
-namespace Glace2dFuncs
+namespace glace2dfreefuncs
 {
 double det(RealArray2D<2,2> a);
 RealArray1D<2> perp(RealArray1D<2> a);

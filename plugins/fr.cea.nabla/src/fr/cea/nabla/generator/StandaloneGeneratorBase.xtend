@@ -45,11 +45,11 @@ abstract class StandaloneGeneratorBase
 		})
 	}
 
-	protected def generate(JavaIoFileSystemAccess fsa, Iterable<GenerationContent> generationContents, String relativeBaseDir)
+	protected def generate(JavaIoFileSystemAccess fsa, Iterable<GenerationContent> generationContents, String applicationDir)
 	{
 		for (gc : generationContents)
 		{
-			val fullFileName = (relativeBaseDir.nullOrEmpty ? gc.fileName : relativeBaseDir + '/' + gc.fileName)
+			val fullFileName = (applicationDir.nullOrEmpty ? gc.fileName : applicationDir + '/' + gc.fileName)
 			// no generation if file already exists and generateOnce is true
 			val isFileAndExists = fsa.isFile(fullFileName)
 			if ( !(isFileAndExists && gc.generateOnce) )

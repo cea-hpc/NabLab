@@ -29,6 +29,7 @@ import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
+import static extension fr.cea.nabla.ir.generator.cpp.CppGeneratorUtils.*
 
 class CppApplicationGenerator extends CppGenerator implements ApplicationGenerator
 {
@@ -81,7 +82,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 
 	/******************** Free functions declarations ********************/
 
-	namespace «className»Funcs
+	namespace «freeFunctionNs»
 	{
 	«FOR f : internFunctions»
 		«functionContentProvider.getDeclarationContent(f)»;
@@ -189,14 +190,14 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	'''
 	«fileHeader»
 
-	#include "«irRoot.name.toLowerCase»/«className».h"
+	#include "«className».h"
 	#include <rapidjson/document.h>
 	#include <rapidjson/istreamwrapper.h>
 	#include <rapidjson/stringbuffer.h>
 	#include <rapidjson/writer.h>
 	«IF main && irRoot.modules.size > 1»
 		«FOR m : irRoot.modules.filter[x | x !== it]»
-			#include "«irRoot.name.toLowerCase»/«m.className».h"
+			#include "«m.className».h"
 		«ENDFOR»
 	«ENDIF»
 
@@ -205,7 +206,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 
 	/******************** Free functions definitions ********************/
 
-	namespace «className»Funcs
+	namespace «freeFunctionNs»
 	{
 	«FOR f : internFunctions SEPARATOR '\n'»
 		«functionContentProvider.getDefinitionContent(f)»

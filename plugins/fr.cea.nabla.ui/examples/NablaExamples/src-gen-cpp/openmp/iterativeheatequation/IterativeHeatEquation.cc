@@ -1,6 +1,6 @@
 /*** GENERATED FILE - DO NOT OVERWRITE ***/
 
-#include "iterativeheatequation/IterativeHeatEquation.h"
+#include "IterativeHeatEquation.h"
 #include <rapidjson/document.h>
 #include <rapidjson/istreamwrapper.h>
 #include <rapidjson/stringbuffer.h>
@@ -9,7 +9,7 @@
 
 /******************** Free functions definitions ********************/
 
-namespace IterativeHeatEquationFuncs
+namespace iterativeheatequationfreefuncs
 {
 bool check(bool a)
 {
@@ -22,7 +22,7 @@ bool check(bool a)
 template<size_t x>
 double norm(RealArray1D<x> a)
 {
-	return std::sqrt(IterativeHeatEquationFuncs::dot(a, a));
+	return std::sqrt(iterativeheatequationfreefuncs::dot(a, a));
 }
 
 template<size_t x>
@@ -196,7 +196,7 @@ void IterativeHeatEquation::computeFaceLength() noexcept
 				const Id pPlus1Id(nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace]);
 				const size_t pNodes(pId);
 				const size_t pPlus1Nodes(pPlus1Id);
-				reduction0 = IterativeHeatEquationFuncs::sumR0(reduction0, IterativeHeatEquationFuncs::norm(X[pNodes] - X[pPlus1Nodes]));
+				reduction0 = iterativeheatequationfreefuncs::sumR0(reduction0, iterativeheatequationfreefuncs::norm(X[pNodes] - X[pPlus1Nodes]));
 			}
 		}
 		faceLength[fFaces] = 0.5 * reduction0;
@@ -234,7 +234,7 @@ void IterativeHeatEquation::computeV() noexcept
 				const Id pPlus1Id(nodesOfCellJ[(pNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
 				const size_t pNodes(pId);
 				const size_t pPlus1Nodes(pPlus1Id);
-				reduction0 = IterativeHeatEquationFuncs::sumR0(reduction0, IterativeHeatEquationFuncs::det(X[pNodes], X[pPlus1Nodes]));
+				reduction0 = iterativeheatequationfreefuncs::sumR0(reduction0, iterativeheatequationfreefuncs::det(X[pNodes], X[pPlus1Nodes]));
 			}
 		}
 		V[jCells] = 0.5 * reduction0;
@@ -284,7 +284,7 @@ void IterativeHeatEquation::initXc() noexcept
 			{
 				const Id pId(nodesOfCellC[pNodesOfCellC]);
 				const size_t pNodes(pId);
-				reduction0 = IterativeHeatEquationFuncs::sumR1(reduction0, X[pNodes]);
+				reduction0 = iterativeheatequationfreefuncs::sumR1(reduction0, X[pNodes]);
 			}
 		}
 		Xc[cCells] = 0.25 * reduction0;
@@ -321,7 +321,7 @@ void IterativeHeatEquation::updateU() noexcept
 			{
 				const Id dId(neighbourCellsC[dNeighbourCellsC]);
 				const size_t dCells(dId);
-				reduction0 = IterativeHeatEquationFuncs::sumR0(reduction0, alpha[cCells][dCells] * u_nplus1_k[dCells]);
+				reduction0 = iterativeheatequationfreefuncs::sumR0(reduction0, alpha[cCells][dCells] * u_nplus1_k[dCells]);
 			}
 		}
 		u_nplus1_kplus1[cCells] = u_n[cCells] + alpha[cCells][cCells] * u_nplus1_k[cCells] + reduction0;
@@ -339,7 +339,7 @@ void IterativeHeatEquation::computeDeltaTn() noexcept
 	#pragma omp parallel for reduction(min:reduction0)
 	for (size_t cCells=0; cCells<nbCells; cCells++)
 	{
-		reduction0 = IterativeHeatEquationFuncs::minR0(reduction0, V[cCells] / D[cCells]);
+		reduction0 = iterativeheatequationfreefuncs::minR0(reduction0, V[cCells] / D[cCells]);
 	}
 	deltat = reduction0 * 0.1;
 }
@@ -363,7 +363,7 @@ void IterativeHeatEquation::computeFaceConductivity() noexcept
 			{
 				const Id c1Id(cellsOfFaceF[c1CellsOfFaceF]);
 				const size_t c1Cells(c1Id);
-				reduction0 = IterativeHeatEquationFuncs::prodR0(reduction0, D[c1Cells]);
+				reduction0 = iterativeheatequationfreefuncs::prodR0(reduction0, D[c1Cells]);
 			}
 		}
 		double reduction1(0.0);
@@ -374,7 +374,7 @@ void IterativeHeatEquation::computeFaceConductivity() noexcept
 			{
 				const Id c2Id(cellsOfFaceF[c2CellsOfFaceF]);
 				const size_t c2Cells(c2Id);
-				reduction1 = IterativeHeatEquationFuncs::sumR0(reduction1, D[c2Cells]);
+				reduction1 = iterativeheatequationfreefuncs::sumR0(reduction1, D[c2Cells]);
 			}
 		}
 		faceConductivity[fFaces] = 2.0 * reduction0 / reduction1;
@@ -392,7 +392,7 @@ void IterativeHeatEquation::computeResidual() noexcept
 	#pragma omp parallel for reduction(min:reduction0)
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
-		reduction0 = IterativeHeatEquationFuncs::maxR0(reduction0, std::abs(u_nplus1_kplus1[jCells] - u_nplus1_k[jCells]));
+		reduction0 = iterativeheatequationfreefuncs::maxR0(reduction0, std::abs(u_nplus1_kplus1[jCells] - u_nplus1_k[jCells]));
 	}
 	residual = reduction0;
 }
@@ -415,7 +415,7 @@ void IterativeHeatEquation::executeTimeLoopK() noexcept
 		
 	
 		// Evaluate loop condition with variables at time n
-		continueLoop = (residual > options.epsilon && IterativeHeatEquationFuncs::check(k + 1 < options.maxIterationsK));
+		continueLoop = (residual > options.epsilon && iterativeheatequationfreefuncs::check(k + 1 < options.maxIterationsK));
 	
 		if (continueLoop)
 		{
@@ -437,7 +437,7 @@ void IterativeHeatEquation::initU() noexcept
 	#pragma omp parallel for shared(u_n)
 	for (size_t cCells=0; cCells<nbCells; cCells++)
 	{
-		if (IterativeHeatEquationFuncs::norm(Xc[cCells] - vectOne) < 0.5) 
+		if (iterativeheatequationfreefuncs::norm(Xc[cCells] - vectOne) < 0.5) 
 			u_n[cCells] = options.u0;
 		else
 			u_n[cCells] = 0.0;
@@ -475,7 +475,7 @@ void IterativeHeatEquation::computeAlphaCoeff() noexcept
 				const size_t dCells(dId);
 				const Id fId(mesh->getCommonFace(cId, dId));
 				const size_t fFaces(fId);
-				const double alphaExtraDiag(deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / IterativeHeatEquationFuncs::norm(Xc[cCells] - Xc[dCells]));
+				const double alphaExtraDiag(deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / iterativeheatequationfreefuncs::norm(Xc[cCells] - Xc[dCells]));
 				alpha[cCells][dCells] = alphaExtraDiag;
 				alphaDiag = alphaDiag + alphaExtraDiag;
 			}

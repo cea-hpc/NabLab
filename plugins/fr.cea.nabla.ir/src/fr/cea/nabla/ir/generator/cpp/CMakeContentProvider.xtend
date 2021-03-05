@@ -47,8 +47,8 @@ abstract class CMakeContentProvider
 		if(NOT TARGET cppnabla)
 			add_subdirectory(${LIBCPPNABLA_DIR} ${CMAKE_BINARY_DIR}/«CppGeneratorUtils::CppLibName» EXCLUDE_FROM_ALL)
 		endif()
-
 		«IF !levelDBPath.nullOrEmpty»
+
 			set(CMAKE_FIND_ROOT_PATH «levelDBPath»)
 			find_package(leveldb)
 			find_package(Threads REQUIRED)
@@ -60,7 +60,6 @@ abstract class CMakeContentProvider
 		«ENDIF»
 
 		add_executable(«name.toLowerCase»«FOR m : modules» «m.className + '.cc'»«ENDFOR»)
-		target_include_directories(«name.toLowerCase» PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
 		target_link_libraries(«name.toLowerCase» PUBLIC cppnabla«FOR l : getTargetLinkLibs(it, (!levelDBPath.nullOrEmpty)) BEFORE " " SEPARATOR " "»«l»«ENDFOR»)
 
 		«CMakeUtils.fileFooter»

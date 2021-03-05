@@ -28,6 +28,7 @@ import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.FunctionContentProvider.*
+import static extension fr.cea.nabla.ir.generator.java.JavaGeneratorUtils.*
 import static extension fr.cea.nabla.ir.generator.java.JobContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.JsonContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.TypeContentProvider.*
@@ -51,7 +52,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 		«fileHeader»
 
 		«val mainModule = irRoot.mainModule»
-		package «irRoot.name.toLowerCase»;
+		package «packageName»;
 
 		import static org.iq80.leveldb.impl.Iq80DBFactory.bytes;
 		import static org.iq80.leveldb.impl.Iq80DBFactory.factory;

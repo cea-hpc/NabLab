@@ -26,7 +26,7 @@ using namespace nablalib::utils::kokkos;
 
 /******************** Free functions declarations ********************/
 
-namespace HeatEquationFuncs
+namespace heatequationfreefuncs
 {
 KOKKOS_INLINE_FUNCTION
 double det(RealArray1D<2> a, RealArray1D<2> b);

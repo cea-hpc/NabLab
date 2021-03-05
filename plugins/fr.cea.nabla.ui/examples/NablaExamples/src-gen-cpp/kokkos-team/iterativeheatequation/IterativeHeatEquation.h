@@ -26,7 +26,7 @@ using namespace nablalib::utils::kokkos;
 
 /******************** Free functions declarations ********************/
 
-namespace IterativeHeatEquationFuncs
+namespace iterativeheatequationfreefuncs
 {
 KOKKOS_INLINE_FUNCTION
 bool check(bool a);

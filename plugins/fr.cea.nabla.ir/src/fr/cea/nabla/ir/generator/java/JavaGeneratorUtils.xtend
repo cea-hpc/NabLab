@@ -11,8 +11,10 @@ package fr.cea.nabla.ir.generator.java
 
 import fr.cea.nabla.ir.ir.ExternFunction
 import fr.cea.nabla.ir.ir.InternFunction
+import fr.cea.nabla.ir.ir.IrModule
 
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
+import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 
 class JavaGeneratorUtils
 {
@@ -34,5 +36,10 @@ class JavaGeneratorUtils
 				'Math.' + name
 		}
 		else 'options.' + provider.instanceName + '.' + name
+	}
+
+	static def getPackageName(IrModule it)
+	{
+		irRoot.name.toLowerCase
 	}
 }

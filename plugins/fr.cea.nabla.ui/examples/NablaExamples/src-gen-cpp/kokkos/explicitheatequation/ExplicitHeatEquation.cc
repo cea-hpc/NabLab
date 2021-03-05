@@ -1,6 +1,6 @@
 /*** GENERATED FILE - DO NOT OVERWRITE ***/
 
-#include "explicitheatequation/ExplicitHeatEquation.h"
+#include "ExplicitHeatEquation.h"
 #include <rapidjson/document.h>
 #include <rapidjson/istreamwrapper.h>
 #include <rapidjson/stringbuffer.h>
@@ -9,13 +9,13 @@
 
 /******************** Free functions definitions ********************/
 
-namespace ExplicitHeatEquationFuncs
+namespace explicitheatequationfreefuncs
 {
 template<size_t x>
 KOKKOS_INLINE_FUNCTION
 double norm(RealArray1D<x> a)
 {
-	return std::sqrt(ExplicitHeatEquationFuncs::dot(a, a));
+	return std::sqrt(explicitheatequationfreefuncs::dot(a, a));
 }
 
 template<size_t x>
@@ -169,7 +169,7 @@ void ExplicitHeatEquation::computeFaceLength() noexcept
 				const Id pPlus1Id(nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace]);
 				const size_t pNodes(pId);
 				const size_t pPlus1Nodes(pPlus1Id);
-				reduction0 = ExplicitHeatEquationFuncs::sumR0(reduction0, ExplicitHeatEquationFuncs::norm(X(pNodes) - X(pPlus1Nodes)));
+				reduction0 = explicitheatequationfreefuncs::sumR0(reduction0, explicitheatequationfreefuncs::norm(X(pNodes) - X(pPlus1Nodes)));
 			}
 		}
 		faceLength(fFaces) = 0.5 * reduction0;
@@ -206,7 +206,7 @@ void ExplicitHeatEquation::computeV() noexcept
 				const Id pPlus1Id(nodesOfCellJ[(pNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
 				const size_t pNodes(pId);
 				const size_t pPlus1Nodes(pPlus1Id);
-				reduction0 = ExplicitHeatEquationFuncs::sumR0(reduction0, ExplicitHeatEquationFuncs::det(X(pNodes), X(pPlus1Nodes)));
+				reduction0 = explicitheatequationfreefuncs::sumR0(reduction0, explicitheatequationfreefuncs::det(X(pNodes), X(pPlus1Nodes)));
 			}
 		}
 		V(jCells) = 0.5 * reduction0;
@@ -254,7 +254,7 @@ void ExplicitHeatEquation::initXc() noexcept
 			{
 				const Id pId(nodesOfCellC[pNodesOfCellC]);
 				const size_t pNodes(pId);
-				reduction0 = ExplicitHeatEquationFuncs::sumR1(reduction0, X(pNodes));
+				reduction0 = explicitheatequationfreefuncs::sumR1(reduction0, X(pNodes));
 			}
 		}
 		Xc(cCells) = 0.25 * reduction0;
@@ -279,7 +279,7 @@ void ExplicitHeatEquation::updateU() noexcept
 			{
 				const Id dId(neighbourCellsC[dNeighbourCellsC]);
 				const size_t dCells(dId);
-				reduction0 = ExplicitHeatEquationFuncs::sumR0(reduction0, alpha(cCells, dCells) * u_n(dCells));
+				reduction0 = explicitheatequationfreefuncs::sumR0(reduction0, alpha(cCells, dCells) * u_n(dCells));
 			}
 		}
 		u_nplus1(cCells) = alpha(cCells, cCells) * u_n(cCells) + reduction0;
@@ -296,8 +296,8 @@ void ExplicitHeatEquation::computeDeltaTn() noexcept
 	double reduction0;
 	Kokkos::parallel_reduce(nbCells, KOKKOS_LAMBDA(const size_t& cCells, double& accu)
 	{
-		accu = ExplicitHeatEquationFuncs::minR0(accu, V(cCells) / D(cCells));
-	}, KokkosJoiner<double>(reduction0, numeric_limits<double>::max(), &ExplicitHeatEquationFuncs::minR0));
+		accu = explicitheatequationfreefuncs::minR0(accu, V(cCells) / D(cCells));
+	}, KokkosJoiner<double>(reduction0, numeric_limits<double>::max(), &explicitheatequationfreefuncs::minR0));
 	deltat = reduction0 * 0.24;
 }
 
@@ -319,7 +319,7 @@ void ExplicitHeatEquation::computeFaceConductivity() noexcept
 			{
 				const Id c1Id(cellsOfFaceF[c1CellsOfFaceF]);
 				const size_t c1Cells(c1Id);
-				reduction0 = ExplicitHeatEquationFuncs::prodR0(reduction0, D(c1Cells));
+				reduction0 = explicitheatequationfreefuncs::prodR0(reduction0, D(c1Cells));
 			}
 		}
 		double reduction1(0.0);
@@ -330,7 +330,7 @@ void ExplicitHeatEquation::computeFaceConductivity() noexcept
 			{
 				const Id c2Id(cellsOfFaceF[c2CellsOfFaceF]);
 				const size_t c2Cells(c2Id);
-				reduction1 = ExplicitHeatEquationFuncs::sumR0(reduction1, D(c2Cells));
+				reduction1 = explicitheatequationfreefuncs::sumR0(reduction1, D(c2Cells));
 			}
 		}
 		faceConductivity(fFaces) = 2.0 * reduction0 / reduction1;
@@ -346,7 +346,7 @@ void ExplicitHeatEquation::initU() noexcept
 {
 	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& cCells)
 	{
-		if (ExplicitHeatEquationFuncs::norm(Xc(cCells) - vectOne) < 0.5) 
+		if (explicitheatequationfreefuncs::norm(Xc(cCells) - vectOne) < 0.5) 
 			u_n(cCells) = options.u0;
 		else
 			u_n(cCells) = 0.0;
@@ -383,7 +383,7 @@ void ExplicitHeatEquation::computeAlphaCoeff() noexcept
 				const size_t dCells(dId);
 				const Id fId(mesh->getCommonFace(cId, dId));
 				const size_t fFaces(fId);
-				const double alphaExtraDiag(deltat / V(cCells) * (faceLength(fFaces) * faceConductivity(fFaces)) / ExplicitHeatEquationFuncs::norm(Xc(cCells) - Xc(dCells)));
+				const double alphaExtraDiag(deltat / V(cCells) * (faceLength(fFaces) * faceConductivity(fFaces)) / explicitheatequationfreefuncs::norm(Xc(cCells) - Xc(dCells)));
 				alpha(cCells, dCells) = alphaExtraDiag;
 				alphaDiag = alphaDiag + alphaExtraDiag;
 			}

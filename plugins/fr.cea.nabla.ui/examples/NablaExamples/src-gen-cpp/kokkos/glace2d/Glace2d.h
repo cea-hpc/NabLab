@@ -26,7 +26,7 @@ using namespace nablalib::utils::kokkos;
 
 /******************** Free functions declarations ********************/
 
-namespace Glace2dFuncs
+namespace glace2dfreefuncs
 {
 KOKKOS_INLINE_FUNCTION
 double det(RealArray2D<2,2> a);

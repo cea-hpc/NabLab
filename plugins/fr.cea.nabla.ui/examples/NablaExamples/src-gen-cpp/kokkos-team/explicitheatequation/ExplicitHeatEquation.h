@@ -26,7 +26,7 @@ using namespace nablalib::utils::kokkos;
 
 /******************** Free functions declarations ********************/
 
-namespace ExplicitHeatEquationFuncs
+namespace explicitheatequationfreefuncs
 {
 template<size_t x>
 KOKKOS_INLINE_FUNCTION

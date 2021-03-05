@@ -24,7 +24,7 @@ using namespace nablalib::utils::stl;
 
 /******************** Free functions declarations ********************/
 
-namespace IterativeHeatEquationFuncs
+namespace iterativeheatequationfreefuncs
 {
 bool check(bool a);
 template<size_t x>

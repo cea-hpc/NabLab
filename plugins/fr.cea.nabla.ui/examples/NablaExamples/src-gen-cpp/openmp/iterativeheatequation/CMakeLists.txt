@@ -24,9 +24,7 @@ if(NOT TARGET cppnabla)
 	add_subdirectory(${LIBCPPNABLA_DIR} ${CMAKE_BINARY_DIR}/LibCppNabla EXCLUDE_FROM_ALL)
 endif()
 
-
 add_executable(iterativeheatequation IterativeHeatEquation.cc)
-target_include_directories(iterativeheatequation PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
 target_link_libraries(iterativeheatequation PUBLIC cppnabla OpenMP::OpenMP_CXX)
 
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)

@@ -9,6 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.java
 
+import fr.cea.nabla.ir.IrTypeExtensions
 import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.generator.ProviderGenerator
 import fr.cea.nabla.ir.generator.Utils
@@ -24,16 +25,15 @@ class JavaProviderGenerator implements ProviderGenerator
 	override getGenerationContents(ExtensionProvider provider)
 	{
 		val fileContents = new ArrayList<GenerationContent>
-		val pathPrefix = getNsPrefix(provider, '.').replace('.', '/')
-
-		// interface
-		val interfaceFileName = pathPrefix + provider.interfaceName + ".java"
-		fileContents += new GenerationContent(interfaceFileName, getInterfaceFileContent(provider), false)
-
-		// Generates class if it does not exists
-		val classFileName = pathPrefix + provider.className + ".java"
-		fileContents += new GenerationContent(classFileName, getClassFileContent(provider), true)
-
+		// interface always
+		fileContents += new GenerationContent(provider.interfaceName + ".java", getInterfaceFileContent(provider), false)
+		// class if they do not exists
+		fileContents += new GenerationContent(provider.className + ".java", getClassFileContent(provider), true)
+		if (provider.linearAlgebra)
+		{
+			fileContents += new GenerationContent(IrTypeExtensions.VectorClass + ".java", getVectorClassFileContent(provider), true)
+			fileContents += new GenerationContent(IrTypeExtensions.MatrixClass + ".java", getMatrixClassFileContent(provider), true)
+		}
 		return fileContents
 	}
 
@@ -41,10 +41,8 @@ class JavaProviderGenerator implements ProviderGenerator
 	'''
 	«Utils::fileHeader»
 
-	«IF !provider.namespace.nullOrEmpty»
-	package «provider.namespace»;
+	package «provider.packageName»;
 
-	«ENDIF»
 	public interface «provider.interfaceName»
 	{
 		public void jsonInit(String jsonContent);
@@ -56,10 +54,8 @@ class JavaProviderGenerator implements ProviderGenerator
 
 	private def getClassFileContent(ExtensionProvider provider)
 	'''
-	«IF !provider.namespace.nullOrEmpty»
-	package «provider.namespace»;
+	package «provider.packageName»;
 
-	«ENDIF»
 	public class «provider.className» implements «provider.interfaceName»
 	{
 		@Override
@@ -77,22 +73,75 @@ class JavaProviderGenerator implements ProviderGenerator
 		«ENDFOR»
 	}
 	'''
-//
-//	private def getAntFile(String projectName, String jarName)
-//	'''
-//	<?xml version="1.0" ?>
-//	<project name="«projectName»" default="jar">
-//		<property environment="env"/>
-//		<path id="classpath">
-//			<fileset dir="/${env.ECLIPSE_HOME}/plugins" includes="**/*.jar"/>
-//		</path>
-//		<target name="build">
-//			<mkdir dir="build"/>
-//			<javac includeantruntime="false" srcdir="." destdir="./build" classpathref="classpath"/>
-//		</target>
-//		<target name="jar" depends="build">
-//			<jar jarfile="lib/«jarName».jar" basedir="build/" includes="**/*.class" />
-//		</target>
-//	</project>
-//	'''
+
+	private def getVectorClassFileContent(ExtensionProvider provider)
+	'''
+	package «provider.packageName»;
+
+	public class «IrTypeExtensions.VectorClass»
+	{
+		public «IrTypeExtensions.VectorClass»(final String name, final int size)
+		{
+			// Your code here
+		}
+
+		public String getName()
+		{
+			// Your code here
+		}
+
+		public int getSize()
+		{
+			// Your code here
+		}
+
+		public double getValue(int i)
+		{
+			// Your code here
+		}
+
+		public void setValue(int i, double value)
+		{
+			// Your code here
+		}
+	}
+	'''
+
+	private def getMatrixClassFileContent(ExtensionProvider provider)
+	'''
+	package «provider.packageName»;
+
+	public class «IrTypeExtensions.MatrixClass»
+	{
+		public «IrTypeExtensions.MatrixClass»(final String name, final int nbRows, final int nbCols)
+		{
+			// Your code here
+		}
+
+		public String getName()
+		{
+			// Your code here
+		}
+
+		int getNbRows()
+		{
+			// Your code here
+		}
+
+		int getNbCols()
+		{
+			// Your code here
+		}
+
+		public double getValue(int i, int j)
+		{
+			// Your code here
+		}
+
+		public void setValue(int i, int j, double value)
+		{
+			// Your code here
+		}
+	}
+	'''
 }

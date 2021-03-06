@@ -1,7 +1,7 @@
 /*** GENERATED FILE - DO NOT OVERWRITE ***/
 
-#ifndef H_H_
-#define H_H_
+#ifndef __H_H_
+#define __H_H_
 
 #include <fstream>
 #include <iomanip>

@@ -35,19 +35,18 @@ class IrRootBuilder
 	 * Consequently, no need to identify the interpreter.
 	 * If several interpreter are needed, the outputPath can be used as an id.
 	 */
-	def IrRoot buildInterpreterIr(NablagenApplication ngenApp, String projectDir)
+	def IrRoot buildInterpreterIr(NablagenApplication ngenApp, String wsPath)
 	{
 		try
 		{
 			val ir = buildIr(ngenApp, true)
 
 			val target = ngenApp.targets.findFirst[x | x.interpreter]
-			val baseDir = projectDir + '/..'
 			var ok = false
 			if (target === null)
-				ok = setDefaultInterpreterProviders(ngenApp, ir, baseDir)
+				ok = setDefaultInterpreterProviders(ngenApp, ir)
 			else
-				ok = ngenExtHelper.setExtensionProviders(ir, baseDir, target, false)
+				ok = ngenExtHelper.setExtensionProviders(ir, wsPath, target, false)
 			if (!ok) throw new RuntimeException("Can not build an IR for interpretation: missing providers")
 
 			return ir
@@ -94,12 +93,8 @@ class IrRootBuilder
 		return ir
 	}
 
-	private def boolean setDefaultInterpreterProviders(EObject ngenContext, IrRoot ir, String baseDir)
+	private def boolean setDefaultInterpreterProviders(EObject ngenContext, IrRoot ir)
 	{
-		// libjavanabla.jar is on the classpath of the runtime
-		// no need to unzip (if the classloader is an URLClassLoader, it seems to work ?)
-		// UnzipHelper::unzipLibJavaNabla(new File(baseDir))
-
 		// Browse IrRoot model providers which need to be filled with Nablaext providers
 		// TODO Traiter la lib Math comme LinearAlgebra, en vrai provider
 		for (irProvider : ir.providers.filter[x | x.extensionName != "Math"])
@@ -112,10 +107,7 @@ class IrRootBuilder
 			}
 
 			irProvider.providerName = provider.name
-			irProvider.projectDir = baseDir + provider.outputDir
-			irProvider.installDir = irProvider.projectDir + '/lib'
-			irProvider.namespace = provider.namespace
-			irProvider.libName = provider.libName
+			irProvider.outputPath = provider.outputPath
 			irProvider.linearAlgebra = provider.extension.linearAlgebra
 		}
 

@@ -19,7 +19,6 @@ import fr.cea.nabla.nablagen.NablagenProvider
 import fr.cea.nabla.nablagen.Target
 import fr.cea.nabla.nablagen.TargetType
 import org.eclipse.emf.ecore.EObject
-import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.xtext.scoping.IScopeProvider
 
 class NablagenExtensionHelper
@@ -29,7 +28,7 @@ class NablagenExtensionHelper
 	@Inject IScopeProvider scopeProvider
 	@Inject Provider<JniProviderGenerator> jniGeneratorProvider
 
-	def boolean setExtensionProviders(IrRoot ir, String baseDir, Target target, boolean generateJniProviders)
+	def boolean setExtensionProviders(IrRoot ir, String wsPath, Target target, boolean generateJniProviders)
 	{
 		val jniGenerator = jniGeneratorProvider.get
 
@@ -44,30 +43,15 @@ class NablagenExtensionHelper
 			}
 
 			irProvider.providerName = provider.name
-			irProvider.projectDir = baseDir + provider.outputDir
-			if (provider.target == TargetType::JAVA)
-				irProvider.installDir = irProvider.projectDir + '/lib'
-			else
-				irProvider.installDir = baseDir + target.outputDir + '/' + ir.name.toLowerCase + '/lib'
-			irProvider.namespace = provider.namespace
-			irProvider.libName = provider.libName
+			irProvider.outputPath = provider.outputPath
 			irProvider.linearAlgebra = provider.extension.linearAlgebra
 			if (provider.target != target.type && !provider.compatibleTargets.contains(target.type))
 			{
 				dispatcher.post(MessageType::Warning, '    The target of the provider differs from target: ' + provider.target.literal + " != " + target.type.literal)
 				if (target.type == TargetType::JAVA)
 				{
-					// transform c++ provider to JNI provider
-					val JNI = 'JNI'
-					val cppProvider = EcoreUtil.copy(irProvider)
-					val jniProvider = irProvider
-					jniProvider.providerName = cppProvider.providerName + JNI
-					jniProvider.projectDir = baseDir + target.outputDir + '/' + jniProvider.providerName.toLowerCase
-					jniProvider.namespace = cppProvider.namespace.replace('::', '.')
-					jniProvider.libName = cppProvider.libName + JNI.toLowerCase
-
-					if (generateJniProviders)
-						jniGenerator.generateAndTransformProvider(backendFactory.getCppBackend(provider.target), provider.extension, cppProvider, jniProvider)
+					dispatcher.post(MessageType::Exec, "Starting JNI code generator: " + target.outputPath)
+					jniGenerator.generateAndTransformProvider(backendFactory.getCppBackend(provider.target), irProvider, wsPath, target.outputPath, generateJniProviders)
 				}
 			}
 		}
@@ -75,7 +59,7 @@ class NablagenExtensionHelper
 		if (generateJniProviders)
 			// JNI providers are generated for interpreter and Java code.
 			// When some JNI providers are generated, a root CMake is created
-			jniGenerator.generateGlobalCMakeIfNecessary(ir, target, baseDir)
+			jniGenerator.generateGlobalCMakeIfNecessary(ir, target, wsPath)
 
 		return true
 	}

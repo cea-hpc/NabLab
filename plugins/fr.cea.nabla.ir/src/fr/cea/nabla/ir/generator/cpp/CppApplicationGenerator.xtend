@@ -9,6 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.cpp
 
+import fr.cea.nabla.ir.UnzipHelper
 import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.ir.generator.ApplicationGenerator
 import fr.cea.nabla.ir.generator.GenerationContent
@@ -21,7 +22,7 @@ import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.Variable
 import java.util.ArrayList
-import java.util.HashMap
+import java.util.LinkedHashSet
 
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
@@ -34,13 +35,17 @@ import static extension fr.cea.nabla.ir.generator.cpp.CppGeneratorUtils.*
 class CppApplicationGenerator extends CppGenerator implements ApplicationGenerator
 {
 	val String levelDBPath
-	val HashMap<String, String> cMakeVars
+	val cMakeVars = new LinkedHashSet<Pair<String, String>>
 
-	new(Backend backend, String libCppNablaDir, String levelDBPath, HashMap<String, String> cMakeVars)
+	new(Backend backend, String wsPath, String levelDBPath, Iterable<Pair<String, String>> cMakeVars)
 	{
-		super(backend, libCppNablaDir)
+		super(backend)
 		this.levelDBPath = levelDBPath
-		this.cMakeVars = cMakeVars
+		cMakeVars.forEach[x | this.cMakeVars += x]
+
+		// Set WS_PATH variables in CMake and unzip NRepository if necessary
+		this.cMakeVars += new Pair(CMakeContentProvider.WS_PATH, wsPath)
+		UnzipHelper::unzipNRepository(wsPath)
 	}
 
 	override getGenerationContents(IrRoot ir)
@@ -51,7 +56,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 			fileContents += new GenerationContent(module.className + '.h', module.headerFileContent, false)
 			fileContents += new GenerationContent(module.className + '.cc', module.sourceFileContent, false)
 		}
-		fileContents += new GenerationContent('CMakeLists.txt', backend.cmakeContentProvider.getContentFor(ir, libCppNablaDir, levelDBPath, cMakeVars), false)
+		fileContents += new GenerationContent('CMakeLists.txt', backend.cmakeContentProvider.getContentFor(ir, levelDBPath, cMakeVars), false)
 		return fileContents
 	}
 
@@ -59,15 +64,15 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	'''
 	«fileHeader»
 
-	#ifndef «name.toUpperCase»_H_
-	#define «name.toUpperCase»_H_
+	#ifndef «name.HDefineName»
+	#define «name.HDefineName»
 
 	«backend.includesContentProvider.getIncludes(!levelDBPath.nullOrEmpty, (irRoot.postProcessing !== null))»
 	«FOR provider : extensionProviders»
-	#include "«getNsPrefix(provider, '::').replace('::', '/')»«provider.className».h"
+	#include "«provider.className».h"
 	«ENDFOR»
 	«IF !main»
-	#include "«irRoot.name.toLowerCase»/«irRoot.mainModule.className».h"
+	#include "«irRoot.mainModule.className».h"
 	«ENDIF»
 
 	«backend.includesContentProvider.getUsings(!levelDBPath.nullOrEmpty)»
@@ -106,7 +111,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 			«typeContentProvider.getCppType(v.type)» «v.name»;
 			«ENDFOR»
 			«FOR v : extensionProviders»
-			«getNsPrefix(v, '::')»«v.className» «v.instanceName»;
+			«v.className» «v.instanceName»;
 			«ENDFOR»
 			«IF levelDB»std::string «Utils.NonRegressionNameAndValue.key»;«ENDIF»
 

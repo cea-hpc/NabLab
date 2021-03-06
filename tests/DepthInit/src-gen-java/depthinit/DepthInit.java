@@ -28,7 +28,7 @@ public final class DepthInit
 		public double maxTime;
 		public int maxIter;
 		public double deltat;
-		public batilib.BatiLib batiLib;
+		public batilibjava.BatiLib batiLib;
 		public String nonRegression;
 
 		public void jsonInit(final String jsonContent)
@@ -65,7 +65,7 @@ public final class DepthInit
 			else
 				deltat = 1.0;
 			// batiLib
-			batiLib = new batilib.BatiLib();
+			batiLib = new batilibjava.BatiLib();
 			if (o.has("batiLib"))
 				batiLib.jsonInit(o.get("batiLib").toString());
 			// Non regression

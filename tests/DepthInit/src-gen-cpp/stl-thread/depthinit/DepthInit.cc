@@ -1,6 +1,6 @@
 /*** GENERATED FILE - DO NOT OVERWRITE ***/
 
-#include "depthinit/DepthInit.h"
+#include "DepthInit.h"
 #include <rapidjson/document.h>
 #include <rapidjson/istreamwrapper.h>
 #include <rapidjson/stringbuffer.h>
@@ -9,7 +9,7 @@
 
 /******************** Free functions definitions ********************/
 
-namespace DepthInitFuncs
+namespace depthinitfreefuncs
 {
 double two()
 {
@@ -96,7 +96,7 @@ void DepthInit::initFromFile() noexcept
 {
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
-		eta[jCells] = DepthInitFuncs::two() * options.batiLib.nextWaveHeight();
+		eta[jCells] = depthinitfreefuncs::two() * options.batiLib.nextWaveHeight();
 	}
 }
 

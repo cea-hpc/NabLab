@@ -15,7 +15,6 @@ import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
-import static extension fr.cea.nabla.ir.generator.Utils.*
 
 @Data
 class MainContentProvider

@@ -1,7 +1,7 @@
 /*** GENERATED FILE - DO NOT OVERWRITE ***/
 
-#ifndef BUGITER_H_
-#define BUGITER_H_
+#ifndef __BUGITER_H_
+#define __BUGITER_H_
 
 #include <fstream>
 #include <iomanip>

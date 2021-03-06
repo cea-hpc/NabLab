@@ -332,33 +332,33 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 		CppSequential
 		{
 			outputPath = "«srcGenFoldersByLanguage.get(TargetType::CPP_SEQUENTIAL).fullPath»";
-			NABLA_CXX_COMPILER = "/usr/bin/g++";
+			N_CXX_COMPILER = "/usr/bin/g++";
 		}
 
 		StlThread
 		{
 			outputPath = "«srcGenFoldersByLanguage.get(TargetType::STL_THREAD).fullPath»";
-			NABLA_CXX_COMPILER = "/usr/bin/g++";
+			N_CXX_COMPILER = "/usr/bin/g++";
 		}
 
 		OpenMP
 		{
 			outputPath = "«srcGenFoldersByLanguage.get(TargetType::OPEN_MP).fullPath»";
-			NABLA_CXX_COMPILER = "/usr/bin/g++";
+			N_CXX_COMPILER = "/usr/bin/g++";
 		}
 
 		Kokkos
 		{
 			outputPath = "«srcGenFoldersByLanguage.get(TargetType::KOKKOS).fullPath»";
-			NABLA_CXX_COMPILER = "/usr/bin/g++";
-			NABLA_KOKKOS_PATH = "$ENV{HOME}/kokkos/kokkos-install";
+			N_CXX_COMPILER = "/usr/bin/g++";
+			N_KOKKOS_PATH = "$ENV{HOME}/kokkos/kokkos-install";
 		}
 
 		KokkosTeamThread
 		{
 			outputPath = "«srcGenFoldersByLanguage.get(TargetType::KOKKOS_TEAM_THREAD).fullPath»";
-			NABLA_CXX_COMPILER = "/usr/bin/g++";
-			NABLA_KOKKOS_PATH = "$ENV{HOME}/kokkos/kokkos-install";
+			N_CXX_COMPILER = "/usr/bin/g++";
+			N_KOKKOS_PATH = "$ENV{HOME}/kokkos/kokkos-install";
 		}
 	'''
 

@@ -12,5 +12,5 @@ Require-Bundle: fr.cea.nabla,
    com.google.gson,
    commons-math3,
    leveldb
-Export-Package: batilib
+Export-Package: batilibjava
 Bundle-Vendor: CEA

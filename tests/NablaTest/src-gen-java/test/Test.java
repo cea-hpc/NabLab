@@ -213,7 +213,7 @@ public final class Test
 	protected void setUpTimeLoopN()
 	{
 		t_n = t_n0;
-		IntStream.range(0, e_n.length).parallel().forEach(i1 -> 
+		IntStream.range(0, e_n.length).parallel().forEach(i1 ->
 		{
 			e_n[i1] = e_n0[i1];
 		});
@@ -266,7 +266,7 @@ public final class Test
 	 */
 	protected void setUpTimeLoopK()
 	{
-		IntStream.range(0, e2_nplus1_k.length).parallel().forEach(i1 -> 
+		IntStream.range(0, e2_nplus1_k.length).parallel().forEach(i1 ->
 		{
 			e2_nplus1_k[i1] = e2_nplus1_k0[i1];
 		});
@@ -307,7 +307,7 @@ public final class Test
 	 */
 	protected void tearDownTimeLoopK()
 	{
-		IntStream.range(0, e2_nplus1.length).parallel().forEach(i1 -> 
+		IntStream.range(0, e2_nplus1.length).parallel().forEach(i1 ->
 		{
 			e2_nplus1[i1] = e2_nplus1_kplus1[i1];
 		});

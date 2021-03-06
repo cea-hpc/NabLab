@@ -1,7 +1,7 @@
 /*** GENERATED FILE - DO NOT OVERWRITE ***/
 
-#ifndef IMPLICITHEATEQUATION_H_
-#define IMPLICITHEATEQUATION_H_
+#ifndef __IMPLICITHEATEQUATION_H_
+#define __IMPLICITHEATEQUATION_H_
 
 #include <fstream>
 #include <iomanip>
@@ -16,7 +16,7 @@
 #include "nablalib/utils/Timer.h"
 #include "nablalib/types/Types.h"
 #include "nablalib/utils/stl/Parallel.h"
-#include "nablalib/linearalgebra/stl/LinearAlgebra.h"
+#include "LinearAlgebra.h"
 
 using namespace nablalib::mesh;
 using namespace nablalib::utils;
@@ -51,7 +51,7 @@ public:
 		double u0;
 		double stopTime;
 		int maxIterations;
-		nablalib::linearalgebra::stl::LinearAlgebra linearAlgebra;
+		LinearAlgebra linearAlgebra;
 
 		void jsonInit(const char* jsonContent);
 	};
@@ -101,13 +101,13 @@ public:
 	double t_n0;
 	std::vector<RealArray1D<2>> X;
 	std::vector<RealArray1D<2>> Xc;
-	nablalib::linearalgebra::stl::Vector u_n;
-	nablalib::linearalgebra::stl::Vector u_nplus1;
+	Vector u_n;
+	Vector u_nplus1;
 	std::vector<double> V;
 	std::vector<double> D;
 	std::vector<double> faceLength;
 	std::vector<double> faceConductivity;
-	nablalib::linearalgebra::stl::Matrix alpha;
+	Matrix alpha;
 };
 
 #endif

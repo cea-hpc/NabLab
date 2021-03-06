@@ -25,10 +25,7 @@ import java.util.Collection;
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ExtensionProviderImpl#getExtensionName <em>Extension Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ExtensionProviderImpl#getProviderName <em>Provider Name</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.ExtensionProviderImpl#getProjectDir <em>Project Dir</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.ExtensionProviderImpl#getInstallDir <em>Install Dir</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.ExtensionProviderImpl#getNamespace <em>Namespace</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.ExtensionProviderImpl#getLibName <em>Lib Name</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.ExtensionProviderImpl#getOutputPath <em>Output Path</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ExtensionProviderImpl#isLinearAlgebra <em>Linear Algebra</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ExtensionProviderImpl#getFunctions <em>Functions</em>}</li>
  * </ul>
@@ -77,84 +74,24 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 	protected String providerName = PROVIDER_NAME_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getProjectDir() <em>Project Dir</em>}' attribute.
+	 * The default value of the '{@link #getOutputPath() <em>Output Path</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getProjectDir()
+	 * @see #getOutputPath()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String PROJECT_DIR_EDEFAULT = null;
+	protected static final String OUTPUT_PATH_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getProjectDir() <em>Project Dir</em>}' attribute.
+	 * The cached value of the '{@link #getOutputPath() <em>Output Path</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getProjectDir()
+	 * @see #getOutputPath()
 	 * @generated
 	 * @ordered
 	 */
-	protected String projectDir = PROJECT_DIR_EDEFAULT;
-
-	/**
-	 * The default value of the '{@link #getInstallDir() <em>Install Dir</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getInstallDir()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final String INSTALL_DIR_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getInstallDir() <em>Install Dir</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getInstallDir()
-	 * @generated
-	 * @ordered
-	 */
-	protected String installDir = INSTALL_DIR_EDEFAULT;
-
-	/**
-	 * The default value of the '{@link #getNamespace() <em>Namespace</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getNamespace()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final String NAMESPACE_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getNamespace() <em>Namespace</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getNamespace()
-	 * @generated
-	 * @ordered
-	 */
-	protected String namespace = NAMESPACE_EDEFAULT;
-
-	/**
-	 * The default value of the '{@link #getLibName() <em>Lib Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getLibName()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final String LIB_NAME_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getLibName() <em>Lib Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getLibName()
-	 * @generated
-	 * @ordered
-	 */
-	protected String libName = LIB_NAME_EDEFAULT;
+	protected String outputPath = OUTPUT_PATH_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #isLinearAlgebra() <em>Linear Algebra</em>}' attribute.
@@ -257,8 +194,8 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 	 * @generated
 	 */
 	@Override
-	public String getProjectDir() {
-		return projectDir;
+	public String getOutputPath() {
+		return outputPath;
 	}
 
 	/**
@@ -267,80 +204,11 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 	 * @generated
 	 */
 	@Override
-	public void setProjectDir(String newProjectDir) {
-		String oldProjectDir = projectDir;
-		projectDir = newProjectDir;
+	public void setOutputPath(String newOutputPath) {
+		String oldOutputPath = outputPath;
+		outputPath = newOutputPath;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.EXTENSION_PROVIDER__PROJECT_DIR, oldProjectDir, projectDir));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public String getInstallDir() {
-		return installDir;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public void setInstallDir(String newInstallDir) {
-		String oldInstallDir = installDir;
-		installDir = newInstallDir;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.EXTENSION_PROVIDER__INSTALL_DIR, oldInstallDir, installDir));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public String getNamespace() {
-		return namespace;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public void setNamespace(String newNamespace) {
-		String oldNamespace = namespace;
-		namespace = newNamespace;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.EXTENSION_PROVIDER__NAMESPACE, oldNamespace, namespace));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public String getLibName() {
-		return libName;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public void setLibName(String newLibName) {
-		String oldLibName = libName;
-		libName = newLibName;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.EXTENSION_PROVIDER__LIB_NAME, oldLibName, libName));
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.EXTENSION_PROVIDER__OUTPUT_PATH, oldOutputPath, outputPath));
 	}
 
 	/**
@@ -420,14 +288,8 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 				return getExtensionName();
 			case IrPackage.EXTENSION_PROVIDER__PROVIDER_NAME:
 				return getProviderName();
-			case IrPackage.EXTENSION_PROVIDER__PROJECT_DIR:
-				return getProjectDir();
-			case IrPackage.EXTENSION_PROVIDER__INSTALL_DIR:
-				return getInstallDir();
-			case IrPackage.EXTENSION_PROVIDER__NAMESPACE:
-				return getNamespace();
-			case IrPackage.EXTENSION_PROVIDER__LIB_NAME:
-				return getLibName();
+			case IrPackage.EXTENSION_PROVIDER__OUTPUT_PATH:
+				return getOutputPath();
 			case IrPackage.EXTENSION_PROVIDER__LINEAR_ALGEBRA:
 				return isLinearAlgebra();
 			case IrPackage.EXTENSION_PROVIDER__FUNCTIONS:
@@ -451,17 +313,8 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 			case IrPackage.EXTENSION_PROVIDER__PROVIDER_NAME:
 				setProviderName((String)newValue);
 				return;
-			case IrPackage.EXTENSION_PROVIDER__PROJECT_DIR:
-				setProjectDir((String)newValue);
-				return;
-			case IrPackage.EXTENSION_PROVIDER__INSTALL_DIR:
-				setInstallDir((String)newValue);
-				return;
-			case IrPackage.EXTENSION_PROVIDER__NAMESPACE:
-				setNamespace((String)newValue);
-				return;
-			case IrPackage.EXTENSION_PROVIDER__LIB_NAME:
-				setLibName((String)newValue);
+			case IrPackage.EXTENSION_PROVIDER__OUTPUT_PATH:
+				setOutputPath((String)newValue);
 				return;
 			case IrPackage.EXTENSION_PROVIDER__LINEAR_ALGEBRA:
 				setLinearAlgebra((Boolean)newValue);
@@ -488,17 +341,8 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 			case IrPackage.EXTENSION_PROVIDER__PROVIDER_NAME:
 				setProviderName(PROVIDER_NAME_EDEFAULT);
 				return;
-			case IrPackage.EXTENSION_PROVIDER__PROJECT_DIR:
-				setProjectDir(PROJECT_DIR_EDEFAULT);
-				return;
-			case IrPackage.EXTENSION_PROVIDER__INSTALL_DIR:
-				setInstallDir(INSTALL_DIR_EDEFAULT);
-				return;
-			case IrPackage.EXTENSION_PROVIDER__NAMESPACE:
-				setNamespace(NAMESPACE_EDEFAULT);
-				return;
-			case IrPackage.EXTENSION_PROVIDER__LIB_NAME:
-				setLibName(LIB_NAME_EDEFAULT);
+			case IrPackage.EXTENSION_PROVIDER__OUTPUT_PATH:
+				setOutputPath(OUTPUT_PATH_EDEFAULT);
 				return;
 			case IrPackage.EXTENSION_PROVIDER__LINEAR_ALGEBRA:
 				setLinearAlgebra(LINEAR_ALGEBRA_EDEFAULT);
@@ -522,14 +366,8 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 				return EXTENSION_NAME_EDEFAULT == null ? extensionName != null : !EXTENSION_NAME_EDEFAULT.equals(extensionName);
 			case IrPackage.EXTENSION_PROVIDER__PROVIDER_NAME:
 				return PROVIDER_NAME_EDEFAULT == null ? providerName != null : !PROVIDER_NAME_EDEFAULT.equals(providerName);
-			case IrPackage.EXTENSION_PROVIDER__PROJECT_DIR:
-				return PROJECT_DIR_EDEFAULT == null ? projectDir != null : !PROJECT_DIR_EDEFAULT.equals(projectDir);
-			case IrPackage.EXTENSION_PROVIDER__INSTALL_DIR:
-				return INSTALL_DIR_EDEFAULT == null ? installDir != null : !INSTALL_DIR_EDEFAULT.equals(installDir);
-			case IrPackage.EXTENSION_PROVIDER__NAMESPACE:
-				return NAMESPACE_EDEFAULT == null ? namespace != null : !NAMESPACE_EDEFAULT.equals(namespace);
-			case IrPackage.EXTENSION_PROVIDER__LIB_NAME:
-				return LIB_NAME_EDEFAULT == null ? libName != null : !LIB_NAME_EDEFAULT.equals(libName);
+			case IrPackage.EXTENSION_PROVIDER__OUTPUT_PATH:
+				return OUTPUT_PATH_EDEFAULT == null ? outputPath != null : !OUTPUT_PATH_EDEFAULT.equals(outputPath);
 			case IrPackage.EXTENSION_PROVIDER__LINEAR_ALGEBRA:
 				return linearAlgebra != LINEAR_ALGEBRA_EDEFAULT;
 			case IrPackage.EXTENSION_PROVIDER__FUNCTIONS:
@@ -552,14 +390,8 @@ public class ExtensionProviderImpl extends IrAnnotableImpl implements ExtensionP
 		result.append(extensionName);
 		result.append(", providerName: ");
 		result.append(providerName);
-		result.append(", projectDir: ");
-		result.append(projectDir);
-		result.append(", installDir: ");
-		result.append(installDir);
-		result.append(", namespace: ");
-		result.append(namespace);
-		result.append(", libName: ");
-		result.append(libName);
+		result.append(", outputPath: ");
+		result.append(outputPath);
 		result.append(", linearAlgebra: ");
 		result.append(linearAlgebra);
 		result.append(')');

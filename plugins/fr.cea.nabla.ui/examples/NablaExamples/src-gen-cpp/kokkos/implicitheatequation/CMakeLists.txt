@@ -1,16 +1,26 @@
 ### GENERATED FILE - DO NOT OVERWRITE ###
 
 cmake_minimum_required(VERSION 3.10)
-
-set(LIBCPPNABLA_DIR $ENV{HOME}/workspaces/NabLab/plugins/fr.cea.nabla.ui/examples/NablaExamples/../LibCppNabla CACHE STRING "")
-set(NABLA_KOKKOS_PATH $ENV{HOME}/kokkos/kokkos-install)
-set(NABLA_CXX_COMPILER /usr/bin/g++)
-set(LINEARALGEBRA_DIR $ENV{HOME}/workspaces/NabLab/plugins/fr.cea.nabla.ui/examples/NablaExamples/../LibCppNabla)
+set(CMAKE_VERBOSE_MAKEFILE FALSE)
 
 project(ImplicitHeatEquationProject CXX)
 
-set(CMAKE_CXX_COMPILER ${NABLA_CXX_COMPILER} CACHE STRING "")
+# SET VARIABLES
+set(N_CXX_COMPILER /usr/bin/g++)
+set(N_KOKKOS_PATH $ENV{HOME}/kokkos/kokkos-install)
+set(N_WS_PATH $ENV{HOME}/workspaces/NabLab/plugins/fr.cea.nabla.ui/examples)
+set(LINEARALGEBRAKOKKOS_PATH ${N_WS_PATH}/.nablab/linearalgebra/linearalgebrakokkos)
 
+# CHECK VARIABLES
+if (NOT DEFINED N_KOKKOS_PATH)
+	message(FATAL_ERROR "N_KOKKOS_PATH variable must be set")
+endif()
+if (NOT DEFINED N_WS_PATH)
+	message(FATAL_ERROR "N_WS_PATH variable must be set")
+endif()
+
+# CHECK CXX VERSION
+set(CMAKE_CXX_COMPILER ${N_CXX_COMPILER} CACHE STRING "")
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 	if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "7.4.0")
 		message(FATAL_ERROR "GCC minimum required version is 7.4.0. Please upgrade.")
@@ -21,16 +31,24 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 	endif()
 endif()
 
-if(NOT TARGET cppnablakokkos)
-	add_subdirectory(${LINEARALGEBRA_DIR} ${CMAKE_BINARY_DIR}/LinearAlgebraKokkos EXCLUDE_FROM_ALL)
+# FIND PACKAGES
+set(CMAKE_FIND_ROOT_PATH ${N_KOKKOS_PATH})
+find_package(Kokkos REQUIRED)
+find_package(KokkosKernels REQUIRED)
+
+# SUB_DIRECTORIES
+if(NOT TARGET nablalib)
+	add_subdirectory(${N_WS_PATH}/.nablab/nablalib ${CMAKE_BINARY_DIR}/nablalib)
 endif()
-if(NOT TARGET cppnabla)
-	add_subdirectory(${LIBCPPNABLA_DIR} ${CMAKE_BINARY_DIR}/LibCppNabla EXCLUDE_FROM_ALL)
+if(NOT TARGET linearalgebrakokkos)
+	add_subdirectory(${LINEARALGEBRAKOKKOS_PATH} ${CMAKE_BINARY_DIR}/linearalgebrakokkos)
 endif()
 
+# EXECUTABLE implicitheatequation
 add_executable(implicitheatequation ImplicitHeatEquation.cc)
-target_link_libraries(implicitheatequation PUBLIC cppnabla cppnablakokkos)
+target_link_libraries(implicitheatequation PUBLIC nablalib Kokkos::kokkos Kokkos::kokkoskernels linearalgebrakokkos)
 
+# OPTIONAL USER OPTIONS IN Project.cmake
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 	include(${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 endif()

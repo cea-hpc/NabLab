@@ -30,7 +30,7 @@ public final class ImplicitHeatEquation
 		public double u0;
 		public double stopTime;
 		public int maxIterations;
-		public fr.cea.nabla.javalib.linearalgebra.LinearAlgebra linearAlgebra;
+		public linearalgebrajava.LinearAlgebra linearAlgebra;
 		public String nonRegression;
 
 		public void jsonInit(final String jsonContent)
@@ -76,7 +76,7 @@ public final class ImplicitHeatEquation
 			else
 				maxIterations = 500000000;
 			// linearAlgebra
-			linearAlgebra = new fr.cea.nabla.javalib.linearalgebra.LinearAlgebra();
+			linearAlgebra = new linearalgebrajava.LinearAlgebra();
 			if (o.has("linearAlgebra"))
 				linearAlgebra.jsonInit(o.get("linearAlgebra").toString());
 			// Non regression
@@ -106,13 +106,13 @@ public final class ImplicitHeatEquation
 	protected double t_n0;
 	protected double[][] X;
 	protected double[][] Xc;
-	protected fr.cea.nabla.javalib.linearalgebra.Vector u_n;
-	protected fr.cea.nabla.javalib.linearalgebra.Vector u_nplus1;
+	protected linearalgebrajava.Vector u_n;
+	protected linearalgebrajava.Vector u_nplus1;
 	protected double[] V;
 	protected double[] D;
 	protected double[] faceLength;
 	protected double[] faceConductivity;
-	protected fr.cea.nabla.javalib.linearalgebra.Matrix alpha;
+	protected linearalgebrajava.Matrix alpha;
 
 	public ImplicitHeatEquation(CartesianMesh2D aMesh, Options aOptions)
 	{
@@ -138,13 +138,13 @@ public final class ImplicitHeatEquation
 		// Allocate arrays
 		X = new double[nbNodes][2];
 		Xc = new double[nbCells][2];
-		u_n = new fr.cea.nabla.javalib.linearalgebra.Vector("u_n", nbCells);
-		u_nplus1 = new fr.cea.nabla.javalib.linearalgebra.Vector("u_nplus1", nbCells);
+		u_n = new linearalgebrajava.Vector("u_n", nbCells);
+		u_nplus1 = new linearalgebrajava.Vector("u_nplus1", nbCells);
 		V = new double[nbCells];
 		D = new double[nbCells];
 		faceLength = new double[nbFaces];
 		faceConductivity = new double[nbFaces];
-		alpha = new fr.cea.nabla.javalib.linearalgebra.Matrix("alpha", nbCells, nbCells);
+		alpha = new linearalgebrajava.Matrix("alpha", nbCells, nbCells);
 
 		// Copy node coordinates
 		double[][] gNodes = mesh.getGeometry().getNodes();
@@ -415,7 +415,7 @@ public final class ImplicitHeatEquation
 				double tmp_t_n = t_n;
 				t_n = t_nplus1;
 				t_nplus1 = tmp_t_n;
-				fr.cea.nabla.javalib.linearalgebra.Vector tmp_u_n = u_n;
+				linearalgebrajava.Vector tmp_u_n = u_n;
 				u_n = u_nplus1;
 				u_nplus1 = tmp_u_n;
 			} 

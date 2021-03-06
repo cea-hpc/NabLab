@@ -11,16 +11,14 @@ package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.ir.ExternFunction
 import fr.cea.nabla.ir.ir.InternFunction
+import fr.cea.nabla.ir.ir.IrModule
 
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.getInstanceName
+import static extension fr.cea.nabla.ir.IrModuleExtensions.getClassName
 import static extension fr.cea.nabla.ir.Utils.getIrModule
-import static extension fr.cea.nabla.ir.generator.Utils.getClassName
-import fr.cea.nabla.ir.ir.IrModule
 
 class CppGeneratorUtils
 {
-	public static val CppLibName = "LibCppNabla"
-
 	static def getFreeFunctionNs(IrModule it)
 	{
 		className.toLowerCase + "freefuncs"
@@ -35,5 +33,10 @@ class CppGeneratorUtils
 	{
 		if (provider.extensionName == "Math") 'std::' + name
 		else 'options.' + provider.instanceName + '.' + name
+	}
+
+	static def getHDefineName(String name)
+	{
+		'__' + name.toUpperCase + '_H_'
 	}
 }

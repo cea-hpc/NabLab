@@ -1,6 +1,6 @@
 /*** GENERATED FILE - DO NOT OVERWRITE ***/
 
-#include "test/Test.h"
+#include "Test.h"
 #include <rapidjson/document.h>
 #include <rapidjson/istreamwrapper.h>
 #include <rapidjson/stringbuffer.h>

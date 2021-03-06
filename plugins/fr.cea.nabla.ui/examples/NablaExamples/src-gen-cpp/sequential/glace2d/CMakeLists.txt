@@ -1,14 +1,21 @@
 ### GENERATED FILE - DO NOT OVERWRITE ###
 
 cmake_minimum_required(VERSION 3.10)
-
-set(LIBCPPNABLA_DIR $ENV{HOME}/workspaces/NabLab/plugins/fr.cea.nabla.ui/examples/NablaExamples/../LibCppNabla CACHE STRING "")
-set(NABLA_CXX_COMPILER /usr/bin/g++)
+set(CMAKE_VERBOSE_MAKEFILE FALSE)
 
 project(Glace2dProject CXX)
 
-set(CMAKE_CXX_COMPILER ${NABLA_CXX_COMPILER} CACHE STRING "")
+# SET VARIABLES
+set(N_CXX_COMPILER /usr/bin/g++)
+set(N_WS_PATH $ENV{HOME}/workspaces/NabLab/plugins/fr.cea.nabla.ui/examples)
 
+# CHECK VARIABLES
+if (NOT DEFINED N_WS_PATH)
+	message(FATAL_ERROR "N_WS_PATH variable must be set")
+endif()
+
+# CHECK CXX VERSION
+set(CMAKE_CXX_COMPILER ${N_CXX_COMPILER} CACHE STRING "")
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 	if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "7.4.0")
 		message(FATAL_ERROR "GCC minimum required version is 7.4.0. Please upgrade.")
@@ -19,13 +26,16 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 	endif()
 endif()
 
-if(NOT TARGET cppnabla)
-	add_subdirectory(${LIBCPPNABLA_DIR} ${CMAKE_BINARY_DIR}/LibCppNabla EXCLUDE_FROM_ALL)
+# SUB_DIRECTORIES
+if(NOT TARGET nablalib)
+	add_subdirectory(${N_WS_PATH}/.nablab/nablalib ${CMAKE_BINARY_DIR}/nablalib)
 endif()
 
+# EXECUTABLE glace2d
 add_executable(glace2d Glace2d.cc)
-target_link_libraries(glace2d PUBLIC cppnabla)
+target_link_libraries(glace2d PUBLIC nablalib)
 
+# OPTIONAL USER OPTIONS IN Project.cmake
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 	include(${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 endif()

@@ -13,51 +13,42 @@ import com.google.inject.Inject
 import fr.cea.nabla.generator.BackendFactory
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
 import fr.cea.nabla.generator.StandaloneGeneratorBase
-import fr.cea.nabla.generator.UnzipHelper
-import fr.cea.nabla.ir.generator.cpp.CppGeneratorUtils
 import fr.cea.nabla.ir.generator.cpp.CppProviderGenerator
 import fr.cea.nabla.ir.generator.java.JavaProviderGenerator
 import fr.cea.nabla.nablagen.NablagenProviderList
 import fr.cea.nabla.nablagen.TargetType
-import java.io.File
+
+import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 
 class NablagenProviderGenerator extends StandaloneGeneratorBase
 {
 	@Inject BackendFactory backendFactory
 	@Inject extension ProvidersUtils
 
-	def generateProviders(NablagenProviderList providerList, String projectDir)
+	def generateProviders(NablagenProviderList providerList, String wsPath)
 	{
-		val baseDir =  projectDir + "/.."
 		val startTime = System.currentTimeMillis
 
 		for (provider : providerList.elements)
 		{
-			val generator = getCodeGenerator(provider.target, baseDir)
-			val outputFolderName = baseDir + provider.outputDir
-			dispatcher.post(MessageType::Exec, "Starting " + provider.target.literal + " code generator: " + provider.outputDir)
+			val generator = getCodeGenerator(provider.target)
+			val outputFolderName = wsPath + provider.outputPath
 			val fsa = getConfiguredFileSystemAccess(outputFolderName, false)
+			dispatcher.post(MessageType::Exec, "Starting " + provider.target.literal + " code generator: " + provider.outputPath)
 			val installDir = '' // unused to generate JNI functions
-			generate(fsa, generator.getGenerationContents(toIrExtensionProvider(provider, baseDir, installDir)), '')
+			val irProvider = toIrExtensionProvider(provider, installDir)
+			generate(fsa, generator.getGenerationContents(irProvider), irProvider.dirName)
 		}
 
 		val endTime = System.currentTimeMillis
 		dispatcher.post(MessageType.Exec, "Code generation ended in " + (endTime-startTime)/1000.0 + "s")
 	}
 
-	private def getCodeGenerator(TargetType targetType, String baseDir)
+	private def getCodeGenerator(TargetType targetType)
 	{
 		if (targetType == TargetType::JAVA)
-		{
-			//UnzipHelper::unzipLibJavaNabla(new File(baseDir))
 			new JavaProviderGenerator
-		}
 		else
-		{
-			val backend = backendFactory.getCppBackend(targetType)
-			UnzipHelper::unzipLibCppNabla(new File(baseDir))
-			val libCppNablaDir = baseDir + '/' + CppGeneratorUtils.CppLibName
-			new CppProviderGenerator(backend, libCppNablaDir)
-		}
+			new CppProviderGenerator(backendFactory.getCppBackend(targetType))
 	}
 }

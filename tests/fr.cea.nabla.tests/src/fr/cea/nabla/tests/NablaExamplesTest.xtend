@@ -12,8 +12,8 @@ package fr.cea.nabla.tests
 import com.google.common.collect.PeekingIterator
 import com.google.gson.Gson
 import com.google.inject.Inject
-import fr.cea.nabla.generator.UnzipHelper
-import fr.cea.nabla.ir.generator.cpp.CppGeneratorUtils
+import fr.cea.nabla.ir.UnzipHelper
+import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.nablagen.Target
 import fr.cea.nabla.nablagen.TargetType
 import java.io.File
@@ -38,7 +38,7 @@ class NablaExamplesTest
 {
 	static String examplesProjectSubPath
 	static String examplesProjectPath
-	static String cppLibPath
+	static String nRepositoryPath
 	static String javaLibPath
 	static String commonMath3Path
 	static String levelDBPath
@@ -53,14 +53,14 @@ class NablaExamplesTest
 	def static void setup()
 	{
 		val testProjectPath = System.getProperty("user.dir")
-		val wsPath = testProjectPath.replace("tests/fr.cea.nabla.tests", "")
+		val basePath = testProjectPath.replace("tests/fr.cea.nabla.tests", "")
 		examplesProjectSubPath = "plugins/fr.cea.nabla.ui/examples/NablaExamples"
-		examplesProjectPath = wsPath + examplesProjectSubPath
-		cppLibPath = wsPath + "plugins/fr.cea.nabla.ir/resources/libcppnabla.zip"
-		javaLibPath = wsPath + "plugins/fr.cea.nabla.javalib/bin/:" + wsPath + "plugins/fr.cea.nabla.javalib/target/*"
-		commonMath3Path = wsPath + "plugins/commons-math3/*"
-		levelDBPath = wsPath + "plugins/leveldb/*"
-		git = new GitUtils(wsPath)
+		examplesProjectPath = basePath + examplesProjectSubPath
+		nRepositoryPath = basePath + "plugins/fr.cea.nabla.ir/resources/.nablab.zip"
+		javaLibPath = basePath + "plugins/fr.cea.nabla.javalib/bin/:" + basePath + "plugins/fr.cea.nabla.javalib/target/*"
+		commonMath3Path = basePath + "plugins/commons-math3/*"
+		levelDBPath = basePath + "plugins/leveldb/*"
+		git = new GitUtils(basePath)
 	}
 
 	@Test
@@ -128,7 +128,7 @@ class NablaExamplesTest
 		val packageName = moduleName.toLowerCase
 		val model = readFileAsString(examplesProjectPath + "/src/" + packageName + "/" + moduleName + ".n")
 		var genmodel = readFileAsString(examplesProjectPath + "/src/" + packageName + "/" + moduleName + ".ngen")
-		compilationHelper.generateCode(model, genmodel, examplesProjectPath)
+		compilationHelper.generateCode(model, genmodel, examplesProjectPath.replace('/NablaExamples', ''), 'NablaExamples')
 		testNoGitDiff("/" + packageName) // Add "/" to avoid a false positiv on explicitheatequation fail or implicitheatequation
 	}
 
@@ -150,26 +150,26 @@ class NablaExamplesTest
 			Assert.fail(envErr)
 		}
 
-		val tmp = new File(Files.createTempDirectory("nablaTest-" + moduleName) + "/NablaExamples")
-		println(tmp)
+		val wsPath = Files.createTempDirectory("nablaTest-" + moduleName).toString
+		val projectName = 'NablaExamples'
+		val projectPath = wsPath + '/' + projectName
+		println(projectPath)
 
-		// We have to create output dir. Simpliest is to copy all NablaExamples tree in tmpDir
+		// Simpliest is to copy all NablaExamples tree in tmpDir
 		val sourceLocation= new File(examplesProjectPath)
-		FileUtils.copyDirectory(sourceLocation, tmp)
+		FileUtils.copyDirectory(sourceLocation, new File(projectPath))
 
 		val packageName = moduleName.toLowerCase
-		val model = readFileAsString(tmp + "/src/" + packageName + "/" + moduleName + ".n")
-		var genmodel = readFileAsString(tmp + "/src/" + packageName + "/" + moduleName + ".ngen")
+		val model = readFileAsString(projectPath + "/src/" + packageName + "/" + moduleName + ".n")
+		var genmodel = readFileAsString(projectPath + "/src/" + packageName + "/" + moduleName + ".ngen")
 
 		// Adapt genModel for LevelDBPath & KokkosPath & tmpOutputDir
 		genmodel = genmodel.adaptedGenModel(kokkosPath, levelDBPath)
-		compilationHelper.generateCode(model, genmodel, tmp.toPath.toString)
+		compilationHelper.generateCode(model, genmodel, wsPath, projectName)
 
-		// unzip libcppnabla
-		val cppZipFile = new File(cppLibPath)
-		val destDir = new File(tmp + '/..')
-		UnzipHelper.unzip(cppZipFile.toURI, destDir.toURI)
-		val cmakePath = Paths.get(destDir.path, CppGeneratorUtils::CppLibName, 'CMakeLists.txt')
+		// unzip nabla resources
+		UnzipHelper.unzip(new File(nRepositoryPath).toURI, new File(wsPath).toURI)
+		val cmakePath = Paths.get(wsPath, Utils::NRepository, 'nablalib', 'CMakeLists.txt')
 		var cmakeContent = Files.readString(cmakePath)
 		cmakeContent = cmakeContent.replaceAll(" -O3 ", " -O2 ")
 		Files.writeString(cmakePath, cmakeContent)
@@ -177,7 +177,7 @@ class NablaExamplesTest
 		var nbErrors = 0
 		for (target : compilationHelper.getNgenApp(model, genmodel).targets.filter[!interpreter])
 		{
-			(!testExecute(target, moduleName, tmp.toString) ? nbErrors++)
+			(!testExecute(target, moduleName, wsPath) ? nbErrors++)
 		}
 		(nbErrors > 0 ? Assert.fail(nbErrors + " error(s) !"))
 	}
@@ -212,23 +212,23 @@ class NablaExamplesTest
 		'''
 	}
 
-	private def testExecute(Target target, String moduleName, String tmp)
+	private def testExecute(Target target, String moduleName, String wsPath)
 	{
 		val testProjectPath = System.getProperty("user.dir")
 		val packageName = moduleName.toLowerCase
-		val outputDir = tmp + "/.." + target.outputDir
-		val targetName = outputDir.split("/").last
+		val outputPath = wsPath + "/" + target.outputPath
+		val targetName = outputPath.split("/").last
 		val levelDBRef = testProjectPath + "/results/compiler/" + targetName + "/" + packageName + "/" + moduleName + "DB.ref"
 		val jsonFile = examplesProjectPath + "/src/" + packageName + "/" + moduleName + ".json"
 
 		print("\tStarting " + target.type.literal)
 		if (target.type == TargetType::JAVA)
-			testExecuteJava(outputDir, packageName, levelDBRef, jsonFile, moduleName)
+			testExecuteJava(outputPath, packageName, levelDBRef, jsonFile, moduleName)
 		else
-			testExecuteCpp(outputDir, packageName, levelDBRef, jsonFile, moduleName)
+			testExecuteCpp(outputPath, packageName, levelDBRef, jsonFile, moduleName)
 	}
 
-	private def testExecuteCpp(String outputDir, String packageName, String levelDBRef, String jsonFile, String moduleName)
+	private def testExecuteCpp(String outputPath, String packageName, String levelDBRef, String jsonFile, String moduleName)
 	{
 //		println("$2= " + cppLibPath)
 //		println("$3= " + packageName)
@@ -237,7 +237,7 @@ class NablaExamplesTest
 //		println("$6= " + moduleName)
 		var pb = new ProcessBuilder("/bin/bash",
 			System.getProperty("user.dir") + "/src/fr/cea/nabla/tests/executeCppNablaExample.sh",
-			outputDir, // output src-gen path
+			outputPath, // output src-gen path
 			packageName,
 			levelDBRef,
 			jsonFile,
@@ -248,21 +248,21 @@ class NablaExamplesTest
 			println(" -> Ok")
 		if (exitVal.equals(10))
 		{
-			val logPath = simplifyPath(outputDir + "/" + packageName + "/CMake.log")
+			val logPath = simplifyPath(outputPath + "/" + packageName + "/CMake.log")
 			println(" -> Configure Error. See " + logPath)
 			//println("\t" + readFileAsString(logPath))
 			return false
 		}
 		if (exitVal.equals(20))
 		{
-			val logPath = simplifyPath(outputDir + "/" + packageName + "/make.log")
+			val logPath = simplifyPath(outputPath + "/" + packageName + "/make.log")
 			println(" -> Compile Error. See " + logPath)
 			//println("\t" + readFileAsString(logPath))
 			return false
 		}
 		if (exitVal.equals(30))
 		{
-			val logPath = simplifyPath(outputDir + "/" + packageName + "/exec.err")
+			val logPath = simplifyPath(outputPath + "/" + packageName + "/exec.err")
 			println(" -> Execute Error. See " + logPath)
 			//println("\t" + readFileAsString(logPath))
 			return false

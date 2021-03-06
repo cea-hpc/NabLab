@@ -25,9 +25,7 @@ NablagenProvider:
 	'{'
 		'target' '=' target=TargetType ';'
 		('compatibleTargets' '=' compatibleTargets+=TargetType (',' compatibleTargets+=TargetType)* ';')?
-		'outputDir' '=' outputDir=STRING ';'
-		'namespace' '=' namespace=STRING ';'
-		'libName' '=' libName=STRING ';'
+		'outputPath' '=' outputPath=STRING ';'
 	'}';
 
 NablagenApplication:
@@ -91,7 +89,7 @@ Target:
 	(writeIR?='[WriteIr]')?
 	(interpreter?='Interpreter' | type=TargetType)
 	'{'
-		'outputPath' '=' outputDir=STRING ';'
+		'outputPath' '=' outputPath=STRING ';'
 		extensionConfigs+=ExtensionConfig*
 		variables+=TargetVar*
 	'}';

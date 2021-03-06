@@ -2,20 +2,20 @@
 #!/bin/sh
 #
 
-### build the libcppnabla resource from fr.cea.nabla.cpplib project
-CPP_ZIP=libcppnabla.zip
-CPP_DIR=LibCppNabla
-rm -f ${CPP_ZIP}
-cp -R ../../fr.cea.nabla.cpplib/src ${CPP_DIR}
-zip -r ${CPP_ZIP} ${CPP_DIR}
-rm -rf ${CPP_DIR}
+### build the nablacore resource
+ZIP_FILE=.nablab.zip
+rm -f ${ZIP_FILE}
 
-### copy the libjavanabla resource from fr.cea.nabla.javalib project
-JAVA_ZIP=libjavanabla.zip
-JAVA_DIR=LibJavaNabla
-rm -f ${JAVA_ZIP}
-mkdir ${JAVA_DIR}
-cp -R ../../fr.cea.nabla.javalib/lib ${JAVA_DIR}/lib
-zip -r ${JAVA_ZIP} ${JAVA_DIR}
-rm -rf ${JAVA_DIR}
+DIR_TO_ZIP=.nablab
+
+# add C++ nablalib and linearalgebra
+cp -R ../../fr.cea.nabla.cpplib/src ${DIR_TO_ZIP}
+rm ${DIR_TO_ZIP}/CMakeLists.txt
+
+# add Java linear algebra jar
+mkdir ${DIR_TO_ZIP}/linearalgebra/linearalgebrajava
+cp -R ../../fr.cea.nabla.javalib/lib ${DIR_TO_ZIP}/linearalgebra/linearalgebrajava
+
+zip -r ${ZIP_FILE} ${DIR_TO_ZIP}
+rm -rf ${DIR_TO_ZIP}
 

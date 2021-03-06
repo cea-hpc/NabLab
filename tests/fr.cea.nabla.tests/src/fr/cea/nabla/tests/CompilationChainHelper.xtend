@@ -57,9 +57,9 @@ class CompilationChainHelper
 	def getIrForInterpretation(CharSequence model, CharSequence genModel)
 	{
 		val irRootBuilder = irRootBuilderProvider.get
-		val projectDir = pluginsPath + "fr.cea.nabla.ui/examples/NablaExamples"
+		val wsPath = pluginsPath + "fr.cea.nabla.ui/examples"
 		val ngen = getNgenApp(model, genModel)
-		return irRootBuilder.buildInterpreterIr(ngen, projectDir)
+		return irRootBuilder.buildInterpreterIr(ngen, wsPath)
 	}
 
 	def getNgenApp(CharSequence model, CharSequence genModel)
@@ -93,13 +93,15 @@ class CompilationChainHelper
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
 		val interpreter = new IrInterpreter(ir, handler)
-		return interpreter.interprete(jsonContent)
+		val testProjectPath = System.getProperty("user.dir")
+		val wsPath = testProjectPath + "/../../"
+		return interpreter.interprete(jsonContent, wsPath)
 	}
 
-	def void generateCode(CharSequence model, CharSequence genModel, String projectDir)
+	def void generateCode(CharSequence model, CharSequence genModel, String wsPath, String projectName)
 	{
 		val generator = ngenAppGeneratorProvider.get
 		val ngen = getNgenApp(model, genModel)
-		generator.generateApplication(ngen, projectDir)
+		generator.generateApplication(ngen, wsPath, projectName)
 	}
 }

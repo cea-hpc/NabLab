@@ -560,40 +560,13 @@ public interface IrPackage extends EPackage {
 	int EXTENSION_PROVIDER__PROVIDER_NAME = IR_ANNOTABLE_FEATURE_COUNT + 1;
 
 	/**
-	 * The feature id for the '<em><b>Project Dir</b></em>' attribute.
+	 * The feature id for the '<em><b>Output Path</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int EXTENSION_PROVIDER__PROJECT_DIR = IR_ANNOTABLE_FEATURE_COUNT + 2;
-
-	/**
-	 * The feature id for the '<em><b>Install Dir</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EXTENSION_PROVIDER__INSTALL_DIR = IR_ANNOTABLE_FEATURE_COUNT + 3;
-
-	/**
-	 * The feature id for the '<em><b>Namespace</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EXTENSION_PROVIDER__NAMESPACE = IR_ANNOTABLE_FEATURE_COUNT + 4;
-
-	/**
-	 * The feature id for the '<em><b>Lib Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EXTENSION_PROVIDER__LIB_NAME = IR_ANNOTABLE_FEATURE_COUNT + 5;
+	int EXTENSION_PROVIDER__OUTPUT_PATH = IR_ANNOTABLE_FEATURE_COUNT + 2;
 
 	/**
 	 * The feature id for the '<em><b>Linear Algebra</b></em>' attribute.
@@ -602,7 +575,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EXTENSION_PROVIDER__LINEAR_ALGEBRA = IR_ANNOTABLE_FEATURE_COUNT + 6;
+	int EXTENSION_PROVIDER__LINEAR_ALGEBRA = IR_ANNOTABLE_FEATURE_COUNT + 3;
 
 	/**
 	 * The feature id for the '<em><b>Functions</b></em>' containment reference list.
@@ -611,7 +584,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EXTENSION_PROVIDER__FUNCTIONS = IR_ANNOTABLE_FEATURE_COUNT + 7;
+	int EXTENSION_PROVIDER__FUNCTIONS = IR_ANNOTABLE_FEATURE_COUNT + 4;
 
 	/**
 	 * The number of structural features of the '<em>Extension Provider</em>' class.
@@ -620,7 +593,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EXTENSION_PROVIDER_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 8;
+	int EXTENSION_PROVIDER_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 5;
 
 	/**
 	 * The number of operations of the '<em>Extension Provider</em>' class.
@@ -4915,48 +4888,15 @@ public interface IrPackage extends EPackage {
 	EAttribute getExtensionProvider_ProviderName();
 
 	/**
-	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.ExtensionProvider#getProjectDir <em>Project Dir</em>}'.
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.ExtensionProvider#getOutputPath <em>Output Path</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Project Dir</em>'.
-	 * @see fr.cea.nabla.ir.ir.ExtensionProvider#getProjectDir()
+	 * @return the meta object for the attribute '<em>Output Path</em>'.
+	 * @see fr.cea.nabla.ir.ir.ExtensionProvider#getOutputPath()
 	 * @see #getExtensionProvider()
 	 * @generated
 	 */
-	EAttribute getExtensionProvider_ProjectDir();
-
-	/**
-	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.ExtensionProvider#getInstallDir <em>Install Dir</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Install Dir</em>'.
-	 * @see fr.cea.nabla.ir.ir.ExtensionProvider#getInstallDir()
-	 * @see #getExtensionProvider()
-	 * @generated
-	 */
-	EAttribute getExtensionProvider_InstallDir();
-
-	/**
-	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.ExtensionProvider#getNamespace <em>Namespace</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Namespace</em>'.
-	 * @see fr.cea.nabla.ir.ir.ExtensionProvider#getNamespace()
-	 * @see #getExtensionProvider()
-	 * @generated
-	 */
-	EAttribute getExtensionProvider_Namespace();
-
-	/**
-	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.ExtensionProvider#getLibName <em>Lib Name</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Lib Name</em>'.
-	 * @see fr.cea.nabla.ir.ir.ExtensionProvider#getLibName()
-	 * @see #getExtensionProvider()
-	 * @generated
-	 */
-	EAttribute getExtensionProvider_LibName();
+	EAttribute getExtensionProvider_OutputPath();
 
 	/**
 	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.ExtensionProvider#isLinearAlgebra <em>Linear Algebra</em>}'.
@@ -7061,36 +7001,12 @@ public interface IrPackage extends EPackage {
 		EAttribute EXTENSION_PROVIDER__PROVIDER_NAME = eINSTANCE.getExtensionProvider_ProviderName();
 
 		/**
-		 * The meta object literal for the '<em><b>Project Dir</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Output Path</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute EXTENSION_PROVIDER__PROJECT_DIR = eINSTANCE.getExtensionProvider_ProjectDir();
-
-		/**
-		 * The meta object literal for the '<em><b>Install Dir</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute EXTENSION_PROVIDER__INSTALL_DIR = eINSTANCE.getExtensionProvider_InstallDir();
-
-		/**
-		 * The meta object literal for the '<em><b>Namespace</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute EXTENSION_PROVIDER__NAMESPACE = eINSTANCE.getExtensionProvider_Namespace();
-
-		/**
-		 * The meta object literal for the '<em><b>Lib Name</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute EXTENSION_PROVIDER__LIB_NAME = eINSTANCE.getExtensionProvider_LibName();
+		EAttribute EXTENSION_PROVIDER__OUTPUT_PATH = eINSTANCE.getExtensionProvider_OutputPath();
 
 		/**
 		 * The meta object literal for the '<em><b>Linear Algebra</b></em>' attribute feature.

@@ -11,7 +11,7 @@ package fr.cea.nabla.ir.generator.cpp
 
 import java.util.LinkedHashSet
 
-abstract class IncludesContentProvider
+class IncludesContentProvider
 {
 	def getIncludes(boolean hasLevelDB, boolean hasPostProcessing)
 	'''
@@ -61,6 +61,7 @@ abstract class IncludesContentProvider
 		userIncludes +=  "nablalib/utils/Utils.h"
 		userIncludes +=  "nablalib/utils/Timer.h"
 		userIncludes +=  "nablalib/types/Types.h"
+		if (hasLevelDB) userIncludes += "nablalib/utils/Serializer.h"
 		return userIncludes
 	}
 
@@ -75,6 +76,7 @@ abstract class IncludesContentProvider
 		userNs += "nablalib::mesh"
 		userNs +=  "nablalib::utils"
 		userNs +=  "nablalib::types"
+		if (hasLevelDB) userNs +=  "nablalib::utils"
 		return userNs
 	}
 }
@@ -85,7 +87,6 @@ class StlThreadIncludesContentProvider extends IncludesContentProvider
 	{
 		val includes = super.getUserIncludes(hasLevelDB, hasPostProcessing)
 		includes += "nablalib/utils/stl/Parallel.h"
-		if (hasLevelDB) includes += "nablalib/utils/stl/Serializer.h"
 		return includes
 	}
 
@@ -123,24 +124,7 @@ class KokkosIncludesContentProvider extends IncludesContentProvider
 	}
 }
 
-class SequentialIncludesContentProvider extends IncludesContentProvider
-{
-	override getUserIncludes(boolean hasLevelDB, boolean hasPostProcessing)
-	{
-		val includes = super.getUserIncludes(hasLevelDB, hasPostProcessing)
-		if (hasLevelDB) includes += "nablalib/utils/stl/Serializer.h"
-		return includes
-	}
-
-	override getUserNs(boolean hasLevelDB)
-	{
-		val userNs = super.getUserNs(hasLevelDB)
-		if (hasLevelDB) userNs += "nablalib::utils::stl"
-		return userNs
-	}
-}
-
-class OpenMpIncludesContentProvider extends SequentialIncludesContentProvider
+class OpenMpIncludesContentProvider extends IncludesContentProvider
 {
 	override getSystemIncludes(boolean hasLevelDB)
 	{

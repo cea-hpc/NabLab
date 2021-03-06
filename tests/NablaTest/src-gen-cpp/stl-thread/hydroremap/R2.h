@@ -1,7 +1,7 @@
 /*** GENERATED FILE - DO NOT OVERWRITE ***/
 
-#ifndef R2_H_
-#define R2_H_
+#ifndef __R2_H_
+#define __R2_H_
 
 #include <fstream>
 #include <iomanip>
@@ -14,8 +14,8 @@
 #include "nablalib/utils/Utils.h"
 #include "nablalib/utils/Timer.h"
 #include "nablalib/types/Types.h"
-#include "hydroremap/H.h"
 #include "nablalib/utils/stl/Parallel.h"
+#include "H.h"
 
 using namespace nablalib::mesh;
 using namespace nablalib::utils;

@@ -9,6 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.cpp
 
+import fr.cea.nabla.ir.IrTypeExtensions
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityType
@@ -20,8 +21,6 @@ import fr.cea.nabla.ir.ir.PrimitiveType
 import java.util.ArrayList
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
-
-import static fr.cea.nabla.ir.ExtensionProviderExtensions.*
 
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 
@@ -41,8 +40,7 @@ abstract class TypeContentProvider
 			BaseType case sizes.empty: primitive.cppType
 			BaseType: getCppArrayType(primitive, sizes)
 			ConnectivityType: getCppType(base, connectivities)
-			LinearAlgebraType case sizes.size == 1: getNsPrefix(provider, '::') + 'Vector'
-			LinearAlgebraType case sizes.size == 2: getNsPrefix(provider, '::') + 'Matrix'
+			LinearAlgebraType: IrTypeExtensions.getLinearAlgebraClass(it)
 			default: throw new RuntimeException("Unexpected type: " + class.name)
 		}
 	}

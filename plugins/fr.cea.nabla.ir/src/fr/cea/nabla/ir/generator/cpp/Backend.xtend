@@ -30,20 +30,20 @@ abstract class Backend
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) MainContentProvider mainContentProvider
 }
 
-/** Expected variables: NABLA_CXX_COMPILER */
+/** Expected variables: N_CXX_COMPILER */
 class SequentialBackend extends Backend
 {
 	new()
 	{
 		name = 'Sequential'
 		irTransformationStep = new ReplaceReductions(true)
-		cmakeContentProvider = new SequentialCMakeContentProvider
+		cmakeContentProvider = new CMakeContentProvider
 		typeContentProvider = new StlThreadTypeContentProvider
 		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
 		instructionContentProvider = new SequentialInstructionContentProvider(typeContentProvider, expressionContentProvider)
 		functionContentProvider = new FunctionContentProvider(typeContentProvider, expressionContentProvider, instructionContentProvider)
 		traceContentProvider = new TraceContentProvider
-		includesContentProvider = new SequentialIncludesContentProvider
+		includesContentProvider = new IncludesContentProvider
 		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
 		jobCallerContentProvider = new JobCallerContentProvider
 		jobContentProvider = new StlThreadJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider)
@@ -51,7 +51,7 @@ class SequentialBackend extends Backend
 	}
 }
 
-/** Expected variables: NABLA_CXX_COMPILER */
+/** Expected variables: N_CXX_COMPILER */
 class StlThreadBackend extends Backend
 {
 	new()
@@ -71,7 +71,7 @@ class StlThreadBackend extends Backend
 	}
 }
 
-/** Expected variables: NABLA_CXX_COMPILER, NABLA_KOKKOS_PATH */
+/** Expected variables: N_CXX_COMPILER, N_KOKKOS_PATH */
 class KokkosBackend extends Backend
 {
 	new()
@@ -91,7 +91,7 @@ class KokkosBackend extends Backend
 	}
 }
 
-/** Expected variables: NABLA_CXX_COMPILER, NABLA_KOKKOS_PATH */
+/** Expected variables: N_CXX_COMPILER, N_KOKKOS_PATH */
 class KokkosTeamThreadBackend extends Backend
 {
 	new()
@@ -111,7 +111,7 @@ class KokkosTeamThreadBackend extends Backend
 	}
 }
 
-/** Expected variables: NABLA_CXX_COMPILER */
+/** Expected variables: N_CXX_COMPILER */
 class OpenMpBackend extends Backend
 {
 	new()

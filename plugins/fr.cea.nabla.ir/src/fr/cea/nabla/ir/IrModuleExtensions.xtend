@@ -22,6 +22,11 @@ class IrModuleExtensions
 		eContainer as IrRoot
 	}
 
+	static def getClassName(IrModule it)
+	{
+		name.toFirstUpper
+	}
+
 	static def getPostProcessing(IrModule it)
 	{
 		if (main) getIrRoot.postProcessing

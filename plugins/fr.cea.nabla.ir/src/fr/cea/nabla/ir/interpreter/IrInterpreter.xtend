@@ -20,6 +20,7 @@ import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
 import java.io.File
 import java.net.URL
 import java.net.URLClassLoader
+import java.util.ArrayList
 import java.util.logging.Logger
 import java.util.logging.StreamHandler
 import org.eclipse.xtend.lib.annotations.Accessors
@@ -39,7 +40,6 @@ class IrInterpreter
 {
 	public static val ITERATION_VARIABLE_NAME = "InterpreterIteration"
 
-	@Accessors URL[] classloaderUrls
 	@Accessors val Context context
 	val IrRoot ir
 	val PvdFileWriter2D writer
@@ -80,7 +80,7 @@ class IrInterpreter
 			context.addVariableValue(v, createValue(v.type, v.name, v.defaultValue, context))
 	}
 
-	def interprete(String jsonContent)
+	def interprete(String jsonContent, String wsPath)
 	{
 		context.logInfo("  Start interpreting " + ir.name + " module")
 //		context.logInfo("     " + classloaderUrls.size + " URL(s) provided to class loader")
@@ -98,14 +98,12 @@ class IrInterpreter
 
 		// initialize class loader to finc external functions
 		val tccl = Thread.currentThread().getContextClassLoader()
+		val classloaderUrls = buildUrls(ir, wsPath)
 		val classLoader = if (classloaderUrls.nullOrEmpty) tccl else new URLClassLoader(classloaderUrls, tccl)
 
 		// Read options in Json
 		for (m : context.ir.modules)
-			if (jsonObject.has(m.name))
-				init(classLoader, m, jsonObject.get(m.name))
-			else
-				init(classLoader, m, null)
+			init(classLoader, m, jsonObject.get(m.name), wsPath)
 
 		// Interprete variables that are not options
 		for (v : ir.variables.filter[!option])
@@ -154,7 +152,7 @@ class IrInterpreter
 		levelDBcompareResult
 	}
 
-	private def init(ClassLoader classLoader, IrModule m, JsonElement jsonElt)
+	private def init(ClassLoader classLoader, IrModule m, JsonElement jsonElt, String wsPath)
 	{
 		val jsonOptions = (jsonElt === null ? null : jsonElt.asJsonObject)
 		for (v : m.options)
@@ -177,7 +175,7 @@ class IrInterpreter
 
 		for (provider : m.providers)
 		{
-			val providerHelper = ExtensionProviderCache.Instance.get(provider, classLoader)
+			val providerHelper = ExtensionProviderCache.Instance.get(provider, classLoader, wsPath)
 			if (jsonOptions !== null && jsonOptions.has(provider.instanceName))
 				providerHelper.jsonInit(jsonOptions.get(provider.instanceName).toString)
 			providerHelper.initFunctions(provider.functions)
@@ -213,4 +211,18 @@ class IrInterpreter
 
 	private def getRefDBName() { levelDatabasePath + ir.name + "DB.ref" }
 	private def getCurDBName() { levelDatabasePath + ir.name + "DB.current" }
+
+	private def buildUrls(IrRoot ir, String wsPath)
+	{
+		val urls = new ArrayList<URL>
+		for (p : ir.providers.filter[x | x.extensionName != "Math"])
+		{
+			val urlText = "file://" + wsPath + p.installPath + "/" + p.libName + ".jar"
+			urls += new URL(urlText)
+			println("wsPath : " + wsPath)
+			println("installPath" + p.installPath)
+			println("YRL : " + urlText)
+		}
+		return urls
+	}
 }

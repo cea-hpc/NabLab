@@ -1,6 +1,6 @@
 /*** GENERATED FILE - DO NOT OVERWRITE ***/
 
-#include "bugiter/BugIter.h"
+#include "BugIter.h"
 #include <rapidjson/document.h>
 #include <rapidjson/istreamwrapper.h>
 #include <rapidjson/stringbuffer.h>

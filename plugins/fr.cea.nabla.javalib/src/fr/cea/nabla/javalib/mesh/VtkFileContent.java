@@ -11,7 +11,7 @@ package fr.cea.nabla.javalib.mesh;
 
 import java.util.LinkedHashMap;
 
-import fr.cea.nabla.javalib.linearalgebra.Vector;
+import linearalgebrajava.Vector;
 
 public class VtkFileContent
 {

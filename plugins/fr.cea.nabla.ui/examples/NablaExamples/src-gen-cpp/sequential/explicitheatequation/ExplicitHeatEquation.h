@@ -1,7 +1,7 @@
 /*** GENERATED FILE - DO NOT OVERWRITE ***/
 
-#ifndef EXPLICITHEATEQUATION_H_
-#define EXPLICITHEATEQUATION_H_
+#ifndef __EXPLICITHEATEQUATION_H_
+#define __EXPLICITHEATEQUATION_H_
 
 #include <fstream>
 #include <iomanip>

@@ -9,58 +9,83 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.cpp
 
+import fr.cea.nabla.ir.IrTypeExtensions
 import fr.cea.nabla.ir.generator.CMakeUtils
+import fr.cea.nabla.ir.ir.ExtensionProvider
 import fr.cea.nabla.ir.ir.IrRoot
-import java.util.HashMap
 import java.util.LinkedHashSet
 
-import static extension fr.cea.nabla.ir.IrRootExtensions.*
-import static extension fr.cea.nabla.ir.generator.Utils.*
+import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
+import static extension fr.cea.nabla.ir.IrModuleExtensions.getClassName
+import static extension fr.cea.nabla.ir.IrRootExtensions.getExecName
 
-abstract class CMakeContentProvider
+class CMakeContentProvider
 {
-	protected def CharSequence getLibraryBackend(IrRoot ir) { '''''' }
-	protected def Iterable<String> getTargetLinkLibraries(IrRoot ir) { #[] }
+	public static val WS_PATH = 'N_WS_PATH'
 
-	def getContentFor(IrRoot it, String libCppNablaDir, String levelDBPath, HashMap<String, String> variables)
+	protected def Iterable<String> getNeededVariables()
+	{
+		#[WS_PATH]
+	}
+
+	protected def CharSequence getFindPackageContent()
+	''''''
+
+	protected def Iterable<String> getTargetLinkLibraries()
+	{ 
+		#['nablalib']
+	}
+
+	protected def Iterable<String> getCompilationOptions()
+	{ 
+		#['-g', '-Wall', '-O3', '--std=c++17', '-mtune=native']
+	}
+
+	def getContentFor(IrRoot it, String levelDBPath, Iterable<Pair<String, String>> variables)
 	'''
-		«CMakeUtils.fileHeader»
-
-		set(LIBCPPNABLA_DIR «CMakeUtils.formatCMakePath(libCppNablaDir)» CACHE STRING "")
-		«FOR entry : variables.entrySet»
-			set(«entry.key» «entry.value»)
-		«ENDFOR»
-		«FOR ep : externalProviders»
-			set(«ep.extensionName.toUpperCase»_DIR «CMakeUtils.formatCMakePath(ep.projectDir)»«IF !ep.namespace.nullOrEmpty && !ep.linearAlgebra»/«ep.namespace.replace('::', '/')»«ENDIF»)
-		«ENDFOR»
+		«CMakeUtils.getFileHeader(false)»
 
 		project(«name»Project CXX)
 
+		«CMakeUtils.setVariables(variables, externalProviders)»
+
+		«CMakeUtils.checkVariables(neededVariables)»
+
 		«CMakeUtils.setCompiler»
+		«IF !(levelDBPath.nullOrEmpty && findPackageContent.length == 0)»
 
-		«libraryBackend»
-		«FOR ep : externalProviders»
-			if(NOT TARGET «ep.libName»)
-				add_subdirectory(${«ep.extensionName.toUpperCase»_DIR} ${CMAKE_BINARY_DIR}/«ep.providerName» EXCLUDE_FROM_ALL)
-			endif()
-		«ENDFOR»
-		if(NOT TARGET cppnabla)
-			add_subdirectory(${LIBCPPNABLA_DIR} ${CMAKE_BINARY_DIR}/«CppGeneratorUtils::CppLibName» EXCLUDE_FROM_ALL)
-		endif()
-		«IF !levelDBPath.nullOrEmpty»
-
+			# FIND PACKAGES
+			«findPackageContent»
+			«IF !levelDBPath.nullOrEmpty»
 			set(CMAKE_FIND_ROOT_PATH «levelDBPath»)
-			find_package(leveldb)
+			find_package(leveldb REQUIRED)
 			find_package(Threads REQUIRED)
-			if(TARGET leveldb::leveldb)
-				message(STATUS "levelDB found")
-			else()
-				message(STATUS "levelDB NOT found !!!")
-			endif()
+			«ENDIF»
 		«ENDIF»
 
-		add_executable(«name.toLowerCase»«FOR m : modules» «m.className + '.cc'»«ENDFOR»)
-		target_link_libraries(«name.toLowerCase» PUBLIC cppnabla«FOR l : getTargetLinkLibs(it, (!levelDBPath.nullOrEmpty)) BEFORE " " SEPARATOR " "»«l»«ENDFOR»)
+		«CMakeUtils.addSubDirectories(true, externalProviders)»
+
+		# EXECUTABLE «execName»
+		add_executable(«execName»«FOR m : modules» «m.className + '.cc'»«ENDFOR»)
+		target_link_libraries(«execName» PUBLIC«FOR l : getTargetLinkLibs(it, (!levelDBPath.nullOrEmpty))» «l»«ENDFOR»)
+
+		«CMakeUtils.fileFooter»
+	'''
+
+	def getCMakeFileContent(ExtensionProvider provider)
+	'''
+		«CMakeUtils.getFileHeader(true)»
+
+		«CMakeUtils.checkVariables(neededVariables)»
+
+		«CMakeUtils.addSubDirectories(true, #[])»
+
+		# LIBRARY «provider.libName»
+		add_library(«provider.libName» «IF provider.linearAlgebra»«IrTypeExtensions.VectorClass».cc «IrTypeExtensions.MatrixClass».cc «ENDIF»«provider.className».cc)
+		set_property(TARGET «provider.libName» PROPERTY POSITION_INDEPENDENT_CODE ON)
+		target_compile_options(«provider.libName» PUBLIC -g -Wall -O3 --std=c++17 -mtune=native)
+		target_include_directories(«provider.libName» PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+		target_link_libraries(«provider.libName» PUBLIC«FOR l : targetLinkLibraries» «l»«ENDFOR»)
 
 		«CMakeUtils.fileFooter»
 	'''
@@ -82,43 +107,56 @@ abstract class CMakeContentProvider
 
 class StlThreadCMakeContentProvider extends CMakeContentProvider
 {
-	override getTargetLinkLibraries(IrRoot ir)
+	override Iterable<String> getCompilationOptions()
 	{
-		#["cppnablastl", "pthread"]
+		super.compilationOptions + #['-fopenmp']
+	}
+
+	override getTargetLinkLibraries()
+	{
+		super.targetLinkLibraries + #["pthread"]
 	}
 }
 
 class KokkosCMakeContentProvider extends CMakeContentProvider
 {
-	override getTargetLinkLibraries(IrRoot ir)
+	override Iterable<String> getNeededVariables()
 	{
-		#["cppnablakokkos"]
+		 #['N_KOKKOS_PATH'] + super.neededVariables
 	}
-}
 
-class SequentialCMakeContentProvider extends CMakeContentProvider
-{
-	override getTargetLinkLibraries(IrRoot ir)
+	override getFindPackageContent()
+	'''
+		set(CMAKE_FIND_ROOT_PATH ${N_KOKKOS_PATH})
+		find_package(Kokkos REQUIRED)
+		find_package(KokkosKernels REQUIRED)
+	'''
+
+	override Iterable<String> getCompilationOptions()
 	{
-		if (ir.linearAlgebra)
-			#["cppnablastl", "pthread"]
-		else
-			#[]
+		super.compilationOptions + #['-fopenmp']
+	}
+
+	override getTargetLinkLibraries()
+	{
+		super.targetLinkLibraries + #['Kokkos::kokkos', 'Kokkos::kokkoskernels']
 	}
 }
 
 class OpenMpCMakeContentProvider extends CMakeContentProvider
 {
-	override getLibraryBackend(IrRoot ir)
+	override getFindPackageContent()
 	'''
-		find_package(OpenMP)
+		find_package(OpenMP REQUIRED)
 	'''
 
-	override getTargetLinkLibraries(IrRoot ir)
+	override Iterable<String> getCompilationOptions()
 	{
-		if (ir.linearAlgebra)
-			#["OpenMP::OpenMP_CXX", "cppnablastl", "pthread"]
-		else
-			#["OpenMP::OpenMP_CXX"]
+		super.compilationOptions + #['-fopenmp']
+	}
+
+	override getTargetLinkLibraries()
+	{
+		super.targetLinkLibraries + #["OpenMP::OpenMP_CXX"]
 	}
 }

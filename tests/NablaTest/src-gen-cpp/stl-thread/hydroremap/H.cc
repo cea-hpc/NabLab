@@ -1,12 +1,12 @@
 /*** GENERATED FILE - DO NOT OVERWRITE ***/
 
-#include "hydroremap/H.h"
+#include "H.h"
 #include <rapidjson/document.h>
 #include <rapidjson/istreamwrapper.h>
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
-#include "hydroremap/R1.h"
-#include "hydroremap/R2.h"
+#include "R1.h"
+#include "R2.h"
 
 
 /******************** Options definition ********************/

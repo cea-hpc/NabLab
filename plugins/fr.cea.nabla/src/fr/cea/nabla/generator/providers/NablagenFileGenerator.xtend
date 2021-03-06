@@ -16,7 +16,7 @@ import fr.cea.nabla.nablagen.TargetType
 
 class NablagenFileGenerator extends StandaloneGeneratorBase
 {
-	def generate(NablaExtension nablaExt, String genDir)
+	def generate(NablaExtension nablaExt, String genDir, String projectName)
 	{
 		val fsa = getConfiguredFileSystemAccess(genDir, false)
 		var fileName = nablaExt.name + ".ngen"
@@ -24,11 +24,11 @@ class NablagenFileGenerator extends StandaloneGeneratorBase
 		if ( !(fsa.isFile(fileName) ))
 		{
 			dispatcher.post(MessageType::Exec, "    Generating: " + fileName)
-			fsa.generateFile(fileName, getContent(nablaExt))
+			fsa.generateFile(fileName, getContent(nablaExt, projectName))
 		}
 	}
 
-	private def getContent(NablaExtension it)
+	private def getContent(NablaExtension it, String projectName)
 	'''
 	/*
 	 * This file contains the providers for the «name» NabLab extension.
@@ -45,10 +45,7 @@ class NablagenFileGenerator extends StandaloneGeneratorBase
 	{
 		target = «TargetType::CPP_SEQUENTIAL.literal»;
 		// compatibleTargets can be added here
-		outputDir = "/«name»/src-cpp";
-		facadeClass = "«name»Cpp";
-		facadeNamespace = "«name.toLowerCase»";
-		libName = "«name.toLowerCase»";
+		outputPath = "/«projectName»/src-cpp";
 	}
 
 	/* 
@@ -58,10 +55,7 @@ class NablagenFileGenerator extends StandaloneGeneratorBase
 	{
 		target = «TargetType::JAVA.literal»;
 		// compatibleTargets can be added here
-		outputDir = "/«name»/src-java";
-		facadeClass = "«name»Java";
-		facadeNamespace = "«name.toLowerCase»";
-		libName = "«name.toLowerCase»";
+		outputPath = "/«projectName»/src-java";
 	}
 	'''
 }

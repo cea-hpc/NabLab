@@ -45,7 +45,7 @@ class GenerateNablagenHandler extends AbstractGenerateHandler
 
 				val startTime = System.currentTimeMillis
 				val nablaExt = emfResource.contents.filter(NablaExtension).head
-				generator.generate(nablaExt, nablaFile.parent.location.toString)
+				generator.generate(nablaExt, nablaFile.parent.location.toString, project.name)
 				val endTime = System.currentTimeMillis
 				consoleFactory.printConsole(MessageType.Exec, "Code generation ended in " + (endTime-startTime)/1000.0 + "s")
 

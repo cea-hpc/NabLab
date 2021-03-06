@@ -1,7 +1,7 @@
 /*** GENERATED FILE - DO NOT OVERWRITE ***/
 
-#ifndef ITERATIVEHEATEQUATION_H_
-#define ITERATIVEHEATEQUATION_H_
+#ifndef __ITERATIVEHEATEQUATION_H_
+#define __ITERATIVEHEATEQUATION_H_
 
 #include <fstream>
 #include <iomanip>

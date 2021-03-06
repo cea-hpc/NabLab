@@ -1,14 +1,18 @@
 ### GENERATED FILE - DO NOT OVERWRITE ###
 
 cmake_minimum_required(VERSION 3.10)
+set(CMAKE_VERBOSE_MAKEFILE FALSE)
 
+project(DepthInitProject CXX)
+
+# SET VARIABLES
+set(N_WS_PATH $ENV{HOME}/workspaces/NabLab/tests)
 set(NABLA_CXX_COMPILER /usr/bin/g++)
 set(JAVA_HOME /usr/lib/jvm/java-11-openjdk-amd64)
+set(BATILIBCPPJNI_PATH ${N_WS_PATH}/DepthInit/src-gen-interpreter/batilibcppjni)
 
-project(DepthInitProject LANGUAGES NONE)
-
-set(CMAKE_CXX_COMPILER ${NABLA_CXX_COMPILER} CACHE STRING "")
-
+# CHECK CXX VERSION
+set(CMAKE_CXX_COMPILER ${N_CXX_COMPILER} CACHE STRING "")
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 	if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "7.4.0")
 		message(FATAL_ERROR "GCC minimum required version is 7.4.0. Please upgrade.")
@@ -19,8 +23,12 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 	endif()
 endif()
 
-add_subdirectory($ENV{HOME}/workspaces/NabLab/tests/DepthInit/../DepthInit/src-gen-interpreter/batilibcppjni ${CMAKE_BINARY_DIR}/BatiLibCppJNI)
+# SUB_DIRECTORIES
+if(NOT TARGET batilibcppjni)
+	add_subdirectory(${BATILIBCPPJNI_PATH} ${CMAKE_BINARY_DIR}/batilibcppjni)
+endif()
 
+# OPTIONAL USER OPTIONS IN Project.cmake
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 	include(${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 endif()

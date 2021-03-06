@@ -22,7 +22,7 @@ abstract class StandaloneGeneratorBase
 	{
 		val baseFolder = new File(absoluteBasePath)
 		if (!baseFolder.exists || !(baseFolder.isDirectory))
-			throw new RuntimeException('** Invalid outputDir: ' + absoluteBasePath)
+			throw new RuntimeException('** Invalid outputPath: ' + absoluteBasePath)
 
 		val fsa = fsaProvider.get
 		fsa.outputConfigurations = outputConfigurations

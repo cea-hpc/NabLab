@@ -9,7 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.cpp
 
-import fr.cea.nabla.ir.generator.CMakeUtils
+import fr.cea.nabla.ir.IrTypeExtensions
 import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.generator.ProviderGenerator
 import fr.cea.nabla.ir.generator.Utils
@@ -17,60 +17,49 @@ import fr.cea.nabla.ir.ir.ExtensionProvider
 import java.util.ArrayList
 
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
+import static extension fr.cea.nabla.ir.generator.cpp.CppGeneratorUtils.*
 
 class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 {
-	new(Backend backend, String libCppNablaDir)
+	new(Backend backend)
 	{
-		super(backend, libCppNablaDir)
+		super(backend)
 	}
 
 	override getGenerationContents(ExtensionProvider provider)
 	{
 		val fileContents = new ArrayList<GenerationContent>
-		val pathPrefix = getNsPrefix(provider, '::').replace('::', '/')
-
-		// .h of interface
-		val interfaceHeaderFileName = pathPrefix + provider.interfaceName + ".h"
-		fileContents += new GenerationContent(interfaceHeaderFileName, getInterfaceHeaderFileContent(provider), false)
-
-		// CMakeLists.txt
-		val cmakeFileName = pathPrefix + "CMakeLists.txt"
-		fileContents += new GenerationContent(cmakeFileName, getCMakeFileContent(provider, libCppNablaDir), false)
-
+		fileContents += new GenerationContent(provider.interfaceName + ".h", getInterfaceHeaderFileContent(provider), false)
+		fileContents += new GenerationContent("CMakeLists.txt", backend.cmakeContentProvider.getCMakeFileContent(provider), false)
 		// Generates .h and .cc if they does not exists
-		// .h
-		val headerFileName = pathPrefix + provider.className + ".h"
-		fileContents += new GenerationContent(headerFileName, getHeaderFileContent(provider), true)
-
-		// .cc
-		val sourceFileName = pathPrefix + provider.className + ".cc"
-		fileContents += new GenerationContent(sourceFileName, getSourceFileContent(provider), true)
-
+		fileContents += new GenerationContent(provider.className + ".h", getHeaderFileContent(provider), true)
+		fileContents += new GenerationContent(provider.className + ".cc", getSourceFileContent(provider), true)
+		if (provider.linearAlgebra)
+		{
+			fileContents += new GenerationContent(IrTypeExtensions.VectorClass + ".h", getVectorHeaderFileContent(provider), true)
+			fileContents += new GenerationContent(IrTypeExtensions.VectorClass + ".cc", getVectorSourceFileContent(provider), true)
+			fileContents += new GenerationContent(IrTypeExtensions.MatrixClass + ".h", getMatrixHeaderFileContent(provider), true)
+			fileContents += new GenerationContent(IrTypeExtensions.MatrixClass + ".cc", getMatrixSourceFileContent(provider), true)
+		}
 		return fileContents
 	}
 
 	private def getInterfaceHeaderFileContent(ExtensionProvider provider)
 	'''
-		«val defineName = '__' + getNsPrefix(provider, '::').replace('::', '_').toUpperCase + '_' + provider.interfaceName.toUpperCase»
 		«Utils::fileHeader»
 
-		#ifndef «defineName»
-		#define «defineName»
+		#ifndef «provider.interfaceName.HDefineName»
+		#define «provider.interfaceName.HDefineName»
 
 		«backend.includesContentProvider.getIncludes(false, false)»
 
 		«backend.includesContentProvider.getUsings(false)»
 
-		«IF !provider.namespace.nullOrEmpty»
-		namespace «provider.namespace»
-		{
-		«ENDIF»
 		class «provider.interfaceName»
 		{
 		public:
 			virtual void jsonInit(const char* jsonContent) = 0;
-	
+
 			/* 
 			 * Here are the other methods to implement in «name» class.
 			 * Some of them can be templates. Therefore they can not be virtual.
@@ -81,26 +70,21 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 			«ENDFOR»
 			*/
 		};
-		«IF !provider.namespace.nullOrEmpty»
-		}
-		«ENDIF»
 
-		#endif // «defineName»
+		#endif
 	'''
 
 	private def getHeaderFileContent(ExtensionProvider provider)
 	'''
-		«val pathPrefix = getNsPrefix(provider, '::').replace('::', '/')»
-		«val defineName = '__' + getNsPrefix(provider, '::').replace('::', '_').toUpperCase + '_' + provider.className.toUpperCase»
-		#ifndef «defineName»
-		#define «defineName»
+		#ifndef «provider.className.HDefineName»
+		#define «provider.className.HDefineName»
 
-		#include "«pathPrefix»«provider.interfaceName».h"
-
-		«IF !provider.namespace.nullOrEmpty»
-		namespace «provider.namespace»
-		{
+		#include "«provider.interfaceName».h"
+		«IF provider.linearAlgebra»
+		#include "«IrTypeExtensions.VectorClass».h"
+		#include "«IrTypeExtensions.MatrixClass».h"
 		«ENDIF»
+
 		class «provider.className» : public «provider.interfaceName»
 		{
 		public:
@@ -113,53 +97,148 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 			}
 			«ENDFOR»
 		};
-		«IF !provider.namespace.nullOrEmpty»
-		}
-		«ENDIF»
 
-		#endif // «defineName»
+		#endif
 	'''
 
 	private def getSourceFileContent(ExtensionProvider provider)
 	'''
-		«val pathPrefix = getNsPrefix(provider, '::').replace('::', '/')»
-		#include "«pathPrefix»«provider.className».h"
+		#include "«provider.className».h"
 		#include <string>
 
-		«IF !provider.namespace.nullOrEmpty»
-			namespace «provider.namespace»
-			{
-		«ENDIF»
 		void «provider.className»::jsonInit(const char* jsonContent)
 		{
 			// Your code here
 		}
-		«IF !provider.namespace.nullOrEmpty»
-			}
-		«ENDIF»
 	'''
 
-	private def getCMakeFileContent(ExtensionProvider provider, String libCppNablaDir)
+	private def getVectorHeaderFileContent(ExtensionProvider provider)
 	'''
-		«CMakeUtils.fileHeader»
+		#ifndef «IrTypeExtensions.VectorClass.HDefineName»
+		#define «IrTypeExtensions.VectorClass.HDefineName»
 
-		set(LIBCPPNABLA_DIR «CMakeUtils.formatCMakePath(libCppNablaDir)» CACHE STRING "")
+		#include <cstddef>
+		#include <string>
 
-		project(«provider.providerName» CXX)
+		class «IrTypeExtensions.VectorClass»
+		{
+		public:
+			«IrTypeExtensions.VectorClass»(const std::string& name, const std::size_t size);
+			~«IrTypeExtensions.VectorClass»();
 
-		«CMakeUtils.setCompiler»
+			«IrTypeExtensions.VectorClass»& operator=(const «IrTypeExtensions.VectorClass»& val);
 
-		MESSAGE(STATUS "Building library «provider.libName»")
+			const std::size_t getSize() const;
+			double getValue(const std::size_t i) const;
+			void setValue(const std::size_t i, double value);
+		};
 
-		if(NOT TARGET cppnabla)
-			add_subdirectory(${LIBCPPNABLA_DIR} ${CMAKE_BINARY_DIR}/«CppGeneratorUtils::CppLibName» EXCLUDE_FROM_ALL)
-		endif()
+		#endif
+	'''
 
-		add_library(«provider.libName» «provider.className».cc)
-		set_property(TARGET «provider.libName» PROPERTY POSITION_INDEPENDENT_CODE ON)
-		target_include_directories(«provider.libName» PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
-		target_link_libraries(«provider.libName» PUBLIC cppnabla)
+	private def getVectorSourceFileContent(ExtensionProvider provider)
+	'''
+		#include "«IrTypeExtensions.VectorClass».h"
 
-		«CMakeUtils.fileFooter»
+		«IrTypeExtensions.VectorClass»::
+		«IrTypeExtensions.VectorClass»(const std::string& name, const std::size_t size)
+		{
+			// Your code here
+		}
+
+		«IrTypeExtensions.VectorClass»::
+		~«IrTypeExtensions.VectorClass»()
+		{
+			// Your code here
+		}
+
+		«IrTypeExtensions.VectorClass»& «IrTypeExtensions.VectorClass»::
+		operator=(const «IrTypeExtensions.VectorClass»& val)
+		{
+			// Your code here
+			return *this;
+		}
+
+		const std::size_t «IrTypeExtensions.VectorClass»::
+		getSize() const
+		{
+			// Your code here
+		}
+
+		double «IrTypeExtensions.VectorClass»::
+		getValue(const std::size_t i) const
+		{
+			// Your code here
+		}
+
+		void «IrTypeExtensions.VectorClass»::
+		setValue(const std::size_t i, double value)
+		{
+			// Your code here
+		}
+	'''
+
+	private def getMatrixHeaderFileContent(ExtensionProvider provider)
+	'''
+		#ifndef «IrTypeExtensions.MatrixClass.HDefineName»
+		#define «IrTypeExtensions.MatrixClass.HDefineName»
+
+		#include <cstddef>
+		#include <string>
+
+		class «IrTypeExtensions.MatrixClass»
+		{
+		public:
+			«IrTypeExtensions.MatrixClass»(const std::string name, const std::size_t rows, const std::size_t cols);
+			~«IrTypeExtensions.MatrixClass»();
+
+			const std::size_t getNbRows() const;
+			const std::size_t getNbCols() const;
+			double getValue(const std::size_t row, const std::size_t col) const;
+			void setValue(const std::size_t row, const std::size_t col, double value);
+		};
+
+		#endif
+	'''
+
+	private def getMatrixSourceFileContent(ExtensionProvider provider)
+	'''
+		#include "«IrTypeExtensions.MatrixClass».h"
+
+		«IrTypeExtensions.MatrixClass»::
+		«IrTypeExtensions.MatrixClass»(const std::string name, const std::size_t rows, const std::size_t cols)
+		{
+			// Your code here
+		}
+
+		«IrTypeExtensions.MatrixClass»::
+		~«IrTypeExtensions.MatrixClass»()
+		{
+			// Your code here
+		}
+
+		const std::size_t «IrTypeExtensions.MatrixClass»::
+		getNbRows() const
+		{
+			// Your code here
+		}
+
+		const std::size_t «IrTypeExtensions.MatrixClass»::
+		getNbCols() const
+		{
+			// Your code here
+		}
+
+		double «IrTypeExtensions.MatrixClass»::
+		getValue(const std::size_t _row, const std::size_t _col) const
+		{
+			// Your code here
+		}
+
+		void «IrTypeExtensions.MatrixClass»::
+		setValue(const std::size_t _row, const std::size_t _col, double value)
+		{
+			// Your code here
+		}
 	'''
 }

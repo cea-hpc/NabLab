@@ -13,9 +13,7 @@ Provider BatiLibCpp : BatiLib
 {
 	target = CppSequential;
 	compatibleTargets = StlThread;
-	outputDir = "/BatiLib/src-cpp";
-	namespace = "batilib";
-	libName = "batilib";
+	outputPath = "/BatiLib/src-cpp";
 }
 
 /* 
@@ -25,7 +23,5 @@ Provider BatiLibJava : BatiLib
 {
 	target = Java;
 	// compatibleTargets can be added here
-	outputDir = "/BatiLib/src-java";
-	namespace = "batilib";
-	libName = "batilib";
+	outputPath = "/BatiLib/src-java";
 }

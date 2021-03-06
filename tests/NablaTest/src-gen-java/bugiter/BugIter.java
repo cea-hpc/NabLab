@@ -235,7 +235,7 @@ public final class BugIter
 	 */
 	protected void setUpTimeLoopK()
 	{
-		IntStream.range(0, v_nplus1_k.length).parallel().forEach(i1 -> 
+		IntStream.range(0, v_nplus1_k.length).parallel().forEach(i1 ->
 		{
 			v_nplus1_k[i1] = v_nplus1_k0[i1];
 		});
@@ -332,7 +332,7 @@ public final class BugIter
 	 */
 	protected void tearDownTimeLoopK()
 	{
-		IntStream.range(0, v_nplus1.length).parallel().forEach(i1 -> 
+		IntStream.range(0, v_nplus1.length).parallel().forEach(i1 ->
 		{
 			v_nplus1[i1] = v_nplus1_kplus1[i1];
 		});
@@ -358,7 +358,7 @@ public final class BugIter
 	 */
 	protected void setUpTimeLoopL()
 	{
-		IntStream.range(0, w_nplus1_l.length).parallel().forEach(i1 -> 
+		IntStream.range(0, w_nplus1_l.length).parallel().forEach(i1 ->
 		{
 			w_nplus1_l[i1] = w_nplus1_l0[i1];
 		});
@@ -399,7 +399,7 @@ public final class BugIter
 	 */
 	protected void tearDownTimeLoopL()
 	{
-		IntStream.range(0, w_nplus1.length).parallel().forEach(i1 -> 
+		IntStream.range(0, w_nplus1.length).parallel().forEach(i1 ->
 		{
 			w_nplus1[i1] = w_nplus1_lplus1[i1];
 		});

@@ -1,7 +1,7 @@
 /*** GENERATED FILE - DO NOT OVERWRITE ***/
 
-#ifndef DEPTHINIT_H_
-#define DEPTHINIT_H_
+#ifndef __DEPTHINIT_H_
+#define __DEPTHINIT_H_
 
 #include <fstream>
 #include <iomanip>
@@ -14,8 +14,8 @@
 #include "nablalib/utils/Utils.h"
 #include "nablalib/utils/Timer.h"
 #include "nablalib/types/Types.h"
-#include "batilib/BatiLib.h"
 #include "nablalib/utils/stl/Parallel.h"
+#include "BatiLib.h"
 
 using namespace nablalib::mesh;
 using namespace nablalib::utils;
@@ -24,7 +24,7 @@ using namespace nablalib::utils::stl;
 
 /******************** Free functions declarations ********************/
 
-namespace DepthInitFuncs
+namespace depthinitfreefuncs
 {
 double two();
 }
@@ -39,7 +39,7 @@ public:
 		double maxTime;
 		int maxIter;
 		double deltat;
-		batilib::BatiLib batiLib;
+		BatiLib batiLib;
 
 		void jsonInit(const char* jsonContent);
 	};

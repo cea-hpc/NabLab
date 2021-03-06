@@ -35,11 +35,6 @@ class Utils
 		/*** GENERATED FILE - DO NOT OVERWRITE ***/
 	'''
 
-	static def getClassName(IrModule it)
-	{
-		name.toFirstUpper
-	}
-
 	static def getCodeName(Job it)
 	{
 		name.toFirstLower

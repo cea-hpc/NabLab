@@ -38,31 +38,31 @@ Java
 Kokkos
 {
 	outputPath = "/NablaExamples/src-gen-cpp/kokkos";
-	NABLA_CXX_COMPILER = "/usr/bin/g++";
-	NABLA_KOKKOS_PATH = "$ENV{HOME}/kokkos/kokkos-install";
+	N_CXX_COMPILER = "/usr/bin/g++";
+	N_KOKKOS_PATH = "$ENV{HOME}/kokkos/kokkos-install";
 }
 
 KokkosTeamThread
 {
 	outputPath = "/NablaExamples/src-gen-cpp/kokkos-team";
-	NABLA_CXX_COMPILER = "/usr/bin/g++";
-	NABLA_KOKKOS_PATH = "$ENV{HOME}/kokkos/kokkos-install";
+	N_CXX_COMPILER = "/usr/bin/g++";
+	N_KOKKOS_PATH = "$ENV{HOME}/kokkos/kokkos-install";
 }
 
 OpenMP
 {
 	outputPath = "/NablaExamples/src-gen-cpp/openmp";
-	NABLA_CXX_COMPILER = "/usr/bin/g++";
+	N_CXX_COMPILER = "/usr/bin/g++";
 }
 
 CppSequential
 {
 	outputPath = "/NablaExamples/src-gen-cpp/sequential";
-	NABLA_CXX_COMPILER = "/usr/bin/g++";
+	N_CXX_COMPILER = "/usr/bin/g++";
 }
 
 StlThread
 {
 	outputPath = "/NablaExamples/src-gen-cpp/stl-thread";
-	NABLA_CXX_COMPILER = "/usr/bin/g++";
+	N_CXX_COMPILER = "/usr/bin/g++";
 }

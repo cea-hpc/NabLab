@@ -20,16 +20,13 @@ class ProvidersUtils
 {
 	@Inject IrFunctionFactory irFunctionFactory
 
-	def toIrExtensionProvider(NablagenProvider provider, String baseDir, String installationDir)
+	def toIrExtensionProvider(NablagenProvider provider, String installationDir)
 	{
 		IrFactory::eINSTANCE.createExtensionProvider =>
 		[
 			extensionName = provider.extension.name
 			providerName = provider.name
-			projectDir = baseDir + provider.outputDir
-			installDir = installationDir
-			namespace = provider.namespace
-			libName = provider.libName
+			outputPath = provider.outputPath
 			linearAlgebra = provider.extension.linearAlgebra
 			functions += provider.extension.irFunctions
 		]

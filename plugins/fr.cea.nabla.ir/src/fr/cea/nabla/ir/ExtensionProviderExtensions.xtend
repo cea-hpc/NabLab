@@ -14,12 +14,34 @@ class ExtensionProviderExtensions
 		extensionName
 	}
 
-	static def getNsPrefix(ExtensionProvider it, String separator)
+	static def getLibName(ExtensionProvider it)
 	{
-		if (namespace.nullOrEmpty)
-			''
-		else
-			namespace + separator
+		providerName.toLowerCase
+	}
+
+	static def getPathVar(ExtensionProvider it)
+	{
+		new Pair(providerName.toUpperCase + '_PATH', '${N_WS_PATH}' + outputPath + '/' + dirName)
+	}
+
+	static def getDirName(ExtensionProvider it)
+	{
+		providerName.toLowerCase
+	}
+
+	/**
+	 * Return the path to the directory containing provider "jar" for java
+	 * code and interpreter and "jar + .so" for JNI. 
+	 */
+	static def getInstallPath(ExtensionProvider it)
+	{
+		outputPath + '/' + dirName + '/lib'
+	}
+
+	/** PackageName is used by Java and Jni */
+	static def getPackageName(ExtensionProvider it)
+	{
+		providerName.toLowerCase
 	}
 
 	static def String getInstanceName(ExtensionProvider it)

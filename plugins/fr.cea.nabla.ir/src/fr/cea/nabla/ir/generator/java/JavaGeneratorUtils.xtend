@@ -18,8 +18,6 @@ import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 
 class JavaGeneratorUtils
 {
-	public static val JavaLibName = "LibJavaNabla"
-
 	static def dispatch getCodeName(InternFunction it)
 	{
 		name

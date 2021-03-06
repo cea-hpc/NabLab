@@ -29,7 +29,7 @@ class ExtensionProviderCache
 	{
 	}
 
-	def ExtensionProviderHelper get(ExtensionProvider p, ClassLoader cl)
+	def ExtensionProviderHelper get(ExtensionProvider p, ClassLoader cl, String wsPath)
 	{
 		var c = classByProviders.get(p)
 		if (c === null)
@@ -38,13 +38,9 @@ class ExtensionProviderCache
 			{
 				c = switch p
 				{
-					case p.extensionName == "Math":
-					{
-						p.namespace = "java.lang"
-						new StaticExtensionProviderHelper(p, cl)
-					}
-					case p.linearAlgebra: new LinearAlgebraExtensionProviderHelper(p, cl)
-					default: new DefaultExtensionProviderHelper(p, cl)
+					case p.extensionName == "Math": new StaticExtensionProviderHelper(p, cl, "java.lang")
+					case p.linearAlgebra: new LinearAlgebraExtensionProviderHelper(p, cl, wsPath)
+					default: new DefaultExtensionProviderHelper(p, cl, wsPath)
 				}
 			}
 			catch (ClassNotFoundException e)
@@ -71,6 +67,6 @@ class ExtensionProviderNotFoundException extends Exception
 
 	private def static String buildMessage(ExtensionProvider p)
 	{
-		'Class ' + p.className + ' not found for provider ' + p.providerName + ': compile and install your provider (make; make install)'
+		'Class ' + p.packageName + '.' + p.className + ' not found for provider ' + p.providerName + ': if JNI compile and install (make; make install)'
 	}
 }

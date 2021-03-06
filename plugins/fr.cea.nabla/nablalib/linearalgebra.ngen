@@ -12,24 +12,18 @@ Provider LinearAlgebraStl : LinearAlgebra
 {
 	target = StlThread;
 	compatibleTargets = CppSequential, OpenMP;
-	outputDir = "/LibCppNabla";
-	namespace = "nablalib::linearalgebra::stl";
-	libName = "cppnablastl";
+	outputPath = "/.nablab/linearalgebra";
 }
 
 Provider LinearAlgebraKokkos : LinearAlgebra
 {
 	target = Kokkos;
 	compatibleTargets = KokkosTeamThread;
-	outputDir = "/LibCppNabla";
-	namespace = "nablalib::linearalgebra::kokkos";
-	libName = "cppnablakokkos";
+	outputPath = "/.nablab/linearalgebra";
 }
 
 Provider LinearAlgebraJava : LinearAlgebra
 {
 	target = Java;
-	outputDir = "/LibJavaNabla";
-	namespace = "fr.cea.nabla.javalib.linearalgebra";
-	libName = "libjavanabla";
+	outputPath = "/.nablab/linearalgebra";
 }

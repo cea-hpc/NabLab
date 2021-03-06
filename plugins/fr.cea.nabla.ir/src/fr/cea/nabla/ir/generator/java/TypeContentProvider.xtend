@@ -9,6 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.java
 
+import fr.cea.nabla.ir.IrTypeExtensions
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.Expression
@@ -17,9 +18,8 @@ import fr.cea.nabla.ir.ir.ItemIndex
 import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.PrimitiveType
 
-import static fr.cea.nabla.ir.ExtensionProviderExtensions.*
-
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
+import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
 
@@ -32,8 +32,7 @@ class TypeContentProvider
 			case null: null
 			BaseType: primitive.javaType + sizes.map['[]'].join
 			ConnectivityType: base.javaType + connectivities.map['[]'].join
-			LinearAlgebraType case sizes.size == 1: getNsPrefix(provider, '.') + 'Vector'
-			LinearAlgebraType case sizes.size == 2: getNsPrefix(provider, '.') + 'Matrix'
+			LinearAlgebraType: provider.packageName + '.' + IrTypeExtensions.getLinearAlgebraClass(it)
 			default: throw new RuntimeException("Unexpected type: " + class.name)
 		}
 	}

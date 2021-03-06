@@ -1,15 +1,22 @@
 ### GENERATED FILE - DO NOT OVERWRITE ###
 
 cmake_minimum_required(VERSION 3.10)
-
-set(LIBCPPNABLA_DIR $ENV{HOME}/workspaces/NabLab/tests/DepthInit/../LibCppNabla CACHE STRING "")
-set(NABLA_CXX_COMPILER /usr/bin/g++)
-set(BATILIB_DIR $ENV{HOME}/workspaces/NabLab/tests/DepthInit/../BatiLib/src-cpp)
+set(CMAKE_VERBOSE_MAKEFILE FALSE)
 
 project(DepthInitProject CXX)
 
-set(CMAKE_CXX_COMPILER ${NABLA_CXX_COMPILER} CACHE STRING "")
+# SET VARIABLES
+set(NABLA_CXX_COMPILER /usr/bin/g++)
+set(N_WS_PATH $ENV{HOME}/workspaces/NabLab/tests)
+set(BATILIBCPP_PATH ${N_WS_PATH}/BatiLib/src-cpp/batilibcpp)
 
+# CHECK VARIABLES
+if (NOT DEFINED N_WS_PATH)
+	message(FATAL_ERROR "N_WS_PATH variable must be set")
+endif()
+
+# CHECK CXX VERSION
+set(CMAKE_CXX_COMPILER ${N_CXX_COMPILER} CACHE STRING "")
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 	if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "7.4.0")
 		message(FATAL_ERROR "GCC minimum required version is 7.4.0. Please upgrade.")
@@ -20,18 +27,19 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 	endif()
 endif()
 
-if(NOT TARGET batilib)
-	add_subdirectory(${BATILIB_DIR} ${CMAKE_BINARY_DIR}/BatiLibCpp EXCLUDE_FROM_ALL)
+# SUB_DIRECTORIES
+if(NOT TARGET nablalib)
+	add_subdirectory(${N_WS_PATH}/.nablab/nablalib ${CMAKE_BINARY_DIR}/nablalib)
 endif()
-if(NOT TARGET cppnabla)
-	add_subdirectory(${LIBCPPNABLA_DIR} ${CMAKE_BINARY_DIR}/LibCppNabla EXCLUDE_FROM_ALL)
+if(NOT TARGET batilibcpp)
+	add_subdirectory(${BATILIBCPP_PATH} ${CMAKE_BINARY_DIR}/batilibcpp)
 endif()
 
-
+# EXECUTABLE depthinit
 add_executable(depthinit DepthInit.cc)
-target_include_directories(depthinit PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
-target_link_libraries(depthinit PUBLIC cppnabla cppnablastl pthread batilib)
+target_link_libraries(depthinit PUBLIC nablalib pthread batilibcpp)
 
+# OPTIONAL USER OPTIONS IN Project.cmake
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 	include(${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
 endif()

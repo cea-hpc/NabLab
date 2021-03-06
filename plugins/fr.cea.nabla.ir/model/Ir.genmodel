@@ -74,10 +74,7 @@
     <genClasses ecoreClass="Ir.ecore#//ExtensionProvider">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ExtensionProvider/extensionName"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ExtensionProvider/providerName"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ExtensionProvider/projectDir"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ExtensionProvider/installDir"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ExtensionProvider/namespace"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ExtensionProvider/libName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ExtensionProvider/outputPath"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ExtensionProvider/linearAlgebra"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ExtensionProvider/functions"/>
     </genClasses>

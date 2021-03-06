@@ -32,6 +32,9 @@ import static extension fr.cea.nabla.ir.Utils.*
 
 class IrTypeExtensions
 {
+	public static val VectorClass = 'Vector'
+	public static val MatrixClass = 'Matrix'
+
 	static def String getLabel(IrType it)
 	{
 		switch it
@@ -41,9 +44,18 @@ class IrTypeExtensions
 			BaseType case sizes.forall[x | x instanceof IntConstant]: getPrimitive.literal + sizes.map[x | (x as IntConstant).value.utfExponent].join('\u02E3')
 			BaseType: getPrimitive.literal + '[' + sizes.map[getExpressionLabel].join(',') + ']'
 			ConnectivityType: base.label + '{' + connectivities.map[name].join(',') + '}'
-			LinearAlgebraType case sizes.size == 1: 'Vector[' + sizes.head.expressionLabel + ']'
-			LinearAlgebraType case sizes.size == 2: 'Matrix[' + sizes.map[getExpressionLabel].join(',') + ']'
+			LinearAlgebraType: linearAlgebraClass + '[' + sizes.map[getExpressionLabel].join(',') + ']'
 			default: null
+		}
+	}
+
+	static def getLinearAlgebraClass(LinearAlgebraType t)
+	{
+		switch t.sizes.size
+		{
+			case 1: VectorClass
+			case 2: MatrixClass
+			default: throw new RuntimeException("Unexpected dimension")
 		}
 	}
 

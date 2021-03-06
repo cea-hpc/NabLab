@@ -12,6 +12,7 @@ import fr.cea.nabla.nablagen.NablagenProviderList
 import fr.cea.nabla.nablagen.NablagenRoot
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.IResource
+import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.emf.ecore.util.EcoreUtil
@@ -48,10 +49,12 @@ class GenerateCodeHandler extends AbstractGenerateHandler
 				emfResource.load(null)
 
 				val ngen = emfResource.contents.filter(NablagenRoot).head
+				val projectFolder = ResourcesPlugin.workspace.root.getFolder(project.location)
+				val wsPath = projectFolder.parent.fullPath.toString
 				switch (ngen)
 				{
-					NablagenApplication: applicationGeneratorProvider.get.generateApplication(ngen, project.location.toString)
-					NablagenProviderList: providerGeneratorProvider.get.generateProviders(ngen, project.location.toString)
+					NablagenApplication: applicationGeneratorProvider.get.generateApplication(ngen, wsPath, project.name)
+					NablagenProviderList: providerGeneratorProvider.get.generateProviders(ngen, wsPath)
 				}
 
 				project.refreshLocal(IResource::DEPTH_INFINITE, null)

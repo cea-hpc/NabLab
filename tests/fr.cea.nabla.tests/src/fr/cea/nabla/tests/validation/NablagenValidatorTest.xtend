@@ -161,7 +161,7 @@ class NablagenValidatorTest
 		val koNgenModel = ngenModel.concat('OpenMP
 			{
 				outputPath = "/tmp";
-				NABLA_CXX_COMPILER = "/usr/bin/g++";
+				N_CXX_COMPILER = "/usr/bin/g++";
 			}')
 
 		val okNgenModel = koNgenModel.replace("timeStep = δt;", "timeStep = δt;
@@ -278,10 +278,7 @@ class NablagenValidatorTest
 			{
 				target = Java;
 				// compatibleTargets can be added here
-				outputDir = "/BatiLib/src-java";
-				facadeClass = "BatiLibJava";
-				facadeNamespace = "batilib";
-				libName = "batilib";
+				outputPath = "/BatiLib/src-java";
 			}
 		'''
 		val providerNgen = nablagenParseHelper.parse(providerNgenModel, rs)

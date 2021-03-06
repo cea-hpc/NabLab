@@ -15,11 +15,9 @@ import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
 import fr.cea.nabla.generator.NablaIrWriter
 import fr.cea.nabla.generator.NablagenExtensionHelper
 import fr.cea.nabla.generator.StandaloneGeneratorBase
-import fr.cea.nabla.generator.UnzipHelper
 import fr.cea.nabla.generator.ir.IrRootBuilder
 import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.generator.cpp.CppApplicationGenerator
-import fr.cea.nabla.ir.generator.cpp.CppGeneratorUtils
 import fr.cea.nabla.ir.generator.java.JavaApplicationGenerator
 import fr.cea.nabla.ir.generator.json.JsonGenerator
 import fr.cea.nabla.ir.ir.IrRoot
@@ -28,12 +26,11 @@ import fr.cea.nabla.nablagen.LevelDB
 import fr.cea.nabla.nablagen.NablagenApplication
 import fr.cea.nabla.nablagen.Target
 import fr.cea.nabla.nablagen.TargetType
-import java.io.File
 import java.util.ArrayList
-import java.util.HashMap
 import org.eclipse.emf.ecore.util.EcoreUtil
 
 import static extension fr.cea.nabla.LatexLabelServices.*
+import static extension fr.cea.nabla.ir.IrRootExtensions.*
 
 class NablagenApplicationGenerator extends StandaloneGeneratorBase
 {
@@ -42,12 +39,11 @@ class NablagenApplicationGenerator extends StandaloneGeneratorBase
 	@Inject IrRootBuilder irRootBuilder
 	@Inject NablagenExtensionHelper ngenExtHelper
 
-	def void generateApplication(NablagenApplication ngenApp, String projectDir)
+	def void generateApplication(NablagenApplication ngenApp, String wsPath, String projectName)
 	{
 		try
 		{
 			val ir = irRootBuilder.buildGeneratorGenericIr(ngenApp)
-			val applicationDir = ir.name.toLowerCase
 			dispatcher.post(MessageType.Exec, "Starting code generation")
 			val startTime = System.currentTimeMillis
 
@@ -59,33 +55,33 @@ class NablagenApplicationGenerator extends StandaloneGeneratorBase
 			for (adModule : ngenApp.additionalModules)
 				if (adModule.type !== null)
 					texContents += new GenerationContent(adModule.type.name + ".tex", adModule.type.latexContent, false)
-			var fsa = getConfiguredFileSystemAccess(projectDir, true)
-			generate(fsa, texContents, applicationDir)
+			val projectPath = wsPath + '/' + projectName
+			var fsa = getConfiguredFileSystemAccess(projectPath, true)
+			generate(fsa, texContents, ir.dirName)
 
 			dispatcher.post(MessageType::Exec, "Starting Json code generator")
 			val ir2Json = new JsonGenerator(ngenApp.levelDB!==null)
 			val jsonGenerationContent = ir2Json.getGenerationContents(ir)
-			generate(fsa, jsonGenerationContent, applicationDir)
+			generate(fsa, jsonGenerationContent, ir.dirName)
 
-			val baseDir =  projectDir + "/.."
 			for (target : ngenApp.targets)
 			{
-				dispatcher.post(MessageType::Exec, "Starting " + target.name + " code generator: " + target.outputDir)
+				dispatcher.post(MessageType::Exec, "Starting " + target.name + " code generator: " + target.outputPath)
 
 				// Configure fsa with target output folder
-				val outputFolderName = baseDir + target.outputDir
+				val outputFolderName = wsPath + target.outputPath
 				fsa = getConfiguredFileSystemAccess(outputFolderName, false)
 
 				// Set provider extension for the target
 				// No need to duplicate IR. All providers are set for each target.
-				if (ngenExtHelper.setExtensionProviders(ir, baseDir, target, true))
+				if (ngenExtHelper.setExtensionProviders(ir, wsPath, target, true))
 				{
 					if (!target.interpreter)
 					{
 						// Create code generator
 						val iterationMax = ngenApp.mainModule.iterationMax.name
 						val timeMax = ngenApp.mainModule.timeMax.name
-						val g = getCodeGenerator(target, baseDir, iterationMax, timeMax, ngenApp.levelDB)
+						val g = getCodeGenerator(target, wsPath, iterationMax, timeMax, ngenApp.levelDB)
 	
 						// Apply IR transformations dedicated to this target (if necessary)
 						var IrRoot genIr = ir
@@ -99,7 +95,7 @@ class NablagenApplicationGenerator extends StandaloneGeneratorBase
 							val fileName = irWriter.createAndSaveResource(fsa, genIr)
 							dispatcher.post(MessageType::Exec, '    Resource saved: ' + fileName)
 						}
-						generate(fsa, g.getGenerationContents(genIr), applicationDir)
+						generate(fsa, g.getGenerationContents(genIr), ir.dirName)
 					}
 				}
 				else
@@ -124,15 +120,12 @@ class NablagenApplicationGenerator extends StandaloneGeneratorBase
 		}
 	}
 
-	private def getCodeGenerator(Target it, String baseDir, String iterationMax, String timeMax, LevelDB levelDB)
+	private def getCodeGenerator(Target it, String wsPath, String iterationMax, String timeMax, LevelDB levelDB)
 	{
 		val levelDBPath = if (levelDB === null) null else levelDB.levelDBPath
 
 		if (type == TargetType::JAVA)
 		{
-			// libjavanabla.jar is on the classpath of the runtime
-			// no need to unzip (if the classloader is an URLClassLoader, it seems to work ?)
-			// UnzipHelper::unzipLibJavaNabla(new File(baseDir))
 			new JavaApplicationGenerator
 		}
 		else
@@ -140,16 +133,8 @@ class NablagenApplicationGenerator extends StandaloneGeneratorBase
 			val backend = backendFactory.getCppBackend(type)
 			backend.traceContentProvider.maxIterationsVarName = iterationMax
 			backend.traceContentProvider.stopTimeVarName = timeMax
-			UnzipHelper::unzipLibCppNabla(new File(baseDir))
-			new CppApplicationGenerator(backend, baseDir + '/' + CppGeneratorUtils.CppLibName, levelDBPath, vars)
+			new CppApplicationGenerator(backend, wsPath, levelDBPath, variables.map[key -> value])
 		}
-	}
-
-	private def getVars(Target it)
-	{
-		val result = new HashMap<String, String>
-		variables.forEach[x | result.put(x.key, x.value)]
-		return result
 	}
 
 	private def getLatexContent(NablaModule m)

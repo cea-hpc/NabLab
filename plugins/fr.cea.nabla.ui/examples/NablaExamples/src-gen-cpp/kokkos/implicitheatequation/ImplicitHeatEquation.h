@@ -1,7 +1,7 @@
 /*** GENERATED FILE - DO NOT OVERWRITE ***/
 
-#ifndef IMPLICITHEATEQUATION_H_
-#define IMPLICITHEATEQUATION_H_
+#ifndef __IMPLICITHEATEQUATION_H_
+#define __IMPLICITHEATEQUATION_H_
 
 #include <fstream>
 #include <iomanip>
@@ -18,7 +18,7 @@
 #include "nablalib/utils/Timer.h"
 #include "nablalib/types/Types.h"
 #include "nablalib/utils/kokkos/Parallel.h"
-#include "nablalib/linearalgebra/kokkos/LinearAlgebra.h"
+#include "LinearAlgebra.h"
 
 using namespace nablalib::mesh;
 using namespace nablalib::utils;
@@ -60,7 +60,7 @@ public:
 		double u0;
 		double stopTime;
 		int maxIterations;
-		nablalib::linearalgebra::kokkos::LinearAlgebra linearAlgebra;
+		LinearAlgebra linearAlgebra;
 
 		void jsonInit(const char* jsonContent);
 	};
@@ -123,13 +123,13 @@ public:
 	double t_n0;
 	Kokkos::View<RealArray1D<2>*> X;
 	Kokkos::View<RealArray1D<2>*> Xc;
-	nablalib::linearalgebra::kokkos::Vector u_n;
-	nablalib::linearalgebra::kokkos::Vector u_nplus1;
+	Vector u_n;
+	Vector u_nplus1;
 	Kokkos::View<double*> V;
 	Kokkos::View<double*> D;
 	Kokkos::View<double*> faceLength;
 	Kokkos::View<double*> faceConductivity;
-	nablalib::linearalgebra::kokkos::Matrix alpha;
+	Matrix alpha;
 };
 
 #endif

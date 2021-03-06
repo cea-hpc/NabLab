@@ -21,7 +21,7 @@ class JniNameMangler
 {
 	static def getJniClassName(ExtensionProvider p)
 	{
-		getNsPrefix(p, '.').replace('.', '_') + p.className
+		p.packageName + 'jni_' + p.className
 	}
 
 	static def getJniFunctionName(ExtensionProvider p, String name)

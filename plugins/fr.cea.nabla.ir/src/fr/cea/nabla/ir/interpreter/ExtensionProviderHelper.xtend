@@ -51,9 +51,10 @@ class StaticExtensionProviderHelper extends ExtensionProviderHelper
 {
 	val Class<?> providerClass
 
-	new(ExtensionProvider extensionProvider, ClassLoader cl)
+	new(ExtensionProvider provider, ClassLoader cl, String packageName)
 	{
-		providerClass = Class.forName(getNsPrefix(extensionProvider, '.') + extensionProvider.className, true, cl)
+		val className = (packageName.nullOrEmpty ? provider.className : packageName + "." + provider.className)
+		providerClass = Class.forName(className, true, cl)
 	}
 
 	override getProviderClass() { providerClass }
@@ -69,10 +70,11 @@ class DefaultExtensionProviderHelper extends ExtensionProviderHelper
 	val Class<?> providerClass
 	@Accessors(PUBLIC_GETTER) val Object providerInstance
 
-	new(ExtensionProvider extensionProvider, ClassLoader cl)
+	new(ExtensionProvider provider, ClassLoader cl, String wsPath)
 	{
-		System.setProperty(JNI_LIBRARY_PATH, extensionProvider.installDir)
-		providerClass = Class.forName(getNsPrefix(extensionProvider, '.') + extensionProvider.className, true, cl)
+		System.setProperty(JNI_LIBRARY_PATH, wsPath + provider.installPath)
+		val className = provider.packageName + '.' + provider.className
+		providerClass = Class.forName(className, true, cl)
 		providerInstance = providerClass.constructor.newInstance
 	}
 
@@ -98,16 +100,18 @@ class LinearAlgebraExtensionProviderHelper extends DefaultExtensionProviderHelpe
 	@Accessors val Method matrixGetValueMethod
 	@Accessors val Method matrixSetValueMethod
 
-	new(ExtensionProvider extensionProvider, ClassLoader cl)
+	new(ExtensionProvider provider, ClassLoader cl, String wsPath)
 	{
-		super(extensionProvider, cl)
+		super(provider, cl, wsPath)
 
-		vectorClass = Class.forName(getNsPrefix(extensionProvider, '.') + 'Vector', true, cl)
+		val vectorClassName = provider.packageName + '.' + fr.cea.nabla.ir.IrTypeExtensions.VectorClass
+		vectorClass = Class.forName(vectorClassName, true, cl)
 		vectorCstr = vectorClass.getConstructor(String, int)
 		vectorGetValueMethod = vectorClass.getMethod("getValue", int)
 		vectorSetValueMethod = vectorClass.getMethod("setValue", int, double)
 
-		matrixClass = Class.forName(getNsPrefix(extensionProvider, '.') + 'Matrix', true, cl)
+		val matrixClassName = provider.packageName + '.' + fr.cea.nabla.ir.IrTypeExtensions.MatrixClass
+		matrixClass = Class.forName(matrixClassName, true, cl)
 		matrixCstr = matrixClass.getConstructor(String, int, int)
 		matrixGetValueMethod = matrixClass.getMethod("getValue", int, int)
 		matrixSetValueMethod = matrixClass.getMethod("setValue", int, int, double)

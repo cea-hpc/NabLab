@@ -1,7 +1,7 @@
 /*** GENERATED FILE - DO NOT OVERWRITE ***/
 
-#ifndef GLACE2D_H_
-#define GLACE2D_H_
+#ifndef __GLACE2D_H_
+#define __GLACE2D_H_
 
 #include <fstream>
 #include <iomanip>

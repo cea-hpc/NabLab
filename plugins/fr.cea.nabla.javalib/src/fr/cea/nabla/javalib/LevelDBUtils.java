@@ -10,8 +10,8 @@ import java.io.IOException;
 import org.iq80.leveldb.DB;
 import org.iq80.leveldb.DBIterator;
 
-import fr.cea.nabla.javalib.linearalgebra.Matrix;
-import fr.cea.nabla.javalib.linearalgebra.Vector;
+import linearalgebrajava.Vector;
+import linearalgebrajava.Matrix;
 
 import org.apache.commons.io.FileUtils;
 

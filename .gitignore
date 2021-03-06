@@ -10,10 +10,12 @@ xtend-gen/
 # C++
 .o
 .a
+build
 # Nabla
 .nablair
 org.antlr.runtime
 output
+.nablab
 # Maven
 target/
 # macOS

@@ -29,4 +29,14 @@ class IrRootExtensions
 	{
 		variables.exists[v | v.linearAlgebra]
 	}
+
+	static def getDirName(IrRoot it)
+	{
+		name.toLowerCase
+	}
+
+	static def getExecName(IrRoot it)
+	{
+		name.toLowerCase
+	}
 }

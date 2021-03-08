@@ -24,7 +24,7 @@ Interpreter
 {
 	outputPath = "/DepthInit/src-gen-interpreter";
 	extension BatiLib providedBy BatiLibCpp;
-	NABLA_CXX_COMPILER = "/usr/bin/g++";
+	N_CXX_COMPILER = "/usr/bin/g++";
 	JAVA_HOME = "/usr/lib/jvm/java-11-openjdk-amd64";
 }
 
@@ -36,5 +36,5 @@ Java
 StlThread
 {
 	outputPath = "/DepthInit/src-gen-cpp/stl-thread";
-	NABLA_CXX_COMPILER = "/usr/bin/g++";
+	N_CXX_COMPILER = "/usr/bin/g++";
 }

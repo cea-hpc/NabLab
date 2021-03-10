@@ -19,14 +19,24 @@ import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 
 class JniNameMangler
 {
-	static def getJniClassName(ExtensionProvider p)
+	static def getJniPrefix(ExtensionProvider p)
 	{
-		p.packageName + 'jni_' + p.className
+		p.packageName + '_'
+	}
+
+	static def getJniFileName(ExtensionProvider p)
+	{
+		p.jniPrefix + p.className
+	}
+
+	static def getJniFunctionName(ExtensionProvider p, String className, String name)
+	{
+		'Java_'+ p.jniPrefix + className + '_' + name
 	}
 
 	static def getJniFunctionName(ExtensionProvider p, String name)
 	{
-		'Java_'+ p.jniClassName + '_' + name
+		'Java_'+ p.jniFileName + '_' + name
 	}
 
 	static def getJniFunctionName(ExtensionProvider provider, ExternFunction f)
@@ -52,8 +62,8 @@ class JniNameMangler
 					case REAL: 'D'
 				}
 			}
-			LinearAlgebraType case sizes.size == 1: 'J' + provider.jniClassName + '_Vector2'
-			LinearAlgebraType case sizes.size == 2: 'J' + provider.jniClassName + '_Matrix2'
+			LinearAlgebraType case sizes.size == 1: 'J' + provider.jniFileName + '_Vector2'
+			LinearAlgebraType case sizes.size == 2: 'J' + provider.jniFileName + '_Matrix2'
 			default: throw new RuntimeException("Ooops. Can not be there, normally...")
 		}
 	}

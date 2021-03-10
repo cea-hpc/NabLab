@@ -6,7 +6,7 @@ set(CMAKE_VERBOSE_MAKEFILE FALSE)
 project(DepthInitProject CXX)
 
 # SET VARIABLES
-set(NABLA_CXX_COMPILER /usr/bin/g++)
+set(N_CXX_COMPILER /usr/bin/g++)
 set(N_WS_PATH $ENV{HOME}/workspaces/NabLab/tests)
 set(BATILIBCPP_PATH ${N_WS_PATH}/BatiLib/src-cpp/batilibcpp)
 

@@ -65,14 +65,11 @@ class StaticExtensionProviderHelper extends ExtensionProviderHelper
 
 class DefaultExtensionProviderHelper extends ExtensionProviderHelper
 {
-	public static val JNI_LIBRARY_PATH = "nabla.jni.library.path"
-
 	val Class<?> providerClass
 	@Accessors(PUBLIC_GETTER) val Object providerInstance
 
 	new(ExtensionProvider provider, ClassLoader cl, String wsPath)
 	{
-		System.setProperty(JNI_LIBRARY_PATH, wsPath + provider.installPath)
 		val className = provider.packageName + '.' + provider.className
 		providerClass = Class.forName(className, true, cl)
 		providerInstance = providerClass.constructor.newInstance

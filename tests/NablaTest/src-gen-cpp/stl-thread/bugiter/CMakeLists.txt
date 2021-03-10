@@ -6,7 +6,7 @@ set(CMAKE_VERBOSE_MAKEFILE FALSE)
 project(BugIterProject CXX)
 
 # SET VARIABLES
-set(NABLA_CXX_COMPILER /usr/bin/g++)
+set(N_CXX_COMPILER /usr/bin/g++)
 set(N_WS_PATH $ENV{HOME}/workspaces/NabLab/tests)
 
 # CHECK VARIABLES

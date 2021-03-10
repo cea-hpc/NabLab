@@ -7,7 +7,7 @@ project(DepthInitProject CXX)
 
 # SET VARIABLES
 set(N_WS_PATH $ENV{HOME}/workspaces/NabLab/tests)
-set(NABLA_CXX_COMPILER /usr/bin/g++)
+set(N_CXX_COMPILER /usr/bin/g++)
 set(JAVA_HOME /usr/lib/jvm/java-11-openjdk-amd64)
 set(BATILIBCPPJNI_PATH ${N_WS_PATH}/DepthInit/src-gen-interpreter/batilibcppjni)
 

@@ -11,17 +11,20 @@ package fr.cea.nabla.ir.generator.jni
 
 import fr.cea.nabla.ir.generator.CMakeUtils
 import fr.cea.nabla.ir.generator.GenerationContent
-import fr.cea.nabla.ir.generator.JniNameMangler
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.generator.cpp.Backend
+import fr.cea.nabla.ir.generator.cpp.CMakeContentProvider
 import fr.cea.nabla.ir.generator.java.FunctionContentProvider
-import fr.cea.nabla.ir.interpreter.DefaultExtensionProviderHelper
 import fr.cea.nabla.ir.ir.ExtensionProvider
 import java.util.ArrayList
 
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
-import fr.cea.nabla.ir.generator.cpp.CMakeContentProvider
+import static extension fr.cea.nabla.ir.generator.JniNameMangler.*
 
+// TODO Manage vector and matrix name in JNI when allocating C++ object
+// TODO Change PvdFileWriter on javalib to do like in C++ to dump Vectors
+// TODO Do not always generate LevelDB block in Java to avoid error on Vectors
+// TODO Change solve methods for solveInPlace methods
 /**
  * JniProviderGenerator does not implement ProviderGenerator
  * because it is not called from a provider definition
@@ -29,6 +32,7 @@ import fr.cea.nabla.ir.generator.cpp.CMakeContentProvider
  */
 class JniProviderGenerator
 {
+	static val userDir = System.getProperty("user.home")
 	val Backend cppBackend
 
 	new(Backend cppBackend)
@@ -36,17 +40,23 @@ class JniProviderGenerator
 		this.cppBackend = cppBackend
 	}
 
-	def getGenerationContents(ExtensionProvider provider)
+	def getGenerationContents(ExtensionProvider jniProvider, ExtensionProvider cppProvider, String wsPath)
 	{
 		val fileContents = new ArrayList<GenerationContent>
-		fileContents += new GenerationContent(provider.className + ".java", getJavaFileContent(provider), false)
-		fileContents += new GenerationContent(JniNameMangler.getJniClassName(provider) + ".cc", getCppFileContent(provider), false)
-		fileContents += new GenerationContent("CMakeLists.txt", getCMakeFileContent(provider), false)
+		fileContents += new GenerationContent(jniProvider.className + ".java", getJavaFacadeClassContent(jniProvider, wsPath), false)
+		fileContents += new GenerationContent("CMakeLists.txt", getCMakeFileContent(jniProvider, cppProvider), false)
+		fileContents += new GenerationContent(jniProvider.jniFileName + ".cc", getCppFacadeClassContent(jniProvider), false)
+
+		if (jniProvider.linearAlgebra)
+		{
+			fileContents += new GenerationContent("Vector.java", getJavaVectorClassContent(jniProvider), false)
+			fileContents += new GenerationContent("Matrix.java", getJavaMatrixClassContent(jniProvider), false)
+		}
 
 		return fileContents
 	}
 
-	private def getJavaFileContent(ExtensionProvider provider)
+	private def getJavaFacadeClassContent(ExtensionProvider provider, String wsPath)
 	'''
 	«Utils.fileHeader»
 
@@ -54,13 +64,15 @@ class JniProviderGenerator
 	 * Design Pattern inspired from https://dhilst.github.io/2016/10/15/JNI-CPP.html
 	 * Principle: a java long attribute to keep the link to the C++ object
 	 */
-	package «provider.packageName»jni;
+	package «provider.packageName»;
 
 	public class «provider.className»
 	{
+		private final static String «wsPath.formatWsPath»;
+
 		static
 		{
-			System.load(System.getProperty("«DefaultExtensionProviderHelper.JNI_LIBRARY_PATH»") + "/lib«provider.libName»jni.so");
+			System.load(N_WS_PATH + "«provider.installPath»/lib«provider.libName».so");
 		}
 
 		// This is a long here (in Java) but is used as a pointer to hold the
@@ -78,7 +90,7 @@ class JniProviderGenerator
 		// native object.
 		public «provider.className»()
 		{
-		nativeObjectPointer = nativeNew();	
+			nativeObjectPointer = nativeNew();	
 		}
 
 		public native void jsonInit(String jsonContent);
@@ -88,110 +100,176 @@ class JniProviderGenerator
 	}
 	'''
 
-	private def getCppFileContent(ExtensionProvider provider)
+	def getJavaVectorClassContent(ExtensionProvider provider)
 	'''
 	«Utils.fileHeader»
 
-	#include "«JniNameMangler.getJniClassName(provider)».h"
+	package «provider.packageName»;
+
+	public class Vector
+	{
+		private String name;
+		private int size;
+		private long nativeObjectPointer;
+
+		private Vector(final int size, final long nativeObjectPointer)
+		{
+			this.name = "";
+			this.size = size;
+			this.nativeObjectPointer = nativeObjectPointer;
+		}
+
+		private native long nativeNew(final String name, final int size);
+
+		public Vector(final String name, final int size)
+		{
+			this.name = name;
+			this.size = size;
+			nativeObjectPointer = nativeNew(name, size);
+		}
+
+		public String getName()
+		{
+			return name;
+		}
+
+		public int getSize()
+		{
+			return size;
+		}
+
+		public native double getValue(int i);
+		public native void setValue(int i, double value);
+	}
+	'''
+
+	def getJavaMatrixClassContent(ExtensionProvider provider)
+	'''
+	«Utils.fileHeader»
+
+	package «provider.packageName»;
+
+	public class Matrix
+	{
+		private String name;
+		private int nbRows;
+		private int nbCols;
+		private long nativeObjectPointer;
+
+		private Matrix(final int nbRows, final int nbCols, final long nativeObjectPointer)
+		{
+			this.name = "";
+			this.nbRows = nbRows;
+			this.nbCols = nbCols;
+			this.nativeObjectPointer = nativeObjectPointer;
+		}
+
+		private native long nativeNew(final String name, final int nbRows, int nbCols);
+
+		public Matrix(final String name, final int nbRows, final int nbCols)
+		{
+			this.name = name;
+			this.nbRows = nbRows;
+			this.nbCols = nbCols;
+			nativeObjectPointer = nativeNew(name, nbRows, nbCols);
+		}
+
+		public String getName()
+		{
+			return name;
+		}
+
+		public int getNbRows()
+		{
+			return nbRows;
+		}
+
+		public int getNbCols()
+		{
+			return nbCols;
+		}
+
+		public native double getValue(int i, int j);
+		public native void setValue(int i, int j, double value);
+	}
+	'''
+
+	private def getCMakeFileContent(ExtensionProvider jniProvider, ExtensionProvider cppProvider)
+	'''
+	«CMakeUtils::getFileHeader(true)»
+
+	«CMakeUtils.checkVariables(#[CMakeContentProvider.WS_PATH, 'JAVA_HOME'])»
+
+	«CMakeUtils.setVariables(#[], #[cppProvider])»
+
+	«CMakeUtils.addSubDirectories(true, #[cppProvider])»
+
+	# LIBRARY «jniProvider.libName»
+	add_library(«jniProvider.libName» SHARED «jniProvider.jniFileName + '.cc'»)
+	target_include_directories(«jniProvider.libName»
+		PUBLIC ${INCLUDE_DIR}
+		PUBLIC ${JAVA_HOME}/include
+		PUBLIC ${JAVA_HOME}/include/linux)
+	target_link_libraries(«jniProvider.libName» PUBLIC «cppProvider.libName»)
+
+	# GENERATE «jniProvider.jniFileName».h FROM «jniProvider.className».java
+	add_custom_command(
+		OUTPUT «jniProvider.outputFileList.join(' ')»
+		COMMENT "Generate «jniProvider.jniFileName».h from «jniProvider.className».java"
+		COMMAND ${JAVA_HOME}/bin/javac -h ${CMAKE_CURRENT_SOURCE_DIR} -d ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/*.java
+		DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/«jniProvider.className».java«IF jniProvider.linearAlgebra» ${CMAKE_CURRENT_SOURCE_DIR}/Vector.java ${CMAKE_CURRENT_SOURCE_DIR}/Matrix.java«ENDIF»)
+
+	# JAR «jniProvider.libName»
+	add_custom_target(«jniProvider.libName»jar ALL DEPENDS «jniProvider.libName».jar)
+	add_custom_command(
+		OUTPUT «jniProvider.libName».jar
+		COMMENT "Built «jniProvider.libName».jar"
+		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+		COMMAND ${JAVA_HOME}/bin/jar cvf «jniProvider.libName».jar «jniProvider.packageName»/*.class
+		DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/«jniProvider.jniFileName».h«IF jniProvider.linearAlgebra» ${CMAKE_CURRENT_SOURCE_DIR}/«jniProvider.jniPrefix»Vector.h  ${CMAKE_CURRENT_SOURCE_DIR}/«jniProvider.jniPrefix»Matrix.h«ENDIF»)
+
+	INSTALL(TARGETS «jniProvider.libName» DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/lib)
+	INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/«jniProvider.libName».jar DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/lib)
+
+	«CMakeUtils.fileFooter»
+	'''
+
+	/** Single .cc file to get access to getVector/getMatrix functions */
+	private def getCppFacadeClassContent(ExtensionProvider provider)
+	'''
+	«Utils.fileHeader»
+
+	#include "«provider.jniFileName».h"
 	#include "«provider.className».h"
-	
+	«IF provider.linearAlgebra»
+	#include "«provider.jniPrefix»Vector.h"
+	#include "«provider.jniPrefix»Matrix.h"
+	#include "Vector.h"
+	#include "Matrix.h"
+	«ENDIF»
+
 	#ifdef __cplusplus
 	extern "C" {
 	#endif
-
-	JNIEXPORT jlong JNICALL «JniNameMangler.getJniFunctionName(provider, 'nativeNew')»
-	(JNIEnv *env, jobject self)
-	{
-		// Here we allocate our new object and return
-		// its pointer casted as a jlong;
-		«provider.className» *o = new «provider.className»();
-		return reinterpret_cast<jlong>(o);
-	}
-
-	static jlong getLongField
-	(JNIEnv *env, jobject self)
-	{
-		jclass cls = env->GetObjectClass(self);
-		if (!cls)
-			env->FatalError("GetObjectClass failed");
-	
-		jfieldID nativeObjectPointerID = env->GetFieldID(cls, "nativeObjectPointer", "J");
-		if (!nativeObjectPointerID)
-			env->FatalError("GetFieldID failed");
-
-		return env->GetLongField(self, nativeObjectPointerID);
-	}
-
 	«IF provider.linearAlgebra»
-	static jobject newJObject
-	(JNIEnv *env, jobject self, jlong cppPtr, const char* javaClassName)
-	{
-		jclass cls = env->FindClass(javaClassName);
-		if (!cls)
-			env->FatalError("FindClass failed");
 
-	jmethodID cid = env->GetMethodID(cls, "<init>", "(J)V");
-	if (!cid)
-		env->FatalError("Cstr failed");
+	/********** VECTOR **********/
 
-	return env->NewObject(cls, cid, cppPtr);
-	}
+	«getCppVectorClassContent(provider)»
 
-	static Vector* getVector
-	(JNIEnv *env, jobject self)
-	{
-		jlong nativeObjectPointer = getLongField(env, self);
-		return reinterpret_cast<Vector*>(nativeObjectPointer);
-	}
+	/********** MATRIX **********/
 
-	static jobject newJavaVector
-	(JNIEnv *env, jobject self, Vector* cppVector)
-	{
-		jlong cppPtr = reinterpret_cast<jlong>(cppVector);
-		return newJObject(env, self, cppPtr, "Vector");
-	}
-
-	static Matrix* getMatrix
-	(JNIEnv *env, jobject self)
-	{
-		jlong nativeObjectPointer = getLongField(env, self);
-		return reinterpret_cast<Matrix*>(nativeObjectPointer);
-	}
-
-	static jobject newJavaMatrix
-	(JNIEnv *env, jobject self, Matrix* cppMatrix)
-	{
-		jlong cppPtr = reinterpret_cast<jlong>(cppMatrix);
-		return newJObject(env, self, cppPtr, "Matrix");
-	}
-
+	«getCppMatrixClassContent(provider)»
 	«ENDIF»
-	// This function is a helper providing the boiler
-	// plate code to return the native object from
-	// Java object. The "nativeObjectPointer" is reached
-	// from this code, casted to People's pointer and
-	// returned. This will be used in all our native
-	// methods wrappers to recover the object before
-	// invoking it's methods.
-	static «provider.className»* getObject
-	(JNIEnv *env, jobject self)
-	{
-		jlong nativeObjectPointer = getLongField(env, self);
-		return reinterpret_cast<«provider.className»*>(nativeObjectPointer);
-	}
 
-	// Here is our native methods wrappers, we simply recover
-	// native BatiLib's instance invoke the requested method
-	// and return its return value. jint can be casted to
-	// Java's int. The string is a case apart. Since String
-	// is an object and not a primitive type we have to
-	// return it as reference (not by value). This is safe
-	// since, as a Java String object the JVM can deallocate
-	// it when is not being used anymore.
-	JNIEXPORT void JNICALL «JniNameMangler.getJniFunctionName(provider, 'jsonInit')»
+	«getObjectFunctionContent(provider.className)»
+
+	«getNativeNewFunctionContent(provider, provider.className, #[])»
+
+	JNIEXPORT void JNICALL «getJniFunctionName(provider, 'jsonInit')»
 	(JNIEnv *env, jobject self, jstring jsonContent)
 	{
-		«provider.className»* _self = getObject(env, self);
+		«provider.className»* _self = get«provider.className»(env, self);
 		const char *nativeJsonContent = env->GetStringUTFChars(jsonContent, 0);
 		_self->jsonInit(nativeJsonContent);
 		env->ReleaseStringUTFChars(jsonContent, nativeJsonContent);
@@ -206,44 +284,130 @@ class JniProviderGenerator
 	#endif
 	'''
 
-	private def getCMakeFileContent(ExtensionProvider provider)
+	private def getCppVectorClassContent(ExtensionProvider provider)
 	'''
-	«CMakeUtils::getFileHeader(true)»
+	«getObjectFunctionContent('Vector')»
 
-	«CMakeUtils.checkVariables(#[CMakeContentProvider.WS_PATH, 'JAVA_HOME'])»
+	static jobject newJavaVector
+	(JNIEnv *env, jobject self, Vector* cppVector)
+	{
+		jlong cppPtr = reinterpret_cast<jlong>(cppVector);
+		jint size = cppVector->getSize();
 
-	«CMakeUtils.setVariables(#[], #[provider])»
+		jclass cls = env->FindClass("«provider.packageName»/Vector");
+		if (!cls)
+			env->FatalError("FindClass failed");
 
-	«CMakeUtils.addSubDirectories(true, #[provider])»
-	«val jniClassName = JniNameMangler.getJniClassName(provider)»
+		jmethodID cid = env->GetMethodID(cls, "<init>", "(IJ)V");
+		if (!cid)
+			env->FatalError("Cstr failed");
 
-	# LIBRARY «provider.libName»jni
-	add_library(«provider.libName»jni SHARED «jniClassName».cc «jniClassName».h)
-	target_include_directories(«provider.libName»jni
-		PUBLIC ${INCLUDE_DIR}
-		PUBLIC ${JAVA_HOME}/include
-		PUBLIC ${JAVA_HOME}/include/linux)
-	target_link_libraries(«provider.libName»jni PUBLIC «provider.libName»)
+		return env->NewObject(cls, cid, size, cppPtr);
+	}
 
-	# GENERATE «jniClassName».h FROM «provider.className».java
-	add_custom_command(
-		OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/«jniClassName».h «provider.packageName»jni/«provider.className».class
-		COMMENT "Generate «jniClassName».h from «provider.className».java"
-		COMMAND ${JAVA_HOME}/bin/javac -h ${CMAKE_CURRENT_SOURCE_DIR} -d ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/*.java
-		DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/«provider.className».java)
+	«getNativeNewFunctionContent(provider, 'Vector', #['size'])»
 
-	# JAR «provider.libName»
-	add_custom_target(«provider.libName»jnijar ALL DEPENDS «provider.libName»jni.jar)
-	add_custom_command(
-		OUTPUT «provider.libName»jni.jar
-		COMMENT "Built «provider.libName»jni.jar"
-		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-		COMMAND ${JAVA_HOME}/bin/jar cvf «provider.libName»jni.jar «provider.packageName»jni/*.class
-		DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/«jniClassName».h)
+	JNIEXPORT jdouble JNICALL «getJniFunctionName(provider, 'Vector', 'getValue')»
+	(JNIEnv *env, jobject self, jint i)
+	{
+		Vector* _self = getVector(env, self);
+		return _self->getValue(i);
+	}
 
-	INSTALL(TARGETS «provider.libName»jni DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/lib)
-	INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/«provider.libName»jni.jar DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/lib)
-
-	«CMakeUtils.fileFooter»
+	JNIEXPORT void JNICALL «getJniFunctionName(provider, 'Vector', 'setValue')»
+	(JNIEnv *env, jobject self, jint i, jdouble value)
+	{
+		Vector* _self = getVector(env, self);
+		return _self->setValue(i, value);
+	}
 	'''
+
+	private def getCppMatrixClassContent(ExtensionProvider provider)
+	'''
+	«getObjectFunctionContent('Matrix')»
+
+	static jobject newJavaMatrix
+	(JNIEnv *env, jobject self, Matrix* cppMatrix)
+	{
+		jlong cppPtr = reinterpret_cast<jlong>(cppMatrix);
+		jint nbRows = cppMatrix->getNbRows();
+		jint nbCols = cppMatrix->getNbCols();
+
+		jclass cls = env->FindClass("«provider.packageName»/Matrix");
+		if (!cls)
+			env->FatalError("FindClass failed");
+
+		jmethodID cid = env->GetMethodID(cls, "<init>", "(IIJ)V");
+		if (!cid)
+			env->FatalError("Cstr failed");
+
+		return env->NewObject(cls, cid, nbRows, nbCols, cppPtr);
+	}
+
+	«getNativeNewFunctionContent(provider, 'Matrix', #['nbRows', 'nbCols'])»
+
+	JNIEXPORT jdouble JNICALL «getJniFunctionName(provider, 'Matrix', 'getValue')»
+	(JNIEnv *env, jobject self, jint i, jint j)
+	{
+		Matrix* _self = getMatrix(env, self);
+		return _self->getValue(i, j);
+	}
+
+	JNIEXPORT void JNICALL «getJniFunctionName(provider, 'Matrix', 'setValue')»
+	(JNIEnv *env, jobject self, jint i, jint j, jdouble value)
+	{
+		Matrix* _self = getMatrix(env, self);
+		return _self->setValue(i, j, value);
+	}
+	'''
+
+	private def getOutputFileList(ExtensionProvider it)
+	{
+		if (linearAlgebra)
+			#[
+				'${CMAKE_CURRENT_SOURCE_DIR}/' + jniPrefix + 'Vector.h', packageName + '/Vector.class',
+				'${CMAKE_CURRENT_SOURCE_DIR}/' + jniPrefix + 'Matrix.h', packageName + '/Matrix.class',
+				'${CMAKE_CURRENT_SOURCE_DIR}/' + jniFileName + '.h', packageName + '/' + className + '.class'
+			]
+		else
+			#['${CMAKE_CURRENT_SOURCE_DIR}/' + jniFileName + '.h', packageName + '/' + className + '.class']
+	}
+
+	private def getObjectFunctionContent(String objectType)
+	'''
+	static «objectType»* get«objectType»
+	(JNIEnv *env, jobject self)
+	{
+		jclass cls = env->GetObjectClass(self);
+		if (!cls)
+			env->FatalError("GetObjectClass failed");
+	
+		jfieldID nativeObjectPointerID = env->GetFieldID(cls, "nativeObjectPointer", "J");
+		if (!nativeObjectPointerID)
+			env->FatalError("GetFieldID failed");
+
+		jlong nativeObjectPointer = env->GetLongField(self, nativeObjectPointerID);
+		return reinterpret_cast<«objectType»*>(nativeObjectPointer);
+	}
+	'''
+
+	private def getNativeNewFunctionContent(ExtensionProvider provider, String objectType, Iterable<String> cstrArgs)
+	'''
+	JNIEXPORT jlong JNICALL «getJniFunctionName(provider, objectType, 'nativeNew')»
+	(JNIEnv *env, jobject self«FOR a : cstrArgs BEFORE ", jstring name"», jint «a»«ENDFOR»)
+	{
+		// Here we allocate our new object and return
+		// its pointer casted as a jlong;
+		«objectType» *o = new «objectType»(«FOR a : cstrArgs BEFORE '""'», «a»«ENDFOR»);
+		return reinterpret_cast<jlong>(o);
+	}
+	'''
+
+	private def formatWsPath(String wsPath)
+	{
+		if (wsPath.startsWith(userDir))
+			'''N_WS_PATH = System.getProperty("user.home") + "«wsPath.replace(userDir, "")»"'''
+		else
+			'''N_WS_PATH = "«wsPath»"'''
+	}
 }

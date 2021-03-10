@@ -219,9 +219,6 @@ class IrInterpreter
 		{
 			val urlText = "file://" + wsPath + p.installPath + "/" + p.libName + ".jar"
 			urls += new URL(urlText)
-			println("wsPath : " + wsPath)
-			println("installPath" + p.installPath)
-			println("YRL : " + urlText)
 		}
 		return urls
 	}

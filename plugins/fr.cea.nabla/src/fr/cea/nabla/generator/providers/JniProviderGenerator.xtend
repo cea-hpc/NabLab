@@ -19,12 +19,13 @@ import fr.cea.nabla.ir.ir.ExtensionProvider
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.nablagen.Target
 import fr.cea.nabla.nablagen.TargetVar
+import java.util.ArrayList
 import java.util.HashSet
 import java.util.LinkedHashSet
+import org.eclipse.emf.ecore.util.EcoreUtil
 
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
-import java.util.ArrayList
 
 class JniProviderGenerator extends StandaloneGeneratorBase
 {
@@ -32,19 +33,20 @@ class JniProviderGenerator extends StandaloneGeneratorBase
 
 	def generateAndTransformProvider(Backend backend, ExtensionProvider provider, String wsPath, String targetOutputPath, boolean generate)
 	{
-		// Build the JNI code content from the C++ provider
-		val generator = new fr.cea.nabla.ir.generator.jni.JniProviderGenerator(backend)
-		val content = generator.getGenerationContents(provider)
-
 		// Transform the C+ provider in a JNI provider
-		val outputFolderName = wsPath + targetOutputPath
-		val fsa = getConfiguredFileSystemAccess(outputFolderName, false)
+		val cppProvider = EcoreUtil.copy(provider)
 		provider.providerName = provider.providerName + 'JNI'
 		provider.outputPath = targetOutputPath
 		providers += provider
 
 		// Generate the file
-		if (generate) generate(fsa, content, provider.dirName)
+		if (generate)
+		{
+			val generator = new fr.cea.nabla.ir.generator.jni.JniProviderGenerator(backend)
+			val outputFolderName = wsPath + targetOutputPath
+			val fsa = getConfiguredFileSystemAccess(outputFolderName, false)
+			generate(fsa, generator.getGenerationContents(provider, cppProvider, wsPath), provider.dirName)
+		}
 	}
 
 	def generateGlobalCMakeIfNecessary(IrRoot ir, Target target, String wsPath)

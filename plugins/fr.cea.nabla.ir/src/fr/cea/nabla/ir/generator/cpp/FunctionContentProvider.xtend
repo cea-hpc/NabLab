@@ -9,6 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.cpp
 
+import fr.cea.nabla.ir.IrTypeExtensions
 import fr.cea.nabla.ir.generator.JniNameMangler
 import fr.cea.nabla.ir.ir.Arg
 import fr.cea.nabla.ir.ir.BaseType
@@ -52,7 +53,7 @@ class FunctionContentProvider
 		JNIEXPORT «returnType.jniType» JNICALL «JniNameMangler.getJniFunctionName(provider, it)»
 		(JNIEnv *env, jobject self«FOR a : inArgs», «a.type.jniType» «a.name»«ENDFOR»)
 		{
-			«provider.className»* _self = getObject(env, self);
+			«provider.className»* _self = get«provider.className»(env, self);
 			«FOR a : inArgs»
 				// «a.name» to c_«a.name»
 				«getJniInArgContent(a)»
@@ -86,7 +87,7 @@ class FunctionContentProvider
 			}
 			LinearAlgebraType:
 			'''
-				auto& «nativeVarName» = *get«t.vectorOrMatrix»(env, self);
+				auto& «nativeVarName» = *get«IrTypeExtensions.getLinearAlgebraClass(t)»(env, «name»);
 			'''
 			default: throw new RuntimeException("Ooops. Can not be there, normally...")
 		}
@@ -97,27 +98,27 @@ class FunctionContentProvider
 		val dim = sizes.size
 		if (dim == 1)
 		'''
-				jsize «jniName»_size = env->GetArrayLength(«jniName»);
-				«nativeName».resize(«jniName»_size);
-				«t.jniType»* «jniName»_body = env->Get«t.cppType.toFirstUpper»ArrayElements(«jniName», JNI_FALSE);
-				for (jsize i0=0; i0<«jniName»_size; i0++)
-					«nativeName»[i0] = «jniName»_body[i0];
-				env->Release«t.cppType.toFirstUpper»ArrayElements(«jniName», «jniName»_body, JNI_FALSE);
-			'''
+			jsize «jniName»_size = env->GetArrayLength(«jniName»);
+			«nativeName».resize(«jniName»_size);
+			«t.jniType»* «jniName»_body = env->Get«t.cppType.toFirstUpper»ArrayElements(«jniName», JNI_FALSE);
+			for (jsize i0=0; i0<«jniName»_size; i0++)
+				«nativeName»[i0] = «jniName»_body[i0];
+			env->Release«t.cppType.toFirstUpper»ArrayElements(«jniName», «jniName»_body, JNI_FALSE);
+		'''
 		else
 		'''
-				jsize «jniName»_size = env->GetArrayLength(«jniName»);
-				«nativeName».resize(«jniName»_size);
-				«val indexName = 'i' + (dim-1).toString»
-				for (jsize «indexName»=0; «indexName»<«jniName»_size; «indexName»++)
-				{
-					«val innerJniName = jniName + '_i' + (dim-2).toString»
-					«val innerJniType = (dim-1 == 1 ? t.jniType : 'jobject')»
-					auto «innerJniName» = reinterpret_cast<«innerJniType»Array>(env->GetObjectArrayElement(«jniName», «indexName»));
-					«getJniInArrayContent(innerJniName, nativeName + "[" + indexName + "]", t, sizes.tail)»
-					env->DeleteLocalRef(«innerJniName»);
-				}
-			'''
+			jsize «jniName»_size = env->GetArrayLength(«jniName»);
+			«nativeName».resize(«jniName»_size);
+			«val indexName = 'i' + (dim-1).toString»
+			for (jsize «indexName»=0; «indexName»<«jniName»_size; «indexName»++)
+			{
+				«val innerJniName = jniName + '_i' + (dim-2).toString»
+				«val innerJniType = (dim-1 == 1 ? t.jniType : 'jobject')»
+				auto «innerJniName» = reinterpret_cast<«innerJniType»Array>(env->GetObjectArrayElement(«jniName», «indexName»));
+				«getJniInArrayContent(innerJniName, nativeName + "[" + indexName + "]", t, sizes.tail)»
+				env->DeleteLocalRef(«innerJniName»);
+			}
+		'''
 	}
 
 	private def getJniReturnContent(IrType t)
@@ -127,7 +128,7 @@ class FunctionContentProvider
 			BaseType: getJniReturnContent("ret", "c_ret", t.primitive, t.sizes)
 			LinearAlgebraType: 
 			'''
-				auto ret = newJava«t.vectorOrMatrix»(env, self, &c_ret);
+				auto ret = newJava«IrTypeExtensions.getLinearAlgebraClass(t)»(env, self, &c_ret);
 			'''
 			default: throw new RuntimeException("Ooops. Can not be there, normally...")
 		}
@@ -178,12 +179,6 @@ class FunctionContentProvider
 			}
 		else
 			'Object'
-	}
-
-	private def getVectorOrMatrix(LinearAlgebraType it)
-	{
-		if (sizes.size == 1) "Vector"
-		else "Matrix"
 	}
 }
 

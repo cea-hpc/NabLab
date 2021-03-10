@@ -33,7 +33,11 @@ class CMakeUtils
 	'''
 		# SET VARIABLES
 		«FOR v : variables»
+		«IF v.key == "N_CXX_COMPILER"»
+		set(CMAKE_CXX_COMPILER «v.value» CACHE STRING "")
+		«ELSE»
 		set(«v.key» «formatCMakePath(v.value)»)
+		«ENDIF»
 		«ENDFOR»
 		«FOR p : providers»
 		set(«p.pathVar.key» «p.pathVar.value»)
@@ -69,13 +73,9 @@ class CMakeUtils
 		«ENDIF»
 	'''
 
-	/**
-	 * Must be done after the project() command to work (CMAKE_CXX_COMPILER_ID not defined before)
-	 */
-	static def setCompiler()
+	static def checkCompiler()
 	'''
-		# CHECK CXX VERSION
-		set(CMAKE_CXX_COMPILER ${N_CXX_COMPILER} CACHE STRING "")
+		# CHECK CXX VERSION: must be done after the project() (CMAKE_CXX_COMPILER_ID not defined before)
 		if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 			if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "7.4.0")
 				message(FATAL_ERROR "GCC minimum required version is 7.4.0. Please upgrade.")

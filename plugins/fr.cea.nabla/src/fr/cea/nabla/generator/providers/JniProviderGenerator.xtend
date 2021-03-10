@@ -71,11 +71,12 @@ class JniProviderGenerator extends StandaloneGeneratorBase
 	'''
 		«CMakeUtils.getFileHeader(false)»
 
-		project(«projectName»Project CXX)
-
 		«CMakeUtils.setVariables(getNeededVariables(wsPath, variables), providers)»
 
-		«CMakeUtils.setCompiler»
+		# PROJECT
+		project(«projectName»Project CXX)
+
+		«CMakeUtils.checkCompiler»
 
 		«CMakeUtils.addSubDirectories(false, providers)»
 

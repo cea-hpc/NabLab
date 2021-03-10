@@ -15,25 +15,10 @@
 namespace nablalib::types
 {
 
-// Type alias
-using Id = size_t;
-
-template<size_t N>
-using IntArray1D = MultiArray<int, N>;
-
-template<size_t M, size_t N>
-using IntArray2D = MultiArray<int, M, N>;
-
-template<size_t N>
-using  RealArray1D = MultiArray<double, N>;
-
-template<size_t M, size_t N>
-using RealArray2D = MultiArray<double, M, N>;
-
 /******************************************************************************/
 void dummy() {
   
-  RealArray<7> v{0., 1., 2., 3., 4., 5., 6.};
+  RealArray<7> v{{0., 1., 2., 3., 4., 5., 6.}};
    
   std::cout << "RealArray<7> v test value:\t" << v << std::endl;
   std::cout << "v dimension is: " << v.dimensions << std::endl;
@@ -55,9 +40,12 @@ void dummy() {
   std::cout << "u[0][0][0][0] = " << u[0][0][0][0] << std::endl << "u dimensions are: " << u.dimensions << std::endl;
 
   std::cout << "5x5 matrix w:\n";
+
   constexpr size_t DIM1=5;
   constexpr size_t DIM2=2;
   constexpr size_t DIM3=3;
+  // About clang warning :
+  // seems like a clang "feature": https://stackoverflow.com/questions/31555584/why-is-clang-warning-suggest-braces-around-initialization-of-subobject-wmis
   IntArray<DIM1, DIM2 + DIM3> w{ 2, -1,  0,  0,  0,
                                 -1,  2, -1,  0,  0,
                                  0, -1,  2, -1,  0,

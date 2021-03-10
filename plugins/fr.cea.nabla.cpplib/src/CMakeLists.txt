@@ -11,14 +11,14 @@
 cmake_minimum_required(VERSION 3.10)
 set(CMAKE_VERBOSE_MAKEFILE FALSE)
 
-project(fr_cea_nabla_cpplib CXX)
-
 # SET VARIABLES
 set(N_WS_PATH ${CMAKE_SOURCE_DIR})
 set(N_KOKKOS_PATH $ENV{HOME}/kokkos/kokkos-install)
 
-# CHECK CXX VERSION
-set(CMAKE_CXX_COMPILER /usr/bin/g++ CACHE STRING "")
+# PROJECT
+project(fr_cea_nabla_cpplib CXX)
+
+# CHECK CXX VERSION: must be done after the project() (CMAKE_CXX_COMPILER_ID not defined before)
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 	if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "7.4.0")
 		message(FATAL_ERROR "GCC minimum required version is 7.4.0. Please upgrade.")

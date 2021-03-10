@@ -3,10 +3,8 @@
 cmake_minimum_required(VERSION 3.10)
 set(CMAKE_VERBOSE_MAKEFILE FALSE)
 
-project(HeatEquationProject CXX)
-
 # SET VARIABLES
-set(N_CXX_COMPILER /usr/bin/g++)
+set(CMAKE_CXX_COMPILER /usr/bin/g++ CACHE STRING "")
 set(N_KOKKOS_PATH $ENV{HOME}/kokkos/kokkos-install)
 set(N_WS_PATH $ENV{HOME}/workspaces/NabLab/plugins/fr.cea.nabla.ui/examples)
 
@@ -18,8 +16,10 @@ if (NOT DEFINED N_WS_PATH)
 	message(FATAL_ERROR "N_WS_PATH variable must be set")
 endif()
 
-# CHECK CXX VERSION
-set(CMAKE_CXX_COMPILER ${N_CXX_COMPILER} CACHE STRING "")
+# PROJECT
+project(HeatEquationProject CXX)
+
+# CHECK CXX VERSION: must be done after the project() (CMAKE_CXX_COMPILER_ID not defined before)
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 	if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "7.4.0")
 		message(FATAL_ERROR "GCC minimum required version is 7.4.0. Please upgrade.")

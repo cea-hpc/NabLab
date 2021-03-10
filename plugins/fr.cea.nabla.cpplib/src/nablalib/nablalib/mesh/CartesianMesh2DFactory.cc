@@ -86,7 +86,7 @@ CartesianMesh2DFactory::create()
   
 	for(size_t j(0); j <= nbYQuads; ++j) {
 		for(size_t i(0); i <= nbXQuads; ++i) {
-			nodes_[node_id_] = RealArray1D<2>{xSize * i, ySize * j};
+			nodes_[node_id_] = RealArray1D<2>{{xSize * i, ySize * j}};
 			if (i!=0 && j!=0 && i!=nbXQuads && j!=nbYQuads)
 				inner_node_ids_[inner_node_id_++] = node_id_;
 			else

@@ -40,7 +40,7 @@ namespace nablalib::types
 // Generic Multi-Dimension template
 // When specifying a 0 dimension MultiArray, it becomes dynamic, using std::vector inheritance instead of std::array
 template <typename T, size_t DIM_1, size_t... DIM_N>
-struct MultiArray : public std::conditional_t<DIM_1, std::array<MultiArray<T, DIM_N...>, DIM_1>, std::vector<MultiArray<T, DIM_N...>>>
+struct MultiArray : public std::conditional_t<(DIM_1>0), std::array<MultiArray<T, DIM_N...>, DIM_1>, std::vector<MultiArray<T, DIM_N...>>>
 {
   // Template dimensions backup
   static constexpr std::array<size_t, 1 + sizeof...(DIM_N)> dimensions = {DIM_1, DIM_N...};
@@ -176,7 +176,7 @@ struct MultiArray : public std::conditional_t<DIM_1, std::array<MultiArray<T, DI
 /******************************************************************************/
 // Specialized for 1 dimension to stop recursive calls
 template<typename T, size_t DIM>
-struct MultiArray<T, DIM> : public std::conditional_t<DIM, std::array<T, DIM>, std::vector<T>>
+struct MultiArray<T, DIM> : public std::conditional_t<(DIM>0), std::array<T, DIM>, std::vector<T>>
 {
   // Template dimensions backup
   static constexpr std::array<size_t, 1> dimensions = {DIM};
@@ -328,6 +328,14 @@ std::ostream& operator<<(std::ostream& os, const std::array<T, N>& array) {
   return os;
 }
 
+// Pretty printer helper function for N dimension MultiArray
+template <typename T, size_t DIM_1, size_t... DIM_N, typename std::enable_if_t<(sizeof...(DIM_N)>0)>* = nullptr>
+std::ostream& operator<<(std::ostream& os, const MultiArray<T, DIM_1, DIM_N...>& array) {
+  for (auto i : array)
+    os << i << std::endl;
+  return os;
+}
+
 // Pretty printer helper function for 1 dimension MultiArray
 template<typename T, size_t DIM>
 std::ostream& operator<<(std::ostream& os, const MultiArray<T, DIM>& array) {
@@ -335,15 +343,6 @@ std::ostream& operator<<(std::ostream& os, const MultiArray<T, DIM>& array) {
     std::cout << (i==0?"| ":"") << array[i] << (i==array.size()-1?" |":" ");
   return os;
 }
-
-// Pretty printer helper function for N dimension MultiArray
-template <typename T, size_t DIM_1, size_t... DIM_N>
-std::ostream& operator<<(std::ostream& os, const MultiArray<T, DIM_1, DIM_N...>& array) {
-  for (auto i : array)
-    os << i << std::endl;
-  return os;
-}
-
 
 /******************************************************************************/
 // Commutative helpers

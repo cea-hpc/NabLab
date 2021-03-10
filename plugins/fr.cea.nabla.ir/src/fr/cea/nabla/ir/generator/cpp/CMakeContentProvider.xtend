@@ -45,13 +45,14 @@ class CMakeContentProvider
 	'''
 		«CMakeUtils.getFileHeader(false)»
 
-		project(«name»Project CXX)
-
 		«CMakeUtils.setVariables(variables, externalProviders)»
 
 		«CMakeUtils.checkVariables(neededVariables)»
 
-		«CMakeUtils.setCompiler»
+		# PROJECT
+		project(«name»Project CXX)
+
+		«CMakeUtils.checkCompiler»
 		«IF !(levelDBPath.nullOrEmpty && findPackageContent.length == 0)»
 
 			# FIND PACKAGES

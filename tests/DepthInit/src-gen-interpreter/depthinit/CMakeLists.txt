@@ -3,16 +3,16 @@
 cmake_minimum_required(VERSION 3.10)
 set(CMAKE_VERBOSE_MAKEFILE FALSE)
 
-project(DepthInitProject CXX)
-
 # SET VARIABLES
 set(N_WS_PATH $ENV{HOME}/workspaces/NabLab/tests)
-set(N_CXX_COMPILER /usr/bin/g++)
+set(CMAKE_CXX_COMPILER /usr/bin/g++ CACHE STRING "")
 set(JAVA_HOME /usr/lib/jvm/java-11-openjdk-amd64)
 set(BATILIBCPPJNI_PATH ${N_WS_PATH}/DepthInit/src-gen-interpreter/batilibcppjni)
 
-# CHECK CXX VERSION
-set(CMAKE_CXX_COMPILER ${N_CXX_COMPILER} CACHE STRING "")
+# PROJECT
+project(DepthInitProject CXX)
+
+# CHECK CXX VERSION: must be done after the project() (CMAKE_CXX_COMPILER_ID not defined before)
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 	if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "7.4.0")
 		message(FATAL_ERROR "GCC minimum required version is 7.4.0. Please upgrade.")

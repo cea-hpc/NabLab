@@ -125,7 +125,7 @@ LinearAlgebra::CGSolve(const SparseMatrixType& A, const VectorType& b, const Vec
   /* p = x */
   VectorType p(x.begin(), x.end());
   /* Ap = A * p */
-  VectorType Ap(std::move(A * p));
+  VectorType Ap(A * p);
   /* b - Ap => r */
   VectorType r(count);
   std::transform(b.begin(), b.end(), Ap.begin(), r.begin(),
@@ -139,7 +139,7 @@ LinearAlgebra::CGSolve(const SparseMatrixType& A, const VectorType& b, const Vec
     /* pAp_dot = dot(p, Ap = A * p) */ 
   
     /* Ap = A * p */
-    Ap = std::move(A * p);
+    Ap = (A * p);
 
     const double pAp_dot(std::inner_product(p.begin(), p.end(), Ap.begin(), 0.0));
     const double alpha(old_rdot / pAp_dot);
@@ -199,14 +199,14 @@ LinearAlgebra::CGSolve(const SparseMatrixType& A, const VectorType& b,
   /* p = x */
   VectorType p(x.begin(), x.end());
   /* Ap = A * p */
-  VectorType Ap(std::move(A * p));
+  VectorType Ap(A * p);
   /* b - Ap => r */
   VectorType r(count);
   std::transform(b.begin(), b.end(), Ap.begin(), r.begin(),
                  [&](const double& lhs, const double& rhs){return (lhs - rhs);});
                  
   /* z = C^-1 * r */
-  VectorType z(std::move(C_minus_1 * r));
+  VectorType z(C_minus_1 * r);
   
   /* p = z */
   std::copy(z.begin(), z.end(), p.begin());
@@ -217,7 +217,7 @@ LinearAlgebra::CGSolve(const SparseMatrixType& A, const VectorType& b,
     /* pAp_dot = dot(p, Ap = A * p) */ 
   
     /* Ap = A * p */
-    Ap = std::move(A * p);
+    Ap = (A * p);
 	
     const double pAp_dot(std::inner_product(p.begin(), p.end(), Ap.begin(), 0.0));
     const double alpha(old_rTz / pAp_dot);
@@ -230,7 +230,7 @@ LinearAlgebra::CGSolve(const SparseMatrixType& A, const VectorType& b,
                    [&](const double& r_i, const double& Ap_i){return (r_i - alpha * Ap_i);});
 
     /* z = C^-1 * r */
-    z = std::move(C_minus_1 * r);
+    z = (C_minus_1 * r);
 
     const double rTz(std::inner_product(r.begin(), r.end(), z.begin(), 0.0));
     const double beta(rTz / old_rTz);

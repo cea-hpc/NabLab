@@ -210,7 +210,7 @@ CartesianMesh2D::getCommonFace(const Id& cellId1, const Id& cellId2) const
 Id
 CartesianMesh2D::getBackCell(const Id& faceId) const
 {
-  vector<Id> cells(move(getCellsOfFace(faceId)));
+  vector<Id> cells(getCellsOfFace(faceId));
   if (cells.size() < 2) {
     stringstream msg;
     msg << "Error in getBackCell(" << faceId << "): please consider using this method with inner face only." << endl;
@@ -223,7 +223,7 @@ CartesianMesh2D::getBackCell(const Id& faceId) const
 Id
 CartesianMesh2D::getFrontCell(const Id& faceId) const
 {
-  vector<Id> cells(move(getCellsOfFace(faceId)));
+  vector<Id> cells(getCellsOfFace(faceId));
   if (cells.size() < 2) {
     stringstream msg;
     msg << "Error in getFrontCell(" << faceId << "): please consider using this method with inner face only." << endl;

@@ -18,7 +18,8 @@ add_library(nablalib
 set_property(TARGET nablalib PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_compile_options(nablalib PUBLIC -g -Wall -O3 --std=c++17 -mtune=native)
 target_include_directories(nablalib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(nablalib PUBLIC stdc++fs)
+# no need since clang++ 9.0 and g++ 9.1
+#target_link_libraries(nablalib PUBLIC stdc++fs)
 
 # OPTIONAL USER OPTIONS IN Project.cmake
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)

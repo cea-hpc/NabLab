@@ -77,8 +77,8 @@ class CMakeUtils
 	'''
 		# CHECK CXX VERSION: must be done after the project() (CMAKE_CXX_COMPILER_ID not defined before)
 		if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-			if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "7.4.0")
-				message(FATAL_ERROR "GCC minimum required version is 7.4.0. Please upgrade.")
+			if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "9.1.0")
+				message(FATAL_ERROR "GCC minimum required version is 9.1.0. Please upgrade.")
 			endif()
 		elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 			if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "9.0.0")

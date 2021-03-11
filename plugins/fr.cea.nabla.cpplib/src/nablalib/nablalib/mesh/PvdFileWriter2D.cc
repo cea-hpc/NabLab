@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-#include <experimental/filesystem>
+#include <filesystem>
 
 #include "PvdFileWriter2D.h"
 
@@ -20,8 +20,8 @@ PvdFileWriter2D::PvdFileWriter2D(const string& moduleName, const string& directo
 , m_directory_name(directoryName)
 , m_state(closed)
 {
-	if (!isDisabled() && !experimental::filesystem::exists(m_directory_name))
-		experimental::filesystem::create_directory(m_directory_name);
+	if (!isDisabled() && !filesystem::exists(m_directory_name))
+		filesystem::create_directory(m_directory_name);
 }
 
 PvdFileWriter2D::~PvdFileWriter2D() {}

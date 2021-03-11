@@ -49,7 +49,7 @@ class DeclarationBuilder
 			{
 				val type = r.typeDeclaration.type.computeExpressionType
 				if (type instanceof NablaSimpleType)
-					declaration = new ReductionDeclaration(r, type as NablaSimpleType)		
+					declaration = new ReductionDeclaration(r, type)		
 			}
 		}
 		return declaration

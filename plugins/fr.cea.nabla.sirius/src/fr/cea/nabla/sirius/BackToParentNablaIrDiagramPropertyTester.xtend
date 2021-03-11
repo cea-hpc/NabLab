@@ -15,19 +15,17 @@ import org.eclipse.gmf.runtime.notation.Diagram
 import org.eclipse.gmf.runtime.notation.Node
 import org.eclipse.sirius.diagram.DSemanticDiagram
 
-class BackToParentNablaIrDiagramPropertyTester extends PropertyTester {
-	new() {
-	}
-
+class BackToParentNablaIrDiagramPropertyTester extends PropertyTester
+{
 	override boolean test(Object receiver, String property, Object[] args, Object expectedValue)
 	{
 		var DSemanticDiagram diagram = null
 		if (receiver instanceof EditPart)
 		{
-			var model = ((receiver as EditPart)).model
+			var model = receiver.model
 			if (model instanceof Diagram)
 			{
-				var element = ((model as Diagram)).element
+				var element = model.element
 				if (element instanceof DSemanticDiagram)
 				{
 					diagram = element as DSemanticDiagram
@@ -35,19 +33,19 @@ class BackToParentNablaIrDiagramPropertyTester extends PropertyTester {
 			}
 			else if (model instanceof Node)
 			{
-				var nodeDiagram = ((model as Node)).diagram
+				var nodeDiagram = model.diagram
 				if (nodeDiagram !== null)
 				{
-					var element = ((nodeDiagram as Diagram)).element
+					var element = nodeDiagram.element
 					if (element instanceof DSemanticDiagram)
 					{
-						diagram = element as DSemanticDiagram
+						diagram = element
 					}
 				}
 			}
 			if (diagram instanceof DSemanticDiagram)
 			{
-				return ((diagram as DSemanticDiagram)).target instanceof Job
+				return (diagram.target instanceof Job)
 			}
 		}
 		return false

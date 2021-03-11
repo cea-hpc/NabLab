@@ -12,7 +12,6 @@ import fr.cea.nabla.ir.ir.Job
 import org.eclipse.core.commands.AbstractHandler
 import org.eclipse.core.commands.ExecutionEvent
 import org.eclipse.core.commands.ExecutionException
-import org.eclipse.jface.viewers.IStructuredSelection
 import org.eclipse.sirius.diagram.DDiagram
 import org.eclipse.sirius.diagram.DSemanticDiagram
 import org.eclipse.sirius.diagram.ui.edit.api.part.AbstractBorderedDiagramElementEditPart
@@ -25,33 +24,30 @@ class BackToParentNablaIrDiagramCommand extends AbstractHandler
 	override Object execute(ExecutionEvent event) throws ExecutionException
 	{
 		var selection = HandlerUtil.getCurrentStructuredSelection(event)
-		if (selection instanceof IStructuredSelection)
+		var element = selection.firstElement
+		var DDiagram diagram = null
+		if (element instanceof AbstractDDiagramEditPart)
 		{
-			var element = selection.firstElement
-			var DDiagram diagram = null
-			if (element instanceof AbstractDDiagramEditPart)
+			var Option<DDiagram> diagramOption = element.resolveDDiagram
+			if (diagramOption.some)
 			{
-				var Option<DDiagram> diagramOption = ((element as AbstractDDiagramEditPart)).resolveDDiagram
-				if (diagramOption.some)
-				{
-					diagram = diagramOption.get
-				}
+				diagram = diagramOption.get
 			}
-			else if (element instanceof AbstractBorderedDiagramElementEditPart)
+		}
+		else if (element instanceof AbstractBorderedDiagramElementEditPart)
+		{
+			var diagramElement = element.resolveDiagramElement
+			if (diagramElement !== null)
 			{
-				var diagramElement = ((element as AbstractBorderedDiagramElementEditPart)).resolveDiagramElement
-				if (diagramElement !== null)
-				{
-					diagram = diagramElement.parentDiagram
-				}
+				diagram = diagramElement.parentDiagram
 			}
-			if (diagram instanceof DSemanticDiagram)
+		}
+		if (diagram instanceof DSemanticDiagram)
+		{
+			var semanticTarget = diagram.target
+			if (semanticTarget instanceof Job)
 			{
-				var semanticTarget = ((diagram as DSemanticDiagram)).target
-				if (semanticTarget instanceof Job)
-				{
-					new NablaSiriusServices().backToParentDiagram((diagram as DSemanticDiagram))
-				}
+				new NablaSiriusServices().backToParentDiagram(diagram)
 			}
 		}
 		return null

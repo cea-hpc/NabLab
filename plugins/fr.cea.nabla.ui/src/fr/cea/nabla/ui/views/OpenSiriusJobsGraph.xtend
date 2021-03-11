@@ -30,7 +30,6 @@ import org.eclipse.core.commands.AbstractHandler
 import org.eclipse.core.commands.ExecutionEvent
 import org.eclipse.core.commands.ExecutionException
 import org.eclipse.core.runtime.NullProgressMonitor
-import org.eclipse.emf.common.notify.Notifier
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.transaction.RecordingCommand
@@ -176,19 +175,18 @@ class OpenSiriusJobsGraph extends AbstractHandler
 		{
 			isNewResource = true
 			val newIrResource = session.transactionalEditingDomain.resourceSet.createResource(irResourceURI)
-			if (newIrResource instanceof Notifier)
+
+			// Remove notifications delivering to avoid "cannot modify resource set without write transaction" exception
+			newIrResource.eSetDeliver(false)
+			newIrResource.contents.add(irRoot)
+			try
 			{
-				// Remove notifications delivering to avoid "cannot modify resource set without write transaction" exception
-				newIrResource.eSetDeliver(false)
-				newIrResource.contents.add(irRoot)
-				try
-				{
-					newIrResource.save(Collections.emptyMap)
-				} catch (IOException e)
-				{
-				}
-				newIrResource.eSetDeliver(true)
+				newIrResource.save(Collections.emptyMap)
+			} catch (IOException e)
+			{
 			}
+			newIrResource.eSetDeliver(true)
+
 			session.transactionalEditingDomain.commandStack.execute(
 				new RecordingCommand(session.transactionalEditingDomain)
 				{
@@ -325,11 +323,10 @@ class OpenSiriusJobsGraph extends AbstractHandler
 			{
 				var root = contents.get(0)
 				if (root instanceof IrRoot)
-				{
-					return root as IrRoot
-				}
+					return root
 			}
 		}
+		return null
 	}
 
 	def protected void saveSession(Session session)

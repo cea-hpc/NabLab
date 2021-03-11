@@ -72,22 +72,22 @@ class NablaSiriusServices
 
 	def void goIntoDiagram(JobCaller jobCaller, DDiagramElement elementView)
 	{
-		var session = SessionManager.INSTANCE.getSession(jobCaller)
+		val session = SessionManager.INSTANCE.getSession(jobCaller)
 		if (session !== null)
 		{
-			var editingSession = SessionUIManager.INSTANCE.getUISession(session)
+			val editingSession = SessionUIManager.INSTANCE.getUISession(session)
 			if (editingSession !== null)
 			{
-				var parentDiagram = elementView.parentDiagram
-				var editor = editingSession.getEditor(parentDiagram)
+				val parentDiagram = elementView.parentDiagram
+				val editor = editingSession.getEditor(parentDiagram)
 				if (editor instanceof DDiagramEditorImpl)
 				{
-					var nablaIrDiagramOnJob = createNablaIrDiagram(session, jobCaller)
-					var sessionURI = session.sessionResource.URI
-					var uid = nablaIrDiagramOnJob.uid
-					var uri = URI.createURI(sessionURI.toString + "#" + uid);
-					var uriEditorInput = new SessionEditorInput(uri, parentDiagram.name, session)
-					((editor as DDiagramEditorImpl)).setInput(uriEditorInput)
+					val nablaIrDiagramOnJob = createNablaIrDiagram(session, jobCaller)
+					val sessionURI = session.sessionResource.URI
+					val uid = nablaIrDiagramOnJob.uid
+					val uri = URI.createURI(sessionURI.toString + "#" + uid);
+					val uriEditorInput = new SessionEditorInput(uri, parentDiagram.name, session)
+					editor.setInput(uriEditorInput)
 					unselectAllElements(session, nablaIrDiagramOnJob)
 				}
 				saveSession(session)
@@ -97,14 +97,14 @@ class NablaSiriusServices
 
 	def private DRepresentation createNablaIrDiagram(Session session, IrAnnotable irAnnotable)
 	{
-		var Collection<RepresentationDescription> representationDescriptions = DialectManager.INSTANCE.
+		val Collection<RepresentationDescription> representationDescriptions = DialectManager.INSTANCE.
 			getAvailableRepresentationDescriptions(session.getSelectedViewpoints(false), irAnnotable)
 		var DRepresentation representation = null
 		for (RepresentationDescription representationDescription : representationDescriptions)
 		{
 			if (NABLA_IR_DIAGRAM_ID.equals(representationDescription.getName()))
 			{
-				var CreateRepresentationCommand cmd = new CreateRepresentationCommand(session,
+				val CreateRepresentationCommand cmd = new CreateRepresentationCommand(session,
 					representationDescription, irAnnotable, irAnnotable.name, new NullProgressMonitor())
 				session.transactionalEditingDomain.commandStack.execute(cmd)
 				representation = cmd.createdRepresentation
@@ -138,13 +138,13 @@ class NablaSiriusServices
 			}
 		}
 		if (annotable instanceof IrAnnotable) {
-			var session = SessionManager.INSTANCE.getSession(annotable)
+			val session = SessionManager.INSTANCE.getSession(annotable)
 			if (session !== null)
 			{
-				var editingSession = SessionUIManager.INSTANCE.getUISession(session)
+				val editingSession = SessionUIManager.INSTANCE.getUISession(session)
 				if (editingSession !== null)
 				{
-					var editor = editingSession.getEditor(diagram)
+					val editor = editingSession.getEditor(diagram)
 					if (editor instanceof DDiagramEditorImpl)
 					{
 						var nablaIrDiagramOnJob = getExistingDiagram(session, annotable)
@@ -152,11 +152,11 @@ class NablaSiriusServices
 						{
 							nablaIrDiagramOnJob = createNablaIrDiagram(session, annotable)
 						}
-						var sessionURI = session.sessionResource.URI
-						var uid = nablaIrDiagramOnJob.uid
-						var uri = URI.createURI(sessionURI.toString + "#" + uid)
-						var uriEditorInput = new SessionEditorInput(uri, annotable.name, session)
-						((editor as DDiagramEditorImpl)).setInput(uriEditorInput)
+						val sessionURI = session.sessionResource.URI
+						val uid = nablaIrDiagramOnJob.uid
+						val uri = URI.createURI(sessionURI.toString + "#" + uid)
+						val uriEditorInput = new SessionEditorInput(uri, annotable.name, session)
+						editor.setInput(uriEditorInput)
 						unselectAllElements(session, nablaIrDiagramOnJob)
 					}
 					saveSession(session)
@@ -181,7 +181,7 @@ class NablaSiriusServices
 
 	def private DRepresentation getExistingDiagram(Session session, IrAnnotable irAnnotable)
 	{
-		var representations = DialectManager.INSTANCE.getRepresentations(irAnnotable, session)
+		val representations = DialectManager.INSTANCE.getRepresentations(irAnnotable, session)
 		if (representations !== null && !(representations.empty))
 		{
 			return representations.get(0)

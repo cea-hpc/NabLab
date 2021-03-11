@@ -40,8 +40,10 @@ class NablaIrCopier extends Copier {
 					{
 						if (eStructuralFeature instanceof EAttribute)
 						{
-							copyAttribute((eStructuralFeature as EAttribute), irRootSource, copyEObject)
-						} else {
+							copyAttribute((eStructuralFeature), irRootSource, copyEObject)
+						} 
+						else
+						{
 							var EReference eReference = (eStructuralFeature as EReference)
 							if (eReference.isContainment())
 							{

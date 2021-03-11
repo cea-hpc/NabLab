@@ -57,9 +57,8 @@ class NablaIrElkLayoutExtension implements IELKLayoutExtension
 			if (gmfDiagram !== null)
 			{
 				var element = gmfDiagram.element
-				if (element instanceof DDiagram) {
-					return Optional.of((element as DDiagram))
-				}
+				if (element instanceof DDiagram)
+					return Optional.of(element)
 			}
 		}
 		return Optional.empty

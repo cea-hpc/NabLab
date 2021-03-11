@@ -17,7 +17,6 @@ import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.InternFunction
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
-import fr.cea.nabla.ir.ir.Variable
 import java.util.ArrayList
 
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
@@ -143,7 +142,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 			«ENDIF»
 			// Global variables
 			«FOR v : variables.filter[!option]»
-			protected «IF v instanceof Variable && (v as Variable).const»final «ENDIF»«v.type.javaType» «v.name»;
+			protected «IF v.const»final «ENDIF»«v.type.javaType» «v.name»;
 			«ENDFOR»
 
 			public «className»(«javaMeshClassName» aMesh, Options aOptions)

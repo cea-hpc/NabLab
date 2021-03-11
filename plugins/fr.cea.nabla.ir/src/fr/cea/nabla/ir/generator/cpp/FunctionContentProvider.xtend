@@ -128,7 +128,7 @@ class FunctionContentProvider
 			BaseType: getJniReturnContent("ret", "c_ret", t.primitive, t.sizes)
 			LinearAlgebraType: 
 			'''
-				auto ret = newJava«IrTypeExtensions.getLinearAlgebraClass(t)»(env, self, &c_ret);
+				auto ret = newJava«IrTypeExtensions.getLinearAlgebraClass(t)»(env, self, new «IrTypeExtensions.getLinearAlgebraClass(t)»(c_ret));
 			'''
 			default: throw new RuntimeException("Ooops. Can not be there, normally...")
 		}

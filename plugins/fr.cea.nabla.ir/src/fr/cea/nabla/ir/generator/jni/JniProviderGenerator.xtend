@@ -21,7 +21,6 @@ import java.util.ArrayList
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.generator.JniNameMangler.*
 
-// TODO Manage vector and matrix name in JNI when allocating C++ object
 // TODO Change PvdFileWriter on javalib to do like in C++ to dump Vectors
 // TODO Do not always generate LevelDB block in Java to avoid error on Vectors
 // TODO Change solve methods for solveInPlace methods
@@ -120,6 +119,7 @@ class JniProviderGenerator
 		}
 
 		private native long nativeNew(final String name, final int size);
+		private native void nativeDelete(final long nativeObjectPointer);
 
 		public Vector(final String name, final int size)
 		{
@@ -136,6 +136,12 @@ class JniProviderGenerator
 		public int getSize()
 		{
 			return size;
+		}
+
+		@Override
+		public void finalize()
+		{
+			nativeDelete(nativeObjectPointer);
 		}
 
 		public native double getValue(int i);
@@ -165,6 +171,7 @@ class JniProviderGenerator
 		}
 
 		private native long nativeNew(final String name, final int nbRows, int nbCols);
+		private native void nativeDelete(final long nativeObjectPointer);
 
 		public Matrix(final String name, final int nbRows, final int nbCols)
 		{
@@ -187,6 +194,12 @@ class JniProviderGenerator
 		public int getNbCols()
 		{
 			return nbCols;
+		}
+
+		@Override
+		public void finalize()
+		{
+			nativeDelete(nativeObjectPointer);
 		}
 
 		public native double getValue(int i, int j);
@@ -289,10 +302,10 @@ class JniProviderGenerator
 	«getObjectFunctionContent('Vector')»
 
 	static jobject newJavaVector
-	(JNIEnv *env, jobject self, Vector* cppVector)
+	(JNIEnv *env, jobject self, Vector* _self)
 	{
-		jlong cppPtr = reinterpret_cast<jlong>(cppVector);
-		jint size = cppVector->getSize();
+		jlong cppPtr = reinterpret_cast<jlong>(_self);
+		jint size = _self->getSize();
 
 		jclass cls = env->FindClass("«provider.packageName»/Vector");
 		if (!cls)
@@ -306,6 +319,8 @@ class JniProviderGenerator
 	}
 
 	«getNativeNewFunctionContent(provider, 'Vector', #['size'])»
+
+	«getNativeDeleteFunctionContent(provider, 'Vector')»
 
 	JNIEXPORT jdouble JNICALL «getJniFunctionName(provider, 'Vector', 'getValue')»
 	(JNIEnv *env, jobject self, jint i)
@@ -327,11 +342,11 @@ class JniProviderGenerator
 	«getObjectFunctionContent('Matrix')»
 
 	static jobject newJavaMatrix
-	(JNIEnv *env, jobject self, Matrix* cppMatrix)
+	(JNIEnv *env, jobject self, Matrix* _self)
 	{
-		jlong cppPtr = reinterpret_cast<jlong>(cppMatrix);
-		jint nbRows = cppMatrix->getNbRows();
-		jint nbCols = cppMatrix->getNbCols();
+		jlong cppPtr = reinterpret_cast<jlong>(_self);
+		jint nbRows = _self->getNbRows();
+		jint nbCols = _self->getNbCols();
 
 		jclass cls = env->FindClass("«provider.packageName»/Matrix");
 		if (!cls)
@@ -345,6 +360,8 @@ class JniProviderGenerator
 	}
 
 	«getNativeNewFunctionContent(provider, 'Matrix', #['nbRows', 'nbCols'])»
+
+	«getNativeDeleteFunctionContent(provider, 'Matrix')»
 
 	JNIEXPORT jdouble JNICALL «getJniFunctionName(provider, 'Matrix', 'getValue')»
 	(JNIEnv *env, jobject self, jint i, jint j)
@@ -396,10 +413,24 @@ class JniProviderGenerator
 	JNIEXPORT jlong JNICALL «getJniFunctionName(provider, objectType, 'nativeNew')»
 	(JNIEnv *env, jobject self«FOR a : cstrArgs BEFORE ", jstring name"», jint «a»«ENDFOR»)
 	{
-		// Here we allocate our new object and return
-		// its pointer casted as a jlong;
-		«objectType» *o = new «objectType»(«FOR a : cstrArgs BEFORE '""'», «a»«ENDFOR»);
-		return reinterpret_cast<jlong>(o);
+		«IF !cstrArgs.empty»
+		const char *nativeName = env->GetStringUTFChars(name, 0);
+		«ENDIF»
+		«objectType» *_self = new «objectType»(«FOR a : cstrArgs BEFORE '"nativeName"'», «a»«ENDFOR»);
+		«IF !cstrArgs.empty»
+		env->ReleaseStringUTFChars(name, nativeName);
+		«ENDIF»
+		return reinterpret_cast<jlong>(_self);
+	}
+	'''
+
+	private def getNativeDeleteFunctionContent(ExtensionProvider provider, String objectType)
+	'''
+	JNIEXPORT void JNICALL «getJniFunctionName(provider, objectType, 'nativeDelete')»
+	(JNIEnv *env, jobject self, jlong nativeObjectPointer)
+	{
+		«objectType»* _self = reinterpret_cast<«objectType»*>(nativeObjectPointer);
+		delete _self;
 	}
 	'''
 

@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.Map;
 
 public class PvdFileWriter2D
 {
@@ -158,7 +159,7 @@ public class PvdFileWriter2D
 		pvdWriter.println("<?xml version=\"1.0\"?>");
 		pvdWriter.println("<VTKFile type=\"Collection\" version=\"0.1\">");
 		pvdWriter.println("	<Collection>");
-		for (var e : fileNameByTimes.entrySet())
+		for (Map.Entry<Double, String> e : fileNameByTimes.entrySet())
 			pvdWriter.println("			<DataSet timestep=\"" + e.getKey() + "\" group=\"\" part=\"0\" file=\"" + e.getValue() + "\"/>");
 		pvdWriter.println("	</Collection>");
 		pvdWriter.println("</VTKFile>");

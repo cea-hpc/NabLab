@@ -109,7 +109,7 @@ public final class IterativeHeatEquation
 
 	// User options
 	private final Options options;
-	private final FileWriter writer;
+	private final PvdFileWriter2D writer;
 
 	// Global variables
 	protected int lastDump;
@@ -657,10 +657,25 @@ public final class IterativeHeatEquation
 	{
 		if (!writer.isDisabled())
 		{
-			VtkFileContent content = new VtkFileContent(iteration, t_n, X, mesh.getGeometry().getQuads());
-			content.addCellVariable("Temperature", u_n);
-			writer.writeFile(content);
-			lastDump = n;
+			try
+			{
+				Quad[] quads = mesh.getGeometry().getQuads();
+				writer.startVtpFile(iteration, t_n, X, quads);
+				writer.openNodeData();
+				writer.closeNodeData();
+				writer.openCellData();
+				writer.openCellArray("Temperature", 0);
+				for (int i=0 ; i<nbCells ; ++i)
+					writer.write(u_n[i]);
+				writer.closeCellArray();
+				writer.closeCellData();
+				writer.closeVtpFile();
+				lastDump = n;
+			}
+			catch (java.io.FileNotFoundException e)
+			{
+				System.out.println("* WARNING: no dump of variables. FileNotFoundException: " + e.getMessage());
+			}
 		}
 	}
 

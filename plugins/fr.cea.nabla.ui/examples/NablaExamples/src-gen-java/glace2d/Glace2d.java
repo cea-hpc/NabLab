@@ -159,7 +159,7 @@ public final class Glace2d
 
 	// User options
 	private final Options options;
-	private final FileWriter writer;
+	private final PvdFileWriter2D writer;
 
 	// Global variables
 	protected int lastDump;
@@ -1060,10 +1060,25 @@ public final class Glace2d
 	{
 		if (!writer.isDisabled())
 		{
-			VtkFileContent content = new VtkFileContent(iteration, t_n, X_n, mesh.getGeometry().getQuads());
-			content.addCellVariable("Density", rho);
-			writer.writeFile(content);
-			lastDump = n;
+			try
+			{
+				Quad[] quads = mesh.getGeometry().getQuads();
+				writer.startVtpFile(iteration, t_n, X_n, quads);
+				writer.openNodeData();
+				writer.closeNodeData();
+				writer.openCellData();
+				writer.openCellArray("Density", 0);
+				for (int i=0 ; i<nbCells ; ++i)
+					writer.write(rho[i]);
+				writer.closeCellArray();
+				writer.closeCellData();
+				writer.closeVtpFile();
+				lastDump = n;
+			}
+			catch (java.io.FileNotFoundException e)
+			{
+				System.out.println("* WARNING: no dump of variables. FileNotFoundException: " + e.getMessage());
+			}
 		}
 	}
 

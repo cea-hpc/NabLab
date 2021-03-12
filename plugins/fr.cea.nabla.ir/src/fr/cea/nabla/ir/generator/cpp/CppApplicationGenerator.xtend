@@ -367,7 +367,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 			«ENDIF»
 			writer.closeCellData();
 			writer.closeVtpFile();
-			«irRoot.postProcessing.lastDumpVariable.name» = «irRoot.postProcessing.periodReference.name»;
+			«postProcessing.lastDumpVariable.name» = «postProcessing.periodReference.name»;
 			if (useTimer)
 			{
 				ioTimer.stop();

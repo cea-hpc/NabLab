@@ -15,14 +15,15 @@ import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.TimeLoopJob
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
-import fr.cea.nabla.javalib.mesh.VtkFileContent
 import java.util.Arrays
 import java.util.Locale
 
 import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
 import static fr.cea.nabla.ir.interpreter.InstructionInterpreter.*
 
+import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.JobCallerExtensions.*
+import static extension fr.cea.nabla.ir.interpreter.NablaValueGetter.*
 import static extension fr.cea.nabla.ir.interpreter.NablaValueSetter.*
 
 class JobInterpreter
@@ -124,33 +125,43 @@ class JobInterpreter
 		if (!writer.disabled)
 		{
 			val time = context.getReal(ir.timeVariable)
-			val coord = (context.getVariableValue(ir.nodeCoordVariable) as NV2Real).data
+			val coords = (context.getVariableValue(ir.nodeCoordVariable) as NV2Real).data
 			val quads = context.meshWrapper.quads
-			val vtkFileContent = new VtkFileContent(iteration, time, coord, quads);
-
+			writer.startVtpFile(iteration, time, coords, quads);
 			val outputVars = ppInfo.outputVariables
-			for (v : outputVars.filter(v | v.support.name == "cell"))
-			{
-				val value = context.getVariableValue(v.target)
-				switch value
-				{
-					NV1Real: vtkFileContent.addCellVariable(v.outputName, value.data)
-					NV2Real: vtkFileContent.addCellVariable(v.outputName, value.data)
-					default: throw new RuntimeException("Vtk writer not yet implemented for type: " + value.class.name)
-				}
-			}
+
+			writer.openNodeData();
 			for (v : outputVars.filter(v | v.support.name == "node"))
 			{
+				writer.openNodeArray(v.outputName, v.target.type.sizesSize)
 				val value = context.getVariableValue(v.target)
-				switch value
-				{
-					NV1Real: vtkFileContent.addNodeVariable(v.outputName, value.data)
-					NV2Real: vtkFileContent.addNodeVariable(v.outputName, value.data)
-					default: throw new RuntimeException("Vtk writer not yet implemented for type: " + value.class.name)
-				}
+				for (i : 0..<coords.length)
+					writer.write(value.getValue(#[i]))
+				writer.closeNodeArray();
 			}
-			writer.writeFile(vtkFileContent)
+			writer.closeNodeData();
+			writer.openCellData();
+			for (v : outputVars.filter(v | v.support.name == "cell"))
+			{
+				writer.openCellArray(v.outputName, v.target.type.sizesSize)
+				val value = context.getVariableValue(v.target)
+				for (i : 0..<quads.length)
+					writer.write(value.getValue(#[i]))
+				writer.closeCellArray();
+			}
+			writer.closeCellData();
+			writer.closeVtpFile();
 			context.setVariableValue(ppInfo.lastDumpVariable, new NV0Real(periodReference))
+		}
+	}
+
+	private def void write(PvdFileWriter2D writer, NablaValue v)
+	{
+		switch v
+		{
+			NV0Real: writer.write(v.data)
+			NV1Real: writer.write(v.data)
+			default: throw new RuntimeException("VTK writer does not manage data value type: " + v.toString)
 		}
 	}
 }

@@ -19,7 +19,6 @@ import fr.cea.nabla.ir.ir.ContractedIf
 import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IntConstant
-import fr.cea.nabla.ir.ir.IrPackage
 import fr.cea.nabla.ir.ir.MaxConstant
 import fr.cea.nabla.ir.ir.MinConstant
 import fr.cea.nabla.ir.ir.Parenthesis
@@ -145,15 +144,8 @@ class ExpressionContentProvider
 
 	def CharSequence getCodeName(ArgOrVarRef it)
 	{
-		var result = target.codeName
-		val argOrVarRefModule = irModule
-		val varModule = target.irModule
-		if (argOrVarRefModule !== varModule) result = 'mainModule->' + result
-		//TODO check this ?
-		// operator() on matrix must use constant object
-		if (target.type.matrix && !iterators.empty && eContainingFeature !== IrPackage.Literals.AFFECTATION__LEFT)
-			result = '''std::cref(«result»)'''
-		return result
+		if (irModule === target.irModule) target.codeName
+		else 'mainModule->' + target.codeName
 	}
 
 	private def dispatch CharSequence getInnerContent(Expression it) { content }

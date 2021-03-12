@@ -103,15 +103,6 @@ abstract class TypeContentProvider
 		}
 	}
 
-	def isMatrix(IrType it)
-	{
-		switch it
-		{
-			LinearAlgebraType: it.sizes.size == 2
-			default: false
-		}
-	}
-
 	def initCppTypeContent(String name, IrType t)
 	{
 		switch t

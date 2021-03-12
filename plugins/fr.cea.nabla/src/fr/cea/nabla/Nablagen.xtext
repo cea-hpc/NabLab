@@ -70,6 +70,10 @@ VtkOutput:
 OutputVar:
 	moduleRef=[NablagenModule] '.' varRef=[nabla::ConnectivityVar] 'as' varName=STRING;
 
+/* 
+ * levelDBPath can be empty for Java and interpreter
+ * but it triggers the generation of serialize instructions.
+ */
 LevelDB:
 	'LevelDB'
 	'{'

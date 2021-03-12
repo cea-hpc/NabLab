@@ -37,6 +37,13 @@ import static extension fr.cea.nabla.ir.generator.java.TypeContentProvider.*
 
 class JavaApplicationGenerator implements ApplicationGenerator
 {
+	val boolean hasLevelDB
+
+	new(boolean hasLevelDB)
+	{
+		this.hasLevelDB = hasLevelDB
+	}
+
 	override getName() { 'Java' }
 
 	override getIrTransformationStep() { null }
@@ -63,9 +70,11 @@ class JavaApplicationGenerator implements ApplicationGenerator
 		import java.io.FileReader;
 		import java.io.IOException;
 		import java.util.stream.IntStream;
+		«IF hasLevelDB»
 
 		import org.iq80.leveldb.DB;
 		import org.iq80.leveldb.WriteBatch;
+		«ENDIF»
 
 		import com.google.gson.JsonElement;
 		import com.google.gson.JsonObject;
@@ -113,13 +122,15 @@ class JavaApplicationGenerator implements ApplicationGenerator
 					if (o.has("«vName»"))
 						«vName».jsonInit(o.get("«vName»").toString());
 					«ENDFOR»
-					// Non regression
 					«val nrName = Utils.NonRegressionNameAndValue.key»
+					«IF hasLevelDB»
+					// Non regression
 					if (o.has("«nrName»"))
 					{
 						final JsonElement «nrName.jsonName» = o.get("«nrName»");
 						«nrName» = «nrName.jsonName».getAsJsonPrimitive().getAsString();
 					}
+					«ENDIF»
 				}
 			}
 
@@ -221,6 +232,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 
 					// Start simulation
 					«name».simulate();
+					«IF hasLevelDB»
 
 					«val dbName = irRoot.name + "DB"»
 					// Non regression testing
@@ -234,6 +246,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 						LevelDBUtils.destroyDB("«dbName».current");
 						System.exit(ret);
 					}
+					«ENDIF»
 				}
 				else
 				{
@@ -285,6 +298,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 				}
 			}
 			«ENDIF»
+			«IF hasLevelDB»
 
 			private void createDB(String db_name) throws IOException
 			{
@@ -314,6 +328,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 				db.close();
 				System.out.println("Reference database " + db_name + " created.");
 			}
+			«ENDIF»
 			«ELSE /* !main */»
 			public void setMainModule(«mainModule.className» aMainModule)
 			{

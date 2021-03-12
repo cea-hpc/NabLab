@@ -10,9 +10,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.stream.IntStream;
 
-import org.iq80.leveldb.DB;
-import org.iq80.leveldb.WriteBatch;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -84,12 +81,6 @@ public final class HeatEquation
 			}
 			else
 				alpha = 1.0;
-			// Non regression
-			if (o.has("nonRegression"))
-			{
-				final JsonElement valueof_nonRegression = o.get("nonRegression");
-				nonRegression = valueof_nonRegression.getAsJsonPrimitive().getAsString();
-			}
 		}
 	}
 
@@ -437,18 +428,6 @@ public final class HeatEquation
 
 			// Start simulation
 			heatEquation.simulate();
-
-			// Non regression testing
-			if (heatEquationOptions.nonRegression != null && heatEquationOptions.nonRegression.equals("CreateReference"))
-				heatEquation.createDB("HeatEquationDB.ref");
-			if (heatEquationOptions.nonRegression != null && heatEquationOptions.nonRegression.equals("CompareToReference"))
-			{
-				heatEquation.createDB("HeatEquationDB.current");
-				if (!LevelDBUtils.compareDB("HeatEquationDB.current", "HeatEquationDB.ref"))
-					ret = 1;
-				LevelDBUtils.destroyDB("HeatEquationDB.current");
-				System.exit(ret);
-			}
 		}
 		else
 		{
@@ -482,45 +461,5 @@ public final class HeatEquation
 				System.out.println("* WARNING: no dump of variables. FileNotFoundException: " + e.getMessage());
 			}
 		}
-	}
-
-	private void createDB(String db_name) throws IOException
-	{
-		org.iq80.leveldb.Options levelDBOptions = new org.iq80.leveldb.Options();
-
-		// Destroy if exists
-		factory.destroy(new File(db_name), levelDBOptions);
-
-		// Create data base
-		levelDBOptions.createIfMissing(true);
-		DB db = factory.open(new File(db_name), levelDBOptions);
-
-		WriteBatch batch = db.createWriteBatch();
-		try
-		{
-			batch.put(bytes("lastDump"), LevelDBUtils.serialize(lastDump));
-			batch.put(bytes("n"), LevelDBUtils.serialize(n));
-			batch.put(bytes("deltat"), LevelDBUtils.serialize(deltat));
-			batch.put(bytes("t_n"), LevelDBUtils.serialize(t_n));
-			batch.put(bytes("t_nplus1"), LevelDBUtils.serialize(t_nplus1));
-			batch.put(bytes("t_n0"), LevelDBUtils.serialize(t_n0));
-			batch.put(bytes("X"), LevelDBUtils.serialize(X));
-			batch.put(bytes("center"), LevelDBUtils.serialize(center));
-			batch.put(bytes("u_n"), LevelDBUtils.serialize(u_n));
-			batch.put(bytes("u_nplus1"), LevelDBUtils.serialize(u_nplus1));
-			batch.put(bytes("V"), LevelDBUtils.serialize(V));
-			batch.put(bytes("f"), LevelDBUtils.serialize(f));
-			batch.put(bytes("outgoingFlux"), LevelDBUtils.serialize(outgoingFlux));
-			batch.put(bytes("surface"), LevelDBUtils.serialize(surface));
-
-			db.write(batch);
-		}
-		finally
-		{
-			// Make sure you close the batch to avoid resource leaks.
-			batch.close();
-		}
-		db.close();
-		System.out.println("Reference database " + db_name + " created.");
 	}
 };

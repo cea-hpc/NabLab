@@ -10,9 +10,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.stream.IntStream;
 
-import org.iq80.leveldb.DB;
-import org.iq80.leveldb.WriteBatch;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -68,12 +65,6 @@ public final class DepthInit
 			batiLib = new batilibjava.BatiLib();
 			if (o.has("batiLib"))
 				batiLib.jsonInit(o.get("batiLib").toString());
-			// Non regression
-			if (o.has("nonRegression"))
-			{
-				final JsonElement valueof_nonRegression = o.get("nonRegression");
-				nonRegression = valueof_nonRegression.getAsJsonPrimitive().getAsString();
-			}
 		}
 	}
 
@@ -162,18 +153,6 @@ public final class DepthInit
 
 			// Start simulation
 			depthInit.simulate();
-
-			// Non regression testing
-			if (depthInitOptions.nonRegression != null && depthInitOptions.nonRegression.equals("CreateReference"))
-				depthInit.createDB("DepthInitDB.ref");
-			if (depthInitOptions.nonRegression != null && depthInitOptions.nonRegression.equals("CompareToReference"))
-			{
-				depthInit.createDB("DepthInitDB.current");
-				if (!LevelDBUtils.compareDB("DepthInitDB.current", "DepthInitDB.ref"))
-					ret = 1;
-				LevelDBUtils.destroyDB("DepthInitDB.current");
-				System.exit(ret);
-			}
 		}
 		else
 		{
@@ -181,34 +160,5 @@ public final class DepthInit
 			System.err.println("        Expecting user data file name, for example DepthInit.json");
 			System.exit(1);
 		}
-	}
-
-	private void createDB(String db_name) throws IOException
-	{
-		org.iq80.leveldb.Options levelDBOptions = new org.iq80.leveldb.Options();
-
-		// Destroy if exists
-		factory.destroy(new File(db_name), levelDBOptions);
-
-		// Create data base
-		levelDBOptions.createIfMissing(true);
-		DB db = factory.open(new File(db_name), levelDBOptions);
-
-		WriteBatch batch = db.createWriteBatch();
-		try
-		{
-			batch.put(bytes("t"), LevelDBUtils.serialize(t));
-			batch.put(bytes("X"), LevelDBUtils.serialize(X));
-			batch.put(bytes("eta"), LevelDBUtils.serialize(eta));
-
-			db.write(batch);
-		}
-		finally
-		{
-			// Make sure you close the batch to avoid resource leaks.
-			batch.close();
-		}
-		db.close();
-		System.out.println("Reference database " + db_name + " created.");
 	}
 };

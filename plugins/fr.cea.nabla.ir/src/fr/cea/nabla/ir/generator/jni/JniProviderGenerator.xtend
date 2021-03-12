@@ -21,8 +21,6 @@ import java.util.ArrayList
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.generator.JniNameMangler.*
 
-// TODO Change PvdFileWriter on javalib to do like in C++ to dump Vectors
-// TODO Do not always generate LevelDB block in Java to avoid error on Vectors
 // TODO Change solve methods for solveInPlace methods
 /**
  * JniProviderGenerator does not implement ProviderGenerator

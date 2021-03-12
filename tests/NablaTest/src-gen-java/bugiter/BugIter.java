@@ -10,9 +10,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.stream.IntStream;
 
-import org.iq80.leveldb.DB;
-import org.iq80.leveldb.WriteBatch;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -83,12 +80,6 @@ public final class BugIter
 			}
 			else
 				deltat = 1.0;
-			// Non regression
-			if (o.has("nonRegression"))
-			{
-				final JsonElement valueof_nonRegression = o.get("nonRegression");
-				nonRegression = valueof_nonRegression.getAsJsonPrimitive().getAsString();
-			}
 		}
 	}
 
@@ -450,18 +441,6 @@ public final class BugIter
 
 			// Start simulation
 			bugIter.simulate();
-
-			// Non regression testing
-			if (bugIterOptions.nonRegression != null && bugIterOptions.nonRegression.equals("CreateReference"))
-				bugIter.createDB("BugIterDB.ref");
-			if (bugIterOptions.nonRegression != null && bugIterOptions.nonRegression.equals("CompareToReference"))
-			{
-				bugIter.createDB("BugIterDB.current");
-				if (!LevelDBUtils.compareDB("BugIterDB.current", "BugIterDB.ref"))
-					ret = 1;
-				LevelDBUtils.destroyDB("BugIterDB.current");
-				System.exit(ret);
-			}
 		}
 		else
 		{
@@ -469,50 +448,5 @@ public final class BugIter
 			System.err.println("        Expecting user data file name, for example BugIter.json");
 			System.exit(1);
 		}
-	}
-
-	private void createDB(String db_name) throws IOException
-	{
-		org.iq80.leveldb.Options levelDBOptions = new org.iq80.leveldb.Options();
-
-		// Destroy if exists
-		factory.destroy(new File(db_name), levelDBOptions);
-
-		// Create data base
-		levelDBOptions.createIfMissing(true);
-		DB db = factory.open(new File(db_name), levelDBOptions);
-
-		WriteBatch batch = db.createWriteBatch();
-		try
-		{
-			batch.put(bytes("n"), LevelDBUtils.serialize(n));
-			batch.put(bytes("k"), LevelDBUtils.serialize(k));
-			batch.put(bytes("l"), LevelDBUtils.serialize(l));
-			batch.put(bytes("t_n"), LevelDBUtils.serialize(t_n));
-			batch.put(bytes("t_nplus1"), LevelDBUtils.serialize(t_nplus1));
-			batch.put(bytes("t_n0"), LevelDBUtils.serialize(t_n0));
-			batch.put(bytes("X"), LevelDBUtils.serialize(X));
-			batch.put(bytes("u_n"), LevelDBUtils.serialize(u_n));
-			batch.put(bytes("u_nplus1"), LevelDBUtils.serialize(u_nplus1));
-			batch.put(bytes("v_n"), LevelDBUtils.serialize(v_n));
-			batch.put(bytes("v_nplus1"), LevelDBUtils.serialize(v_nplus1));
-			batch.put(bytes("v_nplus1_k"), LevelDBUtils.serialize(v_nplus1_k));
-			batch.put(bytes("v_nplus1_kplus1"), LevelDBUtils.serialize(v_nplus1_kplus1));
-			batch.put(bytes("v_nplus1_k0"), LevelDBUtils.serialize(v_nplus1_k0));
-			batch.put(bytes("w_n"), LevelDBUtils.serialize(w_n));
-			batch.put(bytes("w_nplus1"), LevelDBUtils.serialize(w_nplus1));
-			batch.put(bytes("w_nplus1_l"), LevelDBUtils.serialize(w_nplus1_l));
-			batch.put(bytes("w_nplus1_lplus1"), LevelDBUtils.serialize(w_nplus1_lplus1));
-			batch.put(bytes("w_nplus1_l0"), LevelDBUtils.serialize(w_nplus1_l0));
-
-			db.write(batch);
-		}
-		finally
-		{
-			// Make sure you close the batch to avoid resource leaks.
-			batch.close();
-		}
-		db.close();
-		System.out.println("Reference database " + db_name + " created.");
 	}
 };

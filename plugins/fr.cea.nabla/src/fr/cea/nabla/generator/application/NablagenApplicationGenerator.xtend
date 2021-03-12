@@ -126,7 +126,7 @@ class NablagenApplicationGenerator extends StandaloneGeneratorBase
 
 		if (type == TargetType::JAVA)
 		{
-			new JavaApplicationGenerator
+			new JavaApplicationGenerator(levelDB !== null)
 		}
 		else
 		{

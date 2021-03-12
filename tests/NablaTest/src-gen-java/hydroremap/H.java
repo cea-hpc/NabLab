@@ -10,9 +10,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.stream.IntStream;
 
-import org.iq80.leveldb.DB;
-import org.iq80.leveldb.WriteBatch;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -63,12 +60,6 @@ public final class H
 			}
 			else
 				deltat = 1.0;
-			// Non regression
-			if (o.has("nonRegression"))
-			{
-				final JsonElement valueof_nonRegression = o.get("nonRegression");
-				nonRegression = valueof_nonRegression.getAsJsonPrimitive().getAsString();
-			}
 		}
 	}
 
@@ -208,18 +199,6 @@ public final class H
 
 			// Start simulation
 			h.simulate();
-
-			// Non regression testing
-			if (hOptions.nonRegression != null && hOptions.nonRegression.equals("CreateReference"))
-				h.createDB("HydroRemapDB.ref");
-			if (hOptions.nonRegression != null && hOptions.nonRegression.equals("CompareToReference"))
-			{
-				h.createDB("HydroRemapDB.current");
-				if (!LevelDBUtils.compareDB("HydroRemapDB.current", "HydroRemapDB.ref"))
-					ret = 1;
-				LevelDBUtils.destroyDB("HydroRemapDB.current");
-				System.exit(ret);
-			}
 		}
 		else
 		{
@@ -227,42 +206,5 @@ public final class H
 			System.err.println("        Expecting user data file name, for example HydroRemap.json");
 			System.exit(1);
 		}
-	}
-
-	private void createDB(String db_name) throws IOException
-	{
-		org.iq80.leveldb.Options levelDBOptions = new org.iq80.leveldb.Options();
-
-		// Destroy if exists
-		factory.destroy(new File(db_name), levelDBOptions);
-
-		// Create data base
-		levelDBOptions.createIfMissing(true);
-		DB db = factory.open(new File(db_name), levelDBOptions);
-
-		WriteBatch batch = db.createWriteBatch();
-		try
-		{
-			batch.put(bytes("h::t"), LevelDBUtils.serialize(t));
-			batch.put(bytes("h::X"), LevelDBUtils.serialize(X));
-			batch.put(bytes("h::hv1"), LevelDBUtils.serialize(hv1));
-			batch.put(bytes("h::hv2"), LevelDBUtils.serialize(hv2));
-			batch.put(bytes("h::hv3"), LevelDBUtils.serialize(hv3));
-			batch.put(bytes("h::hv4"), LevelDBUtils.serialize(hv4));
-			batch.put(bytes("h::hv5"), LevelDBUtils.serialize(hv5));
-			batch.put(bytes("h::hv6"), LevelDBUtils.serialize(hv6));
-			batch.put(bytes("h::hv7"), LevelDBUtils.serialize(hv7));
-			batch.put(bytes("r1::rv3"), LevelDBUtils.serialize(r1.rv3));
-			batch.put(bytes("r2::rv2"), LevelDBUtils.serialize(r2.rv2));
-
-			db.write(batch);
-		}
-		finally
-		{
-			// Make sure you close the batch to avoid resource leaks.
-			batch.close();
-		}
-		db.close();
-		System.out.println("Reference database " + db_name + " created.");
 	}
 };

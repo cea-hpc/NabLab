@@ -1,8 +1,4 @@
 
----
-permalink: /about/
----
-
 # NabLab
 
 <img src="./logo_512.png" width="20%" height="20%" align="right" /> 

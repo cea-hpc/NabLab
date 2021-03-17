@@ -63,7 +63,9 @@ extends XtextEditor
 
 	def EObject getObjectAtPosition(int offset)
 	{
-		document.readOnly([state | eObjectAtOffsetHelper.resolveContainedElementAt(state, offset)])
+		// seems to be called between cstr and injection...
+		if (eObjectAtOffsetHelper !== null)
+			document.readOnly([state | eObjectAtOffsetHelper.resolveContainedElementAt(state, offset)])
 	}
 
 	def void selectIfDisplayed(IrAnnotable it)

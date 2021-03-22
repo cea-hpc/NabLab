@@ -96,14 +96,9 @@ class IrInterpreter
 		if (!jsonObject.has("mesh")) throw new RuntimeException("Mesh block missing in Json")
 		context.initMesh(gson, jsonObject.get("mesh").toString, ir.connectivities)
 
-		// initialize class loader to finc external functions
-		val tccl = Thread.currentThread().getContextClassLoader()
-		val classloaderUrls = buildUrls(ir, wsPath)
-		val classLoader = if (classloaderUrls.nullOrEmpty) tccl else new URLClassLoader(classloaderUrls, tccl)
-
 		// Read options in Json
-		for (m : context.ir.modules)
-			init(classLoader, m, jsonObject.get(m.name), wsPath)
+		for (m : ir.modules)
+			init(m, jsonObject.get(m.name), wsPath)
 
 		// Interprete variables that are not options
 		for (v : ir.variables.filter[!option])
@@ -152,7 +147,7 @@ class IrInterpreter
 		levelDBcompareResult
 	}
 
-	private def init(ClassLoader classLoader, IrModule m, JsonElement jsonElt, String wsPath)
+	private def init(IrModule m, JsonElement jsonElt, String wsPath)
 	{
 		val jsonOptions = (jsonElt === null ? null : jsonElt.asJsonObject)
 		for (v : m.options)
@@ -173,12 +168,15 @@ class IrInterpreter
 			}
 		}
 
-		for (provider : m.providers)
+		try(val classLoader = buildClassLoader(ir, wsPath))
 		{
-			val providerHelper = ExtensionProviderCache.Instance.get(provider, classLoader, wsPath)
-			if (jsonOptions !== null && jsonOptions.has(provider.instanceName))
-				providerHelper.jsonInit(jsonOptions.get(provider.instanceName).toString)
-			providerHelper.initFunctions(provider.functions)
+			for (provider : m.providers)
+			{
+				val providerHelper = context.extensionProviderCache.get(provider, classLoader, wsPath)
+				if (jsonOptions !== null && jsonOptions.has(provider.instanceName))
+					providerHelper.jsonInit(jsonOptions.get(provider.instanceName).toString)
+				providerHelper.initFunctions(provider.functions)
+			}
 		}
 	}
 
@@ -212,7 +210,7 @@ class IrInterpreter
 	private def getRefDBName() { levelDatabasePath + ir.name + "DB.ref" }
 	private def getCurDBName() { levelDatabasePath + ir.name + "DB.current" }
 
-	private def buildUrls(IrRoot ir, String wsPath)
+	private def buildClassLoader(IrRoot ir, String wsPath)
 	{
 		val urls = new ArrayList<URL>
 		for (p : ir.providers.filter[x | x.extensionName != "Math"])
@@ -220,6 +218,6 @@ class IrInterpreter
 			val urlText = "file://" + wsPath + p.installPath + "/" + p.libName + ".jar"
 			urls += new URL(urlText)
 		}
-		return urls
+		return new URLClassLoader(urls)
 	}
 }

@@ -72,22 +72,20 @@ class JniProviderGenerator
 			System.load(N_WS_PATH + "«provider.installPath»/lib«provider.libName».so");
 		}
 
-		// This is a long here (in Java) but is used as a pointer to hold the
-		// address of our native object at "native world".
 		private long nativeObjectPointer;
 
-		// This method is used to allocate an instance of this class at native
-		// world and return the address of it.
 		private native long nativeNew();
+		private native void nativeDelete(final long nativeObjectPointer);
 
-		// Our constructor. The nativeNew() method is called to allocate a new
-		// instance of our native object and return its address. The address is
-		// assigned to nativeObjectPointer. Just as a note, Java forbiddes
-		// native constructors, so we need a native method to allocate our
-		// native object.
 		public «provider.className»()
 		{
 			nativeObjectPointer = nativeNew();	
+		}
+
+		@Override
+		public void finalize()
+		{
+			nativeDelete(nativeObjectPointer);
 		}
 
 		public native void jsonInit(String jsonContent);
@@ -273,9 +271,13 @@ class JniProviderGenerator
 	«getCppMatrixClassContent(provider)»
 	«ENDIF»
 
+	/********** «provider.className.toUpperCase» **********/
+
 	«getObjectFunctionContent(provider.className)»
 
 	«getNativeNewFunctionContent(provider, provider.className, #[])»
+
+	«getNativeDeleteFunctionContent(provider, provider.className)»
 
 	JNIEXPORT void JNICALL «getJniFunctionName(provider, 'jsonInit')»
 	(JNIEnv *env, jobject self, jstring jsonContent)

@@ -39,7 +39,7 @@ class NablagenLaunchConfigurationTab extends AbstractLaunchConfigurationTab
 	Text fTxtFile
 	Text fJsonFile
 
-	override createControl(Composite parent) 
+	override createControl(Composite parent)
 	{
 		val topControl = new Composite(parent, SWT.NONE)
 		topControl.setLayout(new GridLayout(1, false))

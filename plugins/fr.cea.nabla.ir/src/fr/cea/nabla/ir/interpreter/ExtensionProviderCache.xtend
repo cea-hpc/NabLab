@@ -18,15 +18,15 @@ import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
  * Native library (.so) can only be loaded once.
  * Consequently, JNI classes, containing the static loadLibrary instruction,
  * must not be load more than once to prevent IllegalAccessException.
- * This class is a singleton cache for provider classes.
+ * Libraries are unloaded when associated classLoader is deleted (need 2 calls to System.gc)
  */
 class ExtensionProviderCache
 {
-	val classByProviders = new HashMap<ExtensionProvider, ExtensionProviderHelper>
-	public static val Instance = new ExtensionProviderCache
+	val HashMap<ExtensionProvider, ExtensionProviderHelper> classByProviders
 
-	private new()
+	new()
 	{
+		classByProviders = new HashMap<ExtensionProvider, ExtensionProviderHelper>
 	}
 
 	def ExtensionProviderHelper get(ExtensionProvider p, ClassLoader cl, String wsPath)

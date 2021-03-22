@@ -59,7 +59,7 @@ class StaticExtensionProviderHelper extends ExtensionProviderHelper
 
 	override getProviderClass() { providerClass }
 	override getProviderInstance() { null }
-	
+
 	override jsonInit(String jsonContent) {}
 }
 

@@ -72,7 +72,7 @@ class NablagenRunner
 					val projectFolder = ResourcesPlugin.workspace.root.getFolder(jsonFile.project.location)
 					val wsPath = projectFolder.parent.fullPath.toString
 					val ir = irRootBuilderProvider.get.buildInterpreterIr(ngenApp, wsPath)
-	
+
 					consoleFactory.printConsole(MessageType.Exec, "Starting code interpretation")
 					val startTime = System.currentTimeMillis
 					val handler = new NabLabConsoleHandler(consoleFactory)
@@ -83,7 +83,7 @@ class NablagenRunner
 					irInterpreter.interprete(jsonContent, wsPath)
 					val endTime = System.currentTimeMillis
 					consoleFactory.printConsole(MessageType.Exec, "Code interpretation ended in " + (endTime-startTime)/1000.0 + "s")
-	
+
 					nablagenFile.project.refreshLocal(IResource::DEPTH_INFINITE, null)
 					consoleFactory.printConsole(MessageType.End, "Interpretation ended successfully for: " + nablagenFile.name)
 				}

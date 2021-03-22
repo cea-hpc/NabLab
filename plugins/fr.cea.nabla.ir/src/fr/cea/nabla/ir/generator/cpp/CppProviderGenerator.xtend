@@ -58,6 +58,7 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 		class «provider.interfaceName»
 		{
 		public:
+			virtual ~«provider.interfaceName»() {};
 			virtual void jsonInit(const char* jsonContent) = 0;
 
 			/* 

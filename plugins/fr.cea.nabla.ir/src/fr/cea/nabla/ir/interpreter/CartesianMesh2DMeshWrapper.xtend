@@ -31,8 +31,7 @@ class CartesianMesh2DMeshWrapper
 		f.jsonInit(jsonMeshContent)
 		mesh = f.create
 
-		val tccl = Thread.currentThread().getContextClassLoader()
-		providerClass = Class.forName(CartesianMesh2D.name, true, tccl)
+		providerClass = typeof(CartesianMesh2D)
 		connectivityToMethod = new HashMap<Connectivity, Method>
 		connectivitySizes = new HashMap<Connectivity, Integer>
 	}

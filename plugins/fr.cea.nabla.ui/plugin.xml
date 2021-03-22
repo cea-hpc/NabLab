@@ -515,9 +515,17 @@
 			delegate="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:fr.cea.nabla.ui.launchconfig.NablagenLaunchConfigurationDelegate"
 			id="fr.cea.nabla.ui.launchconfig.NablagenLaunchConfigurationType"
 			modes="run, debug"
-			name="Launch NabLab Interpreter">
+			name="NabLab Interpreter Launch">
 		</launchConfigurationType>
 	</extension>
+ <extension
+       point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+    <launchConfigurationTypeImage
+          configTypeID="fr.cea.nabla.ui.launchconfig.NablagenLaunchConfigurationType"
+          icon="icons/NabLab.gif"
+          id="fr.cea.nabla.ui.launchconfig.NablagenLaunchConfigurationType">
+    </launchConfigurationTypeImage>
+ </extension>
 	<extension
 		point="org.eclipse.debug.ui.launchConfigurationTabGroups">
 		<launchConfigurationTabGroup

@@ -30,6 +30,7 @@ class Context
 	val setValues = new HashMap<String, int[]>
 	val indexValues = new HashMap<ItemIndex, Integer>
 	val idValues = new HashMap<ItemId, Integer>
+	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) val ExtensionProviderCache extensionProviderCache
 	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) val IrRoot ir
 	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) CartesianMesh2DMeshWrapper meshWrapper
 
@@ -37,6 +38,7 @@ class Context
 	{
 		this.outerContext = null
 		this.logger = logger
+		this.extensionProviderCache = new ExtensionProviderCache
 		this.ir = ir
 		this.meshWrapper = null
 	}
@@ -45,6 +47,7 @@ class Context
 	{
 		this.outerContext = outerContext
 		this.logger = outerContext.logger
+		this.extensionProviderCache = outerContext.extensionProviderCache
 		this.ir = outerContext.ir
 		this.meshWrapper = outerContext.meshWrapper
 	}

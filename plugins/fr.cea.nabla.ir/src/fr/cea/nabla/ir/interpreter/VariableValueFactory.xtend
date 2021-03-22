@@ -61,7 +61,7 @@ class VariableValueFactory
 	{
 		val sizes = getIntSizes(type, context)
 		val p = PrimitiveType.REAL
-		val provider = ExtensionProviderCache.Instance.get(type.provider)
+		val provider = context.extensionProviderCache.get(type.provider)
 		switch sizes.size
 		{
 			case 1: createValue(p, name, sizes.get(0), provider)

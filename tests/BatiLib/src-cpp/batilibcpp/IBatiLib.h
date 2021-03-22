@@ -22,6 +22,7 @@ using namespace nablalib::types;
 class IBatiLib
 {
 public:
+	virtual ~IBatiLib() {};
 	virtual void jsonInit(const char* jsonContent) = 0;
 
 	/* 

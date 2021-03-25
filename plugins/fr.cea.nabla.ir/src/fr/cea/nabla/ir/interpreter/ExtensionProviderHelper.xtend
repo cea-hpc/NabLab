@@ -11,9 +11,11 @@ package fr.cea.nabla.ir.interpreter
 
 import fr.cea.nabla.ir.ir.ExtensionProvider
 import fr.cea.nabla.ir.ir.ExternFunction
-import fr.cea.nabla.ir.ir.Function
+import fr.cea.nabla.ir.ir.IrModule
 import java.lang.reflect.Constructor
 import java.lang.reflect.Method
+import java.net.URL
+import java.net.URLClassLoader
 import java.util.HashMap
 import org.eclipse.xtend.lib.annotations.Accessors
 
@@ -21,11 +23,10 @@ import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 
 abstract class ExtensionProviderHelper
 {
-	@Accessors(PUBLIC_GETTER) val HashMap<Function, Method> functionToMethod  = new HashMap<Function, Method>
+	protected val functionToMethod  = new HashMap<ExternFunction, Method>
 
-	def Class<?> getProviderClass()
-	def Object getProviderInstance()
-	def void jsonInit(String jsonContent)
+	abstract def Class<?> getProviderClass()
+	abstract def Object getProviderInstance(IrModule module)
 
 	def void initFunctions(Iterable<ExternFunction> functions)
 	{
@@ -38,49 +39,54 @@ abstract class ExtensionProviderHelper
 		}
 	}
 
-	def NablaValue invokeMethod(Function f, NablaValue[] args)
+	def NablaValue invokeMethod(IrModule module, ExternFunction f, NablaValue[] args)
 	{
 		val javaValues = args.map[x | FunctionCallHelper.getJavaValue(x)].toArray
-		val m = functionToMethod.get(f)
-		val result = m.invoke(providerInstance, javaValues)
+		val method = functionToMethod.get(f)
+		val result = method.invoke(getProviderInstance(module), javaValues)
 		return FunctionCallHelper.createNablaValue(result, this)
 	}
 }
 
-class StaticExtensionProviderHelper extends ExtensionProviderHelper
+class MathExtensionProviderHelper extends ExtensionProviderHelper
 {
 	val Class<?> providerClass
 
-	new(ExtensionProvider provider, ClassLoader cl, String packageName)
+	new()
 	{
-		val className = (packageName.nullOrEmpty ? provider.className : packageName + "." + provider.className)
-		providerClass = Class.forName(className, true, cl)
+		providerClass = Class.forName("java.lang.Math", true, class.classLoader)
 	}
 
 	override getProviderClass() { providerClass }
-	override getProviderInstance() { null }
-
-	override jsonInit(String jsonContent) {}
+	override getProviderInstance(IrModule module) { null } // static call
 }
 
 class DefaultExtensionProviderHelper extends ExtensionProviderHelper
 {
+	protected val providerInstances = new HashMap<IrModule, Object>
+	protected URLClassLoader cl
 	val Class<?> providerClass
-	@Accessors(PUBLIC_GETTER) val Object providerInstance
 
-	new(ExtensionProvider provider, ClassLoader cl, String wsPath)
+	new(ExtensionProvider provider, String wsPath)
 	{
+		val url = new URL("file://" + wsPath + provider.installPath + "/" + provider.libName + ".jar")
+		cl = new URLClassLoader(#[url])
 		val className = provider.packageName + '.' + provider.className
 		providerClass = Class.forName(className, true, cl)
-		providerInstance = providerClass.constructor.newInstance
 	}
 
 	override getProviderClass() { providerClass }
-	override getProviderInstance() { providerInstance }
+	override getProviderInstance(IrModule module) { providerInstances.get(module) }
 
-	override jsonInit(String jsonContent)
+	def void createInstance(IrModule module)
+	{
+		providerInstances.put(module, providerClass.constructor.newInstance)
+	}
+
+	def jsonInit(IrModule module, String jsonContent)
 	{
 		val jsonInitMethod = providerClass.getDeclaredMethod("jsonInit", String)
+		val providerInstance = providerInstances.get(module)
 		jsonInitMethod.invoke(providerInstance, jsonContent)
 	}
 }
@@ -97,9 +103,9 @@ class LinearAlgebraExtensionProviderHelper extends DefaultExtensionProviderHelpe
 	@Accessors val Method matrixGetValueMethod
 	@Accessors val Method matrixSetValueMethod
 
-	new(ExtensionProvider provider, ClassLoader cl, String wsPath)
+	new(ExtensionProvider provider, String wsPath)
 	{
-		super(provider, cl, wsPath)
+		super(provider, wsPath)
 
 		val vectorClassName = provider.packageName + '.' + fr.cea.nabla.ir.IrTypeExtensions.VectorClass
 		vectorClass = Class.forName(vectorClassName, true, cl)

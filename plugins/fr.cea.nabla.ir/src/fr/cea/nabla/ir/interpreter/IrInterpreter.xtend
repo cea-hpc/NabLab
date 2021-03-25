@@ -16,14 +16,9 @@ import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.javalib.LevelDBUtils
-import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
 import java.io.File
-import java.net.URL
-import java.net.URLClassLoader
-import java.util.ArrayList
 import java.util.logging.Logger
 import java.util.logging.StreamHandler
-import org.eclipse.xtend.lib.annotations.Accessors
 import org.iq80.leveldb.Options
 
 import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
@@ -40,20 +35,9 @@ class IrInterpreter
 {
 	public static val ITERATION_VARIABLE_NAME = "InterpreterIteration"
 
-	@Accessors val Context context
-	val IrRoot ir
-	val PvdFileWriter2D writer
-	val JobInterpreter jobInterpreter
 	val Logger logger
-	val String levelDatabasePath
-	var boolean levelDBcompareResult
 
-	new(IrRoot ir, StreamHandler handler)
-	{
-		this(ir, handler, "")
-	}
-
-	new(IrRoot ir, StreamHandler handler, String outputDirName)
+	new(StreamHandler handler)
 	{
 		// create a Logger and a Handler
 		logger = Logger.getLogger(IrInterpreter.name)
@@ -61,71 +45,66 @@ class IrInterpreter
 		logger.setUseParentHandlers(false) // Suppress default console
 		logger.handlers.forEach(h | logger.removeHandler(h))
 		logger.addHandler(handler)
-
-		this.ir = ir
-		this.context = new Context(ir, logger)
-		this.writer = new PvdFileWriter2D(ir.name, outputDirName)
-		this.jobInterpreter = new JobInterpreter(writer)
-		this.levelDatabasePath = "results/interpreter/" + ir.name.toLowerCase + "/"
-		this.levelDBcompareResult = true
 	}
 
 	/**
 	 * Interpret variable with default values.
 	 * This method is public to be used by default Json file generation.
 	 */
-	def interpreteOptionsDefaultValues()
+	def interpreteOptionsDefaultValues(IrRoot ir)
 	{
-		for (v : ir.options)
-			context.addVariableValue(v, createValue(v.type, v.name, v.defaultValue, context))
+		val context = new Context(logger, ir, null)
+		return interpreteOptionsDefaultValues(context)
 	}
 
-	def interprete(String jsonContent, String wsPath)
+	def interprete(IrRoot ir, String jsonContent, String wsPath)
 	{
-		context.logInfo("  Start interpreting " + ir.name + " module")
-//		context.logInfo("     " + classloaderUrls.size + " URL(s) provided to class loader")
-//		classloaderUrls.forEach[x | context.logInfo("       " + x.toString)]
+		val context = new Context(logger, ir, wsPath)
+		context.logInfo("  Start interpreting " + context.ir.name + " module")
 
-		// Start initialising the variables with default values
-		interpreteOptionsDefaultValues
+		// Start initializing the variables with default values
+		interpreteOptionsDefaultValues(context)
 
 		val gson = new Gson
 		val jsonObject = gson.fromJson(jsonContent, JsonObject)
 
 		// Create mesh and mesh variables
 		if (!jsonObject.has("mesh")) throw new RuntimeException("Mesh block missing in Json")
-		context.initMesh(gson, jsonObject.get("mesh").toString, ir.connectivities)
+		context.initMesh(gson, jsonObject.get("mesh").toString, context.ir.connectivities)
 
 		// Read options in Json
-		for (m : ir.modules)
-			init(m, jsonObject.get(m.name), wsPath)
+		for (m : context.ir.modules)
+			init(context, m, jsonObject.get(m.name), wsPath)
 
 		// Interprete variables that are not options
-		for (v : ir.variables.filter[!option])
+		for (v : context.ir.variables.filter[!option])
 			context.addVariableValue(v, createValue(v.type, v.name, v.defaultValue, context))
 
 		// Copy Node Cooords
-		context.addVariableValue(ir.initNodeCoordVariable, new NV2Real(context.meshWrapper.nodes))
+		context.addVariableValue(context.ir.initNodeCoordVariable, new NV2Real(context.meshWrapper.nodes))
 
 		// Interprete Top level jobs
-		for (j : ir.main.calls)
-			jobInterpreter.interprete(j, context)
+		for (j : context.ir.main.calls)
+			JobInterpreter.interprete(j, context)
 
 		// Non regression testing
-		val mainModuleName = ir.mainModule.name
+		val mainModuleName = context.ir.mainModule.name
 		if (jsonObject.has(mainModuleName))
 		{
 			val jsonMainModuleOptions = jsonObject.get(mainModuleName).asJsonObject
 			val nrName = Utils.NonRegressionNameAndValue.key
 			if (jsonMainModuleOptions.has(nrName))
 			{
+				val dbBaseName = "results/interpreter/" + context.ir.name.toLowerCase + "/" + context.ir.name + "DB."
+				val refDBName = dbBaseName + "ref"
 				val jsonNrName = jsonMainModuleOptions.get(nrName).asString
 				if (jsonNrName.equals(Utils.NonRegressionValues.CreateReference.toString))
-					createDB(refDBName)
+					createDB(context, refDBName)
 				if (jsonNrName.equals(Utils.NonRegressionValues.CompareToReference.toString))
 				{
-					createDB(curDBName)
-					levelDBcompareResult = LevelDBUtils.compareDB(curDBName, refDBName)
+					val curDBName = dbBaseName + "current"
+					createDB(context, curDBName)
+					context.levelDBCompareResult = LevelDBUtils.compareDB(curDBName, refDBName)
 					LevelDBUtils.destroyDB(curDBName)
 				}
 			}
@@ -137,19 +116,24 @@ class IrInterpreter
 		return context
 	}
 
-	def info(String message)
+	private def interpreteOptionsDefaultValues(Context context)
 	{
-		logger.info(message)
+		for (v : context.ir.options)
+			context.addVariableValue(v, createValue(v.type, v.name, v.defaultValue, context))
+		return context
 	}
 
-	def getLevelDBCompareResult()
-	{
-		levelDBcompareResult
-	}
-
-	private def init(IrModule m, JsonElement jsonElt, String wsPath)
+	private def init(Context context, IrModule m, JsonElement jsonElt, String wsPath)
 	{
 		val jsonOptions = (jsonElt === null ? null : jsonElt.asJsonObject)
+
+		if (jsonOptions !== null && m.main)
+		{
+			val outputPath = jsonOptions.get("outputPath")
+			if (outputPath !== null)
+				context.initWriter(outputPath.asString)
+		}
+
 		for (v : m.options)
 		{
 			if (jsonOptions !== null && jsonOptions.has(v.name))
@@ -168,19 +152,16 @@ class IrInterpreter
 			}
 		}
 
-		try(val classLoader = buildClassLoader(ir, wsPath))
+		for (provider : m.providers.filter[extensionName != "Math"])
 		{
-			for (provider : m.providers)
-			{
-				val providerHelper = context.extensionProviderCache.get(provider, classLoader, wsPath)
-				if (jsonOptions !== null && jsonOptions.has(provider.instanceName))
-					providerHelper.jsonInit(jsonOptions.get(provider.instanceName).toString)
-				providerHelper.initFunctions(provider.functions)
-			}
+			val providerHelper = context.extensionProviderCache.get(provider) as DefaultExtensionProviderHelper
+			providerHelper.createInstance(m)
+			if (jsonOptions !== null && jsonOptions.has(provider.instanceName))
+				providerHelper.jsonInit(m, jsonOptions.get(provider.instanceName).toString)
 		}
 	}
 
-	private def createDB(String db_name)
+	private def createDB(Context context, String db_name)
 	{
 		val levelDBOptions = new Options()
 
@@ -194,7 +175,7 @@ class IrInterpreter
 		val batch = db.createWriteBatch();
 		try
 		{
-			for (v : ir.variables.filter[!option])
+			for (v : context.ir.variables.filter[!option])
 				batch.put(bytes(v.name), context.getVariableValue(v).serialize);
 			db.write(batch);
 		}
@@ -205,19 +186,5 @@ class IrInterpreter
 		}
 		db.close();
 		System.out.println("Reference database " + db_name + " created.");
-	}
-
-	private def getRefDBName() { levelDatabasePath + ir.name + "DB.ref" }
-	private def getCurDBName() { levelDatabasePath + ir.name + "DB.current" }
-
-	private def buildClassLoader(IrRoot ir, String wsPath)
-	{
-		val urls = new ArrayList<URL>
-		for (p : ir.providers.filter[x | x.extensionName != "Math"])
-		{
-			val urlText = "file://" + wsPath + p.installPath + "/" + p.libName + ".jar"
-			urls += new URL(urlText)
-		}
-		return new URLClassLoader(urls)
 	}
 }

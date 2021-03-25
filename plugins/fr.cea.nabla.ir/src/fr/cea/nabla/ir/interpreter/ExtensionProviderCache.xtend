@@ -22,34 +22,28 @@ import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
  */
 class ExtensionProviderCache
 {
-	val HashMap<ExtensionProvider, ExtensionProviderHelper> classByProviders
+	val classByProviders = new HashMap<ExtensionProvider, ExtensionProviderHelper>
 
-	new()
+	new(Iterable<ExtensionProvider> providers, String wsPath)
 	{
-		classByProviders = new HashMap<ExtensionProvider, ExtensionProviderHelper>
-	}
-
-	def ExtensionProviderHelper get(ExtensionProvider p, ClassLoader cl, String wsPath)
-	{
-		var c = classByProviders.get(p)
-		if (c === null)
+		for (p : providers)
 		{
 			try
 			{
-				c = switch p
+				val c = switch p
 				{
-					case p.extensionName == "Math": new StaticExtensionProviderHelper(p, cl, "java.lang")
-					case p.linearAlgebra: new LinearAlgebraExtensionProviderHelper(p, cl, wsPath)
-					default: new DefaultExtensionProviderHelper(p, cl, wsPath)
+					case p.extensionName == "Math": new MathExtensionProviderHelper
+					case p.linearAlgebra: new LinearAlgebraExtensionProviderHelper(p, wsPath)
+					default: new DefaultExtensionProviderHelper(p, wsPath)
 				}
+				c.initFunctions(p.functions)
+				classByProviders.put(p, c)
 			}
 			catch (ClassNotFoundException e)
 			{
 				throw new ExtensionProviderNotFoundException(p)
 			}
-			classByProviders.put(p, c)
 		}
-		return c
 	}
 
 	def ExtensionProviderHelper get(ExtensionProvider p)

@@ -275,6 +275,17 @@ class JniProviderGenerator
 
 	«getObjectFunctionContent(provider.className)»
 
+	int JNI_OnLoad(JavaVM *vm, void *reserved)
+	{
+		std::cout << "lib«provider.libName».so loaded" << std::endl;
+		return JNI_VERSION_1_1;
+	}
+
+	void JNI_OnUnload(JavaVM *vm, void *reserved)
+	{
+		std::cout << "lib«provider.libName».so unloaded" << std::endl;
+	}
+
 	«getNativeNewFunctionContent(provider, provider.className, #[])»
 
 	«getNativeDeleteFunctionContent(provider, provider.className)»

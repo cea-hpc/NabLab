@@ -18,38 +18,45 @@ import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.ItemId
 import fr.cea.nabla.ir.ir.ItemIndex
 import fr.cea.nabla.ir.ir.SetRef
+import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
 import java.util.HashMap
 import java.util.logging.Logger
 import org.eclipse.xtend.lib.annotations.Accessors
 
 class Context
 {
-	val Context outerContext
-	val Logger logger
 	val variableValues = new HashMap<ArgOrVar, NablaValue>
 	val setValues = new HashMap<String, int[]>
 	val indexValues = new HashMap<ItemIndex, Integer>
 	val idValues = new HashMap<ItemId, Integer>
-	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) val ExtensionProviderCache extensionProviderCache
-	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) val IrRoot ir
-	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) CartesianMesh2DMeshWrapper meshWrapper
+	val Context outerContext
+	val Logger logger
 
-	new(IrRoot ir, Logger logger)
+	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) val IrRoot ir
+	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) val ExtensionProviderCache extensionProviderCache
+	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) PvdFileWriter2D writer
+	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) CartesianMesh2DMeshWrapper meshWrapper
+	@Accessors(PUBLIC_GETTER, PUBLIC_SETTER)  boolean levelDBCompareResult
+
+	new(Logger logger, IrRoot ir, String wsPath)
 	{
 		this.outerContext = null
 		this.logger = logger
-		this.extensionProviderCache = new ExtensionProviderCache
 		this.ir = ir
+		this.extensionProviderCache = (wsPath === null ? null : new ExtensionProviderCache(ir.providers, wsPath))
 		this.meshWrapper = null
+		this.levelDBCompareResult = true
 	}
 
 	new(Context outerContext)
 	{
 		this.outerContext = outerContext
 		this.logger = outerContext.logger
-		this.extensionProviderCache = outerContext.extensionProviderCache
 		this.ir = outerContext.ir
+		this.extensionProviderCache = outerContext.extensionProviderCache
+		this.writer = outerContext.writer
 		this.meshWrapper = outerContext.meshWrapper
+		this.levelDBCompareResult = outerContext.levelDBCompareResult
 	}
 
 	def HashMap<Connectivity, Integer> getConnectivitySizes()
@@ -61,6 +68,11 @@ class Context
 	{
 		meshWrapper = new CartesianMesh2DMeshWrapper(gson, jsonMeshContent)
 		meshWrapper.init(connectivities)
+	}
+
+	def initWriter(String outputPath)
+	{
+		writer = new PvdFileWriter2D(ir.name, outputPath)
 	}
 
 	// VariableValues

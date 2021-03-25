@@ -77,15 +77,22 @@ class NablagenRunner
 					val startTime = System.currentTimeMillis
 					val handler = new NabLabConsoleHandler(consoleFactory)
 					handler.level = Level.FINE
-					val irInterpreter = new IrInterpreter(ir, handler)
+					val irInterpreter = new IrInterpreter(handler)
 					if (jsonFile === null || !jsonFile.exists) throw new RuntimeException("Invalid file: " + jsonFile.fullPath)
 					val jsonContent = new BufferedReader(new InputStreamReader(jsonFile.contents)).lines().collect(Collectors.joining("\n"))
-					irInterpreter.interprete(jsonContent, wsPath)
+					irInterpreter.interprete(ir, jsonContent, wsPath)
 					val endTime = System.currentTimeMillis
 					consoleFactory.printConsole(MessageType.Exec, "Code interpretation ended in " + (endTime-startTime)/1000.0 + "s")
 
 					nablagenFile.project.refreshLocal(IResource::DEPTH_INFINITE, null)
 					consoleFactory.printConsole(MessageType.End, "Interpretation ended successfully for: " + nablagenFile.name)
+
+					// 2 times. Why ? Internet forums...
+					for (i : 0..<2)
+					{
+						System.runFinalization
+						System.gc
+					}
 				}
 			}
 			catch (Exception e)

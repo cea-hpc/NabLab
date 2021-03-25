@@ -135,11 +135,11 @@ class NablaExamplesInterpreterTest
 		val formatter = new SimpleFormatter
 		handler.setFormatter(formatter)
 		handler.level = Level::FINE
-		val irInterpreter = new IrInterpreter(ir, handler)
-		irInterpreter.interprete(jsonContent, wsPath)
+		val irInterpreter = new IrInterpreter(handler)
+		val context = irInterpreter.interprete(ir, jsonContent, wsPath)
 		handler.close
 
-		Assert.assertTrue("LevelDB Compare Error", irInterpreter.levelDBCompareResult)
+		Assert.assertTrue("LevelDB Compare Error", context.levelDBCompareResult)
 		testNoGitDiff("/" + moduleName.toLowerCase)
 	}
 

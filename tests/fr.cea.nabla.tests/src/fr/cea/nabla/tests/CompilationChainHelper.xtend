@@ -92,10 +92,10 @@ class CompilationChainHelper
 	{
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
-		val interpreter = new IrInterpreter(ir, handler)
+		val interpreter = new IrInterpreter(handler)
 		val testProjectPath = System.getProperty("user.dir")
 		val wsPath = testProjectPath + "/../../"
-		return interpreter.interprete(jsonContent, wsPath)
+		return interpreter.interprete(ir, jsonContent, wsPath)
 	}
 
 	def void generateCode(CharSequence model, CharSequence genModel, String wsPath, String projectName)

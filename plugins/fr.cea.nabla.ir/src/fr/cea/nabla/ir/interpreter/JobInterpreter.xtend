@@ -28,15 +28,8 @@ import static extension fr.cea.nabla.ir.interpreter.NablaValueSetter.*
 
 class JobInterpreter
 {
-	val PvdFileWriter2D writer
-
-	new (PvdFileWriter2D writer)
-	{
-		this.writer = writer
-	}
-
 	// Switch to more efficient dispatch (also clearer for profiling)
-	def void interprete(Job j, Context context)
+	static def void interprete(Job j, Context context)
 	{
 		switch j
 		{
@@ -48,14 +41,14 @@ class JobInterpreter
 		}
 	}
 
-	private def void interpreteInstructionJob(InstructionJob it, Context context)
+	private static def void interpreteInstructionJob(InstructionJob it, Context context)
 	{
 		context.logFiner("Interprete InstructionJob " + name + " @ " + at)
 		val innerContext = new Context(context)
 		interprete(instruction, innerContext)
 	}
 
-	private def void interpreteExecuteTimeLoopJob(ExecuteTimeLoopJob it, Context context)
+	private static def void interpreteExecuteTimeLoopJob(ExecuteTimeLoopJob it, Context context)
 	{
 		context.logFiner("Interprete TimeLoopJob " + name + " @ " + at)
 		val ppInfo = context.ir.postProcessing
@@ -107,7 +100,7 @@ class JobInterpreter
 		context.logVariables(msg)
 	}
 
-	private def void interpreteTimeLoopJob(TimeLoopJob it, Context context)
+	private static def void interpreteTimeLoopJob(TimeLoopJob it, Context context)
 	{
 		context.logFiner("Interprete TimeLoopCopyJob " + name + " @ " + at)
 
@@ -119,43 +112,44 @@ class JobInterpreter
 		}
 	}
 
-	private def void dumpVariables(IrRoot ir, int iteration, Context context, double periodReference)
+	private static def void dumpVariables(IrRoot ir, int iteration, Context context, double periodReference)
 	{
 		val ppInfo = ir.postProcessing
-		if (!writer.disabled)
+		val w = context.writer
+		if (w !== null && !w.disabled)
 		{
 			val time = context.getReal(ir.timeVariable)
 			val coords = (context.getVariableValue(ir.nodeCoordVariable) as NV2Real).data
 			val quads = context.meshWrapper.quads
-			writer.startVtpFile(iteration, time, coords, quads);
+			w.startVtpFile(iteration, time, coords, quads);
 			val outputVars = ppInfo.outputVariables
 
-			writer.openNodeData();
+			w.openNodeData();
 			for (v : outputVars.filter(v | v.support.name == "node"))
 			{
-				writer.openNodeArray(v.outputName, v.target.type.sizesSize)
+				w.openNodeArray(v.outputName, v.target.type.sizesSize)
 				val value = context.getVariableValue(v.target)
 				for (i : 0..<coords.length)
-					writer.write(value.getValue(#[i]))
-				writer.closeNodeArray();
+					w.write(value.getValue(#[i]))
+				w.closeNodeArray();
 			}
-			writer.closeNodeData();
-			writer.openCellData();
+			w.closeNodeData();
+			w.openCellData();
 			for (v : outputVars.filter(v | v.support.name == "cell"))
 			{
-				writer.openCellArray(v.outputName, v.target.type.sizesSize)
+				w.openCellArray(v.outputName, v.target.type.sizesSize)
 				val value = context.getVariableValue(v.target)
 				for (i : 0..<quads.length)
-					writer.write(value.getValue(#[i]))
-				writer.closeCellArray();
+					w.write(value.getValue(#[i]))
+				w.closeCellArray();
 			}
-			writer.closeCellData();
-			writer.closeVtpFile();
+			w.closeCellData();
+			w.closeVtpFile();
 			context.setVariableValue(ppInfo.lastDumpVariable, new NV0Real(periodReference))
 		}
 	}
 
-	private def void write(PvdFileWriter2D writer, NablaValue v)
+	private static def void write(PvdFileWriter2D writer, NablaValue v)
 	{
 		switch v
 		{

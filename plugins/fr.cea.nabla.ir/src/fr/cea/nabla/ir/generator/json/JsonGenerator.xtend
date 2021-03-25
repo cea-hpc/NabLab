@@ -88,8 +88,7 @@ class JsonGenerator implements ApplicationGenerator
 	{
 		val handler = new ConsoleHandler
 		handler.level = Level::OFF
-		val irInterpreter = new IrInterpreter(ir, handler)
-		irInterpreter.interpreteOptionsDefaultValues
-		return irInterpreter.context
+		val irInterpreter = new IrInterpreter(handler)
+		return irInterpreter.interpreteOptionsDefaultValues(ir)
 	}
 }

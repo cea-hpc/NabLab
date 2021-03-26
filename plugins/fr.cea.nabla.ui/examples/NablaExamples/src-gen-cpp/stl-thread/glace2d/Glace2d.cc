@@ -702,7 +702,7 @@ void Glace2d::computeBr() noexcept
 void Glace2d::computeDt() noexcept
 {
 	double reduction0;
-	reduction0 = parallel_reduce(nbCells, numeric_limits<double>::max(), [&](double& accu, const size_t& jCells)
+	reduction0 = parallel_reduce(nbCells, double(numeric_limits<double>::max()), [&](double& accu, const size_t& jCells)
 		{
 			return (accu = glace2dfreefuncs::minR0(accu, deltatj[jCells]));
 		},

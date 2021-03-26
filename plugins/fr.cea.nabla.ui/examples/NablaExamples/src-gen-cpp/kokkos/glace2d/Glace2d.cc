@@ -715,7 +715,7 @@ void Glace2d::computeDt() noexcept
 	Kokkos::parallel_reduce(nbCells, KOKKOS_LAMBDA(const size_t& jCells, double& accu)
 	{
 		accu = glace2dfreefuncs::minR0(accu, deltatj(jCells));
-	}, KokkosJoiner<double>(reduction0, numeric_limits<double>::max(), &glace2dfreefuncs::minR0));
+	}, KokkosJoiner<double>(reduction0, double(numeric_limits<double>::max()), &glace2dfreefuncs::minR0));
 	deltat_nplus1 = options.deltatCfl * reduction0;
 }
 

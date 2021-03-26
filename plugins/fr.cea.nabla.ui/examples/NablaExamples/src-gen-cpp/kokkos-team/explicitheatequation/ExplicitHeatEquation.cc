@@ -355,7 +355,7 @@ void ExplicitHeatEquation::computeDeltaTn(const member_type& teamMember) noexcep
 	Kokkos::parallel_reduce(Kokkos::TeamThreadRange(teamMember, nbCells), KOKKOS_LAMBDA(const size_t& cCells, double& accu)
 	{
 		accu = explicitheatequationfreefuncs::minR0(accu, V(cCells) / D(cCells));
-	}, KokkosJoiner<double>(reduction0, numeric_limits<double>::max(), &explicitheatequationfreefuncs::minR0));
+	}, KokkosJoiner<double>(reduction0, double(numeric_limits<double>::max()), &explicitheatequationfreefuncs::minR0));
 	deltat = reduction0 * 0.24;
 }
 

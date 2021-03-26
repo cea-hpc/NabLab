@@ -287,7 +287,7 @@ void ExplicitHeatEquation::updateU() noexcept
 void ExplicitHeatEquation::computeDeltaTn() noexcept
 {
 	double reduction0;
-	reduction0 = parallel_reduce(nbCells, numeric_limits<double>::max(), [&](double& accu, const size_t& cCells)
+	reduction0 = parallel_reduce(nbCells, double(numeric_limits<double>::max()), [&](double& accu, const size_t& cCells)
 		{
 			return (accu = explicitheatequationfreefuncs::minR0(accu, V[cCells] / D[cCells]));
 		},

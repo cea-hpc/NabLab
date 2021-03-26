@@ -9,40 +9,112 @@
  *******************************************************************************/
 
 #include "nablalib/types/MultiArray.h"
+#include <iostream>
+#include <typeinfo>
 
 namespace nablalib::types
 {
-// ****************************************************************************
-void dummy() {
-  MultiArray<double, 2, 3> a{0, 1, 3,
-                             4, 5, 6};
 
-  std::cout << "MultiArray test :" << std::endl;
-  std::cout << "a : rank = " << a.dimension() << ", extent = " << a.size() << std::endl;
-  std::cout << "a[0] : rank = " << a[0].dimension() << ", extent = " << a[0].size() << std::endl;
-  std::cout << a << std::endl;
+	/******************************************************************************/
+	void dummy() {
 
-  size_t nbCells(3);
-  size_t nbNodesOfCell(4);
-  size_t five(5);
-  
-  MultiArray<int, 0> b(five);
-  std::cout << "b : rank = " << b.dimension() << ", extent = " << b.size() << std::endl;
-  std::cout << b << std::endl << std::endl;
+		RealArray<7> v{{0., 1., 2., 3., 4., 5., 6.}};
 
-  MultiArray<float, 0, 0, 2, 2> Ajr(nbCells, five, 2, 2);
-  Ajr.initSize(nbCells, nbNodesOfCell, 2, 2);
-  std::cout << "Ajr : rank = " << Ajr.dimension() << ", extent = " << Ajr.size() << std::endl;
-  std::cout << Ajr << std::endl;
+		std::cout << "RealArray<7> v test value:\t" << v << std::endl;
+		std::cout << "v dimension is: " << v.dimensions << std::endl;
 
-  MultiArray<int, 0, 1, 1> fail(five, 2, 2);
-}
-// *****************************************************************************
+		std::cout << "Adding 10 to every values of v, 'on the fly':\t" << v + 10 << std::endl << std::endl;
+
+		std::cout << "Same operation but in place (by modifying v itself):\n";
+		v += 10;
+		std::cout << v << std::endl << std::endl;
+
+		std::cout << "Adding 10 again, then dividing by 2 every values 'on the fly':\n\t" << (v + 10) / 2 << std::endl << std::endl;
+
+		std::cout << "Testing array operation, (v + v) == (v * 2) : "
+				<< std::boolalpha << (v + v == v * 2) << std::endl << std::endl;
+
+		std::cout << "4 dimensions test:\n\t";
+		RealArray<3, 4, 5, 6> u;
+		u[0][0][0][0] = 666.;
+		std::cout << "u[0][0][0][0] = " << u[0][0][0][0] << std::endl << "u dimensions are: " << u.dimensions << std::endl;
+
+		std::cout << "5x5 matrix w:\n";
+
+		constexpr size_t DIM1=5;
+		constexpr size_t DIM2=2;
+		constexpr size_t DIM3=3;
+		// About clang warning :
+		// seems like a clang "feature": https://stackoverflow.com/questions/31555584/why-is-clang-warning-suggest-braces-around-initialization-of-subobject-wmis
+		IntArray<DIM1, DIM2 + DIM3> w{ 2, -1,  0,  0,  0,
+			-1,  2, -1,  0,  0,
+			0, -1,  2, -1,  0,
+			0,  0, -1,  2, -1,
+			0,  0,  0, -1,  2};
+
+		std::cout << w << std::endl;
+
+		std::cout << "Testing array operation, (w + w) == (w * 2) : "
+				<< std::boolalpha << (w + w == w * 2) << std::endl << std::endl;
+
+		std::cout << "Multiplying by 2.66 every values of w (rouding to integer):\n";
+		RealArray<5, 5> tmp(w * 2.66);
+		w *= 2.66;
+		std::cout << w << std::endl;
+
+		std::cout << "While values should be (if not rounded):\n";
+		std::cout << tmp <<  std::endl;
+
+
+		// mix
+		std::cout << "--- Testing mix array with static and dynamic dimensions: ---" << std::endl;
+		const size_t nb_elmt(3);
+
+		MultiArray<int, 5, 0> mix_array;
+		mix_array.initSize(5, nb_elmt);
+		std::cout << mix_array.dimensions << " matrix mix_array, dynamic dimension will be 3:\n";
+
+		int k(0);
+		for (size_t i(0); i < mix_array.size(); ++i) {
+			for (size_t j(0); j < mix_array[i].size(); ++j) {
+				mix_array[i][j] = k++;
+			}
+		}
+		std::cout << mix_array << std::endl;
+
+		MultiArray<double, 0, 6> mix_array2;
+		mix_array2.initSize(nb_elmt, 6);
+		std::cout << mix_array2.dimensions << " matrix mix_array2, dynamic dimension will be 3:\n";
+
+		for (size_t i(0); i < mix_array2.size(); ++i) {
+			for (size_t j(0); j < mix_array2[i].size(); ++j) {
+				mix_array2[i][j] = static_cast<double>(k) + (k / 10.0);
+				++k;
+			}
+		}
+		std::cout << mix_array2 << std::endl << std::endl;
+
+		std::cout << "3 dimensions mix test matrix [nb_cells][2][nb_nodes], with nb_cells=3 and nb_nodes=4 => 24 elmnts:" << std::endl;
+		const size_t nb_cells(3);
+		const size_t nb_nodes(4);
+		MultiArray<double, 0, 2, 0> mix_array3;
+		mix_array3.initSize(nb_cells, 2, nb_nodes);
+		for (size_t i(0); i < mix_array3.size(); ++i) {
+			for (size_t j(0); j < mix_array3[i].size(); ++j) {
+				for (size_t z(0); z < mix_array3[i][j].size(); ++z) {
+					mix_array3[i][j][z] = k++;
+				}
+			}
+		}
+		std::cout << mix_array3 << std::endl;
+	}
+
+	/******************************************************************************/
 #ifdef TEST
 
-int main() {
-  dummy();
-}
+	int main() {
+		dummy();
+	}
 
 #endif
 

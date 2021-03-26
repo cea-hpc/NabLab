@@ -13,17 +13,16 @@ import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrRoot
-import fr.cea.nabla.ir.ir.IterableInstruction
 import fr.cea.nabla.ir.ir.IterationBlock
-import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.Variable
 import java.util.ArrayList
 import java.util.List
-import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.util.EcoreUtil
 
 import static fr.cea.nabla.ir.transformers.IrTransformationUtils.*
+
+import static extension fr.cea.nabla.ir.Utils.*
 
 class ReplaceReductions extends IrTransformationStep
 {
@@ -43,7 +42,7 @@ class ReplaceReductions extends IrTransformationStep
 	{
 		trace('    IR -> IR: ' + description)
 		var reductions = ir.eAllContents.filter(ReductionInstruction)
-		if (!replaceAllReductions) reductions = reductions.filter[!external]
+		if (!replaceAllReductions) reductions = reductions.filter[!isTopLevelConnectivityIterable]
 
 		for (reduction : reductions.toList)
 		{
@@ -100,13 +99,5 @@ class ReplaceReductions extends IrTransformationStep
 		}
 		// A reduction cannot be executed in // (because of +=)
 		multithreadable = false
-	}
-
-	private def boolean isExternal(EObject it)
-	{
-		if (eContainer === null) false
-		else if (eContainer instanceof IterableInstruction) false
-		else if (eContainer instanceof Job) true
-		else eContainer.external
 	}
 }

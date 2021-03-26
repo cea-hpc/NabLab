@@ -16,6 +16,10 @@ import fr.cea.nabla.ir.ir.IrRoot
 import java.io.PrintWriter
 import java.io.StringWriter
 import org.eclipse.emf.ecore.EObject
+import fr.cea.nabla.ir.ir.IterableInstruction
+import fr.cea.nabla.ir.ir.Iterator
+
+import static extension fr.cea.nabla.ir.ContainerExtensions.*
 
 class Utils
 {
@@ -79,5 +83,14 @@ class Utils
 		val nrName = Utils.NonRegressionNameAndValue.key
 		jsonOptions.addProperty(nrName, value)
 		return gson.toJson(jsonObject)
+	}
+
+	static def boolean isTopLevelConnectivityIterable(IterableInstruction l)
+	{
+		val i = l.iterationBlock
+		if (i instanceof Iterator)
+			i.container.connectivityCall.args.empty
+		else
+			false
 	}
 }

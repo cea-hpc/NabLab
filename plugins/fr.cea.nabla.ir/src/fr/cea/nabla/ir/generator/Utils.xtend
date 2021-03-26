@@ -17,9 +17,7 @@ import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.JobCaller
 import fr.cea.nabla.ir.ir.Loop
-import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.Variable
-import org.eclipse.emf.ecore.EObject
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
@@ -96,7 +94,7 @@ class Utils
 
 	static def boolean isParallelLoop(Loop it)
 	{
-		isTopLevelLoop && multithreadable
+		isTopLevelConnectivityIterable && multithreadable
 	}
 
 	static def getOperatorName(String op)
@@ -107,18 +105,6 @@ class Utils
 			case '-': 'minus'
 			case '*': 'multiply'
 			case '+': 'plus'
-		}
-	}
-
-	private static def boolean isTopLevelLoop(EObject it)
-	{
-		if (eContainer === null) false
-		else switch eContainer
-		{
-			Loop : false
-			ReductionInstruction : false
-			Job : true
-			default : eContainer.topLevelLoop
 		}
 	}
 }

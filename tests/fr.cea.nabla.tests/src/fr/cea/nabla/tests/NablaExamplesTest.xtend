@@ -54,7 +54,7 @@ class NablaExamplesTest
 	{
 		val testProjectPath = System.getProperty("user.dir")
 		val basePath = testProjectPath.replace("tests/fr.cea.nabla.tests", "")
-		examplesProjectSubPath = "plugins/fr.cea.nabla.ui/examples/NablaExamples"
+		examplesProjectSubPath = "plugins/fr.cea.nabla.ui/examples/NabLabExamples"
 		examplesProjectPath = basePath + examplesProjectSubPath
 		nRepositoryPath = basePath + "plugins/fr.cea.nabla.ir/resources/.nablab.zip"
 		javaLibPath = basePath + "plugins/fr.cea.nabla.javalib/bin/:" + basePath + "plugins/fr.cea.nabla.javalib/target/*"
@@ -128,7 +128,7 @@ class NablaExamplesTest
 		val packageName = moduleName.toLowerCase
 		val model = readFileAsString(examplesProjectPath + "/src/" + packageName + "/" + moduleName + ".n")
 		var genmodel = readFileAsString(examplesProjectPath + "/src/" + packageName + "/" + moduleName + ".ngen")
-		compilationHelper.generateCode(model, genmodel, examplesProjectPath.replace('/NablaExamples', ''), 'NablaExamples')
+		compilationHelper.generateCode(model, genmodel, examplesProjectPath.replace('/NabLabExamples', ''), 'NabLabExamples')
 		testNoGitDiff("/" + packageName) // Add "/" to avoid a false positiv on explicitheatequation fail or implicitheatequation
 	}
 
@@ -150,8 +150,8 @@ class NablaExamplesTest
 			Assert.fail(envErr)
 		}
 
-		val wsPath = Files.createTempDirectory("nablaTest-" + moduleName).toString
-		val projectName = 'NablaExamples'
+		val wsPath = Files.createTempDirectory("nablabtest-" + moduleName).toString
+		val projectName = 'NabLabExamples'
 		val projectPath = wsPath + '/' + projectName
 		println(projectPath)
 

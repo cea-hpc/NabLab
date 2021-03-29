@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Text
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage
 
 /**
- * The first page of the new Nabla project wizard.
+ * The first page of the new project wizard.
  */
 class NablaProjectPage extends WizardNewProjectCreationPage
 {

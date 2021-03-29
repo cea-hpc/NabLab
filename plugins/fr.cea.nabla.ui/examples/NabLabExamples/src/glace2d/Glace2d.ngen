@@ -7,9 +7,9 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-Application IterativeHeatEquation;
+Application Glace2d;
 
-MainModule IterativeHeatEquation iterativeHeatEquation
+MainModule Glace2d glace2d
 {
 	meshClassName = "CartesianMesh2D";
 	nodeCoord = X;
@@ -21,8 +21,8 @@ MainModule IterativeHeatEquation iterativeHeatEquation
 
 VtkOutput
 {
-	periodReferenceVariable = iterativeHeatEquation.n;
-	outputVariables = iterativeHeatEquation.u as "Temperature";
+	periodReferenceVariable = glace2d.n;
+	outputVariables = glace2d.ρ as "Density";
 }
 
 //LevelDB
@@ -32,37 +32,37 @@ VtkOutput
 
 Java
 {
-	outputPath = "/NablaExamples/src-gen-java";
+	outputPath = "/NabLabExamples/src-gen-java";
 }
 
 Kokkos
 {
-	outputPath = "/NablaExamples/src-gen-cpp/kokkos";
+	outputPath = "/NabLabExamples/src-gen-cpp/kokkos";
 	N_CXX_COMPILER = "/usr/bin/g++";
 	N_KOKKOS_PATH = "$ENV{HOME}/kokkos/kokkos-install";
 }
 
 KokkosTeamThread
 {
-	outputPath = "/NablaExamples/src-gen-cpp/kokkos-team";
+	outputPath = "/NabLabExamples/src-gen-cpp/kokkos-team";
 	N_CXX_COMPILER = "/usr/bin/g++";
 	N_KOKKOS_PATH = "$ENV{HOME}/kokkos/kokkos-install";
 }
 
 OpenMP
 {
-	outputPath = "/NablaExamples/src-gen-cpp/openmp";
+	outputPath = "/NabLabExamples/src-gen-cpp/openmp";
 	N_CXX_COMPILER = "/usr/bin/g++";
 }
 
 CppSequential
 {
-	outputPath = "/NablaExamples/src-gen-cpp/sequential";
+	outputPath = "/NabLabExamples/src-gen-cpp/sequential";
 	N_CXX_COMPILER = "/usr/bin/g++";
 }
 
 StlThread
 {
-	outputPath = "/NablaExamples/src-gen-cpp/stl-thread";
+	outputPath = "/NabLabExamples/src-gen-cpp/stl-thread";
 	N_CXX_COMPILER = "/usr/bin/g++";
 }

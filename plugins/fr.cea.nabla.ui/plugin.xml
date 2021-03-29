@@ -20,7 +20,7 @@
 			extensions="n"
 			icon="icons/NabLab.gif"
 			id="fr.cea.nabla.Nabla"
-			name="Nabla Editor">
+			name="NabLab Editor">
 		</editor>
 		<editor
 			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.ui.editor.XtextEditor"
@@ -29,7 +29,7 @@
 			extensions="ngen"
 			icon="icons/Nablagen.gif"
 			id="fr.cea.nabla.Nablagen"
-			name="Nablagen Editor">
+			name="Ngen Editor">
 		</editor>
 	</extension>
 	<extension
@@ -100,22 +100,22 @@
 		<page
 			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:org.eclipse.xtext.ui.editor.preferences.LanguageRootPreferencePage"
 			id="fr.cea.nabla.Nabla"
-			name="Nabla">
-			<keywordReference id="fr.cea.nabla.ui.keyword_Nabla"/>
+			name="NabLab">
+			<keywordReference id="fr.cea.nabla.ui.keyword_NabLab"/>
 		</page>
 		<page
 			category="fr.cea.nabla.Nabla"
 			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:org.eclipse.xtext.ui.editor.syntaxcoloring.SyntaxColoringPreferencePage"
 			id="fr.cea.nabla.Nabla.coloring"
 			name="Syntax Coloring">
-			<keywordReference id="fr.cea.nabla.ui.keyword_Nabla"/>
+			<keywordReference id="fr.cea.nabla.ui.keyword_NabLab"/>
 		</page>
 		<page
 			category="fr.cea.nabla.Nabla"
 			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:org.eclipse.xtext.ui.editor.templates.XtextTemplatePreferencePage"
 			id="fr.cea.nabla.Nabla.templates"
 			name="Templates">
-			<keywordReference id="fr.cea.nabla.ui.keyword_Nabla"/>
+			<keywordReference id="fr.cea.nabla.ui.keyword_NabLab"/>
 		</page>
 	</extension>
 	<extension
@@ -123,8 +123,8 @@
 		<page
 			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:org.eclipse.xtext.ui.editor.preferences.LanguageRootPreferencePage"
 			id="fr.cea.nabla.Nabla"
-			name="Nabla">
-			<keywordReference id="fr.cea.nabla.ui.keyword_Nabla"/>
+			name="NabLab">
+			<keywordReference id="fr.cea.nabla.ui.keyword_NabLab"/>
 			<enabledWhen>
 				<adapt type="org.eclipse.core.resources.IProject"/>
 			</enabledWhen>
@@ -134,8 +134,8 @@
 	<extension
 		point="org.eclipse.ui.keywords">
 		<keyword
-			id="fr.cea.nabla.ui.keyword_Nabla"
-			label="Nabla"/>
+			id="fr.cea.nabla.ui.keyword_NabLab"
+			label="NabLab"/>
 	</extension>
 	<extension
 		point="org.eclipse.ui.commands">
@@ -229,7 +229,7 @@
 			base-type="org.eclipse.core.runtime.text"
 			file-extensions="n"
 			id="fr.cea.nabla.Nabla.contenttype"
-			name="Nabla File"
+			name="NabLab File"
 			priority="normal">
 		</content-type>
 	</extension>
@@ -258,21 +258,21 @@
 	<!-- marker definitions for fr.cea.nabla.Nabla -->
 	<extension
 			id="nabla.check.fast"
-			name="Nabla Problem"
+			name="NabLab Problem"
 			point="org.eclipse.core.resources.markers">
 		<super type="org.eclipse.xtext.ui.check.fast"/>
 		<persistent value="true"/>
 	</extension>
 	<extension
 			id="nabla.check.normal"
-			name="Nabla Problem"
+			name="NabLab Problem"
 			point="org.eclipse.core.resources.markers">
 		<super type="org.eclipse.xtext.ui.check.normal"/>
 		<persistent value="true"/>
 	</extension>
 	<extension
 			id="nabla.check.expensive"
-			name="Nabla Problem"
+			name="NabLab Problem"
 			point="org.eclipse.core.resources.markers">
 		<super type="org.eclipse.xtext.ui.check.expensive"/>
 		<persistent value="true"/>
@@ -294,7 +294,7 @@
 			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:org.eclipse.xtext.builder.preferences.BuilderPreferencePage"
 			id="fr.cea.nabla.Nabla.compiler.preferencePage"
 			name="Compiler">
-			<keywordReference id="fr.cea.nabla.ui.keyword_Nabla"/>
+			<keywordReference id="fr.cea.nabla.ui.keyword_NabLab"/>
 		</page>
 	</extension>
 	<extension point="org.eclipse.ui.propertyPages">
@@ -303,7 +303,7 @@
 			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:org.eclipse.xtext.builder.preferences.BuilderPreferencePage"
 			id="fr.cea.nabla.Nabla.compiler.propertyPage"
 			name="Compiler">
-			<keywordReference id="fr.cea.nabla.ui.keyword_Nabla"/>
+			<keywordReference id="fr.cea.nabla.ui.keyword_NabLab"/>
 			<enabledWhen>
 				<adapt type="org.eclipse.core.resources.IProject"/>
 			</enabledWhen>
@@ -423,7 +423,7 @@
 			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:org.eclipse.xtext.ui.refactoring.ui.RefactoringPreferencePage"
 			id="fr.cea.nabla.Nabla.refactoring"
 			name="Refactoring">
-			<keywordReference id="fr.cea.nabla.ui.keyword_Nabla"/>
+			<keywordReference id="fr.cea.nabla.ui.keyword_NabLab"/>
 		</page>
 	</extension>
 	<extension point="org.eclipse.compare.contentViewers">
@@ -438,7 +438,7 @@
 	<extension point="org.eclipse.compare.contentMergeViewers">
 		<viewer id="fr.cea.nabla.Nabla.compare.contentMergeViewers"
 			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:org.eclipse.xtext.ui.compare.InjectableViewerCreator"
-			extensions="n" label="Nabla Compare">
+			extensions="n" label="NabLab Compare">
 		</viewer>
 		<contentTypeBinding
 			contentTypeId="fr.cea.nabla.Nabla.contenttype"
@@ -542,7 +542,7 @@
 			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.perspectives.NabLabPerspective"
 			icon="icons/NabLab.gif"
 			id="fr.cea.nabla.ui.NabLabPerpective"
-			name="%NablaPerspective">
+			name="NabLab Perspective">
 		</perspective>
 	</extension>
 	<extension
@@ -611,9 +611,9 @@
           pageImage="icons/NabLab.gif"
           wizardID="fr.cea.nabla.ui.examples.project.wizard">
        <projectDescriptor
-             contentURI="examples/NablaExamples/"
+             contentURI="examples/NabLabExamples/"
              description="%NablaExamplesWizardFullDescription"
-             name="NablaExamples">
+             name="NabLabExamples">
        </projectDescriptor>
     </example>
  </extension>

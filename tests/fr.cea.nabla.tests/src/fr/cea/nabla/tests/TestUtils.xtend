@@ -167,6 +167,6 @@ class TestUtils
 
 	static def simplifyPath(String path)
 	{
-		path.replace("NablaExamples/../NablaExamples/", "NablaExamples/")
+		path.replace("NabLabExamples/../NabLabExamples/", "NabLabExamples/")
 	}
 }

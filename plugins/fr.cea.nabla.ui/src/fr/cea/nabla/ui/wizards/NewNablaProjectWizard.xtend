@@ -49,10 +49,10 @@ import org.eclipse.xtext.ui.XtextProjectHelper
 
 class NewNablaProjectWizard extends Wizard implements INewWizard
 {
-	static val WIZARD_TITLE = "New Nabla Project"
-	static val DEFAULT_PROJECT_NAME = "nabla.project"
+	static val WIZARD_TITLE = "New NabLab Project"
+	static val DEFAULT_PROJECT_NAME = "nablab.project"
 	static val DEFAULT_MODULE_NAME = "MyModule"
-	static val NEW_PROJECT_PAGE_TITLE = "Create a new Nabla project"
+	static val NEW_PROJECT_PAGE_TITLE = "Create a new NabLab project"
 	static val NEW_PROJECT_PAGE_DESCRIPTION = "Set project and module name."
 	static val NABLAGEN_VP_ID = "InstructionViewpoint"
 

@@ -51,7 +51,7 @@ class NablagenRunner
 			try
 			{
 				consoleFactory.printConsole(MessageType.Start, "Starting interpretation process for: " + nablagenFile.name)
-				consoleFactory.printConsole(MessageType.Exec, "Loading nablagen and nabla resources")
+				consoleFactory.printConsole(MessageType.Exec, "Loading resources (.n and .ngen)")
 
 				if (nablagenFile === null || !nablagenFile.exists) throw new RuntimeException("Invalid file: " + nablagenFile.fullPath)
 				val plaftormUri = URI::createPlatformResourceURI(nablagenFile.project.name + '/' + nablagenFile.projectRelativePath, true)

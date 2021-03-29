@@ -28,8 +28,6 @@ import org.eclipse.core.runtime.IProgressMonitor
 import org.eclipse.core.runtime.IStatus
 import org.eclipse.core.runtime.Path
 import org.eclipse.core.runtime.Status
-import org.eclipse.emf.common.util.URI
-import org.eclipse.emf.transaction.RecordingCommand
 import org.eclipse.jdt.core.IClasspathEntry
 import org.eclipse.jdt.core.JavaCore
 import org.eclipse.jface.operation.IRunnableWithProgress
@@ -37,12 +35,6 @@ import org.eclipse.jface.viewers.IStructuredSelection
 import org.eclipse.jface.wizard.IWizardPage
 import org.eclipse.jface.wizard.Wizard
 import org.eclipse.pde.core.project.IBundleProjectDescription
-import org.eclipse.sirius.business.api.componentization.ViewpointRegistry
-import org.eclipse.sirius.business.api.modelingproject.ModelingProject
-import org.eclipse.sirius.business.api.session.Session
-import org.eclipse.sirius.business.api.session.SessionManager
-import org.eclipse.sirius.ui.business.api.viewpoint.ViewpointSelectionCallback
-import org.eclipse.sirius.ui.tools.api.project.ModelingProjectManager
 import org.eclipse.ui.INewWizard
 import org.eclipse.ui.IWorkbench
 import org.eclipse.xtext.ui.XtextProjectHelper
@@ -54,7 +46,6 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 	static val DEFAULT_MODULE_NAME = "MyModule"
 	static val NEW_PROJECT_PAGE_TITLE = "Create a new NabLab project"
 	static val NEW_PROJECT_PAGE_DESCRIPTION = "Set project and module name."
-	static val NABLAGEN_VP_ID = "InstructionViewpoint"
 
 	NablaProjectPage newProjectPage = null
 
@@ -189,20 +180,6 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 				val manifestFile = metaInf.getFile("MANIFEST.MF")
 				createFile(manifestFile, getManifestContent(), monitor)
 
-				// Convert into Modeling Project
-				ModelingProjectManager::INSTANCE.convertToModelingProject(project, monitor)
-
-				// Enable Nablagen viewpoint
-				val airdFilePath = project.fullPath + "/representations.aird"
-				val airdFileURI = URI.createPlatformResourceURI(airdFilePath, true)
-				val session = SessionManager::INSTANCE.getSession(airdFileURI, monitor)
-				if (!session.isOpen)
-				{
-					session.open
-				}
-				enableNablagenViewpoint(session, monitor)
-				session.save(monitor)
-
 				// Convert into Java Project
 				convertIntoJavaProject(project, #{srcFolder, srcGenJavaFolder}, monitor)
 
@@ -222,7 +199,7 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 
 	private def addNatures(IProjectDescription description)
 	{
-		description.natureIds = #[IBundleProjectDescription.PLUGIN_NATURE, ModelingProject.NATURE_ID, JavaCore.NATURE_ID, XtextProjectHelper.NATURE_ID]
+		description.natureIds = #[IBundleProjectDescription.PLUGIN_NATURE, JavaCore.NATURE_ID, XtextProjectHelper.NATURE_ID]
 	}
 
 	private def addBuilders(IProjectDescription description)
@@ -256,27 +233,6 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 		}
 		javaProject.setRawClasspath(entries.toArray(#[]), monitor)
 		javaProject.setOutputLocation(new Path("/" + project.name + "/bin"), monitor)
-	}
-
-	private def enableNablagenViewpoint(Session session, IProgressMonitor monitor)
-	{
-		val editingDomain = session.transactionalEditingDomain
-		val updateCommand = new RecordingCommand(editingDomain)
-		{
-			override doExecute()
-			{
-				val viewpoints = ViewpointRegistry::instance.viewpoints
-				for (vp : viewpoints)
-				{
-					if (NABLAGEN_VP_ID.equals(vp.name))
-					{
-						new ViewpointSelectionCallback().selectViewpoint(vp, session, monitor)
-						return
-					}
-				}
-			}
-		}
-		editingDomain.commandStack.execute(updateCommand)
 	}
 
 	private def createFile(IFile file, CharSequence fileContent, IProgressMonitor monitor)

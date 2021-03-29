@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -159,6 +159,15 @@ class NablaExamplesTest
 			Assert.fail(envErr)
 		}
 
+		val wsPath = Files.createTempDirectory("nablabtest-" + moduleName).toString
+		val projectName = 'NabLabExamples'
+		val projectPath = wsPath + '/' + projectName
+		println(projectPath)
+
+		// Simpliest is to copy all NablaExamples tree in tmpDir
+		val sourceLocation= new File(examplesProjectPath)
+		FileUtils.copyDirectory(sourceLocation, new File(projectPath))
+
 		val packageName = moduleName.toLowerCase
 		val model = readFileAsString(projectPath + "/src/" + packageName + "/" + moduleName + ".n")
 		var genmodel = readFileAsString(projectPath + "/src/" + packageName + "/" + moduleName + ".ngen")
@@ -290,7 +299,7 @@ class NablaExamplesTest
 //		println("$10= " + commonMath3Path)
 //		println("$11= " + apacheCommonIOPath)
 //		println("javac -classpath " + javaLibPath  + ":" + commonMath3Path + ":" + levelDBPath + ":" + gsonPath + " " + moduleName + ".java")
-//		println("java -classpath " + javaLibPath + ":" + commonMath3Path + ":" + guavaPath + ":" + levelDBPath + ":" + gsonPath + ":" + apacheCommonIOPath + ":" + tmp 
+//		println("java -classpath " + javaLibPath + ":" + commonMath3Path + ":" + guavaPath + ":" + levelDBPath + ":" + gsonPath + ":" + apacheCommonIOPath + ":" + tmp
 //					+ "/" + targetName + " " + packageName + "." + moduleName + " " + "test.json")
 		var pb = new ProcessBuilder("/bin/bash",
 			System.getProperty("user.dir") + "/src/fr/cea/nabla/tests/executeJavaNablaExample.sh",

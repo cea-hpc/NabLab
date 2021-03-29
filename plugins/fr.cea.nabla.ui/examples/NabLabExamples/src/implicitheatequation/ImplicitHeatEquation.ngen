@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2020 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -11,6 +11,7 @@ Application ImplicitHeatEquation;
 
 MainModule ImplicitHeatEquation implicitHeatEquation
 {
+	meshClassName = "CartesianMesh2D";
 	nodeCoord = X;
 	time = t;
 	timeStep = δt;
@@ -26,7 +27,7 @@ VtkOutput
 
 //LevelDB
 //{
-//	leveldb_ROOT = "$ENV{HOME}/leveldb/install";
+//	levelDBPath = "$ENV{HOME}/leveldb/leveldb-install";
 //}
 
 Java
@@ -37,33 +38,31 @@ Java
 Kokkos
 {
 	outputPath = "/NabLabExamples/src-gen-cpp/kokkos";
-	CMAKE_CXX_COMPILER = "/usr/bin/g++";
-	Kokkos_ROOT = "$ENV{HOME}/kokkos/install";
-	KokkosKernels_ROOT = "$ENV{HOME}/kokkos/install";
+	N_CXX_COMPILER = "/usr/bin/g++";
+	N_KOKKOS_PATH = "$ENV{HOME}/kokkos/kokkos-install";
 }
 
 KokkosTeamThread
 {
 	outputPath = "/NabLabExamples/src-gen-cpp/kokkos-team";
-	CMAKE_CXX_COMPILER = "/usr/bin/g++";
-	Kokkos_ROOT = "$ENV{HOME}/kokkos/install";
-	KokkosKernels_ROOT = "$ENV{HOME}/kokkos/install";
+	N_CXX_COMPILER = "/usr/bin/g++";
+	N_KOKKOS_PATH = "$ENV{HOME}/kokkos/kokkos-install";
 }
 
 OpenMP
 {
 	outputPath = "/NabLabExamples/src-gen-cpp/openmp";
-	CMAKE_CXX_COMPILER = "/usr/bin/g++";
+	N_CXX_COMPILER = "/usr/bin/g++";
 }
 
 CppSequential
 {
 	outputPath = "/NabLabExamples/src-gen-cpp/sequential";
-	CMAKE_CXX_COMPILER = "/usr/bin/g++";
+	N_CXX_COMPILER = "/usr/bin/g++";
 }
 
 StlThread
 {
 	outputPath = "/NabLabExamples/src-gen-cpp/stl-thread";
-	CMAKE_CXX_COMPILER = "/usr/bin/g++";
+	N_CXX_COMPILER = "/usr/bin/g++";
 }

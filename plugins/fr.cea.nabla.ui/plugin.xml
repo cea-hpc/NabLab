@@ -2,10 +2,10 @@
 <?eclipse version="3.0"?>
 <!--
     Copyright (c) 2021 CEA
-    This program and the accompanying materials are made available under the 
+    This program and the accompanying materials are made available under the
     terms of the Eclipse Public License 2.0 which is available at
     http://www.eclipse.org/legal/epl-2.0.
-   
+
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  -->
@@ -334,7 +334,7 @@
 	<!-- Quick Outline -->
 	<extension
 		point="org.eclipse.ui.handlers">
-		<handler 
+		<handler
 			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:org.eclipse.xtext.ui.editor.outline.quickoutline.ShowQuickOutlineActionHandler"
 			commandId="org.eclipse.xtext.ui.editor.outline.QuickOutline">
 			<activeWhen>
@@ -394,7 +394,7 @@
 	</extension>
 	<!-- Rename Refactoring -->
 	<extension point="org.eclipse.ui.handlers">
-		<handler 
+		<handler
 			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:org.eclipse.xtext.ui.refactoring.ui.DefaultRenameElementHandler"
 			commandId="org.eclipse.xtext.ui.refactoring.RenameElement">
 			<activeWhen>
@@ -552,8 +552,8 @@
 		<perspective
 			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.perspectives.NabLabPerspective"
 			icon="icons/NabLab.gif"
-			id="fr.cea.nabla.ui.NabLabPerspective"
-			name="NabLab">
+			id="fr.cea.nabla.ui.NabLabPerpective"
+			name="NabLab Perspective">
 		</perspective>
 	</extension>
 	<extension
@@ -687,7 +687,7 @@
  </extension>
  <!-- Create a NabLab console factory -->
  <extension point="org.eclipse.ui.console.consoleFactories">
-   <consoleFactory 
+   <consoleFactory
       label="NabLab Console"
       class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.console.NabLabConsoleFactory"
       icon="icons/NabLab.gif">
@@ -788,7 +788,7 @@
 		id="fr.cea.nabla.ui.commands"
 		name="fr.cea.nabla.ui.commands"
 		point="org.eclipse.ui.commands">
-		<command 
+		<command
 			defaultHandler="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.handlers.GenerateCodeHandler"
 			id="fr.cea.nabla.GenerateCodeCommand"
 			name="Generate code">

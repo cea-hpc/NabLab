@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -160,7 +160,7 @@ class TestUtils
 	def createCardExpression(Connectivity c)
 	{
 		val connectivityCall = NablaFactory.eINSTANCE.createConnectivityCall => [ connectivity = c ]
-		NablaFactory.eINSTANCE.createCardinality => [ container = connectivityCall ]	
+		NablaFactory.eINSTANCE.createCardinality => [ container = connectivityCall ]
 	}
 
 	static def simplifyPath(String path)

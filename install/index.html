@@ -65,6 +65,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#installing-nablab" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -191,9 +196,43 @@
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Installation
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         Installation
       </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#installing-nablab" class="md-nav__link">
+    Installing NabLab
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installing-nablab-debugger" class="md-nav__link">
+    Installing NabLab debugger
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -251,6 +290,42 @@
               </div>
             
             
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#installing-nablab" class="md-nav__link">
+    Installing NabLab
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installing-nablab-debugger" class="md-nav__link">
+    Installing NabLab debugger
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
           
           <div class="md-content" data-md-component="content">
             <article class="md-content__inner md-typeset">
@@ -259,11 +334,21 @@
                 
                   <h1>Installation</h1>
                 
-                <p>Coming soon...</p>
-<p>Just a test for latex:</p>
-<div class="arithmatex">\[
-\operatorname{ker} f=\{g\in G:f(g)=e_{H}\}{\mbox{.}}
-\]</div>
+                <h2 id="installing-nablab">Installing NabLab</h2>
+<p>To download and install the NabLab environment, please refer to the <a href="https://github.com/cea-hpc/NabLab#getting-started">"Getting Started" section of the readme</a> file on the NabLab GitHub.  </p>
+<h2 id="installing-nablab-debugger">Installing NabLab debugger</h2>
+<p>NabLab debugger is based on <a href="https://www.graalvm.org/">GraalVM</a> and <a href="https://github.com/gemoc/monilog">Monilog</a>. It is still under development. The temporary installation process is:</p>
+<ol>
+<li>
+<p>Download GraalVM community edition 21.0.0 <a href="https://github.com/graalvm/graalvm-ce-builds/releases/tag/vm-21.0.0">here</a> and extract it in the directory of your choice.</p>
+</li>
+<li>
+<p>Install Graalpython in following the instructions available <a href="https://www.graalvm.org/reference-manual/python/">here</a>. Note that numpy is a supported package of GraalVM: just replace 'pandas' by 'numpy' in the <a href="https://www.graalvm.org/reference-manual/python/#installing-supported-packages">package installation instructions</a>. </p>
+</li>
+<li>
+<p>For Monilog and GraalVM support of NabLab, download the 3 files available <a href="https://filesender.renater.fr/?s=download&amp;token=f78964cc-ada8-49f2-a2c7-3876e8afb113">here</a>. To install the NabLab and Monilog languages support for GraalVM, type the following command: <code>/path/to/graalvm/bin/gu -L install -f nabla-component.jar</code>. Then create the folder <code>/path/to/graalvm/tools/monilogger</code> and copy the file <code>nabla-component.jar</code> into it.</p>
+</li>
+</ol>
                 
               
               

@@ -51,7 +51,7 @@ Commons-Math3 (3.6.1)
 
 # Licence and copyright
 
-This program and the accompanying materials are made available under the terms of the [Eclipse Public License v. 2.0](available at https://www.eclipse.org/legal/epl-v20.html). SPDX-License-Identifier: EPL-2.0. Please refer to the license for details.
+This program and the accompanying materials are made available under the terms of the [Eclipse Public License v. 2.0](https://www.eclipse.org/legal/epl-v20.html). SPDX-License-Identifier: EPL-2.0. Please refer to the license for details.
 
 <img src="http://www.cea.fr/PublishingImages/cea.jpg" width="20%" height="20%" align="right" />
 

@@ -18,7 +18,7 @@
     
     
       
-        <title>My first application - NabLab documentation</title>
+        <title>Getting started - NabLab documentation</title>
       
     
     
@@ -67,7 +67,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#presentation-of-the-problem" class="md-skip">
+        <a href="#getting-started" class="md-skip">
           Skip to content
         </a>
       
@@ -96,7 +96,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              My first application
+              Getting started
             
           </span>
         </div>
@@ -188,11 +188,138 @@
 
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../gettingstarted/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Getting started
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Getting started
       </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#download-and-install" class="md-nav__link">
+    Download and install
+  </a>
+  
+    <nav class="md-nav" aria-label="Download and install">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#prerequisite" class="md-nav__link">
+    Prerequisite
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#installing-nablab" class="md-nav__link">
+    Installing NabLab
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#installing-nablab-debugger" class="md-nav__link">
+    Installing NabLab debugger
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#build-via-maven-3x" class="md-nav__link">
+    Build via Maven 3.x
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#first-step-in-the-environment" class="md-nav__link">
+    First step in the environment
+  </a>
+  
+    <nav class="md-nav" aria-label="First step in the environment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#perspective" class="md-nav__link">
+    Perspective
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#examples-project" class="md-nav__link">
+    Examples project
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#code-generation" class="md-nav__link">
+    Code generation
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#latex-view" class="md-nav__link">
+    LaTeX view
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#job-graph-view" class="md-nav__link">
+    Job graph view
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#job-graph-editor" class="md-nav__link">
+    Job graph editor
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -203,52 +330,11 @@
 
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          My first application
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../tuto/" class="md-nav__link">
         My first application
       </a>
-      
-        
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#presentation-of-the-problem" class="md-nav__link">
-    Presentation of the problem
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#creating-the-project" class="md-nav__link">
-    Creating the project
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -298,6 +384,8 @@
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -306,16 +394,98 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#presentation-of-the-problem" class="md-nav__link">
-    Presentation of the problem
+  <a href="#download-and-install" class="md-nav__link">
+    Download and install
   </a>
+  
+    <nav class="md-nav" aria-label="Download and install">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#prerequisite" class="md-nav__link">
+    Prerequisite
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#installing-nablab" class="md-nav__link">
+    Installing NabLab
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#installing-nablab-debugger" class="md-nav__link">
+    Installing NabLab debugger
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#build-via-maven-3x" class="md-nav__link">
+    Build via Maven 3.x
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#creating-the-project" class="md-nav__link">
-    Creating the project
+  <a href="#first-step-in-the-environment" class="md-nav__link">
+    First step in the environment
   </a>
+  
+    <nav class="md-nav" aria-label="First step in the environment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#perspective" class="md-nav__link">
+    Perspective
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#examples-project" class="md-nav__link">
+    Examples project
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#code-generation" class="md-nav__link">
+    Code generation
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#latex-view" class="md-nav__link">
+    LaTeX view
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#job-graph-view" class="md-nav__link">
+    Job graph view
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#job-graph-editor" class="md-nav__link">
+    Job graph editor
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -332,52 +502,74 @@
               
                 
                 
-                  <h1>My first application</h1>
-                
-                <h2 id="presentation-of-the-problem">Presentation of the problem</h2>
-<p>The aim of this tutorial is to implement a simple equation of diffusion in NabLab:</p>
-<div class="arithmatex">\[
-\begin{equation}
-\begin{cases}
-\partial_t u - div(K \nabla u) &amp;= f \text{ in } \Omega \\
-(K \nabla u)n &amp;= g \text{ on } \partial \Omega
-\end{cases}
-\end{equation}
-\]</div>
-<p>In this tutorial the equation is discretized with a finite volume scheme on a 2D cartesian mesh.
-A constant approximation of u by cell gives:</p>
-<div class="arithmatex">\[
-\begin{equation}
-\begin{aligned}
-\frac{u_M^{n+1} - u_M^n}{\Delta t} &amp;= f_M + \frac{1}{V_M}\int_{M}{div(K \nabla u^n)} \\
-&amp;= f_M + \frac{1}{V_M}\int_{\partial M}{div(K \nabla u^n)} \nu \\
-&amp;= f_M + \frac{1}{V_M}\sum_{M' \text{neighbor of } M}{K_{MM'} \frac{u_{M'}^n - u_{M}^n}{MM'}}
-\end{aligned}
-\end{equation}
-\]</div>
-<p>with</p>
-<div class="arithmatex">\[
-\begin{equation}
-K_{MM'} = K \text{ on } M \cap  M'
-\end{equation}
-\]</div>
-<p>Consequently</p>
-<div class="arithmatex">\[
-\begin{equation}
-\begin{aligned}
-u_M^{n+1} &amp;= \Delta t f_M + 1 + \frac{\Delta t}{V_M} + \sum_{M' \text{ neighbor of } M}{\frac{K_{MM'}}{MM'}} . u_M^n \\
-&amp;- \frac{\Delta t}{V_M} \sum_{M' \text{ neighbor of } M}{\frac{K_{MM'} u_{M'}^n}{MM'}}
-\end{aligned}
-\end{equation}
-\]</div>
-<h2 id="creating-the-project">Creating the project</h2>
-<p>Just click on the main menu <em>File &gt; New &gt; NabLab Project</em> to create a new project: </p>
-<p><img src="/images/tuto/NabLab_new_menu.png" alt="NabLab New Project" title="NabLab New Project" width="60%" height="60%" /></p>
-<p>A new wizard is launched, asking for a project name and a module name:</p>
-<p><img src="/images/tuto/NabLab_new_project_wizard.png" alt="NabLab New Project Wizard" title="NabLab New Project Wizard" width="50%" height="50%" /></p>
-<p>Enter <em>Tutorial</em> as project name and <em>HeatEquation</em> as module name and click on the <em>Finish</em> button to create the new project. The new project is available in the <em>Model Explorer</em> on the left of the window. It contains two files (<em>HeatEquation.n</em>, and <em>HeatEquation.ngen</em>) in the <em>Tutorial/src/heatequation/</em> folder:</p>
-<p><img src="/images/tuto/NabLab_new_project_result.png" alt="NabLab New Project Result" title="NabLab New Project Result" width="30%" height="30%" /></p>
-<p><strong>TO BE CONTINUED</strong></p>
+                <h1 id="getting-started">Getting started</h1>
+<h2 id="download-and-install">Download and install</h2>
+<h3 id="prerequisite">Prerequisite</h3>
+<p>NabLab requires <a href="https://openjdk.java.net/projects/jdk/11/">Java 11</a> or later to build &amp; run. </p>
+<p>Do not forget to set the <code>JAVA_HOME</code> variable to the java installation directory and to update your path.</p>
+<h3 id="installing-nablab">Installing NabLab</h3>
+<p>The latest NabLab environment can be downloaded <a href="https://github.com/cea-hpc/NabLab/releases/tag/v0.4.0">here</a>.</p>
+<p>Download the file corresponding to your platform, unzip it and lauch the NabLab executable in the root directory.</p>
+<p>For Mac users, depending on your security configuration, you have to enter the following command to execute NabLab: <code>xattr -d com.apple.quarantine NabLab.app</code>.</p>
+<h3 id="installing-nablab-debugger">Installing NabLab debugger</h3>
+<p>NabLab debugger is based on <a href="https://www.graalvm.org/">GraalVM</a> and <a href="https://github.com/gemoc/monilog">Monilog</a>. It is still under development. The temporary installation process is:</p>
+<ol>
+<li>
+<p>Download GraalVM community edition 21.0.0 <a href="https://github.com/graalvm/graalvm-ce-builds/releases/tag/vm-21.0.0">here</a> and extract it in the directory of your choice.</p>
+</li>
+<li>
+<p>Install Graalpython in following the instructions available <a href="https://www.graalvm.org/reference-manual/python/">here</a>. Note that numpy is a supported package of GraalVM: just replace <code>pandas</code> by <code>numpy</code> in the <a href="https://www.graalvm.org/reference-manual/python/#installing-supported-packages">package installation instructions</a>. </p>
+</li>
+<li>
+<p>For Monilog and GraalVM support of NabLab, download the 3 files available <a href="https://filesender.renater.fr/?s=download&amp;token=13f443c8-71d5-4da0-adcf-469abd9aeff6">here</a>. To install the NabLab and Monilog languages support for GraalVM, type the following command: <code>/path/to/graalvm/bin/gu -L install -f nabla-component.jar</code>. Then create the folder <code>/path/to/graalvm/tools/monilogger</code> and copy the file <code>monilogger.jar</code> into it.</p>
+</li>
+<li>
+<p>Into your NabLab product, click on the menu <em>Help &gt; Install New Software...</em>, a dialog box appears, clic on <em>Add... &gt; Archive</em> and select the <code>graalvm-integration.zip</code> file.</p>
+</li>
+<li>
+<p>In the root directory of your NabLab installation, add the following option to the NabLab.ini file <code>-vm /path/to/graalvm-ce-java11-21.0.0/bin/java</code>.</p>
+</li>
+</ol>
+<h3 id="build-via-maven-3x">Build via Maven 3.x</h3>
+<p>If you need to build NabLab products (Windows/Linux/MacOS and Eclipse update-site) from the source code (instead of downloading it), run the following command from the root of the repository:</p>
+<p><code>mvn clean; mvn verify</code>.</p>
+<p>Note the <code>';'</code> after <code>mvn clean</code>. </p>
+<p>The products resulting from the build will be accessible in <em>/releng/fr.cea.nabla.updatesite/target/products/NabLab-X.Y.Z.yyyymmddHHMM-YOUR_PLATFORM.zip</em>.</p>
+<p>The Eclipse update-site resulting from the build will be accessible in <em>/releng/fr.cea.nabla.updatesite/target/fr.cea.nabla.updatesite-X.Y.Z.yyyymmddHHMM.zip</em>.</p>
+<p>If you want to skip tests execution, you can run the following command:
+<code>mvn clean; mvn verify -Dmaven.test.skip=true</code></p>
+<h2 id="first-step-in-the-environment">First step in the environment</h2>
+<h3 id="perspective">Perspective</h3>
+<p>Once the NabLab environment has been launched, the NabLab perspective should be selected. If it is not the case, just select the NabLab perspective from the <em>Window &gt; Perspective &gt; Open Perspective &gt; Other ... &gt; NabLab</em> menu.</p>
+<p><img src="/images/gettingstarted/NabLab_perspective_menu.png" alt="NabLab Perspective Menu" title="NabLab Perspective Menu" width="40%" height="40%" /></p>
+<p>The NabLab perspective provides a set of <em>Views</em> and wizards shortcuts allowing to easily create and develop NabLab projects.</p>
+<h3 id="examples-project">Examples project</h3>
+<p>Just click on the main menu From the <em>File &gt; New &gt; NabLab Examples</em> to import the examples project:</p>
+<p><img src="/images/gettingstarted/NabLab_new_menu.png" alt="NabLab Examples" title="NabLab Examples" width="40%" height="40%" /></p>
+<p>A new wizard is launched:</p>
+<p><img src="/images/gettingstarted/NabLab_examples_wizard.png" alt="NabLab Examples Wizard" title="NabLab Examples Wizard" width="80%" height="80%" /></p>
+<p>Just click on the <em>Finish</em> button to import the examples project that becomes available in the <em>Model Explorer</em> view on the left of the perspective. It contains a set of examples including Glace2D, HeatEquation, ExplicitHeatEquation, IterativeHeatEquation and ImplicitHeatEquation.</p>
+<p><img src="/images/gettingstarted/NabLab_examples_generated_files.png" alt="NabLab Examples Generated Files" title="NabLab Examples Generated Files" width="100%" height="100%" /></p>
+<h3 id="code-generation">Code generation</h3>
+<p>To launch code generation corresponding to the NabLab module, just right-click on the ngen file of the project of your choice, for example <em>NabLabExamples/src/explicitheatequation/ExplicitHeatEquation.ngen</em> and select <em>Generate Code</em></p>
+<p><img src="/images/gettingstarted/NabLab_generate_code.png" alt="NabLab Generate Code" title="NabLab Generate Code" width="50%" height="50%" /></p>
+<p>Java and C++ source code files are generated in <em>src-gen-java</em> and <em>src-gen-cpp</em> folders respectively. For each C++ folder a CMakeLists.txt file is generated.
+A LaTeX file containing the content of the jobs and an example of json data file are also generated in the <em>src-gen</em> folder.  </p>
+<p><img src="/images/gettingstarted/NabLab_generated_files.png" alt="NabLab Generated Files" title="NabLab Generated Files" width="30%" height="30%" /></p>
+<h3 id="latex-view">LaTeX view</h3>
+<p>The <em>LaTeX View</em> is located on the bottom of the NabLab environment. It allows to visualize in an elegant way the formulas contained in a .n file.</p>
+<p>If you do not use the NabLab perspective the <em>The LaTeX View</em> is not visible. You can access it through the <em>Window &gt; Show View &gt; Other... &gt; NabLab &gt; LaTeX View</em> main menu.</p>
+<p>This view is automatically updated and synchronized with the selection in the current NabLab editor.</p>
+<p><img src="/images/gettingstarted/NabLab_latex_view.png" alt="NabLab Latex View" title="NabLab Latex View" width="100%" height="100%" /></p>
+<h3 id="job-graph-view">Job graph view</h3>
+<p>The <em>Job Graph View</em> can be opened from a <em>ngen</em> file containing an <em>Application</em>, by clicking on F1.</p>
+<p>It allows to quickly visualize the data flow graph of the application described in the ngen file.</p>
+<p><img src="/images/gettingstarted/NabLab_job_graph_view.png" alt="NabLab Job Graph View" title="NabLab Job Graph View" width="100%" height="100%" /></p>
+<h3 id="job-graph-editor">Job graph editor</h3>
+<p>NabLab offers another way of visualizing the data flow graph of an application.</p>
+<p>The <em>Job Graph Editor</em> can be opened from a <em>ngen</em> file containing an <em>Application</em>, by clicking on F2.</p>
+<p>It allows to visualize bigger graphs than the <em>Job Graph View</em> thanks to an efficient layout.</p>
+<p><img src="/images/gettingstarted/NabLab_job_graph_editor.png" alt="NabLab Job Graph Editor" title="NabLab Job Graph Editor" width="100%" height="100%"/></p>
                 
               
               
@@ -396,7 +588,7 @@ u_M^{n+1} &amp;= \Delta t f_M + 1 + \frac{\Delta t}{V_M} + \sum_{M' \text{ neigh
   
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
-        <a href="../gettingstarted/" class="md-footer__link md-footer__link--prev" rel="prev">
+        <a href=".." class="md-footer__link md-footer__link--prev" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -405,19 +597,19 @@ u_M^{n+1} &amp;= \Delta t f_M + 1 + \frac{\Delta t}{V_M} + \sum_{M' \text{ neigh
               <span class="md-footer__direction">
                 Previous
               </span>
-              Getting started
+              What is NabLab
             </div>
           </div>
         </a>
       
       
-        <a href="../debug/" class="md-footer__link md-footer__link--next" rel="next">
+        <a href="../tuto/" class="md-footer__link md-footer__link--next" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Monitoring and debugging
+              My first application
             </div>
           </div>
           <div class="md-footer__button md-icon">

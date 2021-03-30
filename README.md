@@ -10,7 +10,7 @@ NabLab is a full-fledged industrial environment for scientific computing and Hig
 
 The NabLab documentation is available [here](https://cea-hpc.github.io/NabLab/).
 
-The latest NabLab environment can be downloaded [here](https://github.com/cea-hpc/NabLab/releases/tag/v0.4.0). For Mac users, depending on your security configuration, you have to enter the following command to execute NabLab: `xattr -d com.apple.quarantine NabLab.app`.
+The latest NabLab environment can be downloaded [here](https://github.com/cea-hpc/NabLab/releases/tag/v0.4.0).
 
 
 # Dependencies

@@ -1,7 +1,7 @@
 [![License](https://img.shields.io/badge/license-EPL%202.0-blue.svg)](http://www.eclipse.org/legal/epl-2.0)
 [![Language](http://img.shields.io/badge/language-java-brightgreen.svg)](https://www.java.com/)
 
-<img src="./README_images/logo_full.png" width="50%" height="50%"/>
+<img src="./README_images/logo_full.png" width="70%" height="70%"/>
 
 NabLab is a full-fledged industrial environment for scientific computing and High Performance Computing based on [Eclipse](https://www.eclipse.org/).
 

@@ -55,7 +55,7 @@ This program and the accompanying materials are made available under the terms o
 
 <img src="http://www.cea.fr/PublishingImages/cea.jpg" width="20%" height="20%" align="right" />
 
-Written by CEA and Contributors
+Written by CEA and Contributors.
 
 (C) Copyright 2021, by CEA. All rights reserved.
 

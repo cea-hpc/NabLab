@@ -28,8 +28,15 @@ NabLab is based on [Eclipse Modeling Framework (EMF)](https://www.eclipse.org/mo
 
 ## Licence and copyright
 
-This program and the accompanying materials are made available under the terms of the [Eclipse Public License v. 2.0](https://www.eclipse.org/legal/epl-v20.html).
+This program and the accompanying materials are made available under the terms of the [Eclipse Public License v. 2.0](https://www.eclipse.org/legal/epl-v20.html). SPDX-License-Identifier: EPL-2.0. Please refer to the license for details.
 
-SPDX-License-Identifier: EPL-2.0
+<img src="http://www.cea.fr/PublishingImages/cea.jpg" width="20%" height="20%" align="right" />
 
-Please refer to the license for details.
+Written by CEA and Contributors.
+
+(C) Copyright 2021, by CEA. All rights reserved.
+
+All content is the property of the respective authors or their employers.
+For more information regarding authorship of content, please consult the
+listed source code repository logs.
+

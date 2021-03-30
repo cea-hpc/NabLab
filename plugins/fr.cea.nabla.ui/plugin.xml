@@ -541,14 +541,14 @@
 		<perspective
 			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.perspectives.NabLabPerspective"
 			icon="icons/NabLab.gif"
-			id="fr.cea.nabla.ui.NabLabPerpective"
-			name="NabLab Perspective">
+			id="fr.cea.nabla.ui.NabLabPerspective"
+			name="NabLab">
 		</perspective>
 	</extension>
 	<extension
 		point="org.eclipse.ui.perspectiveExtensions">
 		<perspectiveExtension
-			targetID="fr.cea.nabla.ui.NabLabPerpective">
+			targetID="fr.cea.nabla.ui.NabLabPerspective">
 			<view
 				id="org.eclipse.ui.views.ContentOutline"
 				minimized="false"
@@ -627,7 +627,7 @@
           <with
                 variable="activeWorkbenchWindow.activePerspective">
              <equals
-                   value="fr.cea.nabla.ui.NabLabPerpective">
+                   value="fr.cea.nabla.ui.NabLabPerspective">
              </equals>
           </with>
        </enablement>
@@ -639,7 +639,7 @@
           <with
                 variable="activeWorkbenchWindow.activePerspective">
              <equals
-                   value="fr.cea.nabla.ui.NabLabPerpective">
+                   value="fr.cea.nabla.ui.NabLabPerspective">
              </equals>
           </with>
        </enablement>
@@ -656,7 +656,7 @@
                 variable="activeWorkbenchWindow.activePerspective">
                 <not>
                    <equals
-                      value="fr.cea.nabla.ui.NabLabPerpective">
+                      value="fr.cea.nabla.ui.NabLabPerspective">
                    </equals>
                 </not>
           </with>

@@ -12,7 +12,7 @@ Do not forget to set the `JAVA_HOME` variable to the java installation directory
 ### Installing NabLab
 
 The latest NabLab environment can be downloaded [here](https://github.com/cea-hpc/NabLab/releases/tag/v0.4.0).
- 
+
 Download the file corresponding to your platform, unzip it and lauch the NabLab executable in the root directory.
 
 For Mac users, depending on your security configuration, you have to enter the following command to execute NabLab: `xattr -d com.apple.quarantine NabLab.app`.
@@ -55,7 +55,7 @@ If you want to skip tests execution, you can run the following command:
 
 Once the NabLab environment has been launched, the NabLab perspective should be selected. If it is not the case, just select the NabLab perspective from the *Window > Perspective > Open Perspective > Other ... > NabLab* menu.
 
-<img src="/images/gettingstarted/NabLab_perspective_menu.png" alt="NabLab Perspective Menu" title="NabLab Perspective Menu" width="40%" height="40%" />
+<img src="img/NabLab_perspective_menu.png" alt="NabLab Perspective Menu" title="NabLab Perspective Menu" width="40%" height="40%" />
 
 The NabLab perspective provides a set of *Views* and wizards shortcuts allowing to easily create and develop NabLab projects.
 
@@ -64,27 +64,27 @@ The NabLab perspective provides a set of *Views* and wizards shortcuts allowing 
 
 Just click on the main menu From the *File > New > NabLab Examples* to import the examples project:
 
-<img src="/images/gettingstarted/NabLab_new_menu.png" alt="NabLab Examples" title="NabLab Examples" width="40%" height="40%" />
+<img src="img/NabLab_new_menu.png" alt="NabLab Examples" title="NabLab Examples" width="40%" height="40%" />
 
 A new wizard is launched:
 
-<img src="/images/gettingstarted/NabLab_examples_wizard.png" alt="NabLab Examples Wizard" title="NabLab Examples Wizard" width="80%" height="80%" />
+<img src="img/NabLab_examples_wizard.png" alt="NabLab Examples Wizard" title="NabLab Examples Wizard" width="80%" height="80%" />
 
 Just click on the *Finish* button to import the examples project that becomes available in the *Model Explorer* view on the left of the perspective. It contains a set of examples including Glace2D, HeatEquation, ExplicitHeatEquation, IterativeHeatEquation and ImplicitHeatEquation.
 
-<img src="/images/gettingstarted/NabLab_examples_generated_files.png" alt="NabLab Examples Generated Files" title="NabLab Examples Generated Files" width="100%" height="100%" />
+<img src="img/NabLab_examples_generated_files.png" alt="NabLab Examples Generated Files" title="NabLab Examples Generated Files" width="100%" height="100%" />
 
 
 ### Code generation
 
 To launch code generation corresponding to the NabLab module, just right-click on the ngen file of the project of your choice, for example *NabLabExamples/src/explicitheatequation/ExplicitHeatEquation.ngen* and select *Generate Code*
 
-<img src="/images/gettingstarted/NabLab_generate_code.png" alt="NabLab Generate Code" title="NabLab Generate Code" width="50%" height="50%" />
+<img src="img/NabLab_generate_code.png" alt="NabLab Generate Code" title="NabLab Generate Code" width="50%" height="50%" />
 
 Java and C++ source code files are generated in *src-gen-java* and *src-gen-cpp* folders respectively. For each C++ folder a CMakeLists.txt file is generated.
 A LaTeX file containing the content of the jobs and an example of json data file are also generated in the *src-gen* folder.  
 
-<img src="/images/gettingstarted/NabLab_generated_files.png" alt="NabLab Generated Files" title="NabLab Generated Files" width="30%" height="30%" />
+<img src="img/NabLab_generated_files.png" alt="NabLab Generated Files" title="NabLab Generated Files" width="30%" height="30%" />
 
 
 ### LaTeX view
@@ -95,7 +95,7 @@ If you do not use the NabLab perspective the *The LaTeX View* is not visible. Yo
 
 This view is automatically updated and synchronized with the selection in the current NabLab editor.
 
-<img src="/images/gettingstarted/NabLab_latex_view.png" alt="NabLab Latex View" title="NabLab Latex View" width="100%" height="100%" />
+<img src="img/NabLab_latex_view.png" alt="NabLab Latex View" title="NabLab Latex View" width="100%" height="100%" />
 
 
 ### Job graph view
@@ -104,7 +104,7 @@ The *Job Graph View* can be opened from a *ngen* file containing an *Application
 
 It allows to quickly visualize the data flow graph of the application described in the ngen file.
 
-<img src="/images/gettingstarted/NabLab_job_graph_view.png" alt="NabLab Job Graph View" title="NabLab Job Graph View" width="100%" height="100%" />
+<img src="img/NabLab_job_graph_view.png" alt="NabLab Job Graph View" title="NabLab Job Graph View" width="100%" height="100%" />
 
 
 ### Job graph editor
@@ -115,5 +115,5 @@ The *Job Graph Editor* can be opened from a *ngen* file containing an *Applicati
 
 It allows to visualize bigger graphs than the *Job Graph View* thanks to an efficient layout.
 
-<img src="/images/gettingstarted/NabLab_job_graph_editor.png" alt="NabLab Job Graph Editor" title="NabLab Job Graph Editor" width="100%" height="100%"/>
+<img src="img/NabLab_job_graph_editor.png" alt="NabLab Job Graph Editor" title="NabLab Job Graph Editor" width="100%" height="100%"/>
 

@@ -19,8 +19,8 @@ theme:
     accent: orange
   features:
     - navigation.instant
-  favicon: images/logo_512.png
-  logo: images/logo_512.png
+  favicon: img/logo_512.png
+  logo: img/logo_512.png
 
 # for LaTeX
 extra_javascript:

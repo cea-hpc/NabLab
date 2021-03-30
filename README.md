@@ -3,9 +3,6 @@
 
 <img src="./README_images/logo_full.png" width="50%" height="50%"/>
 
-
-# Presentation
-
 NabLab is a full-fledged industrial environment for scientific computing and High Performance Computing based on [Eclipse](https://www.eclipse.org/).
 
 The NabLab documentation is available [here](https://cea-hpc.github.io/NabLab/).

@@ -1,1 +1,3 @@
-Coming soon...
+# Language reference
+
+**Coming soon...**

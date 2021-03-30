@@ -1,4 +1,3 @@
-
 # What is NabLab ?
 
 ## Presentation of the project
@@ -29,7 +28,7 @@ NabLab is based on [Eclipse Modeling Framework (EMF)](https://www.eclipse.org/mo
 
 ## Licence and copyright
 
-This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0 which is available at [https://www.eclipse.org/legal/epl-v20.html](https://www.eclipse.org/legal/epl-v20.html).
+This program and the accompanying materials are made available under the terms of the [Eclipse Public License v. 2.0](https://www.eclipse.org/legal/epl-v20.html).
 
 SPDX-License-Identifier: EPL-2.0
 

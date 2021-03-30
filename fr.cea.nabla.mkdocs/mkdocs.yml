@@ -5,22 +5,22 @@ copyright: Copyright &copy; 2021 CEA
 
 nav:
   - What is NabLab: index.md
-  - Installation: install.md
+  - Getting started: gettingstarted.md
   - My first application: tuto.md
-  - Monitoring and Debugging: debug.md
-  - Language Reference: language.md
+  - Monitoring and debugging: debug.md
+  - Language reference: language.md
 
 theme:
   name: 'material'
   language: 'en'
   palette:
-    scheme: 'indigo'
-    primary: 'blue'
-    accent: 'orange'
+    scheme: default
+    primary: indigo
+    accent: orange
   features:
     - navigation.instant
-  favicon: logo_512.png
-  logo: logo_512.png
+  favicon: images/logo_512.png
+  logo: images/logo_512.png
 
 # for LaTeX
 extra_javascript:

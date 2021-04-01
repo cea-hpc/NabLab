@@ -63,7 +63,8 @@ def dot: x | ℝ[x] × ℝ[x] → ℝ, (a , b) →
 	return result;
 }
 
-// determinant = produit vectoriel en 2D
+// 2D cross products
 def det: ℝ[2] × ℝ[2] → ℝ, (a ,b) → return (a[0]*b[1] - a[1]*b[0]);
 def det: ℝ[2,2] → ℝ, (a) → return a[0,0] * a[1,1] - a[0,1] * a[1,0];
+
 def norm: x | ℝ[x] → ℝ, (a) → return √(dot(a,a));

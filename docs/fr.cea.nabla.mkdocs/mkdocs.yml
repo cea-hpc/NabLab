@@ -6,9 +6,12 @@ copyright: Copyright &copy; 2021 CEA
 nav:
   - What is NabLab: index.md
   - Getting started: gettingstarted.md
-  - My first application: tuto.md
+  - My first module: firstmodule.md
+  - My first extension: firstextension.md
+  - Composing modules: modulecomposition.md
   - Monitoring and debugging: debug.md
-  - Language reference: language.md
+  - NabLab language reference: nablablanguage.md
+  - Ngen language reference: ngenlanguage.md
 
 theme:
   name: 'material'
@@ -31,6 +34,8 @@ extra_javascript:
 markdown_extensions:
   - admonition
   - codehilite
+  - pymdownx.highlight
+  - pymdownx.superfences
   - pymdownx.arithmatex:
       generic: true
 

@@ -1,3 +1,0 @@
-# Language reference
-
-**Coming soon...**

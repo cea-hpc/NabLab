@@ -1,3 +1,5 @@
+# My first module
+
 ## Presentation of the problem
 
 The aim of this tutorial is to implement a simple equation of diffusion in NabLab:
@@ -58,6 +60,10 @@ Enter *Tutorial* as project name and *HeatEquation* as module name and click on 
 
 <img src="img/NabLab_new_project_result.png" alt="NabLab New Project Result" title="NabLab New Project Result" width="30%" height="30%" />
 
+
+## Implementation
+
+### Items and connectivities
 
 **TO BE CONTINUED**
 

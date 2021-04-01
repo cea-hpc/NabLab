@@ -1,16 +1,13 @@
 [![License](https://img.shields.io/badge/license-EPL%202.0-blue.svg)](http://www.eclipse.org/legal/epl-2.0)
 [![Language](http://img.shields.io/badge/language-java-brightgreen.svg)](https://www.java.com/)
 
-<img src="./README_images/logo_full.png" width="50%" height="50%"/>
-
-
-# Presentation
+<img src="./README_images/logo_full.png" width="70%" height="70%"/>
 
 NabLab is a full-fledged industrial environment for scientific computing and High Performance Computing based on [Eclipse](https://www.eclipse.org/).
 
 The NabLab documentation is available [here](https://cea-hpc.github.io/NabLab/).
 
-The latest NabLab environment can be downloaded [here](https://github.com/cea-hpc/NabLab/releases/tag/v0.4.0). For Mac users, depending on your security configuration, you have to enter the following command to execute NabLab: `xattr -d com.apple.quarantine NabLab.app`.
+The latest NabLab environment can be downloaded [here](https://github.com/cea-hpc/NabLab/releases/tag/v0.4.0).
 
 
 # Dependencies

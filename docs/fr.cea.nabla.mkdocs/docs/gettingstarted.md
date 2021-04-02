@@ -20,7 +20,15 @@ For Mac users, depending on your security configuration, you have to enter the f
 
 ### Installing NabLab debugger
 
-NabLab debugger is based on [GraalVM](https://www.graalvm.org/) and [Monilog](https://github.com/gemoc/monilog). It is still under development. The temporary installation process is:
+NabLab debugger is part of the [Debug4Science project](http://gemoc.org/debug4science/).
+
+<center>
+<img src="http://gemoc.org/debug4science/img/cea.png" alt="CEA" style="width: 100px;"/>
+&nbsp;&nbsp;&nbsp;
+<img src="http://gemoc.org/debug4science/img/inria.png" alt="Inria" style="width: 150px;"/>
+</center>
+
+It is based on [GraalVM](https://www.graalvm.org/) and [Monilog](https://github.com/gemoc/monilog). It is still under development. The temporary installation process is:
 
 1. Download GraalVM community edition 21.0.0 [here](https://github.com/graalvm/graalvm-ce-builds/releases/tag/vm-21.0.0) and extract it in the directory of your choice.
 

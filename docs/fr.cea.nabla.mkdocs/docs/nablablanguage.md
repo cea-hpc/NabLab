@@ -4,6 +4,8 @@
 
 A NabLab file, extension `n`, can be a `module` or an `extension`.
 
+### Module
+
 A `module` represents a NabLab program and its definition strictly follows the following sequence:
 
 - Imports
@@ -14,11 +16,22 @@ A `module` represents a NabLab program and its definition strictly follows the f
 - Time iterators
 - Jobs
 
+A module is generally associated with a [NabLab application](../ngenlanguage/index.html). Several modules can also be composed into a single application: see [module composition](../modulecomposition/index.html) documentation.
+
+### Extension
+
 An `extension` is a way to extent the language with external functions. Its definition strictly follows the following sequence:
 
 - Imports
 - Reductions
 - Functions
+
+Functions of an extension can be called from a NabLab module. To use an extension X, a module has to import the extension with the instruction `with X.*;` (see below).
+
+!!! note
+	The extension and extension provider mechanisms are the way to call legacy libraries, like linear algebra libraries, from NabLab applications.
+
+Extensions provide external functions, i.e. functions with no NabLab body. Those functions are implemented in an another language, generally C or C++. To link NabLab function declaration to its native definition, providers have to be defined: see [NabLab extension providers](../ngenlanguage/index.html) for details.
 
 
 ## Imports
@@ -62,12 +75,16 @@ connectivity commonFace: cell × cell → face;  // common face of two cells
 
 ## Reductions and functions
 
+### Reductions
+
 Reductions are defined by their name, neutral element (seed of the reduction) and type corresponding to the type off their arguments and also their return type. They can be overloaded: it is possible to create multiple reductions with same name and different type.
 
 ```
 def ∑, 0.0: ℝ, (a, b) → return a + b;
 def ∑, 0.0: x | ℝ[x], (a, b) → return a + b;
 ```
+
+### Functions
 
 Functions are defined by their name, input arguments, return type and body. They can be overloaded: it is possible to create multiple functions with same name and different input arguments. Function's body is a unique instruction or a block of instructions. It can not refer to global variables. That is the reason why functions are declared before variables.
 
@@ -84,6 +101,11 @@ def dot: x | ℝ[x] × ℝ[x] → ℝ, (a , b) → {
 	return result;
 }
 ```
+
+In an extension, functions can be external, without body definition. In this case the definition of an [extension provider](../ngenlanguage/index.html) allows to call a native function (C, C++...). This mechanism allows to use legacy libraries, like linear algebra libraries.
+
+!!! note
+	External functions, i.e. functions with no body, are not allowed in modules, only in extensions.
 
 
 ## Global variables
@@ -121,6 +143,7 @@ A user option is preceded by the `option` keyword. The option can be set in a [J
 ```
 let ℝ γ = 3.0;                      // real scalar
 let ℝ[2] N = [0.0, 1.0];            // 1 dimension real array
+let ℝ[2, 2] N = [ [0.0, 1.0], N ];  // 2 dimensions real array
 let ℕ[2,2] I = [ [1, 0], [0, 1] ];  // 2 dimensions int array
 option ℕ maxIter = 200;             // optional integer user option
 option ℝ maxTime;                   // mandatory real user option
@@ -177,6 +200,10 @@ Ini: j = 0;
 IniTime: t^{n=0} = 0.0;
 ComputeDensity: ∀j∈cells(), ρ{j} = m{j} / V{j};
 ```
+
+The execution of a NabLab program does not start at its beginning and jobs execution order does not correspond to their position in the file. During the compilation phase, the data flow graph of the program is computed  according to input and output variables of each job. Jobs are annotated with a *at* statement corresponding to its hierarchical logical time (HLT). The *HLT* concept is explicitly expressed to go beyond the classical single-program-multiple-data or bulk-synchronous-parallel programming models. The *at* logical timestamp explicitly declares the task-based parallelism of jobs.
+
+However, this way to schedule jobs imposes to have a dedicated tool to visualize the graph representing the program execution. This feature has been developed and integrated into the NabLab environment (see [getting started](../gettingstarted/index.html) documentation  for details).
 
 ## Instructions
 
@@ -295,7 +322,7 @@ Expressions are composed of the following elements:
 - Boolean operators and `&&` and or `||`
 - Contracted if operator `(condition) ? true : false`
 - Min and max constants for integer and real base types: `ℕ.MinValue`, `ℕ.MaxValue`, `ℝ.MinValue`, `ℝ.MaxValue`
-- Array initializations by comma separated list of expressions between brackets: `[1, 2+3, -5]`,
+- Array initializations by comma separated list of expressions between brackets, for example `[1, 2+3, -5]` for `ℕ[3]`, `[ [1.1, 1.2], [2.1, 2.2], [3.1, 3.2] ]` for `ℝ[3,2]`
 - Argument/variable references and reduction/function calls detailed below.
 
 ### Arguments and variable references
@@ -303,7 +330,7 @@ Expressions are composed of the following elements:
 Function arguments and variables are referenced by their name that can be followed by:
 
 - A list of time iterators surrounded by the `^{ }` and separated by a comma: `t^{n+1}`, `t^{n+1, k}`
-- For variables with a support, a list of space iterators surrounded by the `{ }` and separated by a comma: `P{j}`, `Ajr{j, r}`. Iterators are defined by loops and reductions.
+- For variables with a support, a list of space iterators surrounded by the `{ }` and separated by a comma: `P{j}`, `Ajr{j, r}`. Iterators are defined by loops and reductions. Iterators can have an increment, like `X{r+1}` or `X{r-1}`, to access the item before or after the original iterator in the set where it is defined.
 - For arrays, a list of indices surrounded by `[ ]` and separated by a comma: `X[0]`, `Y[i, 0]`. Indices are expressions.
 
 

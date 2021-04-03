@@ -59,6 +59,12 @@ If you want to skip tests execution, you can run the following command:
 
 ## First step in the environment
 
+### Overview
+
+The NabLab environment is based on the [Eclipse Modeling Framework](https://www.eclipse.org/modeling/emf/) (EMF). The central part of the NabLab environment displays a textual editor, based on [Xtext](https://www.eclipse.org/Xtext/) which provides contextual code completion, code folding, syntax highlighting, error detection, quick fixes, variable scoping, and type checking. The left part of the environment proposes a model explorer and a dedicated interactive outline view to navigate easily through the textual editor. The bottom part is composed of several views including a rich LaTeX visualization of the selection in the editor. A graphical editor based on [Sirius](https://www.eclipse.org/sirius/) allows to visualize the data flow graph between jobs.
+
+<img src="img/NabLab_main_window.png" alt="NabLab Main Window" title="NabLab Main Window" width="100%" height="100%" />
+
 ### Perspective
 
 Once the NabLab environment has been launched, the NabLab perspective should be selected. If it is not the case, just select the NabLab perspective from the *Window > Perspective > Open Perspective > Other ... > NabLab* menu.
@@ -95,6 +101,19 @@ A LaTeX file containing the content of the jobs and an example of json data file
 <img src="img/NabLab_generated_files.png" alt="NabLab Generated Files" title="NabLab Generated Files" width="30%" height="30%" />
 
 
+### Interpretation
+
+To launch code interpretation corresponding to the NabLab module, just right-click on the ngen file of the project of your choice, for example *NabLabExamples/src/explicitheatequation/ExplicitHeatEquation.ngen* and select *Run As > Start Interpretation*.
+
+<img src="img/NabLab_start_interpretation.png" alt="NabLab Start Interpretation" title="NabLab Start Interpretation" width="50%" height="50%" />
+
+To change the Json file of your interpretation, right-click on the ngen file and select *Run As > Run Configurations*, select your configuration, for example ExplicitHeatEquation.ngen, and change the Json file in the dialog window.
+
+<img src="img/NabLab_interpretation_configuration.png" alt="NabLab Interpretation Configuration" title="NabLab Interpretation Configuration" width="80%" height="80%" />
+
+!!! note
+	If you have installed and configured GraalVM for NabLab, you can interpret your module using GraalVM: just select *Run As > Start Truffle-Based Interpretation* instead of *Run As > Start Interpretation*. You can set configuration like previously and set the monilog file and python executable path.
+
 ### LaTeX view
 
 The *LaTeX View* is located on the bottom of the NabLab environment. It allows to visualize in an elegant way the formulas contained in a .n file.
@@ -106,7 +125,12 @@ This view is automatically updated and synchronized with the selection in the cu
 <img src="img/NabLab_latex_view.png" alt="NabLab Latex View" title="NabLab Latex View" width="100%" height="100%" />
 
 
-### Job graph view
+### Job graph
+
+NabLab offers 2 visualisation modes for job graph: a fast rendering view and an editor with a more efficient layout.
+In case of job cycles, both of the modes will display the cycle graphically to highlight the error.  
+
+#### View
 
 The *Job Graph View* can be opened from a *ngen* file containing an *Application*, by clicking on F1.
 
@@ -115,7 +139,7 @@ It allows to quickly visualize the data flow graph of the application described 
 <img src="img/NabLab_job_graph_view.png" alt="NabLab Job Graph View" title="NabLab Job Graph View" width="100%" height="100%" />
 
 
-### Job graph editor
+#### Editor
 
 NabLab offers another way of visualizing the data flow graph of an application.
 

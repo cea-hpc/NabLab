@@ -129,14 +129,8 @@ abstract class TypeContentProvider
 		switch t
 		{
 			case null, case BOOL : throw new RuntimeException('Not implemented')
-			default: t.getName() + 'Array' + sizes.size + 'D' + '<' + sizes.map[arraySizeContent].join(',') + '>'
+			default: t.getName() + 'Array' + sizes.size + 'D' + '<' + sizes.map[e | (e.constExpr?e.content:'0')].join(',') + '>'
 		}
-	}
-
-	private def getArraySizeContent(Expression e)
-	{
-		if (e.constExpr) e.content
-		else '0'
 	}
 
 	private def CharSequence initCppType(String name, ConnectivityType t, List<String> accessors, Iterable<Connectivity> connectivities)

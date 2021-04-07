@@ -46,7 +46,7 @@ public:
 
   KOKKOS_INLINE_FUNCTION
   void join(volatile value_type& dest, const volatile value_type& src) const {
-	  dest = user_join(dest, src);
+	  const_cast<value_type&>(dest) = user_join(const_cast<value_type&>(dest), const_cast<value_type&>(src));
   }
 
   KOKKOS_INLINE_FUNCTION

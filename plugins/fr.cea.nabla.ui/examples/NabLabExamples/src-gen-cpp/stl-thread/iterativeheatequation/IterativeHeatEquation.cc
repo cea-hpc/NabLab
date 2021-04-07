@@ -331,7 +331,7 @@ void IterativeHeatEquation::updateU() noexcept
 void IterativeHeatEquation::computeDeltaTn() noexcept
 {
 	double reduction0;
-	reduction0 = parallel_reduce(nbCells, numeric_limits<double>::max(), [&](double& accu, const size_t& cCells)
+	reduction0 = parallel_reduce(nbCells, double(numeric_limits<double>::max()), [&](double& accu, const size_t& cCells)
 		{
 			return (accu = iterativeheatequationfreefuncs::minR0(accu, V[cCells] / D[cCells]));
 		},
@@ -383,7 +383,7 @@ void IterativeHeatEquation::computeFaceConductivity() noexcept
 void IterativeHeatEquation::computeResidual() noexcept
 {
 	double reduction0;
-	reduction0 = parallel_reduce(nbCells, -numeric_limits<double>::max(), [&](double& accu, const size_t& jCells)
+	reduction0 = parallel_reduce(nbCells, double(-numeric_limits<double>::max()), [&](double& accu, const size_t& jCells)
 		{
 			return (accu = iterativeheatequationfreefuncs::maxR0(accu, std::abs(u_nplus1_kplus1[jCells] - u_nplus1_k[jCells])));
 		},

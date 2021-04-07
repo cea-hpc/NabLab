@@ -33,6 +33,8 @@ import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.cpp.CppGeneratorUtils.*
 import static extension fr.cea.nabla.ir.generator.cpp.ItemIndexAndIdValueContentProvider.*
+import fr.cea.nabla.ir.ir.IrType
+import fr.cea.nabla.ir.ir.BaseType
 
 @Data
 abstract class InstructionContentProvider
@@ -172,6 +174,16 @@ abstract class InstructionContentProvider
 	protected def dispatch getNbElems(Iterator it) { container.nbElemsVar }
 	protected def dispatch getNbElems(Interval it) { nbElems.content }
 
+	protected def instanciateTemplate(IrType it)
+	{
+		switch it
+		{
+			case null: ''
+			BaseType case !sizes.empty: '<' + sizes.map[e | (e.constExpr?e.content:'0')].join(',') + '>'
+			default: ''
+		}
+	}
+
 	private def getSetDefinitionContent(String setName, ConnectivityCall call)
 	'''
 		const auto «setName»(mesh->«call.accessor»);
@@ -201,14 +213,14 @@ class StlThreadInstructionContentProvider extends InstructionContentProvider
 	'''
 		«result.type.cppType» «result.name»;
 		«iterationBlock.defineInterval('''
-		«result.name» = parallel_reduce(«iterationBlock.nbElems», «result.defaultValue.content», [&](«result.type.cppType»& accu, const size_t& «iterationBlock.indexName»)
+		«result.name» = parallel_reduce(«iterationBlock.nbElems», «result.type.cppType»(«result.defaultValue.content»), [&](«result.type.cppType»& accu, const size_t& «iterationBlock.indexName»)
 			{
 				«FOR innerInstruction : innerInstructions»
 				«innerInstruction.content»
 				«ENDFOR»
 				return (accu = «binaryFunction.codeName»(accu, «lambda.content»));
 			},
-			&«binaryFunction.codeName»);''')»
+			&«binaryFunction.codeName»«result.type.instanciateTemplate»);''')»
 	'''
 
 	override getParallelLoopContent(Loop it)
@@ -233,7 +245,7 @@ class KokkosInstructionContentProvider extends InstructionContentProvider
 			«innerInstruction.content»
 			«ENDFOR»
 			accu = «binaryFunction.codeName»(accu, «lambda.content»);
-		}, KokkosJoiner<«result.type.cppType»>(«result.name», «result.defaultValue.content», &«binaryFunction.codeName»));''')»
+		}, KokkosJoiner<«result.type.cppType»>(«result.name», «result.type.cppType»(«result.defaultValue.content»), &«binaryFunction.codeName»«result.type.instanciateTemplate»));''')»
 	'''
 
 	override getParallelLoopContent(Loop it)

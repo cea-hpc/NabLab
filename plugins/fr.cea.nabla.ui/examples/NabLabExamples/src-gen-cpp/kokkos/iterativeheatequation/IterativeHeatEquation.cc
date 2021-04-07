@@ -342,7 +342,7 @@ void IterativeHeatEquation::computeDeltaTn() noexcept
 	Kokkos::parallel_reduce(nbCells, KOKKOS_LAMBDA(const size_t& cCells, double& accu)
 	{
 		accu = iterativeheatequationfreefuncs::minR0(accu, V(cCells) / D(cCells));
-	}, KokkosJoiner<double>(reduction0, numeric_limits<double>::max(), &iterativeheatequationfreefuncs::minR0));
+	}, KokkosJoiner<double>(reduction0, double(numeric_limits<double>::max()), &iterativeheatequationfreefuncs::minR0));
 	deltat = reduction0 * 0.1;
 }
 
@@ -393,7 +393,7 @@ void IterativeHeatEquation::computeResidual() noexcept
 	Kokkos::parallel_reduce(nbCells, KOKKOS_LAMBDA(const size_t& jCells, double& accu)
 	{
 		accu = iterativeheatequationfreefuncs::maxR0(accu, std::abs(u_nplus1_kplus1(jCells) - u_nplus1_k(jCells)));
-	}, KokkosJoiner<double>(reduction0, -numeric_limits<double>::max(), &iterativeheatequationfreefuncs::maxR0));
+	}, KokkosJoiner<double>(reduction0, double(-numeric_limits<double>::max()), &iterativeheatequationfreefuncs::maxR0));
 	residual = reduction0;
 }
 

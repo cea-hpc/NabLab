@@ -100,6 +100,9 @@ A LaTeX file containing the content of the jobs and an example of json data file
 
 <img src="img/NabLab_generated_files.png" alt="NabLab Generated Files" title="NabLab Generated Files" width="30%" height="30%" />
 
+!!! note
+	A good practice is to name "src-gen" a directory containing only generated code.
+
 
 ### Interpretation
 

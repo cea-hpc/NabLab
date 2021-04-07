@@ -37,7 +37,7 @@ MainModule Glace2d glace2d
 	`iterationMax` and `timeMax` variables are mandatory for C++ code generation, optional otherwise.
 
 !!! note
-	Code completion is available with *CTRL-space* for all NabLab module and variable references.
+	Code completion is available with *CTRL-space* for all module and variable references.
 
 
 ### VTK output
@@ -119,6 +119,8 @@ Kokkos
 
 All targets have to define the `outputPath` of the generation and a set of variables which will be reported in the *CMakeLists.txt* file.
 
+!!! note
+	A good practice is to name "src-gen" a directory containing only generated code.
 
 For C++ targets, the `N_CXX_COMPILER` variable is mandatory.
 For `Kokkos`, `KokkosTeamThread`, the Kokkos library has to be installed and the path to the library has to be provided is the `N_KOKKOS_PATH` variable. 

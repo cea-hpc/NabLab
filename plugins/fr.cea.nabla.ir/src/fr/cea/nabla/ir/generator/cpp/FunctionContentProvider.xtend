@@ -35,16 +35,23 @@ class FunctionContentProvider
 	protected def String getMacro() { null }
 
 	def getDeclarationContent(Function it)
-	'''
-	«FOR v : variables BEFORE "template<" SEPARATOR ", " AFTER ">"»size_t «v.name»«ENDFOR»
-	«IF macro !== null»«macro»«ENDIF»
-	«returnType.cppType» «name»(«FOR a : inArgs SEPARATOR ', '»«a.type.cppType» «a.name»«ENDFOR»)'''
+	{
+		getDeclarationContent(it, name)
+	}
 
 	def getDefinitionContent(InternFunction it)
 	'''
 		«getDeclarationContent»
 		{
 			«body.innerContent»
+		}
+	'''
+
+	def getDefinitionContent(String className, ExternFunction it)
+	'''
+		«getDeclarationContent(it, className + "::" + name)»
+		{
+			// Your code here
 		}
 	'''
 
@@ -65,6 +72,12 @@ class FunctionContentProvider
 			return ret;
 		}
 	'''
+
+	private def getDeclarationContent(Function it, String name)
+	'''
+	«FOR v : variables BEFORE "template<" SEPARATOR ", " AFTER ">"»size_t «v.name»«ENDFOR»
+	«IF macro !== null»«macro»«ENDIF»
+	«returnType.cppType» «name»(«FOR a : inArgs SEPARATOR ', '»«a.type.cppType» «a.name»«ENDFOR»)'''
 
 	private def getJniInArgContent(Arg it)
 	{

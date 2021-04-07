@@ -127,8 +127,11 @@ This view is automatically updated and synchronized with the selection in the cu
 
 ### Job graph
 
-NabLab offers 2 visualisation modes for job graph: a fast rendering view and an editor with a more efficient layout.
+NabLab offers 2 visualization modes for job graph: a fast rendering view and an editor with a more efficient layout.
 In case of job cycles, both of the modes will display the cycle graphically to highlight the error.  
+
+!!! note
+	In both visualization modes, let the mouse over a job node to display its input and output variables.
 
 #### View
 

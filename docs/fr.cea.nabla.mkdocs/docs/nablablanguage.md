@@ -2,7 +2,7 @@
 
 ## Module and extensions
 
-A NabLab file, extension `n`, can be a `module` or an `extension`.
+A NabLab file, extension `n`, defines a `module` or an `extension`.
 
 ### Module
 

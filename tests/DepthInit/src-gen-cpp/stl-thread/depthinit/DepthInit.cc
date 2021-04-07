@@ -54,13 +54,13 @@ DepthInit::Options::jsonInit(const char* jsonContent)
 	}
 	else
 		deltat = 1.0;
-	// batiLib
-	if (o.HasMember("batiLib"))
+	// bathyLib
+	if (o.HasMember("bathyLib"))
 	{
 		rapidjson::StringBuffer strbuf;
 		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
-		o["batiLib"].Accept(writer);
-		batiLib.jsonInit(strbuf.GetString());
+		o["bathyLib"].Accept(writer);
+		bathyLib.jsonInit(strbuf.GetString());
 	}
 }
 
@@ -96,7 +96,7 @@ void DepthInit::initFromFile() noexcept
 {
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
-		eta[jCells] = depthinitfreefuncs::two() * options.batiLib.nextWaveHeight();
+		eta[jCells] = depthinitfreefuncs::two() * options.bathyLib.nextWaveHeight();
 	}
 }
 

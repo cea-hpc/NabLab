@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-extension BatiLib;
+extension BathyLib;
 
 def nextWaveHeight: → ℝ;
 def nextDepth1: x | ℝ × ℝ[x] → ℝ;

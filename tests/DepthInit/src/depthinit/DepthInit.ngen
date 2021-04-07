@@ -23,7 +23,7 @@ MainModule DepthInit depthInit
 Interpreter
 {
 	outputPath = "/DepthInit/src-gen-interpreter";
-	extension BatiLib providedBy BatiLibCpp;
+	extension BathyLib providedBy BathyLibCpp;
 	N_CXX_COMPILER = "/usr/bin/g++";
 	JAVA_HOME = "/usr/lib/jvm/java-11-openjdk-amd64";
 }

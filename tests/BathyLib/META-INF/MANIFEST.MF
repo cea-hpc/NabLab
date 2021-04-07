@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: BatiLib
-Bundle-SymbolicName: BatiLib
+Bundle-SymbolicName: BathyLib
 Bundle-Version: 0.1.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Automatic-Module-Name: BatiLib
@@ -12,5 +12,5 @@ Require-Bundle: fr.cea.nabla,
    com.google.gson,
    commons-math3,
    leveldb
-Export-Package: batilibjava
+Export-Package: bathylibjava
 Bundle-Vendor: CEA

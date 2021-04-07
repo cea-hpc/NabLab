@@ -9,19 +9,19 @@
 /*
  * C++ Extension Provider
  */
-Provider BatiLibCpp : BatiLib
+Provider BathyLibCpp : BathyLib
 {
 	target = CppSequential;
 	compatibleTargets = StlThread;
-	outputPath = "/BatiLib/src-cpp";
+	outputPath = "/BathyLib/src-cpp";
 }
 
 /* 
  * Java Extension Provider
  */
-Provider BatiLibJava : BatiLib
+Provider BathyLibJava : BathyLib
 {
 	target = Java;
 	// compatibleTargets can be added here
-	outputPath = "/BatiLib/src-java";
+	outputPath = "/BathyLib/src-java";
 }

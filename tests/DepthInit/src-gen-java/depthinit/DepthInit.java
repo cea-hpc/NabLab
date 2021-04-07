@@ -25,7 +25,7 @@ public final class DepthInit
 		public double maxTime;
 		public int maxIter;
 		public double deltat;
-		public batilibjava.BatiLib batiLib;
+		public bathylibjava.BathyLib bathyLib;
 		public String nonRegression;
 
 		public void jsonInit(final String jsonContent)
@@ -61,10 +61,10 @@ public final class DepthInit
 			}
 			else
 				deltat = 1.0;
-			// batiLib
-			batiLib = new batilibjava.BatiLib();
-			if (o.has("batiLib"))
-				batiLib.jsonInit(o.get("batiLib").toString());
+			// bathyLib
+			bathyLib = new bathylibjava.BathyLib();
+			if (o.has("bathyLib"))
+				bathyLib.jsonInit(o.get("bathyLib").toString());
 		}
 	}
 
@@ -115,7 +115,7 @@ public final class DepthInit
 	{
 		for (int jCells=0; jCells<nbCells; jCells++)
 		{
-			eta[jCells] = two() * options.batiLib.nextWaveHeight();
+			eta[jCells] = two() * options.bathyLib.nextWaveHeight();
 		}
 	}
 

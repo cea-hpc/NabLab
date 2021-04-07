@@ -6,7 +6,7 @@ set(CMAKE_VERBOSE_MAKEFILE FALSE)
 # SET VARIABLES
 set(CMAKE_CXX_COMPILER /usr/bin/g++ CACHE STRING "")
 set(N_WS_PATH $ENV{HOME}/workspaces/NabLab/tests)
-set(BATILIBCPP_PATH ${N_WS_PATH}/BatiLib/src-cpp/batilibcpp)
+set(BATHYLIBCPP_PATH ${N_WS_PATH}/BathyLib/src-cpp/bathylibcpp)
 
 # CHECK VARIABLES
 if (NOT DEFINED N_WS_PATH)
@@ -31,13 +31,13 @@ endif()
 if(NOT TARGET nablalib)
 	add_subdirectory(${N_WS_PATH}/.nablab/nablalib ${CMAKE_BINARY_DIR}/nablalib)
 endif()
-if(NOT TARGET batilibcpp)
-	add_subdirectory(${BATILIBCPP_PATH} ${CMAKE_BINARY_DIR}/batilibcpp)
+if(NOT TARGET bathylibcpp)
+	add_subdirectory(${BATHYLIBCPP_PATH} ${CMAKE_BINARY_DIR}/bathylibcpp)
 endif()
 
 # EXECUTABLE depthinit
 add_executable(depthinit DepthInit.cc)
-target_link_libraries(depthinit PUBLIC nablalib pthread batilibcpp)
+target_link_libraries(depthinit PUBLIC nablalib pthread bathylibcpp)
 
 # OPTIONAL USER OPTIONS IN Project.cmake
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)

@@ -1,22 +1,23 @@
-#ifndef __BATILIB__BATILIB
-#define __BATILIB__BATILIB
+/*******************************************************************************
+ * Copyright (c) 2020 CEA
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * Contributors: see AUTHORS file
+ *******************************************************************************/
+#ifndef __BATHYLIB_H_
+#define __BATHYLIB_H_
 
-#include <iostream>
-#include <string>
-#include "IBatiLib.h"
+#include "IBathyLib.h"
 
-using namespace nablalib::types;
-
-class BatiLib : public IBatiLib
+class BathyLib : public IBathyLib
 {
 public:
 	void jsonInit(const char* jsonContent) override;
 
-	double nextWaveHeight()
-	{
-		std::cout << "C++ BatiLib::nextWaveHeight" << std:: endl;
-		return 1.0;
-	}
+	double nextWaveHeight() override;
 
 	template<size_t x>
 	double nextDepth1(double x0, RealArray1D<x> x1)
@@ -63,8 +64,8 @@ public:
 	}
 
 private:
-		double depth = 4.3;
-		std::string fileName = "";
+	double depth = 4.3;
+	std::string fileName = "";
 };
 
 #endif

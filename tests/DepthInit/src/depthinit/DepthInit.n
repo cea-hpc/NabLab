@@ -9,7 +9,7 @@
  *******************************************************************************/
 module DepthInit;
 
-with BatiLib.*;
+with BathyLib.*;
 
 itemtypes { cell, node }
 

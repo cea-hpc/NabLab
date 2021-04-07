@@ -270,6 +270,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    Overview
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#perspective" class="md-nav__link">
     Perspective
   </a>
@@ -291,6 +298,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#interpretation" class="md-nav__link">
+    Interpretation
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#latex-view" class="md-nav__link">
     LaTeX view
   </a>
@@ -298,16 +312,29 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#job-graph-view" class="md-nav__link">
-    Job graph view
+  <a href="#job-graph" class="md-nav__link">
+    Job graph
+  </a>
+  
+    <nav class="md-nav" aria-label="Job graph">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#view" class="md-nav__link">
+    View
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#job-graph-editor" class="md-nav__link">
-    Job graph editor
+  <a href="#editor" class="md-nav__link">
+    Editor
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -488,6 +515,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    Overview
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#perspective" class="md-nav__link">
     Perspective
   </a>
@@ -509,6 +543,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#interpretation" class="md-nav__link">
+    Interpretation
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#latex-view" class="md-nav__link">
     LaTeX view
   </a>
@@ -516,16 +557,29 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#job-graph-view" class="md-nav__link">
-    Job graph view
+  <a href="#job-graph" class="md-nav__link">
+    Job graph
+  </a>
+  
+    <nav class="md-nav" aria-label="Job graph">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#view" class="md-nav__link">
+    View
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#job-graph-editor" class="md-nav__link">
-    Job graph editor
+  <a href="#editor" class="md-nav__link">
+    Editor
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -590,6 +644,9 @@
 <p>If you want to skip tests execution, you can run the following command:
 <code>mvn clean; mvn verify -Dmaven.test.skip=true</code></p>
 <h2 id="first-step-in-the-environment">First step in the environment</h2>
+<h3 id="overview">Overview</h3>
+<p>The NabLab environment is based on the <a href="https://www.eclipse.org/modeling/emf/">Eclipse Modeling Framework</a> (EMF). The central part of the NabLab environment displays a textual editor, based on <a href="https://www.eclipse.org/Xtext/">Xtext</a> which provides contextual code completion, code folding, syntax highlighting, error detection, quick fixes, variable scoping, and type checking. The left part of the environment proposes a model explorer and a dedicated interactive outline view to navigate easily through the textual editor. The bottom part is composed of several views including a rich LaTeX visualization of the selection in the editor. A graphical editor based on <a href="https://www.eclipse.org/sirius/">Sirius</a> allows to visualize the data flow graph between jobs.</p>
+<p><img src="img/NabLab_main_window.png" alt="NabLab Main Window" title="NabLab Main Window" width="100%" height="100%" /></p>
 <h3 id="perspective">Perspective</h3>
 <p>Once the NabLab environment has been launched, the NabLab perspective should be selected. If it is not the case, just select the NabLab perspective from the <em>Window &gt; Perspective &gt; Open Perspective &gt; Other ... &gt; NabLab</em> menu.</p>
 <p><img src="img/NabLab_perspective_menu.png" alt="NabLab Perspective Menu" title="NabLab Perspective Menu" width="40%" height="40%" /></p>
@@ -607,16 +664,32 @@
 <p>Java and C++ source code files are generated in <em>src-gen-java</em> and <em>src-gen-cpp</em> folders respectively. For each C++ folder a CMakeLists.txt file is generated.
 A LaTeX file containing the content of the jobs and an example of json data file are also generated in the <em>src-gen</em> folder.  </p>
 <p><img src="img/NabLab_generated_files.png" alt="NabLab Generated Files" title="NabLab Generated Files" width="30%" height="30%" /></p>
+<h3 id="interpretation">Interpretation</h3>
+<p>To launch code interpretation corresponding to the NabLab module, just right-click on the ngen file of the project of your choice, for example <em>NabLabExamples/src/explicitheatequation/ExplicitHeatEquation.ngen</em> and select <em>Run As &gt; Start Interpretation</em>.</p>
+<p><img src="img/NabLab_start_interpretation.png" alt="NabLab Start Interpretation" title="NabLab Start Interpretation" width="50%" height="50%" /></p>
+<p>To change the Json file of your interpretation, right-click on the ngen file and select <em>Run As &gt; Run Configurations</em>, select your configuration, for example ExplicitHeatEquation.ngen, and change the Json file in the dialog window.</p>
+<p><img src="img/NabLab_interpretation_configuration.png" alt="NabLab Interpretation Configuration" title="NabLab Interpretation Configuration" width="80%" height="80%" /></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you have installed and configured GraalVM for NabLab, you can interpret your module using GraalVM: just select <em>Run As &gt; Start Truffle-Based Interpretation</em> instead of <em>Run As &gt; Start Interpretation</em>. You can set configuration like previously and set the monilog file and python executable path.</p>
+</div>
 <h3 id="latex-view">LaTeX view</h3>
 <p>The <em>LaTeX View</em> is located on the bottom of the NabLab environment. It allows to visualize in an elegant way the formulas contained in a .n file.</p>
 <p>If you do not use the NabLab perspective the <em>The LaTeX View</em> is not visible. You can access it through the <em>Window &gt; Show View &gt; Other... &gt; NabLab &gt; LaTeX View</em> main menu.</p>
 <p>This view is automatically updated and synchronized with the selection in the current NabLab editor.</p>
 <p><img src="img/NabLab_latex_view.png" alt="NabLab Latex View" title="NabLab Latex View" width="100%" height="100%" /></p>
-<h3 id="job-graph-view">Job graph view</h3>
+<h3 id="job-graph">Job graph</h3>
+<p>NabLab offers 2 visualization modes for job graph: a fast rendering view and an editor with a more efficient layout.
+In case of job cycles, both of the modes will display the cycle graphically to highlight the error.  </p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In both visualization modes, let the mouse over a job node to display its input and output variables.</p>
+</div>
+<h4 id="view">View</h4>
 <p>The <em>Job Graph View</em> can be opened from a <em>ngen</em> file containing an <em>Application</em>, by clicking on F1.</p>
 <p>It allows to quickly visualize the data flow graph of the application described in the ngen file.</p>
 <p><img src="img/NabLab_job_graph_view.png" alt="NabLab Job Graph View" title="NabLab Job Graph View" width="100%" height="100%" /></p>
-<h3 id="job-graph-editor">Job graph editor</h3>
+<h4 id="editor">Editor</h4>
 <p>NabLab offers another way of visualizing the data flow graph of an application.</p>
 <p>The <em>Job Graph Editor</em> can be opened from a <em>ngen</em> file containing an <em>Application</em>, by clicking on F2.</p>
 <p>It allows to visualize bigger graphs than the <em>Job Graph View</em> thanks to an efficient layout.</p>

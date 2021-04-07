@@ -288,9 +288,86 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Ngen language reference
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         Ngen language reference
       </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#application" class="md-nav__link">
+    Application
+  </a>
+  
+    <nav class="md-nav" aria-label="Application">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#main-module-identification" class="md-nav__link">
+    Main module identification
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vtk-output" class="md-nav__link">
+    VTK output
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dump-variables" class="md-nav__link">
+    Dump variables
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuring-interpretation" class="md-nav__link">
+    Configuring interpretation
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuring-generation" class="md-nav__link">
+    Configuring generation
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#provider" class="md-nav__link">
+    Provider
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -314,6 +391,69 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#application" class="md-nav__link">
+    Application
+  </a>
+  
+    <nav class="md-nav" aria-label="Application">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#main-module-identification" class="md-nav__link">
+    Main module identification
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vtk-output" class="md-nav__link">
+    VTK output
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dump-variables" class="md-nav__link">
+    Dump variables
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuring-interpretation" class="md-nav__link">
+    Configuring interpretation
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuring-generation" class="md-nav__link">
+    Configuring generation
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#provider" class="md-nav__link">
+    Provider
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -326,7 +466,135 @@
                 
                 
                 <h1 id="ngen-language">Ngen language</h1>
-<p><strong>Coming soon...</strong></p>
+<p>A ngen file, extension <code>ngen</code>, defines an <code>Application</code> or n (or several) <code>ExtensionProvider</code>.
+An <code>Application</code> reference a <code>module</code> while  an <code>ExtensionProvider</code> references an <code>extension</code>.</p>
+<h2 id="application">Application</h2>
+<p>The application is identified by a name starting with an upper case.</p>
+<div class="highlight"><pre><span></span><code>Application Glace2d;
+</code></pre></div>
+<h3 id="main-module-identification">Main module identification</h3>
+<p>The first part of the <em>ngen</em> file identifies the main module of the application. It is defined by a reference to a NabLab module and a name. It must provide some additional parameters useful for code interpretation/generation:</p>
+<ul>
+<li><code>meshClassName</code> identifies the name of the mesh class and the name of the mesh class factory. For example, if the name is <em>CartesianMesh2D</em>, NabLab waits for a factory names <em>CartesianMesh2DFactory</em> with a <code>CartesianMesh2D create()</code> method.</li>
+<li><code>nodeCoord</code> identifies the NabLab variable representing node coordinates.</li>
+<li><code>time</code>, <code>timeStep</code>, <code>iterationMax</code> and <code>timeMax</code> identifies respectively the NabLab variables representing the time of the simulation, the timeStep of the simulation, the maximum number of iterations of the main time loop and the maximum time of the simulation.</li>
+</ul>
+<div class="highlight"><pre><span></span><code>MainModule Glace2d glace2d
+{
+    meshClassName = &quot;CartesianMesh2D&quot;;
+    nodeCoord = X;
+    time = t;
+    timeStep = δt;
+    iterationMax = maxIterations;
+    timeMax = stopTime;
+}
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code>iterationMax</code> and <code>timeMax</code> variables are mandatory for C++ code generation, optional otherwise.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Code completion is available with <em>CTRL-space</em> for all NabLab module and variable references.</p>
+</div>
+<h3 id="vtk-output">VTK output</h3>
+<p>NabLab provides a PVD file format serializer, a VTK compatible file format. The next block of the <em>ngen</em> file aims at configuring this serializer. It is an optional block. The <code>periodReferenceVariable</code> defines the module variable used as a reference for the frequency of the outputs. Most of the time, it is the iteration number (often named <code>n</code>) or the time of the simulation (often named <code>t</code>).</p>
+<div class="highlight"><pre><span></span><code>VtkOutput
+{
+    periodReferenceVariable = glace2d.n;
+    outputVariables = glace2d.ρ as &quot;Density&quot;;
+}
+</code></pre></div>
+<p>When the <code>VtkOutput</code>block exists in the <em>ngen</em> file, two options must appear in the Json data file: <code>outputPath</code> and <code>outputPeriod</code> representing respectively the VTK output directory and the frequency period of the output. For example, for an <code>outputPeriod</code> of 1 and a <code>periodReferenceVariable</code> of <code>n</code>, VTK files will be written at each iteration of the simulation.</p>
+<p>Here is the VTK part of the default generated Json file (in <code>src-gen</code> directory):</p>
+<div class="highlight"><pre><span></span><code>&quot;_outputPath_comment&quot;:&quot;empty outputPath to disable output&quot;,
+&quot;outputPath&quot;:&quot;output&quot;,
+&quot;outputPeriod&quot;:1,
+</code></pre></div>
+<h3 id="dump-variables">Dump variables</h3>
+<p>NabLab provides a mechanism to dump variable values. It uses the LevelDB library for <a href="https://github.com/dain/leveldb">Java</a> and <a href="https://github.com/google/leveldb">C++</a>.
+The Java LevelDB library is included in the NabLab environment. To use the C++ one, you have to download and install it on your computer. </p>
+<p>To trigger the dump of all variables (except linear algebra ones) of your code, add a <code>LevelDB</code> block. In addition to that, in case of C++ generation, provide the path to the LevelDB installation.</p>
+<div class="highlight"><pre><span></span><code>LevelDB
+{
+    levelDBPath = &quot;$ENV{HOME}/leveldb/leveldb-install&quot;;
+}
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code>levelDBPath</code> value supports CMake syntax like <code>$ENV{HOME}</code> in the example above.  </p>
+</div>
+<p>When the <code>LevelDB</code>block exists in the <em>ngen</em> file, the <code>nonRegression</code> option must appear in the Json data file. If its value is <code>CreateReference</code>, variables are dumped in a directory named <em>ApplicationNameDB.ref</em>. If its value is <code>CompareToReference</code>, variables are dumped in a directory named <em>Application NameDB.current</em> and are compared to variables stored in <em>ApplicationNameDB.ref</em>.</p>
+<div class="highlight"><pre><span></span><code>&quot;_nonRegression_comment&quot;:&quot;empty value to disable, CreateReference or CompareToReference to take action&quot;,
+&quot;nonRegression&quot;:&quot;&quot;
+</code></pre></div>
+<h3 id="configuring-interpretation">Configuring interpretation</h3>
+<p>Interpreter needs to be configured only if you use an extension with no <em>Java</em> provider. See the extension section for details.  </p>
+<h3 id="configuring-generation">Configuring generation</h3>
+<p>To configure generation, create as many generation blocks as desired generation targets.</p>
+<p>Possible targets are:</p>
+<ul>
+<li><code>Java</code> for a multi-threaded <a href="https://docs.oracle.com/javase/specs/jls/se14/html/index.html">Java</a> code,</li>
+<li><code>Kokkos</code> for a <a href="https://github.com/kokkos">Kokkos</a> multi-threaded C++ code based on Open MP, </li>
+<li><code>KokkosTeamThread</code> for a <a href="https://github.com/kokkos">Kokkos</a> hierarchical multi-threaded C++ code with team of threads,</li>
+<li><code>OpenMP</code> for an <a href="https://www.openmp.org/">Open MP</a> multi-threaded C++ code,</li>
+<li><code>CppSequential</code> for a sequential C++ code,</li>
+<li><code>StlThread</code> for a multi-threaded C++ code based on an STL threads API provided by the NabLab library.</li>
+</ul>
+<p>Here is an example of a generation block:</p>
+<div class="highlight"><pre><span></span><code>Kokkos
+{
+    outputPath = &quot;/NabLabExamples/src-gen-cpp/kokkos&quot;;
+    N_CXX_COMPILER = &quot;/usr/bin/g++&quot;;
+    N_KOKKOS_PATH = &quot;$ENV{HOME}/kokkos/kokkos-install&quot;;
+}
+</code></pre></div>
+<p>All targets have to define the <code>outputPath</code> of the generation and a set of variables which will be reported in the <em>CMakeLists.txt</em> file.</p>
+<p>For C++ targets, the <code>N_CXX_COMPILER</code> variable is mandatory.
+For <code>Kokkos</code>, <code>KokkosTeamThread</code>, the Kokkos library has to be installed and the path to the library has to be provided is the <code>N_KOKKOS_PATH</code> variable. </p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Variables can use CMake syntax in their value like <code>$ENV{HOME}</code> for path in the example above.  </p>
+</div>
+<h2 id="provider">Provider</h2>
+<p>A NabLab module can import some extensions. Those extensions contain some functions. Some of them can be <em>external functions</em> i.e. functions with just a signature definition and no body. In this case, these <em>external functions</em> are defined in a native language, for example C++.</p>
+<p>To connect definitions to signatures, providers have to be defined:</p>
+<ul>
+<li>some glue code must be written,</li>
+<li>providers have to be declared in a <em>ngen</em> file.</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>NabLab offers a code generator to initialize the glue code and the <em>ngen</em> file for extension providers. See <a href="../firstextension/index.html">My first extension</a> for that.</p>
+</div>
+<p>Most of the time, all providers of an extension are declared in the same <em>ngen</em> file. For example, for <em>linearalgebra</em> extension part of the NabLab library, defined in the <em>linearalgebra.n</em> file, a <em>linearalgebra.ngen</em> file contains the providers.</p>
+<div class="highlight"><pre><span></span><code>Provider LinearAlgebraStl : LinearAlgebra
+{
+    target = StlThread;
+    compatibleTargets = CppSequential, OpenMP;
+    outputPath = &quot;/.nablab/linearalgebra&quot;;
+}
+
+Provider LinearAlgebraKokkos : LinearAlgebra
+{
+    target = Kokkos;
+    compatibleTargets = KokkosTeamThread;
+    outputPath = &quot;/.nablab/linearalgebra&quot;;
+}
+
+Provider LinearAlgebraJava : LinearAlgebra
+{
+    target = Java;
+    outputPath = &quot;/.nablab/linearalgebra&quot;;
+}
+</code></pre></div>
+<p>A provider is defined by its name and the extension it implements (after the <code>:</code> character).
+The provider block is composed of:</p>
+<ul>
+<li><code>target</code> defining which generation target the provider implements.</li>
+<li><code>compatibleTargets</code>, an optional field, representing a list of generation targets compatible with the <code>target</code> previously defined. In the above <code>LinearAlgebraKokkos</code> example, the <code>target</code> indicates that the provider's source code is designed for a multi-threaded C++ Kokkos source code. The <code>compatibleTargets</code> indicates that a caller generated with a <code>KokkosTeamThread</code> target can use this provider.</li>
+<li><code>outputPath</code> containing the directory of the providers's source code.</li>
+</ul>
                 
               
               

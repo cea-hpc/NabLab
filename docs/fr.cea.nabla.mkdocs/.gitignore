@@ -1,0 +1,5 @@
+# virtualenv python
+.venv/
+
+# generated public website 
+site/

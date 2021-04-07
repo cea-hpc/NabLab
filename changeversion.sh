@@ -58,12 +58,15 @@ if grep -q "$OLD_VERSION.qualifier" $f; then
    sed "s/$OLD_VERSION.qualifier/$NEW_VERSION.qualifier/g" $f.old > $f
 fi
 
-f=./README.md
-if grep -q "https://github.com/cea-hpc/NabLab/releases/tag/v$OLD_VERSION" $f; then
-   echo "   Changing version of:" $f
-   cp $f $f.old
-   sed "s%https://github.com/cea-hpc/NabLab/releases/tag/v$OLD_VERSION%https://github.com/cea-hpc/NabLab/releases/tag/v$NEW_VERSION%g" $f.old > $f
-fi
+MD_FILES="./README.md ./docs/fr.cea.nabla.mkdocs/docs/gettingstarted.md"
+for f in $MD_FILES
+do
+   if grep -q "https://github.com/cea-hpc/NabLab/releases/tag/v$OLD_VERSION" $f; then
+      echo "   Changing version of:" $f
+      cp $f $f.old
+      sed "s%https://github.com/cea-hpc/NabLab/releases/tag/v$OLD_VERSION%https://github.com/cea-hpc/NabLab/releases/tag/v$NEW_VERSION%g" $f.old > $f
+   fi
+done
 
 echo "DONE. All that remains is to change the SPLASH SCREEN (BMP 459x347)."
 

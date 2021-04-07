@@ -1,0 +1,47 @@
+site_name: NabLab documentation
+site_description: This is the documentation website of project NabLab
+site_author: Benoit Lelandais
+copyright: Copyright &copy; 2021 CEA
+
+nav:
+  - What is NabLab: index.md
+  - Getting started: gettingstarted.md
+  - My first module: firstmodule.md
+  - My first extension: firstextension.md
+  - Composing modules: modulecomposition.md
+  - Monitoring and debugging: debug.md
+  - NabLab language reference: nablablanguage.md
+  - Ngen language reference: ngenlanguage.md
+
+theme:
+  name: 'material'
+  language: 'en'
+  palette:
+    scheme: default
+    primary: indigo
+    accent: orange
+  features:
+    - navigation.instant
+  favicon: img/logo_512.png
+  logo: img/logo_512.png
+
+# for LaTeX
+extra_javascript:
+  - javascripts/config.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+markdown_extensions:
+  - admonition
+  - codehilite
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.arithmatex:
+      generic: true
+
+extra:
+  version: 0.4.0
+  social:
+    - icon: fontawesome/brands/github
+      link: 'https://github.com/cea-hpc/NabLab'
+

@@ -7,7 +7,7 @@ set(CMAKE_VERBOSE_MAKEFILE FALSE)
 set(N_WS_PATH $ENV{HOME}/workspaces/NabLab/tests)
 set(CMAKE_CXX_COMPILER /usr/bin/g++ CACHE STRING "")
 set(JAVA_HOME /usr/lib/jvm/java-11-openjdk-amd64)
-set(BATILIBCPPJNI_PATH ${N_WS_PATH}/DepthInit/src-gen-interpreter/batilibcppjni)
+set(BATHYLIBCPPJNI_PATH ${N_WS_PATH}/DepthInit/src-gen-interpreter/bathylibcppjni)
 
 # PROJECT
 project(DepthInitProject CXX)
@@ -24,8 +24,8 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 endif()
 
 # SUB_DIRECTORIES
-if(NOT TARGET batilibcppjni)
-	add_subdirectory(${BATILIBCPPJNI_PATH} ${CMAKE_BINARY_DIR}/batilibcppjni)
+if(NOT TARGET bathylibcppjni)
+	add_subdirectory(${BATHYLIBCPPJNI_PATH} ${CMAKE_BINARY_DIR}/bathylibcppjni)
 endif()
 
 # OPTIONAL USER OPTIONS IN Project.cmake

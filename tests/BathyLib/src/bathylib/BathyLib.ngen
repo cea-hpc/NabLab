@@ -1,0 +1,27 @@
+/*
+ * This file contains the providers for the BatiLib NabLab extension.
+ * The list is ordered: the first Provider is the default one for the specified target.
+ * For example, if you entered two StlThread Provider instances,
+ * the first one in the following list will be the default one during NabLab
+ * code generation for the target StlThread.
+ */
+
+/*
+ * C++ Extension Provider
+ */
+Provider BathyLibCpp : BathyLib
+{
+	target = CppSequential;
+	compatibleTargets = StlThread;
+	outputPath = "/BathyLib/src-cpp";
+}
+
+/* 
+ * Java Extension Provider
+ */
+Provider BathyLibJava : BathyLib
+{
+	target = Java;
+	// compatibleTargets can be added here
+	outputPath = "/BathyLib/src-java";
+}

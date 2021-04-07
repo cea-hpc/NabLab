@@ -61,7 +61,7 @@ class NablaExamplesInterpreterTest
 		val nRepositoryPath = pluginsPath + "/fr.cea.nabla.ir/resources/.nablab.zip"
 		UnzipHelper.unzip(new File(nRepositoryPath).toURI, new File(wsPath).toURI)
 
-		examplesProjectPath = pluginsPath + "/fr.cea.nabla.ui/examples/NablaExamples/"
+		examplesProjectPath = pluginsPath + "/fr.cea.nabla.ui/examples/NabLabExamples/"
 		git = new GitUtils(nablabPath)
 
 		System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %5$s %n")

@@ -15,7 +15,7 @@
 #include "nablalib/utils/Timer.h"
 #include "nablalib/types/Types.h"
 #include "nablalib/utils/stl/Parallel.h"
-#include "BatiLib.h"
+#include "BathyLib.h"
 
 using namespace nablalib::mesh;
 using namespace nablalib::utils;
@@ -39,7 +39,7 @@ public:
 		double maxTime;
 		int maxIter;
 		double deltat;
-		BatiLib batiLib;
+		BathyLib bathyLib;
 
 		void jsonInit(const char* jsonContent);
 	};

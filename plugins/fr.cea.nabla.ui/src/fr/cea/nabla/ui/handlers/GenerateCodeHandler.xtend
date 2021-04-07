@@ -39,7 +39,7 @@ class GenerateCodeHandler extends AbstractGenerateHandler
 			try
 			{
 				consoleFactory.printConsole(MessageType.Start, "Starting generation process for: " + nablagenFile.name)
-				consoleFactory.printConsole(MessageType.Exec, "Loading nablagen and nabla resources")
+				consoleFactory.printConsole(MessageType.Exec, "Loading resources (.n and .ngen)")
 				val plaftormUri = URI::createPlatformResourceURI(project.name + '/' + nablagenFile.projectRelativePath, true)
 				val resourceSet = resourceSetProvider.get
 				val uriMap = resourceSet.URIConverter.URIMap

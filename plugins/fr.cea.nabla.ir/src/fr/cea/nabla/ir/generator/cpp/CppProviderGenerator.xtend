@@ -14,6 +14,7 @@ import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.generator.ProviderGenerator
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.ExtensionProvider
+import fr.cea.nabla.ir.ir.Function
 import java.util.ArrayList
 
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
@@ -61,15 +62,15 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 			virtual ~«provider.interfaceName»() {};
 			virtual void jsonInit(const char* jsonContent) = 0;
 
-			/* 
-			 * Here are the other methods to implement in «name» class.
-			 * Some of them can be templates. Therefore they can not be virtual.
-			 *
 			«FOR f : provider.functions»
-
+				«IF f.template»
+				/* Template method can not be virtual. Must be directly defined in implementation class.
 				«backend.functionContentProvider.getDeclarationContent(f)»;
+				*/
+				«ELSE»
+				virtual «backend.functionContentProvider.getDeclarationContent(f)» = 0;
+				«ENDIF»
 			«ENDFOR»
-			*/
 		};
 
 		#endif
@@ -92,10 +93,14 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 			void jsonInit(const char* jsonContent) override;
 			«FOR f : provider.functions»
 
+			«IF f.template»
 			«backend.functionContentProvider.getDeclarationContent(f)»
 			{
 				// Your code here
 			}
+			«ELSE»
+			«backend.functionContentProvider.getDeclarationContent(f)» override;
+			«ENDIF»
 			«ENDFOR»
 		};
 
@@ -111,6 +116,10 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 		{
 			// Your code here
 		}
+		«FOR f : provider.functions.filter[!template]»
+
+		«backend.functionContentProvider.getDefinitionContent(provider.className, f)»
+		«ENDFOR»
 	'''
 
 	private def getVectorHeaderFileContent(ExtensionProvider provider)
@@ -242,4 +251,9 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 			// Your code here
 		}
 	'''
+
+	private def boolean isTemplate(Function it)
+	{
+		!variables.empty
+	}
 }

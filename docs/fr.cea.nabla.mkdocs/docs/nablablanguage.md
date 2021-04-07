@@ -77,7 +77,7 @@ connectivity commonFace: cell × cell → face;  // common face of two cells
 
 ### Reductions
 
-Reductions are defined by their name, neutral element (seed of the reduction) and type corresponding to the type off their arguments and also their return type. They can be overloaded: it is possible to create multiple reductions with same name and different type.
+Reductions are defined by their name, neutral element (seed of the reduction) and type corresponding to the type of their arguments and also their return type. They can be overloaded: it is possible to create multiple reductions with same name and different type.
 
 ```
 def ∑, 0.0: ℝ, (a, b) → return a + b;
@@ -86,7 +86,7 @@ def ∑, 0.0: x | ℝ[x], (a, b) → return a + b;
 
 ### Functions
 
-Functions are defined by their name, input arguments, return type and body. They can be overloaded: it is possible to create multiple functions with same name and different input arguments. Function's body is a unique instruction or a block of instructions. It can not refer to global variables. That is the reason why functions are declared before variables.
+Functions are defined by their name, input arguments, return type and body. They can be overloaded: it is possible to create multiple functions with same name and different input arguments. Function's body is a unique instruction or a block of instructions. It cannot refer to global variables. That is the reason why functions are declared before variables.
 
 ```
 def one: → ℕ, () → return 1;         // function with no in arg
@@ -163,7 +163,7 @@ Variables can be referenced with defined iterators. In the above example definin
 !!! note
 	For the moment, only the `+1` increment of the iterator is allowed.
 
-Is is possible to define several time iterators into a comma separated list: the iterator of index *k+1* is then nested into the iterator of index *k*.
+It is possible to define several time iterators into a comma separated list: the iterator of index *k+1* is then nested into the iterator of index *k*.
 
 ```
 // definition of time iterators n and k.
@@ -173,7 +173,7 @@ iterate n while (t^{n+1} < stopTime && n+1 < maxIterations),
 ```
 
 In case of several iterators, variables can be referenced by a list of defined time iterators, respecting the order of inclusion.
-In the above example defining n and k inside n, a variable can be referenced by `n=0`, `n`, `n+1`, `n+1, k=0`, `n+1, n`, and `n+1, k+1`.  variable named `t` can be referenced like this: `t^{n=0}`, `t^{n}`, `t^{n+1}`, `t^{n+1, k=0}`, `t^{n+1, k}`, `t^{n+1, k+1}`.
+In the above example defining n and k inside n, a variable can be referenced by `n=0`, `n`, `n+1`, `n+1, k=0`, `n+1, n`, and `n+1, k+1`. Variable named `t` can be referenced like this: `t^{n=0}`, `t^{n}`, `t^{n+1}`, `t^{n+1, k=0}`, `t^{n+1, k}`, `t^{n+1, k+1}`.
 
 It is also possible to define a block of inner iterators to define several loops included in a main time loop.
 
@@ -201,7 +201,7 @@ IniTime: t^{n=0} = 0.0;
 ComputeDensity: ∀j∈cells(), ρ{j} = m{j} / V{j};
 ```
 
-The execution of a NabLab program does not start at its beginning and jobs execution order does not correspond to their position in the file. During the compilation phase, the data flow graph of the program is computed  according to input and output variables of each job. Jobs are annotated with a *at* statement corresponding to its hierarchical logical time (HLT). The *HLT* concept is explicitly expressed to go beyond the classical single-program-multiple-data or bulk-synchronous-parallel programming models. The *at* logical timestamp explicitly declares the task-based parallelism of jobs.
+The execution of a NabLab program does not start at its beginning and jobs execution order does not correspond to their position in the file. During the compilation phase, the data flow graph of the program is computed according to input and output variables of each job. Jobs are annotated with an *at* statement corresponding to its hierarchical logical time (HLT). The *HLT* concept is explicitly expressed to go beyond the classical single-program-multiple-data or bulk-synchronous-parallel programming models. The *at* logical timestamp explicitly declares the task-based parallelism of jobs.
 
 However, this way to schedule jobs imposes to have a dedicated tool to visualize the graph representing the program execution. This feature has been developed and integrated into the NabLab environment (see [getting started](../gettingstarted/index.html) documentation  for details).
 

@@ -739,12 +739,12 @@ connectivity commonFace: cell × cell → face;  // common face of two cells
 </code></pre></div>
 <h2 id="reductions-and-functions">Reductions and functions</h2>
 <h3 id="reductions">Reductions</h3>
-<p>Reductions are defined by their name, neutral element (seed of the reduction) and type corresponding to the type off their arguments and also their return type. They can be overloaded: it is possible to create multiple reductions with same name and different type.</p>
+<p>Reductions are defined by their name, neutral element (seed of the reduction) and type corresponding to the type of their arguments and also their return type. They can be overloaded: it is possible to create multiple reductions with same name and different type.</p>
 <div class="highlight"><pre><span></span><code>def ∑, 0.0: ℝ, (a, b) → return a + b;
 def ∑, 0.0: x | ℝ[x], (a, b) → return a + b;
 </code></pre></div>
 <h3 id="functions">Functions</h3>
-<p>Functions are defined by their name, input arguments, return type and body. They can be overloaded: it is possible to create multiple functions with same name and different input arguments. Function's body is a unique instruction or a block of instructions. It can not refer to global variables. That is the reason why functions are declared before variables.</p>
+<p>Functions are defined by their name, input arguments, return type and body. They can be overloaded: it is possible to create multiple functions with same name and different input arguments. Function's body is a unique instruction or a block of instructions. It cannot refer to global variables. That is the reason why functions are declared before variables.</p>
 <div class="highlight"><pre><span></span><code>def one: → ℕ, () → return 1;         // function with no in arg
 
 def inc: ℕ → ℕ, (a) → return a+1;    // overloaded function inc on ℕ
@@ -804,13 +804,13 @@ iterate n while (residual &gt; ε);
 <p class="admonition-title">Note</p>
 <p>For the moment, only the <code>+1</code> increment of the iterator is allowed.</p>
 </div>
-<p>Is is possible to define several time iterators into a comma separated list: the iterator of index <em>k+1</em> is then nested into the iterator of index <em>k</em>.</p>
+<p>It is possible to define several time iterators into a comma separated list: the iterator of index <em>k+1</em> is then nested into the iterator of index <em>k</em>.</p>
 <div class="highlight"><pre><span></span><code>// definition of time iterators n and k.
 iterate n while (t^{n+1} &lt; stopTime &amp;&amp; n+1 &lt; maxIterations),
         k while (residual &gt; ε &amp;&amp; check(k+1 &lt; maxIterationsK));
 </code></pre></div>
 <p>In case of several iterators, variables can be referenced by a list of defined time iterators, respecting the order of inclusion.
-In the above example defining n and k inside n, a variable can be referenced by <code>n=0</code>, <code>n</code>, <code>n+1</code>, <code>n+1, k=0</code>, <code>n+1, n</code>, and <code>n+1, k+1</code>.  variable named <code>t</code> can be referenced like this: <code>t^{n=0}</code>, <code>t^{n}</code>, <code>t^{n+1}</code>, <code>t^{n+1, k=0}</code>, <code>t^{n+1, k}</code>, <code>t^{n+1, k+1}</code>.</p>
+In the above example defining n and k inside n, a variable can be referenced by <code>n=0</code>, <code>n</code>, <code>n+1</code>, <code>n+1, k=0</code>, <code>n+1, n</code>, and <code>n+1, k+1</code>. Variable named <code>t</code> can be referenced like this: <code>t^{n=0}</code>, <code>t^{n}</code>, <code>t^{n+1}</code>, <code>t^{n+1, k=0}</code>, <code>t^{n+1, k}</code>, <code>t^{n+1, k+1}</code>.</p>
 <p>It is also possible to define a block of inner iterators to define several loops included in a main time loop.</p>
 <div class="highlight"><pre><span></span><code>iterate n while (t^{n+1} &lt; maxTime &amp;&amp; n+1 &lt; maxIter), { 
     k while (k+1 &lt; maxIterK);
@@ -828,7 +828,7 @@ In the above example defining n and k inside n, a variable can be referenced by 
 IniTime: t^{n=0} = 0.0;
 ComputeDensity: ∀j∈cells(), ρ{j} = m{j} / V{j};
 </code></pre></div>
-<p>The execution of a NabLab program does not start at its beginning and jobs execution order does not correspond to their position in the file. During the compilation phase, the data flow graph of the program is computed  according to input and output variables of each job. Jobs are annotated with a <em>at</em> statement corresponding to its hierarchical logical time (HLT). The <em>HLT</em> concept is explicitly expressed to go beyond the classical single-program-multiple-data or bulk-synchronous-parallel programming models. The <em>at</em> logical timestamp explicitly declares the task-based parallelism of jobs.</p>
+<p>The execution of a NabLab program does not start at its beginning and jobs execution order does not correspond to their position in the file. During the compilation phase, the data flow graph of the program is computed according to input and output variables of each job. Jobs are annotated with an <em>at</em> statement corresponding to its hierarchical logical time (HLT). The <em>HLT</em> concept is explicitly expressed to go beyond the classical single-program-multiple-data or bulk-synchronous-parallel programming models. The <em>at</em> logical timestamp explicitly declares the task-based parallelism of jobs.</p>
 <p>However, this way to schedule jobs imposes to have a dedicated tool to visualize the graph representing the program execution. This feature has been developed and integrated into the NabLab environment (see <a href="../gettingstarted/index.html">getting started</a> documentation  for details).</p>
 <h2 id="instructions">Instructions</h2>
 <p>The main instructions of the language are: local variable and set definitions, affectations, blocks, loops, conditionals.

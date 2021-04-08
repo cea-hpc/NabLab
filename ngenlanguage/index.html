@@ -495,7 +495,7 @@ An <code>Application</code> reference a <code>module</code> while  an <code>Exte
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Code completion is available with <em>CTRL-space</em> for all NabLab module and variable references.</p>
+<p>Code completion is available with <em>CTRL-space</em> for all module and variable references.</p>
 </div>
 <h3 id="vtk-output">VTK output</h3>
 <p>NabLab provides a PVD file format serializer, a VTK compatible file format. The next block of the <em>ngen</em> file aims at configuring this serializer. It is an optional block. The <code>periodReferenceVariable</code> defines the module variable used as a reference for the frequency of the outputs. Most of the time, it is the iteration number (often named <code>n</code>) or the time of the simulation (often named <code>t</code>).</p>
@@ -550,6 +550,10 @@ The Java LevelDB library is included in the NabLab environment. To use the C++ o
 }
 </code></pre></div>
 <p>All targets have to define the <code>outputPath</code> of the generation and a set of variables which will be reported in the <em>CMakeLists.txt</em> file.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A good practice is to name "src-gen" a directory containing only generated code.</p>
+</div>
 <p>For C++ targets, the <code>N_CXX_COMPILER</code> variable is mandatory.
 For <code>Kokkos</code>, <code>KokkosTeamThread</code>, the Kokkos library has to be installed and the path to the library has to be provided is the <code>N_KOKKOS_PATH</code> variable. </p>
 <div class="admonition note">

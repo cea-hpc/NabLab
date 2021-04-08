@@ -228,9 +228,120 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          My first extension
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         My first extension
       </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#presentation-of-the-problem" class="md-nav__link">
+    Presentation of the problem
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#defining-the-extension" class="md-nav__link">
+    Defining the extension
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#declaring-a-provider" class="md-nav__link">
+    Declaring a provider
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementing-the-provider" class="md-nav__link">
+    Implementing the provider
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementing the provider">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#extension-implementation" class="md-nav__link">
+    Extension implementation
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#provider-initialization-using-json" class="md-nav__link">
+    Provider initialization using Json
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuring-dependencies" class="md-nav__link">
+    Configuring dependencies
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#application-generation" class="md-nav__link">
+    Application generation
+  </a>
+  
+    <nav class="md-nav" aria-label="Application generation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#extension-and-provider-association" class="md-nav__link">
+    Extension and provider association
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#building-the-application" class="md-nav__link">
+    Building the application
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#application-interpretation" class="md-nav__link">
+    Application interpretation
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -314,6 +425,103 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#presentation-of-the-problem" class="md-nav__link">
+    Presentation of the problem
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#defining-the-extension" class="md-nav__link">
+    Defining the extension
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#declaring-a-provider" class="md-nav__link">
+    Declaring a provider
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementing-the-provider" class="md-nav__link">
+    Implementing the provider
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementing the provider">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#extension-implementation" class="md-nav__link">
+    Extension implementation
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#provider-initialization-using-json" class="md-nav__link">
+    Provider initialization using Json
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuring-dependencies" class="md-nav__link">
+    Configuring dependencies
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#application-generation" class="md-nav__link">
+    Application generation
+  </a>
+  
+    <nav class="md-nav" aria-label="Application generation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#extension-and-provider-association" class="md-nav__link">
+    Extension and provider association
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#building-the-application" class="md-nav__link">
+    Building the application
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#application-interpretation" class="md-nav__link">
+    Application interpretation
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -326,7 +534,166 @@
                 
                 
                 <h1 id="my-first-extension">My first extension</h1>
-<p><strong>Coming soon...</strong></p>
+<h2 id="presentation-of-the-problem">Presentation of the problem</h2>
+<p>Let us imagine the NabLab <em>Swan</em> module simulating the effects of the propagation of seismic waves on sea surface. To wave height variable <code>H</code> and the depth sea variable <code>D</code> need to be initialized thanks to the following <code>InitH</code> and <code>InitD</code> jobs:</p>
+<div class="highlight"><pre><span></span><code>// wave initialization 
+InitH: ∀ic∈innerCells(), H{ic} = nextWaveHeight();
+
+// depth initialization
+InitD:
+    if (DConst)
+        ∀ic∈innerCells(), D{ic} = Dini;
+    else
+        ∀ic∈innerCells(), D{ic} = nextDepth();
+</code></pre></div>
+<p>The <code>nextWaveHeight</code> and <code>nextDepth</code> functions have to access shared scientific data provided by <a href="https://www.unidata.ucar.edu/software/netcdf/">NetCDF</a> in a C language library. </p>
+<p>The aim of this tutorial is to see how to create the NabLab extension containing the functions and how to implement and package a NabLab extension provider associated to this extension.</p>
+<h2 id="defining-the-extension">Defining the extension</h2>
+<p>We will create a NabLab extension called <em>BathyLib</em>. The best practice consists in creating a folder for this extension at the same level than the swan folder containing the module and to create a <em>BathyLib.n</em> file into this folder. </p>
+<p><img src="img/NabLab_extension_folders.png" alt="NabLab Extension Folders" title="NabLab Extension Folders" width="20%" height="20%" /></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The extension can also be created into a separate project. The project just needs to share the same workspace as the module.</p>
+</div>
+<p>Then, double-click on the <em>bathylib/BathyLib.n</em> file to open it and declare the <em>BathyLib</em> extension and the <code>nextWaveHeight</code> and <code>nextDepth</code> functions in the NabLab editor:</p>
+<div class="highlight"><pre><span></span><code>extension BathyLib;
+
+def nextWaveHeight: → ℝ;
+def nextDepth: → ℝ;
+</code></pre></div>
+<p>The Swan module containing the <code>InitH</code> and <code>InitD</code> jobs need to import the extension as follow:</p>
+<div class="highlight"><pre><span></span><code>module Swan;
+
+with BathyLib.*;
+</code></pre></div>
+<p>It is noteworthy that the above functions have no body. We will see now how to create the C++ methods providing the glue code to call the NetCDF C functions.</p>
+<h2 id="declaring-a-provider">Declaring a provider</h2>
+<p>The role of providers is to implement extensions. It is possible to implement several providers for an extension, for example a Java one and a C++ one. In this tutorial we will implement only one C++ provider for the <em>BathyLib</em> extension. </p>
+<p>The first step to define the provider is to create a <em>ngen</em> file containing the provider definition. NabLab provides a code generator for that: right-click on the <em>BathyLib.n</em> file and select the <em>Generate nablagen provider file</em> menu. </p>
+<p><img src="img/NabLab_generate_nablagen_provider_file.png" alt="NabLab Provider File Generation" title="NabLab Provider File Generation" width="40%" height="40%" /></p>
+<p>A <em>BathyLib.ngen</em> file is created near the <em>BathyLib.n</em> one.</p>
+<p><img src="img/NabLab_extension_folders2.png" alt="NabLab Extension Folders" title="NabLab Extension Folders" width="20%" height="20%" /></p>
+<p>Double-click on the <em>BathyLib.ngen</em> file to open the editor and suppress lines to let only a simple C++ provider as follows:</p>
+<div class="highlight"><pre><span></span><code>// C++ Extension Provider
+Provider BathyLibCpp : BathyLib
+{
+    target = StlThread;
+    outputPath = &quot;/swan/src-gen-cpp/stl-thread&quot;;
+}
+</code></pre></div>
+<p>The above example defines a provider named <code>BathyLibCpp</code> that implements <code>BathyLib</code>. This provider will be generated for the <code>StlThread</code> target in the provided <code>outputPath</code>. </p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The implemented extension and the available targets are accessible by contextual code completion with <code>CTRL-Space</code> keys.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>More information on generation targets are available in the <a href="../ngenlanguage/index.html">Ngen language reference</a></p>
+</div>
+<h2 id="implementing-the-provider">Implementing the provider</h2>
+<p>The aim of the previously defined provider is to implement the <code>nextWaveHeight</code> and <code>nextDepth</code> <em>BathyLib</em> functions. These functions have to be implemented as methods of a C++ class called <em>BathyLibCpp</em>, the name of the provider. To assist the provider implementation, NabLab offers a code generator. Right-click on the <em>BathyLib.ngen</em> file and select the <em>Generate Code</em> menu.</p>
+<p><img src="img/NabLab_generate_code.png" alt="NabLab Generate Code" title="NabLab Generate Code" width="50%" height="50%" /></p>
+<p>Generated files can be observed in the <code>outputPath</code> folder, in our example "/swan/src-gen-cpp/stl-thread".</p>
+<p><img src="img/NabLab_provider_generated_files.png" alt="NabLab Provider Files" title="NabLab Provider Files" width="20%" height="20%" /></p>
+<p>The <em>CMakeLists.txt</em> file is full generated and contains recipes to build the library.</p>
+<p>The <em>IBathyLib.h</em> file contains the interface representing the <em>BathyLib</em> extension. This file is 100% generated: do not edit this file as it is written in the header comment. This file contains the C++ <code>StlThread</code> generator implementation of the NabLab <em>BathyLib</em> extension and a <code>jsonInit</code> method.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Template functions can not be defined abstract in the interface. Consequently, if the extension implementation generates template functions, they appear as comment in the interface for information.</p>
+</div>
+<h3 id="extension-implementation">Extension implementation</h3>
+<p>The <em>BathyLib.h</em> and <em>BathyLib.cc</em> files define the C++ class implementing the <em>BathyLib</em> extension represented by the <em>IBathyLib</em> C++ interface. The body of their methods is empty and has to be implemented. In our example the methods will contain glue code in charge of calling the NetCDF functions.</p>
+<p>The <em>BathyLib.h</em> and <em>BathyLib.cc</em> files can be edited, they will not be overwritten: they are only generated if they do not already exist. If the extension changes, the generation of the provider will change the interface but not the implementation class (never overwritten). Consequently the implemented code will not compile. In this case, copy the signature of the interface's functions and paste them into the implementation class. This model follows the <a href="https://en.wikipedia.org/wiki/Generation_gap_(pattern)">Generation Gap Pattern</a>.</p>
+<h3 id="provider-initialization-using-json">Provider initialization using Json</h3>
+<p>NabLab creates providers by calling the default constructor (with no argument).
+The <code>jsonInit</code> method allows to initialize the provider class if needed.
+When you implement a provider extension, you are free to inject the Json content you wish. At the beginning of the execution, when the Json data file is read, NabLab will look for Json fields corresponding to extension names with the first letter in lower case; in the above example, <em>bathyLib</em>. This file must be in the block of the module (or extension) using the extension; in the above example in the <em>swan</em> block. </p>
+<div class="highlight"><pre><span></span><code>{
+    &quot;swan&quot;:
+    {
+        &quot;_outputPath_comment&quot;:&quot;empty outputPath to disable output&quot;,
+        &quot;outputPath&quot;:&quot;output&quot;,
+        &quot;outputPeriod&quot;:10,
+        &quot;maxIter&quot;:2500000,
+        &quot;stopTime&quot;:50.0,
+        &quot;bathyLib&quot;:
+        {
+            &quot;waveFilename&quot;:&quot;$ENV{HOME}/workspaces/swan/swan/data/swan/waveCanal.grd&quot;,
+            &quot;waveVarName&quot;:&quot;z&quot;
+        }
+    },
+    &quot;mesh&quot;:
+    {
+        &quot;nbXQuads&quot;:1103,
+        &quot;nbYQuads&quot;:44,
+        &quot;xSize&quot;:200.0,
+        &quot;ySize&quot;:200.0
+    }
+}
+</code></pre></div>
+<p>The Json block corresponding to an extension is injected as an argument to the <code>jsonInit</code> method of the extension. In the previous example, the value of the <em>bathyLib</em> field, becomes the value of the <code>jsonContent</code> argument in <code>BathyLib::jsonInit(const char* jsonContent)</code> method. This value is:</p>
+<div class="highlight"><pre><span></span><code>{
+    &quot;waveFilename&quot;:&quot;$ENV{HOME}/workspaces/swan/swan/data/swan/waveCanal.grd&quot;,
+    &quot;waveVarName&quot;:&quot;z&quot;
+}
+</code></pre></div>
+<h3 id="configuring-dependencies">Configuring dependencies</h3>
+<p>The <em>CMakeLists.txt</em> file generated with the provider is designed to be included in the <em>CMakeLists.txt</em> of the module using the extension, not to be called directly. It is totally generated and is overwritten during each generation: do not edit this file. Nevertheless, the provider sometimes need to add dependencies to external libraries. Fortunately, all NabLab generated <em>CMakeLists.txt</em> files allow to include the content of a <em>Project.cmake</em> file:</p>
+<div class="highlight"><pre><span></span><code># OPTIONAL USER OPTIONS IN Project.cmake
+if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)
+endif()
+</code></pre></div>
+<p>The previously defined <em>BathyLibCpp</em> provider depends on NetCDF library. Thus, this dependency has to appear in a <em>Project.cmake</em> file like this:</p>
+<div class="highlight"><pre><span></span><code>target_link_libraries(bathylibcpp PUBLIC netcdf)
+</code></pre></div>
+<h2 id="application-generation">Application generation</h2>
+<h3 id="extension-and-provider-association">Extension and provider association</h3>
+<p>So, now what do we have to do to inject the provider in an application that imports the extension? </p>
+<p>Most of the time, nothing! If the target of generation of the application (defined in the <em>ngen</em> file) matches the provider's target or one of its compatible targets (also defined in the <em>ngen</em> file) the matching between extension and provider is automatic.</p>
+<p>In the example, the <em>Swan</em> application has a unique <code>StlThread</code> generation target and it corresponds to the target field of the <em>BathyLibCpp</em> provider. During the generation of the <em>Swan</em> application, the NabLab console displays a message showing the default match:</p>
+<p><img src="img/NabLab_generation_msg.png" alt="NabLab Generation Messages" title="NabLab Generation Messages" width="80%" height="80%" /></p>
+<p>If several providers are included in the <em>ngen</em> file, the generation process will take the first one which matches the target conditions. To bypass this mechanism, the matching between extension and provider can be explicitly defined in the <em>ngen</em> file of an application for each generation target after the <em>outputPath</em> field. For the <em>Swan</em> application, this is done with the following instruction:</p>
+<div class="highlight"><pre><span></span><code>StlThread
+{
+    outputPath = &quot;/swan/src-gen-cpp/stl-thread&quot;;
+    extension BathyLib providedBy BathyLibCpp;
+    N_CXX_COMPILER = &quot;/usr/bin/g++&quot;;
+}
+</code></pre></div>
+<p>Once again, the code completion (with <code>CTRL-Space</code> key) proposes the list of extension and the list of providers implementing the extension. </p>
+<h3 id="building-the-application">Building the application</h3>
+<p>The application can be built as usual: go into the generation directory containing the <em>CMakeLists.txt</em> file (in our example <code>/swan/src-gen-cpp/stl-thread/swan</code>) and enter the following commands:</p>
+<div class="highlight"><pre><span></span><code>mkdir build
+cd build
+cmake ..
+make -j4
+</code></pre></div>
+<p>All the linked libraries will be built in the build directory, including those of the providers.</p>
+<h2 id="application-interpretation">Application interpretation</h2>
+<p>The interpreter operates as the generator to look for a provider matching an extension. The interpreter is written in Java and look for Java providers. Most of the time NabLab users only need C++ code generation and they implement C++ providers. Fortunately, NabLab provides a <a href="https://docs.oracle.com/en/java/javase/14/docs/specs/jni/intro.html">JNI</a> generation mechanism to call C++ providers from the interpreter (or from a Java application).</p>
+<p>To trigger the JNI code generation, configure the interpreter target in the <em>ngen</em> file with the desired provider. In our <em>Swan</em> example, the <em>ngen</em> file has to define the following interpreter target:</p>
+<div class="highlight"><pre><span></span><code>Interpreter
+{
+    outputPath = &quot;/swan/src-gen-interpreter&quot;;
+    extension BathyLib providedBy BathyLibCpp;
+}
+</code></pre></div>
+<p>To get the JNI code for the interpreter, launch the generation as usual: right-click on the <em>ngen</em> file (in the example <em>Swan.ngen</em>) and select <em>Generate Code</em>. The NabLab console displays information showing the JNI generation:</p>
+<p><img src="img/NabLab_interpreter_generation_msg.png" alt="NabLab Interpreter Generation Messages" title="NabLab Interpreter Generation Messages" width="70%" height="70%" /></p>
+<p>The generation produces a folder for each JNI provider (name of the provider + jni) and a folder corresponding to the application. In our example, it corresponds to a <em>bathylibcppjni</em> folder for the <em>bathylibcpp</em> provider and a <em>swan</em> folder for the application.</p>
+<p><img src="img/NabLab_jni_generation_folder.png" alt="NabLab JNI Generation Folders" title="NabLab JNI Generation Folders" width="30%" height="30%" /></p>
+<p>To build the generated code, just go into the folder application, <code>/swan/src-gen-interpreter/swan</code> in our example, and build the code as usual:</p>
+<div class="highlight"><pre><span></span><code>mkdir build
+cd build
+cmake ..
+make -j4
+</code></pre></div>
+<p>The interpretation needs an additional installation step to provide libraries to the interpreter in: <code>make install</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Do not forget that the JNI generation process is not necessary if your application does not use extension or if you already have a Java provider. In this case, interpretation can be done directly.</p>
+</div>
                 
               
               

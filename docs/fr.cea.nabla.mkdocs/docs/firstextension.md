@@ -76,7 +76,7 @@ Provider BathyLibCpp : BathyLib
 The above example defines a provider named `BathyLibCpp` that implements `BathyLib`. This provider will be generated for the `StlThread` target in the provided `outputPath`. 
 
 !!! note
-	The implemented extension and the available targets are accessible by contextual code completion with `CTRL-Space` keys.
+	The implemented extension and the available targets are available by contextual code completion with `CTRL-Space` keys.
 
 !!! note
 	More information on generation targets are available in the [Ngen language reference](../ngenlanguage/index.html)
@@ -236,6 +236,8 @@ make -j4
 ```
 
 The interpretation needs an additional installation step to provide libraries to the interpreter in: `make install`.
+
+Finally the interpretation process can be triggered as usual: right-click on the *ngen* file, select *Run As > Start Interpretation*.
 
 !!! note
 	Do not forget that the JNI generation process is not necessary if your application does not use extension or if you already have a Java provider. In this case, interpretation can be done directly.

@@ -206,4 +206,37 @@ All the linked libraries will be built in the build directory, including those o
 
 ## Application interpretation
 
+The interpreter operates as the generator to look for a provider matching an extension. The interpreter is written in Java and look for Java providers. Most of the time NabLab users only need C++ code generation and they implement C++ providers. Fortunately, NabLab provides a [JNI](https://docs.oracle.com/en/java/javase/14/docs/specs/jni/intro.html) generation mechanism to call C++ providers from the interpreter (or from a Java application).
+
+To trigger the JNI code generation, configure the interpreter target in the *ngen* file with the desired provider. In our *Swan* example, the *ngen* file has to define the following interpreter target:
+
+```
+Interpreter
+{
+	outputPath = "/swan/src-gen-interpreter";
+	extension BathyLib providedBy BathyLibCpp;
+}
+```
+
+To get the JNI code for the interpreter, launch the generation as usual: right-click on the *ngen* file (in the example *Swan.ngen*) and select *Generate Code*. The NabLab console displays information showing the JNI generation:
+
+<img src="img/NabLab_interpreter_generation_msg.png" alt="NabLab Interpreter Generation Messages" title="NabLab Interpreter Generation Messages" width="70%" height="70%" />
+
+The generation produces a folder for each JNI provider (name of the provider + jni) and a folder corresponding to the application. In our example, it corresponds to a *bathylibcppjni* folder for the *bathylibcpp* provider and a *swan* folder for the application.
+
+<img src="img/NabLab_jni_generation_folder.png" alt="NabLab JNI Generation Folders" title="NabLab JNI Generation Folders" width="30%" height="30%" />
+  
+To build the generated code, just go into the folder application, `/swan/src-gen-interpreter/swan` in our example, and build the code as usual:
+
+```
+mkdir build
+cd build
+cmake ..
+make -j4
+```
+
+The interpretation needs an additional installation step to provide libraries to the interpreter in: `make install`.
+
+!!! note
+	Do not forget that the JNI generation process is not necessary if your application does not use extension or if you already have a Java provider. In this case, interpretation can be done directly.
 

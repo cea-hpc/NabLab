@@ -139,7 +139,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="calls" upperBound="-1"
         eType="#//Job" eOpposite="#//Job/caller"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Job" abstract="true" eSuperTypes="#//IrAnnotable">
+  <eClassifiers xsi:type="ecore:EClass" name="Job" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" unique="false" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="at" unique="false" lowerBound="1"
@@ -152,23 +152,16 @@
         upperBound="-1" eType="#//Job"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="nextJobsWithSameCaller"
         upperBound="-1" eType="#//Job"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="InstructionJob" eSuperTypes="#//Job">
     <eStructuralFeatures xsi:type="ecore:EReference" name="instruction" lowerBound="1"
         eType="#//Instruction" containment="true" resolveProxies="false"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="timeLoopJob" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="TimeLoopJob" abstract="true" eSuperTypes="#//Job">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="instruction" lowerBound="1"
-        eType="#//Instruction" containment="true" resolveProxies="false"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ExecuteTimeLoopJob" eSuperTypes="#//TimeLoopJob #//JobCaller">
+  <eClassifiers xsi:type="ecore:EClass" name="ExecuteTimeLoopJob" eSuperTypes="#//JobCaller #//Job">
     <eStructuralFeatures xsi:type="ecore:EReference" name="whileCondition" lowerBound="1"
         eType="#//Expression" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="iterationCounter" lowerBound="1"
         eType="#//Variable"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="SetUpTimeLoopJob" eSuperTypes="#//TimeLoopJob"/>
-  <eClassifiers xsi:type="ecore:EClass" name="TearDownTimeLoopJob" eSuperTypes="#//TimeLoopJob"/>
   <eClassifiers xsi:type="ecore:EClass" name="Instruction" abstract="true" eSuperTypes="#//IrAnnotable"/>
   <eClassifiers xsi:type="ecore:EClass" name="InstructionBlock" eSuperTypes="#//Instruction">
     <eStructuralFeatures xsi:type="ecore:EReference" name="variables" upperBound="-1"

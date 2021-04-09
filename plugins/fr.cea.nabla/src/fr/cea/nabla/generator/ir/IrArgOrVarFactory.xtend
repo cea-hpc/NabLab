@@ -15,8 +15,8 @@ import fr.cea.nabla.ArgOrVarExtensions
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.InstructionBlock
 import fr.cea.nabla.ir.ir.IrFactory
+import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.PrimitiveType
-import fr.cea.nabla.ir.ir.TimeLoopJob
 import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.nabla.Arg
 import fr.cea.nabla.nabla.ArgOrVar
@@ -54,7 +54,7 @@ class IrArgOrVarFactory
 	 * created even if there are not directly referenced (useful for variables copy at the end of loop).
 	 * Of course, in this case, v_nplus_k and v_nplus1_kplus1 are also created.
 	 */
-	def Iterable<Variable> createIrVariables(Var v, Iterable<TimeLoopJob> tlJobs)
+	def Iterable<Variable> createIrVariables(Var v, Iterable<Job> tlJobs)
 	{
 		val createdVariables = new LinkedHashSet<Variable>
 
@@ -120,7 +120,7 @@ class IrArgOrVarFactory
 		return createdVariables
 	}
 
-	private def addAffectation(TimeLoopJob tlj, Variable from, Variable to)
+	private def addAffectation(Job tlj, Variable from, Variable to)
 	{
 		val affectation = createAffectation(from, to)
 

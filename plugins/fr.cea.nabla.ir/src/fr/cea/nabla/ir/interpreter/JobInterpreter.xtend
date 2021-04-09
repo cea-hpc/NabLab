@@ -10,10 +10,8 @@
 package fr.cea.nabla.ir.interpreter
 
 import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
-import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Job
-import fr.cea.nabla.ir.ir.TimeLoopJob
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
 import java.util.Arrays
 import java.util.Locale
@@ -33,16 +31,15 @@ class JobInterpreter
 		switch j
 		{
 			ExecuteTimeLoopJob: interpreteExecuteTimeLoopJob(j, context)
-			InstructionJob: interpreteInstructionJob(j, context)
-			TimeLoopJob: interpreteTimeLoopJob(j, context)
+			Job: interpreteJob(j, context)
 			default: throw new IllegalArgumentException("Unhandled parameter types: " +
 				Arrays.<Object>asList(j, context).toString())
 		}
 	}
 
-	private static def void interpreteInstructionJob(InstructionJob it, Context context)
+	private static def void interpreteJob(Job it, Context context)
 	{
-		context.logFiner("Interprete InstructionJob " + name + " @ " + at)
+		context.logFiner("Interprete Job " + name + " @ " + at)
 		val innerContext = new Context(context)
 		interprete(instruction, innerContext)
 	}
@@ -90,12 +87,6 @@ class JobInterpreter
 		context.logInfo(log)
 		val msg = String.format("%1$s After timeLoop %2$s %3$d", caller.indentation, iterationCounter.name, iteration)
 		context.logVariables(msg)
-	}
-
-	private static def void interpreteTimeLoopJob(TimeLoopJob it, Context context)
-	{
-		context.logFiner("Interprete TimeLoopCopyJob " + name + " @ " + at)
-		interprete(instruction, context)
 	}
 
 	private static def void dumpVariables(IrRoot ir, int iteration, Context context, double periodReference)

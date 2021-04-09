@@ -10,9 +10,7 @@
 package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
-import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.Job
-import fr.cea.nabla.ir.ir.TimeLoopJob
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Data
 
@@ -43,7 +41,7 @@ abstract class JobContentProvider
 		}
 	'''
 
-	protected def dispatch CharSequence getInnerContent(InstructionJob it)
+	protected def dispatch CharSequence getInnerContent(Job it)
 	'''
 		«instruction.innerContent»
 	'''
@@ -94,11 +92,6 @@ abstract class JobContentProvider
 			// force a last output at the end
 			dumpVariables(«itVar», false);
 		«ENDIF»
-	'''
-
-	protected def dispatch CharSequence getInnerContent(TimeLoopJob it)
-	'''
-			«instruction.innerContent»
 	'''
 }
 

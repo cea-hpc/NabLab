@@ -11,7 +11,7 @@ package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
 import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.ir.TimeLoopJob
+import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.nabla.AbstractTimeIterator
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.InitTimeIteratorRef
@@ -48,7 +48,7 @@ class TimeIteratorExtensions
 
 		// Time loop job creation
 		// (it.caller = null to reinit caller in case of reuse of job instance)
-		val createdJobs = new ArrayList<TimeLoopJob>
+		val createdJobs = new ArrayList<Job>
 		createdJobs += ti.toIrExecuteTimeLoopJob => 
 		[
 			iterationCounter = ic

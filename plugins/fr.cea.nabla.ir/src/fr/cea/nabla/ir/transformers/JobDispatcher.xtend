@@ -6,8 +6,8 @@ import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.JobCaller
-import fr.cea.nabla.ir.ir.TearDownTimeLoopJob
-import fr.cea.nabla.ir.ir.TimeLoopJob
+
+import static fr.cea.nabla.ir.JobExtensions.*
 
 import static extension fr.cea.nabla.ir.JobCallerExtensions.*
 import static extension fr.cea.nabla.ir.Utils.*
@@ -30,7 +30,7 @@ class JobDispatcher
 	 */
 	def void dispatchJobsInTimeLoops(IrRoot ir)
 	{
-		for (j : ir.jobs.filter[x | !(x instanceof TimeLoopJob) && x.previousJobs.empty])
+		for (j : ir.jobs.filter[x | !x.timeLoopJob && x.previousJobs.empty])
 			if (continueToDispatch(ir.main, j, ''))
 				dispatchJob(ir.main, j, '')
 	}
@@ -38,7 +38,7 @@ class JobDispatcher
 	private def void dispatchJob(JobCaller jc, Job job, String prefix)
 	{
 		//println(prefix + "dispatchJob(" + jc.name + ", " + job.name + ")")
-		if (! (job instanceof TimeLoopJob))
+		if (!job.timeLoopJob)
 		{
 			//println(prefix + jc.name + " <-- " + job.name)
 			jc.calls += job
@@ -53,7 +53,8 @@ class JobDispatcher
 							if (continueToDispatch(job, j, prefix))
 								dispatchJob(job, j, prefix + '\t')
 			}
-			TearDownTimeLoopJob:
+			//TearDownTimeLoopJob:
+			Job case (job.timeLoopJob && job.name.startsWith(TEARDOWN_TIMELOOP_PREFIX)):
 			{
 				for (next : job.nextJobs)
 					if (continueToDispatch(job.caller, next, prefix))
@@ -72,7 +73,7 @@ class JobDispatcher
 	private def boolean continueToDispatch(JobCaller jc, Job job, String prefix)
 	{
 		//println(prefix + "continueToDispatch(" + container.name  + ", " + job.name + ")")
-		(job instanceof TimeLoopJob)
+		(job.timeLoopJob)
 		|| (job.caller === null)
 		|| (includes(job.caller, jc, prefix))
 	}

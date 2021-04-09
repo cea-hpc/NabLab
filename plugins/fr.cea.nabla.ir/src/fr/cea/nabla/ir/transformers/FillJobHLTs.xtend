@@ -14,7 +14,6 @@ import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.JobCaller
-import fr.cea.nabla.ir.ir.TimeLoopJob
 import org.eclipse.emf.common.util.ECollections
 import org.eclipse.emf.common.util.EList
 import org.jgrapht.alg.cycle.CycleDetector
@@ -80,7 +79,7 @@ class FillJobHLTs extends IrTransformationStep
 	/** Build the jgrapht graph corresponding to IrModule and check if it has cycles */
 	private def hasCycles(IrRoot ir)
 	{
-		val g = createGraph(ir.jobs.reject(TimeLoopJob))
+		val g = createGraph(ir.jobs.reject(j | j.timeLoopJob))
 
 		val cycles = g.findCycle
 		val hasCycles = (cycles !== null)
@@ -106,7 +105,7 @@ class FillJobHLTs extends IrTransformationStep
 				g.addEdge(from, to)
 
 		// Add a source node and edges to nodes with no incoming edges
-		val sourceNode = IrFactory::eINSTANCE.createInstructionJob => [ name = SourceNodeLabel ]
+		val sourceNode = IrFactory::eINSTANCE.createJob => [ name = SourceNodeLabel ]
 		g.addVertex(sourceNode)
 		for (startNode : g.vertexSet.filter[v | v !== sourceNode && g.incomingEdgesOf(v).empty])
 			g.addEdge(sourceNode, startNode)

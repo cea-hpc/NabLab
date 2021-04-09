@@ -243,9 +243,80 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Composing modules
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         Composing modules
       </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#presentation-of-the-problem" class="md-nav__link">
+    Presentation of the problem
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-the-project" class="md-nav__link">
+    Creating the project
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-dummy-hydro-module" class="md-nav__link">
+    A dummy Hydro module
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-dummy-remap-module" class="md-nav__link">
+    A dummy Remap module
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hydroremap-association" class="md-nav__link">
+    Hydro/Remap association
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#code-generation" class="md-nav__link">
+    Code generation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#multiple-additional-modules" class="md-nav__link">
+    Multiple additional modules
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -314,6 +385,63 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#presentation-of-the-problem" class="md-nav__link">
+    Presentation of the problem
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-the-project" class="md-nav__link">
+    Creating the project
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-dummy-hydro-module" class="md-nav__link">
+    A dummy Hydro module
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-dummy-remap-module" class="md-nav__link">
+    A dummy Remap module
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hydroremap-association" class="md-nav__link">
+    Hydro/Remap association
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#code-generation" class="md-nav__link">
+    Code generation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#multiple-additional-modules" class="md-nav__link">
+    Multiple additional modules
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -326,7 +454,197 @@
                 
                 
                 <h1 id="composing-modules">Composing modules</h1>
-<p><strong>Coming soon...</strong></p>
+<h2 id="presentation-of-the-problem">Presentation of the problem</h2>
+<p>Let us imagine a dummy hydrodynamic module <em>Hydro</em> defined in <em>Hydro.n</em> file and its own application defined in <em>Hydro.ngen</em> file. You now want to introduce a new remapping module <em>Remap</em>. This module does not have its own application. It is designed to be coupled with the hydrodynamic module into one application defined in a <em>HydroRemap.ngen</em> file.</p>
+<p>From a NabLab point of view, it consists in merging the data flow graphs of the two modules in defining equalities between module's variables.</p>
+<h2 id="creating-the-project">Creating the project</h2>
+<p>Just click on the main menu <em>File &gt; New &gt; NabLab Project</em> to create a new project: </p>
+<p><img src="img/NabLab_new_project_menu.png" alt="NabLab New Project" title="NabLab New Project" width="60%" height="60%" /></p>
+<p>A new wizard is launched, asking for a project name and a module name:</p>
+<p><img src="img/NabLab_new_project_wizard.png" alt="NabLab New Project Wizard" title="NabLab New Project Wizard" width="50%" height="50%" /></p>
+<p>Enter <em>Tutorial</em> as project name and <em>Hydro</em> as module name and click on the <em>Finish</em> button to create the new project. The new project is available in the <em>Model Explorer</em> on the left of the window. It contains two files (<em>Hydro.n</em>, and <em>Hydro.ngen</em>) in the <em>Tutorial/src/hydro/</em> folder:</p>
+<p><img src="img/NabLab_new_project_result.png" alt="NabLab New Project Result" title="NabLab New Project Result" width="30%" height="30%" /></p>
+<h2 id="a-dummy-hydro-module">A dummy Hydro module</h2>
+<p>Here is an example code of a dummy Hydro module. Copy and paste it in <em>Hydro.n</em> file.</p>
+<div class="highlight"><pre><span></span><code>module Hydro;
+
+itemtypes { node, cell }
+connectivity nodes: → {node};
+connectivity cells: → {cell};
+
+option ℝ maxTime = 0.1;
+option ℕ maxIter = 500;
+option ℝ δt = 1.0;
+let ℝ t = 0.0;
+ℝ[2] X{nodes};
+ℝ hv1{cells}, hv2{cells}, hv3{cells}, hv4{cells}, hv5{cells};
+
+Hj1: ∀c∈cells(), hv2{c} = hv1{c};
+Hj2: ∀c∈cells(), hv3{c} = hv2{c};
+Hj3: ∀c∈cells(), hv5{c} = hv3{c} + hv4{c};
+</code></pre></div>
+<p>The algorithm is stupid: the goal is just to introduce dependencies between variables and jobs.</p>
+<table>
+<thead>
+<tr>
+<th>Job</th>
+<th>In Variables</th>
+<th>Out Variables</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hj1</td>
+<td>hv1</td>
+<td>hv2</td>
+</tr>
+<tr>
+<td>Hj2</td>
+<td>hv2</td>
+<td>hv3</td>
+</tr>
+<tr>
+<td>Hj3</td>
+<td>hv3, hv4</td>
+<td>hv5</td>
+</tr>
+</tbody>
+</table>
+<p>The <em>Hydro</em> application is defined in a classical <em>Hydro.ngen</em> file (see <a href="../ngenlanguage/index.html">Ngen language reference</a> for details). Copy and paste it in <em>Hydro.ngen</em> file.</p>
+<div class="highlight"><pre><span></span><code>Application Hydro;
+
+MainModule Hydro hydro
+{
+    meshClassName = &quot;CartesianMesh2D&quot;;
+    nodeCoord = X;
+    time = t;
+    timeStep = δt;
+    iterationMax = maxIter;
+    timeMax = maxTime;
+}
+
+StlThread
+{
+    outputPath = &quot;/NablaTest/src-gen-cpp/stl-thread&quot;;
+    N_CXX_COMPILER = &quot;/usr/bin/g++&quot;;
+}
+</code></pre></div>
+<p>The <em>Job Graph Editor</em>, triggered by pressing F2 key on <em>Hydro.ngen</em> file, displays:</p>
+<p><img src="img/NabLab_hydro_job_graph.png" alt="NabLab Hydro Job Graph" title="NabLab Hydro Job Graph" width="20%" height="20%"/></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Let the mouse over a job to display its in/out variables.</p>
+<p><img src="img/NabLab_hydro_job_in_out_variables.png" alt="NabLab Hydro Job In/Out Variables" title="NabLab Hydro Job In/Out Variables" width="30%" height="30%"/></p>
+</div>
+<h2 id="a-dummy-remap-module">A dummy Remap module</h2>
+<p>Create now a new file for the <em>Remap</em> module. Just type <code>CTRL-N</code> or click on the main menu <em>File &gt; New &gt; Other</em> to create a new file:</p>
+<p><img src="img/NabLab_new_other_menu.png" alt="NabLab New File" title="NabLab New File" width="60%" height="60%" /></p>
+<p>A new wizard is launched, select File:</p>
+<p><img src="img/NabLab_new_file_wizard.png" alt="NabLab New File Wizard" title="NabLab New File Wizard" width="50%" height="50%" /></p>
+<p>Click <em>Next&gt;</em>, select the <em>Tutorial/src/hydro</em> folder and enter <em>Remap.n</em> as file name:</p>
+<p><img src="img/NabLab_new_remap_file.png" alt="NabLab New Remap File" title="NabLab New Remap File" width="50%" height="50%" /></p>
+<p>Here is an example code of a dummy Remap module. Copy and paste it in <em>Remap.n</em> file.</p>
+<div class="highlight"><pre><span></span><code>module Remap;
+
+itemtypes { cell }
+connectivity cells: → {cell};
+
+ℝ rv1{cells}, rv2{cells}, rv3{cells};
+
+Rj1: ∀c∈cells(), rv2{c} = rv1{c};
+Rj2: ∀c∈cells(), rv3{c} = rv2{c};
+</code></pre></div>
+<p>The algorithm is as stupid as the Hydro one: the goal is just to introduce dependencies between variables and jobs.</p>
+<table>
+<thead>
+<tr>
+<th>Job</th>
+<th>In Variables</th>
+<th>Out Variables</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rj1</td>
+<td>rv1</td>
+<td>rv2</td>
+</tr>
+<tr>
+<td>Rj2</td>
+<td>rv2</td>
+<td>rv3</td>
+</tr>
+</tbody>
+</table>
+<p>It is not possible to display the graph of jobs because there is no <em>ngen</em> application file for the <em>Remap</em> module. It is not a standalone module and it is designed to be coupled with the <em>Hydro</em> one.</p>
+<h2 id="hydroremap-association">Hydro/Remap association</h2>
+<p>The aim is to associate the <em>Hydro</em> and <em>Remap</em> modules by coupling their data flow as follows:</p>
+<p><img src="img/HydroAnd1Remap.png" alt="NabLab Hydro/Remap Association" title="NabLab Hydro/Remap Association" width="30%" height="30%"/></p>
+<p>We will create a new application from the previous one. In the explorer, copy <em>Hydro.ngen</em> file and paste it in the same folder. A wizard will ask you for the name of the new file, enter <em>HydroRemap.ngen</em>. The new file must appears in the <em>src/hydro</em> folder as follows:</p>
+<p><img src="img/NabLab_hydro_remap_files.png" alt="NabLab Hydro/Remap Files" title="NabLab Hydro/Remap Files" width="30%" height="30%"/></p>
+<p>The <em>HydroRemap.ngen</em> file defines the application coupling between <em>Hydro</em> and <em>Remap</em> modules. Change the name of the application from <em>Hydro</em> to <em>HydroRemap</em> at the beginning of the file.</p>
+<div class="highlight"><pre><span></span><code>Application HydroRemap;
+</code></pre></div>
+<p>The <em>Hydro</em> module stays the main module of the application. The <em>Remap</em> module will be added to the application: in the <em>HydroRemap.ngen</em> file, between the <code>MainModule</code> and the <code>StlThread</code> blocks, introduce a block to add the additional module <em>Remap</em> and define variable equalities like they appear in the graph above:</p>
+<div class="highlight"><pre><span></span><code>AdditionalModule Remap remap
+{
+    remap.rv1 = hydro.hv1;
+    remap.rv2 = hydro.hv4;
+}
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Module names and their variables are available by contextual code completion with <code>CTRL-Space</code> keys.</p>
+</div>
+<p>Only variables of the same type can be declared as equals: the <em>ngen</em> editor will display an error if it is not the case.</p>
+<p><img src="img/NabLab_association_error.png" alt="NabLab Association Error" title="NabLab Association Error" width="60%" height="60%"/></p>
+<p>The <em>Job Graph Editor</em>, triggered by pressing F2 key on <em>HydroRemap.ngen</em> file, displays:</p>
+<p><img src="img/NabLab_hydro_remap_job_graph.png" alt="NabLab Hydro/Remap Job Graph" title="NabLab Hydro/Remap Job Graph" width="40%" height="40%"/></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In this example, there is no <code>iterate</code> instruction to define time iterators and consequently no variable with time iterators like <code>t^{n}</code>. If it is the case, time iterators must belong to the main module: they are forbidden in additional modules.</p>
+</div>
+<h2 id="code-generation">Code generation</h2>
+<p>Generate the code in the same way as usual: right-click on the <em>HydroRemap.ngen</em> file and select <em>Generate Code</em>. 
+The <code>StlThread</code> generation target will produce the following files, as expected:</p>
+<p><img src="img/NabLab_hydro_remap_generated_files.png" alt="NabLab Hydro/Remap Generated Files" title="NabLab Hydro/Remap Generated Files" width="20%" height="20%"/></p>
+<h2 id="multiple-additional-modules">Multiple additional modules</h2>
+<p>It is possible to define multiple additional modules, even if they have the same type, as long as they have different name. For example, you can couple 2 <em>Remap</em> modules named <em>r1</em> and <em>r2</em> to the <em>Hydro</em> module <em>hydro</em> in the following scenario:</p>
+<p><img src="img/HydroAnd2Remaps.png" alt="NabLab Multiple Additional Modules" title="NabLab Multiple Additional Modules" width="40%" height="40%"/></p>
+<p>The content of the <em>Hydro.n</em> file becomes:</p>
+<div class="highlight"><pre><span></span><code>module Hydro;
+
+itemtypes { node, cell }
+connectivity nodes: → {node};
+connectivity cells: → {cell};
+
+option ℝ maxTime = 0.1;
+option ℕ maxIter = 500;
+option ℝ δt = 1.0;
+let ℝ t = 0.0;
+ℝ[2] X{nodes};
+ℝ hv1{cells}, hv2{cells}, hv3{cells}, hv4{cells}, hv5{cells}, hv6{cells}, hv7{cells};
+
+Hj1: ∀c∈cells(), hv3{c} = hv2{c};
+Hj2: ∀c∈cells(), hv5{c} = hv3{c};
+Hj3: ∀c∈cells(), hv7{c} = hv4{c} + hv5{c} + hv6{c};
+</code></pre></div>
+<p>The <em>Remap</em> module does not change while the content of the <em>HydroRemap.ngen</em> file integrates two additional modules instead of the previous <em>remap</em> one:</p>
+<div class="highlight"><pre><span></span><code>AdditionalModule Remap r1
+{
+    r1.rv1 = h.hv1;
+    r1.rv2 = h.hv4;
+}
+
+AdditionalModule Remap r2
+{
+    r2.rv1 = h.hv3;
+    r2.rv3 = h.hv6;
+}
+</code></pre></div>
+<p>The <code>StlThread</code> target will generate the following files:</p>
+<p><img src="img/NabLab_hydro_2remaps_generated_files.png" alt="NabLab Multiple Additional Module Generated Files" title="NabLab Multiple Additional Module Generated Files" width="20%" height="20%"/></p>
+<p>The above picture shows that generated files have the same name as the instance (for example r1 in <code>AdditionalModule Remap r1</code> in <em>HydroRemap.ngen</em>) starting with an upper case, i.e. <em>Hydro</em>, <em>R1</em> and <em>R2</em>.</p>
                 
               
               

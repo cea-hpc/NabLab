@@ -584,7 +584,7 @@ Provider BathyLibCpp : BathyLib
 <p>The above example defines a provider named <code>BathyLibCpp</code> that implements <code>BathyLib</code>. This provider will be generated for the <code>StlThread</code> target in the provided <code>outputPath</code>. </p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The implemented extension and the available targets are accessible by contextual code completion with <code>CTRL-Space</code> keys.</p>
+<p>The implemented extension and the available targets are available by contextual code completion with <code>CTRL-Space</code> keys.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -690,6 +690,7 @@ cmake ..
 make -j4
 </code></pre></div>
 <p>The interpretation needs an additional installation step to provide libraries to the interpreter in: <code>make install</code>.</p>
+<p>Finally the interpretation process can be triggered as usual: right-click on the <em>ngen</em> file, select <em>Run As &gt; Start Interpretation</em>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Do not forget that the JNI generation process is not necessary if your application does not use extension or if you already have a Java provider. In this case, interpretation can be done directly.</p>

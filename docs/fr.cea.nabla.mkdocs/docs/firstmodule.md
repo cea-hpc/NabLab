@@ -50,7 +50,7 @@ $$
 
 Just click on the main menu *File > New > NabLab Project* to create a new project: 
 
-<img src="img/NabLab_new_menu.png" alt="NabLab New Project" title="NabLab New Project" width="60%" height="60%" />
+<img src="img/NabLab_new_project_menu.png" alt="NabLab New Project" title="NabLab New Project" width="60%" height="60%" />
 
 A new wizard is launched, asking for a project name and a module name:
 

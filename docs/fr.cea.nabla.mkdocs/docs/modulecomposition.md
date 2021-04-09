@@ -2,13 +2,27 @@
 
 ## Presentation of the problem
 
-Let us imagine a dummy hydrodynamic module *Hydro* defined in *Hydro.n* file and its own application defined in *Hydro.ngen* file. You now want to introduce a new remapping module Remap. This module does not have its own application. It is designed to be coupled with the hydrodynamic module into one application defined in a *HydroRemap.ngen* file.
+Let us imagine a dummy hydrodynamic module *Hydro* defined in *Hydro.n* file and its own application defined in *Hydro.ngen* file. You now want to introduce a new remapping module *Remap*. This module does not have its own application. It is designed to be coupled with the hydrodynamic module into one application defined in a *HydroRemap.ngen* file.
 
 From a NabLab point of view, it consists in merging the data flow graphs of the two modules in defining equalities between module's variables.
 
-## The dummy Hydro module
+## Creating the project
 
-You can find an example code of a dummy Hydro module.
+Just click on the main menu *File > New > NabLab Project* to create a new project: 
+
+<img src="img/NabLab_new_project_menu.png" alt="NabLab New Project" title="NabLab New Project" width="60%" height="60%" />
+
+A new wizard is launched, asking for a project name and a module name:
+
+<img src="img/NabLab_new_project_wizard.png" alt="NabLab New Project Wizard" title="NabLab New Project Wizard" width="50%" height="50%" />
+
+Enter *Tutorial* as project name and *Hydro* as module name and click on the *Finish* button to create the new project. The new project is available in the *Model Explorer* on the left of the window. It contains two files (*Hydro.n*, and *Hydro.ngen*) in the *Tutorial/src/hydro/* folder:
+
+<img src="img/NabLab_new_project_result.png" alt="NabLab New Project Result" title="NabLab New Project Result" width="30%" height="30%" />
+
+## A dummy Hydro module
+
+Here is an example code of a dummy Hydro module. Copy and paste it in *Hydro.n* file.
 
 ```
 module Hydro;
@@ -37,7 +51,8 @@ The algorithm is stupid: the goal is just to introduce dependencies between vari
 | Hj2 | hv2          | hv3           |
 | Hj3 | hv3, hv4     | hv5           |
 
-The *Hydro* application is defined in a classical *Hydro.ngen* file (see [Ngen language reference](../ngenlanguage/index.html) for details).
+The *Hydro* application is defined in a classical *Hydro.ngen* file (see [Ngen language reference](../ngenlanguage/index.html) for details). Copy and paste it in *Hydro.ngen* file.
+
 
 ```
 Application Hydro;
@@ -68,9 +83,22 @@ The *Job Graph Editor*, triggered by pressing F2 key on *Hydro.ngen* file, displ
 	
 	<img src="img/NabLab_hydro_job_in_out_variables.png" alt="NabLab Hydro Job In/Out Variables" title="NabLab Hydro Job In/Out Variables" width="30%" height="30%"/>
 
-## The dummy Remap module
-	
-You can find an example code of a dummy Remap module.
+## A dummy Remap module
+
+Create now a new file for the *Remap* module. Just type `CTRL-N` or click on the main menu *File > New > Other* to create a new file:
+
+<img src="img/NabLab_new_other_menu.png" alt="NabLab New File" title="NabLab New File" width="60%" height="60%" />
+
+A new wizard is launched, select File:
+
+<img src="img/NabLab_new_file_wizard.png" alt="NabLab New File Wizard" title="NabLab New File Wizard" width="50%" height="50%" />
+
+Click *Next>*, select the *Tutorial/src/hydro* folder and enter *Remap.n* as file name:
+
+<img src="img/NabLab_new_remap_file.png" alt="NabLab New Remap File" title="NabLab New Remap File" width="50%" height="50%" />
+
+Here is an example code of a dummy Remap module. Copy and paste it in *Remap.n* file.
+
 
 ```
 module Remap;
@@ -99,16 +127,17 @@ The aim is to associate the *Hydro* and *Remap* modules by coupling their data f
 
 <img src="img/HydroAnd1Remap.png" alt="NabLab Hydro/Remap Association" title="NabLab Hydro/Remap Association" width="30%" height="30%"/>
 
-The *Hydro* module stays the main module of the application. The *Remap* module will be added to the application.
+We will create a new application from the previous one. In the explorer, copy *Hydro.ngen* file and paste it in the same folder. A wizard will ask you for the name of the new file, enter *HydroRemap.ngen*. The new file must appears in the *src/hydro* folder as follows:
 
-!!! note
-	In this example, there is no `iterate` instruction to define time iterators and consequently no variable with time iterators like `t^{n}`. If it is the case, time iterators must belong to the main module: they are forbidden in additional modules.
+<img src="img/NabLab_hydro_remap_files.png" alt="NabLab Hydro/Remap Files" title="NabLab Hydro/Remap Files" width="30%" height="30%"/>
 
-Rename *Hydro.ngen* file to *HydroRemap.ngen* to define the new application associating *Hydro* and *Remap* modules. The content of the *src* folder must be as follows:
+The *HydroRemap.ngen* file defines the application coupling between *Hydro* and *Remap* modules. Change the name of the application from *Hydro* to *HydroRemap* at the beginning of the file.
 
-<img src="img/NabLab_hydro_remap_files.png" alt="NabLab Hydro/Remap Files" title="NabLab Hydro/Remap Files" width="20%" height="20%"/>
+```
+Application HydroRemap;
+```
 
-In the *HydroRemap.ngen* file, between the `MainModule` and the `StlThread` blocks, introduce a block to add the additional module *Remap* and define variable equalities like they appear in the graph above:
+The *Hydro* module stays the main module of the application. The *Remap* module will be added to the application: in the *HydroRemap.ngen* file, between the `MainModule` and the `StlThread` blocks, introduce a block to add the additional module *Remap* and define variable equalities like they appear in the graph above:
 
 ```
 AdditionalModule Remap remap
@@ -128,6 +157,9 @@ Only variables of the same type can be declared as equals: the *ngen* editor wil
 The *Job Graph Editor*, triggered by pressing F2 key on *HydroRemap.ngen* file, displays:
 
 <img src="img/NabLab_hydro_remap_job_graph.png" alt="NabLab Hydro/Remap Job Graph" title="NabLab Hydro/Remap Job Graph" width="40%" height="40%"/>
+
+!!! note
+	In this example, there is no `iterate` instruction to define time iterators and consequently no variable with time iterators like `t^{n}`. If it is the case, time iterators must belong to the main module: they are forbidden in additional modules.
 
 
 ## Code generation
@@ -185,4 +217,5 @@ The `StlThread` target will generate the following files:
 
 <img src="img/NabLab_hydro_2remaps_generated_files.png" alt="NabLab Multiple Additional Module Generated Files" title="NabLab Multiple Additional Module Generated Files" width="20%" height="20%"/>
 
-The generated file have the names of the instance starting with an upper case. Consequently, if you create two
+The above picture shows that generated files have the same name as the instance (for example r1 in `AdditionalModule Remap r1` in *HydroRemap.ngen*) starting with an upper case, i.e. *Hydro*, *R1* and *R2*.
+

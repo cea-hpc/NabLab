@@ -78,7 +78,7 @@ The NabLab perspective provides a set of *Views* and wizards shortcuts allowing 
 
 Just click on the main menu From the *File > New > NabLab Examples* to import the examples project:
 
-<img src="img/NabLab_new_menu.png" alt="NabLab Examples" title="NabLab Examples" width="40%" height="40%" />
+<img src="img/NabLab_new_examples_menu.png" alt="NabLab Examples" title="NabLab Examples" width="60%" height="60%" />
 
 A new wizard is launched:
 

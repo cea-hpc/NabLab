@@ -487,9 +487,8 @@ void ImplicitHeatEquation::executeTimeLoopN() noexcept
 	
 		if (continueLoop)
 		{
-			// Switch variables to prepare next iteration
-			std::swap(t_nplus1, t_n);
-			std::swap(u_nplus1, u_n);
+			t_n = t_nplus1;
+			u_n = u_nplus1;
 		}
 	
 		cpuTimer.stop();

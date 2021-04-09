@@ -303,7 +303,10 @@ void IterativeHeatEquation::initXc() noexcept
  */
 void IterativeHeatEquation::setUpTimeLoopK() noexcept
 {
-	deep_copy(u_nplus1_k, u_n);
+	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& i1Cells)
+	{
+		u_nplus1_k(i1Cells) = u_n(i1Cells);
+	});
 }
 
 /**
@@ -419,8 +422,10 @@ void IterativeHeatEquation::executeTimeLoopK() noexcept
 	
 		if (continueLoop)
 		{
-			// Switch variables to prepare next iteration
-			std::swap(u_nplus1_kplus1, u_nplus1_k);
+			Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& i1Cells)
+			{
+				u_nplus1_k(i1Cells) = u_nplus1_kplus1(i1Cells);
+			});
 		}
 	
 	
@@ -489,7 +494,10 @@ void IterativeHeatEquation::computeAlphaCoeff() noexcept
  */
 void IterativeHeatEquation::tearDownTimeLoopK() noexcept
 {
-	deep_copy(u_nplus1, u_nplus1_kplus1);
+	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& i1Cells)
+	{
+		u_nplus1(i1Cells) = u_nplus1_kplus1(i1Cells);
+	});
 }
 
 /**
@@ -523,9 +531,11 @@ void IterativeHeatEquation::executeTimeLoopN() noexcept
 	
 		if (continueLoop)
 		{
-			// Switch variables to prepare next iteration
-			std::swap(t_nplus1, t_n);
-			std::swap(u_nplus1, u_n);
+			t_n = t_nplus1;
+			Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& i1Cells)
+			{
+				u_n(i1Cells) = u_nplus1(i1Cells);
+			});
 		}
 	
 		cpuTimer.stop();

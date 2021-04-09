@@ -402,13 +402,8 @@ public final class ImplicitHeatEquation
 		
 			if (continueLoop)
 			{
-				// Switch variables to prepare next iteration
-				double tmp_t_n = t_n;
 				t_n = t_nplus1;
-				t_nplus1 = tmp_t_n;
-				linearalgebrajava.Vector tmp_u_n = u_n;
 				u_n = u_nplus1;
-				u_nplus1 = tmp_u_n;
 			} 
 		} while (continueLoop);
 		// force a last output at the end

@@ -24,7 +24,6 @@ import static fr.cea.nabla.ir.interpreter.InstructionInterpreter.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.JobCallerExtensions.*
 import static extension fr.cea.nabla.ir.interpreter.NablaValueGetter.*
-import static extension fr.cea.nabla.ir.interpreter.NablaValueSetter.*
 
 class JobInterpreter
 {
@@ -83,14 +82,7 @@ class JobInterpreter
 
 			if (continueLoop)
 			{
-				// Switch variables to prepare next iteration
-				for (copy : copies)
-				{
-					val leftValue = context.getVariableValue(copy.destination)
-					val rightValue = context.getVariableValue(copy.source)
-					context.setVariableValue(copy.destination, rightValue)
-					context.setVariableValue(copy.source, leftValue)
-				}
+				interprete(instruction, context)
 			}
 		}
 		while (continueLoop)
@@ -103,13 +95,7 @@ class JobInterpreter
 	private static def void interpreteTimeLoopJob(TimeLoopJob it, Context context)
 	{
 		context.logFiner("Interprete TimeLoopCopyJob " + name + " @ " + at)
-
-		for (copy : copies)
-		{
-			val sourceValue = context.getVariableValue(copy.source)
-			val destinationValue = context.getVariableValue(copy.destination)
-			destinationValue.setValue(#[], sourceValue)
-		}
+		interprete(instruction, context)
 	}
 
 	private static def void dumpVariables(IrRoot ir, int iteration, Context context, double periodReference)
@@ -127,7 +113,7 @@ class JobInterpreter
 			w.openNodeData();
 			for (v : outputVars.filter(v | v.support.name == "node"))
 			{
-				w.openNodeArray(v.outputName, v.target.type.sizesSize)
+				w.openNodeArray(v.outputName, v.target.type.baseSizes.size)
 				val value = context.getVariableValue(v.target)
 				for (i : 0..<coords.length)
 					w.write(value.getValue(#[i]))
@@ -137,7 +123,7 @@ class JobInterpreter
 			w.openCellData();
 			for (v : outputVars.filter(v | v.support.name == "cell"))
 			{
-				w.openCellArray(v.outputName, v.target.type.sizesSize)
+				w.openCellArray(v.outputName, v.target.type.baseSizes.size)
 				val value = context.getVariableValue(v.target)
 				for (i : 0..<quads.length)
 					w.write(value.getValue(#[i]))

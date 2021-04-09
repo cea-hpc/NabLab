@@ -65,7 +65,6 @@ import fr.cea.nabla.ir.ir.SetDefinition;
 import fr.cea.nabla.ir.ir.SetRef;
 import fr.cea.nabla.ir.ir.SetUpTimeLoopJob;
 import fr.cea.nabla.ir.ir.TearDownTimeLoopJob;
-import fr.cea.nabla.ir.ir.TimeLoopCopy;
 import fr.cea.nabla.ir.ir.TimeLoopJob;
 import fr.cea.nabla.ir.ir.UnaryExpression;
 import fr.cea.nabla.ir.ir.Variable;
@@ -234,13 +233,6 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	private EClass tearDownTimeLoopJobEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass timeLoopCopyEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -1418,7 +1410,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getTimeLoopJob_Copies() {
+	public EReference getTimeLoopJob_Instruction() {
 		return (EReference)timeLoopJobEClass.getEStructuralFeatures().get(0);
 	}
 
@@ -1470,36 +1462,6 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	@Override
 	public EClass getTearDownTimeLoopJob() {
 		return tearDownTimeLoopJobEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EClass getTimeLoopCopy() {
-		return timeLoopCopyEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EReference getTimeLoopCopy_Destination() {
-		return (EReference)timeLoopCopyEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EReference getTimeLoopCopy_Source() {
-		return (EReference)timeLoopCopyEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -2806,7 +2768,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEReference(instructionJobEClass, INSTRUCTION_JOB__INSTRUCTION);
 
 		timeLoopJobEClass = createEClass(TIME_LOOP_JOB);
-		createEReference(timeLoopJobEClass, TIME_LOOP_JOB__COPIES);
+		createEReference(timeLoopJobEClass, TIME_LOOP_JOB__INSTRUCTION);
 
 		executeTimeLoopJobEClass = createEClass(EXECUTE_TIME_LOOP_JOB);
 		createEReference(executeTimeLoopJobEClass, EXECUTE_TIME_LOOP_JOB__WHILE_CONDITION);
@@ -2815,10 +2777,6 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		setUpTimeLoopJobEClass = createEClass(SET_UP_TIME_LOOP_JOB);
 
 		tearDownTimeLoopJobEClass = createEClass(TEAR_DOWN_TIME_LOOP_JOB);
-
-		timeLoopCopyEClass = createEClass(TIME_LOOP_COPY);
-		createEReference(timeLoopCopyEClass, TIME_LOOP_COPY__DESTINATION);
-		createEReference(timeLoopCopyEClass, TIME_LOOP_COPY__SOURCE);
 
 		instructionEClass = createEClass(INSTRUCTION);
 
@@ -3034,7 +2992,6 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		executeTimeLoopJobEClass.getESuperTypes().add(this.getJobCaller());
 		setUpTimeLoopJobEClass.getESuperTypes().add(this.getTimeLoopJob());
 		tearDownTimeLoopJobEClass.getESuperTypes().add(this.getTimeLoopJob());
-		timeLoopCopyEClass.getESuperTypes().add(this.getIrAnnotable());
 		instructionEClass.getESuperTypes().add(this.getIrAnnotable());
 		instructionBlockEClass.getESuperTypes().add(this.getInstruction());
 		variableDeclarationEClass.getESuperTypes().add(this.getInstruction());
@@ -3178,7 +3135,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEReference(getInstructionJob_Instruction(), this.getInstruction(), null, "instruction", null, 1, 1, InstructionJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(timeLoopJobEClass, TimeLoopJob.class, "TimeLoopJob", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getTimeLoopJob_Copies(), this.getTimeLoopCopy(), null, "copies", null, 0, -1, TimeLoopJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getTimeLoopJob_Instruction(), this.getInstruction(), null, "instruction", null, 1, 1, TimeLoopJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(executeTimeLoopJobEClass, ExecuteTimeLoopJob.class, "ExecuteTimeLoopJob", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getExecuteTimeLoopJob_WhileCondition(), this.getExpression(), null, "whileCondition", null, 1, 1, ExecuteTimeLoopJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3187,10 +3144,6 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEClass(setUpTimeLoopJobEClass, SetUpTimeLoopJob.class, "SetUpTimeLoopJob", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(tearDownTimeLoopJobEClass, TearDownTimeLoopJob.class, "TearDownTimeLoopJob", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-
-		initEClass(timeLoopCopyEClass, TimeLoopCopy.class, "TimeLoopCopy", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getTimeLoopCopy_Destination(), this.getVariable(), null, "destination", null, 1, 1, TimeLoopCopy.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getTimeLoopCopy_Source(), this.getVariable(), null, "source", null, 1, 1, TimeLoopCopy.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(instructionEClass, Instruction.class, "Instruction", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 

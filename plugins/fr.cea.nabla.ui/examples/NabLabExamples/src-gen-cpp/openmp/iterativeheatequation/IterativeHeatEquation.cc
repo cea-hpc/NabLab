@@ -298,8 +298,11 @@ void IterativeHeatEquation::initXc() noexcept
  */
 void IterativeHeatEquation::setUpTimeLoopK() noexcept
 {
-	for (size_t i1(0) ; i1<u_nplus1_k.size() ; i1++)
-		u_nplus1_k[i1] = u_n[i1];
+	#pragma omp parallel for shared(u_nplus1_k)
+	for (size_t i1Cells=0; i1Cells<nbCells; i1Cells++)
+	{
+		u_nplus1_k[i1Cells] = u_n[i1Cells];
+	}
 }
 
 /**
@@ -419,8 +422,11 @@ void IterativeHeatEquation::executeTimeLoopK() noexcept
 	
 		if (continueLoop)
 		{
-			// Switch variables to prepare next iteration
-			std::swap(u_nplus1_kplus1, u_nplus1_k);
+			#pragma omp parallel for shared(u_nplus1_k)
+			for (size_t i1Cells=0; i1Cells<nbCells; i1Cells++)
+			{
+				u_nplus1_k[i1Cells] = u_nplus1_kplus1[i1Cells];
+			}
 		}
 	
 	
@@ -491,8 +497,11 @@ void IterativeHeatEquation::computeAlphaCoeff() noexcept
  */
 void IterativeHeatEquation::tearDownTimeLoopK() noexcept
 {
-	for (size_t i1(0) ; i1<u_nplus1.size() ; i1++)
-		u_nplus1[i1] = u_nplus1_kplus1[i1];
+	#pragma omp parallel for shared(u_nplus1)
+	for (size_t i1Cells=0; i1Cells<nbCells; i1Cells++)
+	{
+		u_nplus1[i1Cells] = u_nplus1_kplus1[i1Cells];
+	}
 }
 
 /**
@@ -526,9 +535,12 @@ void IterativeHeatEquation::executeTimeLoopN() noexcept
 	
 		if (continueLoop)
 		{
-			// Switch variables to prepare next iteration
-			std::swap(t_nplus1, t_n);
-			std::swap(u_nplus1, u_n);
+			t_n = t_nplus1;
+			#pragma omp parallel for shared(u_n)
+			for (size_t i1Cells=0; i1Cells<nbCells; i1Cells++)
+			{
+				u_n[i1Cells] = u_nplus1[i1Cells];
+			}
 		}
 	
 		cpuTimer.stop();

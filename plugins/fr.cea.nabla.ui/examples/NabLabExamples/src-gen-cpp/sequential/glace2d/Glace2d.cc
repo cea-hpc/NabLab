@@ -466,9 +466,13 @@ void Glace2d::setUpTimeLoopN() noexcept
 {
 	t_n = t_n0;
 	deltat_n = deltat_n0;
-	for (size_t i1(0) ; i1<X_n.size() ; i1++)
-		for (size_t i2(0) ; i2<X_n[i1].size() ; i2++)
-			X_n[i1][i2] = X_n0[i1][i2];
+	for (size_t i1Nodes=0; i1Nodes<nbNodes; i1Nodes++)
+	{
+		for (size_t i1=0; i1<2; i1++)
+		{
+			X_n[i1Nodes][i1] = X_n0[i1Nodes][i1];
+		}
+	}
 }
 
 /**
@@ -532,12 +536,26 @@ void Glace2d::executeTimeLoopN() noexcept
 	
 		if (continueLoop)
 		{
-			// Switch variables to prepare next iteration
-			std::swap(t_nplus1, t_n);
-			std::swap(deltat_nplus1, deltat_n);
-			std::swap(X_nplus1, X_n);
-			std::swap(E_nplus1, E_n);
-			std::swap(uj_nplus1, uj_n);
+			t_n = t_nplus1;
+			deltat_n = deltat_nplus1;
+			for (size_t i1Nodes=0; i1Nodes<nbNodes; i1Nodes++)
+			{
+				for (size_t i1=0; i1<2; i1++)
+				{
+					X_n[i1Nodes][i1] = X_nplus1[i1Nodes][i1];
+				}
+			}
+			for (size_t i1Cells=0; i1Cells<nbCells; i1Cells++)
+			{
+				E_n[i1Cells] = E_nplus1[i1Cells];
+			}
+			for (size_t i1Cells=0; i1Cells<nbCells; i1Cells++)
+			{
+				for (size_t i1=0; i1<2; i1++)
+				{
+					uj_n[i1Cells][i1] = uj_nplus1[i1Cells][i1];
+				}
+			}
 		}
 	
 		cpuTimer.stop();

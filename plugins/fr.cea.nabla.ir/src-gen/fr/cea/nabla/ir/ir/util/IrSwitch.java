@@ -223,13 +223,6 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case IrPackage.TIME_LOOP_COPY: {
-				TimeLoopCopy timeLoopCopy = (TimeLoopCopy)theEObject;
-				T result = caseTimeLoopCopy(timeLoopCopy);
-				if (result == null) result = caseIrAnnotable(timeLoopCopy);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
 			case IrPackage.INSTRUCTION: {
 				Instruction instruction = (Instruction)theEObject;
 				T result = caseInstruction(instruction);
@@ -906,21 +899,6 @@ public class IrSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseTearDownTimeLoopJob(TearDownTimeLoopJob object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Time Loop Copy</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Time Loop Copy</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseTimeLoopCopy(TimeLoopCopy object) {
 		return null;
 	}
 

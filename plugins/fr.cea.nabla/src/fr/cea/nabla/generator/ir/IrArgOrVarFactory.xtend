@@ -12,6 +12,8 @@ package fr.cea.nabla.generator.ir
 import com.google.inject.Inject
 import com.google.inject.Singleton
 import fr.cea.nabla.ArgOrVarExtensions
+import fr.cea.nabla.ir.ir.Instruction
+import fr.cea.nabla.ir.ir.InstructionBlock
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.TimeLoopJob
@@ -29,6 +31,7 @@ import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.typing.ArgOrVarTypeProvider
 import fr.cea.nabla.typing.BaseTypeTypeProvider
 import java.util.LinkedHashSet
+import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.xtext.EcoreUtil2
 
 @Singleton
@@ -59,6 +62,9 @@ class IrArgOrVarFactory
 		val nablaModule = EcoreUtil2.getContainerOfType(v, NablaModule)
 		val vRefsWithTimeIterators = nablaModule.eAllContents.filter(ArgOrVarRef).filter[target == v && !timeIterators.empty].toList
 
+		val vTimeIteratorsRef = vRefsWithTimeIterators.map[timeIterators].flatten
+		val vTimeIterators = vTimeIteratorsRef.map[target].toSet
+
 		// Is v a time variable ? 
 		if (vRefsWithTimeIterators.empty)
 			createdVariables += v.toIrVariable
@@ -66,55 +72,91 @@ class IrArgOrVarFactory
 		{
 			// Fill time loop variables for all iterators
 			val boolean existsInitTi = existsInitTimeIteratorRef(vRefsWithTimeIterators)
-			for (vRefsWithTimeIterator : vRefsWithTimeIterators)
+			for (ti : vTimeIterators)
 			{
-				for (tiRef : vRefsWithTimeIterator.timeIterators)
+				val boolean existsInitTiForTi = existsInitTimeIteratorRefForTimeIterator(vRefsWithTimeIterators, ti)
+				val parentTi = ti.parentTimeIterator
+
+				// Create variables
+				val currentTiVar = createIrTimeVariable(v, ti, currentTimeIteratorName)
+				val nextTiVar = createIrTimeVariable(v, ti, nextTimeIteratorName)
+				val	initTiVar = (existsInitTiForTi? createIrTimeVariable(v, ti, initTimeIteratorName) : null)
+
+				// Add variables to the list
+				createdVariables += currentTiVar
+				createdVariables += nextTiVar
+				if (initTiVar !== null) createdVariables += initTiVar
+
+				// Variable copy for SetUpTL job
+				// if x^{n+1, k=0} exists, x^{n+1, k} = x^{n+1, k=0}
+				// else x^{n+1, k} = x^{n}
+				val tiSetUpJob = tlJobs.findFirst[name == ti.setUpTimeLoopJobName]
+				if (tiSetUpJob !== null)
 				{
-					val ti = tiRef.target
-					val parentTi = ti.parentTimeIterator
-
-					// Create variables
-					val currentTiVar = createIrTimeVariable(v, ti, currentTimeIteratorName)
-					val nextTiVar = createIrTimeVariable(v, ti, nextTimeIteratorName)
-					val initTiVar = (tiRef instanceof InitTimeIteratorRef ? createIrTimeVariable(v, ti, initTimeIteratorName) : null)
-
-					// Add variables to the list
-					createdVariables += currentTiVar
-					createdVariables += nextTiVar
-					if (initTiVar !== null) createdVariables += initTiVar
-
-					// Variable copy for SetUpTL job
-					// if x^{n+1, k=0} exists, x^{n+1, k} = x^{n+1, k=0}
-					// else x^{n+1, k} = x^{n}
-					val tiSetUpJob = tlJobs.findFirst[name == ti.setUpTimeLoopJobName]
-					if (tiSetUpJob !== null)
+					if (initTiVar !== null)
+						addAffectation(tiSetUpJob, initTiVar, currentTiVar)
+					else if (parentTi !== null && !existsInitTi) // inner time iterator
 					{
-						if (initTiVar !== null)
-							tiSetUpJob.copies += toIrCopy(initTiVar, currentTiVar)
-						else if (parentTi !== null && !existsInitTi) // inner time iterator
-						{
-							val parentCurrentTiVar = createIrTimeVariable(v, parentTi, currentTimeIteratorName)
-							tiSetUpJob.copies += toIrCopy(parentCurrentTiVar, currentTiVar)
-						}
+						val parentCurrentTiVar = createIrTimeVariable(v, parentTi, currentTimeIteratorName)
+						addAffectation(tiSetUpJob, parentCurrentTiVar, currentTiVar)
 					}
+				}
 
-					// Variable copy for ExecuteTL job
-					// x^{n+1, k} <---> x^{n+1, k+1}
-					val tiExecuteJob = tlJobs.findFirst[name == ti.executeTimeLoopJobName]
-					tiExecuteJob.copies += toIrCopy(nextTiVar, currentTiVar)
+				// Variable copy for ExecuteTL job
+				// x^{n+1, k} <---> x^{n+1, k+1}
+				val tiExecuteJob = tlJobs.findFirst[name == ti.executeTimeLoopJobName]
+				addAffectation(tiExecuteJob, nextTiVar, currentTiVar)
 
-					// Variable copy for TearDownTL job
-					// x^{n+1} = x^{n+1, k+1}
-					val tiTearDownJob = tlJobs.findFirst[name == ti.tearDownTimeLoopJobName]
-					if (tiTearDownJob !== null && parentTi !== null)
-					{
-						val parentNextTiVar = createIrTimeVariable(v, parentTi, nextTimeIteratorName)
-						tiTearDownJob.copies += toIrCopy(nextTiVar, parentNextTiVar)
-					}
+				// Variable copy for TearDownTL job
+				// x^{n+1} = x^{n+1, k+1}
+				val tiTearDownJob = tlJobs.findFirst[name == ti.tearDownTimeLoopJobName]
+				if (tiTearDownJob !== null && parentTi !== null)
+				{
+					val parentNextTiVar = createIrTimeVariable(v, parentTi, nextTimeIteratorName)
+					addAffectation(tiTearDownJob, nextTiVar, parentNextTiVar)
 				}
 			}
 		}
 		return createdVariables
+	}
+
+	private def addAffectation(TimeLoopJob tlj, Variable from, Variable to)
+	{
+		val affectation = createAffectation(from, to)
+
+		if (tlj.instruction === null)
+			tlj.instruction = affectation
+		else if (tlj.instruction instanceof InstructionBlock)
+			(tlj.instruction as InstructionBlock).instructions += affectation
+		else if (tlj.instruction instanceof Instruction)
+		{
+			val prevAffectation = tlj.instruction
+			tlj.instruction = IrFactory::eINSTANCE.createInstructionBlock =>
+			[
+				annotations += tlj.toIrAnnotation
+				instructions+= prevAffectation
+				instructions+= affectation
+			]
+		}
+	}
+
+	private def createAffectation(Variable from, Variable to)
+	{
+		val lhs = IrFactory::eINSTANCE.createArgOrVarRef =>
+			[
+				type = EcoreUtil::copy(to.type)
+				target = to
+			]
+		val rhs = IrFactory::eINSTANCE.createArgOrVarRef =>
+			[
+				type = EcoreUtil::copy(from.type)
+				target = from
+			]
+		IrFactory::eINSTANCE.createAffectation =>
+		[
+			left = lhs
+			right = rhs
+		]
 	}
 
 	def toIrArgOrVar(ArgOrVar v, String timeSuffix)
@@ -178,12 +220,6 @@ class IrArgOrVarFactory
 		option = false
 	}
 
-	private def create IrFactory::eINSTANCE.createTimeLoopCopy toIrCopy(Variable from, Variable to)
-	{
-		source = from
-		destination = to
-	}
-
 	private def createIrTimeVariable(Var v, TimeIterator ti, String timeIteratorSuffix)
 	{
 		val name = v.name + getIrVarTimeSuffix(ti, timeIteratorSuffix)
@@ -198,6 +234,14 @@ class IrArgOrVarFactory
 	{
 		for (argOrVarRef : l)
 			if (argOrVarRef.timeIterators.exists[x | x instanceof InitTimeIteratorRef])
+				return true
+		return false
+	}
+
+	private def existsInitTimeIteratorRefForTimeIterator(Iterable<ArgOrVarRef> l, TimeIterator ti)
+	{
+		for (argOrVarRef : l)
+			if (argOrVarRef.timeIterators.exists[x | x instanceof InitTimeIteratorRef && x.target === ti])
 				return true
 		return false
 	}

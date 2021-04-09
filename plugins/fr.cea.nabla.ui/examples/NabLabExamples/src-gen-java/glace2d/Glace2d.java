@@ -434,10 +434,12 @@ public final class Glace2d
 	{
 		t_n = t_n0;
 		deltat_n = deltat_n0;
-		IntStream.range(0, X_n.length).parallel().forEach(i1 ->
+		IntStream.range(0, nbNodes).parallel().forEach(i1Nodes -> 
 		{
-			for (int i2=0 ; i2<X_n[i1].length ; i2++)
-				X_n[i1][i2] = X_n0[i1][i2];
+			for (int i1=0; i1<2; i1++)
+			{
+				X_n[i1Nodes][i1] = X_n0[i1Nodes][i1];
+			}
 		});
 	}
 
@@ -496,22 +498,26 @@ public final class Glace2d
 		
 			if (continueLoop)
 			{
-				// Switch variables to prepare next iteration
-				double tmp_t_n = t_n;
 				t_n = t_nplus1;
-				t_nplus1 = tmp_t_n;
-				double tmp_deltat_n = deltat_n;
 				deltat_n = deltat_nplus1;
-				deltat_nplus1 = tmp_deltat_n;
-				double[][] tmp_X_n = X_n;
-				X_n = X_nplus1;
-				X_nplus1 = tmp_X_n;
-				double[] tmp_E_n = E_n;
-				E_n = E_nplus1;
-				E_nplus1 = tmp_E_n;
-				double[][] tmp_uj_n = uj_n;
-				uj_n = uj_nplus1;
-				uj_nplus1 = tmp_uj_n;
+				IntStream.range(0, nbNodes).parallel().forEach(i1Nodes -> 
+				{
+					for (int i1=0; i1<2; i1++)
+					{
+						X_n[i1Nodes][i1] = X_nplus1[i1Nodes][i1];
+					}
+				});
+				IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
+				{
+					E_n[i1Cells] = E_nplus1[i1Cells];
+				});
+				IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
+				{
+					for (int i1=0; i1<2; i1++)
+					{
+						uj_n[i1Cells][i1] = uj_nplus1[i1Cells][i1];
+					}
+				});
 			} 
 		} while (continueLoop);
 		// force a last output at the end

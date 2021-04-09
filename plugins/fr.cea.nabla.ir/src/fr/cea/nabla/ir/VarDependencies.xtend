@@ -14,7 +14,6 @@ import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
 import fr.cea.nabla.ir.ir.IrPackage
 import fr.cea.nabla.ir.ir.Job
-import fr.cea.nabla.ir.ir.TimeLoopJob
 import fr.cea.nabla.ir.ir.Variable
 import java.util.HashSet
 
@@ -30,7 +29,6 @@ abstract class VarDependencies
 		switch it
 		{
 			ExecuteTimeLoopJob: executeTimeLoopJobOutVars
-			TimeLoopJob: copies.map[destination]
 			default: eAllContents.filter(Affectation).map[left.target].filter(Variable).filter[global].toSet
 		}
 	}
@@ -41,7 +39,6 @@ abstract class VarDependencies
 		switch it
 		{
 			ExecuteTimeLoopJob: executeTimeLoopJobInVars
-			TimeLoopJob: copies.map[source]
 			default:
 			{
 				val allVars = eAllContents.filter(ArgOrVarRef).filter[x|x.eContainingFeature != IrPackage::eINSTANCE.affectation_Left].map[target]
@@ -72,11 +69,12 @@ class JobDispatchVarDependencies extends VarDependencies
 {
 	override Iterable<Variable> getExecuteTimeLoopJobOutVars(ExecuteTimeLoopJob it)
 	{
-		copies.map[source]
+		val allVars = eAllContents.filter(ArgOrVarRef).filter[x|x.eContainingFeature != IrPackage::eINSTANCE.affectation_Left].map[target]
+		allVars.filter(Variable).filter[global].toSet
 	}
 
 	override Iterable<Variable> getExecuteTimeLoopJobInVars(ExecuteTimeLoopJob it)
 	{
-		copies.map[destination]
+		eAllContents.filter(Affectation).map[left.target].filter(Variable).filter[global].toSet
 	}
 }

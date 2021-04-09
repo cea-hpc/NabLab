@@ -166,15 +166,6 @@ public interface IrFactory extends EFactory {
 	TearDownTimeLoopJob createTearDownTimeLoopJob();
 
 	/**
-	 * Returns a new object of class '<em>Time Loop Copy</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Time Loop Copy</em>'.
-	 * @generated
-	 */
-	TimeLoopCopy createTimeLoopCopy();
-
-	/**
 	 * Returns a new object of class '<em>Instruction Block</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

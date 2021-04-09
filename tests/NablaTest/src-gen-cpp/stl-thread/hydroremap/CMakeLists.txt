@@ -32,7 +32,7 @@ if(NOT TARGET nablalib)
 endif()
 
 # EXECUTABLE hydroremap
-add_executable(hydroremap H.cc R1.cc R2.cc)
+add_executable(hydroremap Hydro.cc R1.cc R2.cc)
 target_link_libraries(hydroremap PUBLIC nablalib pthread)
 
 # OPTIONAL USER OPTIONS IN Project.cmake

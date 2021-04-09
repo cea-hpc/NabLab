@@ -9,12 +9,10 @@
  *******************************************************************************/
 module Remap;
 
-itemtypes { node, cell }
+itemtypes { cell }
 
-connectivity nodes: → {node};
 connectivity cells: → {cell};
 
-ℝ[2] X{nodes};
 ℝ rv1{cells}, rv2{cells}, rv3{cells};
 
 Rj1: ∀c∈cells(), rv2{c} = rv1{c};

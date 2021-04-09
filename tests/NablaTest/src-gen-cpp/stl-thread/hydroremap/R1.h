@@ -15,7 +15,7 @@
 #include "nablalib/utils/Timer.h"
 #include "nablalib/types/Types.h"
 #include "nablalib/utils/stl/Parallel.h"
-#include "H.h"
+#include "Hydro.h"
 
 using namespace nablalib::mesh;
 using namespace nablalib::utils;
@@ -36,7 +36,7 @@ public:
 	R1(CartesianMesh2D* aMesh, Options& aOptions);
 	~R1();
 
-	inline void setMainModule(H* value)
+	inline void setMainModule(Hydro* value)
 	{
 		mainModule = value,
 		mainModule->setR1(this);
@@ -55,7 +55,7 @@ private:
 	Options& options;
 
 	// Main module
-	H* mainModule;
+	Hydro* mainModule;
 
 	// Timers
 	Timer globalTimer;

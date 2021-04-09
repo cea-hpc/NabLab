@@ -41,7 +41,7 @@ public final class R1
 	private final Options options;
 
 	// Main module
-	private H mainModule;
+	private Hydro mainModule;
 
 	// Global variables
 	protected double[] rv3;
@@ -88,7 +88,7 @@ public final class R1
 		});
 	}
 
-	public void setMainModule(H aMainModule)
+	public void setMainModule(Hydro aMainModule)
 	{
 		mainModule = aMainModule;
 		mainModule.r1 = this;

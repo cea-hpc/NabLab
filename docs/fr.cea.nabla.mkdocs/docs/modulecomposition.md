@@ -104,7 +104,11 @@ The *Hydro* module stays the main module of the application. The *Remap* module 
 !!! note
 	In this example, there is no `iterate` instruction to define time iterators and consequently no variable with time iterators like `t^{n}`. If it is the case, time iterators must belong to the main module: they are forbidden in additional modules.
 
-Rename *Hydro.ngen* file to *HydroRemap.ngen* to define the new application associating *Hydro* and *Remap* modules. Between the `MainModule` and the `StlThread` blocks, introduce a block to add the additional module *Remap* and define variable equalities like this:
+Rename *Hydro.ngen* file to *HydroRemap.ngen* to define the new application associating *Hydro* and *Remap* modules. The content of the *src* folder must be as follows:
+
+<img src="img/NabLab_hydro_remap_files.png" alt="NabLab Hydro/Remap Files" title="NabLab Hydro/Remap Files" width="20%" height="20%"/>
+
+In the *HydroRemap.ngen* file, between the `MainModule` and the `StlThread` blocks, introduce a block to add the additional module *Remap* and define variable equalities like they appear in the graph above:
 
 ```
 AdditionalModule Remap remap
@@ -121,11 +125,64 @@ Only variables of the same type can be declared as equals: the *ngen* editor wil
 
 <img src="img/NabLab_association_error.png" alt="NabLab Association Error" title="NabLab Association Error" width="60%" height="60%"/>
 
-It is possible to define several additional modules, even if they have the same type, as long as they have different name. For example, you can couple 2 *Remap* modules named *r1* and *r2* to the *Hydro* module *hydro*.
+The *Job Graph Editor*, triggered by pressing F2 key on *HydroRemap.ngen* file, displays:
 
-The final file structure must be as follows:
-
-<img src="img/NabLab_association_files.png" alt="NabLab Association Files" title="NabLab Association Files" width="30%" height="30%"/>
+<img src="img/NabLab_hydro_remap_job_graph.png" alt="NabLab Hydro/Remap Job Graph" title="NabLab Hydro/Remap Job Graph" width="40%" height="40%"/>
 
 
 ## Code generation
+
+Generate the code in the same way as usual: right-click on the *HydroRemap.ngen* file and select *Generate Code*. 
+The `StlThread` generation target will produce the following files, as expected:
+
+<img src="img/NabLab_hydro_remap_generated_files.png" alt="NabLab Hydro/Remap Generated Files" title="NabLab Hydro/Remap Generated Files" width="20%" height="20%"/>
+
+
+## Multiple additional modules
+
+It is possible to define multiple additional modules, even if they have the same type, as long as they have different name. For example, you can couple 2 *Remap* modules named *r1* and *r2* to the *Hydro* module *hydro* in the following scenario:
+
+<img src="img/HydroAnd2Remaps.png" alt="NabLab Multiple Additional Modules" title="NabLab Multiple Additional Modules" width="40%" height="40%"/>
+
+The content of the *Hydro.n* file becomes:
+
+```
+module Hydro;
+
+itemtypes { node, cell }
+connectivity nodes: → {node};
+connectivity cells: → {cell};
+
+option ℝ maxTime = 0.1;
+option ℕ maxIter = 500;
+option ℝ δt = 1.0;
+let ℝ t = 0.0;
+ℝ[2] X{nodes};
+ℝ hv1{cells}, hv2{cells}, hv3{cells}, hv4{cells}, hv5{cells}, hv6{cells}, hv7{cells};
+
+Hj1: ∀c∈cells(), hv3{c} = hv2{c};
+Hj2: ∀c∈cells(), hv5{c} = hv3{c};
+Hj3: ∀c∈cells(), hv7{c} = hv4{c} + hv5{c} + hv6{c};
+```
+
+The *Remap* module does not change while the content of the *HydroRemap.ngen* file integrates two additional modules instead of the previous *remap* one:
+
+```
+AdditionalModule Remap r1
+{
+	r1.rv1 = h.hv1;
+	r1.rv2 = h.hv4;
+}
+
+AdditionalModule Remap r2
+{
+	r2.rv1 = h.hv3;
+	r2.rv3 = h.hv6;
+}
+```
+
+The `StlThread` target will generate the following files:
+
+<img src="img/NabLab_hydro_2remaps_generated_files.png" alt="NabLab Multiple Additional Module Generated Files" title="NabLab Multiple Additional Module Generated Files" width="20%" height="20%"/>
+
+The generated file have the names of the instance starting with an upper case. Consequently, if you create two

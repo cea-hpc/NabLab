@@ -10,10 +10,8 @@
 package fr.cea.nabla.ir.interpreter
 
 import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
-import fr.cea.nabla.ir.ir.InstructionJob
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Job
-import fr.cea.nabla.ir.ir.TimeLoopJob
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
 import java.util.Arrays
 import java.util.Locale
@@ -24,7 +22,6 @@ import static fr.cea.nabla.ir.interpreter.InstructionInterpreter.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.JobCallerExtensions.*
 import static extension fr.cea.nabla.ir.interpreter.NablaValueGetter.*
-import static extension fr.cea.nabla.ir.interpreter.NablaValueSetter.*
 
 class JobInterpreter
 {
@@ -34,16 +31,15 @@ class JobInterpreter
 		switch j
 		{
 			ExecuteTimeLoopJob: interpreteExecuteTimeLoopJob(j, context)
-			InstructionJob: interpreteInstructionJob(j, context)
-			TimeLoopJob: interpreteTimeLoopJob(j, context)
+			Job: interpreteJob(j, context)
 			default: throw new IllegalArgumentException("Unhandled parameter types: " +
 				Arrays.<Object>asList(j, context).toString())
 		}
 	}
 
-	private static def void interpreteInstructionJob(InstructionJob it, Context context)
+	private static def void interpreteJob(Job it, Context context)
 	{
-		context.logFiner("Interprete InstructionJob " + name + " @ " + at)
+		context.logFiner("Interprete Job " + name + " @ " + at)
 		val innerContext = new Context(context)
 		interprete(instruction, innerContext)
 	}
@@ -83,14 +79,7 @@ class JobInterpreter
 
 			if (continueLoop)
 			{
-				// Switch variables to prepare next iteration
-				for (copy : copies)
-				{
-					val leftValue = context.getVariableValue(copy.destination)
-					val rightValue = context.getVariableValue(copy.source)
-					context.setVariableValue(copy.destination, rightValue)
-					context.setVariableValue(copy.source, leftValue)
-				}
+				interprete(instruction, context)
 			}
 		}
 		while (continueLoop)
@@ -98,18 +87,6 @@ class JobInterpreter
 		context.logInfo(log)
 		val msg = String.format("%1$s After timeLoop %2$s %3$d", caller.indentation, iterationCounter.name, iteration)
 		context.logVariables(msg)
-	}
-
-	private static def void interpreteTimeLoopJob(TimeLoopJob it, Context context)
-	{
-		context.logFiner("Interprete TimeLoopCopyJob " + name + " @ " + at)
-
-		for (copy : copies)
-		{
-			val sourceValue = context.getVariableValue(copy.source)
-			val destinationValue = context.getVariableValue(copy.destination)
-			destinationValue.setValue(#[], sourceValue)
-		}
 	}
 
 	private static def void dumpVariables(IrRoot ir, int iteration, Context context, double periodReference)
@@ -127,7 +104,7 @@ class JobInterpreter
 			w.openNodeData();
 			for (v : outputVars.filter(v | v.support.name == "node"))
 			{
-				w.openNodeArray(v.outputName, v.target.type.sizesSize)
+				w.openNodeArray(v.outputName, v.target.type.baseSizes.size)
 				val value = context.getVariableValue(v.target)
 				for (i : 0..<coords.length)
 					w.write(value.getValue(#[i]))
@@ -137,7 +114,7 @@ class JobInterpreter
 			w.openCellData();
 			for (v : outputVars.filter(v | v.support.name == "cell"))
 			{
-				w.openCellArray(v.outputName, v.target.type.sizesSize)
+				w.openCellArray(v.outputName, v.target.type.baseSizes.size)
 				val value = context.getVariableValue(v.target)
 				for (i : 0..<quads.length)
 					w.write(value.getValue(#[i]))

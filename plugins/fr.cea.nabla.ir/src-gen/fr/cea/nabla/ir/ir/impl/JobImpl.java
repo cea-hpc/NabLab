@@ -2,6 +2,7 @@
  */
 package fr.cea.nabla.ir.ir.impl;
 
+import fr.cea.nabla.ir.ir.Instruction;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.Job;
 import fr.cea.nabla.ir.ir.JobCaller;
@@ -30,11 +31,13 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.JobImpl#getCaller <em>Caller</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.JobImpl#getPreviousJobsWithSameCaller <em>Previous Jobs With Same Caller</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.JobImpl#getNextJobsWithSameCaller <em>Next Jobs With Same Caller</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.JobImpl#getInstruction <em>Instruction</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.JobImpl#isTimeLoopJob <em>Time Loop Job</em>}</li>
  * </ul>
  *
  * @generated
  */
-public abstract class JobImpl extends IrAnnotableImpl implements Job {
+public class JobImpl extends IrAnnotableImpl implements Job {
 	/**
 	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -124,6 +127,36 @@ public abstract class JobImpl extends IrAnnotableImpl implements Job {
 	 * @ordered
 	 */
 	protected EList<Job> nextJobsWithSameCaller;
+
+	/**
+	 * The cached value of the '{@link #getInstruction() <em>Instruction</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getInstruction()
+	 * @generated
+	 * @ordered
+	 */
+	protected Instruction instruction;
+
+	/**
+	 * The default value of the '{@link #isTimeLoopJob() <em>Time Loop Job</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isTimeLoopJob()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean TIME_LOOP_JOB_EDEFAULT = false;
+
+	/**
+	 * The cached value of the '{@link #isTimeLoopJob() <em>Time Loop Job</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isTimeLoopJob()
+	 * @generated
+	 * @ordered
+	 */
+	protected boolean timeLoopJob = TIME_LOOP_JOB_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -307,6 +340,74 @@ public abstract class JobImpl extends IrAnnotableImpl implements Job {
 	 * @generated
 	 */
 	@Override
+	public Instruction getInstruction() {
+		return instruction;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetInstruction(Instruction newInstruction, NotificationChain msgs) {
+		Instruction oldInstruction = instruction;
+		instruction = newInstruction;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.JOB__INSTRUCTION, oldInstruction, newInstruction);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setInstruction(Instruction newInstruction) {
+		if (newInstruction != instruction) {
+			NotificationChain msgs = null;
+			if (instruction != null)
+				msgs = ((InternalEObject)instruction).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.JOB__INSTRUCTION, null, msgs);
+			if (newInstruction != null)
+				msgs = ((InternalEObject)newInstruction).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.JOB__INSTRUCTION, null, msgs);
+			msgs = basicSetInstruction(newInstruction, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.JOB__INSTRUCTION, newInstruction, newInstruction));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public boolean isTimeLoopJob() {
+		return timeLoopJob;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setTimeLoopJob(boolean newTimeLoopJob) {
+		boolean oldTimeLoopJob = timeLoopJob;
+		timeLoopJob = newTimeLoopJob;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.JOB__TIME_LOOP_JOB, oldTimeLoopJob, timeLoopJob));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case IrPackage.JOB__CALLER:
@@ -327,6 +428,8 @@ public abstract class JobImpl extends IrAnnotableImpl implements Job {
 		switch (featureID) {
 			case IrPackage.JOB__CALLER:
 				return basicSetCaller(null, msgs);
+			case IrPackage.JOB__INSTRUCTION:
+				return basicSetInstruction(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -352,6 +455,10 @@ public abstract class JobImpl extends IrAnnotableImpl implements Job {
 				return getPreviousJobsWithSameCaller();
 			case IrPackage.JOB__NEXT_JOBS_WITH_SAME_CALLER:
 				return getNextJobsWithSameCaller();
+			case IrPackage.JOB__INSTRUCTION:
+				return getInstruction();
+			case IrPackage.JOB__TIME_LOOP_JOB:
+				return isTimeLoopJob();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -385,6 +492,12 @@ public abstract class JobImpl extends IrAnnotableImpl implements Job {
 				getNextJobsWithSameCaller().clear();
 				getNextJobsWithSameCaller().addAll((Collection<? extends Job>)newValue);
 				return;
+			case IrPackage.JOB__INSTRUCTION:
+				setInstruction((Instruction)newValue);
+				return;
+			case IrPackage.JOB__TIME_LOOP_JOB:
+				setTimeLoopJob((Boolean)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -415,6 +528,12 @@ public abstract class JobImpl extends IrAnnotableImpl implements Job {
 			case IrPackage.JOB__NEXT_JOBS_WITH_SAME_CALLER:
 				getNextJobsWithSameCaller().clear();
 				return;
+			case IrPackage.JOB__INSTRUCTION:
+				setInstruction((Instruction)null);
+				return;
+			case IrPackage.JOB__TIME_LOOP_JOB:
+				setTimeLoopJob(TIME_LOOP_JOB_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -439,6 +558,10 @@ public abstract class JobImpl extends IrAnnotableImpl implements Job {
 				return previousJobsWithSameCaller != null && !previousJobsWithSameCaller.isEmpty();
 			case IrPackage.JOB__NEXT_JOBS_WITH_SAME_CALLER:
 				return nextJobsWithSameCaller != null && !nextJobsWithSameCaller.isEmpty();
+			case IrPackage.JOB__INSTRUCTION:
+				return instruction != null;
+			case IrPackage.JOB__TIME_LOOP_JOB:
+				return timeLoopJob != TIME_LOOP_JOB_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -459,6 +582,8 @@ public abstract class JobImpl extends IrAnnotableImpl implements Job {
 		result.append(at);
 		result.append(", onCycle: ");
 		result.append(onCycle);
+		result.append(", timeLoopJob: ");
+		result.append(timeLoopJob);
 		result.append(')');
 		return result.toString();
 	}

@@ -19,6 +19,10 @@ import static extension fr.cea.nabla.ir.Utils.*
 
 class JobExtensions
 {
+	public static val String SETUP_TIMELOOP_PREFIX = "SetUpTimeLoop"
+	public static val String TEARDOWN_TIMELOOP_PREFIX = "TearDownTimeLoop"
+	public static val String EXECUTE_TIMELOOP_PREFIX = "ExecuteTimeLoop"
+
 	static def hasIterable(Job it)
 	{
 		!eAllContents.filter(IterableInstruction).empty

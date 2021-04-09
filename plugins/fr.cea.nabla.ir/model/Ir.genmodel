@@ -118,22 +118,12 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//Job/caller"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//Job/previousJobsWithSameCaller"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//Job/nextJobsWithSameCaller"/>
-    </genClasses>
-    <genClasses ecoreClass="Ir.ecore#//InstructionJob">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//InstructionJob/instruction"/>
-    </genClasses>
-    <genClasses image="false" ecoreClass="Ir.ecore#//TimeLoopJob">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//TimeLoopJob/copies"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Job/instruction"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Job/timeLoopJob"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//ExecuteTimeLoopJob">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ExecuteTimeLoopJob/whileCondition"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//ExecuteTimeLoopJob/iterationCounter"/>
-    </genClasses>
-    <genClasses ecoreClass="Ir.ecore#//SetUpTimeLoopJob"/>
-    <genClasses ecoreClass="Ir.ecore#//TearDownTimeLoopJob"/>
-    <genClasses ecoreClass="Ir.ecore#//TimeLoopCopy">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//TimeLoopCopy/destination"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//TimeLoopCopy/source"/>
     </genClasses>
     <genClasses image="false" ecoreClass="Ir.ecore#//Instruction"/>
     <genClasses ecoreClass="Ir.ecore#//InstructionBlock">

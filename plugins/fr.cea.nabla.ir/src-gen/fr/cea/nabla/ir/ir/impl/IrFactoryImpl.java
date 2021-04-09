@@ -69,11 +69,8 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.EXTERN_FUNCTION: return createExternFunction();
 			case IrPackage.CONNECTIVITY: return createConnectivity();
 			case IrPackage.JOB_CALLER: return createJobCaller();
-			case IrPackage.INSTRUCTION_JOB: return createInstructionJob();
+			case IrPackage.JOB: return createJob();
 			case IrPackage.EXECUTE_TIME_LOOP_JOB: return createExecuteTimeLoopJob();
-			case IrPackage.SET_UP_TIME_LOOP_JOB: return createSetUpTimeLoopJob();
-			case IrPackage.TEAR_DOWN_TIME_LOOP_JOB: return createTearDownTimeLoopJob();
-			case IrPackage.TIME_LOOP_COPY: return createTimeLoopCopy();
 			case IrPackage.INSTRUCTION_BLOCK: return createInstructionBlock();
 			case IrPackage.VARIABLE_DECLARATION: return createVariableDeclaration();
 			case IrPackage.AFFECTATION: return createAffectation();
@@ -287,9 +284,9 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * @generated
 	 */
 	@Override
-	public InstructionJob createInstructionJob() {
-		InstructionJobImpl instructionJob = new InstructionJobImpl();
-		return instructionJob;
+	public Job createJob() {
+		JobImpl job = new JobImpl();
+		return job;
 	}
 
 	/**
@@ -301,39 +298,6 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	public ExecuteTimeLoopJob createExecuteTimeLoopJob() {
 		ExecuteTimeLoopJobImpl executeTimeLoopJob = new ExecuteTimeLoopJobImpl();
 		return executeTimeLoopJob;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public SetUpTimeLoopJob createSetUpTimeLoopJob() {
-		SetUpTimeLoopJobImpl setUpTimeLoopJob = new SetUpTimeLoopJobImpl();
-		return setUpTimeLoopJob;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public TearDownTimeLoopJob createTearDownTimeLoopJob() {
-		TearDownTimeLoopJobImpl tearDownTimeLoopJob = new TearDownTimeLoopJobImpl();
-		return tearDownTimeLoopJob;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public TimeLoopCopy createTimeLoopCopy() {
-		TimeLoopCopyImpl timeLoopCopy = new TimeLoopCopyImpl();
-		return timeLoopCopy;
 	}
 
 	/**

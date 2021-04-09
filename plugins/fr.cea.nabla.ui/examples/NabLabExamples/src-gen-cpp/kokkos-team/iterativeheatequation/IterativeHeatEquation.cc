@@ -352,9 +352,19 @@ void IterativeHeatEquation::initXc(const member_type& teamMember) noexcept
  * In variables: u_n
  * Out variables: u_nplus1_k
  */
-void IterativeHeatEquation::setUpTimeLoopK() noexcept
+void IterativeHeatEquation::setUpTimeLoopK(const member_type& teamMember) noexcept
 {
-	deep_copy(u_nplus1_k, u_n);
+	{
+		const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
+		if (!teamWork.second)
+			return;
+	
+		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& i1CellsTeam)
+		{
+			int i1Cells(i1CellsTeam + teamWork.first);
+			u_nplus1_k(i1Cells) = u_n(i1Cells);
+		});
+	}
 }
 
 /**
@@ -467,7 +477,7 @@ void IterativeHeatEquation::computeResidual(const member_type& teamMember) noexc
  * In variables: alpha, u_n, u_nplus1_k, u_nplus1_kplus1
  * Out variables: residual, u_nplus1_kplus1
  */
-void IterativeHeatEquation::executeTimeLoopK() noexcept
+void IterativeHeatEquation::executeTimeLoopK(const member_type& teamMember) noexcept
 {
 	auto team_policy(Kokkos::TeamPolicy<>(
 		Kokkos::hwloc::get_available_numa_count(),
@@ -498,8 +508,17 @@ void IterativeHeatEquation::executeTimeLoopK() noexcept
 	
 		if (continueLoop)
 		{
-			// Switch variables to prepare next iteration
-			std::swap(u_nplus1_kplus1, u_nplus1_k);
+			{
+				const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
+				if (!teamWork.second)
+					return;
+			
+				Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& i1CellsTeam)
+				{
+					int i1Cells(i1CellsTeam + teamWork.first);
+					u_nplus1_k(i1Cells) = u_nplus1_kplus1(i1Cells);
+				});
+			}
 		}
 	
 	
@@ -580,9 +599,19 @@ void IterativeHeatEquation::computeAlphaCoeff(const member_type& teamMember) noe
  * In variables: u_nplus1_kplus1
  * Out variables: u_nplus1
  */
-void IterativeHeatEquation::tearDownTimeLoopK() noexcept
+void IterativeHeatEquation::tearDownTimeLoopK(const member_type& teamMember) noexcept
 {
-	deep_copy(u_nplus1, u_nplus1_kplus1);
+	{
+		const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
+		if (!teamWork.second)
+			return;
+	
+		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& i1CellsTeam)
+		{
+			int i1Cells(i1CellsTeam + teamWork.first);
+			u_nplus1(i1Cells) = u_nplus1_kplus1(i1Cells);
+		});
+	}
 }
 
 /**
@@ -590,8 +619,12 @@ void IterativeHeatEquation::tearDownTimeLoopK() noexcept
  * In variables: alpha, deltat, t_n, u_n, u_nplus1_k, u_nplus1_kplus1
  * Out variables: residual, t_nplus1, u_nplus1, u_nplus1_k, u_nplus1_kplus1
  */
-void IterativeHeatEquation::executeTimeLoopN() noexcept
+void IterativeHeatEquation::executeTimeLoopN(const member_type& teamMember) noexcept
 {
+	auto team_policy(Kokkos::TeamPolicy<>(
+		Kokkos::hwloc::get_available_numa_count(),
+		Kokkos::hwloc::get_available_cores_per_numa() * Kokkos::hwloc::get_available_threads_per_core()));
+	
 	n = 0;
 	bool continueLoop = true;
 	do
@@ -606,14 +639,24 @@ void IterativeHeatEquation::executeTimeLoopN() noexcept
 				<< setiosflags(std::ios::scientific) << setprecision(8) << setw(16) << t_n << __RESET__;
 	
 		// @1.0
-		computeTn();
-		setUpTimeLoopK();
+		Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
+		{
+			if (thread.league_rank() == 0)
+				Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){computeTn();});
+			setUpTimeLoopK(thread);
+		});
 		
 		// @2.0
-		executeTimeLoopK();
+		Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
+		{
+			executeTimeLoopK(thread);
+		});
 		
 		// @3.0
-		tearDownTimeLoopK();
+		Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
+		{
+			tearDownTimeLoopK(thread);
+		});
 		
 	
 		// Evaluate loop condition with variables at time n
@@ -621,9 +664,18 @@ void IterativeHeatEquation::executeTimeLoopN() noexcept
 	
 		if (continueLoop)
 		{
-			// Switch variables to prepare next iteration
-			std::swap(t_nplus1, t_n);
-			std::swap(u_nplus1, u_n);
+			t_n = t_nplus1;
+			{
+				const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
+				if (!teamWork.second)
+					return;
+			
+				Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& i1CellsTeam)
+				{
+					int i1Cells(i1CellsTeam + teamWork.first);
+					u_n(i1Cells) = u_nplus1(i1Cells);
+				});
+			}
 		}
 	
 		cpuTimer.stop();
@@ -737,7 +789,10 @@ void IterativeHeatEquation::simulate()
 	});
 	
 	// @4.0
-	executeTimeLoopN();
+	Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
+	{
+		executeTimeLoopN(thread);
+	});
 	
 	std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << globalTimer.print() << __RESET__ << std::endl;
 }

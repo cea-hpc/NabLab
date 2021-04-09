@@ -107,11 +107,11 @@ public:
 	KOKKOS_INLINE_FUNCTION
 	void initialize(const member_type& teamMember) noexcept;
 	KOKKOS_INLINE_FUNCTION
-	void setUpTimeLoopN() noexcept;
+	void setUpTimeLoopN(const member_type& teamMember) noexcept;
 	KOKKOS_INLINE_FUNCTION
 	void computeDensity(const member_type& teamMember) noexcept;
 	KOKKOS_INLINE_FUNCTION
-	void executeTimeLoopN() noexcept;
+	void executeTimeLoopN(const member_type& teamMember) noexcept;
 	KOKKOS_INLINE_FUNCTION
 	void computeEOSp(const member_type& teamMember) noexcept;
 	KOKKOS_INLINE_FUNCTION

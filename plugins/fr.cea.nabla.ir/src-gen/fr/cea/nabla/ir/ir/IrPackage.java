@@ -1244,13 +1244,31 @@ public interface IrPackage extends EPackage {
 	int JOB__NEXT_JOBS_WITH_SAME_CALLER = IR_ANNOTABLE_FEATURE_COUNT + 5;
 
 	/**
+	 * The feature id for the '<em><b>Instruction</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int JOB__INSTRUCTION = IR_ANNOTABLE_FEATURE_COUNT + 6;
+
+	/**
+	 * The feature id for the '<em><b>Time Loop Job</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int JOB__TIME_LOOP_JOB = IR_ANNOTABLE_FEATURE_COUNT + 7;
+
+	/**
 	 * The number of structural features of the '<em>Job</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int JOB_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 6;
+	int JOB_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 8;
 
 	/**
 	 * The number of operations of the '<em>Job</em>' class.
@@ -1262,206 +1280,6 @@ public interface IrPackage extends EPackage {
 	int JOB_OPERATION_COUNT = IR_ANNOTABLE_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.InstructionJobImpl <em>Instruction Job</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see fr.cea.nabla.ir.ir.impl.InstructionJobImpl
-	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getInstructionJob()
-	 * @generated
-	 */
-	int INSTRUCTION_JOB = 16;
-
-	/**
-	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INSTRUCTION_JOB__ANNOTATIONS = JOB__ANNOTATIONS;
-
-	/**
-	 * The feature id for the '<em><b>Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INSTRUCTION_JOB__NAME = JOB__NAME;
-
-	/**
-	 * The feature id for the '<em><b>At</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INSTRUCTION_JOB__AT = JOB__AT;
-
-	/**
-	 * The feature id for the '<em><b>On Cycle</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INSTRUCTION_JOB__ON_CYCLE = JOB__ON_CYCLE;
-
-	/**
-	 * The feature id for the '<em><b>Caller</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INSTRUCTION_JOB__CALLER = JOB__CALLER;
-
-	/**
-	 * The feature id for the '<em><b>Previous Jobs With Same Caller</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INSTRUCTION_JOB__PREVIOUS_JOBS_WITH_SAME_CALLER = JOB__PREVIOUS_JOBS_WITH_SAME_CALLER;
-
-	/**
-	 * The feature id for the '<em><b>Next Jobs With Same Caller</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INSTRUCTION_JOB__NEXT_JOBS_WITH_SAME_CALLER = JOB__NEXT_JOBS_WITH_SAME_CALLER;
-
-	/**
-	 * The feature id for the '<em><b>Instruction</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INSTRUCTION_JOB__INSTRUCTION = JOB_FEATURE_COUNT + 0;
-
-	/**
-	 * The number of structural features of the '<em>Instruction Job</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INSTRUCTION_JOB_FEATURE_COUNT = JOB_FEATURE_COUNT + 1;
-
-	/**
-	 * The number of operations of the '<em>Instruction Job</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INSTRUCTION_JOB_OPERATION_COUNT = JOB_OPERATION_COUNT + 0;
-
-	/**
-	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.TimeLoopJobImpl <em>Time Loop Job</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see fr.cea.nabla.ir.ir.impl.TimeLoopJobImpl
-	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getTimeLoopJob()
-	 * @generated
-	 */
-	int TIME_LOOP_JOB = 17;
-
-	/**
-	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TIME_LOOP_JOB__ANNOTATIONS = JOB__ANNOTATIONS;
-
-	/**
-	 * The feature id for the '<em><b>Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TIME_LOOP_JOB__NAME = JOB__NAME;
-
-	/**
-	 * The feature id for the '<em><b>At</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TIME_LOOP_JOB__AT = JOB__AT;
-
-	/**
-	 * The feature id for the '<em><b>On Cycle</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TIME_LOOP_JOB__ON_CYCLE = JOB__ON_CYCLE;
-
-	/**
-	 * The feature id for the '<em><b>Caller</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TIME_LOOP_JOB__CALLER = JOB__CALLER;
-
-	/**
-	 * The feature id for the '<em><b>Previous Jobs With Same Caller</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TIME_LOOP_JOB__PREVIOUS_JOBS_WITH_SAME_CALLER = JOB__PREVIOUS_JOBS_WITH_SAME_CALLER;
-
-	/**
-	 * The feature id for the '<em><b>Next Jobs With Same Caller</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TIME_LOOP_JOB__NEXT_JOBS_WITH_SAME_CALLER = JOB__NEXT_JOBS_WITH_SAME_CALLER;
-
-	/**
-	 * The feature id for the '<em><b>Copies</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TIME_LOOP_JOB__COPIES = JOB_FEATURE_COUNT + 0;
-
-	/**
-	 * The number of structural features of the '<em>Time Loop Job</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TIME_LOOP_JOB_FEATURE_COUNT = JOB_FEATURE_COUNT + 1;
-
-	/**
-	 * The number of operations of the '<em>Time Loop Job</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TIME_LOOP_JOB_OPERATION_COUNT = JOB_OPERATION_COUNT + 0;
-
-	/**
 	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.ExecuteTimeLoopJobImpl <em>Execute Time Loop Job</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1469,7 +1287,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getExecuteTimeLoopJob()
 	 * @generated
 	 */
-	int EXECUTE_TIME_LOOP_JOB = 18;
+	int EXECUTE_TIME_LOOP_JOB = 16;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -1478,70 +1296,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EXECUTE_TIME_LOOP_JOB__ANNOTATIONS = TIME_LOOP_JOB__ANNOTATIONS;
-
-	/**
-	 * The feature id for the '<em><b>Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EXECUTE_TIME_LOOP_JOB__NAME = TIME_LOOP_JOB__NAME;
-
-	/**
-	 * The feature id for the '<em><b>At</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EXECUTE_TIME_LOOP_JOB__AT = TIME_LOOP_JOB__AT;
-
-	/**
-	 * The feature id for the '<em><b>On Cycle</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EXECUTE_TIME_LOOP_JOB__ON_CYCLE = TIME_LOOP_JOB__ON_CYCLE;
-
-	/**
-	 * The feature id for the '<em><b>Caller</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EXECUTE_TIME_LOOP_JOB__CALLER = TIME_LOOP_JOB__CALLER;
-
-	/**
-	 * The feature id for the '<em><b>Previous Jobs With Same Caller</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EXECUTE_TIME_LOOP_JOB__PREVIOUS_JOBS_WITH_SAME_CALLER = TIME_LOOP_JOB__PREVIOUS_JOBS_WITH_SAME_CALLER;
-
-	/**
-	 * The feature id for the '<em><b>Next Jobs With Same Caller</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EXECUTE_TIME_LOOP_JOB__NEXT_JOBS_WITH_SAME_CALLER = TIME_LOOP_JOB__NEXT_JOBS_WITH_SAME_CALLER;
-
-	/**
-	 * The feature id for the '<em><b>Copies</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EXECUTE_TIME_LOOP_JOB__COPIES = TIME_LOOP_JOB__COPIES;
+	int EXECUTE_TIME_LOOP_JOB__ANNOTATIONS = JOB_CALLER__ANNOTATIONS;
 
 	/**
 	 * The feature id for the '<em><b>Calls</b></em>' reference list.
@@ -1550,7 +1305,79 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EXECUTE_TIME_LOOP_JOB__CALLS = TIME_LOOP_JOB_FEATURE_COUNT + 0;
+	int EXECUTE_TIME_LOOP_JOB__CALLS = JOB_CALLER__CALLS;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXECUTE_TIME_LOOP_JOB__NAME = JOB_CALLER_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>At</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXECUTE_TIME_LOOP_JOB__AT = JOB_CALLER_FEATURE_COUNT + 1;
+
+	/**
+	 * The feature id for the '<em><b>On Cycle</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXECUTE_TIME_LOOP_JOB__ON_CYCLE = JOB_CALLER_FEATURE_COUNT + 2;
+
+	/**
+	 * The feature id for the '<em><b>Caller</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXECUTE_TIME_LOOP_JOB__CALLER = JOB_CALLER_FEATURE_COUNT + 3;
+
+	/**
+	 * The feature id for the '<em><b>Previous Jobs With Same Caller</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXECUTE_TIME_LOOP_JOB__PREVIOUS_JOBS_WITH_SAME_CALLER = JOB_CALLER_FEATURE_COUNT + 4;
+
+	/**
+	 * The feature id for the '<em><b>Next Jobs With Same Caller</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXECUTE_TIME_LOOP_JOB__NEXT_JOBS_WITH_SAME_CALLER = JOB_CALLER_FEATURE_COUNT + 5;
+
+	/**
+	 * The feature id for the '<em><b>Instruction</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXECUTE_TIME_LOOP_JOB__INSTRUCTION = JOB_CALLER_FEATURE_COUNT + 6;
+
+	/**
+	 * The feature id for the '<em><b>Time Loop Job</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXECUTE_TIME_LOOP_JOB__TIME_LOOP_JOB = JOB_CALLER_FEATURE_COUNT + 7;
 
 	/**
 	 * The feature id for the '<em><b>While Condition</b></em>' containment reference.
@@ -1559,7 +1386,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EXECUTE_TIME_LOOP_JOB__WHILE_CONDITION = TIME_LOOP_JOB_FEATURE_COUNT + 1;
+	int EXECUTE_TIME_LOOP_JOB__WHILE_CONDITION = JOB_CALLER_FEATURE_COUNT + 8;
 
 	/**
 	 * The feature id for the '<em><b>Iteration Counter</b></em>' reference.
@@ -1568,7 +1395,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EXECUTE_TIME_LOOP_JOB__ITERATION_COUNTER = TIME_LOOP_JOB_FEATURE_COUNT + 2;
+	int EXECUTE_TIME_LOOP_JOB__ITERATION_COUNTER = JOB_CALLER_FEATURE_COUNT + 9;
 
 	/**
 	 * The number of structural features of the '<em>Execute Time Loop Job</em>' class.
@@ -1577,7 +1404,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EXECUTE_TIME_LOOP_JOB_FEATURE_COUNT = TIME_LOOP_JOB_FEATURE_COUNT + 3;
+	int EXECUTE_TIME_LOOP_JOB_FEATURE_COUNT = JOB_CALLER_FEATURE_COUNT + 10;
 
 	/**
 	 * The number of operations of the '<em>Execute Time Loop Job</em>' class.
@@ -1586,262 +1413,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EXECUTE_TIME_LOOP_JOB_OPERATION_COUNT = TIME_LOOP_JOB_OPERATION_COUNT + 0;
-
-	/**
-	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.SetUpTimeLoopJobImpl <em>Set Up Time Loop Job</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see fr.cea.nabla.ir.ir.impl.SetUpTimeLoopJobImpl
-	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getSetUpTimeLoopJob()
-	 * @generated
-	 */
-	int SET_UP_TIME_LOOP_JOB = 19;
-
-	/**
-	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SET_UP_TIME_LOOP_JOB__ANNOTATIONS = TIME_LOOP_JOB__ANNOTATIONS;
-
-	/**
-	 * The feature id for the '<em><b>Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SET_UP_TIME_LOOP_JOB__NAME = TIME_LOOP_JOB__NAME;
-
-	/**
-	 * The feature id for the '<em><b>At</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SET_UP_TIME_LOOP_JOB__AT = TIME_LOOP_JOB__AT;
-
-	/**
-	 * The feature id for the '<em><b>On Cycle</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SET_UP_TIME_LOOP_JOB__ON_CYCLE = TIME_LOOP_JOB__ON_CYCLE;
-
-	/**
-	 * The feature id for the '<em><b>Caller</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SET_UP_TIME_LOOP_JOB__CALLER = TIME_LOOP_JOB__CALLER;
-
-	/**
-	 * The feature id for the '<em><b>Previous Jobs With Same Caller</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SET_UP_TIME_LOOP_JOB__PREVIOUS_JOBS_WITH_SAME_CALLER = TIME_LOOP_JOB__PREVIOUS_JOBS_WITH_SAME_CALLER;
-
-	/**
-	 * The feature id for the '<em><b>Next Jobs With Same Caller</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SET_UP_TIME_LOOP_JOB__NEXT_JOBS_WITH_SAME_CALLER = TIME_LOOP_JOB__NEXT_JOBS_WITH_SAME_CALLER;
-
-	/**
-	 * The feature id for the '<em><b>Copies</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SET_UP_TIME_LOOP_JOB__COPIES = TIME_LOOP_JOB__COPIES;
-
-	/**
-	 * The number of structural features of the '<em>Set Up Time Loop Job</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SET_UP_TIME_LOOP_JOB_FEATURE_COUNT = TIME_LOOP_JOB_FEATURE_COUNT + 0;
-
-	/**
-	 * The number of operations of the '<em>Set Up Time Loop Job</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SET_UP_TIME_LOOP_JOB_OPERATION_COUNT = TIME_LOOP_JOB_OPERATION_COUNT + 0;
-
-	/**
-	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.TearDownTimeLoopJobImpl <em>Tear Down Time Loop Job</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see fr.cea.nabla.ir.ir.impl.TearDownTimeLoopJobImpl
-	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getTearDownTimeLoopJob()
-	 * @generated
-	 */
-	int TEAR_DOWN_TIME_LOOP_JOB = 20;
-
-	/**
-	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TEAR_DOWN_TIME_LOOP_JOB__ANNOTATIONS = TIME_LOOP_JOB__ANNOTATIONS;
-
-	/**
-	 * The feature id for the '<em><b>Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TEAR_DOWN_TIME_LOOP_JOB__NAME = TIME_LOOP_JOB__NAME;
-
-	/**
-	 * The feature id for the '<em><b>At</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TEAR_DOWN_TIME_LOOP_JOB__AT = TIME_LOOP_JOB__AT;
-
-	/**
-	 * The feature id for the '<em><b>On Cycle</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TEAR_DOWN_TIME_LOOP_JOB__ON_CYCLE = TIME_LOOP_JOB__ON_CYCLE;
-
-	/**
-	 * The feature id for the '<em><b>Caller</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TEAR_DOWN_TIME_LOOP_JOB__CALLER = TIME_LOOP_JOB__CALLER;
-
-	/**
-	 * The feature id for the '<em><b>Previous Jobs With Same Caller</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TEAR_DOWN_TIME_LOOP_JOB__PREVIOUS_JOBS_WITH_SAME_CALLER = TIME_LOOP_JOB__PREVIOUS_JOBS_WITH_SAME_CALLER;
-
-	/**
-	 * The feature id for the '<em><b>Next Jobs With Same Caller</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TEAR_DOWN_TIME_LOOP_JOB__NEXT_JOBS_WITH_SAME_CALLER = TIME_LOOP_JOB__NEXT_JOBS_WITH_SAME_CALLER;
-
-	/**
-	 * The feature id for the '<em><b>Copies</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TEAR_DOWN_TIME_LOOP_JOB__COPIES = TIME_LOOP_JOB__COPIES;
-
-	/**
-	 * The number of structural features of the '<em>Tear Down Time Loop Job</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TEAR_DOWN_TIME_LOOP_JOB_FEATURE_COUNT = TIME_LOOP_JOB_FEATURE_COUNT + 0;
-
-	/**
-	 * The number of operations of the '<em>Tear Down Time Loop Job</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TEAR_DOWN_TIME_LOOP_JOB_OPERATION_COUNT = TIME_LOOP_JOB_OPERATION_COUNT + 0;
-
-	/**
-	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.TimeLoopCopyImpl <em>Time Loop Copy</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see fr.cea.nabla.ir.ir.impl.TimeLoopCopyImpl
-	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getTimeLoopCopy()
-	 * @generated
-	 */
-	int TIME_LOOP_COPY = 21;
-
-	/**
-	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TIME_LOOP_COPY__ANNOTATIONS = IR_ANNOTABLE__ANNOTATIONS;
-
-	/**
-	 * The feature id for the '<em><b>Destination</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TIME_LOOP_COPY__DESTINATION = IR_ANNOTABLE_FEATURE_COUNT + 0;
-
-	/**
-	 * The feature id for the '<em><b>Source</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TIME_LOOP_COPY__SOURCE = IR_ANNOTABLE_FEATURE_COUNT + 1;
-
-	/**
-	 * The number of structural features of the '<em>Time Loop Copy</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TIME_LOOP_COPY_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 2;
-
-	/**
-	 * The number of operations of the '<em>Time Loop Copy</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TIME_LOOP_COPY_OPERATION_COUNT = IR_ANNOTABLE_OPERATION_COUNT + 0;
+	int EXECUTE_TIME_LOOP_JOB_OPERATION_COUNT = JOB_CALLER_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.InstructionImpl <em>Instruction</em>}' class.
@@ -1851,7 +1423,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getInstruction()
 	 * @generated
 	 */
-	int INSTRUCTION = 22;
+	int INSTRUCTION = 17;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -1888,7 +1460,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getInstructionBlock()
 	 * @generated
 	 */
-	int INSTRUCTION_BLOCK = 23;
+	int INSTRUCTION_BLOCK = 18;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -1943,7 +1515,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getVariableDeclaration()
 	 * @generated
 	 */
-	int VARIABLE_DECLARATION = 24;
+	int VARIABLE_DECLARATION = 19;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -1989,7 +1561,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getAffectation()
 	 * @generated
 	 */
-	int AFFECTATION = 25;
+	int AFFECTATION = 20;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -2044,7 +1616,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getIterableInstruction()
 	 * @generated
 	 */
-	int ITERABLE_INSTRUCTION = 26;
+	int ITERABLE_INSTRUCTION = 21;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -2090,7 +1662,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getReductionInstruction()
 	 * @generated
 	 */
-	int REDUCTION_INSTRUCTION = 27;
+	int REDUCTION_INSTRUCTION = 22;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -2172,7 +1744,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getLoop()
 	 * @generated
 	 */
-	int LOOP = 28;
+	int LOOP = 23;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -2236,7 +1808,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getItemIndexDefinition()
 	 * @generated
 	 */
-	int ITEM_INDEX_DEFINITION = 29;
+	int ITEM_INDEX_DEFINITION = 24;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -2291,7 +1863,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getItemIdDefinition()
 	 * @generated
 	 */
-	int ITEM_ID_DEFINITION = 30;
+	int ITEM_ID_DEFINITION = 25;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -2346,7 +1918,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getSetDefinition()
 	 * @generated
 	 */
-	int SET_DEFINITION = 31;
+	int SET_DEFINITION = 26;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -2401,7 +1973,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getIf()
 	 * @generated
 	 */
-	int IF = 32;
+	int IF = 27;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -2465,7 +2037,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getWhile()
 	 * @generated
 	 */
-	int WHILE = 33;
+	int WHILE = 28;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -2520,7 +2092,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getReturn()
 	 * @generated
 	 */
-	int RETURN = 34;
+	int RETURN = 29;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -2566,7 +2138,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getExit()
 	 * @generated
 	 */
-	int EXIT = 35;
+	int EXIT = 30;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -2612,7 +2184,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getIterationBlock()
 	 * @generated
 	 */
-	int ITERATION_BLOCK = 36;
+	int ITERATION_BLOCK = 31;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -2649,7 +2221,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getIterator()
 	 * @generated
 	 */
-	int ITERATOR = 37;
+	int ITERATOR = 32;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -2713,7 +2285,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getInterval()
 	 * @generated
 	 */
-	int INTERVAL = 38;
+	int INTERVAL = 33;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -2768,7 +2340,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getExpression()
 	 * @generated
 	 */
-	int EXPRESSION = 39;
+	int EXPRESSION = 34;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -2823,7 +2395,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getContractedIf()
 	 * @generated
 	 */
-	int CONTRACTED_IF = 40;
+	int CONTRACTED_IF = 35;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -2905,7 +2477,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getBinaryExpression()
 	 * @generated
 	 */
-	int BINARY_EXPRESSION = 41;
+	int BINARY_EXPRESSION = 36;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -2987,7 +2559,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getUnaryExpression()
 	 * @generated
 	 */
-	int UNARY_EXPRESSION = 42;
+	int UNARY_EXPRESSION = 37;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -3060,7 +2632,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getParenthesis()
 	 * @generated
 	 */
-	int PARENTHESIS = 43;
+	int PARENTHESIS = 38;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -3124,7 +2696,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getIntConstant()
 	 * @generated
 	 */
-	int INT_CONSTANT = 44;
+	int INT_CONSTANT = 39;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -3188,7 +2760,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getRealConstant()
 	 * @generated
 	 */
-	int REAL_CONSTANT = 45;
+	int REAL_CONSTANT = 40;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -3252,7 +2824,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getBoolConstant()
 	 * @generated
 	 */
-	int BOOL_CONSTANT = 46;
+	int BOOL_CONSTANT = 41;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -3316,7 +2888,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getMinConstant()
 	 * @generated
 	 */
-	int MIN_CONSTANT = 47;
+	int MIN_CONSTANT = 42;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -3371,7 +2943,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getMaxConstant()
 	 * @generated
 	 */
-	int MAX_CONSTANT = 48;
+	int MAX_CONSTANT = 43;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -3426,7 +2998,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getFunctionCall()
 	 * @generated
 	 */
-	int FUNCTION_CALL = 49;
+	int FUNCTION_CALL = 44;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -3499,7 +3071,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getBaseTypeConstant()
 	 * @generated
 	 */
-	int BASE_TYPE_CONSTANT = 50;
+	int BASE_TYPE_CONSTANT = 45;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -3563,7 +3135,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getVectorConstant()
 	 * @generated
 	 */
-	int VECTOR_CONSTANT = 51;
+	int VECTOR_CONSTANT = 46;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -3627,7 +3199,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getCardinality()
 	 * @generated
 	 */
-	int CARDINALITY = 52;
+	int CARDINALITY = 47;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -3691,7 +3263,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getArgOrVarRef()
 	 * @generated
 	 */
-	int ARG_OR_VAR_REF = 53;
+	int ARG_OR_VAR_REF = 48;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -3773,7 +3345,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getItemType()
 	 * @generated
 	 */
-	int ITEM_TYPE = 54;
+	int ITEM_TYPE = 49;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -3819,7 +3391,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getIrType()
 	 * @generated
 	 */
-	int IR_TYPE = 55;
+	int IR_TYPE = 50;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -3856,7 +3428,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getBaseType()
 	 * @generated
 	 */
-	int BASE_TYPE = 56;
+	int BASE_TYPE = 51;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -3911,7 +3483,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getConnectivityType()
 	 * @generated
 	 */
-	int CONNECTIVITY_TYPE = 57;
+	int CONNECTIVITY_TYPE = 52;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -3966,7 +3538,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getLinearAlgebraType()
 	 * @generated
 	 */
-	int LINEAR_ALGEBRA_TYPE = 58;
+	int LINEAR_ALGEBRA_TYPE = 53;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -4021,7 +3593,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getContainer()
 	 * @generated
 	 */
-	int CONTAINER = 59;
+	int CONTAINER = 54;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -4058,7 +3630,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getConnectivityCall()
 	 * @generated
 	 */
-	int CONNECTIVITY_CALL = 60;
+	int CONNECTIVITY_CALL = 55;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -4113,7 +3685,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getSetRef()
 	 * @generated
 	 */
-	int SET_REF = 61;
+	int SET_REF = 56;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -4159,7 +3731,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getItemId()
 	 * @generated
 	 */
-	int ITEM_ID = 62;
+	int ITEM_ID = 57;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -4214,7 +3786,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getItemIdValue()
 	 * @generated
 	 */
-	int ITEM_ID_VALUE = 63;
+	int ITEM_ID_VALUE = 58;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -4251,7 +3823,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getItemIdValueIterator()
 	 * @generated
 	 */
-	int ITEM_ID_VALUE_ITERATOR = 64;
+	int ITEM_ID_VALUE_ITERATOR = 59;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -4306,7 +3878,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getItemIdValueContainer()
 	 * @generated
 	 */
-	int ITEM_ID_VALUE_CONTAINER = 65;
+	int ITEM_ID_VALUE_CONTAINER = 60;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -4352,7 +3924,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getItemIndex()
 	 * @generated
 	 */
-	int ITEM_INDEX = 66;
+	int ITEM_INDEX = 61;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -4407,7 +3979,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getItemIndexValue()
 	 * @generated
 	 */
-	int ITEM_INDEX_VALUE = 67;
+	int ITEM_INDEX_VALUE = 62;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -4462,7 +4034,7 @@ public interface IrPackage extends EPackage {
 	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getPrimitiveType()
 	 * @generated
 	 */
-	int PRIMITIVE_TYPE = 68;
+	int PRIMITIVE_TYPE = 63;
 
 
 	/**
@@ -5275,46 +4847,26 @@ public interface IrPackage extends EPackage {
 	EReference getJob_NextJobsWithSameCaller();
 
 	/**
-	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.InstructionJob <em>Instruction Job</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Instruction Job</em>'.
-	 * @see fr.cea.nabla.ir.ir.InstructionJob
-	 * @generated
-	 */
-	EClass getInstructionJob();
-
-	/**
-	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.InstructionJob#getInstruction <em>Instruction</em>}'.
+	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.Job#getInstruction <em>Instruction</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the containment reference '<em>Instruction</em>'.
-	 * @see fr.cea.nabla.ir.ir.InstructionJob#getInstruction()
-	 * @see #getInstructionJob()
+	 * @see fr.cea.nabla.ir.ir.Job#getInstruction()
+	 * @see #getJob()
 	 * @generated
 	 */
-	EReference getInstructionJob_Instruction();
+	EReference getJob_Instruction();
 
 	/**
-	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.TimeLoopJob <em>Time Loop Job</em>}'.
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.Job#isTimeLoopJob <em>Time Loop Job</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Time Loop Job</em>'.
-	 * @see fr.cea.nabla.ir.ir.TimeLoopJob
+	 * @return the meta object for the attribute '<em>Time Loop Job</em>'.
+	 * @see fr.cea.nabla.ir.ir.Job#isTimeLoopJob()
+	 * @see #getJob()
 	 * @generated
 	 */
-	EClass getTimeLoopJob();
-
-	/**
-	 * Returns the meta object for the containment reference list '{@link fr.cea.nabla.ir.ir.TimeLoopJob#getCopies <em>Copies</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Copies</em>'.
-	 * @see fr.cea.nabla.ir.ir.TimeLoopJob#getCopies()
-	 * @see #getTimeLoopJob()
-	 * @generated
-	 */
-	EReference getTimeLoopJob_Copies();
+	EAttribute getJob_TimeLoopJob();
 
 	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.ExecuteTimeLoopJob <em>Execute Time Loop Job</em>}'.
@@ -5347,58 +4899,6 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getExecuteTimeLoopJob_IterationCounter();
-
-	/**
-	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.SetUpTimeLoopJob <em>Set Up Time Loop Job</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Set Up Time Loop Job</em>'.
-	 * @see fr.cea.nabla.ir.ir.SetUpTimeLoopJob
-	 * @generated
-	 */
-	EClass getSetUpTimeLoopJob();
-
-	/**
-	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.TearDownTimeLoopJob <em>Tear Down Time Loop Job</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Tear Down Time Loop Job</em>'.
-	 * @see fr.cea.nabla.ir.ir.TearDownTimeLoopJob
-	 * @generated
-	 */
-	EClass getTearDownTimeLoopJob();
-
-	/**
-	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.TimeLoopCopy <em>Time Loop Copy</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Time Loop Copy</em>'.
-	 * @see fr.cea.nabla.ir.ir.TimeLoopCopy
-	 * @generated
-	 */
-	EClass getTimeLoopCopy();
-
-	/**
-	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.TimeLoopCopy#getDestination <em>Destination</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Destination</em>'.
-	 * @see fr.cea.nabla.ir.ir.TimeLoopCopy#getDestination()
-	 * @see #getTimeLoopCopy()
-	 * @generated
-	 */
-	EReference getTimeLoopCopy_Destination();
-
-	/**
-	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.TimeLoopCopy#getSource <em>Source</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Source</em>'.
-	 * @see fr.cea.nabla.ir.ir.TimeLoopCopy#getSource()
-	 * @see #getTimeLoopCopy()
-	 * @generated
-	 */
-	EReference getTimeLoopCopy_Source();
 
 	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.Instruction <em>Instruction</em>}'.
@@ -7307,40 +6807,20 @@ public interface IrPackage extends EPackage {
 		EReference JOB__NEXT_JOBS_WITH_SAME_CALLER = eINSTANCE.getJob_NextJobsWithSameCaller();
 
 		/**
-		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.InstructionJobImpl <em>Instruction Job</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see fr.cea.nabla.ir.ir.impl.InstructionJobImpl
-		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getInstructionJob()
-		 * @generated
-		 */
-		EClass INSTRUCTION_JOB = eINSTANCE.getInstructionJob();
-
-		/**
 		 * The meta object literal for the '<em><b>Instruction</b></em>' containment reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference INSTRUCTION_JOB__INSTRUCTION = eINSTANCE.getInstructionJob_Instruction();
+		EReference JOB__INSTRUCTION = eINSTANCE.getJob_Instruction();
 
 		/**
-		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.TimeLoopJobImpl <em>Time Loop Job</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see fr.cea.nabla.ir.ir.impl.TimeLoopJobImpl
-		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getTimeLoopJob()
-		 * @generated
-		 */
-		EClass TIME_LOOP_JOB = eINSTANCE.getTimeLoopJob();
-
-		/**
-		 * The meta object literal for the '<em><b>Copies</b></em>' containment reference list feature.
+		 * The meta object literal for the '<em><b>Time Loop Job</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference TIME_LOOP_JOB__COPIES = eINSTANCE.getTimeLoopJob_Copies();
+		EAttribute JOB__TIME_LOOP_JOB = eINSTANCE.getJob_TimeLoopJob();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.ExecuteTimeLoopJobImpl <em>Execute Time Loop Job</em>}' class.
@@ -7367,52 +6847,6 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EReference EXECUTE_TIME_LOOP_JOB__ITERATION_COUNTER = eINSTANCE.getExecuteTimeLoopJob_IterationCounter();
-
-		/**
-		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.SetUpTimeLoopJobImpl <em>Set Up Time Loop Job</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see fr.cea.nabla.ir.ir.impl.SetUpTimeLoopJobImpl
-		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getSetUpTimeLoopJob()
-		 * @generated
-		 */
-		EClass SET_UP_TIME_LOOP_JOB = eINSTANCE.getSetUpTimeLoopJob();
-
-		/**
-		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.TearDownTimeLoopJobImpl <em>Tear Down Time Loop Job</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see fr.cea.nabla.ir.ir.impl.TearDownTimeLoopJobImpl
-		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getTearDownTimeLoopJob()
-		 * @generated
-		 */
-		EClass TEAR_DOWN_TIME_LOOP_JOB = eINSTANCE.getTearDownTimeLoopJob();
-
-		/**
-		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.TimeLoopCopyImpl <em>Time Loop Copy</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see fr.cea.nabla.ir.ir.impl.TimeLoopCopyImpl
-		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getTimeLoopCopy()
-		 * @generated
-		 */
-		EClass TIME_LOOP_COPY = eINSTANCE.getTimeLoopCopy();
-
-		/**
-		 * The meta object literal for the '<em><b>Destination</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference TIME_LOOP_COPY__DESTINATION = eINSTANCE.getTimeLoopCopy_Destination();
-
-		/**
-		 * The meta object literal for the '<em><b>Source</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference TIME_LOOP_COPY__SOURCE = eINSTANCE.getTimeLoopCopy_Source();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.InstructionImpl <em>Instruction</em>}' class.

@@ -19,10 +19,12 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link fr.cea.nabla.ir.ir.Job#getCaller <em>Caller</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Job#getPreviousJobsWithSameCaller <em>Previous Jobs With Same Caller</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Job#getNextJobsWithSameCaller <em>Next Jobs With Same Caller</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.Job#getInstruction <em>Instruction</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.Job#isTimeLoopJob <em>Time Loop Job</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getJob()
- * @model abstract="true"
+ * @model
  * @generated
  */
 public interface Job extends IrAnnotable {
@@ -139,5 +141,49 @@ public interface Job extends IrAnnotable {
 	 * @generated
 	 */
 	EList<Job> getNextJobsWithSameCaller();
+
+	/**
+	 * Returns the value of the '<em><b>Instruction</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Instruction</em>' containment reference.
+	 * @see #setInstruction(Instruction)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getJob_Instruction()
+	 * @model containment="true" required="true"
+	 * @generated
+	 */
+	Instruction getInstruction();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Job#getInstruction <em>Instruction</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Instruction</em>' containment reference.
+	 * @see #getInstruction()
+	 * @generated
+	 */
+	void setInstruction(Instruction value);
+
+	/**
+	 * Returns the value of the '<em><b>Time Loop Job</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Time Loop Job</em>' attribute.
+	 * @see #setTimeLoopJob(boolean)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getJob_TimeLoopJob()
+	 * @model
+	 * @generated
+	 */
+	boolean isTimeLoopJob();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Job#isTimeLoopJob <em>Time Loop Job</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Time Loop Job</em>' attribute.
+	 * @see #isTimeLoopJob()
+	 * @generated
+	 */
+	void setTimeLoopJob(boolean value);
 
 } // Job

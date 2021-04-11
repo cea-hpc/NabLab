@@ -396,7 +396,7 @@ void HeatEquation::setUpTimeLoopN() noexcept
  * In variables: V, center, deltat, f, outgoingFlux, surface, t_n, u_n
  * Out variables: outgoingFlux, t_nplus1, u_nplus1
  */
-void HeatEquation::executeTimeLoopN() noexcept
+void HeatEquation::executeTimeLoopN(const member_type& teamMember) noexcept
 {
 	auto team_policy(Kokkos::TeamPolicy<>(
 		Kokkos::hwloc::get_available_numa_count(),
@@ -435,9 +435,18 @@ void HeatEquation::executeTimeLoopN() noexcept
 	
 		if (continueLoop)
 		{
-			// Switch variables to prepare next iteration
-			std::swap(t_nplus1, t_n);
-			std::swap(u_nplus1, u_n);
+			t_n = t_nplus1;
+			{
+				const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
+				if (!teamWork.second)
+					return;
+			
+				Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& i1CellsTeam)
+				{
+					int i1Cells(i1CellsTeam + teamWork.first);
+					u_n(i1Cells) = u_nplus1(i1Cells);
+				});
+			}
 		}
 	
 		cpuTimer.stop();
@@ -542,7 +551,10 @@ void HeatEquation::simulate()
 	});
 	
 	// @3.0
-	executeTimeLoopN();
+	Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
+	{
+		executeTimeLoopN(thread);
+	});
 	
 	std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << globalTimer.print() << __RESET__ << std::endl;
 }

@@ -132,28 +132,8 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createJobAdapter();
 			}
 			@Override
-			public Adapter caseInstructionJob(InstructionJob object) {
-				return createInstructionJobAdapter();
-			}
-			@Override
-			public Adapter caseTimeLoopJob(TimeLoopJob object) {
-				return createTimeLoopJobAdapter();
-			}
-			@Override
 			public Adapter caseExecuteTimeLoopJob(ExecuteTimeLoopJob object) {
 				return createExecuteTimeLoopJobAdapter();
-			}
-			@Override
-			public Adapter caseSetUpTimeLoopJob(SetUpTimeLoopJob object) {
-				return createSetUpTimeLoopJobAdapter();
-			}
-			@Override
-			public Adapter caseTearDownTimeLoopJob(TearDownTimeLoopJob object) {
-				return createTearDownTimeLoopJobAdapter();
-			}
-			@Override
-			public Adapter caseTimeLoopCopy(TimeLoopCopy object) {
-				return createTimeLoopCopyAdapter();
 			}
 			@Override
 			public Adapter caseInstruction(Instruction object) {
@@ -584,20 +564,6 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.InstructionJob <em>Instruction Job</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.InstructionJob
-	 * @generated
-	 */
-	public Adapter createInstructionJobAdapter() {
-		return null;
-	}
-
-	/**
 	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.ExecuteTimeLoopJob <em>Execute Time Loop Job</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -608,62 +574,6 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createExecuteTimeLoopJobAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.TimeLoopJob <em>Time Loop Job</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.TimeLoopJob
-	 * @generated
-	 */
-	public Adapter createTimeLoopJobAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.SetUpTimeLoopJob <em>Set Up Time Loop Job</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.SetUpTimeLoopJob
-	 * @generated
-	 */
-	public Adapter createSetUpTimeLoopJobAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.TearDownTimeLoopJob <em>Tear Down Time Loop Job</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.TearDownTimeLoopJob
-	 * @generated
-	 */
-	public Adapter createTearDownTimeLoopJobAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.TimeLoopCopy <em>Time Loop Copy</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.TimeLoopCopy
-	 * @generated
-	 */
-	public Adapter createTimeLoopCopyAdapter() {
 		return null;
 	}
 

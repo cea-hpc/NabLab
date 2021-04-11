@@ -20,7 +20,6 @@ import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.PrimitiveType
-import fr.cea.nabla.ir.ir.TimeLoopJob
 import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.nabla.ArgOrVar
 import fr.cea.nabla.nabla.NablaModule
@@ -128,7 +127,7 @@ class NablagenApplication2Ir
 			variables.add(0, postProcessing.periodValue)
 		}
 
-		main.calls += jobs.filter(TimeLoopJob).filter[x | x.caller === null]
+		main.calls += jobs.filter(j | j.timeLoopJob).filter[x | x.caller === null]
 	}
 
 	private def createIrModule(IrRoot root, Nabla2Ir nabla2ir, NablagenModule ngenModule)

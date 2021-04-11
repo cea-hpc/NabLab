@@ -478,7 +478,13 @@ void Glace2d::setUpTimeLoopN() noexcept
 {
 	t_n = t_n0;
 	deltat_n = deltat_n0;
-	deep_copy(X_n, X_n0);
+	Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const size_t& i1Nodes)
+	{
+		for (size_t i1=0; i1<2; i1++)
+		{
+			X_n(i1Nodes)[i1] = X_n0(i1Nodes)[i1];
+		}
+	});
 }
 
 /**
@@ -542,12 +548,26 @@ void Glace2d::executeTimeLoopN() noexcept
 	
 		if (continueLoop)
 		{
-			// Switch variables to prepare next iteration
-			std::swap(t_nplus1, t_n);
-			std::swap(deltat_nplus1, deltat_n);
-			std::swap(X_nplus1, X_n);
-			std::swap(E_nplus1, E_n);
-			std::swap(uj_nplus1, uj_n);
+			t_n = t_nplus1;
+			deltat_n = deltat_nplus1;
+			Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const size_t& i1Nodes)
+			{
+				for (size_t i1=0; i1<2; i1++)
+				{
+					X_n(i1Nodes)[i1] = X_nplus1(i1Nodes)[i1];
+				}
+			});
+			Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& i1Cells)
+			{
+				E_n(i1Cells) = E_nplus1(i1Cells);
+			});
+			Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& i1Cells)
+			{
+				for (size_t i1=0; i1<2; i1++)
+				{
+					uj_n(i1Cells)[i1] = uj_nplus1(i1Cells)[i1];
+				}
+			});
 		}
 	
 		cpuTimer.stop();

@@ -130,13 +130,13 @@ public interface IrFactory extends EFactory {
 	JobCaller createJobCaller();
 
 	/**
-	 * Returns a new object of class '<em>Instruction Job</em>'.
+	 * Returns a new object of class '<em>Job</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Instruction Job</em>'.
+	 * @return a new object of class '<em>Job</em>'.
 	 * @generated
 	 */
-	InstructionJob createInstructionJob();
+	Job createJob();
 
 	/**
 	 * Returns a new object of class '<em>Execute Time Loop Job</em>'.
@@ -146,33 +146,6 @@ public interface IrFactory extends EFactory {
 	 * @generated
 	 */
 	ExecuteTimeLoopJob createExecuteTimeLoopJob();
-
-	/**
-	 * Returns a new object of class '<em>Set Up Time Loop Job</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Set Up Time Loop Job</em>'.
-	 * @generated
-	 */
-	SetUpTimeLoopJob createSetUpTimeLoopJob();
-
-	/**
-	 * Returns a new object of class '<em>Tear Down Time Loop Job</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Tear Down Time Loop Job</em>'.
-	 * @generated
-	 */
-	TearDownTimeLoopJob createTearDownTimeLoopJob();
-
-	/**
-	 * Returns a new object of class '<em>Time Loop Copy</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Time Loop Copy</em>'.
-	 * @generated
-	 */
-	TimeLoopCopy createTimeLoopCopy();
 
 	/**
 	 * Returns a new object of class '<em>Instruction Block</em>'.

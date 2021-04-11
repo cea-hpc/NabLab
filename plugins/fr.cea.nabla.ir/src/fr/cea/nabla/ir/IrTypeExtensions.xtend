@@ -70,14 +70,14 @@ class IrTypeExtensions
 		}
 	}
 
-	static def int getSizesSize(IrType it)
+	static def getBaseSizes(IrType it)
 	{
 		switch it
 		{
-			BaseType: sizes.size
-			ConnectivityType: base.sizes.size
-			LinearAlgebraType: sizes.size
-			default: 0
+			BaseType: sizes
+			ConnectivityType: base.sizes
+			LinearAlgebraType: sizes
+			default: #[]
 		}
 	}
 

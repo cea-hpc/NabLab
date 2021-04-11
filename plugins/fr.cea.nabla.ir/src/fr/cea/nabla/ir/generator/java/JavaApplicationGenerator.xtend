@@ -270,7 +270,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 						«val nodeVariables = outputVarsByConnectivities.get("node")»
 						«IF !nodeVariables.nullOrEmpty»
 							«FOR v : nodeVariables»
-								writer.openNodeArray("«v.outputName»", «v.target.type.sizesSize»);
+								writer.openNodeArray("«v.outputName»", «v.target.type.baseSizes.size»);
 								for (int i=0 ; i<nbNodes ; ++i)
 									writer.write(«v.target.writeCallContent»);
 								writer.closeNodeArray();
@@ -281,7 +281,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 						«val cellVariables = outputVarsByConnectivities.get("cell")»
 						«IF !cellVariables.nullOrEmpty»
 							«FOR v : cellVariables»
-								writer.openCellArray("«v.outputName»", «v.target.type.sizesSize»);
+								writer.openCellArray("«v.outputName»", «v.target.type.baseSizes.size»);
 								for (int i=0 ; i<nbCells ; ++i)
 									writer.write(«v.target.writeCallContent»);
 								writer.closeCellArray();

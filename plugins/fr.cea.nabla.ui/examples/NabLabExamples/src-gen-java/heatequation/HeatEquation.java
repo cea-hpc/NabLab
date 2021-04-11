@@ -346,13 +346,11 @@ public final class HeatEquation
 		
 			if (continueLoop)
 			{
-				// Switch variables to prepare next iteration
-				double tmp_t_n = t_n;
 				t_n = t_nplus1;
-				t_nplus1 = tmp_t_n;
-				double[] tmp_u_n = u_n;
-				u_n = u_nplus1;
-				u_nplus1 = tmp_u_n;
+				IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
+				{
+					u_n[i1Cells] = u_nplus1[i1Cells];
+				});
 			} 
 		} while (continueLoop);
 		// force a last output at the end

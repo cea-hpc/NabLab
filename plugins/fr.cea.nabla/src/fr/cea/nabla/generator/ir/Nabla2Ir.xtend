@@ -12,7 +12,6 @@ package fr.cea.nabla.generator.ir
 import com.google.inject.Inject
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.ir.TimeLoopJob
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.FunctionOrReduction
@@ -76,7 +75,7 @@ class Nabla2Ir
 			addJobsAndCountersToModule(nablaModule.iteration.iterator, it)
 
 		// Variables creation: order must be keep to ensure default values validity
-		val tlJobs = jobs.filter(TimeLoopJob)
+		val tlJobs = jobs.filter(j | j.timeLoopJob)
 		for (d : nablaModule.declarations)
 			switch d
 			{

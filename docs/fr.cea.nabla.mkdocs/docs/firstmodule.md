@@ -56,7 +56,7 @@ A new wizard is launched, asking for a project name and a module name:
 
 <img src="img/NabLab_new_project_wizard.png" alt="NabLab New Project Wizard" title="NabLab New Project Wizard" width="50%" height="50%" />
 
-Enter *Tutorial* as project name and *HeatEquation* as module name and click on the *Finish* button to create the new project. The new project is available in the *Model Explorer* on the left of the window. It contains two files (*HeatEquation.n*, and *HeatEquation.ngen*) in the *Tutorial/src/heatequation/* folder:
+Enter *Tutorial* as project name, select the *Module* radio button, enter *HeatEquation* as module name and click on the *Finish* button to create the new project. The new project is available in the *Model Explorer* on the left of the window. It contains two files (*HeatEquation.n*, and *HeatEquation.ngen*) in the *Tutorial/src/heatequation/* folder:
 
 <img src="img/NabLab_new_project_result.png" alt="NabLab New Project Result" title="NabLab New Project Result" width="30%" height="30%" />
 

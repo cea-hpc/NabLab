@@ -16,7 +16,7 @@ A new wizard is launched, asking for a project name and a module name:
 
 <img src="img/NabLab_new_project_wizard.png" alt="NabLab New Project Wizard" title="NabLab New Project Wizard" width="50%" height="50%" />
 
-Enter *Tutorial* as project name and *Hydro* as module name and click on the *Finish* button to create the new project. The new project is available in the *Model Explorer* on the left of the window. It contains two files (*Hydro.n*, and *Hydro.ngen*) in the *Tutorial/src/hydro/* folder:
+Enter *Tutorial* as project name, select the *Module* radio button, enter *Hydro* as module name and click on the *Finish* button to create the new project. The new project is available in the *Model Explorer* on the left of the window. It contains two files (*Hydro.n*, and *Hydro.ngen*) in the *Tutorial/src/hydro/* folder:
 
 <img src="img/NabLab_new_project_result.png" alt="NabLab New Project Result" title="NabLab New Project Result" width="30%" height="30%" />
 
@@ -217,5 +217,5 @@ The `StlThread` target will generate the following files:
 
 <img src="img/NabLab_hydro_2remaps_generated_files.png" alt="NabLab Multiple Additional Module Generated Files" title="NabLab Multiple Additional Module Generated Files" width="20%" height="20%"/>
 
-The above picture shows that generated files have the same name as the instance (for example r1 in `AdditionalModule Remap r1` in *HydroRemap.ngen*) starting with an upper case, i.e. *Hydro*, *R1* and *R2*.
+The above picture shows that generated files have the same name as the module instances (defined in the *HydroRemap.ngen* file) starting with an upper case, i.e. *Hydro*, *R1* and *R2*.
 

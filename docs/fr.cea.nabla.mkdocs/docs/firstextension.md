@@ -21,16 +21,26 @@ The `nextWaveHeight` and `nextDepth` functions have to access shared scientific 
 The aim of this tutorial is to see how to create the NabLab extension containing the functions and how to implement and package a NabLab extension provider associated to this extension.
 
 
-## Defining the extension
+## Creating the project
 
-We will create a NabLab extension called *BathyLib*. The best practice consists in creating a folder for this extension at the same level than the swan folder containing the module and to create a *BathyLib.n* file into this folder. 
+We will create a NabLab extension called *BathyLib*. The best practice consists in creating an independent project for the extension and its providers. To do that, just click on the main menu *File > New > NabLab Project* to create a new project: 
 
-<img src="img/NabLab_extension_folders.png" alt="NabLab Extension Folders" title="NabLab Extension Folders" width="20%" height="20%" />
+<img src="img/NabLab_new_project_menu.png" alt="NabLab New Project" title="NabLab New Project" width="60%" height="60%" />
+
+A new wizard is launched, asking for a project name and an extension name:
+
+<img src="img/NabLab_new_project_wizard.png" alt="NabLab New Project Wizard" title="NabLab New Project Wizard" width="50%" height="50%" />
+
+Enter *BathyLib* as project name, select the *Extension* radio button and enter *BathyLib* as extension name and click on the *Finish* button to create the new project. The new project is available in the *Model Explorer* on the left of the window. It contains two files (*BathyLib.n*, and *BathyLib.ngen*) in the *Tutorial/src/bathylib/* folder:
+
+<img src="img/NabLab_new_project_result.png" alt="NabLab New Project Result" title="NabLab New Project Result" width="30%" height="30%" />
 
 !!!note
-	The extension can also be created into a separate project. The project just needs to share the same workspace as the module.
+	The extension can also be created into the same project as the application, into a separate folder. Therefore, if you plan to share the extension between projects, creating a project for the extension remains the best solution. 
 
-Then, double-click on the *bathylib/BathyLib.n* file to open it and declare the *BathyLib* extension and the `nextWaveHeight` and `nextDepth` functions in the NabLab editor:
+## Defining the extension
+
+Double-click on the *src/bathylib/BathyLib.n* file to open it and declare the `nextWaveHeight` and `nextDepth` functions in the NabLab editor like this:
 
 ```
 extension BathyLib;
@@ -54,33 +64,27 @@ It is noteworthy that the above functions have no body. We will see now how to c
 
 The role of providers is to implement extensions. It is possible to implement several providers for an extension, for example a Java one and a C++ one. In this tutorial we will implement only one C++ provider for the *BathyLib* extension. 
 
-The first step to define the provider is to create a *ngen* file containing the provider definition. NabLab provides a code generator for that: right-click on the *BathyLib.n* file and select the *Generate nablagen provider file* menu. 
+The first step to define the provider is to create a *ngen* file containing the provider definition.
 
-<img src="img/NabLab_generate_nablagen_provider_file.png" alt="NabLab Provider File Generation" title="NabLab Provider File Generation" width="40%" height="40%" />
-
-A *BathyLib.ngen* file is created near the *BathyLib.n* one.
-
-<img src="img/NabLab_extension_folders2.png" alt="NabLab Extension Folders" title="NabLab Extension Folders" width="20%" height="20%" />
+!!! Note
+	The *ngen* file already exists in the project: it has been created by the wizard. If you need to create this *ngen* file on an existing project, NabLab provides a code generator for that: right-click on the *BathyLib.n* file and select the *Generate nablagen provider file* menu. 
 
 Double-click on the *BathyLib.ngen* file to open the editor and suppress lines to let only a simple C++ provider as follows:
 
 ```
-// C++ Extension Provider
 Provider BathyLibCpp : BathyLib
 {
 	target = StlThread;
-	outputPath = "/swan/src-gen-cpp/stl-thread";
+	outputPath = "/BathyLib/src-cpp/stl-thread";
 }
 ```
 
-The above example defines a provider named `BathyLibCpp` that implements `BathyLib`. This provider will be generated for the `StlThread` target in the provided `outputPath`. 
+The above example defines a provider named `BathyLibCpp` that implements `BathyLib`. This provider will be generated for the `StlThread` target in the provided `outputPath`. More information on generation targets are available in the [Ngen language reference](../ngenlanguage/index.html).
 
 !!! note
 	The implemented extension and the available targets are available by contextual code completion with `CTRL-Space` keys.
 
-!!! note
-	More information on generation targets are available in the [Ngen language reference](../ngenlanguage/index.html)
-
+The output folder name is *src-cpp* rather than *src-gen-cpp* because the content of the folder is not totally generated: it will be filled by the user in the following section.
 
 ## Implementing the provider
 
@@ -88,7 +92,7 @@ The aim of the previously defined provider is to implement the `nextWaveHeight` 
 
 <img src="img/NabLab_generate_code.png" alt="NabLab Generate Code" title="NabLab Generate Code" width="50%" height="50%" />
 
-Generated files can be observed in the `outputPath` folder, in our example "/swan/src-gen-cpp/stl-thread".
+Generated files can be observed in the `outputPath` folder, in our example "/BathyLib/src-cpp/stl-thread".
 
 <img src="img/NabLab_provider_generated_files.png" alt="NabLab Provider Files" title="NabLab Provider Files" width="20%" height="20%" />
 

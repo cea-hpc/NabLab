@@ -24,14 +24,14 @@ class NablagenFileGenerator extends StandaloneGeneratorBase
 		if ( !(fsa.isFile(fileName) ))
 		{
 			dispatcher.post(MessageType::Exec, "    Generating: " + fileName)
-			fsa.generateFile(fileName, getContent(nablaExt, projectName))
+			fsa.generateFile(fileName, getContent(nablaExt.name, projectName))
 		}
 	}
 
-	private def getContent(NablaExtension it, String projectName)
+	static def getContent(String nablaExtensionName, String projectName)
 	'''
 	/*
-	 * This file contains the providers for the «name» NabLab extension.
+	 * This file contains the providers for the «nablaExtensionName» NabLab extension.
 	 * The list is ordered: the first Provider is the default one for the specified target.
 	 * For example, if you entered two «TargetType::STL_THREAD» Provider instances,
 	 * the first one in the following list will be the default one during NabLab
@@ -41,17 +41,17 @@ class NablagenFileGenerator extends StandaloneGeneratorBase
 	/*
 	 * C++ Extension Provider
 	 */
-	Provider «name»Cpp : «name»
+	Provider «nablaExtensionName»Cpp : «nablaExtensionName»
 	{
 		target = «TargetType::CPP_SEQUENTIAL.literal»;
 		// compatibleTargets can be added here
-		outputPath = "/«projectName»/src-cpp";
+		outputPath = "/«projectName»/src-cpp/sequential";
 	}
 
 	/* 
 	 * Java Extension Provider
 	 */
-	Provider «name»Java : «name»
+	Provider «nablaExtensionName»Java : «nablaExtensionName»
 	{
 		target = «TargetType::JAVA.literal»;
 		// compatibleTargets can be added here

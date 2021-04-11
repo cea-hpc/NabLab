@@ -14,8 +14,10 @@ import org.eclipse.jface.util.BidiUtils
 import org.eclipse.swt.SWT
 import org.eclipse.swt.layout.GridData
 import org.eclipse.swt.layout.GridLayout
+import org.eclipse.swt.widgets.Button
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.swt.widgets.Event
+import org.eclipse.swt.widgets.Group
 import org.eclipse.swt.widgets.Label
 import org.eclipse.swt.widgets.Listener
 import org.eclipse.swt.widgets.Text
@@ -26,10 +28,10 @@ import org.eclipse.ui.dialogs.WizardNewProjectCreationPage
  */
 class NablaProjectPage extends WizardNewProjectCreationPage
 {
-
-	static val MODULE_NAME_FIELD_WIDTH = 250
-	String initialModuleFieldValue = null
-	Text moduleNameField
+	static val MODULE_OR_EXTENSION_NAME_FIELD_WIDTH = 250
+	Text moduleOrExtensionNameField
+	Button moduleButton
+	Button extensionButton
 
 	var moduleModifyListener = new Listener()
 	{
@@ -49,7 +51,8 @@ class NablaProjectPage extends WizardNewProjectCreationPage
 	override createControl(Composite parent)
 	{
 		super.createControl(parent)
-		createModuleNameGroup(control as Composite)
+		val p = createButtonGroup(control as Composite)
+		createModuleNameGroup(p as Composite)
 		pageComplete = validatePage
 	}
 
@@ -58,11 +61,11 @@ class NablaProjectPage extends WizardNewProjectCreationPage
 		val validProject = super.validatePage
 		if (validProject)
 		{
-			val moduleFieldContents = moduleNameFieldValue
+			val moduleFieldContents = moduleOrExtensionName
 			if (moduleFieldContents.empty)
 			{
 				errorMessage = null
-				message = "Module name must be specified"
+				message = "Module/Extension name must be specified"
 				return false
 			}
 			val authorizedModuleCharacters = Pattern::compile("([A-Z]|_)([a-z]|[A-Z]|[0-9]|_)*").matcher(moduleFieldContents)
@@ -70,10 +73,10 @@ class NablaProjectPage extends WizardNewProjectCreationPage
 			{
 				if (!authorizedModuleCharacters.lookingAt)
 				{
-					errorMessage = "Module name must start with an upper case"
+					errorMessage = "Module/Extension name must start with an upper case"
 					return false
 				}
-				errorMessage = "Module name contains invalid character(s)"
+				errorMessage = "Module/Extension name contains invalid character(s)"
 				return false
 			}
 			errorMessage = null
@@ -83,32 +86,33 @@ class NablaProjectPage extends WizardNewProjectCreationPage
 		return false
 	}
 
-	def String getModuleName()
+	def boolean isModule()
 	{
-		if (moduleNameField === null)
-		{
-			return initialModuleFieldValue
-		}
-		return moduleNameFieldValue
+		moduleButton.selection
 	}
 
-	def setInitialModuleName(String name)
+	def String getModuleOrExtensionName()
 	{
-		if (name === null)
-		{
-			initialModuleFieldValue = null
-		} else {
-			initialModuleFieldValue = name.trim
-		}
+		if (moduleOrExtensionNameField === null) ""
+		else moduleOrExtensionNameField.text.trim
 	}
 
-	private def String getModuleNameFieldValue()
+	private def createButtonGroup(Composite parent)
 	{
-		if (moduleNameField === null)
-		{
-			return ""
-		}
-		return moduleNameField.text.trim
+		val group = new Group(parent, SWT.SHADOW_IN)
+		group.layout = new GridLayout()
+		group.layoutData = new GridData(GridData.FILL_HORIZONTAL)
+		group.setText("Module or Extension")
+
+		moduleButton = new Button(group, SWT.RADIO)
+		moduleButton.setText("Module")
+		moduleButton.selection = true
+
+		extensionButton = new Button(group, SWT.RADIO)
+		extensionButton.setText("Extension")
+		extensionButton.selection = false
+		extensionButton.alignment = SWT.RIGHT
+		return group
 	}
 
 	private def createModuleNameGroup(Composite parent)
@@ -119,21 +123,18 @@ class NablaProjectPage extends WizardNewProjectCreationPage
 		moduleGroup.layout = layout
 		moduleGroup.layoutData = new GridData(GridData.FILL_HORIZONTAL)
 
-		val moduleLabel = new Label(moduleGroup, SWT.NONE)
-		moduleLabel.text = "Module Name:"
-		moduleLabel.font = parent.font
+		val moduleOrExtensionLabel = new Label(moduleGroup, SWT.NONE)
+		moduleOrExtensionLabel.text = "Name:"
+		moduleOrExtensionLabel.font = parent.font
 
-		moduleNameField = new Text(moduleGroup, SWT.BORDER)
+		moduleOrExtensionNameField = new Text(moduleGroup, SWT.BORDER)
 		val data = new GridData(GridData.FILL_HORIZONTAL)
-		data.widthHint = MODULE_NAME_FIELD_WIDTH
-		moduleNameField.layoutData = data
-		moduleNameField.font = parent.font
+		data.widthHint = MODULE_OR_EXTENSION_NAME_FIELD_WIDTH
+		moduleOrExtensionNameField.layoutData = data
+		moduleOrExtensionNameField.font = parent.font
 
-		if (initialModuleFieldValue !== null)
-		{
-			moduleNameField.text = initialModuleFieldValue
-		}
-		moduleNameField.addListener(SWT.Modify, moduleModifyListener)
-		BidiUtils.applyBidiProcessing(moduleNameField, BidiUtils.BTD_DEFAULT)
+		moduleOrExtensionNameField.addListener(SWT.Modify, moduleModifyListener)
+		BidiUtils.applyBidiProcessing(moduleOrExtensionNameField, BidiUtils.BTD_DEFAULT)
+		return moduleGroup
 	}
 }

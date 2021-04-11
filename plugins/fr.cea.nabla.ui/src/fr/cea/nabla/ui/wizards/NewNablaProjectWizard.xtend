@@ -9,6 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ui.wizards
 
+import fr.cea.nabla.generator.providers.NablagenFileGenerator
 import fr.cea.nabla.nablagen.TargetType
 import fr.cea.nabla.ui.NablaUiUtils
 import fr.cea.nabla.ui.internal.NablaActivator
@@ -43,9 +44,8 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 {
 	static val WIZARD_TITLE = "New NabLab Project"
 	static val DEFAULT_PROJECT_NAME = "nablab.project"
-	static val DEFAULT_MODULE_NAME = "MyModule"
 	static val NEW_PROJECT_PAGE_TITLE = "Create a new NabLab project"
-	static val NEW_PROJECT_PAGE_DESCRIPTION = "Set project and module name."
+	static val NEW_PROJECT_PAGE_DESCRIPTION = "Set project and module/extension name."
 
 	NablaProjectPage newProjectPage = null
 
@@ -63,7 +63,6 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 	{
 		newProjectPage = new NablaProjectPage(WIZARD_TITLE)
 		newProjectPage.initialProjectName = DEFAULT_PROJECT_NAME
-		newProjectPage.initialModuleName = DEFAULT_MODULE_NAME
 		newProjectPage.title = NEW_PROJECT_PAGE_TITLE
 		newProjectPage.description = NEW_PROJECT_PAGE_DESCRIPTION
 		val imageDescriptor = NablaUiUtils.getImageDescriptor("icons/NabLab.gif")
@@ -134,45 +133,56 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 				srcFolder.create(false, true, monitor)
 
 				// Create modules folder
-				val modulesFolder = srcFolder.getFolder(newProjectPage.moduleName.toLowerCase)
+				val mOeName = newProjectPage.moduleOrExtensionName
+				val modulesFolder = srcFolder.getFolder(mOeName.toLowerCase)
 				modulesFolder.create(false, true, monitor)
 
 				// Create src-gen-java folder
-				val srcGenFoldersByLanguage = new LinkedHashMap<TargetType, IFolder>
-				val srcGenJavaFolder = project.getFolder("src-gen-java")
-				srcGenJavaFolder.create(false, true, monitor)
-				srcGenFoldersByLanguage.put(TargetType::JAVA, srcGenJavaFolder)
+				val srcFoldersByLanguage = new LinkedHashMap<TargetType, IFolder>
+				val srcJavaFolderName = (newProjectPage.module ? "src-gen-java" : "src-java")
+				val srcJavaFolder = project.getFolder(srcJavaFolderName)
+				srcJavaFolder.create(false, true, monitor)
+				srcFoldersByLanguage.put(TargetType::JAVA, srcJavaFolder)
 
 				// Create src-gen-cpp folder
-				val srcGenCppFolder = project.getFolder("src-gen-cpp")
-				srcGenCppFolder.create(false, true, monitor)
+				val srcCppFolderName = (newProjectPage.module ? "src-gen-cpp" : "src-cpp")
+				val srcCppFolder = project.getFolder(srcCppFolderName)
+				srcCppFolder.create(false, true, monitor)
 
 				// Create all src-gen-cpp subfolders
-				val srcGenSequentialFolder = srcGenCppFolder.getFolder("sequential")
-				srcGenSequentialFolder.create(false, true, monitor)
-				srcGenFoldersByLanguage.put(TargetType::CPP_SEQUENTIAL, srcGenSequentialFolder)
+				val srcSequentialFolder = srcCppFolder.getFolder("sequential")
+				srcSequentialFolder.create(false, true, monitor)
+				srcFoldersByLanguage.put(TargetType::CPP_SEQUENTIAL, srcSequentialFolder)
 
-				val srcGenStlThreadFolder = srcGenCppFolder.getFolder("stl-thread")
-				srcGenStlThreadFolder.create(false, true, monitor)
-				srcGenFoldersByLanguage.put(TargetType::STL_THREAD, srcGenStlThreadFolder)
+				val srcStlThreadFolder = srcCppFolder.getFolder("stl-thread")
+				srcStlThreadFolder.create(false, true, monitor)
+				srcFoldersByLanguage.put(TargetType::STL_THREAD, srcStlThreadFolder)
 
-				val srcGenOpenMpFolder = srcGenCppFolder.getFolder("openmp")
-				srcGenOpenMpFolder.create(false, true, monitor)
-				srcGenFoldersByLanguage.put(TargetType::OPEN_MP, srcGenOpenMpFolder)
+				val srcOpenMpFolder = srcCppFolder.getFolder("openmp")
+				srcOpenMpFolder.create(false, true, monitor)
+				srcFoldersByLanguage.put(TargetType::OPEN_MP, srcOpenMpFolder)
 
-				val srcGenKokkosFolder = srcGenCppFolder.getFolder("kokkos")
-				srcGenKokkosFolder.create(false, true, monitor)
-				srcGenFoldersByLanguage.put(TargetType::KOKKOS, srcGenKokkosFolder)
+				val srcKokkosFolder = srcCppFolder.getFolder("kokkos")
+				srcKokkosFolder.create(false, true, monitor)
+				srcFoldersByLanguage.put(TargetType::KOKKOS, srcKokkosFolder)
 
-				val srcGenKokkosTeamFolder = srcGenCppFolder.getFolder("kokkos-team")
-				srcGenKokkosTeamFolder.create(false, true, monitor)
-				srcGenFoldersByLanguage.put(TargetType::KOKKOS_TEAM_THREAD, srcGenKokkosTeamFolder)
+				val srcKokkosTeamFolder = srcCppFolder.getFolder("kokkos-team")
+				srcKokkosTeamFolder.create(false, true, monitor)
+				srcFoldersByLanguage.put(TargetType::KOKKOS_TEAM_THREAD, srcKokkosTeamFolder)
 
 				// Create nabla and nablagen models
-				val nablaFile = modulesFolder.getFile(newProjectPage.moduleName + ".n")
-				createFile(nablaFile, getNablaModelContent(newProjectPage.moduleName), monitor)
-				val nablagenFile = modulesFolder.getFile(newProjectPage.moduleName + ".ngen")
-				createFile(nablagenFile, getNablagenModelContent(newProjectPage.moduleName, srcGenFoldersByLanguage), monitor)
+				val nablaFile = modulesFolder.getFile(mOeName + ".n")
+				val nablagenFile = modulesFolder.getFile(mOeName + ".ngen")
+				if (newProjectPage.module)
+				{
+					createFile(nablaFile, getNablaModuleContent(mOeName), monitor)
+					createFile(nablagenFile, getNablagenApplicationContent(mOeName, srcFoldersByLanguage), monitor)
+				}
+				else
+				{
+					createFile(nablaFile, getNablaExtensionContent(mOeName), monitor)
+					createFile(nablagenFile, NablagenFileGenerator.getContent(mOeName, newProjectPage.projectName), monitor)
+				}
 
 				// Create META-INF folder and MANIFEST
 				val metaInf = project.getFolder("META-INF")
@@ -181,7 +191,7 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 				createFile(manifestFile, getManifestContent(), monitor)
 
 				// Convert into Java Project
-				convertIntoJavaProject(project, #{srcFolder, srcGenJavaFolder}, monitor)
+				convertIntoJavaProject(project, #{srcFolder, srcJavaFolder}, monitor)
 
 				// Create build.properties
 				val buildPropertiesFile = project.getFile("build.properties")
@@ -242,7 +252,7 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 		file.create(is, false, monitor)
 	}
 
-	private def getNablaModelContent(String moduleName)
+	private def getNablaModuleContent(String moduleName)
 	'''
 		module «moduleName»;
 
@@ -260,7 +270,14 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 		iterate n while (n+1 < maxIter && t^{n+1} < maxTime);
 	'''
 
-	private def getNablagenModelContent(String nablaModuleName, HashMap<TargetType, IFolder> srcGenFoldersByLanguage)
+	private def getNablaExtensionContent(String extensionName)
+	'''
+		extension «extensionName»;
+
+		def myMatVectProduct: x, y  | ℝ[x,y] × ℝ[y] → ℝ[x];
+	'''
+
+	private def getNablagenApplicationContent(String nablaModuleName, HashMap<TargetType, IFolder> srcFoldersByLanguage)
 	'''
 		Application «nablaModuleName»;
 
@@ -282,37 +299,37 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 
 		Java
 		{
-			outputPath = "«srcGenFoldersByLanguage.get(TargetType::JAVA).fullPath»";
+			outputPath = "«srcFoldersByLanguage.get(TargetType::JAVA).fullPath»";
 		}
 
 		CppSequential
 		{
-			outputPath = "«srcGenFoldersByLanguage.get(TargetType::CPP_SEQUENTIAL).fullPath»";
+			outputPath = "«srcFoldersByLanguage.get(TargetType::CPP_SEQUENTIAL).fullPath»";
 			N_CXX_COMPILER = "/usr/bin/g++";
 		}
 
 		StlThread
 		{
-			outputPath = "«srcGenFoldersByLanguage.get(TargetType::STL_THREAD).fullPath»";
+			outputPath = "«srcFoldersByLanguage.get(TargetType::STL_THREAD).fullPath»";
 			N_CXX_COMPILER = "/usr/bin/g++";
 		}
 
 		OpenMP
 		{
-			outputPath = "«srcGenFoldersByLanguage.get(TargetType::OPEN_MP).fullPath»";
+			outputPath = "«srcFoldersByLanguage.get(TargetType::OPEN_MP).fullPath»";
 			N_CXX_COMPILER = "/usr/bin/g++";
 		}
 
 		Kokkos
 		{
-			outputPath = "«srcGenFoldersByLanguage.get(TargetType::KOKKOS).fullPath»";
+			outputPath = "«srcFoldersByLanguage.get(TargetType::KOKKOS).fullPath»";
 			N_CXX_COMPILER = "/usr/bin/g++";
 			N_KOKKOS_PATH = "$ENV{HOME}/kokkos/kokkos-install";
 		}
 
 		KokkosTeamThread
 		{
-			outputPath = "«srcGenFoldersByLanguage.get(TargetType::KOKKOS_TEAM_THREAD).fullPath»";
+			outputPath = "«srcFoldersByLanguage.get(TargetType::KOKKOS_TEAM_THREAD).fullPath»";
 			N_CXX_COMPILER = "/usr/bin/g++";
 			N_KOKKOS_PATH = "$ENV{HOME}/kokkos/kokkos-install";
 		}
@@ -335,12 +352,12 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 		   com.google.gson,
 		   commons-math3,
 		   leveldb
-		Export-Package: «newProjectPage.moduleName.toLowerCase»
+		Export-Package: «newProjectPage.moduleOrExtensionName.toLowerCase»
 	'''
 
 	private def getBuildPropertiesContent()
 	'''
-		source.. = src, src-gen-java/
+		source.. = src, src«IF newProjectPage.module»-gen«ENDIF»-java/
 		bin.includes = .,\
 		               META-INF/
 	'''

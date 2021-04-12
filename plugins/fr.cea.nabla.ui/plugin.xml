@@ -760,7 +760,7 @@
 			<command
 				commandId="fr.cea.nabla.GenerateNablagenCommand"
 				icon="icons/NabLab.gif"
-				label="Generate nablagen provider file"
+				label="Generate nablagen file"
 				style="push">
 				<visibleWhen checkEnabled="false">
 					<with variable="activeMenuSelection">
@@ -796,7 +796,7 @@
 		</command>
 	</extension>
 
-	<!-- Generate handlers for nablagen (code generation), nabla file (provider generation) -->
+	<!-- Generate handlers for nablagen (code generation), nabla file (ngen generation) -->
 	<extension point="org.eclipse.ui.handlers">
 		<handler
 			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.handlers.GenerateNablagenHandler"

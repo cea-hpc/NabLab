@@ -6,7 +6,7 @@ import com.google.inject.Singleton
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
 import fr.cea.nabla.generator.providers.NablagenFileGenerator
 import fr.cea.nabla.ir.Utils
-import fr.cea.nabla.nabla.NablaExtension
+import fr.cea.nabla.nabla.NablaRoot
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.IResource
 import org.eclipse.emf.common.util.URI
@@ -44,8 +44,8 @@ class GenerateNablagenHandler extends AbstractGenerateHandler
 				emfResource.load(null)
 
 				val startTime = System.currentTimeMillis
-				val nablaExt = emfResource.contents.filter(NablaExtension).head
-				generator.generate(nablaExt, nablaFile.parent.location.toString, project.name)
+				val nablaRoot = emfResource.contents.filter(NablaRoot).head
+				generator.generate(nablaRoot, nablaFile.parent.location.toString, project.name)
 				val endTime = System.currentTimeMillis
 				consoleFactory.printConsole(MessageType.Exec, "Code generation ended in " + (endTime-startTime)/1000.0 + "s")
 

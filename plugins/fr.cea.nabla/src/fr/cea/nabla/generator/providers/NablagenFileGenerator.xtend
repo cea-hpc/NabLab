@@ -12,23 +12,37 @@ package fr.cea.nabla.generator.providers
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
 import fr.cea.nabla.generator.StandaloneGeneratorBase
 import fr.cea.nabla.nabla.NablaExtension
+import fr.cea.nabla.nabla.NablaModule
+import fr.cea.nabla.nabla.NablaRoot
 import fr.cea.nabla.nablagen.TargetType
 
 class NablagenFileGenerator extends StandaloneGeneratorBase
 {
-	def generate(NablaExtension nablaExt, String genDir, String projectName)
+	public static val CppGenFoldersByTarget = #{
+		TargetType::CPP_SEQUENTIAL -> "sequential",
+		TargetType::STL_THREAD -> "stl-thread",
+		TargetType::OPEN_MP -> "openmp",
+		TargetType::KOKKOS -> "kokkos",
+		TargetType::KOKKOS_TEAM_THREAD -> "kokkos-team"
+	}
+
+	def generate(NablaRoot moduleOrExtension, String genDir, String projectName)
 	{
 		val fsa = getConfiguredFileSystemAccess(genDir, false)
-		var fileName = nablaExt.name + ".ngen"
+		var fileName = moduleOrExtension.name + ".ngen"
 		// generated only once
 		if ( !(fsa.isFile(fileName) ))
 		{
 			dispatcher.post(MessageType::Exec, "    Generating: " + fileName)
-			fsa.generateFile(fileName, getContent(nablaExt.name, projectName))
+			switch moduleOrExtension
+			{
+				NablaModule: fsa.generateFile(fileName, getApplicationContent(moduleOrExtension.name, projectName))
+				NablaExtension: fsa.generateFile(fileName, getProviderContent(moduleOrExtension.name, projectName))
+			}
 		}
 	}
 
-	static def getContent(String nablaExtensionName, String projectName)
+	static def getProviderContent(String nablaExtensionName, String projectName)
 	'''
 	/*
 	 * This file contains the providers for the «nablaExtensionName» NabLab extension.
@@ -45,7 +59,7 @@ class NablagenFileGenerator extends StandaloneGeneratorBase
 	{
 		target = «TargetType::CPP_SEQUENTIAL.literal»;
 		// compatibleTargets can be added here
-		outputPath = "/«projectName»/src-cpp/sequential";
+		outputPath = "/«projectName»/src-cpp/«CppGenFoldersByTarget.get(TargetType::CPP_SEQUENTIAL)»";
 	}
 
 	/* 
@@ -57,5 +71,63 @@ class NablagenFileGenerator extends StandaloneGeneratorBase
 		// compatibleTargets can be added here
 		outputPath = "/«projectName»/src-java";
 	}
+	'''
+
+	static def getApplicationContent(String nablaModuleName, String projectName)
+	'''
+		Application «nablaModuleName»;
+
+		MainModule «nablaModuleName» «nablaModuleName.toFirstLower»
+		{
+			meshClassName = "CartesianMesh2D";
+			nodeCoord = X;
+			time = t;
+			timeStep = δt;
+			iterationMax = maxIter;
+			timeMax = maxTime;
+		}
+
+		VtkOutput
+		{
+			periodReferenceVariable = «nablaModuleName.toFirstLower».n;
+			outputVariables = «nablaModuleName.toFirstLower».e as "Energy";
+		}
+
+		Java
+		{
+			outputPath = "/«projectName»/src-gen-java";
+		}
+
+		CppSequential
+		{
+			outputPath = "/«projectName»/src-gen-cpp/«CppGenFoldersByTarget.get(TargetType::CPP_SEQUENTIAL)»";
+			N_CXX_COMPILER = "/usr/bin/g++";
+		}
+
+		StlThread
+		{
+			outputPath = "/«projectName»/src-gen-cpp/«CppGenFoldersByTarget.get(TargetType::STL_THREAD)»";
+			N_CXX_COMPILER = "/usr/bin/g++";
+		}
+
+		OpenMP
+		{
+			outputPath = "/«projectName»/src-gen-cpp/«CppGenFoldersByTarget.get(TargetType::OPEN_MP)»";
+			N_CXX_COMPILER = "/usr/bin/g++";
+		}
+
+		Kokkos
+		{
+			outputPath = "/«projectName»/src-gen-cpp/«CppGenFoldersByTarget.get(TargetType::KOKKOS)»";
+			N_CXX_COMPILER = "/usr/bin/g++";
+			N_KOKKOS_PATH = "$ENV{HOME}/kokkos/kokkos-install";
+		}
+
+		KokkosTeamThread
+		{
+			outputPath = "/«projectName»/src-gen-cpp/«CppGenFoldersByTarget.get(TargetType::KOKKOS_TEAM_THREAD)»";
+			N_CXX_COMPILER = "/usr/bin/g++";
+			N_KOKKOS_PATH = "$ENV{HOME}/kokkos/kokkos-install";
+		}
 	'''
 }

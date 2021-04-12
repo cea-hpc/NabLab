@@ -10,15 +10,12 @@
 package fr.cea.nabla.ui.wizards
 
 import fr.cea.nabla.generator.providers.NablagenFileGenerator
-import fr.cea.nabla.nablagen.TargetType
 import fr.cea.nabla.ui.NablaUiUtils
 import fr.cea.nabla.ui.internal.NablaActivator
 import java.io.ByteArrayInputStream
 import java.lang.reflect.InvocationTargetException
 import java.util.ArrayList
 import java.util.Collection
-import java.util.HashMap
-import java.util.LinkedHashMap
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.IFolder
 import org.eclipse.core.resources.IProject
@@ -138,11 +135,9 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 				modulesFolder.create(false, true, monitor)
 
 				// Create src-gen-java folder
-				val srcFoldersByLanguage = new LinkedHashMap<TargetType, IFolder>
 				val srcJavaFolderName = (newProjectPage.module ? "src-gen-java" : "src-java")
 				val srcJavaFolder = project.getFolder(srcJavaFolderName)
 				srcJavaFolder.create(false, true, monitor)
-				srcFoldersByLanguage.put(TargetType::JAVA, srcJavaFolder)
 
 				// Create src-gen-cpp folder
 				val srcCppFolderName = (newProjectPage.module ? "src-gen-cpp" : "src-cpp")
@@ -150,25 +145,11 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 				srcCppFolder.create(false, true, monitor)
 
 				// Create all src-gen-cpp subfolders
-				val srcSequentialFolder = srcCppFolder.getFolder("sequential")
-				srcSequentialFolder.create(false, true, monitor)
-				srcFoldersByLanguage.put(TargetType::CPP_SEQUENTIAL, srcSequentialFolder)
-
-				val srcStlThreadFolder = srcCppFolder.getFolder("stl-thread")
-				srcStlThreadFolder.create(false, true, monitor)
-				srcFoldersByLanguage.put(TargetType::STL_THREAD, srcStlThreadFolder)
-
-				val srcOpenMpFolder = srcCppFolder.getFolder("openmp")
-				srcOpenMpFolder.create(false, true, monitor)
-				srcFoldersByLanguage.put(TargetType::OPEN_MP, srcOpenMpFolder)
-
-				val srcKokkosFolder = srcCppFolder.getFolder("kokkos")
-				srcKokkosFolder.create(false, true, monitor)
-				srcFoldersByLanguage.put(TargetType::KOKKOS, srcKokkosFolder)
-
-				val srcKokkosTeamFolder = srcCppFolder.getFolder("kokkos-team")
-				srcKokkosTeamFolder.create(false, true, monitor)
-				srcFoldersByLanguage.put(TargetType::KOKKOS_TEAM_THREAD, srcKokkosTeamFolder)
+				for (cppFolderName : NablagenFileGenerator.CppGenFoldersByTarget.values)
+				{
+					val cppFolder = srcCppFolder.getFolder(cppFolderName)
+					cppFolder.create(false, true, monitor)
+				}
 
 				// Create nabla and nablagen models
 				val nablaFile = modulesFolder.getFile(mOeName + ".n")
@@ -176,12 +157,12 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 				if (newProjectPage.module)
 				{
 					createFile(nablaFile, getNablaModuleContent(mOeName), monitor)
-					createFile(nablagenFile, getNablagenApplicationContent(mOeName, srcFoldersByLanguage), monitor)
+					createFile(nablagenFile, NablagenFileGenerator.getApplicationContent(mOeName, newProjectPage.projectName), monitor)
 				}
 				else
 				{
 					createFile(nablaFile, getNablaExtensionContent(mOeName), monitor)
-					createFile(nablagenFile, NablagenFileGenerator.getContent(mOeName, newProjectPage.projectName), monitor)
+					createFile(nablagenFile, NablagenFileGenerator.getProviderContent(mOeName, newProjectPage.projectName), monitor)
 				}
 
 				// Create META-INF folder and MANIFEST
@@ -275,64 +256,6 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 		extension «extensionName»;
 
 		def myMatVectProduct: x, y  | ℝ[x,y] × ℝ[y] → ℝ[x];
-	'''
-
-	private def getNablagenApplicationContent(String nablaModuleName, HashMap<TargetType, IFolder> srcFoldersByLanguage)
-	'''
-		Application «nablaModuleName»;
-
-		MainModule «nablaModuleName» «nablaModuleName.toFirstLower»
-		{
-			meshClassName = "CartesianMesh2D";
-			nodeCoord = X;
-			time = t;
-			timeStep = δt;
-			iterationMax = maxIter;
-			timeMax = maxTime;
-		}
-
-		VtkOutput
-		{
-			periodReferenceVariable = «nablaModuleName.toFirstLower».n;
-			outputVariables = «nablaModuleName.toFirstLower».e as "Energy";
-		}
-
-		Java
-		{
-			outputPath = "«srcFoldersByLanguage.get(TargetType::JAVA).fullPath»";
-		}
-
-		CppSequential
-		{
-			outputPath = "«srcFoldersByLanguage.get(TargetType::CPP_SEQUENTIAL).fullPath»";
-			N_CXX_COMPILER = "/usr/bin/g++";
-		}
-
-		StlThread
-		{
-			outputPath = "«srcFoldersByLanguage.get(TargetType::STL_THREAD).fullPath»";
-			N_CXX_COMPILER = "/usr/bin/g++";
-		}
-
-		OpenMP
-		{
-			outputPath = "«srcFoldersByLanguage.get(TargetType::OPEN_MP).fullPath»";
-			N_CXX_COMPILER = "/usr/bin/g++";
-		}
-
-		Kokkos
-		{
-			outputPath = "«srcFoldersByLanguage.get(TargetType::KOKKOS).fullPath»";
-			N_CXX_COMPILER = "/usr/bin/g++";
-			N_KOKKOS_PATH = "$ENV{HOME}/kokkos/kokkos-install";
-		}
-
-		KokkosTeamThread
-		{
-			outputPath = "«srcFoldersByLanguage.get(TargetType::KOKKOS_TEAM_THREAD).fullPath»";
-			N_CXX_COMPILER = "/usr/bin/g++";
-			N_KOKKOS_PATH = "$ENV{HOME}/kokkos/kokkos-install";
-		}
 	'''
 
 	private def getManifestContent()

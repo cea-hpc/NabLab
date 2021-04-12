@@ -2,7 +2,6 @@ package fr.cea.nabla.ui.propertytesters
 
 import com.google.inject.Inject
 import com.google.inject.Provider
-import fr.cea.nabla.nabla.NablaExtension
 import fr.cea.nabla.nabla.NablaRoot
 import org.eclipse.core.expressions.PropertyTester
 import org.eclipse.core.resources.IFile
@@ -17,13 +16,13 @@ class NablaFileContentPropertyTester extends PropertyTester
 	{
 		if (receiver instanceof IFile)
 		{
-			// check if file content is NablaExtension
+			// check if file contains at least one NablaRoot
 			val path = receiver.fullPath.toString
 			val uri = URI.createPlatformResourceURI(path, true)
 			val rSet = rSetProvider.get
 			val r = rSet.getResource(uri, true)
-			val rootObject = r.contents.filter(NablaRoot).head
-			return rootObject instanceof NablaExtension
+			val roots = r.contents.filter(NablaRoot)
+			return (roots !== null && !roots.empty)
 		}
 		else
 			return false

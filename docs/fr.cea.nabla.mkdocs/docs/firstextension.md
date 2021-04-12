@@ -36,7 +36,7 @@ Enter *BathyLib* as project name, select the *Extension* radio button and enter 
 <img src="img/NabLab_new_project_result.png" alt="NabLab New Project Result" title="NabLab New Project Result" width="30%" height="30%" />
 
 !!!note
-	The extension can also be created into the same project as the application, into a separate folder. Therefore, if you plan to share the extension between projects, creating a project for the extension remains the best solution. 
+	The extension can also be created into the same project as the application, into a separate folder. However, if you plan to share the extension between projects, creating a project for the extension remains the best solution. 
 
 ## Defining the extension
 

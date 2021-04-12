@@ -49,7 +49,15 @@ def nextWaveHeight: → ℝ;
 def nextDepth: → ℝ;
 ```
 
-The Swan module containing the `InitH` and `InitD` jobs need to import the extension as follow:
+The Swan module containing the `InitH` and `InitD` jobs need to import the extension. At first the *swan* project must add the *BathyLib* project to its dependencies: double-click on the */swan/META-INF/MANIFEST.mf* file in the explorer on the left of the window, select the *Dependencies* tab and click on *Add...* button in the middle of the panel. 
+
+<img src="img/NabLab_add_dependency_editor.png" alt="NabLab Add Dependency Editor" title="NabLab Add Dependency Editor" width="90%" height="90%" />
+
+In the dialog box, select the *BathyLib* project and click on the *Add* button.
+
+<img src="img/NabLab_add_dependency_dialog.png" alt="NabLab Add Dependency Dialog" title="NabLab Add Dependency Dialog" width="60%" height="60%" />
+
+The *swan* project depends now on the *BathyLib* one. Finally, import the *BathyLib* extension in the *Swan.n* file to use the *BathyLib* functions into the *Swan* module:
 
 ```
 module Swan;

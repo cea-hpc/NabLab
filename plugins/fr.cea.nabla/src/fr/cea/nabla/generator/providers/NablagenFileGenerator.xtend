@@ -31,7 +31,11 @@ class NablagenFileGenerator extends StandaloneGeneratorBase
 		val fsa = getConfiguredFileSystemAccess(genDir, false)
 		var fileName = moduleOrExtension.name + ".ngen"
 		// generated only once
-		if ( !(fsa.isFile(fileName) ))
+		if (fsa.isFile(fileName))
+		{
+			dispatcher.post(MessageType::Exec, "    File already exists, no overwite: " + fileName)
+		}
+		else
 		{
 			dispatcher.post(MessageType::Exec, "    Generating: " + fileName)
 			switch moduleOrExtension

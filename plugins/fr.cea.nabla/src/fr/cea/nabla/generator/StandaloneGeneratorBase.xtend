@@ -58,13 +58,17 @@ abstract class StandaloneGeneratorBase
 				{
 					// No generation if generated content is identical to file content.
 					// Usefull to optimize compilation.
-					dispatcher.post(MessageType::Exec, "    Generation and file contents identical => no overwrite: " + fullFileName)
+					dispatcher.post(MessageType::Exec, "    Generation and file contents identical, no overwrite: " + fullFileName)
 				}
 				else
 				{
 					dispatcher.post(MessageType::Exec, "    Generating: " + fullFileName)
 					fsa.generateFile(fullFileName, gc.fileContent)
 				}
+			}
+			else
+			{
+				dispatcher.post(MessageType::Exec, "    File already exists, no overwite: " + fullFileName)
 			}
 		}
 	}

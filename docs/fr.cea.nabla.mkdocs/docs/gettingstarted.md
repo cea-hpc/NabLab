@@ -34,8 +34,6 @@ To install the debugger, download monilog4nablab-0.4.0.zip [here](https://github
 
 As explained in the installation instructions, GraalVM is installed in the folder of your IDE. Install Graalpython in following the instructions available [here](https://www.graalvm.org/reference-manual/python/). You can also install numpy which is a supported package of GraalVM: just replace `pandas` by `numpy` in the [package installation instructions](https://www.graalvm.org/reference-manual/python/#installing-supported-packages). 
 
-Finally, in the root directory of your NabLab installation, add the following option to the NabLab.ini file `-vm /path/to/graalvm-ce-java11-21.0.0/bin/java`.
-
 
 ### Build via Maven 3.x
 

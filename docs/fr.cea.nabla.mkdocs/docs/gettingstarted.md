@@ -28,17 +28,13 @@ NabLab debugger is part of the [Debug4Science project](http://gemoc.org/debug4sc
 <img src="http://gemoc.org/debug4science/img/inria.png" alt="Inria" style="width: 150px;"/>
 </center>
 
-It is based on [GraalVM](https://www.graalvm.org/) and [Monilog](https://github.com/gemoc/monilog). It is still under development. The temporary installation process is:
+It is based on [GraalVM](https://www.graalvm.org/) and [Monilog](https://github.com/gemoc/monilog). It is still under development. The installation process is:
 
-1. Download GraalVM community edition 21.0.0 [here](https://github.com/graalvm/graalvm-ce-builds/releases/tag/vm-21.0.0) and extract it in the directory of your choice.
+To install the debugger, download monilog4nablab-0.4.0.zip [here](https://github.com/cea-hpc/Monilog4NabLab/releases/tag/v0.4.0/) and follow the Monilog4NabLab [installation instructions](https://github.com/cea-hpc/Monilog4NabLab#how-to-install).
 
-2. Install Graalpython in following the instructions available [here](https://www.graalvm.org/reference-manual/python/). Note that numpy is a supported package of GraalVM: just replace `pandas` by `numpy` in the [package installation instructions](https://www.graalvm.org/reference-manual/python/#installing-supported-packages). 
+As explained in the installation instructions, GraalVM is installed in the folder of your IDE. Install Graalpython in following the instructions available [here](https://www.graalvm.org/reference-manual/python/). You can also install numpy which is a supported package of GraalVM: just replace `pandas` by `numpy` in the [package installation instructions](https://www.graalvm.org/reference-manual/python/#installing-supported-packages). 
 
-3. For Monilog and GraalVM support of NabLab, download the 3 files available [here](https://filesender.renater.fr/?s=download&token=13f443c8-71d5-4da0-adcf-469abd9aeff6). To install the NabLab and Monilog languages support for GraalVM, type the following command: `/path/to/graalvm/bin/gu -L install -f nabla-component.jar`. Then create the folder `/path/to/graalvm/tools/monilogger` and copy the file `monilogger.jar` into it.
-
-4. Into your NabLab product, click on the menu *Help > Install New Software...*, a dialog box appears, clic on *Add... > Archive* and select the `graalvm-integration.zip` file.
-
-5. In the root directory of your NabLab installation, add the following option to the NabLab.ini file `-vm /path/to/graalvm-ce-java11-21.0.0/bin/java`.
+Finally, in the root directory of your NabLab installation, add the following option to the NabLab.ini file `-vm /path/to/graalvm-ce-java11-21.0.0/bin/java`.
 
 
 ### Build via Maven 3.x

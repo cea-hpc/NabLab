@@ -71,6 +71,6 @@ location jsoneditor "http://boothen.github.io/Json-Eclipse-Plugin" {
 }
 
 location markdowneditor "https://nodeclipse.github.io/updates/markdown" {
-	markdown.editor.feature.feature.group
+	winterwell.markdown
 }
 

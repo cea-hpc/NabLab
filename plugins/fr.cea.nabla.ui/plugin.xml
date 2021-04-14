@@ -556,6 +556,9 @@
 				relationship="bottom"
 				relative="org.eclipse.ui.navigator.ProjectExplorer">
 			</view>
+			<actionSet
+				id="org.eclipse.debug.ui.launchActionSet">
+			</actionSet>
 			<hiddenToolBarItem
 				id="org.eclipse.jdt.ui.navigate.open.type">
 			</hiddenToolBarItem>

@@ -12,7 +12,6 @@ package fr.cea.nabla.generator.ir
 import com.google.inject.Inject
 import com.google.inject.Singleton
 import fr.cea.nabla.ArgOrVarExtensions
-import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.InstructionBlock
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.Job
@@ -123,19 +122,16 @@ class IrArgOrVarFactory
 	private def addAffectation(Job tlj, Variable from, Variable to)
 	{
 		val affectation = createAffectation(from, to)
-
-		if (tlj.instruction === null)
-			tlj.instruction = affectation
-		else if (tlj.instruction instanceof InstructionBlock)
-			(tlj.instruction as InstructionBlock).instructions += affectation
-		else if (tlj.instruction instanceof Instruction)
+		val instruction = tlj.instruction
+		switch instruction
 		{
-			val prevAffectation = tlj.instruction
-			tlj.instruction = IrFactory::eINSTANCE.createInstructionBlock =>
+			case null: tlj.instruction = affectation
+			InstructionBlock: instruction.instructions += affectation
+			default: tlj.instruction = IrFactory::eINSTANCE.createInstructionBlock =>
 			[
 				annotations += tlj.toIrAnnotation
-				instructions+= prevAffectation
-				instructions+= affectation
+				instructions += instruction
+				instructions += affectation
 			]
 		}
 	}

@@ -9,11 +9,10 @@
  *******************************************************************************/
 package fr.cea.nabla.ir
 
+import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Variable
 import java.util.HashSet
-
-import static extension fr.cea.nabla.ir.Utils.*
 
 class JobDependencies
 {
@@ -49,6 +48,7 @@ class JobDependencies
 	def getNextJobs(Variable it)
 	{
 		val nextJobs = new HashSet<Job>
+		val irRoot = IrUtils.getContainerOfType(it, IrRoot)
 		for (j : irRoot.jobs)
 			if (j.inVars.exists[x | x === it])
 				nextJobs += j
@@ -58,6 +58,7 @@ class JobDependencies
 	def getPreviousJobs(Variable it)
 	{
 		val previousJobs = new HashSet<Job>
+		val irRoot = IrUtils.getContainerOfType(it, IrRoot)
 		for (j : irRoot.jobs)
 			if (j.outVars.exists[x | x === it])
 				previousJobs += j

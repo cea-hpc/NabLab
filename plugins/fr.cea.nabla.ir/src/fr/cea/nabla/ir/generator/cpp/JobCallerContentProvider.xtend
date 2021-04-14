@@ -49,7 +49,7 @@ class KokkosTeamThreadJobCallerContentProvider extends JobCallerContentProvider
 		«FOR at : jobsByAt.keySet.sort»
 			«val atJobs = jobsByAt.get(at)»
 			// @«at»
-			«IF (atJobs.forall[!hasIterable])»
+			«IF (atJobs.forall[j | !j.hasIterable || j instanceof JobCaller])»
 				«FOR j : atJobs.sortBy[name]»
 				«j.callName.replace('.', '->')»();
 				«ENDFOR»
@@ -63,15 +63,16 @@ class KokkosTeamThreadJobCallerContentProvider extends JobCallerContentProvider
 							std::cout << "[" << __GREEN__ << "RUNTIME" << __RESET__ << "]   Using " << __BOLD__ << setw(3) << thread.league_size() << __RESET__ << " team(s) of "
 								<< __BOLD__ << setw(3) << thread.team_size() << __RESET__<< " thread(s)" << std::endl;});
 					«ENDIF»
-					«IF !j.hasLoop»
-					if (thread.league_rank() == 0)
-						«IF !j.hasIterable /* Only simple instruction jobs */»
+					«IF (!j.hasIterable || j instanceof JobCaller) /* Only simple instruction jobs && ExecuteTimeLoopJobs */»
+						if (thread.league_rank() == 0)
 							Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){«j.callName.replace('.', '->')»();});
-						«ELSE /* Only for jobs containing ReductionInstruction */»
-							«j.callName.replace('.', '->')»(thread);
-						«ENDIF»
 					«ELSE»
-						«j.callName.replace('.', '->')»(thread);
+						«IF j.hasLoop»
+							«j.callName.replace('.', '->')»(thread);
+						«ELSE /* Only for jobs containing ReductionInstruction */»
+							if (thread.league_rank() == 0)
+								«j.callName.replace('.', '->')»(thread);
+						«ENDIF»
 					«ENDIF»
 				«ENDFOR»
 			});

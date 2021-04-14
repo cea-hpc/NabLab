@@ -15,7 +15,7 @@ import com.google.inject.Singleton
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
 import fr.cea.nabla.generator.ir.IrRootBuilder
-import fr.cea.nabla.ir.Utils
+import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.interpreter.IrInterpreter
 import fr.cea.nabla.nablagen.NablagenApplication
 import fr.cea.nabla.ui.NabLabConsoleFactory
@@ -99,7 +99,7 @@ class NablagenRunner
 			{
 				consoleFactory.printConsole(MessageType.Error, "Interpretation failed for: " + nablagenFile.name)
 				consoleFactory.printConsole(MessageType.Error, e.message)
-				consoleFactory.printConsole(MessageType.Error, Utils.getStackTrace(e))
+				consoleFactory.printConsole(MessageType.Error, IrUtils.getStackTrace(e))
 			}
 		]).start
 

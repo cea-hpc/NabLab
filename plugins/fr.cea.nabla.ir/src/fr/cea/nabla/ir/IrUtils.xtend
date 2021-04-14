@@ -11,35 +11,29 @@ package fr.cea.nabla.ir
 
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.ir.IrRoot
+import fr.cea.nabla.ir.ir.IterableInstruction
+import fr.cea.nabla.ir.ir.Iterator
 import java.io.PrintWriter
 import java.io.StringWriter
 import org.eclipse.emf.ecore.EObject
-import fr.cea.nabla.ir.ir.IterableInstruction
-import fr.cea.nabla.ir.ir.Iterator
 
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 
-class Utils
+class IrUtils
 {
 	public static val NRepository = '.nablab'
 	public static val OutputPathNameAndValue = new Pair<String, String>("outputPath", "output")
 	public static val NonRegressionNameAndValue = new Pair<String, String>("nonRegression", "")
 	static enum NonRegressionValues { CreateReference, CompareToReference }
 
-	static def IrModule getIrModule(EObject o)
+	/* Usefull functions from EcoreUtil2 (no dependency to org.eclipse.xtext in IR) */
+	static def <T extends EObject> T getContainerOfType(/* @Nullable */ EObject ele, /* @NonNull */ Class<T> type)
 	{
-		if (o === null) null
-		else if (o instanceof IrModule) o
-		else o.eContainer.irModule
-	}
+		for (var e = ele; e !== null; e = e.eContainer())
+			if (type.isInstance(e))
+				return type.cast(e);
 
-	static def IrRoot getIrRoot(EObject o)
-	{
-		if (o === null) null
-		else if (o instanceof IrRoot) o
-		else o.eContainer.irRoot
+		return null;
 	}
 
 	static def getUtfExponent(int x)
@@ -80,7 +74,7 @@ class Utils
 		// Read options in Json
 		if (!jsonObject.has(moduleName.toFirstLower)) throw new RuntimeException("Options block missing in Json")
 		val jsonOptions = jsonObject.get(moduleName.toFirstLower).asJsonObject
-		val nrName = Utils.NonRegressionNameAndValue.key
+		val nrName = NonRegressionNameAndValue.key
 		jsonOptions.addProperty(nrName, value)
 		return gson.toJson(jsonObject)
 	}

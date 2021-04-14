@@ -12,8 +12,8 @@ package fr.cea.nabla.tests
 import com.google.common.collect.PeekingIterator
 import com.google.gson.Gson
 import com.google.inject.Inject
+import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.UnzipHelper
-import fr.cea.nabla.ir.Utils
 import fr.cea.nabla.nablagen.Target
 import fr.cea.nabla.nablagen.TargetType
 import java.io.File
@@ -169,7 +169,7 @@ class NablaExamplesTest
 
 		// unzip nabla resources
 		UnzipHelper.unzip(new File(nRepositoryPath).toURI, new File(wsPath).toURI)
-		val cmakePath = Paths.get(wsPath, Utils::NRepository, 'nablalib', 'CMakeLists.txt')
+		val cmakePath = Paths.get(wsPath, IrUtils::NRepository, 'nablalib', 'CMakeLists.txt')
 		var cmakeContent = Files.readString(cmakePath)
 		cmakeContent = cmakeContent.replaceAll(" -O3 ", " -O2 ")
 		Files.writeString(cmakePath, cmakeContent)

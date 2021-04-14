@@ -9,7 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.cpp
 
-import fr.cea.nabla.ir.Utils
+import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.ir.IrModule
 import org.eclipse.xtend.lib.annotations.Data
 
@@ -65,12 +65,12 @@ class MainContentProvider
 		«name»->simulate();
 		«IF !levelDBPath.nullOrEmpty»
 
-			«val nrName = Utils.NonRegressionNameAndValue.key»
+			«val nrName = IrUtils.NonRegressionNameAndValue.key»
 			«val dbName = irRoot.name + "DB"»
 			// Non regression testing
-			if («name»Options.«nrName» == "«Utils.NonRegressionValues.CreateReference.toString»")
+			if («name»Options.«nrName» == "«IrUtils.NonRegressionValues.CreateReference.toString»")
 				«name»->createDB("«dbName».ref");
-			if («name»Options.«nrName» == "«Utils.NonRegressionValues.CompareToReference.toString»") {
+			if («name»Options.«nrName» == "«IrUtils.NonRegressionValues.CompareToReference.toString»") {
 				«name»->createDB("«dbName».current");
 				if (!compareDB("«dbName».current", "«dbName».ref"))
 					ret = 1;

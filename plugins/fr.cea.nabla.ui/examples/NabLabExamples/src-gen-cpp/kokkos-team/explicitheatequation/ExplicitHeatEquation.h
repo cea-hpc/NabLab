@@ -94,7 +94,7 @@ public:
 	KOKKOS_INLINE_FUNCTION
 	void computeAlphaCoeff(const member_type& teamMember) noexcept;
 	KOKKOS_INLINE_FUNCTION
-	void executeTimeLoopN(const member_type& teamMember) noexcept;
+	void executeTimeLoopN() noexcept;
 
 private:
 	void dumpVariables(int iteration, bool useTimer=true);

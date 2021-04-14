@@ -9,7 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.json
 
-import fr.cea.nabla.ir.Utils
+import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.generator.ApplicationGenerator
 import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.interpreter.Context
@@ -69,7 +69,7 @@ class JsonGenerator implements ApplicationGenerator
 		if (irModule.postProcessing !== null)
 		{
 			values += new Pair('_outputPath_comment', '"empty outputPath to disable output"')
-			values += new Pair(Utils.OutputPathNameAndValue.key, '"' + Utils.OutputPathNameAndValue.value + '"')
+			values += new Pair(IrUtils.OutputPathNameAndValue.key, '"' + IrUtils.OutputPathNameAndValue.value + '"')
 		}
 		for (option : irModule.options)
 			values += new Pair(option.name, context.getVariableValue(option).content)
@@ -79,7 +79,7 @@ class JsonGenerator implements ApplicationGenerator
 		{
 			val value = '"empty value to disable, " + Utils.NonRegressionValues.CreateReference.toString + " or " + Utils.NonRegressionValues.CompareToReference.toString + " to take action"'
 			values += new Pair('_nonRegression_comment', value)
-			values += Utils.NonRegressionNameAndValue
+			values += IrUtils.NonRegressionNameAndValue
 		}
 		return values
 	}

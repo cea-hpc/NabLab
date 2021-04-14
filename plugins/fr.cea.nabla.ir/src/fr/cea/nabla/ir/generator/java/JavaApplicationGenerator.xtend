@@ -9,7 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.java
 
-import fr.cea.nabla.ir.Utils
+import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.generator.ApplicationGenerator
 import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.ir.BaseType
@@ -89,7 +89,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 			public final static class Options
 			{
 				«IF postProcessing !== null»
-				public String «Utils.OutputPathNameAndValue.key»;
+				public String «IrUtils.OutputPathNameAndValue.key»;
 				«ENDIF»
 				«FOR v : options»
 				public «v.type.javaType» «v.name»;
@@ -97,7 +97,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 				«FOR v : extensionProviders»
 				public «v.packageName».«v.className» «v.instanceName»;
 				«ENDFOR»
-				public String «Utils.NonRegressionNameAndValue.key»;
+				public String «IrUtils.NonRegressionNameAndValue.key»;
 
 				public void jsonInit(final String jsonContent)
 				{
@@ -106,7 +106,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 					assert(json.isJsonObject());
 					final JsonObject o = json.getAsJsonObject();
 					«IF postProcessing !== null»
-					«val opName = Utils.OutputPathNameAndValue.key»
+					«val opName = IrUtils.OutputPathNameAndValue.key»
 					// «opName»
 					assert(o.has("«opName»"));
 					final JsonElement «opName.jsonName» = o.get("«opName»");
@@ -122,7 +122,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 					if (o.has("«vName»"))
 						«vName».jsonInit(o.get("«vName»").toString());
 					«ENDFOR»
-					«val nrName = Utils.NonRegressionNameAndValue.key»
+					«val nrName = IrUtils.NonRegressionNameAndValue.key»
 					«IF hasLevelDB»
 					// Non regression
 					if (o.has("«nrName»"))
@@ -169,7 +169,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 
 				// User options
 				options = aOptions;
-				«IF postProcessing !== null»writer = new PvdFileWriter2D("«irRoot.name»", options.«Utils.OutputPathNameAndValue.key»);«ENDIF»
+				«IF postProcessing !== null»writer = new PvdFileWriter2D("«irRoot.name»", options.«IrUtils.OutputPathNameAndValue.key»);«ENDIF»
 
 				// Initialize variables with default values
 				«FOR v : variablesWithDefaultValue»
@@ -236,9 +236,9 @@ class JavaApplicationGenerator implements ApplicationGenerator
 
 					«val dbName = irRoot.name + "DB"»
 					// Non regression testing
-					if («name»Options.«nrName» != null && «name»Options.«nrName».equals("«Utils.NonRegressionValues.CreateReference.toString»"))
+					if («name»Options.«nrName» != null && «name»Options.«nrName».equals("«IrUtils.NonRegressionValues.CreateReference.toString»"))
 						«name».createDB("«dbName».ref");
-					if («name»Options.«nrName» != null && «name»Options.«nrName».equals("«Utils.NonRegressionValues.CompareToReference.toString»"))
+					if («name»Options.«nrName» != null && «name»Options.«nrName».equals("«IrUtils.NonRegressionValues.CompareToReference.toString»"))
 					{
 						«name».createDB("«dbName».current");
 						if (!LevelDBUtils.compareDB("«dbName».current", "«dbName».ref"))

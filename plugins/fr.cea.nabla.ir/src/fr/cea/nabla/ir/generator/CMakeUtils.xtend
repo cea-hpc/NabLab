@@ -9,6 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator
 
+import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.ir.ExtensionProvider
 
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
@@ -62,7 +63,7 @@ class CMakeUtils
 			# SUB_DIRECTORIES
 			«IF needNablalib»
 				if(NOT TARGET nablalib)
-					add_subdirectory(${N_WS_PATH}/«fr.cea.nabla.ir.Utils::NRepository»/nablalib ${CMAKE_BINARY_DIR}/nablalib)
+					add_subdirectory(${N_WS_PATH}/«IrUtils::NRepository»/nablalib ${CMAKE_BINARY_DIR}/nablalib)
 				endif()
 			«ENDIF»
 			«FOR p : providers»

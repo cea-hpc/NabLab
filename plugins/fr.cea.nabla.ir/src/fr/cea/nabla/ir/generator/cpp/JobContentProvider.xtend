@@ -9,15 +9,18 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.cpp
 
+import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
+import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Job
+import fr.cea.nabla.ir.ir.JobCaller
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.JobCallerExtensions.*
 import static extension fr.cea.nabla.ir.JobExtensions.*
-import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 
 @Data
@@ -35,7 +38,7 @@ abstract class JobContentProvider
 	def getDefinitionContent(Job it)
 	'''
 		«comment»
-		void «irModule.className»::«codeName»() noexcept
+		void «IrUtils.getContainerOfType(it, IrModule).className»::«codeName»() noexcept
 		{
 			«innerContent»
 		}
@@ -59,6 +62,8 @@ abstract class JobContentProvider
 			cpuTimer.start();
 			«ENDIF»
 			«itVar»++;
+			«val irRoot = IrUtils.getContainerOfType(it, IrRoot)»
+			«val irModule = IrUtils.getContainerOfType(it, IrModule)»
 			«val ppInfo = irRoot.postProcessing»
 			«IF caller.main && ppInfo !== null»
 				if (!writer.isDisabled() && «ppInfo.periodReference.codeName» >= «ppInfo.lastDumpVariable.codeName» + «ppInfo.periodValue.codeName»)
@@ -111,7 +116,7 @@ class KokkosJobContentProvider extends JobContentProvider
 	override getDefinitionContent(Job it)
 	'''
 		«comment»
-		void «irModule.className»::«codeName»(«FOR a : arguments SEPARATOR ', '»«a»«ENDFOR») noexcept
+		void «IrUtils.getContainerOfType(it, IrModule).className»::«codeName»(«FOR a : arguments SEPARATOR ', '»«a»«ENDFOR») noexcept
 		{
 			«innerContent»
 		}
@@ -125,7 +130,8 @@ class KokkosTeamThreadJobContentProvider extends KokkosJobContentProvider
 {
 	override getArguments(Job it)
 	{
-		if (hasIterable) #["const member_type& teamMember"]
-		else #[]
+		// JobCaller never in a team
+		if (!hasIterable || it instanceof JobCaller) #[]
+		else #["const member_type& teamMember"]
 	}
 }

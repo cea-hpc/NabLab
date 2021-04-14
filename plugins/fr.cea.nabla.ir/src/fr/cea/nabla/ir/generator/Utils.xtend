@@ -10,6 +10,7 @@
 package fr.cea.nabla.ir.generator
 
 import fr.cea.nabla.ir.DefaultVarDependencies
+import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.ir.ArgOrVar
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
@@ -22,7 +23,6 @@ import fr.cea.nabla.ir.ir.Variable
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.JobCallerExtensions.*
-import static extension fr.cea.nabla.ir.Utils.*
 
 class Utils
 {
@@ -45,11 +45,11 @@ class Utils
 
 	static def getCallName(Job it)
 	{
-		val jobModule = irModule
+		val jobModule = IrUtils.getContainerOfType(it, IrModule)
 		val callerModule = if (caller.eContainer instanceof IrRoot)
 				(caller.eContainer as IrRoot).mainModule
 			else
-				caller.irModule
+				IrUtils.getContainerOfType(caller, IrModule)
 		if (jobModule === callerModule)
 			getCodeName
 		else
@@ -68,15 +68,16 @@ class Utils
 
 	static def getDbKey(Variable it)
 	{
+		val irRoot = IrUtils.getContainerOfType(it, IrRoot)
 		if (irRoot.modules.size > 1)
-			irModule.name + '::' + name
+			IrUtils.getContainerOfType(it, IrModule).name + '::' + name
 		else
 			name
 	}
 
 	static def getDbValue(IrModule m, Variable v, String separator)
 	{
-		val vModule = v.irModule
+		val vModule = IrUtils.getContainerOfType(v, IrModule)
 		if (vModule == m)
 			v.name
 		else
@@ -94,7 +95,7 @@ class Utils
 
 	static def boolean isParallelLoop(Loop it)
 	{
-		isTopLevelConnectivityIterable && multithreadable
+		IrUtils.isTopLevelConnectivityIterable(it) && multithreadable
 	}
 
 	static def getOperatorName(String op)

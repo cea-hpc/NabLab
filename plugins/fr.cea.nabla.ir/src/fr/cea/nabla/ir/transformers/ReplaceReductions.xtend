@@ -9,6 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.transformers
 
+import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.IrFactory
@@ -21,8 +22,6 @@ import java.util.List
 import org.eclipse.emf.ecore.util.EcoreUtil
 
 import static fr.cea.nabla.ir.transformers.IrTransformationUtils.*
-
-import static extension fr.cea.nabla.ir.Utils.*
 
 class ReplaceReductions extends IrTransformationStep
 {
@@ -42,7 +41,7 @@ class ReplaceReductions extends IrTransformationStep
 	{
 		trace('    IR -> IR: ' + description)
 		var reductions = ir.eAllContents.filter(ReductionInstruction)
-		if (!replaceAllReductions) reductions = reductions.filter[!isTopLevelConnectivityIterable]
+		if (!replaceAllReductions) reductions = reductions.filter[x | !IrUtils.isTopLevelConnectivityIterable(x)]
 
 		for (reduction : reductions.toList)
 		{

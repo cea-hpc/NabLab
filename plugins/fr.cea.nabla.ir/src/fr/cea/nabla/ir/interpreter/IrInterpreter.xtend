@@ -12,7 +12,7 @@ package fr.cea.nabla.ir.interpreter
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
-import fr.cea.nabla.ir.Utils
+import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.javalib.LevelDBUtils
@@ -92,15 +92,15 @@ class IrInterpreter
 		if (jsonObject.has(mainModuleName))
 		{
 			val jsonMainModuleOptions = jsonObject.get(mainModuleName).asJsonObject
-			val nrName = Utils.NonRegressionNameAndValue.key
+			val nrName = IrUtils.NonRegressionNameAndValue.key
 			if (jsonMainModuleOptions.has(nrName))
 			{
 				val dbBaseName = "results/interpreter/" + context.ir.name.toLowerCase + "/" + context.ir.name + "DB."
 				val refDBName = dbBaseName + "ref"
 				val jsonNrName = jsonMainModuleOptions.get(nrName).asString
-				if (jsonNrName.equals(Utils.NonRegressionValues.CreateReference.toString))
+				if (jsonNrName.equals(IrUtils.NonRegressionValues.CreateReference.toString))
 					createDB(context, refDBName)
-				if (jsonNrName.equals(Utils.NonRegressionValues.CompareToReference.toString))
+				if (jsonNrName.equals(IrUtils.NonRegressionValues.CompareToReference.toString))
 				{
 					val curDBName = dbBaseName + "current"
 					createDB(context, curDBName)

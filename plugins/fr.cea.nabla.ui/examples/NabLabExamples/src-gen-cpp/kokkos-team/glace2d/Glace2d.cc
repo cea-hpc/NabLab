@@ -584,7 +584,7 @@ void Glace2d::computeDensity(const member_type& teamMember) noexcept
  * In variables: Ajr, Ar, C, E_n, F, Mt, V, X_n, b, bt, c, deltatCfl, deltat_n, deltat_nplus1, deltatj, e, gamma, l, m, p, rho, t_n, uj_n, ur
  * Out variables: Ajr, Ar, C, E_nplus1, F, Mt, V, X_nplus1, b, bt, c, deltat_nplus1, deltatj, e, l, p, rho, t_nplus1, uj_nplus1, ur
  */
-void Glace2d::executeTimeLoopN(const member_type& teamMember) noexcept
+void Glace2d::executeTimeLoopN() noexcept
 {
 	auto team_policy(Kokkos::TeamPolicy<>(
 		Kokkos::hwloc::get_available_numa_count(),
@@ -689,45 +689,24 @@ void Glace2d::executeTimeLoopN(const member_type& teamMember) noexcept
 		{
 			t_n = t_nplus1;
 			deltat_n = deltat_nplus1;
+			Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const size_t& i1Nodes)
 			{
-				const auto teamWork(computeTeamWorkRange(teamMember, nbNodes));
-				if (!teamWork.second)
-					return;
-			
-				Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& i1NodesTeam)
+				for (size_t i1=0; i1<2; i1++)
 				{
-					int i1Nodes(i1NodesTeam + teamWork.first);
-					for (size_t i1=0; i1<2; i1++)
-					{
-						X_n(i1Nodes)[i1] = X_nplus1(i1Nodes)[i1];
-					}
-				});
-			}
+					X_n(i1Nodes)[i1] = X_nplus1(i1Nodes)[i1];
+				}
+			});
+			Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& i1Cells)
 			{
-				const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
-				if (!teamWork.second)
-					return;
-			
-				Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& i1CellsTeam)
-				{
-					int i1Cells(i1CellsTeam + teamWork.first);
-					E_n(i1Cells) = E_nplus1(i1Cells);
-				});
-			}
+				E_n(i1Cells) = E_nplus1(i1Cells);
+			});
+			Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& i1Cells)
 			{
-				const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
-				if (!teamWork.second)
-					return;
-			
-				Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& i1CellsTeam)
+				for (size_t i1=0; i1<2; i1++)
 				{
-					int i1Cells(i1CellsTeam + teamWork.first);
-					for (size_t i1=0; i1<2; i1++)
-					{
-						uj_n(i1Cells)[i1] = uj_nplus1(i1Cells)[i1];
-					}
-				});
-			}
+					uj_n(i1Cells)[i1] = uj_nplus1(i1Cells)[i1];
+				}
+			});
 		}
 	
 		cpuTimer.stop();
@@ -1321,10 +1300,7 @@ void Glace2d::simulate()
 	});
 	
 	// @3.0
-	Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
-	{
-		executeTimeLoopN(thread);
-	});
+	executeTimeLoopN();
 	
 	std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << globalTimer.print() << __RESET__ << std::endl;
 }

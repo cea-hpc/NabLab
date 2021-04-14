@@ -5,7 +5,7 @@ import com.google.inject.Provider
 import com.google.inject.Singleton
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
 import fr.cea.nabla.generator.providers.NablagenFileGenerator
-import fr.cea.nabla.ir.Utils
+import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.nabla.NablaRoot
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.IResource
@@ -56,7 +56,7 @@ class GenerateNablagenHandler extends AbstractGenerateHandler
 			{
 				consoleFactory.printConsole(MessageType.Error, "Generation failed for: " + nablaFile.name)
 				consoleFactory.printConsole(MessageType.Error, e.message)
-				consoleFactory.printConsole(MessageType.Error, Utils.getStackTrace(e))
+				consoleFactory.printConsole(MessageType.Error, IrUtils.getStackTrace(e))
 			}
 		]).start
 

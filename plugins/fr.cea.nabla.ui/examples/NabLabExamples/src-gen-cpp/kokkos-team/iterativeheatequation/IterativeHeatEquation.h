@@ -98,7 +98,7 @@ public:
 	KOKKOS_INLINE_FUNCTION
 	void computeResidual(const member_type& teamMember) noexcept;
 	KOKKOS_INLINE_FUNCTION
-	void executeTimeLoopK(const member_type& teamMember) noexcept;
+	void executeTimeLoopK() noexcept;
 	KOKKOS_INLINE_FUNCTION
 	void initU(const member_type& teamMember) noexcept;
 	KOKKOS_INLINE_FUNCTION
@@ -108,7 +108,7 @@ public:
 	KOKKOS_INLINE_FUNCTION
 	void tearDownTimeLoopK(const member_type& teamMember) noexcept;
 	KOKKOS_INLINE_FUNCTION
-	void executeTimeLoopN(const member_type& teamMember) noexcept;
+	void executeTimeLoopN() noexcept;
 
 private:
 	void dumpVariables(int iteration, bool useTimer=true);

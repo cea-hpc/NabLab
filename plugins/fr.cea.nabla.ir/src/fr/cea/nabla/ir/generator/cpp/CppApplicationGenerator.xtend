@@ -10,7 +10,7 @@
 package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.UnzipHelper
-import fr.cea.nabla.ir.Utils
+import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.generator.ApplicationGenerator
 import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.ir.BaseType
@@ -106,14 +106,14 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	public:
 		struct Options
 		{
-			«IF postProcessing !== null»std::string «Utils.OutputPathNameAndValue.key»;«ENDIF»
+			«IF postProcessing !== null»std::string «IrUtils.OutputPathNameAndValue.key»;«ENDIF»
 			«FOR v : options»
 			«typeContentProvider.getCppType(v.type)» «v.name»;
 			«ENDFOR»
 			«FOR v : extensionProviders»
 			«v.className» «v.instanceName»;
 			«ENDFOR»
-			«IF levelDB»std::string «Utils.NonRegressionNameAndValue.key»;«ENDIF»
+			«IF levelDB»std::string «IrUtils.NonRegressionNameAndValue.key»;«ENDIF»
 
 			void jsonInit(const char* jsonContent);
 		};
@@ -230,7 +230,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		const rapidjson::Value::Object& o = document.GetObject();
 
 		«IF postProcessing !== null»
-		«val opName = Utils.OutputPathNameAndValue.key»
+		«val opName = IrUtils.OutputPathNameAndValue.key»
 		// «opName»
 		assert(o.HasMember("«opName»"));
 		const rapidjson::Value& «jsonContentProvider.getJsonName(opName)» = o["«opName»"];
@@ -253,7 +253,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		«ENDFOR»
 		«IF levelDB»
 		// Non regression
-		«val nrName = Utils.NonRegressionNameAndValue.key»
+		«val nrName = IrUtils.NonRegressionNameAndValue.key»
 		assert(o.HasMember("«nrName»"));
 		const rapidjson::Value& «jsonContentProvider.getJsonName(nrName)» = o["«nrName»"];
 		assert(«jsonContentProvider.getJsonName(nrName)».IsString());
@@ -269,7 +269,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	, «c.nbElemsVar»(«c.connectivityAccessor»)
 	«ENDFOR»
 	, options(aOptions)
-	«IF postProcessing !== null», writer("«irRoot.name»", options.«Utils.OutputPathNameAndValue.key»)«ENDIF»
+	«IF postProcessing !== null», writer("«irRoot.name»", options.«IrUtils.OutputPathNameAndValue.key»)«ENDIF»
 	«FOR v : variablesWithDefaultValue.filter[x | !x.constExpr]»
 	, «v.name»(«expressionContentProvider.getContent(v.defaultValue)»)
 	«ENDFOR»

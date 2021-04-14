@@ -10,8 +10,8 @@
 package fr.cea.nabla.tests.interpreter
 
 import com.google.inject.Inject
+import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.UnzipHelper
-import fr.cea.nabla.ir.Utils.NonRegressionValues
 import fr.cea.nabla.ir.interpreter.IrInterpreter
 import fr.cea.nabla.tests.CompilationChainHelper
 import fr.cea.nabla.tests.GitUtils
@@ -32,8 +32,6 @@ import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
-
-import static fr.cea.nabla.ir.Utils.*
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
@@ -124,7 +122,7 @@ class NablaExamplesInterpreterTest
 		val jsonOptionsFile = String.format("%1$ssrc/%2$s/%3$s.json", examplesProjectPath, moduleName.toLowerCase, moduleName)
 		var jsonContent = readFileAsString(jsonOptionsFile)
 
-		jsonContent = addNonRegressionTagToJsonFile(moduleName, jsonContent, NonRegressionValues.CompareToReference.toString)
+		jsonContent = IrUtils.addNonRegressionTagToJsonFile(moduleName, jsonContent, IrUtils.NonRegressionValues.CompareToReference.toString)
 
 		val ir = compilationHelper.getIrForInterpretation(model, genmodel)
 		//val handler = new ConsoleHandler

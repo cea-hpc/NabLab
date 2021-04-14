@@ -9,6 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla
 
+import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.And
 import fr.cea.nabla.nabla.ArgOrVarRef
@@ -60,8 +61,6 @@ import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.nabla.VectorConstant
 import java.util.List
-
-import static extension fr.cea.nabla.ir.Utils.*
 
 class LabelServices
 {
@@ -176,7 +175,7 @@ class LabelServices
 		if (sizes.empty) 
 			primitive.literal
 		else if (sizes.forall[x | x instanceof IntConstant])
-			primitive.literal + sizes.map[x | (x as IntConstant).value.utfExponent].join('\u02E3')
+			primitive.literal + sizes.map[x | IrUtils.getUtfExponent((x as IntConstant).value)].join('\u02E3')
 		else
 			primitive.literal + '[' + sizes.map[label].join(',') + ']'
 	}

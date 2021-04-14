@@ -21,7 +21,7 @@ class UnzipHelper
 {
 	def static void unzipNRepository(String outputPath)
 	{
-		unzipResource(new File(outputPath), Utils::NRepository)
+		unzipResource(new File(outputPath), IrUtils::NRepository)
 	}
 
 	private def static void unzipResource(File outputDirectory, String resourceName)

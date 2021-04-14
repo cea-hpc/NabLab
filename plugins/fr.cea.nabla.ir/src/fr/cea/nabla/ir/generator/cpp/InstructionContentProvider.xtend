@@ -9,17 +9,21 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.cpp
 
+import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.ir.Affectation
+import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityCall
 import fr.cea.nabla.ir.ir.Exit
 import fr.cea.nabla.ir.ir.If
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.InstructionBlock
 import fr.cea.nabla.ir.ir.Interval
+import fr.cea.nabla.ir.ir.IrType
 import fr.cea.nabla.ir.ir.ItemIdDefinition
 import fr.cea.nabla.ir.ir.ItemIndexDefinition
 import fr.cea.nabla.ir.ir.IterationBlock
 import fr.cea.nabla.ir.ir.Iterator
+import fr.cea.nabla.ir.ir.JobCaller
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.Return
@@ -33,8 +37,6 @@ import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.cpp.CppGeneratorUtils.*
 import static extension fr.cea.nabla.ir.generator.cpp.ItemIndexAndIdValueContentProvider.*
-import fr.cea.nabla.ir.ir.IrType
-import fr.cea.nabla.ir.ir.BaseType
 
 @Data
 abstract class InstructionContentProvider
@@ -271,6 +273,17 @@ class KokkosTeamThreadInstructionContentProvider extends KokkosInstructionConten
 	}
 
 	override getParallelLoopContent(Loop it)
+	{
+		val jobCaller = IrUtils.getContainerOfType(it, JobCaller)
+
+		// A jobCaller instance is a graph, never in a team
+		if (jobCaller === null)
+			parallelLoopBlock
+		else
+			super.getParallelLoopContent(it)
+	}
+
+	private def getParallelLoopBlock(Loop it)
 	'''
 		{
 			«iterationBlock.autoTeamWork»
@@ -282,7 +295,7 @@ class KokkosTeamThreadInstructionContentProvider extends KokkosInstructionConten
 			});
 		}
 	'''
-
+	
 	private def getAutoTeamWork(IterationBlock it)
 	'''
 		const auto teamWork(computeTeamWorkRange(teamMember, «nbElems»));

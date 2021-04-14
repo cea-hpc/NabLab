@@ -9,6 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.java
 
+import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.BaseTypeConstant
@@ -18,6 +19,7 @@ import fr.cea.nabla.ir.ir.Cardinality
 import fr.cea.nabla.ir.ir.ContractedIf
 import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IntConstant
+import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.MaxConstant
 import fr.cea.nabla.ir.ir.MinConstant
 import fr.cea.nabla.ir.ir.Parenthesis
@@ -29,7 +31,6 @@ import fr.cea.nabla.ir.ir.VectorConstant
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
-import static extension fr.cea.nabla.ir.Utils.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.JavaGeneratorUtils.*
 import static extension fr.cea.nabla.ir.generator.java.TypeContentProvider.*
@@ -129,8 +130,8 @@ class ExpressionContentProvider
 
 	static def getCodeName(ArgOrVarRef it)
 	{
-		val argOrVarRefModule = irModule
-		val varModule = target.irModule
+		val argOrVarRefModule = IrUtils.getContainerOfType(it, IrModule)
+		val varModule = IrUtils.getContainerOfType(target, IrModule)
 		if (argOrVarRefModule === varModule)
 			target.codeName
 		else

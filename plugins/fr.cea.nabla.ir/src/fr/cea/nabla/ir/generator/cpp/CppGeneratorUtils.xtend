@@ -9,13 +9,13 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.cpp
 
+import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.ir.ExternFunction
 import fr.cea.nabla.ir.ir.InternFunction
 import fr.cea.nabla.ir.ir.IrModule
 
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.getInstanceName
 import static extension fr.cea.nabla.ir.IrModuleExtensions.getClassName
-import static extension fr.cea.nabla.ir.Utils.getIrModule
 
 class CppGeneratorUtils
 {
@@ -26,6 +26,7 @@ class CppGeneratorUtils
 
 	static def dispatch getCodeName(InternFunction it)
 	{
+		val irModule = IrUtils.getContainerOfType(it, IrModule)
 		irModule.freeFunctionNs + '::' + name
 	}
 

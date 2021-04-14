@@ -9,13 +9,12 @@
  *******************************************************************************/
 package fr.cea.nabla.ir
 
+import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IterableInstruction
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.Variable
-
-import static extension fr.cea.nabla.ir.Utils.*
 
 class JobExtensions
 {
@@ -47,11 +46,13 @@ class JobExtensions
 
 	static def getDisplayName(Job it)
 	{
+		val irModule = IrUtils.getContainerOfType(it, IrModule)
 		irModule.name + "::" + name
 	}
 
 	static def getDiagramDisplayName(Job it)
 	{
+		val irModule = IrUtils.getContainerOfType(it, IrModule)
 		irModule.name + "::" + name
 	}
 }

@@ -9,6 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.interpreter
 
+import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.BaseTypeConstant
@@ -21,6 +22,7 @@ import fr.cea.nabla.ir.ir.ExternFunction
 import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IntConstant
 import fr.cea.nabla.ir.ir.InternFunction
+import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrType
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.LinearAlgebraType
@@ -41,7 +43,6 @@ import static fr.cea.nabla.ir.interpreter.NablaValueSetter.*
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.interpreter.NablaValueExtensions.*
-import fr.cea.nabla.ir.Utils
 
 class ExpressionInterpreter
 {
@@ -220,7 +221,7 @@ class ExpressionInterpreter
 			ExternFunction:
 			{
 				val provider = context.extensionProviderCache.get(f.provider)
-				return provider.invokeMethod(Utils.getIrModule(it), f, argValues)
+				return provider.invokeMethod(IrUtils.getContainerOfType(it, IrModule), f, argValues)
 			}
 			InternFunction:
 			{

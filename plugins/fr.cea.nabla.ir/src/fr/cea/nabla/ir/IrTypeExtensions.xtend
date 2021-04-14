@@ -28,7 +28,7 @@ import fr.cea.nabla.ir.ir.RealConstant
 import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.ir.VectorConstant
 
-import static extension fr.cea.nabla.ir.Utils.*
+import static extension fr.cea.nabla.ir.IrUtils.*
 
 class IrTypeExtensions
 {

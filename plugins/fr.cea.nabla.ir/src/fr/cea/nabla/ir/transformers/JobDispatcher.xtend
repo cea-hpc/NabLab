@@ -1,5 +1,6 @@
 package fr.cea.nabla.ir.transformers
 
+import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.JobDependencies
 import fr.cea.nabla.ir.JobDispatchVarDependencies
 import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
@@ -10,7 +11,6 @@ import fr.cea.nabla.ir.ir.JobCaller
 import static fr.cea.nabla.ir.JobExtensions.*
 
 import static extension fr.cea.nabla.ir.JobCallerExtensions.*
-import static extension fr.cea.nabla.ir.Utils.*
 
 /**
  * Dispatch jobs in their corresponding time loops
@@ -47,7 +47,8 @@ class JobDispatcher
 		{
 			ExecuteTimeLoopJob:
 			{
-				for (j : job.irRoot.jobs.filter[x | x !== job])
+				val jobRoot = IrUtils.getContainerOfType(job, IrRoot)
+				for (j : jobRoot.jobs.filter[x | x !== job])
 					for (startLoopVar : job.inVars)
 						if (j.inVars.exists[x | x === startLoopVar])
 							if (continueToDispatch(job, j, prefix))

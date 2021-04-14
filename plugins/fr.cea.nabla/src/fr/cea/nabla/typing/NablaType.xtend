@@ -9,6 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.typing
 
+import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.IntConstant
@@ -18,7 +19,6 @@ import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.LabelServices.*
-import static extension fr.cea.nabla.ir.Utils.*
 
 @Data
 abstract class NablaType
@@ -65,7 +65,7 @@ abstract class NSTArray1D extends NablaSimpleType
 	override getLabel()
 	{
 		if (size instanceof IntConstant)
-			primitive.literal + size.value.utfExponent
+			primitive.literal + IrUtils.getUtfExponent(size.value)
 		else
 			primitive.literal + '[' + size.label + ']'
 	}
@@ -104,7 +104,7 @@ abstract class NSTArray2D extends NablaSimpleType
 	override getLabel()
 	{
 		if (nbRows instanceof IntConstant && nbCols instanceof IntConstant)
-			primitive.literal + (nbRows as IntConstant).value.utfExponent + '\u02E3' + (nbCols as IntConstant).value.utfExponent
+			primitive.literal + IrUtils.getUtfExponent((nbRows as IntConstant).value) + '\u02E3' + IrUtils.getUtfExponent((nbCols as IntConstant).value)
 		else
 			primitive.literal + '[' + nbRows.label + ',' + nbCols.label + ']'
 	}

@@ -10,6 +10,8 @@
 package fr.cea.nabla.ui
 
 import fr.cea.nabla.ir.DefaultVarDependencies
+import fr.cea.nabla.ir.IrUtils
+import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Variable
 import org.eclipse.core.resources.IFile
@@ -20,7 +22,6 @@ import org.eclipse.jface.resource.ResourceLocator
 import org.eclipse.ui.PlatformUI
 
 import static extension fr.cea.nabla.ir.JobExtensions.*
-import static extension fr.cea.nabla.ir.Utils.*
 
 class NablaUiUtils
 {
@@ -69,6 +70,6 @@ class NablaUiUtils
 
 	private static def String getDisplayName(Variable v)
 	{
-		v.irModule.name + "::" + v.name
+		IrUtils.getContainerOfType(v, IrModule).name + "::" + v.name
 	}
 }

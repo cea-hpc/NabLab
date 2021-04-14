@@ -6,7 +6,7 @@ import com.google.inject.Singleton
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
 import fr.cea.nabla.generator.application.NablagenApplicationGenerator
 import fr.cea.nabla.generator.providers.NablagenProviderGenerator
-import fr.cea.nabla.ir.Utils
+import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.nablagen.NablagenApplication
 import fr.cea.nabla.nablagen.NablagenProviderList
 import fr.cea.nabla.nablagen.NablagenRoot
@@ -64,7 +64,7 @@ class GenerateCodeHandler extends AbstractGenerateHandler
 			{
 				consoleFactory.printConsole(MessageType.Error, "Generation failed for: " + nablagenFile.name)
 				consoleFactory.printConsole(MessageType.Error, e.message)
-				consoleFactory.printConsole(MessageType.Error, Utils.getStackTrace(e))
+				consoleFactory.printConsole(MessageType.Error, IrUtils.getStackTrace(e))
 			}
 		]).start
 

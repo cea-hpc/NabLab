@@ -130,12 +130,9 @@ class NablaSiriusServices
 		{
 			val parent = diagramTarget.caller.eContainer
 			if (parent instanceof IrRoot)
-			{
-				annotable = parent as IrRoot
-			} else
-			{
-				annotable = diagramTarget.caller as JobCaller
-			}
+				annotable = parent
+			else
+				annotable = diagramTarget.caller
 		}
 		if (annotable instanceof IrAnnotable) {
 			val session = SessionManager.INSTANCE.getSession(annotable)

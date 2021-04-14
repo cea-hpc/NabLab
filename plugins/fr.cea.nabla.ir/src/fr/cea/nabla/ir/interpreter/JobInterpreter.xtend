@@ -13,7 +13,6 @@ import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
-import java.util.Arrays
 import java.util.Locale
 
 import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
@@ -28,13 +27,10 @@ class JobInterpreter
 	// Switch to more efficient dispatch (also clearer for profiling)
 	static def void interprete(Job j, Context context)
 	{
-		switch j
-		{
-			ExecuteTimeLoopJob: interpreteExecuteTimeLoopJob(j, context)
-			Job: interpreteJob(j, context)
-			default: throw new IllegalArgumentException("Unhandled parameter types: " +
-				Arrays.<Object>asList(j, context).toString())
-		}
+		if (j instanceof ExecuteTimeLoopJob)
+			interpreteExecuteTimeLoopJob(j, context)
+		else
+			interpreteJob(j, context)
 	}
 
 	private static def void interpreteJob(Job it, Context context)

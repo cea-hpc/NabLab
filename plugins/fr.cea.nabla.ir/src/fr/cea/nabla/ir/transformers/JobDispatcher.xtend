@@ -55,7 +55,7 @@ class JobDispatcher
 								dispatchJob(job, j, prefix + '\t')
 			}
 			//TearDownTimeLoopJob:
-			Job case (job.timeLoopJob && job.name.startsWith(TEARDOWN_TIMELOOP_PREFIX)):
+			case (job.timeLoopJob && job.name.startsWith(TEARDOWN_TIMELOOP_PREFIX)):
 			{
 				for (next : job.nextJobs)
 					if (continueToDispatch(job.caller, next, prefix))
@@ -89,24 +89,4 @@ class JobDispatcher
 				return true
 		return false
 	}
-
-//	private def String getName(JobContainer elt)
-//	{
-//		if (elt === null) "null"
-//		else switch elt
-//		{
-//			TimeLoopJob: elt.name
-//			IrModule: elt.name
-//		}
-//	}
-//
-//	private def String getName(TimeLoopContainer elt)
-//	{
-//		if (elt === null) "null"
-//		else switch elt
-//		{
-//			TimeLoop: elt.name
-//			IrModule: elt.name
-//		}
-//	}
 }

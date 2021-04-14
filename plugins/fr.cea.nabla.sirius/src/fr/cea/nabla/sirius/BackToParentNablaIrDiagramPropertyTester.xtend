@@ -27,9 +27,7 @@ class BackToParentNablaIrDiagramPropertyTester extends PropertyTester
 			{
 				var element = model.element
 				if (element instanceof DSemanticDiagram)
-				{
-					diagram = element as DSemanticDiagram
-				}
+					diagram = element
 			}
 			else if (model instanceof Node)
 			{
@@ -38,12 +36,10 @@ class BackToParentNablaIrDiagramPropertyTester extends PropertyTester
 				{
 					var element = nodeDiagram.element
 					if (element instanceof DSemanticDiagram)
-					{
 						diagram = element
-					}
 				}
 			}
-			if (diagram instanceof DSemanticDiagram)
+			if (diagram !== null)
 			{
 				return (diagram.target instanceof Job)
 			}

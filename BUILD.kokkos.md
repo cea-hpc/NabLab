@@ -28,7 +28,7 @@ We use the same process.
 	mkdir kokkos-build
 	cd kokkos-build
 	# kokkos-install directory already exists from kokkos install
-	cmake ../kokkos-kernels -DCMAKE_CXX_COMPILER=g++ -DCMAKE_INSTALL_PREFIX=~/kokkos/kokkos-install -DKokkos_ENABLE_OPENMP=On -DCMAKE_PREFIX_PATH=~/kokkos/kokkos-install
+	cmake ../kokkos-kernels -DCMAKE_CXX_COMPILER=g++ -DCMAKE_INSTALL_PREFIX=~/kokkos/kokkos-install -DKokkos_ROOT=~/kokkos/kokkos-install
 	make install
 	cd ..
 	rm -rf kokkos-build

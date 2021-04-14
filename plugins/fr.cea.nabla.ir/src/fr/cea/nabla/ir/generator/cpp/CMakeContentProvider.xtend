@@ -15,6 +15,7 @@ import fr.cea.nabla.ir.ir.ExtensionProvider
 import fr.cea.nabla.ir.ir.IrRoot
 import java.util.LinkedHashSet
 
+import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.getClassName
 import static extension fr.cea.nabla.ir.IrRootExtensions.getExecName
@@ -28,10 +29,10 @@ class CMakeContentProvider
 		#[WS_PATH]
 	}
 
-	protected def CharSequence getFindPackageContent()
+	protected def CharSequence getFindPackageContent(IrRoot irRoot)
 	''''''
 
-	protected def Iterable<String> getTargetLinkLibraries()
+	protected def Iterable<String> getTargetLinkLibraries(IrRoot irRoot)
 	{ 
 		#['nablalib']
 	}
@@ -86,7 +87,7 @@ class CMakeContentProvider
 		set_property(TARGET «provider.libName» PROPERTY POSITION_INDEPENDENT_CODE ON)
 		target_compile_options(«provider.libName» PUBLIC -g -Wall -O3 --std=c++17 -mtune=native)
 		target_include_directories(«provider.libName» PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-		target_link_libraries(«provider.libName» PUBLIC«FOR l : targetLinkLibraries» «l»«ENDFOR»)
+		target_link_libraries(«provider.libName» PUBLIC«FOR l : getTargetLinkLibraries(provider.eContainer as IrRoot)» «l»«ENDFOR»)
 
 		«CMakeUtils.fileFooter»
 	'''
@@ -113,9 +114,9 @@ class StlThreadCMakeContentProvider extends CMakeContentProvider
 		super.compilationOptions + #['-fopenmp']
 	}
 
-	override getTargetLinkLibraries()
+	override getTargetLinkLibraries(IrRoot irRoot)
 	{
-		super.targetLinkLibraries + #["pthread"]
+		super.getTargetLinkLibraries(irRoot) + #["pthread"]
 	}
 }
 
@@ -126,11 +127,11 @@ class KokkosCMakeContentProvider extends CMakeContentProvider
 		 #['N_KOKKOS_PATH'] + super.neededVariables
 	}
 
-	override getFindPackageContent()
+	override getFindPackageContent(IrRoot irRoot)
 	'''
 		set(CMAKE_FIND_ROOT_PATH ${N_KOKKOS_PATH})
 		find_package(Kokkos REQUIRED)
-		find_package(KokkosKernels REQUIRED)
+		«IF irRoot.linearAlgebra»find_package(KokkosKernels REQUIRED)«ENDIF»
 	'''
 
 	override Iterable<String> getCompilationOptions()
@@ -138,15 +139,18 @@ class KokkosCMakeContentProvider extends CMakeContentProvider
 		super.compilationOptions + #['-fopenmp']
 	}
 
-	override getTargetLinkLibraries()
+	override getTargetLinkLibraries(IrRoot irRoot)
 	{
-		super.targetLinkLibraries + #['Kokkos::kokkos', 'Kokkos::kokkoskernels']
+		if (irRoot.linearAlgebra)
+			super.getTargetLinkLibraries(irRoot) + #['Kokkos::kokkos', 'Kokkos::kokkoskernels']
+		else
+			super.getTargetLinkLibraries(irRoot) + #['Kokkos::kokkos']
 	}
 }
 
 class OpenMpCMakeContentProvider extends CMakeContentProvider
 {
-	override getFindPackageContent()
+	override getFindPackageContent(IrRoot irRoot)
 	'''
 		find_package(OpenMP REQUIRED)
 	'''
@@ -156,8 +160,8 @@ class OpenMpCMakeContentProvider extends CMakeContentProvider
 		super.compilationOptions + #['-fopenmp']
 	}
 
-	override getTargetLinkLibraries()
+	override getTargetLinkLibraries(IrRoot irRoot)
 	{
-		super.targetLinkLibraries + #["OpenMP::OpenMP_CXX"]
+		super.getTargetLinkLibraries(irRoot) + #["OpenMP::OpenMP_CXX"]
 	}
 }

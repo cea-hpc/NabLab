@@ -33,7 +33,6 @@ endif()
 # FIND PACKAGES
 set(CMAKE_FIND_ROOT_PATH ${N_KOKKOS_PATH})
 find_package(Kokkos REQUIRED)
-find_package(KokkosKernels REQUIRED)
 
 # SUB_DIRECTORIES
 if(NOT TARGET nablalib)
@@ -42,7 +41,7 @@ endif()
 
 # EXECUTABLE explicitheatequation
 add_executable(explicitheatequation ExplicitHeatEquation.cc)
-target_link_libraries(explicitheatequation PUBLIC nablalib Kokkos::kokkos Kokkos::kokkoskernels)
+target_link_libraries(explicitheatequation PUBLIC nablalib Kokkos::kokkos)
 
 # OPTIONAL USER OPTIONS IN Project.cmake
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)

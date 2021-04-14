@@ -15,6 +15,7 @@ import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.JobCaller
+import java.util.ArrayList
 import java.util.Collection
 import java.util.Collections
 import org.eclipse.core.runtime.NullProgressMonitor
@@ -32,7 +33,6 @@ import org.eclipse.sirius.ui.business.api.session.SessionEditorInput
 import org.eclipse.sirius.ui.business.api.session.SessionUIManager
 import org.eclipse.sirius.viewpoint.DRepresentation
 import org.eclipse.sirius.viewpoint.description.RepresentationDescription
-import java.util.ArrayList
 
 @SuppressWarnings("restriction")
 class NablaSiriusServices
@@ -125,16 +125,10 @@ class NablaSiriusServices
 	def void backToParentDiagram(DSemanticDiagram diagram)
 	{
 		val diagramTarget = diagram.target
-		var IrAnnotable annotable = null
 		if (diagramTarget instanceof Job)
 		{
 			val parent = diagramTarget.caller.eContainer
-			if (parent instanceof IrRoot)
-				annotable = parent
-			else
-				annotable = diagramTarget.caller
-		}
-		if (annotable instanceof IrAnnotable) {
+			val annotable = (parent instanceof IrRoot ? parent : diagramTarget.caller)
 			val session = SessionManager.INSTANCE.getSession(annotable)
 			if (session !== null)
 			{

@@ -62,10 +62,14 @@ location gmf-runtime-diagram "https://download.eclipse.org/modeling/gmp/gmf-runt
 	org.eclipse.gmf.runtime.sdk.feature.group [1.10.1,2.0.0)
 }
 
-location "http://www.pydev.org/update_sites/7.4.0" {
+location python "http://www.pydev.org/update_sites/7.4.0" {
 	org.python.pydev.feature.feature.group
 }
 
 location jsoneditor "http://boothen.github.io/Json-Eclipse-Plugin" {
 	jsonedit-feature.feature.group
+}
+
+location markdowneditor "https://nodeclipse.github.io/updates/markdown" {
+	markdown.editor.feature.feature.group
 }

@@ -354,6 +354,7 @@ No third-party beneficiary rights are created under this Agreement.
       <feature id="org.eclipse.wst.xml_core.feature" installMode="root"/>
       <feature id="org.eclipse.wst.xml_ui.feature" installMode="root"/>
       <feature id="jsonedit-feature" installMode="root"/>
+      <feature id="markdown.editor.feature" installMode="root"/>
    </features>
 
    <configurations>

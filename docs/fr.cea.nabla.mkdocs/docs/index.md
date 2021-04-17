@@ -17,7 +17,11 @@ Addressing the major challenges of software productivity and performance portabi
 
 ## How it works
 
-NabLab is based on [Eclipse Modeling Framework (EMF)](https://www.eclipse.org/modeling/emf). The Nabla DSL is realized with [Xtext](https://www.eclipse.org/Xtext) that allows to offer a rich textual editor with syntax coloring, code completion, quick fixes... The code in the editor has an internal EMF model representation. This representation, close to the language, is transformed into a numerical analysis specific Intermediate Representation (IR) also implemented as an Ecore metamodel. The concepts of the IR facilitate the code generation. Currently [Kokkos](https://github.com/kokkos), [Open MP](https://www.openmp.org/) and STL based threads C++ backends are implemented.
+NabLab is based on [Eclipse Modeling Framework (EMF)](https://www.eclipse.org/modeling/emf). The NabLab DSL is realized with [Xtext](https://www.eclipse.org/Xtext) that allows to offer a rich textual editor with syntax coloring, code completion, quick fixes... The DSL raises the level of abstraction close to domain scientist concerns and allows them to write multi-physics applications.
+
+The code in the editor has an internal EMF model representation. This representation, close to the language, is transformed into a numerical analysis specific Intermediate Representation (IR) also implemented as an Ecore metamodel. The transformation chain, based on the IR model, allows HPC engineers to introduce software engineering practices and performance optimization before the code generation. Currently NabLab generates multi threaded C++ for various backends: [Kokkos](https://github.com/kokkos), [Open MP](https://www.openmp.org/) and STL based threads. 
+
+Consequently, NabLab provides a way for domain scientists and software engineers to work for the same project onto separate processes.
 
 
 ## Publications

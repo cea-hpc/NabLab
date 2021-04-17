@@ -20,7 +20,7 @@ $$
 \begin{equation}
 \begin{aligned}
 \frac{u_M^{n+1} - u_M^n}{\Delta t} &= f_M + \frac{1}{V_M}\int_{M}{div(K \nabla u^n)} \\
-&= f_M + \frac{1}{V_M}\int_{\partial M}{div(K \nabla u^n)} \nu \\
+&= f_M + \frac{1}{V_M}\int_{\partial M}{K \nabla u^n} \nu \\
 &= f_M + \frac{1}{V_M}\sum_{M' \text{neighbor of } M}{K_{MM'} \frac{u_{M'}^n - u_{M}^n}{MM'}}
 \end{aligned}
 \end{equation}
@@ -39,8 +39,7 @@ Consequently
 $$
 \begin{equation}
 \begin{aligned}
-u_M^{n+1} &= \Delta t f_M + 1 + \frac{\Delta t}{V_M} + \sum_{M' \text{ neighbor of } M}{\frac{K_{MM'}}{MM'}} . u_M^n \\
-&- \frac{\Delta t}{V_M} \sum_{M' \text{ neighbor of } M}{\frac{K_{MM'} u_{M'}^n}{MM'}}
+u_M^{n+1} &= \Delta t f_M + u_M^n + \frac{\Delta t}{V_M} \sum_{M' \text{ neighbor of } M}{K_{MM'} \frac{u_{M'}^n - u_{M}^n}{MM'}}
 \end{aligned}
 \end{equation}
 $$

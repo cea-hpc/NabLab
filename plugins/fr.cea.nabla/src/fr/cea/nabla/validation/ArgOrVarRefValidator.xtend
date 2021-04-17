@@ -69,7 +69,7 @@ class ArgOrVarRefValidator extends InstructionValidator
 					val dimensionI = dimensions.get(i)
 					val actualT = spaceIteratorRefI.target.type
 					val expectedT = dimensionI.returnType
-					if (actualT != expectedT)
+					if (actualT !== null && expectedT !== null && actualT != expectedT)
 						error(getTypeMsg(expectedT.name, actualT.name), NablaPackage.Literals::ARG_OR_VAR_REF__SPACE_ITERATORS, i, SPACE_ITERATOR_TYPE)
 				}
 			}

@@ -236,7 +236,7 @@ class BasicValidator extends UnusedValidator
 			{
 				val actualT = args.get(i).target.type
 				val expectedT = connectivity.inTypes.get(i)
-				if (actualT != expectedT)
+				if (actualT !== null && expectedT !== null && actualT != expectedT)
 					error(getTypeMsg(expectedT.name, actualT.name), NablaPackage.Literals::CONNECTIVITY_CALL__ARGS, i, CONNECTIVITY_CALL_TYPE)
 			}
 		}

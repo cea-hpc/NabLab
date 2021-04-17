@@ -131,7 +131,7 @@ class LatexLabelServices
 	}
 
 	/* EXPRESSIONS ******************************************/
-	static def dispatch String getLatex(ContractedIf it) { condition.latex + ' ? ' + then.latex + ' : ' + ^else.latex }
+	static def dispatch String getLatex(ContractedIf it) { condition.latex + ' ? ' + then?.latex + ' : ' + ^else?.latex }
 	static def dispatch String getLatex(Or it) { left.latex + '~or~' + right.latex }
 	static def dispatch String getLatex(And it) { left.latex + '~and~' + right.latex }
 	static def dispatch String getLatex(Equality it) { left.latex + ' == ' + right.latex }

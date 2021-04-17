@@ -18,12 +18,14 @@ class SpaceIteratorExtensions
 {
 	def ItemType getType(SpaceIterator it)
 	{
-		container.connectivity.returnType
+		if (container.connectivity === null) null
+		else container.connectivity.returnType
 	}
 
 	def boolean isMultiple(SpaceIterator it)
 	{
-		container.connectivity.multiple
+		if (container.connectivity === null) true
+		else container.connectivity.multiple
 	}
 
 	private def dispatch getConnectivity(ConnectivityCall it) { connectivity }

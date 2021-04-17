@@ -607,8 +607,8 @@
 <p>NabLab requires <a href="https://openjdk.java.net/projects/jdk/11/">Java 11</a> or later to build &amp; run. </p>
 <p>Do not forget to set the <code>JAVA_HOME</code> variable to the java installation directory and to update your path.</p>
 <h3 id="installing-nablab">Installing NabLab</h3>
-<p>The latest NabLab environment can be downloaded <a href="https://github.com/cea-hpc/NabLab/releases/tag/v0.4.0">here</a>.</p>
-<p>Download the file corresponding to your platform, unzip it and lauch the NabLab executable in the root directory.</p>
+<p>The latest NabLab environment can be downloaded <a href="https://github.com/cea-hpc/NabLab/releases/tag/v0.4.0">here</a> for Linux, Mac OS and Windows platforms.</p>
+<p>Download the file corresponding to your platform, unzip it and launch the NabLab executable in the root directory.</p>
 <p>For Mac users, depending on your security configuration, you have to enter the following command to execute NabLab: <code>xattr -d com.apple.quarantine NabLab.app</code>.</p>
 <h3 id="installing-nablab-debugger">Installing NabLab debugger</h3>
 <p>NabLab debugger is part of the <a href="http://gemoc.org/debug4science/">Debug4Science project</a>.</p>
@@ -617,9 +617,9 @@
 &nbsp;&nbsp;&nbsp;
 <img src="http://gemoc.org/debug4science/img/inria.png" alt="Inria" style="width: 150px;"/>
 </center></p>
-<p>It is based on <a href="https://www.graalvm.org/">GraalVM</a> and <a href="https://github.com/gemoc/monilog">Monilog</a>. It is still under development. The installation process is:</p>
-<p>To install the debugger, download monilog4nablab-0.4.0.zip <a href="https://github.com/cea-hpc/Monilog4NabLab/releases/tag/v0.4.0/">here</a> and follow the Monilog4NabLab <a href="https://github.com/cea-hpc/Monilog4NabLab#how-to-install">installation instructions</a>.</p>
-<p>As explained in the installation instructions, GraalVM is installed in the folder of your IDE. Install Graalpython in following the instructions available <a href="https://www.graalvm.org/reference-manual/python/">here</a>. You can also install numpy which is a supported package of GraalVM: just replace <code>pandas</code> by <code>numpy</code> in the <a href="https://www.graalvm.org/reference-manual/python/#installing-supported-packages">package installation instructions</a>. </p>
+<p>It is based on <a href="https://www.graalvm.org/">GraalVM</a> and <a href="https://github.com/gemoc/monilog">Monilog</a>. The aim of this project is to provide debugging facilities for both interpreted and compiled code. For the moment, only the interpreted part is available. The compiled one is still under development.</p>
+<p>To install the debugger, download monilog4nablab-0.4.0.zip <a href="https://github.com/cea-hpc/Monilog4NabLab/releases/tag/v0.4.0/">here</a> and follow the Monilog4NabLab <a href="https://github.com/cea-hpc/Monilog4NabLab#how-to-install">installation instructions</a>. As explained in those instructions, GraalVM will be installed in the folder of your IDE.</p>
+<p>Thanks to Monilog, you can create your own debugging scripts. To write them in Python, install Graalpython in following the instructions available <a href="https://www.graalvm.org/reference-manual/python/">here</a>. You can also install numpy which is a supported package of GraalVM: just replace <code>pandas</code> by <code>numpy</code> in the <a href="https://www.graalvm.org/reference-manual/python/#installing-supported-packages">package installation instructions</a>. </p>
 <h3 id="build-via-maven-3x">Build via Maven 3.x</h3>
 <p>If you need to build NabLab products (Windows/Linux/MacOS and Eclipse update-site) from the source code (instead of downloading it), run the following command from the root of the repository:</p>
 <p><code>mvn clean; mvn verify</code>.</p>

@@ -440,7 +440,7 @@ A constant approximation of u by cell gives:</p>
 \begin{equation}
 \begin{aligned}
 \frac{u_M^{n+1} - u_M^n}{\Delta t} &amp;= f_M + \frac{1}{V_M}\int_{M}{div(K \nabla u^n)} \\
-&amp;= f_M + \frac{1}{V_M}\int_{\partial M}{div(K \nabla u^n)} \nu \\
+&amp;= f_M + \frac{1}{V_M}\int_{\partial M}{K \nabla u^n} \nu \\
 &amp;= f_M + \frac{1}{V_M}\sum_{M' \text{neighbor of } M}{K_{MM'} \frac{u_{M'}^n - u_{M}^n}{MM'}}
 \end{aligned}
 \end{equation}
@@ -455,8 +455,7 @@ K_{MM'} = K \text{ on } M \cap  M'
 <div class="arithmatex">\[
 \begin{equation}
 \begin{aligned}
-u_M^{n+1} &amp;= \Delta t f_M + 1 + \frac{\Delta t}{V_M} + \sum_{M' \text{ neighbor of } M}{\frac{K_{MM'}}{MM'}} . u_M^n \\
-&amp;- \frac{\Delta t}{V_M} \sum_{M' \text{ neighbor of } M}{\frac{K_{MM'} u_{M'}^n}{MM'}}
+u_M^{n+1} &amp;= \Delta t f_M + u_M^n + \frac{\Delta t}{V_M} \sum_{M' \text{ neighbor of } M}{K_{MM'} \frac{u_{M'}^n - u_{M}^n}{MM'}}
 \end{aligned}
 \end{equation}
 \]</div>

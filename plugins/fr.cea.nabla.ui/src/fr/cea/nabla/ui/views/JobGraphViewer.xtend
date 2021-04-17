@@ -10,7 +10,7 @@
 package fr.cea.nabla.ui.views
 
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
-import fr.cea.nabla.ui.NabLabConsoleFactory
+import fr.cea.nabla.ui.console.NabLabConsoleFactory
 import org.eclipse.swt.SWT
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.zest.core.viewers.GraphViewer

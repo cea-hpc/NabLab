@@ -2,7 +2,7 @@ package fr.cea.nabla.ui.handlers
 
 import com.google.inject.Inject
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher
-import fr.cea.nabla.ui.NabLabConsoleFactory
+import fr.cea.nabla.ui.console.NabLabConsoleFactory
 import org.eclipse.core.commands.AbstractHandler
 import org.eclipse.core.commands.ExecutionEvent
 import org.eclipse.core.commands.ExecutionException

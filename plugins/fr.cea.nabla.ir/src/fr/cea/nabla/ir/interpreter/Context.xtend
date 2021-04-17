@@ -75,6 +75,15 @@ class Context
 		writer = new PvdFileWriter2D(ir.name, outputPath)
 	}
 
+	def checkInterrupted() throws IrInterpreterException
+	{
+		if (Thread.currentThread.interrupted)
+		{
+			logInfo("Request for interruption of interpretation of IR: " + ir.name)
+			throw new IrInterpreterException("Interpretation interrupted for IR: " + ir.name)
+		}
+	}
+
 	// VariableValues
 	def NablaValue getVariableValue(ArgOrVar variable)
 	{

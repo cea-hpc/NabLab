@@ -17,9 +17,11 @@ import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
 import fr.cea.nabla.generator.ir.IrRootBuilder
 import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.interpreter.IrInterpreter
+import fr.cea.nabla.ir.interpreter.IrInterpreterException
 import fr.cea.nabla.nablagen.NablagenApplication
-import fr.cea.nabla.ui.NabLabConsoleFactory
-import fr.cea.nabla.ui.NabLabConsoleHandler
+import fr.cea.nabla.ui.console.NabLabConsoleFactory
+import fr.cea.nabla.ui.console.NabLabConsoleHandler
+import fr.cea.nabla.ui.console.NabLabConsoleRunnable
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.util.logging.Level
@@ -39,17 +41,15 @@ class NablagenRunner
 	@Inject NabLabConsoleFactory consoleFactory
 	@Inject NablaGeneratorMessageDispatcher dispatcher
 
+	val traceFunction = [MessageType type, String msg | consoleFactory.printConsole(type, msg)]
+
 	package def launch(IFile nablagenFile, IFile jsonFile)
 	{
-		consoleFactory.openConsole
-		consoleFactory.clearAndActivateConsole
-		val traceFunction = [MessageType type, String msg | consoleFactory.printConsole(type, msg)]
-		dispatcher.traceListeners += traceFunction
-
-		new Thread
-		([
+		new Thread(new NabLabConsoleRunnable(consoleFactory,
+		[
 			try
 			{
+				dispatcher.traceListeners += traceFunction
 				consoleFactory.printConsole(MessageType.Start, "Starting interpretation process for: " + nablagenFile.name)
 				consoleFactory.printConsole(MessageType.Exec, "Loading resources (.n and .ngen)")
 
@@ -95,14 +95,21 @@ class NablagenRunner
 					}
 				}
 			}
+			catch (IrInterpreterException e)
+			{
+				// nothing to do
+				consoleFactory.printConsole(MessageType.Error, e.message)
+			}
 			catch (Exception e)
 			{
 				consoleFactory.printConsole(MessageType.Error, "Interpretation failed for: " + nablagenFile.name)
 				consoleFactory.printConsole(MessageType.Error, e.message)
 				consoleFactory.printConsole(MessageType.Error, IrUtils.getStackTrace(e))
 			}
-		]).start
-
-		dispatcher.traceListeners -= traceFunction
+			finally
+			{
+				dispatcher.traceListeners -= traceFunction
+			}
+		])).start
 	}
 }

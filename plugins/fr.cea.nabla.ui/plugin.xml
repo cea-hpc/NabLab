@@ -678,7 +678,7 @@
  <extension point="org.eclipse.ui.console.consoleFactories">
    <consoleFactory 
       label="NabLab Console"
-      class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.NabLabConsoleFactory"
+      class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.console.NabLabConsoleFactory"
       icon="icons/NabLab.gif">
    </consoleFactory>
  </extension>
@@ -819,5 +819,15 @@
 				</with>
 			</enabledWhen>
 		</handler>
+	</extension>
+
+	<extension point="org.eclipse.ui.console.consolePageParticipants">
+		<consolePageParticipant
+			class="fr.cea.nabla.ui.console.NabLabConsoleActions"
+			id="fr.cea.nabla.ui.console.NabLabConsoleActions">
+			<enablement>
+				<instanceof value="fr.cea.nabla.ui.console.NabLabConsole"/>
+			</enablement>
+		</consolePageParticipant>
 	</extension>
 </plugin>

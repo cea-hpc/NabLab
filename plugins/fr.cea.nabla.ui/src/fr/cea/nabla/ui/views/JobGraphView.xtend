@@ -19,8 +19,8 @@ import fr.cea.nabla.ir.transformers.CompositeTransformationStep
 import fr.cea.nabla.ir.transformers.FillJobHLTs
 import fr.cea.nabla.ir.transformers.ReplaceReductions
 import fr.cea.nabla.nablagen.NablagenApplication
-import fr.cea.nabla.ui.NabLabConsoleFactory
 import fr.cea.nabla.ui.NablaUiUtils
+import fr.cea.nabla.ui.console.NabLabConsoleFactory
 import javax.inject.Provider
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.jface.viewers.DoubleClickEvent

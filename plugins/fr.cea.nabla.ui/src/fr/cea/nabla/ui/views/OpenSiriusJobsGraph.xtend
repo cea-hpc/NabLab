@@ -20,7 +20,7 @@ import fr.cea.nabla.ir.transformers.ComputePreviousAndNextJobs
 import fr.cea.nabla.ir.transformers.FillJobHLTs
 import fr.cea.nabla.ir.transformers.ReplaceReductions
 import fr.cea.nabla.nablagen.NablagenApplication
-import fr.cea.nabla.ui.NabLabConsoleFactory
+import fr.cea.nabla.ui.console.NabLabConsoleFactory
 import fr.cea.nabla.ui.internal.NablaActivator
 import java.io.IOException
 import java.util.ArrayList

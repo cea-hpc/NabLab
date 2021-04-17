@@ -130,6 +130,7 @@ class InstructionInterpreter
 						val ret = interprete(body, context)
 						if (ret !== null)
 							return ret
+						context.checkInterrupted
 					}
 				}
 			}
@@ -196,6 +197,7 @@ class InstructionInterpreter
 		{
 			interprete(instruction, context)
 			cond = interprete(condition, context) as NV0Bool
+			context.checkInterrupted
 		}
 		return null
 	}

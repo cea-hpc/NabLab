@@ -77,6 +77,8 @@ class JobInterpreter
 			{
 				interprete(instruction, context)
 			}
+
+			context.checkInterrupted
 		}
 		while (continueLoop)
 		val log = String.format("%1$s Nb iteration %2$s = %3$d", caller.indentation, iterationCounter.name, iteration)

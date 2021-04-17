@@ -25,21 +25,19 @@ class GenerateCodeHandler extends AbstractGenerateHandler
 	@Inject Provider<NablagenApplicationGenerator> applicationGeneratorProvider
 	@Inject Provider<NablagenProviderGenerator> providerGeneratorProvider
 
+	val traceFunction = [MessageType type, String msg | consoleFactory.printConsole(type, msg)]
+
 	override generate(IFile nablagenFile, Shell shell)
 	{
-		val project = nablagenFile.project
-
-		consoleFactory.openConsole
-		consoleFactory.clearAndActivateConsole
-		val traceFunction = [MessageType type, String msg | consoleFactory.printConsole(type, msg)]
-		dispatcher.traceListeners += traceFunction
-
 		new Thread
 		([
 			try
 			{
+				dispatcher.traceListeners += traceFunction
+				consoleFactory.openConsole
 				consoleFactory.printConsole(MessageType.Start, "Starting generation process for: " + nablagenFile.name)
 				consoleFactory.printConsole(MessageType.Exec, "Loading resources (.n and .ngen)")
+				val project = nablagenFile.project
 				val plaftormUri = URI::createPlatformResourceURI(project.name + '/' + nablagenFile.projectRelativePath, true)
 				val resourceSet = resourceSetProvider.get
 				val uriMap = resourceSet.URIConverter.URIMap
@@ -66,8 +64,10 @@ class GenerateCodeHandler extends AbstractGenerateHandler
 				consoleFactory.printConsole(MessageType.Error, e.message)
 				consoleFactory.printConsole(MessageType.Error, IrUtils.getStackTrace(e))
 			}
+			finally
+			{
+				dispatcher.traceListeners -= traceFunction
+			}
 		]).start
-
-		dispatcher.traceListeners -= traceFunction
 	}
 }

@@ -60,7 +60,7 @@ class NabLabConsoleActions implements IConsolePageParticipant
 		{
 			override void run()
 			{
-				for(c : console.runners) c.interrupt
+				for(c : console.runners) c.run
 			}
 		}
 		updateVis

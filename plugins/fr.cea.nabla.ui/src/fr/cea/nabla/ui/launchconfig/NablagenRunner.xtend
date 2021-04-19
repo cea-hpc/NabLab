@@ -45,8 +45,7 @@ class NablagenRunner
 
 	package def launch(IFile nablagenFile, IFile jsonFile)
 	{
-		new Thread(new NabLabConsoleRunnable(consoleFactory,
-		[
+		val Thread interpreterThread = new Thread([
 			try
 			{
 				dispatcher.traceListeners += traceFunction
@@ -110,6 +109,10 @@ class NablagenRunner
 			{
 				dispatcher.traceListeners -= traceFunction
 			}
-		])).start
+		])
+		
+		val Runnable stopRunnable = [interpreterThread.interrupt]
+		
+		new Thread(new NabLabConsoleRunnable(consoleFactory, interpreterThread, stopRunnable)).start
 	}
 }

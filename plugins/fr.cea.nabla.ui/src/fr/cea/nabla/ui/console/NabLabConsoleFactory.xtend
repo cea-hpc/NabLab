@@ -69,7 +69,7 @@ class NabLabConsoleFactory implements IConsoleFactory
 		}
 	}
 
-	package def void addRunnerToConsole(Thread t)
+	package def void addRunnerToConsole(Runnable t)
 	{
 		if (console !== null)
 		{
@@ -78,7 +78,7 @@ class NabLabConsoleFactory implements IConsoleFactory
 		}
 	}
 
-	package def void removeRunnerToConsole(Thread t)
+	package def void removeRunnerToConsole(Runnable t)
 	{
 		if (console !== null)
 		{

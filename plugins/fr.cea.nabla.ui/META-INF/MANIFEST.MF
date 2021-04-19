@@ -42,6 +42,7 @@ Require-Bundle: fr.cea.nabla,
 Import-Package: org.apache.log4j
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: fr.cea.nabla.ui,
+ fr.cea.nabla.ui.console,
  fr.cea.nabla.ui.contentassist,
  fr.cea.nabla.ui.hovers,
  fr.cea.nabla.ui.internal,

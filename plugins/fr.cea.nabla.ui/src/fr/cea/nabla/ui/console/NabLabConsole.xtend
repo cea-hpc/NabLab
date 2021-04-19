@@ -17,7 +17,7 @@ class NabLabConsole extends MessageConsole
 {
 	public static val ConsoleName = "NabLab Console"
 
-	package val runners = new ArrayList<Thread>
+	package val runners = new ArrayList<Runnable>
 	package NabLabConsoleActions actions
 
 	new(ImageDescriptor imageDescriptor)

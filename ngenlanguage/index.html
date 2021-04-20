@@ -498,7 +498,7 @@ An <code>Application</code> reference a <code>module</code> while  an <code>Exte
 <p>Code completion is available with <em>CTRL-space</em> for all module and variable references.</p>
 </div>
 <h3 id="vtk-output">VTK output</h3>
-<p>NabLab provides a PVD file format serializer, a VTK compatible file format. The next block of the <em>ngen</em> file aims at configuring this serializer. It is an optional block. The <code>periodReferenceVariable</code> defines the module variable used as a reference for the frequency of the outputs. Most of the time, it is the iteration number (often named <code>n</code>) or the time of the simulation (often named <code>t</code>).</p>
+<p>NabLab provides a <a href="https://vtk.org/Wiki/ParaView/Data_formats#PVD_File_Format">PVD</a> file format serializer, a <a href="https://vtk.org/">VTK</a> compatible file format. The next block of the <em>ngen</em> file aims at configuring this serializer. It is an optional block. The <code>periodReferenceVariable</code> field defines the module variable used as a reference for the frequency of the outputs. Most of the time, it is the iteration number (often named <code>n</code>) or the time of the simulation (often named <code>t</code>). The <code>outputVariables</code> field defines the list of nodes and cells variables to write in the output file. The name after the <code>as</code> keyword is the name displayed by <a href="https://www.paraview.org/">Paraview</a>.</p>
 <div class="highlight"><pre><span></span><code>VtkOutput
 {
     periodReferenceVariable = glace2d.n;

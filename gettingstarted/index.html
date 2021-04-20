@@ -607,7 +607,7 @@
 <p>NabLab requires <a href="https://openjdk.java.net/projects/jdk/11/">Java 11</a> or later to build &amp; run. </p>
 <p>Do not forget to set the <code>JAVA_HOME</code> variable to the java installation directory and to update your path.</p>
 <h3 id="installing-nablab">Installing NabLab</h3>
-<p>The latest NabLab environment can be downloaded <a href="https://github.com/cea-hpc/NabLab/releases/tag/v0.4.0">here</a> for Linux, Mac OS and Windows platforms.</p>
+<p>The latest NabLab environment can be downloaded <a href="https://github.com/cea-hpc/NabLab/releases/tag/v0.4.1">here</a> for Linux, Mac OS and Windows platforms.</p>
 <p>Download the file corresponding to your platform, unzip it and launch the NabLab executable in the root directory.</p>
 <p>For Mac users, depending on your security configuration, you have to enter the following command to execute NabLab: <code>xattr -d com.apple.quarantine NabLab.app</code>.</p>
 <h3 id="installing-nablab-debugger">Installing NabLab debugger</h3>
@@ -646,17 +646,17 @@
 <h3 id="code-generation">Code generation</h3>
 <p>To launch code generation corresponding to the NabLab module, just right-click on the ngen file of the project of your choice, for example <em>NabLabExamples/src/explicitheatequation/ExplicitHeatEquation.ngen</em> and select <em>Generate Code</em></p>
 <p><img src="img/NabLab_generate_code.png" alt="NabLab Generate Code" title="NabLab Generate Code" width="50%" height="50%" /></p>
-<p>Java and C++ source code files are generated in <em>src-gen-java</em> and <em>src-gen-cpp</em> folders respectively. For each C++ folder a CMakeLists.txt file is generated.
+<p>Java and C++ source code files are generated in <em>src-gen-java</em> and <em>src-gen-cpp</em> folders respectively. For each C++ folder a <em>CMakeLists.txt</em> file is generated.
 A LaTeX file containing the content of the jobs and an example of json data file are also generated in the <em>src-gen</em> folder.  </p>
 <p><img src="img/NabLab_generated_files.png" alt="NabLab Generated Files" title="NabLab Generated Files" width="30%" height="30%" /></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>A good practice is to name "src-gen" a directory containing only generated code.</p>
+<p>A good practice is to name <em>src-gen</em> a directory containing only generated code.</p>
 </div>
 <h3 id="interpretation">Interpretation</h3>
-<p>To launch code interpretation corresponding to the NabLab module, just right-click on the ngen file of the project of your choice, for example <em>NabLabExamples/src/explicitheatequation/ExplicitHeatEquation.ngen</em> and select <em>Run As &gt; Start Interpretation</em>.</p>
+<p>To launch code interpretation corresponding to the NabLab module, just right-click on the <em>ngen</em> file of the project of your choice, for example <em>NabLabExamples/src/explicitheatequation/ExplicitHeatEquation.ngen</em> and select <em>Run As &gt; Start Interpretation</em>.</p>
 <p><img src="img/NabLab_start_interpretation.png" alt="NabLab Start Interpretation" title="NabLab Start Interpretation" width="50%" height="50%" /></p>
-<p>To change the Json file of your interpretation, right-click on the ngen file and select <em>Run As &gt; Run Configurations</em>, select your configuration, for example ExplicitHeatEquation.ngen, and change the Json file in the dialog window.</p>
+<p>To change the <em>json</em> file of your interpretation, right-click on the <em>ngen</em> file and select <em>Run As &gt; Run Configurations</em>, select your configuration, for example <em>ExplicitHeatEquation.ngen</em>, and change the <em>json</em> file in the dialog window.</p>
 <p><img src="img/NabLab_interpretation_configuration.png" alt="NabLab Interpretation Configuration" title="NabLab Interpretation Configuration" width="80%" height="80%" /></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>

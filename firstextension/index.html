@@ -595,7 +595,7 @@ with BathyLib.*;
 <p>The first step to define the provider is to create a <em>ngen</em> file containing the provider definition.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The <em>ngen</em> file already exists in the project: it has been created by the wizard. If you need to create this <em>ngen</em> file on an existing project, NabLab provides a code generator for that: right-click on the <em>BathyLib.n</em> file and select the <em>Generate nablagen provider file</em> menu. </p>
+<p>The <em>ngen</em> file already exists in the project: it has been created by the wizard. If you need to create this <em>ngen</em> file on an existing project, NabLab provides a code generator for that: right-click on the <em>BathyLib.n</em> file and select the <em>Generate nablagen file</em> menu. </p>
 </div>
 <p>Double-click on the <em>BathyLib.ngen</em> file to open the editor and suppress lines to let only a simple C++ provider as follows:</p>
 <div class="highlight"><pre><span></span><code>Provider BathyLibCpp : BathyLib
@@ -628,34 +628,34 @@ with BathyLib.*;
 <p>NabLab creates providers by calling the default constructor (with no argument).
 The <code>jsonInit</code> method allows to initialize the provider class if needed.
 When you implement a provider extension, you are free to inject the Json content you wish. At the beginning of the execution, when the Json data file is read, NabLab will look for Json fields corresponding to extension names with the first letter in lower case; in the above example, <em>bathyLib</em>. This file must be in the block of the module (or extension) using the extension; in the above example in the <em>swan</em> block. </p>
-<div class="highlight"><pre><span></span><code>{
-    &quot;swan&quot;:
-    {
-        &quot;_outputPath_comment&quot;:&quot;empty outputPath to disable output&quot;,
-        &quot;outputPath&quot;:&quot;output&quot;,
-        &quot;outputPeriod&quot;:10,
-        &quot;maxIter&quot;:2500000,
-        &quot;stopTime&quot;:50.0,
-        &quot;bathyLib&quot;:
-        {
-            &quot;waveFilename&quot;:&quot;$ENV{HOME}/workspaces/swan/swan/data/swan/waveCanal.grd&quot;,
-            &quot;waveVarName&quot;:&quot;z&quot;
-        }
-    },
-    &quot;mesh&quot;:
-    {
-        &quot;nbXQuads&quot;:1103,
-        &quot;nbYQuads&quot;:44,
-        &quot;xSize&quot;:200.0,
-        &quot;ySize&quot;:200.0
-    }
-}
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+    <span class="nt">&quot;swan&quot;</span><span class="p">:</span>
+    <span class="p">{</span>
+        <span class="nt">&quot;_outputPath_comment&quot;</span><span class="p">:</span><span class="s2">&quot;empty outputPath to disable output&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;outputPath&quot;</span><span class="p">:</span><span class="s2">&quot;output&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;outputPeriod&quot;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span>
+        <span class="nt">&quot;maxIter&quot;</span><span class="p">:</span><span class="mi">2500000</span><span class="p">,</span>
+        <span class="nt">&quot;stopTime&quot;</span><span class="p">:</span><span class="mf">50.0</span><span class="p">,</span>
+        <span class="nt">&quot;bathyLib&quot;</span><span class="p">:</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;waveFilename&quot;</span><span class="p">:</span><span class="s2">&quot;$ENV{HOME}/workspaces/swan/swan/data/swan/waveCanal.grd&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;waveVarName&quot;</span><span class="p">:</span><span class="s2">&quot;z&quot;</span>
+        <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;mesh&quot;</span><span class="p">:</span>
+    <span class="p">{</span>
+        <span class="nt">&quot;nbXQuads&quot;</span><span class="p">:</span><span class="mi">1103</span><span class="p">,</span>
+        <span class="nt">&quot;nbYQuads&quot;</span><span class="p">:</span><span class="mi">44</span><span class="p">,</span>
+        <span class="nt">&quot;xSize&quot;</span><span class="p">:</span><span class="mf">200.0</span><span class="p">,</span>
+        <span class="nt">&quot;ySize&quot;</span><span class="p">:</span><span class="mf">200.0</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>The Json block corresponding to an extension is injected as an argument to the <code>jsonInit</code> method of the extension. In the previous example, the value of the <em>bathyLib</em> field, becomes the value of the <code>jsonContent</code> argument in <code>BathyLib::jsonInit(const char* jsonContent)</code> method. This value is:</p>
-<div class="highlight"><pre><span></span><code>{
-    &quot;waveFilename&quot;:&quot;$ENV{HOME}/workspaces/swan/swan/data/swan/waveCanal.grd&quot;,
-    &quot;waveVarName&quot;:&quot;z&quot;
-}
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+    <span class="nt">&quot;waveFilename&quot;</span><span class="p">:</span><span class="s2">&quot;$ENV{HOME}/workspaces/swan/swan/data/swan/waveCanal.grd&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;waveVarName&quot;</span><span class="p">:</span><span class="s2">&quot;z&quot;</span>
+<span class="p">}</span>
 </code></pre></div>
 <h3 id="configuring-dependencies">Configuring dependencies</h3>
 <p>The <em>CMakeLists.txt</em> file generated with the provider is designed to be included in the <em>CMakeLists.txt</em> of the module using the extension, not to be called directly. It is totally generated and is overwritten during each generation: do not edit this file. Nevertheless, the provider sometimes need to add dependencies to external libraries. Fortunately, all NabLab generated <em>CMakeLists.txt</em> files allow to include the content of a <em>Project.cmake</em> file:</p>
@@ -685,7 +685,7 @@ endif()
 <h3 id="building-the-application">Building the application</h3>
 <p>The application can be built as usual: go into the generation directory containing the <em>CMakeLists.txt</em> file (in our example <code>/swan/src-gen-cpp/stl-thread/swan</code>) and enter the following commands:</p>
 <div class="highlight"><pre><span></span><code>mkdir build
-cd build
+<span class="nb">cd</span> build
 cmake ..
 make -j4
 </code></pre></div>
@@ -705,7 +705,7 @@ make -j4
 <p><img src="img/NabLab_jni_generation_folder.png" alt="NabLab JNI Generation Folders" title="NabLab JNI Generation Folders" width="30%" height="30%" /></p>
 <p>To build the generated code, just go into the folder application, <code>/swan/src-gen-interpreter/swan</code> in our example, and build the code as usual:</p>
 <div class="highlight"><pre><span></span><code>mkdir build
-cd build
+<span class="nb">cd</span> build
 cmake ..
 make -j4
 </code></pre></div>

@@ -42,7 +42,7 @@ MainModule Glace2d glace2d
 
 ### VTK output
 
-NabLab provides a PVD file format serializer, a VTK compatible file format. The next block of the *ngen* file aims at configuring this serializer. It is an optional block. The `periodReferenceVariable` defines the module variable used as a reference for the frequency of the outputs. Most of the time, it is the iteration number (often named `n`) or the time of the simulation (often named `t`).
+NabLab provides a [PVD](https://vtk.org/Wiki/ParaView/Data_formats#PVD_File_Format) file format serializer, a [VTK](https://vtk.org/) compatible file format. The next block of the *ngen* file aims at configuring this serializer. It is an optional block. The `periodReferenceVariable` field defines the module variable used as a reference for the frequency of the outputs. Most of the time, it is the iteration number (often named `n`) or the time of the simulation (often named `t`). The `outputVariables` field defines the list of nodes and cells variables to write in the output file. The name after the `as` keyword is the name displayed by [Paraview](https://www.paraview.org/).
 
 ```
 VtkOutput

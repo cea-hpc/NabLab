@@ -75,7 +75,7 @@ The role of providers is to implement extensions. It is possible to implement se
 The first step to define the provider is to create a *ngen* file containing the provider definition.
 
 !!! Note
-	The *ngen* file already exists in the project: it has been created by the wizard. If you need to create this *ngen* file on an existing project, NabLab provides a code generator for that: right-click on the *BathyLib.n* file and select the *Generate nablagen provider file* menu. 
+	The *ngen* file already exists in the project: it has been created by the wizard. If you need to create this *ngen* file on an existing project, NabLab provides a code generator for that: right-click on the *BathyLib.n* file and select the *Generate nablagen file* menu. 
 
 Double-click on the *BathyLib.ngen* file to open the editor and suppress lines to let only a simple C++ provider as follows:
 
@@ -125,7 +125,7 @@ NabLab creates providers by calling the default constructor (with no argument).
 The `jsonInit` method allows to initialize the provider class if needed.
 When you implement a provider extension, you are free to inject the Json content you wish. At the beginning of the execution, when the Json data file is read, NabLab will look for Json fields corresponding to extension names with the first letter in lower case; in the above example, *bathyLib*. This file must be in the block of the module (or extension) using the extension; in the above example in the *swan* block. 
 
-```
+```json
 {
 	"swan":
 	{
@@ -152,7 +152,7 @@ When you implement a provider extension, you are free to inject the Json content
 
 The Json block corresponding to an extension is injected as an argument to the `jsonInit` method of the extension. In the previous example, the value of the *bathyLib* field, becomes the value of the `jsonContent` argument in `BathyLib::jsonInit(const char* jsonContent)` method. This value is:
 
-```
+```json
 {
 	"waveFilename":"$ENV{HOME}/workspaces/swan/swan/data/swan/waveCanal.grd",
 	"waveVarName":"z"
@@ -207,7 +207,7 @@ Once again, the code completion (with `CTRL-Space` key) proposes the list of ext
 
 The application can be built as usual: go into the generation directory containing the *CMakeLists.txt* file (in our example `/swan/src-gen-cpp/stl-thread/swan`) and enter the following commands:
 
-```
+```bash
 mkdir build
 cd build
 cmake ..
@@ -240,7 +240,7 @@ The generation produces a folder for each JNI provider (name of the provider + j
   
 To build the generated code, just go into the folder application, `/swan/src-gen-interpreter/swan` in our example, and build the code as usual:
 
-```
+```bash
 mkdir build
 cd build
 cmake ..

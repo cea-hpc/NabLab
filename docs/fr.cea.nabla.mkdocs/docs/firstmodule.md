@@ -2,7 +2,7 @@
 
 ## Presentation of the problem
 
-The aim of this tutorial is to implement a simple equation of diffusion in NabLab:
+The aim of this tutorial is to implement a simple equation of diffusion in NabLab on a 2D cartesian mesh:
 
 $$
 \begin{equation}
@@ -20,21 +20,15 @@ $$
 \begin{equation}
 \begin{aligned}
 \frac{u_M^{n+1} - u_M^n}{\Delta t} &= f_M + \frac{1}{V_M}\int_{M}{div(K \nabla u^n)} \\
-&= f_M + \frac{1}{V_M}\int_{\partial M}{K \nabla u^n} \nu \\
+&= f_M + \frac{1}{V_M}\int_{\partial M}{(K \nabla u^n) . \nu} \\
 &= f_M + \frac{1}{V_M}\sum_{M' \text{neighbor of } M}{K_{MM'} \frac{u_{M'}^n - u_{M}^n}{MM'}}
 \end{aligned}
 \end{equation}
 $$
 
-with
+where $u_M$ is the temperature of the cell M, $f_M$ is the source term of the cell M, $\nu$ is the face normal vector and $K_{MM'}$ the value of $K$ on $M \cap  M'$.
 
-$$
-\begin{equation}
-K_{MM'} = K \text{ on } M \cap  M'
-\end{equation}
-$$
-
-Consequently
+Consequently:
  
 $$
 \begin{equation}
@@ -60,9 +54,271 @@ Enter *Tutorial* as project name, select the *Module* radio button, enter *HeatE
 <img src="img/NabLab_new_project_result.png" alt="NabLab New Project Result" title="NabLab New Project Result" width="30%" height="30%" />
 
 
-## Implementation
+## Implementing the module
+
+The module must be implemented in the *HeatEquation.n* file. Edit it by double-clicking on the file name in the explorer.
+
+A full description of the language is available in the [reference documentation](../nablablanguage). 
+
 
 ### Items and connectivities
 
-**TO BE CONTINUED**
+The module starts with the declaration of mesh elements and connectivities needed by the module.
 
+```
+itemtypes { node, cell, face }
+
+connectivity nodes: → {node};
+connectivity cells: → {cell};
+connectivity faces: → {face};
+connectivity neighbourCells: cell → {cell};
+connectivity nodesOfFace: face → {node};
+connectivity nodesOfCell: cell → {node};
+connectivity commonFace: cell × cell → face;
+```
+
+### Options
+
+The next part of the file relates to the definition of options: variables whose value can be set in the user data file. Two kinds of options are defined, simulation and user options:
+
+```
+// Simulation options
+option ℝ stopTime = 0.1;
+option ℕ maxIterations = 500;
+
+// User options
+option ℝ PI = 3.1415926;
+option ℝ α = 1.0;
+```
+
+Simulation options represents the maximum time and number of iterations of the simulation. We will see below how they will define the conditions of the iteration loop. 
+
+
+### Variables
+
+For the heat equation module, the variables are:
+
+- *δt* and *t* representing respectively the time step and time of the simulation. Time step is initialized with a default value. It will be constant during the simulation,
+- *X* and center representing respectively coordinates of nodes and center of cells,
+- *u*, *V* and *f* representing the cells' variables presented in the above equation,
+- *outgoingFlux* representing the $\frac{\Delta t}{V_M} \sum{K_{MM'} \frac{u_{M'}^n - u_{M}^n}{MM'}}$ part of the equation,
+- *surface* representing the surface of faces.
+
+```
+let ℝ δt = 0.001;
+ℝ t;
+ℝ[2] X{nodes}, center{cells};
+ℝ u{cells}, V{cells}, f{cells}, outgoingFlux{cells}, surface{faces};
+```
+
+### Time iterators
+
+The next part of the file defines the time loop iterators, a single one named *n* for this example, and the stop condition of the time loop.
+
+```
+iterate n while (t^{n} < stopTime && n < maxIterations);
+```
+
+### Jobs
+
+The next part of the file is dedicated to definition of jobs.
+
+The order of jobs in the editor does not matter for execution. NabLab will build the data flow graph of jobs to determine their execution rank.
+
+At first, four jobs for initializing the values of *t*, *f*, *center* and *u* variables are defined. Fell free to change the initialization of $u^{n}_{j}$!
+
+```
+IniTime: t^{n=0} = 0.0;
+IniF: ∀j∈cells(), f{j} = 0.0;
+IniCenter: ∀j∈cells(), center{j} = 0.25 * ∑{r∈nodesOfCell(j)}(X{r});
+IniUn: ∀j∈cells(), u^{n}{j} = cos(2 * PI * α * center{j}[0]);
+```
+
+To compute the center of cells, we use the $\sum$ reduction defined in the *Math* extension of the NabLab language. Thus, the following instruction must be added at the beginning of the file after the module definition: 
+
+```
+with Math.*;
+```
+
+Then two jobs are needed to compute the volume and surface of cells:
+
+```
+ComputeV: ∀j∈cells(), V{j} = 0.5 * ∑{r∈nodesOfCell(j)}(det(X{r}, X{r+1}));
+ComputeSurface: ∀f∈faces(), surface{f} = 0.5 * ∑{r∈nodesOfFace(f)}(norm(X{r}-X{r+1}));
+```
+
+The `det` and `norm` functions are also defined in the *Math* library. To see the full content of the library, press `F3` on one of its functions, for example `det`. It will open the *Math.n* provided by NabLab.
+
+Now, it is time to code the above formula. It can be done in a single job but we have divided it into two parts: the compute of the outgoing flux representing the $\frac{\Delta t}{V_M} \sum{K_{MM'} \frac{u_{M'}^n - u_{M}^n}{MM'}}$ part of the equation and the compute of the $u^{n+1}$ value:
+
+```
+ComputeOutgoingFlux: ∀j1∈cells(), outgoingFlux{j1} = δt/V{j1} * ∑{j2∈neighbourCells(j1)}(∑{cf∈commonFace(j1,j2)}( (u^{n}{j2}-u^{n}{j1}) / norm(center{j2}-center{j1}) * surface{cf}));
+ComputeUn: ∀j∈cells(), u^{n+1}{j} = f{j} * δt + u^{n}{j} + outgoingFlux{j};
+```
+
+In the *ComputeOutgoingFlux* job, the face is accessed through a $\sum$. In NabLab, all connectivities are handled in the same way even if they return a singleton like the *commonFace* connectivity which returns a single face.
+
+The LaTeX view below the editor displays the job content equation and facilitates the verification of its correctness. Just place your cursor on the job of your choice in the editor to see the LaTeX view changed. 
+
+<img src="img/NabLab_compute_un_latex.png" alt="NabLab LaTeX view" title="NabLab LaTeX view" width="80%" height="80%" />
+
+Finally, just update the global time in a last job.
+
+```
+ComputeTn: t^{n+1} = t^{n} + δt;
+```
+
+The algorithm representing the problem to solve is now complete. the last task consists in defining the global application.
+
+
+## Defining the application
+
+The application must be defined in the *HeatEquation.ngen* file. Edit it by double-clicking on the file name in the explorer.
+
+!!! note
+	The *ngen* file already exists in the project: it has been created by the wizard. If you need to create this *ngen* file on an existing project, NabLab provides a code generator for that: right-click on the *HeatEquation.n* file and select the *Generate nablagen file* menu. 
+
+A full description of the language is available in the [reference documentation](../ngenlanguage). 
+
+### Global parameters
+
+The application must identify its main module which will control the simulation time loop. 
+
+Some parameters have to be fixed like the mesh class name and the variables representing the node coordinates, the time and time step of the simulation and the maximum time and time step of the simulation. 
+
+!!! note
+	All keywords and references to NabLab variables are available by contextual code completion with `CTRL-Space` keys.
+ 
+
+```
+MainModule HeatEquation heatEquation
+{
+	meshClassName = "CartesianMesh2D";
+	nodeCoord = X;
+	time = t;
+	timeStep = δt;
+	iterationMax = maxIterations;
+	timeMax = stopTime;
+}
+```
+
+### VTK output
+
+NabLab provides a [PVD](https://vtk.org/Wiki/ParaView/Data_formats#PVD_File_Format) file format serializer, a [VTK](https://vtk.org/) compatible file format. To configure  this serializer add the block below. 
+
+```
+VtkOutput
+{
+	periodReferenceVariable = heatEquation.n;
+	outputVariables = heatEquation.u as "Temperature";
+}
+```
+
+The `periodReferenceVariable` field defines the module variable used as a reference for the frequency of the outputs, here the iteration number `n`. The `outputVariables` field defines the list of nodes and cells variables to write in the output file. The name after the `as` keyword is the name displayed by [Paraview](https://www.paraview.org/).
+
+The `outputPath` and `outputPeriod` can be set in the *json* data file.
+
+
+### Generation target
+
+To configure generation, create a generation block, for example for the `StlThread` target.
+
+!!! note
+	Other generation target are available by code completion with `CTRL-Space` key or in the [ngen reference documentation](../ngenlanguage/#configuring-generation).
+
+```
+StlThread
+{
+	outputPath = "/Tutorial/src-gen-cpp/stl-thread";
+	N_CXX_COMPILER = "/usr/bin/g++";
+}
+```
+
+For C++ targets, provide the path to the desired compiler into the `N_CXX_COMPILER` variable.
+
+
+## Jobs sequence
+
+NabLab computes the data flow of the application to define the job execution rank. To see the computed graph of jobs, display the *HeatEquation.ngen* file in the editor and press the `F2` key.
+
+<img src="img/NabLab_heatequation_job_graph.png" alt="NabLab Job Graph" title="NabLab Job Graph" width="80%" height="80%" />
+
+To see jobs composing the time loop, double-click on *HeatEquation::ExecuteTimeLoopN* job. Input and output variables of a job are displayed in puttingthe mouse over a job.
+ 
+<img src="img/NabLab_heatequation_time_loop_job_graph.png" alt="NabLab Time Loop Job Graph" title="NabLab Time Loop Job Graph" width="80%" height="80%" />
+
+!!! note
+	A quick representation of the graph is available in the *Job Graph View* tab under the editor by pressing the `F1` key (instead of `F2` for the complete editor).
+
+
+## Generation
+
+To launch code generation, just right-click on the *HeatEquation.ngen* file and select *Generate Code*
+
+<img src="img/NabLab_generate_code.png" alt="NabLab Generate Code" title="NabLab Generate Code" width="50%" height="50%" />
+
+C++ source code files *HeatEquation.h* and *HeatEquation.cc* are generated in the *src-gen-cpp/stl-thread* folder. A *CMakeLists.txt* file is also generated to compile the application. A LaTeX file containing the content of the jobs and an example of json data file are also generated in the *src-gen* folder. The list of generated files are displayed in the NabLab console.
+
+<img src="img/NabLab_generation_msg.png" alt="NabLab Generation Messages" title="NabLab Generation Messages" width="80%" height="80%" />
+
+!!! note
+	A good practice is to name *src-gen* a directory containing only generated code.
+
+
+## Compilation
+
+
+To build the application, go into the generation directory containing the *CMakeLists.txt* generated file i. e. `/Tutorial/src-gen-cpp/stl-thread/heatequation` and enter the following commands:
+
+```bash
+mkdir build
+cd build
+cmake ..
+make -j4
+```
+After the compilation of the application, a *heatequation* executable is available in the *build* directory.
+
+
+## Execution
+
+To execute the application, a data file is needed. NabLab generates a template named *HeatEquationDefault.json* in the *src-gen* directory. Copy this file, paste it in the *src* directory, rename it *HeatEquation.json* (select the file in the explorer and press `F2` key) and double-click on it in the explorer to open the json editor.
+
+Remove the comment line, the file is no more generated, and add a mesh block as follows:
+
+```json
+{
+	"heatEquation":
+	{
+		"_outputPath_comment":"empty outputPath to disable output",
+		"outputPath":"output",
+		"outputPeriod":1,
+		"stopTime":0.1,
+		"maxIterations":500,
+		"PI":3.1415926,
+		"alpha":1.0
+	},
+	"mesh":
+	{
+		"nbXQuads":20,
+		"nbYQuads":20,
+		"xSize":0.1,
+		"ySize":0.1
+	}
+}
+```
+
+The application can then be executed. In the *build* directory, enter the following command:
+ 
+```
+./heatequation ../../../../src/heatequation/HeatEquation.json
+```
+
+## Vizualizing results
+
+The `outputPeriod` value is set two *1* in the *HeatEquation.json* and the `outputPath` value is *output*. Consequently, an output directory has been created and it contains a VTP file for each time step and a PVD file named *HeatEquation.pvd". The results can be visualize in Paraview with the following command:
+
+```
+paraview output/HeatEquation.pvd
+```
+
+<img src="img/NabLab_paraview.png" alt="NabLab Paraview" title="NabLab Paraview" width="100%" height="100%" />

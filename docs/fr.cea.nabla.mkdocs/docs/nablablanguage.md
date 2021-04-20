@@ -72,6 +72,8 @@ connectivity nodesOfCell: cell → {node};      // nodes of a cell
 connectivity commonFace: cell × cell → face;  // common face of two cells
 ```
 
+NabLab provides Java and C++ mesh libraries. They implement the above connectivities. You can also use yous own library. A documentation will be available shortly. 
+
 
 ## Reductions and functions
 

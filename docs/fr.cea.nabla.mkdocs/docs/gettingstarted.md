@@ -89,27 +89,28 @@ To launch code generation corresponding to the NabLab module, just right-click o
 
 <img src="img/NabLab_generate_code.png" alt="NabLab Generate Code" title="NabLab Generate Code" width="50%" height="50%" />
 
-Java and C++ source code files are generated in *src-gen-java* and *src-gen-cpp* folders respectively. For each C++ folder a CMakeLists.txt file is generated.
+Java and C++ source code files are generated in *src-gen-java* and *src-gen-cpp* folders respectively. For each C++ folder a *CMakeLists.txt* file is generated.
 A LaTeX file containing the content of the jobs and an example of json data file are also generated in the *src-gen* folder.  
 
 <img src="img/NabLab_generated_files.png" alt="NabLab Generated Files" title="NabLab Generated Files" width="30%" height="30%" />
 
 !!! note
-	A good practice is to name "src-gen" a directory containing only generated code.
+	A good practice is to name *src-gen* a directory containing only generated code.
 
 
 ### Interpretation
 
-To launch code interpretation corresponding to the NabLab module, just right-click on the ngen file of the project of your choice, for example *NabLabExamples/src/explicitheatequation/ExplicitHeatEquation.ngen* and select *Run As > Start Interpretation*.
+To launch code interpretation corresponding to the NabLab module, just right-click on the *ngen* file of the project of your choice, for example *NabLabExamples/src/explicitheatequation/ExplicitHeatEquation.ngen* and select *Run As > Start Interpretation*.
 
 <img src="img/NabLab_start_interpretation.png" alt="NabLab Start Interpretation" title="NabLab Start Interpretation" width="50%" height="50%" />
 
-To change the Json file of your interpretation, right-click on the ngen file and select *Run As > Run Configurations*, select your configuration, for example ExplicitHeatEquation.ngen, and change the Json file in the dialog window.
+To change the *json* file of your interpretation, right-click on the *ngen* file and select *Run As > Run Configurations*, select your configuration, for example *ExplicitHeatEquation.ngen*, and change the *json* file in the dialog window.
 
 <img src="img/NabLab_interpretation_configuration.png" alt="NabLab Interpretation Configuration" title="NabLab Interpretation Configuration" width="80%" height="80%" />
 
 !!! note
 	If you have installed and configured GraalVM for NabLab, you can interpret your module using GraalVM: just select *Run As > Start Truffle-Based Interpretation* instead of *Run As > Start Interpretation*. You can set configuration like previously and set the monilog file and python executable path.
+
 
 ### LaTeX view
 

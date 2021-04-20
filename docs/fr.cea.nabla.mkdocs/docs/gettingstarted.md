@@ -11,7 +11,7 @@ Do not forget to set the `JAVA_HOME` variable to the java installation directory
 
 ### Installing NabLab
 
-The latest NabLab environment can be downloaded [here](https://github.com/cea-hpc/NabLab/releases/tag/v0.4.0) for Linux, Mac OS and Windows platforms.
+The latest NabLab environment can be downloaded [here](https://github.com/cea-hpc/NabLab/releases/tag/v0.4.1) for Linux, Mac OS and Windows platforms.
 
 Download the file corresponding to your platform, unzip it and launch the NabLab executable in the root directory.
 

@@ -2,6 +2,16 @@
  */
 package fr.cea.nabla.ir.ir.impl;
 
+import java.util.Collection;
+
+import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.NotificationChain;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.util.EObjectResolvingEList;
+
 import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob;
 import fr.cea.nabla.ir.ir.Expression;
 import fr.cea.nabla.ir.ir.Instruction;
@@ -9,16 +19,6 @@ import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.Job;
 import fr.cea.nabla.ir.ir.JobCaller;
 import fr.cea.nabla.ir.ir.Variable;
-import java.util.Collection;
-import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.common.notify.NotificationChain;
-
-import org.eclipse.emf.common.util.EList;
-
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.emf.ecore.impl.ENotificationImpl;
-import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 
 /**
  * <!-- begin-user-doc -->
@@ -539,7 +539,6 @@ public class ExecuteTimeLoopJobImpl extends JobCallerImpl implements ExecuteTime
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {

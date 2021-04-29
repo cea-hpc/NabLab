@@ -9,7 +9,6 @@
  *******************************************************************************/
 package fr.cea.nabla.ui.views
 
-import fr.cea.nabla.ir.JobDependencies
 import fr.cea.nabla.ir.ir.Job
 import org.eclipse.draw2d.ColorConstants
 import org.eclipse.zest.core.viewers.ISelfStyleProvider
@@ -22,8 +21,6 @@ class LabelProvider
 extends org.eclipse.jface.viewers.LabelProvider 
 implements ISelfStyleProvider
 {
-	static val extension JobDependencies = new JobDependencies
-
 	// Label Provider
 	override getText(Object o)
 	{
@@ -43,10 +40,10 @@ implements ISelfStyleProvider
 			node.backgroundColor = ColorConstants.white
 			node.tooltip = new JobTooltipFigure(element)
 
-			if (element.previousJobs.empty)
+			if (element.nextJobsWithSameCaller.empty)
+				node.borderColor = ColorConstants.orange
+			else if (element.previousJobsWithSameCaller.empty)
 				node.borderColor = ColorConstants.green
-			else if (element.nextJobs.empty)
-				node.borderColor = ColorConstants.blue
 
 			if (element.onCycle)
 				node.borderColor = ColorConstants.red

@@ -10,6 +10,7 @@
 package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
+import fr.cea.nabla.ir.JobDependencies
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.nabla.Function
@@ -40,6 +41,10 @@ class Nabla2Ir
 
 	val irModuleModels = new HashMap<NablaModule, IrModule>
 
+	/** 
+	 * Return a IrModule instance for a ngenModule instance.
+	 * If an IRModule instance already exists, it has to be duplicated
+	 */
 	def createIrModule(NablagenModule ngenModule)
 	{
 		val nablaModule = ngenModule.type
@@ -94,6 +99,7 @@ class Nabla2Ir
 
 		// Job creation
 		nablaModule.jobs.forEach[x | jobs += x.toIrInstructionJob => [ it.caller = null ]]
+		jobs.forEach[x | JobDependencies.computeAndSetNextJobs(x)]
 	}
 
 	/**

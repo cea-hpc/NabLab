@@ -105,6 +105,10 @@
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="option" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="previousJobs" upperBound="-1"
+        eType="#//Job" eOpposite="#//Job/outVars"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="nextJobs" upperBound="-1"
+        eType="#//Job" eOpposite="#//Job/inVars"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Function" abstract="true" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" unique="false" lowerBound="1"
@@ -138,6 +142,10 @@
   <eClassifiers xsi:type="ecore:EClass" name="JobCaller" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EReference" name="calls" upperBound="-1"
         eType="#//Job" eOpposite="#//Job/caller"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="allInVars" upperBound="-1"
+        eType="#//Variable"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="allOutVars" upperBound="-1"
+        eType="#//Variable"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Job" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" unique="false" lowerBound="1"
@@ -148,10 +156,18 @@
         lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="caller" eType="#//JobCaller"
         eOpposite="#//JobCaller/calls"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="inVars" upperBound="-1"
+        eType="#//Variable" eOpposite="#//Variable/nextJobs"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="outVars" upperBound="-1"
+        eType="#//Variable" eOpposite="#//Variable/previousJobs"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="previousJobs" upperBound="-1"
+        eType="#//Job" eOpposite="#//Job/nextJobs"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="nextJobs" upperBound="-1"
+        eType="#//Job" eOpposite="#//Job/previousJobs"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="previousJobsWithSameCaller"
-        upperBound="-1" eType="#//Job"/>
+        upperBound="-1" eType="#//Job" eOpposite="#//Job/nextJobsWithSameCaller"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="nextJobsWithSameCaller"
-        upperBound="-1" eType="#//Job"/>
+        upperBound="-1" eType="#//Job" eOpposite="#//Job/previousJobsWithSameCaller"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="instruction" lowerBound="1"
         eType="#//Instruction" containment="true" resolveProxies="false"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="timeLoopJob" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>

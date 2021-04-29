@@ -459,7 +459,7 @@ void ImplicitHeatEquation::computeAlphaCoeff(const member_type& teamMember) noex
 
 /**
  * Job executeTimeLoopN called @4.0 in simulate method.
- * In variables: alpha, deltat, t_n, u_n
+ * In variables: t_n, u_n
  * Out variables: t_nplus1, u_nplus1
  */
 void ImplicitHeatEquation::executeTimeLoopN() noexcept

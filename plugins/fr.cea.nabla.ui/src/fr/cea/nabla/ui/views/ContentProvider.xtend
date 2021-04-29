@@ -9,7 +9,6 @@
  *******************************************************************************/
 package fr.cea.nabla.ui.views
 
-import fr.cea.nabla.ir.JobDependencies
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.JobCaller
@@ -20,8 +19,6 @@ class ContentProvider
 extends ArrayContentProvider
 implements IGraphEntityContentProvider
 {
-	static val extension JobDependencies = new JobDependencies
-
 	override Object[] getElements(Object inputElement)
 	{
 		switch inputElement
@@ -39,7 +36,7 @@ implements IGraphEntityContentProvider
 	override Object[] getConnectedTo(Object entity)
 	{
 		if (entity instanceof Job)
-			entity.nextJobs.filter[x | x.caller === entity.caller]
+			entity.nextJobsWithSameCaller
 	}
 
 	private def hasCycle(IrRoot it)

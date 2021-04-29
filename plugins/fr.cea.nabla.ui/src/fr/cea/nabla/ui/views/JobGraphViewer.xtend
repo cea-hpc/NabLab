@@ -39,13 +39,13 @@ class JobGraphViewer extends GraphViewer
 		connectionStyle = ZestStyles::CONNECTIONS_DIRECTED
 		setLayoutAlgorithm(new TreeLayoutAlgorithm(LayoutStyles::NO_LAYOUT_NODE_RESIZING), true)
 	}
-	
-	override protected inputChanged(Object input, Object oldInput) {
+
+	override protected inputChanged(Object input, Object oldInput)
+	{
 		val start = System.nanoTime()
 		super.inputChanged(input, oldInput)
 		val stop = System.nanoTime()
 		consoleFactory.printConsole(MessageType.End, "IR displayed (" + ((stop - start) / 1000000) + " ms)")
 		
 	}
-	
 }

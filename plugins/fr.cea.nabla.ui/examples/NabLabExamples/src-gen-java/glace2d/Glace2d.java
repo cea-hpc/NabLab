@@ -458,8 +458,8 @@ public final class Glace2d
 
 	/**
 	 * Job executeTimeLoopN called @3.0 in simulate method.
-	 * In variables: Ajr, Ar, C, E_n, F, Mt, V, X_n, b, bt, c, deltatCfl, deltat_n, deltat_nplus1, deltatj, e, gamma, l, m, p, rho, t_n, uj_n, ur
-	 * Out variables: Ajr, Ar, C, E_nplus1, F, Mt, V, X_nplus1, b, bt, c, deltat_nplus1, deltatj, e, l, p, rho, t_nplus1, uj_nplus1, ur
+	 * In variables: E_n, X_n, deltat_n, t_n, uj_n
+	 * Out variables: E_nplus1, X_nplus1, deltat_nplus1, t_nplus1, uj_nplus1
 	 */
 	protected void executeTimeLoopN()
 	{

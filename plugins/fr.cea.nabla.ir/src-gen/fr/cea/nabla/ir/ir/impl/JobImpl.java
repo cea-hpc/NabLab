@@ -6,6 +6,7 @@ import fr.cea.nabla.ir.ir.Instruction;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.Job;
 import fr.cea.nabla.ir.ir.JobCaller;
+import fr.cea.nabla.ir.ir.Variable;
 import java.util.Collection;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -15,7 +16,8 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-import org.eclipse.emf.ecore.util.EObjectResolvingEList;
+import org.eclipse.emf.ecore.util.EObjectWithInverseResolvingEList;
+import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
  * <!-- begin-user-doc -->
@@ -29,6 +31,10 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.JobImpl#getAt <em>At</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.JobImpl#isOnCycle <em>On Cycle</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.JobImpl#getCaller <em>Caller</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.JobImpl#getInVars <em>In Vars</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.JobImpl#getOutVars <em>Out Vars</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.JobImpl#getPreviousJobs <em>Previous Jobs</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.JobImpl#getNextJobs <em>Next Jobs</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.JobImpl#getPreviousJobsWithSameCaller <em>Previous Jobs With Same Caller</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.JobImpl#getNextJobsWithSameCaller <em>Next Jobs With Same Caller</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.JobImpl#getInstruction <em>Instruction</em>}</li>
@@ -107,6 +113,46 @@ public class JobImpl extends IrAnnotableImpl implements Job {
 	 * @ordered
 	 */
 	protected JobCaller caller;
+
+	/**
+	 * The cached value of the '{@link #getInVars() <em>In Vars</em>}' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getInVars()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<Variable> inVars;
+
+	/**
+	 * The cached value of the '{@link #getOutVars() <em>Out Vars</em>}' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getOutVars()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<Variable> outVars;
+
+	/**
+	 * The cached value of the '{@link #getPreviousJobs() <em>Previous Jobs</em>}' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getPreviousJobs()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<Job> previousJobs;
+
+	/**
+	 * The cached value of the '{@link #getNextJobs() <em>Next Jobs</em>}' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getNextJobs()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<Job> nextJobs;
 
 	/**
 	 * The cached value of the '{@link #getPreviousJobsWithSameCaller() <em>Previous Jobs With Same Caller</em>}' reference list.
@@ -314,9 +360,61 @@ public class JobImpl extends IrAnnotableImpl implements Job {
 	 * @generated
 	 */
 	@Override
+	public EList<Variable> getInVars() {
+		if (inVars == null) {
+			inVars = new EObjectWithInverseResolvingEList.ManyInverse<Variable>(Variable.class, this, IrPackage.JOB__IN_VARS, IrPackage.VARIABLE__NEXT_JOBS);
+		}
+		return inVars;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EList<Variable> getOutVars() {
+		if (outVars == null) {
+			outVars = new EObjectWithInverseResolvingEList.ManyInverse<Variable>(Variable.class, this, IrPackage.JOB__OUT_VARS, IrPackage.VARIABLE__PREVIOUS_JOBS);
+		}
+		return outVars;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EList<Job> getPreviousJobs() {
+		if (previousJobs == null) {
+			previousJobs = new EObjectWithInverseResolvingEList.ManyInverse<Job>(Job.class, this, IrPackage.JOB__PREVIOUS_JOBS, IrPackage.JOB__NEXT_JOBS);
+		}
+		return previousJobs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EList<Job> getNextJobs() {
+		if (nextJobs == null) {
+			nextJobs = new EObjectWithInverseResolvingEList.ManyInverse<Job>(Job.class, this, IrPackage.JOB__NEXT_JOBS, IrPackage.JOB__PREVIOUS_JOBS);
+		}
+		return nextJobs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EList<Job> getPreviousJobsWithSameCaller() {
 		if (previousJobsWithSameCaller == null) {
-			previousJobsWithSameCaller = new EObjectResolvingEList<Job>(Job.class, this, IrPackage.JOB__PREVIOUS_JOBS_WITH_SAME_CALLER);
+			previousJobsWithSameCaller = new EObjectWithInverseResolvingEList.ManyInverse<Job>(Job.class, this, IrPackage.JOB__PREVIOUS_JOBS_WITH_SAME_CALLER, IrPackage.JOB__NEXT_JOBS_WITH_SAME_CALLER);
 		}
 		return previousJobsWithSameCaller;
 	}
@@ -329,7 +427,7 @@ public class JobImpl extends IrAnnotableImpl implements Job {
 	@Override
 	public EList<Job> getNextJobsWithSameCaller() {
 		if (nextJobsWithSameCaller == null) {
-			nextJobsWithSameCaller = new EObjectResolvingEList<Job>(Job.class, this, IrPackage.JOB__NEXT_JOBS_WITH_SAME_CALLER);
+			nextJobsWithSameCaller = new EObjectWithInverseResolvingEList.ManyInverse<Job>(Job.class, this, IrPackage.JOB__NEXT_JOBS_WITH_SAME_CALLER, IrPackage.JOB__PREVIOUS_JOBS_WITH_SAME_CALLER);
 		}
 		return nextJobsWithSameCaller;
 	}
@@ -407,6 +505,7 @@ public class JobImpl extends IrAnnotableImpl implements Job {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
@@ -414,6 +513,18 @@ public class JobImpl extends IrAnnotableImpl implements Job {
 				if (caller != null)
 					msgs = ((InternalEObject)caller).eInverseRemove(this, IrPackage.JOB_CALLER__CALLS, JobCaller.class, msgs);
 				return basicSetCaller((JobCaller)otherEnd, msgs);
+			case IrPackage.JOB__IN_VARS:
+				return ((InternalEList<InternalEObject>)(InternalEList<?>)getInVars()).basicAdd(otherEnd, msgs);
+			case IrPackage.JOB__OUT_VARS:
+				return ((InternalEList<InternalEObject>)(InternalEList<?>)getOutVars()).basicAdd(otherEnd, msgs);
+			case IrPackage.JOB__PREVIOUS_JOBS:
+				return ((InternalEList<InternalEObject>)(InternalEList<?>)getPreviousJobs()).basicAdd(otherEnd, msgs);
+			case IrPackage.JOB__NEXT_JOBS:
+				return ((InternalEList<InternalEObject>)(InternalEList<?>)getNextJobs()).basicAdd(otherEnd, msgs);
+			case IrPackage.JOB__PREVIOUS_JOBS_WITH_SAME_CALLER:
+				return ((InternalEList<InternalEObject>)(InternalEList<?>)getPreviousJobsWithSameCaller()).basicAdd(otherEnd, msgs);
+			case IrPackage.JOB__NEXT_JOBS_WITH_SAME_CALLER:
+				return ((InternalEList<InternalEObject>)(InternalEList<?>)getNextJobsWithSameCaller()).basicAdd(otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
@@ -428,6 +539,18 @@ public class JobImpl extends IrAnnotableImpl implements Job {
 		switch (featureID) {
 			case IrPackage.JOB__CALLER:
 				return basicSetCaller(null, msgs);
+			case IrPackage.JOB__IN_VARS:
+				return ((InternalEList<?>)getInVars()).basicRemove(otherEnd, msgs);
+			case IrPackage.JOB__OUT_VARS:
+				return ((InternalEList<?>)getOutVars()).basicRemove(otherEnd, msgs);
+			case IrPackage.JOB__PREVIOUS_JOBS:
+				return ((InternalEList<?>)getPreviousJobs()).basicRemove(otherEnd, msgs);
+			case IrPackage.JOB__NEXT_JOBS:
+				return ((InternalEList<?>)getNextJobs()).basicRemove(otherEnd, msgs);
+			case IrPackage.JOB__PREVIOUS_JOBS_WITH_SAME_CALLER:
+				return ((InternalEList<?>)getPreviousJobsWithSameCaller()).basicRemove(otherEnd, msgs);
+			case IrPackage.JOB__NEXT_JOBS_WITH_SAME_CALLER:
+				return ((InternalEList<?>)getNextJobsWithSameCaller()).basicRemove(otherEnd, msgs);
 			case IrPackage.JOB__INSTRUCTION:
 				return basicSetInstruction(null, msgs);
 		}
@@ -451,6 +574,14 @@ public class JobImpl extends IrAnnotableImpl implements Job {
 			case IrPackage.JOB__CALLER:
 				if (resolve) return getCaller();
 				return basicGetCaller();
+			case IrPackage.JOB__IN_VARS:
+				return getInVars();
+			case IrPackage.JOB__OUT_VARS:
+				return getOutVars();
+			case IrPackage.JOB__PREVIOUS_JOBS:
+				return getPreviousJobs();
+			case IrPackage.JOB__NEXT_JOBS:
+				return getNextJobs();
 			case IrPackage.JOB__PREVIOUS_JOBS_WITH_SAME_CALLER:
 				return getPreviousJobsWithSameCaller();
 			case IrPackage.JOB__NEXT_JOBS_WITH_SAME_CALLER:
@@ -483,6 +614,22 @@ public class JobImpl extends IrAnnotableImpl implements Job {
 				return;
 			case IrPackage.JOB__CALLER:
 				setCaller((JobCaller)newValue);
+				return;
+			case IrPackage.JOB__IN_VARS:
+				getInVars().clear();
+				getInVars().addAll((Collection<? extends Variable>)newValue);
+				return;
+			case IrPackage.JOB__OUT_VARS:
+				getOutVars().clear();
+				getOutVars().addAll((Collection<? extends Variable>)newValue);
+				return;
+			case IrPackage.JOB__PREVIOUS_JOBS:
+				getPreviousJobs().clear();
+				getPreviousJobs().addAll((Collection<? extends Job>)newValue);
+				return;
+			case IrPackage.JOB__NEXT_JOBS:
+				getNextJobs().clear();
+				getNextJobs().addAll((Collection<? extends Job>)newValue);
 				return;
 			case IrPackage.JOB__PREVIOUS_JOBS_WITH_SAME_CALLER:
 				getPreviousJobsWithSameCaller().clear();
@@ -522,6 +669,18 @@ public class JobImpl extends IrAnnotableImpl implements Job {
 			case IrPackage.JOB__CALLER:
 				setCaller((JobCaller)null);
 				return;
+			case IrPackage.JOB__IN_VARS:
+				getInVars().clear();
+				return;
+			case IrPackage.JOB__OUT_VARS:
+				getOutVars().clear();
+				return;
+			case IrPackage.JOB__PREVIOUS_JOBS:
+				getPreviousJobs().clear();
+				return;
+			case IrPackage.JOB__NEXT_JOBS:
+				getNextJobs().clear();
+				return;
 			case IrPackage.JOB__PREVIOUS_JOBS_WITH_SAME_CALLER:
 				getPreviousJobsWithSameCaller().clear();
 				return;
@@ -554,6 +713,14 @@ public class JobImpl extends IrAnnotableImpl implements Job {
 				return onCycle != ON_CYCLE_EDEFAULT;
 			case IrPackage.JOB__CALLER:
 				return caller != null;
+			case IrPackage.JOB__IN_VARS:
+				return inVars != null && !inVars.isEmpty();
+			case IrPackage.JOB__OUT_VARS:
+				return outVars != null && !outVars.isEmpty();
+			case IrPackage.JOB__PREVIOUS_JOBS:
+				return previousJobs != null && !previousJobs.isEmpty();
+			case IrPackage.JOB__NEXT_JOBS:
+				return nextJobs != null && !nextJobs.isEmpty();
 			case IrPackage.JOB__PREVIOUS_JOBS_WITH_SAME_CALLER:
 				return previousJobsWithSameCaller != null && !previousJobsWithSameCaller.isEmpty();
 			case IrPackage.JOB__NEXT_JOBS_WITH_SAME_CALLER:

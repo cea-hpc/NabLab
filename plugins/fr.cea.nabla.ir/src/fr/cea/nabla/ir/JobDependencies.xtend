@@ -9,60 +9,52 @@
  *******************************************************************************/
 package fr.cea.nabla.ir
 
-import fr.cea.nabla.ir.ir.IrRoot
+import fr.cea.nabla.ir.ir.Affectation
+import fr.cea.nabla.ir.ir.ArgOrVarRef
+import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
+import fr.cea.nabla.ir.ir.IrPackage
 import fr.cea.nabla.ir.ir.Job
+import fr.cea.nabla.ir.ir.JobCaller
 import fr.cea.nabla.ir.ir.Variable
-import java.util.HashSet
+
+import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 
 class JobDependencies
 {
-	val extension VarDependencies varDependencies
-
-	new()
+	static def void computeAndSetNextJobs(Job it)
 	{
-		varDependencies = new DefaultVarDependencies
+		outVars.forEach[x | nextJobs += x.nextJobs]
 	}
 
-	new(VarDependencies varDependencies)
+	static def void computeAndSetInOutVars(Job it)
 	{
-		this.varDependencies = varDependencies
+		outVars += eAllContents.filter(Affectation).map[left.target].filter(Variable).filter[global].toSet
+		val allReferencedVars = eAllContents.filter(ArgOrVarRef).filter[x|x.eContainingFeature != IrPackage::eINSTANCE.affectation_Left].map[target]
+		inVars += allReferencedVars.filter(Variable).filter[global].toSet
 	}
 
-	def getPreviousJobs(Job to)
+	static def void computeAndSetNextJobsWithSameCaller(Job it)
 	{
-		val toSourceJobs = new HashSet<Job>
-		for (inVar : to.inVars)
-			toSourceJobs += inVar.previousJobs
-		return toSourceJobs
+		for (j : nextJobs)
+			if (j.caller === caller)
+				nextJobsWithSameCaller += j
+			else
+			{
+				val parent = getExecuteTimeLoopJobWithSameCaller(j, caller)
+				if (parent !== null)
+					nextJobsWithSameCaller += parent
+			}
 	}
 
-	def getNextJobs(Job from)
+	private static def ExecuteTimeLoopJob getExecuteTimeLoopJobWithSameCaller(Job j, JobCaller parentCaller)
 	{
-		val fromTargetJobs = new HashSet<Job>
-		for (outVar : from.outVars)
-			fromTargetJobs += outVar.nextJobs
-		//println("###   module " + from.name + " : " + fromTargetJobs.map[name].join(', '))
-		return fromTargetJobs
+		if (j.caller !== null && j.caller instanceof ExecuteTimeLoopJob)
+		{
+			val c = j.caller as ExecuteTimeLoopJob
+			if (c.caller === parentCaller) c
+			else getExecuteTimeLoopJobWithSameCaller(c, parentCaller)
+		}
+		else
+			null
 	}
-
-	def getNextJobs(Variable it)
-	{
-		val nextJobs = new HashSet<Job>
-		val irRoot = IrUtils.getContainerOfType(it, IrRoot)
-		for (j : irRoot.jobs)
-			if (j.inVars.exists[x | x === it])
-				nextJobs += j
-		return nextJobs
-	}
-
-	def getPreviousJobs(Variable it)
-	{
-		val previousJobs = new HashSet<Job>
-		val irRoot = IrUtils.getContainerOfType(it, IrRoot)
-		for (j : irRoot.jobs)
-			if (j.outVars.exists[x | x === it])
-				previousJobs += j
-		return previousJobs
-	}
-
 }

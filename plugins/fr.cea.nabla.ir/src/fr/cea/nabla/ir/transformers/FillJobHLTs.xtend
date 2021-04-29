@@ -24,7 +24,6 @@ import org.jgrapht.graph.DirectedWeightedPseudograph
 class FillJobHLTs extends IrTransformationStep
 {
 	static val SourceNodeLabel = 'SourceNode'
-	val extension JobDependencies = new JobDependencies
 	val jobDispatcher = new JobDispatcher
 
 	new()
@@ -54,6 +53,10 @@ class FillJobHLTs extends IrTransformationStep
 
 		// No cycles => create subgraphs (i.e. JobContainer instances) corresponding to time loops
 		jobDispatcher.dispatchJobsInTimeLoops(ir)
+
+		// Fill allInVars and allOutVars of callers and nextJobs with same callers (for graph display)
+		ir.main.fillAllInAndOutVars
+		ir.jobs.forEach[x | JobDependencies.computeAndSetNextJobsWithSameCaller(x)]
 
 		// compute at for each subGraph
 		val subGraphs = ir.jobs.groupBy[x | x.caller]
@@ -101,7 +104,7 @@ class FillJobHLTs extends IrTransformationStep
 
 		// Create edges: no outgoing edges from NextTimeLoopIterationJob instances to break time cycles.
 		for (from : jobs)
-			for (to : from.nextJobs.filter[x | g.vertexSet.contains(x)])
+			for (to : from.nextJobsWithSameCaller.filter[x | g.vertexSet.contains(x)])
 				g.addEdge(from, to)
 
 		// Add a source node and edges to nodes with no incoming edges
@@ -161,5 +164,28 @@ class FillJobHLTs extends IrTransformationStep
 			else // ascending order of at
 				(a.at - b.at) as int
 		])
+	}
+
+	/**
+	 * All in/out variables are the union of in/out variables of the caller's calls.
+	 * Those calls can be instance of JobCaller (subgraph). Consequently, their
+	 * in/out variables are computed first.
+	 */
+	private def void fillAllInAndOutVars(JobCaller jc)
+	{
+		for (call : jc.calls)
+		{
+			if (call instanceof JobCaller)
+			{
+				fillAllInAndOutVars(call)
+				jc.allInVars += call.allInVars
+				jc.allOutVars += call.allOutVars
+			}
+			else
+			{
+				jc.allInVars += call.inVars
+				jc.allOutVars += call.outVars
+			}
+		}
 	}
 }

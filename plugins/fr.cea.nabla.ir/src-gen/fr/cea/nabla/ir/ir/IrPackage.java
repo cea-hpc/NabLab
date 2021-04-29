@@ -788,13 +788,31 @@ public interface IrPackage extends EPackage {
 	int VARIABLE__OPTION = ARG_OR_VAR_FEATURE_COUNT + 3;
 
 	/**
+	 * The feature id for the '<em><b>Previous Jobs</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int VARIABLE__PREVIOUS_JOBS = ARG_OR_VAR_FEATURE_COUNT + 4;
+
+	/**
+	 * The feature id for the '<em><b>Next Jobs</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int VARIABLE__NEXT_JOBS = ARG_OR_VAR_FEATURE_COUNT + 5;
+
+	/**
 	 * The number of structural features of the '<em>Variable</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int VARIABLE_FEATURE_COUNT = ARG_OR_VAR_FEATURE_COUNT + 4;
+	int VARIABLE_FEATURE_COUNT = ARG_OR_VAR_FEATURE_COUNT + 6;
 
 	/**
 	 * The number of operations of the '<em>Variable</em>' class.
@@ -1153,13 +1171,31 @@ public interface IrPackage extends EPackage {
 	int JOB_CALLER__CALLS = IR_ANNOTABLE_FEATURE_COUNT + 0;
 
 	/**
+	 * The feature id for the '<em><b>All In Vars</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int JOB_CALLER__ALL_IN_VARS = IR_ANNOTABLE_FEATURE_COUNT + 1;
+
+	/**
+	 * The feature id for the '<em><b>All Out Vars</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int JOB_CALLER__ALL_OUT_VARS = IR_ANNOTABLE_FEATURE_COUNT + 2;
+
+	/**
 	 * The number of structural features of the '<em>Job Caller</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int JOB_CALLER_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 1;
+	int JOB_CALLER_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 3;
 
 	/**
 	 * The number of operations of the '<em>Job Caller</em>' class.
@@ -1226,13 +1262,49 @@ public interface IrPackage extends EPackage {
 	int JOB__CALLER = IR_ANNOTABLE_FEATURE_COUNT + 3;
 
 	/**
+	 * The feature id for the '<em><b>In Vars</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int JOB__IN_VARS = IR_ANNOTABLE_FEATURE_COUNT + 4;
+
+	/**
+	 * The feature id for the '<em><b>Out Vars</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int JOB__OUT_VARS = IR_ANNOTABLE_FEATURE_COUNT + 5;
+
+	/**
+	 * The feature id for the '<em><b>Previous Jobs</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int JOB__PREVIOUS_JOBS = IR_ANNOTABLE_FEATURE_COUNT + 6;
+
+	/**
+	 * The feature id for the '<em><b>Next Jobs</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int JOB__NEXT_JOBS = IR_ANNOTABLE_FEATURE_COUNT + 7;
+
+	/**
 	 * The feature id for the '<em><b>Previous Jobs With Same Caller</b></em>' reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int JOB__PREVIOUS_JOBS_WITH_SAME_CALLER = IR_ANNOTABLE_FEATURE_COUNT + 4;
+	int JOB__PREVIOUS_JOBS_WITH_SAME_CALLER = IR_ANNOTABLE_FEATURE_COUNT + 8;
 
 	/**
 	 * The feature id for the '<em><b>Next Jobs With Same Caller</b></em>' reference list.
@@ -1241,7 +1313,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int JOB__NEXT_JOBS_WITH_SAME_CALLER = IR_ANNOTABLE_FEATURE_COUNT + 5;
+	int JOB__NEXT_JOBS_WITH_SAME_CALLER = IR_ANNOTABLE_FEATURE_COUNT + 9;
 
 	/**
 	 * The feature id for the '<em><b>Instruction</b></em>' containment reference.
@@ -1250,7 +1322,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int JOB__INSTRUCTION = IR_ANNOTABLE_FEATURE_COUNT + 6;
+	int JOB__INSTRUCTION = IR_ANNOTABLE_FEATURE_COUNT + 10;
 
 	/**
 	 * The feature id for the '<em><b>Time Loop Job</b></em>' attribute.
@@ -1259,7 +1331,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int JOB__TIME_LOOP_JOB = IR_ANNOTABLE_FEATURE_COUNT + 7;
+	int JOB__TIME_LOOP_JOB = IR_ANNOTABLE_FEATURE_COUNT + 11;
 
 	/**
 	 * The number of structural features of the '<em>Job</em>' class.
@@ -1268,7 +1340,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int JOB_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 8;
+	int JOB_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 12;
 
 	/**
 	 * The number of operations of the '<em>Job</em>' class.
@@ -1308,6 +1380,24 @@ public interface IrPackage extends EPackage {
 	int EXECUTE_TIME_LOOP_JOB__CALLS = JOB_CALLER__CALLS;
 
 	/**
+	 * The feature id for the '<em><b>All In Vars</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXECUTE_TIME_LOOP_JOB__ALL_IN_VARS = JOB_CALLER__ALL_IN_VARS;
+
+	/**
+	 * The feature id for the '<em><b>All Out Vars</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXECUTE_TIME_LOOP_JOB__ALL_OUT_VARS = JOB_CALLER__ALL_OUT_VARS;
+
+	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1344,13 +1434,49 @@ public interface IrPackage extends EPackage {
 	int EXECUTE_TIME_LOOP_JOB__CALLER = JOB_CALLER_FEATURE_COUNT + 3;
 
 	/**
+	 * The feature id for the '<em><b>In Vars</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXECUTE_TIME_LOOP_JOB__IN_VARS = JOB_CALLER_FEATURE_COUNT + 4;
+
+	/**
+	 * The feature id for the '<em><b>Out Vars</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXECUTE_TIME_LOOP_JOB__OUT_VARS = JOB_CALLER_FEATURE_COUNT + 5;
+
+	/**
+	 * The feature id for the '<em><b>Previous Jobs</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXECUTE_TIME_LOOP_JOB__PREVIOUS_JOBS = JOB_CALLER_FEATURE_COUNT + 6;
+
+	/**
+	 * The feature id for the '<em><b>Next Jobs</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXECUTE_TIME_LOOP_JOB__NEXT_JOBS = JOB_CALLER_FEATURE_COUNT + 7;
+
+	/**
 	 * The feature id for the '<em><b>Previous Jobs With Same Caller</b></em>' reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int EXECUTE_TIME_LOOP_JOB__PREVIOUS_JOBS_WITH_SAME_CALLER = JOB_CALLER_FEATURE_COUNT + 4;
+	int EXECUTE_TIME_LOOP_JOB__PREVIOUS_JOBS_WITH_SAME_CALLER = JOB_CALLER_FEATURE_COUNT + 8;
 
 	/**
 	 * The feature id for the '<em><b>Next Jobs With Same Caller</b></em>' reference list.
@@ -1359,7 +1485,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EXECUTE_TIME_LOOP_JOB__NEXT_JOBS_WITH_SAME_CALLER = JOB_CALLER_FEATURE_COUNT + 5;
+	int EXECUTE_TIME_LOOP_JOB__NEXT_JOBS_WITH_SAME_CALLER = JOB_CALLER_FEATURE_COUNT + 9;
 
 	/**
 	 * The feature id for the '<em><b>Instruction</b></em>' containment reference.
@@ -1368,7 +1494,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EXECUTE_TIME_LOOP_JOB__INSTRUCTION = JOB_CALLER_FEATURE_COUNT + 6;
+	int EXECUTE_TIME_LOOP_JOB__INSTRUCTION = JOB_CALLER_FEATURE_COUNT + 10;
 
 	/**
 	 * The feature id for the '<em><b>Time Loop Job</b></em>' attribute.
@@ -1377,7 +1503,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EXECUTE_TIME_LOOP_JOB__TIME_LOOP_JOB = JOB_CALLER_FEATURE_COUNT + 7;
+	int EXECUTE_TIME_LOOP_JOB__TIME_LOOP_JOB = JOB_CALLER_FEATURE_COUNT + 11;
 
 	/**
 	 * The feature id for the '<em><b>While Condition</b></em>' containment reference.
@@ -1386,7 +1512,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EXECUTE_TIME_LOOP_JOB__WHILE_CONDITION = JOB_CALLER_FEATURE_COUNT + 8;
+	int EXECUTE_TIME_LOOP_JOB__WHILE_CONDITION = JOB_CALLER_FEATURE_COUNT + 12;
 
 	/**
 	 * The feature id for the '<em><b>Iteration Counter</b></em>' reference.
@@ -1395,7 +1521,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EXECUTE_TIME_LOOP_JOB__ITERATION_COUNTER = JOB_CALLER_FEATURE_COUNT + 9;
+	int EXECUTE_TIME_LOOP_JOB__ITERATION_COUNTER = JOB_CALLER_FEATURE_COUNT + 13;
 
 	/**
 	 * The number of structural features of the '<em>Execute Time Loop Job</em>' class.
@@ -1404,7 +1530,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EXECUTE_TIME_LOOP_JOB_FEATURE_COUNT = JOB_CALLER_FEATURE_COUNT + 10;
+	int EXECUTE_TIME_LOOP_JOB_FEATURE_COUNT = JOB_CALLER_FEATURE_COUNT + 14;
 
 	/**
 	 * The number of operations of the '<em>Execute Time Loop Job</em>' class.
@@ -4589,6 +4715,28 @@ public interface IrPackage extends EPackage {
 	EAttribute getVariable_Option();
 
 	/**
+	 * Returns the meta object for the reference list '{@link fr.cea.nabla.ir.ir.Variable#getPreviousJobs <em>Previous Jobs</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference list '<em>Previous Jobs</em>'.
+	 * @see fr.cea.nabla.ir.ir.Variable#getPreviousJobs()
+	 * @see #getVariable()
+	 * @generated
+	 */
+	EReference getVariable_PreviousJobs();
+
+	/**
+	 * Returns the meta object for the reference list '{@link fr.cea.nabla.ir.ir.Variable#getNextJobs <em>Next Jobs</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference list '<em>Next Jobs</em>'.
+	 * @see fr.cea.nabla.ir.ir.Variable#getNextJobs()
+	 * @see #getVariable()
+	 * @generated
+	 */
+	EReference getVariable_NextJobs();
+
+	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.Function <em>Function</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -4771,6 +4919,28 @@ public interface IrPackage extends EPackage {
 	EReference getJobCaller_Calls();
 
 	/**
+	 * Returns the meta object for the reference list '{@link fr.cea.nabla.ir.ir.JobCaller#getAllInVars <em>All In Vars</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference list '<em>All In Vars</em>'.
+	 * @see fr.cea.nabla.ir.ir.JobCaller#getAllInVars()
+	 * @see #getJobCaller()
+	 * @generated
+	 */
+	EReference getJobCaller_AllInVars();
+
+	/**
+	 * Returns the meta object for the reference list '{@link fr.cea.nabla.ir.ir.JobCaller#getAllOutVars <em>All Out Vars</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference list '<em>All Out Vars</em>'.
+	 * @see fr.cea.nabla.ir.ir.JobCaller#getAllOutVars()
+	 * @see #getJobCaller()
+	 * @generated
+	 */
+	EReference getJobCaller_AllOutVars();
+
+	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.Job <em>Job</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -4823,6 +4993,50 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getJob_Caller();
+
+	/**
+	 * Returns the meta object for the reference list '{@link fr.cea.nabla.ir.ir.Job#getInVars <em>In Vars</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference list '<em>In Vars</em>'.
+	 * @see fr.cea.nabla.ir.ir.Job#getInVars()
+	 * @see #getJob()
+	 * @generated
+	 */
+	EReference getJob_InVars();
+
+	/**
+	 * Returns the meta object for the reference list '{@link fr.cea.nabla.ir.ir.Job#getOutVars <em>Out Vars</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference list '<em>Out Vars</em>'.
+	 * @see fr.cea.nabla.ir.ir.Job#getOutVars()
+	 * @see #getJob()
+	 * @generated
+	 */
+	EReference getJob_OutVars();
+
+	/**
+	 * Returns the meta object for the reference list '{@link fr.cea.nabla.ir.ir.Job#getPreviousJobs <em>Previous Jobs</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference list '<em>Previous Jobs</em>'.
+	 * @see fr.cea.nabla.ir.ir.Job#getPreviousJobs()
+	 * @see #getJob()
+	 * @generated
+	 */
+	EReference getJob_PreviousJobs();
+
+	/**
+	 * Returns the meta object for the reference list '{@link fr.cea.nabla.ir.ir.Job#getNextJobs <em>Next Jobs</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference list '<em>Next Jobs</em>'.
+	 * @see fr.cea.nabla.ir.ir.Job#getNextJobs()
+	 * @see #getJob()
+	 * @generated
+	 */
+	EReference getJob_NextJobs();
 
 	/**
 	 * Returns the meta object for the reference list '{@link fr.cea.nabla.ir.ir.Job#getPreviousJobsWithSameCaller <em>Previous Jobs With Same Caller</em>}'.
@@ -6603,6 +6817,22 @@ public interface IrPackage extends EPackage {
 		EAttribute VARIABLE__OPTION = eINSTANCE.getVariable_Option();
 
 		/**
+		 * The meta object literal for the '<em><b>Previous Jobs</b></em>' reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference VARIABLE__PREVIOUS_JOBS = eINSTANCE.getVariable_PreviousJobs();
+
+		/**
+		 * The meta object literal for the '<em><b>Next Jobs</b></em>' reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference VARIABLE__NEXT_JOBS = eINSTANCE.getVariable_NextJobs();
+
+		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.FunctionImpl <em>Function</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -6749,6 +6979,22 @@ public interface IrPackage extends EPackage {
 		EReference JOB_CALLER__CALLS = eINSTANCE.getJobCaller_Calls();
 
 		/**
+		 * The meta object literal for the '<em><b>All In Vars</b></em>' reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference JOB_CALLER__ALL_IN_VARS = eINSTANCE.getJobCaller_AllInVars();
+
+		/**
+		 * The meta object literal for the '<em><b>All Out Vars</b></em>' reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference JOB_CALLER__ALL_OUT_VARS = eINSTANCE.getJobCaller_AllOutVars();
+
+		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.JobImpl <em>Job</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -6789,6 +7035,38 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EReference JOB__CALLER = eINSTANCE.getJob_Caller();
+
+		/**
+		 * The meta object literal for the '<em><b>In Vars</b></em>' reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference JOB__IN_VARS = eINSTANCE.getJob_InVars();
+
+		/**
+		 * The meta object literal for the '<em><b>Out Vars</b></em>' reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference JOB__OUT_VARS = eINSTANCE.getJob_OutVars();
+
+		/**
+		 * The meta object literal for the '<em><b>Previous Jobs</b></em>' reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference JOB__PREVIOUS_JOBS = eINSTANCE.getJob_PreviousJobs();
+
+		/**
+		 * The meta object literal for the '<em><b>Next Jobs</b></em>' reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference JOB__NEXT_JOBS = eINSTANCE.getJob_NextJobs();
 
 		/**
 		 * The meta object literal for the '<em><b>Previous Jobs With Same Caller</b></em>' reference list feature.

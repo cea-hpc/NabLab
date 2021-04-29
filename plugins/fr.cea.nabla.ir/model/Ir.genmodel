@@ -88,6 +88,8 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Variable/const"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Variable/constExpr"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Variable/option"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//Variable/previousJobs"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//Variable/nextJobs"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//Function">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Function/name"/>
@@ -110,12 +112,18 @@
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//JobCaller">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//JobCaller/calls"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//JobCaller/allInVars"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//JobCaller/allOutVars"/>
     </genClasses>
     <genClasses image="false" ecoreClass="Ir.ecore#//Job">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Job/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Job/at"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Job/onCycle"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//Job/caller"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//Job/inVars"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//Job/outVars"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//Job/previousJobs"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//Job/nextJobs"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//Job/previousJobsWithSameCaller"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//Job/nextJobsWithSameCaller"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Job/instruction"/>

@@ -11,11 +11,12 @@ package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
 import com.google.inject.Singleton
+import fr.cea.nabla.ir.JobDependencies
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.TimeIterator
 
-import static extension fr.cea.nabla.ir.JobExtensions.*
+import static fr.cea.nabla.ir.JobExtensions.*
 
 @Singleton
 class IrJobFactory
@@ -31,26 +32,33 @@ class IrJobFactory
 		name = j.name
 		onCycle = false
 		instruction = j.instruction.toIrInstruction
+		JobDependencies.computeAndSetInOutVars(it)
 	}
 
+	/** SetUpTimeLoopJob in/out vars are set in ArgOrVarFactory during time variable creation */
 	def create IrFactory::eINSTANCE.createJob toIrSetUpTimeLoopJob(TimeIterator ti)
 	{
 		annotations += ti.toIrAnnotation
 		name = ti.setUpTimeLoopJobName
+		onCycle = false
 		timeLoopJob = true
 	}
 
+	/** TearDownTimeLoopJob in/out vars are set in ArgOrVarFactory during time variable creation */
 	def create IrFactory::eINSTANCE.createJob toIrTearDownTimeLoopJob(TimeIterator ti)
 	{ 
 		annotations += ti.toIrAnnotation
 		name = ti.tearDownTimeLoopJobName
+		onCycle = false
 		timeLoopJob = true
 	}
 
+	/** ExecuteTimeLoopJob in/out vars are set in ArgOrVarFactory during time variable creation */
 	def create IrFactory::eINSTANCE.createExecuteTimeLoopJob toIrExecuteTimeLoopJob(TimeIterator ti)
 	{
 		annotations += ti.toIrAnnotation
 		name = ti.executeTimeLoopJobName
+		onCycle = false
 		iterationCounter = ti.toIrIterationCounter
 		whileCondition = ti.condition.toIrExpression
 		timeLoopJob = true

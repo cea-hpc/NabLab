@@ -17,6 +17,10 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link fr.cea.nabla.ir.ir.Job#getAt <em>At</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Job#isOnCycle <em>On Cycle</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Job#getCaller <em>Caller</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.Job#getInVars <em>In Vars</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.Job#getOutVars <em>Out Vars</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.Job#getPreviousJobs <em>Previous Jobs</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.Job#getNextJobs <em>Next Jobs</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Job#getPreviousJobsWithSameCaller <em>Previous Jobs With Same Caller</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Job#getNextJobsWithSameCaller <em>Next Jobs With Same Caller</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Job#getInstruction <em>Instruction</em>}</li>
@@ -119,13 +123,71 @@ public interface Job extends IrAnnotable {
 	void setCaller(JobCaller value);
 
 	/**
+	 * Returns the value of the '<em><b>In Vars</b></em>' reference list.
+	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Variable}.
+	 * It is bidirectional and its opposite is '{@link fr.cea.nabla.ir.ir.Variable#getNextJobs <em>Next Jobs</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>In Vars</em>' reference list.
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getJob_InVars()
+	 * @see fr.cea.nabla.ir.ir.Variable#getNextJobs
+	 * @model opposite="nextJobs"
+	 * @generated
+	 */
+	EList<Variable> getInVars();
+
+	/**
+	 * Returns the value of the '<em><b>Out Vars</b></em>' reference list.
+	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Variable}.
+	 * It is bidirectional and its opposite is '{@link fr.cea.nabla.ir.ir.Variable#getPreviousJobs <em>Previous Jobs</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Out Vars</em>' reference list.
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getJob_OutVars()
+	 * @see fr.cea.nabla.ir.ir.Variable#getPreviousJobs
+	 * @model opposite="previousJobs"
+	 * @generated
+	 */
+	EList<Variable> getOutVars();
+
+	/**
+	 * Returns the value of the '<em><b>Previous Jobs</b></em>' reference list.
+	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Job}.
+	 * It is bidirectional and its opposite is '{@link fr.cea.nabla.ir.ir.Job#getNextJobs <em>Next Jobs</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Previous Jobs</em>' reference list.
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getJob_PreviousJobs()
+	 * @see fr.cea.nabla.ir.ir.Job#getNextJobs
+	 * @model opposite="nextJobs"
+	 * @generated
+	 */
+	EList<Job> getPreviousJobs();
+
+	/**
+	 * Returns the value of the '<em><b>Next Jobs</b></em>' reference list.
+	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Job}.
+	 * It is bidirectional and its opposite is '{@link fr.cea.nabla.ir.ir.Job#getPreviousJobs <em>Previous Jobs</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Next Jobs</em>' reference list.
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getJob_NextJobs()
+	 * @see fr.cea.nabla.ir.ir.Job#getPreviousJobs
+	 * @model opposite="previousJobs"
+	 * @generated
+	 */
+	EList<Job> getNextJobs();
+
+	/**
 	 * Returns the value of the '<em><b>Previous Jobs With Same Caller</b></em>' reference list.
 	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Job}.
+	 * It is bidirectional and its opposite is '{@link fr.cea.nabla.ir.ir.Job#getNextJobsWithSameCaller <em>Next Jobs With Same Caller</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Previous Jobs With Same Caller</em>' reference list.
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getJob_PreviousJobsWithSameCaller()
-	 * @model
+	 * @see fr.cea.nabla.ir.ir.Job#getNextJobsWithSameCaller
+	 * @model opposite="nextJobsWithSameCaller"
 	 * @generated
 	 */
 	EList<Job> getPreviousJobsWithSameCaller();
@@ -133,11 +195,13 @@ public interface Job extends IrAnnotable {
 	/**
 	 * Returns the value of the '<em><b>Next Jobs With Same Caller</b></em>' reference list.
 	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Job}.
+	 * It is bidirectional and its opposite is '{@link fr.cea.nabla.ir.ir.Job#getPreviousJobsWithSameCaller <em>Previous Jobs With Same Caller</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Next Jobs With Same Caller</em>' reference list.
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getJob_NextJobsWithSameCaller()
-	 * @model
+	 * @see fr.cea.nabla.ir.ir.Job#getPreviousJobsWithSameCaller
+	 * @model opposite="previousJobsWithSameCaller"
 	 * @generated
 	 */
 	EList<Job> getNextJobsWithSameCaller();

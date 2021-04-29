@@ -9,7 +9,6 @@
  *******************************************************************************/
 package fr.cea.nabla.ui
 
-import fr.cea.nabla.ir.DefaultVarDependencies
 import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
@@ -25,8 +24,6 @@ import static extension fr.cea.nabla.ir.JobExtensions.*
 
 class NablaUiUtils
 {
-	static val extension DefaultVarDependencies = new DefaultVarDependencies
-
 	static def getImageDescriptor(String path)
 	{
 		ResourceLocator::imageDescriptorFromBundle("fr.cea.nabla.ui", path)

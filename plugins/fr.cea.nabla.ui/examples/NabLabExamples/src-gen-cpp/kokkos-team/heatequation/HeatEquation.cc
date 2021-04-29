@@ -393,8 +393,8 @@ void HeatEquation::setUpTimeLoopN() noexcept
 
 /**
  * Job executeTimeLoopN called @3.0 in simulate method.
- * In variables: V, center, deltat, f, outgoingFlux, surface, t_n, u_n
- * Out variables: outgoingFlux, t_nplus1, u_nplus1
+ * In variables: t_n, u_n
+ * Out variables: t_nplus1, u_nplus1
  */
 void HeatEquation::executeTimeLoopN() noexcept
 {

@@ -93,11 +93,17 @@ class IrArgOrVarFactory
 				if (tiSetUpJob !== null)
 				{
 					if (initTiVar !== null)
+					{
 						addAffectation(tiSetUpJob, initTiVar, currentTiVar)
+						tiSetUpJob.inVars += initTiVar
+						tiSetUpJob.outVars += currentTiVar
+					}
 					else if (parentTi !== null && !existsInitTi) // inner time iterator
 					{
 						val parentCurrentTiVar = createIrTimeVariable(v, parentTi, currentTimeIteratorName)
 						addAffectation(tiSetUpJob, parentCurrentTiVar, currentTiVar)
+						tiSetUpJob.inVars += parentCurrentTiVar
+						tiSetUpJob.outVars += currentTiVar
 					}
 				}
 
@@ -105,6 +111,9 @@ class IrArgOrVarFactory
 				// x^{n+1, k} <---> x^{n+1, k+1}
 				val tiExecuteJob = tlJobs.findFirst[name == ti.executeTimeLoopJobName]
 				addAffectation(tiExecuteJob, nextTiVar, currentTiVar)
+				// in/out vars in reverse order for execute time loop job to avoid cycles
+				tiExecuteJob.inVars += currentTiVar
+				tiExecuteJob.outVars += nextTiVar
 
 				// Variable copy for TearDownTL job
 				// x^{n+1} = x^{n+1, k+1}
@@ -113,6 +122,8 @@ class IrArgOrVarFactory
 				{
 					val parentNextTiVar = createIrTimeVariable(v, parentTi, nextTimeIteratorName)
 					addAffectation(tiTearDownJob, nextTiVar, parentNextTiVar)
+					tiTearDownJob.inVars += nextTiVar
+					tiTearDownJob.outVars += parentNextTiVar
 				}
 			}
 		}

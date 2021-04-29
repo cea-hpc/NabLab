@@ -16,7 +16,6 @@ import fr.cea.nabla.generator.NablaIrWriter
 import fr.cea.nabla.generator.ir.NablagenApplication2Ir
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.transformers.CompositeTransformationStep
-import fr.cea.nabla.ir.transformers.ComputePreviousAndNextJobs
 import fr.cea.nabla.ir.transformers.FillJobHLTs
 import fr.cea.nabla.ir.transformers.ReplaceReductions
 import fr.cea.nabla.nablagen.NablagenApplication
@@ -126,7 +125,7 @@ class OpenSiriusJobsGraph extends AbstractHandler
 			val nablagen2Ir = ngenApplicationToIrProvider.get // force a new instance to ensure a new IR
 			ir = nablagen2Ir.toIrRoot(ngenApp)
 			val description = 'Minimal IR->IR transformations to check job cycles'
-			val t = new CompositeTransformationStep(description, #[new ReplaceReductions(false), new FillJobHLTs, new ComputePreviousAndNextJobs])
+			val t = new CompositeTransformationStep(description, #[new ReplaceReductions(false), new FillJobHLTs])
 			t.transformIr(ir, [msg | consoleFactory.printConsole(MessageType.Exec, msg)])
 		}
 		catch (Exception e)
@@ -155,7 +154,7 @@ class OpenSiriusJobsGraph extends AbstractHandler
 		var airdResourceURI = URI.createURI(URIQuery.INMEMORY_URI_SCHEME + ":/" + projectSessionName + "/representations.aird")
 		var session = SessionManager.INSTANCE.getExistingSession(airdResourceURI)
 		if (session === null)
-		{			
+		{
 			session = SessionFactory.INSTANCE.createSession(airdResourceURI, new NullProgressMonitor)
 		}
 		if (!session.open)
@@ -168,7 +167,7 @@ class OpenSiriusJobsGraph extends AbstractHandler
 	def protected boolean addOrUpdateResource(Session session, IrRoot irRoot, String projectSessionName)
 	{
 		val irResourceURI = URI.createURI(URIQuery.INMEMORY_URI_SCHEME + ":/" + projectSessionName + "/" + projectSessionName + "." + NablaIrWriter.IrExtension)
-		
+
 		var isNewResource = false
 		val irResource = session.transactionalEditingDomain.resourceSet.getResource(irResourceURI, false)
 		if (irResource === null)
@@ -199,7 +198,6 @@ class OpenSiriusJobsGraph extends AbstractHandler
 		}
 		else
 		{
-			
 			session.transactionalEditingDomain.commandStack.execute(
 				new RecordingCommand(session.transactionalEditingDomain)
 				{
@@ -214,7 +212,6 @@ class OpenSiriusJobsGraph extends AbstractHandler
 					}
 				}
 			)
-			
 		}
 		return isNewResource
 	}
@@ -281,7 +278,7 @@ class OpenSiriusJobsGraph extends AbstractHandler
 					saveSession(session)
 					return
 				}
-			}	
+			}
 		}
 		// No opened representations, try to open or create and open
 		var representations = DialectManager.INSTANCE.getRepresentations(diagramSemanticRoot, session)

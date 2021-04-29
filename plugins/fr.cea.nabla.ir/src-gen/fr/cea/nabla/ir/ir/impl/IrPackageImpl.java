@@ -1068,6 +1068,26 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
+	public EReference getVariable_PreviousJobs() {
+		return (EReference)variableEClass.getEStructuralFeatures().get(4);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getVariable_NextJobs() {
+		return (EReference)variableEClass.getEStructuralFeatures().get(5);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EClass getPostProcessedVariable() {
 		return postProcessedVariableEClass;
 	}
@@ -1278,6 +1298,26 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
+	public EReference getJobCaller_AllInVars() {
+		return (EReference)jobCallerEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getJobCaller_AllOutVars() {
+		return (EReference)jobCallerEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EClass getJob() {
 		return jobEClass;
 	}
@@ -1328,7 +1368,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getJob_PreviousJobsWithSameCaller() {
+	public EReference getJob_InVars() {
 		return (EReference)jobEClass.getEStructuralFeatures().get(4);
 	}
 
@@ -1338,7 +1378,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getJob_NextJobsWithSameCaller() {
+	public EReference getJob_OutVars() {
 		return (EReference)jobEClass.getEStructuralFeatures().get(5);
 	}
 
@@ -1348,7 +1388,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getJob_Instruction() {
+	public EReference getJob_PreviousJobs() {
 		return (EReference)jobEClass.getEStructuralFeatures().get(6);
 	}
 
@@ -1358,8 +1398,48 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
+	public EReference getJob_NextJobs() {
+		return (EReference)jobEClass.getEStructuralFeatures().get(7);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getJob_PreviousJobsWithSameCaller() {
+		return (EReference)jobEClass.getEStructuralFeatures().get(8);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getJob_NextJobsWithSameCaller() {
+		return (EReference)jobEClass.getEStructuralFeatures().get(9);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getJob_Instruction() {
+		return (EReference)jobEClass.getEStructuralFeatures().get(10);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EAttribute getJob_TimeLoopJob() {
-		return (EAttribute)jobEClass.getEStructuralFeatures().get(7);
+		return (EAttribute)jobEClass.getEStructuralFeatures().get(11);
 	}
 
 	/**
@@ -2661,6 +2741,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEAttribute(variableEClass, VARIABLE__CONST);
 		createEAttribute(variableEClass, VARIABLE__CONST_EXPR);
 		createEAttribute(variableEClass, VARIABLE__OPTION);
+		createEReference(variableEClass, VARIABLE__PREVIOUS_JOBS);
+		createEReference(variableEClass, VARIABLE__NEXT_JOBS);
 
 		functionEClass = createEClass(FUNCTION);
 		createEAttribute(functionEClass, FUNCTION__NAME);
@@ -2683,12 +2765,18 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 
 		jobCallerEClass = createEClass(JOB_CALLER);
 		createEReference(jobCallerEClass, JOB_CALLER__CALLS);
+		createEReference(jobCallerEClass, JOB_CALLER__ALL_IN_VARS);
+		createEReference(jobCallerEClass, JOB_CALLER__ALL_OUT_VARS);
 
 		jobEClass = createEClass(JOB);
 		createEAttribute(jobEClass, JOB__NAME);
 		createEAttribute(jobEClass, JOB__AT);
 		createEAttribute(jobEClass, JOB__ON_CYCLE);
 		createEReference(jobEClass, JOB__CALLER);
+		createEReference(jobEClass, JOB__IN_VARS);
+		createEReference(jobEClass, JOB__OUT_VARS);
+		createEReference(jobEClass, JOB__PREVIOUS_JOBS);
+		createEReference(jobEClass, JOB__NEXT_JOBS);
 		createEReference(jobEClass, JOB__PREVIOUS_JOBS_WITH_SAME_CALLER);
 		createEReference(jobEClass, JOB__NEXT_JOBS_WITH_SAME_CALLER);
 		createEReference(jobEClass, JOB__INSTRUCTION);
@@ -3016,6 +3104,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEAttribute(getVariable_Const(), ecorePackage.getEBoolean(), "const", "false", 1, 1, Variable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getVariable_ConstExpr(), ecorePackage.getEBoolean(), "constExpr", null, 1, 1, Variable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getVariable_Option(), ecorePackage.getEBoolean(), "option", null, 1, 1, Variable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getVariable_PreviousJobs(), this.getJob(), this.getJob_OutVars(), "previousJobs", null, 0, -1, Variable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getVariable_NextJobs(), this.getJob(), this.getJob_InVars(), "nextJobs", null, 0, -1, Variable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(functionEClass, Function.class, "Function", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getFunction_Name(), ecorePackage.getEString(), "name", null, 1, 1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3038,14 +3128,20 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 
 		initEClass(jobCallerEClass, JobCaller.class, "JobCaller", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getJobCaller_Calls(), this.getJob(), this.getJob_Caller(), "calls", null, 0, -1, JobCaller.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getJobCaller_AllInVars(), this.getVariable(), null, "allInVars", null, 0, -1, JobCaller.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getJobCaller_AllOutVars(), this.getVariable(), null, "allOutVars", null, 0, -1, JobCaller.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(jobEClass, Job.class, "Job", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getJob_Name(), ecorePackage.getEString(), "name", null, 1, 1, Job.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getJob_At(), ecorePackage.getEDouble(), "at", null, 1, 1, Job.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getJob_OnCycle(), ecorePackage.getEBoolean(), "onCycle", null, 1, 1, Job.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getJob_Caller(), this.getJobCaller(), this.getJobCaller_Calls(), "caller", null, 0, 1, Job.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getJob_PreviousJobsWithSameCaller(), this.getJob(), null, "previousJobsWithSameCaller", null, 0, -1, Job.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getJob_NextJobsWithSameCaller(), this.getJob(), null, "nextJobsWithSameCaller", null, 0, -1, Job.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getJob_InVars(), this.getVariable(), this.getVariable_NextJobs(), "inVars", null, 0, -1, Job.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getJob_OutVars(), this.getVariable(), this.getVariable_PreviousJobs(), "outVars", null, 0, -1, Job.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getJob_PreviousJobs(), this.getJob(), this.getJob_NextJobs(), "previousJobs", null, 0, -1, Job.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getJob_NextJobs(), this.getJob(), this.getJob_PreviousJobs(), "nextJobs", null, 0, -1, Job.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getJob_PreviousJobsWithSameCaller(), this.getJob(), this.getJob_NextJobsWithSameCaller(), "previousJobsWithSameCaller", null, 0, -1, Job.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getJob_NextJobsWithSameCaller(), this.getJob(), this.getJob_PreviousJobsWithSameCaller(), "nextJobsWithSameCaller", null, 0, -1, Job.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getJob_Instruction(), this.getInstruction(), null, "instruction", null, 1, 1, Job.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getJob_TimeLoopJob(), ecorePackage.getEBoolean(), "timeLoopJob", null, 0, 1, Job.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 

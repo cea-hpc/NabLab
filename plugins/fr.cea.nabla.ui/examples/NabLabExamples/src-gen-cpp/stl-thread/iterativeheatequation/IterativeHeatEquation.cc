@@ -395,8 +395,8 @@ void IterativeHeatEquation::computeResidual() noexcept
 
 /**
  * Job executeTimeLoopK called @2.0 in executeTimeLoopN method.
- * In variables: alpha, u_n, u_nplus1_k, u_nplus1_kplus1
- * Out variables: residual, u_nplus1_kplus1
+ * In variables: u_nplus1_k
+ * Out variables: u_nplus1_kplus1
  */
 void IterativeHeatEquation::executeTimeLoopK() noexcept
 {
@@ -495,8 +495,8 @@ void IterativeHeatEquation::tearDownTimeLoopK() noexcept
 
 /**
  * Job executeTimeLoopN called @4.0 in simulate method.
- * In variables: alpha, deltat, t_n, u_n, u_nplus1_k, u_nplus1_kplus1
- * Out variables: residual, t_nplus1, u_nplus1, u_nplus1_k, u_nplus1_kplus1
+ * In variables: t_n, u_n
+ * Out variables: t_nplus1, u_nplus1
  */
 void IterativeHeatEquation::executeTimeLoopN() noexcept
 {

@@ -4,12 +4,17 @@ package fr.cea.nabla.ir.ir.impl;
 
 import fr.cea.nabla.ir.ir.Expression;
 import fr.cea.nabla.ir.ir.IrPackage;
+import fr.cea.nabla.ir.ir.Job;
 import fr.cea.nabla.ir.ir.Variable;
+import java.util.Collection;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.util.EObjectWithInverseResolvingEList;
+import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
  * <!-- begin-user-doc -->
@@ -23,6 +28,8 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#isConst <em>Const</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#isConstExpr <em>Const Expr</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#isOption <em>Option</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#getPreviousJobs <em>Previous Jobs</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#getNextJobs <em>Next Jobs</em>}</li>
  * </ul>
  *
  * @generated
@@ -91,6 +98,25 @@ public class VariableImpl extends ArgOrVarImpl implements Variable {
 	 * @ordered
 	 */
 	protected boolean option = OPTION_EDEFAULT;
+
+	/**
+	 * The cached value of the '{@link #getPreviousJobs() <em>Previous Jobs</em>}' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getPreviousJobs()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<Job> previousJobs;
+	/**
+	 * The cached value of the '{@link #getNextJobs() <em>Next Jobs</em>}' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getNextJobs()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<Job> nextJobs;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -231,10 +257,57 @@ public class VariableImpl extends ArgOrVarImpl implements Variable {
 	 * @generated
 	 */
 	@Override
+	public EList<Job> getPreviousJobs() {
+		if (previousJobs == null) {
+			previousJobs = new EObjectWithInverseResolvingEList.ManyInverse<Job>(Job.class, this, IrPackage.VARIABLE__PREVIOUS_JOBS, IrPackage.JOB__OUT_VARS);
+		}
+		return previousJobs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EList<Job> getNextJobs() {
+		if (nextJobs == null) {
+			nextJobs = new EObjectWithInverseResolvingEList.ManyInverse<Job>(Job.class, this, IrPackage.VARIABLE__NEXT_JOBS, IrPackage.JOB__IN_VARS);
+		}
+		return nextJobs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case IrPackage.VARIABLE__PREVIOUS_JOBS:
+				return ((InternalEList<InternalEObject>)(InternalEList<?>)getPreviousJobs()).basicAdd(otherEnd, msgs);
+			case IrPackage.VARIABLE__NEXT_JOBS:
+				return ((InternalEList<InternalEObject>)(InternalEList<?>)getNextJobs()).basicAdd(otherEnd, msgs);
+		}
+		return super.eInverseAdd(otherEnd, featureID, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case IrPackage.VARIABLE__DEFAULT_VALUE:
 				return basicSetDefaultValue(null, msgs);
+			case IrPackage.VARIABLE__PREVIOUS_JOBS:
+				return ((InternalEList<?>)getPreviousJobs()).basicRemove(otherEnd, msgs);
+			case IrPackage.VARIABLE__NEXT_JOBS:
+				return ((InternalEList<?>)getNextJobs()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -255,6 +328,10 @@ public class VariableImpl extends ArgOrVarImpl implements Variable {
 				return isConstExpr();
 			case IrPackage.VARIABLE__OPTION:
 				return isOption();
+			case IrPackage.VARIABLE__PREVIOUS_JOBS:
+				return getPreviousJobs();
+			case IrPackage.VARIABLE__NEXT_JOBS:
+				return getNextJobs();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -264,6 +341,7 @@ public class VariableImpl extends ArgOrVarImpl implements Variable {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
@@ -278,6 +356,14 @@ public class VariableImpl extends ArgOrVarImpl implements Variable {
 				return;
 			case IrPackage.VARIABLE__OPTION:
 				setOption((Boolean)newValue);
+				return;
+			case IrPackage.VARIABLE__PREVIOUS_JOBS:
+				getPreviousJobs().clear();
+				getPreviousJobs().addAll((Collection<? extends Job>)newValue);
+				return;
+			case IrPackage.VARIABLE__NEXT_JOBS:
+				getNextJobs().clear();
+				getNextJobs().addAll((Collection<? extends Job>)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -303,6 +389,12 @@ public class VariableImpl extends ArgOrVarImpl implements Variable {
 			case IrPackage.VARIABLE__OPTION:
 				setOption(OPTION_EDEFAULT);
 				return;
+			case IrPackage.VARIABLE__PREVIOUS_JOBS:
+				getPreviousJobs().clear();
+				return;
+			case IrPackage.VARIABLE__NEXT_JOBS:
+				getNextJobs().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -323,6 +415,10 @@ public class VariableImpl extends ArgOrVarImpl implements Variable {
 				return constExpr != CONST_EXPR_EDEFAULT;
 			case IrPackage.VARIABLE__OPTION:
 				return option != OPTION_EDEFAULT;
+			case IrPackage.VARIABLE__PREVIOUS_JOBS:
+				return previousJobs != null && !previousJobs.isEmpty();
+			case IrPackage.VARIABLE__NEXT_JOBS:
+				return nextJobs != null && !nextJobs.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}

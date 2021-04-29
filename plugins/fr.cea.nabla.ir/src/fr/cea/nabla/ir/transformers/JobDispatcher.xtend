@@ -1,8 +1,6 @@
 package fr.cea.nabla.ir.transformers
 
 import fr.cea.nabla.ir.IrUtils
-import fr.cea.nabla.ir.JobDependencies
-import fr.cea.nabla.ir.JobDispatchVarDependencies
 import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Job
@@ -19,15 +17,7 @@ import static extension fr.cea.nabla.ir.JobCallerExtensions.*
  */
 class JobDispatcher
 {
-	val extension JobDispatchVarDependencies jdvd = new JobDispatchVarDependencies
-	val extension JobDependencies  = new JobDependencies(jdvd)
-
-	/**
-	 * Dispacth IrModule jobs in their corresponding job containers.
-	 * First, TimeLoopCopyJob instances are dispatched in the container
-	 * associated to their TimeLoop.
-	 * Then, other jobs will be dispatched during a graph traversal.
-	 */
+	/** Dispatch IrModule jobs in their corresponding job containers during a graph traversal. */
 	def void dispatchJobsInTimeLoops(IrRoot ir)
 	{
 		for (j : ir.jobs.filter[x | !x.timeLoopJob && x.previousJobs.empty])

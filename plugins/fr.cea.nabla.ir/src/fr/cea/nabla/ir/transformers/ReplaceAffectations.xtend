@@ -3,20 +3,22 @@ package fr.cea.nabla.ir.transformers
 import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.Connectivity
+import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrRoot
+import fr.cea.nabla.ir.ir.ItemId
 import fr.cea.nabla.ir.ir.ItemIndex
 import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.Variable
+import java.util.ArrayList
 import java.util.List
 import org.eclipse.emf.ecore.util.EcoreUtil
 
 import static fr.cea.nabla.ir.transformers.IrTransformationUtils.*
 
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
-import fr.cea.nabla.ir.ir.ConnectivityType
 
 class ReplaceAffectations  extends IrTransformationStep
 {
@@ -33,7 +35,7 @@ class ReplaceAffectations  extends IrTransformationStep
 		{
 			// we know that left and right have same type
 			// For connectivityTypes, we generate loops on connectivities
-			val loop = createLoopWithIterator(affectation.left, affectation.right as ArgOrVarRef, (affectation.left.type as ConnectivityType).connectivities, 1)
+			val loop = createLoopWithIterator(affectation.left, affectation.right as ArgOrVarRef, (affectation.left.type as ConnectivityType).connectivities, 1, new ArrayList<ItemId>)
 			replace(affectation, #[loop])
 		}
 
@@ -73,16 +75,37 @@ class ReplaceAffectations  extends IrTransformationStep
 	 * createLoopWithIterator
 	 * Creates a loop on connectivityType dimensions to call affectation only on baseTypes
 	 */
-	private def create IrFactory::eINSTANCE.createLoop createLoopWithIterator(ArgOrVarRef lhs, ArgOrVarRef rhs, List<Connectivity> connectivities, int depth)
+	private def create IrFactory::eINSTANCE.createLoop createLoopWithIterator(ArgOrVarRef lhs, ArgOrVarRef rhs, List<Connectivity> connectivities, int depth, List<ItemId> idArgs)
 	{
-		val itemIndex = createItemIndex(connectivities.get(0), depth)
-		iterationBlock = createIterator(connectivities.get(0), itemIndex)
+		val connectivity = connectivities.get(0)
+		val itemIndex = createItemIndex(connectivity, depth)
+		val iter = createIterator(connectivity, itemIndex, idArgs)
+		iterationBlock = iter
 		lhs.iterators += itemIndex
 		rhs.iterators += itemIndex
+		val instructionBlock = IrFactory::eINSTANCE.createInstructionBlock
+		if (connectivities.size > 1 && !connectivities.get(1).inTypes.empty)
+		{
+			// SubConnectivity will need Id on ItemIndex
+			val itemId = IrFactory.eINSTANCE.createItemId => [
+				name = itemIndex.name + 'Id'
+				itemName = itemIndex.name
+			]
+			val itemIdDefinition = IrFactory.eINSTANCE.createItemIdDefinition => [
+				id = itemId
+				value = IrFactory::eINSTANCE.createItemIdValueIterator => [
+					iterator = iter
+					shift = 0
+				]
+			]
+			instructionBlock.instructions += itemIdDefinition
+			idArgs += itemIdDefinition.id
+		}
 		if (connectivities.size > 1)
-			body = createLoopWithIterator(lhs, rhs, connectivities.tail.toList, depth+1)
+			instructionBlock.instructions += createLoopWithIterator(lhs, rhs, connectivities.tail.toList, depth+1, idArgs)
 		else
-			body = createAffectation(lhs, rhs)
+			instructionBlock.instructions += createAffectation(lhs, rhs)
+		body = instructionBlock
 		multithreadable = true
 	}
 
@@ -116,12 +139,15 @@ class ReplaceAffectations  extends IrTransformationStep
 		]
 	}
 
-	private def createIterator(Connectivity c, ItemIndex id)
+	private def createIterator(Connectivity c, ItemIndex id, List<ItemId> argsIds)
 	{
 		IrFactory::eINSTANCE.createIterator =>
 		[
 			index = id
-			container = IrFactory::eINSTANCE.createConnectivityCall => [ connectivity = c ]
+			container = IrFactory::eINSTANCE.createConnectivityCall => [
+				connectivity = c
+				args += argsIds
+			]
 		]
 	}
 

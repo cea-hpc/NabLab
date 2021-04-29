@@ -41,7 +41,7 @@ class ExtensionProviderCache
 			}
 			catch (ClassNotFoundException e)
 			{
-				throw new ExtensionProviderNotFoundException(p)
+				throw new ExtensionProviderNotFoundException(e, p)
 			}
 		}
 	}
@@ -54,13 +54,13 @@ class ExtensionProviderCache
 
 class ExtensionProviderNotFoundException extends Exception
 {
-	new(ExtensionProvider p)
+	new(ClassNotFoundException innerException, ExtensionProvider p)
 	{
-		super(p.buildMessage)
+		super(innerException.message + '\n' + p.buildMessage)
 	}
 
 	private def static String buildMessage(ExtensionProvider p)
 	{
-		'Class ' + p.packageName + '.' + p.className + ' not found for provider ' + p.providerName + ': if JNI compile and install (make; make install)'
+		'Class ' + p.className + ' not found for provider ' + p.providerName + ': if JNI compile and install (make; make install)'
 	}
 }

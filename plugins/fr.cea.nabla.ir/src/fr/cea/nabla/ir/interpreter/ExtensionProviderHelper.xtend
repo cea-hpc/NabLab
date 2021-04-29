@@ -33,7 +33,10 @@ abstract class ExtensionProviderHelper
 		for (function : functions)
 		{
 			val javaTypes = function.inArgs.map[a | FunctionCallHelper.getJavaType(a.type, this)]
-			val method = providerClass.getDeclaredMethod(function.name, javaTypes)
+			val pc = if (this instanceof MathExtensionProviderHelper && function.name == 'erf')
+						Class.forName("org.apache.commons.math3.special.Erf", true, class.classLoader)
+					else providerClass
+			val method = pc.getDeclaredMethod(function.name, javaTypes)
 			method.setAccessible(true)
 			functionToMethod.put(function, method)
 		}

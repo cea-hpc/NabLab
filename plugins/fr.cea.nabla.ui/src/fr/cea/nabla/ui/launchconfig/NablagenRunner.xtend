@@ -110,9 +110,9 @@ class NablagenRunner
 				dispatcher.traceListeners -= traceFunction
 			}
 		])
-		
+
 		val Runnable stopRunnable = [interpreterThread.interrupt]
-		
+
 		new Thread(new NabLabConsoleRunnable(consoleFactory, interpreterThread, stopRunnable)).start
 	}
 }

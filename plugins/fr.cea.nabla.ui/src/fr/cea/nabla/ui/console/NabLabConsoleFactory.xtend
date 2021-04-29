@@ -9,9 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ui.console
 
-import com.google.inject.Inject
 import com.google.inject.Singleton
-import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
 import fr.cea.nabla.ui.NablaUiUtils
 import org.eclipse.swt.graphics.Color
@@ -27,7 +25,6 @@ class NabLabConsoleFactory implements IConsoleFactory
 	static val ORANGE = new Color(null, 255, 140, 0)
 	static val RED = new Color(null, 139, 0, 0)
 
-	@Inject NablaGeneratorMessageDispatcher dispatcher
 	NabLabConsole console
 
 	override openConsole()
@@ -40,7 +37,6 @@ class NabLabConsoleFactory implements IConsoleFactory
 			val image = if (id.present) id.get else null
 			console = new NabLabConsole(image)
 			consoleMng.addConsoles(#[console])
-			dispatcher.traceListeners += [type, msg | printConsole(type, msg)]
 		}
 		else
 		{

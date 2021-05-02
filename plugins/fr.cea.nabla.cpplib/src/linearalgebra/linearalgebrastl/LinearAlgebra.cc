@@ -259,25 +259,34 @@ LinearAlgebra::CGSolve(const SparseMatrixType& A, const VectorType& b,
  * \brief Call to conjugate gradient to solve A x = b
  * \param A:         [in] Sparse matrix
  * \param b:         [in] Vector
- * \param x0:        [in/out] Initial guess of the solution. If none is provided, a null vector is used.
  * \param max_it:    [in] Iteration threshold (default = 100)
  * \param tolerance: [in] Convergence threshold (default = 1.e-8)
  * \return: Solution vector
  */
 Vector
-LinearAlgebra::solveLinearSystem(Matrix& A, const Vector& b,
-                                 Vector* x0, const size_t max_it, const double tolerance)
+LinearAlgebra::solveLinearSystem(Matrix& A, const Vector& b, const size_t max_it, const double tolerance)
 {
-  if (!x0) {
-    VectorType default_x0(b.m_data.size(), 0.0);
-    VectorType res = CGSolve(A.crsMatrix(), b.m_data, default_x0, max_it, tolerance);
-    Vector v(res);
-    return v;
-  } else {
-	VectorType res = CGSolve(A.crsMatrix(), b.m_data, x0->m_data, max_it, tolerance);
-    Vector v(res);
-    return v;
-  }
+  VectorType default_x0(b.m_data.size(), 0.0);
+  VectorType res = CGSolve(A.crsMatrix(), b.m_data, default_x0, max_it, tolerance);
+  Vector v(res);
+  return v;
+}
+
+/*
+ * \brief Call to conjugate gradient to solve A x = b
+ * \param A:         [in] Sparse matrix
+ * \param b:         [in] Vector
+ * \param x0:        [in/out] Initial guess of the solution.
+ * \param max_it:    [in] Iteration threshold (default = 100)
+ * \param tolerance: [in] Convergence threshold (default = 1.e-8)
+ * \return: Solution vector
+ */
+Vector
+LinearAlgebra::solveLinearSystem(Matrix& A, const Vector& b, Vector& x0, const size_t max_it, const double tolerance)
+{
+  VectorType res = CGSolve(A.crsMatrix(), b.m_data, x0.m_data, max_it, tolerance);
+  Vector v(res);
+  return v;
 }
 
 /*
@@ -286,24 +295,34 @@ LinearAlgebra::solveLinearSystem(Matrix& A, const Vector& b,
  * \param A:         [in] Sparse matrix
  * \param b:         [in] Vector
  * \param C_minus_1: [in] Sparse matrix used as preconditioner
- * \param x0:        [in/out] Initial guess of the solution. If none is provided, a null vector is used.
  * \param max_it:    [in] Iteration threshold (default = 100)
  * \param tolerance: [in] Convergence threshold (default = 1.e-8)
  * \return: Solution vector
  */
 Vector
-LinearAlgebra::solveLinearSystem(Matrix& A, const Vector& b, Matrix& C_minus_1,
-                                 Vector* x0, const size_t max_it, const double tolerance)
+LinearAlgebra::solveLinearSystem(Matrix& A, const Vector& b, Matrix& C_minus_1, const size_t max_it, const double tolerance)
 {
-  if (!x0) {
-    VectorType default_x0(b.m_data.size(), 0.0);
-    VectorType res = CGSolve(A.crsMatrix(), b.m_data, C_minus_1.crsMatrix(), default_x0, max_it, tolerance);
-    Vector v(res);
-    return v;
- } else {
-	VectorType res = CGSolve(A.crsMatrix(), b.m_data, C_minus_1.crsMatrix(), x0->m_data, max_it, tolerance);
-    Vector v(res);
-    return v;
-  }
+  VectorType default_x0(b.m_data.size(), 0.0);
+  VectorType res = CGSolve(A.crsMatrix(), b.m_data, C_minus_1.crsMatrix(), default_x0, max_it, tolerance);
+  Vector v(res);
+  return v;
 }
 
+/*
+ * \brief Call to conjugate gradient to solve A x = b with a preconditioner
+ *        Actually solves C^-1(Ax)=C^-1 b
+ * \param A:         [in] Sparse matrix
+ * \param b:         [in] Vector
+ * \param C_minus_1: [in] Sparse matrix used as preconditioner
+ * \param x0:        [in/out] Initial guess of the solution.
+ * \param max_it:    [in] Iteration threshold (default = 100)
+ * \param tolerance: [in] Convergence threshold (default = 1.e-8)
+ * \return: Solution vector
+ */
+Vector
+LinearAlgebra::solveLinearSystem(Matrix& A, const Vector& b, Matrix& C_minus_1, Vector& x0, const size_t max_it, const double tolerance)
+{
+  VectorType res = CGSolve(A.crsMatrix(), b.m_data, C_minus_1.crsMatrix(), x0.m_data, max_it, tolerance);
+  Vector v(res);
+  return v;
+}

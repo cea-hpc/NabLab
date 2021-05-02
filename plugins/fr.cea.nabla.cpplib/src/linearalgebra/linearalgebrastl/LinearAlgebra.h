@@ -37,10 +37,10 @@ class LinearAlgebra
                      const SparseMatrixType& C_minus_1, const VectorType& x0,
                      const size_t max_it, const double tolerance);
 
-  Vector solveLinearSystem(Matrix& A, const Vector& b,
-                           Vector* x0 = nullptr, const size_t max_it = 100, const double tolerance = 1.e-8);
-  Vector solveLinearSystem(Matrix& A, const Vector& b, Matrix& C_minus_1,
-                           Vector* x0 = nullptr, const size_t max_it = 100, const double tolerance = 1.e-8);
+  Vector solveLinearSystem(Matrix& A, const Vector& b, const size_t max_it = 100, const double tolerance = 1.e-8);
+  Vector solveLinearSystem(Matrix& A, const Vector& b, Vector& x0, const size_t max_it = 100, const double tolerance = 1.e-8);
+  Vector solveLinearSystem(Matrix& A, const Vector& b, Matrix& C_minus_1, const size_t max_it = 100, const double tolerance = 1.e-8);
+  Vector solveLinearSystem(Matrix& A, const Vector& b, Matrix& C_minus_1, Vector& x0, const size_t max_it = 100, const double tolerance = 1.e-8);
 };
 
 #endif

@@ -115,25 +115,7 @@ class ExpressionContentProvider
 	}
 
 	def dispatch CharSequence getContent(FunctionCall it)
-	{
-		if (function.name == 'solveLinearSystem')
-			switch (args.length)
-			{
-				// 2 args means no precond, everything default
-				case 2: '''«function.codeName»(«args.get(0).content», «args.get(1).content»)'''
-				// 3 args either means no precond with x0, or precond without x0
-				case 3: '''«function.codeName»(«args.get(0).content», «args.get(1).content», «args.get(2).cppLinearAlgebraHelper»)'''
-				// 4 args either means no precond with x0 and iteration threshold, or precond with x0
-				case 4: '''«function.codeName»(«args.get(0).content», «args.get(1).content», «args.get(2).cppLinearAlgebraHelper», «args.get(3).cppLinearAlgebraHelper»)'''
-				// 5 args either no precond with everything, or precond with x0 and iteration threshold
-				case 5: '''«function.codeName»(«args.get(0).content», «args.get(1).content», «args.get(2).cppLinearAlgebraHelper», «args.get(3).cppLinearAlgebraHelper», «args.get(4).content»)'''
-				// 6 args means precond with everything
-				case 6: '''«function.codeName»(«args.get(0).content», «args.get(1).content», «args.get(2).content», «args.get(3).cppLinearAlgebraHelper», «args.get(4).content», «args.get(5).content»)'''
-				default: throw new RuntimeException("Wrong numbers of arguments for solveLinearSystem")
-			}
-		else
-			'''«function.codeName»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
-	}
+	'''«function.codeName»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
 
 	def dispatch CharSequence getContent(ArgOrVarRef it)
 	{
@@ -157,14 +139,4 @@ class ExpressionContentProvider
 
 	private def CharSequence initArray(int[] sizes, CharSequence value)
 	'''«FOR size : sizes SEPARATOR ",  "»«FOR i : 0..<size SEPARATOR ', '»«value»«ENDFOR»«ENDFOR»'''
-
-	// Simple helper to add pointer information to VectorType variable for LinearAlgebra cases
-	private def getCppLinearAlgebraHelper(Expression expr) 
-	{
-		switch expr.type.dimension
-		{
-			case 1: '&' + expr.content
-			default: expr.content
-		}
-	}
 }

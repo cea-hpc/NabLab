@@ -41,7 +41,8 @@ class ExtensionProviderExtensions
 	/** PackageName is used by Java and Jni */
 	static def getPackageName(ExtensionProvider it)
 	{
-		providerName.toLowerCase
+		if (providerName === null) "null"
+		else providerName.toLowerCase
 	}
 
 	static def String getInstanceName(ExtensionProvider it)

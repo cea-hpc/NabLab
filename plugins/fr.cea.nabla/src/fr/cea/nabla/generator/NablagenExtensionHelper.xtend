@@ -38,7 +38,7 @@ class NablagenExtensionHelper
 			val provider = getTargetProvider(target, irProvider.extensionName)
 			if (provider === null)
 			{
-				dispatcher.post(MessageType::Warning, '    No provider found for extension: ' + irProvider.extensionName)
+				dispatcher.post(MessageType::Warning, "    No provider found for extension: " + irProvider.extensionName)
 				return false
 			}
 
@@ -47,7 +47,7 @@ class NablagenExtensionHelper
 			irProvider.linearAlgebra = provider.extension.linearAlgebra
 			if (provider.target != target.type && !provider.compatibleTargets.contains(target.type))
 			{
-				dispatcher.post(MessageType::Warning, '    The target of the provider differs from target: ' + provider.target.literal + " != " + target.type.literal)
+				dispatcher.post(MessageType::Warning, "    The target of the provider differs from target (" + provider.target.literal + " != " + target.type.literal + ") for extension: " + irProvider.extensionName)
 				if (target.type == TargetType::JAVA)
 				{
 					dispatcher.post(MessageType::Exec, "Starting JNI code generator: " + target.outputPath)

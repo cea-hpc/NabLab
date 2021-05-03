@@ -92,6 +92,10 @@ class FunctionContentProvider
 					'''
 						«t.primitive.cppType» «nativeVarName» = «name»;
 					'''
+				else if (t.sizes.forall[x | x.constExpr])
+					'''
+						«t.primitive.getName()»Array«t.sizes.size»D<«t.sizes.map[x | x.content].join(',')»> «nativeVarName»;
+					'''
 				else
 					'''
 						«t.primitive.getName()»Array«t.sizes.size»D<«t.sizes.map[0].join(',')»> «nativeVarName»;

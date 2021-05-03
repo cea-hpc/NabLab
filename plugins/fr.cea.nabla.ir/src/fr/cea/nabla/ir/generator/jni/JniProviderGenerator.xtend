@@ -409,7 +409,7 @@ class JniProviderGenerator
 		jclass cls = env->GetObjectClass(self);
 		if (!cls)
 			env->FatalError("GetObjectClass failed");
-	
+
 		jfieldID nativeObjectPointerID = env->GetFieldID(cls, "nativeObjectPointer", "J");
 		if (!nativeObjectPointerID)
 			env->FatalError("GetFieldID failed");

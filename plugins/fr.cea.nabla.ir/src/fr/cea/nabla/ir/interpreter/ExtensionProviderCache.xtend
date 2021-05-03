@@ -12,8 +12,6 @@ package fr.cea.nabla.ir.interpreter
 import fr.cea.nabla.ir.ir.ExtensionProvider
 import java.util.HashMap
 
-import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
-
 /**
  * Native library (.so) can only be loaded once.
  * Consequently, JNI classes, containing the static loadLibrary instruction,
@@ -41,7 +39,7 @@ class ExtensionProviderCache
 			}
 			catch (ClassNotFoundException e)
 			{
-				throw new ExtensionProviderNotFoundException(e, p)
+				throw new ExtensionProviderNotFound(p, e)
 			}
 		}
 	}
@@ -52,15 +50,3 @@ class ExtensionProviderCache
 	}
 }
 
-class ExtensionProviderNotFoundException extends Exception
-{
-	new(ClassNotFoundException innerException, ExtensionProvider p)
-	{
-		super(innerException.message + '\n' + p.buildMessage)
-	}
-
-	private def static String buildMessage(ExtensionProvider p)
-	{
-		'Class ' + p.className + ' not found for provider ' + p.providerName + ': if JNI compile and install (make; make install)'
-	}
-}

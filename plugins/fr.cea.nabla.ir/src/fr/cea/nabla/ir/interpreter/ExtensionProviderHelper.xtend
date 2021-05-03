@@ -12,6 +12,7 @@ package fr.cea.nabla.ir.interpreter
 import fr.cea.nabla.ir.ir.ExtensionProvider
 import fr.cea.nabla.ir.ir.ExternFunction
 import fr.cea.nabla.ir.ir.IrModule
+import java.io.File
 import java.lang.reflect.Constructor
 import java.lang.reflect.Method
 import java.net.URL
@@ -23,7 +24,7 @@ import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 
 abstract class ExtensionProviderHelper
 {
-	protected val functionToMethod  = new HashMap<ExternFunction, Method>
+	protected val functionToMethod = new HashMap<ExternFunction, Method>
 
 	abstract def Class<?> getProviderClass()
 	abstract def Object getProviderInstance(IrModule module)
@@ -72,8 +73,18 @@ class DefaultExtensionProviderHelper extends ExtensionProviderHelper
 
 	new(ExtensionProvider provider, String wsPath)
 	{
-		val url = new URL("file://" + wsPath + provider.installPath + "/" + provider.libName + ".jar")
-		cl = new URLClassLoader(#[url])
+		val fileName = wsPath + provider.installPath + "/" + provider.libName + ".jar"
+		val file = new File(fileName)
+		if (file.exists)
+		{
+			val url = new URL("file://" + fileName)
+			val parentClassLoader = Thread.currentThread.contextClassLoader
+			cl = new URLClassLoader(#[url], parentClassLoader)
+		}
+		else
+		{
+			throw new ExtensionProviderJarNotExist(provider, fileName)
+		}
 		val className = provider.packageName + '.' + provider.className
 		providerClass = Class.forName(className, true, cl)
 	}

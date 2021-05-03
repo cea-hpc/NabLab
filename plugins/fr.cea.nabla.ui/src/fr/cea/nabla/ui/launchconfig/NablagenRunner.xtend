@@ -105,6 +105,11 @@ class NablagenRunner
 				consoleFactory.printConsole(MessageType.Error, e.message)
 				consoleFactory.printConsole(MessageType.Error, IrUtils.getStackTrace(e))
 			}
+			catch (NoClassDefFoundError e)
+			{
+				consoleFactory.printConsole(MessageType.Error, "Interpretation failed for: " + nablagenFile.name)
+				consoleFactory.printConsole(MessageType.Error, e.message)
+			}
 			finally
 			{
 				dispatcher.traceListeners -= traceFunction
@@ -112,7 +117,6 @@ class NablagenRunner
 		])
 
 		val Runnable stopRunnable = [interpreterThread.interrupt]
-
 		new Thread(new NabLabConsoleRunnable(consoleFactory, interpreterThread, stopRunnable)).start
 	}
 }

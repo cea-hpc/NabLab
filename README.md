@@ -51,12 +51,13 @@ Commons-Math3 (3.6.1)
 - Install Zest: Help>Install New Software..., Work with http://download.eclipse.org/releases/2021-03, select Modeling>Zest and install
 - Install Sirius via the MarketPlace: Help>Eclipse Marketplace... and Find Sirius. Do not forget to select *Sirius Integration With Xtext*
 
-Then clone NabLab from GitHib and import existing projects located in plugins, tests, releng and docs directory.
+Then clone NabLab from GitHib and import existing projects located in plugins, tests, releng and docs directories.
 
 It is recommended to install a Markdown editor thanks to Eclipse Marketplace to contribute to the documentation.
 
-It is also recommended to install a Json editor to visualize/modify user data files.
+It is also recommended to install a Json editor thanks to Eclipse Marketplace to visualize/modify user data files.
 
+The launch of a runtime Eclipse displays a warning of unsatisfied dependency on `javax.xml.stream`. To suppress it: Help>Install New Software..., Work with http://download.eclipse.org/tools/orbit/downloads/drops/R20190226160451/repository and select *Java XML Streaming API*.
 
 # Licence and copyright
 

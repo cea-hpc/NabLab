@@ -697,8 +697,11 @@ make -j4
 {
     outputPath = &quot;/swan/src-gen-interpreter&quot;;
     extension BathyLib providedBy BathyLibCpp;
+    N_CXX_COMPILER = &quot;/usr/bin/g++&quot;;
+    JAVA_HOME = &quot;/usr/lib/jvm/java-11-openjdk-amd64&quot;;
 }
 </code></pre></div>
+<p>The interpreter block needs to set the <code>N_CXX_COMPILER</code> variable as for C++ code generators and the <code>JAVA_HOME</code> variable to allow the JNI compilation.</p>
 <p>To get the JNI code for the interpreter, launch the generation as usual: right-click on the <em>ngen</em> file (in the example <em>Swan.ngen</em>) and select <em>Generate Code</em>. The NabLab console displays information showing the JNI generation:</p>
 <p><img src="img/NabLab_interpreter_generation_msg.png" alt="NabLab Interpreter Generation Messages" title="NabLab Interpreter Generation Messages" width="70%" height="70%" /></p>
 <p>The generation produces a folder for each JNI provider (name of the provider + jni) and a folder corresponding to the application. In our example, it corresponds to a <em>bathylibcppjni</em> folder for the <em>bathylibcpp</em> provider and a <em>swan</em> folder for the application.</p>

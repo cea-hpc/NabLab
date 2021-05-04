@@ -227,8 +227,12 @@ Interpreter
 {
 	outputPath = "/swan/src-gen-interpreter";
 	extension BathyLib providedBy BathyLibCpp;
+	N_CXX_COMPILER = "/usr/bin/g++";
+	JAVA_HOME = "/usr/lib/jvm/java-11-openjdk-amd64";
 }
 ```
+
+The interpreter block needs to set the `N_CXX_COMPILER` variable as for C++ code generators and the `JAVA_HOME` variable to allow the JNI compilation.
 
 To get the JNI code for the interpreter, launch the generation as usual: right-click on the *ngen* file (in the example *Swan.ngen*) and select *Generate Code*. The NabLab console displays information showing the JNI generation:
 

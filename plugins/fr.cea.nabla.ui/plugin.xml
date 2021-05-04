@@ -480,6 +480,17 @@
 		</view>
 	</extension>
 
+	<!-- Property tester to check that content of Nabla file is Extension and nablaext file does not exists -->
+	<extension point="org.eclipse.core.expressions.propertyTesters">
+		<propertyTester
+			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.propertytesters.NablagenApplicationPropertyTester"
+			id="fr.cea.nabla.ui.propertytesters.NablagenApplicationPropertyTester"
+			namespace="fr.cea.nabla.ui.propertytesters"
+			properties="NablagenApplicationPropertyTester"
+			type="org.eclipse.core.resources.IResource">
+		</propertyTester>
+	</extension>
+
 	<!-- Launch configuration on nablagen files to launch interpreter -->
 	<extension
 		point="org.eclipse.debug.ui.launchShortcuts">
@@ -495,10 +506,10 @@
 						<count value="1"/>
 						<iterate>
 							<adapt type="org.eclipse.core.resources.IResource">
-								<and>
-									<test property="org.eclipse.core.resources.extension" value="ngen">
-									</test>
-								</and>
+								<test property="org.eclipse.core.resources.extension" value="ngen"/>
+								<and/>
+								<test
+              property="fr.cea.nabla.ui.propertytesters.NablagenApplicationPropertyTester"/>
 							</adapt>
 						</iterate>
 					</with>
@@ -721,17 +732,6 @@
     </handler>
  </extension>
 
-	<!-- Property tester to check that content of Nabla file is Extension and nablaext file does not exists -->
-	<extension point="org.eclipse.core.expressions.propertyTesters">
-		<propertyTester
-			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.propertytesters.NablaFileContentPropertyTester"
-			id="fr.cea.nabla.ui.propertytesters.NablaFileContentPropertyTester"
-			namespace="fr.cea.nabla.ui.propertytesters"
-			properties="NablaFileContentPropertyTester"
-			type="org.eclipse.core.resources.IResource">
-		</propertyTester>
-	</extension>
-
 	<!-- Generate menus for nablagen (code generation), nabla file (provider generation) -->
 	<extension
 		id="fr.cea.nabla.ui.menus"
@@ -793,33 +793,14 @@
 			id="fr.cea.nabla.GenerateCodeCommand"
 			name="Generate code">
 		</command>
-		<command 
-			id="fr.cea.nabla.GenerateNablagenCommand"
-			name="Generate nablagen provider file">
+		<command
+        defaultHandler="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.handlers.GenerateNablagenHandler"
+        id="fr.cea.nabla.GenerateNablagenCommand"
+        name="Generate nablagen file">
 		</command>
 	</extension>
 
 	<!-- Generate handlers for nablagen (code generation), nabla file (ngen generation) -->
-	<extension point="org.eclipse.ui.handlers">
-		<handler
-			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.handlers.GenerateNablagenHandler"
-			commandId="fr.cea.nabla.GenerateNablagenCommand">
-			<enabledWhen>
-				<with variable="selection">
-					<iterate>
-						<adapt type="org.eclipse.core.resources.IResource">
-							<test property="org.eclipse.core.resources.extension" value="n"/>
-						</adapt>
-						<and/>
-						<test
-							property="fr.cea.nabla.ui.propertytesters.NablaFileContentPropertyTester"
-							value="false">
-						</test>
-					</iterate>
-				</with>
-			</enabledWhen>
-		</handler>
-	</extension>
 
 	<extension point="org.eclipse.ui.console.consolePageParticipants">
 		<consolePageParticipant

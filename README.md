@@ -16,16 +16,16 @@ NabLab requires Java 11 or later to build & run.
 
 It as based on:
 
-Eclipse 2020-03
+Eclipse 2021-03 for Java and DSL Developers
  * License: EPL-2.0
- * Project: https://www.eclipse.org/downloads/packages/release/2020-03/r
+ * Project: https://www.eclipse.org/downloads/packages/release/2021-03/r/eclipse-ide-java-and-dsl-developers
 
-Xtext (2.21)
+Xtext (2.25.0)
  * License: EPL-2.0
  * Project: http://projects.eclipse.org/projects/modeling.tmf.xtext
  * Source: https://github.com/eclipse/xtext
 
-Sirius (6.4.0)
+Sirius (6.4.2)
  * License: EPL-2.0
  * Project: http://projects.eclipse.org/projects/modeling.sirius
  * Source: https://git.eclipse.org/c/sirius/org.eclipse.sirius.git
@@ -44,6 +44,18 @@ Commons-Math3 (3.6.1)
   * License: Apache v2
   * Project: https://commons.apache.org/proper/commons-math/
   * Source: https://github.com/apache/commons-math
+
+# Installing Eclipse for NabLab contributors
+
+- Download and install [Eclipse 2021-03](https://www.eclipse.org/downloads/packages/release/2021-03/r/eclipse-ide-java-and-dsl-developers)
+- Install Zest: Help>Install New Software..., Work with http://download.eclipse.org/releases/2021-03, select Modeling>Zest and install
+- Install Sirius via the MarketPlace: Help>Eclipse Marketplace... and Find Sirius. Do not forget to select *Sirius Integration With Xtext*
+
+Then clone NabLab from GitHib and import existing projects located in plugins, tests, releng and docs directory.
+
+It is recommended to install a Markdown editor thanks to Eclipse Marketplace to contribute to the documentation.
+
+It is also recommended to install a Json editor to visualize/modify user data files.
 
 
 # Licence and copyright

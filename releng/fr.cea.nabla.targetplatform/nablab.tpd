@@ -12,7 +12,7 @@ target "NabLab Target platform"
 with requirements
 environment JavaSE-11
 
-location eclipse "https://download.eclipse.org/releases/2020-03" {
+location eclipse "https://download.eclipse.org/releases/2021-03" {
 	org.eclipse.sdk.feature.group
 	org.eclipse.rcp.feature.group
 	org.eclipse.equinox.p2.sdk.feature.group
@@ -40,7 +40,7 @@ location eclipse "https://download.eclipse.org/releases/2020-03" {
 	com.google.gson
 }
 
-location sirius "https://download.eclipse.org/sirius/updates/releases/6.4.0/2020-03" {
+location sirius "https://download.eclipse.org/sirius/updates/releases/6.4.2/2020-06" {
 	org.eclipse.sirius.aql.feature.group
 	org.eclipse.sirius.runtime.feature.group
 	org.eclipse.sirius.runtime.aql.feature.group

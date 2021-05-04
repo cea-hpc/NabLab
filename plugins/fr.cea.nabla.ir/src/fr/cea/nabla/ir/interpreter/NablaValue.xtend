@@ -214,6 +214,11 @@ class NVVector implements NablaValue
 		this.provider = provider
 	}
 
+	def void getValue(int i)
+	{
+		provider.vectorGetValueMethod.invoke(data, i)
+	}
+
 	def void setValue(int i, double value)
 	{
 		provider.vectorSetValueMethod.invoke(data, i, value)

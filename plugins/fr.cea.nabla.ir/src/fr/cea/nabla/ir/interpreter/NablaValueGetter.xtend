@@ -19,7 +19,10 @@ class NablaValueGetter
 		switch indices.size
 		{
 			case 0 : it
-			default : throw new RuntimeException("Wrong access")
+			default : {
+				println(it.toString + " - " + indices.toString)
+				throw new RuntimeException("Wrong access")
+				}
 		}
 	}
 
@@ -157,6 +160,16 @@ class NablaValueGetter
 			case 2 : new NV2Real(data.get(indices.get(0)).get(indices.get(1)))
 			case 3 : new NV1Real(data.get(indices.get(0)).get(indices.get(1)).get(indices.get(2)))
 			case 4 : new NV0Real(data.get(indices.get(0)).get(indices.get(1)).get(indices.get(2)).get(indices.get(3)))
+			default : throw new RuntimeException("Wrong access")
+		}
+	}
+
+	static def dispatch getValue(NVVector it, List<Integer> indices)
+	{
+		switch indices.size
+		{
+			case 0 : it
+			case 1 : getValue(indices.get(0))
 			default : throw new RuntimeException("Wrong access")
 		}
 	}

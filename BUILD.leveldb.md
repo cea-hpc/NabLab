@@ -10,7 +10,7 @@ To install levelDB from GitHub repository
 	cd leveldb
 	mkdir -p build && cd build
 	cmake -DCMAKE_BUILD_TYPE=Release .. && cmake --build .
-	make DESTDIR=$HOME/leveldb/leveldb-install install
+	cmake --build . -DDESTDIR=$HOME/leveldb/leveldb-install --target install
 
 The installed version is 1.22
 

@@ -274,7 +274,7 @@ To build the application, go into the generation directory containing the *CMake
 mkdir build
 cd build
 cmake ..
-make -j4
+cmake --build .
 ```
 After the compilation of the application, a *heatequation* executable is available in the *build* directory.
 

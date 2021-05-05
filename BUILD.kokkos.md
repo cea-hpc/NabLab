@@ -12,7 +12,7 @@ Anyway, we recommend to install Kokkos using github like this:
 	mkdir kokkos-build
 	cd kokkos-build
 	cmake ../kokkos -DCMAKE_CXX_COMPILER=g++ -DKokkos_CXX_STANDARD=17 -DCMAKE_INSTALL_PREFIX=~/kokkos/kokkos-install -DKokkos_ENABLE_OPENMP=On -DKokkos_ENABLE_HWLOC=On
-	make install
+	cmake --build . --target install
 	cd ..
 	rm -rf kokkos-build
 	rm -rf kokkos (if you don't want to keep sources)
@@ -29,7 +29,7 @@ We use the same process.
 	cd kokkos-build
 	# kokkos-install directory already exists from kokkos install
 	cmake ../kokkos-kernels -DCMAKE_CXX_COMPILER=g++ -DCMAKE_INSTALL_PREFIX=~/kokkos/kokkos-install -DKokkos_ROOT=~/kokkos/kokkos-install
-	make install
+	cmake --build . --target install
 	cd ..
 	rm -rf kokkos-build
 	rm -rf kokkos-kernels (if you don't want to keep sources)

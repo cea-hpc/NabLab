@@ -211,7 +211,7 @@ The application can be built as usual: go into the generation directory containi
 mkdir build
 cd build
 cmake ..
-make -j4
+cmake --build .
 ```
 
 All the linked libraries will be built in the build directory, including those of the providers.
@@ -248,7 +248,7 @@ To build the generated code, just go into the folder application, `/swan/src-gen
 mkdir build
 cd build
 cmake ..
-make -j4
+cmake --build .
 ```
 
 The interpretation needs an additional installation step to provide libraries to the interpreter in: `make install`.

@@ -48,16 +48,21 @@ Commons-Math3 (3.6.1)
 # Installing Eclipse for NabLab contributors
 
 - Download and install [Eclipse 2021-03](https://www.eclipse.org/downloads/packages/release/2021-03/r/eclipse-ide-java-and-dsl-developers)
-- Install Zest: Help>Install New Software..., Work with http://download.eclipse.org/releases/2021-03, select Modeling>Zest and install
-- Install Sirius via the MarketPlace: Help>Eclipse Marketplace... and Find Sirius. Do not forget to select *Sirius Integration With Xtext*
+- Install Zest: Help>Install New Software..., Work with http://download.eclipse.org/releases/2021-03, select Modeling>Zest SDK and install
+- Install Sirius via the MarketPlace: Help>Eclipse Marketplace... and Find Sirius 6.4. Do not forget to select *Sirius Integration With Xtext*. In case of message, choose proceed anyway
 
-Then clone NabLab from GitHib and import existing projects located in plugins, tests, releng and docs directories.
+Then clone NabLab from GitHub and import existing projects located in plugins, tests, releng and docs directories.
 
 It is recommended to install a Markdown editor thanks to Eclipse Marketplace to contribute to the documentation.
 
 It is also recommended to install a Json editor thanks to Eclipse Marketplace to visualize/modify user data files.
 
-The launch of a runtime Eclipse displays a warning of unsatisfied dependency on `javax.xml.stream`. To suppress it: Help>Install New Software..., Work with http://download.eclipse.org/tools/orbit/downloads/drops/R20190226160451/repository and select *Java XML Streaming API*.
+The launch of a runtime Eclipse displays a warning of unsatisfied dependency on `javax.xml.bind`. To suppress it: Help>Install New Software..., Work with http://download.eclipse.org/tools/orbit/downloads/drops/R20190226160451/repository and select *Java XML Streaming API* in Orbit.Bundles By Name:javax.*.
+
+To first build NabLab from source
+- open fr.cea.nabla.ir/model/Ir.genmodel and Generate Model Code by right click on NablaIR
+- right click on fr.cea.nabla/src/fr.cea.nabla/GenerateNabla.mwe2 and choose Run As > MWE2 Workflow
+- in terminal 'cd plugins/fr.cea.nabla.ir/resources/' and './import.sh'
 
 # Licence and copyright
 

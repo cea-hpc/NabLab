@@ -177,8 +177,10 @@ void BugIter::updateW() noexcept
  */
 void BugIter::setUpTimeLoopK() noexcept
 {
-	for (size_t i1(0) ; i1<v_nplus1_k.size() ; i1++)
-		v_nplus1_k[i1] = v_nplus1_k0[i1];
+	parallel_exec(nbCells, [&](const size_t& i1Cells)
+	{
+		v_nplus1_k[i1Cells] = v_nplus1_k0[i1Cells];
+	});
 }
 
 /**
@@ -212,8 +214,10 @@ void BugIter::executeTimeLoopK() noexcept
 	
 		if (continueLoop)
 		{
-			// Switch variables to prepare next iteration
-			std::swap(v_nplus1_kplus1, v_nplus1_k);
+			parallel_exec(nbCells, [&](const size_t& i1Cells)
+			{
+				v_nplus1_k[i1Cells] = v_nplus1_kplus1[i1Cells];
+			});
 		}
 	
 	
@@ -222,8 +226,8 @@ void BugIter::executeTimeLoopK() noexcept
 
 /**
  * Job executeTimeLoopN called @3.0 in simulate method.
- * In variables: deltat, t_n, u_n, v_nplus1, v_nplus1_k, v_nplus1_k0, v_nplus1_kplus1, w_nplus1, w_nplus1_l, w_nplus1_l0, w_nplus1_lplus1
- * Out variables: t_nplus1, u_nplus1, v_nplus1, v_nplus1_k, v_nplus1_k0, v_nplus1_kplus1, w_nplus1, w_nplus1_l, w_nplus1_l0, w_nplus1_lplus1
+ * In variables: t_n, u_n, v_n, w_n
+ * Out variables: t_nplus1, u_nplus1, v_nplus1, w_nplus1
  */
 void BugIter::executeTimeLoopN() noexcept
 {
@@ -255,11 +259,19 @@ void BugIter::executeTimeLoopN() noexcept
 	
 		if (continueLoop)
 		{
-			// Switch variables to prepare next iteration
-			std::swap(t_nplus1, t_n);
-			std::swap(u_nplus1, u_n);
-			std::swap(v_nplus1, v_n);
-			std::swap(w_nplus1, w_n);
+			t_n = t_nplus1;
+			parallel_exec(nbCells, [&](const size_t& i1Cells)
+			{
+				u_n[i1Cells] = u_nplus1[i1Cells];
+			});
+			parallel_exec(nbCells, [&](const size_t& i1Cells)
+			{
+				v_n[i1Cells] = v_nplus1[i1Cells];
+			});
+			parallel_exec(nbCells, [&](const size_t& i1Cells)
+			{
+				w_n[i1Cells] = w_nplus1[i1Cells];
+			});
 		}
 	
 		cpuTimer.stop();
@@ -287,8 +299,10 @@ void BugIter::executeTimeLoopN() noexcept
  */
 void BugIter::tearDownTimeLoopK() noexcept
 {
-	for (size_t i1(0) ; i1<v_nplus1.size() ; i1++)
-		v_nplus1[i1] = v_nplus1_kplus1[i1];
+	parallel_exec(nbCells, [&](const size_t& i1Cells)
+	{
+		v_nplus1[i1Cells] = v_nplus1_kplus1[i1Cells];
+	});
 }
 
 /**
@@ -311,8 +325,10 @@ void BugIter::iniW() noexcept
  */
 void BugIter::setUpTimeLoopL() noexcept
 {
-	for (size_t i1(0) ; i1<w_nplus1_l.size() ; i1++)
-		w_nplus1_l[i1] = w_nplus1_l0[i1];
+	parallel_exec(nbCells, [&](const size_t& i1Cells)
+	{
+		w_nplus1_l[i1Cells] = w_nplus1_l0[i1Cells];
+	});
 }
 
 /**
@@ -336,8 +352,10 @@ void BugIter::executeTimeLoopL() noexcept
 	
 		if (continueLoop)
 		{
-			// Switch variables to prepare next iteration
-			std::swap(w_nplus1_lplus1, w_nplus1_l);
+			parallel_exec(nbCells, [&](const size_t& i1Cells)
+			{
+				w_nplus1_l[i1Cells] = w_nplus1_lplus1[i1Cells];
+			});
 		}
 	
 	
@@ -351,8 +369,10 @@ void BugIter::executeTimeLoopL() noexcept
  */
 void BugIter::tearDownTimeLoopL() noexcept
 {
-	for (size_t i1(0) ; i1<w_nplus1.size() ; i1++)
-		w_nplus1[i1] = w_nplus1_lplus1[i1];
+	parallel_exec(nbCells, [&](const size_t& i1Cells)
+	{
+		w_nplus1[i1Cells] = w_nplus1_lplus1[i1Cells];
+	});
 }
 
 /**

@@ -221,10 +221,10 @@ public final class Affectations
 	protected void setUpTimeLoopN()
 	{
 		t_n = t_n0;
-		IntStream.range(0, 2).parallel().forEach(i1 -> 
+		for (int i1=0; i1<2; i1++)
 		{
 			u_n[i1] = u_n0[i1];
-		});
+		}
 		IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
 		{
 			for (int i1=0; i1<2; i1++)
@@ -236,8 +236,8 @@ public final class Affectations
 
 	/**
 	 * Job executeTimeLoopN called @3.0 in simulate method.
-	 * In variables: deltat, e1, e2_nplus1, e2_nplus1_k, e2_nplus1_k0, e2_nplus1_kplus1, e_n, t_n, u_n
-	 * Out variables: e1, e2_nplus1, e2_nplus1_k, e2_nplus1_k0, e2_nplus1_kplus1, e_nplus1, t_nplus1, u_nplus1
+	 * In variables: e2_n, e_n, t_n, u_n
+	 * Out variables: e2_nplus1, e_nplus1, t_nplus1, u_nplus1
 	 */
 	protected void executeTimeLoopN()
 	{
@@ -262,10 +262,10 @@ public final class Affectations
 			if (continueLoop)
 			{
 				t_n = t_nplus1;
-				IntStream.range(0, 2).parallel().forEach(i1 -> 
+				for (int i1=0; i1<2; i1++)
 				{
 					u_n[i1] = u_nplus1[i1];
-				});
+				}
 				IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
 				{
 					for (int i1=0; i1<2; i1++)

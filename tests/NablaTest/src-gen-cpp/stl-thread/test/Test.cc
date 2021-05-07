@@ -157,14 +157,16 @@ void Test::initE2() noexcept
 void Test::setUpTimeLoopN() noexcept
 {
 	t_n = t_n0;
-	for (size_t i1(0) ; i1<e_n.size() ; i1++)
-		e_n[i1] = e_n0[i1];
+	parallel_exec(nbCells, [&](const size_t& i1Cells)
+	{
+		e_n[i1Cells] = e_n0[i1Cells];
+	});
 }
 
 /**
  * Job executeTimeLoopN called @3.0 in simulate method.
- * In variables: deltat, e1, e2_nplus1, e2_nplus1_k, e2_nplus1_k0, e2_nplus1_kplus1, e_n, t_n
- * Out variables: e1, e2_nplus1, e2_nplus1_k, e2_nplus1_k0, e2_nplus1_kplus1, e_nplus1, t_nplus1
+ * In variables: e2_n, e_n, t_n
+ * Out variables: e2_nplus1, e_nplus1, t_nplus1
  */
 void Test::executeTimeLoopN() noexcept
 {
@@ -193,10 +195,15 @@ void Test::executeTimeLoopN() noexcept
 	
 		if (continueLoop)
 		{
-			// Switch variables to prepare next iteration
-			std::swap(t_nplus1, t_n);
-			std::swap(e2_nplus1, e2_n);
-			std::swap(e_nplus1, e_n);
+			t_n = t_nplus1;
+			parallel_exec(nbCells, [&](const size_t& i1Cells)
+			{
+				e2_n[i1Cells] = e2_nplus1[i1Cells];
+			});
+			parallel_exec(nbCells, [&](const size_t& i1Cells)
+			{
+				e_n[i1Cells] = e_nplus1[i1Cells];
+			});
 		}
 	
 		cpuTimer.stop();
@@ -224,8 +231,10 @@ void Test::executeTimeLoopN() noexcept
  */
 void Test::setUpTimeLoopK() noexcept
 {
-	for (size_t i1(0) ; i1<e2_nplus1_k.size() ; i1++)
-		e2_nplus1_k[i1] = e2_nplus1_k0[i1];
+	parallel_exec(nbCells, [&](const size_t& i1Cells)
+	{
+		e2_nplus1_k[i1Cells] = e2_nplus1_k0[i1Cells];
+	});
 }
 
 /**
@@ -249,8 +258,10 @@ void Test::executeTimeLoopK() noexcept
 	
 		if (continueLoop)
 		{
-			// Switch variables to prepare next iteration
-			std::swap(e2_nplus1_kplus1, e2_nplus1_k);
+			parallel_exec(nbCells, [&](const size_t& i1Cells)
+			{
+				e2_nplus1_k[i1Cells] = e2_nplus1_kplus1[i1Cells];
+			});
 		}
 	
 	
@@ -264,8 +275,10 @@ void Test::executeTimeLoopK() noexcept
  */
 void Test::tearDownTimeLoopK() noexcept
 {
-	for (size_t i1(0) ; i1<e2_nplus1.size() ; i1++)
-		e2_nplus1[i1] = e2_nplus1_kplus1[i1];
+	parallel_exec(nbCells, [&](const size_t& i1Cells)
+	{
+		e2_nplus1[i1Cells] = e2_nplus1_kplus1[i1Cells];
+	});
 }
 
 /**

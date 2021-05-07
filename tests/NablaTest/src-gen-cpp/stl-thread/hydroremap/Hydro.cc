@@ -104,7 +104,7 @@ void Hydro::hj2() noexcept
 }
 
 /**
- * Job hj3 called @4.0 in simulate method.
+ * Job hj3 called @3.0 in simulate method.
  * In variables: hv4, hv5, hv6
  * Out variables: hv7
  */
@@ -126,11 +126,11 @@ void Hydro::simulate()
 
 	hj1(); // @1.0
 	r1->rj1(); // @1.0
+	r2->rj1(); // @1.0
 	hj2(); // @2.0
-	r2->rj1(); // @2.0
 	r1->rj2(); // @2.0
-	r2->rj2(); // @3.0
-	hj3(); // @4.0
+	r2->rj2(); // @2.0
+	hj3(); // @3.0
 	
 	std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << globalTimer.print() << __RESET__ << std::endl;
 }

@@ -115,8 +115,8 @@ void Reduction::computeGeometry() noexcept
 
 /**
  * Job executeTimeLoopN called @1.0 in simulate method.
- * In variables: 
- * Out variables: 
+ * In variables: Vnode_n, t_n
+ * Out variables: Vnode_nplus1, t_nplus1
  */
 void Reduction::executeTimeLoopN() noexcept
 {
@@ -138,9 +138,14 @@ void Reduction::executeTimeLoopN() noexcept
 	
 		if (continueLoop)
 		{
-			// Switch variables to prepare next iteration
-			std::swap(t_nplus1, t_n);
-			std::swap(Vnode_nplus1, Vnode_n);
+			t_n = t_nplus1;
+			parallel_exec(nbNodes, [&](const size_t& i1Nodes)
+			{
+				for (size_t i1=0; i1<2; i1++)
+				{
+					Vnode_n[i1Nodes][i1] = Vnode_nplus1[i1Nodes][i1];
+				}
+			});
 		}
 	
 		cpuTimer.stop();

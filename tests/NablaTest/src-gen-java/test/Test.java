@@ -204,16 +204,16 @@ public final class Test
 	protected void setUpTimeLoopN()
 	{
 		t_n = t_n0;
-		IntStream.range(0, e_n.length).parallel().forEach(i1 ->
+		IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
 		{
-			e_n[i1] = e_n0[i1];
+			e_n[i1Cells] = e_n0[i1Cells];
 		});
 	}
 
 	/**
 	 * Job executeTimeLoopN called @3.0 in simulate method.
-	 * In variables: deltat, e1, e2_nplus1, e2_nplus1_k, e2_nplus1_k0, e2_nplus1_kplus1, e_n, t_n
-	 * Out variables: e1, e2_nplus1, e2_nplus1_k, e2_nplus1_k0, e2_nplus1_kplus1, e_nplus1, t_nplus1
+	 * In variables: e2_n, e_n, t_n
+	 * Out variables: e2_nplus1, e_nplus1, t_nplus1
 	 */
 	protected void executeTimeLoopN()
 	{
@@ -236,16 +236,15 @@ public final class Test
 		
 			if (continueLoop)
 			{
-				// Switch variables to prepare next iteration
-				double tmp_t_n = t_n;
 				t_n = t_nplus1;
-				t_nplus1 = tmp_t_n;
-				double[] tmp_e2_n = e2_n;
-				e2_n = e2_nplus1;
-				e2_nplus1 = tmp_e2_n;
-				double[] tmp_e_n = e_n;
-				e_n = e_nplus1;
-				e_nplus1 = tmp_e_n;
+				IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
+				{
+					e2_n[i1Cells] = e2_nplus1[i1Cells];
+				});
+				IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
+				{
+					e_n[i1Cells] = e_nplus1[i1Cells];
+				});
 			} 
 		} while (continueLoop);
 	}
@@ -257,9 +256,9 @@ public final class Test
 	 */
 	protected void setUpTimeLoopK()
 	{
-		IntStream.range(0, e2_nplus1_k.length).parallel().forEach(i1 ->
+		IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
 		{
-			e2_nplus1_k[i1] = e2_nplus1_k0[i1];
+			e2_nplus1_k[i1Cells] = e2_nplus1_k0[i1Cells];
 		});
 	}
 
@@ -283,10 +282,10 @@ public final class Test
 		
 			if (continueLoop)
 			{
-				// Switch variables to prepare next iteration
-				double[] tmp_e2_nplus1_k = e2_nplus1_k;
-				e2_nplus1_k = e2_nplus1_kplus1;
-				e2_nplus1_kplus1 = tmp_e2_nplus1_k;
+				IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
+				{
+					e2_nplus1_k[i1Cells] = e2_nplus1_kplus1[i1Cells];
+				});
 			} 
 		} while (continueLoop);
 	}
@@ -298,9 +297,9 @@ public final class Test
 	 */
 	protected void tearDownTimeLoopK()
 	{
-		IntStream.range(0, e2_nplus1.length).parallel().forEach(i1 ->
+		IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
 		{
-			e2_nplus1[i1] = e2_nplus1_kplus1[i1];
+			e2_nplus1[i1Cells] = e2_nplus1_kplus1[i1Cells];
 		});
 	}
 

@@ -63,8 +63,8 @@ public final class R2
 	}
 
 	/**
-	 * Job rj1 called @2.0 in simulate method.
-	 * In variables: hv3
+	 * Job rj1 called @1.0 in simulate method.
+	 * In variables: 
 	 * Out variables: rv2
 	 */
 	protected void rj1()
@@ -76,9 +76,9 @@ public final class R2
 	}
 
 	/**
-	 * Job rj2 called @3.0 in simulate method.
+	 * Job rj2 called @2.0 in simulate method.
 	 * In variables: rv2
-	 * Out variables: hv6
+	 * Out variables: 
 	 */
 	protected void rj2()
 	{

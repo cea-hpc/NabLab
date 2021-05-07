@@ -226,9 +226,9 @@ public final class BugIter
 	 */
 	protected void setUpTimeLoopK()
 	{
-		IntStream.range(0, v_nplus1_k.length).parallel().forEach(i1 ->
+		IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
 		{
-			v_nplus1_k[i1] = v_nplus1_k0[i1];
+			v_nplus1_k[i1Cells] = v_nplus1_k0[i1Cells];
 		});
 	}
 
@@ -262,18 +262,18 @@ public final class BugIter
 		
 			if (continueLoop)
 			{
-				// Switch variables to prepare next iteration
-				double[] tmp_v_nplus1_k = v_nplus1_k;
-				v_nplus1_k = v_nplus1_kplus1;
-				v_nplus1_kplus1 = tmp_v_nplus1_k;
+				IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
+				{
+					v_nplus1_k[i1Cells] = v_nplus1_kplus1[i1Cells];
+				});
 			} 
 		} while (continueLoop);
 	}
 
 	/**
 	 * Job executeTimeLoopN called @3.0 in simulate method.
-	 * In variables: deltat, t_n, u_n, v_nplus1, v_nplus1_k, v_nplus1_k0, v_nplus1_kplus1, w_nplus1, w_nplus1_l, w_nplus1_l0, w_nplus1_lplus1
-	 * Out variables: t_nplus1, u_nplus1, v_nplus1, v_nplus1_k, v_nplus1_k0, v_nplus1_kplus1, w_nplus1, w_nplus1_l, w_nplus1_l0, w_nplus1_lplus1
+	 * In variables: t_n, u_n, v_n, w_n
+	 * Out variables: t_nplus1, u_nplus1, v_nplus1, w_nplus1
 	 */
 	protected void executeTimeLoopN()
 	{
@@ -299,19 +299,19 @@ public final class BugIter
 		
 			if (continueLoop)
 			{
-				// Switch variables to prepare next iteration
-				double tmp_t_n = t_n;
 				t_n = t_nplus1;
-				t_nplus1 = tmp_t_n;
-				double[] tmp_u_n = u_n;
-				u_n = u_nplus1;
-				u_nplus1 = tmp_u_n;
-				double[] tmp_v_n = v_n;
-				v_n = v_nplus1;
-				v_nplus1 = tmp_v_n;
-				double[] tmp_w_n = w_n;
-				w_n = w_nplus1;
-				w_nplus1 = tmp_w_n;
+				IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
+				{
+					u_n[i1Cells] = u_nplus1[i1Cells];
+				});
+				IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
+				{
+					v_n[i1Cells] = v_nplus1[i1Cells];
+				});
+				IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
+				{
+					w_n[i1Cells] = w_nplus1[i1Cells];
+				});
 			} 
 		} while (continueLoop);
 	}
@@ -323,9 +323,9 @@ public final class BugIter
 	 */
 	protected void tearDownTimeLoopK()
 	{
-		IntStream.range(0, v_nplus1.length).parallel().forEach(i1 ->
+		IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
 		{
-			v_nplus1[i1] = v_nplus1_kplus1[i1];
+			v_nplus1[i1Cells] = v_nplus1_kplus1[i1Cells];
 		});
 	}
 
@@ -349,9 +349,9 @@ public final class BugIter
 	 */
 	protected void setUpTimeLoopL()
 	{
-		IntStream.range(0, w_nplus1_l.length).parallel().forEach(i1 ->
+		IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
 		{
-			w_nplus1_l[i1] = w_nplus1_l0[i1];
+			w_nplus1_l[i1Cells] = w_nplus1_l0[i1Cells];
 		});
 	}
 
@@ -375,10 +375,10 @@ public final class BugIter
 		
 			if (continueLoop)
 			{
-				// Switch variables to prepare next iteration
-				double[] tmp_w_nplus1_l = w_nplus1_l;
-				w_nplus1_l = w_nplus1_lplus1;
-				w_nplus1_lplus1 = tmp_w_nplus1_l;
+				IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
+				{
+					w_nplus1_l[i1Cells] = w_nplus1_lplus1[i1Cells];
+				});
 			} 
 		} while (continueLoop);
 	}
@@ -390,9 +390,9 @@ public final class BugIter
 	 */
 	protected void tearDownTimeLoopL()
 	{
-		IntStream.range(0, w_nplus1.length).parallel().forEach(i1 ->
+		IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
 		{
-			w_nplus1[i1] = w_nplus1_lplus1[i1];
+			w_nplus1[i1Cells] = w_nplus1_lplus1[i1Cells];
 		});
 	}
 

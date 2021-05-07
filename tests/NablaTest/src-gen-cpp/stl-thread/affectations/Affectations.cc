@@ -171,26 +171,24 @@ void Affectations::initE2() noexcept
  */
 void Affectations::setUpTimeLoopN() noexcept
 {
+	t_n = t_n0;
+	for (size_t i1=0; i1<2; i1++)
 	{
-		t_n = t_n0;
-		parallel_exec(2, [&](const size_t& i1)
-		{
-			u_n[i1] = u_n0[i1];
-		});
-		parallel_exec(nbCells, [&](const size_t& i1Cells)
-		{
-			for (size_t i1=0; i1<2; i1++)
-			{
-				e_n[i1Cells][i1] = e_n0[i1Cells][i1];
-			}
-		});
+		u_n[i1] = u_n0[i1];
 	}
+	parallel_exec(nbCells, [&](const size_t& i1Cells)
+	{
+		for (size_t i1=0; i1<2; i1++)
+		{
+			e_n[i1Cells][i1] = e_n0[i1Cells][i1];
+		}
+	});
 }
 
 /**
  * Job executeTimeLoopN called @3.0 in simulate method.
- * In variables: deltat, e1, e2_nplus1, e2_nplus1_k, e2_nplus1_k0, e2_nplus1_kplus1, e_n, t_n, u_n
- * Out variables: e1, e2_nplus1, e2_nplus1_k, e2_nplus1_k0, e2_nplus1_kplus1, e_nplus1, t_nplus1, u_nplus1
+ * In variables: e2_n, e_n, t_n, u_n
+ * Out variables: e2_nplus1, e_nplus1, t_nplus1, u_nplus1
  */
 void Affectations::executeTimeLoopN() noexcept
 {
@@ -220,27 +218,25 @@ void Affectations::executeTimeLoopN() noexcept
 	
 		if (continueLoop)
 		{
-																			{
-																				t_n = t_nplus1;
-																				parallel_exec(2, [&](const size_t& i1)
-																				{
-																					u_n[i1] = u_nplus1[i1];
-																				});
-																				parallel_exec(nbCells, [&](const size_t& i1Cells)
-																				{
-																					for (size_t i1=0; i1<2; i1++)
-																					{
-																						e2_n[i1Cells][i1] = e2_nplus1[i1Cells][i1];
-																					}
-																				});
-																				parallel_exec(nbCells, [&](const size_t& i1Cells)
-																				{
-																					for (size_t i1=0; i1<2; i1++)
-																					{
-																						e_n[i1Cells][i1] = e_nplus1[i1Cells][i1];
-																					}
-																				});
-																			}
+			t_n = t_nplus1;
+			for (size_t i1=0; i1<2; i1++)
+			{
+				u_n[i1] = u_nplus1[i1];
+			}
+			parallel_exec(nbCells, [&](const size_t& i1Cells)
+			{
+				for (size_t i1=0; i1<2; i1++)
+				{
+					e2_n[i1Cells][i1] = e2_nplus1[i1Cells][i1];
+				}
+			});
+			parallel_exec(nbCells, [&](const size_t& i1Cells)
+			{
+				for (size_t i1=0; i1<2; i1++)
+				{
+					e_n[i1Cells][i1] = e_nplus1[i1Cells][i1];
+				}
+			});
 		}
 	
 		cpuTimer.stop();
@@ -268,15 +264,13 @@ void Affectations::executeTimeLoopN() noexcept
  */
 void Affectations::setUpTimeLoopK() noexcept
 {
+	parallel_exec(nbCells, [&](const size_t& i1Cells)
 	{
-		parallel_exec(nbCells, [&](const size_t& i1Cells)
+		for (size_t i1=0; i1<2; i1++)
 		{
-			for (size_t i1=0; i1<2; i1++)
-			{
-				e2_nplus1_k[i1Cells][i1] = e2_nplus1_k0[i1Cells][i1];
-			}
-		});
-	}
+			e2_nplus1_k[i1Cells][i1] = e2_nplus1_k0[i1Cells][i1];
+		}
+	});
 }
 
 /**
@@ -300,15 +294,13 @@ void Affectations::executeTimeLoopK() noexcept
 	
 		if (continueLoop)
 		{
-																			{
-																				parallel_exec(nbCells, [&](const size_t& i1Cells)
-																				{
-																					for (size_t i1=0; i1<2; i1++)
-																					{
-																						e2_nplus1_k[i1Cells][i1] = e2_nplus1_kplus1[i1Cells][i1];
-																					}
-																				});
-																			}
+			parallel_exec(nbCells, [&](const size_t& i1Cells)
+			{
+				for (size_t i1=0; i1<2; i1++)
+				{
+					e2_nplus1_k[i1Cells][i1] = e2_nplus1_kplus1[i1Cells][i1];
+				}
+			});
 		}
 	
 	
@@ -322,15 +314,13 @@ void Affectations::executeTimeLoopK() noexcept
  */
 void Affectations::tearDownTimeLoopK() noexcept
 {
+	parallel_exec(nbCells, [&](const size_t& i1Cells)
 	{
-		parallel_exec(nbCells, [&](const size_t& i1Cells)
+		for (size_t i1=0; i1<2; i1++)
 		{
-			for (size_t i1=0; i1<2; i1++)
-			{
-				e2_nplus1[i1Cells][i1] = e2_nplus1_kplus1[i1Cells][i1];
-			}
-		});
-	}
+			e2_nplus1[i1Cells][i1] = e2_nplus1_kplus1[i1Cells][i1];
+		}
+	});
 }
 
 /**

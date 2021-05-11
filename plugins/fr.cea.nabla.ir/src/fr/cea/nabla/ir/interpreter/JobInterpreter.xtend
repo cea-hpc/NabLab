@@ -59,7 +59,7 @@ class JobInterpreter
 					context.getReal(context.ir.timeVariable),
 					context.getReal(context.ir.timeStepVariable))
 			context.logFine(log)
-			if (main && ppInfo !== null)
+			if (caller.main && ppInfo !== null)
 			{
 				val periodValue = context.getNumber(ppInfo.periodValue)
 				val periodReference = context.getNumber(ppInfo.periodReference)

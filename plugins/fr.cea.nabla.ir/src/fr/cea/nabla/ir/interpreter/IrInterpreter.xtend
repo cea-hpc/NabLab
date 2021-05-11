@@ -131,7 +131,7 @@ class IrInterpreter
 		{
 			val outputPath = jsonOptions.get("outputPath")
 			if (outputPath !== null)
-				context.initWriter(outputPath.asString)
+				context.initWriter(wsPath + File.separator + outputPath.asString)
 		}
 
 		for (v : m.options)

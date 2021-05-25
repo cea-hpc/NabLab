@@ -54,7 +54,6 @@ option ℕ maxIterations = 20000;
 // User options
 option ℝ γ = 1.4;
 option ℝ xInterface = 0.5;
-option ℝ δtIni = 1.0e-5;
 option ℝ δtCfl = 0.4;
 option ℝ ρIniZg = 1.0;
 option ℝ ρIniZd = 0.125;
@@ -78,7 +77,6 @@ iterate n while (t^{n+1} < stopTime && n+1 < maxIterations);
 // * Initialization
 // *************************************************************
 IniTime: t^{n=0} = 0.0;
-IniTimeStep: δt^{n=0} = δtIni;
 IniCjrIc: ∀j∈cells(), ∀r∈nodesOfCell(j),
 	Cjr_ic{j,r} = 0.5 * perp(X^{n=0}{r+1} - X^{n=0}{r-1});
 
@@ -161,8 +159,8 @@ ComputeV: ∀j∈cells(), V{j} = 0.5 * ∑{r∈nodesOfCell(j)}(dot(C{j,r}, X^{n}
 // *************************************************************
 // * Loop iteration (n)
 // *************************************************************
-ComputeXn: ∀r∈nodes(), X^{n+1}{r} = X^{n}{r} + δt^{n} * ur{r};
-ComputeUn: ∀j∈cells(), uj^{n+1}{j} = uj^{n}{j} - (δt^{n}/m{j}) * ∑{r∈nodesOfCell(j)}(F{j,r});
-ComputeEn: ∀j∈cells(), E^{n+1}{j} = E^{n}{j} - (δt^{n} / m{j}) * ∑{r∈nodesOfCell(j)}(dot(F{j,r}, ur{r}));
-ComputeDt: δt^{n+1} = δtCfl * Min{j∈cells()}(δtj{j});
-ComputeTn: t^{n+1} = t^{n} + δt^{n+1};
+ComputeXn: ∀r∈nodes(), X^{n+1}{r} = X^{n}{r} + δt * ur{r};
+ComputeUn: ∀j∈cells(), uj^{n+1}{j} = uj^{n}{j} - (δt/m{j}) * ∑{r∈nodesOfCell(j)}(F{j,r});
+ComputeEn: ∀j∈cells(), E^{n+1}{j} = E^{n}{j} - (δt / m{j}) * ∑{r∈nodesOfCell(j)}(dot(F{j,r}, ur{r}));
+ComputeDt: δt = min((δtCfl * Min{j∈cells()}(δtj{j})), (stopTime-t^{n}));
+ComputeTn: t^{n+1} = t^{n} + δt;

@@ -28,7 +28,6 @@ public final class Glace2d
 		public int maxIterations;
 		public double gamma;
 		public double xInterface;
-		public double deltatIni;
 		public double deltatCfl;
 		public double rhoIniZg;
 		public double rhoIniZd;
@@ -87,15 +86,6 @@ public final class Glace2d
 			}
 			else
 				xInterface = 0.5;
-			// deltatIni
-			if (o.has("deltatIni"))
-			{
-				final JsonElement valueof_deltatIni = o.get("deltatIni");
-				assert(valueof_deltatIni.isJsonPrimitive());
-				deltatIni = valueof_deltatIni.getAsJsonPrimitive().getAsDouble();
-			}
-			else
-				deltatIni = 1.0E-5;
 			// deltatCfl
 			if (o.has("deltatCfl"))
 			{
@@ -158,9 +148,7 @@ public final class Glace2d
 	protected double t_n;
 	protected double t_nplus1;
 	protected double t_n0;
-	protected double deltat_n;
-	protected double deltat_nplus1;
-	protected double deltat_n0;
+	protected double deltat;
 	protected double[][] X_n;
 	protected double[][] X_nplus1;
 	protected double[][] X_n0;
@@ -316,16 +304,6 @@ public final class Glace2d
 	}
 
 	/**
-	 * Job iniTimeStep called @1.0 in simulate method.
-	 * In variables: deltatIni
-	 * Out variables: deltat_n0
-	 */
-	protected void iniTimeStep()
-	{
-		deltat_n0 = options.deltatIni;
-	}
-
-	/**
 	 * Job computeLjr called @2.0 in executeTimeLoopN method.
 	 * In variables: C
 	 * Out variables: l
@@ -427,13 +405,12 @@ public final class Glace2d
 
 	/**
 	 * Job setUpTimeLoopN called @2.0 in simulate method.
-	 * In variables: X_n0, deltat_n0, t_n0
-	 * Out variables: X_n, deltat_n, t_n
+	 * In variables: X_n0, t_n0
+	 * Out variables: X_n, t_n
 	 */
 	protected void setUpTimeLoopN()
 	{
 		t_n = t_n0;
-		deltat_n = deltat_n0;
 		IntStream.range(0, nbNodes).parallel().forEach(i1Nodes -> 
 		{
 			for (int i1=0; i1<2; i1++)
@@ -458,8 +435,8 @@ public final class Glace2d
 
 	/**
 	 * Job executeTimeLoopN called @3.0 in simulate method.
-	 * In variables: E_n, X_n, deltat_n, t_n, uj_n
-	 * Out variables: E_nplus1, X_nplus1, deltat_nplus1, t_nplus1, uj_nplus1
+	 * In variables: E_n, X_n, t_n, uj_n
+	 * Out variables: E_nplus1, X_nplus1, t_nplus1, uj_nplus1
 	 */
 	protected void executeTimeLoopN()
 	{
@@ -468,7 +445,7 @@ public final class Glace2d
 		do
 		{
 			n++;
-			System.out.printf("[%5d] t: %5.5f - deltat: %5.5f\n", n, t_n, deltat_n);
+			System.out.printf("[%5d] t: %5.5f - deltat: %5.5f\n", n, t_n, deltat);
 			if (n >= lastDump + options.outputPeriod)
 				dumpVariables(n);
 			computeCjr(); // @1.0
@@ -496,32 +473,29 @@ public final class Glace2d
 			// Evaluate loop condition with variables at time n
 			continueLoop = (t_nplus1 < options.stopTime && n + 1 < options.maxIterations);
 		
-			if (continueLoop)
+			t_n = t_nplus1;
+			IntStream.range(0, nbNodes).parallel().forEach(i1Nodes -> 
 			{
-				t_n = t_nplus1;
-				deltat_n = deltat_nplus1;
-				IntStream.range(0, nbNodes).parallel().forEach(i1Nodes -> 
+				for (int i1=0; i1<2; i1++)
 				{
-					for (int i1=0; i1<2; i1++)
-					{
-						X_n[i1Nodes][i1] = X_nplus1[i1Nodes][i1];
-					}
-				});
-				IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
+					X_n[i1Nodes][i1] = X_nplus1[i1Nodes][i1];
+				}
+			});
+			IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
+			{
+				E_n[i1Cells] = E_nplus1[i1Cells];
+			});
+			IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
+			{
+				for (int i1=0; i1<2; i1++)
 				{
-					E_n[i1Cells] = E_nplus1[i1Cells];
-				});
-				IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
-				{
-					for (int i1=0; i1<2; i1++)
-					{
-						uj_n[i1Cells][i1] = uj_nplus1[i1Cells][i1];
-					}
-				});
-			} 
+					uj_n[i1Cells][i1] = uj_nplus1[i1Cells][i1];
+				}
+			});
 		} while (continueLoop);
+		System.out.printf("[%5d] t: %5.5f - deltat: %5.5f\n", n, t_n, deltat);
 		// force a last output at the end
-		dumpVariables(n);
+		dumpVariables(n+1);
 	}
 
 	/**
@@ -657,8 +631,8 @@ public final class Glace2d
 
 	/**
 	 * Job computeDt called @7.0 in executeTimeLoopN method.
-	 * In variables: deltatCfl, deltatj
-	 * Out variables: deltat_nplus1
+	 * In variables: deltatCfl, deltatj, stopTime, t_n
+	 * Out variables: deltat
 	 */
 	protected void computeDt()
 	{
@@ -672,7 +646,7 @@ public final class Glace2d
 			},
 			(r1, r2) -> minR0(r1, r2)
 		);
-		deltat_nplus1 = options.deltatCfl * reduction0;
+		deltat = Math.min((options.deltatCfl * reduction0), (options.stopTime - t_n));
 	}
 
 	/**
@@ -796,12 +770,12 @@ public final class Glace2d
 
 	/**
 	 * Job computeTn called @8.0 in executeTimeLoopN method.
-	 * In variables: deltat_nplus1, t_n
+	 * In variables: deltat, t_n
 	 * Out variables: t_nplus1
 	 */
 	protected void computeTn()
 	{
-		t_nplus1 = t_n + deltat_nplus1;
+		t_nplus1 = t_n + deltat;
 	}
 
 	/**
@@ -842,20 +816,20 @@ public final class Glace2d
 
 	/**
 	 * Job computeXn called @10.0 in executeTimeLoopN method.
-	 * In variables: X_n, deltat_n, ur
+	 * In variables: X_n, deltat, ur
 	 * Out variables: X_nplus1
 	 */
 	protected void computeXn()
 	{
 		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> 
 		{
-			X_nplus1[rNodes] = ArrayOperations.plus(X_n[rNodes], ArrayOperations.multiply(deltat_n, ur[rNodes]));
+			X_nplus1[rNodes] = ArrayOperations.plus(X_n[rNodes], ArrayOperations.multiply(deltat, ur[rNodes]));
 		});
 	}
 
 	/**
 	 * Job computeEn called @11.0 in executeTimeLoopN method.
-	 * In variables: E_n, F, deltat_n, m, ur
+	 * In variables: E_n, F, deltat, m, ur
 	 * Out variables: E_nplus1
 	 */
 	protected void computeEn()
@@ -874,13 +848,13 @@ public final class Glace2d
 					reduction0 = sumR0(reduction0, dot(F[jCells][rNodesOfCellJ], ur[rNodes]));
 				}
 			}
-			E_nplus1[jCells] = E_n[jCells] - (deltat_n / m[jCells]) * reduction0;
+			E_nplus1[jCells] = E_n[jCells] - (deltat / m[jCells]) * reduction0;
 		});
 	}
 
 	/**
 	 * Job computeUn called @11.0 in executeTimeLoopN method.
-	 * In variables: F, deltat_n, m, uj_n
+	 * In variables: F, deltat, m, uj_n
 	 * Out variables: uj_nplus1
 	 */
 	protected void computeUn()
@@ -897,7 +871,7 @@ public final class Glace2d
 					reduction0 = sumR1(reduction0, F[jCells][rNodesOfCellJ]);
 				}
 			}
-			uj_nplus1[jCells] = ArrayOperations.minus(uj_n[jCells], ArrayOperations.multiply((deltat_n / m[jCells]), reduction0));
+			uj_nplus1[jCells] = ArrayOperations.minus(uj_n[jCells], ArrayOperations.multiply((deltat / m[jCells]), reduction0));
 		});
 	}
 
@@ -1003,7 +977,6 @@ public final class Glace2d
 		System.out.println("Start execution of glace2d");
 		iniCjrIc(); // @1.0
 		iniTime(); // @1.0
-		iniTimeStep(); // @1.0
 		initialize(); // @2.0
 		setUpTimeLoopN(); // @2.0
 		executeTimeLoopN(); // @3.0

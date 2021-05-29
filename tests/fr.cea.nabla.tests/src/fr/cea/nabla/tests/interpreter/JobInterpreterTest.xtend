@@ -41,7 +41,6 @@ class JobInterpreterTest extends AbstractJobInterpreterTest
 		val context = compilationHelper.getInterpreterContext(ir, jsonDefaultContent)
 		assertVariableValueInContext(ir.mainModule, context, "t_n0", new NV0Real(0.0))
 		assertVariableValueInContext(ir.mainModule, context, "n", new NV0Int(10))
-		assertVariableValueInContext(ir.mainModule, context, "t_n", new NV0Real(0.09))
 		assertVariableValueInContext(ir.mainModule, context, "t_nplus1", new NV0Real(0.1))
 	}
 
@@ -51,6 +50,6 @@ class JobInterpreterTest extends AbstractJobInterpreterTest
 		val context = compilationHelper.getInterpreterContext(ir, jsonDefaultContent)
 		context.logVariables("After")
 		assertVariableValueInContext(ir.mainModule, context, "u_n0", new NV0Real(4.0))
-		assertVariableValueInContext(ir.mainModule, context, "u_n", new NV0Real(13.0))
+		assertVariableValueInContext(ir.mainModule, context, "u_n", new NV0Real(14.0))
 	}
 }

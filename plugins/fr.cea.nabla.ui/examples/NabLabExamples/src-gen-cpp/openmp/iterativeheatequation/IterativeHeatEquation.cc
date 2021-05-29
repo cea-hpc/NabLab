@@ -142,10 +142,10 @@ IterativeHeatEquation::IterativeHeatEquation(CartesianMesh2D* aMesh, Options& aO
 , nbNodes(mesh->getNbNodes())
 , nbCells(mesh->getNbCells())
 , nbFaces(mesh->getNbFaces())
-, nbNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
-, nbNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
-, nbCellsOfFace(CartesianMesh2D::MaxNbCellsOfFace)
-, nbNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
+, maxNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
+, maxNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
+, maxCellsOfFace(CartesianMesh2D::MaxNbCellsOfFace)
+, maxNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
 , options(aOptions)
 , writer("IterativeHeatEquation", options.outputPath)
 , lastDump(numeric_limits<int>::min())
@@ -193,7 +193,7 @@ void IterativeHeatEquation::computeFaceLength() noexcept
 			for (size_t pNodesOfFaceF=0; pNodesOfFaceF<nbNodesOfFaceF; pNodesOfFaceF++)
 			{
 				const Id pId(nodesOfFaceF[pNodesOfFaceF]);
-				const Id pPlus1Id(nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace]);
+				const Id pPlus1Id(nodesOfFaceF[(pNodesOfFaceF+1+maxNodesOfFace)%maxNodesOfFace]);
 				const size_t pNodes(pId);
 				const size_t pPlus1Nodes(pPlus1Id);
 				reduction0 = iterativeheatequationfreefuncs::sumR0(reduction0, iterativeheatequationfreefuncs::norm(X[pNodes] - X[pPlus1Nodes]));
@@ -231,7 +231,7 @@ void IterativeHeatEquation::computeV() noexcept
 			for (size_t pNodesOfCellJ=0; pNodesOfCellJ<nbNodesOfCellJ; pNodesOfCellJ++)
 			{
 				const Id pId(nodesOfCellJ[pNodesOfCellJ]);
-				const Id pPlus1Id(nodesOfCellJ[(pNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
+				const Id pPlus1Id(nodesOfCellJ[(pNodesOfCellJ+1+maxNodesOfCell)%maxNodesOfCell]);
 				const size_t pNodes(pId);
 				const size_t pPlus1Nodes(pPlus1Id);
 				reduction0 = iterativeheatequationfreefuncs::sumR0(reduction0, iterativeheatequationfreefuncs::det(X[pNodes], X[pPlus1Nodes]));
@@ -412,7 +412,6 @@ void IterativeHeatEquation::executeTimeLoopK() noexcept
 	do
 	{
 		k++;
-	
 		updateU(); // @1.0
 		computeResidual(); // @2.0
 		
@@ -420,16 +419,11 @@ void IterativeHeatEquation::executeTimeLoopK() noexcept
 		// Evaluate loop condition with variables at time n
 		continueLoop = (residual > options.epsilon && iterativeheatequationfreefuncs::check(k + 1 < options.maxIterationsK));
 	
-		if (continueLoop)
+		#pragma omp parallel for shared(u_nplus1_k)
+		for (size_t i1Cells=0; i1Cells<nbCells; i1Cells++)
 		{
-			#pragma omp parallel for shared(u_nplus1_k)
-			for (size_t i1Cells=0; i1Cells<nbCells; i1Cells++)
-			{
-				u_nplus1_k[i1Cells] = u_nplus1_kplus1[i1Cells];
-			}
+			u_nplus1_k[i1Cells] = u_nplus1_kplus1[i1Cells];
 		}
-	
-	
 	} while (continueLoop);
 }
 
@@ -533,14 +527,11 @@ void IterativeHeatEquation::executeTimeLoopN() noexcept
 		// Evaluate loop condition with variables at time n
 		continueLoop = (t_nplus1 < options.stopTime && n + 1 < options.maxIterations);
 	
-		if (continueLoop)
+		t_n = t_nplus1;
+		#pragma omp parallel for shared(u_n)
+		for (size_t i1Cells=0; i1Cells<nbCells; i1Cells++)
 		{
-			t_n = t_nplus1;
-			#pragma omp parallel for shared(u_n)
-			for (size_t i1Cells=0; i1Cells<nbCells; i1Cells++)
-			{
-				u_n[i1Cells] = u_nplus1[i1Cells];
-			}
+			u_n[i1Cells] = u_nplus1[i1Cells];
 		}
 	
 		cpuTimer.stop();
@@ -562,8 +553,8 @@ void IterativeHeatEquation::executeTimeLoopN() noexcept
 		cpuTimer.reset();
 		ioTimer.reset();
 	} while (continueLoop);
-	// force a last output at the end
-	dumpVariables(n, false);
+	if (!writer.isDisabled())
+		dumpVariables(n+1, false);
 }
 
 void IterativeHeatEquation::dumpVariables(int iteration, bool useTimer)
@@ -618,6 +609,7 @@ void IterativeHeatEquation::simulate()
 	computeAlphaCoeff(); // @3.0
 	executeTimeLoopN(); // @4.0
 	
+	std::cout << "\nFinal time = " << t_n << endl;
 	std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << globalTimer.print() << __RESET__ << std::endl;
 }
 

@@ -39,7 +39,9 @@
         lowerBound="1" eType="#//Variable"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="nodeCoordVariable" lowerBound="1"
         eType="#//Variable"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="timeVariable" lowerBound="1"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="currentTimeVariable" lowerBound="1"
+        eType="#//Variable"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="nextTimeVariable" lowerBound="1"
         eType="#//Variable"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="timeStepVariable" lowerBound="1"
         eType="#//Variable"/>

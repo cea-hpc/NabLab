@@ -2,22 +2,17 @@
 
 package glace2d;
 
-import static org.iq80.leveldb.impl.Iq80DBFactory.bytes;
-import static org.iq80.leveldb.impl.Iq80DBFactory.factory;
-
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.stream.IntStream;
 
-import com.google.gson.JsonElement;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.JsonElement;
 
 import fr.cea.nabla.javalib.*;
 import fr.cea.nabla.javalib.mesh.*;
 
-@SuppressWarnings("all")
 public final class Glace2d
 {
 	public final static class Options
@@ -37,10 +32,8 @@ public final class Glace2d
 
 		public void jsonInit(final String jsonContent)
 		{
-			final JsonParser parser = new JsonParser();
-			final JsonElement json = parser.parse(jsonContent);
-			assert(json.isJsonObject());
-			final JsonObject o = json.getAsJsonObject();
+			final Gson gson = new Gson();
+			final JsonObject o = gson.fromJson(jsonContent, JsonObject.class);
 			// outputPath
 			assert(o.has("outputPath"));
 			final JsonElement valueof_outputPath = o.get("outputPath");
@@ -136,7 +129,8 @@ public final class Glace2d
 
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
-	private final int nbNodes, nbCells, nbInnerNodes, nbTopNodes, nbBottomNodes, nbLeftNodes, nbRightNodes, nbNodesOfCell, nbCellsOfNode;
+	@SuppressWarnings("unused")
+	private final int nbNodes, nbCells, nbInnerNodes, nbTopNodes, nbBottomNodes, nbLeftNodes, nbRightNodes, maxNodesOfCell, maxCellsOfNode;
 
 	// User options
 	private final Options options;
@@ -185,8 +179,8 @@ public final class Glace2d
 		nbBottomNodes = mesh.getNbBottomNodes();
 		nbLeftNodes = mesh.getNbLeftNodes();
 		nbRightNodes = mesh.getNbRightNodes();
-		nbNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
-		nbCellsOfNode = CartesianMesh2D.MaxNbCellsOfNode;
+		maxNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
+		maxCellsOfNode = CartesianMesh2D.MaxNbCellsOfNode;
 
 		// User options
 		options = aOptions;
@@ -215,11 +209,11 @@ public final class Glace2d
 		deltatj = new double[nbCells];
 		uj_n = new double[nbCells][2];
 		uj_nplus1 = new double[nbCells][2];
-		l = new double[nbCells][nbNodesOfCell];
-		Cjr_ic = new double[nbCells][nbNodesOfCell][2];
-		C = new double[nbCells][nbNodesOfCell][2];
-		F = new double[nbCells][nbNodesOfCell][2];
-		Ajr = new double[nbCells][nbNodesOfCell][2][2];
+		l = new double[nbCells][maxNodesOfCell];
+		Cjr_ic = new double[nbCells][maxNodesOfCell][2];
+		C = new double[nbCells][maxNodesOfCell][2];
+		F = new double[nbCells][maxNodesOfCell][2];
+		Ajr = new double[nbCells][maxNodesOfCell][2][2];
 
 		// Copy node coordinates
 		double[][] gNodes = mesh.getGeometry().getNodes();
@@ -245,8 +239,8 @@ public final class Glace2d
 				final int nbNodesOfCellJ = nodesOfCellJ.length;
 				for (int rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 				{
-					final int rPlus1Id = nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell];
-					final int rMinus1Id = nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCell)%nbNodesOfCell];
+					final int rPlus1Id = nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCellJ)%nbNodesOfCellJ];
+					final int rMinus1Id = nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCellJ)%nbNodesOfCellJ];
 					final int rPlus1Nodes = rPlus1Id;
 					final int rMinus1Nodes = rMinus1Id;
 					C[jCells][rNodesOfCellJ] = ArrayOperations.multiply(0.5, perp(ArrayOperations.minus(X_n[rPlus1Nodes], X_n[rMinus1Nodes])));
@@ -283,8 +277,8 @@ public final class Glace2d
 				final int nbNodesOfCellJ = nodesOfCellJ.length;
 				for (int rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 				{
-					final int rPlus1Id = nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell];
-					final int rMinus1Id = nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCell)%nbNodesOfCell];
+					final int rPlus1Id = nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCellJ)%nbNodesOfCellJ];
+					final int rMinus1Id = nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCellJ)%nbNodesOfCellJ];
 					final int rPlus1Nodes = rPlus1Id;
 					final int rMinus1Nodes = rMinus1Id;
 					Cjr_ic[jCells][rNodesOfCellJ] = ArrayOperations.multiply(0.5, perp(ArrayOperations.minus(X_n0[rPlus1Nodes], X_n0[rMinus1Nodes])));
@@ -445,9 +439,10 @@ public final class Glace2d
 		do
 		{
 			n++;
-			System.out.printf("[%5d] t: %5.5f - deltat: %5.5f\n", n, t_n, deltat);
+			System.out.printf("START ITERATION n: %5d - t: %5.5f - deltat: %5.5f\n", n, t_n, deltat);
 			if (n >= lastDump + options.outputPeriod)
 				dumpVariables(n);
+		
 			computeCjr(); // @1.0
 			computeInternalEnergy(); // @1.0
 			computeLjr(); // @2.0
@@ -493,8 +488,8 @@ public final class Glace2d
 				}
 			});
 		} while (continueLoop);
-		System.out.printf("[%5d] t: %5.5f - deltat: %5.5f\n", n, t_n, deltat);
-		// force a last output at the end
+		
+		System.out.printf("FINAL TIME: %5.5f - deltat: %5.5f\n", t_n, deltat);
 		dumpVariables(n+1);
 	}
 
@@ -887,9 +882,8 @@ public final class Glace2d
 
 	private static double dot(double[] a, double[] b)
 	{
-		final int x = a.length;
 		double result = 0.0;
-		for (int i=0; i<x; i++)
+		for (int i=0; i<a.length; i++)
 		{
 			result = result + a[i] * b[i];
 		}
@@ -898,17 +892,15 @@ public final class Glace2d
 
 	private static double norm(double[] a)
 	{
-		final int x = a.length;
 		return Math.sqrt(dot(a, a));
 	}
 
 	private static double[][] tensProduct(double[] a, double[] b)
 	{
-		final int l = a.length;
-		double[][] result = new double[l][l];
-		for (int ia=0; ia<l; ia++)
+		double[][] result = new double[a.length][a.length];
+		for (int ia=0; ia<a.length; ia++)
 		{
-			for (int ib=0; ib<l; ib++)
+			for (int ib=0; ib<a.length; ib++)
 			{
 				result[ia][ib] = a[ia] * b[ib];
 			}
@@ -918,13 +910,11 @@ public final class Glace2d
 
 	private static double[] matVectProduct(double[][] a, double[] b)
 	{
-		final int x = a.length;
-		final int y = a[0].length;
-		double[] result = new double[x];
-		for (int ix=0; ix<x; ix++)
+		double[] result = new double[a.length];
+		for (int ix=0; ix<a.length; ix++)
 		{
-			double[] tmp = new double[y];
-			for (int iy=0; iy<y; iy++)
+			double[] tmp = new double[a[0].length];
+			for (int iy=0; iy<a[0].length; iy++)
 			{
 				tmp[iy] = a[ix][iy];
 			}
@@ -935,9 +925,8 @@ public final class Glace2d
 
 	private static double trace(double[][] a)
 	{
-		final int l = a.length;
 		double result = 0.0;
-		for (int ia=0; ia<l; ia++)
+		for (int ia=0; ia<a.length; ia++)
 		{
 			result = result + a[ia][ia];
 		}
@@ -952,7 +941,6 @@ public final class Glace2d
 
 	private static double[] sumR1(double[] a, double[] b)
 	{
-		final int x = a.length;
 		return ArrayOperations.plus(a, b);
 	}
 
@@ -963,7 +951,6 @@ public final class Glace2d
 
 	private static double[][] sumR2(double[][] a, double[][] b)
 	{
-		final int x = a.length;
 		return ArrayOperations.plus(a, b);
 	}
 
@@ -987,10 +974,9 @@ public final class Glace2d
 	{
 		if (args.length == 1)
 		{
-			String dataFileName = args[0];
-			JsonParser parser = new JsonParser();
-			JsonObject o = parser.parse(new FileReader(dataFileName)).getAsJsonObject();
-			int ret = 0;
+			final String dataFileName = args[0];
+			final Gson gson = new Gson();
+			final JsonObject o = gson.fromJson(new FileReader(dataFileName), JsonObject.class);
 
 			// Mesh instanciation
 			assert(o.has("mesh"));

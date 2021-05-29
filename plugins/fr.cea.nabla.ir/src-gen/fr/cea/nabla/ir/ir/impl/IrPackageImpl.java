@@ -758,7 +758,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getIrRoot_TimeVariable() {
+	public EReference getIrRoot_CurrentTimeVariable() {
 		return (EReference)irRootEClass.getEStructuralFeatures().get(10);
 	}
 
@@ -768,7 +768,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getIrRoot_TimeStepVariable() {
+	public EReference getIrRoot_NextTimeVariable() {
 		return (EReference)irRootEClass.getEStructuralFeatures().get(11);
 	}
 
@@ -778,7 +778,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getIrRoot_PostProcessing() {
+	public EReference getIrRoot_TimeStepVariable() {
 		return (EReference)irRootEClass.getEStructuralFeatures().get(12);
 	}
 
@@ -788,8 +788,18 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getIrRoot_Providers() {
+	public EReference getIrRoot_PostProcessing() {
 		return (EReference)irRootEClass.getEStructuralFeatures().get(13);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getIrRoot_Providers() {
+		return (EReference)irRootEClass.getEStructuralFeatures().get(14);
 	}
 
 	/**
@@ -2699,7 +2709,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEAttribute(irRootEClass, IR_ROOT__MESH_CLASS_NAME);
 		createEReference(irRootEClass, IR_ROOT__INIT_NODE_COORD_VARIABLE);
 		createEReference(irRootEClass, IR_ROOT__NODE_COORD_VARIABLE);
-		createEReference(irRootEClass, IR_ROOT__TIME_VARIABLE);
+		createEReference(irRootEClass, IR_ROOT__CURRENT_TIME_VARIABLE);
+		createEReference(irRootEClass, IR_ROOT__NEXT_TIME_VARIABLE);
 		createEReference(irRootEClass, IR_ROOT__TIME_STEP_VARIABLE);
 		createEReference(irRootEClass, IR_ROOT__POST_PROCESSING);
 		createEReference(irRootEClass, IR_ROOT__PROVIDERS);
@@ -3062,7 +3073,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEAttribute(getIrRoot_MeshClassName(), ecorePackage.getEString(), "meshClassName", null, 1, 1, IrRoot.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIrRoot_InitNodeCoordVariable(), this.getVariable(), null, "initNodeCoordVariable", null, 1, 1, IrRoot.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIrRoot_NodeCoordVariable(), this.getVariable(), null, "nodeCoordVariable", null, 1, 1, IrRoot.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getIrRoot_TimeVariable(), this.getVariable(), null, "timeVariable", null, 1, 1, IrRoot.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getIrRoot_CurrentTimeVariable(), this.getVariable(), null, "currentTimeVariable", null, 1, 1, IrRoot.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getIrRoot_NextTimeVariable(), this.getVariable(), null, "nextTimeVariable", null, 1, 1, IrRoot.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIrRoot_TimeStepVariable(), this.getVariable(), null, "timeStepVariable", null, 1, 1, IrRoot.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIrRoot_PostProcessing(), this.getPostProcessing(), null, "postProcessing", null, 0, 1, IrRoot.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIrRoot_Providers(), this.getExtensionProvider(), null, "providers", null, 0, -1, IrRoot.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

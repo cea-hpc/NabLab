@@ -118,10 +118,10 @@ ExplicitHeatEquation::ExplicitHeatEquation(CartesianMesh2D* aMesh, Options& aOpt
 , nbNodes(mesh->getNbNodes())
 , nbCells(mesh->getNbCells())
 , nbFaces(mesh->getNbFaces())
-, nbNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
-, nbNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
-, nbCellsOfFace(CartesianMesh2D::MaxNbCellsOfFace)
-, nbNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
+, maxNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
+, maxNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
+, maxCellsOfFace(CartesianMesh2D::MaxNbCellsOfFace)
+, maxNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
 , options(aOptions)
 , writer("ExplicitHeatEquation", options.outputPath)
 , lastDump(numeric_limits<int>::min())
@@ -195,7 +195,7 @@ void ExplicitHeatEquation::computeFaceLength(const member_type& teamMember) noex
 				for (size_t pNodesOfFaceF=0; pNodesOfFaceF<nbNodesOfFaceF; pNodesOfFaceF++)
 				{
 					const Id pId(nodesOfFaceF[pNodesOfFaceF]);
-					const Id pPlus1Id(nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace]);
+					const Id pPlus1Id(nodesOfFaceF[(pNodesOfFaceF+1+maxNodesOfFace)%maxNodesOfFace]);
 					const size_t pNodes(pId);
 					const size_t pPlus1Nodes(pPlus1Id);
 					reduction0 = explicitheatequationfreefuncs::sumR0(reduction0, explicitheatequationfreefuncs::norm(X(pNodes) - X(pPlus1Nodes)));
@@ -228,24 +228,24 @@ void ExplicitHeatEquation::computeV(const member_type& teamMember) noexcept
 		if (!teamWork.second)
 			return;
 	
-		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& jCellsTeam)
+		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& cCellsTeam)
 		{
-			int jCells(jCellsTeam + teamWork.first);
-			const Id jId(jCells);
+			int cCells(cCellsTeam + teamWork.first);
+			const Id cId(cCells);
 			double reduction0(0.0);
 			{
-				const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
-				const size_t nbNodesOfCellJ(nodesOfCellJ.size());
-				for (size_t pNodesOfCellJ=0; pNodesOfCellJ<nbNodesOfCellJ; pNodesOfCellJ++)
+				const auto nodesOfCellC(mesh->getNodesOfCell(cId));
+				const size_t nbNodesOfCellC(nodesOfCellC.size());
+				for (size_t pNodesOfCellC=0; pNodesOfCellC<nbNodesOfCellC; pNodesOfCellC++)
 				{
-					const Id pId(nodesOfCellJ[pNodesOfCellJ]);
-					const Id pPlus1Id(nodesOfCellJ[(pNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
+					const Id pId(nodesOfCellC[pNodesOfCellC]);
+					const Id pPlus1Id(nodesOfCellC[(pNodesOfCellC+1+maxNodesOfCell)%maxNodesOfCell]);
 					const size_t pNodes(pId);
 					const size_t pPlus1Nodes(pPlus1Id);
 					reduction0 = explicitheatequationfreefuncs::sumR0(reduction0, explicitheatequationfreefuncs::det(X(pNodes), X(pPlus1Nodes)));
 				}
 			}
-			V(jCells) = 0.5 * reduction0;
+			V(cCells) = 0.5 * reduction0;
 		});
 	}
 }
@@ -507,14 +507,11 @@ void ExplicitHeatEquation::executeTimeLoopN() noexcept
 		// Evaluate loop condition with variables at time n
 		continueLoop = (t_nplus1 < options.stopTime && n + 1 < options.maxIterations);
 	
-		if (continueLoop)
+		t_n = t_nplus1;
+		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& i1Cells)
 		{
-			t_n = t_nplus1;
-			Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& i1Cells)
-			{
-				u_n(i1Cells) = u_nplus1(i1Cells);
-			});
-		}
+			u_n(i1Cells) = u_nplus1(i1Cells);
+		});
 	
 		cpuTimer.stop();
 		globalTimer.stop();
@@ -535,8 +532,8 @@ void ExplicitHeatEquation::executeTimeLoopN() noexcept
 		cpuTimer.reset();
 		ioTimer.reset();
 	} while (continueLoop);
-	// force a last output at the end
-	dumpVariables(n, false);
+	if (!writer.isDisabled())
+		dumpVariables(n+1, false);
 }
 
 void ExplicitHeatEquation::dumpVariables(int iteration, bool useTimer)
@@ -629,6 +626,7 @@ void ExplicitHeatEquation::simulate()
 	// @4.0
 	executeTimeLoopN();
 	
+	std::cout << "\nFinal time = " << t_n << endl;
 	std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << globalTimer.print() << __RESET__ << std::endl;
 }
 

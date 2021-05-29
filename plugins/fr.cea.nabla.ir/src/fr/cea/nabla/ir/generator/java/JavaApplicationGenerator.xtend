@@ -63,27 +63,26 @@ class JavaApplicationGenerator implements ApplicationGenerator
 		«val mainModule = irRoot.mainModule»
 		package «packageName»;
 
+		«IF hasLevelDB»
 		import static org.iq80.leveldb.impl.Iq80DBFactory.bytes;
 		import static org.iq80.leveldb.impl.Iq80DBFactory.factory;
 
+		import org.iq80.leveldb.DB;
+		import org.iq80.leveldb.WriteBatch;
+
 		import java.io.File;
+		«ENDIF»
 		import java.io.FileReader;
 		import java.io.IOException;
 		import java.util.stream.IntStream;
-		«IF hasLevelDB»
 
-		import org.iq80.leveldb.DB;
-		import org.iq80.leveldb.WriteBatch;
-		«ENDIF»
-
-		import com.google.gson.JsonElement;
+		import com.google.gson.Gson;
 		import com.google.gson.JsonObject;
-		import com.google.gson.JsonParser;
+		import com.google.gson.JsonElement;
 
 		import fr.cea.nabla.javalib.*;
 		import fr.cea.nabla.javalib.mesh.*;
 
-		@SuppressWarnings("all")
 		public final class «className»
 		{
 			public final static class Options
@@ -101,10 +100,8 @@ class JavaApplicationGenerator implements ApplicationGenerator
 
 				public void jsonInit(final String jsonContent)
 				{
-					final JsonParser parser = new JsonParser();
-					final JsonElement json = parser.parse(jsonContent);
-					assert(json.isJsonObject());
-					final JsonObject o = json.getAsJsonObject();
+					final Gson gson = new Gson();
+					final JsonObject o = gson.fromJson(jsonContent, JsonObject.class);
 					«IF postProcessing !== null»
 					«val opName = IrUtils.OutputPathNameAndValue.key»
 					// «opName»
@@ -136,6 +133,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 
 			// Mesh and mesh variables
 			private final «javaMeshClassName» mesh;
+			@SuppressWarnings("unused")
 			«FOR c : irRoot.connectivities.filter[multiple] BEFORE 'private final int ' SEPARATOR ', '»«c.nbElemsVar»«ENDFOR»;
 
 			// User options
@@ -214,10 +212,9 @@ class JavaApplicationGenerator implements ApplicationGenerator
 			{
 				if (args.length == 1)
 				{
-					String dataFileName = args[0];
-					JsonParser parser = new JsonParser();
-					JsonObject o = parser.parse(new FileReader(dataFileName)).getAsJsonObject();
-					int ret = 0;
+					final String dataFileName = args[0];
+					final Gson gson = new Gson();
+					final JsonObject o = gson.fromJson(new FileReader(dataFileName), JsonObject.class);
 
 					// Mesh instanciation
 					assert(o.has("mesh"));
@@ -241,10 +238,9 @@ class JavaApplicationGenerator implements ApplicationGenerator
 					if («name»Options.«nrName» != null && «name»Options.«nrName».equals("«IrUtils.NonRegressionValues.CompareToReference.toString»"))
 					{
 						«name».createDB("«dbName».current");
-						if (!LevelDBUtils.compareDB("«dbName».current", "«dbName».ref"))
-							ret = 1;
+						boolean ok = LevelDBUtils.compareDB("«dbName».current", "«dbName».ref");
 						LevelDBUtils.destroyDB("«dbName».current");
-						System.exit(ret);
+						if (!ok) System.exit(1);
 					}
 					«ENDIF»
 				}
@@ -264,7 +260,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 					try
 					{
 						Quad[] quads = mesh.getGeometry().getQuads();
-						writer.startVtpFile(iteration, «irRoot.timeVariable.name», «irRoot.nodeCoordVariable.name», quads);
+						writer.startVtpFile(iteration, «irRoot.currentTimeVariable.name», «irRoot.nodeCoordVariable.name», quads);
 						«val outputVarsByConnectivities = irRoot.postProcessing.outputVariables.groupBy(x | x.support.name)»
 						writer.openNodeData();
 						«val nodeVariables = outputVarsByConnectivities.get("node")»

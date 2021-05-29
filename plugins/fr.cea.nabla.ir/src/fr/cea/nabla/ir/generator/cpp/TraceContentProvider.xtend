@@ -10,11 +10,12 @@
 package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.IrRoot
+import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
-import org.eclipse.xtend.lib.annotations.Accessors
 
 class TraceContentProvider
 {
@@ -42,21 +43,18 @@ class TraceContentProvider
 		«ENDIF»
 	'''
 
-	def getBeginOfLoopTrace(IrModule it, String iterationVarName, boolean isTopLoop)
+	def getBeginOfLoopTrace(IrModule it, String iterationVarName)
 	'''
-		«IF isTopLoop»
 		if («iterationVarName»!=1)
 			std::cout << "[" << __CYAN__ << __BOLD__ << setw(3) << «iterationVarName» << __RESET__ "] t = " << __BOLD__
-				<< setiosflags(std::ios::scientific) << setprecision(8) << setw(16) << «irRoot.timeVariable.codeName» << __RESET__;
-		«ENDIF»
+				<< setiosflags(std::ios::scientific) << setprecision(8) << setw(16) << «irRoot.currentTimeVariable.codeName» << __RESET__;
 	'''
 
-	def getEndOfLoopTrace(IrModule it, String iterationVarName, boolean isTopLoop, boolean hasWriter)
+	def getEndOfLoopTrace(IrModule it, String iterationVarName, boolean hasWriter)
 	'''
 		«val maxIterationsVar = getVariableByName(maxIterationsVarName)»
 		«val stopTimeVar = getVariableByName(stopTimeVarName)»
 		«val ir = irRoot»
-		«IF isTopLoop»
 		// Timers display
 		«IF hasWriter»
 		if (!writer.isDisabled())
@@ -67,17 +65,17 @@ class TraceContentProvider
 
 		// Progress
 		«IF maxIterationsVar !== null && stopTimeVarName !== null»
-		std::cout << progress_bar(«iterationVarName», «maxIterationsVar.codeName», «ir.timeVariable.codeName», «stopTimeVar.codeName», 25);
+		std::cout << progress_bar(«iterationVarName», «maxIterationsVar.codeName», «ir.currentTimeVariable.codeName», «stopTimeVar.codeName», 25);
 		«ENDIF»
 		std::cout << __BOLD__ << __CYAN__ << Timer::print(
-			eta(«iterationVarName», «maxIterationsVar.codeName», «ir.timeVariable.codeName», «stopTimeVar.codeName», «ir.timeStepVariable.codeName», globalTimer), true)
+			eta(«iterationVarName», «maxIterationsVar.codeName», «ir.currentTimeVariable.codeName», «stopTimeVar.codeName», «ir.timeStepVariable.codeName», globalTimer), true)
 			<< __RESET__ << "\r";
 		std::cout.flush();
-		«ENDIF»
 	'''
 
-	def getEndOfSimuTrace(boolean isLinearAlgebra)
+	def getEndOfSimuTrace(IrRoot it, boolean isLinearAlgebra)
 	'''
+		std::cout << "\nFinal time = " << «currentTimeVariable.codeName» << endl;
 		std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << globalTimer.print() << __RESET__ << std::endl;
 		«IF isLinearAlgebra»std::cout << "[CG] average iteration: " << options.linearAlgebra.m_info.m_nb_it / options.linearAlgebra.m_info.m_nb_call << std::endl;«ENDIF»
 	'''

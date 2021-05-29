@@ -46,7 +46,7 @@ abstract class AbstractJobInterpreterTest
 		let ℕ option_max_iterations = 10;
 		ℝ[2] X{nodes};
 
-		iterate n while (t^{n} < option_stoptime && n < option_max_iterations);
+		iterate n while (t^{n+1} < option_stoptime && n < option_max_iterations);
 
 		InitT: t^{n=0} = 0.;
 		ComputeTn: t^{n+1} = t^{n} + 0.01;
@@ -66,7 +66,7 @@ abstract class AbstractJobInterpreterTest
 		ℝ u;
 		ℝ[2] X{nodes}, center{cells};
 
-		iterate n while (t^{n} < option_stoptime && n < option_max_iterations);
+		iterate n while (t^{n+1} < option_stoptime && n < option_max_iterations);
 
 		InitTime: t^{n=0} = 0.0;
 		IniU : u^{n=0} = 4.0;

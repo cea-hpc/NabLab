@@ -58,7 +58,6 @@ public:
 		int maxIterations;
 		double gamma;
 		double xInterface;
-		double deltatIni;
 		double deltatCfl;
 		double rhoIniZg;
 		double rhoIniZd;
@@ -76,7 +75,6 @@ public:
 	void computeInternalEnergy() noexcept;
 	void iniCjrIc() noexcept;
 	void iniTime() noexcept;
-	void iniTimeStep() noexcept;
 	void computeLjr() noexcept;
 	void computeV() noexcept;
 	void initialize() noexcept;
@@ -105,7 +103,7 @@ private:
 
 	// Mesh and mesh variables
 	CartesianMesh2D* mesh;
-	size_t nbNodes, nbCells, nbInnerNodes, nbTopNodes, nbBottomNodes, nbLeftNodes, nbRightNodes, nbNodesOfCell, nbCellsOfNode;
+	size_t nbNodes, nbCells, nbInnerNodes, nbTopNodes, nbBottomNodes, nbLeftNodes, nbRightNodes, maxNodesOfCell, maxCellsOfNode;
 
 	// User options
 	Options& options;
@@ -123,9 +121,7 @@ public:
 	double t_n;
 	double t_nplus1;
 	double t_n0;
-	double deltat_n;
-	double deltat_nplus1;
-	double deltat_n0;
+	double deltat;
 	std::vector<RealArray1D<2>> X_n;
 	std::vector<RealArray1D<2>> X_nplus1;
 	std::vector<RealArray1D<2>> X_n0;

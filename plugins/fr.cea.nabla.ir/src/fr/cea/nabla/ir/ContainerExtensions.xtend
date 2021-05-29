@@ -34,6 +34,15 @@ class ContainerExtensions
 		}
 	}
 
+	static def getContent(Container it)
+	{
+		switch it
+		{
+			ConnectivityCall: '''mesh.«accessor»'''
+			SetRef: '''«target.name»'''
+		}
+	}
+
 	static def getNbElemsVar(Container it)
 	{
 		if (getConnectivityCall.args.empty)
@@ -44,7 +53,10 @@ class ContainerExtensions
 
 	static def getNbElemsVar(Connectivity it)
 	{
-		'nb' + name.toFirstUpper
+		if (inTypes.empty)
+			'nb' + name.toFirstUpper
+		else
+			'max' + name.toFirstUpper
 	}
 
 	static def getAccessor(ConnectivityCall it)

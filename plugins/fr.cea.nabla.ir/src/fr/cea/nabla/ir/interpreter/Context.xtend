@@ -73,6 +73,7 @@ class Context
 	def initWriter(String outputPath)
 	{
 		writer = new PvdFileWriter2D(ir.name, outputPath)
+		writer.logger = logger;
 	}
 
 	def checkInterrupted() throws IrInterpreterException

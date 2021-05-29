@@ -43,10 +43,7 @@ public class CartesianMesh2DFactory
 
 	public void jsonInit(final String jsonContent)
 	{
-		final JsonParser parser = new JsonParser();
-		final JsonElement json = parser.parse(jsonContent);
-		assert(json.isJsonObject());
-		final JsonObject o = json.getAsJsonObject();
+		final JsonObject o = JsonParser.parseString(jsonContent).getAsJsonObject();
 		assert(o.has("nbXQuads"));
 		final JsonElement valueof_nbXQuads = o.get("nbXQuads");
 		assert(valueof_nbXQuads.isJsonPrimitive());

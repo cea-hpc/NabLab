@@ -47,7 +47,8 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getMeshClassName <em>Mesh Class Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getInitNodeCoordVariable <em>Init Node Coord Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getNodeCoordVariable <em>Node Coord Variable</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getTimeVariable <em>Time Variable</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getCurrentTimeVariable <em>Current Time Variable</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getNextTimeVariable <em>Next Time Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getTimeStepVariable <em>Time Step Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getPostProcessing <em>Post Processing</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getProviders <em>Providers</em>}</li>
@@ -177,14 +178,24 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 	protected Variable nodeCoordVariable;
 
 	/**
-	 * The cached value of the '{@link #getTimeVariable() <em>Time Variable</em>}' reference.
+	 * The cached value of the '{@link #getCurrentTimeVariable() <em>Current Time Variable</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getTimeVariable()
+	 * @see #getCurrentTimeVariable()
 	 * @generated
 	 * @ordered
 	 */
-	protected Variable timeVariable;
+	protected Variable currentTimeVariable;
+
+	/**
+	 * The cached value of the '{@link #getNextTimeVariable() <em>Next Time Variable</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getNextTimeVariable()
+	 * @generated
+	 * @ordered
+	 */
+	protected Variable nextTimeVariable;
 
 	/**
 	 * The cached value of the '{@link #getTimeStepVariable() <em>Time Step Variable</em>}' reference.
@@ -406,16 +417,16 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 	 * @generated
 	 */
 	@Override
-	public Variable getTimeVariable() {
-		if (timeVariable != null && timeVariable.eIsProxy()) {
-			InternalEObject oldTimeVariable = (InternalEObject)timeVariable;
-			timeVariable = (Variable)eResolveProxy(oldTimeVariable);
-			if (timeVariable != oldTimeVariable) {
+	public Variable getCurrentTimeVariable() {
+		if (currentTimeVariable != null && currentTimeVariable.eIsProxy()) {
+			InternalEObject oldCurrentTimeVariable = (InternalEObject)currentTimeVariable;
+			currentTimeVariable = (Variable)eResolveProxy(oldCurrentTimeVariable);
+			if (currentTimeVariable != oldCurrentTimeVariable) {
 				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.IR_ROOT__TIME_VARIABLE, oldTimeVariable, timeVariable));
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.IR_ROOT__CURRENT_TIME_VARIABLE, oldCurrentTimeVariable, currentTimeVariable));
 			}
 		}
-		return timeVariable;
+		return currentTimeVariable;
 	}
 
 	/**
@@ -423,8 +434,8 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Variable basicGetTimeVariable() {
-		return timeVariable;
+	public Variable basicGetCurrentTimeVariable() {
+		return currentTimeVariable;
 	}
 
 	/**
@@ -433,11 +444,51 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 	 * @generated
 	 */
 	@Override
-	public void setTimeVariable(Variable newTimeVariable) {
-		Variable oldTimeVariable = timeVariable;
-		timeVariable = newTimeVariable;
+	public void setCurrentTimeVariable(Variable newCurrentTimeVariable) {
+		Variable oldCurrentTimeVariable = currentTimeVariable;
+		currentTimeVariable = newCurrentTimeVariable;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IR_ROOT__TIME_VARIABLE, oldTimeVariable, timeVariable));
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IR_ROOT__CURRENT_TIME_VARIABLE, oldCurrentTimeVariable, currentTimeVariable));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Variable getNextTimeVariable() {
+		if (nextTimeVariable != null && nextTimeVariable.eIsProxy()) {
+			InternalEObject oldNextTimeVariable = (InternalEObject)nextTimeVariable;
+			nextTimeVariable = (Variable)eResolveProxy(oldNextTimeVariable);
+			if (nextTimeVariable != oldNextTimeVariable) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.IR_ROOT__NEXT_TIME_VARIABLE, oldNextTimeVariable, nextTimeVariable));
+			}
+		}
+		return nextTimeVariable;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Variable basicGetNextTimeVariable() {
+		return nextTimeVariable;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setNextTimeVariable(Variable newNextTimeVariable) {
+		Variable oldNextTimeVariable = nextTimeVariable;
+		nextTimeVariable = newNextTimeVariable;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IR_ROOT__NEXT_TIME_VARIABLE, oldNextTimeVariable, nextTimeVariable));
 	}
 
 	/**
@@ -710,9 +761,12 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 			case IrPackage.IR_ROOT__NODE_COORD_VARIABLE:
 				if (resolve) return getNodeCoordVariable();
 				return basicGetNodeCoordVariable();
-			case IrPackage.IR_ROOT__TIME_VARIABLE:
-				if (resolve) return getTimeVariable();
-				return basicGetTimeVariable();
+			case IrPackage.IR_ROOT__CURRENT_TIME_VARIABLE:
+				if (resolve) return getCurrentTimeVariable();
+				return basicGetCurrentTimeVariable();
+			case IrPackage.IR_ROOT__NEXT_TIME_VARIABLE:
+				if (resolve) return getNextTimeVariable();
+				return basicGetNextTimeVariable();
 			case IrPackage.IR_ROOT__TIME_STEP_VARIABLE:
 				if (resolve) return getTimeStepVariable();
 				return basicGetTimeStepVariable();
@@ -769,8 +823,11 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 			case IrPackage.IR_ROOT__NODE_COORD_VARIABLE:
 				setNodeCoordVariable((Variable)newValue);
 				return;
-			case IrPackage.IR_ROOT__TIME_VARIABLE:
-				setTimeVariable((Variable)newValue);
+			case IrPackage.IR_ROOT__CURRENT_TIME_VARIABLE:
+				setCurrentTimeVariable((Variable)newValue);
+				return;
+			case IrPackage.IR_ROOT__NEXT_TIME_VARIABLE:
+				setNextTimeVariable((Variable)newValue);
 				return;
 			case IrPackage.IR_ROOT__TIME_STEP_VARIABLE:
 				setTimeStepVariable((Variable)newValue);
@@ -824,8 +881,11 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 			case IrPackage.IR_ROOT__NODE_COORD_VARIABLE:
 				setNodeCoordVariable((Variable)null);
 				return;
-			case IrPackage.IR_ROOT__TIME_VARIABLE:
-				setTimeVariable((Variable)null);
+			case IrPackage.IR_ROOT__CURRENT_TIME_VARIABLE:
+				setCurrentTimeVariable((Variable)null);
+				return;
+			case IrPackage.IR_ROOT__NEXT_TIME_VARIABLE:
+				setNextTimeVariable((Variable)null);
 				return;
 			case IrPackage.IR_ROOT__TIME_STEP_VARIABLE:
 				setTimeStepVariable((Variable)null);
@@ -868,8 +928,10 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 				return initNodeCoordVariable != null;
 			case IrPackage.IR_ROOT__NODE_COORD_VARIABLE:
 				return nodeCoordVariable != null;
-			case IrPackage.IR_ROOT__TIME_VARIABLE:
-				return timeVariable != null;
+			case IrPackage.IR_ROOT__CURRENT_TIME_VARIABLE:
+				return currentTimeVariable != null;
+			case IrPackage.IR_ROOT__NEXT_TIME_VARIABLE:
+				return nextTimeVariable != null;
 			case IrPackage.IR_ROOT__TIME_STEP_VARIABLE:
 				return timeStepVariable != null;
 			case IrPackage.IR_ROOT__POST_PROCESSING:

@@ -37,7 +37,7 @@ class TypeContentProvider
 		}
 	}
 
-	static def getJavaAllocation(IrType it, String name)
+	static def CharSequence getJavaAllocation(IrType it, String name)
 	{
 		switch it
 		{

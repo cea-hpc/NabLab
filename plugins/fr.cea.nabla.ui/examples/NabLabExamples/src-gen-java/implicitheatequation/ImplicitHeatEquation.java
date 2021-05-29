@@ -2,22 +2,17 @@
 
 package implicitheatequation;
 
-import static org.iq80.leveldb.impl.Iq80DBFactory.bytes;
-import static org.iq80.leveldb.impl.Iq80DBFactory.factory;
-
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.stream.IntStream;
 
-import com.google.gson.JsonElement;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.JsonElement;
 
 import fr.cea.nabla.javalib.*;
 import fr.cea.nabla.javalib.mesh.*;
 
-@SuppressWarnings("all")
 public final class ImplicitHeatEquation
 {
 	public final static class Options
@@ -32,10 +27,8 @@ public final class ImplicitHeatEquation
 
 		public void jsonInit(final String jsonContent)
 		{
-			final JsonParser parser = new JsonParser();
-			final JsonElement json = parser.parse(jsonContent);
-			assert(json.isJsonObject());
-			final JsonObject o = json.getAsJsonObject();
+			final Gson gson = new Gson();
+			final JsonObject o = gson.fromJson(jsonContent, JsonObject.class);
 			// outputPath
 			assert(o.has("outputPath"));
 			final JsonElement valueof_outputPath = o.get("outputPath");
@@ -81,7 +74,8 @@ public final class ImplicitHeatEquation
 
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
-	private final int nbNodes, nbCells, nbFaces, nbNeighbourCells, nbNodesOfFace, nbCellsOfFace, nbNodesOfCell;
+	@SuppressWarnings("unused")
+	private final int nbNodes, nbCells, nbFaces, maxNeighbourCells, maxNodesOfFace, maxCellsOfFace, maxNodesOfCell;
 
 	// User options
 	private final Options options;
@@ -112,10 +106,10 @@ public final class ImplicitHeatEquation
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
 		nbFaces = mesh.getNbFaces();
-		nbNeighbourCells = CartesianMesh2D.MaxNbNeighbourCells;
-		nbNodesOfFace = CartesianMesh2D.MaxNbNodesOfFace;
-		nbCellsOfFace = CartesianMesh2D.MaxNbCellsOfFace;
-		nbNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
+		maxNeighbourCells = CartesianMesh2D.MaxNbNeighbourCells;
+		maxNodesOfFace = CartesianMesh2D.MaxNbNodesOfFace;
+		maxCellsOfFace = CartesianMesh2D.MaxNbCellsOfFace;
+		maxNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
 
 		// User options
 		options = aOptions;
@@ -163,7 +157,7 @@ public final class ImplicitHeatEquation
 				for (int pNodesOfFaceF=0; pNodesOfFaceF<nbNodesOfFaceF; pNodesOfFaceF++)
 				{
 					final int pId = nodesOfFaceF[pNodesOfFaceF];
-					final int pPlus1Id = nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFace)%nbNodesOfFace];
+					final int pPlus1Id = nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFaceF)%nbNodesOfFaceF];
 					final int pNodes = pId;
 					final int pPlus1Nodes = pPlus1Id;
 					reduction0 = sumR0(reduction0, norm(ArrayOperations.minus(X[pNodes], X[pPlus1Nodes])));
@@ -200,7 +194,7 @@ public final class ImplicitHeatEquation
 				for (int pNodesOfCellJ=0; pNodesOfCellJ<nbNodesOfCellJ; pNodesOfCellJ++)
 				{
 					final int pId = nodesOfCellJ[pNodesOfCellJ];
-					final int pPlus1Id = nodesOfCellJ[(pNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell];
+					final int pPlus1Id = nodesOfCellJ[(pNodesOfCellJ+1+nbNodesOfCellJ)%nbNodesOfCellJ];
 					final int pNodes = pId;
 					final int pPlus1Nodes = pPlus1Id;
 					reduction0 = sumR0(reduction0, det(X[pNodes], X[pPlus1Nodes]));
@@ -391,36 +385,33 @@ public final class ImplicitHeatEquation
 		do
 		{
 			n++;
-			System.out.printf("[%5d] t: %5.5f - deltat: %5.5f\n", n, t_n, deltat);
+			System.out.printf("START ITERATION n: %5d - t: %5.5f - deltat: %5.5f\n", n, t_n, deltat);
 			if (n >= lastDump + options.outputPeriod)
 				dumpVariables(n);
+		
 			computeTn(); // @1.0
 			updateU(); // @1.0
 		
 			// Evaluate loop condition with variables at time n
 			continueLoop = (t_nplus1 < options.stopTime && n + 1 < options.maxIterations);
 		
-			if (continueLoop)
-			{
-				t_n = t_nplus1;
-				u_n = u_nplus1;
-			} 
+			t_n = t_nplus1;
+			u_n = u_nplus1;
 		} while (continueLoop);
-		// force a last output at the end
-		dumpVariables(n);
+		
+		System.out.printf("FINAL TIME: %5.5f - deltat: %5.5f\n", t_n, deltat);
+		dumpVariables(n+1);
 	}
 
 	private static double norm(double[] a)
 	{
-		final int x = a.length;
 		return Math.sqrt(dot(a, a));
 	}
 
 	private static double dot(double[] a, double[] b)
 	{
-		final int x = a.length;
 		double result = 0.0;
-		for (int i=0; i<x; i++)
+		for (int i=0; i<a.length; i++)
 		{
 			result = result + a[i] * b[i];
 		}
@@ -434,7 +425,6 @@ public final class ImplicitHeatEquation
 
 	private static double[] sumR1(double[] a, double[] b)
 	{
-		final int x = a.length;
 		return ArrayOperations.plus(a, b);
 	}
 
@@ -474,10 +464,9 @@ public final class ImplicitHeatEquation
 	{
 		if (args.length == 1)
 		{
-			String dataFileName = args[0];
-			JsonParser parser = new JsonParser();
-			JsonObject o = parser.parse(new FileReader(dataFileName)).getAsJsonObject();
-			int ret = 0;
+			final String dataFileName = args[0];
+			final Gson gson = new Gson();
+			final JsonObject o = gson.fromJson(new FileReader(dataFileName), JsonObject.class);
 
 			// Mesh instanciation
 			assert(o.has("mesh"));

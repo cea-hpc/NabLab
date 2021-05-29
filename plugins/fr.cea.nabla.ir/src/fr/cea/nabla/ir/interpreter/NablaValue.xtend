@@ -214,9 +214,9 @@ class NVVector implements NablaValue
 		this.provider = provider
 	}
 
-	def void getValue(int i)
+	def NV0Real getValue(int i)
 	{
-		provider.vectorGetValueMethod.invoke(data, i)
+		new NV0Real(provider.vectorGetValueMethod.invoke(data, i) as Double)
 	}
 
 	def void setValue(int i, double value)

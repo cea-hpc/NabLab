@@ -34,7 +34,7 @@ abstract class AbstractModuleInterpreterTest
 		let ℕ option_max_iterations = 20000;
 		ℝ[2] X{nodes};
 
-		iterate n while (t^{n} < option_stoptime && n < option_max_iterations);
+		iterate n while (t^{n+1} < option_stoptime && n < option_max_iterations);
 
 		InitT: t^{n=0} = 0.;
 		ComputeTn: t^{n+1} = t^{n} + 0.01;

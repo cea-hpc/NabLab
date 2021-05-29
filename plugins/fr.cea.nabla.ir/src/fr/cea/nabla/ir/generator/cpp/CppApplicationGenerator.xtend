@@ -342,7 +342,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 				ioTimer.start();
 			}
 			auto quads = mesh->getGeometry()->getQuads();
-			writer.startVtpFile(iteration, «irRoot.timeVariable.name», nbNodes, «irRoot.nodeCoordVariable.name».data(), nbCells, quads.data());
+			writer.startVtpFile(iteration, «irRoot.currentTimeVariable.name», nbNodes, «irRoot.nodeCoordVariable.name».data(), nbCells, quads.data());
 			«val outputVarsByConnectivities = irRoot.postProcessing.outputVariables.groupBy(x | x.support.name)»
 			writer.openNodeData();
 			«val nodeVariables = outputVarsByConnectivities.get("node")»
@@ -383,7 +383,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 
 		«jobCallerContentProvider.getCallsHeader(irRoot.main)»
 		«jobCallerContentProvider.getCallsContent(irRoot.main)»
-		«backend.traceContentProvider.getEndOfSimuTrace(linearAlgebra)»
+		«backend.traceContentProvider.getEndOfSimuTrace(irRoot, linearAlgebra)»
 	}
 	«IF levelDB»
 

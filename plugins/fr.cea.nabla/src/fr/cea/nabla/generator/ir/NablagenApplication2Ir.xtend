@@ -70,7 +70,8 @@ class NablagenApplication2Ir
 		meshClassName= ngenApp.mainModule.meshClassName
 		initNodeCoordVariable = getInitIrVariable(mainIrModule, ngenApp.mainModule.nodeCoord)
 		nodeCoordVariable = getCurrentIrVariable(mainIrModule, ngenApp.mainModule.nodeCoord)
-		timeVariable = getCurrentIrVariable(mainIrModule, ngenApp.mainModule.time)
+		currentTimeVariable = getCurrentIrVariable(mainIrModule, ngenApp.mainModule.time)
+		nextTimeVariable = getNextIrVariable(mainIrModule, ngenApp.mainModule.time)
 		timeStepVariable = getCurrentIrVariable(mainIrModule, ngenApp.mainModule.timeStep)
 
 		// set providers
@@ -140,10 +141,11 @@ class NablagenApplication2Ir
 		root.jobs += m.jobs
 	}
 
-	private def getCurrentIrVariable(IrModule m, ArgOrVar nablaVar) { getIrVariable(m, nablaVar, false) }
-	private def getInitIrVariable(IrModule m, ArgOrVar nablaVar) { getIrVariable(m, nablaVar, true) }
+	private def getCurrentIrVariable(IrModule m, ArgOrVar nablaVar) { getIrVariable(m, nablaVar, currentTimeIteratorName) }
+	private def getInitIrVariable(IrModule m, ArgOrVar nablaVar) { getIrVariable(m, nablaVar, initTimeIteratorName) }
+	private def getNextIrVariable(IrModule m, ArgOrVar nablaVar) { getIrVariable(m, nablaVar, nextTimeIteratorName) }
 
-	private def getIrVariable(IrModule irModule, ArgOrVar nablaVar, boolean initTimeIterator)
+	private def getIrVariable(IrModule irModule, ArgOrVar nablaVar, String timeIteratorName)
 	{
 		// Look for an IR variable named "nablaVar.name"
 		val irVariable = IrModuleExtensions.getVariableByName(irModule, nablaVar.name)
@@ -152,27 +154,27 @@ class NablagenApplication2Ir
 		// No IR variable named "nablaVar.name".
 		// Look for an IR variable named "nablaVar.name_n" or "nablaVar.name_n0" if initTimeIterator=true
 		val nablaModule = EcoreUtil2.getContainerOfType(nablaVar, NablaModule)
-		return getIrVariable(nablaModule.iteration.iterator, irModule, nablaVar, initTimeIterator)
+		return getIrVariable(nablaModule.iteration.iterator, irModule, nablaVar, timeIteratorName)
 	}
 
-	private def dispatch Variable getIrVariable(TimeIteratorBlock ti, IrModule irModule, ArgOrVar nablaVar, boolean initTimeIterator)
+	private def dispatch Variable getIrVariable(TimeIteratorBlock ti, IrModule irModule, ArgOrVar nablaVar, String timeIteratorName)
 	{
 		for (childTi : ti.iterators)
 		{
-			val irVar = getIrVariable(childTi, irModule, nablaVar, initTimeIterator)
+			val irVar = getIrVariable(childTi, irModule, nablaVar, timeIteratorName)
 			if (irVar !== null) return irVar
 		}
 	}
 
-	private def dispatch Variable getIrVariable(TimeIterator ti, IrModule irModule, ArgOrVar nablaVar, boolean initTimeIterator)
+	private def dispatch Variable getIrVariable(TimeIterator ti, IrModule irModule, ArgOrVar nablaVar, String timeIteratorName)
 	{
-		if (initTimeIterator)
+		if (timeIteratorName !== currentTimeIteratorName)
 		{
-			// First try to find an init variable like "X_n0" if it exists
-			val irVarName = nablaVar.name + getIrVarTimeSuffix(ti, initTimeIteratorName)
+			// First try to find an init/next variable like "X_n0"/"X_nplus1" if it exists
+			val irVarName = nablaVar.name + getIrVarTimeSuffix(ti, timeIteratorName)
 			val irVar = IrModuleExtensions.getVariableByName(irModule, irVarName)
 			if (irVar !== null) return irVar
-			// Variable not found. No init variable like "X_n0" => looking for "X_n"
+			// Variable not found. No init variable like "X_n0"/"X_nplus1" => looking for "X_n"
 		}
 
 		// Try to find a current time step variable like "X_n" if it exists
@@ -182,7 +184,7 @@ class NablagenApplication2Ir
 
 		// No variable found
 		if (ti.innerIterator === null) return null
-		else return getIrVariable(ti.innerIterator, irModule, nablaVar, initTimeIterator)
+		else return getIrVariable(ti.innerIterator, irModule, nablaVar, timeIteratorName)
 	}
 
 	private def getLastDumpDefaultValue(PrimitiveType t)

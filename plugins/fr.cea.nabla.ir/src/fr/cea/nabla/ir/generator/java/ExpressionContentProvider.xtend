@@ -17,6 +17,7 @@ import fr.cea.nabla.ir.ir.BinaryExpression
 import fr.cea.nabla.ir.ir.BoolConstant
 import fr.cea.nabla.ir.ir.Cardinality
 import fr.cea.nabla.ir.ir.ContractedIf
+import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IntConstant
 import fr.cea.nabla.ir.ir.IrModule
@@ -26,6 +27,7 @@ import fr.cea.nabla.ir.ir.Parenthesis
 import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.RealConstant
 import fr.cea.nabla.ir.ir.UnaryExpression
+import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.ir.ir.VectorConstant
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
@@ -128,14 +130,25 @@ class ExpressionContentProvider
 			'''«getCodeName»«formatIteratorsAndIndices(target.type, iterators, indices)»'''
 	}
 
-	static def getCodeName(ArgOrVarRef it)
+	static def String getCodeName(ArgOrVarRef it)
 	{
-		val argOrVarRefModule = IrUtils.getContainerOfType(it, IrModule)
-		val varModule = IrUtils.getContainerOfType(target, IrModule)
-		if (argOrVarRefModule === varModule)
-			target.codeName
+		if (target.functionDimVar)
+		{
+			// In Java code the size of arrays does not appear explicitly like in NabLab.
+			// It is possible to create a local variable to set it, i.e. final int x = a.length.
+			// But sometimes it is not used and a warning appears.
+			// To avoid that, sizes are referenced by array.length instead of the name of the var.
+			FunctionContentProvider.getSizeOf(target.eContainer as Function, target as Variable)
+		}
 		else
-			'mainModule.' + target.codeName
+		{
+			val argOrVarRefModule = IrUtils.getContainerOfType(it, IrModule)
+			val varModule = IrUtils.getContainerOfType(target, IrModule)
+			if (argOrVarRefModule === varModule)
+				target.codeName
+			else
+				'mainModule.' + target.codeName
+		}
 	}
 
 	private static def CharSequence initArray(int[] sizes, CharSequence value)

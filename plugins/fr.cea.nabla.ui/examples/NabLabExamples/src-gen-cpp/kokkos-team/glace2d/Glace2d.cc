@@ -176,15 +176,6 @@ Glace2d::Options::jsonInit(const char* jsonContent)
 	}
 	else
 		xInterface = 0.5;
-	// deltatIni
-	if (o.HasMember("deltatIni"))
-	{
-		const rapidjson::Value& valueof_deltatIni = o["deltatIni"];
-		assert(valueof_deltatIni.IsDouble());
-		deltatIni = valueof_deltatIni.GetDouble();
-	}
-	else
-		deltatIni = 1.0E-5;
 	// deltatCfl
 	if (o.HasMember("deltatCfl"))
 	{
@@ -243,8 +234,8 @@ Glace2d::Glace2d(CartesianMesh2D* aMesh, Options& aOptions)
 , nbBottomNodes(mesh->getNbBottomNodes())
 , nbLeftNodes(mesh->getNbLeftNodes())
 , nbRightNodes(mesh->getNbRightNodes())
-, nbNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
-, nbCellsOfNode(CartesianMesh2D::MaxNbCellsOfNode)
+, maxNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
+, maxCellsOfNode(CartesianMesh2D::MaxNbCellsOfNode)
 , options(aOptions)
 , writer("Glace2d", options.outputPath)
 , lastDump(numeric_limits<int>::min())
@@ -267,11 +258,11 @@ Glace2d::Glace2d(CartesianMesh2D* aMesh, Options& aOptions)
 , deltatj("deltatj", nbCells)
 , uj_n("uj_n", nbCells)
 , uj_nplus1("uj_nplus1", nbCells)
-, l("l", nbCells, nbNodesOfCell)
-, Cjr_ic("Cjr_ic", nbCells, nbNodesOfCell)
-, C("C", nbCells, nbNodesOfCell)
-, F("F", nbCells, nbNodesOfCell)
-, Ajr("Ajr", nbCells, nbNodesOfCell)
+, l("l", nbCells, maxNodesOfCell)
+, Cjr_ic("Cjr_ic", nbCells, maxNodesOfCell)
+, C("C", nbCells, maxNodesOfCell)
+, F("F", nbCells, maxNodesOfCell)
+, Ajr("Ajr", nbCells, maxNodesOfCell)
 {
 	// Copy node coordinates
 	const auto& gNodes = mesh->getGeometry()->getNodes();
@@ -330,8 +321,8 @@ void Glace2d::computeCjr(const member_type& teamMember) noexcept
 				const size_t nbNodesOfCellJ(nodesOfCellJ.size());
 				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 				{
-					const Id rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
-					const Id rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCell)%nbNodesOfCell]);
+					const Id rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+maxNodesOfCell)%maxNodesOfCell]);
+					const Id rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+maxNodesOfCell)%maxNodesOfCell]);
 					const size_t rPlus1Nodes(rPlus1Id);
 					const size_t rMinus1Nodes(rMinus1Id);
 					C(jCells, rNodesOfCellJ) = 0.5 * glace2dfreefuncs::perp(X_n(rPlus1Nodes) - X_n(rMinus1Nodes));
@@ -382,8 +373,8 @@ void Glace2d::iniCjrIc(const member_type& teamMember) noexcept
 				const size_t nbNodesOfCellJ(nodesOfCellJ.size());
 				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 				{
-					const Id rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCell)%nbNodesOfCell]);
-					const Id rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCell)%nbNodesOfCell]);
+					const Id rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+maxNodesOfCell)%maxNodesOfCell]);
+					const Id rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+maxNodesOfCell)%maxNodesOfCell]);
 					const size_t rPlus1Nodes(rPlus1Id);
 					const size_t rMinus1Nodes(rMinus1Id);
 					Cjr_ic(jCells, rNodesOfCellJ) = 0.5 * glace2dfreefuncs::perp(X_n0(rPlus1Nodes) - X_n0(rMinus1Nodes));
@@ -401,16 +392,6 @@ void Glace2d::iniCjrIc(const member_type& teamMember) noexcept
 void Glace2d::iniTime() noexcept
 {
 	t_n0 = 0.0;
-}
-
-/**
- * Job iniTimeStep called @1.0 in simulate method.
- * In variables: deltatIni
- * Out variables: deltat_n0
- */
-void Glace2d::iniTimeStep() noexcept
-{
-	deltat_n0 = options.deltatIni;
 }
 
 /**
@@ -536,13 +517,12 @@ void Glace2d::initialize(const member_type& teamMember) noexcept
 
 /**
  * Job setUpTimeLoopN called @2.0 in simulate method.
- * In variables: X_n0, deltat_n0, t_n0
- * Out variables: X_n, deltat_n, t_n
+ * In variables: X_n0, t_n0
+ * Out variables: X_n, t_n
  */
 void Glace2d::setUpTimeLoopN(const member_type& teamMember) noexcept
 {
 	t_n = t_n0;
-	deltat_n = deltat_n0;
 	{
 		const auto teamWork(computeTeamWorkRange(teamMember, nbNodes));
 		if (!teamWork.second)
@@ -581,8 +561,8 @@ void Glace2d::computeDensity(const member_type& teamMember) noexcept
 
 /**
  * Job executeTimeLoopN called @3.0 in simulate method.
- * In variables: E_n, X_n, deltat_n, t_n, uj_n
- * Out variables: E_nplus1, X_nplus1, deltat_nplus1, t_nplus1, uj_nplus1
+ * In variables: E_n, X_n, t_n, uj_n
+ * Out variables: E_nplus1, X_nplus1, t_nplus1, uj_nplus1
  */
 void Glace2d::executeTimeLoopN() noexcept
 {
@@ -685,29 +665,25 @@ void Glace2d::executeTimeLoopN() noexcept
 		// Evaluate loop condition with variables at time n
 		continueLoop = (t_nplus1 < options.stopTime && n + 1 < options.maxIterations);
 	
-		if (continueLoop)
+		t_n = t_nplus1;
+		Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const size_t& i1Nodes)
 		{
-			t_n = t_nplus1;
-			deltat_n = deltat_nplus1;
-			Kokkos::parallel_for(nbNodes, KOKKOS_LAMBDA(const size_t& i1Nodes)
+			for (size_t i1=0; i1<2; i1++)
 			{
-				for (size_t i1=0; i1<2; i1++)
-				{
-					X_n(i1Nodes)[i1] = X_nplus1(i1Nodes)[i1];
-				}
-			});
-			Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& i1Cells)
+				X_n(i1Nodes)[i1] = X_nplus1(i1Nodes)[i1];
+			}
+		});
+		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& i1Cells)
+		{
+			E_n(i1Cells) = E_nplus1(i1Cells);
+		});
+		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& i1Cells)
+		{
+			for (size_t i1=0; i1<2; i1++)
 			{
-				E_n(i1Cells) = E_nplus1(i1Cells);
-			});
-			Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& i1Cells)
-			{
-				for (size_t i1=0; i1<2; i1++)
-				{
-					uj_n(i1Cells)[i1] = uj_nplus1(i1Cells)[i1];
-				}
-			});
-		}
+				uj_n(i1Cells)[i1] = uj_nplus1(i1Cells)[i1];
+			}
+		});
 	
 		cpuTimer.stop();
 		globalTimer.stop();
@@ -721,15 +697,15 @@ void Glace2d::executeTimeLoopN() noexcept
 		// Progress
 		std::cout << progress_bar(n, options.maxIterations, t_n, options.stopTime, 25);
 		std::cout << __BOLD__ << __CYAN__ << Timer::print(
-			eta(n, options.maxIterations, t_n, options.stopTime, deltat_n, globalTimer), true)
+			eta(n, options.maxIterations, t_n, options.stopTime, deltat, globalTimer), true)
 			<< __RESET__ << "\r";
 		std::cout.flush();
 	
 		cpuTimer.reset();
 		ioTimer.reset();
 	} while (continueLoop);
-	// force a last output at the end
-	dumpVariables(n, false);
+	if (!writer.isDisabled())
+		dumpVariables(n+1, false);
 }
 
 /**
@@ -907,8 +883,8 @@ void Glace2d::computeBr(const member_type& teamMember) noexcept
 
 /**
  * Job computeDt called @7.0 in executeTimeLoopN method.
- * In variables: deltatCfl, deltatj
- * Out variables: deltat_nplus1
+ * In variables: deltatCfl, deltatj, stopTime, t_n
+ * Out variables: deltat
  */
 void Glace2d::computeDt(const member_type& teamMember) noexcept
 {
@@ -917,7 +893,7 @@ void Glace2d::computeDt(const member_type& teamMember) noexcept
 	{
 		accu = glace2dfreefuncs::minR0(accu, deltatj(jCells));
 	}, KokkosJoiner<double>(reduction0, double(numeric_limits<double>::max()), &glace2dfreefuncs::minR0));
-	deltat_nplus1 = options.deltatCfl * reduction0;
+	deltat = std::min((options.deltatCfl * reduction0), (options.stopTime - t_n));
 }
 
 /**
@@ -1083,12 +1059,12 @@ void Glace2d::computeMt(const member_type& teamMember) noexcept
 
 /**
  * Job computeTn called @8.0 in executeTimeLoopN method.
- * In variables: deltat_nplus1, t_n
+ * In variables: deltat, t_n
  * Out variables: t_nplus1
  */
 void Glace2d::computeTn() noexcept
 {
-	t_nplus1 = t_n + deltat_nplus1;
+	t_nplus1 = t_n + deltat;
 }
 
 /**
@@ -1143,7 +1119,7 @@ void Glace2d::computeFjr(const member_type& teamMember) noexcept
 
 /**
  * Job computeXn called @10.0 in executeTimeLoopN method.
- * In variables: X_n, deltat_n, ur
+ * In variables: X_n, deltat, ur
  * Out variables: X_nplus1
  */
 void Glace2d::computeXn(const member_type& teamMember) noexcept
@@ -1156,14 +1132,14 @@ void Glace2d::computeXn(const member_type& teamMember) noexcept
 		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& rNodesTeam)
 		{
 			int rNodes(rNodesTeam + teamWork.first);
-			X_nplus1(rNodes) = X_n(rNodes) + deltat_n * ur(rNodes);
+			X_nplus1(rNodes) = X_n(rNodes) + deltat * ur(rNodes);
 		});
 	}
 }
 
 /**
  * Job computeEn called @11.0 in executeTimeLoopN method.
- * In variables: E_n, F, deltat_n, m, ur
+ * In variables: E_n, F, deltat, m, ur
  * Out variables: E_nplus1
  */
 void Glace2d::computeEn(const member_type& teamMember) noexcept
@@ -1188,14 +1164,14 @@ void Glace2d::computeEn(const member_type& teamMember) noexcept
 					reduction0 = glace2dfreefuncs::sumR0(reduction0, glace2dfreefuncs::dot(F(jCells, rNodesOfCellJ), ur(rNodes)));
 				}
 			}
-			E_nplus1(jCells) = E_n(jCells) - (deltat_n / m(jCells)) * reduction0;
+			E_nplus1(jCells) = E_n(jCells) - (deltat / m(jCells)) * reduction0;
 		});
 	}
 }
 
 /**
  * Job computeUn called @11.0 in executeTimeLoopN method.
- * In variables: F, deltat_n, m, uj_n
+ * In variables: F, deltat, m, uj_n
  * Out variables: uj_nplus1
  */
 void Glace2d::computeUn(const member_type& teamMember) noexcept
@@ -1218,7 +1194,7 @@ void Glace2d::computeUn(const member_type& teamMember) noexcept
 					reduction0 = glace2dfreefuncs::sumR1(reduction0, F(jCells, rNodesOfCellJ));
 				}
 			}
-			uj_nplus1(jCells) = uj_n(jCells) - (deltat_n / m(jCells)) * reduction0;
+			uj_nplus1(jCells) = uj_n(jCells) - (deltat / m(jCells)) * reduction0;
 		});
 	}
 }
@@ -1288,8 +1264,6 @@ void Glace2d::simulate()
 		iniCjrIc(thread);
 		if (thread.league_rank() == 0)
 			Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){iniTime();});
-		if (thread.league_rank() == 0)
-			Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){iniTimeStep();});
 	});
 	
 	// @2.0
@@ -1302,6 +1276,7 @@ void Glace2d::simulate()
 	// @3.0
 	executeTimeLoopN();
 	
+	std::cout << "\nFinal time = " << t_n << endl;
 	std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << globalTimer.print() << __RESET__ << std::endl;
 }
 

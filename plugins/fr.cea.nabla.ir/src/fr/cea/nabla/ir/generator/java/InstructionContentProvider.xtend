@@ -180,10 +180,7 @@ class InstructionContentProvider
 
 	private static def dispatch getNbElems(Iterator it)
 	{
-		if (container.connectivityCall.connectivity.indexEqualId)
-			container.connectivityCall.connectivity.nbElemsVar
-		else
-			'nb' + container.uniqueName.toFirstUpper
+		container.connectivityCall.nbElemsVar
 	}
 
 	private static def dispatch getNbElems(Interval it)

@@ -92,7 +92,7 @@ private:
 
 	// Mesh and mesh variables
 	CartesianMesh2D* mesh;
-	size_t nbNodes, nbCells, nbFaces, nbNeighbourCells, nbNodesOfFace, nbNodesOfCell;
+	size_t nbNodes, nbCells, nbFaces, maxNeighbourCells, maxNodesOfFace, maxNodesOfCell;
 
 	// User options
 	Options& options;

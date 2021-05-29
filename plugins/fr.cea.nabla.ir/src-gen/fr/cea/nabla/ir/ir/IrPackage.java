@@ -250,13 +250,22 @@ public interface IrPackage extends EPackage {
 	int IR_ROOT__NODE_COORD_VARIABLE = IR_ANNOTABLE_FEATURE_COUNT + 9;
 
 	/**
-	 * The feature id for the '<em><b>Time Variable</b></em>' reference.
+	 * The feature id for the '<em><b>Current Time Variable</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int IR_ROOT__TIME_VARIABLE = IR_ANNOTABLE_FEATURE_COUNT + 10;
+	int IR_ROOT__CURRENT_TIME_VARIABLE = IR_ANNOTABLE_FEATURE_COUNT + 10;
+
+	/**
+	 * The feature id for the '<em><b>Next Time Variable</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IR_ROOT__NEXT_TIME_VARIABLE = IR_ANNOTABLE_FEATURE_COUNT + 11;
 
 	/**
 	 * The feature id for the '<em><b>Time Step Variable</b></em>' reference.
@@ -265,7 +274,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_ROOT__TIME_STEP_VARIABLE = IR_ANNOTABLE_FEATURE_COUNT + 11;
+	int IR_ROOT__TIME_STEP_VARIABLE = IR_ANNOTABLE_FEATURE_COUNT + 12;
 
 	/**
 	 * The feature id for the '<em><b>Post Processing</b></em>' containment reference.
@@ -274,7 +283,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_ROOT__POST_PROCESSING = IR_ANNOTABLE_FEATURE_COUNT + 12;
+	int IR_ROOT__POST_PROCESSING = IR_ANNOTABLE_FEATURE_COUNT + 13;
 
 	/**
 	 * The feature id for the '<em><b>Providers</b></em>' containment reference list.
@@ -283,7 +292,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_ROOT__PROVIDERS = IR_ANNOTABLE_FEATURE_COUNT + 13;
+	int IR_ROOT__PROVIDERS = IR_ANNOTABLE_FEATURE_COUNT + 14;
 
 	/**
 	 * The number of structural features of the '<em>Root</em>' class.
@@ -292,7 +301,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_ROOT_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 14;
+	int IR_ROOT_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 15;
 
 	/**
 	 * The number of operations of the '<em>Root</em>' class.
@@ -4337,15 +4346,26 @@ public interface IrPackage extends EPackage {
 	EReference getIrRoot_NodeCoordVariable();
 
 	/**
-	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.IrRoot#getTimeVariable <em>Time Variable</em>}'.
+	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.IrRoot#getCurrentTimeVariable <em>Current Time Variable</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Time Variable</em>'.
-	 * @see fr.cea.nabla.ir.ir.IrRoot#getTimeVariable()
+	 * @return the meta object for the reference '<em>Current Time Variable</em>'.
+	 * @see fr.cea.nabla.ir.ir.IrRoot#getCurrentTimeVariable()
 	 * @see #getIrRoot()
 	 * @generated
 	 */
-	EReference getIrRoot_TimeVariable();
+	EReference getIrRoot_CurrentTimeVariable();
+
+	/**
+	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.IrRoot#getNextTimeVariable <em>Next Time Variable</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Next Time Variable</em>'.
+	 * @see fr.cea.nabla.ir.ir.IrRoot#getNextTimeVariable()
+	 * @see #getIrRoot()
+	 * @generated
+	 */
+	EReference getIrRoot_NextTimeVariable();
 
 	/**
 	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.IrRoot#getTimeStepVariable <em>Time Step Variable</em>}'.
@@ -6523,12 +6543,20 @@ public interface IrPackage extends EPackage {
 		EReference IR_ROOT__NODE_COORD_VARIABLE = eINSTANCE.getIrRoot_NodeCoordVariable();
 
 		/**
-		 * The meta object literal for the '<em><b>Time Variable</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>Current Time Variable</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference IR_ROOT__TIME_VARIABLE = eINSTANCE.getIrRoot_TimeVariable();
+		EReference IR_ROOT__CURRENT_TIME_VARIABLE = eINSTANCE.getIrRoot_CurrentTimeVariable();
+
+		/**
+		 * The meta object literal for the '<em><b>Next Time Variable</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference IR_ROOT__NEXT_TIME_VARIABLE = eINSTANCE.getIrRoot_NextTimeVariable();
 
 		/**
 		 * The meta object literal for the '<em><b>Time Step Variable</b></em>' reference feature.

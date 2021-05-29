@@ -12,22 +12,25 @@ package fr.cea.nabla.javalib.mesh;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class PvdFileWriter2D
 {
 	enum State { closed, ready, onNodes, nodesFinished, onCells, cellsFinished, onNodeArray, onCellArray };
 
 	private PrintWriter vtpWriter;
-	private HashMap<Double, String> fileNameByTimes;
+	private LinkedHashMap<Double, String> fileNameByTimes;
 	private String moduleName;
 	private String directoryName;
 	private State state;
+	private Logger logger;
 
 	public PvdFileWriter2D(final String moduleName, final String directoryName)
 	{
-		this.fileNameByTimes = new HashMap<Double, String>();
+		this.fileNameByTimes = new LinkedHashMap<Double, String>();
 		this.moduleName = moduleName;
 		this.directoryName = directoryName;
 		this.state = State.closed;
@@ -38,6 +41,11 @@ public class PvdFileWriter2D
 			if (!outputDir.exists())
 				outputDir.mkdir();
 		}
+	}
+
+	public void setLogger(Logger value)
+	{
+		this.logger = value;
 	}
 
 	public boolean isDisabled()
@@ -56,6 +64,11 @@ public class PvdFileWriter2D
 		changeState(State.closed, State.ready);
 
 		final String fileName = moduleName + "." + iteration + ".vtp";
+		if (logger == null)
+			System.out.println("Writing vtp file: " + fileName);
+		else
+			logger.log(Level.INFO, "Writing vtp file: " + fileName);
+
 		fileNameByTimes.put(time, fileName);
 		vtpWriter = new PrintWriter(directoryName + "/" + fileName);
 
@@ -155,7 +168,8 @@ public class PvdFileWriter2D
 		vtpWriter.println("</VTKFile>");
 		vtpWriter.close();
 
-		PrintWriter pvdWriter = new PrintWriter(directoryName + "/" + moduleName + ".pvd");
+		String fileName = directoryName + "/" + moduleName + ".pvd";
+		PrintWriter pvdWriter = new PrintWriter(fileName);
 		pvdWriter.println("<?xml version=\"1.0\"?>");
 		pvdWriter.println("<VTKFile type=\"Collection\" version=\"0.1\">");
 		pvdWriter.println("	<Collection>");

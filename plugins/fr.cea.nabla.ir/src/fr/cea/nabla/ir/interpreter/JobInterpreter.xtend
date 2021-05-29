@@ -53,37 +53,63 @@ class JobInterpreter
 			iteration ++
 			context.setVariableValue(iterationCounter, new NV0Int(iteration))
 
-			val log = String.format(Locale::ENGLISH, "%1$s [%2$d] t: %3$.5f - deltat: %4$.5f",
-					caller.indentation,
-					iteration,
-					context.getReal(context.ir.timeVariable),
-					context.getReal(context.ir.timeStepVariable))
-			context.logFine(log)
-			if (caller.main && ppInfo !== null)
+			if (caller.main)
 			{
-				val periodValue = context.getNumber(ppInfo.periodValue)
-				val periodReference = context.getNumber(ppInfo.periodReference)
-				val lastDump = context.getNumber(ppInfo.lastDumpVariable)
-				if (periodReference >= lastDump + periodValue)
-					dumpVariables(context.ir, iteration, context, periodReference);
+				val log = String.format(Locale::ENGLISH, "START ITERATION %1$s: %2$5d - t: %3$.5f - deltat: %4$.5f",
+						iterationCounter.name,
+						iteration,
+						context.getReal(context.ir.currentTimeVariable),
+						context.getReal(context.ir.timeStepVariable))
+				context.logFine(log)
+
+				if (ppInfo !== null)
+				{
+					val periodValue = context.getNumber(ppInfo.periodValue)
+					val periodReference = context.getNumber(ppInfo.periodReference)
+					val lastDump = context.getNumber(ppInfo.lastDumpVariable)
+					if (periodReference >= lastDump + periodValue)
+						dumpVariables(context.ir, iteration, context, periodReference);
+				}
 			}
+			else
+			{
+				val log = String.format(Locale::ENGLISH, "Start iteration %1$s: %2$5d",
+						iterationCounter.name,
+						iteration)
+				context.logFine(log)
+			}
+
 			for (j : calls)
 				interprete(j, context)
+
 			context.logVariables("After iteration = " + iteration)
 
 			continueLoop = (interprete(whileCondition, context) as NV0Bool).data
 
-			if (continueLoop)
-			{
-				interprete(instruction, context)
-			}
+			interprete(instruction, context)
 
 			context.checkInterrupted
 		}
 		while (continueLoop)
-		val log = String.format("%1$s Nb iteration %2$s = %3$d", caller.indentation, iterationCounter.name, iteration)
+
+		if (caller.main)
+		{
+			// force a last trace and output at the end
+			val log = String.format(Locale::ENGLISH, "FINAL TIME: %1$.5f - deltat: %2$.5f",
+					context.getReal(context.ir.currentTimeVariable),
+					context.getReal(context.ir.timeStepVariable))
+			context.logFine(log)
+
+			if (ppInfo !== null)
+			{
+				val periodReference = context.getNumber(ppInfo.periodReference)
+				dumpVariables(context.ir, iteration + 1, context, periodReference);
+			}
+		}
+
+		val log = String.format("Nb iteration %1$s = %2$d", iterationCounter.name, iteration)
 		context.logInfo(log)
-		val msg = String.format("%1$s After timeLoop %2$s %3$d", caller.indentation, iterationCounter.name, iteration)
+		val msg = String.format("After timeLoop %1$s %2$d", iterationCounter.name, iteration)
 		context.logVariables(msg)
 	}
 
@@ -93,7 +119,7 @@ class JobInterpreter
 		val w = context.writer
 		if (w !== null && !w.disabled)
 		{
-			val time = context.getReal(ir.timeVariable)
+			val time = context.getReal(ir.currentTimeVariable)
 			val coords = (context.getVariableValue(ir.nodeCoordVariable) as NV2Real).data
 			val quads = context.meshWrapper.quads
 			w.startVtpFile(iteration, time, coords, quads);

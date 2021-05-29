@@ -10,7 +10,9 @@
 package fr.cea.nabla.ir
 
 import fr.cea.nabla.ir.ir.ArgOrVar
+import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.IrPackage
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.Variable
@@ -35,5 +37,10 @@ class ArgOrVarExtensions
 	static def isLinearAlgebra(ArgOrVar it)
 	{
 		it.type instanceof LinearAlgebraType
+	}
+
+	static def isFunctionDimVar(ArgOrVar it)
+	{
+		eContainer instanceof Function && eContainingFeature === IrPackage.eINSTANCE.function_Variables
 	}
 }

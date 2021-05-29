@@ -38,18 +38,25 @@ class JobContentProvider
 	private static def dispatch CharSequence getInnerContent(ExecuteTimeLoopJob it)
 	'''
 		«val itVar = iterationCounter.codeName»
+		«val irRoot = IrUtils.getContainerOfType(it, IrRoot)»
+		«val tn = irRoot.currentTimeVariable.codeName»
+		«val deltat = irRoot.timeStepVariable.codeName»
+		«val ppInfo = irRoot.postProcessing»
 		«itVar» = 0;
 		boolean continueLoop = true;
 		do
 		{
 			«itVar»++;
-			«val irRoot = IrUtils.getContainerOfType(it, IrRoot)»
-			System.out.printf("«caller.indentation»[%5d] t: %5.5f - deltat: %5.5f\n", «itVar», «irRoot.timeVariable.codeName», «irRoot.timeStepVariable.codeName»);
-			«IF caller.main && irRoot.postProcessing !== null»
-				«val ppInfo = irRoot.postProcessing»
-				if («ppInfo.periodReference.codeName» >= «ppInfo.lastDumpVariable.codeName» + «ppInfo.periodValue.codeName»)
-					dumpVariables(«itVar»);
+			«IF caller.main»
+				System.out.printf("START ITERATION «iterationCounter.name»: %5d - t: %5.5f - deltat: %5.5f\n", «itVar», «tn», «deltat»);
+				«IF ppInfo !== null»
+					if («ppInfo.periodReference.codeName» >= «ppInfo.lastDumpVariable.codeName» + «ppInfo.periodValue.codeName»)
+						dumpVariables(«itVar»);
+				«ENDIF»
+			«ELSE»
+				System.out.printf("Start iteration «iterationCounter.name»: %5d\n", «itVar»);
 			«ENDIF»
+
 			«FOR j : calls»
 				«j.callName»(); // @«j.at»
 			«ENDFOR»
@@ -57,14 +64,12 @@ class JobContentProvider
 			// Evaluate loop condition with variables at time n
 			continueLoop = («whileCondition.content»);
 
-			if (continueLoop)
-			{
-				«instruction.innerContent»
-			} 
+			«instruction.innerContent»
 		} while (continueLoop);
-		«IF caller.main && irRoot.postProcessing !== null»
-			// force a last output at the end
-			dumpVariables(«itVar»);
+		«IF caller.main»
+
+			System.out.printf("FINAL TIME: %5.5f - deltat: %5.5f\n", «tn», «deltat»);
+			«IF ppInfo !== null»dumpVariables(«itVar»+1);«ENDIF»
 		«ENDIF»
 	'''
 }

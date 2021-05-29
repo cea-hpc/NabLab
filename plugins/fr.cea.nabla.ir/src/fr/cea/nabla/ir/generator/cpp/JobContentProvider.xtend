@@ -53,6 +53,9 @@ abstract class JobContentProvider
 	'''
 		«callsHeader»
 		«val itVar = iterationCounter.codeName»
+		«val irRoot = IrUtils.getContainerOfType(it, IrRoot)»
+		«val irModule = IrUtils.getContainerOfType(it, IrModule)»
+		«val ppInfo = irRoot.postProcessing»
 		«itVar» = 0;
 		bool continueLoop = true;
 		do
@@ -62,40 +65,36 @@ abstract class JobContentProvider
 			cpuTimer.start();
 			«ENDIF»
 			«itVar»++;
-			«val irRoot = IrUtils.getContainerOfType(it, IrRoot)»
-			«val irModule = IrUtils.getContainerOfType(it, IrModule)»
-			«val ppInfo = irRoot.postProcessing»
-			«IF caller.main && ppInfo !== null»
+			«IF caller.main»
+				«IF ppInfo !== null»
 				if (!writer.isDisabled() && «ppInfo.periodReference.codeName» >= «ppInfo.lastDumpVariable.codeName» + «ppInfo.periodValue.codeName»)
 					dumpVariables(«itVar»);
-			«ENDIF»
-			«traceContentProvider.getBeginOfLoopTrace(irModule, itVar, caller.main)»
+				«ENDIF»
+				«traceContentProvider.getBeginOfLoopTrace(irModule, itVar)»
 
+			«ENDIF»
 			«callsContent»
 
 			// Evaluate loop condition with variables at time n
 			continueLoop = («whileCondition.content»);
 
-			if (continueLoop)
-			{
-				«instruction.innerContent»
-			}
+			«instruction.innerContent»
 			«IF caller.main»
 
 			cpuTimer.stop();
 			globalTimer.stop();
-			«ENDIF»
 
-			«traceContentProvider.getEndOfLoopTrace(irModule, itVar, caller.main, (ppInfo !== null))»
+			«traceContentProvider.getEndOfLoopTrace(irModule, itVar, (ppInfo !== null))»
 
-			«IF caller.main»
 			cpuTimer.reset();
 			ioTimer.reset();
 			«ENDIF»
 		} while (continueLoop);
-		«IF caller.main && irRoot.postProcessing !== null»
-			// force a last output at the end
-			dumpVariables(«itVar», false);
+		«IF caller.main»
+			«IF ppInfo !== null»
+			if (!writer.isDisabled())
+				dumpVariables(«itVar»+1, false);
+			«ENDIF»
 		«ENDIF»
 	'''
 }

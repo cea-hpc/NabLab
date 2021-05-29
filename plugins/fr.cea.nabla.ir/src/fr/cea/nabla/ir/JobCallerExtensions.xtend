@@ -22,12 +22,6 @@ class JobCallerExtensions
 		!(jc instanceof ExecuteTimeLoopJob)
 	}
 
-	static def String getIndentation(JobCaller jc)
-	{
-		if (jc instanceof ExecuteTimeLoopJob) getIndentation(jc.caller) + '\t'
-		else ''
-	}
-
 	static def getName(JobCaller jobCaller)
 	{
 		if (jobCaller instanceof ExecuteTimeLoopJob)

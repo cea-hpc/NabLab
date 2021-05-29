@@ -23,7 +23,8 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getMeshClassName <em>Mesh Class Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getInitNodeCoordVariable <em>Init Node Coord Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getNodeCoordVariable <em>Node Coord Variable</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getTimeVariable <em>Time Variable</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getCurrentTimeVariable <em>Current Time Variable</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getNextTimeVariable <em>Next Time Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getTimeStepVariable <em>Time Step Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getPostProcessing <em>Post Processing</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getProviders <em>Providers</em>}</li>
@@ -205,26 +206,48 @@ public interface IrRoot extends IrAnnotable {
 	void setNodeCoordVariable(Variable value);
 
 	/**
-	 * Returns the value of the '<em><b>Time Variable</b></em>' reference.
+	 * Returns the value of the '<em><b>Current Time Variable</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Time Variable</em>' reference.
-	 * @see #setTimeVariable(Variable)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrRoot_TimeVariable()
+	 * @return the value of the '<em>Current Time Variable</em>' reference.
+	 * @see #setCurrentTimeVariable(Variable)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrRoot_CurrentTimeVariable()
 	 * @model required="true"
 	 * @generated
 	 */
-	Variable getTimeVariable();
+	Variable getCurrentTimeVariable();
 
 	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.IrRoot#getTimeVariable <em>Time Variable</em>}' reference.
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.IrRoot#getCurrentTimeVariable <em>Current Time Variable</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Time Variable</em>' reference.
-	 * @see #getTimeVariable()
+	 * @param value the new value of the '<em>Current Time Variable</em>' reference.
+	 * @see #getCurrentTimeVariable()
 	 * @generated
 	 */
-	void setTimeVariable(Variable value);
+	void setCurrentTimeVariable(Variable value);
+
+	/**
+	 * Returns the value of the '<em><b>Next Time Variable</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Next Time Variable</em>' reference.
+	 * @see #setNextTimeVariable(Variable)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrRoot_NextTimeVariable()
+	 * @model required="true"
+	 * @generated
+	 */
+	Variable getNextTimeVariable();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.IrRoot#getNextTimeVariable <em>Next Time Variable</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Next Time Variable</em>' reference.
+	 * @see #getNextTimeVariable()
+	 * @generated
+	 */
+	void setNextTimeVariable(Variable value);
 
 	/**
 	 * Returns the value of the '<em><b>Time Step Variable</b></em>' reference.

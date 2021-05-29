@@ -76,7 +76,6 @@ public:
 		int maxIterations;
 		double gamma;
 		double xInterface;
-		double deltatIni;
 		double deltatCfl;
 		double rhoIniZg;
 		double rhoIniZd;
@@ -98,8 +97,6 @@ public:
 	void iniCjrIc(const member_type& teamMember) noexcept;
 	KOKKOS_INLINE_FUNCTION
 	void iniTime() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void iniTimeStep() noexcept;
 	KOKKOS_INLINE_FUNCTION
 	void computeLjr(const member_type& teamMember) noexcept;
 	KOKKOS_INLINE_FUNCTION
@@ -157,7 +154,7 @@ private:
 
 	// Mesh and mesh variables
 	CartesianMesh2D* mesh;
-	size_t nbNodes, nbCells, nbInnerNodes, nbTopNodes, nbBottomNodes, nbLeftNodes, nbRightNodes, nbNodesOfCell, nbCellsOfNode;
+	size_t nbNodes, nbCells, nbInnerNodes, nbTopNodes, nbBottomNodes, nbLeftNodes, nbRightNodes, maxNodesOfCell, maxCellsOfNode;
 
 	// User options
 	Options& options;
@@ -175,9 +172,7 @@ public:
 	double t_n;
 	double t_nplus1;
 	double t_n0;
-	double deltat_n;
-	double deltat_nplus1;
-	double deltat_n0;
+	double deltat;
 	Kokkos::View<RealArray1D<2>*> X_n;
 	Kokkos::View<RealArray1D<2>*> X_nplus1;
 	Kokkos::View<RealArray1D<2>*> X_n0;

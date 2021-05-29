@@ -37,7 +37,7 @@ let ℝ δt = 0.001;
 ℝ V{cells}; // Volume of cells
 ℝ D{cells}; // Cell centered conductivity
 ℝ faceLength{faces}, faceConductivity{faces};
-ℝ α{cells, cells}; 
+ℝ α{cells, cells};
 
 iterate n while (t^{n+1} < stopTime && n+1 < maxIterations);
 
@@ -51,10 +51,10 @@ InitU: ∀c∈cells(),
 	else 
 		u^{n}{c} = 0.0; // Initial circle in the center with value u0
 
-InitD: ∀c∈cells(), D{c} = 1.0; 
+InitD: ∀c∈cells(), D{c} = 1.0;
 
 ComputeDeltaTn: δt = Min{c∈cells()}(V{c}/D{c}) * 0.24;
-ComputeV: ∀j∈cells(), V{j} = 0.5 * ∑{p∈nodesOfCell(j)}(det(X{p}, X{p+1}));
+ComputeV: ∀c∈cells(), V{c} = 0.5 * ∑{p∈nodesOfCell(c)}(det(X{p}, X{p+1}));
 ComputeFaceLength: ∀f∈faces(), faceLength{f} = 0.5 * ∑{p∈nodesOfFace(f)}(norm(X{p} - X{p+1}));
 ComputeFaceConductivity: ∀f∈faces(), faceConductivity{f} = 2.0 * ∏{c1∈cellsOfFace(f)}(D{c1}) / ∑{c2∈cellsOfFace(f)}(D{c2});
 

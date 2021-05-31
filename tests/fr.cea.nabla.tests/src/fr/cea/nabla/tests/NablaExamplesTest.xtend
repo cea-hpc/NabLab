@@ -36,6 +36,9 @@ import static fr.cea.nabla.tests.TestUtils.*
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class NablaExamplesTest
 {
+	static String projectName = 'NabLabExamples'
+	static String wsPath
+	static String projectPath
 	static String examplesProjectSubPath
 	static String examplesProjectPath
 	static String nRepositoryPath
@@ -61,6 +64,13 @@ class NablaExamplesTest
 		commonMath3Path = basePath + "plugins/commons-math3/*"
 		levelDBPath = basePath + "plugins/leveldb/*"
 		git = new GitUtils(basePath)
+		wsPath = Files.createTempDirectory("nablabtest-").toString
+		projectPath = wsPath + '/' + projectName
+		println("test working directory: " + projectPath)
+
+		// Simpliest is to copy all NablaExamples tree in tmpDir
+		val sourceLocation= new File(examplesProjectPath)
+		FileUtils.copyDirectory(sourceLocation, new File(projectPath))
 	}
 
 	@Test
@@ -150,15 +160,6 @@ class NablaExamplesTest
 			Assert.fail(envErr)
 		}
 
-		val wsPath = Files.createTempDirectory("nablabtest-" + moduleName).toString
-		val projectName = 'NabLabExamples'
-		val projectPath = wsPath + '/' + projectName
-		println(projectPath)
-
-		// Simpliest is to copy all NablaExamples tree in tmpDir
-		val sourceLocation= new File(examplesProjectPath)
-		FileUtils.copyDirectory(sourceLocation, new File(projectPath))
-
 		val packageName = moduleName.toLowerCase
 		val model = readFileAsString(projectPath + "/src/" + packageName + "/" + moduleName + ".n")
 		var genmodel = readFileAsString(projectPath + "/src/" + packageName + "/" + moduleName + ".ngen")
@@ -177,7 +178,7 @@ class NablaExamplesTest
 		var nbErrors = 0
 		for (target : compilationHelper.getNgenApp(model, genmodel).targets.filter[!interpreter])
 		{
-			(!testExecute(target, moduleName, wsPath) ? nbErrors++)
+			(!testExecute(target, moduleName) ? nbErrors++)
 		}
 		(nbErrors > 0 ? Assert.fail(nbErrors + " error(s) !"))
 	}
@@ -212,12 +213,12 @@ class NablaExamplesTest
 		'''
 	}
 
-	private def testExecute(Target target, String moduleName, String wsPath)
+	private def testExecute(Target target, String moduleName)
 	{
 		val testProjectPath = System.getProperty("user.dir")
 		val packageName = moduleName.toLowerCase
 		val outputPath = wsPath + "/" + target.outputPath
-		val targetName = outputPath.split("/").last
+		val targetName = (target.type == TargetType::JAVA ? "src-gen-java" : "src-gen-cpp/" + outputPath.split("/").last)
 		val levelDBRef = testProjectPath + "/results/compiler/" + targetName + "/" + packageName + "/" + moduleName + "DB.ref"
 		val jsonFile = examplesProjectPath + "/src/" + packageName + "/" + moduleName + ".json"
 

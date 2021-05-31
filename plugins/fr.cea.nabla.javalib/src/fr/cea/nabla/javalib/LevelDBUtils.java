@@ -68,7 +68,7 @@ public class LevelDBUtils
 					{
 						String ref = asString(itRef.peekNext().getValue());
 						String value = asString(byteValue);
-						System.out.println(key + ": " + (value.contentEquals(ref) ? "OK" : "ERROR"));
+						System.err.println(key + ": " + (value.contentEquals(ref) ? "OK" : "ERROR"));
 						if (!value.equals(ref))
 						{
 							result = false;

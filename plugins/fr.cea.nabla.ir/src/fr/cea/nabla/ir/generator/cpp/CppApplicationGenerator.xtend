@@ -389,9 +389,13 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 
 	void «className»::createDB(const std::string& db_name)
 	{
-		// Creating data base
 		leveldb::DB* db;
 		leveldb::Options options;
+
+		// Destroy if exists
+		leveldb::DestroyDB(db_name, options);
+
+		// Create data base
 		options.create_if_missing = true;
 		leveldb::Status status = leveldb::DB::Open(options, db_name, &db);
 		assert(status.ok());

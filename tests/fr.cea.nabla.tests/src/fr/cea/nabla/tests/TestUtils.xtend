@@ -168,5 +168,6 @@ class TestUtils
 	static def simplifyPath(String path)
 	{
 		path.replace("NabLabExamples/../NabLabExamples/", "NabLabExamples/")
+		path.replace("//", "/")
 	}
 }

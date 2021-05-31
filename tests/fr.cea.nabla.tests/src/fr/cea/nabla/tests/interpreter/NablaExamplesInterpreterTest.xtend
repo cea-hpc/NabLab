@@ -37,7 +37,7 @@ import org.junit.runner.RunWith
 @InjectWith(NablaInjectorProvider)
 class NablaExamplesInterpreterTest
 {
-	static String wsPath = Files.createTempDirectory("NablaExamplesInterpreterTest").toString
+	static String wsPath = Files.createTempDirectory("nablabtest-interpreter-").toString
 	static String pluginsPath
 	static String testsProjectSubPath
 	static String examplesProjectPath

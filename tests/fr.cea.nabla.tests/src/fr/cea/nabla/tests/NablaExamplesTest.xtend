@@ -37,7 +37,7 @@ import static fr.cea.nabla.tests.TestUtils.*
 class NablaExamplesTest
 {
 	static String projectName = 'NabLabExamples'
-	static String wsPath
+	static String wsPath = Files.createTempDirectory("nablabtest-compiler-").toString
 	static String projectPath
 	static String examplesProjectSubPath
 	static String examplesProjectPath
@@ -64,7 +64,6 @@ class NablaExamplesTest
 		commonMath3Path = basePath + "plugins/commons-math3/*"
 		levelDBPath = basePath + "plugins/leveldb/*"
 		git = new GitUtils(basePath)
-		wsPath = Files.createTempDirectory("nablabtest-").toString
 		projectPath = wsPath + '/' + projectName
 		println("test working directory: " + projectPath)
 

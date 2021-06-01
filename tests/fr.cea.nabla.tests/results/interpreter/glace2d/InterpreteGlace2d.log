@@ -1,151 +1,304 @@
 INFO:   Start interpreting Glace2d module 
-FINE:  [1] t: 0.00000 - deltat: 0.00001 
-FINE:  [2] t: 0.00239 - deltat: 0.00239 
-FINE:  [3] t: 0.00478 - deltat: 0.00239 
-FINE:  [4] t: 0.00691 - deltat: 0.00213 
-FINE:  [5] t: 0.00856 - deltat: 0.00165 
-FINE:  [6] t: 0.01002 - deltat: 0.00145 
-FINE:  [7] t: 0.01141 - deltat: 0.00139 
-FINE:  [8] t: 0.01276 - deltat: 0.00135 
-FINE:  [9] t: 0.01408 - deltat: 0.00132 
-FINE:  [10] t: 0.01537 - deltat: 0.00130 
-FINE:  [11] t: 0.01666 - deltat: 0.00129 
-FINE:  [12] t: 0.01795 - deltat: 0.00128 
-FINE:  [13] t: 0.01923 - deltat: 0.00129 
-FINE:  [14] t: 0.02052 - deltat: 0.00129 
-FINE:  [15] t: 0.02181 - deltat: 0.00129 
-FINE:  [16] t: 0.02311 - deltat: 0.00129 
-FINE:  [17] t: 0.02440 - deltat: 0.00130 
-FINE:  [18] t: 0.02570 - deltat: 0.00130 
-FINE:  [19] t: 0.02700 - deltat: 0.00130 
-FINE:  [20] t: 0.02829 - deltat: 0.00130 
-FINE:  [21] t: 0.02959 - deltat: 0.00130 
-FINE:  [22] t: 0.03089 - deltat: 0.00130 
-FINE:  [23] t: 0.03220 - deltat: 0.00130 
-FINE:  [24] t: 0.03350 - deltat: 0.00130 
-FINE:  [25] t: 0.03480 - deltat: 0.00130 
-FINE:  [26] t: 0.03610 - deltat: 0.00130 
-FINE:  [27] t: 0.03741 - deltat: 0.00131 
-FINE:  [28] t: 0.03872 - deltat: 0.00131 
-FINE:  [29] t: 0.04002 - deltat: 0.00131 
-FINE:  [30] t: 0.04133 - deltat: 0.00131 
-FINE:  [31] t: 0.04264 - deltat: 0.00131 
-FINE:  [32] t: 0.04395 - deltat: 0.00131 
-FINE:  [33] t: 0.04526 - deltat: 0.00131 
-FINE:  [34] t: 0.04657 - deltat: 0.00131 
-FINE:  [35] t: 0.04788 - deltat: 0.00131 
-FINE:  [36] t: 0.04919 - deltat: 0.00131 
-FINE:  [37] t: 0.05050 - deltat: 0.00131 
-FINE:  [38] t: 0.05182 - deltat: 0.00131 
-FINE:  [39] t: 0.05313 - deltat: 0.00131 
-FINE:  [40] t: 0.05445 - deltat: 0.00131 
-FINE:  [41] t: 0.05576 - deltat: 0.00132 
-FINE:  [42] t: 0.05708 - deltat: 0.00132 
-FINE:  [43] t: 0.05840 - deltat: 0.00132 
-FINE:  [44] t: 0.05971 - deltat: 0.00132 
-FINE:  [45] t: 0.06103 - deltat: 0.00132 
-FINE:  [46] t: 0.06235 - deltat: 0.00132 
-FINE:  [47] t: 0.06367 - deltat: 0.00132 
-FINE:  [48] t: 0.06499 - deltat: 0.00132 
-FINE:  [49] t: 0.06631 - deltat: 0.00132 
-FINE:  [50] t: 0.06763 - deltat: 0.00132 
-FINE:  [51] t: 0.06895 - deltat: 0.00132 
-FINE:  [52] t: 0.07028 - deltat: 0.00132 
-FINE:  [53] t: 0.07160 - deltat: 0.00132 
-FINE:  [54] t: 0.07292 - deltat: 0.00132 
-FINE:  [55] t: 0.07425 - deltat: 0.00132 
-FINE:  [56] t: 0.07557 - deltat: 0.00133 
-FINE:  [57] t: 0.07690 - deltat: 0.00133 
-FINE:  [58] t: 0.07822 - deltat: 0.00133 
-FINE:  [59] t: 0.07955 - deltat: 0.00133 
-FINE:  [60] t: 0.08088 - deltat: 0.00133 
-FINE:  [61] t: 0.08221 - deltat: 0.00133 
-FINE:  [62] t: 0.08353 - deltat: 0.00133 
-FINE:  [63] t: 0.08486 - deltat: 0.00133 
-FINE:  [64] t: 0.08619 - deltat: 0.00133 
-FINE:  [65] t: 0.08752 - deltat: 0.00133 
-FINE:  [66] t: 0.08885 - deltat: 0.00133 
-FINE:  [67] t: 0.09018 - deltat: 0.00133 
-FINE:  [68] t: 0.09151 - deltat: 0.00133 
-FINE:  [69] t: 0.09284 - deltat: 0.00133 
-FINE:  [70] t: 0.09417 - deltat: 0.00133 
-FINE:  [71] t: 0.09550 - deltat: 0.00133 
-FINE:  [72] t: 0.09683 - deltat: 0.00133 
-FINE:  [73] t: 0.09817 - deltat: 0.00133 
-FINE:  [74] t: 0.09950 - deltat: 0.00133 
-FINE:  [75] t: 0.10083 - deltat: 0.00133 
-FINE:  [76] t: 0.10216 - deltat: 0.00133 
-FINE:  [77] t: 0.10350 - deltat: 0.00133 
-FINE:  [78] t: 0.10483 - deltat: 0.00133 
-FINE:  [79] t: 0.10617 - deltat: 0.00133 
-FINE:  [80] t: 0.10750 - deltat: 0.00133 
-FINE:  [81] t: 0.10884 - deltat: 0.00133 
-FINE:  [82] t: 0.11017 - deltat: 0.00133 
-FINE:  [83] t: 0.11151 - deltat: 0.00134 
-FINE:  [84] t: 0.11284 - deltat: 0.00134 
-FINE:  [85] t: 0.11418 - deltat: 0.00134 
-FINE:  [86] t: 0.11551 - deltat: 0.00134 
-FINE:  [87] t: 0.11685 - deltat: 0.00134 
-FINE:  [88] t: 0.11819 - deltat: 0.00134 
-FINE:  [89] t: 0.11952 - deltat: 0.00134 
-FINE:  [90] t: 0.12086 - deltat: 0.00134 
-FINE:  [91] t: 0.12220 - deltat: 0.00134 
-FINE:  [92] t: 0.12354 - deltat: 0.00134 
-FINE:  [93] t: 0.12487 - deltat: 0.00134 
-FINE:  [94] t: 0.12621 - deltat: 0.00134 
-FINE:  [95] t: 0.12755 - deltat: 0.00134 
-FINE:  [96] t: 0.12889 - deltat: 0.00134 
-FINE:  [97] t: 0.13023 - deltat: 0.00134 
-FINE:  [98] t: 0.13157 - deltat: 0.00134 
-FINE:  [99] t: 0.13291 - deltat: 0.00134 
-FINE:  [100] t: 0.13425 - deltat: 0.00134 
-FINE:  [101] t: 0.13558 - deltat: 0.00134 
-FINE:  [102] t: 0.13692 - deltat: 0.00134 
-FINE:  [103] t: 0.13826 - deltat: 0.00134 
-FINE:  [104] t: 0.13960 - deltat: 0.00134 
-FINE:  [105] t: 0.14095 - deltat: 0.00134 
-FINE:  [106] t: 0.14229 - deltat: 0.00134 
-FINE:  [107] t: 0.14363 - deltat: 0.00134 
-FINE:  [108] t: 0.14497 - deltat: 0.00134 
-FINE:  [109] t: 0.14631 - deltat: 0.00134 
-FINE:  [110] t: 0.14765 - deltat: 0.00134 
-FINE:  [111] t: 0.14899 - deltat: 0.00134 
-FINE:  [112] t: 0.15033 - deltat: 0.00134 
-FINE:  [113] t: 0.15167 - deltat: 0.00134 
-FINE:  [114] t: 0.15302 - deltat: 0.00134 
-FINE:  [115] t: 0.15436 - deltat: 0.00134 
-FINE:  [116] t: 0.15570 - deltat: 0.00134 
-FINE:  [117] t: 0.15704 - deltat: 0.00134 
-FINE:  [118] t: 0.15838 - deltat: 0.00134 
-FINE:  [119] t: 0.15973 - deltat: 0.00134 
-FINE:  [120] t: 0.16107 - deltat: 0.00134 
-FINE:  [121] t: 0.16241 - deltat: 0.00134 
-FINE:  [122] t: 0.16375 - deltat: 0.00134 
-FINE:  [123] t: 0.16510 - deltat: 0.00134 
-FINE:  [124] t: 0.16644 - deltat: 0.00134 
-FINE:  [125] t: 0.16778 - deltat: 0.00134 
-FINE:  [126] t: 0.16913 - deltat: 0.00134 
-FINE:  [127] t: 0.17047 - deltat: 0.00134 
-FINE:  [128] t: 0.17181 - deltat: 0.00134 
-FINE:  [129] t: 0.17316 - deltat: 0.00134 
-FINE:  [130] t: 0.17450 - deltat: 0.00134 
-FINE:  [131] t: 0.17585 - deltat: 0.00134 
-FINE:  [132] t: 0.17719 - deltat: 0.00134 
-FINE:  [133] t: 0.17853 - deltat: 0.00134 
-FINE:  [134] t: 0.17988 - deltat: 0.00134 
-FINE:  [135] t: 0.18122 - deltat: 0.00134 
-FINE:  [136] t: 0.18257 - deltat: 0.00134 
-FINE:  [137] t: 0.18391 - deltat: 0.00134 
-FINE:  [138] t: 0.18526 - deltat: 0.00134 
-FINE:  [139] t: 0.18660 - deltat: 0.00134 
-FINE:  [140] t: 0.18794 - deltat: 0.00134 
-FINE:  [141] t: 0.18929 - deltat: 0.00134 
-FINE:  [142] t: 0.19063 - deltat: 0.00134 
-FINE:  [143] t: 0.19198 - deltat: 0.00134 
-FINE:  [144] t: 0.19332 - deltat: 0.00135 
-FINE:  [145] t: 0.19467 - deltat: 0.00135 
-FINE:  [146] t: 0.19601 - deltat: 0.00135 
-FINE:  [147] t: 0.19736 - deltat: 0.00135 
-FINE:  [148] t: 0.19870 - deltat: 0.00135 
-INFO:  Nb iteration n = 148 
+FINE: START ITERATION n:     1 - t: 0.00000 - deltat: 0.00000 
+INFO: Writing vtp file: Glace2d.1.vtp 
+FINE: START ITERATION n:     2 - t: 0.00239 - deltat: 0.00239 
+INFO: Writing vtp file: Glace2d.2.vtp 
+FINE: START ITERATION n:     3 - t: 0.00452 - deltat: 0.00213 
+INFO: Writing vtp file: Glace2d.3.vtp 
+FINE: START ITERATION n:     4 - t: 0.00623 - deltat: 0.00171 
+INFO: Writing vtp file: Glace2d.4.vtp 
+FINE: START ITERATION n:     5 - t: 0.00775 - deltat: 0.00152 
+INFO: Writing vtp file: Glace2d.5.vtp 
+FINE: START ITERATION n:     6 - t: 0.00918 - deltat: 0.00144 
+INFO: Writing vtp file: Glace2d.6.vtp 
+FINE: START ITERATION n:     7 - t: 0.01057 - deltat: 0.00138 
+INFO: Writing vtp file: Glace2d.7.vtp 
+FINE: START ITERATION n:     8 - t: 0.01191 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.8.vtp 
+FINE: START ITERATION n:     9 - t: 0.01323 - deltat: 0.00132 
+INFO: Writing vtp file: Glace2d.9.vtp 
+FINE: START ITERATION n:    10 - t: 0.01452 - deltat: 0.00130 
+INFO: Writing vtp file: Glace2d.10.vtp 
+FINE: START ITERATION n:    11 - t: 0.01581 - deltat: 0.00129 
+INFO: Writing vtp file: Glace2d.11.vtp 
+FINE: START ITERATION n:    12 - t: 0.01710 - deltat: 0.00129 
+INFO: Writing vtp file: Glace2d.12.vtp 
+FINE: START ITERATION n:    13 - t: 0.01839 - deltat: 0.00129 
+INFO: Writing vtp file: Glace2d.13.vtp 
+FINE: START ITERATION n:    14 - t: 0.01969 - deltat: 0.00129 
+INFO: Writing vtp file: Glace2d.14.vtp 
+FINE: START ITERATION n:    15 - t: 0.02098 - deltat: 0.00129 
+INFO: Writing vtp file: Glace2d.15.vtp 
+FINE: START ITERATION n:    16 - t: 0.02228 - deltat: 0.00130 
+INFO: Writing vtp file: Glace2d.16.vtp 
+FINE: START ITERATION n:    17 - t: 0.02358 - deltat: 0.00130 
+INFO: Writing vtp file: Glace2d.17.vtp 
+FINE: START ITERATION n:    18 - t: 0.02487 - deltat: 0.00130 
+INFO: Writing vtp file: Glace2d.18.vtp 
+FINE: START ITERATION n:    19 - t: 0.02617 - deltat: 0.00130 
+INFO: Writing vtp file: Glace2d.19.vtp 
+FINE: START ITERATION n:    20 - t: 0.02747 - deltat: 0.00130 
+INFO: Writing vtp file: Glace2d.20.vtp 
+FINE: START ITERATION n:    21 - t: 0.02877 - deltat: 0.00130 
+INFO: Writing vtp file: Glace2d.21.vtp 
+FINE: START ITERATION n:    22 - t: 0.03007 - deltat: 0.00130 
+INFO: Writing vtp file: Glace2d.22.vtp 
+FINE: START ITERATION n:    23 - t: 0.03137 - deltat: 0.00130 
+INFO: Writing vtp file: Glace2d.23.vtp 
+FINE: START ITERATION n:    24 - t: 0.03267 - deltat: 0.00130 
+INFO: Writing vtp file: Glace2d.24.vtp 
+FINE: START ITERATION n:    25 - t: 0.03398 - deltat: 0.00130 
+INFO: Writing vtp file: Glace2d.25.vtp 
+FINE: START ITERATION n:    26 - t: 0.03528 - deltat: 0.00130 
+INFO: Writing vtp file: Glace2d.26.vtp 
+FINE: START ITERATION n:    27 - t: 0.03659 - deltat: 0.00131 
+INFO: Writing vtp file: Glace2d.27.vtp 
+FINE: START ITERATION n:    28 - t: 0.03789 - deltat: 0.00131 
+INFO: Writing vtp file: Glace2d.28.vtp 
+FINE: START ITERATION n:    29 - t: 0.03920 - deltat: 0.00131 
+INFO: Writing vtp file: Glace2d.29.vtp 
+FINE: START ITERATION n:    30 - t: 0.04051 - deltat: 0.00131 
+INFO: Writing vtp file: Glace2d.30.vtp 
+FINE: START ITERATION n:    31 - t: 0.04181 - deltat: 0.00131 
+INFO: Writing vtp file: Glace2d.31.vtp 
+FINE: START ITERATION n:    32 - t: 0.04313 - deltat: 0.00131 
+INFO: Writing vtp file: Glace2d.32.vtp 
+FINE: START ITERATION n:    33 - t: 0.04443 - deltat: 0.00131 
+INFO: Writing vtp file: Glace2d.33.vtp 
+FINE: START ITERATION n:    34 - t: 0.04574 - deltat: 0.00131 
+INFO: Writing vtp file: Glace2d.34.vtp 
+FINE: START ITERATION n:    35 - t: 0.04706 - deltat: 0.00131 
+INFO: Writing vtp file: Glace2d.35.vtp 
+FINE: START ITERATION n:    36 - t: 0.04837 - deltat: 0.00131 
+INFO: Writing vtp file: Glace2d.36.vtp 
+FINE: START ITERATION n:    37 - t: 0.04968 - deltat: 0.00131 
+INFO: Writing vtp file: Glace2d.37.vtp 
+FINE: START ITERATION n:    38 - t: 0.05100 - deltat: 0.00131 
+INFO: Writing vtp file: Glace2d.38.vtp 
+FINE: START ITERATION n:    39 - t: 0.05231 - deltat: 0.00131 
+INFO: Writing vtp file: Glace2d.39.vtp 
+FINE: START ITERATION n:    40 - t: 0.05362 - deltat: 0.00131 
+INFO: Writing vtp file: Glace2d.40.vtp 
+FINE: START ITERATION n:    41 - t: 0.05494 - deltat: 0.00132 
+INFO: Writing vtp file: Glace2d.41.vtp 
+FINE: START ITERATION n:    42 - t: 0.05626 - deltat: 0.00132 
+INFO: Writing vtp file: Glace2d.42.vtp 
+FINE: START ITERATION n:    43 - t: 0.05757 - deltat: 0.00132 
+INFO: Writing vtp file: Glace2d.43.vtp 
+FINE: START ITERATION n:    44 - t: 0.05889 - deltat: 0.00132 
+INFO: Writing vtp file: Glace2d.44.vtp 
+FINE: START ITERATION n:    45 - t: 0.06021 - deltat: 0.00132 
+INFO: Writing vtp file: Glace2d.45.vtp 
+FINE: START ITERATION n:    46 - t: 0.06153 - deltat: 0.00132 
+INFO: Writing vtp file: Glace2d.46.vtp 
+FINE: START ITERATION n:    47 - t: 0.06285 - deltat: 0.00132 
+INFO: Writing vtp file: Glace2d.47.vtp 
+FINE: START ITERATION n:    48 - t: 0.06417 - deltat: 0.00132 
+INFO: Writing vtp file: Glace2d.48.vtp 
+FINE: START ITERATION n:    49 - t: 0.06549 - deltat: 0.00132 
+INFO: Writing vtp file: Glace2d.49.vtp 
+FINE: START ITERATION n:    50 - t: 0.06681 - deltat: 0.00132 
+INFO: Writing vtp file: Glace2d.50.vtp 
+FINE: START ITERATION n:    51 - t: 0.06814 - deltat: 0.00132 
+INFO: Writing vtp file: Glace2d.51.vtp 
+FINE: START ITERATION n:    52 - t: 0.06946 - deltat: 0.00132 
+INFO: Writing vtp file: Glace2d.52.vtp 
+FINE: START ITERATION n:    53 - t: 0.07078 - deltat: 0.00132 
+INFO: Writing vtp file: Glace2d.53.vtp 
+FINE: START ITERATION n:    54 - t: 0.07211 - deltat: 0.00132 
+INFO: Writing vtp file: Glace2d.54.vtp 
+FINE: START ITERATION n:    55 - t: 0.07343 - deltat: 0.00132 
+INFO: Writing vtp file: Glace2d.55.vtp 
+FINE: START ITERATION n:    56 - t: 0.07476 - deltat: 0.00133 
+INFO: Writing vtp file: Glace2d.56.vtp 
+FINE: START ITERATION n:    57 - t: 0.07608 - deltat: 0.00133 
+INFO: Writing vtp file: Glace2d.57.vtp 
+FINE: START ITERATION n:    58 - t: 0.07741 - deltat: 0.00133 
+INFO: Writing vtp file: Glace2d.58.vtp 
+FINE: START ITERATION n:    59 - t: 0.07873 - deltat: 0.00133 
+INFO: Writing vtp file: Glace2d.59.vtp 
+FINE: START ITERATION n:    60 - t: 0.08006 - deltat: 0.00133 
+INFO: Writing vtp file: Glace2d.60.vtp 
+FINE: START ITERATION n:    61 - t: 0.08139 - deltat: 0.00133 
+INFO: Writing vtp file: Glace2d.61.vtp 
+FINE: START ITERATION n:    62 - t: 0.08272 - deltat: 0.00133 
+INFO: Writing vtp file: Glace2d.62.vtp 
+FINE: START ITERATION n:    63 - t: 0.08405 - deltat: 0.00133 
+INFO: Writing vtp file: Glace2d.63.vtp 
+FINE: START ITERATION n:    64 - t: 0.08537 - deltat: 0.00133 
+INFO: Writing vtp file: Glace2d.64.vtp 
+FINE: START ITERATION n:    65 - t: 0.08670 - deltat: 0.00133 
+INFO: Writing vtp file: Glace2d.65.vtp 
+FINE: START ITERATION n:    66 - t: 0.08803 - deltat: 0.00133 
+INFO: Writing vtp file: Glace2d.66.vtp 
+FINE: START ITERATION n:    67 - t: 0.08936 - deltat: 0.00133 
+INFO: Writing vtp file: Glace2d.67.vtp 
+FINE: START ITERATION n:    68 - t: 0.09069 - deltat: 0.00133 
+INFO: Writing vtp file: Glace2d.68.vtp 
+FINE: START ITERATION n:    69 - t: 0.09202 - deltat: 0.00133 
+INFO: Writing vtp file: Glace2d.69.vtp 
+FINE: START ITERATION n:    70 - t: 0.09336 - deltat: 0.00133 
+INFO: Writing vtp file: Glace2d.70.vtp 
+FINE: START ITERATION n:    71 - t: 0.09469 - deltat: 0.00133 
+INFO: Writing vtp file: Glace2d.71.vtp 
+FINE: START ITERATION n:    72 - t: 0.09602 - deltat: 0.00133 
+INFO: Writing vtp file: Glace2d.72.vtp 
+FINE: START ITERATION n:    73 - t: 0.09735 - deltat: 0.00133 
+INFO: Writing vtp file: Glace2d.73.vtp 
+FINE: START ITERATION n:    74 - t: 0.09868 - deltat: 0.00133 
+INFO: Writing vtp file: Glace2d.74.vtp 
+FINE: START ITERATION n:    75 - t: 0.10002 - deltat: 0.00133 
+INFO: Writing vtp file: Glace2d.75.vtp 
+FINE: START ITERATION n:    76 - t: 0.10135 - deltat: 0.00133 
+INFO: Writing vtp file: Glace2d.76.vtp 
+FINE: START ITERATION n:    77 - t: 0.10268 - deltat: 0.00133 
+INFO: Writing vtp file: Glace2d.77.vtp 
+FINE: START ITERATION n:    78 - t: 0.10402 - deltat: 0.00133 
+INFO: Writing vtp file: Glace2d.78.vtp 
+FINE: START ITERATION n:    79 - t: 0.10535 - deltat: 0.00133 
+INFO: Writing vtp file: Glace2d.79.vtp 
+FINE: START ITERATION n:    80 - t: 0.10669 - deltat: 0.00133 
+INFO: Writing vtp file: Glace2d.80.vtp 
+FINE: START ITERATION n:    81 - t: 0.10802 - deltat: 0.00133 
+INFO: Writing vtp file: Glace2d.81.vtp 
+FINE: START ITERATION n:    82 - t: 0.10936 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.82.vtp 
+FINE: START ITERATION n:    83 - t: 0.11069 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.83.vtp 
+FINE: START ITERATION n:    84 - t: 0.11203 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.84.vtp 
+FINE: START ITERATION n:    85 - t: 0.11337 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.85.vtp 
+FINE: START ITERATION n:    86 - t: 0.11470 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.86.vtp 
+FINE: START ITERATION n:    87 - t: 0.11604 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.87.vtp 
+FINE: START ITERATION n:    88 - t: 0.11738 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.88.vtp 
+FINE: START ITERATION n:    89 - t: 0.11871 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.89.vtp 
+FINE: START ITERATION n:    90 - t: 0.12005 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.90.vtp 
+FINE: START ITERATION n:    91 - t: 0.12139 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.91.vtp 
+FINE: START ITERATION n:    92 - t: 0.12272 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.92.vtp 
+FINE: START ITERATION n:    93 - t: 0.12406 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.93.vtp 
+FINE: START ITERATION n:    94 - t: 0.12540 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.94.vtp 
+FINE: START ITERATION n:    95 - t: 0.12674 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.95.vtp 
+FINE: START ITERATION n:    96 - t: 0.12808 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.96.vtp 
+FINE: START ITERATION n:    97 - t: 0.12942 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.97.vtp 
+FINE: START ITERATION n:    98 - t: 0.13076 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.98.vtp 
+FINE: START ITERATION n:    99 - t: 0.13210 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.99.vtp 
+FINE: START ITERATION n:   100 - t: 0.13344 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.100.vtp 
+FINE: START ITERATION n:   101 - t: 0.13477 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.101.vtp 
+FINE: START ITERATION n:   102 - t: 0.13612 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.102.vtp 
+FINE: START ITERATION n:   103 - t: 0.13746 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.103.vtp 
+FINE: START ITERATION n:   104 - t: 0.13880 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.104.vtp 
+FINE: START ITERATION n:   105 - t: 0.14014 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.105.vtp 
+FINE: START ITERATION n:   106 - t: 0.14148 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.106.vtp 
+FINE: START ITERATION n:   107 - t: 0.14282 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.107.vtp 
+FINE: START ITERATION n:   108 - t: 0.14416 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.108.vtp 
+FINE: START ITERATION n:   109 - t: 0.14550 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.109.vtp 
+FINE: START ITERATION n:   110 - t: 0.14684 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.110.vtp 
+FINE: START ITERATION n:   111 - t: 0.14818 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.111.vtp 
+FINE: START ITERATION n:   112 - t: 0.14952 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.112.vtp 
+FINE: START ITERATION n:   113 - t: 0.15087 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.113.vtp 
+FINE: START ITERATION n:   114 - t: 0.15221 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.114.vtp 
+FINE: START ITERATION n:   115 - t: 0.15355 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.115.vtp 
+FINE: START ITERATION n:   116 - t: 0.15489 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.116.vtp 
+FINE: START ITERATION n:   117 - t: 0.15623 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.117.vtp 
+FINE: START ITERATION n:   118 - t: 0.15758 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.118.vtp 
+FINE: START ITERATION n:   119 - t: 0.15892 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.119.vtp 
+FINE: START ITERATION n:   120 - t: 0.16026 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.120.vtp 
+FINE: START ITERATION n:   121 - t: 0.16160 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.121.vtp 
+FINE: START ITERATION n:   122 - t: 0.16295 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.122.vtp 
+FINE: START ITERATION n:   123 - t: 0.16429 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.123.vtp 
+FINE: START ITERATION n:   124 - t: 0.16563 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.124.vtp 
+FINE: START ITERATION n:   125 - t: 0.16698 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.125.vtp 
+FINE: START ITERATION n:   126 - t: 0.16832 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.126.vtp 
+FINE: START ITERATION n:   127 - t: 0.16966 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.127.vtp 
+FINE: START ITERATION n:   128 - t: 0.17101 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.128.vtp 
+FINE: START ITERATION n:   129 - t: 0.17235 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.129.vtp 
+FINE: START ITERATION n:   130 - t: 0.17369 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.130.vtp 
+FINE: START ITERATION n:   131 - t: 0.17504 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.131.vtp 
+FINE: START ITERATION n:   132 - t: 0.17638 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.132.vtp 
+FINE: START ITERATION n:   133 - t: 0.17773 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.133.vtp 
+FINE: START ITERATION n:   134 - t: 0.17907 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.134.vtp 
+FINE: START ITERATION n:   135 - t: 0.18042 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.135.vtp 
+FINE: START ITERATION n:   136 - t: 0.18176 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.136.vtp 
+FINE: START ITERATION n:   137 - t: 0.18310 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.137.vtp 
+FINE: START ITERATION n:   138 - t: 0.18445 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.138.vtp 
+FINE: START ITERATION n:   139 - t: 0.18579 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.139.vtp 
+FINE: START ITERATION n:   140 - t: 0.18714 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.140.vtp 
+FINE: START ITERATION n:   141 - t: 0.18848 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.141.vtp 
+FINE: START ITERATION n:   142 - t: 0.18983 - deltat: 0.00134 
+INFO: Writing vtp file: Glace2d.142.vtp 
+FINE: START ITERATION n:   143 - t: 0.19117 - deltat: 0.00135 
+INFO: Writing vtp file: Glace2d.143.vtp 
+FINE: START ITERATION n:   144 - t: 0.19252 - deltat: 0.00135 
+INFO: Writing vtp file: Glace2d.144.vtp 
+FINE: START ITERATION n:   145 - t: 0.19386 - deltat: 0.00135 
+INFO: Writing vtp file: Glace2d.145.vtp 
+FINE: START ITERATION n:   146 - t: 0.19521 - deltat: 0.00135 
+INFO: Writing vtp file: Glace2d.146.vtp 
+FINE: START ITERATION n:   147 - t: 0.19655 - deltat: 0.00135 
+INFO: Writing vtp file: Glace2d.147.vtp 
+FINE: START ITERATION n:   148 - t: 0.19790 - deltat: 0.00135 
+INFO: Writing vtp file: Glace2d.148.vtp 
+FINE: START ITERATION n:   149 - t: 0.19924 - deltat: 0.00135 
+INFO: Writing vtp file: Glace2d.149.vtp 
+FINE: FINAL TIME: 0.20000 - deltat: 0.00076 
+INFO: Writing vtp file: Glace2d.150.vtp 
+INFO: Nb iteration n = 149 
+INFO: Reference database results/interpreter/glace2d/Glace2dDB.current created. 
 INFO:   End interpreting 

@@ -300,5 +300,4 @@ INFO: Writing vtp file: Glace2d.149.vtp
 FINE: FINAL TIME: 0.20000 - deltat: 0.00076 
 INFO: Writing vtp file: Glace2d.150.vtp 
 INFO: Nb iteration n = 149 
-INFO: Reference database results/interpreter/glace2d/Glace2dDB.current created. 
 INFO:   End interpreting 

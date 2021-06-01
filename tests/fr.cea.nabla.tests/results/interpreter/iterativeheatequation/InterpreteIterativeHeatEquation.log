@@ -3670,5 +3670,4 @@ INFO: Nb iteration k = 4
 FINE: FINAL TIME: 0.10025 - deltat: 0.00025 
 INFO: Writing vtp file: IterativeHeatEquation.402.vtp 
 INFO: Nb iteration n = 401 
-INFO: Reference database results/interpreter/iterativeheatequation/IterativeHeatEquationDB.current created. 
 INFO:   End interpreting 

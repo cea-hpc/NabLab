@@ -3336,4 +3336,5 @@ INFO: Writing vtp file: ExplicitHeatEquation.1667.vtp
 FINE: FINAL TIME: 1.00020 - deltat: 0.00060 
 INFO: Writing vtp file: ExplicitHeatEquation.1668.vtp 
 INFO: Nb iteration n = 1667 
+INFO: Database results/interpreter/explicitheatequation/ExplicitHeatEquationDB.current created. 
 INFO:   End interpreting 

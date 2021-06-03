@@ -185,6 +185,6 @@ class IrInterpreter
 			batch.close();
 		}
 		db.close();
-		context.logInfo("Reference database " + db_name + " created.")
+		context.logInfo("Database " + db_name + " created.")
 	}
 }

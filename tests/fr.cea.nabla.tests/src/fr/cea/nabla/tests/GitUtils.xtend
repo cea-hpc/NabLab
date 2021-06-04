@@ -40,10 +40,11 @@ class GitUtils
 		var workingTreeIterator = new FileTreeIterator(git.repository)
 
 		//master tree
-		val treeParser = new CanonicalTreeParser();
-		val treeId = repository.resolve( "master^{tree}" );
-		try( val reader = repository.newObjectReader() ) {
-		  treeParser.reset( reader, treeId );
+		val headTreeParser = new CanonicalTreeParser()
+		val head = repository.resolve("HEAD^{tree}")
+		try( val reader = repository.newObjectReader())
+		{
+			headTreeParser.reset(reader, head)
 		}
 
 		//formatter
@@ -52,7 +53,7 @@ class GitUtils
 		formatter.setRepository(git.repository)
 		formatter.setPathFilter(PathFilter.create(subPath))
 
-		var diffs = formatter.scan(workingTreeIterator, treeParser)
+		var diffs = formatter.scan(workingTreeIterator, headTreeParser)
 		diffs =	diffs.filter[d | d.newPath.contains(moduleName)].toList
 		var filteredDiffs = new ArrayList<DiffEntry>
 

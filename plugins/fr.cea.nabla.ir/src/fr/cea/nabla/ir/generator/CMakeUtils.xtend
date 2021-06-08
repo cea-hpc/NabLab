@@ -20,7 +20,7 @@ class CMakeUtils
 
 	static def getFileHeader(boolean subDirectory)
 	'''
-		### GENERATED FILE - DO NOT OVERWRITE ###
+		### «Utils::doNotEditWarning» ###
 
 		«IF subDirectory»
 		# This file is in a cmake sub_directory and is called by a root CMakeLists.txt 

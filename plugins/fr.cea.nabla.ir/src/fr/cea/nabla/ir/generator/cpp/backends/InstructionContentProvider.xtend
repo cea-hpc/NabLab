@@ -7,9 +7,10 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-package fr.cea.nabla.ir.generator.cpp
+package fr.cea.nabla.ir.generator.cpp.backends
 
 import fr.cea.nabla.ir.IrUtils
+import fr.cea.nabla.ir.generator.cpp.CppGeneratorUtils
 import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityCall
@@ -35,8 +36,7 @@ import org.eclipse.xtend.lib.annotations.Data
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
-import static extension fr.cea.nabla.ir.generator.cpp.CppGeneratorUtils.*
-import static extension fr.cea.nabla.ir.generator.cpp.ItemIndexAndIdValueContentProvider.*
+import static extension fr.cea.nabla.ir.generator.cpp.backends.ItemIndexAndIdValueContentProvider.*
 
 @Data
 abstract class InstructionContentProvider
@@ -220,9 +220,9 @@ class StlThreadInstructionContentProvider extends InstructionContentProvider
 				«FOR innerInstruction : innerInstructions»
 				«innerInstruction.content»
 				«ENDFOR»
-				return (accu = «binaryFunction.codeName»(accu, «lambda.content»));
+				return (accu = «CppGeneratorUtils.getCodeName(binaryFunction)»(accu, «lambda.content»));
 			},
-			&«binaryFunction.codeName»«result.type.instanciateTemplate»);''')»
+			&«CppGeneratorUtils.getCodeName(binaryFunction)»«result.type.instanciateTemplate»);''')»
 	'''
 
 	override getParallelLoopContent(Loop it)
@@ -246,8 +246,8 @@ class KokkosInstructionContentProvider extends InstructionContentProvider
 			«FOR innerInstruction : innerInstructions»
 			«innerInstruction.content»
 			«ENDFOR»
-			accu = «binaryFunction.codeName»(accu, «lambda.content»);
-		}, KokkosJoiner<«result.type.cppType»>(«result.name», «result.type.cppType»(«result.defaultValue.content»), &«binaryFunction.codeName»«result.type.instanciateTemplate»));''')»
+			accu = «CppGeneratorUtils.getCodeName(binaryFunction)»(accu, «lambda.content»);
+		}, KokkosJoiner<«result.type.cppType»>(«result.name», «result.type.cppType»(«result.defaultValue.content»), &«CppGeneratorUtils.getCodeName(binaryFunction)»«result.type.instanciateTemplate»));''')»
 	'''
 
 	override getParallelLoopContent(Loop it)
@@ -314,7 +314,7 @@ class OpenMpInstructionContentProvider extends InstructionContentProvider
 		«iterationBlock.defineInterval('''
 		for (size_t «iterationBlock.indexName»=0; «iterationBlock.indexName»<«iterationBlock.nbElems»; «iterationBlock.indexName»++)
 		{
-			«result.name» = «binaryFunction.codeName»(«result.name», «lambda.content»);
+			«result.name» = «CppGeneratorUtils.getCodeName(binaryFunction)»(«result.name», «lambda.content»);
 		}''')»
 	'''
 

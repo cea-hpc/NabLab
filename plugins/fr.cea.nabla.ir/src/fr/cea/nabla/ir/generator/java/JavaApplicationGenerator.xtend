@@ -12,6 +12,7 @@ package fr.cea.nabla.ir.generator.java
 import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.generator.ApplicationGenerator
 import fr.cea.nabla.ir.generator.GenerationContent
+import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityType
@@ -27,10 +28,8 @@ import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
-import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.FunctionContentProvider.*
-import static extension fr.cea.nabla.ir.generator.java.JavaGeneratorUtils.*
 import static extension fr.cea.nabla.ir.generator.java.JobContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.JsonContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.TypeContentProvider.*
@@ -58,10 +57,10 @@ class JavaApplicationGenerator implements ApplicationGenerator
 
 	private def getFileContent(IrModule it)
 	'''
-		«fileHeader»
+		/* «Utils.doNotEditWarning» */
 
 		«val mainModule = irRoot.mainModule»
-		package «packageName»;
+		package «JavaGeneratorUtils.packageName»;
 
 		«IF hasLevelDB»
 		import static org.iq80.leveldb.impl.Iq80DBFactory.bytes;
@@ -199,11 +198,11 @@ class JavaApplicationGenerator implements ApplicationGenerator
 			«ENDFOR»
 
 			«IF main»
-			public void «irRoot.main.codeName»()
+			public void «Utils.getCodeName(irRoot.main)»()
 			{
 				System.out.println("Start execution of «name»");
 				«FOR j : irRoot.main.calls»
-					«j.callName»(); // @«j.at»
+					«Utils.getCallName(j)»(); // @«j.at»
 				«ENDFOR»
 				System.out.println("End of execution of «name»");
 			}
@@ -311,7 +310,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 				try
 				{
 					«FOR v : irRoot.variables.filter[!option]»
-					batch.put(bytes("«getDbKey(v)»"), LevelDBUtils.serialize(«getDbValue(it, v, '.')»));
+					batch.put(bytes("«Utils.getDbKey(v)»"), LevelDBUtils.serialize(«Utils.getDbValue(it, v, '.')»));
 					«ENDFOR»
 
 					db.write(batch);

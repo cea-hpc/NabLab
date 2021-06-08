@@ -39,7 +39,7 @@ class JavaProviderGenerator implements ProviderGenerator
 
 	private def getInterfaceFileContent(ExtensionProvider provider)
 	'''
-	«Utils::fileHeader»
+	/* «Utils::doNotEditWarning» */
 
 	package «provider.packageName»;
 

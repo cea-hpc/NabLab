@@ -13,7 +13,7 @@ import com.google.inject.Inject
 import fr.cea.nabla.generator.BackendFactory
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
 import fr.cea.nabla.generator.StandaloneGeneratorBase
-import fr.cea.nabla.ir.generator.cpp.CppProviderGenerator
+import fr.cea.nabla.ir.generator.cpp.backends.CppProviderGenerator
 import fr.cea.nabla.ir.generator.java.JavaProviderGenerator
 import fr.cea.nabla.nablagen.NablagenProviderList
 import fr.cea.nabla.nablagen.TargetType

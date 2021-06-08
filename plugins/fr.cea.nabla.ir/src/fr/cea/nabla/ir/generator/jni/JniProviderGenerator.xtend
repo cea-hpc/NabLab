@@ -12,8 +12,8 @@ package fr.cea.nabla.ir.generator.jni
 import fr.cea.nabla.ir.generator.CMakeUtils
 import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.generator.Utils
-import fr.cea.nabla.ir.generator.cpp.Backend
-import fr.cea.nabla.ir.generator.cpp.CMakeContentProvider
+import fr.cea.nabla.ir.generator.cpp.backends.Backend
+import fr.cea.nabla.ir.generator.cpp.backends.CMakeContentProvider
 import fr.cea.nabla.ir.generator.java.FunctionContentProvider
 import fr.cea.nabla.ir.ir.ExtensionProvider
 import java.util.ArrayList
@@ -55,7 +55,7 @@ class JniProviderGenerator
 
 	private def getJavaFacadeClassContent(ExtensionProvider provider, String wsPath)
 	'''
-	«Utils.fileHeader»
+	/* «Utils::doNotEditWarning» */
 
 	/**
 	 * Design Pattern inspired from https://dhilst.github.io/2016/10/15/JNI-CPP.html
@@ -97,7 +97,7 @@ class JniProviderGenerator
 
 	def getJavaVectorClassContent(ExtensionProvider provider)
 	'''
-	«Utils.fileHeader»
+	/* «Utils::doNotEditWarning» */
 
 	package «provider.packageName»;
 
@@ -147,7 +147,7 @@ class JniProviderGenerator
 
 	def getJavaMatrixClassContent(ExtensionProvider provider)
 	'''
-	«Utils.fileHeader»
+	/* «Utils::doNotEditWarning» */
 
 	package «provider.packageName»;
 
@@ -246,7 +246,7 @@ class JniProviderGenerator
 	/** Single .cc file to get access to getVector/getMatrix functions */
 	private def getCppFacadeClassContent(ExtensionProvider provider)
 	'''
-	«Utils.fileHeader»
+	/* «Utils::doNotEditWarning» */
 
 	#include "«provider.jniFileName».h"
 	#include "«provider.className».h"

@@ -7,20 +7,26 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-package fr.cea.nabla.ir.generator.cpp
+package fr.cea.nabla.ir.generator.cpp.backends
 
 import fr.cea.nabla.ir.IrUtils
+import fr.cea.nabla.ir.generator.Utils
+import fr.cea.nabla.ir.generator.cpp.CppGeneratorUtils
 import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.BaseTypeConstant
 import fr.cea.nabla.ir.ir.BinaryExpression
 import fr.cea.nabla.ir.ir.BoolConstant
 import fr.cea.nabla.ir.ir.Cardinality
+import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.ContractedIf
 import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IntConstant
 import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.IrType
+import fr.cea.nabla.ir.ir.ItemIndex
+import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.MaxConstant
 import fr.cea.nabla.ir.ir.MinConstant
 import fr.cea.nabla.ir.ir.Parenthesis
@@ -33,19 +39,11 @@ import org.eclipse.xtend.lib.annotations.Data
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
-import static extension fr.cea.nabla.ir.generator.Utils.*
-import static extension fr.cea.nabla.ir.generator.cpp.CppGeneratorUtils.*
 
 @Data
-class ExpressionContentProvider
+abstract class ExpressionContentProvider
 {
-	val extension TypeContentProvider typeContentProvider
-
-	new(TypeContentProvider typeContentProvider)
-	{
-		this.typeContentProvider = typeContentProvider
-		this.typeContentProvider.expressionContentProvider = this
-	}
+	protected abstract def CharSequence formatIterators(Iterable<String> iterators)
 
 	def dispatch CharSequence getContent(ContractedIf it) 
 	'''(«condition.content» ? «thenExpression.content» ':' «elseExpression.content»'''
@@ -115,7 +113,7 @@ class ExpressionContentProvider
 	}
 
 	def dispatch CharSequence getContent(FunctionCall it)
-	'''«function.codeName»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
+	'''«CppGeneratorUtils.getCodeName(function)»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
 
 	def dispatch CharSequence getContent(ArgOrVarRef it)
 	{
@@ -125,12 +123,23 @@ class ExpressionContentProvider
 			'''«codeName»«formatIteratorsAndIndices(target.type, iterators, indices)»'''
 	}
 
+	def formatIteratorsAndIndices(IrType type, Iterable<ItemIndex> iterators, Iterable<Expression> indices)
+	{
+		switch type
+		{
+			case (iterators.empty && indices.empty): ''''''
+			BaseType: '''«FOR i : indices»[«i.content»]«ENDFOR»'''
+			LinearAlgebraType: '''«FOR i : iterators SEPARATOR ', '»«i.name»«ENDFOR»«FOR i : indices SEPARATOR ', '»«i.content»«ENDFOR»'''
+			ConnectivityType: '''«formatIterators(iterators.map[name])»«FOR i : indices»[«i.content»]«ENDFOR»'''
+		}
+	}
+
 	def CharSequence getCodeName(ArgOrVarRef it)
 	{
 		if (IrUtils.getContainerOfType(it, IrModule) === IrUtils.getContainerOfType(target, IrModule))
-			target.codeName
+			Utils.getCodeName(target)
 		else
-			'mainModule->' + target.codeName
+			'mainModule->' + Utils.getCodeName(target)
 	}
 
 	private def dispatch CharSequence getInnerContent(Expression it) { content }
@@ -139,4 +148,17 @@ class ExpressionContentProvider
 
 	private def CharSequence initArray(int[] sizes, CharSequence value)
 	'''«FOR size : sizes SEPARATOR ",  "»«FOR i : 0..<size SEPARATOR ', '»«value»«ENDFOR»«ENDFOR»'''
+}
+
+
+class DefaultExpressionContentProvider extends ExpressionContentProvider
+{
+	override formatIterators(Iterable<String> iterators)
+	'''«FOR i : iterators»[«i»]«ENDFOR»'''
+}
+
+class KokkosExpressionContentProvider extends ExpressionContentProvider
+{
+	override formatIterators(Iterable<String> iterators)
+	'''«FOR i : iterators BEFORE '(' SEPARATOR ', ' AFTER ')'»«i»«ENDFOR»'''
 }

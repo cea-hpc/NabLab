@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-package fr.cea.nabla.ir.generator.cpp
+package fr.cea.nabla.ir.generator.cpp.backends
 
 import java.util.LinkedHashSet
 

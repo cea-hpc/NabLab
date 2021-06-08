@@ -11,6 +11,8 @@ Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: fr.cea.nabla.ir,
  fr.cea.nabla.ir.generator,
  fr.cea.nabla.ir.generator.cpp,
+ fr.cea.nabla.ir.generator.cpp.arcane,
+ fr.cea.nabla.ir.generator.cpp.backends,
  fr.cea.nabla.ir.generator.java,
  fr.cea.nabla.ir.generator.jni,
  fr.cea.nabla.ir.generator.json,

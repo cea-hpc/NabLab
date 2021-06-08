@@ -17,7 +17,7 @@ import fr.cea.nabla.generator.NablagenExtensionHelper
 import fr.cea.nabla.generator.StandaloneGeneratorBase
 import fr.cea.nabla.generator.ir.IrRootBuilder
 import fr.cea.nabla.ir.generator.GenerationContent
-import fr.cea.nabla.ir.generator.cpp.CppApplicationGenerator
+import fr.cea.nabla.ir.generator.cpp.backends.CppApplicationGenerator
 import fr.cea.nabla.ir.generator.java.JavaApplicationGenerator
 import fr.cea.nabla.ir.generator.json.JsonGenerator
 import fr.cea.nabla.ir.ir.IrRoot

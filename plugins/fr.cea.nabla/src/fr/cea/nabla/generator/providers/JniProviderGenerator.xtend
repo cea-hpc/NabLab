@@ -13,8 +13,8 @@ import fr.cea.nabla.generator.StandaloneGeneratorBase
 import fr.cea.nabla.ir.UnzipHelper
 import fr.cea.nabla.ir.generator.CMakeUtils
 import fr.cea.nabla.ir.generator.GenerationContent
-import fr.cea.nabla.ir.generator.cpp.Backend
-import fr.cea.nabla.ir.generator.cpp.CMakeContentProvider
+import fr.cea.nabla.ir.generator.cpp.backends.Backend
+import fr.cea.nabla.ir.generator.cpp.backends.CMakeContentProvider
 import fr.cea.nabla.ir.ir.ExtensionProvider
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.nablagen.Target

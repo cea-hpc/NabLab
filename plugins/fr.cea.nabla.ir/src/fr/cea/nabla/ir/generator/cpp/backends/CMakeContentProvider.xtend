@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-package fr.cea.nabla.ir.generator.cpp
+package fr.cea.nabla.ir.generator.cpp.backends
 
 import fr.cea.nabla.ir.IrTypeExtensions
 import fr.cea.nabla.ir.generator.CMakeUtils

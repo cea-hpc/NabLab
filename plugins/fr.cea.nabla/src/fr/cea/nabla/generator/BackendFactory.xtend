@@ -9,12 +9,12 @@
  *******************************************************************************/
 package fr.cea.nabla.generator
 
-import fr.cea.nabla.ir.generator.cpp.Backend
-import fr.cea.nabla.ir.generator.cpp.KokkosBackend
-import fr.cea.nabla.ir.generator.cpp.KokkosTeamThreadBackend
-import fr.cea.nabla.ir.generator.cpp.OpenMpBackend
-import fr.cea.nabla.ir.generator.cpp.SequentialBackend
-import fr.cea.nabla.ir.generator.cpp.StlThreadBackend
+import fr.cea.nabla.ir.generator.cpp.backends.Backend
+import fr.cea.nabla.ir.generator.cpp.backends.KokkosBackend
+import fr.cea.nabla.ir.generator.cpp.backends.KokkosTeamThreadBackend
+import fr.cea.nabla.ir.generator.cpp.backends.OpenMpBackend
+import fr.cea.nabla.ir.generator.cpp.backends.SequentialBackend
+import fr.cea.nabla.ir.generator.cpp.backends.StlThreadBackend
 import fr.cea.nabla.nablagen.TargetType
 
 class BackendFactory

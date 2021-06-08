@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-package fr.cea.nabla.ir.generator.cpp
+package fr.cea.nabla.ir.generator.cpp.backends
 
 import fr.cea.nabla.ir.IrTypeExtensions
 import fr.cea.nabla.ir.generator.JniNameMangler
@@ -26,13 +26,13 @@ import org.eclipse.xtend.lib.annotations.Data
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 
 @Data
-class FunctionContentProvider
+abstract class FunctionContentProvider
 {
 	protected val extension TypeContentProvider
 	protected val extension ExpressionContentProvider
 	protected val extension InstructionContentProvider
 
-	protected def String getMacro() { null }
+	protected abstract def String getMacro()
 
 	def getDeclarationContent(Function it)
 	{
@@ -76,7 +76,7 @@ class FunctionContentProvider
 	private def getDeclarationContent(Function it, String name)
 	'''
 	«FOR v : variables BEFORE "template<" SEPARATOR ", " AFTER ">"»size_t «v.name»«ENDFOR»
-	«IF macro !== null»«macro»«ENDIF»
+	«IF !macro.nullOrEmpty»«macro»«ENDIF»
 	«returnType.cppType» «name»(«FOR a : inArgs SEPARATOR ', '»«a.type.cppType» «a.name»«ENDFOR»)'''
 
 	private def getJniInArgContent(Arg it)
@@ -200,10 +200,13 @@ class FunctionContentProvider
 }
 
 @Data
+class DefaultFunctionContentProvider extends FunctionContentProvider
+{
+	override getMacro() { "" }
+}
+
+@Data
 class KokkosFunctionContentProvider extends FunctionContentProvider
 {
-	override getMacro()
-	{
-		"KOKKOS_INLINE_FUNCTION"
-	}
+	override getMacro() { "KOKKOS_INLINE_FUNCTION" }
 }

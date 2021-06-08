@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-package fr.cea.nabla.ir.generator.cpp
+package fr.cea.nabla.ir.generator.cpp.backends
 
 import fr.cea.nabla.ir.IrTypeExtensions
 import fr.cea.nabla.ir.ir.BaseType
@@ -15,22 +15,21 @@ import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.IrType
-import fr.cea.nabla.ir.ir.ItemIndex
 import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.PrimitiveType
 import java.util.ArrayList
 import java.util.List
-import org.eclipse.xtend.lib.annotations.Accessors
+import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 
+@Data
 abstract class TypeContentProvider
 {
-	@Accessors extension ExpressionContentProvider expressionContentProvider
+	extension ExpressionContentProvider expressionContentProvider
 
 	protected abstract def CharSequence getCppType(BaseType baseType, Iterable<Connectivity> connectivities)
 	protected abstract def CharSequence getCstrInit(String name, BaseType baseType, Iterable<Connectivity> connectivities)
-	protected abstract def CharSequence formatIterators(ConnectivityType type, Iterable<String> iterators)
 
 	def getCppType(IrType it)
 	{
@@ -92,17 +91,6 @@ abstract class TypeContentProvider
 		}
 	}
 
-	def formatIteratorsAndIndices(IrType it, Iterable<ItemIndex> iterators, Iterable<Expression> indices)
-	{
-		switch it
-		{
-			case (iterators.empty && indices.empty): ''''''
-			BaseType: '''«FOR i : indices»[«i.content»]«ENDFOR»'''
-			LinearAlgebraType: '''«FOR i : iterators SEPARATOR ', '»«i.name»«ENDFOR»«FOR i : indices SEPARATOR ', '»«i.content»«ENDFOR»'''
-			ConnectivityType: '''«formatIterators(it, iterators.map[name])»«FOR i : indices»[«i.content»]«ENDFOR»'''
-		}
-	}
-
 	def initCppTypeContent(String name, IrType t)
 	{
 		switch t
@@ -136,7 +124,7 @@ abstract class TypeContentProvider
 	private def CharSequence initCppType(String name, ConnectivityType t, List<String> accessors, Iterable<Connectivity> connectivities)
 	{
 		if (connectivities.empty)
-			'''«name»«formatIterators(t, accessors)».initSize(«t.base.sizes.map[x | expressionContentProvider.getContent(x)].join(', ')»);'''
+			'''«name»«formatIterators(accessors)».initSize(«t.base.sizes.map[x | expressionContentProvider.getContent(x)].join(', ')»);'''
 		else
 		{
 			val indexName = "i" + connectivities.size
@@ -149,7 +137,8 @@ abstract class TypeContentProvider
 	}
 }
 
-class StlThreadTypeContentProvider extends TypeContentProvider
+@Data
+class DefaultTypeContentProvider extends TypeContentProvider
 {
 	override getCppType(BaseType baseType, Iterable<Connectivity> connectivities) 
 	{
@@ -166,11 +155,9 @@ class StlThreadTypeContentProvider extends TypeContentProvider
 			default: '''«connectivities.get(0).nbElemsVar», «getCppType(baseType, connectivities.tail)»(«getCstrInit(name, baseType, connectivities.tail)»)''' 
 		}
 	}
-
-	override formatIterators(ConnectivityType type, Iterable<String> iterators)
-	'''«FOR i : iterators»[«i»]«ENDFOR»'''
 }
 
+@Data
 class KokkosTypeContentProvider extends TypeContentProvider
 {
 	override getCppType(BaseType baseType, Iterable<Connectivity> connectivities) 
@@ -180,7 +167,4 @@ class KokkosTypeContentProvider extends TypeContentProvider
 
 	override getCstrInit(String name, BaseType baseType, Iterable<Connectivity> connectivities)
 	'''"«name»", «FOR c : connectivities SEPARATOR ', '»«c.nbElemsVar»«ENDFOR»'''
-
-	override formatIterators(ConnectivityType type, Iterable<String> iterators)
-	'''«FOR i : iterators BEFORE '(' SEPARATOR ', ' AFTER ')'»«i»«ENDFOR»'''
 }

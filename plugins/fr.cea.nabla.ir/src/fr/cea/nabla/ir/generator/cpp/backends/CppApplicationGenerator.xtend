@@ -7,12 +7,13 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-package fr.cea.nabla.ir.generator.cpp
+package fr.cea.nabla.ir.generator.cpp.backends
 
-import fr.cea.nabla.ir.UnzipHelper
 import fr.cea.nabla.ir.IrUtils
+import fr.cea.nabla.ir.UnzipHelper
 import fr.cea.nabla.ir.generator.ApplicationGenerator
 import fr.cea.nabla.ir.generator.GenerationContent
+import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityType
@@ -29,7 +30,6 @@ import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
-import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.cpp.CppGeneratorUtils.*
 
 class CppApplicationGenerator extends CppGenerator implements ApplicationGenerator
@@ -62,7 +62,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 
 	private def getHeaderFileContent(IrModule it)
 	'''
-	«fileHeader»
+	«Utils.doNotEditWarning»
 
 	#ifndef «name.HDefineName»
 	#define «name.HDefineName»
@@ -193,7 +193,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 
 	private def getSourceFileContent(IrModule it)
 	'''
-	«fileHeader»
+	«Utils.doNotEditWarning»
 
 	#include "«className».h"
 	#include <rapidjson/document.h>
@@ -288,7 +288,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		«IF main»
 		// Copy node coordinates
 		const auto& gNodes = mesh->getGeometry()->getNodes();
-		«val iterator = backend.typeContentProvider.formatIterators(irRoot.initNodeCoordVariable.type as ConnectivityType, #["rNodes"])»
+		«val iterator = backend.expressionContentProvider.formatIterators(#["rNodes"])»
 		for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
 		{
 			«irRoot.initNodeCoordVariable.name»«iterator»[0] = gNodes[rNodes][0];
@@ -377,7 +377,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	}
 	«ENDIF»
 
-	void «className»::«irRoot.main.codeName»()
+	void «className»::«Utils.getCodeName(irRoot.main)»()
 	{
 		«backend.traceContentProvider.getBeginOfSimuTrace(it)»
 
@@ -402,7 +402,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		// Batch to write all data at once
 		leveldb::WriteBatch batch;
 		«FOR v : irRoot.variables.filter[!option]»
-		batch.Put("«v.dbKey»", serialize(«getDbValue(it, v, '->')»));
+		batch.Put("«Utils.getDbKey(v)»", serialize(«Utils.getDbValue(it, v, '->')»));
 		«ENDFOR»
 		status = db->Write(leveldb::WriteOptions(), &batch);
 		// Checking everything was ok
@@ -529,7 +529,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		val t = v.type
 		switch t
 		{
-			ConnectivityType: '''«v.name»«typeContentProvider.formatIterators(t, #["i"])»'''
+			ConnectivityType: '''«v.name»«expressionContentProvider.formatIterators(#["i"])»'''
 			LinearAlgebraType: '''«v.name».getValue(i)'''
 			default: throw new RuntimeException("Unexpected type: " + class.name)
 		}

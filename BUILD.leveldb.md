@@ -4,24 +4,26 @@
 
 LevelDB is a fast key-value storage library written at Google that provides an ordered mapping from string keys to string values.
 
-To install levelDB from GitHub repository
+To install 1.22 levelDB version from GitHub repository
 
-	git clone --recurse-submodules https://github.com/google/leveldb.git
-	cd leveldb
-	mkdir -p build && cd build
-	cmake -DCMAKE_BUILD_TYPE=Release .. && cmake --build .
-	cmake --build . -DDESTDIR=$HOME/leveldb/leveldb-install --target install
+```bash	
+sudo install cmake
 
-The installed version is 1.22
+wget https://github.com/google/leveldb/archive/1.22.tar.gz leveldb.tar.gz
+tar -zxvf leveldb.tar.gz
+cd leveldb
+mkdir -p build && cd build
+cmake -DCMAKE_BUILD_TYPE=Release .. && cmake --build .
+```
 
 ## NabLab examples compilation
 
 To generate code with levelDB support, add this block in nablagen (after VtkOutput block)
-
-	LevelDB
-	{
-		levelDBPath = "$ENV{HOME}/leveldb/leveldb-install";
-	}
- 
- Then the json datafile wait for nonRegression field that could be CreateReference or CompareToReference.
+```
+LevelDB
+{
+	levelDBPath = "$ENV{HOME}/leveldb/leveldb-install";
+}
+ ```
+Then the json datafile wait for nonRegression field that could be CreateReference or CompareToReference.
  

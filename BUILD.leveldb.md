@@ -7,7 +7,7 @@ LevelDB is a fast key-value storage library written at Google that provides an o
 To install 1.22 levelDB version from GitHub repository
 
 ```bash	
-sudo install cmake
+sudo apt-get -y install cmake
 
 wget https://github.com/google/leveldb/archive/1.22.tar.gz leveldb.tar.gz
 tar -zxvf leveldb.tar.gz

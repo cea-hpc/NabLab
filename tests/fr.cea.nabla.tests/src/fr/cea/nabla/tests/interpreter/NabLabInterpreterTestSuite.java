@@ -22,7 +22,7 @@ import org.junit.runners.Suite;
 	JobInterpreterTest.class,
 	ModuleInterpreterTest.class,
 	OptionsInterpreterTest.class,
-	// TODO Uncomment after github actions deployment NablaExamplesInterpreterTest.class
+	NablaExamplesInterpreterTest.class
 })
 
 public class NabLabInterpreterTestSuite {}

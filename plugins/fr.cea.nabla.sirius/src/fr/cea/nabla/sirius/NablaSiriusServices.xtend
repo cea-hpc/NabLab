@@ -188,7 +188,7 @@ class NablaSiriusServices
 		}
 		else if (object instanceof Job)
 		{
-			return JobExtensions.getDiagramDisplayName(object)
+			return JobExtensions.getDisplayName(object)
 		}
 		return 'Sirius Diagram'
 	}

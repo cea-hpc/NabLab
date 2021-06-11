@@ -49,10 +49,4 @@ class JobExtensions
 		val irModule = IrUtils.getContainerOfType(it, IrModule)
 		irModule.name + "::" + name
 	}
-
-	static def getDiagramDisplayName(Job it)
-	{
-		val irModule = IrUtils.getContainerOfType(it, IrModule)
-		irModule.name + "::" + name
-	}
 }

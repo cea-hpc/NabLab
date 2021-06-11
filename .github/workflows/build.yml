@@ -40,7 +40,7 @@ jobs:
         uses: actions/checkout@v2
       
       # Executes fr.cea.nabla.ir/resources/import.sh
-      - name: Runs the import.sh script
+      - name: Run import.sh script
         working-directory: ./plugins/fr.cea.nabla.ir/resources
         run: ./import.sh
         shell: bash

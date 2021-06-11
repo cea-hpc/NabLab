@@ -39,13 +39,16 @@ Thanks to Monilog, you can create your own debugging scripts. To write them in P
 
 If you need to build NabLab products (Windows/Linux/MacOS and Eclipse update-site) from the source code (instead of downloading it), run the following command from the root of the repository:
 
-`mvn clean; mvn verify`.
+`mvn clean -P build,updatesite; mvn verify -P build,updatesite`.
 
-Note the `';'` after `mvn clean`. 
+Note the `';'` after `mvn clean -P build,updatesite`. 
 
 The products resulting from the build will be accessible in */releng/fr.cea.nabla.updatesite/target/products/NabLab-X.Y.Z.yyyymmddHHMM-YOUR_PLATFORM.zip*.
 
 The Eclipse update-site resulting from the build will be accessible in */releng/fr.cea.nabla.updatesite/target/fr.cea.nabla.updatesite-X.Y.Z.yyyymmddHHMM.zip*.
+
+If you only need to compile NabLab code and execute tests, run the following command from the root of the repository:
+`mvn clean; mvn verify`
 
 If you want to skip tests execution, you can run the following command:
 `mvn clean; mvn verify -Dmaven.test.skip=true`

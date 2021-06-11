@@ -28,7 +28,7 @@
 
     <profiles>
         <profile>
-            <id>updatesite</id>
+            <id>build</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
@@ -48,6 +48,15 @@
                 <module>plugins/fr.cea.nabla.rcp</module>
                 <module>tests/fr.cea.nabla.tests</module>
                 <module>tests/fr.cea.nabla.javalib.tests</module>
+                <module>releng/fr.cea.nabla.targetplatform</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>updatesite</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <modules>
                 <module>features/fr.cea.nabla.feature</module>
                 <module>features/fr.cea.nabla.thirdparty.libraries.feature</module>
                 <module>releng/fr.cea.nabla.targetplatform</module>

@@ -1,0 +1,67 @@
+name: Continuous Integration - Build & Tests
+
+# Controls when the action will run. 
+on:
+  # Triggers the workflow on push or pull request events on all branches
+  push:
+    paths-ignore:
+      - 'docs/**'
+    branches:
+      - '**'
+    tags:
+      - '*'
+  pull_request:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+          
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    
+      - name: Setup Java SDK
+        uses: actions/setup-java@v1.4.3
+        with:
+          java-version: 11
+      
+      - name: Cache Maven packages # see https://github.com/actions/cache for more details
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      
+      - name: Checkout NabLab code
+        uses: actions/checkout@v2
+      
+      # Executes fr.cea.nabla.ir/resources/import.sh
+      - name: Runs the import.sh script
+        working-directory: ./plugins/fr.cea.nabla.ir/resources
+        run: ./import.sh
+        shell: bash
+
+      # Runs the maven build (build + tests)
+      - name: Run maven build
+        if: startsWith(github.ref, 'refs/tags/v') != true
+        run: mvn clean;mvn verify
+      
+      # Runs the maven build (build + tests + updatesite + products)
+      - name: Run maven build and updatesite profiles
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: mvn clean -P build,updatesite;mvn verify -P build,updatesite
+        
+      # Create a Github Release
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/v')
+        with:
+          files: |
+            ./releng/fr.cea.nabla.updatesite/target/fr.cea.nabla.updatesite-*.zip
+            ./releng/fr.cea.nabla.updatesite/target/products/*.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

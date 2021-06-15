@@ -58,5 +58,7 @@ jobs:
           files: |
             ./releng/fr.cea.nabla.updatesite/target/fr.cea.nabla.updatesite-*.zip
             ./releng/fr.cea.nabla.updatesite/target/products/*.zip
+          draft: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        

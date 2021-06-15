@@ -202,4 +202,5 @@ INFO: Writing vtp file: HeatEquation.100.vtp
 FINE: FINAL TIME: 0.10000 - deltat: 0.00100 
 INFO: Writing vtp file: HeatEquation.101.vtp 
 INFO: Nb iteration n = 100 
+INFO: Database results/interpreter/heatequation/HeatEquationDB.current created. 
 INFO:   End interpreting 

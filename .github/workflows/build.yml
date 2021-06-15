@@ -20,20 +20,21 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-          
+    container: nablab/execution-env:latest
+
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-  
+
       - name: Cache Maven packages # see https://github.com/actions/cache for more details
         uses: actions/cache@v2
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-      
+
       - name: Checkout NabLab code
         uses: actions/checkout@v2
-      
+
       # Runs the maven build (build + tests)
       - name: Run maven build
         if: startsWith(github.ref, 'refs/tags/v') != true

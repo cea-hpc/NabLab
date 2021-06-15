@@ -9,6 +9,8 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.cpp.arcane
 
+import fr.cea.nabla.ir.IrUtils
+import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
 
 import static extension fr.cea.nabla.ir.generator.Utils.*
@@ -18,20 +20,15 @@ class JobContentProvider
 	static def getDeclarationContent(Job it)
 	'''void «codeName»();'''
 
-//	def getDefinitionContent(Job it)
-//	'''
-//		«comment»
-//		void «IrUtils.getContainerOfType(it, IrModule).className»::«codeName»() noexcept
-//		{
-//			«innerContent»
-//		}
-//	'''
+	static def getDefinitionContent(Job it)
+	'''
+		«comment»
+		void «ArcaneUtils.getModuleName(IrUtils.getContainerOfType(it, IrModule))»::«codeName»() noexcept
+		{
+			«InstructionContentProvider.getInnerContent(instruction)»
+		}
+	'''
 
-//	protected def dispatch CharSequence getInnerContent(Job it)
-//	'''
-//		«instruction.innerContent»
-//	'''
-//
 //	protected def dispatch CharSequence getInnerContent(ExecuteTimeLoopJob it)
 //	'''
 //		«callsHeader»

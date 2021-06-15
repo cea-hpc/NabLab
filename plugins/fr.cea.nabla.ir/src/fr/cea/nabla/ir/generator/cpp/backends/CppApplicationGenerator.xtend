@@ -17,7 +17,6 @@ import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityType
-import fr.cea.nabla.ir.ir.InternFunction
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.LinearAlgebraType
@@ -31,6 +30,7 @@ import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.cpp.CppGeneratorUtils.*
+import static extension fr.cea.nabla.ir.generator.cpp.IrTypeExtensions.*
 
 class CppApplicationGenerator extends CppGenerator implements ApplicationGenerator
 {
@@ -62,7 +62,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 
 	private def getHeaderFileContent(IrModule it)
 	'''
-	«Utils.doNotEditWarning»
+	/* «Utils::doNotEditWarning» */
 
 	#ifndef «name.HDefineName»
 	#define «name.HDefineName»
@@ -82,14 +82,13 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 			class «m.className»;
 		«ENDFOR»
 	«ENDIF»
-	«val internFunctions = functions.filter(InternFunction)»
-	«IF !internFunctions.empty»
+	«IF !functions.empty»
 
 	/******************** Free functions declarations ********************/
 
 	namespace «freeFunctionNs»
 	{
-	«FOR f : internFunctions»
+	«FOR f : functions»
 		«functionContentProvider.getDeclarationContent(f)»;
 	«ENDFOR»
 	}
@@ -193,7 +192,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 
 	private def getSourceFileContent(IrModule it)
 	'''
-	«Utils.doNotEditWarning»
+	/* «Utils::doNotEditWarning» */
 
 	#include "«className».h"
 	#include <rapidjson/document.h>
@@ -206,14 +205,13 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		«ENDFOR»
 	«ENDIF»
 
-	«val internFunctions = functions.filter(InternFunction)»
-	«IF !internFunctions.empty»
+	«IF !functions.empty»
 
 	/******************** Free functions definitions ********************/
 
 	namespace «freeFunctionNs»
 	{
-	«FOR f : internFunctions SEPARATOR '\n'»
+	«FOR f : functions SEPARATOR '\n'»
 		«functionContentProvider.getDefinitionContent(f)»
 	«ENDFOR»
 	}
@@ -511,12 +509,12 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	/** BaseType never need explicit static allocation: it is either scalar or MultiArray default cstr */
 	private def needStaticAllocation(Variable v)
 	{
-		!(v.type instanceof BaseType) && typeContentProvider.isBaseTypeStatic(v.type)
+		!(v.type instanceof BaseType) && v.type.isBaseTypeStatic
 	}
 
 	private def needDynamicAllocation(Variable v)
 	{
-		!typeContentProvider.isBaseTypeStatic(v.type)
+		!v.type.isBaseTypeStatic
 	}
 
 	private def isKokkosTeamThread()

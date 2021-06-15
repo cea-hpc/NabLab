@@ -11,7 +11,9 @@ package fr.cea.nabla.ir.generator.cpp.arcane
 
 import fr.cea.nabla.ir.ir.ExternFunction
 import fr.cea.nabla.ir.ir.Function
+import fr.cea.nabla.ir.ir.InternFunction
 
+import static extension fr.cea.nabla.ir.generator.cpp.arcane.InstructionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.cpp.arcane.TypeContentProvider.*
 
 class FunctionContentProvider
@@ -21,13 +23,13 @@ class FunctionContentProvider
 		getDeclarationContent(it, name)
 	}
 
-//	static def getDefinitionContent(InternFunction it)
-//	'''
-//		«getDeclarationContent»
-//		{
-//			«body.innerContent»
-//		}
-//	'''
+	static def getDefinitionContent(InternFunction it)
+	'''
+		«getDeclarationContent»
+		{
+			«body.innerContent»
+		}
+	'''
 
 	static def getDefinitionContent(String className, ExternFunction it)
 	'''

@@ -57,7 +57,7 @@ class KokkosTeamThreadJobCallerContentProvider extends JobCallerContentProvider
 			Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
 			{
 				«FOR j : atJobs.sortBy[name]»
-					«IF nbTimes++==0 && main»
+					«IF nbTimes++==0 && init»
 					if (thread.league_rank() == 0)
 						Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){
 							std::cout << "[" << __GREEN__ << "RUNTIME" << __RESET__ << "]   Using " << __BOLD__ << setw(3) << thread.league_size() << __RESET__ << " team(s) of "

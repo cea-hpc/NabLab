@@ -101,17 +101,6 @@ abstract class TypeContentProvider
 		}
 	}
 
-	def boolean isBaseTypeStatic(IrType it)
-	{
-		switch it
-		{
-			BaseType: sizes.empty || sizes.forall[x | x.constExpr]
-			ConnectivityType: base.baseTypeStatic
-			LinearAlgebraType: sizes.empty || sizes.forall[x | x.constExpr]
-			default: throw new RuntimeException("Unhandled parameter")
-		}
-	}
-
 	private def getCppArrayType(PrimitiveType t, Iterable<Expression> sizes)
 	{
 		switch t

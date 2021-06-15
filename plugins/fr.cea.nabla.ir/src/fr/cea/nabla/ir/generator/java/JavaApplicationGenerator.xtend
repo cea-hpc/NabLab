@@ -16,7 +16,6 @@ import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityType
-import fr.cea.nabla.ir.ir.InternFunction
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.LinearAlgebraType
@@ -60,7 +59,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 		/* «Utils.doNotEditWarning» */
 
 		«val mainModule = irRoot.mainModule»
-		package «JavaGeneratorUtils.packageName»;
+		package «JavaGeneratorUtils.getPackageName(it)»;
 
 		«IF hasLevelDB»
 		import static org.iq80.leveldb.impl.Iq80DBFactory.bytes;
@@ -192,7 +191,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 
 				«j.content»
 			«ENDFOR»
-			«FOR f : functions.filter(InternFunction)»
+			«FOR f : functions»
 
 				«f.content»
 			«ENDFOR»

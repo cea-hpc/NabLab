@@ -12,8 +12,11 @@ package fr.cea.nabla.ir.generator.cpp.backends
 import fr.cea.nabla.ir.transformers.IrTransformationStep
 import fr.cea.nabla.ir.transformers.ReplaceReductions
 import org.eclipse.xtend.lib.annotations.Accessors
+import fr.cea.nabla.ir.generator.jni.Jniable
+import fr.cea.nabla.ir.ir.ExternFunction
+import fr.cea.nabla.ir.ir.ExtensionProvider
 
-abstract class Backend
+abstract class Backend implements Jniable
 {
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) String name
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) IrTransformationStep irTransformationStep = null
@@ -28,6 +31,11 @@ abstract class Backend
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) JobCallerContentProvider jobCallerContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) JobContentProvider jobContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) MainContentProvider mainContentProvider
+
+	override getJniDefinitionContent(ExternFunction f, ExtensionProvider provider)
+	{
+		functionContentProvider.getJniDefinitionContent(f, provider)
+	}
 }
 
 /** Expected variables: N_CXX_COMPILER */

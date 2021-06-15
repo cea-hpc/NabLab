@@ -9,6 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.cpp.arcane
 
+import fr.cea.nabla.ir.generator.CMakeUtils
 import fr.cea.nabla.ir.ir.IrRoot
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
@@ -25,12 +26,14 @@ class CMakeContentProvider
 
 	find_package(Arcane REQUIRED)
 
-	add_executable(«name»main.cc«FOR m : modules» «m.className».cc «m.name»_axl.h«ENDFOR»)
+	add_executable(«name»«FOR m : modules» «ArcaneUtils.getModuleName(m)».cc «m.className»_axl.h«ENDFOR» main.cc)
 
 	«FOR m : modules»
-	arcane_generate_axl(«m.name»)
+	arcane_generate_axl(«m.className»)
 	«ENDFOR»
-	arcane_add_arcane_libraries_to_target(ExplicitHeatEquation)
+	arcane_add_arcane_libraries_to_target(«name»)
 	target_include_directories(ExplicitHeatEquation PUBLIC . ${CMAKE_CURRENT_BINARY_DIR})
+
+	«CMakeUtils.fileFooter»
 	'''
 }

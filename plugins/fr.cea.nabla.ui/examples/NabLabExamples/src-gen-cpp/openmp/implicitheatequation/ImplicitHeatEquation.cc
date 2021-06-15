@@ -397,9 +397,9 @@ void ImplicitHeatEquation::executeTimeLoopN() noexcept
 	bool continueLoop = true;
 	do
 	{
+		n++;
 		globalTimer.start();
 		cpuTimer.start();
-		n++;
 		if (!writer.isDisabled() && n >= lastDump + options.outputPeriod)
 			dumpVariables(n);
 		if (n!=1)

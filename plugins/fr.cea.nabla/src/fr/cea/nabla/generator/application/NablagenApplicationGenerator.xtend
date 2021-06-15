@@ -10,22 +10,17 @@
 package fr.cea.nabla.generator.application
 
 import com.google.inject.Inject
-import fr.cea.nabla.generator.BackendFactory
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
 import fr.cea.nabla.generator.NablaIrWriter
 import fr.cea.nabla.generator.NablagenExtensionHelper
 import fr.cea.nabla.generator.StandaloneGeneratorBase
 import fr.cea.nabla.generator.ir.IrRootBuilder
 import fr.cea.nabla.ir.generator.GenerationContent
-import fr.cea.nabla.ir.generator.cpp.backends.CppApplicationGenerator
-import fr.cea.nabla.ir.generator.java.JavaApplicationGenerator
 import fr.cea.nabla.ir.generator.json.JsonGenerator
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.nabla.NablaModule
-import fr.cea.nabla.nablagen.LevelDB
 import fr.cea.nabla.nablagen.NablagenApplication
 import fr.cea.nabla.nablagen.Target
-import fr.cea.nabla.nablagen.TargetType
 import java.util.ArrayList
 import org.eclipse.emf.ecore.util.EcoreUtil
 
@@ -35,7 +30,7 @@ import static extension fr.cea.nabla.ir.IrRootExtensions.*
 class NablagenApplicationGenerator extends StandaloneGeneratorBase
 {
 	@Inject NablaIrWriter irWriter
-	@Inject BackendFactory backendFactory
+	@Inject ApplicationGeneratorFactory generatorFactory
 	@Inject IrRootBuilder irRootBuilder
 	@Inject NablagenExtensionHelper ngenExtHelper
 
@@ -79,9 +74,7 @@ class NablagenApplicationGenerator extends StandaloneGeneratorBase
 					if (!target.interpreter)
 					{
 						// Create code generator
-						val iterationMax = ngenApp.mainModule.iterationMax.name
-						val timeMax = ngenApp.mainModule.timeMax.name
-						val g = getCodeGenerator(target, wsPath, iterationMax, timeMax, ngenApp.levelDB)
+						val g = generatorFactory.create(target, ngenApp, wsPath)
 	
 						// Apply IR transformations dedicated to this target (if necessary)
 						var IrRoot genIr = ir
@@ -117,23 +110,6 @@ class NablagenApplicationGenerator extends StandaloneGeneratorBase
 				dispatcher.post(MessageType::Error, 'at ' + stack.className + '.' + stack.methodName + '(' + stack.fileName + ':' + stack.lineNumber + ')')
 			}
 			throw(e)
-		}
-	}
-
-	private def getCodeGenerator(Target it, String wsPath, String iterationMax, String timeMax, LevelDB levelDB)
-	{
-		val levelDBPath = if (levelDB === null) null else levelDB.levelDBPath
-
-		if (type == TargetType::JAVA)
-		{
-			new JavaApplicationGenerator(levelDB !== null)
-		}
-		else
-		{
-			val backend = backendFactory.getCppBackend(type)
-			backend.traceContentProvider.maxIterationsVarName = iterationMax
-			backend.traceContentProvider.stopTimeVarName = timeMax
-			new CppApplicationGenerator(backend, wsPath, levelDBPath, variables.map[key -> value])
 		}
 	}
 

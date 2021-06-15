@@ -9,13 +9,22 @@
  *******************************************************************************/
 package fr.cea.nabla.ir
 
-import fr.cea.nabla.ir.ir.ConnectivityCall
-import fr.cea.nabla.ir.ir.SetRef
-import fr.cea.nabla.ir.ir.Container
 import fr.cea.nabla.ir.ir.Connectivity
+import fr.cea.nabla.ir.ir.ConnectivityCall
+import fr.cea.nabla.ir.ir.Container
+import fr.cea.nabla.ir.ir.SetRef
 
 class ContainerExtensions 
 {
+	static def getItemType(Container it)
+	{
+		switch it
+		{
+			ConnectivityCall: connectivity.returnType
+			SetRef: target.value.connectivity.returnType
+		}
+	}
+
 	static def getConnectivityCall(Container it)
 	{
 		switch it

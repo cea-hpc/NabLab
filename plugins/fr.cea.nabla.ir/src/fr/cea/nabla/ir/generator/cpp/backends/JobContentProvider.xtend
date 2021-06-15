@@ -59,17 +59,15 @@ abstract class JobContentProvider
 		bool continueLoop = true;
 		do
 		{
-			«IF caller.main»
+			«itVar»++;
+			«IF mainTimeLoop»
 			globalTimer.start();
 			cpuTimer.start();
+			«IF ppInfo !== null»
+			if (!writer.isDisabled() && «ppInfo.periodReference.codeName» >= «ppInfo.lastDumpVariable.codeName» + «ppInfo.periodValue.codeName»)
+				dumpVariables(«itVar»);
 			«ENDIF»
-			«itVar»++;
-			«IF caller.main»
-				«IF ppInfo !== null»
-				if (!writer.isDisabled() && «ppInfo.periodReference.codeName» >= «ppInfo.lastDumpVariable.codeName» + «ppInfo.periodValue.codeName»)
-					dumpVariables(«itVar»);
-				«ENDIF»
-				«traceContentProvider.getBeginOfLoopTrace(irModule, itVar)»
+			«traceContentProvider.getBeginOfLoopTrace(irModule, itVar)»
 
 			«ENDIF»
 			«callsContent»
@@ -78,7 +76,7 @@ abstract class JobContentProvider
 			continueLoop = («whileCondition.content»);
 
 			«instruction.innerContent»
-			«IF caller.main»
+			«IF mainTimeLoop»
 
 			cpuTimer.stop();
 			globalTimer.stop();
@@ -89,7 +87,7 @@ abstract class JobContentProvider
 			ioTimer.reset();
 			«ENDIF»
 		} while (continueLoop);
-		«IF caller.main»
+		«IF mainTimeLoop»
 			«IF ppInfo !== null»
 			if (!writer.isDisabled())
 				dumpVariables(«itVar»+1, false);

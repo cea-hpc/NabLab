@@ -12,7 +12,6 @@ package fr.cea.nabla.ir.generator.jni
 import fr.cea.nabla.ir.generator.CMakeUtils
 import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.generator.Utils
-import fr.cea.nabla.ir.generator.cpp.backends.Backend
 import fr.cea.nabla.ir.generator.cpp.backends.CMakeContentProvider
 import fr.cea.nabla.ir.generator.java.FunctionContentProvider
 import fr.cea.nabla.ir.ir.ExtensionProvider
@@ -30,11 +29,11 @@ import static extension fr.cea.nabla.ir.generator.JniNameMangler.*
 class JniProviderGenerator
 {
 	static val userDir = System.getProperty("user.home")
-	val Backend cppBackend
+	val Jniable jniContentProvider
 
-	new(Backend cppBackend)
+	new(Jniable jniContentProvider)
 	{
-		this.cppBackend = cppBackend
+		this.jniContentProvider = jniContentProvider
 	}
 
 	def getGenerationContents(ExtensionProvider jniProvider, ExtensionProvider cppProvider, String wsPath)
@@ -300,7 +299,7 @@ class JniProviderGenerator
 	}
 	«FOR f : provider.functions»
 
-		«cppBackend.functionContentProvider.getJniDefinitionContent(f, provider)»
+		«jniContentProvider.getJniDefinitionContent(f, provider)»
 	«ENDFOR»
 
 	#ifdef __cplusplus

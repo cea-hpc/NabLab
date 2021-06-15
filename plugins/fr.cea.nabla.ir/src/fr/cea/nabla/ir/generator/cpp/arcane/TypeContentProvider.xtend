@@ -12,6 +12,8 @@ package fr.cea.nabla.ir.generator.cpp.arcane
 import fr.cea.nabla.ir.IrTypeExtensions
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityType
+import fr.cea.nabla.ir.ir.Expression
+import fr.cea.nabla.ir.ir.IntConstant
 import fr.cea.nabla.ir.ir.IrType
 import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.PrimitiveType
@@ -23,8 +25,17 @@ class TypeContentProvider
 		switch it
 		{
 			case null: null
-			BaseType case sizes.empty: primitive.typeName
-			BaseType: '''ConstArray«IF sizes.size > 1»«sizes.size»«ENDIF»View<«primitive.typeName»>'''
+			BaseType:
+			{
+				val t = typeNameAndDimension
+				val dimension = t.value
+				switch dimension
+				{
+					case 0: t.key
+					case 1: '''ConstArrayView<«t.key»>'''
+					default: '''ConstArray«dimension»View<«t.key»>'''
+				}
+			}
 			ConnectivityType: getVariableTypeName(it)
 			LinearAlgebraType: IrTypeExtensions.getLinearAlgebraClass(it)
 			default: throw new RuntimeException("Unexpected type: " + class.name)
@@ -34,27 +45,15 @@ class TypeContentProvider
 	static def dispatch getVariableTypeName(ConnectivityType it)
 	{
 		val support = connectivities.head.returnType.name.toFirstUpper
-		val dimension = connectivities.size - 1 + base.sizes.size
-		val dimensionName = switch dimension
-		{
-			case 0: ""
-			case 1: "Array"
-			case 2: "Array2"
-			default: throw new Exception("Unsupported dimension for variable type: " + dimension)
-		}
-		return "Variable" + support + dimensionName + base.primitive.typeName
+		val t = base.typeNameAndDimension
+		val dimension = connectivities.size - 1 + t.value
+		return "Variable" + support + getVariableDimensionName(dimension, true) + t.key
 	}
 
 	static def dispatch getVariableTypeName(BaseType it)
 	{
-		val dimensionName = switch sizes.size
-		{
-			case 0: "Scalar"
-			case 1: "Array"
-			case 2: "Array2"
-			default: throw new Exception("Unsupported dimension for variable type: " + sizes.size)
-		}
-		return "Variable" + dimensionName + primitive.typeName
+		val t = typeNameAndDimension
+		return "Variable" + getVariableDimensionName(t.value, false) + t.key
 	}
 
 	static def dispatch getVariableTypeName(LinearAlgebraType it)
@@ -62,18 +61,49 @@ class TypeContentProvider
 		throw new Exception("Not yet implemented")
 	}
 
-	static def getPrimitiveTypeName(IrType it)
+	static def Pair<String, Integer> getTypeNameAndDimension(BaseType it)
 	{
-		IrTypeExtensions.getPrimitive(it).typeName
-	}
+		if (primitive == PrimitiveType.REAL)
+		{
+			if (sizes.size == 1)
+			{
+				val s = sizes.get(0).intValue
+				if (s == 2) return 'Real2' -> 0
+				if (s == 3) return 'Real3' -> 0
+			}
+			else if (sizes.size == 2)
+			{
+				val x = sizes.get(0).intValue
+				val y = sizes.get(1).intValue
+				if (x == 2 && y == 2) return 'Real2x2' -> 0
+				if (x == 3 && y == 3) return 'Real3x3' -> 0
+			}
+		}
 
-	static def getTypeName(PrimitiveType it)
-	{
-		switch it
+		// All the other cases
+		val typeName = switch primitive
 		{
 			case BOOL: 'Bool'
 			case INT: 'Integer'
 			case REAL: 'Real'
 		}
+		return typeName -> sizes.size
+	}
+
+	private static def getVariableDimensionName(int dimension, boolean hasSupport)
+	{
+		switch dimension
+		{
+			case 0: (hasSupport ? "" : "Scalar")
+			case 1: "Array"
+			case 2: "Array2"
+			default: throw new Exception("Unsupported dimension for variable type: " + dimension)
+		}
+	}
+
+	private static def getIntValue(Expression e)
+	{
+		if (e instanceof IntConstant) e.value
+		else -1
 	}
 }

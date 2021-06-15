@@ -13,8 +13,8 @@ import fr.cea.nabla.generator.StandaloneGeneratorBase
 import fr.cea.nabla.ir.UnzipHelper
 import fr.cea.nabla.ir.generator.CMakeUtils
 import fr.cea.nabla.ir.generator.GenerationContent
-import fr.cea.nabla.ir.generator.cpp.backends.Backend
 import fr.cea.nabla.ir.generator.cpp.backends.CMakeContentProvider
+import fr.cea.nabla.ir.generator.jni.Jniable
 import fr.cea.nabla.ir.ir.ExtensionProvider
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.nablagen.Target
@@ -31,7 +31,7 @@ class JniProviderGenerator extends StandaloneGeneratorBase
 {
 	val providers = new HashSet<ExtensionProvider>
 
-	def generateAndTransformProvider(Backend backend, ExtensionProvider provider, String wsPath, String targetOutputPath, boolean generate)
+	def generateAndTransformProvider(Jniable jniContentProvider, ExtensionProvider provider, String wsPath, String targetOutputPath, boolean generate)
 	{
 		// Transform the C+ provider in a JNI provider
 		val cppProvider = EcoreUtil.copy(provider)
@@ -42,7 +42,7 @@ class JniProviderGenerator extends StandaloneGeneratorBase
 		// Generate the file
 		if (generate)
 		{
-			val generator = new fr.cea.nabla.ir.generator.jni.JniProviderGenerator(backend)
+			val generator = new fr.cea.nabla.ir.generator.jni.JniProviderGenerator(jniContentProvider)
 			val outputFolderName = wsPath + targetOutputPath
 			val fsa = getConfiguredFileSystemAccess(outputFolderName, false)
 			generate(fsa, generator.getGenerationContents(provider, cppProvider, wsPath), provider.dirName)

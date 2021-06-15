@@ -53,7 +53,7 @@ class JobInterpreter
 			iteration ++
 			context.setVariableValue(iterationCounter, new NV0Int(iteration))
 
-			if (caller.main)
+			if (mainTimeLoop)
 			{
 				val log = String.format(Locale::ENGLISH, "START ITERATION %1$s: %2$5d - t: %3$.5f - deltat: %4$.5f",
 						iterationCounter.name,
@@ -92,7 +92,7 @@ class JobInterpreter
 		}
 		while (continueLoop)
 
-		if (caller.main)
+		if (mainTimeLoop)
 		{
 			// force a last trace and output at the end
 			val log = String.format(Locale::ENGLISH, "FINAL TIME: %1$.5f - deltat: %2$.5f",

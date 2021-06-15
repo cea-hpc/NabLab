@@ -9,17 +9,18 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.cpp.arcane
 
+import fr.cea.nabla.ir.JobCallerExtensions
 import fr.cea.nabla.ir.generator.ApplicationGenerator
 import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.generator.cpp.CppGeneratorUtils
-import fr.cea.nabla.ir.ir.InternFunction
+import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
+import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.transformers.ReplaceReductions
 import java.util.ArrayList
 
-import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 
 class ArcaneApplicationGenerator implements ApplicationGenerator
@@ -39,9 +40,10 @@ class ArcaneApplicationGenerator implements ApplicationGenerator
 		val fileContents = new ArrayList<GenerationContent>
 		for (module : ir.modules)
 		{
-			fileContents += new GenerationContent(module.name + '.axl', AxlContentProvider.getContent(module), false)
-			fileContents += new GenerationContent(module.className + '.h', module.headerFileContent, false)
-//			fileContents += new GenerationContent(module.className + '.cc', module.sourceFileContent, false)
+			fileContents += new GenerationContent(module.name.toFirstUpper + '.axl', AxlContentProvider.getContent(module), false)
+			val className = ArcaneUtils.getModuleName(module)
+			fileContents += new GenerationContent(className + '.h', getHeaderFileContent(module, className), false)
+			fileContents += new GenerationContent(className + '.cc', getSourceFileContent(module, className), false)
 		}
 		fileContents += new GenerationContent('CMakeLists.txt', CMakeContentProvider.getContent(ir, arcaneDir), false)
 		fileContents += new GenerationContent(ir.name + '.config', TimeLoopContentProvider.getContent(ir), false)
@@ -49,29 +51,24 @@ class ArcaneApplicationGenerator implements ApplicationGenerator
 		return fileContents
 	}
 
-	private def getHeaderFileContent(IrModule it)
+	private def getHeaderFileContent(IrModule it, String className)
 	'''
 	/* «Utils::doNotEditWarning» */
 
-	«val className = ArcaneUtils.getModuleName(it)»
 	#ifndef «CppGeneratorUtils.getHDefineName(className)»
 	#define «CppGeneratorUtils.getHDefineName(className)»
 
 	#include <arcane/utils/Array.h>
-	#include "«name»_axl.h"
-	«FOR provider : extensionProviders»
-	#include "«provider.className».h"
-	«ENDFOR»
+	#include "«name.toFirstUpper»_axl.h"
 
 	using namespace Arcane;
-	«val internFunctions = functions.filter(InternFunction)»
-	«IF !internFunctions.empty»
+	«IF !functions.empty»
 
 	/******************** Free functions declarations ********************/
 
 	namespace «CppGeneratorUtils.getFreeFunctionNs(it)»
 	{
-	«FOR f : internFunctions»
+	«FOR f : functions»
 		«FunctionContentProvider.getDeclarationContent(f)»;
 	«ENDFOR»
 	}
@@ -93,11 +90,62 @@ class ArcaneApplicationGenerator implements ApplicationGenerator
 		VersionInfo versionInfo() const override { return VersionInfo(1, 0, 0); }
 
 	private:
-		«FOR j : jobs»
+		«FOR j : jobs.filter[!mainTimeLoop]»
 		«JobContentProvider.getDeclarationContent(j)»
 		«ENDFOR»
 	};
 
 	#endif
 	'''
+
+	private def getSourceFileContent(IrModule it, String className)
+	'''
+	/* «Utils::doNotEditWarning» */
+
+	#include "«className».h"
+	#include <arcane/Concurrency.h>
+
+	using namespace Arcane;
+	«IF !functions.empty»
+
+	/******************** Free functions definitions ********************/
+
+	namespace «CppGeneratorUtils.getFreeFunctionNs(it)»
+	{
+	«FOR f : functions SEPARATOR '\n'»
+		«FunctionContentProvider.getDefinitionContent(f)»
+	«ENDFOR»
+	}
+	«ENDIF»
+
+
+	/******************** Module entry points ********************/
+
+	void «className»::init()
+	{
+		«FOR c : irRoot.main.calls»
+		«Utils::getCallName(c).replace('.', '->')»(); // @«c.at»
+		«ENDFOR»
+	}
+
+	void «className»::compute()
+	{
+		«FOR c : (jobs.findFirst[mainTimeLoop] as ExecuteTimeLoopJob).calls»
+		«Utils::getCallName(c).replace('.', '->')»(); // @«c.at»
+		«ENDFOR»
+	}
+
+
+	/******************** Module methods ********************/
+
+	«FOR j : jobs.filter[!mainTimeLoop] SEPARATOR '\n'»
+		«JobContentProvider.getDefinitionContent(j)»
+	«ENDFOR»
+	'''
+
+	/** The main time loop job is represented by the compute entry point */
+	private def boolean isMainTimeLoop(Job j)
+	{
+		j instanceof ExecuteTimeLoopJob && JobCallerExtensions.isMainTimeLoop(j as ExecuteTimeLoopJob)
+	}
 }

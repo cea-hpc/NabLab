@@ -66,3 +66,9 @@ StlThread
 	outputPath = "/NabLabExamples/src-gen-cpp/stl-thread";
 	N_CXX_COMPILER = "/usr/bin/g++";
 }
+
+Arcane
+{
+	outputPath = "/NabLabExamples/src-gen-cpp/arcane";
+	Arcane_DIR = "$ENV{HOME}/arcane/install";
+}

@@ -21,6 +21,7 @@ import fr.cea.nabla.ir.ir.MinConstant
 import fr.cea.nabla.ir.ir.RealConstant
 import fr.cea.nabla.ir.ir.Variable
 
+import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.cpp.arcane.VariableExtensions.*
 
@@ -30,11 +31,11 @@ class AxlContentProvider
 	'''
 	<?xml version="1.0" ?>
 	<!-- «Utils::doNotEditWarning» -->
-	<module name="«name»" version="1.0">
-		<description>«name» module designed and implemented thanks to the NabLab environment.</description>
+	<module name="«className»" version="1.0">
+		<description>«className» module designed and implemented thanks to the NabLab environment.</description>
 
 		<variables>
-			«FOR v : variables.filter[x | !(x.option || x.type instanceof LinearAlgebraType)]»
+			«FOR v : variables.filter[x | !(x.option || x.type instanceof LinearAlgebraType)] SEPARATOR '\n'»
 			<variable
 				field-name="«v.name»"
 				name="«v.codeName»"
@@ -42,8 +43,7 @@ class AxlContentProvider
 				item-kind="«v.itemKind»"
 				dim="«v.dimension»"
 				dump="true"
-				need-sync="true" />
-
+				need-sync="true"/>
 			«ENDFOR»
 		</variables>
 
@@ -65,7 +65,12 @@ class AxlContentProvider
 
 	private static def getDataType(Variable it)
 	{
-		type.primitive.literal.toLowerCase
+		val t = type
+		switch t
+		{
+			BaseType: TypeContentProvider.getTypeNameAndDimension(t).key.toLowerCase
+			ConnectivityType: TypeContentProvider.getTypeNameAndDimension(t.base).key.toLowerCase
+		}
 	}
 
 	private static def getItemKind(Variable it)

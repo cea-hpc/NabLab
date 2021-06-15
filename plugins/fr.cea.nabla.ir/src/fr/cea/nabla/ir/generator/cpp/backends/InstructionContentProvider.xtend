@@ -36,6 +36,7 @@ import org.eclipse.xtend.lib.annotations.Data
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
+import static extension fr.cea.nabla.ir.generator.cpp.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.cpp.backends.ItemIndexAndIdValueContentProvider.*
 
 @Data

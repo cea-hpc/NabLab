@@ -12,6 +12,8 @@ package fr.cea.nabla.ir.generator.cpp.arcane
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.IrRoot
 
+import static extension fr.cea.nabla.ir.IrModuleExtensions.*
+
 class TimeLoopContentProvider
 {
 	static def getContent(IrRoot it)
@@ -27,19 +29,19 @@ class TimeLoopContentProvider
 
 				<modules>
 					«FOR m : modules»
-					<module name="«m.name»" need="required" />
+					<module name="«m.className»" need="required" />
 					«ENDFOR»
 				</modules>
 
 				<entry-points where="init">
 					«FOR m : modules»
-					<entry-point name="«m.name».StartInit" />
+					<entry-point name="«m.className».StartInit" />
 					«ENDFOR»
 				</entry-points>
 
 				<entry-points where="compute-loop">
 					«FOR m : modules»
-					<entry-point name="«m.name».Compute" />
+					<entry-point name="«m.className».Compute" />
 					«ENDFOR»
 				</entry-points>
 			</time-loop>

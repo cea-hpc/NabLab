@@ -23,12 +23,7 @@ jobs:
           
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    
-      - name: Setup Java SDK
-        uses: actions/setup-java@v1.4.3
-        with:
-          java-version: 11
-      
+  
       - name: Cache Maven packages # see https://github.com/actions/cache for more details
         uses: actions/cache@v2
         with:
@@ -63,5 +58,7 @@ jobs:
           files: |
             ./releng/fr.cea.nabla.updatesite/target/fr.cea.nabla.updatesite-*.zip
             ./releng/fr.cea.nabla.updatesite/target/products/*.zip
+          draft: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        

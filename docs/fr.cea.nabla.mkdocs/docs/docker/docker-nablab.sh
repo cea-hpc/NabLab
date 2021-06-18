@@ -35,7 +35,7 @@ mkdir -p ${DOCKERFILE_DIR}
 DOCKERFILE="${DOCKERFILE_DIR}/Dockerfile"
 
 cat > ${DOCKERFILE} <<EOF
-FROM ubuntu:bionic
+FROM ubuntu:focal
 
 ENV USER="${USER}" USER_ID="${USER_ID}" USER_GID="${USER_GID}" HOSTNAME="${DOCKER_HOSTNAME}"
 
@@ -43,52 +43,50 @@ RUN echo "${DOCKER_HOSTNAME}" > /etc/hostname
 RUN groupadd --gid "${USER_GID}" "${USER}"
 RUN useradd --uid "${USER_ID}" --gid "${USER_GID}" --create-home --shell /bin/bash "${USER}"
 
-RUN apt-get update && apt-get -y upgrade && apt-get -y install git wget sudo g++ make cmake libhwloc-dev #snapd
+RUN apt-get update \
+	&& apt-get install -y tzdata \
+	&& apt-get install -y git wget sudo g++ make cmake libhwloc-dev #snapd
 RUN #snap install cmake
 RUN apt-get clean
 
 RUN rm /usr/bin/cc
 RUN echo "${USER} ALL=(ALL:ALL) NOPASSWD:ALL" > "/etc/sudoers.d/${USER}"
 
-RUN mkdir leveldb
+RUN cd; mkdir leveldb
 WORKDIR "/leveldb"
-RUN wget http://github.com/google/leveldb/archive/1.22.tar.gz -O leveldb.tar.gz && tar -zxvf leveldb.tar.gz
-WORKDIR "/leveldb/leveldb-1.22"
-RUN mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=Release .. && cmake --build .
-ENV LEVELDB_HOME=/leveldb/leveldb-install
+RUN wget http://github.com/google/leveldb/archive/1.22.tar.gz -O leveldb.tar.gz && tar -zxf leveldb.tar.gz; rm leveldb.tar.gz
+RUN mkdir build
+WORKDIR "/leveldb/build"
+RUN cmake ../leveldb-1.22 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/leveldb/install && make -s && make install
+ENV LEVELDB_HOME=/leveldb/install
 
-RUN mkdir kokkos
+RUN cd; mkdir kokkos
 WORKDIR "/kokkos"
-RUN wget http://github.com/kokkos/kokkos/archive/refs/tags/3.0.00.tar.gz -O kokkos.tar.gz && tar -zxvf kokkos.tar.gz
-RUN mkdir kokkos-install
-RUN mkdir kokkos-build
-WORKDIR "/kokkos/kokkos-build"
-RUN cmake ../kokkos-3.0.00 -DCMAKE_CXX_COMPILER=g++ -DKokkos_CXX_STANDARD=17 -DCMAKE_INSTALL_PREFIX=~/kokkos/kokkos-install -DKokkos_ENABLE_OPENMP=On -DKokkos_ENABLE_HWLOC=On
-RUN cmake --build . --target install
+RUN wget http://github.com/kokkos/kokkos/archive/refs/tags/3.0.00.tar.gz -O kokkos.tar.gz && tar -zxf kokkos.tar.gz && rm kokkos.tar.gz
+RUN mkdir install; mkdir build; cd build
+WORKDIR "/kokkos/build"
+RUN cmake ../kokkos-3.0.00 -DCMAKE_CXX_COMPILER=g++ -DKokkos_CXX_STANDARD=17 -DCMAKE_INSTALL_PREFIX=/kokkos/install -DKokkos_ENABLE_OPENMP=On -DKokkos_ENABLE_HWLOC=On && make && make install
+RUN cd ..
 WORKDIR "/kokkos"
-RUN rm -rf kokkos-build
-RUN mkdir kokkos-kernels
-WORKDIR "/kokkos/kokkos-kernels"
-RUN wget http://github.com/kokkos/kokkos-kernels/archive/refs/tags/3.0.00.tar.gz -O kernels.tar.gz && tar -zxvf kernels.tar.gz
-RUN mkdir kokkos-build
-WORKDIR "/kokkos/kokkos-kernels/kokkos-build"
-RUN cmake ../kokkos-kernels-3.0.00 -DCMAKE_CXX_COMPILER=g++ -DCMAKE_INSTALL_PREFIX=~/kokkos/kokkos-install -DKokkos_ROOT=~/kokkos/kokkos-install -DKokkos_DIR=/kokkos/kokkos-install
-RUN cmake --build . --target install
-WORKDIR "/kokkos/kokkos-kernels"
-RUN rm -rf kokkos-build
-ENV KOKKOS_HOME=/kokkos/kokkos-install
+RUN wget http://github.com/kokkos/kokkos-kernels/archive/refs/tags/3.0.00.tar.gz -O kernels.tar.gz && tar -zxf kernels.tar.gz && rm kernels.tar.gz 
+RUN rm -rf build && mkdir build && cd build
+WORKDIR "/kokkos/build"
+RUN cmake ../kokkos-kernels-3.0.00 -DCMAKE_CXX_COMPILER=g++ -DCMAKE_INSTALL_PREFIX=/kokkos/install -DKokkos_DIR=/kokkos/install && make && make install
+ENV KOKKOS_HOME=/kokkos/install
 
 RUN apt-get install -y zip
 
-RUN apt install -y maven
+RUN apt-get install -y default-jre
 
-WORKDIR "/"
-RUN cd / && git clone https://github.com/cea-hpc/NabLab.git
-RUN cd NabLab/plugins/fr.cea.nabla.ir/resources && chmod +x ./import.sh && ./import.sh
+RUN apt-get install -y maven
+
+RUN cd && git clone https://github.com/cea-hpc/NabLab.git /NabLab
+RUN cd /NabLab/plugins/fr.cea.nabla.ir/resources && chmod +x ./import.sh && ./import.sh
 
 WORKDIR "/NabLab"
-RUN cd /NabLab && mvn clean -P build,updatesite; mvn verify -P build,updatesite
+RUN #cd /NabLab && mvn clean -P build,updatesite; mvn verify -P build,updatesite
 RUN #cd /NabLab && mvn clean; mvn verify -Dmaven.test.skip=true
+RUN cd /NabLab && mvn clean; mvn verify
 
 EOF
 
@@ -101,6 +99,6 @@ else
 fi
 
 IMAGE_NAME="nablab-docker"
-${DOCKER} build -t oudotmp/NabLab ${DOCKERFILE_DIR}
+${DOCKER} build --network=host -t "${IMAGE_NAME}:latest" ${DOCKERFILE_DIR}
 
-${DOCKER} run -w $(pwd) --user ${USER_ID}:${USER_GID} -ti --entrypoint /bin/bash --hostname="${DOCKER_HOSTNAME}" "${IMAGE_NAME}"
+${DOCKER} run --network=host -w $(pwd) --user ${USER_ID}:${USER_GID} -ti --entrypoint /bin/bash --hostname="${DOCKER_HOSTNAME}" "${IMAGE_NAME}"

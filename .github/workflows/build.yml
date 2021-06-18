@@ -34,12 +34,6 @@ jobs:
       - name: Checkout NabLab code
         uses: actions/checkout@v2
       
-      # Executes fr.cea.nabla.ir/resources/import.sh
-      - name: Run import.sh script
-        working-directory: ./plugins/fr.cea.nabla.ir/resources
-        run: ./import.sh
-        shell: bash
-
       # Runs the maven build (build + tests)
       - name: Run maven build
         if: startsWith(github.ref, 'refs/tags/v') != true

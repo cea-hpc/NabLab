@@ -29,7 +29,7 @@
             <configuration>
               <target>
                 <ant antfile="${basedir}/build.xml">
-                  <property name="dir.base" value="${destDir}"/>
+                  <property name="dir.base" value="target/classes"/>
                   <target name="CreateJar"/>
                 </ant>
               </target>

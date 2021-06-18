@@ -1,7 +1,8 @@
 <?xml version="1.0" ?>
 <!-- Configuration of the Ant build system to generate a Jar file --> 
 <project name="fr.cea.nabla.javalib" default="CreateJar">
+	<property name="dir.base" value="bin"/>
 	<target name="CreateJar" description="Create Jar file">
-		<jar jarfile="lib/linearalgebrajava.jar" basedir="bin/" includes="linearalgebrajava/*.class" />
+		<jar jarfile="lib/linearalgebrajava.jar" basedir="${dir.base}" includes="linearalgebrajava/*.class" />
 	</target>
 </project>

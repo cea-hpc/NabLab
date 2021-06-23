@@ -3,7 +3,7 @@
 <project name="fr.cea.nabla.ir" default="ZipResources">
 	<target name="ZipResources" description="Zip NabLab library resources">
 		<zip destfile="resources/.nablab.zip">
-			<zipfileset dir="../fr.cea.nabla.cpplib/src" prefix=".nablab" excludes="**/CMakeLists.txt"/>
+			<zipfileset dir="../fr.cea.nabla.cpplib/src" prefix=".nablab" excludes="CMakeLists.txt"/>
 			<zipfileset dir="../fr.cea.nabla.javalib/lib" prefix=".nablab/linearalgebra/linearalgebrajava/lib"/>
 		</zip>
 	</target>

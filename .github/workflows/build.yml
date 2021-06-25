@@ -40,11 +40,15 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v') != true
         run: mvn clean;mvn verify
       
-      # Runs the maven build (build + tests + updatesite + products)
-      - name: Run maven build and updatesite profiles
+      # Runs the maven build (build + tests + updatesite + products + deploy maven artifacts to github)
+      - name: Run maven build and updatesite profiles, deploy maven artifacts to github
         if: startsWith(github.ref, 'refs/tags/v')
-        run: mvn clean -P build,updatesite;mvn verify -P build,updatesite
-        
+        run: mvn clean -P build,updatesite;mvn -B deploy -P build,updatesite --settings settings.xml
+        env:
+          USERNAME: ${{ github.actor }}
+          PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
       # Create a Github Release
       - name: Release
         uses: softprops/action-gh-release@v1

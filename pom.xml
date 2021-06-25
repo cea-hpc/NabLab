@@ -26,6 +26,14 @@
         <maven.compiler.source>1.8</maven.compiler.source>
     </properties>
 
+    <distributionManagement>
+		<repository>
+			<id>github</id>
+			<name>Apache Maven Packages</name>
+			<url>https://maven.pkg.github.com/cea-hpc/NabLab</url>
+		</repository>
+	</distributionManagement>
+
     <profiles>
         <profile>
             <id>build</id>

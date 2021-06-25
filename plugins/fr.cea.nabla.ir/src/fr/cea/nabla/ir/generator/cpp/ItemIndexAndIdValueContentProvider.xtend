@@ -24,7 +24,7 @@ class ItemIndexAndIdValueContentProvider
 		if (container.connectivity.indexEqualId) 
 			'''«id.name»'''
 		else 
-			'''indexOf(mesh->«container.accessor», «id.name»)'''
+			'''indexOf(mesh.«container.accessor», «id.name»)'''
 	}
 
 	static def dispatch getContent(ItemIdValueIterator it)
@@ -38,7 +38,7 @@ class ItemIndexAndIdValueContentProvider
 		val c = container
 		switch c
 		{
-			ConnectivityCall: '''mesh->«c.accessor»'''
+			ConnectivityCall: '''mesh.«c.accessor»'''
 			SetRef: '''«c.target.name»'''
 		}
 	}

@@ -28,7 +28,7 @@ abstract class AbstractExpressionInterpreterTest
 	{
 		val model =
 		'''
-		«testModuleForSimulation»
+		«testModule»
 		let ℝ r1 = true ? 1.0 : 2.0; // -> 1.0
 		let ℝ r2 = false ? 1.0 : 2.0; // -> 1.0
 
@@ -42,7 +42,7 @@ abstract class AbstractExpressionInterpreterTest
 	{
 		val model =
 		'''
-		«testModuleForSimulation»
+		«testModule»
 		let ℾ b0 = !false; // -> true
 		let ℕ n0 = -(1); // -> -1
 		let ℝ r0 = -(1.); // -> -1.
@@ -65,7 +65,7 @@ abstract class AbstractExpressionInterpreterTest
 	{
 		val model =
 		'''
-		«testModuleForSimulation»
+		«testModule»
 		let ℾ b = (true);
 		ℝ[2] X{nodes};
 		'''
@@ -78,7 +78,7 @@ abstract class AbstractExpressionInterpreterTest
 		//NB : Constant only for Scalar
 		val model =
 		'''
-		«testModuleForSimulation»
+		«testModule»
 		let ℕ n1 = 1;
 		let ℝ r1 = 2.0;
 		let ℾ b1 = true;
@@ -94,7 +94,7 @@ abstract class AbstractExpressionInterpreterTest
 	{
 		val model =
 		'''
-		«testModuleForSimulation»
+		«testModule»
 		let ℕ nMin = ℕ.MinValue;
 		let ℝ rMin = ℝ.MinValue;
 
@@ -108,7 +108,7 @@ abstract class AbstractExpressionInterpreterTest
 	{
 		val model =
 		'''
-		«testModuleForSimulation»
+		«testModule»
 		let ℕ nMax = ℕ.MaxValue;
 		let ℝ rMax = ℝ.MaxValue;
 
@@ -122,7 +122,7 @@ abstract class AbstractExpressionInterpreterTest
 	{
 		val model =
 		'''
-		«testModuleForSimulation»
+		«testModule»
 		let ℕ n1 = ℕ(1);
 		let ℕ[2] n2 = ℕ[2](1);
 		let ℕ[2,3] n3 = ℕ[2,3](1);
@@ -145,7 +145,7 @@ abstract class AbstractExpressionInterpreterTest
 	{
 		val model =
 		'''
-		«testModuleForSimulation»
+		«testModule»
 		let ℕ[2] n = [1, 2];
 		ℝ[2] X{nodes};
 		'''
@@ -157,7 +157,7 @@ abstract class AbstractExpressionInterpreterTest
 	{
 		val model =
 		'''
-		«testModuleForSimulation»
+		«testModule»
 		let ℕ[2,3] n = [[0, 1, 2],[1, 2, 3]];
 		ℝ[2] X{nodes};
 		'''
@@ -169,7 +169,7 @@ abstract class AbstractExpressionInterpreterTest
 	{
 		val model =
 		'''
-		«testModuleForSimulation»
+		«testModule»
 		let ℝ[2] r = [1.0, 2.0];
 		ℝ[2] X{nodes};
 		'''
@@ -181,7 +181,7 @@ abstract class AbstractExpressionInterpreterTest
 	{
 		val model =
 		'''
-		«testModuleForSimulation»
+		«testModule»
 		let ℝ[2,3] r = [[0., 1., 2.],[1., 2., 3.]];
 		ℝ[2] X{nodes};
 		'''
@@ -193,7 +193,7 @@ abstract class AbstractExpressionInterpreterTest
 	{
 		val model =
 		'''
-		«testModuleForSimulation»
+		«testModule»
 		ℕ c;
 		ℝ[2] X{nodes};
 		Job1: c = card(nodes());
@@ -207,7 +207,8 @@ abstract class AbstractExpressionInterpreterTest
 		val model =
 		'''
 		«emptyTestModule»
-		«defaultConnectivities»
+		with CartesianMesh2D.*;
+
 		def getOne:  → ℕ, () → return 1;
 		def addOne: ℕ → ℕ, (a) → return a + 1;
 		def addOne: ℝ → ℝ, (a) → return a + 1.0;
@@ -216,6 +217,7 @@ abstract class AbstractExpressionInterpreterTest
 		def add: ℝ × ℝ → ℝ, (a, b) → return a + b;
 		def add: x | ℝ[x] × ℝ[x] → ℝ[x], (a, b) → return a + b;
 		def add: x,y | ℝ[x,y] × ℝ[x,y] → ℝ[x,y], (a, b) → return a + b;
+
 		«simulationVariables»
 		let ℕ n0 = 0;
 		let ℕ n1 = getOne(); 	//-> 1
@@ -249,7 +251,9 @@ abstract class AbstractExpressionInterpreterTest
 		val model =
 		'''
 		«emptyTestModule»
-		«defaultConnectivities»
+
+		with CartesianMesh2D.*;
+
 		def h: ℝ[2] → ℝ[2], (a) → return 2 * a;
 
 		def i: a | ℝ[a] → ℝ[a], (x) → {
@@ -263,6 +267,7 @@ abstract class AbstractExpressionInterpreterTest
 		}
 
 		def k: b | ℝ[b] → ℝ[b], (x) → return j(x);
+
 		«simulationVariables»
 		let ℝ[2] u = [0.0, 0.1];
 		let ℝ[3] v = [0.0, 0.1, 0.2];
@@ -289,7 +294,7 @@ abstract class AbstractExpressionInterpreterTest
 	{
 		val model =
 		'''
-		«testModuleForSimulation»
+		«testModule»
 		let ℾ b1 = true;
 		let ℾ b2 = b1; // -> true
 

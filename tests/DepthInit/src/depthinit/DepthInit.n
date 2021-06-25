@@ -10,11 +10,7 @@
 module DepthInit;
 
 with BathyLib.*;
-
-itemtypes { cell, node }
-
-connectivity cells: → {cell};
-connectivity nodes: → {node};
+with CartesianMesh2D.*;
 
 def two: → ℝ, () → return 2.0;
 

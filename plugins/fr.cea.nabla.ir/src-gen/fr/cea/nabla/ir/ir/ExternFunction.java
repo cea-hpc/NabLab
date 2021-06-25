@@ -22,17 +22,17 @@ package fr.cea.nabla.ir.ir;
 public interface ExternFunction extends Function {
 	/**
 	 * Returns the value of the '<em><b>Provider</b></em>' container reference.
-	 * It is bidirectional and its opposite is '{@link fr.cea.nabla.ir.ir.ExtensionProvider#getFunctions <em>Functions</em>}'.
+	 * It is bidirectional and its opposite is '{@link fr.cea.nabla.ir.ir.DefaultExtensionProvider#getFunctions <em>Functions</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Provider</em>' container reference.
-	 * @see #setProvider(ExtensionProvider)
+	 * @see #setProvider(DefaultExtensionProvider)
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getExternFunction_Provider()
-	 * @see fr.cea.nabla.ir.ir.ExtensionProvider#getFunctions
+	 * @see fr.cea.nabla.ir.ir.DefaultExtensionProvider#getFunctions
 	 * @model opposite="functions" transient="false"
 	 * @generated
 	 */
-	ExtensionProvider getProvider();
+	DefaultExtensionProvider getProvider();
 
 	/**
 	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.ExternFunction#getProvider <em>Provider</em>}' container reference.
@@ -42,6 +42,6 @@ public interface ExternFunction extends Function {
 	 * @see #getProvider()
 	 * @generated
 	 */
-	void setProvider(ExtensionProvider value);
+	void setProvider(DefaultExtensionProvider value);
 
 } // ExternFunction

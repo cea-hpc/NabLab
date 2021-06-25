@@ -11,8 +11,10 @@ package fr.cea.nabla.overloading
 
 import com.google.inject.Inject
 import com.google.inject.Provider
+import fr.cea.nabla.nabla.DefaultExtension
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
+import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaRoot
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
@@ -65,8 +67,13 @@ class DeclarationProvider
 	private def Iterable<Reduction> getCandidates(Reduction r, NablaType callerInType)
 	{
 		val root = EcoreUtil2.getContainerOfType(r, NablaRoot)
-		if (root === null) return #[]
-		root.reductions.filter[x | x.name == r.name]
+		switch root
+		{
+			case null: #[]
+			NablaModule: root.reductions.filter[x | x.name == r.name]
+			DefaultExtension: root.reductions.filter[x | x.name == r.name]
+			default: #[]
+		}
 	}
 
 	/**
@@ -77,6 +84,12 @@ class DeclarationProvider
 	{
 		val root = EcoreUtil2.getContainerOfType(f, NablaRoot)
 		if (root === null) return #[]
-		root.functions.filter[x | x.name == f.name && x.typeDeclaration.inTypes.size == callerInTypes.size]
+		switch root
+		{
+			case null: #[]
+			NablaModule: root.functions.filter[x | x.name == f.name && x.typeDeclaration.inTypes.size == callerInTypes.size]
+			DefaultExtension: root.functions.filter[x | x.name == f.name && x.typeDeclaration.inTypes.size == callerInTypes.size]
+			default: #[]
+		}
 	}
 }

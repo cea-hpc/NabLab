@@ -11,6 +11,7 @@ package fr.cea.nabla.ir.transformers
 
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.IrRoot
+import fr.cea.nabla.ir.ir.MeshExtensionProvider
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.Variable
 
@@ -54,7 +55,9 @@ class ReplaceUtf8Chars extends IrTransformationStep
 		trace('    IR -> IR: ' + description)
 		ir.eAllContents.filter(Variable).forEach[x | x.name = x.name.noUtf8]
 		ir.eAllContents.filter(ReductionInstruction).forEach[x | x.result.name = x.result.name.noUtf8]
-		ir.connectivities.forEach[x | x.name = x.name.noUtf8]
+		for (meshprovider : ir.providers.filter(MeshExtensionProvider))
+			for (c : meshprovider.connectivities)
+				c.name = c.name.noUtf8
 		ir.eAllContents.filter(Function).forEach[x | x.name = x.name.noUtf8]
 		ir.jobs.forEach[x | x.name = x.name.noUtf8]
 		return true

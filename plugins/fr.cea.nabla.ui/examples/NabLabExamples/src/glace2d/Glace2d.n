@@ -10,18 +10,7 @@
 module Glace2d;
 
 with Math.*;
-
-itemtypes { node, cell }
-
-connectivity nodes: → {node};
-connectivity cells: → {cell};
-connectivity innerNodes: → {node};
-connectivity topNodes: → {node};
-connectivity bottomNodes: → {node};
-connectivity leftNodes: → {node};
-connectivity rightNodes: → {node};
-connectivity nodesOfCell: cell → {node};
-connectivity cellsOfNode: node → {cell};
+with CartesianMesh2D.*;
 
 // Only for 2D vectors
 def perp: ℝ[2] → ℝ[2], (a) → return [ a[1], -a[0] ];

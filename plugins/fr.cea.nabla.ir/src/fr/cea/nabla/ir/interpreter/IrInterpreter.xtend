@@ -30,6 +30,7 @@ import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.interpreter.NablaValueExtensions.*
+import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 
 class IrInterpreter
 {
@@ -54,7 +55,8 @@ class IrInterpreter
 	def interpreteOptionsDefaultValues(IrRoot ir)
 	{
 		val context = new Context(logger, ir, null)
-		return interpreteOptionsDefaultValues(context)
+		interpreteOptionsDefaultValues(context)
+		return context
 	}
 
 	def interprete(IrRoot ir, String jsonContent, String wsPath)
@@ -70,7 +72,9 @@ class IrInterpreter
 
 		// Create mesh and mesh variables
 		if (!jsonObject.has("mesh")) throw new RuntimeException("Mesh block missing in Json")
-		context.initMesh(gson, jsonObject.get("mesh").toString, context.ir.connectivities)
+		val meshProviderHelper = context.meshProvider
+		meshProviderHelper.createProviderInstance(null)
+		meshProviderHelper.jsonInit(null, jsonObject.get("mesh").toString)
 
 		// Read options in Json
 		for (m : context.ir.modules)
@@ -81,7 +85,7 @@ class IrInterpreter
 			context.addVariableValue(v, createValue(v.type, v.name, v.defaultValue, context))
 
 		// Copy Node Cooords
-		context.addVariableValue(context.ir.initNodeCoordVariable, new NV2Real(context.meshWrapper.nodes))
+		context.addVariableValue(context.ir.initNodeCoordVariable, new NV2Real(context.meshProvider.nodes))
 
 		// Interprete Top level jobs
 		for (j : context.ir.main.calls)
@@ -116,11 +120,10 @@ class IrInterpreter
 		return context
 	}
 
-	private def interpreteOptionsDefaultValues(Context context)
+	private def void interpreteOptionsDefaultValues(Context context)
 	{
 		for (v : context.ir.options)
 			context.addVariableValue(v, createValue(v.type, v.name, v.defaultValue, context))
-		return context
 	}
 
 	private def init(Context context, IrModule m, JsonElement jsonElt, String wsPath)
@@ -152,10 +155,10 @@ class IrInterpreter
 			}
 		}
 
-		for (provider : m.providers.filter[extensionName != "Math"])
+		for (provider : m.providers.filter(DefaultExtensionProvider))
 		{
-			val providerHelper = context.extensionProviderCache.get(provider) as DefaultExtensionProviderHelper
-			providerHelper.createInstance(m)
+			val providerHelper = context.providers.get(provider)
+			providerHelper.createProviderInstance(m)
 			if (jsonOptions !== null && jsonOptions.has(provider.instanceName))
 				providerHelper.jsonInit(m, jsonOptions.get(provider.instanceName).toString)
 		}

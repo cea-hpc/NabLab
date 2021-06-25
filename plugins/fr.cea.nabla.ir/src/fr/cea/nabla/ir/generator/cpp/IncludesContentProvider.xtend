@@ -55,7 +55,6 @@ class IncludesContentProvider
 	protected def getUserIncludes(boolean hasLevelDB, boolean hasPostProcessing)
 	{
 		val userIncludes = new LinkedHashSet<String>
-		userIncludes += "nablalib/mesh/CartesianMesh2DFactory.h"
 		userIncludes += "nablalib/mesh/CartesianMesh2D.h"
 		if (hasPostProcessing) userIncludes += "nablalib/mesh/PvdFileWriter2D.h"
 		userIncludes +=  "nablalib/utils/Utils.h"

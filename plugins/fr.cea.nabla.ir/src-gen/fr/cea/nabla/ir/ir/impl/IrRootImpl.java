@@ -2,12 +2,10 @@
  */
 package fr.cea.nabla.ir.ir.impl;
 
-import fr.cea.nabla.ir.ir.Connectivity;
 import fr.cea.nabla.ir.ir.ExtensionProvider;
 import fr.cea.nabla.ir.ir.IrModule;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.IrRoot;
-import fr.cea.nabla.ir.ir.ItemType;
 import fr.cea.nabla.ir.ir.Job;
 import fr.cea.nabla.ir.ir.JobCaller;
 import fr.cea.nabla.ir.ir.PostProcessing;
@@ -38,13 +36,10 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * </p>
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getName <em>Name</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getItemTypes <em>Item Types</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getConnectivities <em>Connectivities</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getVariables <em>Variables</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getJobs <em>Jobs</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getMain <em>Main</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getModules <em>Modules</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getMeshClassName <em>Mesh Class Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getInitNodeCoordVariable <em>Init Node Coord Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getNodeCoordVariable <em>Node Coord Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getCurrentTimeVariable <em>Current Time Variable</em>}</li>
@@ -76,26 +71,6 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 	 * @ordered
 	 */
 	protected String name = NAME_EDEFAULT;
-
-	/**
-	 * The cached value of the '{@link #getItemTypes() <em>Item Types</em>}' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getItemTypes()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<ItemType> itemTypes;
-
-	/**
-	 * The cached value of the '{@link #getConnectivities() <em>Connectivities</em>}' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getConnectivities()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<Connectivity> connectivities;
 
 	/**
 	 * The cached value of the '{@link #getVariables() <em>Variables</em>}' reference list.
@@ -136,26 +111,6 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 	 * @ordered
 	 */
 	protected EList<IrModule> modules;
-
-	/**
-	 * The default value of the '{@link #getMeshClassName() <em>Mesh Class Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getMeshClassName()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final String MESH_CLASS_NAME_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getMeshClassName() <em>Mesh Class Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getMeshClassName()
-	 * @generated
-	 * @ordered
-	 */
-	protected String meshClassName = MESH_CLASS_NAME_EDEFAULT;
 
 	/**
 	 * The cached value of the '{@link #getInitNodeCoordVariable() <em>Init Node Coord Variable</em>}' reference.
@@ -275,60 +230,11 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 	 * @generated
 	 */
 	@Override
-	public EList<ItemType> getItemTypes() {
-		if (itemTypes == null) {
-			itemTypes = new EObjectContainmentEList.Resolving<ItemType>(ItemType.class, this, IrPackage.IR_ROOT__ITEM_TYPES);
-		}
-		return itemTypes;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EList<Connectivity> getConnectivities() {
-		if (connectivities == null) {
-			connectivities = new EObjectContainmentEList<Connectivity>(Connectivity.class, this, IrPackage.IR_ROOT__CONNECTIVITIES);
-		}
-		return connectivities;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
 	public EList<Variable> getVariables() {
 		if (variables == null) {
 			variables = new EObjectEList<Variable>(Variable.class, this, IrPackage.IR_ROOT__VARIABLES);
 		}
 		return variables;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public String getMeshClassName() {
-		return meshClassName;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public void setMeshClassName(String newMeshClassName) {
-		String oldMeshClassName = meshClassName;
-		meshClassName = newMeshClassName;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IR_ROOT__MESH_CLASS_NAME, oldMeshClassName, meshClassName));
 	}
 
 	/**
@@ -714,10 +620,6 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case IrPackage.IR_ROOT__ITEM_TYPES:
-				return ((InternalEList<?>)getItemTypes()).basicRemove(otherEnd, msgs);
-			case IrPackage.IR_ROOT__CONNECTIVITIES:
-				return ((InternalEList<?>)getConnectivities()).basicRemove(otherEnd, msgs);
 			case IrPackage.IR_ROOT__MAIN:
 				return basicSetMain(null, msgs);
 			case IrPackage.IR_ROOT__MODULES:
@@ -740,10 +642,6 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 		switch (featureID) {
 			case IrPackage.IR_ROOT__NAME:
 				return getName();
-			case IrPackage.IR_ROOT__ITEM_TYPES:
-				return getItemTypes();
-			case IrPackage.IR_ROOT__CONNECTIVITIES:
-				return getConnectivities();
 			case IrPackage.IR_ROOT__VARIABLES:
 				return getVariables();
 			case IrPackage.IR_ROOT__JOBS:
@@ -753,8 +651,6 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 				return basicGetMain();
 			case IrPackage.IR_ROOT__MODULES:
 				return getModules();
-			case IrPackage.IR_ROOT__MESH_CLASS_NAME:
-				return getMeshClassName();
 			case IrPackage.IR_ROOT__INIT_NODE_COORD_VARIABLE:
 				if (resolve) return getInitNodeCoordVariable();
 				return basicGetInitNodeCoordVariable();
@@ -791,14 +687,6 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 			case IrPackage.IR_ROOT__NAME:
 				setName((String)newValue);
 				return;
-			case IrPackage.IR_ROOT__ITEM_TYPES:
-				getItemTypes().clear();
-				getItemTypes().addAll((Collection<? extends ItemType>)newValue);
-				return;
-			case IrPackage.IR_ROOT__CONNECTIVITIES:
-				getConnectivities().clear();
-				getConnectivities().addAll((Collection<? extends Connectivity>)newValue);
-				return;
 			case IrPackage.IR_ROOT__VARIABLES:
 				getVariables().clear();
 				getVariables().addAll((Collection<? extends Variable>)newValue);
@@ -813,9 +701,6 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 			case IrPackage.IR_ROOT__MODULES:
 				getModules().clear();
 				getModules().addAll((Collection<? extends IrModule>)newValue);
-				return;
-			case IrPackage.IR_ROOT__MESH_CLASS_NAME:
-				setMeshClassName((String)newValue);
 				return;
 			case IrPackage.IR_ROOT__INIT_NODE_COORD_VARIABLE:
 				setInitNodeCoordVariable((Variable)newValue);
@@ -854,12 +739,6 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 			case IrPackage.IR_ROOT__NAME:
 				setName(NAME_EDEFAULT);
 				return;
-			case IrPackage.IR_ROOT__ITEM_TYPES:
-				getItemTypes().clear();
-				return;
-			case IrPackage.IR_ROOT__CONNECTIVITIES:
-				getConnectivities().clear();
-				return;
 			case IrPackage.IR_ROOT__VARIABLES:
 				getVariables().clear();
 				return;
@@ -871,9 +750,6 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 				return;
 			case IrPackage.IR_ROOT__MODULES:
 				getModules().clear();
-				return;
-			case IrPackage.IR_ROOT__MESH_CLASS_NAME:
-				setMeshClassName(MESH_CLASS_NAME_EDEFAULT);
 				return;
 			case IrPackage.IR_ROOT__INIT_NODE_COORD_VARIABLE:
 				setInitNodeCoordVariable((Variable)null);
@@ -910,10 +786,6 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 		switch (featureID) {
 			case IrPackage.IR_ROOT__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-			case IrPackage.IR_ROOT__ITEM_TYPES:
-				return itemTypes != null && !itemTypes.isEmpty();
-			case IrPackage.IR_ROOT__CONNECTIVITIES:
-				return connectivities != null && !connectivities.isEmpty();
 			case IrPackage.IR_ROOT__VARIABLES:
 				return variables != null && !variables.isEmpty();
 			case IrPackage.IR_ROOT__JOBS:
@@ -922,8 +794,6 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 				return main != null;
 			case IrPackage.IR_ROOT__MODULES:
 				return modules != null && !modules.isEmpty();
-			case IrPackage.IR_ROOT__MESH_CLASS_NAME:
-				return MESH_CLASS_NAME_EDEFAULT == null ? meshClassName != null : !MESH_CLASS_NAME_EDEFAULT.equals(meshClassName);
 			case IrPackage.IR_ROOT__INIT_NODE_COORD_VARIABLE:
 				return initNodeCoordVariable != null;
 			case IrPackage.IR_ROOT__NODE_COORD_VARIABLE:
@@ -954,8 +824,6 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 		StringBuilder result = new StringBuilder(super.toString());
 		result.append(" (name: ");
 		result.append(name);
-		result.append(", meshClassName: ");
-		result.append(meshClassName);
 		result.append(')');
 		return result.toString();
 	}

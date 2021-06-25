@@ -12,9 +12,10 @@ package fr.cea.nabla.tests
 import com.google.inject.Inject
 import com.google.inject.Provider
 import fr.cea.nabla.NablaModuleExtensions
+import fr.cea.nabla.nabla.ConnectivityVar
+import fr.cea.nabla.nabla.DefaultExtension
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
-import fr.cea.nabla.nabla.NablaExtension
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.NablaRoot
@@ -40,7 +41,7 @@ import org.junit.runner.RunWith
 class DeclarationProviderTest 
 {
 	@Inject Provider<ResourceSet> resourceSetProvider
-	@Inject ParseHelper<NablaRoot> parserHelper
+	@Inject ParseHelper<NablaRoot> parseHelper
 	@Inject extension DeclarationProvider
 	@Inject extension ValidationTestHelper
 	@Inject extension NablaModuleExtensions
@@ -68,11 +69,7 @@ class DeclarationProviderTest
 		module Test;
 
 		with MyLibOfFunctions.*;
-
-		itemtypes { cell, node }
-
-		connectivity cells: → {cell};
-		connectivity nodes: → {node};
+		with CartesianMesh2D.*;
 
 		ℝ[card(cells())] a;
 		ℝ x{cells};
@@ -109,14 +106,16 @@ class DeclarationProviderTest
 		'''
 
 		val rs = resourceSetProvider.get
-		val nablaExt = parserHelper.parse(nablaextModel, rs) as NablaExtension
-		val module = parserHelper.parse(nablaModel, rs) as NablaModule
+		parseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DPath), rs)
+		val nablaExt = parseHelper.parse(nablaextModel, rs) as DefaultExtension
+		val module = parseHelper.parse(nablaModel, rs) as NablaModule
 		Assert.assertNotNull(module)
 		Assert.assertEquals(3, module.validate.filter(i | i.severity == Severity.ERROR).size)
 		module.assertError(NablaPackage.eINSTANCE.functionCall,
 		ExpressionValidator::FUNCTION_CALL_ARGS,
 		ExpressionValidator::getFunctionCallArgsMsg(#[PrimitiveType::REAL.literal, PrimitiveType::BOOL.literal]))
-		val cells = module.getConnectivityByName("cells")
+		val xVar = module.getVariableByName("x") as ConnectivityVar
+		val cells = xVar.supports.head
 		module.assertError(NablaPackage.eINSTANCE.functionCall,
 		ExpressionValidator::FUNCTION_CALL_ARGS,
 		ExpressionValidator::getFunctionCallArgsMsg(#[new NablaConnectivityType(#[cells], new NSTRealArray1D(createIntConstant(2))).label]))
@@ -181,7 +180,7 @@ class DeclarationProviderTest
 		}
 		'''
 
-		val ext = parserHelper.parse(model)
+		val ext = parseHelper.parse(model) as DefaultExtension
 		Assert.assertNotNull(ext)
 		Assert.assertEquals(1, ext.validate.filter(i | i.severity == Severity.ERROR).size)
 		ext.assertError(NablaPackage.eINSTANCE.functionCall, ExpressionValidator::FUNCTION_CALL_ARGS, ExpressionValidator::getFunctionCallArgsMsg(#["ℝ[a]"]))
@@ -207,10 +206,7 @@ class DeclarationProviderTest
 		'''
 		module Test;
 
-		itemtypes { cell, node }
-
-		connectivity cells: → {cell}; 
-		connectivity nodes: → {node};
+		with CartesianMesh2D.*;
 
 		def f, 0.0: ℝ, (a , b) → return a;
 		def f, 0.0: x | ℝ[x], (a , b) → return a;
@@ -225,7 +221,9 @@ class DeclarationProviderTest
 		J2: { let ℝ x = f{j ∈ cells()}(bidon{j}); } // Wrong arguments : ℕ
 		'''
 
-		val module = parserHelper.parse(model) as NablaModule
+		val rs = resourceSetProvider.get
+		parseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DPath), rs)
+		val module = parseHelper.parse(model, rs) as NablaModule
 		Assert.assertNotNull(module)
 		Assert.assertEquals(1, module.validate.filter(i | i.severity == Severity.ERROR).size)
 		module.assertError(NablaPackage.eINSTANCE.reductionCall,

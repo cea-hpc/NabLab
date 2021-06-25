@@ -13,8 +13,13 @@ import com.google.inject.Inject
 import fr.cea.nabla.generator.BackendFactory
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
 import fr.cea.nabla.generator.StandaloneGeneratorBase
+import fr.cea.nabla.generator.ir.IrFunctionFactory
 import fr.cea.nabla.ir.generator.cpp.CppProviderGenerator
 import fr.cea.nabla.ir.generator.java.JavaProviderGenerator
+import fr.cea.nabla.ir.ir.IrFactory
+import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
+import fr.cea.nabla.nabla.DefaultExtension
+import fr.cea.nabla.nablagen.NablagenProvider
 import fr.cea.nabla.nablagen.NablagenProviderList
 import fr.cea.nabla.nablagen.TargetType
 
@@ -23,7 +28,7 @@ import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 class NablagenProviderGenerator extends StandaloneGeneratorBase
 {
 	@Inject BackendFactory backendFactory
-	@Inject extension ProvidersUtils
+	@Inject IrFunctionFactory irFunctionFactory
 
 	def generateProviders(NablagenProviderList providerList, String wsPath)
 	{
@@ -31,13 +36,16 @@ class NablagenProviderGenerator extends StandaloneGeneratorBase
 
 		for (provider : providerList.elements)
 		{
-			val generator = getCodeGenerator(provider.target)
-			val outputFolderName = wsPath + provider.outputPath
-			val fsa = getConfiguredFileSystemAccess(outputFolderName, false)
-			dispatcher.post(MessageType::Exec, "Starting " + provider.target.literal + " code generator: " + provider.outputPath)
-			val installDir = '' // unused to generate JNI functions
-			val irProvider = toIrExtensionProvider(provider, installDir)
-			generate(fsa, generator.getGenerationContents(irProvider), irProvider.dirName)
+			if (provider.extension instanceof DefaultExtension)
+			{
+				val generator = getCodeGenerator(provider.target)
+				val outputFolderName = wsPath + provider.outputPath
+				val fsa = getConfiguredFileSystemAccess(outputFolderName, false)
+				dispatcher.post(MessageType::Exec, "Starting " + provider.target.literal + " code generator: " + provider.outputPath)
+				val installDir = '' // unused to generate JNI functions
+				val irProvider = toIrDefaultExtensionProvider(provider, installDir)
+				generate(fsa, generator.getGenerationContents(irProvider), irProvider.dirName)
+			}
 		}
 
 		val endTime = System.currentTimeMillis
@@ -50,5 +58,26 @@ class NablagenProviderGenerator extends StandaloneGeneratorBase
 			new JavaProviderGenerator
 		else
 			new CppProviderGenerator(backendFactory.getCppBackend(targetType))
+	}
+
+	private def toIrDefaultExtensionProvider(NablagenProvider provider, String installationDir)
+	{
+		IrFactory::eINSTANCE.createDefaultExtensionProvider =>
+		[
+			extensionName = provider.extension.name
+			providerName = provider.name
+			outputPath = provider.outputPath
+			linearAlgebra = (provider.extension as DefaultExtension).linearAlgebra
+			functions += (provider.extension as DefaultExtension).irFunctions
+		]
+	}
+
+	private def getIrFunctions(DefaultExtension it)
+	{
+		functions.filter[external].map[x | 
+			val irFunction = irFunctionFactory.toIrExternFunction(x)
+			irFunction.name = ReplaceUtf8Chars.getNoUtf8(irFunction.name)
+			return irFunction
+		]
 	}
 }

@@ -7,7 +7,8 @@ Bundle-RequiredExecutionEnvironment: JavaSE-11
 Automatic-Module-Name: DepthInit
 Export-Package: depthinit
 Bundle-Vendor: CEA
-Require-Bundle: com.google.gson,
- leveldb;bundle-version="0.13.0",
+Require-Bundle: fr.cea.nabla,
  fr.cea.nabla.javalib,
+ com.google.gson,
+ leveldb;bundle-version="0.13.0",
  BathyLib

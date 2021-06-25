@@ -7,6 +7,7 @@
  * SPDX-License-Identifier: EPL-2.0
 	 * Contributors: see AUTHORS file
  *******************************************************************************/
+#include <rapidjson/document.h>
 #include "nablalib/mesh/CartesianMesh2D.h"
 #include <stdexcept>
 #include <sstream>
@@ -15,74 +16,35 @@
 namespace nablalib::mesh
 {
 
-CartesianMesh2D::CartesianMesh2D(
-  MeshGeometry<2>* geometry, const vector<Id>& inner_nodes_ids,
-  const vector<Id>& top_nodes_ids, const vector<Id>& bottom_nodes_ids,
-  const vector<Id>& left_nodes_ids, const vector<Id>& right_nodes_ids,
-  const Id top_left_node_id, const Id top_right_node_id,
-  const Id bottom_left_node_id, const Id bottom_right_node_id,
-  const vector<Id>& inner_cells_ids_, const vector<Id>& outer_cells_ids_)
-: m_geometry(geometry)
-, m_inner_nodes(inner_nodes_ids)
-, m_top_nodes(top_nodes_ids)
-, m_bottom_nodes(bottom_nodes_ids)
-, m_left_nodes(left_nodes_ids)
-, m_right_nodes(right_nodes_ids)
-, m_top_left_node(top_left_node_id)
-, m_top_right_node(top_right_node_id)
-, m_bottom_left_node(bottom_left_node_id)
-, m_bottom_right_node(bottom_right_node_id)
-, m_top_faces(0)
-, m_bottom_faces(0)
-, m_left_faces(0)
-, m_right_faces(0)
-, m_inner_cells(inner_cells_ids_)
-, m_outer_cells(outer_cells_ids_)
-, m_nb_x_quads(bottom_nodes_ids.size() - 1)
-, m_nb_y_quads(left_nodes_ids.size() - 1)
+void
+CartesianMesh2D::jsonInit(const char* jsonContent)
 {
-  // faces partitionment
-  const auto& edges = m_geometry->getEdges();
-  for (size_t edgeId(0); edgeId < edges.size(); ++edgeId) {
-    m_faces.emplace_back(edgeId);
-    // Top boundary faces
-    if (edgeId >= 2 * m_nb_x_quads * m_nb_y_quads + m_nb_y_quads) m_top_faces.emplace_back(edgeId);
-    // Bottom boundary faces
-    if ((edgeId < 2 * m_nb_x_quads) && (edgeId % 2 == 0)) m_bottom_faces.emplace_back(edgeId);
-    // Left boundary faces
-    if ((edgeId % (2 * m_nb_x_quads + 1) == 1) &&  (edgeId < (2 * m_nb_x_quads + 1) * m_nb_y_quads)) m_left_faces.emplace_back(edgeId);
-    // Right boundary faces
-    if (edgeId % (2 * m_nb_x_quads + 1) == 2 * m_nb_x_quads) m_right_faces.emplace_back(edgeId);
-    // Outer Faces
-    if (!isInnerEdge(edges[edgeId])) {
-      m_outer_faces.emplace_back(edgeId);
-    } else {
-      m_inner_faces.emplace_back(edgeId);
-      if (isVerticalEdge(edges[edgeId])) {
-        m_inner_vertical_faces.emplace_back(edgeId);
-      } else if (isHorizontalEdge(edges[edgeId])) {
-        m_inner_horizontal_faces.emplace_back(edgeId);
-      } else {
-        stringstream msg;
-        msg << "The inner edge " << edgeId << " should be either vertical or horizontal" << endl;
-        throw runtime_error(msg.str());
-      }
-    }
-  }
-  // Construction of boundary cell sets
-  const auto& cells = m_geometry->getQuads();
-  for (size_t cellId(0); cellId < cells.size(); ++cellId) {
-    size_t i,j;
-    tie(i, j) = id2IndexCell(cellId);
-    // Top boundary cells
-    if (i == m_nb_y_quads - 1) m_top_cells.emplace_back(cellId);
-    // Bottom boundary cells
-    if (i == 0) m_bottom_cells.emplace_back(cellId);
-    // Left boundary cells
-    if (j == 0) m_left_cells.emplace_back(cellId);
-    // Right boundary cells
-    if (j == m_nb_x_quads - 1) m_right_cells.emplace_back(cellId);
-  }
+	rapidjson::Document document;
+	assert(!document.Parse(jsonContent).HasParseError());
+	assert(document.IsObject());
+	const rapidjson::Value::Object& o = document.GetObject();
+
+	assert(o.HasMember("nbXQuads"));
+	const rapidjson::Value& valueof_nbXQuads = o["nbXQuads"];
+	assert(valueof_nbXQuads.IsInt());
+	size_t nb_x_quads = valueof_nbXQuads.GetInt();
+
+	assert(o.HasMember("nbYQuads"));
+	const rapidjson::Value& valueof_nbYQuads = o["nbYQuads"];
+	assert(valueof_nbYQuads.IsInt());
+	size_t nb_y_quads = valueof_nbYQuads.GetInt();
+
+	assert(o.HasMember("xSize"));
+	const rapidjson::Value& valueof_xSize = o["xSize"];
+	assert(valueof_xSize.IsDouble());
+	double x_size = valueof_xSize.GetDouble();
+
+	assert(o.HasMember("ySize"));
+	const rapidjson::Value& valueof_ySize = o["ySize"];
+	assert(valueof_ySize.IsDouble());
+	double y_size = valueof_ySize.GetDouble();
+
+	create(nb_x_quads, nb_y_quads, x_size, y_size);
 }
 
 const array<Id, 4>&
@@ -149,22 +111,6 @@ CartesianMesh2D::getCellsOfFace(const Id& faceId) const
 	  cells.emplace_back(index2IdCell(i_f-1, k_f));
 	}
   return cells;
-  /*
-   * Old code just in case there are still flaws in new code...
-   * 
-  std::vector<Id> cellsOfFace;
-	const auto& nodes(getNodesOfFace(faceId));
-	for (auto nodeId : nodes)
-	{
-		auto adjacentCells(getCellsOfNode(nodeId));
-		for(auto quadId : adjacentCells)
-			if (getNbCommonIds(nodes, m_geometry->getQuads()[quadId].getNodeIds()) == 2)
-				cellsOfFace.emplace_back(quadId);
-	}
-	std::sort(cellsOfFace.begin(), cellsOfFace.end());
-	cellsOfFace.erase(std::unique(cellsOfFace.begin(), cellsOfFace.end()), cellsOfFace.end());
-	return cellsOfFace;
-  */
 }
 
 vector<Id>
@@ -495,6 +441,143 @@ CartesianMesh2D::cellsOfNodeCollection(const vector<Id>& nodes)
   std::sort(cells.begin(), cells.end());
   cells.erase(std::unique(cells.begin(), cells.end()), cells.end());
   return cells;
+}
+
+void
+CartesianMesh2D::create(size_t nb_x_quads, size_t nb_y_quads, double x_size, double y_size)
+{
+	m_nb_x_quads = nb_x_quads;
+	m_nb_y_quads = nb_y_quads;
+
+	vector<RealArray1D<2>> nodes_((nb_x_quads + 1) * (nb_y_quads + 1));
+	vector<Quad> quads_(nb_x_quads * nb_y_quads);
+	vector<Edge> edges_(2 * quads_.size() + nb_x_quads + nb_y_quads);
+
+	vector<Id> outer_nodes_(2 * (nb_x_quads + nb_y_quads));
+	m_inner_nodes.resize(nodes_.size() - outer_nodes_.size());
+	m_top_nodes.resize(nb_x_quads + 1);
+	m_bottom_nodes.resize(nb_x_quads + 1);
+	m_left_nodes.resize(nb_y_quads + 1);
+	m_right_nodes.resize(nb_y_quads + 1);
+
+	size_t nb_inner_cells(nb_x_quads>1&&nb_y_quads>1?(nb_x_quads-2)*(nb_y_quads-2):0);  // 0 for mesh with only 1 cell
+	size_t nb_outer_cells(nb_x_quads * nb_y_quads - nb_inner_cells);
+	m_inner_cells.resize(nb_inner_cells);
+	m_outer_cells.resize(nb_outer_cells);
+
+	// node creation
+	Id node_id_(0);
+	Id inner_node_id_(0);
+	Id top_node_id_(0);
+	Id bottom_node_id_(0);
+	Id left_node_id_(0);
+	Id right_node_id_(0);
+
+	for(size_t j(0); j <= nb_y_quads; ++j)
+	{
+		for(size_t i(0); i <= nb_x_quads; ++i)
+		{
+			nodes_[node_id_] = RealArray1D<2>{{x_size * i, y_size * j}};
+			if (i!=0 && j!=0 && i!=nb_x_quads && j!=nb_y_quads)
+				m_inner_nodes[inner_node_id_++] = node_id_;
+			else
+			{
+				if (j==0) m_bottom_nodes[bottom_node_id_++] = node_id_;
+				if (j==nb_y_quads) m_top_nodes[top_node_id_++] = node_id_;
+				if (i==0) m_left_nodes[left_node_id_++] = node_id_;
+				if (i==nb_x_quads) m_right_nodes[right_node_id_++] = node_id_;
+				if (i==0 && j==0) m_bottom_left_node = node_id_;
+				if (i==nb_x_quads && j==0) m_bottom_right_node = node_id_;
+				if (i==0 && j==nb_y_quads) m_top_left_node = node_id_;
+				if (i==nb_x_quads && j==nb_y_quads) m_top_right_node = node_id_;
+			}
+			++node_id_;
+		}
+	}
+
+	// edge creation
+	const size_t nb_x_nodes_(nb_x_quads + 1);
+	Id edge_id_(0);
+	for(size_t i(0); i < nodes_.size(); ++i)
+	{
+		const size_t right_node_index_(i + 1);
+		if (right_node_index_ % nb_x_nodes_ != 0)
+			edges_[edge_id_++] = move(Edge(static_cast<Id>(i), right_node_index_));
+		const size_t above_node_index_(i + nb_x_nodes_);
+		if (above_node_index_ < nodes_.size())
+			edges_[edge_id_++] = Edge(static_cast<Id>(i), above_node_index_);
+	}
+
+	// quad creation
+	Id quad_id_(0);
+	Id inner_id_(0);
+	Id outer_id_(0);
+	for(size_t j(0); j < nb_y_quads; ++j)
+	{
+		for(size_t i(0); i < nb_x_quads; ++i)
+		{
+			if( (i != 0) && (i != nb_x_quads - 1) && (j != 0) && (j!= nb_y_quads - 1) )
+			{
+				m_inner_cells[inner_id_++] = quad_id_;
+			}
+			else
+			{
+				m_outer_cells[outer_id_++] = quad_id_;
+			}
+			const size_t upper_left_node_index_((j * static_cast<size_t>(nb_x_nodes_)) + i);
+			const size_t lower_left_node_index_(upper_left_node_index_ + static_cast<size_t>(nb_x_nodes_));
+			quads_[quad_id_++] = move(Quad(upper_left_node_index_, upper_left_node_index_ + 1,
+                                     lower_left_node_index_ + 1, lower_left_node_index_));
+		}
+	}
+
+	m_geometry = new MeshGeometry<2>(nodes_, edges_, quads_);
+
+	// faces partitionment
+	for (size_t edgeId(0); edgeId < edges_.size(); ++edgeId)
+	{
+		m_faces.emplace_back(edgeId);
+		// Top boundary faces
+		if (edgeId >= 2 * m_nb_x_quads * m_nb_y_quads + m_nb_y_quads) m_top_faces.emplace_back(edgeId);
+		// Bottom boundary faces
+		if ((edgeId < 2 * m_nb_x_quads) && (edgeId % 2 == 0)) m_bottom_faces.emplace_back(edgeId);
+		// Left boundary faces
+		if ((edgeId % (2 * m_nb_x_quads + 1) == 1) &&  (edgeId < (2 * m_nb_x_quads + 1) * m_nb_y_quads)) m_left_faces.emplace_back(edgeId);
+		// Right boundary faces
+		if (edgeId % (2 * m_nb_x_quads + 1) == 2 * m_nb_x_quads) m_right_faces.emplace_back(edgeId);
+		// Outer Faces
+		if (!isInnerEdge(edges_[edgeId]))
+			m_outer_faces.emplace_back(edgeId);
+		else
+			m_inner_faces.emplace_back(edgeId);
+
+		if (isVerticalEdge(edges_[edgeId]))
+			m_inner_vertical_faces.emplace_back(edgeId);
+		else if (isHorizontalEdge(edges_[edgeId]))
+			m_inner_horizontal_faces.emplace_back(edgeId);
+		else
+		{
+			stringstream msg;
+			msg << "The inner edge " << edgeId << " should be either vertical or horizontal" << endl;
+			throw runtime_error(msg.str());
+		}
+	}
+
+	// Construction of boundary cell sets
+	const auto& cells = m_geometry->getQuads();
+	for (size_t cellId(0); cellId < cells.size(); ++cellId)
+	{
+		size_t i,j;
+		tie(i, j) = id2IndexCell(cellId);
+		// Top boundary cells
+		if (i == m_nb_y_quads - 1) m_top_cells.emplace_back(cellId);
+		// Bottom boundary cells
+		if (i == 0) m_bottom_cells.emplace_back(cellId);
+		// Left boundary cells
+		if (j == 0) m_left_cells.emplace_back(cellId);
+		// Right boundary cells
+		if (j == m_nb_x_quads - 1) m_right_cells.emplace_back(cellId);
+	}
 }
 
 }

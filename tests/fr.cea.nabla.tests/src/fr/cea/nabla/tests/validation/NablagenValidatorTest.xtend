@@ -17,6 +17,7 @@ import fr.cea.nabla.nabla.NablaRoot
 import fr.cea.nabla.nablagen.NablagenPackage
 import fr.cea.nabla.nablagen.NablagenRoot
 import fr.cea.nabla.tests.NablagenInjectorProvider
+import fr.cea.nabla.tests.TestUtils
 import fr.cea.nabla.validation.NablagenValidator
 import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.resource.ResourceSet
@@ -34,15 +35,13 @@ class NablagenValidatorTest
 {
 	@Inject Provider<ResourceSet> resourceSetProvider
 	@Inject ValidationTestHelper vth
+	@Inject extension TestUtils
 
 	val nablaHydroModel =
 	'''
 	module Hydro;
 
-	itemtypes { node, cell }
-
-	connectivity nodes: → {node};
-	connectivity cells: → {cell};
+	with CartesianMesh2D.*;
 
 	// Simulation options
 	option ℝ maxTime = 0.1;
@@ -64,10 +63,7 @@ class NablagenValidatorTest
 	'''
 	module Remap;
 
-	itemtypes { node, cell }
-
-	connectivity nodes: → {node};
-	connectivity cells: → {cell};
+	with CartesianMesh2D.*;
 
 	ℝ[2] X{nodes};
 	ℝ rv1{cells}, rv2{cells}, rv3{cells};
@@ -82,7 +78,6 @@ class NablagenValidatorTest
 
 	MainModule Hydro h
 	{
-		meshClassName = "CartesianMesh2D";
 		nodeCoord = X;
 		time = t;
 		timeStep = δt;
@@ -109,13 +104,13 @@ class NablagenValidatorTest
 	}
 	'''
 
-	val nablaSetup = new NablaStandaloneSetup
-	val nablaInjector = nablaSetup.createInjectorAndDoEMFRegistration
-	val ParseHelper<NablaRoot> nablaParseHelper = nablaInjector.getInstance(ParseHelper)
+	val nSetup = new NablaStandaloneSetup
+	val nInjector = nSetup.createInjectorAndDoEMFRegistration
+	val ParseHelper<NablaRoot> nParseHelper = nInjector.getInstance(ParseHelper)
 
-	val nablagenSetup = new NablagenStandaloneSetup
-	val nablagenInjector = nablagenSetup.createInjectorAndDoEMFRegistration
-	val ParseHelper<NablagenRoot> nablagenParseHelper = nablagenInjector.getInstance(ParseHelper)
+	val ngenSetup = new NablagenStandaloneSetup
+	val ngenInjector = ngenSetup.createInjectorAndDoEMFRegistration
+	val ParseHelper<NablagenRoot> ngenParseHelper = ngenInjector.getInstance(ParseHelper)
 
 	@Test
 	def void testCheckName()
@@ -185,19 +180,6 @@ class NablagenValidatorTest
 	}
 
 	@Test
-	def void testCheckConnectivityConsistency()
-	{
-		val koHydroModel = nablaHydroModel.replace("→ {cell}", "→ {node}")
-		val koNgen = readModelsAndGetNgen(koHydroModel, nablaRemapModel, ngenModel)
-		vth.assertError(koNgen,
-			NablagenPackage.eINSTANCE.nablagenModule,
-			NablagenValidator::CONNECTIVITY_CONSISTENCY,
-			NablagenValidator::getConnectivityConsistencyMsg("Remap::cells", "Hydro::cells"))
-		val okNgen = readModelsAndGetNgen(nablaHydroModel, nablaRemapModel, ngenModel)
-		vth.assertNoErrors(okNgen)
-	}
-
-	@Test
 	def void testCheckNoTimeIteratorDefinition()
 	{
 		val koRemapModel = nablaRemapModel.replace("Rj1: ", "iterate n while (true);\nRj1: ")
@@ -236,9 +218,7 @@ class NablagenValidatorTest
 			module DepthInit;
 
 			with BatiLib.*;
-			itemtypes { cell, node }
-			connectivity cells: → {cell};
-			connectivity nodes: → {node};
+			with CartesianMesh2D.*;
 
 			let ℝ t = 0.0;
 			option ℝ maxTime = 0.1;
@@ -255,7 +235,6 @@ class NablagenValidatorTest
 
 			MainModule DepthInit depthInit
 			{
-				meshClassName = "CartesianMesh2D";
 				nodeCoord = X;
 				time = t;
 				timeStep = δt;
@@ -270,11 +249,11 @@ class NablagenValidatorTest
 		'''
 
 		val rs = resourceSetProvider.get
-		val batiLib = nablaParseHelper.parse(batiLibModel, rs)
+		val batiLib = nParseHelper.parse(batiLibModel, rs)
 		Assert.assertNotNull(batiLib)
-		val depthInit = nablaParseHelper.parse(depthInitModel, rs)
+		val depthInit = nParseHelper.parse(depthInitModel, rs)
 		Assert.assertNotNull(depthInit)
-		val appNgen = nablagenParseHelper.parse(appNgenModel, rs)
+		val appNgen = ngenParseHelper.parse(appNgenModel, rs)
 		Assert.assertNotNull(appNgen)
 
 		// Warning: no provider for BatiLib
@@ -290,7 +269,7 @@ class NablagenValidatorTest
 				outputPath = "/BatiLib/src-java";
 			}
 		'''
-		val providerNgen = nablagenParseHelper.parse(providerNgenModel, rs)
+		val providerNgen = ngenParseHelper.parse(providerNgenModel, rs)
 		Assert.assertNotNull(providerNgen)
 
 		vth.assertNoIssues(appNgen)
@@ -307,11 +286,12 @@ class NablagenValidatorTest
 	private def NablagenRoot readModelsAndGetNgen(String nablaHydroModel, String nablaRemapModel, String ngenModel)
 	{
 		val rs = resourceSetProvider.get
-		val nablaHydro = nablaParseHelper.parse(nablaHydroModel, rs)
+		nParseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DPath), rs)
+		val nablaHydro = nParseHelper.parse(nablaHydroModel, rs)
 		Assert.assertNotNull(nablaHydro)
-		val nablaRemap = nablaParseHelper.parse(nablaRemapModel, rs)
+		val nablaRemap = nParseHelper.parse(nablaRemapModel, rs)
 		Assert.assertNotNull(nablaRemap)
-		val ngen = nablagenParseHelper.parse(ngenModel, rs)
+		val ngen = ngenParseHelper.parse(ngenModel, rs)
 		Assert.assertNotNull(ngen)
 		return ngen
 	}

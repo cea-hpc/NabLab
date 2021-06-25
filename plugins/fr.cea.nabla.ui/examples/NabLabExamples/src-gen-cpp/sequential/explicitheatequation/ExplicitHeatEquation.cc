@@ -106,15 +106,15 @@ ExplicitHeatEquation::Options::jsonInit(const char* jsonContent)
 
 /******************** Module definition ********************/
 
-ExplicitHeatEquation::ExplicitHeatEquation(CartesianMesh2D* aMesh, Options& aOptions)
+ExplicitHeatEquation::ExplicitHeatEquation(CartesianMesh2D& aMesh, Options& aOptions)
 : mesh(aMesh)
-, nbNodes(mesh->getNbNodes())
-, nbCells(mesh->getNbCells())
-, nbFaces(mesh->getNbFaces())
-, maxNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
+, nbNodes(mesh.getNbNodes())
+, nbCells(mesh.getNbCells())
+, nbFaces(mesh.getNbFaces())
+, maxNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
 , maxNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
 , maxCellsOfFace(CartesianMesh2D::MaxNbCellsOfFace)
-, maxNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
+, maxNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
 , options(aOptions)
 , writer("ExplicitHeatEquation", options.outputPath)
 , lastDump(numeric_limits<int>::min())
@@ -130,7 +130,7 @@ ExplicitHeatEquation::ExplicitHeatEquation(CartesianMesh2D* aMesh, Options& aOpt
 , alpha(nbCells, std::vector<double>(nbCells))
 {
 	// Copy node coordinates
-	const auto& gNodes = mesh->getGeometry()->getNodes();
+	const auto& gNodes = mesh.getGeometry()->getNodes();
 	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
 	{
 		X[rNodes][0] = gNodes[rNodes][0];
@@ -154,7 +154,7 @@ void ExplicitHeatEquation::computeFaceLength() noexcept
 		const Id fId(fFaces);
 		double reduction0(0.0);
 		{
-			const auto nodesOfFaceF(mesh->getNodesOfFace(fId));
+			const auto nodesOfFaceF(mesh.getNodesOfFace(fId));
 			const size_t nbNodesOfFaceF(nodesOfFaceF.size());
 			for (size_t pNodesOfFaceF=0; pNodesOfFaceF<nbNodesOfFaceF; pNodesOfFaceF++)
 			{
@@ -191,7 +191,7 @@ void ExplicitHeatEquation::computeV() noexcept
 		const Id cId(cCells);
 		double reduction0(0.0);
 		{
-			const auto nodesOfCellC(mesh->getNodesOfCell(cId));
+			const auto nodesOfCellC(mesh.getNodesOfCell(cId));
 			const size_t nbNodesOfCellC(nodesOfCellC.size());
 			for (size_t pNodesOfCellC=0; pNodesOfCellC<nbNodesOfCellC; pNodesOfCellC++)
 			{
@@ -241,7 +241,7 @@ void ExplicitHeatEquation::initXc() noexcept
 		const Id cId(cCells);
 		RealArray1D<2> reduction0({0.0, 0.0});
 		{
-			const auto nodesOfCellC(mesh->getNodesOfCell(cId));
+			const auto nodesOfCellC(mesh.getNodesOfCell(cId));
 			const size_t nbNodesOfCellC(nodesOfCellC.size());
 			for (size_t pNodesOfCellC=0; pNodesOfCellC<nbNodesOfCellC; pNodesOfCellC++)
 			{
@@ -266,7 +266,7 @@ void ExplicitHeatEquation::updateU() noexcept
 		const Id cId(cCells);
 		double reduction0(0.0);
 		{
-			const auto neighbourCellsC(mesh->getNeighbourCells(cId));
+			const auto neighbourCellsC(mesh.getNeighbourCells(cId));
 			const size_t nbNeighbourCellsC(neighbourCellsC.size());
 			for (size_t dNeighbourCellsC=0; dNeighbourCellsC<nbNeighbourCellsC; dNeighbourCellsC++)
 			{
@@ -306,7 +306,7 @@ void ExplicitHeatEquation::computeFaceConductivity() noexcept
 		const Id fId(fFaces);
 		double reduction0(1.0);
 		{
-			const auto cellsOfFaceF(mesh->getCellsOfFace(fId));
+			const auto cellsOfFaceF(mesh.getCellsOfFace(fId));
 			const size_t nbCellsOfFaceF(cellsOfFaceF.size());
 			for (size_t c1CellsOfFaceF=0; c1CellsOfFaceF<nbCellsOfFaceF; c1CellsOfFaceF++)
 			{
@@ -317,7 +317,7 @@ void ExplicitHeatEquation::computeFaceConductivity() noexcept
 		}
 		double reduction1(0.0);
 		{
-			const auto cellsOfFaceF(mesh->getCellsOfFace(fId));
+			const auto cellsOfFaceF(mesh.getCellsOfFace(fId));
 			const size_t nbCellsOfFaceF(cellsOfFaceF.size());
 			for (size_t c2CellsOfFaceF=0; c2CellsOfFaceF<nbCellsOfFaceF; c2CellsOfFaceF++)
 			{
@@ -368,13 +368,13 @@ void ExplicitHeatEquation::computeAlphaCoeff() noexcept
 		const Id cId(cCells);
 		double alphaDiag(0.0);
 		{
-			const auto neighbourCellsC(mesh->getNeighbourCells(cId));
+			const auto neighbourCellsC(mesh.getNeighbourCells(cId));
 			const size_t nbNeighbourCellsC(neighbourCellsC.size());
 			for (size_t dNeighbourCellsC=0; dNeighbourCellsC<nbNeighbourCellsC; dNeighbourCellsC++)
 			{
 				const Id dId(neighbourCellsC[dNeighbourCellsC]);
 				const size_t dCells(dId);
-				const Id fId(mesh->getCommonFace(cId, dId));
+				const Id fId(mesh.getCommonFace(cId, dId));
 				const size_t fFaces(fId);
 				const double alphaExtraDiag(deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / explicitheatequationfreefuncs::norm(Xc[cCells] - Xc[dCells]));
 				alpha[cCells][dCells] = alphaExtraDiag;
@@ -450,7 +450,7 @@ void ExplicitHeatEquation::dumpVariables(int iteration, bool useTimer)
 			cpuTimer.stop();
 			ioTimer.start();
 		}
-		auto quads = mesh->getGeometry()->getQuads();
+		auto quads = mesh.getGeometry()->getQuads();
 		writer.startVtpFile(iteration, t_n, nbNodes, X.data(), nbCells, quads.data());
 		writer.openNodeData();
 		writer.closeNodeData();
@@ -521,15 +521,12 @@ int main(int argc, char* argv[])
 	assert(d.IsObject());
 	
 	// Mesh instanciation
-	CartesianMesh2DFactory meshFactory;
-	if (d.HasMember("mesh"))
-	{
-		rapidjson::StringBuffer strbuf;
-		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
-		d["mesh"].Accept(writer);
-		meshFactory.jsonInit(strbuf.GetString());
-	}
-	CartesianMesh2D* mesh = meshFactory.create();
+	CartesianMesh2D mesh;
+	assert(d.HasMember("mesh"));
+	rapidjson::StringBuffer strbuf;
+	rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
+	d["mesh"].Accept(writer);
+	mesh.jsonInit(strbuf.GetString());
 	
 	// Module instanciation(s)
 	ExplicitHeatEquation::Options explicitHeatEquationOptions;
@@ -547,6 +544,5 @@ int main(int argc, char* argv[])
 	explicitHeatEquation->simulate();
 	
 	delete explicitHeatEquation;
-	delete mesh;
 	return ret;
 }

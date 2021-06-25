@@ -237,9 +237,7 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 	'''
 		module «moduleName»;
 
-		itemtypes { node }
-
-		connectivity nodes: → { node };
+		with CartesianMesh2D.*;
 
 		option ℕ maxIter = 200;
 		option ℝ maxTime = 1.0;

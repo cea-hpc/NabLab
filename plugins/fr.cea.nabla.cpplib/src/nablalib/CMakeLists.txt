@@ -12,7 +12,7 @@
 
 # LIBRARY nablalib
 add_library(nablalib 
-    nablalib/mesh/CartesianMesh2D.cc nablalib/mesh/CartesianMesh2DFactory.cc nablalib/mesh/PvdFileWriter2D.cc
+    nablalib/mesh/CartesianMesh2D.cc nablalib/mesh/PvdFileWriter2D.cc
     nablalib/types/MultiArray.cc
     nablalib/utils/Timer.cc nablalib/utils/Utils.cc)
 set_property(TARGET nablalib PROPERTY POSITION_INDEPENDENT_CODE ON)

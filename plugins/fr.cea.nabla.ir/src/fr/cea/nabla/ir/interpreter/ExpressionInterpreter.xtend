@@ -220,8 +220,8 @@ class ExpressionInterpreter
 		{
 			ExternFunction:
 			{
-				val provider = context.extensionProviderCache.get(f.provider)
-				return provider.invokeMethod(IrUtils.getContainerOfType(it, IrModule), f, argValues)
+				val provider = context.providers.get(f.provider)
+				return provider.call(IrUtils.getContainerOfType(it, IrModule), f, argValues)
 			}
 			InternFunction:
 			{

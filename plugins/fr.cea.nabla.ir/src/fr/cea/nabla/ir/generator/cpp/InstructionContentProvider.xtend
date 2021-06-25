@@ -188,7 +188,7 @@ abstract class InstructionContentProvider
 
 	private def getSetDefinitionContent(String setName, ConnectivityCall call)
 	'''
-		const auto «setName»(mesh->«call.accessor»);
+		const auto «setName»(mesh.«call.accessor»);
 	'''
 }
 

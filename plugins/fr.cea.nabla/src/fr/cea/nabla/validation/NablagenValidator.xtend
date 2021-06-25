@@ -11,10 +11,8 @@ package fr.cea.nabla.validation
 
 import com.google.inject.Inject
 import fr.cea.nabla.generator.NablagenExtensionHelper
-import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.NablaExtension
-import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaRoot
 import fr.cea.nabla.nablagen.AdditionalModule
 import fr.cea.nabla.nablagen.NablagenApplication
@@ -44,7 +42,6 @@ class NablagenValidator extends AbstractNablagenValidator
 	public static val NGEN_MODULE_NAME = "NablagenValidator::ModuleName"
 	public static val UNIQUE_INTERPRETER = "NablagenValidator::UniqueInterpreter"
 	public static val CPP_MANDATORY_VARIABLES = "NablagenValidator::CppMandatoryVariables"
-	public static val CONNECTIVITY_CONSISTENCY = "NablagenValidator::ConnectivityConsistency"
 	public static val NO_TIME_ITERATOR_DEFINITION = "NablagenValidator::NoTimeIteratorDefinition"
 	public static val VAR_LINK_MAIN_VAR_TYPE = "NablagenValidator::VarLinkMainVarType"
 	public static val PROVIDER_FOR_EACH_EXTENSION = "NablagenValidator::ProviderForEachExtension"
@@ -53,7 +50,6 @@ class NablagenValidator extends AbstractNablagenValidator
 	static def getNgenModuleNameMsg() { "Nabla module instance name must start with a lower case" }
 	static def getUniqueInterpreterMsg() { "Only one interpreter target allowed" }
 	static def getCppMandatoryVariablesMsg() { "'iterationMax' and 'timeMax' simulation variables must be defined (after timeStep) when using C++ code generator" }
-	static def getConnectivityConsistencyMsg(String a, String b) { "Connectivities with same name must be identical: " + a + " \u2260 " + b}
 	static def getNoTimeIteratorDefinitionMsg() { "Iterate keyword not allowed in additional module" }
 	static def getVarLinkMainVarTypeMsg(String v1Type, String v2Type) { "Variables must have the same type: " + v1Type + " \u2260 " + v2Type }
 	static def getProviderForEachExtensionMsg(String extensionName) { "No provider found for extension: " + extensionName }
@@ -98,26 +94,6 @@ class NablagenValidator extends AbstractNablagenValidator
 	}
 
 	@Check(CheckType.FAST)
-	def void checkConnectivityConsistency(AdditionalModule it)
-	{
-		// Look for all referenced NablaModule 
-		val ngenApp = eContainer as NablagenApplication
-		val otherNablaModules = new HashSet<NablaModule>
-		if (ngenApp.mainModule.type !== null && ngenApp.mainModule.type !== type)
-			otherNablaModules += ngenApp.mainModule.type
-		for (am : ngenApp.additionalModules)
-			if (am !== it && am.type !== null && am.type !== type)
-				otherNablaModules += am.type
-
-		// Check that connectivities with same names are identical
-		for (a : type.connectivities)
-			for (nablaModule : otherNablaModules)
-				for (b : nablaModule.connectivities)
-					if (!areConsistent(a, b))
-						error(getConnectivityConsistencyMsg(a.msgId, b.msgId), NablagenPackage.Literals::NABLAGEN_MODULE__NAME, CONNECTIVITY_CONSISTENCY)
-	}
-
-	@Check(CheckType.FAST)
 	def void checkNoTimeIteratorDefinition(AdditionalModule it)
 	{
 		if (type.iteration !== null)
@@ -156,28 +132,6 @@ class NablagenValidator extends AbstractNablagenValidator
 				val structuralFeature = (interpreter ? NablagenPackage.Literals::TARGET__INTERPRETER : NablagenPackage.Literals::TARGET__TYPE)
 				warning(getProviderForEachExtensionMsg(neededExtensionName), structuralFeature, PROVIDER_FOR_EACH_EXTENSION)
 			}
-	}
-
-	/**
-	 * Return true if a and b have different names or are identical
-	 * false otherwise.
-	 */
-	private def areConsistent(Connectivity a, Connectivity b)
-	{
-		if (a.name != b.name) return true
-
-		// a and b have the same name => they must be identical
-		if (a.multiple != b.multiple) return false
-		if (a.returnType.name != b.returnType.name) return false
-		if (a.inTypes.size != b.inTypes.size) return false
-		for (i : 0..<a.inTypes.size)
-			if (a.inTypes.get(i).name != b.inTypes.get(i).name) return false
-		return true
-	}
-
-	private def getMsgId(Connectivity it)
-	{
-		(eContainer as NablaModule).name + "::" + name
 	}
 
 	private def getExtensionNames(NablaRoot it)

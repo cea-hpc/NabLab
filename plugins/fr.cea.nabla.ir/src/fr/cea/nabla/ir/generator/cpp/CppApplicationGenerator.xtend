@@ -9,8 +9,8 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.cpp
 
-import fr.cea.nabla.ir.UnzipHelper
 import fr.cea.nabla.ir.IrUtils
+import fr.cea.nabla.ir.UnzipHelper
 import fr.cea.nabla.ir.generator.ApplicationGenerator
 import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.ir.BaseType
@@ -20,6 +20,7 @@ import fr.cea.nabla.ir.ir.InternFunction
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.LinearAlgebraType
+import fr.cea.nabla.ir.ir.MeshExtensionProvider
 import fr.cea.nabla.ir.ir.Variable
 import java.util.ArrayList
 import java.util.LinkedHashSet
@@ -68,7 +69,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	#define «name.HDefineName»
 
 	«backend.includesContentProvider.getIncludes(!levelDBPath.nullOrEmpty, (irRoot.postProcessing !== null))»
-	«FOR provider : extensionProviders»
+	«FOR provider : defaultExtensionProviders»
 	#include "«provider.className».h"
 	«ENDFOR»
 	«IF !main»
@@ -110,7 +111,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 			«FOR v : options»
 			«typeContentProvider.getCppType(v.type)» «v.name»;
 			«ENDFOR»
-			«FOR v : extensionProviders»
+			«FOR v : defaultExtensionProviders»
 			«v.className» «v.instanceName»;
 			«ENDFOR»
 			«IF levelDB»std::string «IrUtils.NonRegressionNameAndValue.key»;«ENDIF»
@@ -118,7 +119,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 			void jsonInit(const char* jsonContent);
 		};
 
-		«className»(«meshClassName»* aMesh, Options& aOptions);
+		«className»(«meshClassName»& aMesh, Options& aOptions);
 		~«className»();
 		«IF main»
 			«IF irRoot.modules.size > 1»
@@ -157,8 +158,10 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 
 		«ENDIF»
 		// Mesh and mesh variables
-		«meshClassName»* mesh;
-		«FOR c : irRoot.connectivities.filter[multiple] BEFORE 'size_t ' SEPARATOR ', '»«c.nbElemsVar»«ENDFOR»;
+		«meshClassName»& mesh;
+		«FOR meshProvider : irRoot.providers.filter(MeshExtensionProvider)»
+			«FOR c : meshProvider.connectivities.filter[multiple] BEFORE 'size_t ' SEPARATOR ', ' AFTER ';'»«c.nbElemsVar»«ENDFOR»
+		«ENDFOR»
 
 		// User options
 		Options& options;
@@ -240,7 +243,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		«FOR v : options»
 		«jsonContentProvider.getJsonContent(v.name, v.type as BaseType, v.defaultValue)»
 		«ENDFOR»
-		«FOR v : extensionProviders»
+		«FOR v : defaultExtensionProviders»
 		«val vName = v.instanceName»
 		// «vName»
 		if (o.HasMember("«vName»"))
@@ -263,10 +266,12 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 
 	/******************** Module definition ********************/
 
-	«className»::«className»(«meshClassName»* aMesh, Options& aOptions)
+	«className»::«className»(«meshClassName»& aMesh, Options& aOptions)
 	: mesh(aMesh)
-	«FOR c : irRoot.connectivities.filter[multiple]»
-	, «c.nbElemsVar»(«c.connectivityAccessor»)
+	«FOR meshProvider : irRoot.providers.filter(MeshExtensionProvider)»
+		«FOR c : meshProvider.connectivities.filter[multiple]»
+			, «c.nbElemsVar»(«c.connectivityAccessor»)
+		«ENDFOR»
 	«ENDFOR»
 	, options(aOptions)
 	«IF postProcessing !== null», writer("«irRoot.name»", options.«IrUtils.OutputPathNameAndValue.key»)«ENDIF»
@@ -287,7 +292,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		«ENDIF»
 		«IF main»
 		// Copy node coordinates
-		const auto& gNodes = mesh->getGeometry()->getNodes();
+		const auto& gNodes = mesh.getGeometry()->getNodes();
 		«val iterator = backend.typeContentProvider.formatIterators(irRoot.initNodeCoordVariable.type as ConnectivityType, #["rNodes"])»
 		for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
 		{
@@ -341,7 +346,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 				cpuTimer.stop();
 				ioTimer.start();
 			}
-			auto quads = mesh->getGeometry()->getQuads();
+			auto quads = mesh.getGeometry()->getQuads();
 			writer.startVtpFile(iteration, «irRoot.currentTimeVariable.name», nbNodes, «irRoot.nodeCoordVariable.name».data(), nbCells, quads.data());
 			«val outputVarsByConnectivities = irRoot.postProcessing.outputVariables.groupBy(x | x.support.name)»
 			writer.openNodeData();
@@ -488,7 +493,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	private def getConnectivityAccessor(Connectivity c)
 	{
 		if (c.inTypes.empty)
-			'''mesh->getNb«c.name.toFirstUpper»()'''
+			'''mesh.getNb«c.name.toFirstUpper»()'''
 		else
 			'''CartesianMesh2D::MaxNb«c.name.toFirstUpper»'''
 	}

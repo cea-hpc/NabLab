@@ -48,11 +48,10 @@ Affectations::Options::jsonInit(const char* jsonContent)
 
 /******************** Module definition ********************/
 
-Affectations::Affectations(CartesianMesh2D* aMesh, Options& aOptions)
+Affectations::Affectations(CartesianMesh2D& aMesh, Options& aOptions)
 : mesh(aMesh)
-, nbNodes(mesh->getNbNodes())
-, nbCells(mesh->getNbCells())
-, nbNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
+, nbNodes(mesh.getNbNodes())
+, nbCells(mesh.getNbCells())
 , options(aOptions)
 , X(nbNodes)
 , e1(nbCells)
@@ -66,7 +65,7 @@ Affectations::Affectations(CartesianMesh2D* aMesh, Options& aOptions)
 , e_n0(nbCells)
 {
 	// Copy node coordinates
-	const auto& gNodes = mesh->getGeometry()->getNodes();
+	const auto& gNodes = mesh.getGeometry()->getNodes();
 	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
 	{
 		X[rNodes][0] = gNodes[rNodes][0];
@@ -216,28 +215,25 @@ void Affectations::executeTimeLoopN() noexcept
 		// Evaluate loop condition with variables at time n
 		continueLoop = (n + 1 < options.maxIter && t_nplus1 < options.maxTime);
 	
-		if (continueLoop)
+		t_n = t_nplus1;
+		for (size_t i1=0; i1<2; i1++)
 		{
-			t_n = t_nplus1;
+			u_n[i1] = u_nplus1[i1];
+		}
+		parallel_exec(nbCells, [&](const size_t& i1Cells)
+		{
 			for (size_t i1=0; i1<2; i1++)
 			{
-				u_n[i1] = u_nplus1[i1];
+				e2_n[i1Cells][i1] = e2_nplus1[i1Cells][i1];
 			}
-			parallel_exec(nbCells, [&](const size_t& i1Cells)
+		});
+		parallel_exec(nbCells, [&](const size_t& i1Cells)
+		{
+			for (size_t i1=0; i1<2; i1++)
 			{
-				for (size_t i1=0; i1<2; i1++)
-				{
-					e2_n[i1Cells][i1] = e2_nplus1[i1Cells][i1];
-				}
-			});
-			parallel_exec(nbCells, [&](const size_t& i1Cells)
-			{
-				for (size_t i1=0; i1<2; i1++)
-				{
-					e_n[i1Cells][i1] = e_nplus1[i1Cells][i1];
-				}
-			});
-		}
+				e_n[i1Cells][i1] = e_nplus1[i1Cells][i1];
+			}
+		});
 	
 		cpuTimer.stop();
 		globalTimer.stop();
@@ -285,25 +281,19 @@ void Affectations::executeTimeLoopK() noexcept
 	do
 	{
 		k++;
-	
 		computeE2(); // @1.0
 		
 	
 		// Evaluate loop condition with variables at time n
 		continueLoop = (k + 1 < 10);
 	
-		if (continueLoop)
+		parallel_exec(nbCells, [&](const size_t& i1Cells)
 		{
-			parallel_exec(nbCells, [&](const size_t& i1Cells)
+			for (size_t i1=0; i1<2; i1++)
 			{
-				for (size_t i1=0; i1<2; i1++)
-				{
-					e2_nplus1_k[i1Cells][i1] = e2_nplus1_kplus1[i1Cells][i1];
-				}
-			});
-		}
-	
-	
+				e2_nplus1_k[i1Cells][i1] = e2_nplus1_kplus1[i1Cells][i1];
+			}
+		});
 	} while (continueLoop);
 }
 
@@ -349,6 +339,7 @@ void Affectations::simulate()
 	setUpTimeLoopN(); // @2.0
 	executeTimeLoopN(); // @3.0
 	
+	std::cout << "\nFinal time = " << t_n << endl;
 	std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << globalTimer.print() << __RESET__ << std::endl;
 }
 
@@ -376,15 +367,12 @@ int main(int argc, char* argv[])
 	assert(d.IsObject());
 	
 	// Mesh instanciation
-	CartesianMesh2DFactory meshFactory;
-	if (d.HasMember("mesh"))
-	{
-		rapidjson::StringBuffer strbuf;
-		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
-		d["mesh"].Accept(writer);
-		meshFactory.jsonInit(strbuf.GetString());
-	}
-	CartesianMesh2D* mesh = meshFactory.create();
+	CartesianMesh2D mesh;
+	assert(d.HasMember("mesh"));
+	rapidjson::StringBuffer strbuf;
+	rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
+	d["mesh"].Accept(writer);
+	mesh.jsonInit(strbuf.GetString());
 	
 	// Module instanciation(s)
 	Affectations::Options affectationsOptions;
@@ -402,6 +390,5 @@ int main(int argc, char* argv[])
 	affectations->simulate();
 	
 	delete affectations;
-	delete mesh;
 	return ret;
 }

@@ -51,16 +51,6 @@ class NablaModuleExtensions
 		jobs.findFirst[j | j.name == jobName]
 	}
 
-	def getConnectivityByName(NablaModule it, String connectivityName)
-	{
-		connectivities.findFirst[c | c.name == connectivityName]
-	}
-
-	def getItemTypeByName(NablaModule it, String itemTypeName)
-	{
-		itemTypes.findFirst[i | i.name == itemTypeName]
-	}
-
 	def getVariableByName(NablaModule it, String variableName)
 	{
 		allVars.filter(Var).findFirst[v | v.name == variableName]

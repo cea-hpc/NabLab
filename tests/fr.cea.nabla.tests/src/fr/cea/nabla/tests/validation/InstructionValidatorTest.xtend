@@ -10,6 +10,7 @@
 package fr.cea.nabla.tests.validation
 
 import com.google.inject.Inject
+import com.google.inject.Provider
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.NablaRoot
 import fr.cea.nabla.nabla.PrimitiveType
@@ -17,6 +18,7 @@ import fr.cea.nabla.tests.NablaInjectorProvider
 import fr.cea.nabla.tests.TestUtils
 import fr.cea.nabla.validation.InstructionValidator
 import fr.cea.nabla.validation.ValidationUtils
+import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.eclipse.xtext.testing.util.ParseHelper
@@ -30,6 +32,7 @@ import org.junit.runner.RunWith
 class InstructionValidatorTest 
 {
 	@Inject ParseHelper<NablaRoot> parseHelper
+	@Inject Provider<ResourceSet> resourceSetProvider
 	@Inject extension ValidationUtils
 	@Inject extension ValidationTestHelper
 	@Inject extension TestUtils
@@ -37,17 +40,18 @@ class InstructionValidatorTest
 	@Test
 	def void testCheckLocalConnectivityVars() 
 	{
+		val rs = resourceSetProvider.get
+		parseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DPath), rs)
 		val moduleKo = parseHelper.parse(
 			'''
-			«testModuleForSimulation»
+			«testModule»
 			ℝ[2] X{nodes};
 			UpdateX: 
 			{
 				ℝ[2] a{nodes};
 				∀r∈nodes(), X{r} = a{r};
 			}
-			'''
-		)
+			''', rs)
 		Assert.assertNotNull(moduleKo)
 		moduleKo.assertError(NablaPackage.eINSTANCE.varGroupDeclaration,
 			InstructionValidator::LOCAL_CONNECTIVITY_VAR,
@@ -55,15 +59,14 @@ class InstructionValidatorTest
 
 		val moduleOk =  parseHelper.parse(
 			'''
-			«testModuleForSimulation»
+			«testModule»
 			ℝ[2] X{nodes};
 			UpdateX: 
 			{
 				ℝ[2] a;
 				∀r∈nodes(), X{r} = a;
 			}
-			'''
-		)
+			''', rs)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
@@ -71,9 +74,11 @@ class InstructionValidatorTest
 	@Test
 	def void testCheckAffectationType()
 	{
+		val rs = resourceSetProvider.get
+		parseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DPath), rs)
 		val moduleKo = parseHelper.parse(
 			'''
-			«testModuleForSimulation»
+			«testModule»
 			ℕ U{cells};
 			ℕ V{nodes};
 			ComputeU: ∀ j∈cells(), {
@@ -81,7 +86,7 @@ class InstructionValidatorTest
 					U{j} = e * 4;
 			}
 			ComputeV: V = U;
-			''')
+			''', rs)
 		Assert.assertNotNull(moduleKo)
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.affectation,
@@ -96,7 +101,7 @@ class InstructionValidatorTest
 
 		val moduleOk = parseHelper.parse(
 			'''
-			«testModuleForSimulation»
+			«testModule»
 			ℕ U{cells}; 
 			ℕ V{cells};
 			ComputeU: ∀ j∈cells(), {
@@ -104,7 +109,7 @@ class InstructionValidatorTest
 					U{j} = e * 4;
 			}
 			ComputeV: ∀ j∈cells(), V{j} = U{j};
-			''')
+			''', rs)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
@@ -234,7 +239,7 @@ class InstructionValidatorTest
 
 		val moduleOk = parseHelper.parse(
 			'''
-			«testModuleForSimulation»
+			«emptyTestModule»
 			option ℕ alpha = 1;
 			''')
 		Assert.assertNotNull(moduleOk)

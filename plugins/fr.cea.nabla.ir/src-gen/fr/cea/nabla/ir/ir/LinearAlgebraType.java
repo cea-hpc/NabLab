@@ -39,12 +39,12 @@ public interface LinearAlgebraType extends IrType {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Provider</em>' reference.
-	 * @see #setProvider(ExtensionProvider)
+	 * @see #setProvider(DefaultExtensionProvider)
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getLinearAlgebraType_Provider()
 	 * @model required="true"
 	 * @generated
 	 */
-	ExtensionProvider getProvider();
+	DefaultExtensionProvider getProvider();
 
 	/**
 	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.LinearAlgebraType#getProvider <em>Provider</em>}' reference.
@@ -54,6 +54,6 @@ public interface LinearAlgebraType extends IrType {
 	 * @see #getProvider()
 	 * @generated
 	 */
-	void setProvider(ExtensionProvider value);
+	void setProvider(DefaultExtensionProvider value);
 
 } // LinearAlgebraType

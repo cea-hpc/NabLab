@@ -9,11 +9,12 @@
  *******************************************************************************/
 package fr.cea.nabla.ir
 
-import fr.cea.nabla.ir.ir.ExtensionProvider
+import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
+import fr.cea.nabla.ir.ir.MeshExtensionProvider
 
 class IrModuleExtensions
 {
@@ -35,12 +36,16 @@ class IrModuleExtensions
 
 	static def getMeshClassName(IrModule it)
 	{
-		getIrRoot.meshClassName
+		val meshProviders = providers.filter(MeshExtensionProvider)
+		if (meshProviders.size == 1)
+			meshProviders.head.extensionName
+		else
+			throw new Exception("Not yet implemented")
 	}
 
-	static def ExtensionProvider[] getExtensionProviders(IrModule it)
+	static def DefaultExtensionProvider[] getDefaultExtensionProviders(IrModule it)
 	{
-		providers.filter[x | x.extensionName != "Math"]
+		providers.filter(DefaultExtensionProvider).filter[x | x.extensionName != "Math"]
 	}
 
 	static def getJobByName(IrModule it, String jobName)

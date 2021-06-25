@@ -41,7 +41,6 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//NablagenModule/name"/>
     </genClasses>
     <genClasses ecoreClass="Nablagen.ecore#//MainModule">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//MainModule/meshClassName"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//MainModule/nodeCoord"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//MainModule/time"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nablagen.ecore#//MainModule/timeStep"/>

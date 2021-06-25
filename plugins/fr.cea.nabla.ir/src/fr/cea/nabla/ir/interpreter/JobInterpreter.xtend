@@ -121,7 +121,7 @@ class JobInterpreter
 		{
 			val time = context.getReal(ir.currentTimeVariable)
 			val coords = (context.getVariableValue(ir.nodeCoordVariable) as NV2Real).data
-			val quads = context.meshWrapper.quads
+			val quads = context.meshProvider.quads
 			w.startVtpFile(iteration, time, coords, quads);
 			val outputVars = ppInfo.outputVariables
 

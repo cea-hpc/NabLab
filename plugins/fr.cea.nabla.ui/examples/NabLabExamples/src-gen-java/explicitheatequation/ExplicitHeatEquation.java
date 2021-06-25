@@ -70,7 +70,7 @@ public final class ExplicitHeatEquation
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
 	@SuppressWarnings("unused")
-	private final int nbNodes, nbCells, nbFaces, maxNeighbourCells, maxNodesOfFace, maxCellsOfFace, maxNodesOfCell;
+	private final int nbNodes, nbCells, nbFaces, maxNodesOfCell, maxNodesOfFace, maxCellsOfFace, maxNeighbourCells;
 
 	// User options
 	private final Options options;
@@ -101,10 +101,10 @@ public final class ExplicitHeatEquation
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
 		nbFaces = mesh.getNbFaces();
-		maxNeighbourCells = CartesianMesh2D.MaxNbNeighbourCells;
+		maxNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
 		maxNodesOfFace = CartesianMesh2D.MaxNbNodesOfFace;
 		maxCellsOfFace = CartesianMesh2D.MaxNbCellsOfFace;
-		maxNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
+		maxNeighbourCells = CartesianMesh2D.MaxNbNeighbourCells;
 
 		// User options
 		options = aOptions;
@@ -483,9 +483,8 @@ public final class ExplicitHeatEquation
 
 			// Mesh instanciation
 			assert(o.has("mesh"));
-			CartesianMesh2DFactory meshFactory = new CartesianMesh2DFactory();
-			meshFactory.jsonInit(o.get("mesh").toString());
-			CartesianMesh2D mesh = meshFactory.create();
+			CartesianMesh2D mesh = new CartesianMesh2D();
+			mesh.jsonInit(o.get("mesh").toString());
 
 			// Module instanciation(s)
 			ExplicitHeatEquation.Options explicitHeatEquationOptions = new ExplicitHeatEquation.Options();

@@ -75,16 +75,20 @@ RUN cmake ../kokkos-kernels-3.0.00 -DCMAKE_CXX_COMPILER=g++ -DCMAKE_INSTALL_PREF
 ENV KOKKOS_HOME=/kokkos/install
 
 RUN apt-get install -y default-jdk
-RUN apt-get install -y maven
 
-#WORKDIR /
+WORKDIR /
+RUN apt-get install -y maven
+#RUN mkdir maven; cd maven; mkdir .m2; cd .m2; mkdir repository
+#ENV MAVEN_OPTS="-Dmaven.repo.local=/maven/.m2/repository"
+
 #RUN git clone https://github.com/cea-hpc/NabLab.git /NabLab
 
 #RUN chown -R ${USER} /NabLab
-#WORKDIR "/NabLab"
+#WORKDIR /NabLab
 #RUN mvn clean -P build,updatesite; mvn verify -P build,updatesite; chown -R ${USER} /tmp
 #RUN mvn clean; mvn verify -Dmaven.test.skip=true; chown -R ${USER} /tmp
 #RUN mvn clean; mvn verify; chown -R ${USER} /tmp
+#RUN mvn clean;
 
 EOF
 

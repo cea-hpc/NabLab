@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -31,12 +31,12 @@ class CMakeContentProvider
 	''''''
 
 	protected def Iterable<String> getTargetLinkLibraries(IrRoot irRoot)
-	{ 
+	{
 		#['nablalib']
 	}
 
 	protected def Iterable<String> getCompilationOptions()
-	{ 
+	{
 		#['-g', '-Wall', '-O3', '--std=c++17', '-mtune=native']
 	}
 
@@ -96,6 +96,11 @@ class CMakeContentProvider
 		if (hasLevelDB) libs += "leveldb::leveldb Threads::Threads"
 		externalProviders.forEach[p | libs += p.libName]
 		return libs
+	}
+
+	private def getExternalProviders(IrRoot it)
+	{
+		providers.filter(DefaultExtensionProvider).filter[x | x.extensionName != "Math"]
 	}
 }
 

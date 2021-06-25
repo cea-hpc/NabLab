@@ -209,28 +209,6 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * @generated
 	 */
 	@Override
-	public Arg createArg() {
-		ArgImpl arg = new ArgImpl();
-		return arg;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Variable createVariable() {
-		VariableImpl variable = new VariableImpl();
-		return variable;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
 	public PostProcessedVariable createPostProcessedVariable() {
 		PostProcessedVariableImpl postProcessedVariable = new PostProcessedVariableImpl();
 		return postProcessedVariable;
@@ -256,6 +234,28 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	public MeshExtensionProvider createMeshExtensionProvider() {
 		MeshExtensionProviderImpl meshExtensionProvider = new MeshExtensionProviderImpl();
 		return meshExtensionProvider;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Arg createArg() {
+		ArgImpl arg = new ArgImpl();
+		return arg;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Variable createVariable() {
+		VariableImpl variable = new VariableImpl();
+		return variable;
 	}
 
 	/**
@@ -682,6 +682,17 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * @generated
 	 */
 	@Override
+	public LinearAlgebraType createLinearAlgebraType() {
+		LinearAlgebraTypeImpl linearAlgebraType = new LinearAlgebraTypeImpl();
+		return linearAlgebraType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public ConnectivityCall createConnectivityCall() {
 		ConnectivityCallImpl connectivityCall = new ConnectivityCallImpl();
 		return connectivityCall;
@@ -751,17 +762,6 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	public ItemIndexValue createItemIndexValue() {
 		ItemIndexValueImpl itemIndexValue = new ItemIndexValueImpl();
 		return itemIndexValue;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public LinearAlgebraType createLinearAlgebraType() {
-		LinearAlgebraTypeImpl linearAlgebraType = new LinearAlgebraTypeImpl();
-		return linearAlgebraType;
 	}
 
 	/**

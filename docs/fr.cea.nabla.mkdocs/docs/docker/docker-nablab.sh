@@ -24,10 +24,10 @@ then
    exit 1
 fi
 
-USER=$(id -un)
+USER="appusr"
 USER_ID=$(id -u)
 USER_GID=$(id -g)
-DOCKER_HOSTNAME="$(hostname)-docker"
+DOCKER_HOSTNAME="nablab-docker"
 
 DOCKERFILE_DIR=/tmp/${USER}/nablab.docker
 mkdir -p ${DOCKERFILE_DIR}

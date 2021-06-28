@@ -46,6 +46,10 @@ class NablagenProviderGenerator extends StandaloneGeneratorBase
 				val irProvider = toIrDefaultExtensionProvider(provider, installDir)
 				generate(fsa, generator.getGenerationContents(irProvider), irProvider.dirName)
 			}
+			else
+			{
+				dispatcher.post(MessageType::Warning, "No code generator for mesh provider: " + provider.name)
+			}
 		}
 
 		val endTime = System.currentTimeMillis

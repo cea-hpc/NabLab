@@ -10,6 +10,7 @@
 package fr.cea.nabla.validation
 
 import com.google.inject.Inject
+import fr.cea.nabla.NablaModuleExtensions
 import fr.cea.nabla.generator.NablagenExtensionHelper
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.NablaExtension
@@ -36,6 +37,7 @@ import org.eclipse.xtext.validation.CheckType
 class NablagenValidator extends AbstractNablagenValidator
 {
 	@Inject extension ArgOrVarTypeProvider
+	@Inject extension NablaModuleExtensions
 	@Inject NablagenExtensionHelper nablagenExtensionHelper
 
 	public static val NGEN_ELEMENT_NAME = "NablagenValidator::ElementName"
@@ -45,6 +47,7 @@ class NablagenValidator extends AbstractNablagenValidator
 	public static val NO_TIME_ITERATOR_DEFINITION = "NablagenValidator::NoTimeIteratorDefinition"
 	public static val VAR_LINK_MAIN_VAR_TYPE = "NablagenValidator::VarLinkMainVarType"
 	public static val PROVIDER_FOR_EACH_EXTENSION = "NablagenValidator::ProviderForEachExtension"
+	public static val MAIN_MODULE_MESH = "NablagenValidator::MainModuleMesh"
 
 	static def getNgenElementNameMsg() { "Application/Provider name must start with an upper case" }
 	static def getNgenModuleNameMsg() { "Nabla module instance name must start with a lower case" }
@@ -53,6 +56,7 @@ class NablagenValidator extends AbstractNablagenValidator
 	static def getNoTimeIteratorDefinitionMsg() { "Iterate keyword not allowed in additional module" }
 	static def getVarLinkMainVarTypeMsg(String v1Type, String v2Type) { "Variables must have the same type: " + v1Type + " \u2260 " + v2Type }
 	static def getProviderForEachExtensionMsg(String extensionName) { "No provider found for extension: " + extensionName }
+	static def getMainModuleMeshMsg(String expectedMesh, String actualMesh) { "Mesh extension must be identical as main module's one. Expected " + expectedMesh + ", but was " + actualMesh }
 
 	@Check(CheckType.FAST)
 	def checkName(NablagenApplication it)
@@ -132,6 +136,20 @@ class NablagenValidator extends AbstractNablagenValidator
 				val structuralFeature = (interpreter ? NablagenPackage.Literals::TARGET__INTERPRETER : NablagenPackage.Literals::TARGET__TYPE)
 				warning(getProviderForEachExtensionMsg(neededExtensionName), structuralFeature, PROVIDER_FOR_EACH_EXTENSION)
 			}
+	}
+
+	@Check(CheckType.FAST)
+	def void checkMainModuleMesh(AdditionalModule it)
+	{
+		val ngen = eContainer as NablagenApplication
+		val mainModule = ngen.mainModule
+		if (mainModule !== null && mainModule.type !== null && type !== null)
+		{
+			val mainMeshes = mainModule.type.meshExtensions
+			val addMeshes = type.meshExtensions
+			if (mainMeshes.size > 0 && addMeshes.size > 0 && mainMeshes.head != addMeshes.head)
+				error(getMainModuleMeshMsg(mainMeshes.head.name, addMeshes.head.name), NablagenPackage.Literals::NABLAGEN_MODULE__TYPE, MAIN_MODULE_MESH)
+		}
 	}
 
 	private def getExtensionNames(NablaRoot it)

@@ -10,6 +10,9 @@
 package fr.cea.nabla
 
 import fr.cea.nabla.nabla.ArgOrVar
+import fr.cea.nabla.nabla.ConnectivityCall
+import fr.cea.nabla.nabla.ConnectivityVar
+import fr.cea.nabla.nabla.MeshExtension
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.OptionDeclaration
 import fr.cea.nabla.nabla.SimpleVarDeclaration
@@ -17,9 +20,20 @@ import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import java.util.ArrayList
+import java.util.LinkedHashSet
 
 class NablaModuleExtensions 
 {
+	def Iterable<MeshExtension> getMeshExtensions(NablaModule it)
+	{
+		val meshes = new LinkedHashSet<MeshExtension>
+		meshes += eAllContents.filter(ConnectivityCall).map[connectivity.eContainer as MeshExtension].toIterable
+		for (v : eAllContents.filter(ConnectivityVar).toIterable)
+			for (s : v.supports)
+				meshes += s.eContainer as MeshExtension
+		return meshes
+	}
+
 	def getAllVars(NablaModule it)
 	{
 		val allVars = new ArrayList<ArgOrVar>

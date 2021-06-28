@@ -16,7 +16,6 @@ import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.ItemId
 import fr.cea.nabla.ir.ir.ItemIndex
-import fr.cea.nabla.ir.ir.MeshExtensionProvider
 import fr.cea.nabla.ir.ir.SetRef
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
 import java.util.HashMap
@@ -54,33 +53,28 @@ class Context
 			{
 				try
 				{
-					switch p
-					{
-						DefaultExtensionProvider:
-						{
-							// create the helper
-							var CallableExtensionProviderHelper helper
-							if (p.extensionName == "Math")
-								helper = new MathExtensionProviderHelper
-							else if (p.linearAlgebra)
-								helper = new LinearAlgebraExtensionProviderHelper(p, wsPath)
-							else
-								helper = new DefaultExtensionProviderHelper(p, wsPath)
+					// create the helper
+					var CallableExtensionProviderHelper helper
+					if (p.extensionName == "Math")
+						helper = new MathExtensionProviderHelper
+					else if (p.linearAlgebra)
+						helper = new LinearAlgebraExtensionProviderHelper(p, wsPath)
+					else
+						helper = new DefaultExtensionProviderHelper(p, wsPath)
 
-							helper.init(p.functions)
-							providers.put(p, helper)
-						}
-						MeshExtensionProvider:
-						{
-							meshProvider = new MeshExtensionProviderHelper
-							meshProvider.init(p.connectivities)
-						}
-					}
+					helper.init(p.functions)
+					providers.put(p, helper)
 				}
 				catch (ClassNotFoundException e)
 				{
 					throw new ExtensionProviderNotFound(p, e)
 				}
+			}
+
+			if (ir.mesh !== null)
+			{
+				meshProvider = new MeshExtensionProviderHelper
+				meshProvider.init(ir.mesh.connectivities)
 			}
 		}
 	}

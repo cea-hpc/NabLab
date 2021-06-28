@@ -34,7 +34,6 @@ import static extension fr.cea.nabla.ir.generator.java.JavaGeneratorUtils.*
 import static extension fr.cea.nabla.ir.generator.java.JobContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.JsonContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.TypeContentProvider.*
-import fr.cea.nabla.ir.ir.MeshExtensionProvider
 
 class JavaApplicationGenerator implements ApplicationGenerator
 {
@@ -94,7 +93,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 				«FOR v : options»
 				public «v.type.javaType» «v.name»;
 				«ENDFOR»
-				«FOR v : defaultExtensionProviders»
+				«FOR v : validExtensionProviders»
 				public «v.packageName».«v.className» «v.instanceName»;
 				«ENDFOR»
 				public String «IrUtils.NonRegressionNameAndValue.key»;
@@ -113,7 +112,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 					«FOR v : options»
 					«getJsonContent(v.name, v.type as BaseType, v.defaultValue)»
 					«ENDFOR»
-					«FOR v : defaultExtensionProviders»
+					«FOR v : validExtensionProviders»
 					«val vName = v.instanceName»
 					// «vName»
 					«vName» = new «v.packageName».«v.className»();
@@ -135,9 +134,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 			// Mesh and mesh variables
 			private final «meshClassName» mesh;
 			@SuppressWarnings("unused")
-			«FOR meshProvider : irRoot.providers.filter(MeshExtensionProvider)»
-				«FOR c : meshProvider.connectivities.filter[multiple] BEFORE 'private final int ' SEPARATOR ', ' AFTER ';'»«c.nbElemsVar»«ENDFOR»
-			«ENDFOR»
+			«FOR c : irRoot.mesh.connectivities.filter[multiple] BEFORE 'private final int ' SEPARATOR ', ' AFTER ';'»«c.nbElemsVar»«ENDFOR»
 
 			// User options
 			private final Options options;
@@ -164,10 +161,8 @@ class JavaApplicationGenerator implements ApplicationGenerator
 			{
 				// Mesh and mesh variables initialization
 				mesh = aMesh;
-				«FOR meshProvider : irRoot.providers.filter(MeshExtensionProvider)»
-					«FOR c : meshProvider.connectivities.filter[multiple]»
-						«c.nbElemsVar» = «c.connectivityAccessor»;
-					«ENDFOR»
+				«FOR c : irRoot.mesh.connectivities.filter[multiple]»
+					«c.nbElemsVar» = «c.connectivityAccessor»;
 				«ENDFOR»
 
 				// User options

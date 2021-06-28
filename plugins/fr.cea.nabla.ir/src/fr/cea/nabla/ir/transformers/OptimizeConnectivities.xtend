@@ -10,7 +10,6 @@
 package fr.cea.nabla.ir.transformers
 
 import fr.cea.nabla.ir.ir.IrRoot
-import fr.cea.nabla.ir.ir.MeshExtensionProvider
 import java.util.List
 
 class OptimizeConnectivities extends IrTransformationStep
@@ -26,12 +25,11 @@ class OptimizeConnectivities extends IrTransformationStep
 	override transform(IrRoot ir)
 	{
 		trace('    IR -> IR: ' + description)
-		for (meshProvider : ir.providers.filter(MeshExtensionProvider))
-			for (c : meshProvider.connectivities)
-			{
-				if (!c.multiple) c.indexEqualId = true
-				else if (connectivities.contains(c.name)) c.indexEqualId = true
-			}
+		for (c : ir.mesh.connectivities)
+		{
+			if (!c.multiple) c.indexEqualId = true
+			else if (connectivities.contains(c.name)) c.indexEqualId = true
+		}
 		return true
 	}
 }

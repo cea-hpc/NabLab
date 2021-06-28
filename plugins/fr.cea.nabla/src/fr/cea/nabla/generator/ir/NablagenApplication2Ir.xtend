@@ -16,12 +16,12 @@ import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityCall
 import fr.cea.nabla.ir.ir.ConnectivityType
-import fr.cea.nabla.ir.ir.ExtensionProvider
 import fr.cea.nabla.ir.ir.ExternFunction
 import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
+import fr.cea.nabla.ir.ir.MeshExtensionProvider
 import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.nabla.ArgOrVar
@@ -30,7 +30,7 @@ import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.TimeIteratorBlock
 import fr.cea.nabla.nablagen.NablagenApplication
 import fr.cea.nabla.nablagen.NablagenModule
-import java.util.HashSet
+import java.util.LinkedHashSet
 import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.xtext.EcoreUtil2
 
@@ -80,21 +80,24 @@ class NablagenApplication2Ir
 		// set providers
 		for (m : modules)
 		{
-			val moduleProviders = new HashSet<ExtensionProvider>
-
 			// Default providers: only providers containing external functions are needed in IR
-			val externFunctions = eAllContents.filter(FunctionCall).map[function].filter(ExternFunction).toList
-			moduleProviders += externFunctions.map[provider]
+			m.providers += eAllContents.filter(FunctionCall).map[function].filter(ExternFunction).map[provider].toSet
+			providers += m.providers
 
-			// Mesh providers
-			for (v : m.variables)
-				if (v.type instanceof ConnectivityType)
-					for (c : (v.type as ConnectivityType).connectivities)
-						moduleProviders += c.provider
-			moduleProviders += eAllContents.filter(ConnectivityCall).map[connectivity.provider].toList
+			if (m.main)
+			{
+				// Mesh provider
+				val meshes = new LinkedHashSet<MeshExtensionProvider>
+				meshes += eAllContents.filter(ConnectivityCall).map[connectivity.provider].toIterable
+				for (t : variables.map[type].filter(ConnectivityType))
+					for (s : t.connectivities)
+						meshes += s.provider
 
-			m.providers += moduleProviders
-			providers += moduleProviders
+				if (meshes.size > 1)
+					throw new Exception("Not yet implemented")
+				else if (meshes.size == 1)
+					mesh = meshes.head
+			}
 		}
 
 		// post processing

@@ -76,6 +76,44 @@ class BasicValidatorTest
 		moduleOk3.assertNoErrors
 	}
 
+	@Test
+	def void testCheckModuleUniqueMeshExtension()
+	{
+		var rs = resourceSetProvider.get
+		parseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DPath), rs)
+		parseHelper.parse(
+			'''
+			mesh extension BidonMesh;
+
+			itemtypes { node }
+
+			connectivity nodes: → {node};
+			''', rs)
+
+		val moduleKo = parseHelper.parse(
+			'''
+			module Test;
+			ℝ a{CartesianMesh2D.nodes};
+			ℝ b{BidonMesh.nodes};
+			''', rs)
+
+		moduleKo.assertError(NablaPackage.eINSTANCE.nablaRoot,
+			BasicValidator::MODULE_UNIQUE_MESH_EXTENSION,
+			BasicValidator::getModuleUniqueMeshExtensionMsg(#["CartesianMesh2D", "BidonMesh"]))
+
+		rs = resourceSetProvider.get
+		parseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DPath), rs)
+		val moduleOk = parseHelper.parse(
+			'''
+			module Test;
+			with CartesianMesh2D.*;
+			ℝ a{nodes};
+			ℝ b{nodes};
+			''', rs)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+
 	// ===== Interval =====
 
 	@Test

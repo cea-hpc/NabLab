@@ -47,16 +47,16 @@ class NablagenValidatorTest
 	option ℝ maxTime = 0.1;
 	option ℕ maxIter = 500;
 
-	let ℝ t = 0.0;
 	option ℝ δt = 1.0;
+	ℝ t;
 	ℝ[2] X{nodes};
 	ℝ hv1{cells}, hv2{cells}, hv3{cells}, hv4{cells}, hv5{cells}, hv6{cells}, hv7{cells};
 
 	iterate n while (n+1 < maxIter && t^{n+1} < maxTime);
 
-	hj1: ∀c∈cells(), hv3{c} = hv2{c};
-	hj2: ∀c∈cells(), hv5{c} = hv3{c};
-	hj3: ∀c∈cells(), hv7{c} = hv4{c} + hv5{c} + hv6{c};		
+	Hj1: ∀c∈cells(), hv3{c} = hv2{c};
+	Hj2: ∀c∈cells(), hv5{c} = hv3{c};
+	Hj3: ∀c∈cells(), hv7{c} = hv4{c} + hv5{c} + hv6{c};
 	'''
 
 	val nablaRemapModel =
@@ -273,6 +273,35 @@ class NablagenValidatorTest
 		Assert.assertNotNull(providerNgen)
 
 		vth.assertNoIssues(appNgen)
+	}
+
+	@Test
+	def void testCheckMainModuleMesh()
+	{
+		val bidonMesh =
+		'''
+			mesh extension BidonMesh;
+
+			itemtypes { node, cell }
+
+			connectivity nodes: → {node};
+			connectivity cells: → {cell};
+		'''
+
+		val rs = resourceSetProvider.get
+		nParseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DPath), rs)
+		nParseHelper.parse(bidonMesh, rs)
+		val nablaHydro = nParseHelper.parse(nablaHydroModel, rs)
+		Assert.assertNotNull(nablaHydro)
+		val nablaRemap = nParseHelper.parse(nablaRemapModel.replace("CartesianMesh2D", "BidonMesh"), rs)
+		Assert.assertNotNull(nablaRemap)
+		val koNgen = ngenParseHelper.parse(ngenModel, rs)
+		Assert.assertNotNull(koNgen)
+
+		vth.assertError(koNgen, NablagenPackage.eINSTANCE.additionalModule, NablagenValidator.MAIN_MODULE_MESH, NablagenValidator.getMainModuleMeshMsg("CartesianMesh2D", "BidonMesh"))
+
+		val okNgen = readModelsAndGetNgen(nablaHydroModel, nablaRemapModel, ngenModel)
+		vth.assertNoErrors(okNgen)
 	}
 
 	private def void assertNgen(String koNgenModel, EClass objectType, String code, String msg, String okNgenModel)

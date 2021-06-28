@@ -2,12 +2,13 @@
  */
 package fr.cea.nabla.ir.ir.impl;
 
-import fr.cea.nabla.ir.ir.ExtensionProvider;
+import fr.cea.nabla.ir.ir.DefaultExtensionProvider;
 import fr.cea.nabla.ir.ir.IrModule;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.IrRoot;
 import fr.cea.nabla.ir.ir.Job;
 import fr.cea.nabla.ir.ir.JobCaller;
+import fr.cea.nabla.ir.ir.MeshExtensionProvider;
 import fr.cea.nabla.ir.ir.PostProcessing;
 import fr.cea.nabla.ir.ir.Variable;
 
@@ -47,6 +48,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getTimeStepVariable <em>Time Step Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getPostProcessing <em>Post Processing</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getProviders <em>Providers</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getMesh <em>Mesh</em>}</li>
  * </ul>
  *
  * @generated
@@ -180,7 +182,17 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<ExtensionProvider> providers;
+	protected EList<DefaultExtensionProvider> providers;
+
+	/**
+	 * The cached value of the '{@link #getMesh() <em>Mesh</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getMesh()
+	 * @generated
+	 * @ordered
+	 */
+	protected MeshExtensionProvider mesh;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -524,11 +536,79 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 	 * @generated
 	 */
 	@Override
-	public EList<ExtensionProvider> getProviders() {
+	public EList<DefaultExtensionProvider> getProviders() {
 		if (providers == null) {
-			providers = new EObjectContainmentEList.Resolving<ExtensionProvider>(ExtensionProvider.class, this, IrPackage.IR_ROOT__PROVIDERS);
+			providers = new EObjectContainmentEList.Resolving<DefaultExtensionProvider>(DefaultExtensionProvider.class, this, IrPackage.IR_ROOT__PROVIDERS);
 		}
 		return providers;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public MeshExtensionProvider getMesh() {
+		if (mesh != null && mesh.eIsProxy()) {
+			InternalEObject oldMesh = (InternalEObject)mesh;
+			mesh = (MeshExtensionProvider)eResolveProxy(oldMesh);
+			if (mesh != oldMesh) {
+				InternalEObject newMesh = (InternalEObject)mesh;
+				NotificationChain msgs = oldMesh.eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_ROOT__MESH, null, null);
+				if (newMesh.eInternalContainer() == null) {
+					msgs = newMesh.eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_ROOT__MESH, null, msgs);
+				}
+				if (msgs != null) msgs.dispatch();
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.IR_ROOT__MESH, oldMesh, mesh));
+			}
+		}
+		return mesh;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public MeshExtensionProvider basicGetMesh() {
+		return mesh;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetMesh(MeshExtensionProvider newMesh, NotificationChain msgs) {
+		MeshExtensionProvider oldMesh = mesh;
+		mesh = newMesh;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.IR_ROOT__MESH, oldMesh, newMesh);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setMesh(MeshExtensionProvider newMesh) {
+		if (newMesh != mesh) {
+			NotificationChain msgs = null;
+			if (mesh != null)
+				msgs = ((InternalEObject)mesh).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_ROOT__MESH, null, msgs);
+			if (newMesh != null)
+				msgs = ((InternalEObject)newMesh).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_ROOT__MESH, null, msgs);
+			msgs = basicSetMesh(newMesh, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IR_ROOT__MESH, newMesh, newMesh));
 	}
 
 	/**
@@ -628,6 +708,8 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 				return basicSetPostProcessing(null, msgs);
 			case IrPackage.IR_ROOT__PROVIDERS:
 				return ((InternalEList<?>)getProviders()).basicRemove(otherEnd, msgs);
+			case IrPackage.IR_ROOT__MESH:
+				return basicSetMesh(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -671,6 +753,9 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 				return basicGetPostProcessing();
 			case IrPackage.IR_ROOT__PROVIDERS:
 				return getProviders();
+			case IrPackage.IR_ROOT__MESH:
+				if (resolve) return getMesh();
+				return basicGetMesh();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -722,7 +807,10 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 				return;
 			case IrPackage.IR_ROOT__PROVIDERS:
 				getProviders().clear();
-				getProviders().addAll((Collection<? extends ExtensionProvider>)newValue);
+				getProviders().addAll((Collection<? extends DefaultExtensionProvider>)newValue);
+				return;
+			case IrPackage.IR_ROOT__MESH:
+				setMesh((MeshExtensionProvider)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -772,6 +860,9 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 			case IrPackage.IR_ROOT__PROVIDERS:
 				getProviders().clear();
 				return;
+			case IrPackage.IR_ROOT__MESH:
+				setMesh((MeshExtensionProvider)null);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -808,6 +899,8 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 				return postProcessing != null;
 			case IrPackage.IR_ROOT__PROVIDERS:
 				return providers != null && !providers.isEmpty();
+			case IrPackage.IR_ROOT__MESH:
+				return mesh != null;
 		}
 		return super.eIsSet(featureID);
 	}

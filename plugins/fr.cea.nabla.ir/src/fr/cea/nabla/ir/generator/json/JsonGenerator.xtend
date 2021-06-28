@@ -73,7 +73,7 @@ class JsonGenerator implements ApplicationGenerator
 		}
 		for (option : irModule.options)
 			values += new Pair(option.name, context.getVariableValue(option).content)
-		for (extensionProvider : irModule.defaultExtensionProviders)
+		for (extensionProvider : irModule.validExtensionProviders)
 			values += new Pair(extensionProvider.instanceName, '{}')
 		if (irModule.main && levelDB)
 		{

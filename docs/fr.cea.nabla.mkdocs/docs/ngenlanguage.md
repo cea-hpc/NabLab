@@ -17,14 +17,12 @@ Application Glace2d;
 
 The first part of the *ngen* file identifies the main module of the application. It is defined by a reference to a NabLab module and a name. It must provide some additional parameters useful for code interpretation/generation:
 
-- `meshClassName` identifies the name of the mesh class and the name of the mesh class factory. For example, if the name is *CartesianMesh2D*, NabLab waits for a factory names *CartesianMesh2DFactory* with a `CartesianMesh2D create()` method.
 - `nodeCoord` identifies the NabLab variable representing node coordinates.
 - `time`, `timeStep`, `iterationMax` and `timeMax` identifies respectively the NabLab variables representing the time of the simulation, the timeStep of the simulation, the maximum number of iterations of the main time loop and the maximum time of the simulation.
 
 ```
 MainModule Glace2d glace2d
 {
-	meshClassName = "CartesianMesh2D";
 	nodeCoord = X;
 	time = t;
 	timeStep = δt;

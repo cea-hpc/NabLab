@@ -9,9 +9,7 @@
  *******************************************************************************/
 module Hydro;
 
-itemtypes { node, cell }
-connectivity nodes: → {node};
-connectivity cells: → {cell};
+with CartesianMesh2D.*;
 
 option ℝ maxTime = 0.1;
 option ℕ maxIter = 500;

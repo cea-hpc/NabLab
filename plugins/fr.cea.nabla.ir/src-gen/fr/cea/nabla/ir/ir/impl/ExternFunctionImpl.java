@@ -2,10 +2,9 @@
  */
 package fr.cea.nabla.ir.ir.impl;
 
-import fr.cea.nabla.ir.ir.ExtensionProvider;
+import fr.cea.nabla.ir.ir.DefaultExtensionProvider;
 import fr.cea.nabla.ir.ir.ExternFunction;
 import fr.cea.nabla.ir.ir.IrPackage;
-
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.ecore.EClass;
@@ -53,9 +52,9 @@ public class ExternFunctionImpl extends FunctionImpl implements ExternFunction {
 	 * @generated
 	 */
 	@Override
-	public ExtensionProvider getProvider() {
+	public DefaultExtensionProvider getProvider() {
 		if (eContainerFeatureID() != IrPackage.EXTERN_FUNCTION__PROVIDER) return null;
-		return (ExtensionProvider)eContainer();
+		return (DefaultExtensionProvider)eContainer();
 	}
 
 	/**
@@ -63,9 +62,9 @@ public class ExternFunctionImpl extends FunctionImpl implements ExternFunction {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ExtensionProvider basicGetProvider() {
+	public DefaultExtensionProvider basicGetProvider() {
 		if (eContainerFeatureID() != IrPackage.EXTERN_FUNCTION__PROVIDER) return null;
-		return (ExtensionProvider)eInternalContainer();
+		return (DefaultExtensionProvider)eInternalContainer();
 	}
 
 	/**
@@ -73,7 +72,7 @@ public class ExternFunctionImpl extends FunctionImpl implements ExternFunction {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetProvider(ExtensionProvider newProvider, NotificationChain msgs) {
+	public NotificationChain basicSetProvider(DefaultExtensionProvider newProvider, NotificationChain msgs) {
 		msgs = eBasicSetContainer((InternalEObject)newProvider, IrPackage.EXTERN_FUNCTION__PROVIDER, msgs);
 		return msgs;
 	}
@@ -84,7 +83,7 @@ public class ExternFunctionImpl extends FunctionImpl implements ExternFunction {
 	 * @generated
 	 */
 	@Override
-	public void setProvider(ExtensionProvider newProvider) {
+	public void setProvider(DefaultExtensionProvider newProvider) {
 		if (newProvider != eInternalContainer() || (eContainerFeatureID() != IrPackage.EXTERN_FUNCTION__PROVIDER && newProvider != null)) {
 			if (EcoreUtil.isAncestor(this, newProvider))
 				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
@@ -92,7 +91,7 @@ public class ExternFunctionImpl extends FunctionImpl implements ExternFunction {
 			if (eInternalContainer() != null)
 				msgs = eBasicRemoveFromContainer(msgs);
 			if (newProvider != null)
-				msgs = ((InternalEObject)newProvider).eInverseAdd(this, IrPackage.EXTENSION_PROVIDER__FUNCTIONS, ExtensionProvider.class, msgs);
+				msgs = ((InternalEObject)newProvider).eInverseAdd(this, IrPackage.DEFAULT_EXTENSION_PROVIDER__FUNCTIONS, DefaultExtensionProvider.class, msgs);
 			msgs = basicSetProvider(newProvider, msgs);
 			if (msgs != null) msgs.dispatch();
 		}
@@ -111,7 +110,7 @@ public class ExternFunctionImpl extends FunctionImpl implements ExternFunction {
 			case IrPackage.EXTERN_FUNCTION__PROVIDER:
 				if (eInternalContainer() != null)
 					msgs = eBasicRemoveFromContainer(msgs);
-				return basicSetProvider((ExtensionProvider)otherEnd, msgs);
+				return basicSetProvider((DefaultExtensionProvider)otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
@@ -139,7 +138,7 @@ public class ExternFunctionImpl extends FunctionImpl implements ExternFunction {
 	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
 		switch (eContainerFeatureID()) {
 			case IrPackage.EXTERN_FUNCTION__PROVIDER:
-				return eInternalContainer().eInverseRemove(this, IrPackage.EXTENSION_PROVIDER__FUNCTIONS, ExtensionProvider.class, msgs);
+				return eInternalContainer().eInverseRemove(this, IrPackage.DEFAULT_EXTENSION_PROVIDER__FUNCTIONS, DefaultExtensionProvider.class, msgs);
 		}
 		return super.eBasicRemoveFromContainerFeature(msgs);
 	}
@@ -168,7 +167,7 @@ public class ExternFunctionImpl extends FunctionImpl implements ExternFunction {
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case IrPackage.EXTERN_FUNCTION__PROVIDER:
-				setProvider((ExtensionProvider)newValue);
+				setProvider((DefaultExtensionProvider)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -183,7 +182,7 @@ public class ExternFunctionImpl extends FunctionImpl implements ExternFunction {
 	public void eUnset(int featureID) {
 		switch (featureID) {
 			case IrPackage.EXTERN_FUNCTION__PROVIDER:
-				setProvider((ExtensionProvider)null);
+				setProvider((DefaultExtensionProvider)null);
 				return;
 		}
 		super.eUnset(featureID);

@@ -15,6 +15,7 @@ import fr.cea.nabla.ir.generator.CMakeUtils
 import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.generator.cpp.Backend
 import fr.cea.nabla.ir.generator.cpp.CMakeContentProvider
+import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.ExtensionProvider
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.nablagen.Target
@@ -31,7 +32,7 @@ class JniProviderGenerator extends StandaloneGeneratorBase
 {
 	val providers = new HashSet<ExtensionProvider>
 
-	def generateAndTransformProvider(Backend backend, ExtensionProvider provider, String wsPath, String targetOutputPath, boolean generate)
+	def transformProvider(Backend backend, DefaultExtensionProvider provider, String wsPath, String targetOutputPath, boolean generate)
 	{
 		// Transform the C+ provider in a JNI provider
 		val cppProvider = EcoreUtil.copy(provider)
@@ -71,14 +72,14 @@ class JniProviderGenerator extends StandaloneGeneratorBase
 	'''
 		«CMakeUtils.getFileHeader(false)»
 
-		«CMakeUtils.setVariables(getNeededVariables(wsPath, variables), providers)»
+		«CMakeUtils.setVariables(getNeededVariables(wsPath, variables), providers.filter(DefaultExtensionProvider))»
 
 		# PROJECT
 		project(«projectName»Project CXX)
 
 		«CMakeUtils.checkCompiler»
 
-		«CMakeUtils.addSubDirectories(false, providers)»
+		«CMakeUtils.addSubDirectories(false, providers.filter(DefaultExtensionProvider))»
 
 		«CMakeUtils.fileFooter»
 	'''

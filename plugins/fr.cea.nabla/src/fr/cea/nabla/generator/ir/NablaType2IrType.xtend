@@ -81,7 +81,7 @@ class NablaType2IrType
 	{
 		IrFactory.eINSTANCE.createLinearAlgebraType =>
 		[
-			provider = t.nablaExtension.toIrExtensionProvider
+			provider = t.defaultExtension.toIrDefaultExtensionProvider
 			sizes += t.size.toIrExpression
 		]
 	}
@@ -90,7 +90,7 @@ class NablaType2IrType
 	{
 		IrFactory.eINSTANCE.createLinearAlgebraType =>
 		[
-			provider = t.nablaExtension.toIrExtensionProvider
+			provider = t.defaultExtension.toIrDefaultExtensionProvider
 			sizes += t.nbRows.toIrExpression
 			sizes += t.nbCols.toIrExpression
 		]

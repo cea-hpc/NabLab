@@ -30,7 +30,7 @@ import java.util.LinkedHashSet
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.util.EcoreUtil
 
-class Nabla2Ir
+class IrModuleFactory
 {
 	@Inject extension IrAnnotationHelper
 	@Inject extension DeclarationProvider
@@ -45,7 +45,7 @@ class Nabla2Ir
 	 * Return a IrModule instance for a ngenModule instance.
 	 * If an IRModule instance already exists, it has to be duplicated
 	 */
-	def createIrModule(NablagenModule ngenModule)
+	def toIrModule(NablagenModule ngenModule)
 	{
 		val nablaModule = ngenModule.type
 		var irModule = irModuleModels.get(nablaModule)

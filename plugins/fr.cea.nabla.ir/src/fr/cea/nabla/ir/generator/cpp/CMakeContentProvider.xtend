@@ -11,13 +11,13 @@ package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.IrTypeExtensions
 import fr.cea.nabla.ir.generator.CMakeUtils
-import fr.cea.nabla.ir.ir.ExtensionProvider
+import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.IrRoot
 import java.util.LinkedHashSet
 
-import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.getClassName
+import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.getExecName
 
 class CMakeContentProvider
@@ -74,7 +74,7 @@ class CMakeContentProvider
 		«CMakeUtils.fileFooter»
 	'''
 
-	def getCMakeFileContent(ExtensionProvider provider)
+	def getCMakeFileContent(DefaultExtensionProvider provider)
 	'''
 		«CMakeUtils.getFileHeader(true)»
 
@@ -103,7 +103,7 @@ class CMakeContentProvider
 
 	private def getExternalProviders(IrRoot it)
 	{
-		providers.filter[x | x.extensionName != "Math"]
+		providers.filter(DefaultExtensionProvider).filter[x | x.extensionName != "Math"]
 	}
 }
 

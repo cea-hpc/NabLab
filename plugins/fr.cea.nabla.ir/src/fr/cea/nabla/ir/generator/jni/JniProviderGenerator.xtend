@@ -15,7 +15,7 @@ import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.generator.cpp.Backend
 import fr.cea.nabla.ir.generator.cpp.CMakeContentProvider
 import fr.cea.nabla.ir.generator.java.FunctionContentProvider
-import fr.cea.nabla.ir.ir.ExtensionProvider
+import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import java.util.ArrayList
 
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
@@ -37,7 +37,7 @@ class JniProviderGenerator
 		this.cppBackend = cppBackend
 	}
 
-	def getGenerationContents(ExtensionProvider jniProvider, ExtensionProvider cppProvider, String wsPath)
+	def getGenerationContents(DefaultExtensionProvider jniProvider, DefaultExtensionProvider cppProvider, String wsPath)
 	{
 		val fileContents = new ArrayList<GenerationContent>
 		fileContents += new GenerationContent(jniProvider.className + ".java", getJavaFacadeClassContent(jniProvider, wsPath), false)
@@ -53,7 +53,7 @@ class JniProviderGenerator
 		return fileContents
 	}
 
-	private def getJavaFacadeClassContent(ExtensionProvider provider, String wsPath)
+	private def getJavaFacadeClassContent(DefaultExtensionProvider provider, String wsPath)
 	'''
 	«Utils.fileHeader»
 
@@ -95,7 +95,7 @@ class JniProviderGenerator
 	}
 	'''
 
-	def getJavaVectorClassContent(ExtensionProvider provider)
+	def getJavaVectorClassContent(DefaultExtensionProvider provider)
 	'''
 	«Utils.fileHeader»
 
@@ -145,7 +145,7 @@ class JniProviderGenerator
 	}
 	'''
 
-	def getJavaMatrixClassContent(ExtensionProvider provider)
+	def getJavaMatrixClassContent(DefaultExtensionProvider provider)
 	'''
 	«Utils.fileHeader»
 
@@ -203,7 +203,7 @@ class JniProviderGenerator
 	}
 	'''
 
-	private def getCMakeFileContent(ExtensionProvider jniProvider, ExtensionProvider cppProvider)
+	private def getCMakeFileContent(DefaultExtensionProvider jniProvider, DefaultExtensionProvider cppProvider)
 	'''
 	«CMakeUtils::getFileHeader(true)»
 
@@ -244,7 +244,7 @@ class JniProviderGenerator
 	'''
 
 	/** Single .cc file to get access to getVector/getMatrix functions */
-	private def getCppFacadeClassContent(ExtensionProvider provider)
+	private def getCppFacadeClassContent(DefaultExtensionProvider provider)
 	'''
 	«Utils.fileHeader»
 
@@ -308,7 +308,7 @@ class JniProviderGenerator
 	#endif
 	'''
 
-	private def getCppVectorClassContent(ExtensionProvider provider)
+	private def getCppVectorClassContent(DefaultExtensionProvider provider)
 	'''
 	«getObjectFunctionContent('Vector')»
 
@@ -348,7 +348,7 @@ class JniProviderGenerator
 	}
 	'''
 
-	private def getCppMatrixClassContent(ExtensionProvider provider)
+	private def getCppMatrixClassContent(DefaultExtensionProvider provider)
 	'''
 	«getObjectFunctionContent('Matrix')»
 
@@ -389,7 +389,7 @@ class JniProviderGenerator
 	}
 	'''
 
-	private def getOutputFileList(ExtensionProvider it)
+	private def getOutputFileList(DefaultExtensionProvider it)
 	{
 		if (linearAlgebra)
 			#[
@@ -419,7 +419,7 @@ class JniProviderGenerator
 	}
 	'''
 
-	private def getNativeNewFunctionContent(ExtensionProvider provider, String objectType, Iterable<String> cstrArgs)
+	private def getNativeNewFunctionContent(DefaultExtensionProvider provider, String objectType, Iterable<String> cstrArgs)
 	'''
 	JNIEXPORT jlong JNICALL «getJniFunctionName(provider, objectType, 'nativeNew')»
 	(JNIEnv *env, jobject self«FOR a : cstrArgs BEFORE ", jstring name"», jint «a»«ENDFOR»)
@@ -435,7 +435,7 @@ class JniProviderGenerator
 	}
 	'''
 
-	private def getNativeDeleteFunctionContent(ExtensionProvider provider, String objectType)
+	private def getNativeDeleteFunctionContent(DefaultExtensionProvider provider, String objectType)
 	'''
 	JNIEXPORT void JNICALL «getJniFunctionName(provider, objectType, 'nativeDelete')»
 	(JNIEnv *env, jobject self, jlong nativeObjectPointer)

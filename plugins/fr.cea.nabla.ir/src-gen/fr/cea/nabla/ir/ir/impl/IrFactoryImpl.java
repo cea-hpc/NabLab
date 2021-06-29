@@ -62,7 +62,8 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.IR_MODULE: return createIrModule();
 			case IrPackage.POST_PROCESSING: return createPostProcessing();
 			case IrPackage.POST_PROCESSED_VARIABLE: return createPostProcessedVariable();
-			case IrPackage.EXTENSION_PROVIDER: return createExtensionProvider();
+			case IrPackage.DEFAULT_EXTENSION_PROVIDER: return createDefaultExtensionProvider();
+			case IrPackage.MESH_EXTENSION_PROVIDER: return createMeshExtensionProvider();
 			case IrPackage.ARG: return createArg();
 			case IrPackage.VARIABLE: return createVariable();
 			case IrPackage.INTERN_FUNCTION: return createInternFunction();
@@ -196,17 +197,6 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * @generated
 	 */
 	@Override
-	public ExtensionProvider createExtensionProvider() {
-		ExtensionProviderImpl extensionProvider = new ExtensionProviderImpl();
-		return extensionProvider;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
 	public Arg createArg() {
 		ArgImpl arg = new ArgImpl();
 		return arg;
@@ -232,6 +222,28 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	public PostProcessedVariable createPostProcessedVariable() {
 		PostProcessedVariableImpl postProcessedVariable = new PostProcessedVariableImpl();
 		return postProcessedVariable;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public DefaultExtensionProvider createDefaultExtensionProvider() {
+		DefaultExtensionProviderImpl defaultExtensionProvider = new DefaultExtensionProviderImpl();
+		return defaultExtensionProvider;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public MeshExtensionProvider createMeshExtensionProvider() {
+		MeshExtensionProviderImpl meshExtensionProvider = new MeshExtensionProviderImpl();
+		return meshExtensionProvider;
 	}
 
 	/**

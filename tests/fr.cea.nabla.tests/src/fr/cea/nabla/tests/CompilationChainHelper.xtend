@@ -20,8 +20,6 @@ import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.nabla.NablaRoot
 import fr.cea.nabla.nablagen.NablagenApplication
 import fr.cea.nabla.nablagen.NablagenRoot
-import java.nio.file.Files
-import java.nio.file.Paths
 import java.util.logging.ConsoleHandler
 import java.util.logging.Level
 import org.eclipse.emf.ecore.resource.ResourceSet
@@ -36,6 +34,7 @@ import org.junit.runner.RunWith
 class CompilationChainHelper
 {
 	@Inject extension ValidationTestHelper
+	@Inject extension TestUtils
 	@Inject Provider<NablagenApplicationGenerator> ngenAppGeneratorProvider
 	@Inject Provider<IrRootBuilder> irRootBuilderProvider
 	@Inject Provider<ResourceSet> resourceSetProvider
@@ -48,16 +47,13 @@ class CompilationChainHelper
 	val nablagenInjector = nablagenSetup.createInjectorAndDoEMFRegistration
 	val ParseHelper<NablagenRoot> nablagenParseHelper = nablagenInjector.getInstance(ParseHelper)
 
-	val testProjectPath = System.getProperty("user.dir")
-	val pluginsPath = testProjectPath + "/../../plugins/"
-
 	/** 
 	 * Returns a module ready for interpretation i.e. with no reduction instruction.
 	 */
 	def getIrForInterpretation(CharSequence model, CharSequence genModel)
 	{
 		val irRootBuilder = irRootBuilderProvider.get
-		val wsPath = pluginsPath + "fr.cea.nabla.ui/examples"
+		val wsPath = TestUtils.PluginsBasePath + ".ui/examples"
 		val ngen = getNgenApp(model, genModel)
 		return irRootBuilder.buildInterpreterIr(ngen, wsPath)
 	}
@@ -66,17 +62,11 @@ class CompilationChainHelper
 	{
 		val rs = resourceSetProvider.get
 
-		// Read math.nabla
-		val mathPath = pluginsPath + "fr.cea.nabla/nablalib/math.n"
-		nablaParseHelper.parse(new String(Files.readAllBytes(Paths.get(mathPath))), rs)
-
-		// Read linearalgebra.n
-		val linearAlgebraPath = pluginsPath + "fr.cea.nabla/nablalib/linearalgebra.n"
-		nablaParseHelper.parse(new String(Files.readAllBytes(Paths.get(linearAlgebraPath))), rs)
-
-		// Read linearalgebra.ngen
-		val linearAlgebraGenPath = pluginsPath + "fr.cea.nabla/nablalib/linearalgebra.ngen"
-		nablagenParseHelper.parse(new String(Files.readAllBytes(Paths.get(linearAlgebraGenPath))), rs)
+		nablaParseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DPath), rs)
+		nablagenParseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DGenPath), rs)
+		nablaParseHelper.parse(readFileAsString(TestUtils.MathPath), rs)
+		nablaParseHelper.parse(readFileAsString(TestUtils.LinearAlgebraPath), rs)
+		nablagenParseHelper.parse(readFileAsString(TestUtils.LinearAlgebraGenPath), rs)
 
 		val nablaRoot = nablaParseHelper.parse(model, rs)
 		nablaRoot.assertNoErrors

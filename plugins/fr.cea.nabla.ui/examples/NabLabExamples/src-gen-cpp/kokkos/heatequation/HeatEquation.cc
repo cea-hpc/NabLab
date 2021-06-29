@@ -110,14 +110,14 @@ HeatEquation::Options::jsonInit(const char* jsonContent)
 
 /******************** Module definition ********************/
 
-HeatEquation::HeatEquation(CartesianMesh2D* aMesh, Options& aOptions)
+HeatEquation::HeatEquation(CartesianMesh2D& aMesh, Options& aOptions)
 : mesh(aMesh)
-, nbNodes(mesh->getNbNodes())
-, nbCells(mesh->getNbCells())
-, nbFaces(mesh->getNbFaces())
-, maxNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
-, maxNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
+, nbNodes(mesh.getNbNodes())
+, nbCells(mesh.getNbCells())
+, nbFaces(mesh.getNbFaces())
 , maxNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
+, maxNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
+, maxNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
 , options(aOptions)
 , writer("HeatEquation", options.outputPath)
 , lastDump(numeric_limits<int>::min())
@@ -131,7 +131,7 @@ HeatEquation::HeatEquation(CartesianMesh2D* aMesh, Options& aOptions)
 , surface("surface", nbFaces)
 {
 	// Copy node coordinates
-	const auto& gNodes = mesh->getGeometry()->getNodes();
+	const auto& gNodes = mesh.getGeometry()->getNodes();
 	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
 	{
 		X(rNodes)[0] = gNodes[rNodes][0];
@@ -155,13 +155,13 @@ void HeatEquation::computeOutgoingFlux() noexcept
 		const Id j1Id(j1Cells);
 		double reduction0(0.0);
 		{
-			const auto neighbourCellsJ1(mesh->getNeighbourCells(j1Id));
+			const auto neighbourCellsJ1(mesh.getNeighbourCells(j1Id));
 			const size_t nbNeighbourCellsJ1(neighbourCellsJ1.size());
 			for (size_t j2NeighbourCellsJ1=0; j2NeighbourCellsJ1<nbNeighbourCellsJ1; j2NeighbourCellsJ1++)
 			{
 				const Id j2Id(neighbourCellsJ1[j2NeighbourCellsJ1]);
 				const size_t j2Cells(j2Id);
-				const Id cfId(mesh->getCommonFace(j1Id, j2Id));
+				const Id cfId(mesh.getCommonFace(j1Id, j2Id));
 				const size_t cfFaces(cfId);
 				double reduction1((u_n(j2Cells) - u_n(j1Cells)) / heatequationfreefuncs::norm(center(j2Cells) - center(j1Cells)) * surface(cfFaces));
 				reduction0 = heatequationfreefuncs::sumR0(reduction0, reduction1);
@@ -183,7 +183,7 @@ void HeatEquation::computeSurface() noexcept
 		const Id fId(fFaces);
 		double reduction0(0.0);
 		{
-			const auto nodesOfFaceF(mesh->getNodesOfFace(fId));
+			const auto nodesOfFaceF(mesh.getNodesOfFace(fId));
 			const size_t nbNodesOfFaceF(nodesOfFaceF.size());
 			for (size_t rNodesOfFaceF=0; rNodesOfFaceF<nbNodesOfFaceF; rNodesOfFaceF++)
 			{
@@ -220,7 +220,7 @@ void HeatEquation::computeV() noexcept
 		const Id jId(jCells);
 		double reduction0(0.0);
 		{
-			const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
+			const auto nodesOfCellJ(mesh.getNodesOfCell(jId));
 			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
 			for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 			{
@@ -247,7 +247,7 @@ void HeatEquation::iniCenter() noexcept
 		const Id jId(jCells);
 		RealArray1D<2> reduction0({0.0, 0.0});
 		{
-			const auto nodesOfCellJ(mesh->getNodesOfCell(jId));
+			const auto nodesOfCellJ(mesh.getNodesOfCell(jId));
 			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
 			for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 			{
@@ -385,7 +385,7 @@ void HeatEquation::dumpVariables(int iteration, bool useTimer)
 			cpuTimer.stop();
 			ioTimer.start();
 		}
-		auto quads = mesh->getGeometry()->getQuads();
+		auto quads = mesh.getGeometry()->getQuads();
 		writer.startVtpFile(iteration, t_n, nbNodes, X.data(), nbCells, quads.data());
 		writer.openNodeData();
 		writer.closeNodeData();
@@ -465,15 +465,12 @@ int main(int argc, char* argv[])
 	assert(d.IsObject());
 	
 	// Mesh instanciation
-	CartesianMesh2DFactory meshFactory;
-	if (d.HasMember("mesh"))
-	{
-		rapidjson::StringBuffer strbuf;
-		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
-		d["mesh"].Accept(writer);
-		meshFactory.jsonInit(strbuf.GetString());
-	}
-	CartesianMesh2D* mesh = meshFactory.create();
+	CartesianMesh2D mesh;
+	assert(d.HasMember("mesh"));
+	rapidjson::StringBuffer strbuf;
+	rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
+	d["mesh"].Accept(writer);
+	mesh.jsonInit(strbuf.GetString());
 	
 	// Module instanciation(s)
 	HeatEquation::Options heatEquationOptions;
@@ -491,7 +488,6 @@ int main(int argc, char* argv[])
 	heatEquation->simulate();
 	
 	delete heatEquation;
-	delete mesh;
 	// simulator must be deleted before calling finalize
 	Kokkos::finalize();
 	return ret;

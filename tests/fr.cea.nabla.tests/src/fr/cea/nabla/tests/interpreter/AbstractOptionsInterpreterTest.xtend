@@ -23,8 +23,7 @@ abstract class AbstractOptionsInterpreterTest
 	'''
 	module Test;
 
-	itemtypes { node }
-	connectivity nodes: → {node};
+	with CartesianMesh2D.*;
 
 	def square: ℝ → ℝ, (a) → return a * a;
 
@@ -48,8 +47,7 @@ abstract class AbstractOptionsInterpreterTest
 	'''
 	module Test;
 
-	itemtypes { node }
-	connectivity nodes: → {node};
+	with CartesianMesh2D.*;
 
 	option ℕ A = 10;
 	option ℕ[2] mandatory1;

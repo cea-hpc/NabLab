@@ -66,10 +66,10 @@ BugIter::Options::jsonInit(const char* jsonContent)
 
 /******************** Module definition ********************/
 
-BugIter::BugIter(CartesianMesh2D* aMesh, Options& aOptions)
+BugIter::BugIter(CartesianMesh2D& aMesh, Options& aOptions)
 : mesh(aMesh)
-, nbCells(mesh->getNbCells())
-, nbNodes(mesh->getNbNodes())
+, nbNodes(mesh.getNbNodes())
+, nbCells(mesh.getNbCells())
 , options(aOptions)
 , X(nbNodes)
 , u_n(nbCells)
@@ -86,7 +86,7 @@ BugIter::BugIter(CartesianMesh2D* aMesh, Options& aOptions)
 , w_nplus1_l0(nbCells)
 {
 	// Copy node coordinates
-	const auto& gNodes = mesh->getGeometry()->getNodes();
+	const auto& gNodes = mesh.getGeometry()->getNodes();
 	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
 	{
 		X[rNodes][0] = gNodes[rNodes][0];
@@ -205,22 +205,16 @@ void BugIter::executeTimeLoopK() noexcept
 	do
 	{
 		k++;
-	
 		updateV(); // @1.0
 		
 	
 		// Evaluate loop condition with variables at time n
 		continueLoop = (k + 1 < options.maxIterK);
 	
-		if (continueLoop)
+		parallel_exec(nbCells, [&](const size_t& i1Cells)
 		{
-			parallel_exec(nbCells, [&](const size_t& i1Cells)
-			{
-				v_nplus1_k[i1Cells] = v_nplus1_kplus1[i1Cells];
-			});
-		}
-	
-	
+			v_nplus1_k[i1Cells] = v_nplus1_kplus1[i1Cells];
+		});
 	} while (continueLoop);
 }
 
@@ -257,22 +251,19 @@ void BugIter::executeTimeLoopN() noexcept
 		// Evaluate loop condition with variables at time n
 		continueLoop = (t_nplus1 < options.maxTime && n + 1 < options.maxIter);
 	
-		if (continueLoop)
+		t_n = t_nplus1;
+		parallel_exec(nbCells, [&](const size_t& i1Cells)
 		{
-			t_n = t_nplus1;
-			parallel_exec(nbCells, [&](const size_t& i1Cells)
-			{
-				u_n[i1Cells] = u_nplus1[i1Cells];
-			});
-			parallel_exec(nbCells, [&](const size_t& i1Cells)
-			{
-				v_n[i1Cells] = v_nplus1[i1Cells];
-			});
-			parallel_exec(nbCells, [&](const size_t& i1Cells)
-			{
-				w_n[i1Cells] = w_nplus1[i1Cells];
-			});
-		}
+			u_n[i1Cells] = u_nplus1[i1Cells];
+		});
+		parallel_exec(nbCells, [&](const size_t& i1Cells)
+		{
+			v_n[i1Cells] = v_nplus1[i1Cells];
+		});
+		parallel_exec(nbCells, [&](const size_t& i1Cells)
+		{
+			w_n[i1Cells] = w_nplus1[i1Cells];
+		});
 	
 		cpuTimer.stop();
 		globalTimer.stop();
@@ -343,22 +334,16 @@ void BugIter::executeTimeLoopL() noexcept
 	do
 	{
 		l++;
-	
 		updateW(); // @1.0
 		
 	
 		// Evaluate loop condition with variables at time n
 		continueLoop = (l + 1 < options.maxIterL);
 	
-		if (continueLoop)
+		parallel_exec(nbCells, [&](const size_t& i1Cells)
 		{
-			parallel_exec(nbCells, [&](const size_t& i1Cells)
-			{
-				w_nplus1_l[i1Cells] = w_nplus1_lplus1[i1Cells];
-			});
-		}
-	
-	
+			w_nplus1_l[i1Cells] = w_nplus1_lplus1[i1Cells];
+		});
 	} while (continueLoop);
 }
 
@@ -401,6 +386,7 @@ void BugIter::simulate()
 	setUpTimeLoopN(); // @2.0
 	executeTimeLoopN(); // @3.0
 	
+	std::cout << "\nFinal time = " << t_n << endl;
 	std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << globalTimer.print() << __RESET__ << std::endl;
 }
 
@@ -428,15 +414,12 @@ int main(int argc, char* argv[])
 	assert(d.IsObject());
 	
 	// Mesh instanciation
-	CartesianMesh2DFactory meshFactory;
-	if (d.HasMember("mesh"))
-	{
-		rapidjson::StringBuffer strbuf;
-		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
-		d["mesh"].Accept(writer);
-		meshFactory.jsonInit(strbuf.GetString());
-	}
-	CartesianMesh2D* mesh = meshFactory.create();
+	CartesianMesh2D mesh;
+	assert(d.HasMember("mesh"));
+	rapidjson::StringBuffer strbuf;
+	rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
+	d["mesh"].Accept(writer);
+	mesh.jsonInit(strbuf.GetString());
 	
 	// Module instanciation(s)
 	BugIter::Options bugIterOptions;
@@ -454,6 +437,5 @@ int main(int argc, char* argv[])
 	bugIter->simulate();
 	
 	delete bugIter;
-	delete mesh;
 	return ret;
 }

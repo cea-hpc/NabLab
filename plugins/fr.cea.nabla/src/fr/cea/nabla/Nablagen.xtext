@@ -25,7 +25,7 @@ NablagenProvider:
 	'{'
 		'target' '=' target=TargetType ';'
 		('compatibleTargets' '=' compatibleTargets+=TargetType (',' compatibleTargets+=TargetType)* ';')?
-		'outputPath' '=' outputPath=STRING ';'
+		('outputPath' '=' outputPath=STRING ';')? // no output path if native (mesh)
 	'}';
 
 NablagenApplication:
@@ -42,7 +42,6 @@ NablagenModule: MainModule | AdditionalModule;
 MainModule:
 	'MainModule' type=[nabla::NablaModule] name=ID
 	'{'
-		'meshClassName' '=' meshClassName=STRING ';'
 		'nodeCoord' '=' nodeCoord=[nabla::ConnectivityVar]';'
 		'time' '=' time=[nabla::SimpleVar]';'
 		'timeStep' '=' timeStep=[nabla::SimpleVar]';'

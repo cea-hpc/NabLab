@@ -14,9 +14,11 @@ import com.google.inject.Singleton
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.Connectivity
+import fr.cea.nabla.nabla.DefaultExtension
 import fr.cea.nabla.nabla.ItemType
-import fr.cea.nabla.nabla.NablaExtension
+import fr.cea.nabla.nabla.MeshExtension
 import fr.cea.nabla.nabla.PrimitiveType
+import org.eclipse.xtext.EcoreUtil2
 
 @Singleton
 class IrBasicFactory
@@ -49,15 +51,36 @@ class IrBasicFactory
 			returnType = c.returnType.toIrItemType
 			if (inTypes.empty) inTypes += c.inTypes.map[toIrItemType]
 			multiple = c.multiple
+			val ext = EcoreUtil2.getContainerOfType(c, MeshExtension)
+			provider = ext.toIrMeshExtensionProvider
 		]
 	}
 
 	def toIrItemType(ItemType i)
 	{
-		i.name.toIrItemType => [annotations += i.toIrAnnotation]
+		i.name.toIrItemType =>
+		[
+			annotations += i.toIrAnnotation
+			val ext = EcoreUtil2.getContainerOfType(i, MeshExtension)
+			provider = ext.toIrMeshExtensionProvider
+		]
 	}
 
-	def create IrFactory::eINSTANCE.createExtensionProvider toIrExtensionProvider(NablaExtension ext)
+//	def toIrExtensionProvider(NablaExtension ext)
+//	{
+//		switch ext
+//		{
+//			DefaultExtension: ext.toIrDefaultExtensionProvider
+//			MeshExtension: ext.toIrMeshExtensionProvider
+//		}
+//	}
+
+	def create IrFactory::eINSTANCE.createMeshExtensionProvider toIrMeshExtensionProvider(MeshExtension ext)
+	{
+		extensionName = ext.name
+	}
+
+	def create IrFactory::eINSTANCE.createDefaultExtensionProvider toIrDefaultExtensionProvider(DefaultExtension ext)
 	{
 		extensionName = ext.name
 	}

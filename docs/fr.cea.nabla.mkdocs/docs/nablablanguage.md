@@ -6,6 +6,10 @@ A NabLab file, extension `n`, defines a `module` or an `extension`.
 
 ### Module
 
+```
+module Glace2d;
+```
+
 A `module` represents a NabLab program and its definition strictly follows the following sequence:
 
 - Imports
@@ -20,19 +24,59 @@ A module is generally associated with a [NabLab application](../ngenlanguage/ind
 
 ### Extension
 
-An `extension` is a way to extent the language with external functions. Its definition strictly follows the following sequence:
+```
+extension Math;
+```
+
+An `extension` is a way to extend the language with external functions.
+
+Its definition strictly follows the following sequence:
 
 - Imports
 - Reductions
 - Functions
 
-Functions of an extension can be called from a NabLab module. To use an extension X, a module has to import the extension with the instruction `with X.*;` (see below).
+Functions of an extension can be called from a NabLab module.
+To use an extension X, a module has to import the extension with the instruction `with X.*;` (see below).
+
+Extensions provide external functions, i.e. functions with no NabLab body. 
+Those functions are implemented in an another language, generally C or C++. 
+To link NabLab function declaration to its native definition, providers have to be defined: see [NabLab extension providers](../ngenlanguage/index.html#provider) for details.
+
+The extension and extension provider mechanisms are the way to call legacy libraries from NabLab applications.
 
 !!! note
-	The extension and extension provider mechanisms are the way to call legacy libraries, like linear algebra libraries, from NabLab applications.
+	NabLab library provides a [mathematical extension](https://github.com/cea-hpc/NabLab/blob/master/plugins/fr.cea.nabla/nablalib/Math.n) containing the ∑, ∏, Min and Max reductions and the usual mathematical functions (sin, cos, √...).
 
-Extensions provide external functions, i.e. functions with no NabLab body. Those functions are implemented in an another language, generally C or C++. To link NabLab function declaration to its native definition, providers have to be defined: see [NabLab extension providers](../ngenlanguage/index.html) for details.
+#### Linear algebra extension
 
+```
+linearalgebra extension LinearAlgebra;
+```
+
+A linear algebra extension is an extension with no reductions, only functions.
+Moreover, functions' arguments of type ℝ[x] and ℝ[x, x] will be respectively interpreted as vector and matrix.
+
+!!! note
+	NabLab library provides a [linear algebra extension](https://github.com/cea-hpc/NabLab/blob/master/plugins/fr.cea.nabla/nablalib/LinearAlgebra.n) containing some *Ax=B* functions to solve linear systems.
+
+#### Mesh extension
+
+```
+mesh extension CartesianMesh2D;
+```
+
+This kind of extension defines the interface of a mesh library.
+
+Its definition strictly follows the following sequence:
+
+- Item types
+- Connectivities
+
+The syntax of item types and connectivities is described below.
+
+!!! note
+	NabLab library provides a [mesh extension](https://github.com/cea-hpc/NabLab/blob/master/plugins/fr.cea.nabla/nablalib/CartesianMesh2D.n) containing the signature of a 2D cartesian mesh used by NabLab examples.
 
 ## Imports
 
@@ -49,7 +93,7 @@ with Math.*;
 with LinearAlgebra.*;
 ```
 
-## Items and connectivities
+## Item types and connectivities
 
 Items are elements of a set, typically mesh elements. The various types of items are defined in a set.
 

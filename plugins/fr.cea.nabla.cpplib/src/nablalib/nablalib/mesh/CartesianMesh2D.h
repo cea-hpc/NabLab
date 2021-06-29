@@ -29,12 +29,7 @@ public:
 	static constexpr int MaxNbFacesOfCell = 4;
 	static constexpr int MaxNbNeighbourCells = 4;
 
-	CartesianMesh2D(MeshGeometry<2>* geometry, const vector<Id>& inner_nodes_ids,
-                  const vector<Id>& top_nodes_ids, const vector<Id>& bottom_nodes_ids,
-                  const vector<Id>& left_nodes_ids, const vector<Id>& right_nodes_ids,
-                  const Id top_left_node_id, const Id top_right_node_id,
-                  const Id bottom_left_node_id, const Id bottom_right_node_id,
-                  const vector<Id>& inner_cells_ids_ , const vector<Id>& outer_cells_ids_);
+	void jsonInit(const char* jsonContent);
 
 	MeshGeometry<2>* getGeometry() noexcept { return m_geometry; }
 
@@ -153,14 +148,20 @@ public:
 
 	inline vector<Id> cellsOfNodeCollection(const vector<Id>& nodes);
 
+	void create(size_t nb_x_quads, size_t nb_y_quads, double x_size, double y_size);
+
 private:
 	MeshGeometry<2>* m_geometry;
+
+	size_t m_nb_x_quads;
+	size_t m_nb_y_quads;
 
 	vector<Id> m_inner_nodes;
 	vector<Id> m_top_nodes;
 	vector<Id> m_bottom_nodes;
 	vector<Id> m_left_nodes;
 	vector<Id> m_right_nodes;
+
 	Id m_top_left_node;
 	Id m_top_right_node;
 	Id m_bottom_left_node;
@@ -183,9 +184,6 @@ private:
 
 	vector<Id> m_inner_cells;
 	vector<Id> m_outer_cells;
-
-	size_t m_nb_x_quads;
-	size_t m_nb_y_quads;
 };
 
 }

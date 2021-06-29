@@ -2,22 +2,17 @@
 
 package test;
 
-import static org.iq80.leveldb.impl.Iq80DBFactory.bytes;
-import static org.iq80.leveldb.impl.Iq80DBFactory.factory;
-
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.stream.IntStream;
 
-import com.google.gson.JsonElement;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.JsonElement;
 
 import fr.cea.nabla.javalib.*;
 import fr.cea.nabla.javalib.mesh.*;
 
-@SuppressWarnings("all")
 public final class Test
 {
 	public final static class Options
@@ -29,10 +24,8 @@ public final class Test
 
 		public void jsonInit(final String jsonContent)
 		{
-			final JsonParser parser = new JsonParser();
-			final JsonElement json = parser.parse(jsonContent);
-			assert(json.isJsonObject());
-			final JsonObject o = json.getAsJsonObject();
+			final Gson gson = new Gson();
+			final JsonObject o = gson.fromJson(jsonContent, JsonObject.class);
 			// maxTime
 			if (o.has("maxTime"))
 			{
@@ -65,6 +58,7 @@ public final class Test
 
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
+	@SuppressWarnings("unused")
 	private final int nbNodes, nbCells;
 
 	// User options
@@ -222,7 +216,8 @@ public final class Test
 		do
 		{
 			n++;
-			System.out.printf("[%5d] t: %5.5f - deltat: %5.5f\n", n, t_n, options.deltat);
+			System.out.printf("START ITERATION n: %5d - t: %5.5f - deltat: %5.5f\n", n, t_n, options.deltat);
+		
 			computeE1(); // @1.0
 			updateT(); // @1.0
 			initE2(); // @2.0
@@ -234,19 +229,18 @@ public final class Test
 			// Evaluate loop condition with variables at time n
 			continueLoop = (n + 1 < options.maxIter && t_nplus1 < options.maxTime);
 		
-			if (continueLoop)
+			t_n = t_nplus1;
+			IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
 			{
-				t_n = t_nplus1;
-				IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
-				{
-					e2_n[i1Cells] = e2_nplus1[i1Cells];
-				});
-				IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
-				{
-					e_n[i1Cells] = e_nplus1[i1Cells];
-				});
-			} 
+				e2_n[i1Cells] = e2_nplus1[i1Cells];
+			});
+			IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
+			{
+				e_n[i1Cells] = e_nplus1[i1Cells];
+			});
 		} while (continueLoop);
+		
+		System.out.printf("FINAL TIME: %5.5f - deltat: %5.5f\n", t_n, options.deltat);
 	}
 
 	/**
@@ -274,19 +268,17 @@ public final class Test
 		do
 		{
 			k++;
-			System.out.printf("	[%5d] t: %5.5f - deltat: %5.5f\n", k, t_n, options.deltat);
+			System.out.printf("Start iteration k: %5d\n", k);
+		
 			computeE2(); // @1.0
 		
 			// Evaluate loop condition with variables at time n
 			continueLoop = (k + 1 < 10);
 		
-			if (continueLoop)
+			IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
 			{
-				IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
-				{
-					e2_nplus1_k[i1Cells] = e2_nplus1_kplus1[i1Cells];
-				});
-			} 
+				e2_nplus1_k[i1Cells] = e2_nplus1_kplus1[i1Cells];
+			});
 		} while (continueLoop);
 	}
 
@@ -330,16 +322,14 @@ public final class Test
 	{
 		if (args.length == 1)
 		{
-			String dataFileName = args[0];
-			JsonParser parser = new JsonParser();
-			JsonObject o = parser.parse(new FileReader(dataFileName)).getAsJsonObject();
-			int ret = 0;
+			final String dataFileName = args[0];
+			final Gson gson = new Gson();
+			final JsonObject o = gson.fromJson(new FileReader(dataFileName), JsonObject.class);
 
 			// Mesh instanciation
 			assert(o.has("mesh"));
-			CartesianMesh2DFactory meshFactory = new CartesianMesh2DFactory();
-			meshFactory.jsonInit(o.get("mesh").toString());
-			CartesianMesh2D mesh = meshFactory.create();
+			CartesianMesh2D mesh = new CartesianMesh2D();
+			mesh.jsonInit(o.get("mesh").toString());
 
 			// Module instanciation(s)
 			Test.Options testOptions = new Test.Options();

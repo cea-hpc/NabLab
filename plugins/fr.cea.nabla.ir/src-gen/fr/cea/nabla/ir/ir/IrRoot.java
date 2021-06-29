@@ -14,13 +14,10 @@ import org.eclipse.emf.common.util.EList;
  * </p>
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getName <em>Name</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getItemTypes <em>Item Types</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getConnectivities <em>Connectivities</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getVariables <em>Variables</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getJobs <em>Jobs</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getMain <em>Main</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getModules <em>Modules</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getMeshClassName <em>Mesh Class Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getInitNodeCoordVariable <em>Init Node Coord Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getNodeCoordVariable <em>Node Coord Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getCurrentTimeVariable <em>Current Time Variable</em>}</li>
@@ -28,6 +25,7 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getTimeStepVariable <em>Time Step Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getPostProcessing <em>Post Processing</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getProviders <em>Providers</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getMesh <em>Mesh</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getIrRoot()
@@ -56,30 +54,6 @@ public interface IrRoot extends IrAnnotable {
 	 * @generated
 	 */
 	void setName(String value);
-
-	/**
-	 * Returns the value of the '<em><b>Item Types</b></em>' containment reference list.
-	 * The list contents are of type {@link fr.cea.nabla.ir.ir.ItemType}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Item Types</em>' containment reference list.
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrRoot_ItemTypes()
-	 * @model containment="true" resolveProxies="true"
-	 * @generated
-	 */
-	EList<ItemType> getItemTypes();
-
-	/**
-	 * Returns the value of the '<em><b>Connectivities</b></em>' containment reference list.
-	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Connectivity}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Connectivities</em>' containment reference list.
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrRoot_Connectivities()
-	 * @model containment="true"
-	 * @generated
-	 */
-	EList<Connectivity> getConnectivities();
 
 	/**
 	 * Returns the value of the '<em><b>Variables</b></em>' reference list.
@@ -138,28 +112,6 @@ public interface IrRoot extends IrAnnotable {
 	 * @generated
 	 */
 	EList<IrModule> getModules();
-
-	/**
-	 * Returns the value of the '<em><b>Mesh Class Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Mesh Class Name</em>' attribute.
-	 * @see #setMeshClassName(String)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrRoot_MeshClassName()
-	 * @model required="true"
-	 * @generated
-	 */
-	String getMeshClassName();
-
-	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.IrRoot#getMeshClassName <em>Mesh Class Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Mesh Class Name</em>' attribute.
-	 * @see #getMeshClassName()
-	 * @generated
-	 */
-	void setMeshClassName(String value);
 
 	/**
 	 * Returns the value of the '<em><b>Init Node Coord Variable</b></em>' reference.
@@ -295,7 +247,7 @@ public interface IrRoot extends IrAnnotable {
 
 	/**
 	 * Returns the value of the '<em><b>Providers</b></em>' containment reference list.
-	 * The list contents are of type {@link fr.cea.nabla.ir.ir.ExtensionProvider}.
+	 * The list contents are of type {@link fr.cea.nabla.ir.ir.DefaultExtensionProvider}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Providers</em>' containment reference list.
@@ -303,6 +255,28 @@ public interface IrRoot extends IrAnnotable {
 	 * @model containment="true" resolveProxies="true"
 	 * @generated
 	 */
-	EList<ExtensionProvider> getProviders();
+	EList<DefaultExtensionProvider> getProviders();
+
+	/**
+	 * Returns the value of the '<em><b>Mesh</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Mesh</em>' containment reference.
+	 * @see #setMesh(MeshExtensionProvider)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrRoot_Mesh()
+	 * @model containment="true" resolveProxies="true" required="true"
+	 * @generated
+	 */
+	MeshExtensionProvider getMesh();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.IrRoot#getMesh <em>Mesh</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Mesh</em>' containment reference.
+	 * @see #getMesh()
+	 * @generated
+	 */
+	void setMesh(MeshExtensionProvider value);
 
 } // IrRoot

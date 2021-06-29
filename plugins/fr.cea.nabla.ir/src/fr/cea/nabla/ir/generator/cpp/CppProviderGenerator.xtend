@@ -13,7 +13,7 @@ import fr.cea.nabla.ir.IrTypeExtensions
 import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.generator.ProviderGenerator
 import fr.cea.nabla.ir.generator.Utils
-import fr.cea.nabla.ir.ir.ExtensionProvider
+import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.Function
 import java.util.ArrayList
 
@@ -27,7 +27,7 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 		super(backend)
 	}
 
-	override getGenerationContents(ExtensionProvider provider)
+	override getGenerationContents(DefaultExtensionProvider provider)
 	{
 		val fileContents = new ArrayList<GenerationContent>
 		fileContents += new GenerationContent(provider.interfaceName + ".h", getInterfaceHeaderFileContent(provider), false)
@@ -45,7 +45,7 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 		return fileContents
 	}
 
-	private def getInterfaceHeaderFileContent(ExtensionProvider provider)
+	private def getInterfaceHeaderFileContent(DefaultExtensionProvider provider)
 	'''
 		«Utils::fileHeader»
 
@@ -76,7 +76,7 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 		#endif
 	'''
 
-	private def getHeaderFileContent(ExtensionProvider provider)
+	private def getHeaderFileContent(DefaultExtensionProvider provider)
 	'''
 		#ifndef «provider.className.HDefineName»
 		#define «provider.className.HDefineName»
@@ -107,7 +107,7 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 		#endif
 	'''
 
-	private def getSourceFileContent(ExtensionProvider provider)
+	private def getSourceFileContent(DefaultExtensionProvider provider)
 	'''
 		#include "«provider.className».h"
 		#include <string>
@@ -122,7 +122,7 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 		«ENDFOR»
 	'''
 
-	private def getVectorHeaderFileContent(ExtensionProvider provider)
+	private def getVectorHeaderFileContent(DefaultExtensionProvider provider)
 	'''
 		#ifndef «IrTypeExtensions.VectorClass.HDefineName»
 		#define «IrTypeExtensions.VectorClass.HDefineName»
@@ -146,7 +146,7 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 		#endif
 	'''
 
-	private def getVectorSourceFileContent(ExtensionProvider provider)
+	private def getVectorSourceFileContent(DefaultExtensionProvider provider)
 	'''
 		#include "«IrTypeExtensions.VectorClass».h"
 
@@ -188,7 +188,7 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 		}
 	'''
 
-	private def getMatrixHeaderFileContent(ExtensionProvider provider)
+	private def getMatrixHeaderFileContent(DefaultExtensionProvider provider)
 	'''
 		#ifndef «IrTypeExtensions.MatrixClass.HDefineName»
 		#define «IrTypeExtensions.MatrixClass.HDefineName»
@@ -211,7 +211,7 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 		#endif
 	'''
 
-	private def getMatrixSourceFileContent(ExtensionProvider provider)
+	private def getMatrixSourceFileContent(DefaultExtensionProvider provider)
 	'''
 		#include "«IrTypeExtensions.MatrixClass».h"
 

@@ -28,7 +28,7 @@ abstract class AbstractBinaryOperationsInterpreterTest
 	{
 		val model =
 		'''
-		«testModuleForSimulation»
+		«testModule»
 		let ℾ b1 = true || false; // -> true
 		let ℾ b2 = true || true; // -> true
 		let ℾ b3 = false || false; // -> false
@@ -54,7 +54,7 @@ abstract class AbstractBinaryOperationsInterpreterTest
 	{
 		val model =
 		'''
-		«testModuleForSimulation»
+		«testModule»
 		let ℾ b1 = 1 == 2; // -> false
 		let ℾ b2 = 1 == 1; // -> true
 
@@ -90,7 +90,7 @@ abstract class AbstractBinaryOperationsInterpreterTest
 	{
 		val model =
 		'''
-		«testModuleForSimulation»
+		«testModule»
 		let ℾ b1 = 1 == 2.; // -> false
 		let ℾ b2 = 1 == 1; // -> true
 
@@ -125,7 +125,7 @@ abstract class AbstractBinaryOperationsInterpreterTest
 	{
 		val model =
 		'''
-		«testModuleForSimulation»
+		«testModule»
 		let ℕ[2] n1 = [1,2];
 		let ℕ[2] n2 = 3 + n1;
 		let ℕ[2] n3 = 3 * n1;

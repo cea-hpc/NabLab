@@ -15,10 +15,10 @@ import fr.cea.nabla.nabla.Arg
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.ConnectivityVar
+import fr.cea.nabla.nabla.DefaultExtension
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.FunctionTypeDeclaration
-import fr.cea.nabla.nabla.NablaExtension
 import fr.cea.nabla.nabla.NablaRoot
 import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.nabla.SimpleVar
@@ -31,7 +31,7 @@ class LinearAlgebraUtils
 {
 	@Inject extension ArgOrVarExtensions
 
-	def NablaExtension getLinearAlgebraExtension(EObject o)
+	def DefaultExtension getLinearAlgebraExtension(EObject o)
 	{
 		switch o
 		{
@@ -40,7 +40,7 @@ class LinearAlgebraUtils
 			FunctionCall: return o.function.linearAlgebraExtension
 			Function:
 			{
-				val ext = EcoreUtil2.getContainerOfType(o, NablaExtension)
+				val ext = EcoreUtil2.getContainerOfType(o, DefaultExtension)
 				if (ext !== null && ext.linearAlgebra) ext
 				else null
 			}

@@ -1,5 +1,8 @@
 # My first extension
 
+!!! note
+	NabLab defines three kinds of extension: default, linear algebra and mesh. This tutorial covers the default one.
+
 ## Presentation of the problem
 
 Let us imagine the NabLab *Swan* module simulating the effects of the propagation of seismic waves on sea surface. To wave height variable `H` and the depth sea variable `D` need to be initialized thanks to the following `InitH` and `InitD` jobs:

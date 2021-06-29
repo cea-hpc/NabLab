@@ -9,7 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.javalib.mesh.test
 
-import fr.cea.nabla.javalib.mesh.CartesianMesh2DFactory
+import fr.cea.nabla.javalib.mesh.CartesianMesh2D
 import org.junit.Test
 
 import static org.junit.Assert.*
@@ -24,7 +24,7 @@ import static org.junit.Assert.*
  *   | 0  | 1  | 2  | 3  |          1    3    5    7    8
  *   0----1----2----3----4          |-0--|-2--|-4--|-6--|
  */
-class CartesianMesh2DFactoryTest
+class CartesianMesh2DTest
 {
 	val nbXQuads = 4
 	val nbYQuads = 3
@@ -34,8 +34,7 @@ class CartesianMesh2DFactoryTest
 	@Test
 	def void testGeometry()
 	{
-		val f = new CartesianMesh2DFactory(nbXQuads, nbYQuads, xSize, ySize)
-		val mesh = f.create()
+		val mesh = new CartesianMesh2D(nbXQuads, nbYQuads, xSize, ySize)
 		mesh.dump()
 
 		val nbQuads = nbXQuads * nbYQuads
@@ -69,8 +68,7 @@ class CartesianMesh2DFactoryTest
 	@Test
 	def void testTopology()
 	{
-		val f = new CartesianMesh2DFactory(nbXQuads, nbYQuads, xSize, ySize)
-		val mesh = f.create()
+		val mesh = new CartesianMesh2D(nbXQuads, nbYQuads, xSize, ySize)
 
 		assertEquals((nbXQuads + 1) * (nbYQuads + 1), mesh.nbNodes)
 		assertEquals(nbXQuads * nbYQuads, mesh.nbCells)
@@ -107,8 +105,7 @@ class CartesianMesh2DFactoryTest
 	@Test
 	def void testConnectivity()
 	{
-		val f = new CartesianMesh2DFactory(nbXQuads, nbYQuads, xSize, ySize)
-		val mesh = f.create()
+		val mesh = new CartesianMesh2D(nbXQuads, nbYQuads, xSize, ySize)
 
 		assertArrayEquals(#[0, 1, 6, 5], mesh.getNodesOfCell(0))
 
@@ -183,8 +180,7 @@ class CartesianMesh2DFactoryTest
 	def void testConnectivityOnBigMesh()
 	{
 //		var startTime = LocalDateTime.now
-		val f = new CartesianMesh2DFactory(40, 30, xSize, ySize)
-		val mesh = f.create()
+		val mesh = new CartesianMesh2D(40, 30, xSize, ySize)
 
 //		var endTime = LocalDateTime.now()
 //		var duration = Duration.between(startTime, endTime);
@@ -196,8 +192,7 @@ class CartesianMesh2DFactoryTest
 	def void testConnectivityOnHugeMesh()
 	{
 //		var startTime = LocalDateTime.now
-		val f = new CartesianMesh2DFactory(400, 300, xSize, ySize)
-		val mesh = f.create()
+		val mesh = new CartesianMesh2D(400, 300, xSize, ySize)
 
 //		var endTime = LocalDateTime.now()
 //		var duration = Duration.between(startTime, endTime);

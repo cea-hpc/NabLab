@@ -14,8 +14,9 @@ import com.google.inject.Provider
 import fr.cea.nabla.ArgOrVarExtensions
 import fr.cea.nabla.NablaModuleExtensions
 import fr.cea.nabla.nabla.Affectation
+import fr.cea.nabla.nabla.ConnectivityVar
+import fr.cea.nabla.nabla.DefaultExtension
 import fr.cea.nabla.nabla.Job
-import fr.cea.nabla.nabla.NablaExtension
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaRoot
 import fr.cea.nabla.nabla.Var
@@ -55,7 +56,7 @@ class ExpressionTypeProviderTest
 	@Inject extension NablaModuleExtensions
 	@Inject extension TestUtils
 
-	val nablaextModel =
+	val lightLinearAlgebraModel =
 	'''
 	linearalgebra extension LinearAlgebra;
 
@@ -67,12 +68,7 @@ class ExpressionTypeProviderTest
 	module Test;
 
 	with LinearAlgebra.*;
-
-	itemtypes { node, cell }
-
-	connectivity cells: → {cell};
-	connectivity nodesOfCell: cell → {node};
-	connectivity nodes: → {node};
+	with CartesianMesh2D.*;
 
 	def reduceMin, ℝ.MaxValue: ℝ, (a, b) → return a;
 
@@ -148,17 +144,19 @@ class ExpressionTypeProviderTest
 	'''
 
 	//TODO : add a BinaryOperationsTypeProviderTest to cover all cases
-	@Test 
-	def void testGetTypeFor() 
+	@Test
+	def void testGetTypeFor()
 	{
 		val rs = resourceSetProvider.get
-		val ext = parseHelper.parse(nablaextModel, rs) as NablaExtension
+		parseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DPath), rs)
+		val linearAlgebraExt = parseHelper.parse(lightLinearAlgebraModel, rs) as DefaultExtension
 		val module = parseHelper.parse(nablaModel, rs) as NablaModule
 		Assert.assertNotNull(module)
 		Assert.assertEquals(0, module.validate.filter(i | i.severity == Severity.ERROR).size)
 
- 		val cells = module.getConnectivityByName("cells")
- 		val nodesOfCell = module.getConnectivityByName("nodesOfCell")
+		val xVar = module.getVariableByName("x") as ConnectivityVar
+ 		val cells = xVar.supports.get(0)
+ 		val nodesOfCell = xVar.supports.get(1)
 		val computeV = module.getJobByName("ComputeV")
 		val computeX = module.getJobByName("ComputeX")
 
@@ -207,8 +205,8 @@ class ExpressionTypeProviderTest
 		assertTypesFor(new NablaConnectivityType(#[cells, nodesOfCell], new NSTRealArray1D(createIntConstant(2))), module, "w")
 		assertTypesFor(new NablaConnectivityType(#[cells, nodesOfCell], new NSTRealScalar), module, "x")
 
-		assertTypesFor(new NLATMatrix(ext, createCardExpression(cells), createCardExpression(cells)), module, "α")
-		assertTypesFor(new NLATVector(ext, createCardExpression(cells)), module, "u")
+		assertTypesFor(new NLATMatrix(linearAlgebraExt, createCardExpression(cells), createCardExpression(cells)), module, "α")
+		assertTypesFor(new NLATVector(linearAlgebraExt, createCardExpression(cells)), module, "u")
 
 		assertTypesFor(new NSTRealScalar, computeV, "v")
 

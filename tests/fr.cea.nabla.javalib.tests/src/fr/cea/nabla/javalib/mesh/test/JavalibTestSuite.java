@@ -16,7 +16,7 @@ import org.junit.runners.Suite;
 
 @Suite.SuiteClasses
 ({
-	CartesianMesh2DFactoryTest.class,
+	CartesianMesh2DTest.class,
 	EdgeTest.class,
 	QuadTest.class
 })

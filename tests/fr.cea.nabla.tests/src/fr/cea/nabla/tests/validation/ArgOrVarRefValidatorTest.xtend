@@ -10,7 +10,7 @@
 package fr.cea.nabla.tests.validation
 
 import com.google.inject.Inject
-import fr.cea.nabla.NablaModuleExtensions
+import com.google.inject.Provider
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.tests.NablaInjectorProvider
@@ -18,6 +18,7 @@ import fr.cea.nabla.tests.TestUtils
 import fr.cea.nabla.validation.ArgOrVarRefValidator
 import fr.cea.nabla.validation.BasicValidator
 import fr.cea.nabla.validation.ValidationUtils
+import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.eclipse.xtext.testing.util.ParseHelper
@@ -31,10 +32,10 @@ import org.junit.runner.RunWith
 class ArgOrVarRefValidatorTest
 {
 	@Inject ParseHelper<NablaModule> parseHelper
+	@Inject Provider<ResourceSet> resourceSetProvider
 	@Inject extension ValidationUtils
 	@Inject extension TestUtils
 	@Inject extension ValidationTestHelper
-	@Inject extension NablaModuleExtensions
 
 	@Test
 	def void testCheckIndicesNumber()
@@ -46,8 +47,7 @@ class ArgOrVarRefValidatorTest
 			let ℕ[2] b = a[0]; // Wrong number of args
 			let ℕ[2] c = ℕ[2](0);
 			let ℕ d = c[0,1]; // Wrong number of args
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleKo)
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.argOrVarRef,
@@ -63,8 +63,7 @@ class ArgOrVarRefValidatorTest
 			«emptyTestModule»
 			let ℕ[2,2] a = ℕ[2,2](0);
 			let ℕ b = a[0,0];
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
@@ -72,15 +71,16 @@ class ArgOrVarRefValidatorTest
 	@Test
 	def void testCheckSpaceIteratorNumberAndType()
 	{
+		val rs = resourceSetProvider.get
+		parseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DPath), rs)
 		val moduleKo = parseHelper.parse(
 			'''
-			«testModuleForSimulation»
+			«testModule»
 			ℝ u{cells}, v{cells, nodesOfCell}, w{nodes};
 			ComputeU: ∀ j∈cells(), ∀r∈nodesOfCell(j), u{j,r} = 1.;
 			ComputeV: ∀ j∈cells(), ∀r∈nodesOfCell(j), v{j} = 1.;
 			ComputeW: ∀ j∈cells(), w{j} = 1.;
-			'''
-		)
+			''', rs)
 		Assert.assertNotNull(moduleKo)
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.argOrVarRef,
@@ -91,22 +91,18 @@ class ArgOrVarRefValidatorTest
 			ArgOrVarRefValidator::SPACE_ITERATOR_NUMBER,
 			ArgOrVarRefValidator::getSpaceIteratorNumberMsg(2,1))
 
-		val node = moduleKo.getItemTypeByName("node").name
-		val cell = moduleKo.getItemTypeByName("cell").name
-
 		moduleKo.assertError(NablaPackage.eINSTANCE.argOrVarRef,
 			ArgOrVarRefValidator::SPACE_ITERATOR_TYPE, 
-			getTypeMsg(node, cell))
+			getTypeMsg("node", "cell"))
 
 		val moduleOk =  parseHelper.parse(
 			'''
-			«testModuleForSimulation»
+			«testModule»
 			ℝ u{cells}, v{cells, nodesOfCell}, w{nodes};
 			ComputeU: ∀ j∈cells(), ∀r∈nodesOfCell(j), u{j} = 1.;
 			ComputeV: ∀ j∈cells(), ∀r∈nodesOfCell(j), v{j,r} = 1.;
 			ComputeW: ∀ j∈nodes(), w{j} = 1.;
-			'''
-		)
+			''', rs)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
@@ -114,15 +110,16 @@ class ArgOrVarRefValidatorTest
 	@Test
 	def void testCheckRequiredTimeIterator()
 	{
+		val rs = resourceSetProvider.get
+		parseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DPath), rs)
 		val moduleKo = parseHelper.parse(
 			'''
-			«testModuleForSimulation»
+			«testModule»
 			ℝ u, v;
 			iterate n while(true);
 			ComputeU: u^{n+1} = u^{n} + 6.0;
 			ComputeV: v = u + 4.0; // Wrong: must be u^{n}
-			'''
-		)
+			''', rs)
 		Assert.assertNotNull(moduleKo)
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.argOrVarRef,
@@ -131,13 +128,12 @@ class ArgOrVarRefValidatorTest
 
 		val moduleOk =  parseHelper.parse(
 			'''
-			«testModuleForSimulation»
+			«testModule»
 			ℝ u, v;
 			iterate n while(true);
 			ComputeU: u^{n+1} = u^{n} + 6.0;
 			ComputeV: v = u^{n} + 4.0; // Wrong: must be u^{n}
-			'''
-		)
+			''', rs)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
@@ -145,16 +141,17 @@ class ArgOrVarRefValidatorTest
 	@Test
 	def void testCheckIllegalTimeIterator()
 	{
+		val rs = resourceSetProvider.get
+		parseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DPath), rs)
 		val moduleKo1 = parseHelper.parse(
 			'''
-			«testModuleForSimulation»
+			«testModule»
 			let ℝ u=0;
 			ℝ v;
 			iterate n while(true);
 			ComputeU: u^{n+1} = u^{n} + 6.0;
 			ComputeV: v = u + 4.0; // Wrong: must be u^{n}
-			'''
-		)
+			''', rs)
 		Assert.assertNotNull(moduleKo1)
 		moduleKo1.assertError(NablaPackage.eINSTANCE.argOrVarRef,
 			ArgOrVarRefValidator::ILLEGAL_TIME_ITERATOR,
@@ -162,14 +159,13 @@ class ArgOrVarRefValidatorTest
 
 		val moduleKo2 = parseHelper.parse(
 			'''
-			«testModuleForSimulation»
+			«testModule»
 			option ℝ u;
 			ℝ v;
 			iterate n while(true);
 			ComputeU: u^{n+1} = u^{n} + 6.0;
 			ComputeV: v = u + 4.0; // Wrong: must be u^{n}
-			'''
-		)
+			''', rs)
 		Assert.assertNotNull(moduleKo2)
 		moduleKo2.assertError(NablaPackage.eINSTANCE.argOrVarRef,
 			ArgOrVarRefValidator::ILLEGAL_TIME_ITERATOR,
@@ -177,13 +173,12 @@ class ArgOrVarRefValidatorTest
 
 		val moduleKo3 = parseHelper.parse(
 			'''
-			«testModuleForSimulation»
+			«testModule»
 			ℝ u, v;
 			iterate n while(true);
 			ComputeU: u^{n+1} = u^{n} + n^{n} + 6.0;
 			ComputeV: v = u + 4.0; // Wrong: must be u^{n}
-			'''
-		)
+			''', rs)
 		Assert.assertNotNull(moduleKo3)
 		moduleKo3.assertError(NablaPackage.eINSTANCE.argOrVarRef,
 			ArgOrVarRefValidator::ILLEGAL_TIME_ITERATOR,
@@ -191,13 +186,12 @@ class ArgOrVarRefValidatorTest
 
 		val moduleOk =  parseHelper.parse(
 			'''
-			«testModuleForSimulation»
+			«testModule»
 			ℝ u, v;
 			iterate n while(true);
 			ComputeU: u^{n+1} = u^{n} + 6.0;
 			ComputeV: v = u^{n} + 4.0; // Wrong: must be u^{n}
-			'''
-		)
+			''', rs)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
@@ -205,13 +199,14 @@ class ArgOrVarRefValidatorTest
 	@Test
 	def void testCheckIndicesExpressionAndType()
 	{
+		val rs = resourceSetProvider.get
+		parseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DPath), rs)
 		val moduleKo1 = parseHelper.parse(
 			'''
-			«testModuleForSimulation»
+			«testModule»
 			let ℕ[2] a = ℕ[2](0);
 			let ℕ m = a[2.3];
-			'''
-		)
+			''', rs)
 		Assert.assertNotNull(moduleKo1)
 		moduleKo1.assertError(NablaPackage.eINSTANCE.argOrVarRef,
 			BasicValidator::TYPE_EXPRESSION_TYPE,
@@ -219,12 +214,11 @@ class ArgOrVarRefValidatorTest
 
 		val moduleKo2 = parseHelper.parse(
 			'''
-			«testModuleForSimulation»
+			«testModule»
 			let ℕ[2] a = ℕ[2](0);
 			let ℝ b = 1.2;
 			let ℕ o = a[b];
-			'''
-		)
+			''', rs)
 		Assert.assertNotNull(moduleKo2)
 		moduleKo2.assertError(NablaPackage.eINSTANCE.argOrVarRef,
 			BasicValidator::TYPE_EXPRESSION_TYPE,
@@ -232,15 +226,14 @@ class ArgOrVarRefValidatorTest
 
 		val moduleOk =  parseHelper.parse(
 			'''
-			«testModuleForSimulation»
+			«testModule»
 			let ℕ[2] a = ℕ[2](0);
 			let ℕ b = 1;
 
 			let ℕ m = a[2];
 			let ℕ o = a[b];
 			let ℕ p = a[b + 4];
-			'''
-		)
+			''', rs)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
@@ -248,14 +241,15 @@ class ArgOrVarRefValidatorTest
 	@Test
 	def void testCheckNullType()
 	{
+		val rs = resourceSetProvider.get
+		parseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DPath), rs)
 		val moduleKo = parseHelper.parse(
 			'''
-			«testModuleForSimulation»
+			«testModule»
 			ℝ[2] X{nodes};
 			ℝ x{nodes};
 			InitY : y = X[1]; // wrong syntax. Precise space iterator before indice
-			'''
-		)
+			''', rs)
 		Assert.assertNotNull(moduleKo)
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.argOrVarRef,
@@ -264,12 +258,11 @@ class ArgOrVarRefValidatorTest
 
 		val moduleOk =  parseHelper.parse(
 			'''
-			«testModuleForSimulation»
+			«testModule»
 			ℝ[2] X{nodes};
 			ℝ y{nodes};
 			InitY : ∀r ∈nodes(), y{r} = X{r}[1];
-			'''
-		)
+			''', rs)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}

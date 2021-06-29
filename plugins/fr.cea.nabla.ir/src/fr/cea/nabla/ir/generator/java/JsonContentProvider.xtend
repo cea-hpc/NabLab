@@ -21,7 +21,10 @@ import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider
 @Data
 class JsonContentProvider
 {
-	static def getJsonName(String varName) { 'valueof_' + varName }
+	static def getJsonName(String varName)
+	{
+		'valueof_' + varName
+	}
 
 	static def getJsonContent(String name, BaseType type, Expression defaultValue)
 	'''

@@ -83,7 +83,6 @@ class NablagenFileGenerator extends StandaloneGeneratorBase
 
 		MainModule «nablaModuleName» «nablaModuleName.toFirstLower»
 		{
-			meshClassName = "CartesianMesh2D";
 			nodeCoord = X;
 			time = t;
 			timeStep = δt;

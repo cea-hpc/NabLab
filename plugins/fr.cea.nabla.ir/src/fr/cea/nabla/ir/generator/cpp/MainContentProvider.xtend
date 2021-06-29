@@ -45,15 +45,12 @@ class MainContentProvider
 		assert(d.IsObject());
 
 		// Mesh instanciation
-		«meshClassName»Factory meshFactory;
-		if (d.HasMember("mesh"))
-		{
-			rapidjson::StringBuffer strbuf;
-			rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
-			d["mesh"].Accept(writer);
-			meshFactory.jsonInit(strbuf.GetString());
-		}
-		«meshClassName»* mesh = meshFactory.create();
+		«meshClassName» mesh;
+		assert(d.HasMember("mesh"));
+		rapidjson::StringBuffer strbuf;
+		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
+		d["mesh"].Accept(writer);
+		mesh.jsonInit(strbuf.GetString());
 
 		// Module instanciation(s)
 		«FOR m : irRoot.modules»
@@ -81,7 +78,6 @@ class MainContentProvider
 		«FOR m : irRoot.modules.reverseView»
 			delete «m.name»;
 		«ENDFOR»
-		delete mesh;
 	'''
 
 	private def getInstanciation(IrModule it)

@@ -62,7 +62,6 @@ The launch of a runtime Eclipse displays a warning of unsatisfied dependency on 
 To first build NabLab from source
 - open fr.cea.nabla.ir/model/Ir.genmodel and Generate Model Code by right click on NablaIR
 - right click on fr.cea.nabla/src/fr.cea.nabla/GenerateNabla.mwe2 and choose Run As > MWE2 Workflow
-- in terminal 'cd plugins/fr.cea.nabla.ir/resources/' and './import.sh'
 
 # Licence and copyright
 

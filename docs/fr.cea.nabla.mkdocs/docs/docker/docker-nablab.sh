@@ -24,10 +24,10 @@ then
    exit 1
 fi
 
-USER=$(id -un)
+USER="appusr"
 USER_ID=$(id -u)
 USER_GID=$(id -g)
-DOCKER_HOSTNAME="$(hostname)-docker"
+DOCKER_HOSTNAME="nablab-docker"
 
 DOCKERFILE_DIR=/tmp/${USER}/nablab.docker
 mkdir -p ${DOCKERFILE_DIR}
@@ -75,16 +75,18 @@ RUN cmake ../kokkos-kernels-3.0.00 -DCMAKE_CXX_COMPILER=g++ -DCMAKE_INSTALL_PREF
 ENV KOKKOS_HOME=/kokkos/install
 
 RUN apt-get install -y default-jdk
+
+WORKDIR /
 RUN apt-get install -y maven
 
-#WORKDIR /
 #RUN git clone https://github.com/cea-hpc/NabLab.git /NabLab
 
 #RUN chown -R ${USER} /NabLab
-#WORKDIR "/NabLab"
+#WORKDIR /NabLab
 #RUN mvn clean -P build,updatesite; mvn verify -P build,updatesite; chown -R ${USER} /tmp
 #RUN mvn clean; mvn verify -Dmaven.test.skip=true; chown -R ${USER} /tmp
 #RUN mvn clean; mvn verify; chown -R ${USER} /tmp
+#RUN mvn clean;
 
 EOF
 

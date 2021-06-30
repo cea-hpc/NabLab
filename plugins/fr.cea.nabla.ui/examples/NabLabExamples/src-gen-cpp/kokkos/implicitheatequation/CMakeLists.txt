@@ -5,7 +5,7 @@ cmake_policy(SET CMP0074 NEW)
 set(CMAKE_VERBOSE_MAKEFILE FALSE)
 
 # SET VARIABLES
-set(CMAKE_CXX_COMPILER /usr/bin/g++ CACHE STRING "")
+set(CMAKE_CXX_COMPILER /usr/bin/g++)
 set(Kokkos_ROOT $ENV{HOME}/kokkos/kokkos-install)
 set(KokkosKernels_ROOT $ENV{HOME}/kokkos/kokkos-install)
 set(N_WS_PATH $ENV{HOME}/workspaces/NabLab/plugins/fr.cea.nabla.ui/examples)

@@ -37,7 +37,7 @@ Java
 Kokkos
 {
 	outputPath = "/NabLabExamples/src-gen-cpp/kokkos";
-	N_CXX_COMPILER = "/usr/bin/g++";
+	CMAKE_CXX_COMPILER = "/usr/bin/g++";
 	Kokkos_ROOT = "$ENV{HOME}/kokkos/kokkos-install";
 	KokkosKernels_ROOT = "$ENV{HOME}/kokkos/kokkos-install";
 }
@@ -45,7 +45,7 @@ Kokkos
 KokkosTeamThread
 {
 	outputPath = "/NabLabExamples/src-gen-cpp/kokkos-team";
-	N_CXX_COMPILER = "/usr/bin/g++";
+	CMAKE_CXX_COMPILER = "/usr/bin/g++";
 	Kokkos_ROOT = "$ENV{HOME}/kokkos/kokkos-install";
 	KokkosKernels_ROOT = "$ENV{HOME}/kokkos/kokkos-install";
 }
@@ -53,17 +53,17 @@ KokkosTeamThread
 OpenMP
 {
 	outputPath = "/NabLabExamples/src-gen-cpp/openmp";
-	N_CXX_COMPILER = "/usr/bin/g++";
+	CMAKE_CXX_COMPILER = "/usr/bin/g++";
 }
 
 CppSequential
 {
 	outputPath = "/NabLabExamples/src-gen-cpp/sequential";
-	N_CXX_COMPILER = "/usr/bin/g++";
+	CMAKE_CXX_COMPILER = "/usr/bin/g++";
 }
 
 StlThread
 {
 	outputPath = "/NabLabExamples/src-gen-cpp/stl-thread";
-	N_CXX_COMPILER = "/usr/bin/g++";
+	CMAKE_CXX_COMPILER = "/usr/bin/g++";
 }

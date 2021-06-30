@@ -35,11 +35,7 @@ class CMakeUtils
 	'''
 		# SET VARIABLES
 		«FOR v : variables»
-		«IF v.key == "N_CXX_COMPILER"»
-		set(CMAKE_CXX_COMPILER «v.value» CACHE STRING "")
-		«ELSE»
 		set(«v.key» «formatCMakePath(v.value)»)
-		«ENDIF»
 		«ENDFOR»
 		«FOR p : providers»
 		set(«p.pathVar.key» «p.pathVar.value»)

@@ -231,11 +231,11 @@ To configure generation, create a generation block, for example for the `StlThre
 StlThread
 {
 	outputPath = "/Tutorial/src-gen-cpp/stl-thread";
-	N_CXX_COMPILER = "/usr/bin/g++";
+	CMAKE_CXX_COMPILER = "/usr/bin/g++";
 }
 ```
 
-For C++ targets, provide the path to the desired compiler into the `N_CXX_COMPILER` variable.
+For C++ targets, provide the path to the desired compiler into the `CMAKE_CXX_COMPILER` variable.
 
 
 ## Jobs sequence

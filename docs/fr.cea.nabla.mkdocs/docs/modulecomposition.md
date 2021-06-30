@@ -67,7 +67,7 @@ MainModule Hydro hydro
 StlThread
 {
 	outputPath = "/NablaTest/src-gen-cpp/stl-thread";
-	N_CXX_COMPILER = "/usr/bin/g++";
+	CMAKE_CXX_COMPILER = "/usr/bin/g++";
 }
 ```
 

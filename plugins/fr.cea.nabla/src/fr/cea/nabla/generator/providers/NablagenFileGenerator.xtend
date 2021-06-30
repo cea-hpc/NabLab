@@ -104,32 +104,32 @@ class NablagenFileGenerator extends StandaloneGeneratorBase
 		CppSequential
 		{
 			outputPath = "/«projectName»/src-gen-cpp/«CppGenFoldersByTarget.get(TargetType::CPP_SEQUENTIAL)»";
-			N_CXX_COMPILER = "/usr/bin/g++";
+			CMAKE_CXX_COMPILER = "/usr/bin/g++";
 		}
 
 		StlThread
 		{
 			outputPath = "/«projectName»/src-gen-cpp/«CppGenFoldersByTarget.get(TargetType::STL_THREAD)»";
-			N_CXX_COMPILER = "/usr/bin/g++";
+			CMAKE_CXX_COMPILER = "/usr/bin/g++";
 		}
 
 		OpenMP
 		{
 			outputPath = "/«projectName»/src-gen-cpp/«CppGenFoldersByTarget.get(TargetType::OPEN_MP)»";
-			N_CXX_COMPILER = "/usr/bin/g++";
+			CMAKE_CXX_COMPILER = "/usr/bin/g++";
 		}
 
 		Kokkos
 		{
 			outputPath = "/«projectName»/src-gen-cpp/«CppGenFoldersByTarget.get(TargetType::KOKKOS)»";
-			N_CXX_COMPILER = "/usr/bin/g++";
+			CMAKE_CXX_COMPILER = "/usr/bin/g++";
 			Kokkos_ROOT = "$ENV{HOME}/kokkos/kokkos-install";
 		}
 
 		KokkosTeamThread
 		{
 			outputPath = "/«projectName»/src-gen-cpp/«CppGenFoldersByTarget.get(TargetType::KOKKOS_TEAM_THREAD)»";
-			N_CXX_COMPILER = "/usr/bin/g++";
+			CMAKE_CXX_COMPILER = "/usr/bin/g++";
 			Kokkos_ROOT = "$ENV{HOME}/kokkos/kokkos-install";
 		}
 	'''

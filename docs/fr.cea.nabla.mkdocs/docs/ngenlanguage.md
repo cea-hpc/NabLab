@@ -110,7 +110,7 @@ Here is an example of a generation block:
 Kokkos
 {
 	outputPath = "/NabLabExamples/src-gen-cpp/kokkos";
-	N_CXX_COMPILER = "/usr/bin/g++";
+	CMAKE_CXX_COMPILER = "/usr/bin/g++";
 	Kokkos_ROOT = "$ENV{HOME}/kokkos/kokkos-install";
 }
 ```
@@ -120,7 +120,6 @@ All targets have to define the `outputPath` of the generation and a set of varia
 !!! note
 	A good practice is to name "src-gen" a directory containing only generated code.
 
-For C++ targets, the `N_CXX_COMPILER` variable is mandatory.
 For `Kokkos`, `KokkosTeamThread`, the Kokkos library has to be installed and the path to the library has to be provided is the `Kokkos_ROOT` variable.
 Moreover, if linear algebra is used, `KokkosKernels_ROOT` variable must be set to Kokkos Kernels installation directory.
 

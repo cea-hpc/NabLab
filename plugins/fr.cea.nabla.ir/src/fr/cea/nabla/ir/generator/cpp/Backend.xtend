@@ -30,7 +30,6 @@ abstract class Backend
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) MainContentProvider mainContentProvider
 }
 
-/** Expected variables: N_CXX_COMPILER */
 class SequentialBackend extends Backend
 {
 	new()
@@ -51,7 +50,6 @@ class SequentialBackend extends Backend
 	}
 }
 
-/** Expected variables: N_CXX_COMPILER */
 class StlThreadBackend extends Backend
 {
 	new()
@@ -71,7 +69,6 @@ class StlThreadBackend extends Backend
 	}
 }
 
-/** Expected variables: N_CXX_COMPILER, Kokkos_ROOT */
 class KokkosBackend extends Backend
 {
 	new()
@@ -91,7 +88,6 @@ class KokkosBackend extends Backend
 	}
 }
 
-/** Expected variables: N_CXX_COMPILER, Kokkos_ROOT */
 class KokkosTeamThreadBackend extends Backend
 {
 	new()
@@ -111,7 +107,6 @@ class KokkosTeamThreadBackend extends Backend
 	}
 }
 
-/** Expected variables: N_CXX_COMPILER */
 class OpenMpBackend extends Backend
 {
 	new()

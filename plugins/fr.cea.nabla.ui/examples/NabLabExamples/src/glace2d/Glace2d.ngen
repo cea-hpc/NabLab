@@ -26,7 +26,7 @@ VtkOutput
 
 //LevelDB
 //{
-//	levelDBPath = "$ENV{HOME}/leveldb/leveldb-install";
+//	leveldb_ROOT = "$ENV{HOME}/leveldb/install";
 //}
 
 Java
@@ -38,14 +38,14 @@ Kokkos
 {
 	outputPath = "/NabLabExamples/src-gen-cpp/kokkos";
 	CMAKE_CXX_COMPILER = "/usr/bin/g++";
-	Kokkos_ROOT = "$ENV{HOME}/kokkos/kokkos-install";
+	Kokkos_ROOT = "$ENV{HOME}/kokkos/install";
 }
 
 KokkosTeamThread
 {
 	outputPath = "/NabLabExamples/src-gen-cpp/kokkos-team";
 	CMAKE_CXX_COMPILER = "/usr/bin/g++";
-	Kokkos_ROOT = "$ENV{HOME}/kokkos/kokkos-install";
+	Kokkos_ROOT = "$ENV{HOME}/kokkos/install";
 }
 
 OpenMP

@@ -187,7 +187,7 @@ class NablaExamplesTest
 		// add LevelDBBlock before JavaBlock
 		var adaptedModel =  genmodel.replace(javaBlock.toString, levelDBPath.levelDBBlock.toString + javaBlock.toString)
 		// customize KokkosPath
-		val defaultKokkosPath = "$ENV{HOME}/kokkos/kokkos-install"
+		val defaultKokkosPath = "$ENV{HOME}/kokkos/install"
 		adaptedModel = adaptedModel.replace(defaultKokkosPath, kokkosPath)
 
 		return adaptedModel
@@ -206,7 +206,7 @@ class NablaExamplesTest
 		'''
 		LevelDB
 		{
-			levelDBPath = "«levelDBPath»";
+			leveldb_ROOT = "«levelDBPath»";
 		}
 
 		'''

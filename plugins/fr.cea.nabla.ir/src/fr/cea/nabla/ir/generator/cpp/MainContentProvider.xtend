@@ -21,7 +21,7 @@ class MainContentProvider
 {
 	val extension JsonContentProvider jsonContentProvider
 
-	def getContentFor(IrModule it, String levelDBPath)
+	def getContentFor(IrModule it, boolean hasLevelDB)
 	'''
 		string dataFile;
 		int ret = 0;
@@ -60,7 +60,7 @@ class MainContentProvider
 		// Start simulation
 		// Simulator must be a pointer when a finalize is needed at the end (Kokkos, omp...)
 		«name»->simulate();
-		«IF !levelDBPath.nullOrEmpty»
+		«IF hasLevelDB»
 
 			«val nrName = IrUtils.NonRegressionNameAndValue.key»
 			«val dbName = irRoot.name + "DB"»
@@ -98,10 +98,10 @@ class MainContentProvider
 @Data
 class KokkosMainContentProvider extends MainContentProvider
 {
-	override getContentFor(IrModule it, String levelDBPath)
+	override getContentFor(IrModule it, boolean hasLevelDB)
 	'''
 		Kokkos::initialize(argc, argv);
-		«super.getContentFor(it, levelDBPath)»
+		«super.getContentFor(it, hasLevelDB)»
 		// simulator must be deleted before calling finalize
 		Kokkos::finalize();
 	'''

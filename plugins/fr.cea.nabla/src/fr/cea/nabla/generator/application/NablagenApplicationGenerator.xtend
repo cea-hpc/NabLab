@@ -122,8 +122,6 @@ class NablagenApplicationGenerator extends StandaloneGeneratorBase
 
 	private def getCodeGenerator(Target it, String wsPath, String iterationMax, String timeMax, LevelDB levelDB)
 	{
-		val levelDBPath = if (levelDB === null) null else levelDB.levelDBPath
-
 		if (type == TargetType::JAVA)
 		{
 			new JavaApplicationGenerator(levelDB !== null)
@@ -133,7 +131,10 @@ class NablagenApplicationGenerator extends StandaloneGeneratorBase
 			val backend = backendFactory.getCppBackend(type)
 			backend.traceContentProvider.maxIterationsVarName = iterationMax
 			backend.traceContentProvider.stopTimeVarName = timeMax
-			new CppApplicationGenerator(backend, wsPath, levelDBPath, variables.map[key -> value])
+			val cmakeVars = new ArrayList<Pair<String, String>>
+			variables.forEach[x | cmakeVars += x.key -> x.value]
+			if (levelDB !== null) levelDB.variables.forEach[x | cmakeVars += x.key -> x.value]
+			new CppApplicationGenerator(backend, wsPath, (levelDB !== null), cmakeVars)
 		}
 	}
 

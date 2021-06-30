@@ -71,12 +71,12 @@ To trigger the dump of all variables (except linear algebra ones) of your code, 
 ``` 
 LevelDB
 {
-	levelDBPath = "$ENV{HOME}/leveldb/leveldb-install";
+	leveldb_ROOT = "$ENV{HOME}/leveldb/install";
 }
 ```
 
 !!! note
-	The `levelDBPath` value supports CMake syntax like `$ENV{HOME}` in the example above.  
+	The `leveldb_ROOT` value supports CMake syntax like `$ENV{HOME}` in the example above.
 
 When the `LevelDB`block exists in the *ngen* file, the `nonRegression` option must appear in the Json data file. If its value is `CreateReference`, variables are dumped in a directory named *ApplicationNameDB.ref*. If its value is `CompareToReference`, variables are dumped in a directory named *Application NameDB.current* and are compared to variables stored in *ApplicationNameDB.ref*.
 
@@ -111,7 +111,7 @@ Kokkos
 {
 	outputPath = "/NabLabExamples/src-gen-cpp/kokkos";
 	CMAKE_CXX_COMPILER = "/usr/bin/g++";
-	Kokkos_ROOT = "$ENV{HOME}/kokkos/kokkos-install";
+	Kokkos_ROOT = "$ENV{HOME}/kokkos/install";
 }
 ```
 

@@ -6,8 +6,8 @@ set(CMAKE_VERBOSE_MAKEFILE FALSE)
 
 # SET VARIABLES
 set(CMAKE_CXX_COMPILER /usr/bin/g++)
-set(Kokkos_ROOT $ENV{HOME}/kokkos/kokkos-install)
-set(KokkosKernels_ROOT $ENV{HOME}/kokkos/kokkos-install)
+set(Kokkos_ROOT $ENV{HOME}/kokkos/install)
+set(KokkosKernels_ROOT $ENV{HOME}/kokkos/install)
 set(N_WS_PATH $ENV{HOME}/workspaces/NabLab/plugins/fr.cea.nabla.ui/examples)
 set(LINEARALGEBRAKOKKOS_PATH ${N_WS_PATH}/.nablab/linearalgebra/linearalgebrakokkos)
 

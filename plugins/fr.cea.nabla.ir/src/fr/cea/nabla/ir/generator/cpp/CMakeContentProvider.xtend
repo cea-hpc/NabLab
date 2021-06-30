@@ -42,7 +42,7 @@ class CMakeContentProvider
 		#['-g', '-Wall', '-O3', '--std=c++17', '-mtune=native']
 	}
 
-	def getContentFor(IrRoot it, String levelDBPath, Iterable<Pair<String, String>> variables)
+	def getContentFor(IrRoot it, boolean hasLevelDB, Iterable<Pair<String, String>> variables)
 	'''
 		«CMakeUtils.getFileHeader(false)»
 
@@ -54,12 +54,11 @@ class CMakeContentProvider
 		project(«name»Project CXX)
 
 		«CMakeUtils.checkCompiler»
-		«IF !(levelDBPath.nullOrEmpty && findPackageContent.length == 0)»
+		«IF hasLevelDB || findPackageContent.length != 0»
 
 			# FIND PACKAGES
 			«findPackageContent»
-			«IF !levelDBPath.nullOrEmpty»
-			set(CMAKE_FIND_ROOT_PATH «levelDBPath»)
+			«IF hasLevelDB»
 			find_package(leveldb REQUIRED)
 			find_package(Threads REQUIRED)
 			«ENDIF»
@@ -69,7 +68,7 @@ class CMakeContentProvider
 
 		# EXECUTABLE «execName»
 		add_executable(«execName»«FOR m : modules» «m.className + '.cc'»«ENDFOR»)
-		target_link_libraries(«execName» PUBLIC«FOR l : getTargetLinkLibs(it, (!levelDBPath.nullOrEmpty))» «l»«ENDFOR»)
+		target_link_libraries(«execName» PUBLIC«FOR l : getTargetLinkLibs(it, hasLevelDB)» «l»«ENDFOR»)
 
 		«CMakeUtils.fileFooter»
 	'''

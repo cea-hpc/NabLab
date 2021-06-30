@@ -34,14 +34,14 @@ import static extension fr.cea.nabla.ir.generator.cpp.CppGeneratorUtils.*
 
 class CppApplicationGenerator extends CppGenerator implements ApplicationGenerator
 {
-	val String levelDBPath
+	val boolean hasLevelDB
 	val cMakeVars = new LinkedHashSet<Pair<String, String>>
 
-	new(Backend backend, String wsPath, String levelDBPath, Iterable<Pair<String, String>> cMakeVars)
+	new(Backend backend, String wsPath, boolean hasLevelDB, Iterable<Pair<String, String>> cmakeVars)
 	{
 		super(backend)
-		this.levelDBPath = levelDBPath
-		cMakeVars.forEach[x | this.cMakeVars += x]
+		this.hasLevelDB = hasLevelDB
+		cmakeVars.forEach[x | this.cMakeVars += x]
 
 		// Set WS_PATH variables in CMake and unzip NRepository if necessary
 		this.cMakeVars += new Pair(CMakeContentProvider.WS_PATH, wsPath)
@@ -56,7 +56,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 			fileContents += new GenerationContent(module.className + '.h', module.headerFileContent, false)
 			fileContents += new GenerationContent(module.className + '.cc', module.sourceFileContent, false)
 		}
-		fileContents += new GenerationContent('CMakeLists.txt', backend.cmakeContentProvider.getContentFor(ir, levelDBPath, cMakeVars), false)
+		fileContents += new GenerationContent('CMakeLists.txt', backend.cmakeContentProvider.getContentFor(ir, hasLevelDB, cMakeVars), false)
 		return fileContents
 	}
 
@@ -67,7 +67,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	#ifndef «name.HDefineName»
 	#define «name.HDefineName»
 
-	«backend.includesContentProvider.getIncludes(!levelDBPath.nullOrEmpty, (irRoot.postProcessing !== null))»
+	«backend.includesContentProvider.getIncludes(hasLevelDB, (irRoot.postProcessing !== null))»
 	«FOR provider : validExtensionProviders»
 	#include "«provider.className».h"
 	«ENDFOR»
@@ -75,7 +75,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	#include "«irRoot.mainModule.className».h"
 	«ENDIF»
 
-	«backend.includesContentProvider.getUsings(!levelDBPath.nullOrEmpty)»
+	«backend.includesContentProvider.getUsings(hasLevelDB)»
 	«IF main && irRoot.modules.size > 1»
 
 		«FOR m : irRoot.modules.filter[x | x !== it]»
@@ -479,7 +479,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 
 	int main(int argc, char* argv[]) 
 	{
-		«backend.mainContentProvider.getContentFor(it, levelDBPath)»
+		«backend.mainContentProvider.getContentFor(it, hasLevelDB)»
 		return ret;
 	}
 	«ENDIF»
@@ -495,7 +495,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 
 	private def isLevelDB(IrModule it)
 	{
-		main && !levelDBPath.nullOrEmpty
+		main && hasLevelDB
 	}
 
 	private def CharSequence getVariableDeclaration(Variable v)

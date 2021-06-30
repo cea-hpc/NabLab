@@ -70,13 +70,13 @@ OutputVar:
 	moduleRef=[NablagenModule] '.' varRef=[nabla::ConnectivityVar] 'as' varName=STRING;
 
 /* 
- * levelDBPath can be empty for Java and interpreter
+ * variables can be empty for Java and interpreter
  * but it triggers the generation of serialize instructions.
  */
 LevelDB:
-	'LevelDB'
+	{LevelDB} 'LevelDB'
 	'{'
-		'levelDBPath' '=' levelDBPath=STRING ';'
+		variables+=TargetVar*
 	'}';
 
 /*

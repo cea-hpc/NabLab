@@ -67,7 +67,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//OutputVar/varName"/>
     </genClasses>
     <genClasses ecoreClass="Nablagen.ecore#//LevelDB">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//LevelDB/levelDBPath"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//LevelDB/variables"/>
     </genClasses>
     <genClasses ecoreClass="Nablagen.ecore#//Target">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//Target/writeIR"/>

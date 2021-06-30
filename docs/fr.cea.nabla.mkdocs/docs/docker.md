@@ -84,7 +84,7 @@ docker login
 
 Username : nablab / Password : cf gmail pwd
 
-NB : An application account has beeen created with nablalang@gmail.com
+NB : An application account has been created with nablalang@gmail.com
 
 Push to docker hub
 

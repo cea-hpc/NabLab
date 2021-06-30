@@ -1,18 +1,17 @@
 ### GENERATED FILE - DO NOT OVERWRITE ###
 
 cmake_minimum_required(VERSION 3.10)
+cmake_policy(SET CMP0074 NEW)
 set(CMAKE_VERBOSE_MAKEFILE FALSE)
 
 # SET VARIABLES
 set(CMAKE_CXX_COMPILER /usr/bin/g++ CACHE STRING "")
-set(N_KOKKOS_PATH $ENV{HOME}/kokkos/kokkos-install)
+set(Kokkos_ROOT $ENV{HOME}/kokkos/kokkos-install)
+set(KokkosKernels_ROOT $ENV{HOME}/kokkos/kokkos-install)
 set(N_WS_PATH $ENV{HOME}/workspaces/NabLab/plugins/fr.cea.nabla.ui/examples)
 set(LINEARALGEBRAKOKKOS_PATH ${N_WS_PATH}/.nablab/linearalgebra/linearalgebrakokkos)
 
 # CHECK VARIABLES
-if (NOT DEFINED N_KOKKOS_PATH)
-	message(FATAL_ERROR "N_KOKKOS_PATH variable must be set")
-endif()
 if (NOT DEFINED N_WS_PATH)
 	message(FATAL_ERROR "N_WS_PATH variable must be set")
 endif()
@@ -32,7 +31,6 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 endif()
 
 # FIND PACKAGES
-set(CMAKE_FIND_ROOT_PATH ${N_KOKKOS_PATH})
 find_package(Kokkos REQUIRED)
 find_package(KokkosKernels REQUIRED)
 

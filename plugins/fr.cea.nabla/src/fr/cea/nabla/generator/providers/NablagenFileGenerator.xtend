@@ -123,14 +123,14 @@ class NablagenFileGenerator extends StandaloneGeneratorBase
 		{
 			outputPath = "/«projectName»/src-gen-cpp/«CppGenFoldersByTarget.get(TargetType::KOKKOS)»";
 			N_CXX_COMPILER = "/usr/bin/g++";
-			N_KOKKOS_PATH = "$ENV{HOME}/kokkos/kokkos-install";
+			Kokkos_ROOT = "$ENV{HOME}/kokkos/kokkos-install";
 		}
 
 		KokkosTeamThread
 		{
 			outputPath = "/«projectName»/src-gen-cpp/«CppGenFoldersByTarget.get(TargetType::KOKKOS_TEAM_THREAD)»";
 			N_CXX_COMPILER = "/usr/bin/g++";
-			N_KOKKOS_PATH = "$ENV{HOME}/kokkos/kokkos-install";
+			Kokkos_ROOT = "$ENV{HOME}/kokkos/kokkos-install";
 		}
 	'''
 }

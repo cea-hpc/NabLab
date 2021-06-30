@@ -9,11 +9,13 @@
 ###############################################################################
 
 cmake_minimum_required(VERSION 3.10)
+cmake_policy(SET CMP0074 NEW)
 set(CMAKE_VERBOSE_MAKEFILE FALSE)
 
 # SET VARIABLES
 set(N_WS_PATH ${CMAKE_SOURCE_DIR})
-set(N_KOKKOS_PATH $ENV{HOME}/kokkos/kokkos-install)
+set(Kokkos_ROOT $ENV{HOME}/kokkos/kokkos-install)
+set(KokkosKernels_ROOT $ENV{HOME}/kokkos/kokkos-install)
 
 # PROJECT
 project(fr_cea_nabla_cpplib CXX)

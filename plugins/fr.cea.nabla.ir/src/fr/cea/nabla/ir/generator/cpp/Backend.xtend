@@ -71,7 +71,7 @@ class StlThreadBackend extends Backend
 	}
 }
 
-/** Expected variables: N_CXX_COMPILER, N_KOKKOS_PATH */
+/** Expected variables: N_CXX_COMPILER, Kokkos_ROOT */
 class KokkosBackend extends Backend
 {
 	new()
@@ -91,7 +91,7 @@ class KokkosBackend extends Backend
 	}
 }
 
-/** Expected variables: N_CXX_COMPILER, N_KOKKOS_PATH */
+/** Expected variables: N_CXX_COMPILER, Kokkos_ROOT */
 class KokkosTeamThreadBackend extends Backend
 {
 	new()

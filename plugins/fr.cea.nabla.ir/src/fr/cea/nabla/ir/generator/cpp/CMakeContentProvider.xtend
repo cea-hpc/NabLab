@@ -122,14 +122,8 @@ class StlThreadCMakeContentProvider extends CMakeContentProvider
 
 class KokkosCMakeContentProvider extends CMakeContentProvider
 {
-	override Iterable<String> getNeededVariables()
-	{
-		 #['N_KOKKOS_PATH'] + super.neededVariables
-	}
-
 	override getFindPackageContent(IrRoot irRoot)
 	'''
-		set(CMAKE_FIND_ROOT_PATH ${N_KOKKOS_PATH})
 		find_package(Kokkos REQUIRED)
 		«IF irRoot.linearAlgebra»find_package(KokkosKernels REQUIRED)«ENDIF»
 	'''

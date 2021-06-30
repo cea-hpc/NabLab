@@ -26,6 +26,7 @@ class CMakeUtils
 		# This file is in a cmake sub_directory and is called by a root CMakeLists.txt 
 		«ELSE»
 		cmake_minimum_required(VERSION 3.10)
+		cmake_policy(SET CMP0074 NEW)
 		set(CMAKE_VERBOSE_MAKEFILE FALSE)
 		«ENDIF»
 	'''

@@ -13,7 +13,6 @@ module Glace2d;
 A `module` represents a NabLab program and its definition strictly follows the following sequence:
 
 - Imports
-- Item types and connectivities
 - Reductions
 - Functions
 - Variables and options

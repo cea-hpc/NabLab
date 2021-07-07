@@ -13,8 +13,8 @@
         <meta name="author" content="Benoit Lelandais">
       
       
-      <link rel="icon" href="../img/logo_512.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.0">
+      <link rel="icon" href="img/logo_512.png">
+      <meta name="generator" content="mkdocs-1.2.1, mkdocs-material-7.1.9">
     
     
       
@@ -22,10 +22,10 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.33e2939f.min.css">
+      <link rel="stylesheet" href="assets/stylesheets/main.ca7ac06f.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.ef6f36e2.min.css">
+        <link rel="stylesheet" href="assets/stylesheets/palette.f1a3b89f.min.css">
         
           
           
@@ -46,6 +46,8 @@
     
     
       
+
+
     
     
   </head>
@@ -59,7 +61,7 @@
     <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="orange">
   
     
-    <script>function __prefix(e){return new URL("..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    <script>function __prefix(e){return new URL(".",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
@@ -78,9 +80,9 @@
     
       <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="NabLab documentation" class="md-header__button md-logo" aria-label="NabLab documentation" data-md-component="logo">
+    <a href="index.html" title="NabLab documentation" class="md-header__button md-logo" aria-label="NabLab documentation" data-md-component="logo">
       
-  <img src="../img/logo_512.png" alt="logo">
+  <img src="img/logo_512.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -157,9 +159,9 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="NabLab documentation" class="md-nav__button md-logo" aria-label="NabLab documentation" data-md-component="logo">
+    <a href="index.html" title="NabLab documentation" class="md-nav__button md-logo" aria-label="NabLab documentation" data-md-component="logo">
       
-  <img src="../img/logo_512.png" alt="logo">
+  <img src="img/logo_512.png" alt="logo">
 
     </a>
     NabLab documentation
@@ -175,7 +177,7 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="index.html" class="md-nav__link">
         What is NabLab
       </a>
     </li>
@@ -190,7 +192,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../gettingstarted/" class="md-nav__link">
+      <a href="gettingstarted.html" class="md-nav__link">
         Getting started
       </a>
     </li>
@@ -205,7 +207,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../firstmodule/" class="md-nav__link">
+      <a href="firstmodule.html" class="md-nav__link">
         My first module
       </a>
     </li>
@@ -220,7 +222,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../firstextension/" class="md-nav__link">
+      <a href="firstextension.html" class="md-nav__link">
         My first extension
       </a>
     </li>
@@ -235,7 +237,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../modulecomposition/" class="md-nav__link">
+      <a href="modulecomposition.html" class="md-nav__link">
         Composing modules
       </a>
     </li>
@@ -250,7 +252,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../debug/" class="md-nav__link">
+      <a href="debug.html" class="md-nav__link">
         Monitoring and debugging
       </a>
     </li>
@@ -270,6 +272,7 @@
       
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
       
+      
         
       
       
@@ -278,12 +281,13 @@
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <a href="./" class="md-nav__link md-nav__link--active">
+      <a href="nablablanguage.html" class="md-nav__link md-nav__link--active">
         NabLab language reference
       </a>
       
         
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
   
   
     
@@ -315,6 +319,26 @@
     Extension
   </a>
   
+    <nav class="md-nav" aria-label="Extension">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linear-algebra-extension" class="md-nav__link">
+    Linear algebra extension
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mesh-extension" class="md-nav__link">
+    Mesh extension
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
       </ul>
@@ -330,8 +354,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#items-and-connectivities" class="md-nav__link">
-    Items and connectivities
+  <a href="#item-types-and-connectivities" class="md-nav__link">
+    Item types and connectivities
   </a>
   
 </li>
@@ -475,8 +499,23 @@
   
   
     <li class="md-nav__item">
-      <a href="../ngenlanguage/" class="md-nav__link">
+      <a href="ngenlanguage.html" class="md-nav__link">
         Ngen language reference
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="docker.html" class="md-nav__link">
+        Docker integration
       </a>
     </li>
   
@@ -495,6 +534,7 @@
                   <div class="md-sidebar__inner">
                     
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
   
   
     
@@ -526,6 +566,26 @@
     Extension
   </a>
   
+    <nav class="md-nav" aria-label="Extension">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linear-algebra-extension" class="md-nav__link">
+    Linear algebra extension
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mesh-extension" class="md-nav__link">
+    Mesh extension
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
       </ul>
@@ -541,8 +601,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#items-and-connectivities" class="md-nav__link">
-    Items and connectivities
+  <a href="#item-types-and-connectivities" class="md-nav__link">
+    Item types and connectivities
   </a>
   
 </li>
@@ -687,6 +747,8 @@
 <h2 id="module-and-extensions">Module and extensions</h2>
 <p>A NabLab file, extension <code>n</code>, defines a <code>module</code> or an <code>extension</code>.</p>
 <h3 id="module">Module</h3>
+<div class="highlight"><pre><span></span><code>module Glace2d;
+</code></pre></div>
 <p>A <code>module</code> represents a NabLab program and its definition strictly follows the following sequence:</p>
 <ul>
 <li>Imports</li>
@@ -699,18 +761,48 @@
 </ul>
 <p>A module is generally associated with a <a href="../ngenlanguage/index.html">NabLab application</a>. Several modules can also be composed into a single application: see <a href="../modulecomposition/index.html">module composition</a> documentation.</p>
 <h3 id="extension">Extension</h3>
-<p>An <code>extension</code> is a way to extent the language with external functions. Its definition strictly follows the following sequence:</p>
+<div class="highlight"><pre><span></span><code>extension Math;
+</code></pre></div>
+<p>An <code>extension</code> is a way to extend the language with external functions.</p>
+<p>Its definition strictly follows the following sequence:</p>
 <ul>
 <li>Imports</li>
 <li>Reductions</li>
 <li>Functions</li>
 </ul>
-<p>Functions of an extension can be called from a NabLab module. To use an extension X, a module has to import the extension with the instruction <code>with X.*;</code> (see below).</p>
+<p>Functions of an extension can be called from a NabLab module.
+To use an extension X, a module has to import the extension with the instruction <code>with X.*;</code> (see below).</p>
+<p>Extensions provide external functions, i.e. functions with no NabLab body. 
+Those functions are implemented in an another language, generally C or C++. 
+To link NabLab function declaration to its native definition, providers have to be defined: see <a href="../ngenlanguage/index.html#provider">NabLab extension providers</a> for details.</p>
+<p>The extension and extension provider mechanisms are the way to call legacy libraries from NabLab applications.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The extension and extension provider mechanisms are the way to call legacy libraries, like linear algebra libraries, from NabLab applications.</p>
+<p>NabLab library provides a <a href="https://github.com/cea-hpc/NabLab/blob/master/plugins/fr.cea.nabla/nablalib/Math.n">mathematical extension</a> containing the ∑, ∏, Min and Max reductions and the usual mathematical functions (sin, cos, √...).</p>
 </div>
-<p>Extensions provide external functions, i.e. functions with no NabLab body. Those functions are implemented in an another language, generally C or C++. To link NabLab function declaration to its native definition, providers have to be defined: see <a href="../ngenlanguage/index.html">NabLab extension providers</a> for details.</p>
+<h4 id="linear-algebra-extension">Linear algebra extension</h4>
+<div class="highlight"><pre><span></span><code>linearalgebra extension LinearAlgebra;
+</code></pre></div>
+<p>A linear algebra extension is an extension with no reductions, only functions.
+Moreover, functions' arguments of type ℝ[x] and ℝ[x, x] will be respectively interpreted as vector and matrix.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>NabLab library provides a <a href="https://github.com/cea-hpc/NabLab/blob/master/plugins/fr.cea.nabla/nablalib/LinearAlgebra.n">linear algebra extension</a> containing some <em>Ax=B</em> functions to solve linear systems.</p>
+</div>
+<h4 id="mesh-extension">Mesh extension</h4>
+<div class="highlight"><pre><span></span><code>mesh extension CartesianMesh2D;
+</code></pre></div>
+<p>This kind of extension defines the interface of a mesh library.</p>
+<p>Its definition strictly follows the following sequence:</p>
+<ul>
+<li>Item types</li>
+<li>Connectivities</li>
+</ul>
+<p>The syntax of item types and connectivities is described below.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>NabLab library provides a <a href="https://github.com/cea-hpc/NabLab/blob/master/plugins/fr.cea.nabla/nablalib/CartesianMesh2D.n">mesh extension</a> containing the signature of a 2D cartesian mesh used by NabLab examples.</p>
+</div>
 <h2 id="imports">Imports</h2>
 <p>The <code>with</code> keyword allows to import NabLab extensions, libraries of reductions and functions external to the module.</p>
 <p>NabLab provides two native extensions: <a href="https://github.com/cea-hpc/NabLab/blob/master/plugins/fr.cea.nabla/nablalib/math.n">Math</a> and <a href="https://github.com/cea-hpc/NabLab/blob/master/plugins/fr.cea.nabla/nablalib/linearalgebra.n">Linear Algebra</a> (follow the link to see the available functions and reductions).</p>
@@ -720,7 +812,7 @@
 with Math.*;
 with LinearAlgebra.*;
 </code></pre></div>
-<h2 id="items-and-connectivities">Items and connectivities</h2>
+<h2 id="item-types-and-connectivities">Item types and connectivities</h2>
 <p>Items are elements of a set, typically mesh elements. The various types of items are defined in a set.</p>
 <div class="highlight"><pre><span></span><code>itemtypes { node, cell, face }
 </code></pre></div>
@@ -949,7 +1041,8 @@ while (residual &gt; ε) {
   
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
-        <a href="../debug/" class="md-footer__link md-footer__link--prev" rel="prev">
+        
+        <a href="debug.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: Monitoring and debugging" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -964,7 +1057,8 @@ while (residual &gt; ε) {
         </a>
       
       
-        <a href="../ngenlanguage/" class="md-footer__link md-footer__link--next" rel="next">
+        
+        <a href="ngenlanguage.html" class="md-footer__link md-footer__link--next" aria-label="Next: Ngen language reference" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
@@ -1016,12 +1110,12 @@ while (residual &gt; ε) {
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../assets/javascripts/workers/search.fe42c31b.min.js", "version": "0.4.0"}</script>
+    <script id="__config" type="application/json">{"base": ".", "features": ["navigation.instant"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "assets/javascripts/workers/search.477d984a.min.js", "version": "0.4.0"}</script>
     
     
-      <script src="../assets/javascripts/bundle.d892486b.min.js"></script>
+      <script src="assets/javascripts/bundle.82b56eb2.min.js"></script>
       
-        <script src="../javascripts/config.js"></script>
+        <script src="javascripts/config.js"></script>
       
         <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
       

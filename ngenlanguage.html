@@ -13,8 +13,8 @@
         <meta name="author" content="Benoit Lelandais">
       
       
-      <link rel="icon" href="../img/logo_512.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.0">
+      <link rel="icon" href="img/logo_512.png">
+      <meta name="generator" content="mkdocs-1.2.1, mkdocs-material-7.1.9">
     
     
       
@@ -22,10 +22,10 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.33e2939f.min.css">
+      <link rel="stylesheet" href="assets/stylesheets/main.ca7ac06f.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.ef6f36e2.min.css">
+        <link rel="stylesheet" href="assets/stylesheets/palette.f1a3b89f.min.css">
         
           
           
@@ -46,6 +46,8 @@
     
     
       
+
+
     
     
   </head>
@@ -59,7 +61,7 @@
     <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="orange">
   
     
-    <script>function __prefix(e){return new URL("..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    <script>function __prefix(e){return new URL(".",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
@@ -78,9 +80,9 @@
     
       <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="NabLab documentation" class="md-header__button md-logo" aria-label="NabLab documentation" data-md-component="logo">
+    <a href="index.html" title="NabLab documentation" class="md-header__button md-logo" aria-label="NabLab documentation" data-md-component="logo">
       
-  <img src="../img/logo_512.png" alt="logo">
+  <img src="img/logo_512.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -157,9 +159,9 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="NabLab documentation" class="md-nav__button md-logo" aria-label="NabLab documentation" data-md-component="logo">
+    <a href="index.html" title="NabLab documentation" class="md-nav__button md-logo" aria-label="NabLab documentation" data-md-component="logo">
       
-  <img src="../img/logo_512.png" alt="logo">
+  <img src="img/logo_512.png" alt="logo">
 
     </a>
     NabLab documentation
@@ -175,7 +177,7 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="index.html" class="md-nav__link">
         What is NabLab
       </a>
     </li>
@@ -190,7 +192,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../gettingstarted/" class="md-nav__link">
+      <a href="gettingstarted.html" class="md-nav__link">
         Getting started
       </a>
     </li>
@@ -205,7 +207,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../firstmodule/" class="md-nav__link">
+      <a href="firstmodule.html" class="md-nav__link">
         My first module
       </a>
     </li>
@@ -220,7 +222,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../firstextension/" class="md-nav__link">
+      <a href="firstextension.html" class="md-nav__link">
         My first extension
       </a>
     </li>
@@ -235,7 +237,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../modulecomposition/" class="md-nav__link">
+      <a href="modulecomposition.html" class="md-nav__link">
         Composing modules
       </a>
     </li>
@@ -250,7 +252,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../debug/" class="md-nav__link">
+      <a href="debug.html" class="md-nav__link">
         Monitoring and debugging
       </a>
     </li>
@@ -265,7 +267,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../nablablanguage/" class="md-nav__link">
+      <a href="nablablanguage.html" class="md-nav__link">
         NabLab language reference
       </a>
     </li>
@@ -285,6 +287,7 @@
       
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
       
+      
         
       
       
@@ -293,12 +296,13 @@
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <a href="./" class="md-nav__link md-nav__link--active">
+      <a href="ngenlanguage.html" class="md-nav__link md-nav__link--active">
         Ngen language reference
       </a>
       
         
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
   
   
     
@@ -373,6 +377,21 @@
   
 
     
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="docker.html" class="md-nav__link">
+        Docker integration
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -386,6 +405,7 @@
                   <div class="md-sidebar__inner">
                     
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
   
   
     
@@ -475,13 +495,11 @@ An <code>Application</code> reference a <code>module</code> while  an <code>Exte
 <h3 id="main-module-identification">Main module identification</h3>
 <p>The first part of the <em>ngen</em> file identifies the main module of the application. It is defined by a reference to a NabLab module and a name. It must provide some additional parameters useful for code interpretation/generation:</p>
 <ul>
-<li><code>meshClassName</code> identifies the name of the mesh class and the name of the mesh class factory. For example, if the name is <em>CartesianMesh2D</em>, NabLab waits for a factory names <em>CartesianMesh2DFactory</em> with a <code>CartesianMesh2D create()</code> method.</li>
 <li><code>nodeCoord</code> identifies the NabLab variable representing node coordinates.</li>
 <li><code>time</code>, <code>timeStep</code>, <code>iterationMax</code> and <code>timeMax</code> identifies respectively the NabLab variables representing the time of the simulation, the timeStep of the simulation, the maximum number of iterations of the main time loop and the maximum time of the simulation.</li>
 </ul>
 <div class="highlight"><pre><span></span><code>MainModule Glace2d glace2d
 {
-    meshClassName = &quot;CartesianMesh2D&quot;;
     nodeCoord = X;
     time = t;
     timeStep = δt;
@@ -517,12 +535,12 @@ The Java LevelDB library is included in the NabLab environment. To use the C++ o
 <p>To trigger the dump of all variables (except linear algebra ones) of your code, add a <code>LevelDB</code> block. In addition to that, in case of C++ generation, provide the path to the LevelDB installation.</p>
 <div class="highlight"><pre><span></span><code>LevelDB
 {
-    levelDBPath = &quot;$ENV{HOME}/leveldb/leveldb-install&quot;;
+    leveldb_ROOT = &quot;$ENV{HOME}/leveldb/install&quot;;
 }
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The <code>levelDBPath</code> value supports CMake syntax like <code>$ENV{HOME}</code> in the example above.  </p>
+<p>The <code>leveldb_ROOT</code> value supports CMake syntax like <code>$ENV{HOME}</code> in the example above.</p>
 </div>
 <p>When the <code>LevelDB</code>block exists in the <em>ngen</em> file, the <code>nonRegression</code> option must appear in the Json data file. If its value is <code>CreateReference</code>, variables are dumped in a directory named <em>ApplicationNameDB.ref</em>. If its value is <code>CompareToReference</code>, variables are dumped in a directory named <em>Application NameDB.current</em> and are compared to variables stored in <em>ApplicationNameDB.ref</em>.</p>
 <div class="highlight"><pre><span></span><code>&quot;_nonRegression_comment&quot;:&quot;empty value to disable, CreateReference or CompareToReference to take action&quot;,
@@ -545,8 +563,8 @@ The Java LevelDB library is included in the NabLab environment. To use the C++ o
 <div class="highlight"><pre><span></span><code>Kokkos
 {
     outputPath = &quot;/NabLabExamples/src-gen-cpp/kokkos&quot;;
-    N_CXX_COMPILER = &quot;/usr/bin/g++&quot;;
-    N_KOKKOS_PATH = &quot;$ENV{HOME}/kokkos/kokkos-install&quot;;
+    CMAKE_CXX_COMPILER = &quot;/usr/bin/g++&quot;;
+    Kokkos_ROOT = &quot;$ENV{HOME}/kokkos/install&quot;;
 }
 </code></pre></div>
 <p>All targets have to define the <code>outputPath</code> of the generation and a set of variables which will be reported in the <em>CMakeLists.txt</em> file.</p>
@@ -554,8 +572,8 @@ The Java LevelDB library is included in the NabLab environment. To use the C++ o
 <p class="admonition-title">Note</p>
 <p>A good practice is to name "src-gen" a directory containing only generated code.</p>
 </div>
-<p>For C++ targets, the <code>N_CXX_COMPILER</code> variable is mandatory.
-For <code>Kokkos</code>, <code>KokkosTeamThread</code>, the Kokkos library has to be installed and the path to the library has to be provided is the <code>N_KOKKOS_PATH</code> variable. </p>
+<p>For <code>Kokkos</code>, <code>KokkosTeamThread</code>, the Kokkos library has to be installed and the path to the library has to be provided is the <code>Kokkos_ROOT</code> variable.
+Moreover, if linear algebra is used, <code>KokkosKernels_ROOT</code> variable must be set to Kokkos Kernels installation directory.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Variables can use CMake syntax in their value like <code>$ENV{HOME}</code> for path in the example above.  </p>
@@ -617,7 +635,8 @@ The provider block is composed of:</p>
   
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
-        <a href="../nablablanguage/" class="md-footer__link md-footer__link--prev" rel="prev">
+        
+        <a href="nablablanguage.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: NabLab language reference" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -631,6 +650,21 @@ The provider block is composed of:</p>
           </div>
         </a>
       
+      
+        
+        <a href="docker.html" class="md-footer__link md-footer__link--next" aria-label="Next: Docker integration" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Docker integration
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
       
     </nav>
   
@@ -670,12 +704,12 @@ The provider block is composed of:</p>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../assets/javascripts/workers/search.fe42c31b.min.js", "version": "0.4.0"}</script>
+    <script id="__config" type="application/json">{"base": ".", "features": ["navigation.instant"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "assets/javascripts/workers/search.477d984a.min.js", "version": "0.4.0"}</script>
     
     
-      <script src="../assets/javascripts/bundle.d892486b.min.js"></script>
+      <script src="assets/javascripts/bundle.82b56eb2.min.js"></script>
       
-        <script src="../javascripts/config.js"></script>
+        <script src="javascripts/config.js"></script>
       
         <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
       

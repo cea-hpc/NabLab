@@ -13,19 +13,19 @@
         <meta name="author" content="Benoit Lelandais">
       
       
-      <link rel="icon" href="../img/logo_512.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.0">
+      <link rel="icon" href="img/logo_512.png">
+      <meta name="generator" content="mkdocs-1.2.1, mkdocs-material-7.1.9">
     
     
       
-        <title>Monitoring and debugging - NabLab documentation</title>
+        <title>Docker integration - NabLab documentation</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.33e2939f.min.css">
+      <link rel="stylesheet" href="assets/stylesheets/main.ca7ac06f.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.ef6f36e2.min.css">
+        <link rel="stylesheet" href="assets/stylesheets/palette.f1a3b89f.min.css">
         
           
           
@@ -46,6 +46,8 @@
     
     
       
+
+
     
     
   </head>
@@ -59,7 +61,7 @@
     <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="orange">
   
     
-    <script>function __prefix(e){return new URL("..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    <script>function __prefix(e){return new URL(".",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
@@ -67,7 +69,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#monitoring-and-debugging" class="md-skip">
+        <a href="#docker-integration" class="md-skip">
           Skip to content
         </a>
       
@@ -78,9 +80,9 @@
     
       <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="NabLab documentation" class="md-header__button md-logo" aria-label="NabLab documentation" data-md-component="logo">
+    <a href="index.html" title="NabLab documentation" class="md-header__button md-logo" aria-label="NabLab documentation" data-md-component="logo">
       
-  <img src="../img/logo_512.png" alt="logo">
+  <img src="img/logo_512.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -96,7 +98,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Monitoring and debugging
+              Docker integration
             
           </span>
         </div>
@@ -157,9 +159,9 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="NabLab documentation" class="md-nav__button md-logo" aria-label="NabLab documentation" data-md-component="logo">
+    <a href="index.html" title="NabLab documentation" class="md-nav__button md-logo" aria-label="NabLab documentation" data-md-component="logo">
       
-  <img src="../img/logo_512.png" alt="logo">
+  <img src="img/logo_512.png" alt="logo">
 
     </a>
     NabLab documentation
@@ -175,7 +177,7 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="index.html" class="md-nav__link">
         What is NabLab
       </a>
     </li>
@@ -190,7 +192,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../gettingstarted/" class="md-nav__link">
+      <a href="gettingstarted.html" class="md-nav__link">
         Getting started
       </a>
     </li>
@@ -205,7 +207,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../firstmodule/" class="md-nav__link">
+      <a href="firstmodule.html" class="md-nav__link">
         My first module
       </a>
     </li>
@@ -220,7 +222,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../firstextension/" class="md-nav__link">
+      <a href="firstextension.html" class="md-nav__link">
         My first extension
       </a>
     </li>
@@ -235,8 +237,53 @@
   
   
     <li class="md-nav__item">
-      <a href="../modulecomposition/" class="md-nav__link">
+      <a href="modulecomposition.html" class="md-nav__link">
         Composing modules
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="debug.html" class="md-nav__link">
+        Monitoring and debugging
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="nablablanguage.html" class="md-nav__link">
+        NabLab language reference
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ngenlanguage.html" class="md-nav__link">
+        Ngen language reference
       </a>
     </li>
   
@@ -255,43 +302,65 @@
       
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
       
+      
         
       
       
-      <a href="./" class="md-nav__link md-nav__link--active">
-        Monitoring and debugging
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Docker integration
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="docker.html" class="md-nav__link md-nav__link--active">
+        Docker integration
       </a>
       
-    </li>
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
-
+  
+  
     
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
+        <li class="md-nav__item">
+  <a href="#set-up-the-repository" class="md-nav__link">
+    Set up the repository
+  </a>
+  
+</li>
       
+        <li class="md-nav__item">
+  <a href="#install-docker-engine" class="md-nav__link">
+    Install Docker Engine
+  </a>
+  
+</li>
       
-
+        <li class="md-nav__item">
+  <a href="#create-your-own-docker-image-and-execute-it-with-the-script-here" class="md-nav__link">
+    Create your own docker image and execute it with the script here
+  </a>
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../nablablanguage/" class="md-nav__link">
-        NabLab language reference
-      </a>
-    </li>
-  
-
-    
+</li>
       
+        <li class="md-nav__item">
+  <a href="#push-the-image-on-docker-hub" class="md-nav__link">
+    Push the image on docker hub
+  </a>
+  
+</li>
       
+    </ul>
+  
+</nav>
       
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../ngenlanguage/" class="md-nav__link">
-        Ngen language reference
-      </a>
     </li>
   
 
@@ -311,8 +380,45 @@
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
+  
     
   
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#set-up-the-repository" class="md-nav__link">
+    Set up the repository
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install-docker-engine" class="md-nav__link">
+    Install Docker Engine
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-your-own-docker-image-and-execute-it-with-the-script-here" class="md-nav__link">
+    Create your own docker image and execute it with the script here
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#push-the-image-on-docker-hub" class="md-nav__link">
+    Push the image on docker hub
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -325,14 +431,60 @@
               
                 
                 
-                <h1 id="monitoring-and-debugging">Monitoring and debugging</h1>
-<p>NabLab debugger is part of the <a href="http://gemoc.org/debug4science/">Debug4Science project</a>.</p>
-<p><center>
-<img src="http://gemoc.org/debug4science/img/cea.png" alt="CEA" style="width: 100px;"/>
-&nbsp;&nbsp;&nbsp;
-<img src="http://gemoc.org/debug4science/img/inria.png" alt="Inria" style="width: 150px;"/>
-</center></p>
-<p><strong>Coming soon...</strong></p>
+                <h1 id="docker-integration">Docker integration</h1>
+<p>The continuous integration mechanism with GitHub triggers all the tests defined in NabLab, including the NablaExamplesTests that generate, compile and run the NabalaExamples for each backend. 
+For these tests to run without error, the environment on which they are running must be correctly configured (java, gcc, cmake, Kokkos and LevelDb). 
+This is the purpose of the docker image built by the docker-nablab.sh script. This image is then pushed on a DockerHub public repository to be used by the GitHub actions of the CI workflow. </p>
+<p>The complete documentation to install docker on your ubuntu machine, is available <a href="https://docs.docker.com/engine/install/ubuntu/">here</a>.
+The procedure below lists the main steps.</p>
+<h2 id="set-up-the-repository">Set up the repository</h2>
+<p>Update the apt package index and install packages to allow apt to use a repository over HTTPS:</p>
+<div class="highlight"><pre><span></span><code>sudo apt-get update
+
+sudo apt-get install <span class="se">\</span>
+    apt-transport-https <span class="se">\</span>
+    ca-certificates <span class="se">\</span>
+    curl <span class="se">\</span>
+    gnupg <span class="se">\</span>
+    lsb-release
+</code></pre></div>
+<p>Add Docker’s official GPG key:</p>
+<div class="highlight"><pre><span></span><code>curl -fsSL https://download.docker.com/linux/ubuntu/gpg <span class="p">|</span> sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+</code></pre></div>
+<p>Use the following command to set up the stable repository</p>
+<div class="highlight"><pre><span></span><code><span class="nb">echo</span> <span class="se">\</span>
+  <span class="s2">&quot;deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \</span>
+<span class="s2">  </span><span class="k">$(</span>lsb_release -cs<span class="k">)</span><span class="s2"> stable&quot;</span> <span class="p">|</span> sudo tee /etc/apt/sources.list.d/docker.list &gt; /dev/null
+</code></pre></div>
+<h2 id="install-docker-engine">Install Docker Engine</h2>
+<p>Update the apt package index, and install the latest version of Docker Engine and containerd</p>
+<div class="highlight"><pre><span></span><code>sudo apt-get update
+
+sudo apt-get install docker-ce docker-ce-cli containerd.io
+</code></pre></div>
+<p>User must belong to the 'docker' group</p>
+<div class="highlight"><pre><span></span><code>sudo adduser <span class="nv">$USER</span> docker
+</code></pre></div>
+<p>Verify that Docker Engine is installed correctly by running the hello-world image (optional)</p>
+<div class="highlight"><pre><span></span><code>sudo docker run hello-world
+</code></pre></div>
+<h2 id="create-your-own-docker-image-and-execute-it-with-the-script-here">Create your own docker image and execute it with the script <a href="docker/docker-nablab.sh">here</a></h2>
+<div class="highlight"><pre><span></span><code>./docker/docker-nablab.sh
+</code></pre></div>
+<p>You can then test it (and check if maven clean verify works)</p>
+<p>NB : with VPN you may use --network=host option in docker build and docker run</p>
+<p>List available images on your system (optional)</p>
+<div class="highlight"><pre><span></span><code>docker images 
+</code></pre></div>
+<h2 id="push-the-image-on-docker-hub">Push the image on docker hub</h2>
+<p>Login to docker hub</p>
+<div class="highlight"><pre><span></span><code>docker login
+</code></pre></div>
+<p>Username : nablab / Password : cf gmail pwd</p>
+<p>NB : An application account has been created with nablalang@gmail.com</p>
+<p>Push to docker hub</p>
+<div class="highlight"><pre><span></span><code>docker push nablab/execution-env
+</code></pre></div>
                 
               
               
@@ -351,7 +503,8 @@
   
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
-        <a href="../modulecomposition/" class="md-footer__link md-footer__link--prev" rel="prev">
+        
+        <a href="ngenlanguage.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: Ngen language reference" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -360,25 +513,11 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              Composing modules
+              Ngen language reference
             </div>
           </div>
         </a>
       
-      
-        <a href="../nablablanguage/" class="md-footer__link md-footer__link--next" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              NabLab language reference
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
-          </div>
-        </a>
       
     </nav>
   
@@ -418,12 +557,12 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../assets/javascripts/workers/search.fe42c31b.min.js", "version": "0.4.0"}</script>
+    <script id="__config" type="application/json">{"base": ".", "features": ["navigation.instant"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "assets/javascripts/workers/search.477d984a.min.js", "version": "0.4.0"}</script>
     
     
-      <script src="../assets/javascripts/bundle.d892486b.min.js"></script>
+      <script src="assets/javascripts/bundle.82b56eb2.min.js"></script>
       
-        <script src="../javascripts/config.js"></script>
+        <script src="javascripts/config.js"></script>
       
         <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
       

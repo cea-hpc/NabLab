@@ -22,6 +22,7 @@ nav:
   - Monitoring and debugging: debug.md
   - NabLab language reference: nablablanguage.md
   - Ngen language reference: ngenlanguage.md
+  - Docker integration: docker.md 
   - Arcane code generation: arcane.md
 
 theme:

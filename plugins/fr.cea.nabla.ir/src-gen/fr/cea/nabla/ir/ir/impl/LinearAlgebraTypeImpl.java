@@ -2,8 +2,8 @@
  */
 package fr.cea.nabla.ir.ir.impl;
 
+import fr.cea.nabla.ir.ir.DefaultExtensionProvider;
 import fr.cea.nabla.ir.ir.Expression;
-import fr.cea.nabla.ir.ir.ExtensionProvider;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.LinearAlgebraType;
 
@@ -54,7 +54,7 @@ public class LinearAlgebraTypeImpl extends IrTypeImpl implements LinearAlgebraTy
 	 * @generated
 	 * @ordered
 	 */
-	protected ExtensionProvider provider;
+	protected DefaultExtensionProvider provider;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -94,10 +94,10 @@ public class LinearAlgebraTypeImpl extends IrTypeImpl implements LinearAlgebraTy
 	 * @generated
 	 */
 	@Override
-	public ExtensionProvider getProvider() {
+	public DefaultExtensionProvider getProvider() {
 		if (provider != null && provider.eIsProxy()) {
 			InternalEObject oldProvider = (InternalEObject)provider;
-			provider = (ExtensionProvider)eResolveProxy(oldProvider);
+			provider = (DefaultExtensionProvider)eResolveProxy(oldProvider);
 			if (provider != oldProvider) {
 				if (eNotificationRequired())
 					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.LINEAR_ALGEBRA_TYPE__PROVIDER, oldProvider, provider));
@@ -111,7 +111,7 @@ public class LinearAlgebraTypeImpl extends IrTypeImpl implements LinearAlgebraTy
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ExtensionProvider basicGetProvider() {
+	public DefaultExtensionProvider basicGetProvider() {
 		return provider;
 	}
 
@@ -121,8 +121,8 @@ public class LinearAlgebraTypeImpl extends IrTypeImpl implements LinearAlgebraTy
 	 * @generated
 	 */
 	@Override
-	public void setProvider(ExtensionProvider newProvider) {
-		ExtensionProvider oldProvider = provider;
+	public void setProvider(DefaultExtensionProvider newProvider) {
+		DefaultExtensionProvider oldProvider = provider;
 		provider = newProvider;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.LINEAR_ALGEBRA_TYPE__PROVIDER, oldProvider, provider));
@@ -173,7 +173,7 @@ public class LinearAlgebraTypeImpl extends IrTypeImpl implements LinearAlgebraTy
 				getSizes().addAll((Collection<? extends Expression>)newValue);
 				return;
 			case IrPackage.LINEAR_ALGEBRA_TYPE__PROVIDER:
-				setProvider((ExtensionProvider)newValue);
+				setProvider((DefaultExtensionProvider)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -191,7 +191,7 @@ public class LinearAlgebraTypeImpl extends IrTypeImpl implements LinearAlgebraTy
 				getSizes().clear();
 				return;
 			case IrPackage.LINEAR_ALGEBRA_TYPE__PROVIDER:
-				setProvider((ExtensionProvider)null);
+				setProvider((DefaultExtensionProvider)null);
 				return;
 		}
 		super.eUnset(featureID);

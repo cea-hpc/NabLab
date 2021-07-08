@@ -13,6 +13,7 @@ import com.google.inject.Inject
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
 import fr.cea.nabla.generator.NablagenExtensionHelper
+import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.transformers.CompositeTransformationStep
 import fr.cea.nabla.ir.transformers.FillJobHLTs
@@ -20,6 +21,7 @@ import fr.cea.nabla.ir.transformers.OptimizeConnectivities
 import fr.cea.nabla.ir.transformers.ReplaceAffectations
 import fr.cea.nabla.ir.transformers.ReplaceReductions
 import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
+import fr.cea.nabla.nabla.DefaultExtension
 import fr.cea.nabla.nablagen.NablagenApplication
 import fr.cea.nabla.nablagen.TargetType
 import org.eclipse.emf.ecore.EObject
@@ -96,7 +98,6 @@ class IrRootBuilder
 	private def boolean setDefaultInterpreterProviders(EObject ngenContext, IrRoot ir)
 	{
 		// Browse IrRoot model providers which need to be filled with Nablaext providers
-		// TODO Traiter la lib Math comme LinearAlgebra, en vrai provider
 		for (irProvider : ir.providers.filter[x | x.extensionName != "Math"])
 		{
 			val provider = ngenExtHelper.getDefaultProvider(ngenContext, TargetType::JAVA, irProvider.extensionName)
@@ -108,7 +109,8 @@ class IrRootBuilder
 
 			irProvider.providerName = provider.name
 			irProvider.outputPath = provider.outputPath
-			irProvider.linearAlgebra = provider.extension.linearAlgebra
+			if (provider.extension instanceof DefaultExtension && irProvider instanceof DefaultExtensionProvider)
+				(irProvider as DefaultExtensionProvider).linearAlgebra = (provider.extension as DefaultExtension).linearAlgebra
 		}
 
 		return true

@@ -10,7 +10,7 @@
 package fr.cea.nabla.ir.generator
 
 import fr.cea.nabla.ir.IrUtils
-import fr.cea.nabla.ir.ir.ExtensionProvider
+import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 
@@ -26,19 +26,16 @@ class CMakeUtils
 		# This file is in a cmake sub_directory and is called by a root CMakeLists.txt 
 		«ELSE»
 		cmake_minimum_required(VERSION 3.10)
+		cmake_policy(SET CMP0074 NEW)
 		set(CMAKE_VERBOSE_MAKEFILE FALSE)
 		«ENDIF»
 	'''
 
-	static def setVariables(Iterable<Pair<String, String>> variables, Iterable<ExtensionProvider> providers)
+	static def setVariables(Iterable<Pair<String, String>> variables, Iterable<DefaultExtensionProvider> providers)
 	'''
 		# SET VARIABLES
 		«FOR v : variables»
-		«IF v.key == "N_CXX_COMPILER"»
-		set(CMAKE_CXX_COMPILER «v.value» CACHE STRING "")
-		«ELSE»
 		set(«v.key» «formatCMakePath(v.value)»)
-		«ENDIF»
 		«ENDFOR»
 		«FOR p : providers»
 		set(«p.pathVar.key» «p.pathVar.value»)
@@ -57,7 +54,7 @@ class CMakeUtils
 		«ENDIF»
 	'''
 
-	static def addSubDirectories(boolean needNablalib, Iterable<ExtensionProvider> providers)
+	static def addSubDirectories(boolean needNablalib, Iterable<DefaultExtensionProvider> providers)
 	'''
 		«IF needNablalib || !providers.empty»
 			# SUB_DIRECTORIES

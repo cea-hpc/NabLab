@@ -23,7 +23,7 @@ class IrTypeExtensions
 		switch it
 		{
 			BaseType: interpreteDimensionExpressions(it.sizes, context)
-			ConnectivityType: it.connectivities.map[x | context.connectivitySizes.get(x)] + getIntSizes(it.base, context)
+			ConnectivityType: it.connectivities.map[x | context.meshProvider.getSize(x)] + getIntSizes(it.base, context)
 			LinearAlgebraType: interpreteDimensionExpressions(it.sizes, context)
 		}
 	}

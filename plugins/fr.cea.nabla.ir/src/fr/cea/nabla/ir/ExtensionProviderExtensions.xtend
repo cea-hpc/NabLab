@@ -9,7 +9,11 @@
  *******************************************************************************/
 package fr.cea.nabla.ir
 
+import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.ExtensionProvider
+import java.io.File
+import java.net.URL
+import java.net.URLClassLoader
 
 class ExtensionProviderExtensions
 {
@@ -23,7 +27,7 @@ class ExtensionProviderExtensions
 		extensionName
 	}
 
-	static def getLibName(ExtensionProvider it)
+	static def getLibName(DefaultExtensionProvider it)
 	{
 		providerName.toLowerCase
 	}
@@ -57,5 +61,24 @@ class ExtensionProviderExtensions
 	static def String getInstanceName(ExtensionProvider it)
 	{
 		extensionName.toFirstLower
+	}
+
+	static def String getJarFileName(DefaultExtensionProvider it, String wsPath)
+	{
+		wsPath + installPath + "/" + libName + ".jar"
+	}
+
+	static def URLClassLoader getClassLoader(DefaultExtensionProvider it, String wsPath)
+	{
+		val fileName = getJarFileName(wsPath)
+		val file = new File(fileName)
+		if (file.exists)
+		{
+			val url = new URL("file://" + fileName)
+			val parentClassLoader = Thread.currentThread.contextClassLoader
+			new URLClassLoader(#[url], parentClassLoader)
+		}
+		else
+			null
 	}
 }

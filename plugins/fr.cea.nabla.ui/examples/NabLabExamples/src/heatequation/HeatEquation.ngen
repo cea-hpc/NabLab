@@ -11,7 +11,6 @@ Application HeatEquation;
 
 MainModule HeatEquation heatEquation
 {
-	meshClassName = "CartesianMesh2D";
 	nodeCoord = X;
 	time = t;
 	timeStep = δt;
@@ -27,7 +26,7 @@ VtkOutput
 
 //LevelDB
 //{
-//	levelDBPath = "$ENV{HOME}/leveldb/leveldb-install";
+//	leveldb_ROOT = "$ENV{HOME}/leveldb/install";
 //}
 
 Java
@@ -38,31 +37,31 @@ Java
 Kokkos
 {
 	outputPath = "/NabLabExamples/src-gen-cpp/kokkos";
-	N_CXX_COMPILER = "/usr/bin/g++";
-	N_KOKKOS_PATH = "$ENV{HOME}/kokkos/kokkos-install";
+	CMAKE_CXX_COMPILER = "/usr/bin/g++";
+	Kokkos_ROOT = "$ENV{HOME}/kokkos/install";
 }
 
 KokkosTeamThread
 {
 	outputPath = "/NabLabExamples/src-gen-cpp/kokkos-team";
-	N_CXX_COMPILER = "/usr/bin/g++";
-	N_KOKKOS_PATH = "$ENV{HOME}/kokkos/kokkos-install";
+	CMAKE_CXX_COMPILER = "/usr/bin/g++";
+	Kokkos_ROOT = "$ENV{HOME}/kokkos/install";
 }
 
 OpenMP
 {
 	outputPath = "/NabLabExamples/src-gen-cpp/openmp";
-	N_CXX_COMPILER = "/usr/bin/g++";
+	CMAKE_CXX_COMPILER = "/usr/bin/g++";
 }
 
 CppSequential
 {
 	outputPath = "/NabLabExamples/src-gen-cpp/sequential";
-	N_CXX_COMPILER = "/usr/bin/g++";
+	CMAKE_CXX_COMPILER = "/usr/bin/g++";
 }
 
 StlThread
 {
 	outputPath = "/NabLabExamples/src-gen-cpp/stl-thread";
-	N_CXX_COMPILER = "/usr/bin/g++";
+	CMAKE_CXX_COMPILER = "/usr/bin/g++";
 }

@@ -10,17 +10,7 @@
 module ExplicitHeatEquation;
 
 with Math.*;
-
-itemtypes { node, cell, face }
-
-connectivity nodes: → {node};
-connectivity cells: → {cell};
-connectivity faces: → {face};
-connectivity neighbourCells: cell → {cell};
-connectivity nodesOfFace: face → {node};
-connectivity cellsOfFace: face → {cell};
-connectivity nodesOfCell: cell → {node};
-connectivity commonFace: cell × cell → face;
+with CartesianMesh2D.*;
 
 option ℝ u0 = 1.0;
 let ℝ[2] vectOne = ℝ[2](1.0);

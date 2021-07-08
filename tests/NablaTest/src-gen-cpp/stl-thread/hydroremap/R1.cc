@@ -21,10 +21,10 @@ R1::Options::jsonInit(const char* jsonContent)
 
 /******************** Module definition ********************/
 
-R1::R1(CartesianMesh2D* aMesh, Options& aOptions)
+R1::R1(CartesianMesh2D& aMesh, Options& aOptions)
 : mesh(aMesh)
-, nbNodes(mesh->getNbNodes())
-, nbCells(mesh->getNbCells())
+, nbNodes(mesh.getNbNodes())
+, nbCells(mesh.getNbCells())
 , options(aOptions)
 , rv3(nbCells)
 {

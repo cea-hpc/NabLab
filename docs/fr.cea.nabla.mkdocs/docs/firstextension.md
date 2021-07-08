@@ -1,5 +1,8 @@
 # My first extension
 
+!!! note
+	NabLab defines three kinds of extension: default, linear algebra and mesh. This tutorial covers the default one.
+
 ## Presentation of the problem
 
 Let us imagine the NabLab *Swan* module simulating the effects of the propagation of seismic waves on sea surface. To wave height variable `H` and the depth sea variable `D` need to be initialized thanks to the following `InitH` and `InitD` jobs:
@@ -197,7 +200,7 @@ StlThread
 {
 	outputPath = "/swan/src-gen-cpp/stl-thread";
 	extension BathyLib providedBy BathyLibCpp;
-	N_CXX_COMPILER = "/usr/bin/g++";
+	CMAKE_CXX_COMPILER = "/usr/bin/g++";
 }
 ```
 
@@ -227,12 +230,12 @@ Interpreter
 {
 	outputPath = "/swan/src-gen-interpreter";
 	extension BathyLib providedBy BathyLibCpp;
-	N_CXX_COMPILER = "/usr/bin/g++";
+	CMAKE_CXX_COMPILER = "/usr/bin/g++";
 	JAVA_HOME = "/usr/lib/jvm/java-11-openjdk-amd64";
 }
 ```
 
-The interpreter block needs to set the `N_CXX_COMPILER` variable as for C++ code generators and the `JAVA_HOME` variable to allow the JNI compilation.
+The interpreter block can provide the path to the desired compiler into the `CMAKE_CXX_COMPILER` variable and needs to set the `JAVA_HOME` variable to allow the JNI compilation.
 
 To get the JNI code for the interpreter, launch the generation as usual: right-click on the *ngen* file (in the example *Swan.ngen*) and select *Generate Code*. The NabLab console displays information showing the JNI generation:
 

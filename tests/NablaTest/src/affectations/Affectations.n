@@ -9,11 +9,7 @@
  *******************************************************************************/
 module Affectations;
 
-itemtypes { node, cell }
-
-connectivity nodes: → {node};
-connectivity cells: → {cell};
-connectivity nodesOfCell: cell → {node};
+with CartesianMesh2D.*;
 
 // Simulation options
 option ℝ maxTime = 0.1;

@@ -26,6 +26,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 import static extension fr.cea.nabla.UniqueNameHelper.*
+import com.google.inject.Provider
+import org.eclipse.emf.ecore.resource.ResourceSet
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
@@ -37,6 +39,7 @@ class IteratorExtensionsTest
 	@Inject extension IrItemIdDefinitionFactory
 	@Inject extension IrItemIndexDefinitionFactory
 	@Inject ParseHelper<NablaModule> parseHelper
+	@Inject Provider<ResourceSet> resourceSetProvider
 
 	Job j1; Job j2; Job j3; Job j4; Job j5; Job j6;
 	SpaceIterator j1_j; SpaceIterator j2_j; SpaceIterator j2_r; SpaceIterator j3_j; SpaceIterator j3_r;
@@ -49,18 +52,8 @@ class IteratorExtensionsTest
 		val model =
 		'''
 		module Test;
-		
-		with Math.*;
 
-		itemtypes { cell, node, face }
-
-		connectivity cells: → {cell};
-		connectivity nodes: → {node};
-		connectivity faces: → {face};
-		connectivity nodesOfCell: cell → {node};
-		connectivity cellsOfNode: node → {cell};
-		connectivity neighbourCells: cell → {cell};
-		connectivity commonFace: cell × cell → face;
+		with CartesianMesh2D.*;
 
 		def ∑, 0.0: ℝ, (a, b) → return a + b;
 		def ∑, 0.0: x | ℝ[x], (a, b) → return a + b;
@@ -80,7 +73,10 @@ class IteratorExtensionsTest
 		J5: ∀j1∈cells(), f{j1} = a * ∑{j2∈neighbourCells(j1)}(∑{cf∈commonFace(j1,j2)}((x{j2}-x{j1}) / surface{cf}));
 		J6: ∀j1∈cells(), ∀j2∈neighbourCells(j1), ∀cf∈commonFace(j1,j2), let ℝ bidon = (x{j2}-x{j1}) / surface{cf});
 		'''
-		val nablaModule = parseHelper.parse(model)
+
+		val rs = resourceSetProvider.get
+		parseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DPath), rs)
+		val nablaModule = parseHelper.parse(model, rs)
 
 		j1 = nablaModule.getJobByName("J1")
 		j2 = nablaModule.getJobByName("J2")

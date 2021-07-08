@@ -28,7 +28,7 @@ abstract class AbstractInstructionInterpreterTest
 	{
 		val model =
 		'''
-		«testModuleForSimulation»
+		«testModule»
 		ℝ[2] X{nodes};
 		Job1: { let ℝ r = 1.0; t = r; }
 		'''
@@ -40,7 +40,7 @@ abstract class AbstractInstructionInterpreterTest
 	{
 		val model =
 		'''
-		«testModuleForSimulation»
+		«testModule»
 		ℝ[2] X{nodes};
 		Job1: { let ℝ r = 1.0; t = r; }
 		'''
@@ -52,7 +52,7 @@ abstract class AbstractInstructionInterpreterTest
 	{
 		val model =
 		'''
-		«testModuleForSimulation»
+		«testModule»
 		ℝ[2] X{nodes};
 		Job1: { let ℝ r = 1.0; t = r; }
 		'''
@@ -64,7 +64,7 @@ abstract class AbstractInstructionInterpreterTest
 	{
 		val model =
 		'''
-		«testModuleForSimulation»
+		«testModule»
 		option ℕ maxIter = 10;
 		option ℝ maxTime = 1.0;
 		ℝ U{cells};
@@ -106,7 +106,7 @@ abstract class AbstractInstructionInterpreterTest
 	{
 		val model =
 		'''
-		«testModuleForSimulation»
+		«testModule»
 		ℝ U{cells};
 		ℝ[2] X{nodes};
 		InitU : ∀r, countr ∈ cells(), {
@@ -124,7 +124,7 @@ abstract class AbstractInstructionInterpreterTest
 	{
 		val model =
 		'''
-		«testModuleForSimulation»
+		«testModule»
 		ℝ U{cells};
 		ℝ[2] X{nodes}, C{cells, nodesOfCell};
 		InitU : {
@@ -143,7 +143,7 @@ abstract class AbstractInstructionInterpreterTest
 	{
 		val model =
 		'''
-		«testModuleForSimulation»
+		«testModule»
 
 		ℝ[2] X{nodes};
 		ℝ U{cells};
@@ -160,7 +160,7 @@ abstract class AbstractInstructionInterpreterTest
 	{
 		val model =
 		'''
-		«testModuleForSimulation»
+		«testModule»
 		let ℕ V=100;
 		let ℕ W=0;
 		ℝ[2] X{nodes};

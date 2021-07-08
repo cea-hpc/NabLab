@@ -2,8 +2,8 @@
 #!/bin/bash
 #
 
-OLD_VERSION=0.4.0
-NEW_VERSION=0.4.1
+OLD_VERSION=0.4.1
+NEW_VERSION=0.4.2
 
 echo "Looking for MANIFEST.MF files"
 FIND_RES=`find . -path ./.metadata -prune -o -name "MANIFEST.MF" -print`
@@ -56,6 +56,13 @@ if grep -q "$OLD_VERSION.qualifier" $f; then
    echo "   Changing version of:" $f
    cp $f $f.old
    sed "s/$OLD_VERSION.qualifier/$NEW_VERSION.qualifier/g" $f.old > $f
+fi
+
+f=./.github/workflows/build.yml
+if grep -q "$OLD_VERSION-SNAPSHOT.jar -Dversion=$OLD_VERSION" $f; then
+   echo "   Changing version of:" $f
+   cp $f $f.old
+   sed "s/$OLD_VERSION-SNAPSHOT.jar -Dversion=$OLD_VERSION/$NEW_VERSION-SNAPSHOT.jar -Dversion=$NEW_VERSION/g" $f.old > $f
 fi
 
 MD_FILES="./README.md ./docs/fr.cea.nabla.mkdocs/docs/gettingstarted.md"

@@ -17,14 +17,12 @@ Application Glace2d;
 
 The first part of the *ngen* file identifies the main module of the application. It is defined by a reference to a NabLab module and a name. It must provide some additional parameters useful for code interpretation/generation:
 
-- `meshClassName` identifies the name of the mesh class and the name of the mesh class factory. For example, if the name is *CartesianMesh2D*, NabLab waits for a factory names *CartesianMesh2DFactory* with a `CartesianMesh2D create()` method.
 - `nodeCoord` identifies the NabLab variable representing node coordinates.
 - `time`, `timeStep`, `iterationMax` and `timeMax` identifies respectively the NabLab variables representing the time of the simulation, the timeStep of the simulation, the maximum number of iterations of the main time loop and the maximum time of the simulation.
 
 ```
 MainModule Glace2d glace2d
 {
-	meshClassName = "CartesianMesh2D";
 	nodeCoord = X;
 	time = t;
 	timeStep = δt;
@@ -73,12 +71,12 @@ To trigger the dump of all variables (except linear algebra ones) of your code, 
 ``` 
 LevelDB
 {
-	levelDBPath = "$ENV{HOME}/leveldb/leveldb-install";
+	leveldb_ROOT = "$ENV{HOME}/leveldb/install";
 }
 ```
 
 !!! note
-	The `levelDBPath` value supports CMake syntax like `$ENV{HOME}` in the example above.  
+	The `leveldb_ROOT` value supports CMake syntax like `$ENV{HOME}` in the example above.
 
 When the `LevelDB`block exists in the *ngen* file, the `nonRegression` option must appear in the Json data file. If its value is `CreateReference`, variables are dumped in a directory named *ApplicationNameDB.ref*. If its value is `CompareToReference`, variables are dumped in a directory named *Application NameDB.current* and are compared to variables stored in *ApplicationNameDB.ref*.
 
@@ -112,8 +110,8 @@ Here is an example of a generation block:
 Kokkos
 {
 	outputPath = "/NabLabExamples/src-gen-cpp/kokkos";
-	N_CXX_COMPILER = "/usr/bin/g++";
-	N_KOKKOS_PATH = "$ENV{HOME}/kokkos/kokkos-install";
+	CMAKE_CXX_COMPILER = "/usr/bin/g++";
+	Kokkos_ROOT = "$ENV{HOME}/kokkos/install";
 }
 ```
 
@@ -122,8 +120,8 @@ All targets have to define the `outputPath` of the generation and a set of varia
 !!! note
 	A good practice is to name "src-gen" a directory containing only generated code.
 
-For C++ targets, the `N_CXX_COMPILER` variable is mandatory.
-For `Kokkos`, `KokkosTeamThread`, the Kokkos library has to be installed and the path to the library has to be provided is the `N_KOKKOS_PATH` variable. 
+For `Kokkos`, `KokkosTeamThread`, the Kokkos library has to be installed and the path to the library has to be provided is the `Kokkos_ROOT` variable.
+Moreover, if linear algebra is used, `KokkosKernels_ROOT` variable must be set to Kokkos Kernels installation directory.
 
 !!! note
 	Variables can use CMake syntax in their value like `$ENV{HOME}` for path in the example above.  

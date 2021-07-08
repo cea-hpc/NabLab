@@ -2,22 +2,17 @@
 
 package affectations;
 
-import static org.iq80.leveldb.impl.Iq80DBFactory.bytes;
-import static org.iq80.leveldb.impl.Iq80DBFactory.factory;
-
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.stream.IntStream;
 
-import com.google.gson.JsonElement;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.JsonElement;
 
 import fr.cea.nabla.javalib.*;
 import fr.cea.nabla.javalib.mesh.*;
 
-@SuppressWarnings("all")
 public final class Affectations
 {
 	public final static class Options
@@ -29,10 +24,8 @@ public final class Affectations
 
 		public void jsonInit(final String jsonContent)
 		{
-			final JsonParser parser = new JsonParser();
-			final JsonElement json = parser.parse(jsonContent);
-			assert(json.isJsonObject());
-			final JsonObject o = json.getAsJsonObject();
+			final Gson gson = new Gson();
+			final JsonObject o = gson.fromJson(jsonContent, JsonObject.class);
 			// maxTime
 			if (o.has("maxTime"))
 			{
@@ -65,7 +58,8 @@ public final class Affectations
 
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
-	private final int nbNodes, nbCells, nbNodesOfCell;
+	@SuppressWarnings("unused")
+	private final int nbNodes, nbCells;
 
 	// User options
 	private final Options options;
@@ -96,7 +90,6 @@ public final class Affectations
 		mesh = aMesh;
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
-		nbNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
 
 		// User options
 		options = aOptions;
@@ -246,7 +239,8 @@ public final class Affectations
 		do
 		{
 			n++;
-			System.out.printf("[%5d] t: %5.5f - deltat: %5.5f\n", n, t_n, options.deltat);
+			System.out.printf("START ITERATION n: %5d - t: %5.5f - deltat: %5.5f\n", n, t_n, options.deltat);
+		
 			computeE1(); // @1.0
 			updateT(); // @1.0
 			updateU(); // @1.0
@@ -259,29 +253,28 @@ public final class Affectations
 			// Evaluate loop condition with variables at time n
 			continueLoop = (n + 1 < options.maxIter && t_nplus1 < options.maxTime);
 		
-			if (continueLoop)
+			t_n = t_nplus1;
+			for (int i1=0; i1<2; i1++)
 			{
-				t_n = t_nplus1;
+				u_n[i1] = u_nplus1[i1];
+			}
+			IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
+			{
 				for (int i1=0; i1<2; i1++)
 				{
-					u_n[i1] = u_nplus1[i1];
+					e2_n[i1Cells][i1] = e2_nplus1[i1Cells][i1];
 				}
-				IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
+			});
+			IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
+			{
+				for (int i1=0; i1<2; i1++)
 				{
-					for (int i1=0; i1<2; i1++)
-					{
-						e2_n[i1Cells][i1] = e2_nplus1[i1Cells][i1];
-					}
-				});
-				IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
-				{
-					for (int i1=0; i1<2; i1++)
-					{
-						e_n[i1Cells][i1] = e_nplus1[i1Cells][i1];
-					}
-				});
-			} 
+					e_n[i1Cells][i1] = e_nplus1[i1Cells][i1];
+				}
+			});
 		} while (continueLoop);
+		
+		System.out.printf("FINAL TIME: %5.5f - deltat: %5.5f\n", t_n, options.deltat);
 	}
 
 	/**
@@ -312,22 +305,20 @@ public final class Affectations
 		do
 		{
 			k++;
-			System.out.printf("	[%5d] t: %5.5f - deltat: %5.5f\n", k, t_n, options.deltat);
+			System.out.printf("Start iteration k: %5d\n", k);
+		
 			computeE2(); // @1.0
 		
 			// Evaluate loop condition with variables at time n
 			continueLoop = (k + 1 < 10);
 		
-			if (continueLoop)
+			IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
 			{
-				IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
+				for (int i1=0; i1<2; i1++)
 				{
-					for (int i1=0; i1<2; i1++)
-					{
-						e2_nplus1_k[i1Cells][i1] = e2_nplus1_kplus1[i1Cells][i1];
-					}
-				});
-			} 
+					e2_nplus1_k[i1Cells][i1] = e2_nplus1_kplus1[i1Cells][i1];
+				}
+			});
 		} while (continueLoop);
 	}
 
@@ -374,16 +365,14 @@ public final class Affectations
 	{
 		if (args.length == 1)
 		{
-			String dataFileName = args[0];
-			JsonParser parser = new JsonParser();
-			JsonObject o = parser.parse(new FileReader(dataFileName)).getAsJsonObject();
-			int ret = 0;
+			final String dataFileName = args[0];
+			final Gson gson = new Gson();
+			final JsonObject o = gson.fromJson(new FileReader(dataFileName), JsonObject.class);
 
 			// Mesh instanciation
 			assert(o.has("mesh"));
-			CartesianMesh2DFactory meshFactory = new CartesianMesh2DFactory();
-			meshFactory.jsonInit(o.get("mesh").toString());
-			CartesianMesh2D mesh = meshFactory.create();
+			CartesianMesh2D mesh = new CartesianMesh2D();
+			mesh.jsonInit(o.get("mesh").toString());
 
 			// Module instanciation(s)
 			Affectations.Options affectationsOptions = new Affectations.Options();

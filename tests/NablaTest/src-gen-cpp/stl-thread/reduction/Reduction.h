@@ -9,7 +9,6 @@
 #include <limits>
 #include <utility>
 #include <cmath>
-#include "nablalib/mesh/CartesianMesh2DFactory.h"
 #include "nablalib/mesh/CartesianMesh2D.h"
 #include "nablalib/utils/Utils.h"
 #include "nablalib/utils/Timer.h"
@@ -44,7 +43,7 @@ public:
 		void jsonInit(const char* jsonContent);
 	};
 
-	Reduction(CartesianMesh2D* aMesh, Options& aOptions);
+	Reduction(CartesianMesh2D& aMesh, Options& aOptions);
 	~Reduction();
 
 	void simulate();
@@ -55,8 +54,8 @@ public:
 
 private:
 	// Mesh and mesh variables
-	CartesianMesh2D* mesh;
-	size_t nbNodes, nbCells, nbCellsOfNode, nbNodesOfCell;
+	CartesianMesh2D& mesh;
+	size_t nbNodes, maxCellsOfNode, nbCells, maxNodesOfCell;
 
 	// User options
 	Options& options;

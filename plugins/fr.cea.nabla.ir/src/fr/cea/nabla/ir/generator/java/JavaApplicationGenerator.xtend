@@ -91,7 +91,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 				«FOR v : options»
 				public «v.type.javaType» «v.name»;
 				«ENDFOR»
-				«FOR v : extensionProviders»
+				«FOR v : validExtensionProviders»
 				public «v.packageName».«v.className» «v.instanceName»;
 				«ENDFOR»
 				public String «IrUtils.NonRegressionNameAndValue.key»;
@@ -110,7 +110,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 					«FOR v : options»
 					«getJsonContent(v.name, v.type as BaseType, v.defaultValue)»
 					«ENDFOR»
-					«FOR v : extensionProviders»
+					«FOR v : validExtensionProviders»
 					«val vName = v.instanceName»
 					// «vName»
 					«vName» = new «v.packageName».«v.className»();
@@ -130,9 +130,9 @@ class JavaApplicationGenerator implements ApplicationGenerator
 			}
 
 			// Mesh and mesh variables
-			private final «javaMeshClassName» mesh;
+			private final «meshClassName» mesh;
 			@SuppressWarnings("unused")
-			«FOR c : irRoot.connectivities.filter[multiple] BEFORE 'private final int ' SEPARATOR ', '»«c.nbElemsVar»«ENDFOR»;
+			«FOR c : irRoot.mesh.connectivities.filter[multiple] BEFORE 'private final int ' SEPARATOR ', ' AFTER ';'»«c.nbElemsVar»«ENDFOR»
 
 			// User options
 			private final Options options;
@@ -155,12 +155,12 @@ class JavaApplicationGenerator implements ApplicationGenerator
 			protected «IF v.const»final «ENDIF»«v.type.javaType» «v.name»;
 			«ENDFOR»
 
-			public «className»(«javaMeshClassName» aMesh, Options aOptions)
+			public «className»(«meshClassName» aMesh, Options aOptions)
 			{
 				// Mesh and mesh variables initialization
 				mesh = aMesh;
-				«FOR c : irRoot.connectivities.filter[multiple]»
-				«c.nbElemsVar» = «c.connectivityAccessor»;
+				«FOR c : irRoot.mesh.connectivities.filter[multiple]»
+					«c.nbElemsVar» = «c.connectivityAccessor»;
 				«ENDFOR»
 
 				// User options
@@ -216,9 +216,8 @@ class JavaApplicationGenerator implements ApplicationGenerator
 
 					// Mesh instanciation
 					assert(o.has("mesh"));
-					«javaMeshClassName»Factory meshFactory = new «javaMeshClassName»Factory();
-					meshFactory.jsonInit(o.get("mesh").toString());
-					«javaMeshClassName» mesh = meshFactory.create();
+					«meshClassName» mesh = new «meshClassName»();
+					mesh.jsonInit(o.get("mesh").toString());
 
 					// Module instanciation(s)
 					«FOR m : irRoot.modules»
@@ -347,11 +346,6 @@ class JavaApplicationGenerator implements ApplicationGenerator
 			'''mesh.getNb«c.name.toFirstUpper»()'''
 		else
 			'''CartesianMesh2D.MaxNb«c.name.toFirstUpper»'''
-	}
-
-	private def String getJavaMeshClassName(IrModule it)
-	{
-		meshClassName.replace('::', '.')
 	}
 
 	private def getWriteCallContent(Variable v)

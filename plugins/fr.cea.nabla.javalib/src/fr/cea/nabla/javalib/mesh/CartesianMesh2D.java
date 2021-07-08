@@ -18,6 +18,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 public class CartesianMesh2D
 {
 	public static int MaxNbNodesOfCell = 4;
@@ -27,7 +31,10 @@ public class CartesianMesh2D
 	public static int MaxNbFacesOfCell = 4;
 	public static int MaxNbNeighbourCells = 4;
 
-	private  MeshGeometry geometry;
+	private MeshGeometry geometry;
+
+	private int nbXQuads;
+	private int nbYQuads;
 
 	private int[] innerNodes;
 	private int[] topNodes;
@@ -58,91 +65,35 @@ public class CartesianMesh2D
 	private int[] leftFaces;
 	private int[] rightFaces;
 
-	private int xQuads;
-	private int yQuads;
-
-	public CartesianMesh2D(MeshGeometry meshGeometry, int[] innerNodeIds, int[] topNodeIds, int[] bottomNodeIds, int[] leftNodeIds, int[] rightNodeIds, int[] innerCellIds, int[] outerCellIds)
+	public CartesianMesh2D(int nbXQuads, int nbYQuads, double xSize, double ySize)
 	{
-		this.geometry = meshGeometry;
-		this.innerNodes = innerNodeIds;
-		this.topNodes = topNodeIds;
-		this.bottomNodes = bottomNodeIds;
-		this.leftNodes = leftNodeIds;
-		this.rightNodes = rightNodeIds;
+		create(nbXQuads, nbYQuads, xSize, ySize);
+	}
 
-		this.innerCells = innerCellIds;
-		this.outerCells = outerCellIds;
+	/** Constructor for Json creation */
+	public CartesianMesh2D() {}
 
-		this.xQuads = bottomNodeIds.length -1;
-		this.yQuads = leftNodeIds.length -1;
+	public void jsonInit(final String jsonContent)
+	{
+		final JsonObject o = JsonParser.parseString(jsonContent).getAsJsonObject();
+		assert(o.has("nbXQuads"));
+		final JsonElement valueof_nbXQuads = o.get("nbXQuads");
+		assert(valueof_nbXQuads.isJsonPrimitive());
+		int nbXQuads = valueof_nbXQuads.getAsJsonPrimitive().getAsInt();
+		assert(o.has("nbYQuads"));
+		final JsonElement valueof_nbYQuads = o.get("nbYQuads");
+		assert(valueof_nbYQuads.isJsonPrimitive());
+		int nbYQuads = valueof_nbYQuads.getAsJsonPrimitive().getAsInt();
+		assert(o.has("xSize"));
+		final JsonElement valueof_xSize = o.get("xSize");
+		assert(valueof_xSize.isJsonPrimitive());
+		double xSize = valueof_xSize.getAsJsonPrimitive().getAsDouble();
+		assert(o.has("ySize"));
+		final JsonElement valueof_ySize = o.get("ySize");
+		assert(valueof_ySize.isJsonPrimitive());
+		double ySize = valueof_ySize.getAsJsonPrimitive().getAsDouble();
 
-		this.topLeftNode = (xQuads + 1) * yQuads;
-		this.topRightNode = (xQuads + 1) * (yQuads +1) - 1;
-		this.bottomLeftNode = 0;
-		this.bottomRightNode = xQuads;
-
-		Edge[] edges = geometry.getEdges();
-		ArrayList<Integer> outFaces = new ArrayList<Integer>();
-		ArrayList<Integer> inFaces = new ArrayList<Integer>();
-		ArrayList<Integer> inVFaces = new ArrayList<Integer>();
-		ArrayList<Integer> inHFaces = new ArrayList<Integer>();
-		ArrayList<Integer> tFaces = new ArrayList<Integer>();
-		ArrayList<Integer> bFaces = new ArrayList<Integer>();
-		ArrayList<Integer> lFaces = new ArrayList<Integer>();
-		ArrayList<Integer> rFaces = new ArrayList<Integer>();
-
-		for (int edgeId = 0; edgeId <edges.length; edgeId ++)
-		{
-			// Top boundary faces
-			if (edgeId >= 2 * xQuads * yQuads + yQuads) tFaces.add(edgeId);
-			// Bottom boundary faces
-			if ((edgeId < 2 * xQuads) && (edgeId % 2 == 0)) bFaces.add(edgeId);
-			// Left boundary faces
-			if ((edgeId % (2 * xQuads + 1) == 1) && (edgeId < (2 * xQuads + 1) * yQuads)) lFaces.add(edgeId);
-			// Right boundary faces
-			if (edgeId % (2 * xQuads + 1) == 2 * xQuads) rFaces.add(edgeId);
-
-			Edge edge = edges[edgeId];
-
-			if (!isInnerEdge(edge))
-				outFaces.add(edgeId);
-			else
-			{
-				inFaces.add(edgeId);
-				if (isVerticalEdge(edge))
-					inVFaces.add(edgeId);
-				else if (isHorizontalEdge(edge))
-					inHFaces.add(edgeId);
-				else
-					throw new RuntimeException("The inner edge " + edgeId + " should be either vertical or horizontal");
-			}
-		}
-		outerFaces = outFaces.stream().mapToInt(x->x).toArray();
-		innerFaces = inFaces.stream().mapToInt(x->x).toArray();
-		innerVerticalFaces = inVFaces.stream().mapToInt(x->x).toArray();
-		innerHorizontalFaces = inHFaces.stream().mapToInt(x->x).toArray();
-
-		topFaces = tFaces.stream().mapToInt(x->x).toArray();
-		bottomFaces = bFaces.stream().mapToInt(x->x).toArray();
-		leftFaces = lFaces.stream().mapToInt(x->x).toArray();
-		rightFaces = rFaces.stream().mapToInt(x->x).toArray();
-
-		// Construction of boundary cell sets
-		topCells = cellsOfNodeCollection(topNodes);
-		bottomCells = cellsOfNodeCollection(bottomNodes);
-		leftCells = cellsOfNodeCollection(leftNodes);
-		rightCells = cellsOfNodeCollection(rightNodes);
-
-//		// Construction of boundary face sets
-//		topFaces = new int[topCells.length];
-//		bottomFaces = new int[bottomCells.length];
-//		leftFaces = new int[leftCells.length];
-//		rightFaces = new int[rightCells.length];
-//
-//		for (int i=0 ; i<topCells.length ; i++) topFaces[i] = getTopFaceOfCell(topCells[i]);
-//		for (int i=0 ; i<bottomCells.length ; i++) bottomFaces[i] = getBottomFaceOfCell(bottomCells[i]);
-//		for (int i=0 ; i<leftCells.length ; i++) leftFaces[i] = getLeftFaceOfCell(leftCells[i]);
-//		for (int i=0 ; i<rightCells.length ; i++) rightFaces[i] = getRightFaceOfCell(rightCells[i]);
+		create(nbXQuads, nbYQuads, xSize, ySize);
 	}
 
 	public MeshGeometry getGeometry() { return geometry; }
@@ -229,9 +180,9 @@ public class CartesianMesh2D
 		int j = index.getValue();
 		
 		ArrayList<Integer> cellsOfNode = new ArrayList<Integer>();
-		if (i < yQuads && j < xQuads) cellsOfNode.add(index2IdCell(i, j));
-		if (i < yQuads && j > 0) cellsOfNode.add(index2IdCell(i, j-1));
-		if (i > 0 && j < xQuads) cellsOfNode.add(index2IdCell(i-1, j));
+		if (i < nbYQuads && j < nbXQuads) cellsOfNode.add(index2IdCell(i, j));
+		if (i < nbYQuads && j > 0) cellsOfNode.add(index2IdCell(i, j-1));
+		if (i > 0 && j < nbXQuads) cellsOfNode.add(index2IdCell(i-1, j));
 		if (i > 0 && j > 0) cellsOfNode.add(index2IdCell(i-1, j-1));
 		Collections.sort(cellsOfNode);
 		return cellsOfNode.stream().mapToInt(x->x).toArray();
@@ -239,13 +190,13 @@ public class CartesianMesh2D
 
 	public int[] getCellsOfFace(int faceId)
 	{
-		int i_f = (faceId / ((2 * this.xQuads) + 1));
-		int k_f = (faceId - (i_f * ((2 * this.xQuads) + 1)));
+		int i_f = (faceId / ((2 * nbXQuads) + 1));
+		int k_f = (faceId - (i_f * ((2 * nbXQuads) + 1)));
 		ArrayList<Integer> cellsOfFace = new ArrayList<Integer>();
-		if (i_f < this.yQuads) // all except upper bound faces
+		if (i_f < nbYQuads) // all except upper bound faces
 		{
-			if (k_f == (2 * this.xQuads))
-				cellsOfFace.add(index2IdCell(i_f, xQuads - 1));
+			if (k_f == (2 * nbXQuads))
+				cellsOfFace.add(index2IdCell(i_f, nbXQuads - 1));
 			else
 			{
 				if (k_f == 1) // left bound edge
@@ -278,9 +229,9 @@ public class CartesianMesh2D
 		int j = index.getValue();
 		ArrayList<Integer> neighbourCells = new ArrayList<Integer>();
 		if (i >= 1)	neighbourCells.add(index2IdCell(i-1, j));
-		if (i < yQuads - 1) neighbourCells.add(index2IdCell(i+1, j));
+		if (i < nbYQuads - 1) neighbourCells.add(index2IdCell(i+1, j));
 		if (j >= 1) neighbourCells.add(index2IdCell(i, j-1));
-		if (j < (xQuads - 1)) neighbourCells.add(index2IdCell(i, j+1));
+		if (j < (nbXQuads - 1)) neighbourCells.add(index2IdCell(i, j+1));
 		Collections.sort(neighbourCells);
 		return neighbourCells.stream().mapToInt(x->x).toArray();
 	}
@@ -290,10 +241,10 @@ public class CartesianMesh2D
 		Map.Entry<Integer, Integer> index = id2IndexCell(cellId);
 		int i = index.getKey();
 		int j = index.getValue();
-		int bottomFace = (2 * j + i * (2 * xQuads + 1));
+		int bottomFace = (2 * j + i * (2 * nbXQuads + 1));
 		int leftFace = bottomFace + 1;
-		int rightFace = bottomFace + (j == xQuads-1 ? 2 : 3);
-		int topFace = bottomFace + (i < yQuads-1 ? 2 * xQuads + 1 : 2 * xQuads + 1 - j);
+		int rightFace = bottomFace + (j == nbXQuads-1 ? 2 : 3);
+		int topFace = bottomFace + (i < nbYQuads-1 ? 2 * nbXQuads + 1 : 2 * nbXQuads + 1 - j);
 		return new int[] {bottomFace, leftFace, rightFace, topFace};
 	}
 
@@ -333,8 +284,8 @@ public class CartesianMesh2D
 		Map.Entry<Integer, Integer> index = id2IndexCell(cellId);
 		int i = index.getKey();
 		int j = index.getValue();
-		int bottomFace = 2 * j + i * (2 * xQuads + 1);
-		int topFace = bottomFace + (i < yQuads - 1 ? 2 * xQuads + 1 :2 * xQuads + 1 - j);
+		int bottomFace = 2 * j + i * (2 * nbXQuads + 1);
+		int topFace = bottomFace + (i < nbYQuads - 1 ? 2 * nbXQuads + 1 :2 * nbXQuads + 1 - j);
 		return topFace;
 	}
 
@@ -343,7 +294,7 @@ public class CartesianMesh2D
 		Map.Entry<Integer, Integer> index = id2IndexCell(cellId);
 		int i = index.getKey();
 		int j = index.getValue();
-		int bottomFace = 2 * j + i * (2 * xQuads + 1);
+		int bottomFace = 2 * j + i * (2 * nbXQuads + 1);
 		return bottomFace;
 	}
 
@@ -359,8 +310,8 @@ public class CartesianMesh2D
 		Map.Entry<Integer, Integer> index = id2IndexCell(cellId);
 		Integer i = index.getKey();
 		Integer j = index.getValue();
-		int bottomFace = 2 * j + i * (2 * xQuads + 1);
-		int rightFace = bottomFace + (j == xQuads - 1 ? 2 : 3);
+		int bottomFace = 2 * j + i * (2 * nbXQuads + 1);
+		int rightFace = bottomFace + (j == nbXQuads - 1 ? 2 : 3);
 		return rightFace;
 	}
 
@@ -369,7 +320,7 @@ public class CartesianMesh2D
 		Map.Entry<Integer, Integer> index = id2IndexCell(cellId);
 		Integer i = index.getKey();
 		Integer j = index.getValue();
-		if (i == yQuads - 1) return cellId;
+		if (i == nbYQuads - 1) return cellId;
 		return index2IdCell(i+1, j);
 	}
 
@@ -396,13 +347,13 @@ public class CartesianMesh2D
 		Map.Entry<Integer, Integer> index = id2IndexCell(cellId);
 		Integer i = index.getKey();
 		Integer j = index.getValue();
-		if (j == xQuads-1) return cellId;
+		if (j == nbXQuads-1) return cellId;
 		return index2IdCell(i, j+1);
 	}
 
 	public int getBottomFaceNeighbour(int faceId)
 	{
-		  return (faceId - (2 * xQuads + 1));
+		  return (faceId - (2 * nbXQuads + 1));
 	}
 
 	public int getBottomLeftFaceNeighbour(int faceId)
@@ -411,7 +362,7 @@ public class CartesianMesh2D
 		if(isVerticalEdge(edges[faceId]))
 			return (faceId - 3);
 		else
-			return ((faceId + 1) - (2 * xQuads + 1));
+			return ((faceId + 1) - (2 * nbXQuads + 1));
 	}
 
 	public int getBottomRightFaceNeighbour(int faceId)
@@ -420,19 +371,19 @@ public class CartesianMesh2D
 		if (isVerticalEdge(edges[faceId]))
 		    return (faceId - 1);
 		else  // horizontal
-		    return ((faceId + 3) - (2 * xQuads + 1));
+		    return ((faceId + 3) - (2 * nbXQuads + 1));
 	}
 
 	public int getTopFaceNeighbour(int faceId)
 	{
-		return (faceId + (2 * xQuads + 1));
+		return (faceId + (2 * nbXQuads + 1));
 	}
 
 	public int getTopLeftFaceNeighbour(int faceId)
 	{
 		Edge[] edges = geometry.getEdges();
 		if (isVerticalEdge(edges[faceId]))
-			return ((faceId - 3) + (2 * xQuads + 1));
+			return ((faceId - 3) + (2 * nbXQuads + 1));
 		else  // horizontal
 		    return (faceId + 1);
 	}
@@ -441,7 +392,7 @@ public class CartesianMesh2D
 	{
 		Edge[] edges = geometry.getEdges();
 		if (isVerticalEdge(edges[faceId]))
-		    return ((faceId - 1) + (2 * xQuads + 1));
+		    return ((faceId - 1) + (2 * nbXQuads + 1));
 		  else  // horizontal
 		    return (faceId + 3);
 	}
@@ -484,8 +435,8 @@ public class CartesianMesh2D
 		Integer i2 = index2.getKey();
 		Integer j2 = index2.getValue();
 		  // If nodes are located on the same boundary, then the face is an outer one
-		  if ((i1 == 0 && i2 == 0) || (i1 == yQuads && i2 == yQuads) ||
-		      (j1 == 0 && j2 == 0) || (j1 == xQuads && j2 == xQuads))
+		  if ((i1 == 0 && i2 == 0) || (i1 == nbYQuads && i2 == nbYQuads) ||
+		      (j1 == 0 && j2 == 0) || (j1 == nbXQuads && j2 == nbXQuads))
 		    return false;
 		  // else it's an inner one
 		  return true;
@@ -493,8 +444,8 @@ public class CartesianMesh2D
 
 	private boolean isVerticalEdge(Edge edge)
 	{
-		  return (edge.getNodeIds()[0] == edge.getNodeIds()[1] + xQuads + 1 ||
-				  edge.getNodeIds()[1] == edge.getNodeIds()[0] + xQuads + 1);
+		  return (edge.getNodeIds()[0] == edge.getNodeIds()[1] + nbXQuads + 1 ||
+				  edge.getNodeIds()[1] == edge.getNodeIds()[0] + nbXQuads + 1);
 	}
 
 	private boolean isHorizontalEdge(Edge edge)
@@ -505,20 +456,20 @@ public class CartesianMesh2D
 
 	private int index2IdCell(int i, int j)
 	{
-		return ((i * this.xQuads) + j);
+		return ((i * nbXQuads) + j);
 	}
 
 	private Map.Entry<Integer, Integer> id2IndexCell(int cellId)
 	{
-		int i = Math.abs((cellId / this.xQuads));
-		int j = (cellId % this.xQuads);
+		int i = Math.abs((cellId / nbXQuads));
+		int j = (cellId % nbXQuads);
 		return Map.entry(i, j);
 	}
 
 	private Map.Entry<Integer, Integer> id2IndexNode(int nodeId)
 	{
-		int i = Math.abs((nodeId / (this.xQuads + 1)));
-		int j = (nodeId % (this.xQuads + 1));
+		int i = Math.abs((nodeId / (nbXQuads + 1)));
+		int j = (nodeId % (nbXQuads + 1));
 		return Map.entry(i, j);
 	}
 
@@ -531,5 +482,138 @@ public class CartesianMesh2D
 				cellsOfNode.add(cellId);
 		}
 		return cellsOfNode.stream().mapToInt(x->x).toArray();
+	}
+
+	private void create(int nbXQuads, int nbYQuads, double xSize, double ySize)
+	{
+		if (nbXQuads == -1 || nbYQuads == -1 || xSize == -1 || ySize == -1)
+			throw new RuntimeException("Mesh attributes uninitialized");
+
+		this.nbXQuads = nbXQuads;
+		this.nbYQuads = nbYQuads;
+
+		double[][] nodes = new double[(nbXQuads + 1) * (nbYQuads + 1)][2];
+		Quad[] quads = new Quad[nbXQuads * nbYQuads];
+		Edge[] edges = new Edge[2 * quads.length + nbXQuads + nbYQuads];
+
+		int[] outerNodesIds = new int[2 * (nbXQuads + nbYQuads)];
+		innerNodes = new int[nodes.length - outerNodesIds.length];
+		topNodes = new int[nbXQuads + 1];
+		bottomNodes = new int[nbXQuads + 1];
+		leftNodes = new int[nbYQuads + 1];
+		rightNodes = new int[nbYQuads + 1];
+
+		innerCells = new int[(nbXQuads - 2)*(nbYQuads - 2)];
+		outerCells = new int[2 * nbXQuads + 2 * (nbYQuads - 2)];
+
+		int nodeId = 0;
+		int innerNodeId = 0;
+		int topNodeId = 0;
+		int bottomNodeId = 0;
+		int leftNodeId = 0;
+		int rightNodeId = 0;
+
+		// node creation
+		for (int j = 0; j <=nbYQuads; j++)
+			for (int i = 0; i<=nbXQuads; i++)
+			{
+				nodes[nodeId][0] = xSize * i;
+				nodes[nodeId][1] = ySize * j;
+				if (i!=0 && j!=0 && i!=nbXQuads && j!=nbYQuads)
+					innerNodes[innerNodeId++] = nodeId;
+				else
+				{
+					if (j==0) bottomNodes[bottomNodeId++] =nodeId;
+					if (j==nbYQuads) topNodes[topNodeId++] = nodeId;
+					if (i==0) leftNodes[leftNodeId++] = nodeId;
+					if (i==nbXQuads) rightNodes[rightNodeId++] = nodeId;
+				}
+				nodeId++;
+		}
+
+		// edge creation
+		int nbXNodes = nbXQuads+1;
+		int edgeId = 0;
+		for (int i = 0; i<nodes.length; i++)
+		{
+			int rightNodeIndex = i+1;
+			if (rightNodeIndex%nbXNodes!=0) edges[edgeId++] = new Edge(i, rightNodeIndex);
+			int belowNodeIndex = i + nbXNodes;
+			if (belowNodeIndex<nodes.length) edges[edgeId++] = new Edge(i, belowNodeIndex);
+		}
+
+		// quad creation
+		int quadId = 0;
+		int innerCellId = 0;
+		int outerCellId = 0;
+		for (int j = 0; j < nbYQuads; j++)
+			for (int i = 0; i < nbXQuads; i++)
+			{
+				if( (i != 0) && (i != nbXQuads - 1) && (j != 0) && (j!= nbYQuads - 1) )
+					innerCells[innerCellId++] = quadId;
+				else
+					outerCells[outerCellId++] = quadId;
+
+				int upperLeftNodeIndex = (j*nbXNodes)+i;
+				int lowerLeftNodeIndex = upperLeftNodeIndex + nbXNodes;
+				quads[quadId++] = new Quad(upperLeftNodeIndex, upperLeftNodeIndex+1, lowerLeftNodeIndex+1, lowerLeftNodeIndex);
+			}
+
+		this.geometry = new MeshGeometry(nodes, edges, quads);
+		this.topLeftNode = (nbXQuads + 1) * nbYQuads;
+		this.topRightNode = (nbXQuads + 1) * (nbYQuads +1) - 1;
+		this.bottomLeftNode = 0;
+		this.bottomRightNode = nbXQuads;
+
+		ArrayList<Integer> outFaces = new ArrayList<Integer>();
+		ArrayList<Integer> inFaces = new ArrayList<Integer>();
+		ArrayList<Integer> inVFaces = new ArrayList<Integer>();
+		ArrayList<Integer> inHFaces = new ArrayList<Integer>();
+		ArrayList<Integer> tFaces = new ArrayList<Integer>();
+		ArrayList<Integer> bFaces = new ArrayList<Integer>();
+		ArrayList<Integer> lFaces = new ArrayList<Integer>();
+		ArrayList<Integer> rFaces = new ArrayList<Integer>();
+
+		for (edgeId = 0; edgeId <edges.length; edgeId ++)
+		{
+			// Top boundary faces
+			if (edgeId >= 2 * nbXQuads * nbYQuads + nbYQuads) tFaces.add(edgeId);
+			// Bottom boundary faces
+			if ((edgeId < 2 * nbXQuads) && (edgeId % 2 == 0)) bFaces.add(edgeId);
+			// Left boundary faces
+			if ((edgeId % (2 * nbXQuads + 1) == 1) && (edgeId < (2 * nbXQuads + 1) * nbYQuads)) lFaces.add(edgeId);
+			// Right boundary faces
+			if (edgeId % (2 * nbXQuads + 1) == 2 * nbXQuads) rFaces.add(edgeId);
+
+			Edge edge = edges[edgeId];
+
+			if (!isInnerEdge(edge))
+				outFaces.add(edgeId);
+			else
+			{
+				inFaces.add(edgeId);
+				if (isVerticalEdge(edge))
+					inVFaces.add(edgeId);
+				else if (isHorizontalEdge(edge))
+					inHFaces.add(edgeId);
+				else
+					throw new RuntimeException("The inner edge " + edgeId + " should be either vertical or horizontal");
+			}
+		}
+		outerFaces = outFaces.stream().mapToInt(x->x).toArray();
+		innerFaces = inFaces.stream().mapToInt(x->x).toArray();
+		innerVerticalFaces = inVFaces.stream().mapToInt(x->x).toArray();
+		innerHorizontalFaces = inHFaces.stream().mapToInt(x->x).toArray();
+
+		topFaces = tFaces.stream().mapToInt(x->x).toArray();
+		bottomFaces = bFaces.stream().mapToInt(x->x).toArray();
+		leftFaces = lFaces.stream().mapToInt(x->x).toArray();
+		rightFaces = rFaces.stream().mapToInt(x->x).toArray();
+
+		// Construction of boundary cell sets
+		topCells = cellsOfNodeCollection(topNodes);
+		bottomCells = cellsOfNodeCollection(bottomNodes);
+		leftCells = cellsOfNodeCollection(leftNodes);
+		rightCells = cellsOfNodeCollection(rightNodes);
 	}
 }

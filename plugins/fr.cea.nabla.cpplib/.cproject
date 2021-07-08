@@ -1,150 +1,64 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?fileVersion 4.0.0?><cproject storage_type_id="org.eclipse.cdt.core.XmlProjectDescriptionStorage">
-    	
-    <storageModule moduleId="org.eclipse.cdt.core.settings">
-        		
-        <cconfiguration id="de.marw.cmake.cdt.lsp.config.cmake.1679311623">
-            			
-            <storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="de.marw.cmake.cdt.lsp.config.cmake.1679311623" moduleId="org.eclipse.cdt.core.settings" name="Default">
-                				
-                <externalSettings/>
-                				
-                <extensions>
-                    					
-                    <extension id="org.eclipse.cdt.core.MachO64" point="org.eclipse.cdt.core.BinaryParser"/>
-                    					
-                    <extension id="org.eclipse.cdt.core.Cygwin_PE" point="org.eclipse.cdt.core.BinaryParser"/>
-                    					
-                    <extension id="org.eclipse.cdt.core.PE" point="org.eclipse.cdt.core.BinaryParser"/>
-                    					
-                    <extension id="org.eclipse.cdt.core.GNU_ELF" point="org.eclipse.cdt.core.BinaryParser"/>
-                    					
-                    <extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
-                    					
-                    <extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
-                    					
-                    <extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
-                    					
-                    <extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
-                    					
-                    <extension id="org.eclipse.cdt.core.MakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
-                    					
-                    <extension id="org.eclipse.cdt.core.VCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
-                    					
-                    <extension id="org.eclipse.cdt.core.CWDLocator" point="org.eclipse.cdt.core.ErrorParser"/>
-                    					
-                    <extension id="org.eclipse.cdt.autotools.core.ErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
-                    					
-                    <extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
-                    				
-                </extensions>
-                			
-            </storageModule>
-            			
-            <storageModule moduleId="cdtBuildSystem" version="4.0.0">
-                				
-                <configuration artifactName="${ProjName}" buildArtefactType="de.marw.cmake.cdt.lsp.buildArtefactType.cmake" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=de.marw.cmake.cdt.lsp.buildArtefactType.cmake" description="Default coming from cmake" id="de.marw.cmake.cdt.lsp.config.cmake.1679311623" name="Default" parent="de.marw.cmake.cdt.lsp.config.cmake">
-                    					
-                    <folderInfo id="de.marw.cmake.cdt.lsp.config.cmake.1679311623." name="/" resourcePath="">
-                        						
-                        <toolChain id="de.marw.cmake.cdt.lsp.config.cmake.toolChain.1788828266" name="CMake driven" superClass="de.marw.cmake.cdt.lsp.config.cmake.toolChain">
-                            							
-                            <targetPlatform id="de.marw.cmake.cdt.lsp.targetPlatform.cmake.394206421" name="Any Platform" superClass="de.marw.cmake.cdt.lsp.targetPlatform.cmake"/>
-                            							
-                            <builder arguments="" autoBuildTarget="all" buildPath="${workspace_loc:/fr.cea.nabla.cpplib/lib}" cleanBuildTarget="clean" command="make" enableAutoBuild="false" enableCleanBuild="true" enabledIncrementalBuild="true" id="de.marw.cmake.cdt.lsp.builder.portable.1039761844" incrementalBuildTarget="all" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="CMake Builder" parallelBuildOn="true" parallelizationNumber="unlimited" superClass="de.marw.cmake.cdt.lsp.builder.portable"/>
-                            							
-                            <tool id="de.marw.cmake.cdt.lsp.toolchain.tool.dummy.1222161107" name="CMake driven Languages Proxy" superClass="de.marw.cmake.cdt.lsp.toolchain.tool.dummy">
-                                								
-                                <option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="de.marw.cmake.option.dummy.391526332" superClass="de.marw.cmake.option.dummy" valueType="includePath">
-                                    									
-                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/fr.cea.nabla.cpplib/src}&quot;"/>
-                                    								
-                                </option>
-                                								
-                                <inputType id="de.marw.cmake.cdt.lsp.inputType.c.1058059406" superClass="de.marw.cmake.cdt.lsp.inputType.c"/>
-                                								
-                                <inputType id="de.marw.cmake.cdt.lsp.inputType.cpp.915372846" superClass="de.marw.cmake.cdt.lsp.inputType.cpp"/>
-                                							
-                            </tool>
-                            						
-                        </toolChain>
-                        					
-                    </folderInfo>
-                    				
-                </configuration>
-                			
-            </storageModule>
-            			
-            <storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
-            			
-            <storageModule buildDir="/lib" moduleId="de.marw.cdt.cmake.core.settings">
-                				
-                <options debugOutput="true" trace="true"/>
-                				
-                <linux command="cmake ../src" generator="UnixMakefiles">
-                    					
-                    <defs/>
-                    					
-                    <undefs/>
-                    				
-                </linux>
-                				
-                <win32 command="cmake" generator="MinGWMakefiles" use-default="true">
-                    					
-                    <defs/>
-                    					
-                    <undefs/>
-                    				
-                </win32>
-                				
-                <defs/>
-                				
-                <undefs/>
-                			
-            </storageModule>
-            		
-        </cconfiguration>
-        	
-    </storageModule>
-    	
-    <storageModule moduleId="cdtBuildSystem" version="4.0.0">
-        		
-        <project id="fr.cea.nabla.cpplib.de.marw.cmake.cdt.lsp.projectType.2138853980" name="CMake driven" projectType="de.marw.cmake.cdt.lsp.projectType"/>
-        	
-    </storageModule>
-    	
-    <storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
-    	
-    <storageModule moduleId="refreshScope" versionNumber="2">
-        		
-        <configuration configurationName="Default">
-            			
-            <resource resourceType="PROJECT" workspacePath="/fr.cea.nabla.cpplib"/>
-            		
-        </configuration>
-        	
-    </storageModule>
-    	
-    <storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
-    	
-    <storageModule moduleId="scannerConfiguration">
-        		
-        <autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-        		
-        <scannerConfigBuildInfo instanceId="de.marw.cmake.cdt.lsp.config.cmake.1679311623;de.marw.cmake.cdt.lsp.config.cmake.1679311623.;de.marw.cmake.cdt.lsp.toolchain.tool.dummy.1222161107;de.marw.cmake.cdt.lsp.inputType.c.1058059406">
-            			
-            <autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-            		
-        </scannerConfigBuildInfo>
-        		
-        <scannerConfigBuildInfo instanceId="de.marw.cmake.cdt.lsp.config.cmake.1679311623;de.marw.cmake.cdt.lsp.config.cmake.1679311623.;de.marw.cmake.cdt.lsp.toolchain.tool.dummy.1222161107;de.marw.cmake.cdt.lsp.inputType.cpp.915372846">
-            			
-            <autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-            		
-        </scannerConfigBuildInfo>
-        	
-    </storageModule>
-    	
-    <storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
-    
+	<storageModule moduleId="org.eclipse.cdt.core.settings">
+		<cconfiguration id="de.marw.cmake.cdt.lsp.config.cmake.1679311623">
+			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="de.marw.cmake.cdt.lsp.config.cmake.1679311623" moduleId="org.eclipse.cdt.core.settings" name="Default">
+				<externalSettings/>
+				<extensions>
+					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.MakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.VCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.CWDLocator" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.autotools.core.ErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+				</extensions>
+			</storageModule>
+			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+				<configuration artifactName="${ProjName}" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=de.marw.cmake.cdt.lsp.buildArtefactType.cmake,org.eclipse.cdt.build.core.buildArtefactType=de.marw.cmake.cdt.lsp.buildArtefactType.cmake" description="Default coming from cmake" id="de.marw.cmake.cdt.lsp.config.cmake.1679311623" name="Default" parent="de.marw.cmake.cdt.lsp.config.cmake.1679311623">
+					<folderInfo id="de.marw.cmake.cdt.lsp.config.cmake.1679311623." name="/" resourcePath="">
+						<toolChain id="de.marw.cmake.cdt.lsp.config.cmake.toolChain.1788828266" name="CMake driven">
+							<targetPlatform id="de.marw.cmake.cdt.lsp.targetPlatform.cmake.394206421" name="Any Platform"/>
+							<builder arguments="" autoBuildTarget="all" buildPath="${workspace_loc:/fr.cea.nabla.cpplib/lib}" cleanBuildTarget="clean" command="make" enableAutoBuild="false" enableCleanBuild="true" enabledIncrementalBuild="true" id="de.marw.cmake.cdt.lsp.builder.portable.1039761844" incrementalBuildTarget="all" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="CMake Builder" parallelBuildOn="true"/>
+						</toolChain>
+					</folderInfo>
+				</configuration>
+			</storageModule>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+			<storageModule buildDir="/lib" moduleId="de.marw.cdt.cmake.core.settings">
+				<options debugOutput="true" trace="true"/>
+				<linux command="cmake ../src" generator="UnixMakefiles">
+					<defs/>
+					<undefs/>
+				</linux>
+				<win32 command="cmake" generator="MinGWMakefiles" use-default="true">
+					<defs/>
+					<undefs/>
+				</win32>
+				<defs/>
+				<undefs/>
+			</storageModule>
+		</cconfiguration>
+	</storageModule>
+	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+		<project id="fr.cea.nabla.cpplib.de.marw.cmake.cdt.lsp.projectType.2138853980" name="CMake driven"/>
+	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
+	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="Default">
+			<resource resourceType="PROJECT" workspacePath="/fr.cea.nabla.cpplib"/>
+		</configuration>
+	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
+	<storageModule moduleId="scannerConfiguration">
+		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		<scannerConfigBuildInfo instanceId="de.marw.cmake.cdt.lsp.config.cmake.1679311623;de.marw.cmake.cdt.lsp.config.cmake.1679311623.;de.marw.cmake.cdt.lsp.toolchain.tool.dummy.1222161107;de.marw.cmake.cdt.lsp.inputType.c.1058059406">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="de.marw.cmake.cdt.lsp.config.cmake.1679311623;de.marw.cmake.cdt.lsp.config.cmake.1679311623.;de.marw.cmake.cdt.lsp.toolchain.tool.dummy.1222161107;de.marw.cmake.cdt.lsp.inputType.cpp.915372846">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
+	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 </cproject>

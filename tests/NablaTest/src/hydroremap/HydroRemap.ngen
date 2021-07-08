@@ -11,7 +11,6 @@ Application HydroRemap;
 
 MainModule Hydro hydro
 {
-	meshClassName = "CartesianMesh2D";
 	nodeCoord = X;
 	time = t;
 	timeStep = δt;

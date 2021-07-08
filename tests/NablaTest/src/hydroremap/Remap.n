@@ -9,9 +9,7 @@
  *******************************************************************************/
 module Remap;
 
-itemtypes { cell }
-
-connectivity cells: → {cell};
+with CartesianMesh2D.*;
 
 ℝ rv1{cells}, rv2{cells}, rv3{cells};
 

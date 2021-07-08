@@ -10,6 +10,7 @@
 package fr.cea.nabla.tests.validation
 
 import com.google.inject.Inject
+import com.google.inject.Provider
 import fr.cea.nabla.NablaModuleExtensions
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
@@ -21,6 +22,7 @@ import fr.cea.nabla.typing.NSTRealArray1D
 import fr.cea.nabla.typing.NSTRealScalar
 import fr.cea.nabla.validation.ExpressionValidator
 import fr.cea.nabla.validation.ValidationUtils
+import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.eclipse.xtext.testing.util.ParseHelper
@@ -34,6 +36,7 @@ import org.junit.runner.RunWith
 class ExpressionValidatorTest
 {
 	@Inject ParseHelper<NablaModule> parseHelper
+	@Inject Provider<ResourceSet> resourceSetProvider
 	@Inject extension ValidationUtils
 	@Inject extension ValidationTestHelper
 	@Inject extension NablaModuleExtensions
@@ -51,8 +54,7 @@ class ExpressionValidatorTest
 			let ℾ bool = ℾ(1);
 			let ℝ real = ℝ(true);
 			let ℝ[2] realOne = ℝ[2](one);
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleKo)
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.baseTypeConstant,
@@ -74,8 +76,7 @@ class ExpressionValidatorTest
 			let ℾ bool = ℾ(true);
 			let ℝ real = ℝ(1.2);
 			let ℝ[2] realOne = ℝ[2](1.0);
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
@@ -88,8 +89,7 @@ class ExpressionValidatorTest
 			«emptyTestModule»
 			let ℕ two = 2;
 			let ℝ[2] realOne = ℝ[two](1.0);
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleKo)
 		moduleKo.assertError(NablaPackage.eINSTANCE.baseTypeConstant,
 			ExpressionValidator::BASE_TYPE_CONSTANT_TYPE, 
@@ -99,8 +99,7 @@ class ExpressionValidatorTest
 			'''
 			«emptyTestModule»
 			let ℝ[2] realOne = ℝ[2](1.0);
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
@@ -108,10 +107,12 @@ class ExpressionValidatorTest
 	@Test
 	def void testCheckFunctionCallArgs()
 	{
+		val rs = resourceSetProvider.get
+		parseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DPath), rs)
 		val model =
 			'''
 			«emptyTestModule»
-			«defaultConnectivities»
+			with CartesianMesh2D.*;
 			def test: ℾ × ℝ × ℝ[2] → ℝ, (a, b, c) → return b;
 			let ℝ[2] opt = [0., 1.];
 			let ℕ count = 1;
@@ -122,8 +123,7 @@ class ExpressionValidatorTest
 			'''
 			«model»
 			J1: let ℝ x = test(true, 0, opt);
-			'''
-		)
+			''', rs)
 		Assert.assertNotNull(moduleKo)
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.functionCall,
@@ -138,8 +138,7 @@ class ExpressionValidatorTest
 			'''
 			«model»
 			J1: let ℝ x = test(true, 0., opt);
-			'''
-		)
+			''', rs)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
@@ -147,17 +146,18 @@ class ExpressionValidatorTest
 	@Test
 	def void testCheckReductionCallArgs()
 	{
+		val rs = resourceSetProvider.get
+		parseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DPath), rs)
 		val moduleKo = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			«defaultConnectivities»
+			with CartesianMesh2D.*;
 			def sum, 0.0: ℝ, (a, b) → return a + b;
 			ℝ D{cells}; 
 			ℝ[2] E{cells}; 
 			ComputeU: let ℝ u = sum{c∈cells()}(D);
 			ComputeV: let ℝ[2] v = sum{c∈cells()}(E{c});
-			'''
-		)
+			''', rs)
 		Assert.assertNotNull(moduleKo)
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.reductionCall,
@@ -171,15 +171,14 @@ class ExpressionValidatorTest
 		val moduleOk = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			«defaultConnectivities»
+			with CartesianMesh2D.*;
 			def sum, 0.0: ℝ, (a,b) → return a + b;
 			def sum, 0.0: x | ℝ[x], (a,b) → return a + b;
 			ℝ D{cells};
 			ℝ[2] E{cells};
 			ComputeU: let ℝ u = sum{c∈cells()}(D{c});
 			ComputeV: let ℝ[2] v = sum{c∈cells()}(E{c});
-			'''
-		)
+			''', rs)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
@@ -194,8 +193,7 @@ class ExpressionValidatorTest
 			let ℝ U = 1.1;
 			let ℕ V = 2;
 			let ℝ W = (cond ? U : V);
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleKo)
 		val cond = moduleKo.getVariableByName("cond")
 		val u = moduleKo.getVariableByName("U")
@@ -216,8 +214,7 @@ class ExpressionValidatorTest
 			let ℝ U = 0.0;
 			let ℝ V = 1.1;
 			let ℝ W = (cond ? U : V);
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
@@ -230,8 +227,7 @@ class ExpressionValidatorTest
 			«emptyTestModule»
 			let ℝ cond = 0.0;
 			let ℾ ok = !cond; 
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleKo)
 		val cond = moduleKo.getVariableByName("cond")
 
@@ -244,8 +240,7 @@ class ExpressionValidatorTest
 			«emptyTestModule»
 			let ℾ cond = true;
 			let ℾ ok = !cond; 
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
@@ -259,8 +254,7 @@ class ExpressionValidatorTest
 			let ℾ  a = true; 
 			let ℝ b = 0.0;
 			let ℝ c = a * b;
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleKo)
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.mul,
@@ -276,8 +270,7 @@ class ExpressionValidatorTest
 			let ℝ a = 1.1;
 			let ℝ b = 0.0;
 			let ℝ c = a * b;
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
@@ -291,8 +284,7 @@ class ExpressionValidatorTest
 			let ℾ a = true; 
 			let ℝ b = 0.0;
 			let ℝ c = a / b;
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleKo)
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.div,
@@ -308,8 +300,7 @@ class ExpressionValidatorTest
 			let ℝ a = 1.1;
 			let ℝ b = 0.0;
 			let ℝ c = a / b;
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
@@ -323,8 +314,7 @@ class ExpressionValidatorTest
 			let ℾ a = true; 
 			let ℕ b = 0;
 			let ℝ c = a + b;
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleKo)
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.plus,
@@ -340,8 +330,7 @@ class ExpressionValidatorTest
 			let ℝ a = 1.1;
 			let ℕ b = 0;
 			let ℝ c = a + b;
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
@@ -355,8 +344,7 @@ class ExpressionValidatorTest
 			let ℝ[2] a = ℝ[2](0.0);
 			let ℝ[3] b = ℝ[3](0.0);
 			let ℝ[2] c = a - b;
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleKo)
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.minus,
@@ -373,8 +361,7 @@ class ExpressionValidatorTest
 			let ℝ[2] a = ℝ[2](0.0);
 			let ℝ[2] b = ℝ[2](1.1);
 			let ℝ[2] c = a - b;
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
@@ -388,8 +375,7 @@ class ExpressionValidatorTest
 			let ℝ a = 0.0;
 			let ℝ[2] b = ℝ[2](1.1);
 			let ℾ c = a > b;
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleKo)
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.comparison,
@@ -405,8 +391,7 @@ class ExpressionValidatorTest
 			let ℝ a = 0.0;
 			let ℝ b = 1.1;
 			let ℾ c = a > b;
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
@@ -420,8 +405,7 @@ class ExpressionValidatorTest
 			let ℝ a = 0.0;
 			let ℝ[2] b = ℝ[2](1.1);
 			let ℾ c = a == b;
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleKo)
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.equality,
@@ -437,8 +421,7 @@ class ExpressionValidatorTest
 			let ℝ a = 0.0; 
 			let ℝ b = 1.1;
 			let ℾ c = a == b;
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
@@ -452,8 +435,7 @@ class ExpressionValidatorTest
 			let ℝ a = 0.0;
 			let ℝ[2] b = ℝ[2](1.1);
 			let ℕ c = a % b;
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleKo)
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.modulo,
@@ -470,8 +452,7 @@ class ExpressionValidatorTest
 			let ℕ a = 0;
 			let ℕ b = 1;
 			let ℕ c = a % b;
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
@@ -485,8 +466,7 @@ class ExpressionValidatorTest
 			let ℕ a = 0;
 			let ℝ b = 1.1; 
 			let ℾ c = a && b;
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleKo)
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.and,
@@ -503,8 +483,7 @@ class ExpressionValidatorTest
 			let ℾ a = true;
 			let ℾ b = false; 
 			let ℾ c = a && b;
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
@@ -518,8 +497,7 @@ class ExpressionValidatorTest
 			let ℕ a = 0;
 			let ℝ b = 1.1;
 			let ℾ c = a || b;
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleKo)
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.or,
@@ -536,8 +514,7 @@ class ExpressionValidatorTest
 			let ℾ a = true;
 			let ℾ b = false;
 			let ℾ c = a || b;
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
@@ -549,8 +526,7 @@ class ExpressionValidatorTest
 			'''
 			«emptyTestModule»
 			let ℕ[1] V = [0];
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleKo)
 		moduleKo.assertError(NablaPackage.eINSTANCE.vectorConstant,
 			ExpressionValidator::VECTOR_CONSTANT_SIZE,
@@ -560,8 +536,7 @@ class ExpressionValidatorTest
 			'''
 			«emptyTestModule»
 			letℕ[2] V = [0, 1];
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleOk)
 	}
 
@@ -572,8 +547,7 @@ class ExpressionValidatorTest
 			'''
 			«emptyTestModule»
 			let ℕ[2] V = [0, 3.4];
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleKo)
 		moduleKo.assertError(NablaPackage.eINSTANCE.vectorConstant,
 			ExpressionValidator::VECTOR_CONSTANT_INCONSISTENT_TYPE,
@@ -583,8 +557,7 @@ class ExpressionValidatorTest
 			'''
 			«emptyTestModule»
 			let ℕ[2] V = [0, 3];
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleOk)
 	}
 }

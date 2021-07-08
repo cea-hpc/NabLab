@@ -9,11 +9,14 @@
 ###############################################################################
 
 cmake_minimum_required(VERSION 3.10)
+cmake_policy(SET CMP0074 NEW)
 set(CMAKE_VERBOSE_MAKEFILE FALSE)
 
 # SET VARIABLES
 set(N_WS_PATH ${CMAKE_SOURCE_DIR})
-set(N_KOKKOS_PATH $ENV{HOME}/kokkos/kokkos-install)
+set(Kokkos_ROOT $ENV{HOME}/kokkos/install)
+set(KokkosKernels_ROOT $ENV{HOME}/kokkos/install)
+set(Arcane_ROOT $ENV{HOME}/arcane/install)
 
 # PROJECT
 project(fr_cea_nabla_cpplib CXX)
@@ -31,5 +34,7 @@ endif()
 
 # SUB_DIRECTORIES
 add_subdirectory(nablalib ${CMAKE_BINARY_DIR}/nablalib)
+add_subdirectory(mesh/meshstl ${CMAKE_BINARY_DIR}/meshstl)
+add_subdirectory(mesh/mesharcane ${CMAKE_BINARY_DIR}/mesharcane)
 add_subdirectory(linearalgebra/linearalgebrastl ${CMAKE_BINARY_DIR}/linearalgebrastl)
 add_subdirectory(linearalgebra/linearalgebrakokkos ${CMAKE_BINARY_DIR}/linearalgebrakokkos)

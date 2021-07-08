@@ -2,7 +2,7 @@
  */
 package fr.cea.nabla.ir.ir.impl;
 
-import fr.cea.nabla.ir.ir.ExtensionProvider;
+import fr.cea.nabla.ir.ir.DefaultExtensionProvider;
 import fr.cea.nabla.ir.ir.InternFunction;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -117,7 +117,7 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<ExtensionProvider> providers;
+	protected EList<DefaultExtensionProvider> providers;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -229,9 +229,9 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 	 * @generated
 	 */
 	@Override
-	public EList<ExtensionProvider> getProviders() {
+	public EList<DefaultExtensionProvider> getProviders() {
 		if (providers == null) {
-			providers = new EObjectResolvingEList<ExtensionProvider>(ExtensionProvider.class, this, IrPackage.IR_MODULE__PROVIDERS);
+			providers = new EObjectResolvingEList<DefaultExtensionProvider>(DefaultExtensionProvider.class, this, IrPackage.IR_MODULE__PROVIDERS);
 		}
 		return providers;
 	}
@@ -307,7 +307,7 @@ public class IrModuleImpl extends IrAnnotableImpl implements IrModule {
 				return;
 			case IrPackage.IR_MODULE__PROVIDERS:
 				getProviders().clear();
-				getProviders().addAll((Collection<? extends ExtensionProvider>)newValue);
+				getProviders().addAll((Collection<? extends DefaultExtensionProvider>)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);

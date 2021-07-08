@@ -21,10 +21,6 @@
   <eClassifiers xsi:type="ecore:EClass" name="IrRoot" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" unique="false" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="itemTypes" upperBound="-1"
-        eType="#//ItemType" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="connectivities" upperBound="-1"
-        eType="#//Connectivity" containment="true" resolveProxies="false"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="variables" upperBound="-1"
         eType="#//Variable" resolveProxies="false"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="jobs" upperBound="-1" eType="#//Job"
@@ -33,8 +29,6 @@
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="modules" upperBound="-1"
         eType="#//IrModule" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="meshClassName" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="initNodeCoordVariable"
         lowerBound="1" eType="#//Variable"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="nodeCoordVariable" lowerBound="1"
@@ -48,7 +42,9 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="postProcessing" eType="#//PostProcessing"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="providers" upperBound="-1"
-        eType="#//ExtensionProvider" containment="true"/>
+        eType="#//DefaultExtensionProvider" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="mesh" lowerBound="1" eType="#//MeshExtensionProvider"
+        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="IrModule" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" unique="false" lowerBound="1"
@@ -61,7 +57,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="jobs" upperBound="-1" eType="#//Job"
         containment="true" resolveProxies="false"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="providers" upperBound="-1"
-        eType="#//ExtensionProvider"/>
+        eType="#//DefaultExtensionProvider"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="PostProcessing" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EReference" name="outputVariables" upperBound="-1"
@@ -80,17 +76,25 @@
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="support" eType="#//ItemType"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ExtensionProvider" eSuperTypes="#//IrAnnotable">
+  <eClassifiers xsi:type="ecore:EClass" name="ExtensionProvider" abstract="true" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="extensionName" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="providerName" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="outputPath" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="linearAlgebra" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DefaultExtensionProvider" eSuperTypes="#//ExtensionProvider">
     <eStructuralFeatures xsi:type="ecore:EReference" name="functions" upperBound="-1"
         eType="#//ExternFunction" containment="true" resolveProxies="false" eOpposite="#//ExternFunction/provider"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="linearAlgebra" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MeshExtensionProvider" eSuperTypes="#//ExtensionProvider">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="itemTypes" upperBound="-1"
+        eType="#//ItemType" containment="true" eOpposite="#//ItemType/provider"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="connectivities" upperBound="-1"
+        eType="#//Connectivity" containment="true" resolveProxies="false" eOpposite="#//Connectivity/provider"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ArgOrVar" abstract="true" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -127,8 +131,8 @@
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ExternFunction" eSuperTypes="#//Function">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="provider" eType="#//ExtensionProvider"
-        eOpposite="#//ExtensionProvider/functions"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="provider" eType="#//DefaultExtensionProvider"
+        eOpposite="#//DefaultExtensionProvider/functions"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Connectivity" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -140,6 +144,8 @@
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean" defaultValueLiteral="false"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="multiple" unique="false"
         lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="provider" lowerBound="1"
+        eType="#//MeshExtensionProvider" eOpposite="#//MeshExtensionProvider/connectivities"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="JobCaller" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EReference" name="calls" upperBound="-1"
@@ -346,6 +352,8 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ItemType" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="provider" lowerBound="1"
+        eType="#//MeshExtensionProvider" eOpposite="#//MeshExtensionProvider/itemTypes"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="IrType" eSuperTypes="#//IrAnnotable"/>
   <eClassifiers xsi:type="ecore:EEnum" name="PrimitiveType">
@@ -369,7 +377,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="sizes" upperBound="-1"
         eType="#//Expression" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="provider" lowerBound="1"
-        eType="#//ExtensionProvider"/>
+        eType="#//DefaultExtensionProvider"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Container" abstract="true" eSuperTypes="#//IrAnnotable"/>
   <eClassifiers xsi:type="ecore:EClass" name="ConnectivityCall" eSuperTypes="#//Container">

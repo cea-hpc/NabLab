@@ -14,6 +14,7 @@ import com.google.inject.Provider
 import fr.cea.nabla.NablaStandaloneSetup
 import fr.cea.nabla.NablagenStandaloneSetup
 import fr.cea.nabla.nabla.NablaModule
+import fr.cea.nabla.nabla.NablaRoot
 import fr.cea.nabla.nablagen.NablagenApplication
 import fr.cea.nabla.nablagen.NablagenModule
 import fr.cea.nabla.nablagen.NablagenPackage
@@ -34,16 +35,14 @@ import org.junit.runner.RunWith
 class NablagenScopeProviderTest
 {
 	@Inject extension IScopeProvider
+	@Inject extension TestUtils
 	@Inject Provider<ResourceSet> resourceSetProvider
 
 	val nablaHydroModel =
 	'''
 	module Hydro;
 
-	itemtypes { node, cell }
-
-	connectivity nodes: → {node};
-	connectivity cells: → {cell};
+	with CartesianMesh2D.*;
 
 	// Simulation options
 	option ℝ maxTime = 0.1;
@@ -65,10 +64,7 @@ class NablagenScopeProviderTest
 	'''
 	module Remap;
 
-	itemtypes { node, cell }
-
-	connectivity nodes: → {node};
-	connectivity cells: → {cell};
+	with CartesianMesh2D.*;
 
 	ℝ[2] X{nodes};
 	ℝ rv1{cells}, rv2{cells}, rv3{cells};
@@ -114,11 +110,11 @@ class NablagenScopeProviderTest
 
 	val nablaSetup = new NablaStandaloneSetup
 	val nablaInjector = nablaSetup.createInjectorAndDoEMFRegistration
-	val ParseHelper<NablaModule> nablaParseHelper = nablaInjector.getInstance(ParseHelper)
+	val ParseHelper<NablaRoot> nParseHelper = nablaInjector.getInstance(ParseHelper)
 
 	val nablagenSetup = new NablagenStandaloneSetup
 	val nablagenInjector = nablagenSetup.createInjectorAndDoEMFRegistration
-	val ParseHelper<NablagenApplication> nagenAppParseHelper = nablagenInjector.getInstance(ParseHelper)
+	val ParseHelper<NablagenApplication> ngenParseHelper = nablagenInjector.getInstance(ParseHelper)
 
 	NablaModule nablaHydro
 	NablaModule nablaRemap
@@ -128,11 +124,12 @@ class NablagenScopeProviderTest
 	def void readModels()
 	{
 		val rs = resourceSetProvider.get
-		nablaHydro = nablaParseHelper.parse(nablaHydroModel, rs)
+		nParseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DPath), rs)
+		nablaHydro = nParseHelper.parse(nablaHydroModel, rs) as NablaModule
 		Assert.assertNotNull(nablaHydro)
-		nablaRemap = nablaParseHelper.parse(nablaRemapModel, rs)
+		nablaRemap = nParseHelper.parse(nablaRemapModel, rs)  as NablaModule
 		Assert.assertNotNull(nablaRemap)
-		ngenApp = nagenAppParseHelper.parse(ngenModel, rs)
+		ngenApp = ngenParseHelper.parse(ngenModel, rs)
 		Assert.assertNotNull(ngenApp)
 	}
 

@@ -9,11 +9,10 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.interpreter
 
-import com.google.gson.Gson
 import fr.cea.nabla.ir.ir.ArgOrVar
-import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityCall
 import fr.cea.nabla.ir.ir.Container
+import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.ItemId
 import fr.cea.nabla.ir.ir.ItemIndex
@@ -33,19 +32,51 @@ class Context
 	val Logger logger
 
 	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) val IrRoot ir
-	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) val ExtensionProviderCache extensionProviderCache
 	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) PvdFileWriter2D writer
-	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) CartesianMesh2DMeshWrapper meshWrapper
 	@Accessors(PUBLIC_GETTER, PUBLIC_SETTER)  boolean levelDBCompareResult
+	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) val HashMap<DefaultExtensionProvider, CallableExtensionProviderHelper> providers
+	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) MeshExtensionProviderHelper meshProvider
 
 	new(Logger logger, IrRoot ir, String wsPath)
 	{
 		this.outerContext = null
 		this.logger = logger
 		this.ir = ir
-		this.extensionProviderCache = (wsPath === null ? null : new ExtensionProviderCache(ir.providers, wsPath))
-		this.meshWrapper = null
 		this.levelDBCompareResult = true
+
+		providers = new HashMap<DefaultExtensionProvider, CallableExtensionProviderHelper>
+		// providerName can be null when default option are interpreted for json generation
+		// The providerName is set when the target is defined (json generation done before)
+		if (wsPath !== null)
+		{
+			for (p : ir.providers)
+			{
+				try
+				{
+					// create the helper
+					var CallableExtensionProviderHelper helper
+					if (p.extensionName == "Math")
+						helper = new MathExtensionProviderHelper
+					else if (p.linearAlgebra)
+						helper = new LinearAlgebraExtensionProviderHelper(p, wsPath)
+					else
+						helper = new DefaultExtensionProviderHelper(p, wsPath)
+
+					helper.init(p.functions)
+					providers.put(p, helper)
+				}
+				catch (ClassNotFoundException e)
+				{
+					throw new ExtensionProviderNotFound(p, e)
+				}
+			}
+
+			if (ir.mesh !== null)
+			{
+				meshProvider = new MeshExtensionProviderHelper
+				meshProvider.init(ir.mesh.connectivities)
+			}
+		}
 	}
 
 	new(Context outerContext)
@@ -53,21 +84,10 @@ class Context
 		this.outerContext = outerContext
 		this.logger = outerContext.logger
 		this.ir = outerContext.ir
-		this.extensionProviderCache = outerContext.extensionProviderCache
 		this.writer = outerContext.writer
-		this.meshWrapper = outerContext.meshWrapper
 		this.levelDBCompareResult = outerContext.levelDBCompareResult
-	}
-
-	def HashMap<Connectivity, Integer> getConnectivitySizes()
-	{ 
-		meshWrapper.connectivitySizes
-	}
-
-	def initMesh(Gson gson, String jsonMeshContent, Connectivity[] connectivities)
-	{
-		meshWrapper = new CartesianMesh2DMeshWrapper(gson, jsonMeshContent)
-		meshWrapper.init(connectivities)
+		this.providers = outerContext.providers
+		this.meshProvider = outerContext.meshProvider
 	}
 
 	def initWriter(String outputPath)
@@ -145,14 +165,14 @@ class Context
 	def void addSetValue(String setName, ConnectivityCall value) 
 	{ 
 		val argIds =  value.args.map[x | getIdValue(x)]
-		val containerValue = meshWrapper.getElements(value.connectivity, argIds)
+		val containerValue = meshProvider.getElements(value.connectivity, argIds)
 		setValues.put(setName, containerValue)
 	}
 
 	def int[] getConnectivityCallValue(ConnectivityCall it)
 	{
 		val argIds =  args.map[x | getIdValue(x)]
-		meshWrapper.getElements(connectivity, argIds)
+		meshProvider.getElements(connectivity, argIds)
 	}
 
 	// IndexValues
@@ -202,7 +222,7 @@ class Context
 
 	def int getSingleton(ConnectivityCall it)
 	{
-		meshWrapper.getSingleton(connectivity, args.map[x | getIdValue(x)])
+		meshProvider.getSingleton(connectivity, args.map[x | getIdValue(x)])
 	}
 
 	def logVariables(String message)
@@ -219,7 +239,7 @@ class Context
 		if (logger.level.intValue <= Context.Level::FINER.intValue)
 		{
 			if (message !== null) logger.log(Context.Level::FINER, message)
-			connectivitySizes.keySet.forEach[k | logger.log(Context.Level::FINER, "	" + k.name + " de taille " + connectivitySizes.get(k))]
+			meshProvider.logSizes(logger, Context.Level::FINER)
 		}
 	}
 

@@ -10,11 +10,13 @@
 package fr.cea.nabla.tests.validation
 
 import com.google.inject.Inject
+import com.google.inject.Provider
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.NablaRoot
 import fr.cea.nabla.tests.NablaInjectorProvider
 import fr.cea.nabla.tests.TestUtils
 import fr.cea.nabla.validation.UniqueNameValidator
+import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.eclipse.xtext.testing.util.ParseHelper
@@ -28,6 +30,7 @@ import org.junit.runner.RunWith
 class UniqueNameValidatorTest
 {
 	@Inject ParseHelper<NablaRoot> parseHelper
+	@Inject Provider<ResourceSet> resourceSetProvider
 	@Inject extension TestUtils
 	@Inject extension ValidationTestHelper
 
@@ -103,16 +106,16 @@ class UniqueNameValidatorTest
 	{
 		val model = 
 			'''
-			«emptyTestModule»
-			itemtypes { node }
-			connectivity nodes: → {node};
-			ℝ X{nodes, nodes};
+			«testModule»
+			ℝ XXX{nodes, nodes};
 			'''
+		val rs = resourceSetProvider.get
+		parseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DPath), rs)
 		val rootKo1 = parseHelper.parse(
 			'''
 			«model»
-			J1: ∀r∈nodes(), ∀r∈nodes(), let d = X{r, r} * 2.0;
-			''')
+			J1: ∀r∈nodes(), ∀r∈nodes(), let d = XXX{r, r} * 2.0;
+			''', rs)
 		Assert.assertNotNull(rootKo1)
 		rootKo1.assertError(NablaPackage.eINSTANCE.spaceIterator,
 			UniqueNameValidator::DUPLICATE_NAME,
@@ -121,8 +124,8 @@ class UniqueNameValidatorTest
 		val rootOk = parseHelper.parse(
 			'''
 			«model»
-			J1: ∀r1∈nodes(), ∀r2∈nodes(), let ℝ d = X{r1, r2} * 2.0;
-			''')
+			J1: ∀r1∈nodes(), ∀r2∈nodes(), let ℝ d = XXX{r1, r2} * 2.0;
+			''', rs)
 		Assert.assertNotNull(rootOk)
 		rootOk.assertNoErrors
 	}
@@ -130,14 +133,16 @@ class UniqueNameValidatorTest
 	@Test
 	def void checkDuplicateSet()
 	{
+		val rs = resourceSetProvider.get
+		parseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DPath), rs)
 		val rootKo = parseHelper.parse(
 			'''
-			«testModuleForSimulation»
+			«testModule»
 			J1: {
 				set myNodes = nodes();
 				set myNodes = nodes();
 			}
-			''')
+			''', rs)
 		Assert.assertNotNull(rootKo)
 		rootKo.assertError(NablaPackage.eINSTANCE.itemSet,
 			UniqueNameValidator::DUPLICATE_NAME,
@@ -145,13 +150,13 @@ class UniqueNameValidatorTest
 
 		val rootOk = parseHelper.parse(
 			'''
-			«testModuleForSimulation»
+			«testModule»
 			ℝ X{nodes, nodes};
 			J1: {
 				set myNodes = nodes();
 				∀r1∈myNodes, ∀r2∈myNodes, let ℝ d = X{r1, r2} * 2.0;
 			}
-			''')
+			''', rs)
 		Assert.assertNotNull(rootOk)
 		rootOk.assertNoErrors
 	}
@@ -161,10 +166,9 @@ class UniqueNameValidatorTest
 	{
 		val rootKo = parseHelper.parse(
 			'''
-			module Test;
+			mesh extension Test;
 			itemtypes { node, node }
 			connectivity nodes: → {node};
-			ℝ[2] X{nodes};
 			''')
 		Assert.assertNotNull(rootKo)
 		rootKo.assertError(NablaPackage.eINSTANCE.itemType,
@@ -173,10 +177,9 @@ class UniqueNameValidatorTest
 
 		val rootOk = parseHelper.parse(
 			'''
-			module Test;
+			mesh extension Test;
 			itemtypes { node }
 			connectivity nodes: → {node};
-			ℝ[2] X{nodes};
 			''')
 		Assert.assertNotNull(rootOk)
 		rootOk.assertNoErrors
@@ -187,11 +190,10 @@ class UniqueNameValidatorTest
 	{
 		val rootKo = parseHelper.parse(
 			'''
-			module Test;
+			mesh extension Test;
 			itemtypes { node }
 			connectivity nodes: → {node};
 			connectivity nodes: → {node};
-			ℝ[2] X{nodes};
 			''')
 		Assert.assertNotNull(rootKo)
 		rootKo.assertError(NablaPackage.eINSTANCE.connectivity,
@@ -200,10 +202,9 @@ class UniqueNameValidatorTest
 
 		val rootOk = parseHelper.parse(
 			'''
-			module Test;
+			mesh extension Test;
 			itemtypes { node }
 			connectivity nodes: → {node};
-			ℝ[2] X{nodes};
 			''')
 		Assert.assertNotNull(rootOk)
 		rootOk.assertNoErrors

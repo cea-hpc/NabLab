@@ -22,7 +22,6 @@ import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.IntConstant
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
-import fr.cea.nabla.nabla.NablaRoot
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.Return
 import fr.cea.nabla.nabla.SimpleVar
@@ -140,8 +139,7 @@ class FunctionOrReductionValidator extends BasicValidator
 			return
 		}
 
-		val root = EcoreUtil2.getContainerOfType(it, NablaRoot)
-		val otherFunctionArgs = root.functions.filter[x | x.name == name && x !== it]
+		val otherFunctionArgs = eContainer.eAllContents.filter(Function).filter[x | x.name == name && x !== it]
 		val conflictingFunctionArg = otherFunctionArgs.findFirst[x | !areCompatible(x.typeDeclaration, typeDeclaration)]
 		if (conflictingFunctionArg !== null)
 			error(getFunctionIncompatibleInTypesMsg(), NablaPackage.Literals::FUNCTION_OR_REDUCTION__NAME, FUNCTION_INCOMPATIBLE_IN_TYPES)
@@ -187,8 +185,7 @@ class FunctionOrReductionValidator extends BasicValidator
 	@Check(CheckType.NORMAL)
 	def checkReductionIncompatibleTypes(Reduction it)
 	{
-		val root = EcoreUtil2.getContainerOfType(it, NablaRoot)
-		val otherReductionArgs = root.reductions.filter[x | x.name == name && x !== it]
+		val otherReductionArgs = eContainer.eAllContents.filter(Reduction).filter[x | x.name == name && x !== it]
 		val conflictingReductionArg = otherReductionArgs.findFirst[x | !areCompatible(x.typeDeclaration.type, typeDeclaration.type)]
 		if (conflictingReductionArg !== null)
 			error(getReductionIncompatibleTypesMsg(), NablaPackage.Literals::REDUCTION__TYPE_DECLARATION, REDUCTION_INCOMPATIBLE_TYPES)

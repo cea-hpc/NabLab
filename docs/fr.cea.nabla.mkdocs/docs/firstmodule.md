@@ -61,20 +61,22 @@ The module must be implemented in the *HeatEquation.n* file. Edit it by double-c
 A full description of the language is available in the [reference documentation](../nablablanguage). 
 
 
-### Items and connectivities
+### Imports
 
-The module starts with the declaration of mesh elements and connectivities needed by the module.
+The module starts with the import of the extensions: Math and CartesianMesh2D.
+
+Extension files describe services implemented in external libraries called providers. For more details see the extension section in the [reference documentation](../nablablanguage).
+The NabLab product includes three extensions, CartesianMash2D, Math and LinearAlgebra, and their implementations in Java and C++.
+
+[Math](https://github.com/cea-hpc/NabLab/blob/master/plugins/fr.cea.nabla/nablalib/Math.n) contains the ∑, ∏, Min and Max reductions and the usual mathematical functions (sin, cos, √...).
+
+[CartesianMesh2D](https://github.com/cea-hpc/NabLab/tree/master/plugins/fr.cea.nabla/CartesianMesh2D.n) contains a 2D cartesian mesh extension as well as the corresponding Java and C++ [providers](https://github.com/cea-hpc/NabLab/tree/master/plugins/fr.cea.nabla/CartesianMesh2D.ngen).
 
 ```
-itemtypes { node, cell, face }
+module HeatEquation;
 
-connectivity nodes: → {node};
-connectivity cells: → {cell};
-connectivity faces: → {face};
-connectivity neighbourCells: cell → {cell};
-connectivity nodesOfFace: face → {node};
-connectivity nodesOfCell: cell → {node};
-connectivity commonFace: cell × cell → face;
+with Math.*;
+with CartesianMesh2D.*;
 ```
 
 ### Options
@@ -193,7 +195,6 @@ Some parameters have to be fixed like the mesh class name and the variables repr
 ```
 MainModule HeatEquation heatEquation
 {
-	meshClassName = "CartesianMesh2D";
 	nodeCoord = X;
 	time = t;
 	timeStep = δt;
@@ -230,11 +231,11 @@ To configure generation, create a generation block, for example for the `StlThre
 StlThread
 {
 	outputPath = "/Tutorial/src-gen-cpp/stl-thread";
-	N_CXX_COMPILER = "/usr/bin/g++";
+	CMAKE_CXX_COMPILER = "/usr/bin/g++";
 }
 ```
 
-For C++ targets, provide the path to the desired compiler into the `N_CXX_COMPILER` variable.
+For C++ targets, provide the path to the desired compiler into the `CMAKE_CXX_COMPILER` variable.
 
 
 ## Jobs sequence

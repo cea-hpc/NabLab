@@ -66,16 +66,16 @@ DepthInit::Options::jsonInit(const char* jsonContent)
 
 /******************** Module definition ********************/
 
-DepthInit::DepthInit(CartesianMesh2D* aMesh, Options& aOptions)
+DepthInit::DepthInit(CartesianMesh2D& aMesh, Options& aOptions)
 : mesh(aMesh)
-, nbCells(mesh->getNbCells())
-, nbNodes(mesh->getNbNodes())
+, nbNodes(mesh.getNbNodes())
+, nbCells(mesh.getNbCells())
 , options(aOptions)
 , X(nbNodes)
 , eta(nbCells)
 {
 	// Copy node coordinates
-	const auto& gNodes = mesh->getGeometry()->getNodes();
+	const auto& gNodes = mesh.getGeometry()->getNodes();
 	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
 	{
 		X[rNodes][0] = gNodes[rNodes][0];
@@ -110,6 +110,7 @@ void DepthInit::simulate()
 
 	initFromFile(); // @1.0
 	
+	std::cout << "\nFinal time = " << t << endl;
 	std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << globalTimer.print() << __RESET__ << std::endl;
 }
 
@@ -137,15 +138,12 @@ int main(int argc, char* argv[])
 	assert(d.IsObject());
 	
 	// Mesh instanciation
-	CartesianMesh2DFactory meshFactory;
-	if (d.HasMember("mesh"))
-	{
-		rapidjson::StringBuffer strbuf;
-		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
-		d["mesh"].Accept(writer);
-		meshFactory.jsonInit(strbuf.GetString());
-	}
-	CartesianMesh2D* mesh = meshFactory.create();
+	CartesianMesh2D mesh;
+	assert(d.HasMember("mesh"));
+	rapidjson::StringBuffer strbuf;
+	rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
+	d["mesh"].Accept(writer);
+	mesh.jsonInit(strbuf.GetString());
 	
 	// Module instanciation(s)
 	DepthInit::Options depthInitOptions;
@@ -163,6 +161,5 @@ int main(int argc, char* argv[])
 	depthInit->simulate();
 	
 	delete depthInit;
-	delete mesh;
 	return ret;
 }

@@ -12,6 +12,7 @@ package fr.cea.nabla.generator.providers
 import com.google.inject.Inject
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
 import fr.cea.nabla.generator.StandaloneGeneratorBase
+import fr.cea.nabla.nabla.DefaultExtension
 import fr.cea.nabla.nablagen.NablagenProviderList
 
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
@@ -27,13 +28,20 @@ class NablagenProviderGenerator extends StandaloneGeneratorBase
 
 		for (provider : providerList.elements)
 		{
-			val generator = generatorFactory.create(provider.target)
-			val outputFolderName = wsPath + provider.outputPath
-			val fsa = getConfiguredFileSystemAccess(outputFolderName, false)
-			dispatcher.post(MessageType::Exec, "Starting " + provider.target.literal + " code generator: " + provider.outputPath)
-			val installDir = '' // unused to generate JNI functions
-			val irProvider = utils.toIrExtensionProvider(provider, installDir)
-			generate(fsa, generator.getGenerationContents(irProvider), irProvider.dirName)
+			if (provider.extension instanceof DefaultExtension)
+			{
+				val generator = generatorFactory.create(provider.target)
+				val outputFolderName = wsPath + provider.outputPath
+				val fsa = getConfiguredFileSystemAccess(outputFolderName, false)
+				dispatcher.post(MessageType::Exec, "Starting " + provider.target.literal + " code generator: " + provider.outputPath)
+				val installDir = '' // unused to generate JNI functions
+				val irProvider = utils.toIrDefaultExtensionProvider(provider, installDir)
+				generate(fsa, generator.getGenerationContents(irProvider), irProvider.dirName)
+			}
+			else
+			{
+				dispatcher.post(MessageType::Warning, "No code generator for mesh provider: " + provider.name)
+			}
 		}
 
 		val endTime = System.currentTimeMillis

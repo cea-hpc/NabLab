@@ -9,10 +9,7 @@
  *******************************************************************************/
 module Test;
 
-itemtypes { node, cell }
-
-connectivity nodes: → {node};
-connectivity cells: → {cell};
+with CartesianMesh2D.*;
 
 // Simulation options
 option ℝ maxTime = 0.1;

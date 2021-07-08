@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.15)
 
 project(ExplicitHeatEquation LANGUAGES CXX)
 
-set(Arcane_DIR $ENV{HOME}/arcane/install)
+set(Arcane_ROOT $ENV{HOME}/arcane/install)
 
 find_package(Arcane REQUIRED)
 

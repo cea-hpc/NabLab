@@ -28,7 +28,7 @@ abstract class AbstractJobInterpreterTest
 	{
 		val model =
 		'''
-		«testModuleForSimulation»
+		«testModule»
 		ℝ[2] X{nodes};
 		InitT : t = 5.;
 		'''
@@ -40,7 +40,7 @@ abstract class AbstractJobInterpreterTest
 	{
 		val model =
 		'''
-		«testModuleForSimulation»
+		«testModule»
 		// Simulation options
 		let ℝ option_stoptime = 0.2;
 		let ℕ option_max_iterations = 10;
@@ -59,7 +59,7 @@ abstract class AbstractJobInterpreterTest
 	{
 		val model =
 		'''
-		«testModuleForSimulation»
+		«testModule»
 		// Simulation options
 		let ℝ option_stoptime = 0.2;
 		let ℕ option_max_iterations = 10;

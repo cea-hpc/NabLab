@@ -54,9 +54,9 @@ class ReplaceUtf8Chars extends IrTransformationStep
 		trace('    IR -> IR: ' + description)
 		ir.eAllContents.filter(Variable).forEach[x | x.name = x.name.noUtf8]
 		ir.eAllContents.filter(ReductionInstruction).forEach[x | x.result.name = x.result.name.noUtf8]
-		ir.connectivities.forEach[x | x.name = x.name.noUtf8]
 		ir.eAllContents.filter(Function).forEach[x | x.name = x.name.noUtf8]
 		ir.jobs.forEach[x | x.name = x.name.noUtf8]
+		ir.mesh.connectivities.forEach[x | x.name = x.name.noUtf8]
 		return true
 	}
 

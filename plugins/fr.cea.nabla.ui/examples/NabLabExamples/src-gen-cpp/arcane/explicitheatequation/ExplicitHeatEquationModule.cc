@@ -17,7 +17,7 @@ Real norm(ConstArrayView<Real> a)
 Real dot(ConstArrayView<Real> a, ConstArrayView<Real> b)
 {
 	Real result(0.0);
-	for (Integer i=0; i<x; i++)
+	for (Integer i=0; i<a.size(); i++)
 	{
 		result = result + a[i] * b[i];
 	}
@@ -65,7 +65,6 @@ void ExplicitHeatEquationModule::init()
 	initU(); // @2.0
 	setUpTimeLoopN(); // @2.0
 	computeAlphaCoeff(); // @3.0
-	executeTimeLoopN(); // @4.0
 }
 
 void ExplicitHeatEquationModule::compute()
@@ -82,18 +81,18 @@ void ExplicitHeatEquationModule::compute()
  * In variables: X
  * Out variables: faceLength
  */
-void ExplicitHeatEquationModule::computeFaceLength() noexcept
+void ExplicitHeatEquationModule::computeFaceLength()
 {
-	Parallel::Foreach(getFaces(), [&](FaceVectorView view)
+	Parallel::Foreach(allFaces(), [&](FaceVectorView view)
 	{
 		ENUMERATE_FACE(f, view)
 		{
 			Real reduction0(0.0);
-			ENUMERATE_NODE(p, getNodesOfFace(fId))
+			ENUMERATE_NODE(p, f->nodes())
 			{
-				reduction0 = explicitheatequationfreefuncs::sumR0(reduction0, explicitheatequationfreefuncs::norm(X[p] - X[p]));
+				reduction0 = explicitheatequationfreefuncs::sumR0(reduction0, explicitheatequationfreefuncs::norm(m_x[p] - m_x[p]));
 			}
-			faceLength[f] = 0.5 * reduction0;
+			m_face_length[f] = 0.5 * reduction0;
 		}
 	});
 }
@@ -103,9 +102,9 @@ void ExplicitHeatEquationModule::computeFaceLength() noexcept
  * In variables: deltat, t_n
  * Out variables: t_nplus1
  */
-void ExplicitHeatEquationModule::computeTn() noexcept
+void ExplicitHeatEquationModule::computeTn()
 {
-	t_nplus1 = t_n + deltat;
+	m_t_nplus1 = m_t_n + m_deltat;
 }
 
 /**
@@ -113,18 +112,18 @@ void ExplicitHeatEquationModule::computeTn() noexcept
  * In variables: X
  * Out variables: V
  */
-void ExplicitHeatEquationModule::computeV() noexcept
+void ExplicitHeatEquationModule::computeV()
 {
-	Parallel::Foreach(getCells(), [&](CellVectorView view)
+	Parallel::Foreach(allCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(c, view)
 		{
 			Real reduction0(0.0);
-			ENUMERATE_NODE(p, getNodesOfCell(cId))
+			ENUMERATE_NODE(p, c->nodes())
 			{
-				reduction0 = explicitheatequationfreefuncs::sumR0(reduction0, explicitheatequationfreefuncs::det(X[p], X[p]));
+				reduction0 = explicitheatequationfreefuncs::sumR0(reduction0, explicitheatequationfreefuncs::det(m_x[p], m_x[p]));
 			}
-			V[c] = 0.5 * reduction0;
+			m_v[c] = 0.5 * reduction0;
 		}
 	});
 }
@@ -134,13 +133,13 @@ void ExplicitHeatEquationModule::computeV() noexcept
  * In variables: 
  * Out variables: D
  */
-void ExplicitHeatEquationModule::initD() noexcept
+void ExplicitHeatEquationModule::initD()
 {
-	Parallel::Foreach(getCells(), [&](CellVectorView view)
+	Parallel::Foreach(allCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(c, view)
 		{
-			D[c] = 1.0;
+			m_d[c] = 1.0;
 		}
 	});
 }
@@ -150,9 +149,9 @@ void ExplicitHeatEquationModule::initD() noexcept
  * In variables: 
  * Out variables: t_n0
  */
-void ExplicitHeatEquationModule::initTime() noexcept
+void ExplicitHeatEquationModule::initTime()
 {
-	t_n0 = 0.0;
+	m_t_n0 = 0.0;
 }
 
 /**
@@ -160,18 +159,18 @@ void ExplicitHeatEquationModule::initTime() noexcept
  * In variables: X
  * Out variables: Xc
  */
-void ExplicitHeatEquationModule::initXc() noexcept
+void ExplicitHeatEquationModule::initXc()
 {
-	Parallel::Foreach(getCells(), [&](CellVectorView view)
+	Parallel::Foreach(allCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(c, view)
 		{
 			Real2 reduction0({0.0, 0.0});
-			ENUMERATE_NODE(p, getNodesOfCell(cId))
+			ENUMERATE_NODE(p, c->nodes())
 			{
-				reduction0 = explicitheatequationfreefuncs::sumR1(reduction0, X[p]);
+				reduction0 = explicitheatequationfreefuncs::sumR1(reduction0, m_x[p]);
 			}
-			Xc[c] = 0.25 * reduction0;
+			m_xc[c] = 0.25 * reduction0;
 		}
 	});
 }
@@ -181,18 +180,18 @@ void ExplicitHeatEquationModule::initXc() noexcept
  * In variables: alpha, u_n
  * Out variables: u_nplus1
  */
-void ExplicitHeatEquationModule::updateU() noexcept
+void ExplicitHeatEquationModule::updateU()
 {
-	Parallel::Foreach(getCells(), [&](CellVectorView view)
+	Parallel::Foreach(allCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(c, view)
 		{
 			Real reduction0(0.0);
-			ENUMERATE_CELL(d, getNeighbourCells(cId))
+			ENUMERATE_CELL(d, c->getNeighbourCells())
 			{
-				reduction0 = explicitheatequationfreefuncs::sumR0(reduction0, alpha[c][d] * u_n[d]);
+				reduction0 = explicitheatequationfreefuncs::sumR0(reduction0, m_alpha[c][d] * m_u_n[d]);
 			}
-			u_nplus1[c] = alpha[c][c] * u_n[c] + reduction0;
+			m_u_nplus1[c] = m_alpha[c][c] * m_u_n[c] + reduction0;
 		}
 	});
 }
@@ -202,14 +201,14 @@ void ExplicitHeatEquationModule::updateU() noexcept
  * In variables: D, V
  * Out variables: deltat
  */
-void ExplicitHeatEquationModule::computeDeltaTn() noexcept
+void ExplicitHeatEquationModule::computeDeltaTn()
 {
 	Real reduction0(numeric_limits<double>::max());
-	ENUMERATE_CELL(c, getCells())
+	ENUMERATE_CELL(c, allCells())
 	{
-		reduction0 = explicitheatequationfreefuncs::minR0(reduction0, V[c] / D[c]);
+		reduction0 = explicitheatequationfreefuncs::minR0(reduction0, m_v[c] / m_d[c]);
 	}
-	deltat = reduction0 * 0.24;
+	m_deltat = reduction0 * 0.24;
 }
 
 /**
@@ -217,23 +216,23 @@ void ExplicitHeatEquationModule::computeDeltaTn() noexcept
  * In variables: D
  * Out variables: faceConductivity
  */
-void ExplicitHeatEquationModule::computeFaceConductivity() noexcept
+void ExplicitHeatEquationModule::computeFaceConductivity()
 {
-	Parallel::Foreach(getFaces(), [&](FaceVectorView view)
+	Parallel::Foreach(allFaces(), [&](FaceVectorView view)
 	{
 		ENUMERATE_FACE(f, view)
 		{
 			Real reduction0(1.0);
-			ENUMERATE_CELL(c1, getCellsOfFace(fId))
+			ENUMERATE_CELL(c1, f->cells())
 			{
-				reduction0 = explicitheatequationfreefuncs::prodR0(reduction0, D[c1]);
+				reduction0 = explicitheatequationfreefuncs::prodR0(reduction0, m_d[c1]);
 			}
 			Real reduction1(0.0);
-			ENUMERATE_CELL(c2, getCellsOfFace(fId))
+			ENUMERATE_CELL(c2, f->cells())
 			{
-				reduction1 = explicitheatequationfreefuncs::sumR0(reduction1, D[c2]);
+				reduction1 = explicitheatequationfreefuncs::sumR0(reduction1, m_d[c2]);
 			}
-			faceConductivity[f] = 2.0 * reduction0 / reduction1;
+			m_face_conductivity[f] = 2.0 * reduction0 / reduction1;
 		}
 	});
 }
@@ -243,16 +242,16 @@ void ExplicitHeatEquationModule::computeFaceConductivity() noexcept
  * In variables: Xc, u0, vectOne
  * Out variables: u_n
  */
-void ExplicitHeatEquationModule::initU() noexcept
+void ExplicitHeatEquationModule::initU()
 {
-	Parallel::Foreach(getCells(), [&](CellVectorView view)
+	Parallel::Foreach(allCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(c, view)
 		{
-			if (explicitheatequationfreefuncs::norm(Xc[c] - vectOne) < 0.5) 
-				u_n[c] = options.u0;
+			if (explicitheatequationfreefuncs::norm(m_xc[c] - m_vect_one) < 0.5) 
+				m_u_n[c] = options.u0;
 			else
-				u_n[c] = 0.0;
+				m_u_n[c] = 0.0;
 		}
 	});
 }
@@ -262,9 +261,9 @@ void ExplicitHeatEquationModule::initU() noexcept
  * In variables: t_n0
  * Out variables: t_n
  */
-void ExplicitHeatEquationModule::setUpTimeLoopN() noexcept
+void ExplicitHeatEquationModule::setUpTimeLoopN()
 {
-	t_n = t_n0;
+	m_t_n = m_t_n0;
 }
 
 /**
@@ -272,20 +271,20 @@ void ExplicitHeatEquationModule::setUpTimeLoopN() noexcept
  * In variables: V, Xc, deltat, faceConductivity, faceLength
  * Out variables: alpha
  */
-void ExplicitHeatEquationModule::computeAlphaCoeff() noexcept
+void ExplicitHeatEquationModule::computeAlphaCoeff()
 {
-	Parallel::Foreach(getCells(), [&](CellVectorView view)
+	Parallel::Foreach(allCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(c, view)
 		{
 			Real alphaDiag(0.0);
-			ENUMERATE_CELL(d, getNeighbourCells(cId))
+			ENUMERATE_CELL(d, c->getNeighbourCells())
 			{
-				const Real alphaExtraDiag(deltat / V[c] * (faceLength[f] * faceConductivity[f]) / explicitheatequationfreefuncs::norm(Xc[c] - Xc[d]));
-				alpha[c][d] = alphaExtraDiag;
-				alphaDiag = alphaDiag + alphaExtraDiag;
+				const Real alphaExtraDiag(m_deltat / m_v[c] * (m_face_length[f] * m_face_conductivity[f]) / explicitheatequationfreefuncs::norm(m_xc[c] - m_xc[d]));
+				m_alpha[c][d] = alpha_extra_diag;
+				alpha_diag = alpha_diag + alpha_extra_diag;
 			}
-			alpha[c][c] = 1 - alphaDiag;
+			m_alpha[c][c] = 1 - alpha_diag;
 		}
 	});
 }

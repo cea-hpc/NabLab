@@ -12,7 +12,6 @@ Application DepthInit;
 
 MainModule DepthInit depthInit
 {
-	meshClassName = "CartesianMesh2D";
 	nodeCoord = X;
 	time = t;
 	timeStep = δt;

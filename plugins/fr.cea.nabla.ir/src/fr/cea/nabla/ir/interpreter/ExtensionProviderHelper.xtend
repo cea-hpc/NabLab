@@ -9,128 +9,20 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.interpreter
 
-import fr.cea.nabla.ir.ir.ExtensionProvider
-import fr.cea.nabla.ir.ir.ExternFunction
 import fr.cea.nabla.ir.ir.IrModule
-import java.io.File
-import java.lang.reflect.Constructor
-import java.lang.reflect.Method
-import java.net.URL
-import java.net.URLClassLoader
-import java.util.HashMap
-import org.eclipse.xtend.lib.annotations.Accessors
 
-import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
-
-abstract class ExtensionProviderHelper
+interface ExtensionProviderHelper
 {
-	protected val functionToMethod = new HashMap<ExternFunction, Method>
-
-	abstract def Class<?> getProviderClass()
-	abstract def Object getProviderInstance(IrModule module)
-
-	def void initFunctions(Iterable<ExternFunction> functions)
-	{
-		for (function : functions)
-		{
-			val javaTypes = function.inArgs.map[a | FunctionCallHelper.getJavaType(a.type, this)]
-			val pc = if (this instanceof MathExtensionProviderHelper && function.name == 'erf')
-						Class.forName("org.apache.commons.math3.special.Erf", true, class.classLoader)
-					else providerClass
-			val method = pc.getDeclaredMethod(function.name, javaTypes)
-			method.setAccessible(true)
-			functionToMethod.put(function, method)
-		}
-	}
-
-	def NablaValue invokeMethod(IrModule module, ExternFunction f, NablaValue[] args)
-	{
-		val javaValues = args.map[x | FunctionCallHelper.getJavaValue(x)].toArray
-		val method = functionToMethod.get(f)
-		val result = method.invoke(getProviderInstance(module), javaValues)
-		return FunctionCallHelper.createNablaValue(result, this)
-	}
-}
-
-class MathExtensionProviderHelper extends ExtensionProviderHelper
-{
-	val Class<?> providerClass
-
-	new()
-	{
-		providerClass = Class.forName("java.lang.Math", true, class.classLoader)
-	}
-
-	override getProviderClass() { providerClass }
-	override getProviderInstance(IrModule module) { null } // static call
-}
-
-class DefaultExtensionProviderHelper extends ExtensionProviderHelper
-{
-	protected val providerInstances = new HashMap<IrModule, Object>
-	protected URLClassLoader cl
-	val Class<?> providerClass
-
-	new(ExtensionProvider provider, String wsPath)
-	{
-		val fileName = wsPath + provider.installPath + "/" + provider.libName + ".jar"
-		val file = new File(fileName)
-		if (file.exists)
-		{
-			val url = new URL("file://" + fileName)
-			val parentClassLoader = Thread.currentThread.contextClassLoader
-			cl = new URLClassLoader(#[url], parentClassLoader)
-		}
-		else
-		{
-			throw new ExtensionProviderJarNotExist(provider, fileName)
-		}
-		val className = provider.packageName + '.' + provider.className
-		providerClass = Class.forName(className, true, cl)
-	}
-
-	override getProviderClass() { providerClass }
-	override getProviderInstance(IrModule module) { providerInstances.get(module) }
-
-	def void createInstance(IrModule module)
-	{
-		providerInstances.put(module, providerClass.constructor.newInstance)
-	}
+	def void createProviderInstance(IrModule module)
+	def Class<?> getProviderClass(String functionName)
+	def Object getProviderInstance(IrModule module)
 
 	def jsonInit(IrModule module, String jsonContent)
 	{
-		val jsonInitMethod = providerClass.getDeclaredMethod("jsonInit", String)
-		val providerInstance = providerInstances.get(module)
+		val functionName = "jsonInit"
+		val providerClass = getProviderClass(functionName)
+		val jsonInitMethod = providerClass.getDeclaredMethod(functionName, String)
+		val providerInstance = getProviderInstance(module)
 		jsonInitMethod.invoke(providerInstance, jsonContent)
-	}
-}
-
-class LinearAlgebraExtensionProviderHelper extends DefaultExtensionProviderHelper
-{
-	@Accessors val Class<?> vectorClass
-	@Accessors val Constructor<?> vectorCstr
-	@Accessors val Method vectorGetValueMethod
-	@Accessors val Method vectorSetValueMethod
-
-	@Accessors val Class<?> matrixClass
-	@Accessors val Constructor<?> matrixCstr
-	@Accessors val Method matrixGetValueMethod
-	@Accessors val Method matrixSetValueMethod
-
-	new(ExtensionProvider provider, String wsPath)
-	{
-		super(provider, wsPath)
-
-		val vectorClassName = provider.packageName + '.' + fr.cea.nabla.ir.IrTypeExtensions.VectorClass
-		vectorClass = Class.forName(vectorClassName, true, cl)
-		vectorCstr = vectorClass.getConstructor(String, int)
-		vectorGetValueMethod = vectorClass.getMethod("getValue", int)
-		vectorSetValueMethod = vectorClass.getMethod("setValue", int, double)
-
-		val matrixClassName = provider.packageName + '.' + fr.cea.nabla.ir.IrTypeExtensions.MatrixClass
-		matrixClass = Class.forName(matrixClassName, true, cl)
-		matrixCstr = matrixClass.getConstructor(String, int, int)
-		matrixGetValueMethod = matrixClass.getMethod("getValue", int, int)
-		matrixSetValueMethod = matrixClass.getMethod("setValue", int, int, double)
 	}
 }

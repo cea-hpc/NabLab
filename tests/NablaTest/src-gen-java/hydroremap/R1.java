@@ -2,22 +2,17 @@
 
 package hydroremap;
 
-import static org.iq80.leveldb.impl.Iq80DBFactory.bytes;
-import static org.iq80.leveldb.impl.Iq80DBFactory.factory;
-
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.stream.IntStream;
 
-import com.google.gson.JsonElement;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.JsonElement;
 
 import fr.cea.nabla.javalib.*;
 import fr.cea.nabla.javalib.mesh.*;
 
-@SuppressWarnings("all")
 public final class R1
 {
 	public final static class Options
@@ -26,15 +21,14 @@ public final class R1
 
 		public void jsonInit(final String jsonContent)
 		{
-			final JsonParser parser = new JsonParser();
-			final JsonElement json = parser.parse(jsonContent);
-			assert(json.isJsonObject());
-			final JsonObject o = json.getAsJsonObject();
+			final Gson gson = new Gson();
+			final JsonObject o = gson.fromJson(jsonContent, JsonObject.class);
 		}
 	}
 
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
+	@SuppressWarnings("unused")
 	private final int nbNodes, nbCells;
 
 	// User options

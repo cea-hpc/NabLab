@@ -14,11 +14,14 @@ import com.google.inject.Provider
 import fr.cea.nabla.ir.IrModuleExtensions
 import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.BaseType
+import fr.cea.nabla.ir.ir.ConnectivityCall
+import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.ExternFunction
 import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
+import fr.cea.nabla.ir.ir.MeshExtensionProvider
 import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.nabla.ArgOrVar
@@ -27,6 +30,7 @@ import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.TimeIteratorBlock
 import fr.cea.nabla.nablagen.NablagenApplication
 import fr.cea.nabla.nablagen.NablagenModule
+import java.util.LinkedHashSet
 import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.xtext.EcoreUtil2
 
@@ -35,7 +39,7 @@ class NablagenApplication2Ir
 	@Inject extension IrAnnotationHelper
 	@Inject extension IrBasicFactory
 	@Inject extension TimeIteratorExtensions
-	@Inject Provider<Nabla2Ir> nabla2IrProvider
+	@Inject Provider<IrModuleFactory> irModuleFactoryProvider
 
 	def create IrFactory::eINSTANCE.createIrRoot toIrRoot(NablagenApplication ngenApp)
 	{
@@ -44,9 +48,9 @@ class NablagenApplication2Ir
 		main = IrFactory::eINSTANCE.createJobCaller
 
 		// create modules
-		val nabla2ir = nabla2IrProvider.get
-		createIrModule(it, nabla2ir, ngenApp.mainModule)
-		ngenApp.additionalModules.forEach[x | createIrModule(it, nabla2ir, x)]
+		val irModuleFactory = irModuleFactoryProvider.get
+		createIrModule(it, irModuleFactory, ngenApp.mainModule)
+		ngenApp.additionalModules.forEach[x | createIrModule(it, irModuleFactory, x)]
 
 		// variable dependencies: replace additional modules variable
 		// with main module referenced variable
@@ -67,7 +71,6 @@ class NablagenApplication2Ir
 		}
 
 		// set simulation variables
-		meshClassName= ngenApp.mainModule.meshClassName
 		initNodeCoordVariable = getInitIrVariable(mainIrModule, ngenApp.mainModule.nodeCoord)
 		nodeCoordVariable = getCurrentIrVariable(mainIrModule, ngenApp.mainModule.nodeCoord)
 		currentTimeVariable = getCurrentIrVariable(mainIrModule, ngenApp.mainModule.time)
@@ -77,9 +80,24 @@ class NablagenApplication2Ir
 		// set providers
 		for (m : modules)
 		{
-			val externFunctions = eAllContents.filter(FunctionCall).map[function].filter(ExternFunction).toList
-			m.providers += externFunctions.map[provider].toSet
+			// Default providers: only providers containing external functions are needed in IR
+			m.providers += eAllContents.filter(FunctionCall).map[function].filter(ExternFunction).map[provider].toSet
 			providers += m.providers
+
+			if (m.main)
+			{
+				// Mesh provider
+				val meshes = new LinkedHashSet<MeshExtensionProvider>
+				meshes += eAllContents.filter(ConnectivityCall).map[connectivity.provider].toIterable
+				for (t : variables.map[type].filter(ConnectivityType))
+					for (s : t.connectivities)
+						meshes += s.provider
+
+				if (meshes.size > 1)
+					throw new Exception("Not yet implemented")
+				else if (meshes.size == 1)
+					mesh = meshes.head
+			}
 		}
 
 		// post processing
@@ -131,11 +149,9 @@ class NablagenApplication2Ir
 		main.calls += jobs.filter(j | j.timeLoopJob).filter[x | x.caller === null]
 	}
 
-	private def createIrModule(IrRoot root, Nabla2Ir nabla2ir, NablagenModule ngenModule)
+	private def createIrModule(IrRoot root, IrModuleFactory irModuleFactory, NablagenModule ngenModule)
 	{
-		ngenModule.type.itemTypes.forEach[x | root.itemTypes += x.toIrItemType]
-		ngenModule.type.connectivities.forEach[x | root.connectivities += x.toIrConnectivity]
-		val m = nabla2ir.createIrModule(ngenModule)
+		val m = irModuleFactory.toIrModule(ngenModule)
 		root.modules += m
 		root.variables += m.variables
 		root.jobs += m.jobs

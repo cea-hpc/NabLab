@@ -13,26 +13,26 @@ import com.google.inject.Inject
 import fr.cea.nabla.generator.ir.IrFunctionFactory
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
-import fr.cea.nabla.nabla.NablaExtension
+import fr.cea.nabla.nabla.DefaultExtension
 import fr.cea.nabla.nablagen.NablagenProvider
 
 class ProvidersUtils
 {
 	@Inject IrFunctionFactory irFunctionFactory
 
-	def toIrExtensionProvider(NablagenProvider provider, String installationDir)
+	def toIrDefaultExtensionProvider(NablagenProvider provider, String installationDir)
 	{
-		IrFactory::eINSTANCE.createExtensionProvider =>
+		IrFactory::eINSTANCE.createDefaultExtensionProvider =>
 		[
 			extensionName = provider.extension.name
 			providerName = provider.name
 			outputPath = provider.outputPath
-			linearAlgebra = provider.extension.linearAlgebra
-			functions += provider.extension.irFunctions
+			linearAlgebra = (provider.extension as DefaultExtension).linearAlgebra
+			functions += (provider.extension as DefaultExtension).irFunctions
 		]
 	}
 
-	private def getIrFunctions(NablaExtension it)
+	private def getIrFunctions(DefaultExtension it)
 	{
 		functions.filter[external].map[x | 
 			val irFunction = irFunctionFactory.toIrExternFunction(x)

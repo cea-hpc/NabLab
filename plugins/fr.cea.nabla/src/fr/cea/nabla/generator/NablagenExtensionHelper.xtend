@@ -13,7 +13,9 @@ import com.google.inject.Inject
 import com.google.inject.Provider
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
 import fr.cea.nabla.generator.providers.JniProviderGenerator
+import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.IrRoot
+import fr.cea.nabla.nabla.DefaultExtension
 import fr.cea.nabla.nablagen.NablagenPackage
 import fr.cea.nabla.nablagen.NablagenProvider
 import fr.cea.nabla.nablagen.Target
@@ -28,11 +30,11 @@ class NablagenExtensionHelper
 	@Inject IScopeProvider scopeProvider
 	@Inject Provider<JniProviderGenerator> jniGeneratorProvider
 
-	def boolean setExtensionProviders(IrRoot ir, String wsPath, Target target, boolean generateJniProviders)
+	def boolean setExtensionProviders(IrRoot ir, String wsPath, Target target, boolean generate)
 	{
 		val jniGenerator = jniGeneratorProvider.get
 
-		// Browse IrRoot model providers which need to be filled with Nablaext providers
+		// Browse IrRoot model providers which need to be filled with Ngen providers
 		for (irProvider : ir.providers.filter[x | x.extensionName != "Math"])
 		{
 			val provider = getTargetProvider(target, irProvider.extensionName)
@@ -44,22 +46,28 @@ class NablagenExtensionHelper
 
 			irProvider.providerName = provider.name
 			irProvider.outputPath = provider.outputPath
-			irProvider.linearAlgebra = provider.extension.linearAlgebra
-			if (provider.target != target.type && !provider.compatibleTargets.contains(target.type))
+			if (provider.extension instanceof DefaultExtension && irProvider instanceof DefaultExtensionProvider)
 			{
-				dispatcher.post(MessageType::Warning, "    The target of the provider differs from target (" + provider.target.literal + " != " + target.type.literal + ") for extension: " + irProvider.extensionName)
-				if (target.type == TargetType::JAVA)
+				(irProvider as DefaultExtensionProvider).linearAlgebra = (provider.extension as DefaultExtension).linearAlgebra
+
+				if (provider.target != target.type && !provider.compatibleTargets.contains(target.type))
 				{
-					dispatcher.post(MessageType::Exec, "Starting JNI code generator: " + target.outputPath)
-					jniGenerator.generateAndTransformProvider(backendFactory.getCppBackend(provider.target), irProvider, wsPath, target.outputPath, generateJniProviders)
+					dispatcher.post(MessageType::Warning, "    The target of the provider differs from target (" + provider.target.literal + " != " + target.type.literal + ") for extension: " + irProvider.extensionName)
+					if (target.type == TargetType::JAVA)
+					{
+						dispatcher.post(MessageType::Exec, "Starting JNI code generator: " + target.outputPath)
+						jniGenerator.transformProvider(backendFactory.getCppBackend(provider.target), irProvider as DefaultExtensionProvider, wsPath, target.outputPath, generate)
+					}
 				}
 			}
 		}
 
-		if (generateJniProviders)
+		if (generate)
+		{
 			// JNI providers are generated for interpreter and Java code.
 			// When some JNI providers are generated, a root CMake is created
 			jniGenerator.generateGlobalCMakeIfNecessary(ir, target, wsPath)
+		}
 
 		return true
 	}
@@ -94,4 +102,3 @@ class NablagenExtensionHelper
 		return null
 	}
 }
-

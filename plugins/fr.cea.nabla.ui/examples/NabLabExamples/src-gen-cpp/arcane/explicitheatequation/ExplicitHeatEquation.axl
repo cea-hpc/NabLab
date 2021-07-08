@@ -5,8 +5,8 @@
 
 	<variables>
 		<variable
-			field-name="lastDump"
-			name="m_last_dump"
+			field-name="last_dump"
+			name="lastDump"
 			data-type="integer"
 			item-kind="none"
 			dim="0"
@@ -15,7 +15,7 @@
 		
 		<variable
 			field-name="n"
-			name="m_n"
+			name="n"
 			data-type="integer"
 			item-kind="none"
 			dim="0"
@@ -23,17 +23,17 @@
 			need-sync="true"/>
 		
 		<variable
-			field-name="vectOne"
-			name="m_vect_one"
+			field-name="vect_one"
+			name="vectOne"
 			data-type="real2"
 			item-kind="none"
-			dim="1"
+			dim="0"
 			dump="true"
 			need-sync="true"/>
 		
 		<variable
 			field-name="deltat"
-			name="m_deltat"
+			name="deltat"
 			data-type="real"
 			item-kind="none"
 			dim="0"
@@ -42,7 +42,7 @@
 		
 		<variable
 			field-name="t_n"
-			name="m_t_n"
+			name="t_n"
 			data-type="real"
 			item-kind="none"
 			dim="0"
@@ -51,7 +51,7 @@
 		
 		<variable
 			field-name="t_nplus1"
-			name="m_t_nplus1"
+			name="t_nplus1"
 			data-type="real"
 			item-kind="none"
 			dim="0"
@@ -60,7 +60,7 @@
 		
 		<variable
 			field-name="t_n0"
-			name="m_t_n0"
+			name="t_n0"
 			data-type="real"
 			item-kind="none"
 			dim="0"
@@ -68,26 +68,26 @@
 			need-sync="true"/>
 		
 		<variable
-			field-name="X"
-			name="m_x"
+			field-name="x"
+			name="NodeCoord"
 			data-type="real2"
 			item-kind="node"
-			dim="1"
+			dim="0"
 			dump="true"
 			need-sync="true"/>
 		
 		<variable
-			field-name="Xc"
-			name="m_xc"
+			field-name="xc"
+			name="Xc"
 			data-type="real2"
 			item-kind="cell"
-			dim="1"
+			dim="0"
 			dump="true"
 			need-sync="true"/>
 		
 		<variable
 			field-name="u_n"
-			name="m_u_n"
+			name="u_n"
 			data-type="real"
 			item-kind="cell"
 			dim="0"
@@ -96,7 +96,7 @@
 		
 		<variable
 			field-name="u_nplus1"
-			name="m_u_nplus1"
+			name="u_nplus1"
 			data-type="real"
 			item-kind="cell"
 			dim="0"
@@ -104,8 +104,8 @@
 			need-sync="true"/>
 		
 		<variable
-			field-name="V"
-			name="m_v"
+			field-name="v"
+			name="V"
 			data-type="real"
 			item-kind="cell"
 			dim="0"
@@ -113,8 +113,8 @@
 			need-sync="true"/>
 		
 		<variable
-			field-name="D"
-			name="m_d"
+			field-name="d"
+			name="D"
 			data-type="real"
 			item-kind="cell"
 			dim="0"
@@ -122,8 +122,8 @@
 			need-sync="true"/>
 		
 		<variable
-			field-name="faceLength"
-			name="m_face_length"
+			field-name="face_length"
+			name="faceLength"
 			data-type="real"
 			item-kind="face"
 			dim="0"
@@ -131,8 +131,8 @@
 			need-sync="true"/>
 		
 		<variable
-			field-name="faceConductivity"
-			name="m_face_conductivity"
+			field-name="face_conductivity"
+			name="faceConductivity"
 			data-type="real"
 			item-kind="face"
 			dim="0"
@@ -141,10 +141,10 @@
 		
 		<variable
 			field-name="alpha"
-			name="m_alpha"
+			name="alpha"
 			data-type="real"
 			item-kind="cell"
-			dim="1"
+			dim="0"
 			dump="true"
 			need-sync="true"/>
 	</variables>

@@ -11,7 +11,6 @@
 #include <cmath>
 #include <Kokkos_Core.hpp>
 #include <Kokkos_hwloc.hpp>
-#include "nablalib/mesh/CartesianMesh2DFactory.h"
 #include "nablalib/mesh/CartesianMesh2D.h"
 #include "nablalib/mesh/PvdFileWriter2D.h"
 #include "nablalib/utils/Utils.h"
@@ -83,7 +82,7 @@ public:
 		void jsonInit(const char* jsonContent);
 	};
 
-	Glace2d(CartesianMesh2D* aMesh, Options& aOptions);
+	Glace2d(CartesianMesh2D& aMesh, Options& aOptions);
 	~Glace2d();
 
 	void simulate();
@@ -144,8 +143,8 @@ private:
 	void dumpVariables(int iteration, bool useTimer=true);
 
 	// Mesh and mesh variables
-	CartesianMesh2D* mesh;
-	size_t nbNodes, nbCells, nbInnerNodes, nbTopNodes, nbBottomNodes, nbLeftNodes, nbRightNodes, maxNodesOfCell, maxCellsOfNode;
+	CartesianMesh2D& mesh;
+	size_t nbNodes, nbCells, maxNodesOfCell, maxCellsOfNode, nbInnerNodes, nbTopNodes, nbBottomNodes, nbLeftNodes, nbRightNodes;
 
 	// User options
 	Options& options;

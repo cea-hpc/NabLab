@@ -11,13 +11,7 @@ module Reduction;
 
 with Math.*;
 
-itemtypes { node, cell }
-
-connectivity nodes: → {node};
-connectivity cells: → {cell};
-connectivity cellsOfNode: node → {cell};
-connectivity nodesOfCell: cell → {node};
-connectivity topLeftNode: → node;
+with CartesianMesh2D.*;
 
 def nodeVelocityBoundaryConditionCorner: ℕ × ℝ[2] × ℕ × ℝ[2] × ℝ[2,2] × ℝ[2] × ℝ[2] → ℝ[2], (BC1, BCValue1, BC2, BCValue2, Mp, Gp, lp_np)→ {
 	return [0., 0.];

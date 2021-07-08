@@ -7,7 +7,7 @@ NabLab is a full-fledged industrial environment for scientific computing and Hig
 
 The NabLab documentation is available [here](https://cea-hpc.github.io/NabLab/).
 
-The latest NabLab environment can be downloaded [here](https://github.com/cea-hpc/NabLab/releases/tag/v0.4.1).
+The latest NabLab environment can be downloaded [here](https://github.com/cea-hpc/NabLab/releases/tag/v0.4.2).
 
 
 # Dependencies
@@ -62,7 +62,6 @@ The launch of a runtime Eclipse displays a warning of unsatisfied dependency on 
 To first build NabLab from source
 - open fr.cea.nabla.ir/model/Ir.genmodel and Generate Model Code by right click on NablaIR
 - right click on fr.cea.nabla/src/fr.cea.nabla/GenerateNabla.mwe2 and choose Run As > MWE2 Workflow
-- in terminal 'cd plugins/fr.cea.nabla.ir/resources/' and './import.sh'
 
 # Licence and copyright
 

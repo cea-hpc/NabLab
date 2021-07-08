@@ -33,6 +33,14 @@ class TestUtils
 {
 	public static val DoubleTolerance = 1e-15
 
+	public static val TestProjectPath = System.getProperty("user.dir")
+	public static val PluginsBasePath = TestProjectPath.replace("/tests/fr.cea.nabla.tests", "/plugins/fr.cea.nabla")
+	public static val MathPath = PluginsBasePath + "/nablalib/Math.n"
+	public static val CartesianMesh2DPath = PluginsBasePath + "/nablalib/CartesianMesh2D.n"
+	public static val LinearAlgebraPath = PluginsBasePath + "/nablalib/LinearAlgebra.n"
+	public static val CartesianMesh2DGenPath = PluginsBasePath + "/nablalib/CartesianMesh2D.ngen"
+	public static val LinearAlgebraGenPath = PluginsBasePath + "/nablalib/LinearAlgebra.ngen"
+
 	def getAllVars(EObject it)
 	{
 		val allVariables = new ArrayList<Var>
@@ -50,8 +58,6 @@ class TestUtils
 		eAllContents.filter(Affectation)
 	}
 
-	// ===== CharSequence utils =====
-
 	def getVarByName(EObject it, String variableName)
 	{
 		allVars.findFirst[v | v.name == variableName]
@@ -62,13 +68,16 @@ class TestUtils
 		allAffectations.findFirst[a | a.left.target.name == variableName]
 	}
 
-	def getConnectivityCallFor(EObject it, Connectivity connectivity)
+	def getAllConnectivityCalls(EObject it)
 	{
-		eAllContents.filter(ConnectivityCall).findFirst[ cc | cc.connectivity == connectivity]
+		eAllContents.filter(ConnectivityCall).toList
 	}
 
-	// ===== CharSequence utils =====
-	def String getJsonDefaultContent() { getJsonContent(10,10) }
+	def String getJsonDefaultContent()
+	{
+		getJsonContent(10,10)
+	}
+
 	def String getJsonContent(int nbXQuads, int nbYQuads)
 	'''
 		{
@@ -91,25 +100,16 @@ class TestUtils
 		ℝ t;
 	'''
 
-	def getDefaultConnectivities()
-	'''
-		itemtypes { node, cell }
-
-		connectivity nodes: → {node};
-		connectivity cells: → {cell};
-		connectivity nodesOfCell: cell → {node};
-	'''
-
 	def getEmptyTestModule()
 	'''
 		module Test;
 		with Math.*;
 	'''
 
-	def getTestModuleForSimulation()
+	def getTestModule()
 	'''
 		«emptyTestModule»
-		«defaultConnectivities»
+		with CartesianMesh2D.*;
 		«simulationVariables»
 	'''
 
@@ -119,7 +119,6 @@ class TestUtils
 
 		MainModule Test test
 		{
-			meshClassName = "CartesianMesh2D";
 			nodeCoord = X;
 			time = t;
 			timeStep = δt;
@@ -145,7 +144,6 @@ class TestUtils
 		Assert.assertEquals(value.data, (variableValue as NV0Real).data, TestUtils.DoubleTolerance)
 	}
 
-	//Read File to String
 	def readFileAsString(String filePath)
 	{
 		new String(Files.readAllBytes(Paths.get(filePath)))

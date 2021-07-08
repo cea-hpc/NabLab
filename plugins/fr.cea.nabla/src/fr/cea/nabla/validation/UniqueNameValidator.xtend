@@ -19,6 +19,7 @@ import fr.cea.nabla.nabla.ItemType
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
+import fr.cea.nabla.nabla.NablaRoot
 import fr.cea.nabla.nabla.SpaceIterator
 import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.Var
@@ -119,7 +120,7 @@ class UniqueNameValidator extends AbstractNablaValidator
 	{
 		val name = SimpleAttributeResolver.NAME_RESOLVER.apply(t)
 		//println('checkDuplicates(' + t + ', ' + f.name + ', ' + name + ')')
-		val module = EcoreUtil2.getContainerOfType(t, NablaModule)
+		val module = EcoreUtil2.getContainerOfType(t, NablaRoot)
 		if (module !== null)
 		{
 			val contents = EcoreUtil2.getAllContentsOfType(module, t.class)

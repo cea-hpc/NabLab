@@ -10,11 +10,13 @@
 package fr.cea.nabla.tests.validation
 
 import com.google.inject.Inject
+import com.google.inject.Provider
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.tests.NablaInjectorProvider
 import fr.cea.nabla.tests.TestUtils
 import fr.cea.nabla.validation.UnusedValidator
+import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.eclipse.xtext.testing.util.ParseHelper
@@ -28,6 +30,7 @@ import org.junit.runner.RunWith
 class UnusedValidatorTest
 {
 	@Inject ParseHelper<NablaModule> parseHelper
+	@Inject Provider<ResourceSet> resourceSetProvider
 	@Inject extension TestUtils
 	@Inject extension ValidationTestHelper
 
@@ -38,8 +41,7 @@ class UnusedValidatorTest
 			'''
 			«emptyTestModule»
 			iterate n while(true);
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleKo)
 
 		moduleKo.assertWarning(NablaPackage.eINSTANCE.timeIterator,
@@ -52,8 +54,7 @@ class UnusedValidatorTest
 			ℝ u, v;
 			iterate n while(true);
 			ComputeU: u^{n+1} = u^{n} + 6.0;
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
@@ -65,8 +66,7 @@ class UnusedValidatorTest
 			'''
 			«emptyTestModule»
 			ℝ a;
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleKo)
 
 		moduleKo.assertWarning(NablaPackage.eINSTANCE.^var, 
@@ -78,67 +78,8 @@ class UnusedValidatorTest
 			«emptyTestModule»
 			ℝ a;
 			ComputeA: a = 1.;
-			'''
-		)
-
-		Assert.assertNotNull(moduleOk)
-		moduleOk.assertNoIssues
-	}
-
-	@Test
-	def void testCheckUnusedConnectivity()
-	{
-		val model =
-			'''
-			«emptyTestModule»
-			itemtypes { node }
-			connectivity nodes: → {node};
-			connectivity borderNodes: → {node};
-			'''
-		val moduleKo = parseHelper.parse(model)
-		Assert.assertNotNull(moduleKo)
-
-		moduleKo.assertWarning(NablaPackage.eINSTANCE.connectivity,
-			UnusedValidator::UNUSED,
-			UnusedValidator::getUnusedMsg(NablaPackage.Literals.CONNECTIVITY, 'nodes'))
-
-		moduleKo.assertWarning(NablaPackage.eINSTANCE.connectivity,
-			UnusedValidator::UNUSED,
-			UnusedValidator::getUnusedMsg(NablaPackage.Literals.CONNECTIVITY, 'borderNodes'))
-
-		val moduleOk = parseHelper.parse(
-			'''
-			«model»
-			ℝ[2] X{nodes};
-			IniXborder: ∀r∈borderNodes(), X{r} = X{r} - 1;
-			'''
-		)
-		Assert.assertNotNull(moduleOk)
-		moduleOk.assertNoIssues
-	}
-
-	@Test
-	def void testCheckUnusedItemType()
-	{
-		val moduleKo = parseHelper.parse(
-			'''
-			«emptyTestModule»
-			itemtypes { node }
 			''')
-		Assert.assertNotNull(moduleKo)
-		moduleKo.assertWarning(NablaPackage.eINSTANCE.itemType,
-			UnusedValidator::UNUSED,
-			UnusedValidator::getUnusedMsg(NablaPackage.Literals.ITEM_TYPE, 'node'))
 
-		val moduleOk = parseHelper.parse(
-			'''
-			«emptyTestModule»
-			itemtypes { node }
-			connectivity nodes: → {node};
-			ℝ[2] X{nodes};
-			UpdateX: ∀r1∈nodes(), X{r1} = X{r1} + 1;
-			'''
-			)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoIssues
 	}
@@ -146,12 +87,14 @@ class UnusedValidatorTest
 	@Test
 	def void testCheckUnusedSpaceIterator()
 	{
+		val rs = resourceSetProvider.get
+		parseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DPath), rs)
 		val moduleKo1 = parseHelper.parse(
 			'''
-			«testModuleForSimulation»
+			«emptyTestModule»
+			with CartesianMesh2D.*;
 			UpdateX: ∀r1∈nodes(), ∀r2∈nodes(), X{r1} = X{r1} + 1;
-			'''
-		)
+			''', rs)
 		Assert.assertNotNull(moduleKo1)
 		moduleKo1.assertWarning(NablaPackage.eINSTANCE.spaceIterator,
 			UnusedValidator::UNUSED,
@@ -160,13 +103,10 @@ class UnusedValidatorTest
 		val moduleKo2 = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			itemtypes { node }
-			connectivity nodes: → {node};
-			connectivity topLeftNode: → node;
+			with CartesianMesh2D.*;
 			ℝ[2] X{nodes};
 			UpdateX: ∀r1∈nodes(), ∀r2∈topLeftNode(), X{r1} = X{r1} + 1;
-			'''
-		)
+			''', rs)
 		Assert.assertNotNull(moduleKo1)
 		moduleKo2.assertWarning(NablaPackage.eINSTANCE.spaceIterator,
 			UnusedValidator::UNUSED,
@@ -175,12 +115,10 @@ class UnusedValidatorTest
 		val moduleOk = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			itemtypes { node }
-			connectivity nodes: → {node};
+			with CartesianMesh2D.*;
 			ℝ[2] X{nodes};
 			UpdateX: ∀r1∈nodes(), X{r1} = X{r1} + 1;
-			'''
-		)
+			''', rs)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoIssues
 	}
@@ -191,10 +129,11 @@ class UnusedValidatorTest
 		val model = 
 			'''
 			«emptyTestModule»
-			itemtypes { node }
-			connectivity nodes: → {node};
+			with CartesianMesh2D.*;
 			ℝ[2] X{nodes};
 			'''
+		val rs = resourceSetProvider.get
+		parseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DPath), rs)
 		val moduleKo = parseHelper.parse(
 			'''
 			«model»
@@ -202,8 +141,7 @@ class UnusedValidatorTest
 				set myNodes = nodes();
 				∀r1∈nodes(), X{r1} = X{r1} + 1;
 			}
-			'''
-		)
+			''', rs)
 		Assert.assertNotNull(moduleKo)
 		moduleKo.assertWarning(NablaPackage.eINSTANCE.itemSet,
 			UnusedValidator::UNUSED,
@@ -216,8 +154,7 @@ class UnusedValidatorTest
 				set myNodes = nodes();
 				∀r1∈myNodes, X{r1} = X{r1} + 1;
 			}
-			'''
-		)
+			''', rs)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoIssues
 	}
@@ -258,13 +195,14 @@ class UnusedValidatorTest
 		val modelKo = 
 			'''
 			«emptyTestModule»
-			itemtypes { node }
-			connectivity nodes: → {node};
+			with CartesianMesh2D.*;
 			def sum, 0.0: ℝ[2], (a, b) → return a+b;
 			let ℝ[2] orig = [0.0 , 0.0];
 			ℝ[2] X{nodes};
 			'''
-		val moduleKo = parseHelper.parse(modelKo)
+		val rs = resourceSetProvider.get
+		parseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DPath), rs)
+		val moduleKo = parseHelper.parse(modelKo, rs)
 		Assert.assertNotNull(moduleKo)
 
 		moduleKo.assertWarning(NablaPackage.eINSTANCE.reduction,
@@ -275,8 +213,7 @@ class UnusedValidatorTest
 			'''
 			«modelKo»
 			ComputeU: orig = sum{r∈nodes()}(X{r});
-			'''
-		)
+			''', rs)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoIssues
 	}

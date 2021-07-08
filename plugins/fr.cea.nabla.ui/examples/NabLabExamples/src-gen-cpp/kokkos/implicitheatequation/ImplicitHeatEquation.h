@@ -11,7 +11,6 @@
 #include <cmath>
 #include <Kokkos_Core.hpp>
 #include <Kokkos_hwloc.hpp>
-#include "nablalib/mesh/CartesianMesh2DFactory.h"
 #include "nablalib/mesh/CartesianMesh2D.h"
 #include "nablalib/mesh/PvdFileWriter2D.h"
 #include "nablalib/utils/Utils.h"
@@ -65,7 +64,7 @@ public:
 		void jsonInit(const char* jsonContent);
 	};
 
-	ImplicitHeatEquation(CartesianMesh2D* aMesh, Options& aOptions);
+	ImplicitHeatEquation(CartesianMesh2D& aMesh, Options& aOptions);
 	~ImplicitHeatEquation();
 
 	void simulate();
@@ -100,8 +99,8 @@ private:
 	void dumpVariables(int iteration, bool useTimer=true);
 
 	// Mesh and mesh variables
-	CartesianMesh2D* mesh;
-	size_t nbNodes, nbCells, nbFaces, maxNeighbourCells, maxNodesOfFace, maxCellsOfFace, maxNodesOfCell;
+	CartesianMesh2D& mesh;
+	size_t nbNodes, nbCells, nbFaces, maxNodesOfCell, maxNodesOfFace, maxCellsOfFace, maxNeighbourCells;
 
 	// User options
 	Options& options;

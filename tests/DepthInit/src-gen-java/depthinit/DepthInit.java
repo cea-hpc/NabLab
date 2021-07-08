@@ -2,22 +2,17 @@
 
 package depthinit;
 
-import static org.iq80.leveldb.impl.Iq80DBFactory.bytes;
-import static org.iq80.leveldb.impl.Iq80DBFactory.factory;
-
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.stream.IntStream;
 
-import com.google.gson.JsonElement;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.JsonElement;
 
 import fr.cea.nabla.javalib.*;
 import fr.cea.nabla.javalib.mesh.*;
 
-@SuppressWarnings("all")
 public final class DepthInit
 {
 	public final static class Options
@@ -30,10 +25,8 @@ public final class DepthInit
 
 		public void jsonInit(final String jsonContent)
 		{
-			final JsonParser parser = new JsonParser();
-			final JsonElement json = parser.parse(jsonContent);
-			assert(json.isJsonObject());
-			final JsonObject o = json.getAsJsonObject();
+			final Gson gson = new Gson();
+			final JsonObject o = gson.fromJson(jsonContent, JsonObject.class);
 			// maxTime
 			if (o.has("maxTime"))
 			{
@@ -70,7 +63,8 @@ public final class DepthInit
 
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
-	private final int nbCells, nbNodes;
+	@SuppressWarnings("unused")
+	private final int nbNodes, nbCells;
 
 	// User options
 	private final Options options;
@@ -84,8 +78,8 @@ public final class DepthInit
 	{
 		// Mesh and mesh variables initialization
 		mesh = aMesh;
-		nbCells = mesh.getNbCells();
 		nbNodes = mesh.getNbNodes();
+		nbCells = mesh.getNbCells();
 
 		// User options
 		options = aOptions;
@@ -135,16 +129,14 @@ public final class DepthInit
 	{
 		if (args.length == 1)
 		{
-			String dataFileName = args[0];
-			JsonParser parser = new JsonParser();
-			JsonObject o = parser.parse(new FileReader(dataFileName)).getAsJsonObject();
-			int ret = 0;
+			final String dataFileName = args[0];
+			final Gson gson = new Gson();
+			final JsonObject o = gson.fromJson(new FileReader(dataFileName), JsonObject.class);
 
 			// Mesh instanciation
 			assert(o.has("mesh"));
-			CartesianMesh2DFactory meshFactory = new CartesianMesh2DFactory();
-			meshFactory.jsonInit(o.get("mesh").toString());
-			CartesianMesh2D mesh = meshFactory.create();
+			CartesianMesh2D mesh = new CartesianMesh2D();
+			mesh.jsonInit(o.get("mesh").toString());
 
 			// Module instanciation(s)
 			DepthInit.Options depthInitOptions = new DepthInit.Options();

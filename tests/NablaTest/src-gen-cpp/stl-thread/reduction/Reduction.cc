@@ -64,20 +64,20 @@ Reduction::Options::jsonInit(const char* jsonContent)
 
 /******************** Module definition ********************/
 
-Reduction::Reduction(CartesianMesh2D* aMesh, Options& aOptions)
+Reduction::Reduction(CartesianMesh2D& aMesh, Options& aOptions)
 : mesh(aMesh)
-, nbNodes(mesh->getNbNodes())
-, nbCells(mesh->getNbCells())
-, nbCellsOfNode(CartesianMesh2D::MaxNbCellsOfNode)
-, nbNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
+, nbNodes(mesh.getNbNodes())
+, maxCellsOfNode(CartesianMesh2D::MaxNbCellsOfNode)
+, nbCells(mesh.getNbCells())
+, maxNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
 , options(aOptions)
 , X(nbNodes)
 , Vnode_n(nbNodes)
 , Vnode_nplus1(nbNodes)
-, lpc_n(nbNodes, std::vector<RealArray1D<2>>(nbCellsOfNode))
+, lpc_n(nbNodes, std::vector<RealArray1D<2>>(maxCellsOfNode))
 {
 	// Copy node coordinates
-	const auto& gNodes = mesh->getGeometry()->getNodes();
+	const auto& gNodes = mesh.getGeometry()->getNodes();
 	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
 	{
 		X[rNodes][0] = gNodes[rNodes][0];
@@ -100,13 +100,13 @@ void Reduction::computeGeometry() noexcept
 	{
 		const Id cId(cCells);
 		{
-			const auto nodesOfCellC(mesh->getNodesOfCell(cId));
+			const auto nodesOfCellC(mesh.getNodesOfCell(cId));
 			const size_t nbNodesOfCellC(nodesOfCellC.size());
 			for (size_t pNodesOfCellC=0; pNodesOfCellC<nbNodesOfCellC; pNodesOfCellC++)
 			{
 				const Id pId(nodesOfCellC[pNodesOfCellC]);
 				const size_t pNodes(pId);
-				const size_t cCellsOfNodeP(indexOf(mesh->getCellsOfNode(pId), cId));
+				const size_t cCellsOfNodeP(indexOf(mesh.getCellsOfNode(pId), cId));
 				lpc_n[pNodes][cCellsOfNodeP] = {1.0, 1.0};
 			}
 		}
@@ -136,17 +136,14 @@ void Reduction::executeTimeLoopN() noexcept
 		// Evaluate loop condition with variables at time n
 		continueLoop = (n <= 2);
 	
-		if (continueLoop)
+		t_n = t_nplus1;
+		parallel_exec(nbNodes, [&](const size_t& i1Nodes)
 		{
-			t_n = t_nplus1;
-			parallel_exec(nbNodes, [&](const size_t& i1Nodes)
+			for (size_t i1=0; i1<2; i1++)
 			{
-				for (size_t i1=0; i1<2; i1++)
-				{
-					Vnode_n[i1Nodes][i1] = Vnode_nplus1[i1Nodes][i1];
-				}
-			});
-		}
+				Vnode_n[i1Nodes][i1] = Vnode_nplus1[i1Nodes][i1];
+			}
+		});
 	
 		cpuTimer.stop();
 		globalTimer.stop();
@@ -183,11 +180,11 @@ void Reduction::updateTime() noexcept
  */
 void Reduction::computeBoundaryNodeVelocities() noexcept
 {
-	const Id pId(mesh->getTopLeftNode());
+	const Id pId(mesh.getTopLeftNode());
 	const size_t pNodes(pId);
 	RealArray1D<2> reduction0({0.0, 0.0});
 	{
-		const auto cellsOfNodeP(mesh->getCellsOfNode(pId));
+		const auto cellsOfNodeP(mesh.getCellsOfNode(pId));
 		const size_t nbCellsOfNodeP(cellsOfNodeP.size());
 		for (size_t cCellsOfNodeP=0; cCellsOfNodeP<nbCellsOfNodeP; cCellsOfNodeP++)
 		{
@@ -210,6 +207,7 @@ void Reduction::simulate()
 	updateTime(); // @1.0
 	computeBoundaryNodeVelocities(); // @2.0
 	
+	std::cout << "\nFinal time = " << t_n << endl;
 	std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << globalTimer.print() << __RESET__ << std::endl;
 }
 
@@ -237,15 +235,12 @@ int main(int argc, char* argv[])
 	assert(d.IsObject());
 	
 	// Mesh instanciation
-	CartesianMesh2DFactory meshFactory;
-	if (d.HasMember("mesh"))
-	{
-		rapidjson::StringBuffer strbuf;
-		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
-		d["mesh"].Accept(writer);
-		meshFactory.jsonInit(strbuf.GetString());
-	}
-	CartesianMesh2D* mesh = meshFactory.create();
+	CartesianMesh2D mesh;
+	assert(d.HasMember("mesh"));
+	rapidjson::StringBuffer strbuf;
+	rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
+	d["mesh"].Accept(writer);
+	mesh.jsonInit(strbuf.GetString());
 	
 	// Module instanciation(s)
 	Reduction::Options reductionOptions;
@@ -263,6 +258,5 @@ int main(int argc, char* argv[])
 	reduction->simulate();
 	
 	delete reduction;
-	delete mesh;
 	return ret;
 }

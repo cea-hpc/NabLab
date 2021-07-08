@@ -11,6 +11,7 @@ package fr.cea.nabla.validation
 
 import com.google.inject.Inject
 import fr.cea.nabla.ExpressionExtensions
+import fr.cea.nabla.NablaModuleExtensions
 import fr.cea.nabla.SpaceIteratorExtensions
 import fr.cea.nabla.nabla.AbstractTimeIterator
 import fr.cea.nabla.nabla.ArgOrVarRef
@@ -18,8 +19,10 @@ import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.Expression
+import fr.cea.nabla.nabla.FunctionOrReduction
 import fr.cea.nabla.nabla.InitTimeIteratorRef
 import fr.cea.nabla.nabla.Interval
+import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.NablaRoot
@@ -36,8 +39,6 @@ import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.validation.Check
 import org.eclipse.xtext.validation.CheckType
-import fr.cea.nabla.nabla.Job
-import fr.cea.nabla.nabla.FunctionOrReduction
 
 // Caution: OptDefinition validation with InstructionValidator
 class BasicValidator extends UnusedValidator
@@ -46,6 +47,7 @@ class BasicValidator extends UnusedValidator
 	@Inject extension SpaceIteratorExtensions
 	@Inject extension ExpressionExtensions
 	@Inject extension ExpressionTypeProvider
+	@Inject extension NablaModuleExtensions
 
 	// ===== Module ====
 
@@ -54,14 +56,24 @@ class BasicValidator extends UnusedValidator
 	 * That is a way to differentiate between modules and extensions.
 	 */
 	public static val MODULE_BASE = "Module::ModuleBase"
+	public static val MODULE_UNIQUE_MESH_EXTENSION = "Module::UniqueMeshExtension"
 
 	static def getModuleBaseMsg() { "Module must contains at least a variable declaration, a job definition or an iterate instruction"}
+	static def getModuleUniqueMeshExtensionMsg(Iterable<String> names) { "Module must use only one mesh extension. Multiple meshes not yet implemented: " + names.join(", ") }
 
 	@Check(CheckType.NORMAL)
 	def void checkModuleBase(NablaModule it)
 	{
 		if (declarations.empty && iteration === null && jobs.empty)
 			error(getModuleBaseMsg(), NablaPackage.Literals.NABLA_ROOT__NAME, MODULE_BASE);
+	}
+
+	@Check(CheckType.NORMAL)
+	def void checkModuleUniqueMeshExtension(NablaModule it)
+	{
+		val meshes = meshExtensions
+		if (meshes.size > 1)
+			error(getModuleUniqueMeshExtensionMsg(meshes.map[name]), NablaPackage.Literals.NABLA_ROOT__NAME, MODULE_UNIQUE_MESH_EXTENSION);
 	}
 
 	// ===== Interval ====

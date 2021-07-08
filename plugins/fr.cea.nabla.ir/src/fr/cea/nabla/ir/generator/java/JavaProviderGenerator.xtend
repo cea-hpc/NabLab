@@ -13,7 +13,7 @@ import fr.cea.nabla.ir.IrTypeExtensions
 import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.generator.ProviderGenerator
 import fr.cea.nabla.ir.generator.Utils
-import fr.cea.nabla.ir.ir.ExtensionProvider
+import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import java.util.ArrayList
 
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
@@ -22,7 +22,7 @@ class JavaProviderGenerator implements ProviderGenerator
 {
 	override getName() { 'Java' }
 
-	override getGenerationContents(ExtensionProvider provider)
+	override getGenerationContents(DefaultExtensionProvider provider)
 	{
 		val fileContents = new ArrayList<GenerationContent>
 		// interface always
@@ -37,7 +37,7 @@ class JavaProviderGenerator implements ProviderGenerator
 		return fileContents
 	}
 
-	private def getInterfaceFileContent(ExtensionProvider provider)
+	private def getInterfaceFileContent(DefaultExtensionProvider provider)
 	'''
 	/* «Utils::doNotEditWarning» */
 
@@ -52,7 +52,7 @@ class JavaProviderGenerator implements ProviderGenerator
 	}
 	'''
 
-	private def getClassFileContent(ExtensionProvider provider)
+	private def getClassFileContent(DefaultExtensionProvider provider)
 	'''
 	package «provider.packageName»;
 
@@ -74,7 +74,7 @@ class JavaProviderGenerator implements ProviderGenerator
 	}
 	'''
 
-	private def getVectorClassFileContent(ExtensionProvider provider)
+	private def getVectorClassFileContent(DefaultExtensionProvider provider)
 	'''
 	package «provider.packageName»;
 
@@ -107,7 +107,7 @@ class JavaProviderGenerator implements ProviderGenerator
 	}
 	'''
 
-	private def getMatrixClassFileContent(ExtensionProvider provider)
+	private def getMatrixClassFileContent(DefaultExtensionProvider provider)
 	'''
 	package «provider.packageName»;
 

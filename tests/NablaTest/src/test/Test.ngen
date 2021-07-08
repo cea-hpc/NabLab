@@ -11,7 +11,6 @@ Application Test;
 
 MainModule Test test
 {
-	meshClassName = "CartesianMesh2D";
 	nodeCoord = X;
 	time = t;
 	timeStep = δt;
@@ -27,5 +26,5 @@ Java
 StlThread
 {
 	outputPath = "/NablaTest/src-gen-cpp/stl-thread";
-	N_CXX_COMPILER = "/usr/bin/g++";
+	CMAKE_CXX_COMPILER = "/usr/bin/g++";
 }

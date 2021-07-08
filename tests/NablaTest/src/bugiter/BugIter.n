@@ -9,10 +9,7 @@
  *******************************************************************************/
 module BugIter;
 
-itemtypes { cell, node }
-
-connectivity cells: → {cell};
-connectivity nodes: → {node};
+with CartesianMesh2D.*;
 
 option ℝ maxTime = 0.1;
 option ℕ maxIter = 500;

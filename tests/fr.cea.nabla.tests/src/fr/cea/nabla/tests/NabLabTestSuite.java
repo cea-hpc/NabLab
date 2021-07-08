@@ -22,7 +22,7 @@ import fr.cea.nabla.tests.validation.NabLabValidationTestSuite;
 	DeclarationProviderTest.class,
 	ExpressionTypeProviderTest.class,
 	IteratorExtensionsTest.class,
-	// TODO Uncomment after github actions deployment NablaExamplesTest.class,
+	NablaExamplesTest.class,
 	NablagenParsingTest.class,
 	NablagenScopeProviderTest.class,
 	NablaParsingTest.class,

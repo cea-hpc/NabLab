@@ -11,7 +11,6 @@
 #include <cmath>
 #include <Kokkos_Core.hpp>
 #include <Kokkos_hwloc.hpp>
-#include "nablalib/mesh/CartesianMesh2DFactory.h"
 #include "nablalib/mesh/CartesianMesh2D.h"
 #include "nablalib/mesh/PvdFileWriter2D.h"
 #include "nablalib/utils/Utils.h"
@@ -65,7 +64,7 @@ public:
 		void jsonInit(const char* jsonContent);
 	};
 
-	ExplicitHeatEquation(CartesianMesh2D* aMesh, Options& aOptions);
+	ExplicitHeatEquation(CartesianMesh2D& aMesh, Options& aOptions);
 	~ExplicitHeatEquation();
 
 	void simulate();
@@ -107,8 +106,8 @@ private:
 	const std::pair<size_t, size_t> computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept;
 
 	// Mesh and mesh variables
-	CartesianMesh2D* mesh;
-	size_t nbNodes, nbCells, nbFaces, maxNeighbourCells, maxNodesOfFace, maxCellsOfFace, maxNodesOfCell;
+	CartesianMesh2D& mesh;
+	size_t nbNodes, nbCells, nbFaces, maxNodesOfCell, maxNodesOfFace, maxCellsOfFace, maxNeighbourCells;
 
 	// User options
 	Options& options;

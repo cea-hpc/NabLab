@@ -17,17 +17,22 @@ generate nabla "http://www.cea.fr/nabla/Nabla"
 
 NablaRoot: NablaExtension | NablaModule;
 
-NablaExtension:
+NablaExtension: DefaultExtension | MeshExtension;
+
+DefaultExtension:
 	(linearAlgebra?='linearalgebra')? 'extension' name=QualifiedName ';'
 	imports+=Import*
 	reductions+=Reduction*
 	functions+=Function*;
 
+MeshExtension:
+	'mesh' 'extension' name=QualifiedName ';'
+	('itemtypes' '{' itemTypes+=ItemType (',' itemTypes+=ItemType)* '}'
+	connectivities+=Connectivity*)?;
+
 NablaModule:
 	'module' name=QualifiedName ';'
 	imports+=Import*
-	('itemtypes' '{' itemTypes+=ItemType (',' itemTypes+=ItemType)* '}'
-	connectivities+=Connectivity*)?
 	reductions+=Reduction*
 	functions+=Function*
 	declarations+=VarDeclaration*
@@ -40,7 +45,7 @@ Import: 'with' importedNamespace=QualifiedNameWithWildcard ';';
 
 /* ITEMS & CONNECTIVITES *********************************/
 ItemType: name=ID;
-Connectivity: 'connectivity' name=ID ':' (inTypes+=[ItemType] ('\u00D7' inTypes+=[ItemType])*)?  '\u2192' ((multiple?='{' returnType=[ItemType] '}') | returnType=[ItemType]) ';';
+Connectivity: 'connectivity' name=ID ':' (inTypes+=[ItemType|QualifiedName] ('\u00D7' inTypes+=[ItemType|QualifiedName])*)?  '\u2192' ((multiple?='{' returnType=[ItemType|QualifiedName] '}') | returnType=[ItemType|QualifiedName]) ';';
 
 
 /* JOBS & INSTRUCTIONS ***********************************/
@@ -68,7 +73,7 @@ Container: ItemSetRef | ConnectivityCall;
 ItemSetRef: target=[ItemSet];
 SpaceIterator: name=ID (',' counter=SimpleVar)? '\u2208' container=Container;
 Interval: index=SimpleVar '\u2208' '[' from=INT ';' nbElems=Expression '[';  // from forced to 0 for the moment
-ConnectivityCall: connectivity=[Connectivity]  '('(args+=SpaceIteratorRef (',' args+=SpaceIteratorRef)*)?')';
+ConnectivityCall: connectivity=[Connectivity|QualifiedName]  '('(args+=SpaceIteratorRef (',' args+=SpaceIteratorRef)*)?')';
 SpaceIteratorRef: target=[SpaceIterator] (('+' inc=INT) | ('-' dec=INT))?;
 
 TimeIteratorDefinition: 'iterate' iterator=AbstractTimeIterator;
@@ -85,7 +90,7 @@ NextTimeIteratorRef: target=[TimeIterator] '+' value=INT;
 ArgOrVar: Arg | Var | TimeIterator;
 Var: SimpleVar | ConnectivityVar;
 SimpleVar: name=ID;
-ConnectivityVar: name=ID '{' supports+=[Connectivity] (',' supports+=[Connectivity])* '}';
+ConnectivityVar: name=ID '{' supports+=[Connectivity|QualifiedName] (',' supports+=[Connectivity|QualifiedName])* '}';
 
 
 /* FONCTIONS / REDUCTIONS ********************************/

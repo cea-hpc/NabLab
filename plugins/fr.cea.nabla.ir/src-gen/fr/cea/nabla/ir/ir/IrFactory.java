@@ -67,13 +67,22 @@ public interface IrFactory extends EFactory {
 	PostProcessedVariable createPostProcessedVariable();
 
 	/**
-	 * Returns a new object of class '<em>Extension Provider</em>'.
+	 * Returns a new object of class '<em>Default Extension Provider</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Extension Provider</em>'.
+	 * @return a new object of class '<em>Default Extension Provider</em>'.
 	 * @generated
 	 */
-	ExtensionProvider createExtensionProvider();
+	DefaultExtensionProvider createDefaultExtensionProvider();
+
+	/**
+	 * Returns a new object of class '<em>Mesh Extension Provider</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Mesh Extension Provider</em>'.
+	 * @generated
+	 */
+	MeshExtensionProvider createMeshExtensionProvider();
 
 	/**
 	 * Returns a new object of class '<em>Arg</em>'.

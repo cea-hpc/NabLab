@@ -10,6 +10,7 @@
 package fr.cea.nabla.tests.validation
 
 import com.google.inject.Inject
+import com.google.inject.Provider
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.NablaRoot
 import fr.cea.nabla.nabla.PrimitiveType
@@ -17,6 +18,7 @@ import fr.cea.nabla.tests.NablaInjectorProvider
 import fr.cea.nabla.tests.TestUtils
 import fr.cea.nabla.validation.FunctionOrReductionValidator
 import fr.cea.nabla.validation.ValidationUtils
+import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.xtext.diagnostics.Severity
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
@@ -31,6 +33,7 @@ import org.junit.runner.RunWith
 class FunctionOrReductionValidatorTest
 {
 	@Inject ParseHelper<NablaRoot> parseHelper
+	@Inject Provider<ResourceSet> resourceSetProvider
 	@Inject extension ValidationUtils
 	@Inject extension TestUtils
 	@Inject extension ValidationTestHelper
@@ -61,17 +64,18 @@ class FunctionOrReductionValidatorTest
 	@Test
 	def void testCheckForbiddenReturn()
 	{
+		val rs = resourceSetProvider.get
+		parseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DPath), rs)
 		val moduleKo = parseHelper.parse(
 			'''
-			«testModuleForSimulation»
+			«testModule»
 			ℕ U{cells};
 			ComputeU: ∀ j∈cells(), {
 					let ℕ e = 1;
 					U{j} = e * 4;
 					return e;
 			}
-			'''
-		)
+			''', rs)
 		Assert.assertNotNull(moduleKo)
 		moduleKo.assertError(NablaPackage.eINSTANCE.^return,
 			FunctionOrReductionValidator::FORBIDDEN_RETURN,
@@ -79,14 +83,13 @@ class FunctionOrReductionValidatorTest
 
 		val moduleOk = parseHelper.parse(
 			'''
-			«testModuleForSimulation»
+			«testModule»
 			ℕ U{cells};
 			ComputeU: ∀ j∈cells(), {
 					let ℕ e = 1;
 					U{j} = e * 4;
 			}
-			'''
-		)
+			''', rs)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
@@ -289,8 +292,7 @@ class FunctionOrReductionValidatorTest
 			extension Test;
 			def g, 0.0: ℝ[2], (a, b) → return a;
 			def g, 0.0: x | ℝ[x], (a, b) → return a;
-			'''
-		)
+			''')
 		Assert.assertNotNull(modulekO)
 		modulekO.assertError(NablaPackage.eINSTANCE.reduction,
 			FunctionOrReductionValidator::REDUCTION_INCOMPATIBLE_TYPES,
@@ -314,8 +316,7 @@ class FunctionOrReductionValidatorTest
 			extension Test;
 			def sum1, [0.0, 0.0]: ℝ[2], (a, b) → return a + b;
 			def sum1, 0.0: ℕ, (a, b) → return a + b;
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleKo)
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.reduction,
@@ -331,8 +332,7 @@ class FunctionOrReductionValidatorTest
 			extension Test;
 			def sum1, 0.0: ℝ[2], (a, b) → return a + b;
 			def sum1, 0: ℕ, (a, b) → return a + b;
-			'''
-		)
+			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}

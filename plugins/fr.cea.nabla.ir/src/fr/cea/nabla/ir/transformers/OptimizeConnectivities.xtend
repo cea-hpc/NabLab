@@ -25,7 +25,7 @@ class OptimizeConnectivities extends IrTransformationStep
 	override transform(IrRoot ir)
 	{
 		trace('    IR -> IR: ' + description)
-		for (c : ir.connectivities)
+		for (c : ir.mesh.connectivities)
 		{
 			if (!c.multiple) c.indexEqualId = true
 			else if (connectivities.contains(c.name)) c.indexEqualId = true

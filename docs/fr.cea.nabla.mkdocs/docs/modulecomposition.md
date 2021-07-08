@@ -27,9 +27,7 @@ Here is an example code of a dummy Hydro module. Copy and paste it in *Hydro.n* 
 ```
 module Hydro;
 
-itemtypes { node, cell }
-connectivity nodes: → {node};
-connectivity cells: → {cell};
+with CartesianMesh2D.*;
 
 option ℝ maxTime = 0.1;
 option ℕ maxIter = 500;
@@ -59,7 +57,6 @@ Application Hydro;
 
 MainModule Hydro hydro
 {
-	meshClassName = "CartesianMesh2D";
 	nodeCoord = X;
 	time = t;
 	timeStep = δt;
@@ -70,7 +67,7 @@ MainModule Hydro hydro
 StlThread
 {
 	outputPath = "/NablaTest/src-gen-cpp/stl-thread";
-	N_CXX_COMPILER = "/usr/bin/g++";
+	CMAKE_CXX_COMPILER = "/usr/bin/g++";
 }
 ```
 
@@ -103,8 +100,7 @@ Here is an example code of a dummy Remap module. Copy and paste it in *Remap.n* 
 ```
 module Remap;
 
-itemtypes { cell }
-connectivity cells: → {cell};
+with CartesianMesh2D.*;
 
 ℝ rv1{cells}, rv2{cells}, rv3{cells};
 
@@ -181,9 +177,7 @@ The content of the *Hydro.n* file becomes:
 ```
 module Hydro;
 
-itemtypes { node, cell }
-connectivity nodes: → {node};
-connectivity cells: → {cell};
+with CartesianMesh2D.*;
 
 option ℝ maxTime = 0.1;
 option ℕ maxIter = 500;

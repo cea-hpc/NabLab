@@ -28,7 +28,7 @@ abstract class AbstractModuleInterpreterTest
 	{
 		val model =
 		'''
-		«testModuleForSimulation»
+		«testModule»
 		// Simulation options
 		let ℝ option_stoptime = 0.2;
 		let ℕ option_max_iterations = 20000;

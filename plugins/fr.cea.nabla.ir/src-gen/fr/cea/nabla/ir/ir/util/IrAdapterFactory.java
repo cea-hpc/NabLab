@@ -96,6 +96,14 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createExtensionProviderAdapter();
 			}
 			@Override
+			public Adapter caseDefaultExtensionProvider(DefaultExtensionProvider object) {
+				return createDefaultExtensionProviderAdapter();
+			}
+			@Override
+			public Adapter caseMeshExtensionProvider(MeshExtensionProvider object) {
+				return createMeshExtensionProviderAdapter();
+			}
+			@Override
 			public Adapter caseArgOrVar(ArgOrVar object) {
 				return createArgOrVarAdapter();
 			}
@@ -420,6 +428,34 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createExtensionProviderAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.DefaultExtensionProvider <em>Default Extension Provider</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.DefaultExtensionProvider
+	 * @generated
+	 */
+	public Adapter createDefaultExtensionProviderAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.MeshExtensionProvider <em>Mesh Extension Provider</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.MeshExtensionProvider
+	 * @generated
+	 */
+	public Adapter createMeshExtensionProviderAdapter() {
 		return null;
 	}
 

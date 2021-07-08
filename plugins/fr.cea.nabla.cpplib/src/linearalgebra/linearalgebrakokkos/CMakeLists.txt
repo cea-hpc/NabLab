@@ -15,12 +15,7 @@ if (NOT DEFINED N_WS_PATH)
 	message(FATAL_ERROR "N_WS_PATH variable must be set")
 endif()
 
-if (NOT DEFINED N_KOKKOS_PATH)
-	message(FATAL_ERROR "N_KOKKOS_PATH variable must be set")
-endif()
-
 # FIND PACKAGES
-set(CMAKE_FIND_ROOT_PATH ${N_KOKKOS_PATH})
 find_package(Kokkos)
 find_package(KokkosKernels)
 

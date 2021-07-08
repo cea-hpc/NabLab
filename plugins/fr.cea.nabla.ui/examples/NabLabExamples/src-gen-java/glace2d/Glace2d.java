@@ -130,7 +130,7 @@ public final class Glace2d
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
 	@SuppressWarnings("unused")
-	private final int nbNodes, nbCells, nbInnerNodes, nbTopNodes, nbBottomNodes, nbLeftNodes, nbRightNodes, maxNodesOfCell, maxCellsOfNode;
+	private final int nbNodes, nbCells, maxNodesOfCell, maxCellsOfNode, nbInnerNodes, nbTopNodes, nbBottomNodes, nbLeftNodes, nbRightNodes;
 
 	// User options
 	private final Options options;
@@ -174,13 +174,13 @@ public final class Glace2d
 		mesh = aMesh;
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
+		maxNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
+		maxCellsOfNode = CartesianMesh2D.MaxNbCellsOfNode;
 		nbInnerNodes = mesh.getNbInnerNodes();
 		nbTopNodes = mesh.getNbTopNodes();
 		nbBottomNodes = mesh.getNbBottomNodes();
 		nbLeftNodes = mesh.getNbLeftNodes();
 		nbRightNodes = mesh.getNbRightNodes();
-		maxNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
-		maxCellsOfNode = CartesianMesh2D.MaxNbCellsOfNode;
 
 		// User options
 		options = aOptions;
@@ -980,9 +980,8 @@ public final class Glace2d
 
 			// Mesh instanciation
 			assert(o.has("mesh"));
-			CartesianMesh2DFactory meshFactory = new CartesianMesh2DFactory();
-			meshFactory.jsonInit(o.get("mesh").toString());
-			CartesianMesh2D mesh = meshFactory.create();
+			CartesianMesh2D mesh = new CartesianMesh2D();
+			mesh.jsonInit(o.get("mesh").toString());
 
 			// Module instanciation(s)
 			Glace2d.Options glace2dOptions = new Glace2d.Options();

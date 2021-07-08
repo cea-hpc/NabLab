@@ -112,6 +112,22 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case IrPackage.DEFAULT_EXTENSION_PROVIDER: {
+				DefaultExtensionProvider defaultExtensionProvider = (DefaultExtensionProvider)theEObject;
+				T result = caseDefaultExtensionProvider(defaultExtensionProvider);
+				if (result == null) result = caseExtensionProvider(defaultExtensionProvider);
+				if (result == null) result = caseIrAnnotable(defaultExtensionProvider);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case IrPackage.MESH_EXTENSION_PROVIDER: {
+				MeshExtensionProvider meshExtensionProvider = (MeshExtensionProvider)theEObject;
+				T result = caseMeshExtensionProvider(meshExtensionProvider);
+				if (result == null) result = caseExtensionProvider(meshExtensionProvider);
+				if (result == null) result = caseIrAnnotable(meshExtensionProvider);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			case IrPackage.ARG_OR_VAR: {
 				ArgOrVar argOrVar = (ArgOrVar)theEObject;
 				T result = caseArgOrVar(argOrVar);
@@ -639,6 +655,36 @@ public class IrSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseExtensionProvider(ExtensionProvider object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Default Extension Provider</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Default Extension Provider</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseDefaultExtensionProvider(DefaultExtensionProvider object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Mesh Extension Provider</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Mesh Extension Provider</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseMeshExtensionProvider(MeshExtensionProvider object) {
 		return null;
 	}
 

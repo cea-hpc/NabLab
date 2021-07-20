@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: fr.cea.nabla.dace
+Bundle-SymbolicName: fr.cea.nabla.dace
+Bundle-Version: 0.4.2.qualifier
+Bundle-Vendor: CEA
+Automatic-Module-Name: fr.cea.nabla.dace
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Require-Bundle: fr.cea.nabla.ir,
+ com.google.guava,
+ org.eclipse.xtext.xbase.lib,
+ org.eclipse.xtend.lib,
+ org.eclipse.xtend.lib.macro

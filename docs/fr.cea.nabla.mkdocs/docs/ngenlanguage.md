@@ -88,7 +88,7 @@ When the `LevelDB`block exists in the *ngen* file, the `nonRegression` option mu
 
 ### Configuring interpretation
 
-Interpreter needs to be configured only if you use an extension with no *Java* provider. See the extension section for details.  
+Interpreter needs to be configured only if you use an extension with no *Java* provider. See the extension section for details.
 
 
 ### Configuring generation
@@ -124,7 +124,7 @@ For `Kokkos`, `KokkosTeamThread`, the Kokkos library has to be installed and the
 Moreover, if linear algebra is used, `KokkosKernels_ROOT` variable must be set to Kokkos Kernels installation directory.
 
 !!! note
-	Variables can use CMake syntax in their value like `$ENV{HOME}` for path in the example above.  
+	Variables can use CMake syntax in their value like `$ENV{HOME}` for path in the example above.
 
 
 ## Provider
@@ -137,7 +137,7 @@ To connect definitions to signatures, providers have to be defined:
 - providers have to be declared in a *ngen* file.
 
 !!! note
-	NabLab offers a code generator to initialize the glue code and the *ngen* file for extension providers. See [My first extension](../firstextension/index.html) for that.
+	NabLab offers a code generator to initialize the glue code and the *ngen* file for extension providers. See [My first extension](../firstextension) for that.
 	
 Most of the time, all providers of an extension are declared in the same *ngen* file. For example, for *linearalgebra* extension part of the NabLab library, defined in the *linearalgebra.n* file, a *linearalgebra.ngen* file contains the providers.
 

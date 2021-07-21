@@ -90,7 +90,7 @@ Provider BathyLibCpp : BathyLib
 }
 ```
 
-The above example defines a provider named `BathyLibCpp` that implements `BathyLib`. This provider will be generated for the `StlThread` target in the provided `outputPath`. More information on generation targets are available in the [Ngen language reference](../ngenlanguage/index.html).
+The above example defines a provider named `BathyLibCpp` that implements `BathyLib`. This provider will be generated for the `StlThread` target in the provided `outputPath`. More information on generation targets are available in the [Ngen language reference](../ngenlanguage).
 
 !!! note
 	The implemented extension and the available targets are available by contextual code completion with `CTRL-Space` keys.

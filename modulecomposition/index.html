@@ -1,0 +1,764 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="This is the documentation website of NabLab project">
+      
+      
+      
+        <meta name="author" content="Benoit Lelandais">
+      
+      
+        <link rel="canonical" href="https://cea-hpc.github.io/NabLab/modulecomposition/">
+      
+      <link rel="icon" href="../img/logo_512.png">
+      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.1.11">
+    
+    
+      
+        <title>Composing modules - NabLab documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.3754935a.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.f1a3b89f.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#4051b5">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+    
+      
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="orange">
+  
+    
+    <script>function __prefix(e){return new URL("..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#composing-modules" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="NabLab documentation" class="md-header__button md-logo" aria-label="NabLab documentation" data-md-component="logo">
+      
+  <img src="../img/logo_512.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            NabLab documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Composing modules
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="NabLab documentation" class="md-nav__button md-logo" aria-label="NabLab documentation" data-md-component="logo">
+      
+  <img src="../img/logo_512.png" alt="logo">
+
+    </a>
+    NabLab documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        What is NabLab
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gettingstarted/" class="md-nav__link">
+        Getting started
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../firstmodule/" class="md-nav__link">
+        My first module
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../firstextension/" class="md-nav__link">
+        My first extension
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Composing modules
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Composing modules
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#presentation-of-the-problem" class="md-nav__link">
+    Presentation of the problem
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-the-project" class="md-nav__link">
+    Creating the project
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-dummy-hydro-module" class="md-nav__link">
+    A dummy Hydro module
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-dummy-remap-module" class="md-nav__link">
+    A dummy Remap module
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hydroremap-association" class="md-nav__link">
+    Hydro/Remap association
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#code-generation" class="md-nav__link">
+    Code generation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#multiple-additional-modules" class="md-nav__link">
+    Multiple additional modules
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../debug/" class="md-nav__link">
+        Monitoring and debugging
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nablablanguage/" class="md-nav__link">
+        NabLab language reference
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ngenlanguage/" class="md-nav__link">
+        Ngen language reference
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docker/" class="md-nav__link">
+        Docker integration
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#presentation-of-the-problem" class="md-nav__link">
+    Presentation of the problem
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-the-project" class="md-nav__link">
+    Creating the project
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-dummy-hydro-module" class="md-nav__link">
+    A dummy Hydro module
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-dummy-remap-module" class="md-nav__link">
+    A dummy Remap module
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hydroremap-association" class="md-nav__link">
+    Hydro/Remap association
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#code-generation" class="md-nav__link">
+    Code generation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#multiple-additional-modules" class="md-nav__link">
+    Multiple additional modules
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="composing-modules">Composing modules</h1>
+<h2 id="presentation-of-the-problem">Presentation of the problem</h2>
+<p>Let us imagine a dummy hydrodynamic module <em>Hydro</em> defined in <em>Hydro.n</em> file and its own application defined in <em>Hydro.ngen</em> file. You now want to introduce a new remapping module <em>Remap</em>. This module does not have its own application. It is designed to be coupled with the hydrodynamic module into one application defined in a <em>HydroRemap.ngen</em> file.</p>
+<p>From a NabLab point of view, it consists in merging the data flow graphs of the two modules in defining equalities between module's variables.</p>
+<h2 id="creating-the-project">Creating the project</h2>
+<p>Just click on the main menu <em>File &gt; New &gt; NabLab Project</em> to create a new project: </p>
+<p><img src="img/NabLab_new_project_menu.png" alt="NabLab New Project" title="NabLab New Project" width="60%" height="60%" /></p>
+<p>A new wizard is launched, asking for a project name and a module name:</p>
+<p><img src="img/NabLab_new_project_wizard.png" alt="NabLab New Project Wizard" title="NabLab New Project Wizard" width="50%" height="50%" /></p>
+<p>Enter <em>Tutorial</em> as project name, select the <em>Module</em> radio button, enter <em>Hydro</em> as module name and click on the <em>Finish</em> button to create the new project. The new project is available in the <em>Model Explorer</em> on the left of the window. It contains two files (<em>Hydro.n</em>, and <em>Hydro.ngen</em>) in the <em>Tutorial/src/hydro/</em> folder:</p>
+<p><img src="img/NabLab_new_project_result.png" alt="NabLab New Project Result" title="NabLab New Project Result" width="30%" height="30%" /></p>
+<h2 id="a-dummy-hydro-module">A dummy Hydro module</h2>
+<p>Here is an example code of a dummy Hydro module. Copy and paste it in <em>Hydro.n</em> file.</p>
+<div class="highlight"><pre><span></span><code>module Hydro;
+
+with CartesianMesh2D.*;
+
+option ℝ maxTime = 0.1;
+option ℕ maxIter = 500;
+option ℝ δt = 1.0;
+let ℝ t = 0.0;
+ℝ[2] X{nodes};
+ℝ hv1{cells}, hv2{cells}, hv3{cells}, hv4{cells}, hv5{cells};
+
+Hj1: ∀c∈cells(), hv2{c} = hv1{c};
+Hj2: ∀c∈cells(), hv3{c} = hv2{c};
+Hj3: ∀c∈cells(), hv5{c} = hv3{c} + hv4{c};
+</code></pre></div>
+<p>The algorithm is stupid: the goal is just to introduce dependencies between variables and jobs.</p>
+<table>
+<thead>
+<tr>
+<th>Job</th>
+<th>In Variables</th>
+<th>Out Variables</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hj1</td>
+<td>hv1</td>
+<td>hv2</td>
+</tr>
+<tr>
+<td>Hj2</td>
+<td>hv2</td>
+<td>hv3</td>
+</tr>
+<tr>
+<td>Hj3</td>
+<td>hv3, hv4</td>
+<td>hv5</td>
+</tr>
+</tbody>
+</table>
+<p>The <em>Hydro</em> application is defined in a classical <em>Hydro.ngen</em> file (see <a href="../ngenlanguage">Ngen language reference</a> for details). Copy and paste it in <em>Hydro.ngen</em> file.</p>
+<div class="highlight"><pre><span></span><code>Application Hydro;
+
+MainModule Hydro hydro
+{
+    nodeCoord = X;
+    time = t;
+    timeStep = δt;
+    iterationMax = maxIter;
+    timeMax = maxTime;
+}
+
+StlThread
+{
+    outputPath = &quot;/NablaTest/src-gen-cpp/stl-thread&quot;;
+    CMAKE_CXX_COMPILER = &quot;/usr/bin/g++&quot;;
+}
+</code></pre></div>
+<p>The <em>Job Graph Editor</em>, triggered by pressing F2 key on <em>Hydro.ngen</em> file, displays:</p>
+<p><img src="img/NabLab_hydro_job_graph.png" alt="NabLab Hydro Job Graph" title="NabLab Hydro Job Graph" width="20%" height="20%"/></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Let the mouse over a job to display its in/out variables.</p>
+<p><img src="img/NabLab_hydro_job_in_out_variables.png" alt="NabLab Hydro Job In/Out Variables" title="NabLab Hydro Job In/Out Variables" width="30%" height="30%"/></p>
+</div>
+<h2 id="a-dummy-remap-module">A dummy Remap module</h2>
+<p>Create now a new file for the <em>Remap</em> module. Just type <code>CTRL-N</code> or click on the main menu <em>File &gt; New &gt; Other</em> to create a new file:</p>
+<p><img src="img/NabLab_new_other_menu.png" alt="NabLab New File" title="NabLab New File" width="60%" height="60%" /></p>
+<p>A new wizard is launched, select File:</p>
+<p><img src="img/NabLab_new_file_wizard.png" alt="NabLab New File Wizard" title="NabLab New File Wizard" width="50%" height="50%" /></p>
+<p>Click <em>Next&gt;</em>, select the <em>Tutorial/src/hydro</em> folder and enter <em>Remap.n</em> as file name:</p>
+<p><img src="img/NabLab_new_remap_file.png" alt="NabLab New Remap File" title="NabLab New Remap File" width="50%" height="50%" /></p>
+<p>Here is an example code of a dummy Remap module. Copy and paste it in <em>Remap.n</em> file.</p>
+<div class="highlight"><pre><span></span><code>module Remap;
+
+with CartesianMesh2D.*;
+
+ℝ rv1{cells}, rv2{cells}, rv3{cells};
+
+Rj1: ∀c∈cells(), rv2{c} = rv1{c};
+Rj2: ∀c∈cells(), rv3{c} = rv2{c};
+</code></pre></div>
+<p>The algorithm is as stupid as the Hydro one: the goal is just to introduce dependencies between variables and jobs.</p>
+<table>
+<thead>
+<tr>
+<th>Job</th>
+<th>In Variables</th>
+<th>Out Variables</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rj1</td>
+<td>rv1</td>
+<td>rv2</td>
+</tr>
+<tr>
+<td>Rj2</td>
+<td>rv2</td>
+<td>rv3</td>
+</tr>
+</tbody>
+</table>
+<p>It is not possible to display the graph of jobs because there is no <em>ngen</em> application file for the <em>Remap</em> module. It is not a standalone module and it is designed to be coupled with the <em>Hydro</em> one.</p>
+<h2 id="hydroremap-association">Hydro/Remap association</h2>
+<p>The aim is to associate the <em>Hydro</em> and <em>Remap</em> modules by coupling their data flow as follows:</p>
+<p><img src="img/HydroAnd1Remap.png" alt="NabLab Hydro/Remap Association" title="NabLab Hydro/Remap Association" width="30%" height="30%"/></p>
+<p>We will create a new application from the previous one. In the explorer, copy <em>Hydro.ngen</em> file and paste it in the same folder. A wizard will ask you for the name of the new file, enter <em>HydroRemap.ngen</em>. The new file must appears in the <em>src/hydro</em> folder as follows:</p>
+<p><img src="img/NabLab_hydro_remap_files.png" alt="NabLab Hydro/Remap Files" title="NabLab Hydro/Remap Files" width="30%" height="30%"/></p>
+<p>The <em>HydroRemap.ngen</em> file defines the application coupling between <em>Hydro</em> and <em>Remap</em> modules. Change the name of the application from <em>Hydro</em> to <em>HydroRemap</em> at the beginning of the file.</p>
+<div class="highlight"><pre><span></span><code>Application HydroRemap;
+</code></pre></div>
+<p>The <em>Hydro</em> module stays the main module of the application. The <em>Remap</em> module will be added to the application: in the <em>HydroRemap.ngen</em> file, between the <code>MainModule</code> and the <code>StlThread</code> blocks, introduce a block to add the additional module <em>Remap</em> and define variable equalities like they appear in the graph above:</p>
+<div class="highlight"><pre><span></span><code>AdditionalModule Remap remap
+{
+    remap.rv1 = hydro.hv1;
+    remap.rv2 = hydro.hv4;
+}
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Module names and their variables are available by contextual code completion with <code>CTRL-Space</code> keys.</p>
+</div>
+<p>Only variables of the same type can be declared as equals: the <em>ngen</em> editor will display an error if it is not the case.</p>
+<p><img src="img/NabLab_association_error.png" alt="NabLab Association Error" title="NabLab Association Error" width="60%" height="60%"/></p>
+<p>The <em>Job Graph Editor</em>, triggered by pressing F2 key on <em>HydroRemap.ngen</em> file, displays:</p>
+<p><img src="img/NabLab_hydro_remap_job_graph.png" alt="NabLab Hydro/Remap Job Graph" title="NabLab Hydro/Remap Job Graph" width="40%" height="40%"/></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In this example, there is no <code>iterate</code> instruction to define time iterators and consequently no variable with time iterators like <code>t^{n}</code>. If it is the case, time iterators must belong to the main module: they are forbidden in additional modules.</p>
+</div>
+<h2 id="code-generation">Code generation</h2>
+<p>Generate the code in the same way as usual: right-click on the <em>HydroRemap.ngen</em> file and select <em>Generate Code</em>. 
+The <code>StlThread</code> generation target will produce the following files, as expected:</p>
+<p><img src="img/NabLab_hydro_remap_generated_files.png" alt="NabLab Hydro/Remap Generated Files" title="NabLab Hydro/Remap Generated Files" width="20%" height="20%"/></p>
+<h2 id="multiple-additional-modules">Multiple additional modules</h2>
+<p>It is possible to define multiple additional modules, even if they have the same type, as long as they have different name. For example, you can couple 2 <em>Remap</em> modules named <em>r1</em> and <em>r2</em> to the <em>Hydro</em> module <em>hydro</em> in the following scenario:</p>
+<p><img src="img/HydroAnd2Remaps.png" alt="NabLab Multiple Additional Modules" title="NabLab Multiple Additional Modules" width="40%" height="40%"/></p>
+<p>The content of the <em>Hydro.n</em> file becomes:</p>
+<div class="highlight"><pre><span></span><code>module Hydro;
+
+with CartesianMesh2D.*;
+
+option ℝ maxTime = 0.1;
+option ℕ maxIter = 500;
+option ℝ δt = 1.0;
+let ℝ t = 0.0;
+ℝ[2] X{nodes};
+ℝ hv1{cells}, hv2{cells}, hv3{cells}, hv4{cells}, hv5{cells}, hv6{cells}, hv7{cells};
+
+Hj1: ∀c∈cells(), hv3{c} = hv2{c};
+Hj2: ∀c∈cells(), hv5{c} = hv3{c};
+Hj3: ∀c∈cells(), hv7{c} = hv4{c} + hv5{c} + hv6{c};
+</code></pre></div>
+<p>The <em>Remap</em> module does not change while the content of the <em>HydroRemap.ngen</em> file integrates two additional modules instead of the previous <em>remap</em> one:</p>
+<div class="highlight"><pre><span></span><code>AdditionalModule Remap r1
+{
+    r1.rv1 = h.hv1;
+    r1.rv2 = h.hv4;
+}
+
+AdditionalModule Remap r2
+{
+    r2.rv1 = h.hv3;
+    r2.rv3 = h.hv6;
+}
+</code></pre></div>
+<p>The <code>StlThread</code> target will generate the following files:</p>
+<p><img src="img/NabLab_hydro_2remaps_generated_files.png" alt="NabLab Multiple Additional Module Generated Files" title="NabLab Multiple Additional Module Generated Files" width="20%" height="20%"/></p>
+<p>The above picture shows that generated files have the same name as the module instances (defined in the <em>HydroRemap.ngen</em> file) starting with an upper case, i.e. <em>Hydro</em>, <em>R1</em> and <em>R2</em>.</p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../firstextension/" class="md-footer__link md-footer__link--prev" aria-label="Previous: My first extension" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              My first extension
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../debug/" class="md-footer__link md-footer__link--next" aria-label="Next: Monitoring and debugging" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Monitoring and debugging
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Copyright &copy; 2021 CEA
+          </div>
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+        
+      </div>
+      
+  <div class="md-footer-social">
+    
+      
+      
+        
+        
+      
+      <a href="https://github.com/cea-hpc/NabLab" target="_blank" rel="noopener" title="github.com" class="md-footer-social__link">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+      </a>
+    
+  </div>
+
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.477d984a.min.js", "version": "0.4.0"}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.ddd52ceb.min.js"></script>
+      
+        <script src="../javascripts/config.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

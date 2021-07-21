@@ -1,0 +1,1127 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="This is the documentation website of NabLab project">
+      
+      
+      
+        <meta name="author" content="Benoit Lelandais">
+      
+      
+        <link rel="canonical" href="https://cea-hpc.github.io/NabLab/nablablanguage/">
+      
+      <link rel="icon" href="../img/logo_512.png">
+      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.1.11">
+    
+    
+      
+        <title>NabLab language reference - NabLab documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.3754935a.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.f1a3b89f.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#4051b5">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+    
+      
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="orange">
+  
+    
+    <script>function __prefix(e){return new URL("..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#nablab-language" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="NabLab documentation" class="md-header__button md-logo" aria-label="NabLab documentation" data-md-component="logo">
+      
+  <img src="../img/logo_512.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            NabLab documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              NabLab language reference
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="NabLab documentation" class="md-nav__button md-logo" aria-label="NabLab documentation" data-md-component="logo">
+      
+  <img src="../img/logo_512.png" alt="logo">
+
+    </a>
+    NabLab documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        What is NabLab
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gettingstarted/" class="md-nav__link">
+        Getting started
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../firstmodule/" class="md-nav__link">
+        My first module
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../firstextension/" class="md-nav__link">
+        My first extension
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modulecomposition/" class="md-nav__link">
+        Composing modules
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../debug/" class="md-nav__link">
+        Monitoring and debugging
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          NabLab language reference
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        NabLab language reference
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#module-and-extensions" class="md-nav__link">
+    Module and extensions
+  </a>
+  
+    <nav class="md-nav" aria-label="Module and extensions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#module" class="md-nav__link">
+    Module
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#extension" class="md-nav__link">
+    Extension
+  </a>
+  
+    <nav class="md-nav" aria-label="Extension">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linear-algebra-extension" class="md-nav__link">
+    Linear algebra extension
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mesh-extension" class="md-nav__link">
+    Mesh extension
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#imports" class="md-nav__link">
+    Imports
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#item-types-and-connectivities" class="md-nav__link">
+    Item types and connectivities
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reductions-and-functions" class="md-nav__link">
+    Reductions and functions
+  </a>
+  
+    <nav class="md-nav" aria-label="Reductions and functions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#reductions" class="md-nav__link">
+    Reductions
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#functions" class="md-nav__link">
+    Functions
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#global-variables" class="md-nav__link">
+    Global variables
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#time-iterators" class="md-nav__link">
+    Time iterators
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#jobs" class="md-nav__link">
+    Jobs
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instructions" class="md-nav__link">
+    Instructions
+  </a>
+  
+    <nav class="md-nav" aria-label="Instructions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#local-variables-and-set-definitions" class="md-nav__link">
+    Local variables and set definitions
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#affectations" class="md-nav__link">
+    Affectations
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blocks" class="md-nav__link">
+    Blocks
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#loops" class="md-nav__link">
+    Loops
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conditionals" class="md-nav__link">
+    Conditionals
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#expressions" class="md-nav__link">
+    Expressions
+  </a>
+  
+    <nav class="md-nav" aria-label="Expressions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#arguments-and-variable-references" class="md-nav__link">
+    Arguments and variable references
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reduction-and-function-calls" class="md-nav__link">
+    Reduction and function calls
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ngenlanguage/" class="md-nav__link">
+        Ngen language reference
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docker/" class="md-nav__link">
+        Docker integration
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#module-and-extensions" class="md-nav__link">
+    Module and extensions
+  </a>
+  
+    <nav class="md-nav" aria-label="Module and extensions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#module" class="md-nav__link">
+    Module
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#extension" class="md-nav__link">
+    Extension
+  </a>
+  
+    <nav class="md-nav" aria-label="Extension">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linear-algebra-extension" class="md-nav__link">
+    Linear algebra extension
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mesh-extension" class="md-nav__link">
+    Mesh extension
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#imports" class="md-nav__link">
+    Imports
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#item-types-and-connectivities" class="md-nav__link">
+    Item types and connectivities
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reductions-and-functions" class="md-nav__link">
+    Reductions and functions
+  </a>
+  
+    <nav class="md-nav" aria-label="Reductions and functions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#reductions" class="md-nav__link">
+    Reductions
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#functions" class="md-nav__link">
+    Functions
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#global-variables" class="md-nav__link">
+    Global variables
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#time-iterators" class="md-nav__link">
+    Time iterators
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#jobs" class="md-nav__link">
+    Jobs
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instructions" class="md-nav__link">
+    Instructions
+  </a>
+  
+    <nav class="md-nav" aria-label="Instructions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#local-variables-and-set-definitions" class="md-nav__link">
+    Local variables and set definitions
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#affectations" class="md-nav__link">
+    Affectations
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blocks" class="md-nav__link">
+    Blocks
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#loops" class="md-nav__link">
+    Loops
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conditionals" class="md-nav__link">
+    Conditionals
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#expressions" class="md-nav__link">
+    Expressions
+  </a>
+  
+    <nav class="md-nav" aria-label="Expressions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#arguments-and-variable-references" class="md-nav__link">
+    Arguments and variable references
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reduction-and-function-calls" class="md-nav__link">
+    Reduction and function calls
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="nablab-language">NabLab language</h1>
+<h2 id="module-and-extensions">Module and extensions</h2>
+<p>A NabLab file, extension <code>n</code>, defines a <code>module</code> or an <code>extension</code>.</p>
+<h3 id="module">Module</h3>
+<div class="highlight"><pre><span></span><code>module Glace2d;
+</code></pre></div>
+<p>A <code>module</code> represents a NabLab program and its definition strictly follows the following sequence:</p>
+<ul>
+<li>Imports</li>
+<li>Reductions</li>
+<li>Functions</li>
+<li>Variables and options</li>
+<li>Time iterators</li>
+<li>Jobs</li>
+</ul>
+<p>A module is generally associated with a <a href="../ngenlanguage">NabLab application</a>. Several modules can also be composed into a single application: see <a href="../modulecomposition">module composition</a> documentation.</p>
+<h3 id="extension">Extension</h3>
+<div class="highlight"><pre><span></span><code>extension Math;
+</code></pre></div>
+<p>An <code>extension</code> is a way to extend the language with external functions.</p>
+<p>Its definition strictly follows the following sequence:</p>
+<ul>
+<li>Imports</li>
+<li>Reductions</li>
+<li>Functions</li>
+</ul>
+<p>Functions of an extension can be called from a NabLab module.
+To use an extension X, a module has to import the extension with the instruction <code>with X.*;</code> (see below).</p>
+<p>Extensions provide external functions, i.e. functions with no NabLab body. 
+Those functions are implemented in an another language, generally C or C++. 
+To link NabLab function declaration to its native definition, providers have to be defined: see <a href="../ngenlanguage#provider">NabLab extension providers</a> for details.</p>
+<p>The extension and extension provider mechanisms are the way to call legacy libraries from NabLab applications.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>NabLab library provides a <a href="https://github.com/cea-hpc/NabLab/blob/master/plugins/fr.cea.nabla/nablalib/Math.n">mathematical extension</a> containing the ∑, ∏, Min and Max reductions and the usual mathematical functions (sin, cos, √...).</p>
+</div>
+<h4 id="linear-algebra-extension">Linear algebra extension</h4>
+<div class="highlight"><pre><span></span><code>linearalgebra extension LinearAlgebra;
+</code></pre></div>
+<p>A linear algebra extension is an extension with no reductions, only functions.
+Moreover, functions' arguments of type ℝ[x] and ℝ[x, x] will be respectively interpreted as vector and matrix.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>NabLab library provides a <a href="https://github.com/cea-hpc/NabLab/blob/master/plugins/fr.cea.nabla/nablalib/LinearAlgebra.n">linear algebra extension</a> containing some <em>Ax=B</em> functions to solve linear systems.</p>
+</div>
+<h4 id="mesh-extension">Mesh extension</h4>
+<div class="highlight"><pre><span></span><code>mesh extension CartesianMesh2D;
+</code></pre></div>
+<p>This kind of extension defines the interface of a mesh library.</p>
+<p>Its definition strictly follows the following sequence:</p>
+<ul>
+<li>Item types</li>
+<li>Connectivities</li>
+</ul>
+<p>The syntax of item types and connectivities is described below.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>NabLab library provides a <a href="https://github.com/cea-hpc/NabLab/blob/master/plugins/fr.cea.nabla/nablalib/CartesianMesh2D.n">mesh extension</a> containing the signature of a 2D cartesian mesh used by NabLab examples.</p>
+</div>
+<h2 id="imports">Imports</h2>
+<p>The <code>with</code> keyword allows to import NabLab extensions, libraries of reductions and functions external to the module.</p>
+<p>NabLab provides two native extensions: <a href="https://github.com/cea-hpc/NabLab/blob/master/plugins/fr.cea.nabla/nablalib/math.n">Math</a> and <a href="https://github.com/cea-hpc/NabLab/blob/master/plugins/fr.cea.nabla/nablalib/linearalgebra.n">Linear Algebra</a> (follow the link to see the available functions and reductions).</p>
+<p>To use them in your own module, just create an import section as follow:</p>
+<div class="highlight"><pre><span></span><code>module ImplicitHeatEquation;
+
+with Math.*;
+with LinearAlgebra.*;
+</code></pre></div>
+<h2 id="item-types-and-connectivities">Item types and connectivities</h2>
+<p>Items are elements of a set, typically mesh elements. The various types of items are defined in a set.</p>
+<div class="highlight"><pre><span></span><code>itemtypes { node, cell, face }
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Sets are surrounded by curly brackets and separated by a comma.</p>
+</div>
+<p>A connectivity declaration id defined by a name, its inputs items and an output item or a set of output items.</p>
+<div class="highlight"><pre><span></span><code>connectivity nodes: → {node};                 // mesh nodes
+connectivity cells: → {cell};                 // mesh cells
+connectivity faces: → {face};                 // mesh faces
+connectivity neighborCells: cell → {cell};    // neighbor cells of a cell
+connectivity nodesOfFace: face → {node};      // nodes of a face
+connectivity nodesOfCell: cell → {node};      // nodes of a cell
+connectivity commonFace: cell × cell → face;  // common face of two cells
+</code></pre></div>
+<p>NabLab provides Java and C++ mesh libraries. They implement the above connectivities. You can also use yous own library. A documentation will be available shortly. </p>
+<h2 id="reductions-and-functions">Reductions and functions</h2>
+<h3 id="reductions">Reductions</h3>
+<p>Reductions are defined by their name, neutral element (seed of the reduction) and type corresponding to the type of their arguments and also their return type. They can be overloaded: it is possible to create multiple reductions with same name and different type.</p>
+<div class="highlight"><pre><span></span><code>def ∑, 0.0: ℝ, (a, b) → return a + b;
+def ∑, 0.0: x | ℝ[x], (a, b) → return a + b;
+</code></pre></div>
+<h3 id="functions">Functions</h3>
+<p>Functions are defined by their name, input arguments, return type and body. They can be overloaded: it is possible to create multiple functions with same name and different input arguments. Function's body is a unique instruction or a block of instructions. It cannot refer to global variables. That is the reason why functions are declared before variables.</p>
+<div class="highlight"><pre><span></span><code>def one: → ℕ, () → return 1;         // function with no in arg
+
+def inc: ℕ → ℕ, (a) → return a+1;    // overloaded function inc on ℕ
+def inc: ℝ → ℝ, (a) → return a+1.0;  // overloaded function inc on ℝ
+
+def dot: x | ℝ[x] × ℝ[x] → ℝ, (a , b) → {
+    let ℝ result = 0.0;
+    ∀ i ∈ [0;x[,
+        result = result + a[i]*b[i];
+    return result;
+}
+</code></pre></div>
+<p>In an extension, functions can be external, without body definition. In this case the definition of an <a href="../ngenlanguage">extension provider</a> allows to call a native function (C, C++...). This mechanism allows to use legacy libraries, like linear algebra libraries.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>External functions, i.e. functions with no body, are not allowed in modules, only in extensions.</p>
+</div>
+<h2 id="global-variables">Global variables</h2>
+<p>Global variables are defined by their type, name and eventually one or several supports representing the connectivity on which the variable lives.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>UTF-8 characters for variable names are supported to fit domain scientists classical notations, for example δt, ρ...</p>
+</div>
+<p>The type of the variable is one of the 3 NabLab base types: boolean <code>ℾ</code>, integer <code>ℕ</code> or real <code>ℝ</code>. It can be scalar or array. Arrays are defined by giving a comma separated list of sizes between brackets.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>NabLab text editor offers a contextual code completion and interactive ASCII template sequences to enter UTF-8 keywords.</p>
+</div>
+<div class="highlight"><pre><span></span><code>ℾ is_ok;                            // boolean
+ℕ i, j;                             // integers
+ℝ t, δt;                            // reals
+ℝ[2] x;                             // 1 dimension real array
+ℝ[2, 2] xx;                         // 2 dimensions real array
+ℝ[2] X{nodes};                      // array of 2 reals on each node
+ℝ[2, 2] Ajr{cells, nodesOfCell};    // 2x2 matrix on each node of each cell
+</code></pre></div>
+<p>Multiple variables can be declared in the same instruction into a comma separated list.</p>
+<div class="highlight"><pre><span></span><code>ℝ t, δt;
+ℝ c{cells}, m{cells}, p{cells};
+</code></pre></div>
+<p>A variable initialized with a default value is preceded by the <code>let</code> keyword. It is not possible to assign several variables in one definition.
+A user option is preceded by the <code>option</code> keyword. The option can be set in a <a href="https://www.json.org">Json</a> data file. If the option has a default value it becomes optional in the data file otherwise the execution will produce an error if the option has no default value and is not found in the data file.</p>
+<div class="highlight"><pre><span></span><code>let ℝ γ = 3.0;                      // real scalar
+let ℝ[2] N = [0.0, 1.0];            // 1 dimension real array
+let ℝ[2, 2] N = [ [0.0, 1.0], N ];  // 2 dimensions real array
+let ℕ[2,2] I = [ [1, 0], [0, 1] ];  // 2 dimensions int array
+option ℕ maxIter = 200;             // optional integer user option
+option ℝ maxTime;                   // mandatory real user option
+</code></pre></div>
+<h2 id="time-iterators">Time iterators</h2>
+<p>The <code>iterate</code> section is used to define time iterators and the stop conditions of their time loop.</p>
+<div class="highlight"><pre><span></span><code>// definition of time iterator n
+iterate n while (residual &gt; ε);
+</code></pre></div>
+<p>Variables can be referenced with defined iterators. In the above example defining a <code>n</code> time iterator, a variable can be referenced at <code>n=0</code>, <code>n</code> and <code>n+1</code>. A variable named <code>t</code> can be referenced like this: <code>t^{n=0}</code>, <code>t^{n}</code> and <code>t^{n+1}</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For the moment, only the <code>+1</code> increment of the iterator is allowed.</p>
+</div>
+<p>It is possible to define several time iterators into a comma separated list: the iterator of index <em>k+1</em> is then nested into the iterator of index <em>k</em>.</p>
+<div class="highlight"><pre><span></span><code>// definition of time iterators n and k.
+iterate n while (t^{n+1} &lt; stopTime &amp;&amp; n+1 &lt; maxIterations),
+        k while (residual &gt; ε &amp;&amp; check(k+1 &lt; maxIterationsK));
+</code></pre></div>
+<p>In case of several iterators, variables can be referenced by a list of defined time iterators, respecting the order of inclusion.
+In the above example defining n and k inside n, a variable can be referenced by <code>n=0</code>, <code>n</code>, <code>n+1</code>, <code>n+1, k=0</code>, <code>n+1, n</code>, and <code>n+1, k+1</code>. Variable named <code>t</code> can be referenced like this: <code>t^{n=0}</code>, <code>t^{n}</code>, <code>t^{n+1}</code>, <code>t^{n+1, k=0}</code>, <code>t^{n+1, k}</code>, <code>t^{n+1, k+1}</code>.</p>
+<p>It is also possible to define a block of inner iterators to define several loops included in a main time loop.</p>
+<div class="highlight"><pre><span></span><code>iterate n while (t^{n+1} &lt; maxTime &amp;&amp; n+1 &lt; maxIter), { 
+    k while (k+1 &lt; maxIterK);
+    l while (l+1 &lt; maxIterL);
+}
+</code></pre></div>
+<p>In the above example defining n, k inside n and l inside n, a variable can be referenced by <code>n=0</code>, <code>n</code>, <code>n+1</code> and either <code>n+1, k=0</code>, <code>n+1, n</code>, <code>n+1, k+1</code> or <code>n+1, l=0</code>, <code>n+1, l</code>, <code>n+1, l+1</code>. A variable named <code>t</code> can be referenced like this: <code>t^{n=0}</code>, <code>t^{n}</code>, <code>t^{n+1}</code> and either <code>t^{n+1, k=0}</code>, <code>t^{n+1, k}</code>, <code>t^{n+1, k+1}</code> or <code>t^{n+1, l=0}</code>, <code>t^{n+1, l}</code>, <code>t^{n+1, l+1}</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For a time iterator <code>n</code>, if a variable is initialized at <code>n=0</code>, NabLab automatically initializes <code>n</code> with <code>n=0</code> value of the variable at the beginning of the time loop and with <code>n+1</code> value during loop iterations.</p>
+</div>
+<h2 id="jobs">Jobs</h2>
+<p>Jobs are identified by a name, starting with an upper case. They are composed of an instruction, or a block of instructions.</p>
+<div class="highlight"><pre><span></span><code>Ini: j = 0;
+IniTime: t^{n=0} = 0.0;
+ComputeDensity: ∀j∈cells(), ρ{j} = m{j} / V{j};
+</code></pre></div>
+<p>The execution of a NabLab program does not start at its beginning and jobs execution order does not correspond to their position in the file. During the compilation phase, the data flow graph of the program is computed according to input and output variables of each job. Jobs are annotated with an <em>at</em> statement corresponding to its hierarchical logical time (HLT). The <em>HLT</em> concept is explicitly expressed to go beyond the classical single-program-multiple-data or bulk-synchronous-parallel programming models. The <em>at</em> logical timestamp explicitly declares the task-based parallelism of jobs.</p>
+<p>However, this way to schedule jobs imposes to have a dedicated tool to visualize the graph representing the program execution. This feature has been developed and integrated into the NabLab environment (see <a href="../gettingstarted">getting started</a> documentation  for details).</p>
+<h2 id="instructions">Instructions</h2>
+<p>The main instructions of the language are: local variable and set definitions, affectations, blocks, loops, conditionals.
+An instruction ends with the <code>;</code> character except blocks surrounded by curly brackets.</p>
+<h3 id="local-variables-and-set-definitions">Local variables and set definitions</h3>
+<p>Local variables can be defined with the same syntax than global ones but local definitions include neither variables with supports nor user options.</p>
+<p>Set of items can be defined locally by calling a connectivity, like this:
+<div class="highlight"><pre><span></span><code>set my_cells = cells();
+</code></pre></div></p>
+<h3 id="affectations">Affectations</h3>
+<p>An affectation is composed of a variable reference, the <code>=</code> character and an expression.</p>
+<div class="highlight"><pre><span></span><code>ρ_ic = ρIniZg;
+t^{n=0} = 0.0;
+N = [0.0, 1.0];
+Cjr_ic{j,r} = 0.5 * perp(X^{n=0}{r+1} - X^{n=0}{r-1});
+</code></pre></div>
+<h3 id="blocks">Blocks</h3>
+<p>A block is a list of instructions. It follows the <a href="https://en.wikipedia.org/wiki/Composite_pattern">Composite Design Pattern</a>: The block is an instruction and contains itself a list of instructions. The block is surrounded with curly brackets.</p>
+<div class="highlight"><pre><span></span><code>{
+    ρ_ic = ρIniZd;
+    p_ic = pIniZd;
+}
+</code></pre></div>
+<h3 id="loops">Loops</h3>
+<p>NabLab provides two instructions for loops: <code>while</code> and <code>∀</code>.</p>
+<p>The <code>while</code> is composed of a condition, which is an expression, and an instruction that can be a block.</p>
+<div class="highlight"><pre><span></span><code>while (t^{n} &lt; 5.0) x = 0;
+while (residual &gt; ε) {
+    alpha = 1.0 / det(a);
+    I = [ [1.0, 0.0], [0.0, 1.0] ];
+}
+</code></pre></div>
+<p>The <code>∀</code> loop provides two kinds of iteration blocks: interval and space iterators.</p>
+<p>Interval are going from 0 to n-1 with n an integer result of an expression.</p>
+<div class="highlight"><pre><span></span><code>∀i∈[0;5[, x = 0;
+∀i∈[0;x+4[, {
+    beta = i * a;
+    A = [i, 0];
+}
+</code></pre></div>
+<p>Space iterators allows to loop on connectivity sets. </p>
+<div class="highlight"><pre><span></span><code>// loop on cells
+∀j∈cells(),
+    ρ{j} = m{j} / V{j};
+
+// loop on topNodes
+∀r∈topNodes(), {
+    let ℝ[2] N = [0.0, 1.0];
+    let ℝ[2,2] NxN = tensProduct(N,N);
+    let ℝ[2,2] IcP = I - NxN;
+    bt{r} = matVectProduct(IcP, b{r});
+}
+
+// loop on cells with a reduction on nodesOfCell
+∀j∈cells(),
+    V{j} = 0.5 * ∑{r∈nodesOfCell(j)}(dot(C{j,r}, X^{n}{r}));
+
+// loop on cells and inner loop on nodesOfCell
+∀j∈cells(), ∀r∈nodesOfCell(j),
+    Ajr{j,r} = ((ρ{j} * c{j}) / l{j,r}) * tensProduct(C{j,r}, C{j,r});
+</code></pre></div>
+<p>It is possible to define a loop iterator counter viewed as an integer local variable.
+<div class="highlight"><pre><span></span><code>∀j, ij ∈cells(),
+    ρ{j} = V{j} * ij;
+</code></pre></div></p>
+<h3 id="conditionals">Conditionals</h3>
+<p>Conditionals are defined with the classical <code>if</code>, <code>else</code> sequence. The condition in the <code>if</code> instruction is an expression, like for the <code>while</code> instruction. The <code>else</code> clause is optional.</p>
+<div class="highlight"><pre><span></span><code>if (center[0] &lt; xInterface) {
+    ρ_ic = ρIniZg;
+    p_ic = pIniZg;
+} else {
+    ρ_ic = ρIniZd;
+    p_ic = pIniZd;
+}
+</code></pre></div>
+<h2 id="expressions">Expressions</h2>
+<p>Expressions are composed of the following elements:</p>
+<ul>
+<li>Unary operators minus <code>-</code> and not <code>!</code></li>
+<li>Binary operators add <code>+</code>, substract <code>-</code>, multiply <code>*</code>, divide <code>/</code> and modulo <code>%</code></li>
+<li>Comparison operators greater than <code>&gt;</code>, greater than or equal <code>&gt;=</code>, less than <code>&lt;</code>, less than or equal <code>&lt;=</code>, equal <code>==</code>, not equal <code>!=</code></li>
+<li>Boolean operators and <code>&amp;&amp;</code> and or <code>||</code></li>
+<li>Contracted if operator <code>(condition) ? true : false</code></li>
+<li>Min and max constants for integer and real base types: <code>ℕ.MinValue</code>, <code>ℕ.MaxValue</code>, <code>ℝ.MinValue</code>, <code>ℝ.MaxValue</code></li>
+<li>Array initializations by comma separated list of expressions between brackets, for example <code>[1, 2+3, -5]</code> for <code>ℕ[3]</code>, <code>[ [1.1, 1.2], [2.1, 2.2], [3.1, 3.2] ]</code> for <code>ℝ[3,2]</code></li>
+<li>Argument/variable references and reduction/function calls detailed below.</li>
+</ul>
+<h3 id="arguments-and-variable-references">Arguments and variable references</h3>
+<p>Function arguments and variables are referenced by their name that can be followed by:</p>
+<ul>
+<li>A list of time iterators surrounded by the <code>^{ }</code> and separated by a comma: <code>t^{n+1}</code>, <code>t^{n+1, k}</code></li>
+<li>For variables with a support, a list of space iterators surrounded by the <code>{ }</code> and separated by a comma: <code>P{j}</code>, <code>Ajr{j, r}</code>. Iterators are defined by loops and reductions. Iterators can have an increment, like <code>X{r+1}</code> or <code>X{r-1}</code>, to access the item before or after the original iterator in the set where it is defined.</li>
+<li>For arrays, a list of indices surrounded by <code>[ ]</code> and separated by a comma: <code>X[0]</code>, <code>Y[i, 0]</code>. Indices are expressions.</li>
+</ul>
+<h3 id="reduction-and-function-calls">Reduction and function calls</h3>
+<p>A reduction call includes an iteration on a set or interval, like for a space iterator loop, and an expression of the type of the reduction. For example, to compute the sum of a real variable P defined on cells, the call includes the cells set iterator and the variable reference <code>P{j}</code>:
+<div class="highlight"><pre><span></span><code>let ℝ sum = ∑{j∈cells()}(P{j});
+</code></pre></div></p>
+<p>A function call is defined by the name of the function and the right number and type of input arguments as expressions:
+<div class="highlight"><pre><span></span><code>let ℝ my_cos = cos(3.14 + 3.14);
+</code></pre></div></p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../debug/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Monitoring and debugging" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Monitoring and debugging
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../ngenlanguage/" class="md-footer__link md-footer__link--next" aria-label="Next: Ngen language reference" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Ngen language reference
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Copyright &copy; 2021 CEA
+          </div>
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+        
+      </div>
+      
+  <div class="md-footer-social">
+    
+      
+      
+        
+        
+      
+      <a href="https://github.com/cea-hpc/NabLab" target="_blank" rel="noopener" title="github.com" class="md-footer-social__link">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+      </a>
+    
+  </div>
+
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.477d984a.min.js", "version": "0.4.0"}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.ddd52ceb.min.js"></script>
+      
+        <script src="../javascripts/config.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

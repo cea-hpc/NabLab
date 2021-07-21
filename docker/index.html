@@ -13,21 +13,21 @@
         <meta name="author" content="Benoit Lelandais">
       
       
-        <link rel="canonical" href="https://cea-hpc.github.io/NabLab/">
+        <link rel="canonical" href="https://cea-hpc.github.io/NabLab/docker/">
       
-      <link rel="icon" href="img/logo_512.png">
+      <link rel="icon" href="../img/logo_512.png">
       <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.1.11">
     
     
       
-        <title>NabLab documentation</title>
+        <title>Docker integration - NabLab documentation</title>
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.3754935a.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.3754935a.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.f1a3b89f.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.f1a3b89f.min.css">
         
           
           
@@ -63,7 +63,7 @@
     <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="orange">
   
     
-    <script>function __prefix(e){return new URL(".",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    <script>function __prefix(e){return new URL("..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
@@ -71,7 +71,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#what-is-nablab" class="md-skip">
+        <a href="#docker-integration" class="md-skip">
           Skip to content
         </a>
       
@@ -82,9 +82,9 @@
     
       <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="NabLab documentation" class="md-header__button md-logo" aria-label="NabLab documentation" data-md-component="logo">
+    <a href=".." title="NabLab documentation" class="md-header__button md-logo" aria-label="NabLab documentation" data-md-component="logo">
       
-  <img src="img/logo_512.png" alt="logo">
+  <img src="../img/logo_512.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -100,7 +100,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              What is NabLab
+              Docker integration
             
           </span>
         </div>
@@ -161,15 +161,135 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="NabLab documentation" class="md-nav__button md-logo" aria-label="NabLab documentation" data-md-component="logo">
+    <a href=".." title="NabLab documentation" class="md-nav__button md-logo" aria-label="NabLab documentation" data-md-component="logo">
       
-  <img src="img/logo_512.png" alt="logo">
+  <img src="../img/logo_512.png" alt="logo">
 
     </a>
     NabLab documentation
   </label>
   
   <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        What is NabLab
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gettingstarted/" class="md-nav__link">
+        Getting started
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../firstmodule/" class="md-nav__link">
+        My first module
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../firstextension/" class="md-nav__link">
+        My first extension
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modulecomposition/" class="md-nav__link">
+        Composing modules
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../debug/" class="md-nav__link">
+        Monitoring and debugging
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nablablanguage/" class="md-nav__link">
+        NabLab language reference
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ngenlanguage/" class="md-nav__link">
+        Ngen language reference
+      </a>
+    </li>
+  
+
     
       
       
@@ -189,12 +309,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          What is NabLab
+          Docker integration
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <a href="." class="md-nav__link md-nav__link--active">
-        What is NabLab
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Docker integration
       </a>
       
         
@@ -212,36 +332,29 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#presentation-of-the-project" class="md-nav__link">
-    Presentation of the project
+  <a href="#set-up-the-repository" class="md-nav__link">
+    Set up the repository
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#motivation" class="md-nav__link">
-    Motivation
+  <a href="#install-docker-engine" class="md-nav__link">
+    Install Docker Engine
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#how-it-works" class="md-nav__link">
-    How it works
+  <a href="#create-your-own-docker-image-and-execute-it-with-the-script-here" class="md-nav__link">
+    Create your own docker image and execute it with the script here
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#publications" class="md-nav__link">
-    Publications
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#licence-and-copyright" class="md-nav__link">
-    Licence and copyright
+  <a href="#push-the-image-on-docker-hub" class="md-nav__link">
+    Push the image on docker hub
   </a>
   
 </li>
@@ -250,126 +363,6 @@
   
 </nav>
       
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="gettingstarted/" class="md-nav__link">
-        Getting started
-      </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="firstmodule/" class="md-nav__link">
-        My first module
-      </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="firstextension/" class="md-nav__link">
-        My first extension
-      </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="modulecomposition/" class="md-nav__link">
-        Composing modules
-      </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="debug/" class="md-nav__link">
-        Monitoring and debugging
-      </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="nablablanguage/" class="md-nav__link">
-        NabLab language reference
-      </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="ngenlanguage/" class="md-nav__link">
-        Ngen language reference
-      </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="docker/" class="md-nav__link">
-        Docker integration
-      </a>
     </li>
   
 
@@ -400,36 +393,29 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#presentation-of-the-project" class="md-nav__link">
-    Presentation of the project
+  <a href="#set-up-the-repository" class="md-nav__link">
+    Set up the repository
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#motivation" class="md-nav__link">
-    Motivation
+  <a href="#install-docker-engine" class="md-nav__link">
+    Install Docker Engine
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#how-it-works" class="md-nav__link">
-    How it works
+  <a href="#create-your-own-docker-image-and-execute-it-with-the-script-here" class="md-nav__link">
+    Create your own docker image and execute it with the script here
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#publications" class="md-nav__link">
-    Publications
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#licence-and-copyright" class="md-nav__link">
-    Licence and copyright
+  <a href="#push-the-image-on-docker-hub" class="md-nav__link">
+    Push the image on docker hub
   </a>
   
 </li>
@@ -447,34 +433,60 @@
               
                 
                 
-                <h1 id="what-is-nablab">What is NabLab ?</h1>
-<h2 id="presentation-of-the-project">Presentation of the project</h2>
-<p>NabLab is a open-source research project led by <a href="http://www-hpc.cea.fr/index-en.htm">HPC initiative of the CEA</a>.
-It aims is to provide a productive development way for exascale HPC technologies, flexible enough to be competitive in terms of performances.
-It is composed of:</p>
-<ul>
-<li>a numerical analysis Domain Specific Language (DSL) to improve applied mathematicians productivity throughput and enables new algorithmic developments for the construction of hierarchical and composable high-performance scientific applications.</li>
-<li>an full-fledged environment to edit, interpret, debug specific numerical-analysis sources and to generate optimized code for various C++ targets.</li>
-</ul>
-<h2 id="motivation">Motivation</h2>
-<p>Addressing the major challenges of software productivity and performance portability is becoming necessary to take advantage of emerging extreme-scale computing architectures. As software development costs will continuously increase to address exascale hardware issues, higher-level programming abstraction will facilitate the path to go. There is a growing demand for new programming environments in order to improve scientific productivity, to facilitate the design and implementation, and to optimize large production codes.</p>
-<h2 id="how-it-works">How it works</h2>
-<p>NabLab is based on <a href="https://www.eclipse.org/modeling/emf">Eclipse Modeling Framework (EMF)</a>. The NabLab DSL is realized with <a href="https://www.eclipse.org/Xtext">Xtext</a> that allows to offer a rich textual editor with syntax coloring, code completion, quick fixes... The DSL raises the level of abstraction close to domain scientist concerns and allows them to write multi-physics applications.</p>
-<p>The code in the editor has an internal EMF model representation. This representation, close to the language, is transformed into a numerical analysis specific Intermediate Representation (IR) also implemented as an Ecore metamodel. The transformation chain, based on the IR model, allows HPC engineers to introduce software engineering practices and performance optimization before the code generation. Currently NabLab generates multi threaded C++ for various backends: <a href="https://github.com/kokkos">Kokkos</a>, <a href="https://www.openmp.org/">Open MP</a> and STL based threads. </p>
-<p>Consequently, NabLab provides a way for domain scientists and software engineers to work for the same project onto separate processes.</p>
-<h2 id="publications">Publications</h2>
-<ul>
-<li><a href="https://hal.inria.fr/hal-01910139">Fostering metamodels and grammars within a dedicated environment for HPC: the NabLab environment</a></li>
-<li><a href="https://hal.inria.fr/hal-02296030">Applying Model-Driven Engineering to High-Performance Computing: Experience Report, Lessons Learned, and Remaining Challenges </a></li>
-</ul>
-<h2 id="licence-and-copyright">Licence and copyright</h2>
-<p>This program and the accompanying materials are made available under the terms of the <a href="https://www.eclipse.org/legal/epl-v20.html">Eclipse Public License v. 2.0</a>. SPDX-License-Identifier: EPL-2.0. Please refer to the license for details.</p>
-<p><img src="http://www.cea.fr/PublishingImages/cea.jpg" width="20%" height="20%" align="right" /></p>
-<p>Written by CEA and Contributors.</p>
-<p>(C) Copyright 2021, by CEA. All rights reserved.</p>
-<p>All content is the property of the respective authors or their employers.
-For more information regarding authorship of content, please consult the
-listed source code repository logs.</p>
+                <h1 id="docker-integration">Docker integration</h1>
+<p>The continuous integration mechanism with GitHub triggers all the tests defined in NabLab, including the NablaExamplesTests that generate, compile and run the NabalaExamples for each backend. 
+For these tests to run without error, the environment on which they are running must be correctly configured (java, gcc, cmake, Kokkos and LevelDb). 
+This is the purpose of the docker image built by the docker-nablab.sh script. This image is then pushed on a DockerHub public repository to be used by the GitHub actions of the CI workflow. </p>
+<p>The complete documentation to install docker on your ubuntu machine, is available <a href="https://docs.docker.com/engine/install/ubuntu/">here</a>.
+The procedure below lists the main steps.</p>
+<h2 id="set-up-the-repository">Set up the repository</h2>
+<p>Update the apt package index and install packages to allow apt to use a repository over HTTPS:</p>
+<div class="highlight"><pre><span></span><code>sudo apt-get update
+
+sudo apt-get install <span class="se">\</span>
+    apt-transport-https <span class="se">\</span>
+    ca-certificates <span class="se">\</span>
+    curl <span class="se">\</span>
+    gnupg <span class="se">\</span>
+    lsb-release
+</code></pre></div>
+<p>Add Docker’s official GPG key:</p>
+<div class="highlight"><pre><span></span><code>curl -fsSL https://download.docker.com/linux/ubuntu/gpg <span class="p">|</span> sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+</code></pre></div>
+<p>Use the following command to set up the stable repository</p>
+<div class="highlight"><pre><span></span><code><span class="nb">echo</span> <span class="se">\</span>
+  <span class="s2">&quot;deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \</span>
+<span class="s2">  </span><span class="k">$(</span>lsb_release -cs<span class="k">)</span><span class="s2"> stable&quot;</span> <span class="p">|</span> sudo tee /etc/apt/sources.list.d/docker.list &gt; /dev/null
+</code></pre></div>
+<h2 id="install-docker-engine">Install Docker Engine</h2>
+<p>Update the apt package index, and install the latest version of Docker Engine and containerd</p>
+<div class="highlight"><pre><span></span><code>sudo apt-get update
+
+sudo apt-get install docker-ce docker-ce-cli containerd.io
+</code></pre></div>
+<p>User must belong to the 'docker' group</p>
+<div class="highlight"><pre><span></span><code>sudo adduser <span class="nv">$USER</span> docker
+</code></pre></div>
+<p>Verify that Docker Engine is installed correctly by running the hello-world image (optional)</p>
+<div class="highlight"><pre><span></span><code>sudo docker run hello-world
+</code></pre></div>
+<h2 id="create-your-own-docker-image-and-execute-it-with-the-script-here">Create your own docker image and execute it with the script <a href="docker-nablab.sh">here</a></h2>
+<div class="highlight"><pre><span></span><code>./docker/docker-nablab.sh
+</code></pre></div>
+<p>You can then test it (and check if maven clean verify works)</p>
+<p>NB : with VPN you may use --network=host option in docker build and docker run</p>
+<p>List available images on your system (optional)</p>
+<div class="highlight"><pre><span></span><code>docker images 
+</code></pre></div>
+<h2 id="push-the-image-on-docker-hub">Push the image on docker hub</h2>
+<p>Login to docker hub</p>
+<div class="highlight"><pre><span></span><code>docker login
+</code></pre></div>
+<p>Username : nablab / Password : cf gmail pwd</p>
+<p>NB : An application account has been created with nablalang@gmail.com</p>
+<p>Push to docker hub</p>
+<div class="highlight"><pre><span></span><code>docker push nablab/execution-env
+</code></pre></div>
                 
               
               
@@ -493,21 +505,21 @@ listed source code repository logs.</p>
   
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
-      
         
-        <a href="gettingstarted/" class="md-footer__link md-footer__link--next" aria-label="Next: Getting started" rel="next">
+        <a href="../ngenlanguage/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Ngen language reference" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
-                Next
+                Previous
               </span>
-              Getting started
+              Ngen language reference
             </div>
           </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
-          </div>
         </a>
+      
       
     </nav>
   
@@ -547,12 +559,12 @@ listed source code repository logs.</p>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": ".", "features": ["navigation.instant"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "assets/javascripts/workers/search.477d984a.min.js", "version": "0.4.0"}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.477d984a.min.js", "version": "0.4.0"}</script>
     
     
-      <script src="assets/javascripts/bundle.ddd52ceb.min.js"></script>
+      <script src="../assets/javascripts/bundle.ddd52ceb.min.js"></script>
       
-        <script src="javascripts/config.js"></script>
+        <script src="../javascripts/config.js"></script>
       
         <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
       

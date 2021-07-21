@@ -13,19 +13,21 @@
         <meta name="author" content="Benoit Lelandais">
       
       
-      <link rel="icon" href="/NabLab/img/logo_512.png">
+        <link rel="canonical" href="https://cea-hpc.github.io/NabLab/debug/">
+      
+      <link rel="icon" href="../img/logo_512.png">
       <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.1.11">
     
     
       
-        <title>NabLab documentation</title>
+        <title>Monitoring and debugging - NabLab documentation</title>
       
     
     
-      <link rel="stylesheet" href="/NabLab/assets/stylesheets/main.3754935a.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.3754935a.min.css">
       
         
-        <link rel="stylesheet" href="/NabLab/assets/stylesheets/palette.f1a3b89f.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.f1a3b89f.min.css">
         
           
           
@@ -61,12 +63,17 @@
     <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="orange">
   
     
-    <script>function __prefix(e){return new URL("/NabLab/",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    <script>function __prefix(e){return new URL("..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
+      
+        
+        <a href="#monitoring-and-debugging" class="md-skip">
+          Skip to content
+        </a>
       
     </div>
     <div data-md-component="announce">
@@ -75,9 +82,9 @@
     
       <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="/NabLab/." title="NabLab documentation" class="md-header__button md-logo" aria-label="NabLab documentation" data-md-component="logo">
+    <a href=".." title="NabLab documentation" class="md-header__button md-logo" aria-label="NabLab documentation" data-md-component="logo">
       
-  <img src="/NabLab/img/logo_512.png" alt="logo">
+  <img src="../img/logo_512.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -93,7 +100,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              
+              Monitoring and debugging
             
           </span>
         </div>
@@ -154,9 +161,9 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="/NabLab/." title="NabLab documentation" class="md-nav__button md-logo" aria-label="NabLab documentation" data-md-component="logo">
+    <a href=".." title="NabLab documentation" class="md-nav__button md-logo" aria-label="NabLab documentation" data-md-component="logo">
       
-  <img src="/NabLab/img/logo_512.png" alt="logo">
+  <img src="../img/logo_512.png" alt="logo">
 
     </a>
     NabLab documentation
@@ -172,7 +179,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/NabLab/." class="md-nav__link">
+      <a href=".." class="md-nav__link">
         What is NabLab
       </a>
     </li>
@@ -187,7 +194,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/NabLab/gettingstarted/" class="md-nav__link">
+      <a href="../gettingstarted/" class="md-nav__link">
         Getting started
       </a>
     </li>
@@ -202,7 +209,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/NabLab/firstmodule/" class="md-nav__link">
+      <a href="../firstmodule/" class="md-nav__link">
         My first module
       </a>
     </li>
@@ -217,7 +224,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/NabLab/firstextension/" class="md-nav__link">
+      <a href="../firstextension/" class="md-nav__link">
         My first extension
       </a>
     </li>
@@ -232,7 +239,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/NabLab/modulecomposition/" class="md-nav__link">
+      <a href="../modulecomposition/" class="md-nav__link">
         Composing modules
       </a>
     </li>
@@ -245,11 +252,21 @@
 
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="/NabLab/debug/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Monitoring and debugging
       </a>
+      
     </li>
   
 
@@ -262,7 +279,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/NabLab/nablablanguage/" class="md-nav__link">
+      <a href="../nablablanguage/" class="md-nav__link">
         NabLab language reference
       </a>
     </li>
@@ -277,7 +294,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/NabLab/ngenlanguage/" class="md-nav__link">
+      <a href="../ngenlanguage/" class="md-nav__link">
         Ngen language reference
       </a>
     </li>
@@ -292,7 +309,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/NabLab/docker/" class="md-nav__link">
+      <a href="../docker/" class="md-nav__link">
         Docker integration
       </a>
     </li>
@@ -306,11 +323,42 @@
               </div>
             
             
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
           
           <div class="md-content" data-md-component="content">
             <article class="md-content__inner md-typeset">
               
-  <h1>404 - Not found</h1>
+                
+                
+                <h1 id="monitoring-and-debugging">Monitoring and debugging</h1>
+<p>NabLab debugger is part of the <a href="http://gemoc.org/debug4science/">Debug4Science project</a>.</p>
+<p><center>
+<img src="http://gemoc.org/debug4science/img/cea.png" alt="CEA" style="width: 100px;"/>
+&nbsp;&nbsp;&nbsp;
+<img src="http://gemoc.org/debug4science/img/inria.png" alt="Inria" style="width: 150px;"/>
+</center></p>
+<p><strong>Coming soon...</strong></p>
+                
+              
+              
+                
+
 
               
             </article>
@@ -321,6 +369,41 @@
       
         
 <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../modulecomposition/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Composing modules" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Composing modules
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../nablablanguage/" class="md-footer__link md-footer__link--next" aria-label="Next: NabLab language reference" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              NabLab language reference
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
@@ -358,12 +441,12 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "/NabLab/", "features": ["navigation.instant"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "/NabLab/assets/javascripts/workers/search.477d984a.min.js", "version": "0.4.0"}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.477d984a.min.js", "version": "0.4.0"}</script>
     
     
-      <script src="/NabLab/assets/javascripts/bundle.ddd52ceb.min.js"></script>
+      <script src="../assets/javascripts/bundle.ddd52ceb.min.js"></script>
       
-        <script src="/NabLab/javascripts/config.js"></script>
+        <script src="../javascripts/config.js"></script>
       
         <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
       

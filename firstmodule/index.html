@@ -1,0 +1,954 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="This is the documentation website of NabLab project">
+      
+      
+      
+        <meta name="author" content="Benoit Lelandais">
+      
+      
+        <link rel="canonical" href="https://cea-hpc.github.io/NabLab/firstmodule/">
+      
+      <link rel="icon" href="../img/logo_512.png">
+      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.1.11">
+    
+    
+      
+        <title>My first module - NabLab documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.3754935a.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.f1a3b89f.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#4051b5">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+    
+      
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="orange">
+  
+    
+    <script>function __prefix(e){return new URL("..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#my-first-module" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="NabLab documentation" class="md-header__button md-logo" aria-label="NabLab documentation" data-md-component="logo">
+      
+  <img src="../img/logo_512.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            NabLab documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              My first module
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="NabLab documentation" class="md-nav__button md-logo" aria-label="NabLab documentation" data-md-component="logo">
+      
+  <img src="../img/logo_512.png" alt="logo">
+
+    </a>
+    NabLab documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        What is NabLab
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gettingstarted/" class="md-nav__link">
+        Getting started
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          My first module
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        My first module
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#presentation-of-the-problem" class="md-nav__link">
+    Presentation of the problem
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-the-project" class="md-nav__link">
+    Creating the project
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementing-the-module" class="md-nav__link">
+    Implementing the module
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementing the module">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#imports" class="md-nav__link">
+    Imports
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#options" class="md-nav__link">
+    Options
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#variables" class="md-nav__link">
+    Variables
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#time-iterators" class="md-nav__link">
+    Time iterators
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#jobs" class="md-nav__link">
+    Jobs
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#defining-the-application" class="md-nav__link">
+    Defining the application
+  </a>
+  
+    <nav class="md-nav" aria-label="Defining the application">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#global-parameters" class="md-nav__link">
+    Global parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vtk-output" class="md-nav__link">
+    VTK output
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generation-target" class="md-nav__link">
+    Generation target
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#jobs-sequence" class="md-nav__link">
+    Jobs sequence
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#generation" class="md-nav__link">
+    Generation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compilation" class="md-nav__link">
+    Compilation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#execution" class="md-nav__link">
+    Execution
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#vizualizing-results" class="md-nav__link">
+    Vizualizing results
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../firstextension/" class="md-nav__link">
+        My first extension
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modulecomposition/" class="md-nav__link">
+        Composing modules
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../debug/" class="md-nav__link">
+        Monitoring and debugging
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nablablanguage/" class="md-nav__link">
+        NabLab language reference
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ngenlanguage/" class="md-nav__link">
+        Ngen language reference
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docker/" class="md-nav__link">
+        Docker integration
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#presentation-of-the-problem" class="md-nav__link">
+    Presentation of the problem
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-the-project" class="md-nav__link">
+    Creating the project
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementing-the-module" class="md-nav__link">
+    Implementing the module
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementing the module">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#imports" class="md-nav__link">
+    Imports
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#options" class="md-nav__link">
+    Options
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#variables" class="md-nav__link">
+    Variables
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#time-iterators" class="md-nav__link">
+    Time iterators
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#jobs" class="md-nav__link">
+    Jobs
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#defining-the-application" class="md-nav__link">
+    Defining the application
+  </a>
+  
+    <nav class="md-nav" aria-label="Defining the application">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#global-parameters" class="md-nav__link">
+    Global parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vtk-output" class="md-nav__link">
+    VTK output
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generation-target" class="md-nav__link">
+    Generation target
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#jobs-sequence" class="md-nav__link">
+    Jobs sequence
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#generation" class="md-nav__link">
+    Generation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compilation" class="md-nav__link">
+    Compilation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#execution" class="md-nav__link">
+    Execution
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#vizualizing-results" class="md-nav__link">
+    Vizualizing results
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="my-first-module">My first module</h1>
+<h2 id="presentation-of-the-problem">Presentation of the problem</h2>
+<p>The aim of this tutorial is to implement a simple equation of diffusion in NabLab on a 2D cartesian mesh:</p>
+<div class="arithmatex">\[
+\begin{equation}
+\begin{cases}
+\partial_t u - div(K \nabla u) &amp;= f \text{ in } \Omega \\
+(K \nabla u)n &amp;= g \text{ on } \partial \Omega
+\end{cases}
+\end{equation}
+\]</div>
+<p>In this tutorial the equation is discretized with a finite volume scheme on a 2D cartesian mesh.
+A constant approximation of u by cell gives:</p>
+<div class="arithmatex">\[
+\begin{equation}
+\begin{aligned}
+\frac{u_M^{n+1} - u_M^n}{\Delta t} &amp;= f_M + \frac{1}{V_M}\int_{M}{div(K \nabla u^n)} \\
+&amp;= f_M + \frac{1}{V_M}\int_{\partial M}{(K \nabla u^n) . \nu} \\
+&amp;= f_M + \frac{1}{V_M}\sum_{M' \text{neighbor of } M}{K_{MM'} \frac{u_{M'}^n - u_{M}^n}{MM'}}
+\end{aligned}
+\end{equation}
+\]</div>
+<p>where <span class="arithmatex">\(u_M\)</span> is the temperature of the cell M, <span class="arithmatex">\(f_M\)</span> is the source term of the cell M, <span class="arithmatex">\(\nu\)</span> is the face normal vector and <span class="arithmatex">\(K_{MM'}\)</span> the value of <span class="arithmatex">\(K\)</span> on <span class="arithmatex">\(M \cap  M'\)</span>.</p>
+<p>Consequently:</p>
+<div class="arithmatex">\[
+\begin{equation}
+\begin{aligned}
+u_M^{n+1} &amp;= \Delta t f_M + u_M^n + \frac{\Delta t}{V_M} \sum_{M' \text{ neighbor of } M}{K_{MM'} \frac{u_{M'}^n - u_{M}^n}{MM'}}
+\end{aligned}
+\end{equation}
+\]</div>
+<h2 id="creating-the-project">Creating the project</h2>
+<p>Just click on the main menu <em>File &gt; New &gt; NabLab Project</em> to create a new project: </p>
+<p><img src="img/NabLab_new_project_menu.png" alt="NabLab New Project" title="NabLab New Project" width="60%" height="60%" /></p>
+<p>A new wizard is launched, asking for a project name and a module name:</p>
+<p><img src="img/NabLab_new_project_wizard.png" alt="NabLab New Project Wizard" title="NabLab New Project Wizard" width="50%" height="50%" /></p>
+<p>Enter <em>Tutorial</em> as project name, select the <em>Module</em> radio button, enter <em>HeatEquation</em> as module name and click on the <em>Finish</em> button to create the new project. The new project is available in the <em>Model Explorer</em> on the left of the window. It contains two files (<em>HeatEquation.n</em>, and <em>HeatEquation.ngen</em>) in the <em>Tutorial/src/heatequation/</em> folder:</p>
+<p><img src="img/NabLab_new_project_result.png" alt="NabLab New Project Result" title="NabLab New Project Result" width="30%" height="30%" /></p>
+<h2 id="implementing-the-module">Implementing the module</h2>
+<p>The module must be implemented in the <em>HeatEquation.n</em> file. Edit it by double-clicking on the file name in the explorer.</p>
+<p>A full description of the language is available in the <a href="../nablablanguage">reference documentation</a>. </p>
+<h3 id="imports">Imports</h3>
+<p>The module starts with the import of the extensions: Math and CartesianMesh2D.</p>
+<p>Extension files describe services implemented in external libraries called providers. For more details see the extension section in the <a href="../nablablanguage">reference documentation</a>.
+The NabLab product includes three extensions, CartesianMash2D, Math and LinearAlgebra, and their implementations in Java and C++.</p>
+<p><a href="https://github.com/cea-hpc/NabLab/blob/master/plugins/fr.cea.nabla/nablalib/Math.n">Math</a> contains the ∑, ∏, Min and Max reductions and the usual mathematical functions (sin, cos, √...).</p>
+<p><a href="https://github.com/cea-hpc/NabLab/tree/master/plugins/fr.cea.nabla/CartesianMesh2D.n">CartesianMesh2D</a> contains a 2D cartesian mesh extension as well as the corresponding Java and C++ <a href="https://github.com/cea-hpc/NabLab/tree/master/plugins/fr.cea.nabla/CartesianMesh2D.ngen">providers</a>.</p>
+<div class="highlight"><pre><span></span><code>module HeatEquation;
+
+with Math.*;
+with CartesianMesh2D.*;
+</code></pre></div>
+<h3 id="options">Options</h3>
+<p>The next part of the file relates to the definition of options: variables whose value can be set in the user data file. Two kinds of options are defined, simulation and user options:</p>
+<div class="highlight"><pre><span></span><code>// Simulation options
+option ℝ stopTime = 0.1;
+option ℕ maxIterations = 500;
+
+// User options
+option ℝ PI = 3.1415926;
+option ℝ α = 1.0;
+</code></pre></div>
+<p>Simulation options represents the maximum time and number of iterations of the simulation. We will see below how they will define the conditions of the iteration loop. </p>
+<h3 id="variables">Variables</h3>
+<p>For the heat equation module, the variables are:</p>
+<ul>
+<li><em>δt</em> and <em>t</em> representing respectively the time step and time of the simulation. Time step is initialized with a default value. It will be constant during the simulation,</li>
+<li><em>X</em> and center representing respectively coordinates of nodes and center of cells,</li>
+<li><em>u</em>, <em>V</em> and <em>f</em> representing the cells' variables presented in the above equation,</li>
+<li><em>outgoingFlux</em> representing the <span class="arithmatex">\(\frac{\Delta t}{V_M} \sum{K_{MM'} \frac{u_{M'}^n - u_{M}^n}{MM'}}\)</span> part of the equation,</li>
+<li><em>surface</em> representing the surface of faces.</li>
+</ul>
+<div class="highlight"><pre><span></span><code>let ℝ δt = 0.001;
+ℝ t;
+ℝ[2] X{nodes}, center{cells};
+ℝ u{cells}, V{cells}, f{cells}, outgoingFlux{cells}, surface{faces};
+</code></pre></div>
+<h3 id="time-iterators">Time iterators</h3>
+<p>The next part of the file defines the time loop iterators, a single one named <em>n</em> for this example, and the stop condition of the time loop.</p>
+<div class="highlight"><pre><span></span><code>iterate n while (t^{n} &lt; stopTime &amp;&amp; n &lt; maxIterations);
+</code></pre></div>
+<h3 id="jobs">Jobs</h3>
+<p>The next part of the file is dedicated to definition of jobs.</p>
+<p>The order of jobs in the editor does not matter for execution. NabLab will build the data flow graph of jobs to determine their execution rank.</p>
+<p>At first, four jobs for initializing the values of <em>t</em>, <em>f</em>, <em>center</em> and <em>u</em> variables are defined. Fell free to change the initialization of <span class="arithmatex">\(u^{n}_{j}\)</span>!</p>
+<div class="highlight"><pre><span></span><code>IniTime: t^{n=0} = 0.0;
+IniF: ∀j∈cells(), f{j} = 0.0;
+IniCenter: ∀j∈cells(), center{j} = 0.25 * ∑{r∈nodesOfCell(j)}(X{r});
+IniUn: ∀j∈cells(), u^{n}{j} = cos(2 * PI * α * center{j}[0]);
+</code></pre></div>
+<p>To compute the center of cells, we use the <span class="arithmatex">\(\sum\)</span> reduction defined in the <em>Math</em> extension of the NabLab language. Thus, the following instruction must be added at the beginning of the file after the module definition: </p>
+<div class="highlight"><pre><span></span><code>with Math.*;
+</code></pre></div>
+<p>Then two jobs are needed to compute the volume and surface of cells:</p>
+<div class="highlight"><pre><span></span><code>ComputeV: ∀j∈cells(), V{j} = 0.5 * ∑{r∈nodesOfCell(j)}(det(X{r}, X{r+1}));
+ComputeSurface: ∀f∈faces(), surface{f} = 0.5 * ∑{r∈nodesOfFace(f)}(norm(X{r}-X{r+1}));
+</code></pre></div>
+<p>The <code>det</code> and <code>norm</code> functions are also defined in the <em>Math</em> library. To see the full content of the library, press <code>F3</code> on one of its functions, for example <code>det</code>. It will open the <em>Math.n</em> provided by NabLab.</p>
+<p>Now, it is time to code the above formula. It can be done in a single job but we have divided it into two parts: the compute of the outgoing flux representing the <span class="arithmatex">\(\frac{\Delta t}{V_M} \sum{K_{MM'} \frac{u_{M'}^n - u_{M}^n}{MM'}}\)</span> part of the equation and the compute of the <span class="arithmatex">\(u^{n+1}\)</span> value:</p>
+<div class="highlight"><pre><span></span><code>ComputeOutgoingFlux: ∀j1∈cells(), outgoingFlux{j1} = δt/V{j1} * ∑{j2∈neighbourCells(j1)}(∑{cf∈commonFace(j1,j2)}( (u^{n}{j2}-u^{n}{j1}) / norm(center{j2}-center{j1}) * surface{cf}));
+ComputeUn: ∀j∈cells(), u^{n+1}{j} = f{j} * δt + u^{n}{j} + outgoingFlux{j};
+</code></pre></div>
+<p>In the <em>ComputeOutgoingFlux</em> job, the face is accessed through a <span class="arithmatex">\(\sum\)</span>. In NabLab, all connectivities are handled in the same way even if they return a singleton like the <em>commonFace</em> connectivity which returns a single face.</p>
+<p>The LaTeX view below the editor displays the job content equation and facilitates the verification of its correctness. Just place your cursor on the job of your choice in the editor to see the LaTeX view changed. </p>
+<p><img src="img/NabLab_compute_un_latex.png" alt="NabLab LaTeX view" title="NabLab LaTeX view" width="80%" height="80%" /></p>
+<p>Finally, just update the global time in a last job.</p>
+<div class="highlight"><pre><span></span><code>ComputeTn: t^{n+1} = t^{n} + δt;
+</code></pre></div>
+<p>The algorithm representing the problem to solve is now complete. the last task consists in defining the global application.</p>
+<h2 id="defining-the-application">Defining the application</h2>
+<p>The application must be defined in the <em>HeatEquation.ngen</em> file. Edit it by double-clicking on the file name in the explorer.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <em>ngen</em> file already exists in the project: it has been created by the wizard. If you need to create this <em>ngen</em> file on an existing project, NabLab provides a code generator for that: right-click on the <em>HeatEquation.n</em> file and select the <em>Generate nablagen file</em> menu. </p>
+</div>
+<p>A full description of the language is available in the <a href="../ngenlanguage">reference documentation</a>. </p>
+<h3 id="global-parameters">Global parameters</h3>
+<p>The application must identify its main module which will control the simulation time loop. </p>
+<p>Some parameters have to be fixed like the mesh class name and the variables representing the node coordinates, the time and time step of the simulation and the maximum time and time step of the simulation. </p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>All keywords and references to NabLab variables are available by contextual code completion with <code>CTRL-Space</code> keys.</p>
+</div>
+<div class="highlight"><pre><span></span><code>MainModule HeatEquation heatEquation
+{
+    nodeCoord = X;
+    time = t;
+    timeStep = δt;
+    iterationMax = maxIterations;
+    timeMax = stopTime;
+}
+</code></pre></div>
+<h3 id="vtk-output">VTK output</h3>
+<p>NabLab provides a <a href="https://vtk.org/Wiki/ParaView/Data_formats#PVD_File_Format">PVD</a> file format serializer, a <a href="https://vtk.org/">VTK</a> compatible file format. To configure  this serializer add the block below. </p>
+<div class="highlight"><pre><span></span><code>VtkOutput
+{
+    periodReferenceVariable = heatEquation.n;
+    outputVariables = heatEquation.u as &quot;Temperature&quot;;
+}
+</code></pre></div>
+<p>The <code>periodReferenceVariable</code> field defines the module variable used as a reference for the frequency of the outputs, here the iteration number <code>n</code>. The <code>outputVariables</code> field defines the list of nodes and cells variables to write in the output file. The name after the <code>as</code> keyword is the name displayed by <a href="https://www.paraview.org/">Paraview</a>.</p>
+<p>The <code>outputPath</code> and <code>outputPeriod</code> can be set in the <em>json</em> data file.</p>
+<h3 id="generation-target">Generation target</h3>
+<p>To configure generation, create a generation block, for example for the <code>StlThread</code> target.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Other generation target are available by code completion with <code>CTRL-Space</code> key or in the <a href="../ngenlanguage/#configuring-generation">ngen reference documentation</a>.</p>
+</div>
+<div class="highlight"><pre><span></span><code>StlThread
+{
+    outputPath = &quot;/Tutorial/src-gen-cpp/stl-thread&quot;;
+    CMAKE_CXX_COMPILER = &quot;/usr/bin/g++&quot;;
+}
+</code></pre></div>
+<p>For C++ targets, provide the path to the desired compiler into the <code>CMAKE_CXX_COMPILER</code> variable.</p>
+<h2 id="jobs-sequence">Jobs sequence</h2>
+<p>NabLab computes the data flow of the application to define the job execution rank. To see the computed graph of jobs, display the <em>HeatEquation.ngen</em> file in the editor and press the <code>F2</code> key.</p>
+<p><img src="img/NabLab_heatequation_job_graph.png" alt="NabLab Job Graph" title="NabLab Job Graph" width="80%" height="80%" /></p>
+<p>To see jobs composing the time loop, double-click on <em>HeatEquation::ExecuteTimeLoopN</em> job. Input and output variables of a job are displayed in puttingthe mouse over a job.</p>
+<p><img src="img/NabLab_heatequation_time_loop_job_graph.png" alt="NabLab Time Loop Job Graph" title="NabLab Time Loop Job Graph" width="80%" height="80%" /></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A quick representation of the graph is available in the <em>Job Graph View</em> tab under the editor by pressing the <code>F1</code> key (instead of <code>F2</code> for the complete editor).</p>
+</div>
+<h2 id="generation">Generation</h2>
+<p>To launch code generation, just right-click on the <em>HeatEquation.ngen</em> file and select <em>Generate Code</em></p>
+<p><img src="img/NabLab_generate_code.png" alt="NabLab Generate Code" title="NabLab Generate Code" width="50%" height="50%" /></p>
+<p>C++ source code files <em>HeatEquation.h</em> and <em>HeatEquation.cc</em> are generated in the <em>src-gen-cpp/stl-thread</em> folder. A <em>CMakeLists.txt</em> file is also generated to compile the application. A LaTeX file containing the content of the jobs and an example of json data file are also generated in the <em>src-gen</em> folder. The list of generated files are displayed in the NabLab console.</p>
+<p><img src="img/NabLab_generation_msg.png" alt="NabLab Generation Messages" title="NabLab Generation Messages" width="80%" height="80%" /></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A good practice is to name <em>src-gen</em> a directory containing only generated code.</p>
+</div>
+<h2 id="compilation">Compilation</h2>
+<p>To build the application, go into the generation directory containing the <em>CMakeLists.txt</em> generated file i. e. <code>/Tutorial/src-gen-cpp/stl-thread/heatequation</code> and enter the following commands:</p>
+<p><div class="highlight"><pre><span></span><code>mkdir build
+<span class="nb">cd</span> build
+cmake ..
+cmake --build .
+</code></pre></div>
+After the compilation of the application, a <em>heatequation</em> executable is available in the <em>build</em> directory.</p>
+<h2 id="execution">Execution</h2>
+<p>To execute the application, a data file is needed. NabLab generates a template named <em>HeatEquationDefault.json</em> in the <em>src-gen</em> directory. Copy this file, paste it in the <em>src</em> directory, rename it <em>HeatEquation.json</em> (select the file in the explorer and press <code>F2</code> key) and double-click on it in the explorer to open the json editor.</p>
+<p>Remove the comment line, the file is no more generated, and add a mesh block as follows:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+    <span class="nt">&quot;heatEquation&quot;</span><span class="p">:</span>
+    <span class="p">{</span>
+        <span class="nt">&quot;_outputPath_comment&quot;</span><span class="p">:</span><span class="s2">&quot;empty outputPath to disable output&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;outputPath&quot;</span><span class="p">:</span><span class="s2">&quot;output&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;outputPeriod&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span>
+        <span class="nt">&quot;stopTime&quot;</span><span class="p">:</span><span class="mf">0.1</span><span class="p">,</span>
+        <span class="nt">&quot;maxIterations&quot;</span><span class="p">:</span><span class="mi">500</span><span class="p">,</span>
+        <span class="nt">&quot;PI&quot;</span><span class="p">:</span><span class="mf">3.1415926</span><span class="p">,</span>
+        <span class="nt">&quot;alpha&quot;</span><span class="p">:</span><span class="mf">1.0</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;mesh&quot;</span><span class="p">:</span>
+    <span class="p">{</span>
+        <span class="nt">&quot;nbXQuads&quot;</span><span class="p">:</span><span class="mi">20</span><span class="p">,</span>
+        <span class="nt">&quot;nbYQuads&quot;</span><span class="p">:</span><span class="mi">20</span><span class="p">,</span>
+        <span class="nt">&quot;xSize&quot;</span><span class="p">:</span><span class="mf">0.1</span><span class="p">,</span>
+        <span class="nt">&quot;ySize&quot;</span><span class="p">:</span><span class="mf">0.1</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The application can then be executed. In the <em>build</em> directory, enter the following command:</p>
+<div class="highlight"><pre><span></span><code>./heatequation ../../../../src/heatequation/HeatEquation.json
+</code></pre></div>
+<h2 id="vizualizing-results">Vizualizing results</h2>
+<p>The <code>outputPeriod</code> value is set two <em>1</em> in the <em>HeatEquation.json</em> and the <code>outputPath</code> value is <em>output</em>. Consequently, an output directory has been created and it contains a VTP file for each time step and a PVD file named *HeatEquation.pvd". The results can be visualize in Paraview with the following command:</p>
+<div class="highlight"><pre><span></span><code>paraview output/HeatEquation.pvd
+</code></pre></div>
+<p><img src="img/NabLab_paraview.png" alt="NabLab Paraview" title="NabLab Paraview" width="100%" height="100%" /></p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../gettingstarted/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Getting started" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Getting started
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../firstextension/" class="md-footer__link md-footer__link--next" aria-label="Next: My first extension" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              My first extension
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Copyright &copy; 2021 CEA
+          </div>
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+        
+      </div>
+      
+  <div class="md-footer-social">
+    
+      
+      
+        
+        
+      
+      <a href="https://github.com/cea-hpc/NabLab" target="_blank" rel="noopener" title="github.com" class="md-footer-social__link">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+      </a>
+    
+  </div>
+
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.477d984a.min.js", "version": "0.4.0"}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.ddd52ceb.min.js"></script>
+      
+        <script src="../javascripts/config.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

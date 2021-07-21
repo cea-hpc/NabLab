@@ -1,0 +1,722 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="This is the documentation website of NabLab project">
+      
+      
+      
+        <meta name="author" content="Benoit Lelandais">
+      
+      
+        <link rel="canonical" href="https://cea-hpc.github.io/NabLab/ngenlanguage/">
+      
+      <link rel="icon" href="../img/logo_512.png">
+      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.1.11">
+    
+    
+      
+        <title>Ngen language reference - NabLab documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.3754935a.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.f1a3b89f.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#4051b5">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+    
+      
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="orange">
+  
+    
+    <script>function __prefix(e){return new URL("..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ngen-language" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="NabLab documentation" class="md-header__button md-logo" aria-label="NabLab documentation" data-md-component="logo">
+      
+  <img src="../img/logo_512.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            NabLab documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Ngen language reference
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="NabLab documentation" class="md-nav__button md-logo" aria-label="NabLab documentation" data-md-component="logo">
+      
+  <img src="../img/logo_512.png" alt="logo">
+
+    </a>
+    NabLab documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        What is NabLab
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gettingstarted/" class="md-nav__link">
+        Getting started
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../firstmodule/" class="md-nav__link">
+        My first module
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../firstextension/" class="md-nav__link">
+        My first extension
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modulecomposition/" class="md-nav__link">
+        Composing modules
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../debug/" class="md-nav__link">
+        Monitoring and debugging
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nablablanguage/" class="md-nav__link">
+        NabLab language reference
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Ngen language reference
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Ngen language reference
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#application" class="md-nav__link">
+    Application
+  </a>
+  
+    <nav class="md-nav" aria-label="Application">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#main-module-identification" class="md-nav__link">
+    Main module identification
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vtk-output" class="md-nav__link">
+    VTK output
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dump-variables" class="md-nav__link">
+    Dump variables
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuring-interpretation" class="md-nav__link">
+    Configuring interpretation
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuring-generation" class="md-nav__link">
+    Configuring generation
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#provider" class="md-nav__link">
+    Provider
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docker/" class="md-nav__link">
+        Docker integration
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#application" class="md-nav__link">
+    Application
+  </a>
+  
+    <nav class="md-nav" aria-label="Application">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#main-module-identification" class="md-nav__link">
+    Main module identification
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vtk-output" class="md-nav__link">
+    VTK output
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dump-variables" class="md-nav__link">
+    Dump variables
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuring-interpretation" class="md-nav__link">
+    Configuring interpretation
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuring-generation" class="md-nav__link">
+    Configuring generation
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#provider" class="md-nav__link">
+    Provider
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="ngen-language">Ngen language</h1>
+<p>A ngen file, extension <code>ngen</code>, defines an <code>Application</code> or n (or several) <code>ExtensionProvider</code>.
+An <code>Application</code> reference a <code>module</code> while  an <code>ExtensionProvider</code> references an <code>extension</code>.</p>
+<h2 id="application">Application</h2>
+<p>The application is identified by a name starting with an upper case.</p>
+<div class="highlight"><pre><span></span><code>Application Glace2d;
+</code></pre></div>
+<h3 id="main-module-identification">Main module identification</h3>
+<p>The first part of the <em>ngen</em> file identifies the main module of the application. It is defined by a reference to a NabLab module and a name. It must provide some additional parameters useful for code interpretation/generation:</p>
+<ul>
+<li><code>nodeCoord</code> identifies the NabLab variable representing node coordinates.</li>
+<li><code>time</code>, <code>timeStep</code>, <code>iterationMax</code> and <code>timeMax</code> identifies respectively the NabLab variables representing the time of the simulation, the timeStep of the simulation, the maximum number of iterations of the main time loop and the maximum time of the simulation.</li>
+</ul>
+<div class="highlight"><pre><span></span><code>MainModule Glace2d glace2d
+{
+    nodeCoord = X;
+    time = t;
+    timeStep = δt;
+    iterationMax = maxIterations;
+    timeMax = stopTime;
+}
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code>iterationMax</code> and <code>timeMax</code> variables are mandatory for C++ code generation, optional otherwise.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Code completion is available with <em>CTRL-space</em> for all module and variable references.</p>
+</div>
+<h3 id="vtk-output">VTK output</h3>
+<p>NabLab provides a <a href="https://vtk.org/Wiki/ParaView/Data_formats#PVD_File_Format">PVD</a> file format serializer, a <a href="https://vtk.org/">VTK</a> compatible file format. The next block of the <em>ngen</em> file aims at configuring this serializer. It is an optional block. The <code>periodReferenceVariable</code> field defines the module variable used as a reference for the frequency of the outputs. Most of the time, it is the iteration number (often named <code>n</code>) or the time of the simulation (often named <code>t</code>). The <code>outputVariables</code> field defines the list of nodes and cells variables to write in the output file. The name after the <code>as</code> keyword is the name displayed by <a href="https://www.paraview.org/">Paraview</a>.</p>
+<div class="highlight"><pre><span></span><code>VtkOutput
+{
+    periodReferenceVariable = glace2d.n;
+    outputVariables = glace2d.ρ as &quot;Density&quot;;
+}
+</code></pre></div>
+<p>When the <code>VtkOutput</code>block exists in the <em>ngen</em> file, two options must appear in the Json data file: <code>outputPath</code> and <code>outputPeriod</code> representing respectively the VTK output directory and the frequency period of the output. For example, for an <code>outputPeriod</code> of 1 and a <code>periodReferenceVariable</code> of <code>n</code>, VTK files will be written at each iteration of the simulation.</p>
+<p>Here is the VTK part of the default generated Json file (in <code>src-gen</code> directory):</p>
+<div class="highlight"><pre><span></span><code>&quot;_outputPath_comment&quot;:&quot;empty outputPath to disable output&quot;,
+&quot;outputPath&quot;:&quot;output&quot;,
+&quot;outputPeriod&quot;:1,
+</code></pre></div>
+<h3 id="dump-variables">Dump variables</h3>
+<p>NabLab provides a mechanism to dump variable values. It uses the LevelDB library for <a href="https://github.com/dain/leveldb">Java</a> and <a href="https://github.com/google/leveldb">C++</a>.
+The Java LevelDB library is included in the NabLab environment. To use the C++ one, you have to download and install it on your computer. </p>
+<p>To trigger the dump of all variables (except linear algebra ones) of your code, add a <code>LevelDB</code> block. In addition to that, in case of C++ generation, provide the path to the LevelDB installation.</p>
+<div class="highlight"><pre><span></span><code>LevelDB
+{
+    leveldb_ROOT = &quot;$ENV{HOME}/leveldb/install&quot;;
+}
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code>leveldb_ROOT</code> value supports CMake syntax like <code>$ENV{HOME}</code> in the example above.</p>
+</div>
+<p>When the <code>LevelDB</code>block exists in the <em>ngen</em> file, the <code>nonRegression</code> option must appear in the Json data file. If its value is <code>CreateReference</code>, variables are dumped in a directory named <em>ApplicationNameDB.ref</em>. If its value is <code>CompareToReference</code>, variables are dumped in a directory named <em>Application NameDB.current</em> and are compared to variables stored in <em>ApplicationNameDB.ref</em>.</p>
+<div class="highlight"><pre><span></span><code>&quot;_nonRegression_comment&quot;:&quot;empty value to disable, CreateReference or CompareToReference to take action&quot;,
+&quot;nonRegression&quot;:&quot;&quot;
+</code></pre></div>
+<h3 id="configuring-interpretation">Configuring interpretation</h3>
+<p>Interpreter needs to be configured only if you use an extension with no <em>Java</em> provider. See the extension section for details.</p>
+<h3 id="configuring-generation">Configuring generation</h3>
+<p>To configure generation, create as many generation blocks as desired generation targets.</p>
+<p>Possible targets are:</p>
+<ul>
+<li><code>Java</code> for a multi-threaded <a href="https://docs.oracle.com/javase/specs/jls/se14/html/index.html">Java</a> code,</li>
+<li><code>Kokkos</code> for a <a href="https://github.com/kokkos">Kokkos</a> multi-threaded C++ code based on Open MP, </li>
+<li><code>KokkosTeamThread</code> for a <a href="https://github.com/kokkos">Kokkos</a> hierarchical multi-threaded C++ code with team of threads,</li>
+<li><code>OpenMP</code> for an <a href="https://www.openmp.org/">Open MP</a> multi-threaded C++ code,</li>
+<li><code>CppSequential</code> for a sequential C++ code,</li>
+<li><code>StlThread</code> for a multi-threaded C++ code based on an STL threads API provided by the NabLab library.</li>
+</ul>
+<p>Here is an example of a generation block:</p>
+<div class="highlight"><pre><span></span><code>Kokkos
+{
+    outputPath = &quot;/NabLabExamples/src-gen-cpp/kokkos&quot;;
+    CMAKE_CXX_COMPILER = &quot;/usr/bin/g++&quot;;
+    Kokkos_ROOT = &quot;$ENV{HOME}/kokkos/install&quot;;
+}
+</code></pre></div>
+<p>All targets have to define the <code>outputPath</code> of the generation and a set of variables which will be reported in the <em>CMakeLists.txt</em> file.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A good practice is to name "src-gen" a directory containing only generated code.</p>
+</div>
+<p>For <code>Kokkos</code>, <code>KokkosTeamThread</code>, the Kokkos library has to be installed and the path to the library has to be provided is the <code>Kokkos_ROOT</code> variable.
+Moreover, if linear algebra is used, <code>KokkosKernels_ROOT</code> variable must be set to Kokkos Kernels installation directory.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Variables can use CMake syntax in their value like <code>$ENV{HOME}</code> for path in the example above.</p>
+</div>
+<h2 id="provider">Provider</h2>
+<p>A NabLab module can import some extensions. Those extensions contain some functions. Some of them can be <em>external functions</em> i.e. functions with just a signature definition and no body. In this case, these <em>external functions</em> are defined in a native language, for example C++.</p>
+<p>To connect definitions to signatures, providers have to be defined:</p>
+<ul>
+<li>some glue code must be written,</li>
+<li>providers have to be declared in a <em>ngen</em> file.</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>NabLab offers a code generator to initialize the glue code and the <em>ngen</em> file for extension providers. See <a href="../firstextension">My first extension</a> for that.</p>
+</div>
+<p>Most of the time, all providers of an extension are declared in the same <em>ngen</em> file. For example, for <em>linearalgebra</em> extension part of the NabLab library, defined in the <em>linearalgebra.n</em> file, a <em>linearalgebra.ngen</em> file contains the providers.</p>
+<div class="highlight"><pre><span></span><code>Provider LinearAlgebraStl : LinearAlgebra
+{
+    target = StlThread;
+    compatibleTargets = CppSequential, OpenMP;
+    outputPath = &quot;/.nablab/linearalgebra&quot;;
+}
+
+Provider LinearAlgebraKokkos : LinearAlgebra
+{
+    target = Kokkos;
+    compatibleTargets = KokkosTeamThread;
+    outputPath = &quot;/.nablab/linearalgebra&quot;;
+}
+
+Provider LinearAlgebraJava : LinearAlgebra
+{
+    target = Java;
+    outputPath = &quot;/.nablab/linearalgebra&quot;;
+}
+</code></pre></div>
+<p>A provider is defined by its name and the extension it implements (after the <code>:</code> character).
+The provider block is composed of:</p>
+<ul>
+<li><code>target</code> defining which generation target the provider implements.</li>
+<li><code>compatibleTargets</code>, an optional field, representing a list of generation targets compatible with the <code>target</code> previously defined. In the above <code>LinearAlgebraKokkos</code> example, the <code>target</code> indicates that the provider's source code is designed for a multi-threaded C++ Kokkos source code. The <code>compatibleTargets</code> indicates that a caller generated with a <code>KokkosTeamThread</code> target can use this provider.</li>
+<li><code>outputPath</code> containing the directory of the providers's source code.</li>
+</ul>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../nablablanguage/" class="md-footer__link md-footer__link--prev" aria-label="Previous: NabLab language reference" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              NabLab language reference
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../docker/" class="md-footer__link md-footer__link--next" aria-label="Next: Docker integration" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Docker integration
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Copyright &copy; 2021 CEA
+          </div>
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+        
+      </div>
+      
+  <div class="md-footer-social">
+    
+      
+      
+        
+        
+      
+      <a href="https://github.com/cea-hpc/NabLab" target="_blank" rel="noopener" title="github.com" class="md-footer-social__link">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+      </a>
+    
+  </div>
+
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.477d984a.min.js", "version": "0.4.0"}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.ddd52ceb.min.js"></script>
+      
+        <script src="../javascripts/config.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

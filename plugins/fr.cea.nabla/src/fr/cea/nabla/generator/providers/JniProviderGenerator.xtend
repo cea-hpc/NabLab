@@ -13,10 +13,8 @@ import fr.cea.nabla.generator.StandaloneGeneratorBase
 import fr.cea.nabla.ir.UnzipHelper
 import fr.cea.nabla.ir.generator.CMakeUtils
 import fr.cea.nabla.ir.generator.GenerationContent
-import fr.cea.nabla.ir.generator.cpp.CMakeContentProvider
 import fr.cea.nabla.ir.generator.jni.Jniable
 import fr.cea.nabla.ir.ir.DefaultExtensionProvider
-import fr.cea.nabla.ir.ir.ExtensionProvider
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.nablagen.Target
 import fr.cea.nabla.nablagen.TargetVar
@@ -30,7 +28,7 @@ import static extension fr.cea.nabla.ir.IrRootExtensions.*
 
 class JniProviderGenerator extends StandaloneGeneratorBase
 {
-	val providers = new HashSet<ExtensionProvider>
+	val providers = new HashSet<DefaultExtensionProvider>
 
 	def transformProvider(Jniable jniContentProvider, DefaultExtensionProvider provider, String wsPath, String targetOutputPath, boolean generate)
 	{
@@ -60,7 +58,7 @@ class JniProviderGenerator extends StandaloneGeneratorBase
 			// Set WS_PATH variables in CMake and unzip NRepository if necessary
 			val cMakeVars = new LinkedHashSet<Pair<String, String>>
 			target.variables.forEach[x | cMakeVars += new Pair(x.key, x.value)]
-			cMakeVars += new Pair(CMakeContentProvider.WS_PATH, wsPath)
+			cMakeVars += new Pair(CMakeUtils.WS_PATH, wsPath)
 			UnzipHelper::unzipNRepository(wsPath)
 
 			val content = new GenerationContent('CMakeLists.txt', getCMakeContent(ir.name, wsPath, target.variables), false)
@@ -72,14 +70,14 @@ class JniProviderGenerator extends StandaloneGeneratorBase
 	'''
 		«CMakeUtils.getFileHeader(false)»
 
-		«CMakeUtils.setVariables(getNeededVariables(wsPath, variables), providers.filter(DefaultExtensionProvider))»
+		«CMakeUtils.setVariables(getNeededVariables(wsPath, variables), providers)»
 
 		# PROJECT
 		project(«projectName»Project CXX)
 
 		«CMakeUtils.checkCompiler»
 
-		«CMakeUtils.addSubDirectories(false, providers.filter(DefaultExtensionProvider))»
+		«CMakeUtils.addSubDirectories(false, providers)»
 
 		«CMakeUtils.fileFooter»
 	'''
@@ -87,7 +85,7 @@ class JniProviderGenerator extends StandaloneGeneratorBase
 	private def getNeededVariables(String wsPath, Iterable<TargetVar> variables)
 	{
 		val neededVars = new ArrayList<Pair<String, String>>
-		neededVars += new Pair(CMakeContentProvider.WS_PATH, wsPath)
+		neededVars += new Pair(CMakeUtils.WS_PATH, wsPath)
 		variables.forEach[x | neededVars += new Pair(x.key, x.value)]
 		return neededVars
 	}

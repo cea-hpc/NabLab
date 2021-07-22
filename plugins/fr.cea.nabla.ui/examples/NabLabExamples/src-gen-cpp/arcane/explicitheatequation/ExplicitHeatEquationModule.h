@@ -5,6 +5,7 @@
 
 #include <arcane/utils/Array.h>
 #include "ExplicitHeatEquation_axl.h"
+#include "CartesianMesh2DHelper.h"
 
 using namespace Arcane;
 
@@ -49,6 +50,9 @@ private:
 	void initU();
 	void setUpTimeLoopN();
 	void computeAlphaCoeff();
+
+private:
+	CartesianMesh2DHelper* m_mesh;
 };
 
 #endif

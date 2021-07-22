@@ -268,22 +268,13 @@ public interface IrPackage extends EPackage {
 	int IR_ROOT__PROVIDERS = IR_ANNOTABLE_FEATURE_COUNT + 11;
 
 	/**
-	 * The feature id for the '<em><b>Mesh</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int IR_ROOT__MESH = IR_ANNOTABLE_FEATURE_COUNT + 12;
-
-	/**
 	 * The number of structural features of the '<em>Root</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int IR_ROOT_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 13;
+	int IR_ROOT_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 12;
 
 	/**
 	 * The number of operations of the '<em>Root</em>' class.
@@ -4514,17 +4505,6 @@ public interface IrPackage extends EPackage {
 	EReference getIrRoot_Providers();
 
 	/**
-	 * Returns the meta object for the containment reference '{@link fr.cea.nabla.ir.ir.IrRoot#getMesh <em>Mesh</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference '<em>Mesh</em>'.
-	 * @see fr.cea.nabla.ir.ir.IrRoot#getMesh()
-	 * @see #getIrRoot()
-	 * @generated
-	 */
-	EReference getIrRoot_Mesh();
-
-	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.IrModule <em>Module</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -6745,14 +6725,6 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EReference IR_ROOT__PROVIDERS = eINSTANCE.getIrRoot_Providers();
-
-		/**
-		 * The meta object literal for the '<em><b>Mesh</b></em>' containment reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference IR_ROOT__MESH = eINSTANCE.getIrRoot_Mesh();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.IrModuleImpl <em>Module</em>}' class.

@@ -12,7 +12,6 @@ package fr.cea.nabla.ir.generator.jni
 import fr.cea.nabla.ir.generator.CMakeUtils
 import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.generator.Utils
-import fr.cea.nabla.ir.generator.cpp.CMakeContentProvider
 import fr.cea.nabla.ir.generator.java.FunctionContentProvider
 import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import java.util.ArrayList
@@ -206,7 +205,7 @@ class JniProviderGenerator
 	'''
 	«CMakeUtils::getFileHeader(true)»
 
-	«CMakeUtils.checkVariables(#[CMakeContentProvider.WS_PATH, 'JAVA_HOME'])»
+	«CMakeUtils.checkVariables(#[CMakeUtils.WS_PATH, 'JAVA_HOME'])»
 
 	«CMakeUtils.setVariables(#[], #[cppProvider])»
 

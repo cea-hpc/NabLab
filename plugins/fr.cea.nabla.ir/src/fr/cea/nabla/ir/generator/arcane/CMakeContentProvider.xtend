@@ -16,23 +16,28 @@ import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 
 class CMakeContentProvider
 {
-	static def getContent(IrRoot it, String arcaneDir)
+	static def getContent(IrRoot it, Iterable<Pair<String, String>> variables)
 	'''
-	cmake_minimum_required(VERSION 3.15)
+	«CMakeUtils.getFileHeader(false)»
+
+	«CMakeUtils.setVariables(variables, #[])»
+
+	«CMakeUtils.checkVariables(#[CMakeUtils.WS_PATH, "Arcane_ROOT"])»
 
 	project(«name» LANGUAGES CXX)
 
-	set(Arcane_ROOT «arcaneDir»)
-
 	find_package(Arcane REQUIRED)
+
+	«CMakeUtils.addSubDirectories(true, #[])»
 
 	add_executable(«name»«FOR m : modules» «ArcaneUtils.getModuleName(m)».cc «m.className»_axl.h«ENDFOR» main.cc)
 
 	«FOR m : modules»
 	arcane_generate_axl(«m.className»)
 	«ENDFOR»
-	arcane_add_arcane_libraries_to_target(«name»)
-	target_include_directories(ExplicitHeatEquation PUBLIC . ${CMAKE_CURRENT_BINARY_DIR})
+	#arcane_add_arcane_libraries_to_target(«name»)
+	target_link_libraries(«name» PRIVATE arcane_full nablalib)
+	target_include_directories(«name» PUBLIC . ${CMAKE_CURRENT_BINARY_DIR})
 
 	«CMakeUtils.fileFooter»
 	'''

@@ -9,9 +9,10 @@
  *******************************************************************************/
 package fr.cea.nabla.ir
 
-import fr.cea.nabla.ir.ir.DefaultExtensionProvider
+import fr.cea.nabla.ir.ir.ExtensionProvider
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
+import fr.cea.nabla.ir.ir.MeshExtensionProvider
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 
@@ -35,11 +36,12 @@ class IrModuleExtensions
 
 	static def getMeshClassName(IrModule it)
 	{
-		val root = eContainer as IrRoot
-		root.mesh.extensionName
+		val meshProviders = providers.filter(MeshExtensionProvider)
+		if (meshProviders.empty) "UnknowMesh"
+		else meshProviders.head.extensionName
 	}
-
-	static def DefaultExtensionProvider[] getValidExtensionProviders(IrModule it)
+ 
+	static def ExtensionProvider[] getValidExtensionProviders(IrModule it)
 	{
 		providers.filter[x | !x.providerName.nullOrEmpty]
 	}

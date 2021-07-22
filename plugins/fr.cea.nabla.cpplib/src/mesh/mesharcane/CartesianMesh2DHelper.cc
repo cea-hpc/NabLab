@@ -9,9 +9,9 @@
  *******************************************************************************/
 #include "CartesianMesh2DHelper.h"
 
-#include "arcane/ItemGroup.h"
-#include "arcane/IItemFamily.h"
-#include "arcane/mesh/IncrementalItemConnectivity.h"
+#include <arcane/ItemGroup.h>
+#include <arcane/IItemFamily.h>
+#include <arcane/mesh/IncrementalItemConnectivity.h>
 
 CartesianMesh2DHelper*
 CartesianMesh2DHelper::createInstance(IMesh* mesh)
@@ -51,6 +51,25 @@ CartesianMesh2DHelper::CartesianMesh2DHelper(IMesh* mesh)
 	}
 
 	m_neighbour_cells = cn->connectivityView();
+}
+
+
+CellGroup
+CartesianMesh2DHelper::getCells() const
+{
+	return m_mesh->allCells();
+}
+
+NodeGroup
+CartesianMesh2DHelper::getNodes() const
+{
+	return m_mesh->allNodes();
+}
+
+FaceGroup
+CartesianMesh2DHelper::getFaces() const
+{
+	return m_mesh->allFaces();
 }
 
 ItemLocalIdView<Node>

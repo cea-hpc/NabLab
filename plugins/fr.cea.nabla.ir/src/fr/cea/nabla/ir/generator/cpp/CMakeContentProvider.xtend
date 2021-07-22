@@ -19,14 +19,13 @@ import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.getClassName
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.getExecName
+import fr.cea.nabla.ir.ir.ExtensionProvider
 
 class CMakeContentProvider
 {
-	public static val WS_PATH = 'N_WS_PATH'
-
 	protected def Iterable<String> getNeededVariables()
 	{
-		#[WS_PATH]
+		#[CMakeUtils.WS_PATH]
 	}
 
 	protected def CharSequence getFindPackageContent(IrRoot irRoot)
@@ -102,7 +101,10 @@ class CMakeContentProvider
 
 	private def getExternalProviders(IrRoot it)
 	{
-		providers.filter(DefaultExtensionProvider).filter[x | x.extensionName != "Math"]
+		val externalProviders = new LinkedHashSet<ExtensionProvider>
+		externalProviders += mesh
+		externalProviders += providers.filter[x | x.extensionName != "Math"]
+		return externalProviders
 	}
 }
 

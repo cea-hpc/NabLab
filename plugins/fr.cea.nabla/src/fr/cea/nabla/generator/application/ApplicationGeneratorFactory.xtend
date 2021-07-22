@@ -28,7 +28,12 @@ class ApplicationGeneratorFactory
 		switch target.type
 		{
 			case JAVA: new JavaApplicationGenerator(application.levelDB !== null)
-			case ARCANE: new ArcaneApplicationGenerator(target.variables.findFirst[x | x.key == "Arcane_DIR"].value)
+			case ARCANE:
+			{
+				val cmakeVars = new ArrayList<Pair<String, String>>
+				target.variables.forEach[x | cmakeVars += x.key -> x.value]
+				new ArcaneApplicationGenerator(wsPath, cmakeVars)
+			}
 			default:
 			{
 				val backend = backendFactory.getCppBackend(target.type)

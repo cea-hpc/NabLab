@@ -55,6 +55,9 @@ Real prodR0(Real a, Real b)
 
 void ExplicitHeatEquationModule::init()
 {
+	// mesh initialisation
+	m_mesh = CartesianMesh2DHelper::create(mesh);
+
 	computeFaceLength(); // @1.0
 	computeV(); // @1.0
 	initD(); // @1.0
@@ -83,12 +86,12 @@ void ExplicitHeatEquationModule::compute()
  */
 void ExplicitHeatEquationModule::computeFaceLength()
 {
-	Parallel::Foreach(allFaces(), [&](FaceVectorView view)
+	arcaneParallelForeach(m_mesh->getFaces(), [&](FaceVectorView view)
 	{
 		ENUMERATE_FACE(f, view)
 		{
 			Real reduction0(0.0);
-			ENUMERATE_NODE(p, f->nodes())
+			for (NodeLocalId p : m_mesh->getNodesOfFace(f))
 			{
 				reduction0 = explicitheatequationfreefuncs::sumR0(reduction0, explicitheatequationfreefuncs::norm(m_x[p] - m_x[p]));
 			}
@@ -114,12 +117,12 @@ void ExplicitHeatEquationModule::computeTn()
  */
 void ExplicitHeatEquationModule::computeV()
 {
-	Parallel::Foreach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(m_mesh->getCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(c, view)
 		{
 			Real reduction0(0.0);
-			ENUMERATE_NODE(p, c->nodes())
+			for (NodeLocalId p : m_mesh->getNodesOfCell(c))
 			{
 				reduction0 = explicitheatequationfreefuncs::sumR0(reduction0, explicitheatequationfreefuncs::det(m_x[p], m_x[p]));
 			}
@@ -135,7 +138,7 @@ void ExplicitHeatEquationModule::computeV()
  */
 void ExplicitHeatEquationModule::initD()
 {
-	Parallel::Foreach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(m_mesh->getCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(c, view)
 		{
@@ -161,12 +164,12 @@ void ExplicitHeatEquationModule::initTime()
  */
 void ExplicitHeatEquationModule::initXc()
 {
-	Parallel::Foreach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(m_mesh->getCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(c, view)
 		{
 			Real2 reduction0({0.0, 0.0});
-			ENUMERATE_NODE(p, c->nodes())
+			for (NodeLocalId p : m_mesh->getNodesOfCell(c))
 			{
 				reduction0 = explicitheatequationfreefuncs::sumR1(reduction0, m_x[p]);
 			}
@@ -182,12 +185,12 @@ void ExplicitHeatEquationModule::initXc()
  */
 void ExplicitHeatEquationModule::updateU()
 {
-	Parallel::Foreach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(m_mesh->getCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(c, view)
 		{
 			Real reduction0(0.0);
-			ENUMERATE_CELL(d, c->getNeighbourCells())
+			for (CellLocalId d : m_mesh->getNeighbourCells(c))
 			{
 				reduction0 = explicitheatequationfreefuncs::sumR0(reduction0, m_alpha[c][d] * m_u_n[d]);
 			}
@@ -204,7 +207,7 @@ void ExplicitHeatEquationModule::updateU()
 void ExplicitHeatEquationModule::computeDeltaTn()
 {
 	Real reduction0(numeric_limits<double>::max());
-	ENUMERATE_CELL(c, allCells())
+	for (CellLocalId c : m_mesh->getCells())
 	{
 		reduction0 = explicitheatequationfreefuncs::minR0(reduction0, m_v[c] / m_d[c]);
 	}
@@ -218,17 +221,17 @@ void ExplicitHeatEquationModule::computeDeltaTn()
  */
 void ExplicitHeatEquationModule::computeFaceConductivity()
 {
-	Parallel::Foreach(allFaces(), [&](FaceVectorView view)
+	arcaneParallelForeach(m_mesh->getFaces(), [&](FaceVectorView view)
 	{
 		ENUMERATE_FACE(f, view)
 		{
 			Real reduction0(1.0);
-			ENUMERATE_CELL(c1, f->cells())
+			for (CellLocalId c1 : m_mesh->getCellsOfFace(f))
 			{
 				reduction0 = explicitheatequationfreefuncs::prodR0(reduction0, m_d[c1]);
 			}
 			Real reduction1(0.0);
-			ENUMERATE_CELL(c2, f->cells())
+			for (CellLocalId c2 : m_mesh->getCellsOfFace(f))
 			{
 				reduction1 = explicitheatequationfreefuncs::sumR0(reduction1, m_d[c2]);
 			}
@@ -244,7 +247,7 @@ void ExplicitHeatEquationModule::computeFaceConductivity()
  */
 void ExplicitHeatEquationModule::initU()
 {
-	Parallel::Foreach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(m_mesh->getCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(c, view)
 		{
@@ -273,12 +276,12 @@ void ExplicitHeatEquationModule::setUpTimeLoopN()
  */
 void ExplicitHeatEquationModule::computeAlphaCoeff()
 {
-	Parallel::Foreach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(m_mesh->getCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(c, view)
 		{
 			Real alphaDiag(0.0);
-			ENUMERATE_CELL(d, c->getNeighbourCells())
+			for (CellLocalId d : m_mesh->getNeighbourCells(c))
 			{
 				const Real alphaExtraDiag(m_deltat / m_v[c] * (m_face_length[f] * m_face_conductivity[f]) / explicitheatequationfreefuncs::norm(m_xc[c] - m_xc[d]));
 				m_alpha[c][d] = alpha_extra_diag;

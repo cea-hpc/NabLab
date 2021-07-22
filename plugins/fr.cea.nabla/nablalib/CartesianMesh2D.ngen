@@ -12,9 +12,17 @@ Provider CartesianMesh2DCpp : CartesianMesh2D
 {
 	target = CppSequential;
 	compatibleTargets = StlThread, OpenMP, Kokkos, KokkosTeamThread;
+	outputPath = "/.nablab/mesh";
+}
+
+Provider CartesianMesh2DArcane : CartesianMesh2D
+{
+	target = Arcane;
+	outputPath = "/.nablab/mesh";
 }
 
 Provider CartesianMesh2DJava : CartesianMesh2D
 {
 	target = Java;
+	outputPath = "/.nablab/mesh";
 }

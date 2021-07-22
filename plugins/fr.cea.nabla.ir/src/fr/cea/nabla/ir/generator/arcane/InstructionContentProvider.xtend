@@ -148,7 +148,7 @@ class InstructionContentProvider
 
 	private static def getSequentialLoopContent(Iterator iterator, Instruction loopBody)
 	'''
-		ENUMERATE_«iterator.container.itemType.name.toUpperCase»(«iterator.index.itemName», «getContainerCall(iterator.container)»)
+		for («iterator.container.itemType.name.toFirstUpper»LocalId «iterator.index.itemName» : «getContainerCall(iterator.container)»)
 		{
 			«loopBody.innerContent»
 		}
@@ -167,13 +167,7 @@ class InstructionContentProvider
 		switch c
 		{
 			SetRef: c.uniqueName
-			ConnectivityCall:
-			{
-				if (c.args.size == 1)
-					'''«c.args.head.itemName»->«c.connectivity.name»()'''
-				else
-					'''«c.connectivity.name»(«c.args.map[itemName].join(', ')»)'''
-			}
+			ConnectivityCall: '''m_mesh->get«c.connectivity.name.toFirstUpper»(«c.args.map[itemName].join(', ')»)'''
 		}
 	}
 }

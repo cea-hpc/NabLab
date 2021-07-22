@@ -108,7 +108,7 @@ public interface IrModule extends IrAnnotable {
 
 	/**
 	 * Returns the value of the '<em><b>Providers</b></em>' reference list.
-	 * The list contents are of type {@link fr.cea.nabla.ir.ir.DefaultExtensionProvider}.
+	 * The list contents are of type {@link fr.cea.nabla.ir.ir.ExtensionProvider}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Providers</em>' reference list.
@@ -116,6 +116,6 @@ public interface IrModule extends IrAnnotable {
 	 * @model
 	 * @generated
 	 */
-	EList<DefaultExtensionProvider> getProviders();
+	EList<ExtensionProvider> getProviders();
 
 } // IrModule

@@ -10,37 +10,39 @@
 package fr.cea.nabla.ir.generator.arcane
 
 import fr.cea.nabla.ir.JobCallerExtensions
+import fr.cea.nabla.ir.UnzipHelper
 import fr.cea.nabla.ir.generator.ApplicationGenerator
+import fr.cea.nabla.ir.generator.CMakeUtils
+import fr.cea.nabla.ir.generator.CppGeneratorUtils
 import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.generator.Utils
-import fr.cea.nabla.ir.generator.CppGeneratorUtils
 import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Job
-import fr.cea.nabla.ir.transformers.CartesianMesh2D2Arcane
-import fr.cea.nabla.ir.transformers.CompositeTransformationStep
 import fr.cea.nabla.ir.transformers.ReplaceReductions
 import java.util.ArrayList
+import java.util.LinkedHashSet
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 
 class ArcaneApplicationGenerator implements ApplicationGenerator
 {
-	val String arcaneDir
+	val cMakeVars = new LinkedHashSet<Pair<String, String>>
 
 	override getName() { 'Arcane' }
 
 	override getIrTransformationStep()
 	{
-		new CompositeTransformationStep("Arcane IR transformations", #[
-			new CartesianMesh2D2Arcane,
-			new ReplaceReductions(true)])
+		new ReplaceReductions(true)
 	}
 
-	new(String arcaneDir)
+	new(String wsPath, Iterable<Pair<String, String>> cmakeVars)
 	{
-		this.arcaneDir = arcaneDir
+		cmakeVars.forEach[x | this.cMakeVars += x]
+		// Set WS_PATH variables in CMake and unzip NRepository if necessary
+		this.cMakeVars += new Pair(CMakeUtils.WS_PATH, wsPath)
+		UnzipHelper::unzipNRepository(wsPath)
 	}
 
 	override getGenerationContents(IrRoot ir)
@@ -53,7 +55,7 @@ class ArcaneApplicationGenerator implements ApplicationGenerator
 			fileContents += new GenerationContent(className + '.h', getHeaderFileContent(module, className), false)
 			fileContents += new GenerationContent(className + '.cc', getSourceFileContent(module, className), false)
 		}
-		fileContents += new GenerationContent('CMakeLists.txt', CMakeContentProvider.getContent(ir, arcaneDir), false)
+		fileContents += new GenerationContent('CMakeLists.txt', CMakeContentProvider.getContent(ir, cMakeVars), false)
 		fileContents += new GenerationContent(ir.name + '.config', TimeLoopContentProvider.getContent(ir), false)
 		fileContents += new GenerationContent('main.cc', MainContentProvider.getContent(ir), false)
 		return fileContents
@@ -68,6 +70,7 @@ class ArcaneApplicationGenerator implements ApplicationGenerator
 
 	#include <arcane/utils/Array.h>
 	#include "«name.toFirstUpper»_axl.h"
+	#include "CartesianMesh2DHelper.h"
 
 	using namespace Arcane;
 	«IF !functions.empty»
@@ -101,6 +104,9 @@ class ArcaneApplicationGenerator implements ApplicationGenerator
 		«FOR j : jobs.filter[!mainTimeLoop]»
 		«JobContentProvider.getDeclarationContent(j)»
 		«ENDFOR»
+
+	private:
+		CartesianMesh2DHelper* m_mesh;
 	};
 
 	#endif
@@ -131,6 +137,9 @@ class ArcaneApplicationGenerator implements ApplicationGenerator
 
 	void «className»::init()
 	{
+		// mesh initialisation
+		m_mesh = CartesianMesh2DHelper::create(mesh);
+
 		«FOR c : irRoot.main.calls.filter[!mainTimeLoop]»
 		«Utils::getCallName(c).replace('.', '->')»(); // @«c.at»
 		«ENDFOR»

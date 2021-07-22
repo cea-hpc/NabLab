@@ -11,10 +11,10 @@
 #define _CARTESIANMESH2DHELPER_H_
 
 #include <map>
-#include "arcane/ItemTypes.h"
-#include "arcane/IMesh.h"
-#include "arcane/UnstructuredMeshConnectivity.h"
-#include "arcane/IndexedItemConnectivityView.h"
+#include <arcane/ItemTypes.h>
+#include <arcane/IMesh.h>
+#include <arcane/UnstructuredMeshConnectivity.h>
+#include <arcane/IndexedItemConnectivityView.h>
 
 using namespace std;
 using namespace Arcane;
@@ -26,6 +26,9 @@ public:
 
 	CartesianMesh2DHelper(IMesh* mesh);
 
+	CellGroup getCells() const;
+	NodeGroup getNodes() const;
+	FaceGroup getFaces() const;
 	ItemLocalIdView<Node> getNodesOfCell(Cell c) const;
 	ItemLocalIdView<Node> getNodesOfFace(Face f) const;
 	ItemLocalIdView<Cell> getCellsOfNode(Node n) const;

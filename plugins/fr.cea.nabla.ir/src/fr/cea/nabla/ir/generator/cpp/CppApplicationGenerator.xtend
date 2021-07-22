@@ -12,6 +12,7 @@ package fr.cea.nabla.ir.generator.cpp
 import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.UnzipHelper
 import fr.cea.nabla.ir.generator.ApplicationGenerator
+import fr.cea.nabla.ir.generator.CMakeUtils
 import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.BaseType
@@ -43,7 +44,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		cmakeVars.forEach[x | this.cMakeVars += x]
 
 		// Set WS_PATH variables in CMake and unzip NRepository if necessary
-		this.cMakeVars += new Pair(CMakeContentProvider.WS_PATH, wsPath)
+		this.cMakeVars += new Pair(CMakeUtils.WS_PATH, wsPath)
 		UnzipHelper::unzipNRepository(wsPath)
 	}
 

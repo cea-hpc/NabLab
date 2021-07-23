@@ -141,7 +141,7 @@ class LatexLabelServices
 	static def dispatch String getLatex(Mul it) { left.latex + ' \\cdot ' + right.latex }
 	static def dispatch String getLatex(Div it) { '\\frac{' + left.latex + '}{' + right.latex + '}' }
 	static def dispatch String getLatex(Modulo it) { left.latex + ' % ' + right.latex }	
-	static def dispatch String getLatex(Parenthesis it) { '(' + expression.latex + ')' }
+	static def dispatch String getLatex(Parenthesis it) { '\\left(' + expression.latex + '\\right)' }
 	static def dispatch String getLatex(UnaryMinus it) { '-' + expression.latex }
 	static def dispatch String getLatex(Not it) { '\\neg {' + expression.latex + '}' }
 	static def dispatch String getLatex(IntConstant it) { value.toString }

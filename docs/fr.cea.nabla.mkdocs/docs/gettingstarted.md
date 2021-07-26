@@ -125,11 +125,15 @@ This view is automatically updated and synchronized with the selection in the cu
 
 <img src="img/NabLab_latex_view.png" alt="NabLab Latex View" title="NabLab Latex View" width="100%" height="100%" />
 
+!!! note
+	If you can not see formulas in the LaTeX view, Java probably encounters a ClassNotFoundException on java.awt.Font (see log file) due to font installation issue on your computer.
+	To fix the problem, add `-Djava.awt.headless=true` at the end of the *NabLab.ini* file located in NabLab root directory.
+	For contributors using NabLab as an Eclipse runtime application, add the same option into the Run As > Run Configurations... > Arguments > VM arguments text box.
 
 ### Job graph
 
 NabLab offers 2 visualization modes for job graph: a fast rendering view and an editor with a more efficient layout.
-In case of job cycles, both of the modes will display the cycle graphically to highlight the error.  
+In case of job cycles, both of the modes will display the cycle graphically to highlight the error.
 
 !!! note
 	In both visualization modes, let the mouse over a job node to display its input and output variables.

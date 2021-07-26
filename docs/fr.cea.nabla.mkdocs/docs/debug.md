@@ -26,7 +26,7 @@ Then, clik on the *Add* button.
 <img src="img/NabLab_install_new_software_dialog.png" alt="Install New Software Dialog" title="Install New Software Dialog" width="60%" />
 </p>
 
-In the newly opened dialog, either enter the `https://todo` URL under *Location* (the MoniLog4NabLab update site), or select *Archive* and provide the .zip file available [here](https://github.com/cea-hpc/Monilog4NabLab/releases/tag/v0.4.2).
+In the newly opened dialog select *Archive* and provide the .zip file available [here](https://github.com/cea-hpc/Monilog4NabLab/releases/tag/v0.4.2).
 Tick the box and click *Next*, then click *Finish*.
 
 <p align=center>

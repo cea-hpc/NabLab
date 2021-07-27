@@ -82,7 +82,7 @@ class FillJobHLTs extends IrTransformationStep
 	/** Build the jgrapht graph corresponding to IrModule and check if it has cycles */
 	private def hasCycles(IrRoot ir)
 	{
-		val g = createGraph(ir.jobs.reject(j | j.timeLoopJob))
+		val g = createGraph(ir.jobs.reject(j | j.timeLoopJob), false)
 
 		val cycles = g.findCycle
 		val hasCycles = (cycles !== null)
@@ -96,16 +96,21 @@ class FillJobHLTs extends IrTransformationStep
 	}
 
 	/** Return a graph created from the list of nodes */
-	private def createGraph(Iterable<Job> jobs)
+	private def createGraph(Iterable<Job> jobs, boolean isNextJobWithSameCallerComputer)
 	{
 		// Create nodes 
 		val g = new DirectedWeightedPseudograph<Job, DefaultWeightedEdge>(DefaultWeightedEdge)
 		jobs.forEach[x | g.addVertex(x)]
 
 		// Create edges: no outgoing edges from NextTimeLoopIterationJob instances to break time cycles.
+		// First call of createGraph: nextJobsWithSameCaller is not set, jobs are not yet dispatched => nextJobs is used
+		// Second call of createGraph: nextJobsWithSameCaller must be used because ExecuteTimeLoopJob takes account of all its variables (union)
 		for (from : jobs)
-			for (to : from.nextJobsWithSameCaller.filter[x | g.vertexSet.contains(x)])
+		{
+			var nextJobs = (isNextJobWithSameCallerComputer ? from.nextJobsWithSameCaller : from.nextJobs)
+			for (to : nextJobs.filter[x | g.vertexSet.contains(x)])
 				g.addEdge(from, to)
+		}
 
 		// Add a source node and edges to nodes with no incoming edges
 		val sourceNode = IrFactory::eINSTANCE.createJob => [ name = SourceNodeLabel ]
@@ -138,7 +143,7 @@ class FillJobHLTs extends IrTransformationStep
 	 */
 	private def void fillAt(Iterable<Job> jobs)
 	{
-		val g = createGraph(jobs)
+		val g = createGraph(jobs, true)
 		val jalgo = new FloydWarshallShortestPaths<Job, DefaultWeightedEdge>(g)
 
 		var maxAtValue = 0.0

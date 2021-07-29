@@ -19,6 +19,8 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link fr.cea.nabla.ir.ir.Variable#isOption <em>Option</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Variable#getPreviousJobs <em>Previous Jobs</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Variable#getNextJobs <em>Next Jobs</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.Variable#getOriginName <em>Origin Name</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.Variable#getTimeIterator <em>Time Iterator</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getVariable()
@@ -142,5 +144,51 @@ public interface Variable extends ArgOrVar {
 	 * @generated
 	 */
 	EList<Job> getNextJobs();
+
+	/**
+	 * Returns the value of the '<em><b>Origin Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Origin Name</em>' attribute.
+	 * @see #setOriginName(String)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getVariable_OriginName()
+	 * @model required="true"
+	 * @generated
+	 */
+	String getOriginName();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Variable#getOriginName <em>Origin Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Origin Name</em>' attribute.
+	 * @see #getOriginName()
+	 * @generated
+	 */
+	void setOriginName(String value);
+
+	/**
+	 * Returns the value of the '<em><b>Time Iterator</b></em>' reference.
+	 * It is bidirectional and its opposite is '{@link fr.cea.nabla.ir.ir.TimeIterator#getVariables <em>Variables</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Time Iterator</em>' reference.
+	 * @see #setTimeIterator(TimeIterator)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getVariable_TimeIterator()
+	 * @see fr.cea.nabla.ir.ir.TimeIterator#getVariables
+	 * @model opposite="variables"
+	 * @generated
+	 */
+	TimeIterator getTimeIterator();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Variable#getTimeIterator <em>Time Iterator</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Time Iterator</em>' reference.
+	 * @see #getTimeIterator()
+	 * @generated
+	 */
+	void setTimeIterator(TimeIterator value);
 
 } // Variable

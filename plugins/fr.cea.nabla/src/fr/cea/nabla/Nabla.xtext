@@ -79,7 +79,7 @@ SpaceIteratorRef: target=[SpaceIterator] (('+' inc=INT) | ('-' dec=INT))?;
 TimeIteratorDefinition: 'iterate' iterator=AbstractTimeIterator;
 AbstractTimeIterator: TimeIterator | TimeIteratorBlock;
 TimeIterator: name=ID 'while' '(' condition=Expression ')' (';' | (',' innerIterator=AbstractTimeIterator));
-TimeIteratorBlock: '{' iterators+=AbstractTimeIterator+ '}';
+TimeIteratorBlock: '{' iterators+=TimeIterator+ '}';
 TimeIteratorRef: CurrentTimeIteratorRef | InitTimeIteratorRef | NextTimeIteratorRef;
 CurrentTimeIteratorRef: target=[TimeIterator];
 InitTimeIteratorRef: target=[TimeIterator] '=' value=INT;

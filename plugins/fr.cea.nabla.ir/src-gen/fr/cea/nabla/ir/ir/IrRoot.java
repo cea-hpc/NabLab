@@ -26,6 +26,7 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getPostProcessing <em>Post Processing</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getProviders <em>Providers</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getMesh <em>Mesh</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getTimeIterators <em>Time Iterators</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getIrRoot()
@@ -278,5 +279,17 @@ public interface IrRoot extends IrAnnotable {
 	 * @generated
 	 */
 	void setMesh(MeshExtensionProvider value);
+
+	/**
+	 * Returns the value of the '<em><b>Time Iterators</b></em>' containment reference list.
+	 * The list contents are of type {@link fr.cea.nabla.ir.ir.TimeIterator}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Time Iterators</em>' containment reference list.
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrRoot_TimeIterators()
+	 * @model containment="true" resolveProxies="true"
+	 * @generated
+	 */
+	EList<TimeIterator> getTimeIterators();
 
 } // IrRoot

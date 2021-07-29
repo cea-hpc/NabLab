@@ -38,6 +38,7 @@ class IrArgOrVarFactory
 {
 	@Inject extension ArgOrVarExtensions
 	@Inject extension TimeIteratorExtensions
+	@Inject extension IrTimeIteratorFactory
 	@Inject extension IrExpressionFactory
 	@Inject extension IrJobFactory
 	@Inject extension IrAnnotationHelper
@@ -79,7 +80,7 @@ class IrArgOrVarFactory
 				// Create variables
 				val currentTiVar = createIrTimeVariable(v, ti, currentTimeIteratorName)
 				val nextTiVar = createIrTimeVariable(v, ti, nextTimeIteratorName)
-				val	initTiVar = (existsInitTiForTi? createIrTimeVariable(v, ti, initTimeIteratorName) : null)
+				val initTiVar = (existsInitTiForTi? createIrTimeVariable(v, ti, initTimeIteratorName) : null)
 
 				// Add variables to the list
 				createdVariables += currentTiVar
@@ -199,6 +200,7 @@ class IrArgOrVarFactory
 	{
 		annotations += v.toIrAnnotation
 		name = varName
+		originName = name
 		type = nablaType2IrType.toIrType(v.typeFor)
 		const = v.const
 		constExpr = v.constExpr
@@ -211,6 +213,7 @@ class IrArgOrVarFactory
 	{
 		annotations += v.toIrAnnotation
 		name = varName
+		originName = name
 		type = nablaType2IrType.toIrType(v.typeFor)
 		const = false
 		constExpr = false
@@ -221,6 +224,7 @@ class IrArgOrVarFactory
 	{
 		annotations += t.toIrAnnotation
 		name = t.name
+		originName = name
 		type = IrFactory.eINSTANCE.createBaseType => [ primitive = PrimitiveType::INT ]
 		const = false
 		constExpr = false
@@ -230,11 +234,14 @@ class IrArgOrVarFactory
 	private def createIrTimeVariable(Var v, TimeIterator ti, String timeIteratorSuffix)
 	{
 		val name = v.name + getIrVarTimeSuffix(ti, timeIteratorSuffix)
-		return switch v
+		val irV = switch v
 		{
 			SimpleVar : toIrVariable(v, name) => [const = false]
 			ConnectivityVar : toIrVariable(v, name)
 		}
+		irV.originName = v.name
+		irV.timeIterator = ti.toIrTimeIterator
+		return irV
 	}
 
 	private def existsInitTimeIteratorRef(Iterable<ArgOrVarRef> l)

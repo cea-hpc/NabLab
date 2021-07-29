@@ -92,6 +92,13 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case IrPackage.TIME_ITERATOR: {
+				TimeIterator timeIterator = (TimeIterator)theEObject;
+				T result = caseTimeIterator(timeIterator);
+				if (result == null) result = caseIrAnnotable(timeIterator);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			case IrPackage.POST_PROCESSING: {
 				PostProcessing postProcessing = (PostProcessing)theEObject;
 				T result = casePostProcessing(postProcessing);
@@ -625,6 +632,21 @@ public class IrSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseIrModule(IrModule object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Time Iterator</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Time Iterator</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseTimeIterator(TimeIterator object) {
 		return null;
 	}
 

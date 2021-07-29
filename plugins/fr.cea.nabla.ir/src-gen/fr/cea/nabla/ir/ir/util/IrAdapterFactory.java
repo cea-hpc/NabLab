@@ -84,6 +84,10 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createIrModuleAdapter();
 			}
 			@Override
+			public Adapter caseTimeIterator(TimeIterator object) {
+				return createTimeIteratorAdapter();
+			}
+			@Override
 			public Adapter casePostProcessing(PostProcessing object) {
 				return createPostProcessingAdapter();
 			}
@@ -400,6 +404,20 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createIrModuleAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.TimeIterator <em>Time Iterator</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.TimeIterator
+	 * @generated
+	 */
+	public Adapter createTimeIteratorAdapter() {
 		return null;
 	}
 

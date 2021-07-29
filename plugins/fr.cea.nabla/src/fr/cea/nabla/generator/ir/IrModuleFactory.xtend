@@ -79,7 +79,7 @@ class IrModuleFactory
 		if (nablaModule.iteration !== null)
 			addJobsAndCountersToModule(nablaModule.iteration.iterator, it)
 
-		// Variables creation: order must be keep to ensure default values validity
+		// Variables creation: order must be kept to ensure default values validity
 		val tlJobs = jobs.filter(j | j.timeLoopJob)
 		for (d : nablaModule.declarations)
 			switch d

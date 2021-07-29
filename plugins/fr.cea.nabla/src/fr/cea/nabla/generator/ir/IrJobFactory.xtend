@@ -25,6 +25,7 @@ class IrJobFactory
 	@Inject extension IrInstructionFactory
 	@Inject extension IrArgOrVarFactory
 	@Inject extension IrExpressionFactory
+	@Inject extension IrTimeIteratorFactory
 
 	def create IrFactory::eINSTANCE.createJob toIrInstructionJob(Job j)
 	{
@@ -62,6 +63,7 @@ class IrJobFactory
 		iterationCounter = ti.toIrIterationCounter
 		whileCondition = ti.condition.toIrExpression
 		timeLoopJob = true
+		timeIterator = ti.toIrTimeIterator
 	}
 
 	def getSetUpTimeLoopJobName(TimeIterator ti) { SETUP_TIMELOOP_PREFIX + ti.name.toFirstUpper }

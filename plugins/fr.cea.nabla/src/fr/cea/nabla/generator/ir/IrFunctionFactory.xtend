@@ -21,7 +21,7 @@ import org.eclipse.xtext.EcoreUtil2
 @Singleton
 class IrFunctionFactory
 {
-	@Inject extension IrAnnotationHelper
+	@Inject extension NabLabFileAnnotationFactory
 	@Inject extension IrBasicFactory
 	@Inject extension IrArgOrVarFactory
 	@Inject extension IrInstructionFactory
@@ -37,7 +37,7 @@ class IrFunctionFactory
 	def create IrFactory::eINSTANCE.createInternFunction toIrFunction(Reduction f)
 	{
 		val t = f.typeDeclaration.type
-		annotations += f.toIrAnnotation
+		annotations += f.toNabLabFileAnnotation
 		// build a unique name with name and type
 		name = f.name.toFirstLower + t.primitive.getName().charAt(0) + t.sizes.size
 		f.variables.forEach[x | variables += x.toIrVariable]
@@ -48,7 +48,7 @@ class IrFunctionFactory
 
 	def create IrFactory::eINSTANCE.createInternFunction toIrInternFunction(Function f)
 	{
-		annotations += f.toIrAnnotation
+		annotations += f.toNabLabFileAnnotation
 		name = f.name
 		f.variables.forEach[x | variables += x.toIrVariable]
 		// f is internal, it has a inArgs and a body
@@ -59,7 +59,7 @@ class IrFunctionFactory
 
 	def create IrFactory::eINSTANCE.createExternFunction toIrExternFunction(Function f)
 	{
-		annotations += f.toIrAnnotation
+		annotations += f.toNabLabFileAnnotation
 		name = f.name
 		val ext = EcoreUtil2.getContainerOfType(f, DefaultExtension)
 		provider = ext.toIrDefaultExtensionProvider

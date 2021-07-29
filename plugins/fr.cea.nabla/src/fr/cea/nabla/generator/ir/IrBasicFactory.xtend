@@ -23,7 +23,7 @@ import org.eclipse.xtext.EcoreUtil2
 @Singleton
 class IrBasicFactory
 {
-	@Inject extension IrAnnotationHelper
+	@Inject extension NabLabFileAnnotationFactory
 	@Inject extension IrExpressionFactory
 
 	// No create method to ensure a new instance every time (for n+1 time variables)
@@ -47,7 +47,7 @@ class IrBasicFactory
 	{
 		c.name.toIrConnectivity =>
 		[
-			if (annotations.empty) annotations += c.toIrAnnotation
+			if (annotations.empty) annotations += c.toNabLabFileAnnotation
 			returnType = c.returnType.toIrItemType
 			if (inTypes.empty) inTypes += c.inTypes.map[toIrItemType]
 			multiple = c.multiple
@@ -60,7 +60,7 @@ class IrBasicFactory
 	{
 		i.name.toIrItemType =>
 		[
-			annotations += i.toIrAnnotation
+			annotations += i.toNabLabFileAnnotation
 			val ext = EcoreUtil2.getContainerOfType(i, MeshExtension)
 			provider = ext.toIrMeshExtensionProvider
 		]

@@ -41,7 +41,7 @@ class IrArgOrVarFactory
 	@Inject extension IrTimeIteratorFactory
 	@Inject extension IrExpressionFactory
 	@Inject extension IrJobFactory
-	@Inject extension IrAnnotationHelper
+	@Inject extension NabLabFileAnnotationFactory
 	@Inject extension ArgOrVarTypeProvider
 	@Inject extension BaseTypeTypeProvider
 	@Inject NablaType2IrType nablaType2IrType
@@ -141,7 +141,7 @@ class IrArgOrVarFactory
 			InstructionBlock: instruction.instructions += affectation
 			default: tlj.instruction = IrFactory::eINSTANCE.createInstructionBlock =>
 			[
-				annotations += tlj.toIrAnnotation
+				annotations += tlj.toNabLabFileAnnotation
 				instructions += instruction
 				instructions += affectation
 			]
@@ -184,21 +184,21 @@ class IrArgOrVarFactory
 
 	def create IrFactory::eINSTANCE.createArg toIrArg(BaseType nablaType, String nablaName)
 	{
-		annotations += nablaType.toIrAnnotation
+		annotations += nablaType.toNabLabFileAnnotation
 		name = nablaName
 		type = nablaType2IrType.toIrType(nablaType.typeFor)
 	}
 
 	def create IrFactory::eINSTANCE.createArg toIrArg(Arg v, String varName)
 	{
-		annotations += v.toIrAnnotation
+		annotations += v.toNabLabFileAnnotation
 		name = varName
 		type = nablaType2IrType.toIrType(v.typeFor)
 	}
 
 	def create IrFactory::eINSTANCE.createVariable toIrVariable(SimpleVar v, String varName)
 	{
-		annotations += v.toIrAnnotation
+		annotations += v.toNabLabFileAnnotation
 		name = varName
 		originName = name
 		type = nablaType2IrType.toIrType(v.typeFor)
@@ -211,7 +211,7 @@ class IrArgOrVarFactory
 
 	def create IrFactory::eINSTANCE.createVariable toIrVariable(ConnectivityVar v, String varName)
 	{
-		annotations += v.toIrAnnotation
+		annotations += v.toNabLabFileAnnotation
 		name = varName
 		originName = name
 		type = nablaType2IrType.toIrType(v.typeFor)
@@ -222,7 +222,7 @@ class IrArgOrVarFactory
 
 	def create IrFactory::eINSTANCE.createVariable toIrIterationCounter(TimeIterator t)
 	{
-		annotations += t.toIrAnnotation
+		annotations += t.toNabLabFileAnnotation
 		name = t.name
 		originName = name
 		type = IrFactory.eINSTANCE.createBaseType => [ primitive = PrimitiveType::INT ]

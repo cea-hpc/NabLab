@@ -30,7 +30,7 @@ import static extension fr.cea.nabla.SpaceIteratorRefExtensions.*
 @Singleton
 class IrItemIdDefinitionFactory
 {
-	@Inject extension IrAnnotationHelper
+	@Inject extension NabLabFileAnnotationFactory
 	@Inject extension SpaceIteratorExtensions
 	@Inject extension IrItemIdFactory
 	@Inject extension IrItemIndexFactory
@@ -76,9 +76,9 @@ class IrItemIdDefinitionFactory
 	private def toIrIdDefinition(ItemId id, int shift, SpaceIterator si)
 	{
 		if (si.multiple)
-			createItemIdDefinition(si.toIrAnnotation, id, toIrIdValue(si, shift))
+			createItemIdDefinition(si.toNabLabFileAnnotation, id, toIrIdValue(si, shift))
 		else
-			createItemIdDefinition(si.toIrAnnotation, id, si.container.toIrIdValue)
+			createItemIdDefinition(si.toNabLabFileAnnotation, id, si.container.toIrIdValue)
 	}
 
 	private def create IrFactory::eINSTANCE.createItemIdDefinition createItemIdDefinition(IrAnnotation annotation, ItemId _id, ItemIdValue _value)

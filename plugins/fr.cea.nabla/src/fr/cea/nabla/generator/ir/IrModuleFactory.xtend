@@ -32,7 +32,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil
 
 class IrModuleFactory
 {
-	@Inject extension IrAnnotationHelper
+	@Inject extension NabLabFileAnnotationFactory
 	@Inject extension DeclarationProvider
 	@Inject extension TimeIteratorExtensions
 	@Inject extension IrArgOrVarFactory
@@ -59,7 +59,7 @@ class IrModuleFactory
 			irModule = EcoreUtil.copy(irModule)
 		}
 
-		irModule.annotations += ngenModule.toIrAnnotation
+		irModule.annotations += ngenModule.toNabLabFileAnnotation
 		irModule.name = ngenModule.name
 		irModule.main = (ngenModule instanceof MainModule)
 

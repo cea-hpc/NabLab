@@ -36,7 +36,7 @@ import org.eclipse.xtext.EcoreUtil2
 
 class NablagenApplication2Ir
 {
-	@Inject extension IrAnnotationHelper
+	@Inject extension NabLabFileAnnotationFactory
 	@Inject extension IrBasicFactory
 	@Inject extension IrTimeIteratorFactory
 	@Inject extension TimeIteratorExtensions
@@ -44,7 +44,7 @@ class NablagenApplication2Ir
 
 	def create IrFactory::eINSTANCE.createIrRoot toIrRoot(NablagenApplication ngenApp)
 	{
-		annotations += ngenApp.toIrAnnotation
+		annotations += ngenApp.toNabLabFileAnnotation
 		name = ngenApp.name
 		main = IrFactory::eINSTANCE.createJobCaller
 

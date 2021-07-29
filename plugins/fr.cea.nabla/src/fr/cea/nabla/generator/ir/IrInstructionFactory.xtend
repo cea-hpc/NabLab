@@ -41,7 +41,7 @@ class IrInstructionFactory
 	@Inject extension SpaceIteratorExtensions
 	@Inject extension IrArgOrVarFactory
 	@Inject extension IrExpressionFactory
-	@Inject extension IrAnnotationHelper
+	@Inject extension NabLabFileAnnotationFactory
 	@Inject extension IrReductionInstructionFactory
 	@Inject extension IrIterationBlockFactory
 	@Inject extension IrSetDefinitionFactory
@@ -57,7 +57,7 @@ class IrInstructionFactory
 	{
 		val irInstr = IrFactory::eINSTANCE.createVariableDeclaration =>
 		[
-			annotations += v.toIrAnnotation
+			annotations += v.toNabLabFileAnnotation
 			variable = v.variable.toIrVariable
 		]
 
@@ -71,7 +71,7 @@ class IrInstructionFactory
 		{
 			instructions += IrFactory::eINSTANCE.createVariableDeclaration =>
 			[
-				annotations += nablaVar.toIrAnnotation
+				annotations += nablaVar.toNabLabFileAnnotation
 				variable = nablaVar.toIrVariable
 			]
 		}
@@ -82,7 +82,7 @@ class IrInstructionFactory
 	{
 		val irInstr = IrFactory::eINSTANCE.createInstructionBlock =>
 		[
-			annotations += v.toIrAnnotation
+			annotations += v.toNabLabFileAnnotation
 			v.instructions.forEach[x | instructions += x.toIrInstructions]
 		]
 		#[irInstr]
@@ -93,14 +93,14 @@ class IrInstructionFactory
 		if (v.iterationBlock instanceof SpaceIterator && !(v.iterationBlock as SpaceIterator).multiple)
 		{
 			val irInstr = flatten(v.body.toIrInstruction, v.iterationBlock.neededIndexAndIdDefinitions)
-			irInstr.annotations += v.toIrAnnotation
+			irInstr.annotations += v.toNabLabFileAnnotation
 			#[irInstr]
 		}
 		else
 		{
 			val irInstr = IrFactory::eINSTANCE.createLoop =>
 			[
-				annotations += v.toIrAnnotation
+				annotations += v.toNabLabFileAnnotation
 				iterationBlock = v.iterationBlock.toIrIterationBlock
 				body = flatten(v.body.toIrInstruction, v.iterationBlock.neededIndexAndIdDefinitions)
 				multithreadable = !v.eAllContents.filter(FunctionCall).exists[x | x.function.external && !x.function.nablaLibFunction]
@@ -113,7 +113,7 @@ class IrInstructionFactory
 	{
 		val irInstr = IrFactory::eINSTANCE.createAffectation =>
 		[
-			annotations += v.toIrAnnotation
+			annotations += v.toNabLabFileAnnotation
 			left = v.left.toIrExpression as ArgOrVarRef
 			right = v.right.toIrExpression
 		]
@@ -125,7 +125,7 @@ class IrInstructionFactory
 	{
 		val irInstr = IrFactory::eINSTANCE.createIf =>
 		[
-			annotations += v.toIrAnnotation
+			annotations += v.toNabLabFileAnnotation
 			condition = v.condition.toIrExpression
 			thenInstruction = v.then.toIrInstruction
 			if (v.^else !== null) elseInstruction = v.^else.toIrInstruction
@@ -142,7 +142,7 @@ class IrInstructionFactory
 	{
 		val irInstr = IrFactory::eINSTANCE.createWhile =>
 		[
-			annotations += v.toIrAnnotation
+			annotations += v.toNabLabFileAnnotation
 			condition = v.condition.toIrExpression
 			instruction = v.instruction.toIrInstruction
 		]
@@ -153,7 +153,7 @@ class IrInstructionFactory
 	{
 		val irInstr = IrFactory::eINSTANCE.createReturn =>
 		[
-			annotations += v.toIrAnnotation
+			annotations += v.toNabLabFileAnnotation
 			expression = v.expression.toIrExpression
 		]
 		return irInstr.transformReductions(v.expression)
@@ -163,7 +163,7 @@ class IrInstructionFactory
 	{
 		val irInstr = IrFactory::eINSTANCE.createExit =>
 		[
-			annotations += v.toIrAnnotation
+			annotations += v.toNabLabFileAnnotation
 			message = v.message
 		]
 		#[irInstr]

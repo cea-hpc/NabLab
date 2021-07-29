@@ -17,12 +17,12 @@ import fr.cea.nabla.nabla.ItemSet
 @Singleton
 class IrSetDefinitionFactory
 {
-	@Inject extension IrAnnotationHelper
+	@Inject extension NabLabFileAnnotationFactory
 	@Inject extension IrContainerFactory
 
 	def create IrFactory::eINSTANCE.createSetDefinition toIrSetDefinition(ItemSet sd)
 	{
-			annotations += sd.toIrAnnotation
+			annotations += sd.toNabLabFileAnnotation
 			name = sd.name
 			value = sd.value.toIrConnectivityCall
 	}

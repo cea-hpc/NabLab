@@ -21,6 +21,7 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link fr.cea.nabla.ir.ir.Variable#getNextJobs <em>Next Jobs</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Variable#getOriginName <em>Origin Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Variable#getTimeIterator <em>Time Iterator</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.Variable#getTimeIteratorIndex <em>Time Iterator Index</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getVariable()
@@ -190,5 +191,27 @@ public interface Variable extends ArgOrVar {
 	 * @generated
 	 */
 	void setTimeIterator(TimeIterator value);
+
+	/**
+	 * Returns the value of the '<em><b>Time Iterator Index</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Time Iterator Index</em>' attribute.
+	 * @see #setTimeIteratorIndex(int)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getVariable_TimeIteratorIndex()
+	 * @model
+	 * @generated
+	 */
+	int getTimeIteratorIndex();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Variable#getTimeIteratorIndex <em>Time Iterator Index</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Time Iterator Index</em>' attribute.
+	 * @see #getTimeIteratorIndex()
+	 * @generated
+	 */
+	void setTimeIteratorIndex(int value);
 
 } // Variable

@@ -1052,13 +1052,22 @@ public interface IrPackage extends EPackage {
 	int VARIABLE__TIME_ITERATOR = ARG_OR_VAR_FEATURE_COUNT + 7;
 
 	/**
+	 * The feature id for the '<em><b>Time Iterator Index</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int VARIABLE__TIME_ITERATOR_INDEX = ARG_OR_VAR_FEATURE_COUNT + 8;
+
+	/**
 	 * The number of structural features of the '<em>Variable</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int VARIABLE_FEATURE_COUNT = ARG_OR_VAR_FEATURE_COUNT + 8;
+	int VARIABLE_FEATURE_COUNT = ARG_OR_VAR_FEATURE_COUNT + 9;
 
 	/**
 	 * The number of operations of the '<em>Variable</em>' class.
@@ -5139,6 +5148,17 @@ public interface IrPackage extends EPackage {
 	EReference getVariable_TimeIterator();
 
 	/**
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.Variable#getTimeIteratorIndex <em>Time Iterator Index</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Time Iterator Index</em>'.
+	 * @see fr.cea.nabla.ir.ir.Variable#getTimeIteratorIndex()
+	 * @see #getVariable()
+	 * @generated
+	 */
+	EAttribute getVariable_TimeIteratorIndex();
+
+	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.Function <em>Function</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -7368,6 +7388,14 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EReference VARIABLE__TIME_ITERATOR = eINSTANCE.getVariable_TimeIterator();
+
+		/**
+		 * The meta object literal for the '<em><b>Time Iterator Index</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute VARIABLE__TIME_ITERATOR_INDEX = eINSTANCE.getVariable_TimeIteratorIndex();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.FunctionImpl <em>Function</em>}' class.

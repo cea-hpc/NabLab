@@ -78,9 +78,9 @@ class IrArgOrVarFactory
 				val parentTi = ti.parentTimeIterator
 
 				// Create variables
-				val currentTiVar = createIrTimeVariable(v, ti, currentTimeIteratorName)
-				val nextTiVar = createIrTimeVariable(v, ti, nextTimeIteratorName)
-				val initTiVar = (existsInitTiForTi? createIrTimeVariable(v, ti, initTimeIteratorName) : null)
+				val currentTiVar = createIrTimeVariable(v, ti, currentTimeIteratorName, currentTimeIteratorIndex)
+				val nextTiVar = createIrTimeVariable(v, ti, nextTimeIteratorName, nextTimeIteratorIndex)
+				val initTiVar = (existsInitTiForTi? createIrTimeVariable(v, ti, initTimeIteratorName, initTimeIteratorIndex) : null)
 
 				// Add variables to the list
 				createdVariables += currentTiVar
@@ -101,7 +101,7 @@ class IrArgOrVarFactory
 					}
 					else if (parentTi !== null && !existsInitTi) // inner time iterator
 					{
-						val parentCurrentTiVar = createIrTimeVariable(v, parentTi, currentTimeIteratorName)
+						val parentCurrentTiVar = createIrTimeVariable(v, parentTi, currentTimeIteratorName, currentTimeIteratorIndex)
 						addAffectation(tiSetUpJob, parentCurrentTiVar, currentTiVar)
 						tiSetUpJob.inVars += parentCurrentTiVar
 						tiSetUpJob.outVars += currentTiVar
@@ -121,7 +121,7 @@ class IrArgOrVarFactory
 				val tiTearDownJob = tlJobs.findFirst[name == ti.tearDownTimeLoopJobName]
 				if (tiTearDownJob !== null && parentTi !== null)
 				{
-					val parentNextTiVar = createIrTimeVariable(v, parentTi, nextTimeIteratorName)
+					val parentNextTiVar = createIrTimeVariable(v, parentTi, nextTimeIteratorName, nextTimeIteratorIndex)
 					addAffectation(tiTearDownJob, nextTiVar, parentNextTiVar)
 					tiTearDownJob.inVars += nextTiVar
 					tiTearDownJob.outVars += parentNextTiVar
@@ -231,7 +231,7 @@ class IrArgOrVarFactory
 		option = false
 	}
 
-	private def createIrTimeVariable(Var v, TimeIterator ti, String timeIteratorSuffix)
+	private def createIrTimeVariable(Var v, TimeIterator ti, String timeIteratorSuffix, int timeIteratorIndex)
 	{
 		val name = v.name + getIrVarTimeSuffix(ti, timeIteratorSuffix)
 		val irV = switch v
@@ -241,6 +241,7 @@ class IrArgOrVarFactory
 		}
 		irV.originName = v.name
 		irV.timeIterator = ti.toIrTimeIterator
+		irV.timeIteratorIndex = timeIteratorIndex
 		return irV
 	}
 

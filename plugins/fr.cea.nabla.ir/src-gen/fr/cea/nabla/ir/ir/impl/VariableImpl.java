@@ -33,6 +33,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#getNextJobs <em>Next Jobs</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#getOriginName <em>Origin Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#getTimeIterator <em>Time Iterator</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#getTimeIteratorIndex <em>Time Iterator Index</em>}</li>
  * </ul>
  *
  * @generated
@@ -149,6 +150,24 @@ public class VariableImpl extends ArgOrVarImpl implements Variable {
 	 */
 	protected TimeIterator timeIterator;
 
+	/**
+	 * The default value of the '{@link #getTimeIteratorIndex() <em>Time Iterator Index</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getTimeIteratorIndex()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final int TIME_ITERATOR_INDEX_EDEFAULT = 0;
+	/**
+	 * The cached value of the '{@link #getTimeIteratorIndex() <em>Time Iterator Index</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getTimeIteratorIndex()
+	 * @generated
+	 * @ordered
+	 */
+	protected int timeIteratorIndex = TIME_ITERATOR_INDEX_EDEFAULT;
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -398,6 +417,29 @@ public class VariableImpl extends ArgOrVarImpl implements Variable {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
+	public int getTimeIteratorIndex() {
+		return timeIteratorIndex;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setTimeIteratorIndex(int newTimeIteratorIndex) {
+		int oldTimeIteratorIndex = timeIteratorIndex;
+		timeIteratorIndex = newTimeIteratorIndex;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.VARIABLE__TIME_ITERATOR_INDEX, oldTimeIteratorIndex, timeIteratorIndex));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
@@ -459,6 +501,8 @@ public class VariableImpl extends ArgOrVarImpl implements Variable {
 			case IrPackage.VARIABLE__TIME_ITERATOR:
 				if (resolve) return getTimeIterator();
 				return basicGetTimeIterator();
+			case IrPackage.VARIABLE__TIME_ITERATOR_INDEX:
+				return getTimeIteratorIndex();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -498,6 +542,9 @@ public class VariableImpl extends ArgOrVarImpl implements Variable {
 			case IrPackage.VARIABLE__TIME_ITERATOR:
 				setTimeIterator((TimeIterator)newValue);
 				return;
+			case IrPackage.VARIABLE__TIME_ITERATOR_INDEX:
+				setTimeIteratorIndex((Integer)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -534,6 +581,9 @@ public class VariableImpl extends ArgOrVarImpl implements Variable {
 			case IrPackage.VARIABLE__TIME_ITERATOR:
 				setTimeIterator((TimeIterator)null);
 				return;
+			case IrPackage.VARIABLE__TIME_ITERATOR_INDEX:
+				setTimeIteratorIndex(TIME_ITERATOR_INDEX_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -562,6 +612,8 @@ public class VariableImpl extends ArgOrVarImpl implements Variable {
 				return ORIGIN_NAME_EDEFAULT == null ? originName != null : !ORIGIN_NAME_EDEFAULT.equals(originName);
 			case IrPackage.VARIABLE__TIME_ITERATOR:
 				return timeIterator != null;
+			case IrPackage.VARIABLE__TIME_ITERATOR_INDEX:
+				return timeIteratorIndex != TIME_ITERATOR_INDEX_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -584,6 +636,8 @@ public class VariableImpl extends ArgOrVarImpl implements Variable {
 		result.append(option);
 		result.append(", originName: ");
 		result.append(originName);
+		result.append(", timeIteratorIndex: ");
+		result.append(timeIteratorIndex);
 		result.append(')');
 		return result.toString();
 	}

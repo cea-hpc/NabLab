@@ -1232,6 +1232,16 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
+	public EAttribute getVariable_TimeIteratorIndex() {
+		return (EAttribute)variableEClass.getEStructuralFeatures().get(8);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EClass getPostProcessedVariable() {
 		return postProcessedVariableEClass;
 	}
@@ -2932,6 +2942,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEReference(variableEClass, VARIABLE__NEXT_JOBS);
 		createEAttribute(variableEClass, VARIABLE__ORIGIN_NAME);
 		createEReference(variableEClass, VARIABLE__TIME_ITERATOR);
+		createEAttribute(variableEClass, VARIABLE__TIME_ITERATOR_INDEX);
 
 		functionEClass = createEClass(FUNCTION);
 		createEAttribute(functionEClass, FUNCTION__NAME);
@@ -3316,6 +3327,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEReference(getVariable_NextJobs(), this.getJob(), this.getJob_InVars(), "nextJobs", null, 0, -1, Variable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getVariable_OriginName(), ecorePackage.getEString(), "originName", null, 1, 1, Variable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getVariable_TimeIterator(), this.getTimeIterator(), this.getTimeIterator_Variables(), "timeIterator", null, 0, 1, Variable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getVariable_TimeIteratorIndex(), ecorePackage.getEInt(), "timeIteratorIndex", null, 0, 1, Variable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(functionEClass, Function.class, "Function", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getFunction_Name(), ecorePackage.getEString(), "name", null, 1, 1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

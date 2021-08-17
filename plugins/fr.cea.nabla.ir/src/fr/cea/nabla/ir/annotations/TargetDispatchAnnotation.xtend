@@ -3,6 +3,7 @@ package fr.cea.nabla.ir.annotations
 import fr.cea.nabla.ir.ir.IrAnnotable
 import fr.cea.nabla.ir.ir.IrAnnotation
 import fr.cea.nabla.ir.ir.IrFactory
+import fr.cea.nabla.ir.ir.IterableInstruction
 import fr.cea.nabla.ir.ir.Job
 import org.eclipse.xtend.lib.annotations.Accessors
 
@@ -11,11 +12,11 @@ enum TargetType { CPU, GPU }
 /*
  * Commentaire pour Maël
  * La méthode get est publique sur NabLabFileAnnotation car ce type d'annotation
- * est positionné sur n'importe quel élément de modèle. Dans ton cas, mieux vaut la laisser
- * en privé et créer des méthodes pour chaque type ayant besoin d'être annoté.
- * De cette manière, ce sera plus facile de passer des annotations à un type statique sur l'IR :
- * on saura immédiatement quelles classes sont concernées.
- * J'ai fait la méthode get pour le Job, à titre d'exemple.
+ * est positionné sur n'importe quel élément de modèle. Dans ton cas, mieux vaut
+ * la laisser en privé et créer des méthodes pour chaque type ayant besoin
+ * d'être annoté. De cette manière, ce sera plus facile de passer des
+ * annotations à un type statique sur l'IR : on saura immédiatement quelles
+ * classes sont concernées. J'ai fait la méthode get pour le Job, à titre * d'exemple.
  */
 class TargetDispatchAnnotation
 {
@@ -25,6 +26,7 @@ class TargetDispatchAnnotation
 	@Accessors val IrAnnotation irAnnotation
 
 	static def get(Job object) { _get(object) }
+	static def get(IterableInstruction object) { _get(object) }
 
 	static def create(TargetType targetType)
 	{

@@ -13,31 +13,63 @@ import fr.cea.nabla.ir.annotations.TargetDispatchAnnotation
 import fr.cea.nabla.ir.annotations.TargetType
 import fr.cea.nabla.ir.annotations.VariableRegionAnnotation
 import fr.cea.nabla.ir.annotations.VariableRegionAnnotation.RegionType
+import fr.cea.nabla.ir.ir.Expression
+import fr.cea.nabla.ir.ir.Function
+import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.IrRoot
-import fr.cea.nabla.ir.ir.IterableInstruction
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Variable
 
 class PutGpuAnnotations extends IrTransformationStep
 {
-	new()
+	val GpuDispatchStrategy strategy
+	
+	new(GpuDispatchStrategy strategy)
 	{
 		super('Place GPU annotations on the IR tree')
+		this.strategy = strategy
+		this.strategy.init()
 	}
-	
+
 	override protected transform(IrRoot ir)
 	{
 		trace('    IR -> IR: ' + description)
-		
-		// Default to all CPU for now
+
+		// Apply strategy to dispatch things to CPU or GPU
+
+		ir.eAllContents.filter(Instruction).forEach[ x |
+			val dispatch = strategy.couldRunOnGPU(x) ? TargetType.GPU : TargetType.CPU
+			x.annotations += TargetDispatchAnnotation::create(dispatch).irAnnotation
+		]
+
+		ir.eAllContents.filter(Function).forEach[ x |
+			val dispatch = strategy.couldRunOnGPU(x) ? TargetType.GPU : TargetType.CPU
+			x.annotations += TargetDispatchAnnotation::create(dispatch).irAnnotation
+		]
+
+		ir.eAllContents.filter(Job).forEach[ x |
+			val dispatch = strategy.couldRunOnGPU(x) ? TargetType.GPU : TargetType.CPU
+			x.annotations += TargetDispatchAnnotation::create(dispatch).irAnnotation
+		]
+
+		ir.eAllContents.filter(Expression).forEach[ x |
+			val dispatch = strategy.couldRunOnGPU(x) ? TargetType.GPU : TargetType.CPU
+			x.annotations += TargetDispatchAnnotation::create(dispatch).irAnnotation
+		]
+
+		// With any strategy the region read/write is the same
+
+		val jobsOnCpu = ir.eAllContents.filter(Job).filter[ x |
+			TargetDispatchAnnotation::get(x).targetType == TargetType.CPU
+		]
+
+		val variableReadOnCpu  = jobsOnCpu.map[inVars].toSet.flatten
+		val variableWriteOnCpu = jobsOnCpu.map[outVars].toSet.flatten
+
 		ir.eAllContents.filter(Variable).forEach[ v |
-			v.annotations += VariableRegionAnnotation::create(RegionType.CPU, RegionType.CPU).irAnnotation
-		]
-		ir.eAllContents.filter(Job).forEach[ job |
-			job.annotations += TargetDispatchAnnotation::create(TargetType.CPU).irAnnotation
-		]
-		ir.eAllContents.filter(IterableInstruction).forEach[ ii |
-			ii.annotations += TargetDispatchAnnotation::create(TargetType.CPU).irAnnotation
+			val regionRead  = variableReadOnCpu.contains(v) ? RegionType.CPU : RegionType.GPU
+			val regionWrite = variableWriteOnCpu.contains(v) ? RegionType.CPU : RegionType.GPU
+			v.annotations += VariableRegionAnnotation::create(regionRead, regionWrite).irAnnotation
 		]
 
 		return true

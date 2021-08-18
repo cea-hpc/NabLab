@@ -49,6 +49,15 @@ public interface IrFactory extends EFactory {
 	IrModule createIrModule();
 
 	/**
+	 * Returns a new object of class '<em>Time Iterator</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Time Iterator</em>'.
+	 * @generated
+	 */
+	TimeIterator createTimeIterator();
+
+	/**
 	 * Returns a new object of class '<em>Post Processing</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

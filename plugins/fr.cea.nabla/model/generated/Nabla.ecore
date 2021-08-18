@@ -159,7 +159,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TimeIteratorBlock" eSuperTypes="#//AbstractTimeIterator">
     <eStructuralFeatures xsi:type="ecore:EReference" name="iterators" upperBound="-1"
-        eType="#//AbstractTimeIterator" containment="true"/>
+        eType="#//TimeIterator" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TimeIteratorRef">
     <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="#//TimeIterator"/>

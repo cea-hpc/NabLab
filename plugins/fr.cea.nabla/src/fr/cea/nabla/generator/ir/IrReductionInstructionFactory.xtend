@@ -38,7 +38,7 @@ class IrReductionInstructionFactory
 {
 	@Inject extension SpaceIteratorExtensions
 	@Inject extension ReductionCallExtensions
-	@Inject extension IrAnnotationHelper
+	@Inject extension NabLabFileAnnotationFactory
 	@Inject extension IrFunctionFactory
 	@Inject extension DeclarationProvider
 	@Inject extension IrIterationBlockFactory
@@ -80,7 +80,7 @@ class IrReductionInstructionFactory
 		else
 		{
 			val irInstruction = IrFactory::eINSTANCE.createReductionInstruction
-			irInstruction.annotations += toIrAnnotation
+			irInstruction.annotations += toNabLabFileAnnotation
 			irInstruction.innerInstructions += iterationBlock.neededIndexAndIdDefinitions
 			irInstruction.innerInstructions += arg.toIrReductions
 			irInstruction.binaryFunction = declaration.model.toIrFunction

@@ -21,14 +21,15 @@ import static fr.cea.nabla.ir.JobExtensions.*
 @Singleton
 class IrJobFactory
 {
-	@Inject extension IrAnnotationHelper
+	@Inject extension NabLabFileAnnotationFactory
 	@Inject extension IrInstructionFactory
 	@Inject extension IrArgOrVarFactory
 	@Inject extension IrExpressionFactory
+	@Inject extension IrTimeIteratorFactory
 
 	def create IrFactory::eINSTANCE.createJob toIrInstructionJob(Job j)
 	{
-		annotations += j.toIrAnnotation
+		annotations += j.toNabLabFileAnnotation
 		name = j.name
 		onCycle = false
 		instruction = j.instruction.toIrInstruction
@@ -38,7 +39,7 @@ class IrJobFactory
 	/** SetUpTimeLoopJob in/out vars are set in ArgOrVarFactory during time variable creation */
 	def create IrFactory::eINSTANCE.createJob toIrSetUpTimeLoopJob(TimeIterator ti)
 	{
-		annotations += ti.toIrAnnotation
+		annotations += ti.toNabLabFileAnnotation
 		name = ti.setUpTimeLoopJobName
 		onCycle = false
 		timeLoopJob = true
@@ -47,7 +48,7 @@ class IrJobFactory
 	/** TearDownTimeLoopJob in/out vars are set in ArgOrVarFactory during time variable creation */
 	def create IrFactory::eINSTANCE.createJob toIrTearDownTimeLoopJob(TimeIterator ti)
 	{ 
-		annotations += ti.toIrAnnotation
+		annotations += ti.toNabLabFileAnnotation
 		name = ti.tearDownTimeLoopJobName
 		onCycle = false
 		timeLoopJob = true
@@ -56,12 +57,13 @@ class IrJobFactory
 	/** ExecuteTimeLoopJob in/out vars are set in ArgOrVarFactory during time variable creation */
 	def create IrFactory::eINSTANCE.createExecuteTimeLoopJob toIrExecuteTimeLoopJob(TimeIterator ti)
 	{
-		annotations += ti.toIrAnnotation
+		annotations += ti.toNabLabFileAnnotation
 		name = ti.executeTimeLoopJobName
 		onCycle = false
 		iterationCounter = ti.toIrIterationCounter
 		whileCondition = ti.condition.toIrExpression
 		timeLoopJob = true
+		timeIterator = ti.toIrTimeIterator
 	}
 
 	def getSetUpTimeLoopJobName(TimeIterator ti) { SETUP_TIMELOOP_PREFIX + ti.name.toFirstUpper }

@@ -32,7 +32,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil
 
 class IrModuleFactory
 {
-	@Inject extension IrAnnotationHelper
+	@Inject extension NabLabFileAnnotationFactory
 	@Inject extension DeclarationProvider
 	@Inject extension TimeIteratorExtensions
 	@Inject extension IrArgOrVarFactory
@@ -59,7 +59,7 @@ class IrModuleFactory
 			irModule = EcoreUtil.copy(irModule)
 		}
 
-		irModule.annotations += ngenModule.toIrAnnotation
+		irModule.annotations += ngenModule.toNabLabFileAnnotation
 		irModule.name = ngenModule.name
 		irModule.main = (ngenModule instanceof MainModule)
 
@@ -79,7 +79,7 @@ class IrModuleFactory
 		if (nablaModule.iteration !== null)
 			addJobsAndCountersToModule(nablaModule.iteration.iterator, it)
 
-		// Variables creation: order must be keep to ensure default values validity
+		// Variables creation: order must be kept to ensure default values validity
 		val tlJobs = jobs.filter(j | j.timeLoopJob)
 		for (d : nablaModule.declarations)
 			switch d

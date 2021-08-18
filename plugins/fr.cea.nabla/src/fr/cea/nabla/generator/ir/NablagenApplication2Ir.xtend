@@ -21,6 +21,7 @@ import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
+import fr.cea.nabla.ir.ir.MeshExtensionProvider
 import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.nabla.ArgOrVar
@@ -29,19 +30,21 @@ import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.TimeIteratorBlock
 import fr.cea.nabla.nablagen.NablagenApplication
 import fr.cea.nabla.nablagen.NablagenModule
+import java.util.LinkedHashSet
 import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.xtext.EcoreUtil2
 
 class NablagenApplication2Ir
 {
-	@Inject extension IrAnnotationHelper
+	@Inject extension NabLabFileAnnotationFactory
 	@Inject extension IrBasicFactory
+	@Inject extension IrTimeIteratorFactory
 	@Inject extension TimeIteratorExtensions
 	@Inject Provider<IrModuleFactory> irModuleFactoryProvider
 
 	def create IrFactory::eINSTANCE.createIrRoot toIrRoot(NablagenApplication ngenApp)
 	{
-		annotations += ngenApp.toIrAnnotation
+		annotations += ngenApp.toNabLabFileAnnotation
 		name = ngenApp.name
 		main = IrFactory::eINSTANCE.createJobCaller
 
@@ -80,14 +83,22 @@ class NablagenApplication2Ir
 		{
 			// Default providers: only providers containing external functions are needed in IR
 			m.providers += eAllContents.filter(FunctionCall).map[function].filter(ExternFunction).map[provider].toSet
-
-			// Mesh provider
-			m.providers += eAllContents.filter(ConnectivityCall).map[connectivity.provider].toIterable
-			for (t : variables.map[type].filter(ConnectivityType))
-				for (s : t.connectivities)
-					m.providers += s.provider
-
 			providers += m.providers
+
+			if (m.main)
+			{
+				// Mesh provider
+				val meshes = new LinkedHashSet<MeshExtensionProvider>
+				meshes += eAllContents.filter(ConnectivityCall).map[connectivity.provider].toIterable
+				for (t : variables.map[type].filter(ConnectivityType))
+					for (s : t.connectivities)
+						meshes += s.provider
+
+				if (meshes.size > 1)
+					throw new Exception("Not yet implemented")
+				else if (meshes.size == 1)
+					mesh = meshes.head
+			}
 		}
 
 		// post processing
@@ -112,6 +123,7 @@ class NablagenApplication2Ir
 			postProcessing.lastDumpVariable = IrFactory.eINSTANCE.createVariable =>
 			[
 				name = "lastDump"
+				originName = name
 				type = EcoreUtil::copy(periodVariableType)
 				const = false
 				constExpr = false
@@ -126,6 +138,7 @@ class NablagenApplication2Ir
 			postProcessing.periodValue = IrFactory.eINSTANCE.createVariable =>
 			[
 				name = "outputPeriod"
+				originName = name
 				type = EcoreUtil::copy(periodVariableType)
 				const = false
 				constExpr = false
@@ -145,6 +158,9 @@ class NablagenApplication2Ir
 		root.modules += m
 		root.variables += m.variables
 		root.jobs += m.jobs
+
+		if (ngenModule.type.iteration !== null && ngenModule.type.iteration.iterator !== null)
+			root.timeIterators += createIrTimeIterators(ngenModule.type.iteration.iterator)
 	}
 
 	private def getCurrentIrVariable(IrModule m, ArgOrVar nablaVar) { getIrVariable(m, nablaVar, currentTimeIteratorName) }

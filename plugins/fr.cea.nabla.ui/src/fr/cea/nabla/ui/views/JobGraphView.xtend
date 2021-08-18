@@ -138,6 +138,7 @@ class JobGraphView extends ViewPart implements IZoomableWorkbenchPart
 		}
 		catch (Exception e)
 		{
+			// consoleFactory.printConsole(MessageType.Error, IrUtils.getStackTrace(e))
 			// An exception can occured during IR building if environment is not configured,
 			// for example compilation not done, or during transformation step. Whatever... 
 			// irModule stays null. Error message printed below.

@@ -2,13 +2,15 @@
  */
 package fr.cea.nabla.ir.ir.impl;
 
-import fr.cea.nabla.ir.ir.ExtensionProvider;
+import fr.cea.nabla.ir.ir.DefaultExtensionProvider;
 import fr.cea.nabla.ir.ir.IrModule;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.IrRoot;
 import fr.cea.nabla.ir.ir.Job;
 import fr.cea.nabla.ir.ir.JobCaller;
+import fr.cea.nabla.ir.ir.MeshExtensionProvider;
 import fr.cea.nabla.ir.ir.PostProcessing;
+import fr.cea.nabla.ir.ir.TimeIterator;
 import fr.cea.nabla.ir.ir.Variable;
 
 import java.util.Collection;
@@ -47,6 +49,8 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getTimeStepVariable <em>Time Step Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getPostProcessing <em>Post Processing</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getProviders <em>Providers</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getMesh <em>Mesh</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getTimeIterators <em>Time Iterators</em>}</li>
  * </ul>
  *
  * @generated
@@ -180,7 +184,27 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<ExtensionProvider> providers;
+	protected EList<DefaultExtensionProvider> providers;
+
+	/**
+	 * The cached value of the '{@link #getMesh() <em>Mesh</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getMesh()
+	 * @generated
+	 * @ordered
+	 */
+	protected MeshExtensionProvider mesh;
+
+	/**
+	 * The cached value of the '{@link #getTimeIterators() <em>Time Iterators</em>}' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getTimeIterators()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<TimeIterator> timeIterators;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -235,6 +259,100 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 			variables = new EObjectEList<Variable>(Variable.class, this, IrPackage.IR_ROOT__VARIABLES);
 		}
 		return variables;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EList<Job> getJobs() {
+		if (jobs == null) {
+			jobs = new EObjectEList<Job>(Job.class, this, IrPackage.IR_ROOT__JOBS);
+		}
+		return jobs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public JobCaller getMain() {
+		if (main != null && main.eIsProxy()) {
+			InternalEObject oldMain = (InternalEObject)main;
+			main = (JobCaller)eResolveProxy(oldMain);
+			if (main != oldMain) {
+				InternalEObject newMain = (InternalEObject)main;
+				NotificationChain msgs = oldMain.eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_ROOT__MAIN, null, null);
+				if (newMain.eInternalContainer() == null) {
+					msgs = newMain.eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_ROOT__MAIN, null, msgs);
+				}
+				if (msgs != null) msgs.dispatch();
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.IR_ROOT__MAIN, oldMain, main));
+			}
+		}
+		return main;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public JobCaller basicGetMain() {
+		return main;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetMain(JobCaller newMain, NotificationChain msgs) {
+		JobCaller oldMain = main;
+		main = newMain;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.IR_ROOT__MAIN, oldMain, newMain);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setMain(JobCaller newMain) {
+		if (newMain != main) {
+			NotificationChain msgs = null;
+			if (main != null)
+				msgs = ((InternalEObject)main).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_ROOT__MAIN, null, msgs);
+			if (newMain != null)
+				msgs = ((InternalEObject)newMain).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_ROOT__MAIN, null, msgs);
+			msgs = basicSetMain(newMain, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IR_ROOT__MAIN, newMain, newMain));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EList<IrModule> getModules() {
+		if (modules == null) {
+			modules = new EObjectContainmentEList.Resolving<IrModule>(IrModule.class, this, IrPackage.IR_ROOT__MODULES);
+		}
+		return modules;
 	}
 
 	/**
@@ -443,19 +561,6 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 	 * @generated
 	 */
 	@Override
-	public EList<Job> getJobs() {
-		if (jobs == null) {
-			jobs = new EObjectEList<Job>(Job.class, this, IrPackage.IR_ROOT__JOBS);
-		}
-		return jobs;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
 	public PostProcessing getPostProcessing() {
 		if (postProcessing != null && postProcessing.eIsProxy()) {
 			InternalEObject oldPostProcessing = (InternalEObject)postProcessing;
@@ -524,9 +629,9 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 	 * @generated
 	 */
 	@Override
-	public EList<ExtensionProvider> getProviders() {
+	public EList<DefaultExtensionProvider> getProviders() {
 		if (providers == null) {
-			providers = new EObjectContainmentEList.Resolving<ExtensionProvider>(ExtensionProvider.class, this, IrPackage.IR_ROOT__PROVIDERS);
+			providers = new EObjectContainmentEList.Resolving<DefaultExtensionProvider>(DefaultExtensionProvider.class, this, IrPackage.IR_ROOT__PROVIDERS);
 		}
 		return providers;
 	}
@@ -537,22 +642,22 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 	 * @generated
 	 */
 	@Override
-	public JobCaller getMain() {
-		if (main != null && main.eIsProxy()) {
-			InternalEObject oldMain = (InternalEObject)main;
-			main = (JobCaller)eResolveProxy(oldMain);
-			if (main != oldMain) {
-				InternalEObject newMain = (InternalEObject)main;
-				NotificationChain msgs = oldMain.eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_ROOT__MAIN, null, null);
-				if (newMain.eInternalContainer() == null) {
-					msgs = newMain.eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_ROOT__MAIN, null, msgs);
+	public MeshExtensionProvider getMesh() {
+		if (mesh != null && mesh.eIsProxy()) {
+			InternalEObject oldMesh = (InternalEObject)mesh;
+			mesh = (MeshExtensionProvider)eResolveProxy(oldMesh);
+			if (mesh != oldMesh) {
+				InternalEObject newMesh = (InternalEObject)mesh;
+				NotificationChain msgs = oldMesh.eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_ROOT__MESH, null, null);
+				if (newMesh.eInternalContainer() == null) {
+					msgs = newMesh.eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_ROOT__MESH, null, msgs);
 				}
 				if (msgs != null) msgs.dispatch();
 				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.IR_ROOT__MAIN, oldMain, main));
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.IR_ROOT__MESH, oldMesh, mesh));
 			}
 		}
-		return main;
+		return mesh;
 	}
 
 	/**
@@ -560,8 +665,8 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public JobCaller basicGetMain() {
-		return main;
+	public MeshExtensionProvider basicGetMesh() {
+		return mesh;
 	}
 
 	/**
@@ -569,11 +674,11 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetMain(JobCaller newMain, NotificationChain msgs) {
-		JobCaller oldMain = main;
-		main = newMain;
+	public NotificationChain basicSetMesh(MeshExtensionProvider newMesh, NotificationChain msgs) {
+		MeshExtensionProvider oldMesh = mesh;
+		mesh = newMesh;
 		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.IR_ROOT__MAIN, oldMain, newMain);
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.IR_ROOT__MESH, oldMesh, newMesh);
 			if (msgs == null) msgs = notification; else msgs.add(notification);
 		}
 		return msgs;
@@ -585,18 +690,18 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 	 * @generated
 	 */
 	@Override
-	public void setMain(JobCaller newMain) {
-		if (newMain != main) {
+	public void setMesh(MeshExtensionProvider newMesh) {
+		if (newMesh != mesh) {
 			NotificationChain msgs = null;
-			if (main != null)
-				msgs = ((InternalEObject)main).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_ROOT__MAIN, null, msgs);
-			if (newMain != null)
-				msgs = ((InternalEObject)newMain).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_ROOT__MAIN, null, msgs);
-			msgs = basicSetMain(newMain, msgs);
+			if (mesh != null)
+				msgs = ((InternalEObject)mesh).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_ROOT__MESH, null, msgs);
+			if (newMesh != null)
+				msgs = ((InternalEObject)newMesh).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - IrPackage.IR_ROOT__MESH, null, msgs);
+			msgs = basicSetMesh(newMesh, msgs);
 			if (msgs != null) msgs.dispatch();
 		}
 		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IR_ROOT__MAIN, newMain, newMain));
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.IR_ROOT__MESH, newMesh, newMesh));
 	}
 
 	/**
@@ -605,11 +710,11 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 	 * @generated
 	 */
 	@Override
-	public EList<IrModule> getModules() {
-		if (modules == null) {
-			modules = new EObjectContainmentEList.Resolving<IrModule>(IrModule.class, this, IrPackage.IR_ROOT__MODULES);
+	public EList<TimeIterator> getTimeIterators() {
+		if (timeIterators == null) {
+			timeIterators = new EObjectContainmentEList.Resolving<TimeIterator>(TimeIterator.class, this, IrPackage.IR_ROOT__TIME_ITERATORS);
 		}
-		return modules;
+		return timeIterators;
 	}
 
 	/**
@@ -628,6 +733,10 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 				return basicSetPostProcessing(null, msgs);
 			case IrPackage.IR_ROOT__PROVIDERS:
 				return ((InternalEList<?>)getProviders()).basicRemove(otherEnd, msgs);
+			case IrPackage.IR_ROOT__MESH:
+				return basicSetMesh(null, msgs);
+			case IrPackage.IR_ROOT__TIME_ITERATORS:
+				return ((InternalEList<?>)getTimeIterators()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -671,6 +780,11 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 				return basicGetPostProcessing();
 			case IrPackage.IR_ROOT__PROVIDERS:
 				return getProviders();
+			case IrPackage.IR_ROOT__MESH:
+				if (resolve) return getMesh();
+				return basicGetMesh();
+			case IrPackage.IR_ROOT__TIME_ITERATORS:
+				return getTimeIterators();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -722,7 +836,14 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 				return;
 			case IrPackage.IR_ROOT__PROVIDERS:
 				getProviders().clear();
-				getProviders().addAll((Collection<? extends ExtensionProvider>)newValue);
+				getProviders().addAll((Collection<? extends DefaultExtensionProvider>)newValue);
+				return;
+			case IrPackage.IR_ROOT__MESH:
+				setMesh((MeshExtensionProvider)newValue);
+				return;
+			case IrPackage.IR_ROOT__TIME_ITERATORS:
+				getTimeIterators().clear();
+				getTimeIterators().addAll((Collection<? extends TimeIterator>)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -772,6 +893,12 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 			case IrPackage.IR_ROOT__PROVIDERS:
 				getProviders().clear();
 				return;
+			case IrPackage.IR_ROOT__MESH:
+				setMesh((MeshExtensionProvider)null);
+				return;
+			case IrPackage.IR_ROOT__TIME_ITERATORS:
+				getTimeIterators().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -808,6 +935,10 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 				return postProcessing != null;
 			case IrPackage.IR_ROOT__PROVIDERS:
 				return providers != null && !providers.isEmpty();
+			case IrPackage.IR_ROOT__MESH:
+				return mesh != null;
+			case IrPackage.IR_ROOT__TIME_ITERATORS:
+				return timeIterators != null && !timeIterators.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}

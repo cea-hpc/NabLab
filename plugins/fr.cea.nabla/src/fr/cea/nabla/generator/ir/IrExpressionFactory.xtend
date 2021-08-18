@@ -53,7 +53,7 @@ class IrExpressionFactory
 	@Inject extension ReductionCallExtensions
 	@Inject extension DeclarationProvider
 	@Inject extension ExpressionTypeProvider
-	@Inject extension IrAnnotationHelper
+	@Inject extension NabLabFileAnnotationFactory
 	@Inject extension IrFunctionFactory
 	@Inject extension IrArgOrVarFactory
 	@Inject extension IrItemIndexFactory
@@ -64,7 +64,7 @@ class IrExpressionFactory
 	{
 		IrFactory::eINSTANCE.createContractedIf =>
 		[
-			annotations += e.toIrAnnotation
+			annotations += e.toNabLabFileAnnotation
 			type = e.typeFor?.toIrType
 			condition = e.condition.toIrExpression
 			thenExpression = e.then.toIrExpression
@@ -87,7 +87,7 @@ class IrExpressionFactory
 	{
 		IrFactory::eINSTANCE.createParenthesis =>
 		[
-			annotations += e.toIrAnnotation
+			annotations += e.toNabLabFileAnnotation
 			type = e.typeFor?.toIrType
 			expression = e.expression.toIrExpression
 			constExpr = expression.constExpr
@@ -101,7 +101,7 @@ class IrExpressionFactory
 	{
 		IrFactory::eINSTANCE.createIntConstant =>
 		[
-			annotations += e.toIrAnnotation 
+			annotations += e.toNabLabFileAnnotation 
 			type = e.typeFor?.toIrType
 			value = e.value
 			constExpr = true
@@ -112,7 +112,7 @@ class IrExpressionFactory
 	{
 		IrFactory::eINSTANCE.createRealConstant =>
 		[ 
-			annotations += e.toIrAnnotation
+			annotations += e.toNabLabFileAnnotation
 			type = e.typeFor?.toIrType
 			value = e.value
 			constExpr = true
@@ -123,7 +123,7 @@ class IrExpressionFactory
 	{
 		IrFactory::eINSTANCE.createBoolConstant =>
 		[ 
-			annotations += e.toIrAnnotation
+			annotations += e.toNabLabFileAnnotation
 			type = e.typeFor?.toIrType
 			value = e.value
 			constExpr = true
@@ -134,7 +134,7 @@ class IrExpressionFactory
 	{
 		IrFactory::eINSTANCE.createMinConstant =>
 		[ 
-			annotations += e.toIrAnnotation
+			annotations += e.toNabLabFileAnnotation
 			type = e.typeFor?.toIrType
 			constExpr = true
 		]
@@ -144,7 +144,7 @@ class IrExpressionFactory
 	{
 		IrFactory::eINSTANCE.createMaxConstant => 
 		[ 
-			annotations += e.toIrAnnotation
+			annotations += e.toNabLabFileAnnotation
 			type = e.typeFor?.toIrType
 			constExpr = true
 		]
@@ -154,7 +154,7 @@ class IrExpressionFactory
 	{
 		IrFactory::eINSTANCE.createFunctionCall =>
 		[
-			annotations += e.toIrAnnotation
+			annotations += e.toNabLabFileAnnotation
 			type = e.typeFor?.toIrType
 			function = e.declaration.model.toIrFunction
 			args += e.args.map[toIrExpression]
@@ -167,7 +167,7 @@ class IrExpressionFactory
 		val irVariable = e.toIrLocalVariable
 		IrFactory::eINSTANCE.createArgOrVarRef =>
 		[
-			annotations += e.toIrAnnotation
+			annotations += e.toNabLabFileAnnotation
 			type = e.typeFor?.toIrType
 			target = irVariable
 			constExpr = true
@@ -178,7 +178,7 @@ class IrExpressionFactory
 	{
 		IrFactory::eINSTANCE.createBaseTypeConstant => 
 		[ 
-			annotations += e.toIrAnnotation
+			annotations += e.toNabLabFileAnnotation
 			type = e.typeFor?.toIrType // for arrays, only IntConstants in sizes
 			value = e.value.toIrExpression 
 			constExpr = true // because for arrays only IntConstants in sizes
@@ -189,7 +189,7 @@ class IrExpressionFactory
 	{
 		IrFactory::eINSTANCE.createVectorConstant =>
 		[ 
-			annotations += e.toIrAnnotation
+			annotations += e.toNabLabFileAnnotation
 			type = e.typeFor?.toIrType
 			e.values.forEach[x | values += x.toIrExpression]
 			constExpr = values.forall[constExpr]
@@ -200,7 +200,7 @@ class IrExpressionFactory
 	{
 		IrFactory::eINSTANCE.createCardinality =>
 		[ 
-			annotations += e.toIrAnnotation
+			annotations += e.toNabLabFileAnnotation
 			container = e.container.toIrContainer
 			// cardinality of a connectivity with no arg generates a constant
 			val eCont = e.container
@@ -217,7 +217,7 @@ class IrExpressionFactory
 	{
 		IrFactory::eINSTANCE.createArgOrVarRef =>
 		[ 
-			annotations += e.toIrAnnotation
+			annotations += e.toNabLabFileAnnotation
 			type = e.typeFor?.toIrType
 			target = e.target.toIrArgOrVar(getIrTimeSuffix(e.timeIterators))
 			e.indices.forEach[x | indices += x.toIrExpression]
@@ -229,7 +229,7 @@ class IrExpressionFactory
 
 	private def create IrFactory::eINSTANCE.createBinaryExpression toIrBinaryExpr(fr.cea.nabla.nabla.Expression container, fr.cea.nabla.nabla.Expression l, fr.cea.nabla.nabla.Expression r, String op)
 	{
-		annotations += container.toIrAnnotation
+		annotations += container.toNabLabFileAnnotation
 		type = container.typeFor?.toIrType
 		operator = op
 		left = l.toIrExpression
@@ -239,7 +239,7 @@ class IrExpressionFactory
 
 	private def create IrFactory::eINSTANCE.createUnaryExpression toIrUnaryExpr(fr.cea.nabla.nabla.Expression container, fr.cea.nabla.nabla.Expression e, String op)
 	{
-		annotations += container.toIrAnnotation
+		annotations += container.toNabLabFileAnnotation
 		type = container.typeFor?.toIrType
 		operator = op
 		expression = e.toIrExpression

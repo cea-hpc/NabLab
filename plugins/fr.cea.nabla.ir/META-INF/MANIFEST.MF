@@ -9,6 +9,7 @@ Bundle-Vendor: CEA
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: fr.cea.nabla.ir,
+ fr.cea.nabla.ir.annotations,
  fr.cea.nabla.ir.generator,
  fr.cea.nabla.ir.generator.cpp,
  fr.cea.nabla.ir.generator.arcane,

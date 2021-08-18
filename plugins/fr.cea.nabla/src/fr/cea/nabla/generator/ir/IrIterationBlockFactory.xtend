@@ -23,7 +23,7 @@ import java.util.List
 @Singleton
 class IrIterationBlockFactory 
 {
-	@Inject extension IrAnnotationHelper
+	@Inject extension NabLabFileAnnotationFactory
 	@Inject extension IrContainerFactory
 	@Inject extension IrItemIndexDefinitionFactory
 	@Inject extension IrItemIdDefinitionFactory
@@ -38,7 +38,7 @@ class IrIterationBlockFactory
 
 	def dispatch IterationBlock create IrFactory::eINSTANCE.createIterator toIrIterationBlock(SpaceIterator b)
 	{
-		annotations += b.toIrAnnotation
+		annotations += b.toNabLabFileAnnotation
 		index = b.toIrIndex
 		if (b.counter !== null) counter = toIrVariable(b.counter)
 		container = toIrContainer(b.container)
@@ -46,7 +46,7 @@ class IrIterationBlockFactory
 
 	def dispatch IterationBlock create IrFactory::eINSTANCE.createInterval toIrIterationBlock(Interval b)
 	{
-		annotations += b.toIrAnnotation
+		annotations += b.toNabLabFileAnnotation
 		index = b.index.toIrVariable
 		nbElems = b.nbElems.toIrExpression
 	}

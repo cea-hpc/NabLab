@@ -17,14 +17,9 @@ import static extension fr.cea.nabla.ir.JobExtensions.getDisplayName
 
 class JobCallerExtensions
 {
-	static def boolean isInit(JobCaller jc)
+	static def boolean isMain(JobCaller jc)
 	{
 		!(jc instanceof ExecuteTimeLoopJob)
-	}
-
-	static def boolean isMainTimeLoop(JobCaller jc)
-	{
-		jc instanceof ExecuteTimeLoopJob && (jc as ExecuteTimeLoopJob).caller.init
 	}
 
 	static def getName(JobCaller jobCaller)

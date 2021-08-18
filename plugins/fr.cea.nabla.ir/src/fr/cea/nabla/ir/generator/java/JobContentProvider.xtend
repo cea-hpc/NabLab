@@ -47,7 +47,7 @@ class JobContentProvider
 		do
 		{
 			«itVar»++;
-			«IF mainTimeLoop»
+			«IF caller.main»
 				System.out.printf("START ITERATION «iterationCounter.name»: %5d - t: %5.5f - deltat: %5.5f\n", «itVar», «tn», «deltat»);
 				«IF ppInfo !== null»
 					if («ppInfo.periodReference.codeName» >= «ppInfo.lastDumpVariable.codeName» + «ppInfo.periodValue.codeName»)
@@ -66,7 +66,7 @@ class JobContentProvider
 
 			«instruction.innerContent»
 		} while (continueLoop);
-		«IF mainTimeLoop»
+		«IF caller.main»
 
 			System.out.printf("FINAL TIME: %5.5f - deltat: %5.5f\n", «tn», «deltat»);
 			«IF ppInfo !== null»dumpVariables(«itVar»+1);«ENDIF»

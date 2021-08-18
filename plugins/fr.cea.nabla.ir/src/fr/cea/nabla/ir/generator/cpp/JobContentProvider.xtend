@@ -32,7 +32,8 @@ abstract class JobContentProvider
 	protected val extension JobCallerContentProvider
 
 	def getDeclarationContent(Job it)
-	'''void «codeName»() noexcept;'''
+	'''
+		void «codeName»() noexcept;'''
 
 	def getDefinitionContent(Job it)
 	'''
@@ -59,15 +60,17 @@ abstract class JobContentProvider
 		bool continueLoop = true;
 		do
 		{
-			«itVar»++;
-			«IF mainTimeLoop»
+			«IF caller.main»
 			globalTimer.start();
 			cpuTimer.start();
-			«IF ppInfo !== null»
-			if (!writer.isDisabled() && «ppInfo.periodReference.codeName» >= «ppInfo.lastDumpVariable.codeName» + «ppInfo.periodValue.codeName»)
-				dumpVariables(«itVar»);
 			«ENDIF»
-			«traceContentProvider.getBeginOfLoopTrace(irModule, itVar)»
+			«itVar»++;
+			«IF caller.main»
+				«IF ppInfo !== null»
+				if (!writer.isDisabled() && «ppInfo.periodReference.codeName» >= «ppInfo.lastDumpVariable.codeName» + «ppInfo.periodValue.codeName»)
+					dumpVariables(«itVar»);
+				«ENDIF»
+				«traceContentProvider.getBeginOfLoopTrace(irModule, itVar)»
 
 			«ENDIF»
 			«callsContent»
@@ -76,7 +79,7 @@ abstract class JobContentProvider
 			continueLoop = («whileCondition.content»);
 
 			«instruction.innerContent»
-			«IF mainTimeLoop»
+			«IF caller.main»
 
 			cpuTimer.stop();
 			globalTimer.stop();
@@ -87,7 +90,7 @@ abstract class JobContentProvider
 			ioTimer.reset();
 			«ENDIF»
 		} while (continueLoop);
-		«IF mainTimeLoop»
+		«IF caller.main»
 			«IF ppInfo !== null»
 			if (!writer.isDisabled())
 				dumpVariables(«itVar»+1, false);

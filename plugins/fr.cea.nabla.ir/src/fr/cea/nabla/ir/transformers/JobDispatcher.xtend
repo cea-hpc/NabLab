@@ -81,8 +81,8 @@ class JobDispatcher
 	private def boolean includes(JobCaller a, JobCaller b, String prefix)
 	{
 		//println(prefix + "includes(" + a + ", " + b + ")")
-		if (a === b || b.init) return false
-		if (a.init) return true
+		if (a === b || b.main) return false
+		if (a.main) return true
 		for (call : a.calls.filter(JobCaller))
 			if (call === b || includes(call, b, prefix + '\t'))
 				return true

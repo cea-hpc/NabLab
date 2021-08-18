@@ -10,7 +10,7 @@
 package fr.cea.nabla.ir.generator
 
 import fr.cea.nabla.ir.IrUtils
-import fr.cea.nabla.ir.ir.ExtensionProvider
+import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 
@@ -32,7 +32,7 @@ class CMakeUtils
 		«ENDIF»
 	'''
 
-	static def setVariables(Iterable<Pair<String, String>> variables, Iterable<? extends ExtensionProvider> providers)
+	static def setVariables(Iterable<Pair<String, String>> variables, Iterable<DefaultExtensionProvider> providers)
 	'''
 		# SET VARIABLES
 		«FOR v : variables»
@@ -55,7 +55,7 @@ class CMakeUtils
 		«ENDIF»
 	'''
 
-	static def addSubDirectories(boolean needNablalib, Iterable<? extends ExtensionProvider> providers)
+	static def addSubDirectories(boolean needNablalib, Iterable<DefaultExtensionProvider> providers)
 	'''
 		«IF needNablalib || !providers.empty»
 			# SUB_DIRECTORIES

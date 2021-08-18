@@ -21,7 +21,6 @@ class VariableRegionAnnotation
 	enum RegionType { CPU, GPU, BOTH }
 	
 	static def get(Variable object) { _get(object) }
-	def put(Variable object) { _put(object) }
 	
 	// Create an annotation for a variable
 	static def create(RegionType read, RegionType write)
@@ -74,12 +73,6 @@ class VariableRegionAnnotation
 	{
 		val o = object.annotations.findFirst[ x | x.source == ANNOTATION_SOURCE ]
 		return o === null ? null : new VariableRegionAnnotation(o)
-	}
-	
-	private def _put(IrAnnotable object)
-	{
-		object.annotations.removeIf[ x | x.source == ANNOTATION_SOURCE ]
-		object.annotations.add(irAnnotation)
 	}
 	
 	private new(IrAnnotation irAnnotation)

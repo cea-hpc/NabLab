@@ -9,9 +9,13 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.transformers
 
+import fr.cea.nabla.ir.annotations.TargetDispatchAnnotation
+import fr.cea.nabla.ir.annotations.TargetType
 import fr.cea.nabla.ir.annotations.VariableRegionAnnotation
 import fr.cea.nabla.ir.annotations.VariableRegionAnnotation.RegionType
 import fr.cea.nabla.ir.ir.IrRoot
+import fr.cea.nabla.ir.ir.IterableInstruction
+import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Variable
 
 class PutGpuAnnotations extends IrTransformationStep
@@ -27,7 +31,13 @@ class PutGpuAnnotations extends IrTransformationStep
 		
 		// Default to all CPU for now
 		ir.eAllContents.filter(Variable).forEach[ v |
-			VariableRegionAnnotation::create(RegionType.CPU, RegionType.CPU).put(v)
+			v.annotations += VariableRegionAnnotation::create(RegionType.CPU, RegionType.CPU).irAnnotation
+		]
+		ir.eAllContents.filter(Job).forEach[ job |
+			job.annotations += TargetDispatchAnnotation::create(TargetType.CPU).irAnnotation
+		]
+		ir.eAllContents.filter(IterableInstruction).forEach[ ii |
+			ii.annotations += TargetDispatchAnnotation::create(TargetType.CPU).irAnnotation
 		]
 
 		return true

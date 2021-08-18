@@ -17,7 +17,10 @@ import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.transformers.CompositeTransformationStep
 import fr.cea.nabla.ir.transformers.FillJobHLTs
+import fr.cea.nabla.ir.transformers.GpuDispatchStrategyOptions
+import fr.cea.nabla.ir.transformers.OptimistGpuDispatchStrategy
 import fr.cea.nabla.ir.transformers.OptimizeConnectivities
+import fr.cea.nabla.ir.transformers.PutGpuAnnotations
 import fr.cea.nabla.ir.transformers.ReplaceAffectations
 import fr.cea.nabla.ir.transformers.ReplaceReductions
 import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
@@ -83,12 +86,14 @@ class IrRootBuilder
 		dispatcher.post(MessageType.Exec, "Starting NabLab to IR model transformation")
 		val startTime = System.currentTimeMillis
 		val ir = nablagen2Ir.toIrRoot(ngenApp)
+		val gpuStrategy = new GpuDispatchStrategyOptions(true)
 		val commonTransformation = new CompositeTransformationStep('Common transformations', #[
 			new ReplaceUtf8Chars, 
 			new OptimizeConnectivities(#['cells', 'nodes', 'faces']),
 			new ReplaceReductions(replaceAllReductions),
 			new ReplaceAffectations,
-			new FillJobHLTs])
+			new FillJobHLTs,
+			new PutGpuAnnotations(new OptimistGpuDispatchStrategy(gpuStrategy))])
 		commonTransformation.transformIr(ir, [msg | dispatcher.post(MessageType::Exec, msg)])
 		val endTime = System.currentTimeMillis
 		dispatcher.post(MessageType.Exec, "NabLab to IR model transformation ended in " + (endTime-startTime)/1000.0 + "s")

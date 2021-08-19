@@ -9,16 +9,17 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.transformers
 
+import fr.cea.nabla.ir.annotations.EnumUtils
 import fr.cea.nabla.ir.annotations.TargetDispatchAnnotation
 import fr.cea.nabla.ir.annotations.TargetType
 import fr.cea.nabla.ir.annotations.VariableRegionAnnotation
-import fr.cea.nabla.ir.annotations.VariableRegionAnnotation.RegionType
 import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Job
-import fr.cea.nabla.ir.ir.Variable
+import org.eclipse.emf.common.util.EList
+import fr.cea.nabla.ir.annotations.RegionType
 
 class PutGpuAnnotations extends IrTransformationStep
 {
@@ -35,41 +36,45 @@ class PutGpuAnnotations extends IrTransformationStep
 	{
 		trace('    IR -> IR: ' + description)
 
-		// Apply strategy to dispatch things to CPU or GPU
+		val (boolean)=>TargetType couldToTarget = [ b | b ? TargetType.GPU : TargetType.CPU ]
+		val getJobsRegions = [ EList<Job> jobs |
+			jobs.map[ j |
+				EnumUtils::RegionFromTarget(TargetDispatchAnnotation::get(j).targetType)
+			]
+		]
 
-		ir.eAllContents.filter(Instruction).forEach[ x |
-			val dispatch = strategy.couldRunOnGPU(x) ? TargetType.GPU : TargetType.CPU
+		// Apply strategy to dispatch things to CPU or GPU.
+		// First the leaf to root pass
+
+		ir.eAllContents.filter(Expression).forEach[ x |
+			val dispatch = couldToTarget.apply(strategy.couldRunOnGPU(x))
 			x.annotations += TargetDispatchAnnotation::create(dispatch).irAnnotation
 		]
 
+		ir.eAllContents.filter(Instruction).forEach[ x |
+			val dispatch = couldToTarget.apply(strategy.couldRunOnGPU(x))
+			x.annotations += TargetDispatchAnnotation::create(dispatch).irAnnotation
+		]
+		
 		ir.eAllContents.filter(Function).forEach[ x |
-			val dispatch = strategy.couldRunOnGPU(x) ? TargetType.GPU : TargetType.CPU
+			val dispatch = couldToTarget.apply(strategy.couldRunOnGPU(x))
 			x.annotations += TargetDispatchAnnotation::create(dispatch).irAnnotation
 		]
 
 		ir.eAllContents.filter(Job).forEach[ x |
-			val dispatch = strategy.couldRunOnGPU(x) ? TargetType.GPU : TargetType.CPU
+			val dispatch = couldToTarget.apply(strategy.couldRunOnGPU(x))
 			x.annotations += TargetDispatchAnnotation::create(dispatch).irAnnotation
 		]
-
-		ir.eAllContents.filter(Expression).forEach[ x |
-			val dispatch = strategy.couldRunOnGPU(x) ? TargetType.GPU : TargetType.CPU
-			x.annotations += TargetDispatchAnnotation::create(dispatch).irAnnotation
-		]
+		
+		// Now the root to leaf pass. This is the same with any strategy
+		// TODO
 
 		// With any strategy the region read/write is the same
 
-		val jobsOnCpu = ir.eAllContents.filter(Job).filter[ x |
-			TargetDispatchAnnotation::get(x).targetType == TargetType.CPU
-		]
-
-		val variableReadOnCpu  = jobsOnCpu.map[inVars].toSet.flatten
-		val variableWriteOnCpu = jobsOnCpu.map[outVars].toSet.flatten
-
-		ir.eAllContents.filter(Variable).forEach[ v |
-			val regionRead  = variableReadOnCpu.contains(v) ? RegionType.CPU : RegionType.GPU
-			val regionWrite = variableWriteOnCpu.contains(v) ? RegionType.CPU : RegionType.GPU
-			v.annotations += VariableRegionAnnotation::create(regionRead, regionWrite).irAnnotation
+		ir.variables.forEach[ v |
+			val RegionType readRegion  = EnumUtils::FuseRegions(getJobsRegions.apply(v.consumerJobs))
+			val RegionType writeRegion = EnumUtils::FuseRegions(getJobsRegions.apply(v.producerJobs))
+			v.annotations += VariableRegionAnnotation::create(readRegion, writeRegion).irAnnotation
 		]
 
 		return true

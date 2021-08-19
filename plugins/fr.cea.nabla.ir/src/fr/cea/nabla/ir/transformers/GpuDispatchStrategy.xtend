@@ -33,22 +33,18 @@ import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.ir.VariableDeclaration
 import fr.cea.nabla.ir.ir.VectorConstant
 import fr.cea.nabla.ir.ir.While
-import org.eclipse.xtend.lib.annotations.Accessors
+import fr.cea.nabla.ir.IrUtils
 
 @Data
 class GpuDispatchStrategyOptions
 {
-	@Accessors boolean permitIfExpressions
+	boolean permitIfExpressions
 }
 
+@Data
 abstract class GpuDispatchStrategy
 {
-	protected val GpuDispatchStrategyOptions opt
-	
-	protected new(GpuDispatchStrategyOptions opt)
-	{
-		this.opt = opt
-	}
+	val GpuDispatchStrategyOptions opt
 	
 	// Used to initialize the strategy before using it if needed
 	def void init()
@@ -61,7 +57,6 @@ abstract class GpuDispatchStrategy
 
 class OptimistGpuDispatchStrategy extends GpuDispatchStrategy
 {
-	
 	new(GpuDispatchStrategyOptions opt)
 	{
 		super(opt)
@@ -71,8 +66,8 @@ class OptimistGpuDispatchStrategy extends GpuDispatchStrategy
 	
 	override boolean couldRunOnGPU(Function it) {
 		switch it {
-			ExternFunction: return false
-			InternFunction: return body.couldRunOnGPU
+			ExternFunction: false
+			InternFunction: body.couldRunOnGPU
 			default: throw new Error("Unexpected function type for " + it.toString)
 		}
 	}
@@ -83,18 +78,18 @@ class OptimistGpuDispatchStrategy extends GpuDispatchStrategy
 		{
 			ArgOrVarRef | Cardinality | VectorConstant | BaseTypeConstant |
 			MinConstant | MaxConstant | BoolConstant | RealConstant | IntConstant |
-			Parenthesis: return true
+			Parenthesis: true
 
-			ContractedIf: return opt.permitIfExpressions
+			ContractedIf: opt.permitIfExpressions
 				&& condition.couldRunOnGPU
 				&& thenExpression.couldRunOnGPU
 				&& elseExpression.couldRunOnGPU
 
-			BinaryExpression: return left.couldRunOnGPU
+			BinaryExpression: left.couldRunOnGPU
 				&& right.couldRunOnGPU
 
-			FunctionCall: return function.couldRunOnGPU
-			UnaryExpression: return expression.couldRunOnGPU
+			FunctionCall: function.couldRunOnGPU
+			UnaryExpression: expression.couldRunOnGPU
 
 			default: throw new Error("Unexprected expression type for " + it.toString)
 		}
@@ -104,9 +99,10 @@ class OptimistGpuDispatchStrategy extends GpuDispatchStrategy
 	{
 		switch it
 		{
-			While | Return: return true
-			Exit: return false
-			ItemIndexDefinition | ItemIdDefinition | SetDefinition: true // FIXME: For now
+			While | Return | VariableDeclaration | ItemIndexDefinition |
+			ItemIdDefinition | SetDefinition: true
+
+			Exit: false
 			
 			If: return opt.permitIfExpressions
 
@@ -115,26 +111,28 @@ class OptimistGpuDispatchStrategy extends GpuDispatchStrategy
 					instructions.map[couldRunOnGPU].reduce[t1, t2 | t1 && t2] : true
 			}
 
-			VariableDeclaration: {
-				// FIXME: Only permit constexpr variables for now. We should
-				// manually check if the generated variables will be
-				// compatible with GPU (avoid std::vector...)
-				return variable.constExpr
-			}
-
+			// NOTE: The Affectation inherits the 'GPU-Able' state of its
+			// parent! Top level affectations can't be placed on GPU because
+			// one affectation can't be run in parallel.
 			Affectation: {
-				// FIXME: Get the height of the affectation...
-				return true
+				if (null !== IrUtils::getContainerOfType(it, Loop) ||
+					null !== IrUtils::getContainerOfType(it, ReductionInstruction))
+					return true
+
+				val possibleParentFunction = IrUtils::getContainerOfType(it, Function)
+				if (possibleParentFunction !== null)
+					return possibleParentFunction.couldRunOnGPU
+
+				return false
 			}
 
 			ReductionInstruction: {
-				return binaryFunction.couldRunOnGPU
-					&& lambda.couldRunOnGPU
-					&& ((innerInstructions.size != 0) ?
-						innerInstructions.map[couldRunOnGPU].reduce[t1, t2 | t1 && t2] : true)
+				binaryFunction.couldRunOnGPU && lambda.couldRunOnGPU &&
+				((innerInstructions.size != 0) ?
+					innerInstructions.map[couldRunOnGPU].reduce[t1, t2 | t1 && t2] : true)
 			}
 
-			Loop: return body.couldRunOnGPU
+			Loop: body.couldRunOnGPU
 
 			default: throw new Error("Unexpected instruction type for " + it.toString)
 		}

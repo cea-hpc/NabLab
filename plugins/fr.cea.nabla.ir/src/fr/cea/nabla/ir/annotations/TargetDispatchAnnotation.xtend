@@ -7,8 +7,6 @@ import fr.cea.nabla.ir.ir.IterableInstruction
 import fr.cea.nabla.ir.ir.Job
 import org.eclipse.xtend.lib.annotations.Accessors
 
-enum TargetType { CPU, GPU }
-
 class TargetDispatchAnnotation
 {
 	static val ANNOTATION_SOURCE = TargetDispatchAnnotation.name

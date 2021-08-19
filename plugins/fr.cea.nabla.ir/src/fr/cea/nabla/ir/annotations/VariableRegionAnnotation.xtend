@@ -18,8 +18,6 @@ class VariableRegionAnnotation
 	
 	@Accessors val IrAnnotation irAnnotation
 	
-	enum RegionType { CPU, GPU, BOTH }
-	
 	static def get(Variable object) { _get(object) }
 	
 	// Create an annotation for a variable

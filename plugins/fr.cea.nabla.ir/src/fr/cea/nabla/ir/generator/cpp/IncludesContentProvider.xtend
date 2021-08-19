@@ -130,3 +130,12 @@ class OpenMpIncludesContentProvider extends IncludesContentProvider
 	}
 }
 
+class OpenMpTaskIncludesContentProvider extends IncludesContentProvider
+{
+	override getSystemIncludes(boolean hasLevelDB)
+	{
+		val includes = super.getSystemIncludes(hasLevelDB)
+		includes += "omp.h"
+		return includes
+	}
+}

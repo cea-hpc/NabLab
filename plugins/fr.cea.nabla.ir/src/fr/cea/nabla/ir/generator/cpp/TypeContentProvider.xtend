@@ -184,3 +184,25 @@ class KokkosTypeContentProvider extends TypeContentProvider
 	override formatIterators(ConnectivityType type, Iterable<String> iterators)
 	'''«FOR i : iterators BEFORE '(' SEPARATOR ', ' AFTER ')'»«i»«ENDFOR»'''
 }
+
+class OpenMpTaskTypeContentProvider extends TypeContentProvider
+{
+	override getCppType(BaseType baseType, Iterable<Connectivity> connectivities) 
+	{
+		if (connectivities.empty) baseType.cppType
+		else 'std::vector<' + getCppType(baseType, connectivities.tail) + '>'
+	}
+
+	override getCstrInit(String name, BaseType baseType, Iterable<Connectivity> connectivities)
+	{
+		switch connectivities.size
+		{
+			case 0: throw new RuntimeException("Ooops. Can not be there, normally...")
+			case 1: connectivities.get(0).nbElemsVar
+			default: '''«connectivities.get(0).nbElemsVar», «getCppType(baseType, connectivities.tail)»(«getCstrInit(name, baseType, connectivities.tail)»)''' 
+		}
+	}
+
+	override formatIterators(ConnectivityType type, Iterable<String> iterators)
+	'''«FOR i : iterators»[«i»]«ENDFOR»'''
+}

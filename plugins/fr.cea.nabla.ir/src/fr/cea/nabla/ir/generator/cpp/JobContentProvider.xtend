@@ -134,3 +134,8 @@ class KokkosTeamThreadJobContentProvider extends KokkosJobContentProvider
 		else #["const member_type& teamMember"]
 	}
 }
+
+@Data
+class OpenMpTaskJobContentProvider extends JobContentProvider
+{
+}

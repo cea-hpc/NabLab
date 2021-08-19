@@ -12,8 +12,13 @@ package fr.cea.nabla.ir.generator.cpp
 import fr.cea.nabla.ir.generator.jni.Jniable
 import fr.cea.nabla.ir.ir.ExtensionProvider
 import fr.cea.nabla.ir.ir.ExternFunction
+import fr.cea.nabla.ir.transformers.CompositeTransformationStep
+import fr.cea.nabla.ir.transformers.GpuDispatchStrategyOptions
 import fr.cea.nabla.ir.transformers.IrTransformationStep
+import fr.cea.nabla.ir.transformers.OptimistGpuDispatchStrategy
+import fr.cea.nabla.ir.transformers.PutGpuAnnotations
 import fr.cea.nabla.ir.transformers.ReplaceReductions
+import java.util.ArrayList
 import org.eclipse.xtend.lib.annotations.Accessors
 
 abstract class Backend implements Jniable
@@ -31,6 +36,7 @@ abstract class Backend implements Jniable
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) JobCallerContentProvider jobCallerContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) JobContentProvider jobContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) MainContentProvider mainContentProvider
+	@Accessors(PRIVATE_GETTER, PUBLIC_SETTER) ArrayList<Pair<String, String>> options
 
 	override getJniDefinitionContent(ExternFunction f, ExtensionProvider provider)
 	{
@@ -131,5 +137,28 @@ class OpenMpBackend extends Backend
 		jobCallerContentProvider = new JobCallerContentProvider
 		jobContentProvider = new StlThreadJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider)
 		mainContentProvider = new MainContentProvider(jsonContentProvider)
+	}
+}
+
+class OpenMpTaskBackend extends Backend
+{
+	new()
+	{
+		name = 'OpenMPTask'
+		cmakeContentProvider = new OpenMpCMakeContentProvider
+		typeContentProvider = new OpenMpTaskTypeContentProvider
+		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
+		instructionContentProvider = new OpenMpTaskInstructionContentProvider(typeContentProvider, expressionContentProvider)
+		functionContentProvider = new DefaultFunctionContentProvider(typeContentProvider, expressionContentProvider, instructionContentProvider)
+		traceContentProvider = new TraceContentProvider
+		includesContentProvider = new OpenMpTaskIncludesContentProvider
+		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
+		jobCallerContentProvider = new JobCallerContentProvider
+		jobContentProvider = new OpenMpTaskJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider)
+		mainContentProvider = new MainContentProvider(jsonContentProvider)
+
+		irTransformationStep = new CompositeTransformationStep('OpenMPTask specific transformations', #[
+			new PutGpuAnnotations(new OptimistGpuDispatchStrategy(new GpuDispatchStrategyOptions(true)))
+		])
 	}
 }

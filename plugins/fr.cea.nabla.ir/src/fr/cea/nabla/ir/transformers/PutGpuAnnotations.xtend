@@ -24,7 +24,6 @@ import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Job
 import java.util.Iterator
 import org.eclipse.emf.common.util.EList
-import org.eclipse.emf.ecore.EObject
 
 class PutGpuAnnotations extends IrTransformationStep
 {
@@ -41,15 +40,10 @@ class PutGpuAnnotations extends IrTransformationStep
 	{
 		trace('    IR -> IR: ' + description)
 
-		val (boolean)=>TargetType couldToTarget = [ b | b ? TargetType.GPU : TargetType.CPU ]
-		val getJobsRegions = [ EList<Job> jobs |
-			jobs.map[ j |
-				EnumUtils::RegionFromTarget(TargetDispatchAnnotation::get(j).targetType)
-			]
-		]
-
 		// Apply strategy to dispatch things to CPU or GPU.
 		// First the leaf to root pass
+
+		val (boolean)=>TargetType couldToTarget = [ b | b ? TargetType.GPU : TargetType.CPU ]
 
 		ir.eAllContents.filter(Expression).forEach[ x |
 			val dispatch = couldToTarget.apply(strategy.couldRunOnGPU(x))
@@ -72,10 +66,19 @@ class PutGpuAnnotations extends IrTransformationStep
 		]
 		
 		// Now the root to leaf pass. This is the same with any strategy
+		// FIXME: Back propagation doesn't seems to work well...
 
-		ir.eAllContents.filter(Job).forEach[ x | x.instruction.backTargetPropagation(true) ]
+		ir.eAllContents.filter(Job).forEach[ x |
+			x.instruction.backTargetPropagation(true)
+		]
 
 		// With any strategy the region read/write is the same
+
+		val getJobsRegions = [ EList<Job> jobs |
+			jobs.map[ j |
+				EnumUtils::RegionFromTarget(TargetDispatchAnnotation::get(j).targetType)
+			]
+		]
 
 		ir.variables.forEach[ v |
 			val RegionType readRegion  = EnumUtils::FuseRegions(getJobsRegions.apply(v.consumerJobs))
@@ -93,24 +96,26 @@ class PutGpuAnnotations extends IrTransformationStep
 			x.annotations += TargetDispatchAnnotation::create(TargetType.CPU).irAnnotation
 		]
 
+		// TODO: Use a real recursive function and avoir the eAllContents
 		switch it
 		{
 			InstructionBlock:
 			{
-				instructions.forEach[ x | x.backTargetPropagation(true) ]
+				instructions.forEach[ x | x.backTargetPropagation(toplevel) ]
 				lambda.apply(it)
 			}
 
-			Affectation: if (toplevel)
+			Affectation: if (toplevel || containsGpuBlacklistedElement)
 			{
 				lambda.apply(it)
 				eAllContents.filter(Expression).forEach[ x | lambda.apply(x) ]
 				eAllContents.filter(Instruction).forEach[ x | lambda.apply(x) ]
 			}
-
+			
 			default:
 			{
-				if (containsGpuBlacklistedElement) {
+				if (containsGpuBlacklistedElement)
+				{
 					lambda.apply(it)
 					eAllContents.filter(Expression).forEach[ x | lambda.apply(x) ]
 					eAllContents.filter(Instruction).forEach[ x | lambda.apply(x) ]
@@ -118,13 +123,13 @@ class PutGpuAnnotations extends IrTransformationStep
 			}
 		}
 	}
-	
-	private def boolean containsGpuBlacklistedElement(EObject it)
+
+	private def boolean containsGpuBlacklistedElement(IrAnnotable it)
 	{
 		val (Iterator<TargetDispatchAnnotation>)=>boolean lambda = [ x1 |
 			if (x1 === null || x1.size == 0)
 				return false;
-				
+
 			val x2 = x1.reject[null]
 			if (x2.size == 0)
 				return false;

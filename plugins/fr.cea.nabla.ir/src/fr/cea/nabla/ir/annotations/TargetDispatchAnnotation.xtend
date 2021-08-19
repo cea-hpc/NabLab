@@ -1,9 +1,10 @@
 package fr.cea.nabla.ir.annotations
 
+import fr.cea.nabla.ir.ir.Expression
+import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.IrAnnotable
 import fr.cea.nabla.ir.ir.IrAnnotation
 import fr.cea.nabla.ir.ir.IrFactory
-import fr.cea.nabla.ir.ir.IterableInstruction
 import fr.cea.nabla.ir.ir.Job
 import org.eclipse.xtend.lib.annotations.Accessors
 
@@ -15,7 +16,13 @@ class TargetDispatchAnnotation
 	@Accessors val IrAnnotation irAnnotation
 
 	static def get(Job object) { _get(object) }
-	static def get(IterableInstruction object) { _get(object) }
+	static def get(Expression object) { _get(object) }
+	static def get(Instruction object) { _get(object) }
+	
+	static def del(IrAnnotable object)
+	{
+		object.annotations.removeIf[ x | x.source == ANNOTATION_SOURCE ]
+	}
 
 	static def create(TargetType targetType)
 	{

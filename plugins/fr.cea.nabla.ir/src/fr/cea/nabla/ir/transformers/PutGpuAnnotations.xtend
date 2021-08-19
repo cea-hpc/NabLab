@@ -10,16 +10,21 @@
 package fr.cea.nabla.ir.transformers
 
 import fr.cea.nabla.ir.annotations.EnumUtils
+import fr.cea.nabla.ir.annotations.RegionType
 import fr.cea.nabla.ir.annotations.TargetDispatchAnnotation
 import fr.cea.nabla.ir.annotations.TargetType
 import fr.cea.nabla.ir.annotations.VariableRegionAnnotation
+import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.Instruction
+import fr.cea.nabla.ir.ir.InstructionBlock
+import fr.cea.nabla.ir.ir.IrAnnotable
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Job
+import java.util.Iterator
 import org.eclipse.emf.common.util.EList
-import fr.cea.nabla.ir.annotations.RegionType
+import org.eclipse.emf.ecore.EObject
 
 class PutGpuAnnotations extends IrTransformationStep
 {
@@ -67,7 +72,8 @@ class PutGpuAnnotations extends IrTransformationStep
 		]
 		
 		// Now the root to leaf pass. This is the same with any strategy
-		// TODO
+
+		ir.eAllContents.filter(Job).forEach[ x | x.instruction.backTargetPropagation(true) ]
 
 		// With any strategy the region read/write is the same
 
@@ -78,5 +84,56 @@ class PutGpuAnnotations extends IrTransformationStep
 		]
 
 		return true
+	}
+	
+	private def void backTargetPropagation(Instruction it, boolean toplevel)
+	{
+		val (IrAnnotable)=>void lambda = [ x |
+			TargetDispatchAnnotation::del(x)
+			x.annotations += TargetDispatchAnnotation::create(TargetType.CPU).irAnnotation
+		]
+
+		switch it
+		{
+			InstructionBlock:
+			{
+				instructions.forEach[ x | x.backTargetPropagation(true) ]
+				lambda.apply(it)
+			}
+
+			Affectation: if (toplevel)
+			{
+				lambda.apply(it)
+				eAllContents.filter(Expression).forEach[ x | lambda.apply(x) ]
+				eAllContents.filter(Instruction).forEach[ x | lambda.apply(x) ]
+			}
+
+			default:
+			{
+				if (containsGpuBlacklistedElement) {
+					lambda.apply(it)
+					eAllContents.filter(Expression).forEach[ x | lambda.apply(x) ]
+					eAllContents.filter(Instruction).forEach[ x | lambda.apply(x) ]
+				}
+			}
+		}
+	}
+	
+	private def boolean containsGpuBlacklistedElement(EObject it)
+	{
+		val (Iterator<TargetDispatchAnnotation>)=>boolean lambda = [ x1 |
+			if (x1 === null || x1.size == 0)
+				return false;
+				
+			val x2 = x1.reject[null]
+			if (x2.size == 0)
+				return false;
+
+			val x3 = x2.filter[targetType == TargetType.CPU]
+			return x3.size >= 1
+		]
+
+		lambda.apply(eAllContents.filter(Expression).map[x | TargetDispatchAnnotation::get(x)]) ||
+		lambda.apply(eAllContents.filter(Instruction).map[x | TargetDispatchAnnotation::get(x)])
 	}
 }

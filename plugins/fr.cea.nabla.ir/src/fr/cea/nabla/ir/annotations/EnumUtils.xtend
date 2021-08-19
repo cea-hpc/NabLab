@@ -10,8 +10,11 @@ class EnumUtils
 
 	static def FuseRegions(Iterable<RegionType> regions)
 	{
+		// NOTE: If no region for a variable, it is considered to be "BOTH" is
+		// it's only the case for things that are initialized at the beginning
+		// of the program.
 		if (regions.size == 0)
-			throw new Exception("Can't reduce an empty list!")
+			return RegionType.BOTH
 		regions.reduce[ r1, r2 | FuseRegions(r1, r2) ]
 	}
 	

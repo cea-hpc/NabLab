@@ -1,5 +1,6 @@
 package fr.cea.nabla.ir.transformers
 
+import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.BaseTypeConstant
@@ -33,12 +34,13 @@ import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.ir.VariableDeclaration
 import fr.cea.nabla.ir.ir.VectorConstant
 import fr.cea.nabla.ir.ir.While
-import fr.cea.nabla.ir.IrUtils
+import java.util.Set
 
 @Data
 class GpuDispatchStrategyOptions
 {
 	boolean permitIfExpressions
+	Set<String> gpuBlacklistedFunction
 }
 
 @Data
@@ -65,6 +67,9 @@ class OptimistGpuDispatchStrategy extends GpuDispatchStrategy
 	override void init() { }
 	
 	override boolean couldRunOnGPU(Function it) {
+		if (opt.gpuBlacklistedFunction.contains(name))
+			return false
+
 		switch it {
 			ExternFunction: false
 			InternFunction: body.couldRunOnGPU

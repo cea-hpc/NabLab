@@ -20,6 +20,7 @@ import fr.cea.nabla.ir.transformers.PutGpuAnnotations
 import fr.cea.nabla.ir.transformers.ReplaceReductions
 import java.util.ArrayList
 import org.eclipse.xtend.lib.annotations.Accessors
+import java.util.HashSet
 
 abstract class Backend implements Jniable
 {
@@ -30,6 +31,11 @@ abstract class Backend implements Jniable
 	}
 	
 	protected ArrayList<Pair<String, String>> options
+	
+	protected def Iterable<String> checkForMultipleStringOption(String key)
+	{
+		options.filter[ pair | pair.key == key ].map[ value ]
+	}
 	
 	protected def boolean checkForFlagOption(String key, boolean flag)
 	{
@@ -190,7 +196,8 @@ class OpenMpTaskBackend extends Backend
 
 		// Build the transformation steps from the options
 		var opt = new GpuDispatchStrategyOptions(
-			checkForFlagOption("GPU_PERMIT_IF_STATEMENTS", true) // Permit IF statements on GPU
+			checkForFlagOption("GPU_PERMIT_IF_STATEMENTS", true), // Permit IF statements on GPU
+			checkForMultipleStringOption("GPU_BLACKLIST_FUNCTION").toSet // Backlist some functions
 		)
 		
 		irTransformationStep = new CompositeTransformationStep('OpenMPTask specific transformations', #[

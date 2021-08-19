@@ -23,6 +23,26 @@ import org.eclipse.xtend.lib.annotations.Accessors
 
 abstract class Backend implements Jniable
 {
+	new(ArrayList<Pair<String, String>> options)
+	{
+		this.options = options
+		options.forEach[pair | println(pair.key + " -> " + pair.value)]
+	}
+	
+	protected ArrayList<Pair<String, String>> options
+	
+	protected def boolean checkForFlagOption(String key, boolean flag)
+	{
+		val filtered = options.filter[ pair | pair.key == key ]
+		if (filtered.size <= 0)
+			return false
+		val opt = filtered.head.value.toLowerCase
+		
+		return flag
+			? (opt == "true" || opt == "1" || opt == "ok" || opt == "yes")
+			: (opt == "false" || opt == "0" || opt == "ack" || opt == "no")
+	}
+
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) String name
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) IrTransformationStep irTransformationStep = null
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) CMakeContentProvider cmakeContentProvider
@@ -36,7 +56,6 @@ abstract class Backend implements Jniable
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) JobCallerContentProvider jobCallerContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) JobContentProvider jobContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) MainContentProvider mainContentProvider
-	@Accessors(PRIVATE_GETTER, PUBLIC_SETTER) ArrayList<Pair<String, String>> options
 
 	override getJniDefinitionContent(ExternFunction f, ExtensionProvider provider)
 	{
@@ -46,8 +65,10 @@ abstract class Backend implements Jniable
 
 class SequentialBackend extends Backend
 {
-	new()
+	new(ArrayList<Pair<String, String>> options)
 	{
+		super(options)
+
 		name = 'Sequential'
 		irTransformationStep = new ReplaceReductions(true)
 		cmakeContentProvider = new CMakeContentProvider
@@ -66,8 +87,10 @@ class SequentialBackend extends Backend
 
 class StlThreadBackend extends Backend
 {
-	new()
+	new(ArrayList<Pair<String, String>> options)
 	{
+		super(options)
+
 		name = 'StlThread'
 		cmakeContentProvider = new StlThreadCMakeContentProvider
 		typeContentProvider = new StlThreadTypeContentProvider
@@ -85,8 +108,10 @@ class StlThreadBackend extends Backend
 
 class KokkosBackend extends Backend
 {
-	new()
+	new(ArrayList<Pair<String, String>> options)
 	{
+		super(options)
+
 		name = 'Kokkos'
 		cmakeContentProvider = new KokkosCMakeContentProvider
 		typeContentProvider = new KokkosTypeContentProvider
@@ -104,8 +129,10 @@ class KokkosBackend extends Backend
 
 class KokkosTeamThreadBackend extends Backend
 {
-	new()
+	new(ArrayList<Pair<String, String>> options)
 	{
+		super(options)
+
 		name = 'Kokkos Team Thread'
 		cmakeContentProvider = new KokkosCMakeContentProvider
 		typeContentProvider = new KokkosTypeContentProvider
@@ -123,8 +150,10 @@ class KokkosTeamThreadBackend extends Backend
 
 class OpenMpBackend extends Backend
 {
-	new()
+	new(ArrayList<Pair<String, String>> options)
 	{
+		super(options)
+
 		name = 'OpenMP'
 		cmakeContentProvider = new OpenMpCMakeContentProvider
 		typeContentProvider = new StlThreadTypeContentProvider
@@ -142,8 +171,10 @@ class OpenMpBackend extends Backend
 
 class OpenMpTaskBackend extends Backend
 {
-	new()
+	new(ArrayList<Pair<String, String>> options)
 	{
+		super(options)
+
 		name = 'OpenMPTask'
 		cmakeContentProvider = new OpenMpCMakeContentProvider
 		typeContentProvider = new OpenMpTaskTypeContentProvider
@@ -157,8 +188,13 @@ class OpenMpTaskBackend extends Backend
 		jobContentProvider = new OpenMpTaskJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider)
 		mainContentProvider = new MainContentProvider(jsonContentProvider)
 
+		// Build the transformation steps from the options
+		var opt = new GpuDispatchStrategyOptions(
+			checkForFlagOption("GPU_PERMIT_IF_STATEMENTS", true) // Permit IF statements on GPU
+		)
+		
 		irTransformationStep = new CompositeTransformationStep('OpenMPTask specific transformations', #[
-			new PutGpuAnnotations(new OptimistGpuDispatchStrategy(new GpuDispatchStrategyOptions(true)))
+			new PutGpuAnnotations(new OptimistGpuDispatchStrategy(opt))
 		])
 	}
 }

@@ -20,6 +20,7 @@ import fr.cea.nabla.nablagen.NablagenPackage
 import fr.cea.nabla.nablagen.NablagenProvider
 import fr.cea.nabla.nablagen.Target
 import fr.cea.nabla.nablagen.TargetType
+import java.util.ArrayList
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.scoping.IScopeProvider
 
@@ -33,6 +34,7 @@ class NablagenExtensionHelper
 	def boolean setExtensionProviders(IrRoot ir, String wsPath, Target target, boolean generate)
 	{
 		val jniGenerator = jniGeneratorProvider.get
+		val generatorOptions = new ArrayList<Pair<String, String>> // No options
 
 		// Browse IrRoot model providers which need to be filled with Ngen providers
 		for (irProvider : ir.providers.filter[x | x.extensionName != "Math"])
@@ -56,7 +58,7 @@ class NablagenExtensionHelper
 					if (target.type == TargetType::JAVA)
 					{
 						dispatcher.post(MessageType::Exec, "Starting JNI code generator: " + target.outputPath)
-						jniGenerator.transformProvider(backendFactory.getCppBackend(provider.target), irProvider as DefaultExtensionProvider, wsPath, target.outputPath, generate)
+						jniGenerator.transformProvider(backendFactory.getCppBackend(provider.target, generatorOptions), irProvider as DefaultExtensionProvider, wsPath, target.outputPath, generate)
 					}
 				}
 			}

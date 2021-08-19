@@ -17,19 +17,20 @@ import fr.cea.nabla.ir.generator.cpp.OpenMpTaskBackend
 import fr.cea.nabla.ir.generator.cpp.SequentialBackend
 import fr.cea.nabla.ir.generator.cpp.StlThreadBackend
 import fr.cea.nabla.nablagen.TargetType
+import java.util.ArrayList
 
 class BackendFactory
 {
-	def Backend getCppBackend(TargetType type)
+	def Backend getCppBackend(TargetType type, ArrayList<Pair<String, String>> options)
 	{
 		switch type
 		{
-			case CPP_SEQUENTIAL: new SequentialBackend
-			case STL_THREAD: new StlThreadBackend
-			case OPEN_MP: new OpenMpBackend
-			case OPEN_MP_TASK: new OpenMpTaskBackend
-			case KOKKOS: new KokkosBackend
-			case KOKKOS_TEAM_THREAD: new KokkosTeamThreadBackend
+			case CPP_SEQUENTIAL: new SequentialBackend(options)
+			case STL_THREAD: new StlThreadBackend(options)
+			case OPEN_MP: new OpenMpBackend(options)
+			case OPEN_MP_TASK: new OpenMpTaskBackend(options)
+			case KOKKOS: new KokkosBackend(options)
+			case KOKKOS_TEAM_THREAD: new KokkosTeamThreadBackend(options)
 			default: throw new RuntimeException("No backend for type: " + type.literal)
 		}
 	}

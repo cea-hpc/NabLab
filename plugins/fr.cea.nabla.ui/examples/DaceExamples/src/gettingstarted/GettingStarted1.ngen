@@ -1,0 +1,16 @@
+Application GettingStarted1;
+
+MainModule GettingStarted1 gettingStarted1
+{
+	nodeCoord = X;
+	time = t;
+	timeStep = δt;
+	iterationMax = maxIterations;
+	timeMax = stopTime;
+}
+
+[WriteIr]
+Java
+{
+	outputPath = "/DaceExamples/src-gen-java";
+}

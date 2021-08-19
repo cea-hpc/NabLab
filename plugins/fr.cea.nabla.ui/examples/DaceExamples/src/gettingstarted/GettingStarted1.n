@@ -1,0 +1,14 @@
+module GettingStarted1;
+
+with CartesianMesh2D.*;
+
+// Simulation options
+let ℝ stopTime = 0.2;
+let ℕ maxIterations = 20000;
+ℝ t, δt;
+ℝ[2] X{nodes};
+
+let ℝ[5] array1 = ℝ[5](0.0);
+let ℝ[5] array2 = [1.0, 2.0, 3.0, 4.0, 5.0];
+
+AddJob: array1 = array2 * 3.0;

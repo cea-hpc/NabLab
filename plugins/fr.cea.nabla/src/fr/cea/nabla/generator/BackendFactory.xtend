@@ -26,6 +26,7 @@ class BackendFactory
 			case CPP_SEQUENTIAL: new SequentialBackend
 			case STL_THREAD: new StlThreadBackend
 			case OPEN_MP: new OpenMpBackend
+			case OPEN_MP_TASK: new OpenMpBackend
 			case KOKKOS: new KokkosBackend
 			case KOKKOS_TEAM_THREAD: new KokkosTeamThreadBackend
 			default: throw new RuntimeException("No backend for type: " + type.literal)

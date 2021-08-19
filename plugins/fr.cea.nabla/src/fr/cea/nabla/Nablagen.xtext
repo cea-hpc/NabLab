@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -69,7 +69,7 @@ VtkOutput:
 OutputVar:
 	moduleRef=[NablagenModule] '.' varRef=[nabla::ConnectivityVar] 'as' varName=STRING;
 
-/* 
+/*
  * variables can be empty for Java and interpreter
  * but it triggers the generation of serialize instructions.
  */
@@ -82,7 +82,7 @@ LevelDB:
 /*
  * Java is the first enum literal i.e. the default value for interpreter.
  * Thanks to this, interpreter is considered as a Target.
- * 
+ *
  * Validation checks that there is a unique interpreter.
  * If multiple interpreter configurations are needed, the launcher
  * should integrate the outputPath as a new launch parameter
@@ -104,5 +104,4 @@ TargetVar:
 	key=ID '=' value=STRING ';';
 
 // Java must be the first enum literal to be the default value for interpreter
-enum TargetType: Java | CppSequential | StlThread | OpenMP | Kokkos | KokkosTeamThread | Arcane;
-	
+enum TargetType: Java | CppSequential | StlThread | OpenMP | Kokkos | KokkosTeamThread | Arcane | OpenMPTask;

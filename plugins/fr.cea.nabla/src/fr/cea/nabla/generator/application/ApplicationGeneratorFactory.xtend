@@ -36,12 +36,12 @@ class ApplicationGeneratorFactory
 			}
 			default:
 			{
-				val backend = backendFactory.getCppBackend(target.type)
-				backend.traceContentProvider.maxIterationsVarName = application.mainModule.iterationMax.name
-				backend.traceContentProvider.stopTimeVarName = application.mainModule.timeMax.name
 				val cmakeVars = new ArrayList<Pair<String, String>>
 				target.variables.forEach[x | cmakeVars += x.key -> x.value]
 				if (application.levelDB !== null) application.levelDB.variables.forEach[x | cmakeVars += x.key -> x.value]
+				val backend = backendFactory.getCppBackend(target.type, cmakeVars)
+				backend.traceContentProvider.maxIterationsVarName = application.mainModule.iterationMax.name
+				backend.traceContentProvider.stopTimeVarName = application.mainModule.timeMax.name
 				new CppApplicationGenerator(backend, wsPath, (application.levelDB !== null), cmakeVars)
 			}
 		}

@@ -63,9 +63,9 @@ class OptimistGpuDispatchStrategy extends GpuDispatchStrategy
 	{
 		super(opt)
 	}
-	
+
 	override void init() { }
-	
+
 	override boolean couldRunOnGPU(Function it) {
 		if (opt.gpuBlacklistedFunction.contains(name))
 			return false
@@ -99,7 +99,7 @@ class OptimistGpuDispatchStrategy extends GpuDispatchStrategy
 			default: throw new Error("Unexprected expression type for " + it.toString)
 		}
 	}
-	
+
 	override boolean couldRunOnGPU(Instruction it)
 	{
 		switch it
@@ -142,7 +142,7 @@ class OptimistGpuDispatchStrategy extends GpuDispatchStrategy
 			default: throw new Error("Unexpected instruction type for " + it.toString)
 		}
 	}
-	
+
 	override boolean couldRunOnGPU(Job it)
 	{
 		return (timeLoopJob || it instanceof ExecuteTimeLoopJob) ? false : instruction.couldRunOnGPU

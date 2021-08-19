@@ -15,6 +15,7 @@ import fr.cea.nabla.ir.generator.ProviderGenerator
 import fr.cea.nabla.ir.generator.cpp.CppProviderGenerator
 import fr.cea.nabla.ir.generator.java.JavaProviderGenerator
 import fr.cea.nabla.nablagen.TargetType
+import java.util.ArrayList
 
 class ProviderGeneratorFactory
 {
@@ -26,7 +27,7 @@ class ProviderGeneratorFactory
 		{
 			case JAVA: new JavaProviderGenerator
 			case ARCANE : throw new Exception("Not yet implemented")
-			default: new CppProviderGenerator(backendFactory.getCppBackend(targetType))
+			default: new CppProviderGenerator(backendFactory.getCppBackend(targetType, new ArrayList<Pair<String, String>>))
 		}
 	}
 }

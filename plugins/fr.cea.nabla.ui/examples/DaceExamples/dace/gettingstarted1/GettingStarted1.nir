@@ -1,69 +1,41 @@
 <?xml version="1.0" encoding="ASCII"?>
-<ir:IrRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ir="http://www.cea.fr/nabla/ir" name="GettingStarted1" variables="//@modules.0/@variables.0 //@modules.0/@variables.1 //@modules.0/@variables.2 //@modules.0/@variables.3 //@modules.0/@variables.4 //@modules.0/@variables.5 //@modules.0/@variables.6"
-    jobs="//@modules.0/@jobs.0" initNodeCoordVariable="//@modules.0/@variables.4" nodeCoordVariable="//@modules.0/@variables.4" currentTimeVariable="//@modules.0/@variables.2"
-    nextTimeVariable="//@modules.0/@variables.2" timeStepVariable="//@modules.0/@variables.3">
+<ir:IrRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ir="http://www.cea.fr/nabla/ir" name="GettingStarted1" variables="//@modules.0/@variables.0 //@modules.0/@variables.1 //@modules.0/@variables.2 //@modules.0/@variables.3 //@modules.0/@variables.4"
+    jobs="//@modules.0/@jobs.0" initNodeCoordVariable="//@modules.0/@variables.2" nodeCoordVariable="//@modules.0/@variables.2" currentTimeVariable="//@modules.0/@variables.0"
+    nextTimeVariable="//@modules.0/@variables.0" timeStepVariable="//@modules.0/@variables.1">
   <annotations source="nabla-origin">
     <details key="offset" value="0"/>
-    <details key="length" value="235"/>
+    <details key="length" value="175"/>
   </annotations>
-  <main/>
+  <main calls="//@modules.0/@jobs.0" allInVars="//@modules.0/@variables.4" allOutVars="//@modules.0/@variables.3"/>
   <modules name="gettingStarted1" main="true">
     <annotations source="nabla-origin">
       <details key="offset" value="30"/>
-      <details key="length" value="141"/>
+      <details key="length" value="89"/>
     </annotations>
-    <variables name="stopTime" const="true" constExpr="true">
-      <annotations source="nabla-origin">
-        <details key="offset" value="78"/>
-        <details key="length" value="8"/>
-      </annotations>
-      <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
-      <defaultValue xsi:type="ir:RealConstant" constExpr="true" value="0.2">
-        <annotations source="nabla-origin">
-          <details key="offset" value="89"/>
-          <details key="length" value="3"/>
-        </annotations>
-        <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
-      </defaultValue>
-    </variables>
-    <variables name="maxIterations" const="true" constExpr="true">
-      <annotations source="nabla-origin">
-        <details key="offset" value="100"/>
-        <details key="length" value="13"/>
-      </annotations>
-      <type xsi:type="ir:BaseType"/>
-      <defaultValue xsi:type="ir:IntConstant" constExpr="true" value="20000">
-        <annotations source="nabla-origin">
-          <details key="offset" value="116"/>
-          <details key="length" value="5"/>
-        </annotations>
-        <type xsi:type="ir:BaseType"/>
-      </defaultValue>
-    </variables>
     <variables name="t">
       <annotations source="nabla-origin">
-        <details key="offset" value="125"/>
+        <details key="offset" value="74"/>
         <details key="length" value="1"/>
       </annotations>
       <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
     </variables>
     <variables name="deltat">
       <annotations source="nabla-origin">
-        <details key="offset" value="128"/>
+        <details key="offset" value="77"/>
         <details key="length" value="2"/>
       </annotations>
       <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
     </variables>
     <variables name="X">
       <annotations source="nabla-origin">
-        <details key="offset" value="137"/>
+        <details key="offset" value="86"/>
         <details key="length" value="8"/>
       </annotations>
       <type xsi:type="ir:ConnectivityType" connectivities="//@mesh/@connectivities.0">
         <base primitive="&#x211d;">
           <sizes xsi:type="ir:IntConstant" constExpr="true" value="2">
             <annotations source="nabla-origin">
-              <details key="offset" value="134"/>
+              <details key="offset" value="83"/>
               <details key="length" value="1"/>
             </annotations>
             <type xsi:type="ir:BaseType"/>
@@ -71,15 +43,15 @@
         </base>
       </type>
     </variables>
-    <variables name="array1" previousJobs="//@modules.0/@jobs.0" nextJobs="//@modules.0/@jobs.0">
+    <variables name="array1" previousJobs="//@modules.0/@jobs.0">
       <annotations source="nabla-origin">
-        <details key="offset" value="157"/>
+        <details key="offset" value="106"/>
         <details key="length" value="6"/>
       </annotations>
       <type xsi:type="ir:BaseType" primitive="&#x211d;">
         <sizes xsi:type="ir:IntConstant" constExpr="true" value="5">
           <annotations source="nabla-origin">
-            <details key="offset" value="154"/>
+            <details key="offset" value="103"/>
             <details key="length" value="1"/>
           </annotations>
           <type xsi:type="ir:BaseType"/>
@@ -87,13 +59,13 @@
       </type>
       <defaultValue xsi:type="ir:BaseTypeConstant" constExpr="true">
         <annotations source="nabla-origin">
-          <details key="offset" value="166"/>
+          <details key="offset" value="115"/>
           <details key="length" value="9"/>
         </annotations>
         <type xsi:type="ir:BaseType" primitive="&#x211d;">
           <sizes xsi:type="ir:IntConstant" constExpr="true" value="5">
             <annotations source="nabla-origin">
-              <details key="offset" value="168"/>
+              <details key="offset" value="117"/>
               <details key="length" value="1"/>
             </annotations>
             <type xsi:type="ir:BaseType"/>
@@ -101,7 +73,7 @@
         </type>
         <value xsi:type="ir:RealConstant" constExpr="true">
           <annotations source="nabla-origin">
-            <details key="offset" value="171"/>
+            <details key="offset" value="120"/>
             <details key="length" value="3"/>
           </annotations>
           <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
@@ -110,13 +82,13 @@
     </variables>
     <variables name="array2" const="true" constExpr="true" nextJobs="//@modules.0/@jobs.0">
       <annotations source="nabla-origin">
-        <details key="offset" value="186"/>
+        <details key="offset" value="135"/>
         <details key="length" value="6"/>
       </annotations>
       <type xsi:type="ir:BaseType" primitive="&#x211d;">
         <sizes xsi:type="ir:IntConstant" constExpr="true" value="5">
           <annotations source="nabla-origin">
-            <details key="offset" value="183"/>
+            <details key="offset" value="132"/>
             <details key="length" value="1"/>
           </annotations>
           <type xsi:type="ir:BaseType"/>
@@ -124,7 +96,7 @@
       </type>
       <defaultValue xsi:type="ir:VectorConstant" constExpr="true">
         <annotations source="nabla-origin">
-          <details key="offset" value="195"/>
+          <details key="offset" value="144"/>
           <details key="length" value="25"/>
         </annotations>
         <type xsi:type="ir:BaseType" primitive="&#x211d;">
@@ -138,111 +110,102 @@
         </type>
         <values xsi:type="ir:RealConstant" constExpr="true" value="1.0">
           <annotations source="nabla-origin">
-            <details key="offset" value="196"/>
+            <details key="offset" value="145"/>
             <details key="length" value="3"/>
           </annotations>
           <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
         </values>
         <values xsi:type="ir:RealConstant" constExpr="true" value="2.0">
           <annotations source="nabla-origin">
-            <details key="offset" value="201"/>
+            <details key="offset" value="150"/>
             <details key="length" value="3"/>
           </annotations>
           <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
         </values>
         <values xsi:type="ir:RealConstant" constExpr="true" value="3.0">
           <annotations source="nabla-origin">
-            <details key="offset" value="206"/>
+            <details key="offset" value="155"/>
             <details key="length" value="3"/>
           </annotations>
           <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
         </values>
         <values xsi:type="ir:RealConstant" constExpr="true" value="4.0">
           <annotations source="nabla-origin">
-            <details key="offset" value="211"/>
+            <details key="offset" value="160"/>
             <details key="length" value="3"/>
           </annotations>
           <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
         </values>
         <values xsi:type="ir:RealConstant" constExpr="true" value="5.0">
           <annotations source="nabla-origin">
-            <details key="offset" value="216"/>
+            <details key="offset" value="165"/>
             <details key="length" value="3"/>
           </annotations>
           <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
         </values>
       </defaultValue>
     </variables>
-    <jobs name="AddJob" inVars="//@modules.0/@variables.6 //@modules.0/@variables.5" outVars="//@modules.0/@variables.5" previousJobs="//@modules.0/@jobs.0" nextJobs="//@modules.0/@jobs.0"
-        previousJobsWithSameCaller="//@modules.0/@jobs.0" nextJobsWithSameCaller="//@modules.0/@jobs.0">
+    <jobs name="AddJob" at="1.0" caller="//@main" inVars="//@modules.0/@variables.4" outVars="//@modules.0/@variables.3">
       <annotations source="nabla-origin">
-        <details key="offset" value="223"/>
-        <details key="length" value="33"/>
+        <details key="offset" value="172"/>
+        <details key="length" value="30"/>
         <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/GettingStarted1.n"/>
       </annotations>
       <instruction xsi:type="ir:Affectation">
         <annotations source="nabla-origin">
-          <details key="offset" value="231"/>
-          <details key="length" value="25"/>
+          <details key="offset" value="180"/>
+          <details key="length" value="22"/>
         </annotations>
-        <left target="//@modules.0/@variables.5">
+        <left target="//@modules.0/@variables.3">
           <annotations source="nabla-origin">
-            <details key="offset" value="231"/>
+            <details key="offset" value="180"/>
             <details key="length" value="6"/>
           </annotations>
           <type xsi:type="ir:BaseType" primitive="&#x211d;">
             <sizes xsi:type="ir:IntConstant" constExpr="true" value="5">
               <annotations source="nabla-origin">
-                <details key="offset" value="154"/>
+                <details key="offset" value="103"/>
                 <details key="length" value="1"/>
               </annotations>
               <type xsi:type="ir:BaseType"/>
             </sizes>
           </type>
         </left>
-        <right xsi:type="ir:BinaryExpression" operator="*">
+        <right xsi:type="ir:BinaryExpression" constExpr="true" operator="*">
           <annotations source="nabla-origin">
-            <details key="offset" value="240"/>
-            <details key="length" value="15"/>
+            <details key="offset" value="189"/>
+            <details key="length" value="12"/>
           </annotations>
           <type xsi:type="ir:BaseType" primitive="&#x211d;">
             <sizes xsi:type="ir:IntConstant" constExpr="true" value="5">
               <annotations source="nabla-origin">
-                <details key="offset" value="183"/>
+                <details key="offset" value="132"/>
                 <details key="length" value="1"/>
               </annotations>
               <type xsi:type="ir:BaseType"/>
             </sizes>
           </type>
-          <left xsi:type="ir:ArgOrVarRef" constExpr="true" target="//@modules.0/@variables.6">
+          <left xsi:type="ir:ArgOrVarRef" constExpr="true" target="//@modules.0/@variables.4">
             <annotations source="nabla-origin">
-              <details key="offset" value="240"/>
+              <details key="offset" value="189"/>
               <details key="length" value="6"/>
             </annotations>
             <type xsi:type="ir:BaseType" primitive="&#x211d;">
               <sizes xsi:type="ir:IntConstant" constExpr="true" value="5">
                 <annotations source="nabla-origin">
-                  <details key="offset" value="183"/>
+                  <details key="offset" value="132"/>
                   <details key="length" value="1"/>
                 </annotations>
                 <type xsi:type="ir:BaseType"/>
               </sizes>
             </type>
           </left>
-          <right xsi:type="ir:ArgOrVarRef" target="//@modules.0/@variables.5">
+          <right xsi:type="ir:RealConstant" constExpr="true" value="3.0">
             <annotations source="nabla-origin">
-              <details key="offset" value="249"/>
-              <details key="length" value="6"/>
+              <details key="offset" value="198"/>
+              <details key="length" value="3"/>
             </annotations>
-            <type xsi:type="ir:BaseType" primitive="&#x211d;">
-              <sizes xsi:type="ir:IntConstant" constExpr="true" value="5">
-                <annotations source="nabla-origin">
-                  <details key="offset" value="154"/>
-                  <details key="length" value="1"/>
-                </annotations>
-                <type xsi:type="ir:BaseType"/>
-              </sizes>
-            </type>
+            <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
           </right>
         </right>
       </instruction>
@@ -250,14 +213,6 @@
   </modules>
   <mesh extensionName="CartesianMesh2D">
     <itemTypes name="node">
-      <annotations source="nabla-origin">
-        <details key="offset" value="490"/>
-        <details key="length" value="4"/>
-      </annotations>
-      <annotations source="nabla-origin">
-        <details key="offset" value="490"/>
-        <details key="length" value="4"/>
-      </annotations>
       <annotations source="nabla-origin">
         <details key="offset" value="490"/>
         <details key="length" value="4"/>

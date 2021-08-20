@@ -15,6 +15,7 @@
       <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//TargetType/OpenMP"/>
       <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//TargetType/Kokkos"/>
       <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//TargetType/KokkosTeamThread"/>
+      <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//TargetType/Dace"/>
     </genEnums>
     <genClasses ecoreClass="Nablagen.ecore#//NablagenRoot"/>
     <genClasses ecoreClass="Nablagen.ecore#//NablagenProviderList">

@@ -60,6 +60,7 @@ class NablagenOutlineTreeProvider extends DefaultOutlineTreeProvider
 			case OPEN_MP: 'OpenMP C++'
 			case CPP_SEQUENTIAL: 'Sequential C++'
 			case STL_THREAD: 'Multi-thread STL C++'
+			case DACE: 'Data-Centric Parallel Programming'
 			default: 'Unknown target'
 		}
 	}
@@ -74,6 +75,7 @@ class NablagenOutlineTreeProvider extends DefaultOutlineTreeProvider
 			case OPEN_MP: NablaUiUtils.createImage('icons/OpenMP.gif')
 			case CPP_SEQUENTIAL: NablaUiUtils.createImage('icons/CppSequential.gif')
 			case STL_THREAD: NablaUiUtils.createImage('icons/StlThread.gif')
+			case DACE: NablaUiUtils.createImage('icons/Dace.gif')
 			default: null
 		}
 	}

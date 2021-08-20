@@ -5,12 +5,10 @@ MainModule GettingStarted1 gettingStarted1
 	nodeCoord = X;
 	time = t;
 	timeStep = δt;
-	iterationMax = maxIterations;
-	timeMax = stopTime;
 }
 
 [WriteIr]
-Java
+Dace
 {
-	outputPath = "/DaceExamples/src-gen-java";
+	outputPath = "/DaceExamples/dace";
 }

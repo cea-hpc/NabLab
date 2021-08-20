@@ -18,6 +18,7 @@ import fr.cea.nabla.generator.StandaloneGeneratorBase
 import fr.cea.nabla.generator.ir.IrRootBuilder
 import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.generator.cpp.CppApplicationGenerator
+import fr.cea.nabla.ir.generator.dace.DaceApplicationGenerator
 import fr.cea.nabla.ir.generator.java.JavaApplicationGenerator
 import fr.cea.nabla.ir.generator.json.JsonGenerator
 import fr.cea.nabla.ir.ir.IrRoot
@@ -79,8 +80,13 @@ class NablagenApplicationGenerator extends StandaloneGeneratorBase
 					if (!target.interpreter)
 					{
 						// Create code generator
-						val iterationMax = ngenApp.mainModule.iterationMax.name
-						val timeMax = ngenApp.mainModule.timeMax.name
+						var String iterationMax = null
+						var String timeMax = null
+						if (target.type !== TargetType.JAVA && target.type !== TargetType::DACE)
+						{
+							iterationMax = ngenApp.mainModule.iterationMax.name
+							timeMax = ngenApp.mainModule.timeMax.name
+						}
 						val g = getCodeGenerator(target, wsPath, iterationMax, timeMax, ngenApp.levelDB)
 	
 						// Apply IR transformations dedicated to this target (if necessary)
@@ -122,19 +128,20 @@ class NablagenApplicationGenerator extends StandaloneGeneratorBase
 
 	private def getCodeGenerator(Target it, String wsPath, String iterationMax, String timeMax, LevelDB levelDB)
 	{
-		if (type == TargetType::JAVA)
+		switch type
 		{
-			new JavaApplicationGenerator(levelDB !== null)
-		}
-		else
-		{
-			val backend = backendFactory.getCppBackend(type)
-			backend.traceContentProvider.maxIterationsVarName = iterationMax
-			backend.traceContentProvider.stopTimeVarName = timeMax
-			val cmakeVars = new ArrayList<Pair<String, String>>
-			variables.forEach[x | cmakeVars += x.key -> x.value]
-			if (levelDB !== null) levelDB.variables.forEach[x | cmakeVars += x.key -> x.value]
-			new CppApplicationGenerator(backend, wsPath, (levelDB !== null), cmakeVars)
+			case JAVA: new JavaApplicationGenerator(levelDB !== null)
+			case DACE: new DaceApplicationGenerator
+			default: // C++ 
+			{
+				val backend = backendFactory.getCppBackend(type)
+				backend.traceContentProvider.maxIterationsVarName = iterationMax
+				backend.traceContentProvider.stopTimeVarName = timeMax
+				val cmakeVars = new ArrayList<Pair<String, String>>
+				variables.forEach[x | cmakeVars += x.key -> x.value]
+				if (levelDB !== null) levelDB.variables.forEach[x | cmakeVars += x.key -> x.value]
+				new CppApplicationGenerator(backend, wsPath, (levelDB !== null), cmakeVars)
+			}
 		}
 	}
 

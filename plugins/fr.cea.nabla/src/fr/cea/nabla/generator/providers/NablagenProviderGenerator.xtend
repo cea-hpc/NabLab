@@ -58,10 +58,13 @@ class NablagenProviderGenerator extends StandaloneGeneratorBase
 
 	private def getCodeGenerator(TargetType targetType)
 	{
-		if (targetType == TargetType::JAVA)
-			new JavaProviderGenerator
-		else
-			new CppProviderGenerator(backendFactory.getCppBackend(targetType))
+		switch targetType
+		{
+			case JAVA: new JavaProviderGenerator
+			case DACE: new JavaProviderGenerator
+			default: // C++
+				new CppProviderGenerator(backendFactory.getCppBackend(targetType))
+		}
 	}
 
 	private def toIrDefaultExtensionProvider(NablagenProvider provider, String installationDir)

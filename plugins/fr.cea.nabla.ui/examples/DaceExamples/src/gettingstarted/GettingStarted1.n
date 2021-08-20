@@ -3,8 +3,6 @@ module GettingStarted1;
 with CartesianMesh2D.*;
 
 // Simulation options
-let ℝ stopTime = 0.2;
-let ℕ maxIterations = 20000;
 ℝ t, δt;
 ℝ[2] X{nodes};
 

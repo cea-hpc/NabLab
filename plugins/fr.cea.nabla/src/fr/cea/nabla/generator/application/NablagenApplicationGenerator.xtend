@@ -79,8 +79,13 @@ class NablagenApplicationGenerator extends StandaloneGeneratorBase
 					if (!target.interpreter)
 					{
 						// Create code generator
-						val iterationMax = ngenApp.mainModule.iterationMax.name
-						val timeMax = ngenApp.mainModule.timeMax.name
+						var String iterationMax = null
+						var String timeMax = null
+						if (target.type !== TargetType.JAVA)
+						{
+							iterationMax = ngenApp.mainModule.iterationMax.name
+							timeMax = ngenApp.mainModule.timeMax.name
+						}
 						val g = getCodeGenerator(target, wsPath, iterationMax, timeMax, ngenApp.levelDB)
 	
 						// Apply IR transformations dedicated to this target (if necessary)

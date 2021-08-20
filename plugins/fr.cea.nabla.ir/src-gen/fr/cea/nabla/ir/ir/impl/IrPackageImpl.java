@@ -64,6 +64,7 @@ import fr.cea.nabla.ir.ir.ReductionInstruction;
 import fr.cea.nabla.ir.ir.Return;
 import fr.cea.nabla.ir.ir.SetDefinition;
 import fr.cea.nabla.ir.ir.SetRef;
+import fr.cea.nabla.ir.ir.TimeIterator;
 import fr.cea.nabla.ir.ir.UnaryExpression;
 import fr.cea.nabla.ir.ir.Variable;
 import fr.cea.nabla.ir.ir.VariableDeclaration;
@@ -112,6 +113,13 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	private EClass irModuleEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass timeIteratorEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -804,6 +812,16 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
+	public EReference getIrRoot_TimeIterators() {
+		return (EReference)irRootEClass.getEStructuralFeatures().get(13);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EClass getIrModule() {
 		return irModuleEClass;
 	}
@@ -866,6 +884,66 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	@Override
 	public EReference getIrModule_Providers() {
 		return (EReference)irModuleEClass.getEStructuralFeatures().get(5);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EClass getTimeIterator() {
+		return timeIteratorEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getTimeIterator_Name() {
+		return (EAttribute)timeIteratorEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getTimeIterator_InnerIterators() {
+		return (EReference)timeIteratorEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getTimeIterator_ParentIterator() {
+		return (EReference)timeIteratorEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getTimeIterator_Variables() {
+		return (EReference)timeIteratorEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getTimeIterator_TimeLoopJob() {
+		return (EReference)timeIteratorEClass.getEStructuralFeatures().get(4);
 	}
 
 	/**
@@ -1126,6 +1204,36 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	@Override
 	public EReference getVariable_NextJobs() {
 		return (EReference)variableEClass.getEStructuralFeatures().get(5);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getVariable_OriginName() {
+		return (EAttribute)variableEClass.getEStructuralFeatures().get(6);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getVariable_TimeIterator() {
+		return (EReference)variableEClass.getEStructuralFeatures().get(7);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getVariable_TimeIteratorIndex() {
+		return (EAttribute)variableEClass.getEStructuralFeatures().get(8);
 	}
 
 	/**
@@ -1526,6 +1634,16 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	@Override
 	public EReference getExecuteTimeLoopJob_IterationCounter() {
 		return (EReference)executeTimeLoopJobEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getExecuteTimeLoopJob_TimeIterator() {
+		return (EReference)executeTimeLoopJobEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -2768,6 +2886,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEReference(irRootEClass, IR_ROOT__POST_PROCESSING);
 		createEReference(irRootEClass, IR_ROOT__PROVIDERS);
 		createEReference(irRootEClass, IR_ROOT__MESH);
+		createEReference(irRootEClass, IR_ROOT__TIME_ITERATORS);
 
 		irModuleEClass = createEClass(IR_MODULE);
 		createEAttribute(irModuleEClass, IR_MODULE__NAME);
@@ -2776,6 +2895,13 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEReference(irModuleEClass, IR_MODULE__VARIABLES);
 		createEReference(irModuleEClass, IR_MODULE__JOBS);
 		createEReference(irModuleEClass, IR_MODULE__PROVIDERS);
+
+		timeIteratorEClass = createEClass(TIME_ITERATOR);
+		createEAttribute(timeIteratorEClass, TIME_ITERATOR__NAME);
+		createEReference(timeIteratorEClass, TIME_ITERATOR__INNER_ITERATORS);
+		createEReference(timeIteratorEClass, TIME_ITERATOR__PARENT_ITERATOR);
+		createEReference(timeIteratorEClass, TIME_ITERATOR__VARIABLES);
+		createEReference(timeIteratorEClass, TIME_ITERATOR__TIME_LOOP_JOB);
 
 		postProcessingEClass = createEClass(POST_PROCESSING);
 		createEReference(postProcessingEClass, POST_PROCESSING__OUTPUT_VARIABLES);
@@ -2814,6 +2940,9 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEAttribute(variableEClass, VARIABLE__OPTION);
 		createEReference(variableEClass, VARIABLE__PREVIOUS_JOBS);
 		createEReference(variableEClass, VARIABLE__NEXT_JOBS);
+		createEAttribute(variableEClass, VARIABLE__ORIGIN_NAME);
+		createEReference(variableEClass, VARIABLE__TIME_ITERATOR);
+		createEAttribute(variableEClass, VARIABLE__TIME_ITERATOR_INDEX);
 
 		functionEClass = createEClass(FUNCTION);
 		createEAttribute(functionEClass, FUNCTION__NAME);
@@ -2857,6 +2986,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		executeTimeLoopJobEClass = createEClass(EXECUTE_TIME_LOOP_JOB);
 		createEReference(executeTimeLoopJobEClass, EXECUTE_TIME_LOOP_JOB__WHILE_CONDITION);
 		createEReference(executeTimeLoopJobEClass, EXECUTE_TIME_LOOP_JOB__ITERATION_COUNTER);
+		createEReference(executeTimeLoopJobEClass, EXECUTE_TIME_LOOP_JOB__TIME_ITERATOR);
 
 		instructionEClass = createEClass(INSTRUCTION);
 
@@ -3056,6 +3186,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		// Add supertypes to classes
 		irRootEClass.getESuperTypes().add(this.getIrAnnotable());
 		irModuleEClass.getESuperTypes().add(this.getIrAnnotable());
+		timeIteratorEClass.getESuperTypes().add(this.getIrAnnotable());
 		postProcessingEClass.getESuperTypes().add(this.getIrAnnotable());
 		extensionProviderEClass.getESuperTypes().add(this.getIrAnnotable());
 		defaultExtensionProviderEClass.getESuperTypes().add(this.getExtensionProvider());
@@ -3140,6 +3271,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEReference(getIrRoot_PostProcessing(), this.getPostProcessing(), null, "postProcessing", null, 0, 1, IrRoot.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIrRoot_Providers(), this.getDefaultExtensionProvider(), null, "providers", null, 0, -1, IrRoot.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIrRoot_Mesh(), this.getMeshExtensionProvider(), null, "mesh", null, 1, 1, IrRoot.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getIrRoot_TimeIterators(), this.getTimeIterator(), null, "timeIterators", null, 0, -1, IrRoot.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(irModuleEClass, IrModule.class, "IrModule", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getIrModule_Name(), ecorePackage.getEString(), "name", null, 1, 1, IrModule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3148,6 +3280,13 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEReference(getIrModule_Variables(), this.getVariable(), null, "variables", null, 0, -1, IrModule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIrModule_Jobs(), this.getJob(), null, "jobs", null, 0, -1, IrModule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIrModule_Providers(), this.getDefaultExtensionProvider(), null, "providers", null, 0, -1, IrModule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(timeIteratorEClass, TimeIterator.class, "TimeIterator", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getTimeIterator_Name(), ecorePackage.getEString(), "name", null, 1, 1, TimeIterator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getTimeIterator_InnerIterators(), this.getTimeIterator(), this.getTimeIterator_ParentIterator(), "innerIterators", null, 0, -1, TimeIterator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getTimeIterator_ParentIterator(), this.getTimeIterator(), this.getTimeIterator_InnerIterators(), "parentIterator", null, 0, 1, TimeIterator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getTimeIterator_Variables(), this.getVariable(), this.getVariable_TimeIterator(), "variables", null, 0, -1, TimeIterator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getTimeIterator_TimeLoopJob(), this.getExecuteTimeLoopJob(), this.getExecuteTimeLoopJob_TimeIterator(), "timeLoopJob", null, 1, 1, TimeIterator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(postProcessingEClass, PostProcessing.class, "PostProcessing", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getPostProcessing_OutputVariables(), this.getPostProcessedVariable(), null, "outputVariables", null, 0, -1, PostProcessing.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3186,6 +3325,9 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEAttribute(getVariable_Option(), ecorePackage.getEBoolean(), "option", null, 1, 1, Variable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getVariable_PreviousJobs(), this.getJob(), this.getJob_OutVars(), "previousJobs", null, 0, -1, Variable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getVariable_NextJobs(), this.getJob(), this.getJob_InVars(), "nextJobs", null, 0, -1, Variable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getVariable_OriginName(), ecorePackage.getEString(), "originName", null, 1, 1, Variable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getVariable_TimeIterator(), this.getTimeIterator(), this.getTimeIterator_Variables(), "timeIterator", null, 0, 1, Variable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getVariable_TimeIteratorIndex(), ecorePackage.getEInt(), "timeIteratorIndex", null, 0, 1, Variable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(functionEClass, Function.class, "Function", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getFunction_Name(), ecorePackage.getEString(), "name", null, 1, 1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3229,6 +3371,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEClass(executeTimeLoopJobEClass, ExecuteTimeLoopJob.class, "ExecuteTimeLoopJob", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getExecuteTimeLoopJob_WhileCondition(), this.getExpression(), null, "whileCondition", null, 1, 1, ExecuteTimeLoopJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getExecuteTimeLoopJob_IterationCounter(), this.getVariable(), null, "iterationCounter", null, 1, 1, ExecuteTimeLoopJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getExecuteTimeLoopJob_TimeIterator(), this.getTimeIterator(), this.getTimeIterator_TimeLoopJob(), "timeIterator", null, 1, 1, ExecuteTimeLoopJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(instructionEClass, Instruction.class, "Instruction", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 

@@ -10,6 +10,7 @@ import fr.cea.nabla.ir.ir.Job;
 import fr.cea.nabla.ir.ir.JobCaller;
 import fr.cea.nabla.ir.ir.MeshExtensionProvider;
 import fr.cea.nabla.ir.ir.PostProcessing;
+import fr.cea.nabla.ir.ir.TimeIterator;
 import fr.cea.nabla.ir.ir.Variable;
 
 import java.util.Collection;
@@ -49,6 +50,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getPostProcessing <em>Post Processing</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getProviders <em>Providers</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getMesh <em>Mesh</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.IrRootImpl#getTimeIterators <em>Time Iterators</em>}</li>
  * </ul>
  *
  * @generated
@@ -193,6 +195,16 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 	 * @ordered
 	 */
 	protected MeshExtensionProvider mesh;
+
+	/**
+	 * The cached value of the '{@link #getTimeIterators() <em>Time Iterators</em>}' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getTimeIterators()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<TimeIterator> timeIterators;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -617,6 +629,19 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 	 * @generated
 	 */
 	@Override
+	public EList<TimeIterator> getTimeIterators() {
+		if (timeIterators == null) {
+			timeIterators = new EObjectContainmentEList.Resolving<TimeIterator>(TimeIterator.class, this, IrPackage.IR_ROOT__TIME_ITERATORS);
+		}
+		return timeIterators;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public JobCaller getMain() {
 		if (main != null && main.eIsProxy()) {
 			InternalEObject oldMain = (InternalEObject)main;
@@ -710,6 +735,8 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 				return ((InternalEList<?>)getProviders()).basicRemove(otherEnd, msgs);
 			case IrPackage.IR_ROOT__MESH:
 				return basicSetMesh(null, msgs);
+			case IrPackage.IR_ROOT__TIME_ITERATORS:
+				return ((InternalEList<?>)getTimeIterators()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -756,6 +783,8 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 			case IrPackage.IR_ROOT__MESH:
 				if (resolve) return getMesh();
 				return basicGetMesh();
+			case IrPackage.IR_ROOT__TIME_ITERATORS:
+				return getTimeIterators();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -812,6 +841,10 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 			case IrPackage.IR_ROOT__MESH:
 				setMesh((MeshExtensionProvider)newValue);
 				return;
+			case IrPackage.IR_ROOT__TIME_ITERATORS:
+				getTimeIterators().clear();
+				getTimeIterators().addAll((Collection<? extends TimeIterator>)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -863,6 +896,9 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 			case IrPackage.IR_ROOT__MESH:
 				setMesh((MeshExtensionProvider)null);
 				return;
+			case IrPackage.IR_ROOT__TIME_ITERATORS:
+				getTimeIterators().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -901,6 +937,8 @@ public class IrRootImpl extends IrAnnotableImpl implements IrRoot {
 				return providers != null && !providers.isEmpty();
 			case IrPackage.IR_ROOT__MESH:
 				return mesh != null;
+			case IrPackage.IR_ROOT__TIME_ITERATORS:
+				return timeIterators != null && !timeIterators.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}

@@ -19,7 +19,7 @@ A `module` represents a NabLab program and its definition strictly follows the f
 - Time iterators
 - Jobs
 
-A module is generally associated with a [NabLab application](../ngenlanguage/index.html). Several modules can also be composed into a single application: see [module composition](../modulecomposition/index.html) documentation.
+A module is generally associated with a [NabLab application](../ngenlanguage). Several modules can also be composed into a single application: see [module composition](../modulecomposition) documentation.
 
 ### Extension
 
@@ -40,7 +40,7 @@ To use an extension X, a module has to import the extension with the instruction
 
 Extensions provide external functions, i.e. functions with no NabLab body. 
 Those functions are implemented in an another language, generally C or C++. 
-To link NabLab function declaration to its native definition, providers have to be defined: see [NabLab extension providers](../ngenlanguage/index.html#provider) for details.
+To link NabLab function declaration to its native definition, providers have to be defined: see [NabLab extension providers](../ngenlanguage#provider) for details.
 
 The extension and extension provider mechanisms are the way to call legacy libraries from NabLab applications.
 
@@ -147,7 +147,7 @@ def dot: x | ℝ[x] × ℝ[x] → ℝ, (a , b) → {
 }
 ```
 
-In an extension, functions can be external, without body definition. In this case the definition of an [extension provider](../ngenlanguage/index.html) allows to call a native function (C, C++...). This mechanism allows to use legacy libraries, like linear algebra libraries.
+In an extension, functions can be external, without body definition. In this case the definition of an [extension provider](../ngenlanguage) allows to call a native function (C, C++...). This mechanism allows to use legacy libraries, like linear algebra libraries.
 
 !!! note
 	External functions, i.e. functions with no body, are not allowed in modules, only in extensions.
@@ -248,7 +248,7 @@ ComputeDensity: ∀j∈cells(), ρ{j} = m{j} / V{j};
 
 The execution of a NabLab program does not start at its beginning and jobs execution order does not correspond to their position in the file. During the compilation phase, the data flow graph of the program is computed according to input and output variables of each job. Jobs are annotated with an *at* statement corresponding to its hierarchical logical time (HLT). The *HLT* concept is explicitly expressed to go beyond the classical single-program-multiple-data or bulk-synchronous-parallel programming models. The *at* logical timestamp explicitly declares the task-based parallelism of jobs.
 
-However, this way to schedule jobs imposes to have a dedicated tool to visualize the graph representing the program execution. This feature has been developed and integrated into the NabLab environment (see [getting started](../gettingstarted/index.html) documentation  for details).
+However, this way to schedule jobs imposes to have a dedicated tool to visualize the graph representing the program execution. This feature has been developed and integrated into the NabLab environment (see [getting started](../gettingstarted) documentation  for details).
 
 ## Instructions
 

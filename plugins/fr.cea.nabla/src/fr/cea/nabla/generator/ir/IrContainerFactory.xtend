@@ -20,7 +20,7 @@ import java.util.List
 
 class IrContainerFactory
 {
-	@Inject extension IrAnnotationHelper
+	@Inject extension NabLabFileAnnotationFactory
 	@Inject extension IrBasicFactory
 	@Inject extension IrItemIdFactory
 	@Inject extension IrSetDefinitionFactory
@@ -45,7 +45,7 @@ class IrContainerFactory
 	{
 		IrFactory::eINSTANCE.createConnectivityCall =>
 		[
-			annotations += c.toIrAnnotation
+			annotations += c.toNabLabFileAnnotation
 			connectivity = c.toIrConnectivity
 			largs.forEach[x | args += x.toIrId]
 		]

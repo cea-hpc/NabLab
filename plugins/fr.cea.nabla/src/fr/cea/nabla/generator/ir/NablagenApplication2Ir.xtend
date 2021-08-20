@@ -36,14 +36,15 @@ import org.eclipse.xtext.EcoreUtil2
 
 class NablagenApplication2Ir
 {
-	@Inject extension IrAnnotationHelper
+	@Inject extension NabLabFileAnnotationFactory
 	@Inject extension IrBasicFactory
+	@Inject extension IrTimeIteratorFactory
 	@Inject extension TimeIteratorExtensions
 	@Inject Provider<IrModuleFactory> irModuleFactoryProvider
 
 	def create IrFactory::eINSTANCE.createIrRoot toIrRoot(NablagenApplication ngenApp)
 	{
-		annotations += ngenApp.toIrAnnotation
+		annotations += ngenApp.toNabLabFileAnnotation
 		name = ngenApp.name
 		main = IrFactory::eINSTANCE.createJobCaller
 
@@ -122,6 +123,7 @@ class NablagenApplication2Ir
 			postProcessing.lastDumpVariable = IrFactory.eINSTANCE.createVariable =>
 			[
 				name = "lastDump"
+				originName = name
 				type = EcoreUtil::copy(periodVariableType)
 				const = false
 				constExpr = false
@@ -136,6 +138,7 @@ class NablagenApplication2Ir
 			postProcessing.periodValue = IrFactory.eINSTANCE.createVariable =>
 			[
 				name = "outputPeriod"
+				originName = name
 				type = EcoreUtil::copy(periodVariableType)
 				const = false
 				constExpr = false
@@ -155,6 +158,9 @@ class NablagenApplication2Ir
 		root.modules += m
 		root.variables += m.variables
 		root.jobs += m.jobs
+
+		if (ngenModule.type.iteration !== null && ngenModule.type.iteration.iterator !== null)
+			root.timeIterators += createIrTimeIterators(ngenModule.type.iteration.iterator)
 	}
 
 	private def getCurrentIrVariable(IrModule m, ArgOrVar nablaVar) { getIrVariable(m, nablaVar, currentTimeIteratorName) }

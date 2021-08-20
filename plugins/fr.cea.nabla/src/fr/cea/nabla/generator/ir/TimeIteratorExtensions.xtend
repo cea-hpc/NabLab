@@ -98,4 +98,8 @@ class TimeIteratorExtensions
 	def getCurrentTimeIteratorName() { '' }
 	def getInitTimeIteratorName() { '0' }
 	def getNextTimeIteratorName() { 'plus1' }
+
+	def getCurrentTimeIteratorIndex() { 0 }
+	def getInitTimeIteratorIndex() { Integer.MIN_VALUE }
+	def getNextTimeIteratorIndex() { 1 }
 }

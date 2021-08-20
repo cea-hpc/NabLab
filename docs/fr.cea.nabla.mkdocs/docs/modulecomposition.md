@@ -49,7 +49,7 @@ The algorithm is stupid: the goal is just to introduce dependencies between vari
 | Hj2 | hv2          | hv3           |
 | Hj3 | hv3, hv4     | hv5           |
 
-The *Hydro* application is defined in a classical *Hydro.ngen* file (see [Ngen language reference](../ngenlanguage/index.html) for details). Copy and paste it in *Hydro.ngen* file.
+The *Hydro* application is defined in a classical *Hydro.ngen* file (see [Ngen language reference](../ngenlanguage) for details). Copy and paste it in *Hydro.ngen* file.
 
 
 ```

@@ -10,6 +10,7 @@
 package fr.cea.nabla.ui
 
 import com.google.inject.Inject
+import fr.cea.nabla.ir.annotations.NabLabFileAnnotation
 import fr.cea.nabla.ir.ir.IrAnnotable
 import fr.cea.nabla.ui.console.NabLabConsoleFactory
 import org.eclipse.emf.ecore.EObject
@@ -22,8 +23,6 @@ import org.eclipse.ui.ISelectionListener
 import org.eclipse.ui.IWorkbenchPart
 import org.eclipse.xtext.resource.EObjectAtOffsetHelper
 import org.eclipse.xtext.ui.editor.XtextEditor
-
-import static extension fr.cea.nabla.ir.IrAnnotableExtensions.*
 
 class NablaDslEditor 
 extends XtextEditor
@@ -72,8 +71,8 @@ extends XtextEditor
 	def void selectIfDisplayed(IrAnnotable it)
 	{
 		val editorResourceUri = resource.fullPath.toString
-		val uri = uriDetail
-		if (uri !== null && uri.endsWith(editorResourceUri))
-			selectAndReveal(offset, length)
+		val annotation = NabLabFileAnnotation.get(it)
+		if (annotation !== null && annotation.uri !== null && annotation.uri.endsWith(editorResourceUri))
+			selectAndReveal(annotation.offset, annotation.length)
 	}
 }

@@ -18,6 +18,7 @@ import fr.cea.nabla.ir.ir.Instruction;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.Job;
 import fr.cea.nabla.ir.ir.JobCaller;
+import fr.cea.nabla.ir.ir.TimeIterator;
 import fr.cea.nabla.ir.ir.Variable;
 
 /**
@@ -42,6 +43,7 @@ import fr.cea.nabla.ir.ir.Variable;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ExecuteTimeLoopJobImpl#isTimeLoopJob <em>Time Loop Job</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ExecuteTimeLoopJobImpl#getWhileCondition <em>While Condition</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ExecuteTimeLoopJobImpl#getIterationCounter <em>Iteration Counter</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.ExecuteTimeLoopJobImpl#getTimeIterator <em>Time Iterator</em>}</li>
  * </ul>
  *
  * @generated
@@ -225,6 +227,16 @@ public class ExecuteTimeLoopJobImpl extends JobCallerImpl implements ExecuteTime
 	 * @ordered
 	 */
 	protected Variable iterationCounter;
+
+	/**
+	 * The cached value of the '{@link #getTimeIterator() <em>Time Iterator</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getTimeIterator()
+	 * @generated
+	 * @ordered
+	 */
+	protected TimeIterator timeIterator;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -635,6 +647,68 @@ public class ExecuteTimeLoopJobImpl extends JobCallerImpl implements ExecuteTime
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
+	public TimeIterator getTimeIterator() {
+		if (timeIterator != null && timeIterator.eIsProxy()) {
+			InternalEObject oldTimeIterator = (InternalEObject)timeIterator;
+			timeIterator = (TimeIterator)eResolveProxy(oldTimeIterator);
+			if (timeIterator != oldTimeIterator) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.EXECUTE_TIME_LOOP_JOB__TIME_ITERATOR, oldTimeIterator, timeIterator));
+			}
+		}
+		return timeIterator;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public TimeIterator basicGetTimeIterator() {
+		return timeIterator;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetTimeIterator(TimeIterator newTimeIterator, NotificationChain msgs) {
+		TimeIterator oldTimeIterator = timeIterator;
+		timeIterator = newTimeIterator;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.EXECUTE_TIME_LOOP_JOB__TIME_ITERATOR, oldTimeIterator, newTimeIterator);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setTimeIterator(TimeIterator newTimeIterator) {
+		if (newTimeIterator != timeIterator) {
+			NotificationChain msgs = null;
+			if (timeIterator != null)
+				msgs = ((InternalEObject)timeIterator).eInverseRemove(this, IrPackage.TIME_ITERATOR__TIME_LOOP_JOB, TimeIterator.class, msgs);
+			if (newTimeIterator != null)
+				msgs = ((InternalEObject)newTimeIterator).eInverseAdd(this, IrPackage.TIME_ITERATOR__TIME_LOOP_JOB, TimeIterator.class, msgs);
+			msgs = basicSetTimeIterator(newTimeIterator, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.EXECUTE_TIME_LOOP_JOB__TIME_ITERATOR, newTimeIterator, newTimeIterator));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
@@ -655,6 +729,10 @@ public class ExecuteTimeLoopJobImpl extends JobCallerImpl implements ExecuteTime
 				return ((InternalEList<InternalEObject>)(InternalEList<?>)getPreviousJobsWithSameCaller()).basicAdd(otherEnd, msgs);
 			case IrPackage.EXECUTE_TIME_LOOP_JOB__NEXT_JOBS_WITH_SAME_CALLER:
 				return ((InternalEList<InternalEObject>)(InternalEList<?>)getNextJobsWithSameCaller()).basicAdd(otherEnd, msgs);
+			case IrPackage.EXECUTE_TIME_LOOP_JOB__TIME_ITERATOR:
+				if (timeIterator != null)
+					msgs = ((InternalEObject)timeIterator).eInverseRemove(this, IrPackage.TIME_ITERATOR__TIME_LOOP_JOB, TimeIterator.class, msgs);
+				return basicSetTimeIterator((TimeIterator)otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
@@ -685,6 +763,8 @@ public class ExecuteTimeLoopJobImpl extends JobCallerImpl implements ExecuteTime
 				return basicSetInstruction(null, msgs);
 			case IrPackage.EXECUTE_TIME_LOOP_JOB__WHILE_CONDITION:
 				return basicSetWhileCondition(null, msgs);
+			case IrPackage.EXECUTE_TIME_LOOP_JOB__TIME_ITERATOR:
+				return basicSetTimeIterator(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -728,6 +808,9 @@ public class ExecuteTimeLoopJobImpl extends JobCallerImpl implements ExecuteTime
 			case IrPackage.EXECUTE_TIME_LOOP_JOB__ITERATION_COUNTER:
 				if (resolve) return getIterationCounter();
 				return basicGetIterationCounter();
+			case IrPackage.EXECUTE_TIME_LOOP_JOB__TIME_ITERATOR:
+				if (resolve) return getTimeIterator();
+				return basicGetTimeIterator();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -789,6 +872,9 @@ public class ExecuteTimeLoopJobImpl extends JobCallerImpl implements ExecuteTime
 			case IrPackage.EXECUTE_TIME_LOOP_JOB__ITERATION_COUNTER:
 				setIterationCounter((Variable)newValue);
 				return;
+			case IrPackage.EXECUTE_TIME_LOOP_JOB__TIME_ITERATOR:
+				setTimeIterator((TimeIterator)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -843,6 +929,9 @@ public class ExecuteTimeLoopJobImpl extends JobCallerImpl implements ExecuteTime
 			case IrPackage.EXECUTE_TIME_LOOP_JOB__ITERATION_COUNTER:
 				setIterationCounter((Variable)null);
 				return;
+			case IrPackage.EXECUTE_TIME_LOOP_JOB__TIME_ITERATOR:
+				setTimeIterator((TimeIterator)null);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -883,6 +972,8 @@ public class ExecuteTimeLoopJobImpl extends JobCallerImpl implements ExecuteTime
 				return whileCondition != null;
 			case IrPackage.EXECUTE_TIME_LOOP_JOB__ITERATION_COUNTER:
 				return iterationCounter != null;
+			case IrPackage.EXECUTE_TIME_LOOP_JOB__TIME_ITERATOR:
+				return timeIterator != null;
 		}
 		return super.eIsSet(featureID);
 	}

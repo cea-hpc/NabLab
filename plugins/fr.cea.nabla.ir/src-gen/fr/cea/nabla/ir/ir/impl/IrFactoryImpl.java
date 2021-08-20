@@ -60,6 +60,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.IR_ANNOTATION: return createIrAnnotation();
 			case IrPackage.IR_ROOT: return createIrRoot();
 			case IrPackage.IR_MODULE: return createIrModule();
+			case IrPackage.TIME_ITERATOR: return createTimeIterator();
 			case IrPackage.POST_PROCESSING: return createPostProcessing();
 			case IrPackage.POST_PROCESSED_VARIABLE: return createPostProcessedVariable();
 			case IrPackage.DEFAULT_EXTENSION_PROVIDER: return createDefaultExtensionProvider();
@@ -178,6 +179,17 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	public IrModule createIrModule() {
 		IrModuleImpl irModule = new IrModuleImpl();
 		return irModule;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public TimeIterator createTimeIterator() {
+		TimeIteratorImpl timeIterator = new TimeIteratorImpl();
+		return timeIterator;
 	}
 
 	/**

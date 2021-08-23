@@ -77,7 +77,6 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//Target/type"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//Target/outputPath"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//Target/extensionConfigs"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//Target/options"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nablagen.ecore#//Target/variables"/>
     </genClasses>
     <genClasses ecoreClass="Nablagen.ecore#//ExtensionConfig">
@@ -87,10 +86,6 @@
     <genClasses ecoreClass="Nablagen.ecore#//TargetVar">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//TargetVar/key"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//TargetVar/value"/>
-    </genClasses>
-    <genClasses ecoreClass="Nablagen.ecore#//TargetOption">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//TargetOption/key"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nablagen.ecore#//TargetOption/value"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

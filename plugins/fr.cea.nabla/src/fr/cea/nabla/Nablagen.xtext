@@ -94,7 +94,6 @@ Target:
 	'{'
 		'outputPath' '=' outputPath=STRING ';'
 		extensionConfigs+=ExtensionConfig*
-		options+=TargetOption*
 		variables+=TargetVar*
 	'}';
 	
@@ -103,9 +102,6 @@ ExtensionConfig:
 
 TargetVar:
 	key=ID '=' value=STRING ';';
-
-TargetOption:
-	'option' key=ID '=' value=STRING ';';
 
 // Java must be the first enum literal to be the default value for interpreter
 enum TargetType: Java | CppSequential | StlThread | OpenMP | Kokkos | KokkosTeamThread | Arcane | OpenMPTask;

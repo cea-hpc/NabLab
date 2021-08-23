@@ -33,7 +33,7 @@ class PutGpuAnnotations extends IrTransformationStep
 	{
 		super('Place GPU annotations on the IR tree')
 		this.strategy = strategy
-		this.strategy.init()
+		this.strategy.init([ String str | trace(str) ])
 	}
 
 	override protected transform(IrRoot ir)
@@ -67,6 +67,7 @@ class PutGpuAnnotations extends IrTransformationStep
 		
 		// Now the root to leaf pass. This is the same with any strategy
 		// FIXME: Back propagation doesn't seems to work well...
+		// NOTE: To verify: now the back propagation seems to work well
 
 		ir.eAllContents.filter(Job).forEach[ x |
 			x.instruction.backTargetPropagation(true)
@@ -94,9 +95,9 @@ class PutGpuAnnotations extends IrTransformationStep
 		val (IrAnnotable)=>void lambda = [ x |
 			TargetDispatchAnnotation::del(x)
 			x.annotations += TargetDispatchAnnotation::create(TargetType.CPU).irAnnotation
+			trace('    <> Force CPU Target on ' + x.class.name)
 		]
 
-		// TODO: Use a real recursive function and avoir the eAllContents
 		switch it
 		{
 			InstructionBlock:
@@ -111,15 +112,12 @@ class PutGpuAnnotations extends IrTransformationStep
 				eAllContents.filter(Expression).forEach[ x | lambda.apply(x) ]
 				eAllContents.filter(Instruction).forEach[ x | lambda.apply(x) ]
 			}
-			
-			default:
+
+			default: if (containsGpuBlacklistedElement)
 			{
-				if (containsGpuBlacklistedElement)
-				{
-					lambda.apply(it)
-					eAllContents.filter(Expression).forEach[ x | lambda.apply(x) ]
-					eAllContents.filter(Instruction).forEach[ x | lambda.apply(x) ]
-				}
+				lambda.apply(it)
+				eAllContents.filter(Expression).forEach[ x | lambda.apply(x) ]
+				eAllContents.filter(Instruction).forEach[ x | lambda.apply(x) ]
 			}
 		}
 	}

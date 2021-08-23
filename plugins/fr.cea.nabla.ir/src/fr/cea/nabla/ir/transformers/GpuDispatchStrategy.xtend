@@ -35,6 +35,7 @@ import fr.cea.nabla.ir.ir.VariableDeclaration
 import fr.cea.nabla.ir.ir.VectorConstant
 import fr.cea.nabla.ir.ir.While
 import java.util.Set
+import java.util.ArrayList
 
 @Data
 class GpuDispatchStrategyOptions
@@ -47,14 +48,26 @@ class GpuDispatchStrategyOptions
 abstract class GpuDispatchStrategy
 {
 	val GpuDispatchStrategyOptions opt
+	protected val ArrayList<(String)=>void> tracer = new ArrayList<(String)=>void>()
 	
 	// Used to initialize the strategy before using it if needed
-	def void init()
+	def void init((String)=>void userTrace)
+	{
+		tracer.clear
+		tracer += userTrace
+	}
 
-	def boolean couldRunOnGPU(Function it)
-	def boolean couldRunOnGPU(Job it)
-	def boolean couldRunOnGPU(Instruction it)
-	def boolean couldRunOnGPU(Expression it)
+	def boolean couldRunOnGPU(Function it)    // @2
+	def boolean couldRunOnGPU(Job it)         // @3
+	def boolean couldRunOnGPU(Instruction it) // @2
+	def boolean couldRunOnGPU(Expression it)  // @1
+	
+	protected def tracePlaceOnCPU(String what) { tracePlaceOnTarget('CPU', what) }
+	protected def tracePlaceOnGPU(String what) { tracePlaceOnTarget('GPU', what) }
+	private def tracePlaceOnTarget(String dest, String what)
+	{
+		tracer.forEach[ apply('    ' + dest + ' <~ ' + what) ]
+	}
 }
 
 class OptimistGpuDispatchStrategy extends GpuDispatchStrategy
@@ -64,15 +77,17 @@ class OptimistGpuDispatchStrategy extends GpuDispatchStrategy
 		super(opt)
 	}
 
-	override void init() { }
-
 	override boolean couldRunOnGPU(Function it) {
 		if (opt.gpuBlacklistedFunction.contains(name))
+		{
+			tracePlaceOnCPU(name)
 			return false
+		}
 
 		switch it {
-			ExternFunction: false
-			InternFunction: body.couldRunOnGPU
+			ExternFunction: { tracePlaceOnCPU(name); false }
+			InternFunction: { body.couldRunOnGPU ?
+				{ tracePlaceOnGPU(name); true } : { tracePlaceOnCPU(name); false } }
 			default: throw new Error("Unexpected function type for " + it.toString)
 		}
 	}
@@ -120,6 +135,9 @@ class OptimistGpuDispatchStrategy extends GpuDispatchStrategy
 			// parent! Top level affectations can't be placed on GPU because
 			// one affectation can't be run in parallel.
 			Affectation: {
+				if (!right.couldRunOnGPU) // NOTE: Very important!
+					return false
+				
 				if (null !== IrUtils::getContainerOfType(it, Loop) ||
 					null !== IrUtils::getContainerOfType(it, ReductionInstruction))
 					return true
@@ -145,7 +163,18 @@ class OptimistGpuDispatchStrategy extends GpuDispatchStrategy
 
 	override boolean couldRunOnGPU(Job it)
 	{
-		return (timeLoopJob || it instanceof ExecuteTimeLoopJob) ? false : instruction.couldRunOnGPU
+		if (timeLoopJob || it instanceof ExecuteTimeLoopJob)
+			return false
+			
+		if (instruction.couldRunOnGPU) {
+			tracePlaceOnGPU(name)
+			return true
+		}
+			
+		else {
+			tracePlaceOnCPU(name)
+			return false
+		}
 	}
 	
 }

@@ -23,19 +23,25 @@ class JobDependencies
 {
 	static def void computeAndSetNextJobs(Job it)
 	{
-		outVars.forEach[x | nextJobs += x.nextJobs]
+		outVars.forEach[x | nextJobs += x.consumerJobs]
 	}
 
 	static def void computeAndSetInOutVars(Job it)
 	{
-		outVars += eAllContents.filter(Affectation).map[left.target].filter(Variable).filter[global].toSet
-		val allReferencedVars = eAllContents.filter(ArgOrVarRef).filter[x|x.eContainingFeature != IrPackage::eINSTANCE.affectation_Left].map[target]
-		inVars += allReferencedVars.filter(Variable).filter[global].toSet
+		// time loop job vars set during time loop vars creation
+		if (!timeLoopJob)
+		{
+			outVars += eAllContents.filter(Affectation).map[left.target].filter(Variable).filter[global].toSet
+			val allReferencedVars = eAllContents.filter(ArgOrVarRef).filter[x|x.eContainingFeature != IrPackage::eINSTANCE.affectation_Left].map[target]
+	
+			inVars += allReferencedVars.filter(Variable).filter[global].toSet
+		}
 	}
 
 	static def void computeAndSetNextJobsWithSameCaller(Job it)
 	{
 		for (j : nextJobs)
+		{
 			if (j.caller === caller)
 				nextJobsWithSameCaller += j
 			else
@@ -44,6 +50,7 @@ class JobDependencies
 				if (parent !== null)
 					nextJobsWithSameCaller += parent
 			}
+		}
 	}
 
 	private static def ExecuteTimeLoopJob getExecuteTimeLoopJobWithSameCaller(Job j, JobCaller parentCaller)

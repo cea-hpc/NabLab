@@ -29,8 +29,8 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#isConst <em>Const</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#isConstExpr <em>Const Expr</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#isOption <em>Option</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#getPreviousJobs <em>Previous Jobs</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#getNextJobs <em>Next Jobs</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#getProducerJobs <em>Producer Jobs</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#getConsumerJobs <em>Consumer Jobs</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#getOriginName <em>Origin Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#getTimeIterator <em>Time Iterator</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#getTimeIteratorIndex <em>Time Iterator Index</em>}</li>
@@ -104,24 +104,23 @@ public class VariableImpl extends ArgOrVarImpl implements Variable {
 	protected boolean option = OPTION_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getPreviousJobs() <em>Previous Jobs</em>}' reference list.
+	 * The cached value of the '{@link #getProducerJobs() <em>Producer Jobs</em>}' reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getPreviousJobs()
+	 * @see #getProducerJobs()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<Job> previousJobs;
+	protected EList<Job> producerJobs;
 	/**
-	 * The cached value of the '{@link #getNextJobs() <em>Next Jobs</em>}' reference list.
+	 * The cached value of the '{@link #getConsumerJobs() <em>Consumer Jobs</em>}' reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getNextJobs()
+	 * @see #getConsumerJobs()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<Job> nextJobs;
-
+	protected EList<Job> consumerJobs;
 	/**
 	 * The default value of the '{@link #getOriginName() <em>Origin Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -307,11 +306,11 @@ public class VariableImpl extends ArgOrVarImpl implements Variable {
 	 * @generated
 	 */
 	@Override
-	public EList<Job> getPreviousJobs() {
-		if (previousJobs == null) {
-			previousJobs = new EObjectWithInverseResolvingEList.ManyInverse<Job>(Job.class, this, IrPackage.VARIABLE__PREVIOUS_JOBS, IrPackage.JOB__OUT_VARS);
+	public EList<Job> getProducerJobs() {
+		if (producerJobs == null) {
+			producerJobs = new EObjectWithInverseResolvingEList.ManyInverse<Job>(Job.class, this, IrPackage.VARIABLE__PRODUCER_JOBS, IrPackage.JOB__OUT_VARS);
 		}
-		return previousJobs;
+		return producerJobs;
 	}
 
 	/**
@@ -320,11 +319,11 @@ public class VariableImpl extends ArgOrVarImpl implements Variable {
 	 * @generated
 	 */
 	@Override
-	public EList<Job> getNextJobs() {
-		if (nextJobs == null) {
-			nextJobs = new EObjectWithInverseResolvingEList.ManyInverse<Job>(Job.class, this, IrPackage.VARIABLE__NEXT_JOBS, IrPackage.JOB__IN_VARS);
+	public EList<Job> getConsumerJobs() {
+		if (consumerJobs == null) {
+			consumerJobs = new EObjectWithInverseResolvingEList.ManyInverse<Job>(Job.class, this, IrPackage.VARIABLE__CONSUMER_JOBS, IrPackage.JOB__IN_VARS);
 		}
-		return nextJobs;
+		return consumerJobs;
 	}
 
 	/**
@@ -444,10 +443,10 @@ public class VariableImpl extends ArgOrVarImpl implements Variable {
 	@Override
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case IrPackage.VARIABLE__PREVIOUS_JOBS:
-				return ((InternalEList<InternalEObject>)(InternalEList<?>)getPreviousJobs()).basicAdd(otherEnd, msgs);
-			case IrPackage.VARIABLE__NEXT_JOBS:
-				return ((InternalEList<InternalEObject>)(InternalEList<?>)getNextJobs()).basicAdd(otherEnd, msgs);
+			case IrPackage.VARIABLE__PRODUCER_JOBS:
+				return ((InternalEList<InternalEObject>)(InternalEList<?>)getProducerJobs()).basicAdd(otherEnd, msgs);
+			case IrPackage.VARIABLE__CONSUMER_JOBS:
+				return ((InternalEList<InternalEObject>)(InternalEList<?>)getConsumerJobs()).basicAdd(otherEnd, msgs);
 			case IrPackage.VARIABLE__TIME_ITERATOR:
 				if (timeIterator != null)
 					msgs = ((InternalEObject)timeIterator).eInverseRemove(this, IrPackage.TIME_ITERATOR__VARIABLES, TimeIterator.class, msgs);
@@ -466,10 +465,10 @@ public class VariableImpl extends ArgOrVarImpl implements Variable {
 		switch (featureID) {
 			case IrPackage.VARIABLE__DEFAULT_VALUE:
 				return basicSetDefaultValue(null, msgs);
-			case IrPackage.VARIABLE__PREVIOUS_JOBS:
-				return ((InternalEList<?>)getPreviousJobs()).basicRemove(otherEnd, msgs);
-			case IrPackage.VARIABLE__NEXT_JOBS:
-				return ((InternalEList<?>)getNextJobs()).basicRemove(otherEnd, msgs);
+			case IrPackage.VARIABLE__PRODUCER_JOBS:
+				return ((InternalEList<?>)getProducerJobs()).basicRemove(otherEnd, msgs);
+			case IrPackage.VARIABLE__CONSUMER_JOBS:
+				return ((InternalEList<?>)getConsumerJobs()).basicRemove(otherEnd, msgs);
 			case IrPackage.VARIABLE__TIME_ITERATOR:
 				return basicSetTimeIterator(null, msgs);
 		}
@@ -492,10 +491,10 @@ public class VariableImpl extends ArgOrVarImpl implements Variable {
 				return isConstExpr();
 			case IrPackage.VARIABLE__OPTION:
 				return isOption();
-			case IrPackage.VARIABLE__PREVIOUS_JOBS:
-				return getPreviousJobs();
-			case IrPackage.VARIABLE__NEXT_JOBS:
-				return getNextJobs();
+			case IrPackage.VARIABLE__PRODUCER_JOBS:
+				return getProducerJobs();
+			case IrPackage.VARIABLE__CONSUMER_JOBS:
+				return getConsumerJobs();
 			case IrPackage.VARIABLE__ORIGIN_NAME:
 				return getOriginName();
 			case IrPackage.VARIABLE__TIME_ITERATOR:
@@ -528,13 +527,13 @@ public class VariableImpl extends ArgOrVarImpl implements Variable {
 			case IrPackage.VARIABLE__OPTION:
 				setOption((Boolean)newValue);
 				return;
-			case IrPackage.VARIABLE__PREVIOUS_JOBS:
-				getPreviousJobs().clear();
-				getPreviousJobs().addAll((Collection<? extends Job>)newValue);
+			case IrPackage.VARIABLE__PRODUCER_JOBS:
+				getProducerJobs().clear();
+				getProducerJobs().addAll((Collection<? extends Job>)newValue);
 				return;
-			case IrPackage.VARIABLE__NEXT_JOBS:
-				getNextJobs().clear();
-				getNextJobs().addAll((Collection<? extends Job>)newValue);
+			case IrPackage.VARIABLE__CONSUMER_JOBS:
+				getConsumerJobs().clear();
+				getConsumerJobs().addAll((Collection<? extends Job>)newValue);
 				return;
 			case IrPackage.VARIABLE__ORIGIN_NAME:
 				setOriginName((String)newValue);
@@ -569,11 +568,11 @@ public class VariableImpl extends ArgOrVarImpl implements Variable {
 			case IrPackage.VARIABLE__OPTION:
 				setOption(OPTION_EDEFAULT);
 				return;
-			case IrPackage.VARIABLE__PREVIOUS_JOBS:
-				getPreviousJobs().clear();
+			case IrPackage.VARIABLE__PRODUCER_JOBS:
+				getProducerJobs().clear();
 				return;
-			case IrPackage.VARIABLE__NEXT_JOBS:
-				getNextJobs().clear();
+			case IrPackage.VARIABLE__CONSUMER_JOBS:
+				getConsumerJobs().clear();
 				return;
 			case IrPackage.VARIABLE__ORIGIN_NAME:
 				setOriginName(ORIGIN_NAME_EDEFAULT);
@@ -604,10 +603,10 @@ public class VariableImpl extends ArgOrVarImpl implements Variable {
 				return constExpr != CONST_EXPR_EDEFAULT;
 			case IrPackage.VARIABLE__OPTION:
 				return option != OPTION_EDEFAULT;
-			case IrPackage.VARIABLE__PREVIOUS_JOBS:
-				return previousJobs != null && !previousJobs.isEmpty();
-			case IrPackage.VARIABLE__NEXT_JOBS:
-				return nextJobs != null && !nextJobs.isEmpty();
+			case IrPackage.VARIABLE__PRODUCER_JOBS:
+				return producerJobs != null && !producerJobs.isEmpty();
+			case IrPackage.VARIABLE__CONSUMER_JOBS:
+				return consumerJobs != null && !consumerJobs.isEmpty();
 			case IrPackage.VARIABLE__ORIGIN_NAME:
 				return ORIGIN_NAME_EDEFAULT == null ? originName != null : !ORIGIN_NAME_EDEFAULT.equals(originName);
 			case IrPackage.VARIABLE__TIME_ITERATOR:

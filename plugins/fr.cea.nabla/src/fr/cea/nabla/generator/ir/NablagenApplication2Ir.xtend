@@ -12,6 +12,7 @@ package fr.cea.nabla.generator.ir
 import com.google.inject.Inject
 import com.google.inject.Provider
 import fr.cea.nabla.ir.IrModuleExtensions
+import fr.cea.nabla.ir.JobDependencies
 import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityCall
@@ -70,6 +71,10 @@ class NablagenApplication2Ir
 				EcoreUtil.delete(adModuleIrVar)
 			}
 		}
+
+		// set variables/jobs dependencies. 2 loops necessary: allin/out vars needed to computer next/previous jobs
+		jobs.forEach[x | JobDependencies.computeAndSetInOutVars(x)]
+		jobs.forEach[x | JobDependencies.computeAndSetNextJobs(x)]
 
 		// set simulation variables
 		initNodeCoordVariable = getInitIrVariable(mainIrModule, ngenApp.mainModule.nodeCoord)

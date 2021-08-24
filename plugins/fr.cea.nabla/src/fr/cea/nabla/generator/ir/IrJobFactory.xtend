@@ -11,7 +11,6 @@ package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
 import com.google.inject.Singleton
-import fr.cea.nabla.ir.JobDependencies
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.TimeIterator
@@ -32,8 +31,8 @@ class IrJobFactory
 		annotations += j.toNabLabFileAnnotation
 		name = j.name
 		onCycle = false
+		timeLoopJob = false
 		instruction = j.instruction.toIrInstruction
-		JobDependencies.computeAndSetInOutVars(it)
 	}
 
 	/** SetUpTimeLoopJob in/out vars are set in ArgOrVarFactory during time variable creation */

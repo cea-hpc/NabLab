@@ -213,3 +213,7 @@ The `StlThread` target will generate the following files:
 
 The above picture shows that generated files have the same name as the module instances (defined in the *HydroRemap.ngen* file) starting with an upper case, i.e. *Hydro*, *R1* and *R2*.
 
+The *Job Graph Editor*, triggered by pressing F2 key on *HydroRemap.ngen* file, now displays:
+
+<img src="img/NabLab_hydro_2_remap_job_graph.png" alt="NabLab Hydro and 2 Remap Job Graph" title="NabLab Hydro and 2 Remap Job Graph" width="60%" height="60%"/>
+

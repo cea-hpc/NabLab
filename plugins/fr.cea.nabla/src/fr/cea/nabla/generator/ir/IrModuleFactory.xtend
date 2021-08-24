@@ -10,7 +10,6 @@
 package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
-import fr.cea.nabla.ir.JobDependencies
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.nabla.Function
@@ -99,7 +98,6 @@ class IrModuleFactory
 
 		// Job creation
 		nablaModule.jobs.forEach[x | jobs += x.toIrInstructionJob => [ it.caller = null ]]
-		jobs.forEach[x | JobDependencies.computeAndSetNextJobs(x)]
 	}
 
 	/**

@@ -1016,22 +1016,22 @@ public interface IrPackage extends EPackage {
 	int VARIABLE__OPTION = ARG_OR_VAR_FEATURE_COUNT + 3;
 
 	/**
-	 * The feature id for the '<em><b>Previous Jobs</b></em>' reference list.
+	 * The feature id for the '<em><b>Producer Jobs</b></em>' reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int VARIABLE__PREVIOUS_JOBS = ARG_OR_VAR_FEATURE_COUNT + 4;
+	int VARIABLE__PRODUCER_JOBS = ARG_OR_VAR_FEATURE_COUNT + 4;
 
 	/**
-	 * The feature id for the '<em><b>Next Jobs</b></em>' reference list.
+	 * The feature id for the '<em><b>Consumer Jobs</b></em>' reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int VARIABLE__NEXT_JOBS = ARG_OR_VAR_FEATURE_COUNT + 5;
+	int VARIABLE__CONSUMER_JOBS = ARG_OR_VAR_FEATURE_COUNT + 5;
 
 	/**
 	 * The feature id for the '<em><b>Origin Name</b></em>' attribute.
@@ -5104,26 +5104,26 @@ public interface IrPackage extends EPackage {
 	EAttribute getVariable_Option();
 
 	/**
-	 * Returns the meta object for the reference list '{@link fr.cea.nabla.ir.ir.Variable#getPreviousJobs <em>Previous Jobs</em>}'.
+	 * Returns the meta object for the reference list '{@link fr.cea.nabla.ir.ir.Variable#getProducerJobs <em>Producer Jobs</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Previous Jobs</em>'.
-	 * @see fr.cea.nabla.ir.ir.Variable#getPreviousJobs()
+	 * @return the meta object for the reference list '<em>Producer Jobs</em>'.
+	 * @see fr.cea.nabla.ir.ir.Variable#getProducerJobs()
 	 * @see #getVariable()
 	 * @generated
 	 */
-	EReference getVariable_PreviousJobs();
+	EReference getVariable_ProducerJobs();
 
 	/**
-	 * Returns the meta object for the reference list '{@link fr.cea.nabla.ir.ir.Variable#getNextJobs <em>Next Jobs</em>}'.
+	 * Returns the meta object for the reference list '{@link fr.cea.nabla.ir.ir.Variable#getConsumerJobs <em>Consumer Jobs</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Next Jobs</em>'.
-	 * @see fr.cea.nabla.ir.ir.Variable#getNextJobs()
+	 * @return the meta object for the reference list '<em>Consumer Jobs</em>'.
+	 * @see fr.cea.nabla.ir.ir.Variable#getConsumerJobs()
 	 * @see #getVariable()
 	 * @generated
 	 */
-	EReference getVariable_NextJobs();
+	EReference getVariable_ConsumerJobs();
 
 	/**
 	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.Variable#getOriginName <em>Origin Name</em>}'.
@@ -7358,20 +7358,20 @@ public interface IrPackage extends EPackage {
 		EAttribute VARIABLE__OPTION = eINSTANCE.getVariable_Option();
 
 		/**
-		 * The meta object literal for the '<em><b>Previous Jobs</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Producer Jobs</b></em>' reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference VARIABLE__PREVIOUS_JOBS = eINSTANCE.getVariable_PreviousJobs();
+		EReference VARIABLE__PRODUCER_JOBS = eINSTANCE.getVariable_ProducerJobs();
 
 		/**
-		 * The meta object literal for the '<em><b>Next Jobs</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Consumer Jobs</b></em>' reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference VARIABLE__NEXT_JOBS = eINSTANCE.getVariable_NextJobs();
+		EReference VARIABLE__CONSUMER_JOBS = eINSTANCE.getVariable_ConsumerJobs();
 
 		/**
 		 * The meta object literal for the '<em><b>Origin Name</b></em>' attribute feature.

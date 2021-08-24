@@ -125,9 +125,9 @@
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="option" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="previousJobs" upperBound="-1"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="producerJobs" upperBound="-1"
         eType="#//Job" eOpposite="#//Job/outVars"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="nextJobs" upperBound="-1"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="consumerJobs" upperBound="-1"
         eType="#//Job" eOpposite="#//Job/inVars"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="originName" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -184,9 +184,9 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="caller" eType="#//JobCaller"
         eOpposite="#//JobCaller/calls"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="inVars" upperBound="-1"
-        eType="#//Variable" eOpposite="#//Variable/nextJobs"/>
+        eType="#//Variable" eOpposite="#//Variable/consumerJobs"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="outVars" upperBound="-1"
-        eType="#//Variable" eOpposite="#//Variable/previousJobs"/>
+        eType="#//Variable" eOpposite="#//Variable/producerJobs"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="previousJobs" upperBound="-1"
         eType="#//Job" eOpposite="#//Job/nextJobs"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="nextJobs" upperBound="-1"

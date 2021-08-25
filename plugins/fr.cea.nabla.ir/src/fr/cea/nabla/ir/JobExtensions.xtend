@@ -15,6 +15,7 @@ import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.Variable
+import fr.cea.nabla.ir.ir.IrRoot
 
 class JobExtensions
 {
@@ -46,7 +47,10 @@ class JobExtensions
 
 	static def getDisplayName(Job it)
 	{
-		val irModule = IrUtils.getContainerOfType(it, IrModule)
-		irModule.name + "::" + name
+		val module = IrUtils.getContainerOfType(it, IrModule)
+		if (module !== null && (module.eContainer as IrRoot).modules.size > 1)
+			module.name + "::" + name
+		else
+			name
 	}
 }

@@ -107,7 +107,8 @@ class NablagenValidator extends AbstractNablagenValidator
 	@Check(CheckType.FAST)
 	def void checkVarLinkMainVarType(VarLink it)
 	{
-		if (additionalVariable !== null && mainVariable !== null)
+		if (additionalVariable !== null && !additionalVariable.eIsProxy
+			&& mainVariable !== null && !mainVariable.eIsProxy)
 		{
 			val avType = additionalVariable.typeFor
 			val mvType = mainVariable.typeFor

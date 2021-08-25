@@ -163,7 +163,6 @@ class ArcaneApplicationGenerator implements ApplicationGenerator
 	/** The main time loop job is represented by the compute entry point */
 	private def boolean isMainTimeLoop(Job j)
 	{
-		println("isMainTimeLoop : " + j.name + " : " + (j instanceof ExecuteTimeLoopJob && JobCallerExtensions.isMain(j.caller)))
 		j instanceof ExecuteTimeLoopJob && JobCallerExtensions.isMain(j.caller)
 	}
 }

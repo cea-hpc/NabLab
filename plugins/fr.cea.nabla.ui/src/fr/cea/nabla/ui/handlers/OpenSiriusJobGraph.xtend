@@ -7,32 +7,19 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-package fr.cea.nabla.ui.views
+package fr.cea.nabla.ui.handlers
 
-import com.google.inject.Inject
 import com.google.inject.Singleton
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
 import fr.cea.nabla.generator.NablaIrWriter
-import fr.cea.nabla.generator.ir.NablagenApplication2Ir
 import fr.cea.nabla.ir.ir.IrRoot
-import fr.cea.nabla.ir.transformers.CompositeTransformationStep
-import fr.cea.nabla.ir.transformers.FillJobHLTs
-import fr.cea.nabla.ir.transformers.ReplaceReductions
-import fr.cea.nabla.nablagen.NablagenApplication
-import fr.cea.nabla.ui.console.NabLabConsoleFactory
-import fr.cea.nabla.ui.internal.NablaActivator
 import java.io.IOException
 import java.util.ArrayList
 import java.util.Collections
-import javax.inject.Provider
-import org.eclipse.core.commands.AbstractHandler
-import org.eclipse.core.commands.ExecutionEvent
-import org.eclipse.core.commands.ExecutionException
 import org.eclipse.core.runtime.NullProgressMonitor
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.transaction.RecordingCommand
-import org.eclipse.jface.text.TextSelection
 import org.eclipse.sirius.business.api.componentization.ViewpointRegistry
 import org.eclipse.sirius.business.api.dialect.DialectManager
 import org.eclipse.sirius.business.api.dialect.command.CreateRepresentationCommand
@@ -47,109 +34,38 @@ import org.eclipse.sirius.ui.business.api.viewpoint.ViewpointSelectionCallback
 import org.eclipse.sirius.viewpoint.DRepresentation
 import org.eclipse.sirius.viewpoint.description.Viewpoint
 import org.eclipse.sirius.viewpoint.provider.SiriusEditPlugin
-import org.eclipse.ui.PlatformUI
-import org.eclipse.xtext.EcoreUtil2
-import org.eclipse.xtext.resource.EObjectAtOffsetHelper
-import org.eclipse.xtext.ui.editor.XtextEditor
+import fr.cea.nabla.ui.views.NablaIrCopier
 
 @Singleton
-class OpenSiriusJobsGraph extends AbstractHandler
+class OpenSiriusJobGraph extends OpenJobGraph
 {
 	static val INSTRUCTION_VP = "InstructionViewpoint"
 	static val NABLA_IR_DIAGRAM_ID = "NablaIrDiagram"
 
-	@Inject NabLabConsoleFactory consoleFactory
-	@Inject EObjectAtOffsetHelper eObjectAtOffsetHelper
-	@Inject Provider<NablagenApplication2Ir> ngenApplicationToIrProvider
-
-	override execute(ExecutionEvent event) throws ExecutionException
+	protected override displayIr(IrRoot ir)
 	{
-		val window = PlatformUI.workbench.activeWorkbenchWindow
-		if (window !== null && window.activePage !== null)
-		{
-			val editor = window.activePage.activeEditor
-			if (editor !== null && editor instanceof XtextEditor)
-			{
-				val xtextEditor = editor as XtextEditor
-				if (xtextEditor.languageName == NablaActivator.FR_CEA_NABLA_NABLAGEN)
-				{
-					val selection = xtextEditor.selectionProvider.selection
-					if (selection !== null && selection instanceof TextSelection)
-					{
-						val textSelection = selection as TextSelection
-						val selectedNablagenObject = xtextEditor.document.readOnly([state | eObjectAtOffsetHelper.resolveContainedElementAt(state, textSelection.offset)])
-						if (selectedNablagenObject !== null)
-						{
-							val ngenApp = EcoreUtil2.getContainerOfType(selectedNablagenObject, NablagenApplication)
-							if (ngenApp !== null) displayIrModuleFrom(ngenApp)
-						}
-					}
-				}
-			}
-		}
-		return null
-	}
-
-	def protected void displayIrModuleFrom(NablagenApplication ngenApp)
-	{
-		val IrRoot irRoot = convertIrModuleFrom(ngenApp)
-		if (irRoot !== null)
+		if (ir !== null)
 		{
 			val start = System.nanoTime()
-			var compactName = irRoot.name.replaceAll("\\s+", "")
+			var compactName = ir.name.replaceAll("\\s+", "")
 			val session = getOrCreateSession(compactName)
-			val isNewResource = addOrUpdateResource(session, irRoot, compactName)
+			val isNewResource = addOrUpdateResource(session, ir, compactName)
 			val irRootFromSession = getSemanticRoot(session)
 			if (isNewResource)
 			{
 				selectViewpoint(session, INSTRUCTION_VP)
-				createAndOpenRepresentation(session, NABLA_IR_DIAGRAM_ID, irRoot.name, irRootFromSession)
+				createAndOpenRepresentation(session, NABLA_IR_DIAGRAM_ID, ir.name, irRootFromSession)
 			}
 			else
 			{
-				updateOpenedRepresentation(session, irRootFromSession, irRoot.name)
+				updateOpenedRepresentation(session, irRootFromSession, ir.name)
 			}
 			val stop = System.nanoTime()
 			consoleFactory.printConsole(MessageType.Start,"IR displayed (" + ((stop - start) / 1000000) + " ms)")
 		}
 	}
 
-	def protected IrRoot convertIrModuleFrom(NablagenApplication ngenApp)
-	{
-		val start = System.nanoTime()
-		var IrRoot ir = null
-		consoleFactory.printConsole(MessageType.Start, "Building IR to initialize job graph editor")
-
-		try
-		{
-			val nablagen2Ir = ngenApplicationToIrProvider.get // force a new instance to ensure a new IR
-			ir = nablagen2Ir.toIrRoot(ngenApp)
-			val description = 'Minimal IR->IR transformations to check job cycles'
-			val t = new CompositeTransformationStep(description, #[new ReplaceReductions(false), new FillJobHLTs])
-			t.transformIr(ir, [msg | consoleFactory.printConsole(MessageType.Exec, msg)])
-		}
-		catch (Exception e)
-		{
-			// An exception can occured during IR building if environment is not configured,
-			// for example compilation not done, or during transformation step. Whatever... 
-			// irModule stays null. Error message printed below.
-		}
-
-		val stop = System.nanoTime()
-		consoleFactory.printConsole(MessageType.End, "IR converted (" + ((stop - start) / 1000000) + " ms)")
-
-		if (ir === null)
-		{
-			consoleFactory.printConsole(MessageType.Error, "IR module can not be built. Try to clean and rebuild all projects and start again.")
-			return null
-		}
-		else
-		{
-			return ir
-		}
-	}
-
-	def protected Session getOrCreateSession(String projectSessionName)
+	private def Session getOrCreateSession(String projectSessionName)
 	{
 		var airdResourceURI = URI.createURI(URIQuery.INMEMORY_URI_SCHEME + ":/" + projectSessionName + "/representations.aird")
 		var session = SessionManager.INSTANCE.getExistingSession(airdResourceURI)
@@ -164,7 +80,7 @@ class OpenSiriusJobsGraph extends AbstractHandler
 		return session
 	}
 
-	def protected boolean addOrUpdateResource(Session session, IrRoot irRoot, String projectSessionName)
+	private def boolean addOrUpdateResource(Session session, IrRoot irRoot, String projectSessionName)
 	{
 		val irResourceURI = URI.createURI(URIQuery.INMEMORY_URI_SCHEME + ":/" + projectSessionName + "/" + projectSessionName + "." + NablaIrWriter.IrExtension)
 
@@ -216,7 +132,7 @@ class OpenSiriusJobsGraph extends AbstractHandler
 		return isNewResource
 	}
 
-	def protected void selectViewpoint(Session session, String vpName)
+	private def void selectViewpoint(Session session, String vpName)
 	{
 		session.transactionalEditingDomain.commandStack.execute(
 			new RecordingCommand(session.transactionalEditingDomain)
@@ -242,7 +158,7 @@ class OpenSiriusJobsGraph extends AbstractHandler
 		)
 	}
 
-	def protected void createAndOpenRepresentation(Session session, String representationName, String diagramName, EObject rootElement)
+	private def void createAndOpenRepresentation(Session session, String representationName, String diagramName, EObject rootElement)
 	{
 		val representationDescriptions = DialectManager.INSTANCE.getAvailableRepresentationDescriptions(session.getSelectedViewpoints(false), rootElement)
 
@@ -264,7 +180,7 @@ class OpenSiriusJobsGraph extends AbstractHandler
 		}
 	}
 
-	def protected void updateOpenedRepresentation(Session session, EObject diagramSemanticRoot, String diagramName)
+	private def void updateOpenedRepresentation(Session session, EObject diagramSemanticRoot, String diagramName)
 	{
 		var editingSession = SessionUIManager.INSTANCE.getUISession(session)
 		if (editingSession !== null)
@@ -296,7 +212,7 @@ class OpenSiriusJobsGraph extends AbstractHandler
 		saveSession(session)
 	}
 
-	def protected void unselectAllElements(Session session, DRepresentation representation)
+	private def void unselectAllElements(Session session, DRepresentation representation)
 	{
 		session.transactionalEditingDomain.commandStack.execute(
 			new RecordingCommand(session.transactionalEditingDomain)
@@ -310,7 +226,7 @@ class OpenSiriusJobsGraph extends AbstractHandler
 		)
 	}
 
-	def protected IrRoot getSemanticRoot(Session session)
+	private def IrRoot getSemanticRoot(Session session)
 	{
 		var semanticResources = session.semanticResources
 		for (semanticResource : semanticResources)
@@ -326,7 +242,7 @@ class OpenSiriusJobsGraph extends AbstractHandler
 		return null
 	}
 
-	def protected void saveSession(Session session)
+	private def void saveSession(Session session)
 	{
 		session.transactionalEditingDomain.commandStack.execute(
 			new RecordingCommand(session.transactionalEditingDomain)

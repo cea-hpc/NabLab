@@ -34,7 +34,6 @@ class ExtensionProviderExtensions
 
 	static def getPathVar(ExtensionProvider it)
 	{
-		println("EP " + extensionName + " " + providerName + " " + outputPath)
 		new Pair(providerName.toUpperCase + '_PATH', '${N_WS_PATH}' + outputPath + '/' + dirName)
 	}
 

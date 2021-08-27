@@ -27,7 +27,7 @@ class ExtensionProviderExtensions
 		extensionName
 	}
 
-	static def getLibName(DefaultExtensionProvider it)
+	static def getLibName(ExtensionProvider it)
 	{
 		providerName.toLowerCase
 	}

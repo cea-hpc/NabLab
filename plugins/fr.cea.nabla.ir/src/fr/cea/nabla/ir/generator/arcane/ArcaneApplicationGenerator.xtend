@@ -24,7 +24,9 @@ import fr.cea.nabla.ir.transformers.ReplaceReductions
 import java.util.ArrayList
 import java.util.LinkedHashSet
 
+import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
+import static extension fr.cea.nabla.ir.IrRootExtensions.*
 
 class ArcaneApplicationGenerator implements ApplicationGenerator
 {
@@ -70,7 +72,10 @@ class ArcaneApplicationGenerator implements ApplicationGenerator
 
 	#include <arcane/utils/Array.h>
 	#include "«name.toFirstUpper»_axl.h"
-	#include "CartesianMesh2DHelper.h"
+	#include "«irRoot.mesh.className».h"
+	«FOR provider : externalProviders»
+	#include "«provider.className».h"
+	«ENDFOR»
 
 	using namespace Arcane;
 	«IF !functions.empty»

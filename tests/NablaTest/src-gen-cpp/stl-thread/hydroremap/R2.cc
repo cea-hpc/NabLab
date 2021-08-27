@@ -35,8 +35,8 @@ R2::~R2()
 }
 
 /**
- * Job rj1 called @1.0 in simulate method.
- * In variables: 
+ * Job rj1 called @2.0 in simulate method.
+ * In variables: hv3
  * Out variables: rv2
  */
 void R2::rj1() noexcept
@@ -48,9 +48,9 @@ void R2::rj1() noexcept
 }
 
 /**
- * Job rj2 called @2.0 in simulate method.
+ * Job rj2 called @3.0 in simulate method.
  * In variables: rv2
- * Out variables: 
+ * Out variables: hv6
  */
 void R2::rj2() noexcept
 {

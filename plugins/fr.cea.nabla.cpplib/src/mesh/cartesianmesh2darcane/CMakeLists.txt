@@ -13,11 +13,11 @@
 # FIND PACKAGES
 find_package(Arcane)
 
-# LIBRARY mesharcane
-add_library(mesharcane CartesianMesh2DHelper.cc)
-set_property(TARGET mesharcane PROPERTY POSITION_INDEPENDENT_CODE ON)
-target_compile_options(mesharcane PUBLIC -g -Wall -O3 --std=c++17 -mtune=native)
-arcane_add_arcane_libraries_to_target(mesharcane)
+# LIBRARY cartesianmesh2darcane
+add_library(cartesianmesh2darcane CartesianMesh2D.cc)
+set_property(TARGET cartesianmesh2darcane PROPERTY POSITION_INDEPENDENT_CODE ON)
+target_compile_options(cartesianmesh2darcane PUBLIC -g -Wall -O3 --std=c++17 -mtune=native)
+arcane_add_arcane_libraries_to_target(cartesianmesh2darcane)
 
 # OPTIONAL USER OPTIONS IN Project.cmake
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)

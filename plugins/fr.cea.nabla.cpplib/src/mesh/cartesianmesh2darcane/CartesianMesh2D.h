@@ -7,8 +7,8 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-#ifndef _CARTESIANMESH2DHELPER_H_
-#define _CARTESIANMESH2DHELPER_H_
+#ifndef _CARTESIANMESH2D_H_
+#define _CARTESIANMESH2D_H_
 
 #include <map>
 #include <arcane/ItemTypes.h>
@@ -19,12 +19,12 @@
 using namespace std;
 using namespace Arcane;
 
-class CartesianMesh2DHelper
+class CartesianMesh2D
 {
 public:
-	static CartesianMesh2DHelper* createInstance(IMesh* mesh);
+	static CartesianMesh2D* createInstance(IMesh* mesh);
 
-	CartesianMesh2DHelper(IMesh* mesh);
+	CartesianMesh2D(IMesh* mesh);
 
 	CellGroup getCells() const;
 	NodeGroup getNodes() const;
@@ -40,7 +40,7 @@ private:
 	IMesh* m_mesh;
 	UnstructuredMeshConnectivityView m_umcv;
 	IndexedItemConnectivityView<Cell, Cell> m_neighbour_cells;
-	static map<IMesh*, CartesianMesh2DHelper*> m_instances;
+	static map<IMesh*, CartesianMesh2D*> m_instances;
 };
 
-#endif /* _CARTESIANMESH2DHELPER_H_ */
+#endif /* _CARTESIANMESH2D_H_ */

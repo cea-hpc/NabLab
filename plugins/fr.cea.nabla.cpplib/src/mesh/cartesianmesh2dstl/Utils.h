@@ -13,8 +13,8 @@
 #include <vector>
 #include <algorithm>
 
-#include "CartesianMesh2D.h"
-#include "MeshGeometry.h"
+#include "../cartesianmesh2dstl/CartesianMesh2D.h"
+#include "../cartesianmesh2dstl/MeshGeometry.h"
 
 using namespace std;
 

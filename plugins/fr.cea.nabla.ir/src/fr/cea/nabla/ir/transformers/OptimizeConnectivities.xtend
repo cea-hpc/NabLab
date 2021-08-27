@@ -12,6 +12,8 @@ package fr.cea.nabla.ir.transformers
 import fr.cea.nabla.ir.ir.IrRoot
 import java.util.List
 
+import static extension fr.cea.nabla.ir.IrRootExtensions.*
+
 class OptimizeConnectivities extends IrTransformationStep
 {
 	val List<String> connectivities

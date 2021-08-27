@@ -8,7 +8,7 @@
  * Contributors: see AUTHORS file
  *******************************************************************************/
 
-Provider CartesianMesh2DCpp : CartesianMesh2D
+Provider CartesianMesh2DStl : CartesianMesh2D
 {
 	target = CppSequential;
 	compatibleTargets = StlThread, OpenMP, Kokkos, KokkosTeamThread;

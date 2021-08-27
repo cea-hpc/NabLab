@@ -18,7 +18,6 @@ class TimeLoopContentProvider
 {
 	static def getContent(IrRoot it)
 	'''
-	<!-- GENERATED FILE - 
 	<?xml version="1.0" ?>
 	<!-- «Utils::doNotEditWarning» -->
 	<arcane-config code-name="«name»">
@@ -29,19 +28,19 @@ class TimeLoopContentProvider
 
 				<modules>
 					«FOR m : modules»
-					<module name="«m.className»" need="required" />
+					<module name="«m.className»" need="required"/>
 					«ENDFOR»
 				</modules>
 
 				<entry-points where="init">
 					«FOR m : modules»
-					<entry-point name="«m.className».StartInit" />
+					<entry-point name="«m.className».StartInit"/>
 					«ENDFOR»
 				</entry-points>
 
 				<entry-points where="compute-loop">
 					«FOR m : modules»
-					<entry-point name="«m.className».Compute" />
+					<entry-point name="«m.className».Compute"/>
 					«ENDFOR»
 				</entry-points>
 			</time-loop>

@@ -34,7 +34,7 @@ endif()
 
 # SUB_DIRECTORIES
 add_subdirectory(nablalib ${CMAKE_BINARY_DIR}/nablalib)
-add_subdirectory(mesh/meshstl ${CMAKE_BINARY_DIR}/meshstl)
-add_subdirectory(mesh/mesharcane ${CMAKE_BINARY_DIR}/mesharcane)
+add_subdirectory(mesh/cartesianmesh2dstl ${CMAKE_BINARY_DIR}/cartesianmesh2dstl)
+add_subdirectory(mesh/cartesianmesh2darcane ${CMAKE_BINARY_DIR}/cartesianmesh2darcane)
 add_subdirectory(linearalgebra/linearalgebrastl ${CMAKE_BINARY_DIR}/linearalgebrastl)
 add_subdirectory(linearalgebra/linearalgebrakokkos ${CMAKE_BINARY_DIR}/linearalgebrakokkos)

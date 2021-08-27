@@ -13,7 +13,7 @@
 #include <vector>
 #include <algorithm>
 
-#include "NodeIdContainer.h"
+#include "../cartesianmesh2dstl/NodeIdContainer.h"
 
 using namespace std;
 

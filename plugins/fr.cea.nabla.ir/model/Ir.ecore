@@ -42,9 +42,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="postProcessing" eType="#//PostProcessing"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="providers" upperBound="-1"
-        eType="#//DefaultExtensionProvider" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="mesh" lowerBound="1" eType="#//MeshExtensionProvider"
-        containment="true"/>
+        eType="#//ExtensionProvider" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="timeIterators" upperBound="-1"
         eType="#//TimeIterator" containment="true"/>
   </eClassifiers>

@@ -11,15 +11,14 @@
 #include <cmath>
 #include <Kokkos_Core.hpp>
 #include <Kokkos_hwloc.hpp>
-#include "nablalib/mesh/CartesianMesh2D.h"
-#include "nablalib/mesh/PvdFileWriter2D.h"
 #include "nablalib/utils/Utils.h"
 #include "nablalib/utils/Timer.h"
 #include "nablalib/types/Types.h"
 #include "nablalib/utils/kokkos/Parallel.h"
+#include "CartesianMesh2D.h"
+#include "PvdFileWriter2D.h"
 #include "LinearAlgebra.h"
 
-using namespace nablalib::mesh;
 using namespace nablalib::utils;
 using namespace nablalib::types;
 using namespace nablalib::utils::kokkos;

@@ -10,6 +10,7 @@
 package fr.cea.nabla.ir
 
 import fr.cea.nabla.ir.ir.IrRoot
+import fr.cea.nabla.ir.ir.MeshExtensionProvider
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 
@@ -38,5 +39,16 @@ class IrRootExtensions
 	static def getExecName(IrRoot it)
 	{
 		name.toLowerCase
+	}
+
+	static def getMesh(IrRoot it)
+	{
+		// only one mesh for the moment
+		providers.filter(MeshExtensionProvider).head
+	}
+
+	static def getExternalProviders(IrRoot it)
+	{
+		providers.filter[x | x.extensionName != "Math"]
 	}
 }

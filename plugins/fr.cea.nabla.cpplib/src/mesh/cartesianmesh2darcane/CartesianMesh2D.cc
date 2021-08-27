@@ -7,25 +7,25 @@
  * SPDX-License-Identifier: EPL-2.0
 	 * Contributors: see AUTHORS file
  *******************************************************************************/
-#include "CartesianMesh2DHelper.h"
+#include "../cartesianmesh2darcane/CartesianMesh2D.h"
 
 #include <arcane/ItemGroup.h>
 #include <arcane/IItemFamily.h>
 #include <arcane/mesh/IncrementalItemConnectivity.h>
 
-CartesianMesh2DHelper*
-CartesianMesh2DHelper::createInstance(IMesh* mesh)
+CartesianMesh2D*
+CartesianMesh2D::createInstance(IMesh* mesh)
 {
-	CartesianMesh2DHelper* instance = m_instances[mesh];
+	CartesianMesh2D* instance = m_instances[mesh];
 	if (instance == NULL)
 	{
-		instance = new CartesianMesh2DHelper(mesh);
+		instance = new CartesianMesh2D(mesh);
 		m_instances[mesh] = instance;
 	}
 	return instance;
 }
 
-CartesianMesh2DHelper::CartesianMesh2DHelper(IMesh* mesh)
+CartesianMesh2D::CartesianMesh2D(IMesh* mesh)
 : m_mesh(mesh)
 {
 	m_umcv.setMesh(mesh);
@@ -55,55 +55,55 @@ CartesianMesh2DHelper::CartesianMesh2DHelper(IMesh* mesh)
 
 
 CellGroup
-CartesianMesh2DHelper::getCells() const
+CartesianMesh2D::getCells() const
 {
 	return m_mesh->allCells();
 }
 
 NodeGroup
-CartesianMesh2DHelper::getNodes() const
+CartesianMesh2D::getNodes() const
 {
 	return m_mesh->allNodes();
 }
 
 FaceGroup
-CartesianMesh2DHelper::getFaces() const
+CartesianMesh2D::getFaces() const
 {
 	return m_mesh->allFaces();
 }
 
 ItemLocalIdView<Node>
-CartesianMesh2DHelper::getNodesOfCell(Cell c) const
+CartesianMesh2D::getNodesOfCell(Cell c) const
 {
 	return m_umcv.cellNode().items(c);
 }
 
 ItemLocalIdView<Node>
-CartesianMesh2DHelper::getNodesOfFace(Face f) const
+CartesianMesh2D::getNodesOfFace(Face f) const
 {
 	return m_umcv.faceNode().items(f);
 }
 
 ItemLocalIdView<Cell>
-CartesianMesh2DHelper::getCellsOfNode(Node n) const
+CartesianMesh2D::getCellsOfNode(Node n) const
 {
 	return m_umcv.nodeCell().items(n);
 }
 
 ItemLocalIdView<Cell>
-CartesianMesh2DHelper::getCellsOfFace(Face f) const
+CartesianMesh2D::getCellsOfFace(Face f) const
 {
 	return m_umcv.faceCell().items(f);
 }
 
 IndexedItemConnectivityView<Cell, Cell>
-CartesianMesh2DHelper::getNeighbourCells(Cell c) const
+CartesianMesh2D::getNeighbourCells(Cell c) const
 {
 	return m_neighbour_cells;
 }
 
 ItemLocalIdView<Face>
-CartesianMesh2DHelper::getFacesOfCell(Cell c) const
+CartesianMesh2D::getFacesOfCell(Cell c) const
 {
 	return m_umcv.cellFace().items(c);
 }

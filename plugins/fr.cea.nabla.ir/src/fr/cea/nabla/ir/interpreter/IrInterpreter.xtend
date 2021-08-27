@@ -71,9 +71,9 @@ class IrInterpreter
 
 		// Create mesh and mesh variables
 		if (!jsonObject.has("mesh")) throw new RuntimeException("Mesh block missing in Json")
-		val meshProviderHelper = context.meshProvider
-		meshProviderHelper.createProviderInstance(null)
-		meshProviderHelper.jsonInit(null, jsonObject.get("mesh").toString)
+		val mesh = context.mesh
+		mesh.createProviderInstance(null)
+		mesh.jsonInit(null, jsonObject.get("mesh").toString)
 
 		// Read options in Json
 		for (m : context.ir.modules)
@@ -84,7 +84,7 @@ class IrInterpreter
 			context.addVariableValue(v, createValue(v.type, v.name, v.defaultValue, context))
 
 		// Copy Node Cooords
-		context.addVariableValue(context.ir.initNodeCoordVariable, new NV2Real(context.meshProvider.nodes))
+		context.addVariableValue(context.ir.initNodeCoordVariable, new NV2Real(context.mesh.nodes))
 
 		// Interprete Top level jobs
 		for (j : context.ir.main.calls)

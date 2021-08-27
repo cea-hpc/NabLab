@@ -13,6 +13,7 @@ import fr.cea.nabla.ir.generator.CMakeUtils
 import fr.cea.nabla.ir.ir.IrRoot
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
+import static extension fr.cea.nabla.ir.IrRootExtensions.*
 
 class CMakeContentProvider
 {
@@ -20,9 +21,9 @@ class CMakeContentProvider
 	'''
 	«CMakeUtils.getFileHeader(false)»
 
-	«CMakeUtils.setVariables(variables, #[])»
+	«CMakeUtils.setVariables(variables, externalProviders)»
 
-	«CMakeUtils.checkVariables(#[CMakeUtils.WS_PATH, "Arcane_ROOT"])»
+	«CMakeUtils.checkVariables(false, #["Arcane_ROOT"])»
 
 	project(«name» LANGUAGES CXX)
 

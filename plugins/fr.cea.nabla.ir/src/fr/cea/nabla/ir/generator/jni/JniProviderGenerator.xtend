@@ -205,7 +205,7 @@ class JniProviderGenerator
 	'''
 	«CMakeUtils::getFileHeader(true)»
 
-	«CMakeUtils.checkVariables(#[CMakeUtils.WS_PATH, 'JAVA_HOME'])»
+	«CMakeUtils.checkVariables(true, #['JAVA_HOME'])»
 
 	«CMakeUtils.setVariables(#[], #[cppProvider])»
 

@@ -9,7 +9,6 @@
  *******************************************************************************/
 package fr.cea.nabla.ir
 
-import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
 
@@ -31,17 +30,6 @@ class IrModuleExtensions
 	{
 		if (main) getIrRoot.postProcessing
 		else null
-	}
-
-	static def getMeshClassName(IrModule it)
-	{
-		val root = eContainer as IrRoot
-		root.mesh.extensionName
-	}
-
-	static def DefaultExtensionProvider[] getValidExtensionProviders(IrModule it)
-	{
-		providers.filter[x | !x.providerName.nullOrEmpty]
 	}
 
 	static def getJobByName(IrModule it, String jobName)
@@ -68,4 +56,8 @@ class IrModuleExtensions
 	{
 		variables.findFirst[j | j.name == irVarName]
 	}
-}
+
+	static def getExternalProviders(IrModule it)
+	{
+		providers.filter[x | x.extensionName != "Math"]
+	}}

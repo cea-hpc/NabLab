@@ -20,12 +20,12 @@ if(NOT TARGET nablalib)
 	add_subdirectory($ENV{N_WS_PATH}/nablalib ${CMAKE_BINARY_DIR}/nablalib)
 endif()
 
-# LIBRARY meshstl
-add_library(meshstl CartesianMesh2D.cc PvdFileWriter2D.cc)
-set_property(TARGET meshstl PROPERTY POSITION_INDEPENDENT_CODE ON)
-target_compile_options(meshstl PUBLIC -g -Wall -O3 --std=c++17 -mtune=native)
+# LIBRARY cartesianmesh2dstl
+add_library(cartesianmesh2dstl CartesianMesh2D.cc PvdFileWriter2D.cc)
+set_property(TARGET cartesianmesh2dstl PROPERTY POSITION_INDEPENDENT_CODE ON)
+target_compile_options(cartesianmesh2dstl PUBLIC -g -Wall -O3 --std=c++17 -mtune=native)
 target_include_directories(nablalib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(meshstl PUBLIC nablalib)
+target_link_libraries(cartesianmesh2dstl PUBLIC nablalib)
 
 # OPTIONAL USER OPTIONS IN Project.cmake
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)

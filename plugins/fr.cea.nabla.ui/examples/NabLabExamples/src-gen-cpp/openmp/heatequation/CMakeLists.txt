@@ -7,11 +7,8 @@ set(CMAKE_VERBOSE_MAKEFILE FALSE)
 # SET VARIABLES
 set(CMAKE_CXX_COMPILER /usr/bin/g++)
 set(N_WS_PATH $ENV{HOME}/workspaces/NabLab/plugins/fr.cea.nabla.ui/examples)
+set(CARTESIANMESH2DSTL_PATH ${N_WS_PATH}/.nablab/mesh/cartesianmesh2dstl)
 
-# CHECK VARIABLES
-if (NOT DEFINED N_WS_PATH)
-	message(FATAL_ERROR "N_WS_PATH variable must be set")
-endif()
 
 # PROJECT
 project(HeatEquationProject CXX)
@@ -34,10 +31,13 @@ find_package(OpenMP REQUIRED)
 if(NOT TARGET nablalib)
 	add_subdirectory(${N_WS_PATH}/.nablab/nablalib ${CMAKE_BINARY_DIR}/nablalib)
 endif()
+if(NOT TARGET cartesianmesh2dstl)
+	add_subdirectory(${CARTESIANMESH2DSTL_PATH} ${CMAKE_BINARY_DIR}/cartesianmesh2dstl)
+endif()
 
 # EXECUTABLE heatequation
 add_executable(heatequation HeatEquation.cc)
-target_link_libraries(heatequation PUBLIC nablalib OpenMP::OpenMP_CXX)
+target_link_libraries(heatequation PUBLIC nablalib OpenMP::OpenMP_CXX cartesianmesh2dstl)
 
 # OPTIONAL USER OPTIONS IN Project.cmake
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)

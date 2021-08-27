@@ -25,7 +25,6 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getTimeStepVariable <em>Time Step Variable</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getPostProcessing <em>Post Processing</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getProviders <em>Providers</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getMesh <em>Mesh</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.IrRoot#getTimeIterators <em>Time Iterators</em>}</li>
  * </ul>
  *
@@ -248,7 +247,7 @@ public interface IrRoot extends IrAnnotable {
 
 	/**
 	 * Returns the value of the '<em><b>Providers</b></em>' containment reference list.
-	 * The list contents are of type {@link fr.cea.nabla.ir.ir.DefaultExtensionProvider}.
+	 * The list contents are of type {@link fr.cea.nabla.ir.ir.ExtensionProvider}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Providers</em>' containment reference list.
@@ -256,29 +255,7 @@ public interface IrRoot extends IrAnnotable {
 	 * @model containment="true" resolveProxies="true"
 	 * @generated
 	 */
-	EList<DefaultExtensionProvider> getProviders();
-
-	/**
-	 * Returns the value of the '<em><b>Mesh</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Mesh</em>' containment reference.
-	 * @see #setMesh(MeshExtensionProvider)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getIrRoot_Mesh()
-	 * @model containment="true" resolveProxies="true" required="true"
-	 * @generated
-	 */
-	MeshExtensionProvider getMesh();
-
-	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.IrRoot#getMesh <em>Mesh</em>}' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Mesh</em>' containment reference.
-	 * @see #getMesh()
-	 * @generated
-	 */
-	void setMesh(MeshExtensionProvider value);
+	EList<ExtensionProvider> getProviders();
 
 	/**
 	 * Returns the value of the '<em><b>Time Iterators</b></em>' containment reference list.

@@ -220,7 +220,7 @@ class ExpressionInterpreter
 		{
 			ExternFunction:
 			{
-				val provider = context.providers.get(f.provider)
+				val provider = context.providers.get(f.provider) as CallableExtensionProviderHelper
 				return provider.call(IrUtils.getContainerOfType(it, IrModule), f, argValues)
 			}
 			InternFunction:

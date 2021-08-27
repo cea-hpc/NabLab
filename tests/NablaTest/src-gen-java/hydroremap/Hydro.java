@@ -138,7 +138,7 @@ public final class Hydro
 	}
 
 	/**
-	 * Job hj3 called @3.0 in simulate method.
+	 * Job hj3 called @4.0 in simulate method.
 	 * In variables: hv4, hv5, hv6
 	 * Out variables: hv7
 	 */
@@ -155,11 +155,11 @@ public final class Hydro
 		System.out.println("Start execution of hydro");
 		hj1(); // @1.0
 		r1.rj1(); // @1.0
-		r2.rj1(); // @1.0
 		hj2(); // @2.0
+		r2.rj1(); // @2.0
 		r1.rj2(); // @2.0
-		r2.rj2(); // @2.0
-		hj3(); // @3.0
+		r2.rj2(); // @3.0
+		hj3(); // @4.0
 		System.out.println("End of execution of hydro");
 	}
 

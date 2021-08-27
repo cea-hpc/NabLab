@@ -68,7 +68,9 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	#define «name.HDefineName»
 
 	«backend.includesContentProvider.getIncludes(hasLevelDB, (irRoot.postProcessing !== null))»
-	«FOR provider : validExtensionProviders»
+	#include "«irRoot.mesh.className».h"
+	«IF irRoot.postProcessing !== null»#include "PvdFileWriter2D.h"«ENDIF»
+	«FOR provider : externalProviders»
 	#include "«provider.className».h"
 	«ENDFOR»
 	«IF !main»
@@ -109,7 +111,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 			«FOR v : options»
 			«typeContentProvider.getCppType(v.type)» «v.name»;
 			«ENDFOR»
-			«FOR v : validExtensionProviders»
+			«FOR v : externalProviders»
 			«v.className» «v.instanceName»;
 			«ENDFOR»
 			«IF levelDB»std::string «IrUtils.NonRegressionNameAndValue.key»;«ENDIF»
@@ -117,7 +119,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 			void jsonInit(const char* jsonContent);
 		};
 
-		«className»(«meshClassName»& aMesh, Options& aOptions);
+		«className»(«irRoot.mesh.className»& aMesh, Options& aOptions);
 		~«className»();
 		«IF main»
 			«IF irRoot.modules.size > 1»
@@ -156,7 +158,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 
 		«ENDIF»
 		// Mesh and mesh variables
-		«meshClassName»& mesh;
+		«irRoot.mesh.className»& mesh;
 		«FOR c : irRoot.mesh.connectivities.filter[multiple] BEFORE 'size_t ' SEPARATOR ', ' AFTER ';'»«c.nbElemsVar»«ENDFOR»
 
 		// User options
@@ -238,7 +240,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		«FOR v : options»
 		«jsonContentProvider.getJsonContent(v.name, v.type as BaseType, v.defaultValue)»
 		«ENDFOR»
-		«FOR v : validExtensionProviders»
+		«FOR v : externalProviders»
 		«val vName = v.instanceName»
 		// «vName»
 		if (o.HasMember("«vName»"))
@@ -261,7 +263,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 
 	/******************** Module definition ********************/
 
-	«className»::«className»(«meshClassName»& aMesh, Options& aOptions)
+	«className»::«className»(«irRoot.mesh.className»& aMesh, Options& aOptions)
 	: mesh(aMesh)
 	«FOR c : irRoot.mesh.connectivities.filter[multiple]»
 	, «c.nbElemsVar»(«c.connectivityAccessor»)

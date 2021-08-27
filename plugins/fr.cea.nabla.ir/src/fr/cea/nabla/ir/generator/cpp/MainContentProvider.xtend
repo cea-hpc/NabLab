@@ -13,6 +13,7 @@ import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.ir.IrModule
 import org.eclipse.xtend.lib.annotations.Data
 
+import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 
@@ -45,7 +46,7 @@ class MainContentProvider
 		assert(d.IsObject());
 
 		// Mesh instanciation
-		«meshClassName» mesh;
+		«irRoot.mesh.className» mesh;
 		assert(d.HasMember("mesh"));
 		rapidjson::StringBuffer strbuf;
 		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);

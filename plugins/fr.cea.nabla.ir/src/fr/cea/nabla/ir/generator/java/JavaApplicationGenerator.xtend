@@ -91,7 +91,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 				«FOR v : options»
 				public «v.type.javaType» «v.name»;
 				«ENDFOR»
-				«FOR v : validExtensionProviders»
+				«FOR v : externalProviders»
 				public «v.packageName».«v.className» «v.instanceName»;
 				«ENDFOR»
 				public String «IrUtils.NonRegressionNameAndValue.key»;
@@ -110,7 +110,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 					«FOR v : options»
 					«getJsonContent(v.name, v.type as BaseType, v.defaultValue)»
 					«ENDFOR»
-					«FOR v : validExtensionProviders»
+					«FOR v : externalProviders»
 					«val vName = v.instanceName»
 					// «vName»
 					«vName» = new «v.packageName».«v.className»();
@@ -130,7 +130,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 			}
 
 			// Mesh and mesh variables
-			private final «meshClassName» mesh;
+			private final «irRoot.mesh.className» mesh;
 			@SuppressWarnings("unused")
 			«FOR c : irRoot.mesh.connectivities.filter[multiple] BEFORE 'private final int ' SEPARATOR ', ' AFTER ';'»«c.nbElemsVar»«ENDFOR»
 
@@ -155,7 +155,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 			protected «IF v.const»final «ENDIF»«v.type.javaType» «v.name»;
 			«ENDFOR»
 
-			public «className»(«meshClassName» aMesh, Options aOptions)
+			public «className»(«irRoot.mesh.className» aMesh, Options aOptions)
 			{
 				// Mesh and mesh variables initialization
 				mesh = aMesh;
@@ -216,7 +216,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 
 					// Mesh instanciation
 					assert(o.has("mesh"));
-					«meshClassName» mesh = new «meshClassName»();
+					«irRoot.mesh.className» mesh = new «irRoot.mesh.className»();
 					mesh.jsonInit(o.get("mesh").toString());
 
 					// Module instanciation(s)

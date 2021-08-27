@@ -14,6 +14,8 @@ import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.Variable
 
+import static extension fr.cea.nabla.ir.IrRootExtensions.*
+
 class ReplaceUtf8Chars extends IrTransformationStep
 {
 	public static val UTF8Chars = #{

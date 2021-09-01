@@ -25,8 +25,6 @@ import java.util.ArrayList
 import java.util.List
 import org.eclipse.emf.ecore.util.EcoreUtil
 
-import static fr.cea.nabla.ir.transformers.IrTransformationUtils.*
-
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 
 class ReplaceAffectations  extends IrTransformationStep
@@ -45,7 +43,7 @@ class ReplaceAffectations  extends IrTransformationStep
 			// we know that left and right have same type
 			// For connectivityTypes, we generate loops on connectivities
 			val loop = createLoopWithIterator(affectation.left, affectation.right as ArgOrVarRef, (affectation.left.type as ConnectivityType).connectivities, 1, new ArrayList<ItemId>)
-			replace(affectation, #[loop])
+			IrTransformationUtils.replace(affectation, #[loop])
 		}
 
 		for (affectation : ir.eAllContents.filter(Affectation).toList)
@@ -57,7 +55,7 @@ class ReplaceAffectations  extends IrTransformationStep
 				&& affectation.right instanceof ArgOrVarRef)
 			{
 				val loop = createLoopWithInterval(affectation.left, affectation.right as ArgOrVarRef, affectation.left.type.baseSizes, 1)
-				replace(affectation, #[loop])
+				IrTransformationUtils.replace(affectation, #[loop])
 			}
 		}
 		return true

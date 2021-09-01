@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-#include "../cartesianmesh2dstl/PvdFileWriter2D.h"
+#include "PvdFileWriter2D.h"
 
 #include <filesystem>
 

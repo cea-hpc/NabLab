@@ -28,7 +28,7 @@ endif()
 add_library(linearalgebrakokkos Vector.cc Matrix.cc LinearAlgebra.cc)
 set_property(TARGET linearalgebrakokkos PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_compile_options(linearalgebrakokkos PUBLIC -g -Wall -O3 --std=c++17 -fopenmp -mtune=native)
-target_include_directories(nablalib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(linearalgebrakokkos PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(linearalgebrakokkos PUBLIC nablalib Kokkos::kokkos Kokkos::kokkoskernels)
 
 # OPTIONAL USER OPTIONS IN Project.cmake

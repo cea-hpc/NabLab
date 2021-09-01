@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-#include "../linearalgebrastl/Vector.h"
+#include "Vector.h"
 #include "nablalib/utils/Serializer.h"
 
 using namespace nablalib::utils;

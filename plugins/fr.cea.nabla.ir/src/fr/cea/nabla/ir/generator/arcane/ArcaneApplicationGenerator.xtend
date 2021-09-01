@@ -111,7 +111,7 @@ class ArcaneApplicationGenerator implements ApplicationGenerator
 		«ENDFOR»
 
 	private:
-		CartesianMesh2DHelper* m_mesh;
+		«irRoot.mesh.className»* m_mesh;
 	};
 
 	#endif
@@ -143,7 +143,7 @@ class ArcaneApplicationGenerator implements ApplicationGenerator
 	void «className»::init()
 	{
 		// mesh initialisation
-		m_mesh = CartesianMesh2DHelper::create(mesh);
+		m_mesh = «irRoot.mesh.className»::create(mesh);
 
 		«FOR c : irRoot.main.calls.filter[!mainTimeLoop]»
 		«Utils::getCallName(c).replace('.', '->')»(); // @«c.at»

@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-#include "../linearalgebrastl/Matrix.h"
+#include "Matrix.h"
 #include "nablalib/utils/Serializer.h"
 
 Matrix::

@@ -24,8 +24,6 @@ class CartesianMesh2D
 public:
 	static CartesianMesh2D* createInstance(IMesh* mesh);
 
-	CartesianMesh2D(IMesh* mesh);
-
 	CellGroup getCells() const;
 	NodeGroup getNodes() const;
 	FaceGroup getFaces() const;
@@ -37,6 +35,7 @@ public:
 	ItemLocalIdView<Face> getFacesOfCell(Cell c) const;
 
 private:
+	CartesianMesh2D(IMesh* mesh);
 	IMesh* m_mesh;
 	UnstructuredMeshConnectivityView m_umcv;
 	IndexedItemConnectivityView<Cell, Cell> m_neighbour_cells;

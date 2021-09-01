@@ -30,10 +30,10 @@ class IrTransformationUtils
 			if (FeatureMapUtil.isMany(container, feature))
 			{
 				val list = container.eGet(feature) as List<Object>
-				val reductionIndex = list.indexOf(oldInstruction)
-				list.set(reductionIndex, newInstructions.get(0))
+				val index = list.indexOf(oldInstruction)
+				list.set(index, newInstructions.get(0))
 				for (i : 1..<newInstructions.length)
-					list.add(reductionIndex+i, newInstructions.get(i))
+					list.add(index+i, newInstructions.get(i))
 			}
 			else
 			{

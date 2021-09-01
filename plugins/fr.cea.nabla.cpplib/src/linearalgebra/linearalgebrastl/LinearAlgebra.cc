@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-#include "../linearalgebrastl/LinearAlgebra.h"
+#include "LinearAlgebra.h"
 
 #include <iostream>
 #include <algorithm>

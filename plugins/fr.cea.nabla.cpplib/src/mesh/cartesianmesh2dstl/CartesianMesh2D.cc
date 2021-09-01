@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: EPL-2.0
 	 * Contributors: see AUTHORS file
  *******************************************************************************/
-#include "../cartesianmesh2dstl/CartesianMesh2D.h"
+#include "CartesianMesh2D.h"
 
 #include <rapidjson/document.h>
 #include <stdexcept>

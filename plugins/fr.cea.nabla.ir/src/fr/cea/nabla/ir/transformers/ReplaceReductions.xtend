@@ -21,8 +21,6 @@ import java.util.ArrayList
 import java.util.List
 import org.eclipse.emf.ecore.util.EcoreUtil
 
-import static fr.cea.nabla.ir.transformers.IrTransformationUtils.*
-
 class ReplaceReductions extends IrTransformationStep
 {
 	val boolean replaceAllReductions
@@ -54,7 +52,7 @@ class ReplaceReductions extends IrTransformationStep
 
 			// instantiate the VarDefinition at the end to prevent reduction.result from becoming null
 			val variableDefinition = IrFactory::eINSTANCE.createVariableDeclaration => [ variable = reduction.result ]
-			replace(reduction, #[variableDefinition, loop])
+			IrTransformationUtils.replace(reduction, #[variableDefinition, loop])
 		}
 		return true
 	}

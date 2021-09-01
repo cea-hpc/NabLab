@@ -12,6 +12,7 @@ package fr.cea.nabla.ir.generator.arcane
 import fr.cea.nabla.ir.generator.CMakeUtils
 import fr.cea.nabla.ir.ir.IrRoot
 
+import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 
@@ -29,7 +30,7 @@ class CMakeContentProvider
 
 	find_package(Arcane REQUIRED)
 
-	«CMakeUtils.addSubDirectories(true, #[])»
+	«CMakeUtils.addSubDirectories(true, externalProviders)»
 
 	add_executable(«name»«FOR m : modules» «ArcaneUtils.getModuleName(m)».cc «m.className»_axl.h«ENDFOR» main.cc)
 
@@ -37,7 +38,7 @@ class CMakeContentProvider
 	arcane_generate_axl(«m.className»)
 	«ENDFOR»
 	#arcane_add_arcane_libraries_to_target(«name»)
-	target_link_libraries(«name» PRIVATE arcane_full nablalib)
+	target_link_libraries(«name» PRIVATE arcane_full nablalib«FOR e : externalProviders» «e.libName»«ENDFOR»)
 	target_include_directories(«name» PUBLIC . ${CMAKE_CURRENT_BINARY_DIR})
 
 	«CMakeUtils.fileFooter»

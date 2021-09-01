@@ -24,7 +24,7 @@ endif()
 add_library(cartesianmesh2dstl CartesianMesh2D.cc PvdFileWriter2D.cc)
 set_property(TARGET cartesianmesh2dstl PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_compile_options(cartesianmesh2dstl PUBLIC -g -Wall -O3 --std=c++17 -mtune=native)
-target_include_directories(nablalib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(cartesianmesh2dstl PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(cartesianmesh2dstl PUBLIC nablalib)
 
 # OPTIONAL USER OPTIONS IN Project.cmake

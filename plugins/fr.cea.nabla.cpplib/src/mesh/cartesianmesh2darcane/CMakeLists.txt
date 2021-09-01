@@ -17,6 +17,7 @@ find_package(Arcane)
 add_library(cartesianmesh2darcane CartesianMesh2D.cc)
 set_property(TARGET cartesianmesh2darcane PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_compile_options(cartesianmesh2darcane PUBLIC -g -Wall -O3 --std=c++17 -mtune=native)
+target_include_directories(cartesianmesh2darcane PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 arcane_add_arcane_libraries_to_target(cartesianmesh2darcane)
 
 # OPTIONAL USER OPTIONS IN Project.cmake

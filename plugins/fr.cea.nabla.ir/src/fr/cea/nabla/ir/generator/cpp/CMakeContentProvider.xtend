@@ -67,6 +67,9 @@ class CMakeContentProvider
 		# EXECUTABLE «execName»
 		add_executable(«execName»«FOR m : modules» «m.className + '.cc'»«ENDFOR»)
 		target_link_libraries(«execName» PUBLIC«FOR l : getRootTargetLinkLibraries(it, hasLevelDB)» «l»«ENDFOR»)
+		«IF compilationOptions.size != 0»
+		add_compile_options(«FOR opt : compilationOptions» «opt»«ENDFOR»)
+		«ENDIF»
 
 		«CMakeUtils.fileFooter»
 	'''
@@ -179,6 +182,7 @@ class OpenMpTargetCMakeContentProvider extends CMakeContentProvider
 	override Iterable<String> getCompilationOptions()
 	{
 		super.compilationOptions + #[
+			'-stdlib=libc++', // clang/llvm's STL implementation
 			'-fopenmp', '-fopenmp-target=nvptx64-nvidia-cuda',
 			'-Xopenmp-target', '-march="${' + CUDA_TARGET_ARCH + '}"',
 			'-gline-tables-only', '-fopenmp-cuda-force-full-runtime'
@@ -187,6 +191,11 @@ class OpenMpTargetCMakeContentProvider extends CMakeContentProvider
 
 	override getTargetLinkLibraries(IrRoot irRoot)
 	{
-		super.getTargetLinkLibraries(irRoot) + #["OpenMP::OpenMP_CXX"]
+		super.getTargetLinkLibraries(irRoot) + #[
+			'-stdlib=libc++', // clang/llvm's STL implementation
+			'-fopenmp', '-fopenmp-target=nvptx64-nvidia-cuda',
+			'-Xopenmp-target', '-march="${' + CUDA_TARGET_ARCH + '}"',
+			'-gline-tables-only', '-fopenmp-cuda-force-full-runtime'
+		]
 	}
 }

@@ -20,7 +20,6 @@ import fr.cea.nabla.ir.transformers.PutGpuAnnotations
 import fr.cea.nabla.ir.transformers.ReplaceReductions
 import java.util.ArrayList
 import org.eclipse.xtend.lib.annotations.Accessors
-import java.util.HashSet
 
 abstract class Backend implements Jniable
 {
@@ -175,23 +174,23 @@ class OpenMpBackend extends Backend
 	}
 }
 
-class OpenMpTaskBackend extends Backend
+class OpenMpTargetBackend extends Backend
 {
 	new(ArrayList<Pair<String, String>> options)
 	{
 		super(options)
 
-		name = 'OpenMPTask'
-		cmakeContentProvider = new OpenMpCMakeContentProvider
-		typeContentProvider = new OpenMpTaskTypeContentProvider
+		name = 'OpenMPTarget'
+		cmakeContentProvider = new OpenMpTargetCMakeContentProvider
+		typeContentProvider = new OpenMpTargetTypeContentProvider
 		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
-		instructionContentProvider = new OpenMpTaskInstructionContentProvider(typeContentProvider, expressionContentProvider)
+		instructionContentProvider = new OpenMpTargetInstructionContentProvider(typeContentProvider, expressionContentProvider)
 		functionContentProvider = new DefaultFunctionContentProvider(typeContentProvider, expressionContentProvider, instructionContentProvider)
 		traceContentProvider = new TraceContentProvider
-		includesContentProvider = new OpenMpTaskIncludesContentProvider
+		includesContentProvider = new OpenMpTargetIncludesContentProvider
 		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
 		jobCallerContentProvider = new JobCallerContentProvider
-		jobContentProvider = new OpenMpTaskJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider)
+		jobContentProvider = new OpenMpTargetJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider)
 		mainContentProvider = new MainContentProvider(jsonContentProvider)
 
 		// Build the transformation steps from the options
@@ -200,7 +199,7 @@ class OpenMpTaskBackend extends Backend
 			checkForMultipleStringOption("GPU_BLACKLIST_FUNCTION").toSet // Backlist some functions
 		)
 		
-		irTransformationStep = new CompositeTransformationStep('OpenMPTask specific transformations', #[
+		irTransformationStep = new CompositeTransformationStep('OpenMPTarget specific transformations', #[
 			new PutGpuAnnotations(new OptimistGpuDispatchStrategy(opt))
 		])
 	}

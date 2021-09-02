@@ -161,3 +161,32 @@ class OpenMpCMakeContentProvider extends CMakeContentProvider
 		super.getTargetLinkLibraries(irRoot) + #["OpenMP::OpenMP_CXX"]
 	}
 }
+
+class OpenMpTargetCMakeContentProvider extends CMakeContentProvider
+{
+	static public val CUDA_TARGET_ARCH = 'N_CUDA_TARGET_ARCH' // Default can be sm_70 for V100
+	
+	override getFindPackageContent(IrRoot irRoot)
+	'''
+		find_package(OpenMP REQUIRED)
+	'''
+
+	override Iterable<String> getNeededVariables(IrRoot irRoot)
+	{
+		super.getNeededVariables(irRoot) + #[CUDA_TARGET_ARCH]
+	}
+
+	override Iterable<String> getCompilationOptions()
+	{
+		super.compilationOptions + #[
+			'-fopenmp', '-fopenmp-target=nvptx64-nvidia-cuda',
+			'-Xopenmp-target', '-march="${' + CUDA_TARGET_ARCH + '}"',
+			'-gline-tables-only', '-fopenmp-cuda-force-full-runtime'
+		]
+	}
+
+	override getTargetLinkLibraries(IrRoot irRoot)
+	{
+		super.getTargetLinkLibraries(irRoot) + #["OpenMP::OpenMP_CXX"]
+	}
+}

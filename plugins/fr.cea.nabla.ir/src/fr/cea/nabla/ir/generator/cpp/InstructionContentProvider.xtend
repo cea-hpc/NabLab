@@ -333,7 +333,7 @@ class OpenMpInstructionContentProvider extends InstructionContentProvider
 }
 
 @Data
-class OpenMpTaskInstructionContentProvider extends InstructionContentProvider
+class OpenMpTargetInstructionContentProvider extends InstructionContentProvider
 {
 	override getReductionContent(ReductionInstruction it)
 	'''

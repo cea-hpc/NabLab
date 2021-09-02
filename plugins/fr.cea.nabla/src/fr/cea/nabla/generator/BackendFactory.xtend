@@ -13,7 +13,7 @@ import fr.cea.nabla.ir.generator.cpp.Backend
 import fr.cea.nabla.ir.generator.cpp.KokkosBackend
 import fr.cea.nabla.ir.generator.cpp.KokkosTeamThreadBackend
 import fr.cea.nabla.ir.generator.cpp.OpenMpBackend
-import fr.cea.nabla.ir.generator.cpp.OpenMpTaskBackend
+import fr.cea.nabla.ir.generator.cpp.OpenMpTargetBackend
 import fr.cea.nabla.ir.generator.cpp.SequentialBackend
 import fr.cea.nabla.ir.generator.cpp.StlThreadBackend
 import fr.cea.nabla.nablagen.TargetType
@@ -28,7 +28,7 @@ class BackendFactory
 			case CPP_SEQUENTIAL: new SequentialBackend(options)
 			case STL_THREAD: new StlThreadBackend(options)
 			case OPEN_MP: new OpenMpBackend(options)
-			case OPEN_MP_TASK: new OpenMpTaskBackend(options)
+			case OPEN_MP_TASK: new OpenMpTargetBackend(options)
 			case KOKKOS: new KokkosBackend(options)
 			case KOKKOS_TEAM_THREAD: new KokkosTeamThreadBackend(options)
 			default: throw new RuntimeException("No backend for type: " + type.literal)

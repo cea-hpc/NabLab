@@ -136,6 +136,6 @@ class KokkosTeamThreadJobContentProvider extends KokkosJobContentProvider
 }
 
 @Data
-class OpenMpTaskJobContentProvider extends JobContentProvider
+class OpenMpTargetJobContentProvider extends JobContentProvider
 {
 }

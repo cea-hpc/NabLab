@@ -130,7 +130,7 @@ class OpenMpIncludesContentProvider extends IncludesContentProvider
 	}
 }
 
-class OpenMpTaskIncludesContentProvider extends IncludesContentProvider
+class OpenMpTargetIncludesContentProvider extends IncludesContentProvider
 {
 	override getSystemIncludes(boolean hasLevelDB)
 	{

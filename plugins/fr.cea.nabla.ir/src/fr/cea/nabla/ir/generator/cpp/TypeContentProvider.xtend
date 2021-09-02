@@ -185,7 +185,7 @@ class KokkosTypeContentProvider extends TypeContentProvider
 	'''«FOR i : iterators BEFORE '(' SEPARATOR ', ' AFTER ')'»«i»«ENDFOR»'''
 }
 
-class OpenMpTaskTypeContentProvider extends TypeContentProvider
+class OpenMpTargetTypeContentProvider extends TypeContentProvider
 {
 	override getCppType(BaseType baseType, Iterable<Connectivity> connectivities) 
 	{

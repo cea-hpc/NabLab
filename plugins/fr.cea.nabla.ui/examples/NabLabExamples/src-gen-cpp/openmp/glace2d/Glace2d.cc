@@ -108,10 +108,60 @@ double minR0(double a, double b)
 }
 }
 
-/******************** Options definition ********************/
+/******************** Module definition ********************/
+
+Glace2d::Glace2d(CartesianMesh2D& aMesh)
+: mesh(aMesh)
+, nbNodes(mesh.getNbNodes())
+, nbCells(mesh.getNbCells())
+, maxNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
+, maxCellsOfNode(CartesianMesh2D::MaxNbCellsOfNode)
+, nbInnerNodes(mesh.getNbInnerNodes())
+, nbTopNodes(mesh.getNbTopNodes())
+, nbBottomNodes(mesh.getNbBottomNodes())
+, nbLeftNodes(mesh.getNbLeftNodes())
+, nbRightNodes(mesh.getNbRightNodes())
+, lastDump(numeric_limits<int>::min())
+, X_n(nbNodes)
+, X_nplus1(nbNodes)
+, X_n0(nbNodes)
+, b(nbNodes)
+, bt(nbNodes)
+, Ar(nbNodes)
+, Mt(nbNodes)
+, ur(nbNodes)
+, c(nbCells)
+, m(nbCells)
+, p(nbCells)
+, rho(nbCells)
+, e(nbCells)
+, E_n(nbCells)
+, E_nplus1(nbCells)
+, V(nbCells)
+, deltatj(nbCells)
+, uj_n(nbCells)
+, uj_nplus1(nbCells)
+, l(nbCells, std::vector<double>(maxNodesOfCell))
+, Cjr_ic(nbCells, std::vector<RealArray1D<2>>(maxNodesOfCell))
+, C(nbCells, std::vector<RealArray1D<2>>(maxNodesOfCell))
+, F(nbCells, std::vector<RealArray1D<2>>(maxNodesOfCell))
+, Ajr(nbCells, std::vector<RealArray2D<2,2>>(maxNodesOfCell))
+{
+	// Copy node coordinates
+	const auto& gNodes = mesh.getGeometry()->getNodes();
+	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
+	{
+		X_n0[rNodes][0] = gNodes[rNodes][0];
+		X_n0[rNodes][1] = gNodes[rNodes][1];
+	}
+}
+
+Glace2d::~Glace2d()
+{
+}
 
 void
-Glace2d::Options::jsonInit(const char* jsonContent)
+Glace2d::jsonInit(const char* jsonContent)
 {
 	rapidjson::Document document;
 	assert(!document.Parse(jsonContent).HasParseError());
@@ -123,6 +173,7 @@ Glace2d::Options::jsonInit(const char* jsonContent)
 	const rapidjson::Value& valueof_outputPath = o["outputPath"];
 	assert(valueof_outputPath.IsString());
 	outputPath = valueof_outputPath.GetString();
+	writer = new PvdFileWriter2D("Glace2d", outputPath);
 	// outputPeriod
 	assert(o.HasMember("outputPeriod"));
 	const rapidjson::Value& valueof_outputPeriod = o["outputPeriod"];
@@ -211,59 +262,6 @@ Glace2d::Options::jsonInit(const char* jsonContent)
 		pIniZd = 0.1;
 }
 
-/******************** Module definition ********************/
-
-Glace2d::Glace2d(CartesianMesh2D& aMesh, Options& aOptions)
-: mesh(aMesh)
-, nbNodes(mesh.getNbNodes())
-, nbCells(mesh.getNbCells())
-, maxNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
-, maxCellsOfNode(CartesianMesh2D::MaxNbCellsOfNode)
-, nbInnerNodes(mesh.getNbInnerNodes())
-, nbTopNodes(mesh.getNbTopNodes())
-, nbBottomNodes(mesh.getNbBottomNodes())
-, nbLeftNodes(mesh.getNbLeftNodes())
-, nbRightNodes(mesh.getNbRightNodes())
-, options(aOptions)
-, writer("Glace2d", options.outputPath)
-, lastDump(numeric_limits<int>::min())
-, X_n(nbNodes)
-, X_nplus1(nbNodes)
-, X_n0(nbNodes)
-, b(nbNodes)
-, bt(nbNodes)
-, Ar(nbNodes)
-, Mt(nbNodes)
-, ur(nbNodes)
-, c(nbCells)
-, m(nbCells)
-, p(nbCells)
-, rho(nbCells)
-, e(nbCells)
-, E_n(nbCells)
-, E_nplus1(nbCells)
-, V(nbCells)
-, deltatj(nbCells)
-, uj_n(nbCells)
-, uj_nplus1(nbCells)
-, l(nbCells, std::vector<double>(maxNodesOfCell))
-, Cjr_ic(nbCells, std::vector<RealArray1D<2>>(maxNodesOfCell))
-, C(nbCells, std::vector<RealArray1D<2>>(maxNodesOfCell))
-, F(nbCells, std::vector<RealArray1D<2>>(maxNodesOfCell))
-, Ajr(nbCells, std::vector<RealArray2D<2,2>>(maxNodesOfCell))
-{
-	// Copy node coordinates
-	const auto& gNodes = mesh.getGeometry()->getNodes();
-	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
-	{
-		X_n0[rNodes][0] = gNodes[rNodes][0];
-		X_n0[rNodes][1] = gNodes[rNodes][1];
-	}
-}
-
-Glace2d::~Glace2d()
-{
-}
 
 /**
  * Job computeCjr called @1.0 in executeTimeLoopN method.
@@ -414,15 +412,15 @@ void Glace2d::initialize() noexcept
 			}
 		}
 		const RealArray1D<2> center(0.25 * reduction0);
-		if (center[0] < options.xInterface) 
+		if (center[0] < xInterface) 
 		{
-			rho_ic = options.rhoIniZg;
-			p_ic = options.pIniZg;
+			rho_ic = rhoIniZg;
+			p_ic = pIniZg;
 		}
 		else
 		{
-			rho_ic = options.rhoIniZd;
-			p_ic = options.pIniZd;
+			rho_ic = rhoIniZd;
+			p_ic = pIniZd;
 		}
 		double reduction1(0.0);
 		{
@@ -439,7 +437,7 @@ void Glace2d::initialize() noexcept
 		m[jCells] = rho_ic * V_ic;
 		p[jCells] = p_ic;
 		rho[jCells] = rho_ic;
-		E_n[jCells] = p_ic / ((options.gamma - 1.0) * rho_ic);
+		E_n[jCells] = p_ic / ((gamma - 1.0) * rho_ic);
 		uj_n[jCells] = {0.0, 0.0};
 	}
 }
@@ -490,7 +488,7 @@ void Glace2d::executeTimeLoopN() noexcept
 		globalTimer.start();
 		cpuTimer.start();
 		n++;
-		if (!writer.isDisabled() && n >= lastDump + options.outputPeriod)
+		if (writer != NULL && !writer->isDisabled() && n >= lastDump + outputPeriod)
 			dumpVariables(n);
 		if (n!=1)
 			std::cout << "[" << __CYAN__ << __BOLD__ << setw(3) << n << __RESET__ "] t = " << __BOLD__
@@ -520,7 +518,7 @@ void Glace2d::executeTimeLoopN() noexcept
 		
 	
 		// Evaluate loop condition with variables at time n
-		continueLoop = (t_nplus1 < options.stopTime && n + 1 < options.maxIterations);
+		continueLoop = (t_nplus1 < stopTime && n + 1 < maxIterations);
 	
 		t_n = t_nplus1;
 		#pragma omp parallel for shared(X_n)
@@ -549,22 +547,22 @@ void Glace2d::executeTimeLoopN() noexcept
 		globalTimer.stop();
 	
 		// Timers display
-		if (!writer.isDisabled())
+		if (writer != NULL && !writer->isDisabled())
 			std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __BLUE__ << ioTimer.print(true) << __RESET__ "} ";
 		else
 			std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __RED__ << "none" << __RESET__ << "} ";
 		
 		// Progress
-		std::cout << progress_bar(n, options.maxIterations, t_n, options.stopTime, 25);
+		std::cout << progress_bar(n, maxIterations, t_n, stopTime, 25);
 		std::cout << __BOLD__ << __CYAN__ << Timer::print(
-			eta(n, options.maxIterations, t_n, options.stopTime, deltat, globalTimer), true)
+			eta(n, maxIterations, t_n, stopTime, deltat, globalTimer), true)
 			<< __RESET__ << "\r";
 		std::cout.flush();
 	
 		cpuTimer.reset();
 		ioTimer.reset();
 	} while (continueLoop);
-	if (!writer.isDisabled())
+	if (writer != NULL && !writer->isDisabled())
 		dumpVariables(n+1, false);
 }
 
@@ -578,7 +576,7 @@ void Glace2d::computeEOSp() noexcept
 	#pragma omp parallel for shared(p)
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
-		p[jCells] = (options.gamma - 1.0) * rho[jCells] * e[jCells];
+		p[jCells] = (gamma - 1.0) * rho[jCells] * e[jCells];
 	}
 }
 
@@ -592,7 +590,7 @@ void Glace2d::computeEOSc() noexcept
 	#pragma omp parallel for shared(c)
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
-		c[jCells] = std::sqrt(options.gamma * p[jCells] / rho[jCells]);
+		c[jCells] = std::sqrt(gamma * p[jCells] / rho[jCells]);
 	}
 }
 
@@ -718,7 +716,7 @@ void Glace2d::computeDt() noexcept
 	{
 		reduction0 = glace2dfreefuncs::minR0(reduction0, deltatj[jCells]);
 	}
-	deltat = std::min((options.deltatCfl * reduction0), (options.stopTime - t_n));
+	deltat = std::min((deltatCfl * reduction0), (stopTime - t_n));
 }
 
 /**
@@ -960,7 +958,7 @@ void Glace2d::computeUn() noexcept
 
 void Glace2d::dumpVariables(int iteration, bool useTimer)
 {
-	if (!writer.isDisabled())
+	if (writer != NULL && !writer->isDisabled())
 	{
 		if (useTimer)
 		{
@@ -968,16 +966,16 @@ void Glace2d::dumpVariables(int iteration, bool useTimer)
 			ioTimer.start();
 		}
 		auto quads = mesh.getGeometry()->getQuads();
-		writer.startVtpFile(iteration, t_n, nbNodes, X_n.data(), nbCells, quads.data());
-		writer.openNodeData();
-		writer.closeNodeData();
-		writer.openCellData();
-		writer.openCellArray("Density", 0);
+		writer->startVtpFile(iteration, t_n, nbNodes, X_n.data(), nbCells, quads.data());
+		writer->openNodeData();
+		writer->closeNodeData();
+		writer->openCellData();
+		writer->openCellArray("Density", 0);
 		for (size_t i=0 ; i<nbCells ; ++i)
-			writer.write(rho[i]);
-		writer.closeCellArray();
-		writer.closeCellData();
-		writer.closeVtpFile();
+			writer->write(rho[i]);
+		writer->closeCellArray();
+		writer->closeCellData();
+		writer->closeVtpFile();
 		lastDump = n;
 		if (useTimer)
 		{
@@ -993,8 +991,8 @@ void Glace2d::simulate()
 	
 	std::cout << "[" << __GREEN__ << "TOPOLOGY" << __RESET__ << "]  HWLOC unavailable cannot get topological informations" << std::endl;
 	
-	if (!writer.isDisabled())
-		std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    VTK files stored in " << __BOLD__ << writer.outputDirectory() << __RESET__ << " directory" << std::endl;
+	if (writer != NULL && !writer->isDisabled())
+		std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    VTK files stored in " << __BOLD__ << writer->outputDirectory() << __RESET__ << " directory" << std::endl;
 	else
 		std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    " << __BOLD__ << "Disabled" << __RESET__ << std::endl;
 
@@ -1040,15 +1038,14 @@ int main(int argc, char* argv[])
 	mesh.jsonInit(strbuf.GetString());
 	
 	// Module instanciation(s)
-	Glace2d::Options glace2dOptions;
+	Glace2d* glace2d = new Glace2d(mesh);
 	if (d.HasMember("glace2d"))
 	{
 		rapidjson::StringBuffer strbuf;
 		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
 		d["glace2d"].Accept(writer);
-		glace2dOptions.jsonInit(strbuf.GetString());
+		glace2d->jsonInit(strbuf.GetString());
 	}
-	Glace2d* glace2d = new Glace2d(mesh, glace2dOptions);
 	
 	// Start simulation
 	// Simulator must be a pointer when a finalize is needed at the end (Kokkos, omp...)

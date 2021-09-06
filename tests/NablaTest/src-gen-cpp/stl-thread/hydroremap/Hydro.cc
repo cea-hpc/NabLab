@@ -9,10 +9,36 @@
 #include "R2.h"
 
 
-/******************** Options definition ********************/
+/******************** Module definition ********************/
+
+Hydro::Hydro(CartesianMesh2D& aMesh)
+: mesh(aMesh)
+, nbNodes(mesh.getNbNodes())
+, nbCells(mesh.getNbCells())
+, X(nbNodes)
+, hv1(nbCells)
+, hv2(nbCells)
+, hv3(nbCells)
+, hv4(nbCells)
+, hv5(nbCells)
+, hv6(nbCells)
+, hv7(nbCells)
+{
+	// Copy node coordinates
+	const auto& gNodes = mesh.getGeometry()->getNodes();
+	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
+	{
+		X[rNodes][0] = gNodes[rNodes][0];
+		X[rNodes][1] = gNodes[rNodes][1];
+	}
+}
+
+Hydro::~Hydro()
+{
+}
 
 void
-Hydro::Options::jsonInit(const char* jsonContent)
+Hydro::jsonInit(const char* jsonContent)
 {
 	rapidjson::Document document;
 	assert(!document.Parse(jsonContent).HasParseError());
@@ -46,36 +72,13 @@ Hydro::Options::jsonInit(const char* jsonContent)
 	}
 	else
 		deltat = 1.0;
+	// Non regression
+	assert(o.HasMember("nonRegression"));
+	const rapidjson::Value& valueof_nonRegression = o["nonRegression"];
+	assert(valueof_nonRegression.IsString());
+	nonRegression = valueof_nonRegression.GetString();
 }
 
-/******************** Module definition ********************/
-
-Hydro::Hydro(CartesianMesh2D& aMesh, Options& aOptions)
-: mesh(aMesh)
-, nbNodes(mesh.getNbNodes())
-, nbCells(mesh.getNbCells())
-, options(aOptions)
-, X(nbNodes)
-, hv1(nbCells)
-, hv2(nbCells)
-, hv3(nbCells)
-, hv4(nbCells)
-, hv5(nbCells)
-, hv6(nbCells)
-, hv7(nbCells)
-{
-	// Copy node coordinates
-	const auto& gNodes = mesh.getGeometry()->getNodes();
-	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
-	{
-		X[rNodes][0] = gNodes[rNodes][0];
-		X[rNodes][1] = gNodes[rNodes][1];
-	}
-}
-
-Hydro::~Hydro()
-{
-}
 
 /**
  * Job hj1 called @1.0 in simulate method.
@@ -136,6 +139,103 @@ void Hydro::simulate()
 	std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << globalTimer.print() << __RESET__ << std::endl;
 }
 
+void Hydro::createDB(const std::string& db_name)
+{
+	leveldb::DB* db;
+	leveldb::Options options;
+
+	// Destroy if exists
+	leveldb::DestroyDB(db_name, options);
+
+	// Create data base
+	options.create_if_missing = true;
+	leveldb::Status status = leveldb::DB::Open(options, db_name, &db);
+	assert(status.ok());
+	// Batch to write all data at once
+	leveldb::WriteBatch batch;
+	batch.Put("hydro::t", serialize(t));
+	batch.Put("hydro::X", serialize(X));
+	batch.Put("hydro::hv1", serialize(hv1));
+	batch.Put("hydro::hv2", serialize(hv2));
+	batch.Put("hydro::hv3", serialize(hv3));
+	batch.Put("hydro::hv4", serialize(hv4));
+	batch.Put("hydro::hv5", serialize(hv5));
+	batch.Put("hydro::hv6", serialize(hv6));
+	batch.Put("hydro::hv7", serialize(hv7));
+	batch.Put("r1::rv3", serialize(r1->rv3));
+	batch.Put("r2::rv2", serialize(r2->rv2));
+	status = db->Write(leveldb::WriteOptions(), &batch);
+	// Checking everything was ok
+	assert(status.ok());
+	std::cerr << "Reference database " << db_name << " created." << std::endl;
+	// Freeing memory
+	delete db;
+}
+
+/******************** Non regression testing ********************/
+
+bool compareDB(const std::string& current, const std::string& ref)
+{
+	// Final result
+	bool result = true;
+
+	// Loading ref DB
+	leveldb::DB* db_ref;
+	leveldb::Options options_ref;
+	options_ref.create_if_missing = false;
+	leveldb::Status status = leveldb::DB::Open(options_ref, ref, &db_ref);
+	if (!status.ok())
+	{
+		std::cerr << "No ref database to compare with ! Looking for " << ref << std::endl;
+		return false;
+	}
+	leveldb::Iterator* it_ref = db_ref->NewIterator(leveldb::ReadOptions());
+
+	// Loading current DB
+	leveldb::DB* db;
+	leveldb::Options options;
+	options.create_if_missing = false;
+	status = leveldb::DB::Open(options, current, &db);
+	assert(status.ok());
+	leveldb::Iterator* it = db->NewIterator(leveldb::ReadOptions());
+
+	// Results comparison
+	std::cerr << "# Comparing results ..." << std::endl;
+	for (it_ref->SeekToFirst(); it_ref->Valid(); it_ref->Next()) {
+		auto key = it_ref->key();
+		std::string value;
+		auto status = db->Get(leveldb::ReadOptions(), key, &value);
+		if (status.IsNotFound()) {
+			std::cerr << "ERROR - Key : " << key.ToString() << " not found." << endl;
+			result = false;
+		}
+		else {
+			if (value == it_ref->value().ToString())
+				std::cerr << key.ToString() << ": " << "OK" << std::endl;
+			else {
+				std::cerr << key.ToString() << ": " << "ERROR" << std::endl;
+				result = false;
+			}
+		}
+	}
+
+	// looking for key in the db that are not in the ref (new variables)
+	for (it->SeekToFirst(); it->Valid(); it->Next()) {
+		auto key = it->key();
+		std::string value;
+		if (db_ref->Get(leveldb::ReadOptions(), key, &value).IsNotFound()) {
+			std::cerr << "ERROR - Key : " << key.ToString() << " can not be compared (not present in the ref)." << std::endl;
+			result = false;
+		}
+	}
+
+	// Freeing memory
+	delete db;
+	delete db_ref;
+
+	return result;
+}
+
 int main(int argc, char* argv[]) 
 {
 	string dataFile;
@@ -168,39 +268,46 @@ int main(int argc, char* argv[])
 	mesh.jsonInit(strbuf.GetString());
 	
 	// Module instanciation(s)
-	Hydro::Options hydroOptions;
+	Hydro* hydro = new Hydro(mesh);
 	if (d.HasMember("hydro"))
 	{
 		rapidjson::StringBuffer strbuf;
 		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
 		d["hydro"].Accept(writer);
-		hydroOptions.jsonInit(strbuf.GetString());
+		hydro->jsonInit(strbuf.GetString());
 	}
-	Hydro* hydro = new Hydro(mesh, hydroOptions);
-	R1::Options r1Options;
+	R1* r1 = new R1(mesh);
 	if (d.HasMember("r1"))
 	{
 		rapidjson::StringBuffer strbuf;
 		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
 		d["r1"].Accept(writer);
-		r1Options.jsonInit(strbuf.GetString());
+		r1->jsonInit(strbuf.GetString());
 	}
-	R1* r1 = new R1(mesh, r1Options);
 	r1->setMainModule(hydro);
-	R2::Options r2Options;
+	R2* r2 = new R2(mesh);
 	if (d.HasMember("r2"))
 	{
 		rapidjson::StringBuffer strbuf;
 		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
 		d["r2"].Accept(writer);
-		r2Options.jsonInit(strbuf.GetString());
+		r2->jsonInit(strbuf.GetString());
 	}
-	R2* r2 = new R2(mesh, r2Options);
 	r2->setMainModule(hydro);
 	
 	// Start simulation
 	// Simulator must be a pointer when a finalize is needed at the end (Kokkos, omp...)
 	hydro->simulate();
+	
+	// Non regression testing
+	if (hydro->getNonRegression() == "CreateReference")
+		hydro->createDB("HydroRemapDB.ref");
+	if (hydro->getNonRegression() == "CompareToReference") {
+		hydro->createDB("HydroRemapDB.current");
+		if (!compareDB("HydroRemapDB.current", "HydroRemapDB.ref"))
+			ret = 1;
+		leveldb::DestroyDB("HydroRemapDB.current", leveldb::Options());
+	}
 	
 	delete r2;
 	delete r1;

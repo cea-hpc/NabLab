@@ -9,9 +9,12 @@
 #include <limits>
 #include <utility>
 #include <cmath>
+#include <leveldb/db.h>
+#include <leveldb/write_batch.h>
 #include "nablalib/utils/Utils.h"
 #include "nablalib/utils/Timer.h"
 #include "nablalib/types/Types.h"
+#include "nablalib/utils/Serializer.h"
 #include "nablalib/utils/stl/Parallel.h"
 #include "CartesianMesh2D.h"
 
@@ -26,46 +29,39 @@ class R2;
 
 class Hydro
 {
+	friend class R1;
+	friend class R2;
 public:
-	struct Options
-	{
-		double maxTime;
-		int maxIter;
-		double deltat;
-
-		void jsonInit(const char* jsonContent);
-	};
-
-	Hydro(CartesianMesh2D& aMesh, Options& aOptions);
+	Hydro(CartesianMesh2D& aMesh);
 	~Hydro();
 
-	inline void setR1(R1* value) { r1 = value; }
-	inline void setR2(R2* value) { r2 = value; }
+	void jsonInit(const char* jsonContent);
 
 	void simulate();
 	void hj1() noexcept;
 	void hj2() noexcept;
 	void hj3() noexcept;
+	const std::string& getNonRegression()
+	{
+		return nonRegression;
+	}
+
+	void createDB(const std::string& db_name);
 
 private:
 	// Mesh and mesh variables
 	CartesianMesh2D& mesh;
 	size_t nbNodes, nbCells;
 
-	// User options
-	Options& options;
-
 	// Additional modules
 	R1* r1;
 	R2* r2;
 
-	// Timers
-	Timer globalTimer;
-	Timer cpuTimer;
-	Timer ioTimer;
-
-public:
-	// Global variables
+	// Option and global variables
+	std::string nonRegression;
+	double maxTime;
+	int maxIter;
+	double deltat;
 	static constexpr double t = 0.0;
 	std::vector<RealArray1D<2>> X;
 	std::vector<double> hv1;
@@ -75,6 +71,11 @@ public:
 	std::vector<double> hv5;
 	std::vector<double> hv6;
 	std::vector<double> hv7;
+
+	// Timers
+	Timer globalTimer;
+	Timer cpuTimer;
+	Timer ioTimer;
 };
 
 #endif

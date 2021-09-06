@@ -60,4 +60,5 @@ class IrModuleExtensions
 	static def getExternalProviders(IrModule it)
 	{
 		providers.filter[x | x.extensionName != "Math"]
-	}}
+	}
+}

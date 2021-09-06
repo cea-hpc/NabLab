@@ -9,9 +9,12 @@
 #include <limits>
 #include <utility>
 #include <cmath>
+#include <leveldb/db.h>
+#include <leveldb/write_batch.h>
 #include "nablalib/utils/Utils.h"
 #include "nablalib/utils/Timer.h"
 #include "nablalib/types/Types.h"
+#include "nablalib/utils/Serializer.h"
 #include "nablalib/utils/stl/Parallel.h"
 #include "CartesianMesh2D.h"
 #include "Hydro.h"
@@ -24,20 +27,18 @@ using namespace nablalib::utils::stl;
 
 class R1
 {
+	friend class Hydro;
+	friend class R2;
 public:
-	struct Options
-	{
-
-		void jsonInit(const char* jsonContent);
-	};
-
-	R1(CartesianMesh2D& aMesh, Options& aOptions);
+	R1(CartesianMesh2D& aMesh);
 	~R1();
+
+	void jsonInit(const char* jsonContent);
 
 	inline void setMainModule(Hydro* value)
 	{
 		mainModule = value,
-		mainModule->setR1(this);
+		mainModule->r1 = this;
 	}
 
 	void simulate();
@@ -49,20 +50,16 @@ private:
 	CartesianMesh2D& mesh;
 	size_t nbNodes, nbCells;
 
-	// User options
-	Options& options;
-
 	// Main module
 	Hydro* mainModule;
+
+	// Option and global variables
+	std::vector<double> rv3;
 
 	// Timers
 	Timer globalTimer;
 	Timer cpuTimer;
 	Timer ioTimer;
-
-public:
-	// Global variables
-	std::vector<double> rv3;
 };
 
 #endif

@@ -15,45 +15,34 @@ import fr.cea.nabla.javalib.mesh.*;
 
 public final class R1
 {
-	public final static class Options
-	{
-		public String nonRegression;
-
-		public void jsonInit(final String jsonContent)
-		{
-			final Gson gson = new Gson();
-			final JsonObject o = gson.fromJson(jsonContent, JsonObject.class);
-		}
-	}
-
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
 	@SuppressWarnings("unused")
 	private final int nbNodes, nbCells;
 
-	// User options
-	private final Options options;
-
 	// Main module
 	private Hydro mainModule;
 
-	// Global variables
-	protected double[] rv3;
+	// Option and global variables
+	double[] rv3;
 
-	public R1(CartesianMesh2D aMesh, Options aOptions)
+	public R1(CartesianMesh2D aMesh)
 	{
 		// Mesh and mesh variables initialization
 		mesh = aMesh;
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
 
-		// User options
-		options = aOptions;
-
 		// Initialize variables with default values
 
 		// Allocate arrays
 		rv3 = new double[nbCells];
+	}
+
+	public void jsonInit(final String jsonContent)
+	{
+		final Gson gson = new Gson();
+		final JsonObject o = gson.fromJson(jsonContent, JsonObject.class);
 	}
 
 	/**

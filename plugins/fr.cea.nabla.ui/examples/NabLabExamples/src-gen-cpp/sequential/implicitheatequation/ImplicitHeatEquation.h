@@ -40,20 +40,10 @@ double prodR0(double a, double b);
 class ImplicitHeatEquation
 {
 public:
-	struct Options
-	{
-		std::string outputPath;
-		int outputPeriod;
-		double u0;
-		double stopTime;
-		int maxIterations;
-		LinearAlgebra linearAlgebra;
-
-		void jsonInit(const char* jsonContent);
-	};
-
-	ImplicitHeatEquation(CartesianMesh2D& aMesh, Options& aOptions);
+	ImplicitHeatEquation(CartesianMesh2D& aMesh);
 	~ImplicitHeatEquation();
+
+	void jsonInit(const char* jsonContent);
 
 	void simulate();
 	void computeFaceLength() noexcept;
@@ -77,20 +67,17 @@ private:
 	CartesianMesh2D& mesh;
 	size_t nbNodes, nbCells, nbFaces, maxNodesOfCell, maxNodesOfFace, maxCellsOfFace, maxNeighbourCells;
 
-	// User options
-	Options& options;
-	PvdFileWriter2D writer;
-
-	// Timers
-	Timer globalTimer;
-	Timer cpuTimer;
-	Timer ioTimer;
-
-public:
-	// Global variables
+	// Option and global variables
+	PvdFileWriter2D* writer;
+	std::string outputPath;
+	LinearAlgebra linearAlgebra;
+	int outputPeriod;
 	int lastDump;
 	int n;
+	double u0;
 	static constexpr RealArray1D<2> vectOne = {1.0, 1.0};
+	double stopTime;
+	int maxIterations;
 	double deltat;
 	double t_n;
 	double t_nplus1;
@@ -104,6 +91,11 @@ public:
 	std::vector<double> faceLength;
 	std::vector<double> faceConductivity;
 	Matrix alpha;
+
+	// Timers
+	Timer globalTimer;
+	Timer cpuTimer;
+	Timer ioTimer;
 };
 
 #endif

@@ -68,10 +68,46 @@ double maxR0(double a, double b)
 }
 }
 
-/******************** Options definition ********************/
+/******************** Module definition ********************/
+
+IterativeHeatEquation::IterativeHeatEquation(CartesianMesh2D& aMesh)
+: mesh(aMesh)
+, nbNodes(mesh.getNbNodes())
+, nbCells(mesh.getNbCells())
+, nbFaces(mesh.getNbFaces())
+, maxNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
+, maxNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
+, maxCellsOfFace(CartesianMesh2D::MaxNbCellsOfFace)
+, maxNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
+, lastDump(numeric_limits<int>::min())
+, deltat(0.001)
+, X(nbNodes)
+, Xc(nbCells)
+, u_n(nbCells)
+, u_nplus1(nbCells)
+, u_nplus1_k(nbCells)
+, u_nplus1_kplus1(nbCells)
+, V(nbCells)
+, D(nbCells)
+, faceLength(nbFaces)
+, faceConductivity(nbFaces)
+, alpha(nbCells, std::vector<double>(nbCells))
+{
+	// Copy node coordinates
+	const auto& gNodes = mesh.getGeometry()->getNodes();
+	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
+	{
+		X[rNodes][0] = gNodes[rNodes][0];
+		X[rNodes][1] = gNodes[rNodes][1];
+	}
+}
+
+IterativeHeatEquation::~IterativeHeatEquation()
+{
+}
 
 void
-IterativeHeatEquation::Options::jsonInit(const char* jsonContent)
+IterativeHeatEquation::jsonInit(const char* jsonContent)
 {
 	rapidjson::Document document;
 	assert(!document.Parse(jsonContent).HasParseError());
@@ -83,6 +119,7 @@ IterativeHeatEquation::Options::jsonInit(const char* jsonContent)
 	const rapidjson::Value& valueof_outputPath = o["outputPath"];
 	assert(valueof_outputPath.IsString());
 	outputPath = valueof_outputPath.GetString();
+	writer = new PvdFileWriter2D("IterativeHeatEquation", outputPath);
 	// outputPeriod
 	assert(o.HasMember("outputPeriod"));
 	const rapidjson::Value& valueof_outputPeriod = o["outputPeriod"];
@@ -135,45 +172,6 @@ IterativeHeatEquation::Options::jsonInit(const char* jsonContent)
 		epsilon = 1.0E-8;
 }
 
-/******************** Module definition ********************/
-
-IterativeHeatEquation::IterativeHeatEquation(CartesianMesh2D& aMesh, Options& aOptions)
-: mesh(aMesh)
-, nbNodes(mesh.getNbNodes())
-, nbCells(mesh.getNbCells())
-, nbFaces(mesh.getNbFaces())
-, maxNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
-, maxNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
-, maxCellsOfFace(CartesianMesh2D::MaxNbCellsOfFace)
-, maxNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
-, options(aOptions)
-, writer("IterativeHeatEquation", options.outputPath)
-, lastDump(numeric_limits<int>::min())
-, deltat(0.001)
-, X(nbNodes)
-, Xc(nbCells)
-, u_n(nbCells)
-, u_nplus1(nbCells)
-, u_nplus1_k(nbCells)
-, u_nplus1_kplus1(nbCells)
-, V(nbCells)
-, D(nbCells)
-, faceLength(nbFaces)
-, faceConductivity(nbFaces)
-, alpha(nbCells, std::vector<double>(nbCells))
-{
-	// Copy node coordinates
-	const auto& gNodes = mesh.getGeometry()->getNodes();
-	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
-	{
-		X[rNodes][0] = gNodes[rNodes][0];
-		X[rNodes][1] = gNodes[rNodes][1];
-	}
-}
-
-IterativeHeatEquation::~IterativeHeatEquation()
-{
-}
 
 /**
  * Job computeFaceLength called @1.0 in simulate method.
@@ -410,7 +408,7 @@ void IterativeHeatEquation::executeTimeLoopK() noexcept
 		
 	
 		// Evaluate loop condition with variables at time n
-		continueLoop = (residual > options.epsilon && iterativeheatequationfreefuncs::check(k + 1 < options.maxIterationsK));
+		continueLoop = (residual > epsilon && iterativeheatequationfreefuncs::check(k + 1 < maxIterationsK));
 	
 		parallel_exec(nbCells, [&](const size_t& i1Cells)
 		{
@@ -429,7 +427,7 @@ void IterativeHeatEquation::initU() noexcept
 	parallel_exec(nbCells, [&](const size_t& cCells)
 	{
 		if (iterativeheatequationfreefuncs::norm(Xc[cCells] - vectOne) < 0.5) 
-			u_n[cCells] = options.u0;
+			u_n[cCells] = u0;
 		else
 			u_n[cCells] = 0.0;
 	});
@@ -501,7 +499,7 @@ void IterativeHeatEquation::executeTimeLoopN() noexcept
 		globalTimer.start();
 		cpuTimer.start();
 		n++;
-		if (!writer.isDisabled() && n >= lastDump + options.outputPeriod)
+		if (writer != NULL && !writer->isDisabled() && n >= lastDump + outputPeriod)
 			dumpVariables(n);
 		if (n!=1)
 			std::cout << "[" << __CYAN__ << __BOLD__ << setw(3) << n << __RESET__ "] t = " << __BOLD__
@@ -514,7 +512,7 @@ void IterativeHeatEquation::executeTimeLoopN() noexcept
 		
 	
 		// Evaluate loop condition with variables at time n
-		continueLoop = (t_nplus1 < options.stopTime && n + 1 < options.maxIterations);
+		continueLoop = (t_nplus1 < stopTime && n + 1 < maxIterations);
 	
 		t_n = t_nplus1;
 		parallel_exec(nbCells, [&](const size_t& i1Cells)
@@ -526,28 +524,28 @@ void IterativeHeatEquation::executeTimeLoopN() noexcept
 		globalTimer.stop();
 	
 		// Timers display
-		if (!writer.isDisabled())
+		if (writer != NULL && !writer->isDisabled())
 			std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __BLUE__ << ioTimer.print(true) << __RESET__ "} ";
 		else
 			std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __RED__ << "none" << __RESET__ << "} ";
 		
 		// Progress
-		std::cout << progress_bar(n, options.maxIterations, t_n, options.stopTime, 25);
+		std::cout << progress_bar(n, maxIterations, t_n, stopTime, 25);
 		std::cout << __BOLD__ << __CYAN__ << Timer::print(
-			eta(n, options.maxIterations, t_n, options.stopTime, deltat, globalTimer), true)
+			eta(n, maxIterations, t_n, stopTime, deltat, globalTimer), true)
 			<< __RESET__ << "\r";
 		std::cout.flush();
 	
 		cpuTimer.reset();
 		ioTimer.reset();
 	} while (continueLoop);
-	if (!writer.isDisabled())
+	if (writer != NULL && !writer->isDisabled())
 		dumpVariables(n+1, false);
 }
 
 void IterativeHeatEquation::dumpVariables(int iteration, bool useTimer)
 {
-	if (!writer.isDisabled())
+	if (writer != NULL && !writer->isDisabled())
 	{
 		if (useTimer)
 		{
@@ -555,16 +553,16 @@ void IterativeHeatEquation::dumpVariables(int iteration, bool useTimer)
 			ioTimer.start();
 		}
 		auto quads = mesh.getGeometry()->getQuads();
-		writer.startVtpFile(iteration, t_n, nbNodes, X.data(), nbCells, quads.data());
-		writer.openNodeData();
-		writer.closeNodeData();
-		writer.openCellData();
-		writer.openCellArray("Temperature", 0);
+		writer->startVtpFile(iteration, t_n, nbNodes, X.data(), nbCells, quads.data());
+		writer->openNodeData();
+		writer->closeNodeData();
+		writer->openCellData();
+		writer->openCellArray("Temperature", 0);
 		for (size_t i=0 ; i<nbCells ; ++i)
-			writer.write(u_n[i]);
-		writer.closeCellArray();
-		writer.closeCellData();
-		writer.closeVtpFile();
+			writer->write(u_n[i]);
+		writer->closeCellArray();
+		writer->closeCellData();
+		writer->closeVtpFile();
 		lastDump = n;
 		if (useTimer)
 		{
@@ -580,8 +578,8 @@ void IterativeHeatEquation::simulate()
 	
 	std::cout << "[" << __GREEN__ << "TOPOLOGY" << __RESET__ << "]  HWLOC unavailable cannot get topological informations" << std::endl;
 	
-	if (!writer.isDisabled())
-		std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    VTK files stored in " << __BOLD__ << writer.outputDirectory() << __RESET__ << " directory" << std::endl;
+	if (writer != NULL && !writer->isDisabled())
+		std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    VTK files stored in " << __BOLD__ << writer->outputDirectory() << __RESET__ << " directory" << std::endl;
 	else
 		std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    " << __BOLD__ << "Disabled" << __RESET__ << std::endl;
 
@@ -633,15 +631,14 @@ int main(int argc, char* argv[])
 	mesh.jsonInit(strbuf.GetString());
 	
 	// Module instanciation(s)
-	IterativeHeatEquation::Options iterativeHeatEquationOptions;
+	IterativeHeatEquation* iterativeHeatEquation = new IterativeHeatEquation(mesh);
 	if (d.HasMember("iterativeHeatEquation"))
 	{
 		rapidjson::StringBuffer strbuf;
 		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
 		d["iterativeHeatEquation"].Accept(writer);
-		iterativeHeatEquationOptions.jsonInit(strbuf.GetString());
+		iterativeHeatEquation->jsonInit(strbuf.GetString());
 	}
-	IterativeHeatEquation* iterativeHeatEquation = new IterativeHeatEquation(mesh, iterativeHeatEquationOptions);
 	
 	// Start simulation
 	// Simulator must be a pointer when a finalize is needed at the end (Kokkos, omp...)

@@ -2,6 +2,13 @@
 
 package hydroremap;
 
+import static org.iq80.leveldb.impl.Iq80DBFactory.bytes;
+import static org.iq80.leveldb.impl.Iq80DBFactory.factory;
+
+import org.iq80.leveldb.DB;
+import org.iq80.leveldb.WriteBatch;
+
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.stream.IntStream;
@@ -15,79 +22,36 @@ import fr.cea.nabla.javalib.mesh.*;
 
 public final class Hydro
 {
-	public final static class Options
-	{
-		public double maxTime;
-		public int maxIter;
-		public double deltat;
-		public String nonRegression;
-
-		public void jsonInit(final String jsonContent)
-		{
-			final Gson gson = new Gson();
-			final JsonObject o = gson.fromJson(jsonContent, JsonObject.class);
-			// maxTime
-			if (o.has("maxTime"))
-			{
-				final JsonElement valueof_maxTime = o.get("maxTime");
-				assert(valueof_maxTime.isJsonPrimitive());
-				maxTime = valueof_maxTime.getAsJsonPrimitive().getAsDouble();
-			}
-			else
-				maxTime = 0.1;
-			// maxIter
-			if (o.has("maxIter"))
-			{
-				final JsonElement valueof_maxIter = o.get("maxIter");
-				assert(valueof_maxIter.isJsonPrimitive());
-				maxIter = valueof_maxIter.getAsJsonPrimitive().getAsInt();
-			}
-			else
-				maxIter = 500;
-			// deltat
-			if (o.has("deltat"))
-			{
-				final JsonElement valueof_deltat = o.get("deltat");
-				assert(valueof_deltat.isJsonPrimitive());
-				deltat = valueof_deltat.getAsJsonPrimitive().getAsDouble();
-			}
-			else
-				deltat = 1.0;
-		}
-	}
-
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
 	@SuppressWarnings("unused")
 	private final int nbNodes, nbCells;
 
-	// User options
-	private final Options options;
-
 	// Additional modules
 	protected R1 r1;
 	protected R2 r2;
 
-	// Global variables
-	protected final double t;
-	protected double[][] X;
-	protected double[] hv1;
-	protected double[] hv2;
-	protected double[] hv3;
-	protected double[] hv4;
-	protected double[] hv5;
-	protected double[] hv6;
-	protected double[] hv7;
+	// Option and global variables
+	private String nonRegression;
+	double maxTime;
+	int maxIter;
+	double deltat;
+	final double t;
+	double[][] X;
+	double[] hv1;
+	double[] hv2;
+	double[] hv3;
+	double[] hv4;
+	double[] hv5;
+	double[] hv6;
+	double[] hv7;
 
-	public Hydro(CartesianMesh2D aMesh, Options aOptions)
+	public Hydro(CartesianMesh2D aMesh)
 	{
 		// Mesh and mesh variables initialization
 		mesh = aMesh;
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
-
-		// User options
-		options = aOptions;
 
 		// Initialize variables with default values
 		t = 0.0;
@@ -109,6 +73,45 @@ public final class Hydro
 			X[rNodes][0] = gNodes[rNodes][0];
 			X[rNodes][1] = gNodes[rNodes][1];
 		});
+	}
+
+	public void jsonInit(final String jsonContent)
+	{
+		final Gson gson = new Gson();
+		final JsonObject o = gson.fromJson(jsonContent, JsonObject.class);
+		// maxTime
+		if (o.has("maxTime"))
+		{
+			final JsonElement valueof_maxTime = o.get("maxTime");
+			assert(valueof_maxTime.isJsonPrimitive());
+			maxTime = valueof_maxTime.getAsJsonPrimitive().getAsDouble();
+		}
+		else
+			maxTime = 0.1;
+		// maxIter
+		if (o.has("maxIter"))
+		{
+			final JsonElement valueof_maxIter = o.get("maxIter");
+			assert(valueof_maxIter.isJsonPrimitive());
+			maxIter = valueof_maxIter.getAsJsonPrimitive().getAsInt();
+		}
+		else
+			maxIter = 500;
+		// deltat
+		if (o.has("deltat"))
+		{
+			final JsonElement valueof_deltat = o.get("deltat");
+			assert(valueof_deltat.isJsonPrimitive());
+			deltat = valueof_deltat.getAsJsonPrimitive().getAsDouble();
+		}
+		else
+			deltat = 1.0;
+		// Non regression
+		if (o.has("nonRegression"))
+		{
+			final JsonElement valueof_nonRegression = o.get("nonRegression");
+			nonRegression = valueof_nonRegression.getAsJsonPrimitive().getAsString();
+		}
 	}
 
 	/**
@@ -177,20 +180,28 @@ public final class Hydro
 			mesh.jsonInit(o.get("mesh").toString());
 
 			// Module instanciation(s)
-			Hydro.Options hydroOptions = new Hydro.Options();
-			if (o.has("hydro")) hydroOptions.jsonInit(o.get("hydro").toString());
-			Hydro hydro = new Hydro(mesh, hydroOptions);
-			R1.Options r1Options = new R1.Options();
-			if (o.has("r1")) r1Options.jsonInit(o.get("r1").toString());
-			R1 r1 = new R1(mesh, r1Options);
+			Hydro hydro = new Hydro(mesh);
+			if (o.has("hydro")) hydro.jsonInit(o.get("hydro").toString());
+			R1 r1 = new R1(mesh);
+			if (o.has("r1")) r1.jsonInit(o.get("r1").toString());
 			r1.setMainModule(hydro);
-			R2.Options r2Options = new R2.Options();
-			if (o.has("r2")) r2Options.jsonInit(o.get("r2").toString());
-			R2 r2 = new R2(mesh, r2Options);
+			R2 r2 = new R2(mesh);
+			if (o.has("r2")) r2.jsonInit(o.get("r2").toString());
 			r2.setMainModule(hydro);
 
 			// Start simulation
 			hydro.simulate();
+
+			// Non regression testing
+			if (hydro.nonRegression != null && hydro.nonRegression.equals("CreateReference"))
+				hydro.createDB("HydroRemapDB.ref");
+			if (hydro.nonRegression != null && hydro.nonRegression.equals("CompareToReference"))
+			{
+				hydro.createDB("HydroRemapDB.current");
+				boolean ok = LevelDBUtils.compareDB("HydroRemapDB.current", "HydroRemapDB.ref");
+				LevelDBUtils.destroyDB("HydroRemapDB.current");
+				if (!ok) System.exit(1);
+			}
 		}
 		else
 		{
@@ -198,5 +209,42 @@ public final class Hydro
 			System.err.println("        Expecting user data file name, for example HydroRemap.json");
 			System.exit(1);
 		}
+	}
+
+	private void createDB(String db_name) throws IOException
+	{
+		org.iq80.leveldb.Options levelDBOptions = new org.iq80.leveldb.Options();
+
+		// Destroy if exists
+		factory.destroy(new File(db_name), levelDBOptions);
+
+		// Create data base
+		levelDBOptions.createIfMissing(true);
+		DB db = factory.open(new File(db_name), levelDBOptions);
+
+		WriteBatch batch = db.createWriteBatch();
+		try
+		{
+			batch.put(bytes("hydro::t"), LevelDBUtils.serialize(t));
+			batch.put(bytes("hydro::X"), LevelDBUtils.serialize(X));
+			batch.put(bytes("hydro::hv1"), LevelDBUtils.serialize(hv1));
+			batch.put(bytes("hydro::hv2"), LevelDBUtils.serialize(hv2));
+			batch.put(bytes("hydro::hv3"), LevelDBUtils.serialize(hv3));
+			batch.put(bytes("hydro::hv4"), LevelDBUtils.serialize(hv4));
+			batch.put(bytes("hydro::hv5"), LevelDBUtils.serialize(hv5));
+			batch.put(bytes("hydro::hv6"), LevelDBUtils.serialize(hv6));
+			batch.put(bytes("hydro::hv7"), LevelDBUtils.serialize(hv7));
+			batch.put(bytes("r1::rv3"), LevelDBUtils.serialize(r1.rv3));
+			batch.put(bytes("r2::rv2"), LevelDBUtils.serialize(r2.rv2));
+
+			db.write(batch);
+		}
+		finally
+		{
+			// Make sure you close the batch to avoid resource leaks.
+			batch.close();
+		}
+		db.close();
+		System.out.println("Reference database " + db_name + " created.");
 	}
 };

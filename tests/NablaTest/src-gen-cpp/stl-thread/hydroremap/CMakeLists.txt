@@ -6,6 +6,7 @@ set(CMAKE_VERBOSE_MAKEFILE FALSE)
 
 # SET VARIABLES
 set(N_CXX_COMPILER /usr/bin/g++)
+set(leveldb_ROOT $ENV{HOME}/leveldb/install)
 set(N_WS_PATH $ENV{HOME}/workspaces/NabLab/tests)
 set(CARTESIANMESH2DSTL_PATH ${N_WS_PATH}/.nablab/mesh/cartesianmesh2dstl)
 
@@ -24,6 +25,10 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 	endif()
 endif()
 
+# FIND PACKAGES
+find_package(leveldb REQUIRED)
+find_package(Threads REQUIRED)
+
 # SUB_DIRECTORIES
 if(NOT TARGET nablalib)
 	add_subdirectory(${N_WS_PATH}/.nablab/nablalib ${CMAKE_BINARY_DIR}/nablalib)
@@ -34,7 +39,7 @@ endif()
 
 # EXECUTABLE hydroremap
 add_executable(hydroremap Hydro.cc R1.cc R2.cc)
-target_link_libraries(hydroremap PUBLIC nablalib pthread cartesianmesh2dstl)
+target_link_libraries(hydroremap PUBLIC nablalib pthread leveldb::leveldb Threads::Threads cartesianmesh2dstl)
 
 # OPTIONAL USER OPTIONS IN Project.cmake
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Project.cmake)

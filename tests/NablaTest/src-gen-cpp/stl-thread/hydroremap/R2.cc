@@ -7,10 +7,22 @@
 #include <rapidjson/writer.h>
 
 
-/******************** Options definition ********************/
+/******************** Module definition ********************/
+
+R2::R2(CartesianMesh2D& aMesh)
+: mesh(aMesh)
+, nbNodes(mesh.getNbNodes())
+, nbCells(mesh.getNbCells())
+, rv2(nbCells)
+{
+}
+
+R2::~R2()
+{
+}
 
 void
-R2::Options::jsonInit(const char* jsonContent)
+R2::jsonInit(const char* jsonContent)
 {
 	rapidjson::Document document;
 	assert(!document.Parse(jsonContent).HasParseError());
@@ -19,20 +31,6 @@ R2::Options::jsonInit(const char* jsonContent)
 
 }
 
-/******************** Module definition ********************/
-
-R2::R2(CartesianMesh2D& aMesh, Options& aOptions)
-: mesh(aMesh)
-, nbNodes(mesh.getNbNodes())
-, nbCells(mesh.getNbCells())
-, options(aOptions)
-, rv2(nbCells)
-{
-}
-
-R2::~R2()
-{
-}
 
 /**
  * Job rj1 called @2.0 in simulate method.

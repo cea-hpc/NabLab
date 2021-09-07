@@ -58,7 +58,7 @@ class NablagenOutlineTreeProvider extends DefaultOutlineTreeProvider
 			case KOKKOS: 'Kokkos C++'
 			case KOKKOS_TEAM_THREAD: 'Kokkos C++ with teams of threads'
 			case OPEN_MP: 'OpenMP C++'
-			case OPEN_MP_TASK: 'OpenMP Task C++'
+			case OPEN_MP_TARGET: 'OpenMP Target C++'
 			case CPP_SEQUENTIAL: 'Sequential C++'
 			case STL_THREAD: 'Multi-thread STL C++'
 			case ARCANE: 'Arcane C++ framework'
@@ -74,7 +74,7 @@ class NablagenOutlineTreeProvider extends DefaultOutlineTreeProvider
 			case KOKKOS: NablaUiUtils.createImage('icons/Kokkos.gif')
 			case KOKKOS_TEAM_THREAD: NablaUiUtils.createImage('icons/KokkosTeamThread.gif')
 			case OPEN_MP: NablaUiUtils.createImage('icons/OpenMP.gif')
-			case OPEN_MP_TASK: NablaUiUtils.createImage('icons/OpenMP.gif')
+			case OPEN_MP_TARGET: NablaUiUtils.createImage('icons/OpenMP.gif')
 			case CPP_SEQUENTIAL: NablaUiUtils.createImage('icons/CppSequential.gif')
 			case STL_THREAD: NablaUiUtils.createImage('icons/StlThread.gif')
 			case ARCANE: NablaUiUtils.createImage('icons/StlThread.gif')

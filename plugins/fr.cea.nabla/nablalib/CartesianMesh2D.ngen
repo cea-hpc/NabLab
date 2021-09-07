@@ -11,7 +11,7 @@
 Provider CartesianMesh2DStl : CartesianMesh2D
 {
 	target = CppSequential;
-	compatibleTargets = StlThread, OpenMP, Kokkos, KokkosTeamThread;
+	compatibleTargets = StlThread, OpenMP, Kokkos, KokkosTeamThread, OpenMPTarget;
 	outputPath = "/.nablab/mesh";
 }
 

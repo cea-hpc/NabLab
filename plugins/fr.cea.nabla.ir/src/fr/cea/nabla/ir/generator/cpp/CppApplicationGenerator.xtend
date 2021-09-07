@@ -68,8 +68,8 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	#define «name.HDefineName»
 
 	«backend.includesContentProvider.getIncludes(hasLevelDB, (irRoot.postProcessing !== null))»
-	#include "«irRoot.mesh.className».h"
-	«IF irRoot.postProcessing !== null»#include "PvdFileWriter2D.h"«ENDIF»
+	#include "nablalib/mesh/«irRoot.mesh.className».h"
+	«IF irRoot.postProcessing !== null»#include "nablalib/mesh/PvdFileWriter2D.h"«ENDIF»
 	«FOR provider : externalProviders»
 	#include "«provider.className».h"
 	«ENDFOR»

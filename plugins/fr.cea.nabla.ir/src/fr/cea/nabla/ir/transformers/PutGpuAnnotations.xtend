@@ -24,6 +24,9 @@ import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Job
 import java.util.Iterator
 import org.eclipse.emf.common.util.EList
+import java.util.HashSet
+import java.util.Set
+import fr.cea.nabla.ir.ir.Variable
 
 class PutGpuAnnotations extends IrTransformationStep
 {
@@ -67,7 +70,7 @@ class PutGpuAnnotations extends IrTransformationStep
 		
 		// Now the root to leaf pass. This is the same with any strategy
 		// FIXME: Back propagation doesn't seems to work well...
-		// NOTE: To verify: now the back propagation seems to work well
+		// FIXME: To verify: now the back propagation seems to work well
 
 		ir.eAllContents.filter(Job).forEach[ x |
 			x.instruction.backTargetPropagation(true)
@@ -80,11 +83,39 @@ class PutGpuAnnotations extends IrTransformationStep
 				EnumUtils::RegionFromTarget(TargetDispatchAnnotation::get(j).targetType)
 			]
 		]
+		
+		// For each individual variables, e.g. X_n, alpha, deltat, etc
 
 		ir.variables.forEach[ v |
 			val RegionType readRegion  = EnumUtils::FuseRegions(getJobsRegions.apply(v.consumerJobs))
 			val RegionType writeRegion = EnumUtils::FuseRegions(getJobsRegions.apply(v.producerJobs))
-			v.annotations += VariableRegionAnnotation::create(readRegion, writeRegion).irAnnotation
+			val oldAnnotation = VariableRegionAnnotation::get(v)
+
+			if (oldAnnotation !== null) {
+				val newAnnotation = VariableRegionAnnotation::create(readRegion, writeRegion)
+				v.annotations += VariableRegionAnnotation::fuse(newAnnotation, oldAnnotation).irAnnotation
+			} else {
+				v.annotations += VariableRegionAnnotation::create(readRegion, writeRegion).irAnnotation
+			}
+		]
+		
+		// Link variables if needed, e.g. X_n0 <-> X_n <-> X_nplus1
+		// FIXME: Only look at the current time iterator for now
+
+		val Set<String> visitedNames = new HashSet<String>()
+		ir.variables.forEach[ v |
+			val timeIterator = v.timeIterator
+			if (timeIterator !== null && !visitedNames.contains(v.originName)) {
+				visitedNames.add(v.originName)
+
+				val discretizedVars       = timeIterator.variables.filter[ originName == v.originName ]
+				val initRegion            = VariableRegionAnnotation::get(v)
+				val fusedVariableRegion   = VariableRegionAnnotation::fuse(discretizedVars.map[ ov | VariableRegionAnnotation::get(ov) ])
+				val reFusedVariableRegion = VariableRegionAnnotation::fuse(fusedVariableRegion, initRegion)
+
+				VariableRegionAnnotation::del(v)
+				v.annotations += reFusedVariableRegion.irAnnotation
+			}
 		]
 
 		return true
@@ -95,7 +126,6 @@ class PutGpuAnnotations extends IrTransformationStep
 		val (IrAnnotable)=>void lambda = [ x |
 			TargetDispatchAnnotation::del(x)
 			x.annotations += TargetDispatchAnnotation::create(TargetType.CPU).irAnnotation
-			trace('    <> Force CPU Target on ' + x.class.name)
 		]
 
 		switch it

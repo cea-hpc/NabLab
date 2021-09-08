@@ -20,6 +20,8 @@ class VariableRegionAnnotation
 	
 	static def get(Variable object) { _get(object) }
 	
+	static def del(IrAnnotable o) { o.annotations.removeIf[ source == ANNOTATION_SOURCE ] }
+	
 	// Create an annotation for a variable
 	static def create(RegionType read, RegionType write)
 	{
@@ -39,6 +41,13 @@ class VariableRegionAnnotation
 		val read = fuse(first.readRegion, second.readRegion)
 		val write = fuse(first.writeRegion, second.writeRegion)
 		return create(read, write)
+	}
+
+	static def fuse(Iterable<VariableRegionAnnotation> regions)
+	{
+		if (regions.size == 0) return null
+		else if (regions.size == 1) return regions.head
+		else return regions.reduce[ r1, r2 | fuse(r1, r2) ]
 	}
 	
 	def isReadGPU()  { isRegion(ANNOTATION_READ_REGION,  RegionType.GPU) }

@@ -18,12 +18,9 @@ class TargetDispatchAnnotation
 	static def get(Job object) { _get(object) }
 	static def get(Expression object) { _get(object) }
 	static def get(Instruction object) { _get(object) }
-	
-	static def del(IrAnnotable object)
-	{
-		object.annotations.removeIf[ x | x.source == ANNOTATION_SOURCE ]
-	}
 
+	static def del(IrAnnotable o) { o.annotations.removeIf[ source == ANNOTATION_SOURCE ] }
+	
 	static def create(TargetType targetType)
 	{
 		val o = IrFactory::eINSTANCE.createIrAnnotation => 

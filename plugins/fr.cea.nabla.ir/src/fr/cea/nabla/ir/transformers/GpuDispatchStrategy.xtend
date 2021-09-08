@@ -49,6 +49,8 @@ abstract class GpuDispatchStrategy
 {
 	val GpuDispatchStrategyOptions opt
 	protected val ArrayList<(String)=>void> tracer = new ArrayList<(String)=>void>()
+
+	var boolean isInDebugMode = false
 	
 	// Used to initialize the strategy before using it if needed
 	def void init((String)=>void userTrace)
@@ -66,7 +68,8 @@ abstract class GpuDispatchStrategy
 	protected def tracePlaceOnGPU(String what) { tracePlaceOnTarget('GPU', what) }
 	private def tracePlaceOnTarget(String dest, String what)
 	{
-		tracer.forEach[ apply('    ' + dest + ' <~ ' + what) ]
+		if (isInDebugMode)
+			tracer.forEach[ apply('    ' + dest + ' <~ ' + what) ]
 	}
 }
 

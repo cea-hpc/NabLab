@@ -81,7 +81,7 @@ The syntax of item types and connectivities is described below.
 
 The `with` keyword allows to import NabLab extensions, libraries of reductions and functions external to the module.
 
-NabLab provides two native extensions: [Math](https://github.com/cea-hpc/NabLab/blob/master/plugins/fr.cea.nabla/nablalib/math.n) and [Linear Algebra](https://github.com/cea-hpc/NabLab/blob/master/plugins/fr.cea.nabla/nablalib/linearalgebra.n) (follow the link to see the available functions and reductions).
+NabLab provides two native extensions: [Math](https://github.com/cea-hpc/NabLab/blob/master/plugins/fr.cea.nabla/nablalib/Math.n) and [Linear Algebra](https://github.com/cea-hpc/NabLab/blob/master/plugins/fr.cea.nabla/nablalib/LinearAlgebra.n) (follow the link to see the available functions and reductions).
 
 To use them in your own module, just create an import section as follow:
 

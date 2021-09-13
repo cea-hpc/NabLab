@@ -22,11 +22,10 @@ import fr.cea.nabla.ir.ir.InstructionBlock
 import fr.cea.nabla.ir.ir.IrAnnotable
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Job
-import java.util.Iterator
-import org.eclipse.emf.common.util.EList
 import java.util.HashSet
+import java.util.Iterator
 import java.util.Set
-import fr.cea.nabla.ir.ir.Variable
+import org.eclipse.emf.common.util.EList
 
 class PutGpuAnnotations extends IrTransformationStep
 {
@@ -57,7 +56,7 @@ class PutGpuAnnotations extends IrTransformationStep
 			val dispatch = couldToTarget.apply(strategy.couldRunOnGPU(x))
 			x.annotations += TargetDispatchAnnotation::create(dispatch).irAnnotation
 		]
-		
+
 		ir.eAllContents.filter(Function).forEach[ x |
 			val dispatch = couldToTarget.apply(strategy.couldRunOnGPU(x))
 			x.annotations += TargetDispatchAnnotation::create(dispatch).irAnnotation
@@ -67,7 +66,7 @@ class PutGpuAnnotations extends IrTransformationStep
 			val dispatch = couldToTarget.apply(strategy.couldRunOnGPU(x))
 			x.annotations += TargetDispatchAnnotation::create(dispatch).irAnnotation
 		]
-		
+
 		// Now the root to leaf pass. This is the same with any strategy
 		// FIXME: Back propagation doesn't seems to work well...
 		// FIXME: To verify: now the back propagation seems to work well
@@ -98,7 +97,7 @@ class PutGpuAnnotations extends IrTransformationStep
 				v.annotations += VariableRegionAnnotation::create(readRegion, writeRegion).irAnnotation
 			}
 		]
-		
+
 		// Link variables if needed, e.g. X_n0 <-> X_n <-> X_nplus1
 		// FIXME: Only look at the current time iterator for now
 
@@ -120,7 +119,7 @@ class PutGpuAnnotations extends IrTransformationStep
 
 		return true
 	}
-	
+
 	private def void backTargetPropagation(Instruction it, boolean toplevel)
 	{
 		val (IrAnnotable)=>void lambda = [ x |

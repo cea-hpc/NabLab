@@ -26,16 +26,15 @@ abstract class Backend implements Jniable
 	new(ArrayList<Pair<String, String>> options)
 	{
 		this.options = options
-		options.forEach[pair | println(pair.key + " -> " + pair.value)]
 	}
-	
+
 	protected ArrayList<Pair<String, String>> options
-	
+
 	protected def Iterable<String> checkForMultipleStringOption(String key)
 	{
 		options.filter[ pair | pair.key == key ].map[ value ]
 	}
-	
+
 	protected def boolean checkForFlagOption(String key, boolean flag)
 	{
 		val filtered = options.filter[ pair | pair.key == key ]
@@ -198,7 +197,7 @@ class OpenMpTargetBackend extends Backend
 			checkForFlagOption("GPU_PERMIT_IF_STATEMENTS", true), // Permit IF statements on GPU
 			checkForMultipleStringOption("GPU_BLACKLIST_FUNCTION").toSet // Backlist some functions
 		)
-		
+
 		irTransformationStep = new CompositeTransformationStep('OpenMPTarget specific transformations', #[
 			new PutGpuAnnotations(new OptimistGpuDispatchStrategy(opt))
 		])

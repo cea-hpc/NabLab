@@ -48,7 +48,7 @@ class DeclarationProviderTest
 	@Inject extension TestUtils
 
 	@Test
-	def void testFunctions() 
+	def void testFunctions()
 	{
 		val nablaextModel =
 		'''

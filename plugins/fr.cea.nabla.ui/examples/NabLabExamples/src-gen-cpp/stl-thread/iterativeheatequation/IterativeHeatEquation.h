@@ -43,21 +43,10 @@ double maxR0(double a, double b);
 class IterativeHeatEquation
 {
 public:
-	struct Options
-	{
-		std::string outputPath;
-		int outputPeriod;
-		double u0;
-		double stopTime;
-		int maxIterations;
-		int maxIterationsK;
-		double epsilon;
-
-		void jsonInit(const char* jsonContent);
-	};
-
-	IterativeHeatEquation(CartesianMesh2D& aMesh, Options& aOptions);
+	IterativeHeatEquation(CartesianMesh2D& aMesh);
 	~IterativeHeatEquation();
+
+	void jsonInit(const char* jsonContent);
 
 	void simulate();
 	void computeFaceLength() noexcept;
@@ -85,21 +74,19 @@ private:
 	CartesianMesh2D& mesh;
 	size_t nbNodes, nbCells, nbFaces, maxNodesOfCell, maxNodesOfFace, maxCellsOfFace, maxNeighbourCells;
 
-	// User options
-	Options& options;
-	PvdFileWriter2D writer;
-
-	// Timers
-	Timer globalTimer;
-	Timer cpuTimer;
-	Timer ioTimer;
-
-public:
-	// Global variables
+	// Option and global variables
+	PvdFileWriter2D* writer;
+	std::string outputPath;
+	int outputPeriod;
 	int lastDump;
 	int n;
 	int k;
+	double u0;
 	static constexpr RealArray1D<2> vectOne = {1.0, 1.0};
+	double stopTime;
+	int maxIterations;
+	int maxIterationsK;
+	double epsilon;
 	double deltat;
 	double t_n;
 	double t_nplus1;
@@ -116,6 +103,11 @@ public:
 	std::vector<double> faceConductivity;
 	std::vector<std::vector<double>> alpha;
 	double residual;
+
+	// Timers
+	Timer globalTimer;
+	Timer cpuTimer;
+	Timer ioTimer;
 };
 
 #endif

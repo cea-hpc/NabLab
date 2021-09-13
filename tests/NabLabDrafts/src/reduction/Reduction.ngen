@@ -1,0 +1,30 @@
+/*******************************************************************************
+ * Copyright (c) 2021 CEA
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * Contributors: see AUTHORS file
+ *******************************************************************************/
+Application Reduction;
+
+MainModule Reduction reduction
+{
+	nodeCoord = X;
+	time = t;
+	timeStep = δt;
+	iterationMax = maxIter;
+	timeMax = maxTime;
+}
+
+Java
+{
+	outputPath = "/NabLabDrafts/src-gen-java";
+}
+
+StlThread
+{
+	outputPath = "/NabLabDrafts/src-gen-cpp/stl-thread";
+	N_CXX_COMPILER = "/usr/bin/g++";
+}

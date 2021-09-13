@@ -33,7 +33,7 @@ class CppGeneratorUtils
 	static def dispatch getCodeName(ExternFunction it)
 	{
 		if (provider.extensionName == "Math") 'std::' + name
-		else 'options.' + provider.instanceName + '.' + name
+		else provider.instanceName + '.' + name
 	}
 
 	static def getHDefineName(String name)

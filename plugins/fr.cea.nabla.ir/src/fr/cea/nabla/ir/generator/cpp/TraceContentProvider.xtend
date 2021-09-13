@@ -36,8 +36,8 @@ class TraceContentProvider
 		«IF irRoot.postProcessing === null»
 		std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    " << __BOLD__ << "Disabled" << __RESET__ << std::endl;
 		«ELSE»
-		if (!writer.isDisabled())
-			std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    VTK files stored in " << __BOLD__ << writer.outputDirectory() << __RESET__ << " directory" << std::endl;
+		if (writer != NULL && !writer->isDisabled())
+			std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    VTK files stored in " << __BOLD__ << writer->outputDirectory() << __RESET__ << " directory" << std::endl;
 		else
 			std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    " << __BOLD__ << "Disabled" << __RESET__ << std::endl;
 		«ENDIF»
@@ -57,7 +57,7 @@ class TraceContentProvider
 		«val ir = irRoot»
 		// Timers display
 		«IF hasWriter»
-		if (!writer.isDisabled())
+		if (writer != NULL && !writer->isDisabled())
 			std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __BLUE__ << ioTimer.print(true) << __RESET__ "} ";
 		else
 		«ENDIF»
@@ -77,7 +77,7 @@ class TraceContentProvider
 	'''
 		std::cout << "\nFinal time = " << «currentTimeVariable.codeName» << endl;
 		std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << globalTimer.print() << __RESET__ << std::endl;
-		«IF isLinearAlgebra»std::cout << "[CG] average iteration: " << options.linearAlgebra.m_info.m_nb_it / options.linearAlgebra.m_info.m_nb_call << std::endl;«ENDIF»
+		«IF isLinearAlgebra»std::cout << "[CG] average iteration: " << linearAlgebra.m_info.m_nb_it / linearAlgebra.m_info.m_nb_call << std::endl;«ENDIF»
 	'''
 }
 

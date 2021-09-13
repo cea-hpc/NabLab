@@ -14,6 +14,7 @@ import java.text.DecimalFormat;
 import org.apache.commons.math3.linear.AbstractRealMatrix;
 import org.apache.commons.math3.linear.ConjugateGradient;
 import org.apache.commons.math3.linear.IterativeLinearSolver;
+import org.apache.commons.math3.linear.PreconditionedIterativeLinearSolver;
 import org.apache.commons.math3.linear.RealVector;
 
 public class LinearAlgebra implements ILinearAlgebra
@@ -31,8 +32,22 @@ public class LinearAlgebra implements ILinearAlgebra
 	public RealVector solveLinearSystem(AbstractRealMatrix a, RealVector b)
 	{
 		final int maxIterations = 100;
-		final IterativeLinearSolver m_solver = new ConjugateGradient(maxIterations, 1E-10, true);
+		final IterativeLinearSolver m_solver = new ConjugateGradient(maxIterations, 1E-8, true);
 		return m_solver.solve(a, b);
+	}
+
+	public RealVector solveLinearSystem(AbstractRealMatrix a, RealVector b, RealVector x0)
+	{
+		final int maxIterations = 100;
+		final IterativeLinearSolver m_solver = new ConjugateGradient(maxIterations, 1E-8, true);
+		return m_solver.solve(a, b, x0);
+	}
+
+	public RealVector solveLinearSystem(AbstractRealMatrix a, RealVector b, AbstractRealMatrix m, RealVector x0)
+	{
+		final int maxIterations = 100;
+		final PreconditionedIterativeLinearSolver m_solver = new ConjugateGradient(maxIterations, 1E-8, true);
+		return m_solver.solve(a, m, b, x0);
 	}
 
 	public void print(double[] x, DecimalFormat df)
@@ -50,9 +65,10 @@ public class LinearAlgebra implements ILinearAlgebra
 	}
 
 	@Override
-	public Vector solveLinearSystem(Matrix x0, Vector x1, Vector x2)
+	public Vector solveLinearSystem(Matrix a, Vector b, Vector x0)
 	{
-		throw new RuntimeException("Not implemented exception");
+		final RealVector x = solveLinearSystem(a.getData(), b.getData(), x0.getData());
+		return new Vector(b.getName() + "_plus1", x);
 	}
 
 	@Override
@@ -68,9 +84,10 @@ public class LinearAlgebra implements ILinearAlgebra
 	}
 
 	@Override
-	public Vector solveLinearSystem(Matrix x0, Vector x1, Matrix x2, Vector x3)
+	public Vector solveLinearSystem(Matrix a, Vector b, Matrix m, Vector x0)
 	{
-		throw new RuntimeException("Not implemented exception");
+		final RealVector x = solveLinearSystem(a.getData(), b.getData(), m.getData(), x0.getData());
+		return new Vector(b.getName() + "_plus1", x);
 	}
 
 	@Override

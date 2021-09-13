@@ -43,7 +43,7 @@ public class MeshGeometry
 		String edgesList = "";
 		String quadsList = "";
 		for (int i = 0; i < nodes.length; i++)
-			nodesList += nodes[i].toString() + (i < nodes.length-1 ? ", " : "");
+			nodesList += "[" + nodes[i][0] + ", " + nodes[i][1] + "]" + (i < nodes.length-1 ? ", " : "");
 		System.out.println("  nodes (" + nodes.length + ") : " + nodesList);
 		for (int i = 0; i < edges.length; i++)
 			edgesList += edges[i].toString() + (i < edges.length-1 ? ", " : "");

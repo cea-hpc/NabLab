@@ -547,17 +547,18 @@ CartesianMesh2D::create(size_t nb_x_quads, size_t nb_y_quads, double x_size, dou
 		if (!isInnerEdge(edges_[edgeId]))
 			m_outer_faces.emplace_back(edgeId);
 		else
-			m_inner_faces.emplace_back(edgeId);
-
-		if (isVerticalEdge(edges_[edgeId]))
-			m_inner_vertical_faces.emplace_back(edgeId);
-		else if (isHorizontalEdge(edges_[edgeId]))
-			m_inner_horizontal_faces.emplace_back(edgeId);
-		else
 		{
-			stringstream msg;
-			msg << "The inner edge " << edgeId << " should be either vertical or horizontal" << endl;
-			throw runtime_error(msg.str());
+			m_inner_faces.emplace_back(edgeId);
+			if (isVerticalEdge(edges_[edgeId]))
+				m_inner_vertical_faces.emplace_back(edgeId);
+			else if (isHorizontalEdge(edges_[edgeId]))
+				m_inner_horizontal_faces.emplace_back(edgeId);
+			else
+			{
+				stringstream msg;
+				msg << "The inner edge " << edgeId << " should be either vertical or horizontal" << endl;
+				throw runtime_error(msg.str());
+			}
 		}
 	}
 

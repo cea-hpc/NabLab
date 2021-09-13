@@ -40,7 +40,7 @@ class NabLabTestsTest extends GenerateAndExecuteTestBase
 	@Test
 	def void testGenerateHydroRemap()
 	{
-		testGenerateModule("HydroRemap")
+		testGenerateModule("HydroRemap", #["Hydro", "Remap"])
 	}
 
 	@Test

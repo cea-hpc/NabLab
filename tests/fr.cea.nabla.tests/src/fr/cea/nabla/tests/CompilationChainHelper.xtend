@@ -52,13 +52,18 @@ class CompilationChainHelper
 	 */
 	def getIrForInterpretation(CharSequence model, CharSequence genModel)
 	{
+		getIrForInterpretation(#[model], genModel)
+	}
+
+	def getIrForInterpretation(CharSequence[] models, CharSequence genModel)
+	{
 		val irRootBuilder = irRootBuilderProvider.get
 		val wsPath = TestUtils.PluginsBasePath + ".ui/examples"
-		val ngen = getNgenApp(model, genModel)
+		val ngen = getNgenApp(models, genModel)
 		return irRootBuilder.buildInterpreterIr(ngen, wsPath)
 	}
 
-	def getNgenApp(CharSequence model, CharSequence genModel)
+	def getNgenApp(CharSequence[] models, CharSequence genModel)
 	{
 		val rs = resourceSetProvider.get
 
@@ -68,9 +73,12 @@ class CompilationChainHelper
 		nablaParseHelper.parse(readFileAsString(TestUtils.LinearAlgebraPath), rs)
 		nablagenParseHelper.parse(readFileAsString(TestUtils.LinearAlgebraGenPath), rs)
 
-		val nablaRoot = nablaParseHelper.parse(model, rs)
-		nablaRoot.assertNoErrors
-		rs.resources.add(nablaRoot.eResource)
+		for (model : models)
+		{
+			val nablaRoot = nablaParseHelper.parse(model, rs)
+			nablaRoot.assertNoErrors
+			rs.resources.add(nablaRoot.eResource)
+		}
 
 		val ngenApp = nablagenParseHelper.parse(genModel, rs) as NablagenApplication
 		ngenApp.assertNoErrors
@@ -88,10 +96,10 @@ class CompilationChainHelper
 		return interpreter.interprete(ir, jsonContent, wsPath)
 	}
 
-	def void generateCode(CharSequence model, CharSequence genModel, String wsPath, String projectName)
+	def void generateCode(CharSequence[] models, CharSequence genModel, String wsPath, String projectName)
 	{
 		val generator = ngenAppGeneratorProvider.get
-		val ngen = getNgenApp(model, genModel)
+		val ngen = getNgenApp(models, genModel)
 		generator.generateApplication(ngen, wsPath, projectName)
 	}
 }

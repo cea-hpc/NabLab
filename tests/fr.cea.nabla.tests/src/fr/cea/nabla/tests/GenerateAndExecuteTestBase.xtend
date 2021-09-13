@@ -19,6 +19,7 @@ import fr.cea.nabla.nablagen.TargetType
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
+import java.util.ArrayList
 import org.apache.commons.io.FileUtils
 import org.junit.Assert
 
@@ -66,16 +67,28 @@ abstract class GenerateAndExecuteTestBase
 
 	protected def testGenerateModule(String moduleName)
 	{
-		val packageName = moduleName.toLowerCase
-		val model = readFileAsString(GenerateAndExecuteTestBase.projectAbsolutePath + "/src/" + packageName + "/" + moduleName + ".n")
-		var genmodel = readFileAsString(GenerateAndExecuteTestBase.projectAbsolutePath + "/src/" + packageName + "/" + moduleName + ".ngen")
-		compilationHelper.generateCode(model, genmodel, GenerateAndExecuteTestBase.projectAbsolutePath.replace('/' + projectName, ''), projectName)
+		testGenerateModule(moduleName, #[moduleName])
+	}
+
+	protected def testGenerateModule(String ngenFileName, String[] nFileNames)
+	{
+		val packageName = ngenFileName.toLowerCase
+		val models = new ArrayList<CharSequence>
+		for (nFileName : nFileNames)
+			models += readFileAsString(GenerateAndExecuteTestBase.projectAbsolutePath + "/src/" + packageName + "/" + nFileName + ".n")
+		var genmodel = readFileAsString(GenerateAndExecuteTestBase.projectAbsolutePath + "/src/" + packageName + "/" + ngenFileName + ".ngen")
+		compilationHelper.generateCode(models, genmodel, GenerateAndExecuteTestBase.projectAbsolutePath.replace('/' + projectName, ''), projectName)
 		testNoGitDiff("/" + packageName) // Add "/" to avoid a false positiv on explicitheatequation fail or implicitheatequation
 	}
 
 	protected def testExecuteModule(String moduleName)
 	{
-		println("\n" + moduleName)
+		testExecuteModule(moduleName, #[moduleName])
+	}
+
+	protected def testExecuteModule(String ngenFileName, String[] nFileNames)
+	{
+		println("\n" + ngenFileName)
 		// check Env Variables
 		val kokkosPath = System.getenv(KokkosENV)
 		val levelDBPath = System.getenv(LevelDBEnv)
@@ -86,13 +99,15 @@ abstract class GenerateAndExecuteTestBase
 			Assert.fail(envErr)
 		}
 
-		val packageName = moduleName.toLowerCase
-		val model = readFileAsString(GenerateAndExecuteTestBase.outputPath + "/src/" + packageName + "/" + moduleName + ".n")
-		var genmodel = readFileAsString(GenerateAndExecuteTestBase.outputPath + "/src/" + packageName + "/" + moduleName + ".ngen")
+		val packageName = ngenFileName.toLowerCase
+		val models = new ArrayList<CharSequence>
+		for (nFileName : nFileNames)
+			models += readFileAsString(GenerateAndExecuteTestBase.outputPath + "/src/" + packageName + "/" + nFileName + ".n")
+		var genmodel = readFileAsString(GenerateAndExecuteTestBase.outputPath + "/src/" + packageName + "/" + ngenFileName + ".ngen")
 
 		// Adapt genModel for LevelDBPath & KokkosPath & tmpOutputDir
 		genmodel = genmodel.adaptedGenModel(kokkosPath, levelDBPath)
-		compilationHelper.generateCode(model, genmodel, WsPath, projectName)
+		compilationHelper.generateCode(models, genmodel, WsPath, projectName)
 
 		// unzip nabla resources
 		UnzipHelper.unzip(new File(nRepositoryPath).toURI, new File(WsPath).toURI)
@@ -102,9 +117,9 @@ abstract class GenerateAndExecuteTestBase
 		Files.writeString(cmakePath, cmakeContent)
 
 		var nbErrors = 0
-		for (target : compilationHelper.getNgenApp(model, genmodel).targets.filter[!interpreter])
+		for (target : compilationHelper.getNgenApp(models, genmodel).targets.filter[!interpreter])
 		{
-			(!testExecute(target, moduleName) ? nbErrors++)
+			(!testExecute(target, ngenFileName) ? nbErrors++)
 		}
 		(nbErrors > 0 ? Assert.fail(nbErrors + " error(s) !"))
 	}

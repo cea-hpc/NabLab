@@ -41,6 +41,7 @@ endif()
 
 # EXECUTABLE implicitheatequation
 add_executable(implicitheatequation ImplicitHeatEquation.cc)
+target_compile_options(implicitheatequation PUBLIC  -g -Wall -O3 --std=c++17 -mtune=native -fopenmp)
 target_link_libraries(implicitheatequation PUBLIC nablalib OpenMP::OpenMP_CXX linearalgebrastl cartesianmesh2dstl)
 
 # OPTIONAL USER OPTIONS IN Project.cmake

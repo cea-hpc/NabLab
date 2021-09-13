@@ -55,7 +55,6 @@ class Utils
 	{
 		switch it
 		{
-			Variable case option: 'options.' + name
 			case iteratorCounter: (eContainer as Iterator).index.name
 			default: name
 		}

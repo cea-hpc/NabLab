@@ -66,10 +66,8 @@ class CMakeContentProvider
 
 		# EXECUTABLE «execName»
 		add_executable(«execName»«FOR m : modules» «m.className + '.cc'»«ENDFOR»)
+		target_compile_options(«execName» PUBLIC «FOR opt : compilationOptions» «opt»«ENDFOR»)
 		target_link_libraries(«execName» PUBLIC«FOR l : getRootTargetLinkLibraries(it, hasLevelDB)» «l»«ENDFOR»)
-		«IF compilationOptions.size != 0»
-		add_compile_options(«FOR opt : compilationOptions» «opt»«ENDFOR»)
-		«ENDIF»
 
 		«CMakeUtils.fileFooter»
 	'''
@@ -85,7 +83,7 @@ class CMakeContentProvider
 		# LIBRARY «provider.libName»
 		add_library(«provider.libName» «IF provider.linearAlgebra»«IrTypeExtensions.VectorClass».cc «IrTypeExtensions.MatrixClass».cc «ENDIF»«provider.className».cc)
 		set_property(TARGET «provider.libName» PROPERTY POSITION_INDEPENDENT_CODE ON)
-		target_compile_options(«provider.libName» PUBLIC -g -Wall -O3 --std=c++17 -mtune=native)
+		target_compile_options(«provider.libName» PUBLIC «FOR opt : compilationOptions» «opt»«ENDFOR»)
 		target_include_directories(«provider.libName» PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 		target_link_libraries(«provider.libName» PUBLIC«FOR l : getTargetLinkLibraries(provider.eContainer as IrRoot)» «l»«ENDFOR»)
 
@@ -99,11 +97,6 @@ class CMakeContentProvider
 		if (hasLevelDB) libs += "leveldb::leveldb Threads::Threads"
 		externalProviders.forEach[p | libs += p.libName]
 		return libs
-	}
-
-	private def getExternalProviders(IrRoot it)
-	{
-		providers.filter(DefaultExtensionProvider).filter[x | x.extensionName != "Math"]
 	}
 }
 

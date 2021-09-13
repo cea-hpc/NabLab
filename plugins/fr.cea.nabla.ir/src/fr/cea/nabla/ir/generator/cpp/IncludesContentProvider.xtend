@@ -70,10 +70,9 @@ class IncludesContentProvider
 	protected def getUserNs(boolean hasLevelDB)
 	{
 		val userNs = new LinkedHashSet<String>
-		userNs += "nablalib::utils"
-		userNs += "nablalib::types"
-		userNs += "nablalib::mesh"
-		if (hasLevelDB) userNs += "nablalib::utils"
+		userNs +=  "nablalib::utils"
+		userNs +=  "nablalib::types"
+		if (hasLevelDB) userNs +=  "nablalib::utils"
 		return userNs
 	}
 }

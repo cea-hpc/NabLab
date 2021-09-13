@@ -68,8 +68,8 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	#define «name.HDefineName»
 
 	«backend.includesContentProvider.getIncludes(hasLevelDB, (irRoot.postProcessing !== null))»
-	#include "nablalib/mesh/«irRoot.mesh.className».h"
-	«IF irRoot.postProcessing !== null»#include "nablalib/mesh/PvdFileWriter2D.h"«ENDIF»
+	#include "«irRoot.mesh.className».h"
+	«IF irRoot.postProcessing !== null»#include "PvdFileWriter2D.h"«ENDIF»
 	«FOR provider : externalProviders»
 	#include "«provider.className».h"
 	«ENDFOR»
@@ -100,40 +100,24 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 
 	class «className»
 	{
+		«FOR adm : irRoot.modules.filter[x | x !== it]»
+		friend class «adm.className»;
+		«ENDFOR»
 		«IF kokkosTeamThread»
 		typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
 
 		«ENDIF»
 	public:
-		struct Options
-		{
-			«IF postProcessing !== null»std::string «IrUtils.OutputPathNameAndValue.key»;«ENDIF»
-			«FOR v : options»
-			«typeContentProvider.getCppType(v.type)» «v.name»;
-			«ENDFOR»
-			«FOR v : externalProviders»
-			«v.className» «v.instanceName»;
-			«ENDFOR»
-			«IF levelDB»std::string «IrUtils.NonRegressionNameAndValue.key»;«ENDIF»
-
-			void jsonInit(const char* jsonContent);
-		};
-
-		«className»(«irRoot.mesh.className»& aMesh, Options& aOptions);
+		«className»(«irRoot.mesh.className»& aMesh);
 		~«className»();
-		«IF main»
-			«IF irRoot.modules.size > 1»
 
-				«FOR adm : irRoot.modules.filter[x | x !== it]»
-				inline void set«adm.name.toFirstUpper»(«adm.className»* value) { «adm.name» = value; }
-				«ENDFOR»
-			«ENDIF»
-		«ELSE»
+		void jsonInit(const char* jsonContent);
+		«IF !main»
 
 		inline void setMainModule(«irRoot.mainModule.className»* value)
 		{
 			mainModule = value,
-			mainModule->set«name.toFirstUpper»(this);
+			mainModule->«name» = this;
 		}
 		«ENDIF»
 
@@ -141,7 +125,14 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		«FOR j : jobs»
 		«backend.jobContentProvider.getDeclarationContent(j)»
 		«ENDFOR»
-		«IF levelDB»void createDB(const std::string& db_name);«ENDIF»
+		«IF levelDB»
+			const std::string& get«IrUtils.NonRegressionNameAndValue.key.toFirstUpper»()
+			{
+				return «IrUtils.NonRegressionNameAndValue.key»;
+			}
+
+			void createDB(const std::string& db_name);
+		«ENDIF»
 
 	private:
 		«IF postProcessing !== null»
@@ -161,10 +152,6 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		«irRoot.mesh.className»& mesh;
 		«FOR c : irRoot.mesh.connectivities.filter[multiple] BEFORE 'size_t ' SEPARATOR ', ' AFTER ';'»«c.nbElemsVar»«ENDFOR»
 
-		// User options
-		Options& options;
-		«IF postProcessing !== null»PvdFileWriter2D writer;«ENDIF»
-
 		«IF irRoot.modules.size > 1»
 			«IF main»
 				// Additional modules
@@ -177,16 +164,25 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 			«ENDIF»
 
 		«ENDIF»
+		// Option and global variables
+		«IF postProcessing !== null»
+			PvdFileWriter2D* writer;
+			std::string «IrUtils.OutputPathNameAndValue.key»;
+		«ENDIF»
+		«FOR v : externalProviders»
+			«v.className» «v.instanceName»;
+		«ENDFOR»
+		«IF levelDB»
+			std::string «IrUtils.NonRegressionNameAndValue.key»;
+		«ENDIF»
+		«FOR v : variables»
+			«v.variableDeclaration»
+		«ENDFOR»
+
 		// Timers
 		Timer globalTimer;
 		Timer cpuTimer;
 		Timer ioTimer;
-
-	public:
-		// Global variables
-		«FOR v : variables.filter[!option]»
-			«v.variableDeclaration»
-		«ENDFOR»
 	};
 
 	#endif
@@ -219,57 +215,13 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	}
 	«ENDIF»
 
-	/******************** Options definition ********************/
-
-	void
-	«className»::Options::jsonInit(const char* jsonContent)
-	{
-		rapidjson::Document document;
-		assert(!document.Parse(jsonContent).HasParseError());
-		assert(document.IsObject());
-		const rapidjson::Value::Object& o = document.GetObject();
-
-		«IF postProcessing !== null»
-		«val opName = IrUtils.OutputPathNameAndValue.key»
-		// «opName»
-		assert(o.HasMember("«opName»"));
-		const rapidjson::Value& «jsonContentProvider.getJsonName(opName)» = o["«opName»"];
-		assert(«jsonContentProvider.getJsonName(opName)».IsString());
-		«opName» = «jsonContentProvider.getJsonName(opName)».GetString();
-		«ENDIF»
-		«FOR v : options»
-		«jsonContentProvider.getJsonContent(v.name, v.type as BaseType, v.defaultValue)»
-		«ENDFOR»
-		«FOR v : externalProviders»
-		«val vName = v.instanceName»
-		// «vName»
-		if (o.HasMember("«vName»"))
-		{
-			rapidjson::StringBuffer strbuf;
-			rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
-			o["«vName»"].Accept(writer);
-			«vName».jsonInit(strbuf.GetString());
-		}
-		«ENDFOR»
-		«IF levelDB»
-		// Non regression
-		«val nrName = IrUtils.NonRegressionNameAndValue.key»
-		assert(o.HasMember("«nrName»"));
-		const rapidjson::Value& «jsonContentProvider.getJsonName(nrName)» = o["«nrName»"];
-		assert(«jsonContentProvider.getJsonName(nrName)».IsString());
-		«nrName» = «jsonContentProvider.getJsonName(nrName)».GetString();
-		«ENDIF»
-	}
-
 	/******************** Module definition ********************/
 
-	«className»::«className»(«irRoot.mesh.className»& aMesh, Options& aOptions)
+	«className»::«className»(«irRoot.mesh.className»& aMesh)
 	: mesh(aMesh)
 	«FOR c : irRoot.mesh.connectivities.filter[multiple]»
 	, «c.nbElemsVar»(«c.connectivityAccessor»)
 	«ENDFOR»
-	, options(aOptions)
-	«IF postProcessing !== null», writer("«irRoot.name»", options.«IrUtils.OutputPathNameAndValue.key»)«ENDIF»
 	«FOR v : variablesWithDefaultValue.filter[x | !x.constExpr]»
 	, «v.name»(«expressionContentProvider.getContent(v.defaultValue)»)
 	«ENDFOR»
@@ -300,6 +252,48 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	«className»::~«className»()
 	{
 	}
+
+	void
+	«className»::jsonInit(const char* jsonContent)
+	{
+		rapidjson::Document document;
+		assert(!document.Parse(jsonContent).HasParseError());
+		assert(document.IsObject());
+		const rapidjson::Value::Object& o = document.GetObject();
+
+		«IF postProcessing !== null»
+		«val opName = IrUtils.OutputPathNameAndValue.key»
+		// «opName»
+		assert(o.HasMember("«opName»"));
+		const rapidjson::Value& «jsonContentProvider.getJsonName(opName)» = o["«opName»"];
+		assert(«jsonContentProvider.getJsonName(opName)».IsString());
+		«opName» = «jsonContentProvider.getJsonName(opName)».GetString();
+		writer = new PvdFileWriter2D("«irRoot.name»", «opName»);
+		«ENDIF»
+		«FOR v : options»
+		«jsonContentProvider.getJsonContent(v.name, v.type as BaseType, v.defaultValue)»
+		«ENDFOR»
+		«FOR v : externalProviders»
+		«val vName = v.instanceName»
+		// «vName»
+		if (o.HasMember("«vName»"))
+		{
+			rapidjson::StringBuffer strbuf;
+			rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
+			o["«vName»"].Accept(writer);
+			«vName».jsonInit(strbuf.GetString());
+		}
+		«ENDFOR»
+		«IF levelDB»
+		// Non regression
+		«val nrName = IrUtils.NonRegressionNameAndValue.key»
+		assert(o.HasMember("«nrName»"));
+		const rapidjson::Value& «jsonContentProvider.getJsonName(nrName)» = o["«nrName»"];
+		assert(«jsonContentProvider.getJsonName(nrName)».IsString());
+		«nrName» = «jsonContentProvider.getJsonName(nrName)».GetString();
+		«ENDIF»
+	}
+
 	«IF kokkosTeamThread»
 
 	const std::pair<size_t, size_t> «className»::computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept
@@ -334,7 +328,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 
 	void «className»::dumpVariables(int iteration, bool useTimer)
 	{
-		if (!writer.isDisabled())
+		if (writer != NULL && !writer->isDisabled())
 		{
 			if (useTimer)
 			{
@@ -342,31 +336,31 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 				ioTimer.start();
 			}
 			auto quads = mesh.getGeometry()->getQuads();
-			writer.startVtpFile(iteration, «irRoot.currentTimeVariable.name», nbNodes, «irRoot.nodeCoordVariable.name».data(), nbCells, quads.data());
+			writer->startVtpFile(iteration, «irRoot.currentTimeVariable.name», nbNodes, «irRoot.nodeCoordVariable.name».data(), nbCells, quads.data());
 			«val outputVarsByConnectivities = irRoot.postProcessing.outputVariables.groupBy(x | x.support.name)»
-			writer.openNodeData();
+			writer->openNodeData();
 			«val nodeVariables = outputVarsByConnectivities.get("node")»
 			«IF !nodeVariables.nullOrEmpty»
 				«FOR v : nodeVariables»
-					writer.openNodeArray("«v.outputName»", «v.target.type.baseSizes.size»);
+					writer->openNodeArray("«v.outputName»", «v.target.type.baseSizes.size»);
 					for (size_t i=0 ; i<nbNodes ; ++i)
-						writer.write(«v.target.writeCallContent»);
-					writer.closeNodeArray();
+						writer->write(«v.target.writeCallContent»);
+					writer->closeNodeArray();
 				«ENDFOR»
 			«ENDIF»
-			writer.closeNodeData();
-			writer.openCellData();
+			writer->closeNodeData();
+			writer->openCellData();
 			«val cellVariables = outputVarsByConnectivities.get("cell")»
 			«IF !cellVariables.nullOrEmpty»
 				«FOR v : cellVariables»
-					writer.openCellArray("«v.outputName»", «v.target.type.baseSizes.size»);
+					writer->openCellArray("«v.outputName»", «v.target.type.baseSizes.size»);
 					for (size_t i=0 ; i<nbCells ; ++i)
-						writer.write(«v.target.writeCallContent»);
-					writer.closeCellArray();
+						writer->write(«v.target.writeCallContent»);
+					writer->closeCellArray();
 				«ENDFOR»
 			«ENDIF»
-			writer.closeCellData();
-			writer.closeVtpFile();
+			writer->closeCellData();
+			writer->closeVtpFile();
 			«postProcessing.lastDumpVariable.name» = «postProcessing.periodReference.name»;
 			if (useTimer)
 			{

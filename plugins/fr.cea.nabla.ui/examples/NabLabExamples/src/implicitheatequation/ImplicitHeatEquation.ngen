@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 CEA
+ * Copyright (c) 2021 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -26,7 +26,7 @@ VtkOutput
 
 //LevelDB
 //{
-//	levelDBPath = "$ENV{HOME}/leveldb/leveldb-install";
+//	leveldb_ROOT = "$ENV{HOME}/leveldb/install";
 //}
 
 Java
@@ -37,31 +37,33 @@ Java
 Kokkos
 {
 	outputPath = "/NabLabExamples/src-gen-cpp/kokkos";
-	N_CXX_COMPILER = "/usr/bin/g++";
-	N_KOKKOS_PATH = "$ENV{HOME}/kokkos/kokkos-install";
+	CMAKE_CXX_COMPILER = "/usr/bin/g++";
+	Kokkos_ROOT = "$ENV{HOME}/kokkos/install";
+	KokkosKernels_ROOT = "$ENV{HOME}/kokkos/install";
 }
 
 KokkosTeamThread
 {
 	outputPath = "/NabLabExamples/src-gen-cpp/kokkos-team";
-	N_CXX_COMPILER = "/usr/bin/g++";
-	N_KOKKOS_PATH = "$ENV{HOME}/kokkos/kokkos-install";
+	CMAKE_CXX_COMPILER = "/usr/bin/g++";
+	Kokkos_ROOT = "$ENV{HOME}/kokkos/install";
+	KokkosKernels_ROOT = "$ENV{HOME}/kokkos/install";
 }
 
 OpenMP
 {
 	outputPath = "/NabLabExamples/src-gen-cpp/openmp";
-	N_CXX_COMPILER = "/usr/bin/g++";
+	CMAKE_CXX_COMPILER = "/usr/bin/g++";
 }
 
 CppSequential
 {
 	outputPath = "/NabLabExamples/src-gen-cpp/sequential";
-	N_CXX_COMPILER = "/usr/bin/g++";
+	CMAKE_CXX_COMPILER = "/usr/bin/g++";
 }
 
 StlThread
 {
 	outputPath = "/NabLabExamples/src-gen-cpp/stl-thread";
-	N_CXX_COMPILER = "/usr/bin/g++";
+	CMAKE_CXX_COMPILER = "/usr/bin/g++";
 }

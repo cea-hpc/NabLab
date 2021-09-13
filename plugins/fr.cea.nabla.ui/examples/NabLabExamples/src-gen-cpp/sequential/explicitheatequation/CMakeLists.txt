@@ -34,6 +34,7 @@ endif()
 
 # EXECUTABLE explicitheatequation
 add_executable(explicitheatequation ExplicitHeatEquation.cc)
+target_compile_options(explicitheatequation PUBLIC  -g -Wall -O3 --std=c++17 -mtune=native)
 target_link_libraries(explicitheatequation PUBLIC nablalib cartesianmesh2dstl)
 
 # OPTIONAL USER OPTIONS IN Project.cmake

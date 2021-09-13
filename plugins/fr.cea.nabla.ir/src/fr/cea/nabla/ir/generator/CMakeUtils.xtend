@@ -19,17 +19,6 @@ class CMakeUtils
 	public static val WS_PATH = 'N_WS_PATH'
 	static val userDir = System.getProperty("user.home")
 	static val rejectedPrefixes = #[ "GPU_" ]
-	
-	private static def shouldRejectVariable(Pair<String, String> variable)
-	{
-		val varName = variable.key
-		for (preffix : rejectedPrefixes)
-		{
-			if (varName.startsWith(preffix))
-				return true
-		}
-		return false
-	}
 
 	static def getFileHeader(boolean subDirectory)
 	'''
@@ -117,5 +106,16 @@ class CMakeUtils
 			path.replace(userDir, "$ENV{HOME}")
 		else
 			path
+	}
+
+	private static def shouldRejectVariable(Pair<String, String> variable)
+	{
+		val varName = variable.key
+		for (prefix : rejectedPrefixes)
+		{
+			if (varName.startsWith(prefix))
+				return true
+		}
+		return false
 	}
 }

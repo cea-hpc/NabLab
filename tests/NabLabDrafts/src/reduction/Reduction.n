@@ -1,0 +1,36 @@
+/*******************************************************************************
+ * Copyright (c) 2021 CEA
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * Contributors: see AUTHORS file
+ *******************************************************************************/
+module Reduction;
+
+with Math.*;
+
+with CartesianMesh2D.*;
+
+def nodeVelocityBoundaryConditionCorner: ℕ × ℝ[2] × ℕ × ℝ[2] × ℝ[2,2] × ℝ[2] × ℝ[2] → ℝ[2], (BC1, BCValue1, BC2, BCValue2, Mp, Gp, lp_np)→ {
+	return [0., 0.];
+}
+
+// Simulation options
+let ℝ maxTime = 0.1;
+let ℕ maxIter = 500;
+let ℝ δt = 0.01;
+
+ℝ t;
+ℝ[2] X{nodes};
+ℝ[2] Vnode{nodes};
+ℝ[2] lpc_n{nodes, cellsOfNode}; // Corner normal --> "lpc npc" 
+
+iterate n while (n <= 2);
+
+ComputeGeometry: ∀c∈cells(), ∀p∈nodesOfCell(c), lpc_n{p,c}  = [1.0, 1.0];
+
+ComputeBoundaryNodeVelocities: ∀p∈topLeftNode(), Vnode^{n+1}{p} = nodeVelocityBoundaryConditionCorner(1, [0., 0.], 1, [0., 0.], [[1., 1.],[1., 1.]], [1., 1.], ∑{c∈cellsOfNode(p)}(lpc_n{p,c}));
+
+UpdateTime: t^{n+1} = t^{n}+δt;

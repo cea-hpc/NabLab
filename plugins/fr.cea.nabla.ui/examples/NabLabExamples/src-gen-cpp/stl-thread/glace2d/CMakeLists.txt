@@ -34,6 +34,7 @@ endif()
 
 # EXECUTABLE glace2d
 add_executable(glace2d Glace2d.cc)
+target_compile_options(glace2d PUBLIC  -g -Wall -O3 --std=c++17 -mtune=native -fopenmp)
 target_link_libraries(glace2d PUBLIC nablalib pthread cartesianmesh2dstl)
 
 # OPTIONAL USER OPTIONS IN Project.cmake

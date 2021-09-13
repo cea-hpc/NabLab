@@ -34,6 +34,7 @@ endif()
 
 # EXECUTABLE iterativeheatequation
 add_executable(iterativeheatequation IterativeHeatEquation.cc)
+target_compile_options(iterativeheatequation PUBLIC  -g -Wall -O3 --std=c++17 -mtune=native -fopenmp)
 target_link_libraries(iterativeheatequation PUBLIC nablalib pthread cartesianmesh2dstl)
 
 # OPTIONAL USER OPTIONS IN Project.cmake

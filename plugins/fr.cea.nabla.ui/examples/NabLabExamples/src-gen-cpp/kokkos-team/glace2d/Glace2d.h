@@ -66,25 +66,10 @@ class Glace2d
 	typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
 
 public:
-	struct Options
-	{
-		std::string outputPath;
-		int outputPeriod;
-		double stopTime;
-		int maxIterations;
-		double gamma;
-		double xInterface;
-		double deltatCfl;
-		double rhoIniZg;
-		double rhoIniZd;
-		double pIniZg;
-		double pIniZd;
-
-		void jsonInit(const char* jsonContent);
-	};
-
-	Glace2d(CartesianMesh2D& aMesh, Options& aOptions);
+	Glace2d(CartesianMesh2D& aMesh);
 	~Glace2d();
+
+	void jsonInit(const char* jsonContent);
 
 	void simulate();
 	KOKKOS_INLINE_FUNCTION
@@ -154,19 +139,21 @@ private:
 	CartesianMesh2D& mesh;
 	size_t nbNodes, nbCells, maxNodesOfCell, maxCellsOfNode, nbInnerNodes, nbTopNodes, nbBottomNodes, nbLeftNodes, nbRightNodes;
 
-	// User options
-	Options& options;
-	PvdFileWriter2D writer;
-
-	// Timers
-	Timer globalTimer;
-	Timer cpuTimer;
-	Timer ioTimer;
-
-public:
-	// Global variables
+	// Option and global variables
+	PvdFileWriter2D* writer;
+	std::string outputPath;
+	int outputPeriod;
 	int lastDump;
 	int n;
+	double stopTime;
+	int maxIterations;
+	double gamma;
+	double xInterface;
+	double deltatCfl;
+	double rhoIniZg;
+	double rhoIniZd;
+	double pIniZg;
+	double pIniZd;
 	double t_n;
 	double t_nplus1;
 	double t_n0;
@@ -195,6 +182,11 @@ public:
 	Kokkos::View<RealArray1D<2>**> C;
 	Kokkos::View<RealArray1D<2>**> F;
 	Kokkos::View<RealArray2D<2,2>**> Ajr;
+
+	// Timers
+	Timer globalTimer;
+	Timer cpuTimer;
+	Timer ioTimer;
 };
 
 #endif

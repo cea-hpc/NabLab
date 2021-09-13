@@ -41,6 +41,7 @@ endif()
 
 # EXECUTABLE heatequation
 add_executable(heatequation HeatEquation.cc)
+target_compile_options(heatequation PUBLIC  -g -Wall -O3 --std=c++17 -mtune=native -fopenmp)
 target_link_libraries(heatequation PUBLIC nablalib Kokkos::kokkos cartesianmesh2dstl)
 
 # OPTIONAL USER OPTIONS IN Project.cmake

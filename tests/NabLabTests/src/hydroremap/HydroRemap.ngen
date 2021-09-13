@@ -1,0 +1,69 @@
+/*******************************************************************************
+ * Copyright (c) 2021 CEA
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * Contributors: see AUTHORS file
+ *******************************************************************************/
+Application HydroRemap;
+
+MainModule Hydro hydro
+{
+	nodeCoord = X;
+	time = t;
+	timeStep = δt;
+	iterationMax = maxIter;
+	timeMax = maxTime;
+}
+
+AdditionalModule Remap r1
+{
+	r1.rv1 = hydro.hv1;
+	r1.rv2 = hydro.hv4;
+}
+
+AdditionalModule Remap r2
+{
+	r2.rv1 = hydro.hv3;
+	r2.rv3 = hydro.hv6;
+}
+
+
+Java
+{
+	outputPath = "/NabLabTests/src-gen-java";
+}
+
+Kokkos
+{
+	outputPath = "/NabLabTests/src-gen-cpp/kokkos";
+	CMAKE_CXX_COMPILER = "/usr/bin/g++";
+	Kokkos_ROOT = "$ENV{HOME}/kokkos/install";
+}
+
+KokkosTeamThread
+{
+	outputPath = "/NabLabTests/src-gen-cpp/kokkos-team";
+	CMAKE_CXX_COMPILER = "/usr/bin/g++";
+	Kokkos_ROOT = "$ENV{HOME}/kokkos/install";
+}
+
+OpenMP
+{
+	outputPath = "/NabLabTests/src-gen-cpp/openmp";
+	CMAKE_CXX_COMPILER = "/usr/bin/g++";
+}
+
+CppSequential
+{
+	outputPath = "/NabLabTests/src-gen-cpp/sequential";
+	CMAKE_CXX_COMPILER = "/usr/bin/g++";
+}
+
+StlThread
+{
+	outputPath = "/NabLabTests/src-gen-cpp/stl-thread";
+	CMAKE_CXX_COMPILER = "/usr/bin/g++";
+}

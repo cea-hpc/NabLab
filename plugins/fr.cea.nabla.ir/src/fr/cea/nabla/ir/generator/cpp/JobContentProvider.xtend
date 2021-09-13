@@ -67,7 +67,7 @@ abstract class JobContentProvider
 			«itVar»++;
 			«IF caller.main»
 				«IF ppInfo !== null»
-				if (!writer.isDisabled() && «ppInfo.periodReference.codeName» >= «ppInfo.lastDumpVariable.codeName» + «ppInfo.periodValue.codeName»)
+				if (writer != NULL && !writer->isDisabled() && «ppInfo.periodReference.codeName» >= «ppInfo.lastDumpVariable.codeName» + «ppInfo.periodValue.codeName»)
 					dumpVariables(«itVar»);
 				«ENDIF»
 				«traceContentProvider.getBeginOfLoopTrace(irModule, itVar)»
@@ -92,7 +92,7 @@ abstract class JobContentProvider
 		} while (continueLoop);
 		«IF caller.main»
 			«IF ppInfo !== null»
-			if (!writer.isDisabled())
+			if (writer != NULL && !writer->isDisabled())
 				dumpVariables(«itVar»+1, false);
 			«ENDIF»
 		«ENDIF»

@@ -66,9 +66,9 @@ class MainContentProvider
 			«val nrName = IrUtils.NonRegressionNameAndValue.key»
 			«val dbName = irRoot.name + "DB"»
 			// Non regression testing
-			if («name»Options.«nrName» == "«IrUtils.NonRegressionValues.CreateReference.toString»")
+			if («name»->get«nrName.toFirstUpper()»() == "«IrUtils.NonRegressionValues.CreateReference.toString»")
 				«name»->createDB("«dbName».ref");
-			if («name»Options.«nrName» == "«IrUtils.NonRegressionValues.CompareToReference.toString»") {
+			if («name»->get«nrName.toFirstUpper()»() == "«IrUtils.NonRegressionValues.CompareToReference.toString»") {
 				«name»->createDB("«dbName».current");
 				if (!compareDB("«dbName».current", "«dbName».ref"))
 					ret = 1;
@@ -83,15 +83,14 @@ class MainContentProvider
 
 	private def getInstanciation(IrModule it)
 	'''
-		«className»::Options «name»Options;
+		«className»* «name» = new «className»(mesh);
 		if (d.HasMember("«name»"))
 		{
 			rapidjson::StringBuffer strbuf;
 			rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
 			d["«name»"].Accept(writer);
-			«name»Options.jsonInit(strbuf.GetString());
+			«name»->jsonInit(strbuf.GetString());
 		}
-		«className»* «name» = new «className»(mesh, «name»Options);
 		«IF !main»«name»->setMainModule(«irRoot.mainModule.name»);«ENDIF»
 	'''
 }

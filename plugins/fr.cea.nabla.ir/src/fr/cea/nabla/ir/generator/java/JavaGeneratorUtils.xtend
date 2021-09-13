@@ -33,7 +33,7 @@ class JavaGeneratorUtils
 			else
 				'Math.' + name
 		}
-		else 'options.' + provider.instanceName + '.' + name
+		else provider.instanceName + '.' + name
 	}
 
 	static def getPackageName(IrModule it)

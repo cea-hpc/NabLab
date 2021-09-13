@@ -48,20 +48,10 @@ class HeatEquation
 	typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
 
 public:
-	struct Options
-	{
-		std::string outputPath;
-		int outputPeriod;
-		double stopTime;
-		int maxIterations;
-		double PI;
-		double alpha;
-
-		void jsonInit(const char* jsonContent);
-	};
-
-	HeatEquation(CartesianMesh2D& aMesh, Options& aOptions);
+	HeatEquation(CartesianMesh2D& aMesh);
 	~HeatEquation();
+
+	void jsonInit(const char* jsonContent);
 
 	void simulate();
 	KOKKOS_INLINE_FUNCTION
@@ -101,19 +91,16 @@ private:
 	CartesianMesh2D& mesh;
 	size_t nbNodes, nbCells, nbFaces, maxNodesOfCell, maxNodesOfFace, maxNeighbourCells;
 
-	// User options
-	Options& options;
-	PvdFileWriter2D writer;
-
-	// Timers
-	Timer globalTimer;
-	Timer cpuTimer;
-	Timer ioTimer;
-
-public:
-	// Global variables
+	// Option and global variables
+	PvdFileWriter2D* writer;
+	std::string outputPath;
+	int outputPeriod;
 	int lastDump;
 	int n;
+	double stopTime;
+	int maxIterations;
+	double PI;
+	double alpha;
 	static constexpr double deltat = 0.001;
 	double t_n;
 	double t_nplus1;
@@ -126,6 +113,11 @@ public:
 	Kokkos::View<double*> f;
 	Kokkos::View<double*> outgoingFlux;
 	Kokkos::View<double*> surface;
+
+	// Timers
+	Timer globalTimer;
+	Timer cpuTimer;
+	Timer ioTimer;
 };
 
 #endif

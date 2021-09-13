@@ -12,7 +12,7 @@
 
 #include <utility>
 
-#include "../cartesianmesh2dstl/MeshGeometry.h"
+#include "MeshGeometry.h"
 #include "nablalib/types/Types.h"
 
 using namespace std;

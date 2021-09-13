@@ -70,7 +70,7 @@ The NabLab product includes three extensions, CartesianMash2D, Math and LinearAl
 
 [Math](https://github.com/cea-hpc/NabLab/blob/master/plugins/fr.cea.nabla/nablalib/Math.n) contains the ∑, ∏, Min and Max reductions and the usual mathematical functions (sin, cos, √...).
 
-[CartesianMesh2D](https://github.com/cea-hpc/NabLab/tree/master/plugins/fr.cea.nabla/CartesianMesh2D.n) contains a 2D cartesian mesh extension as well as the corresponding Java and C++ [providers](https://github.com/cea-hpc/NabLab/tree/master/plugins/fr.cea.nabla/CartesianMesh2D.ngen).
+[CartesianMesh2D](https://github.com/cea-hpc/NabLab/tree/master/plugins/fr.cea.nabla/nablalib/CartesianMesh2D.n) contains a 2D cartesian mesh extension as well as the corresponding Java and C++ [providers](https://github.com/cea-hpc/NabLab/tree/master/plugins/fr.cea.nabla/nablalib/CartesianMesh2D.ngen).
 
 ```
 module HeatEquation;

@@ -47,7 +47,7 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 
 	private def getInterfaceHeaderFileContent(DefaultExtensionProvider provider)
 	'''
-		«Utils::doNotEditWarning»
+		/* «Utils::doNotEditWarning» */
 
 		#ifndef «CppGeneratorUtils.getHDefineName(provider.interfaceName)»
 		#define «CppGeneratorUtils.getHDefineName(provider.interfaceName)»

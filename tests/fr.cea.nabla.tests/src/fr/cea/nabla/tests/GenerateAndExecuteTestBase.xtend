@@ -124,9 +124,9 @@ abstract class GenerateAndExecuteTestBase
 		(nbErrors > 0 ? Assert.fail(nbErrors + " error(s) !"))
 	}
 
-	private def testNoGitDiff(String moduleName)
+	private def testNoGitDiff(String packageName)
 	{
-		Assert.assertTrue(git.noGitDiff(GenerateAndExecuteTestBase.projectRelativePath, moduleName))
+		Assert.assertTrue(git.noGitDiff(GenerateAndExecuteTestBase.projectRelativePath, packageName))
 	}
 
 	private def adaptedGenModel(String genmodel, String kokkosPath, String levelDBPath)

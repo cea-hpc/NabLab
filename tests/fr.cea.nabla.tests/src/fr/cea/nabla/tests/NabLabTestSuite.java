@@ -22,7 +22,7 @@ import fr.cea.nabla.tests.validation.NabLabValidationTestSuite;
 	DeclarationProviderTest.class,
 	ExpressionTypeProviderTest.class,
 	IteratorExtensionsTest.class,
-	NablaExamplesTest.class,
+	NabLabExamplesTest.class,
 	NablagenParsingTest.class,
 	NablagenScopeProviderTest.class,
 	NablaParsingTest.class,

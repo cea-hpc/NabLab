@@ -25,7 +25,7 @@
 #include <limits>
 #include <mutex>
 
-#include "../linearalgebrastl/CrsMatrix.h"
+#include "CrsMatrix.h"
 
 typedef CrsMatrix<double> SparseMatrixType;
 

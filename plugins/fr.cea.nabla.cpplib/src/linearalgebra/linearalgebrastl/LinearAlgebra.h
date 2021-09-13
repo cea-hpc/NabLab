@@ -10,8 +10,8 @@
 #ifndef __LINEARALGEBRA_H_
 #define __LINEARALGEBRA_H_
 
-#include "../linearalgebrastl/Matrix.h"
-#include "../linearalgebrastl/Vector.h"
+#include "Matrix.h"
+#include "Vector.h"
 
 class LinearAlgebra
 {

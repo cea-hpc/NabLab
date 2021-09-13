@@ -14,7 +14,7 @@
 #include <map>
 #include <fstream>
 
-#include "../cartesianmesh2dstl/NodeIdContainer.h"
+#include "NodeIdContainer.h"
 #include "nablalib/types/Types.h"
 
 using namespace std;

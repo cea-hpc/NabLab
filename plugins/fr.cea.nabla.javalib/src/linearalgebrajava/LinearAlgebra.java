@@ -32,21 +32,21 @@ public class LinearAlgebra implements ILinearAlgebra
 	public RealVector solveLinearSystem(AbstractRealMatrix a, RealVector b)
 	{
 		final int maxIterations = 100;
-		final IterativeLinearSolver m_solver = new ConjugateGradient(maxIterations, 1E-8, true);
+		final IterativeLinearSolver m_solver = new ConjugateGradient(maxIterations, 1E-10, true);
 		return m_solver.solve(a, b);
 	}
 
 	public RealVector solveLinearSystem(AbstractRealMatrix a, RealVector b, RealVector x0)
 	{
 		final int maxIterations = 100;
-		final IterativeLinearSolver m_solver = new ConjugateGradient(maxIterations, 1E-8, true);
+		final IterativeLinearSolver m_solver = new ConjugateGradient(maxIterations, 1E-10, true);
 		return m_solver.solve(a, b, x0);
 	}
 
 	public RealVector solveLinearSystem(AbstractRealMatrix a, RealVector b, AbstractRealMatrix m, RealVector x0)
 	{
 		final int maxIterations = 100;
-		final PreconditionedIterativeLinearSolver m_solver = new ConjugateGradient(maxIterations, 1E-8, true);
+		final PreconditionedIterativeLinearSolver m_solver = new ConjugateGradient(maxIterations, 1E-10, true);
 		return m_solver.solve(a, m, b, x0);
 	}
 

@@ -41,7 +41,7 @@ class IrFunctionFactory
 		// build a unique name with name and type
 		name = f.name.toFirstLower + t.primitive.getName().charAt(0) + t.sizes.size
 		f.variables.forEach[x | variables += x.toIrVariable]
-		f.inArgs.forEach[x | inArgs += toIrArg(x, x.name)]
+		f.inArgs.forEach[x | inArgs += toIrArg(x)]
 		returnType = t.toIrBaseType
 		body = f.body.toIrInstruction
 	}
@@ -52,7 +52,7 @@ class IrFunctionFactory
 		name = f.name
 		f.variables.forEach[x | variables += x.toIrVariable]
 		// f is internal, it has a inArgs and a body
-		f.inArgs.forEach[x | inArgs += toIrArg(x, x.name)]
+		f.inArgs.forEach[x | inArgs += toIrArg(x)]
 		body = f.body.toIrInstruction
 		returnType = f.toIrReturnType
 	}

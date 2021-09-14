@@ -67,6 +67,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.MESH_EXTENSION_PROVIDER: return createMeshExtensionProvider();
 			case IrPackage.ARG: return createArg();
 			case IrPackage.VARIABLE: return createVariable();
+			case IrPackage.TIME_VARIABLE: return createTimeVariable();
 			case IrPackage.INTERN_FUNCTION: return createInternFunction();
 			case IrPackage.EXTERN_FUNCTION: return createExternFunction();
 			case IrPackage.CONNECTIVITY: return createConnectivity();
@@ -223,6 +224,17 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	public Variable createVariable() {
 		VariableImpl variable = new VariableImpl();
 		return variable;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public TimeVariable createTimeVariable() {
+		TimeVariableImpl timeVariable = new TimeVariableImpl();
+		return timeVariable;
 	}
 
 	/**

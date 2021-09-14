@@ -67,10 +67,10 @@ class ArgOrVarExtensions
 	}
 
 	/** Return true if 'it' has a default value and is never affected */
-	def boolean isConst(SimpleVar it)
+	def boolean isConst(Var it)
 	{
 		// Only SimpleVar defined with a value can be const
-		if (eContainer !== null && eContainer instanceof SimpleVarDeclaration && (eContainer as SimpleVarDeclaration).value !== null)
+		if (it instanceof SimpleVar && eContainer !== null && eContainer instanceof SimpleVarDeclaration && (eContainer as SimpleVarDeclaration).value !== null)
 		{
 			val root = EcoreUtil2::getContainerOfType(it, NablaRoot)
 			root.eAllContents.filter(Affectation).forall[x | x.left.target !== it]

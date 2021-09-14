@@ -67,7 +67,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="parentIterator" eType="#//TimeIterator"
         eOpposite="#//TimeIterator/innerIterators"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="variables" upperBound="-1"
-        eType="#//Variable" eOpposite="#//Variable/timeIterator"/>
+        eType="#//TimeVariable" eOpposite="#//TimeVariable/timeIterator"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="timeLoopJob" lowerBound="1"
         eType="#//ExecuteTimeLoopJob" eOpposite="#//ExecuteTimeLoopJob/timeIterator"/>
   </eClassifiers>
@@ -127,6 +127,8 @@
         eType="#//Job" eOpposite="#//Job/outVars"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="consumerJobs" upperBound="-1"
         eType="#//Job" eOpposite="#//Job/inVars"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TimeVariable" eSuperTypes="#//Variable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="originName" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="timeIterator" eType="#//TimeIterator"

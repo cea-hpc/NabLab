@@ -32,7 +32,6 @@ class ReductionCallExtensions
 	{
 		annotations += rc.toNabLabFileAnnotation
 		name = "reduction" + rc.number
-		originName = name
 		val d = rc.declaration
 		val vType = d.type.toIrBaseType
 		type = vType

@@ -321,7 +321,7 @@ class OpenMpInstructionContentProvider extends InstructionContentProvider
 	override getParallelLoopContent(Loop it)
 	'''
 		«val vars = modifiedVariables»
-		#pragma omp parallel«IF !vars.empty» for shared(«vars.map[codeName].join(', ')»«ENDIF»)
+		#pragma omp parallel«IF !vars.empty» for shared(«vars.map[codeName].join(', ')»)«ENDIF»
 		«sequentialLoopContent»
 	'''
 

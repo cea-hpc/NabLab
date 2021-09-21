@@ -125,7 +125,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 				«ENDFOR»
 
 				// Initialize variables with default values
-				«FOR v : variablesWithDefaultValue»
+				«FOR v : variables.filter[x | !x.option && x.defaultValue !== null]»
 					«v.name» = «v.defaultValue.content»;
 				«ENDFOR»
 

@@ -222,11 +222,12 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	«FOR c : irRoot.mesh.connectivities.filter[multiple]»
 	, «c.nbElemsVar»(«c.connectivityAccessor»)
 	«ENDFOR»
-	«FOR v : variablesWithDefaultValue.filter[x | !x.constExpr]»
-	, «v.name»(«expressionContentProvider.getContent(v.defaultValue)»)
-	«ENDFOR»
-	«FOR v : variables.filter[needAllocation]»
-	, «v.name»(«typeContentProvider.getCstrInit(v.type, v.name)»)
+	«FOR v : variables»
+		«IF !v.option && v.defaultValue !== null && !v.constExpr»
+			, «v.name»(«expressionContentProvider.getContent(v.defaultValue)»)
+		«ELSEIF !(v.type instanceof BaseType)»
+			, «v.name»(«typeContentProvider.getCstrInit(v.type, v.name)»)
+		«ENDIF»
 	«ENDFOR»
 	{
 		«IF main»
@@ -492,12 +493,6 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 			case v.const: '''const «typeContentProvider.getCppType(v.type)» «v.name»;'''
 			default: '''«typeContentProvider.getCppType(v.type)» «v.name»;'''
 		}
-	}
-
-	/** BaseType never need explicit allocation: it is either scalar or MultiArray default cstr */
-	private def needAllocation(Variable v)
-	{
-		!(v.type instanceof BaseType)
 	}
 
 	private def isKokkosTeamThread()

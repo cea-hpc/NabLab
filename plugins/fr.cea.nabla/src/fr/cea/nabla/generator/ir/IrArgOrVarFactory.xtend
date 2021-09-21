@@ -12,6 +12,7 @@ package fr.cea.nabla.generator.ir
 import com.google.inject.Inject
 import com.google.inject.Singleton
 import fr.cea.nabla.ArgOrVarExtensions
+import fr.cea.nabla.ConstExprServices
 import fr.cea.nabla.ir.ir.InstructionBlock
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.Job
@@ -47,6 +48,7 @@ class IrArgOrVarFactory
 	@Inject extension ArgOrVarTypeProvider
 	@Inject extension BaseTypeTypeProvider
 	@Inject NablaType2IrType nablaType2IrType
+	@Inject ConstExprServices constExprServices
 
 	/**
 	 * If v variable is referenced with time iterators, create the associated time variables.
@@ -222,7 +224,7 @@ class IrArgOrVarFactory
 		name = v.name
 		type = nablaType2IrType.toIrType(v.typeFor)
 		const = v.const
-		constExpr = v.constExpr
+		constExpr = constExprServices.isConstExpr(v)
 		option = false
 		val value = v.value
 		if (value !== null) defaultValue = value.toIrExpression

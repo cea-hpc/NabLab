@@ -19,6 +19,7 @@ import fr.cea.nabla.tests.validation.NabLabValidationTestSuite;
 
 @Suite.SuiteClasses
 ({
+	ConstExprServicesTest.class,
 	DeclarationProviderTest.class,
 	ExpressionTypeProviderTest.class,
 	IteratorExtensionsTest.class,

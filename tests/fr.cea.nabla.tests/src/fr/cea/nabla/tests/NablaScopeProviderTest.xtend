@@ -339,7 +339,6 @@ class NablaScopeProviderTest
 		val model =
 		'''
 		«emptyTestModule»
-		def inverse: ℝ[2,2] → ℝ[2,2];
 		def f: x,y | ℝ[x] × ℝ[y] → ℝ[x+y], (a, b) →
 		{
 			let ℝ c = 2.0;
@@ -362,10 +361,6 @@ class NablaScopeProviderTest
 		val module = parseHelper.parse(model)
 		Assert.assertNotNull(module)
 		val eref = NablaPackage::eINSTANCE.argOrVarRef_Target
-
-		val inverse = module.getFunctionByName("inverse")
-		Assert.assertNotNull(inverse)
-		inverse.assertScope(eref, "")
 
 		val f = module.getFunctionByName("f")
 		Assert.assertNotNull(f)
@@ -396,11 +391,11 @@ class NablaScopeProviderTest
 		«testModule»
 		ℝ[2] X{nodes};
 		ℝ c1 {cells};
-		
+
 		j1: ∀ j∈cells(), {
 			c1{j} = 2.0;
 		}
-		
+
 		j2: {
 			ℝ[4] n;
 			ℝ[4, 2] m;
@@ -453,7 +448,6 @@ class NablaScopeProviderTest
 		val model =
 		'''
 		«emptyTestModule»
-		def inverse: ℝ[2,2] → ℝ[2,2];
 		def f: x,y | ℝ[x] × ℝ[y] → ℝ[x+y], (a, b) →
 		{
 			ℝ[x,y] c;
@@ -475,10 +469,6 @@ class NablaScopeProviderTest
 		val module = parseHelper.parse(model)
 		Assert.assertNotNull(module)
 		val eref = NablaPackage::eINSTANCE.argOrVarRef_Target
-
-		val inverse = module.getFunctionByName("inverse")
-		Assert.assertNotNull(inverse)
-		inverse.assertScope(eref, "")
 
 		val f = module.getFunctionByName("f")
 		Assert.assertNotNull(f)

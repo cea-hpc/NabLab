@@ -1316,13 +1316,22 @@ public interface IrPackage extends EPackage {
 	int INTERN_FUNCTION__BODY = FUNCTION_FEATURE_COUNT + 0;
 
 	/**
+	 * The feature id for the '<em><b>Const Expr</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INTERN_FUNCTION__CONST_EXPR = FUNCTION_FEATURE_COUNT + 1;
+
+	/**
 	 * The number of structural features of the '<em>Intern Function</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int INTERN_FUNCTION_FEATURE_COUNT = FUNCTION_FEATURE_COUNT + 1;
+	int INTERN_FUNCTION_FEATURE_COUNT = FUNCTION_FEATURE_COUNT + 2;
 
 	/**
 	 * The number of operations of the '<em>Intern Function</em>' class.
@@ -5333,6 +5342,17 @@ public interface IrPackage extends EPackage {
 	EReference getInternFunction_Body();
 
 	/**
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.InternFunction#isConstExpr <em>Const Expr</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Const Expr</em>'.
+	 * @see fr.cea.nabla.ir.ir.InternFunction#isConstExpr()
+	 * @see #getInternFunction()
+	 * @generated
+	 */
+	EAttribute getInternFunction_ConstExpr();
+
+	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.ExternFunction <em>Extern Function</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -7557,6 +7577,14 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EReference INTERN_FUNCTION__BODY = eINSTANCE.getInternFunction_Body();
+
+		/**
+		 * The meta object literal for the '<em><b>Const Expr</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute INTERN_FUNCTION__CONST_EXPR = eINSTANCE.getInternFunction_ConstExpr();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.ExternFunctionImpl <em>Extern Function</em>}' class.

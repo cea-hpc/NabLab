@@ -11,6 +11,7 @@ package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
 import com.google.inject.Singleton
+import fr.cea.nabla.ConstExprServices
 import fr.cea.nabla.LinearAlgebraUtils
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.nabla.DefaultExtension
@@ -27,6 +28,7 @@ class IrFunctionFactory
 	@Inject extension IrInstructionFactory
 	@Inject extension IrExpressionFactory
 	@Inject extension LinearAlgebraUtils
+	@Inject ConstExprServices constExprServices
 
 	def toIrFunction(Function f)
 	{
@@ -44,6 +46,7 @@ class IrFunctionFactory
 		f.inArgs.forEach[x | inArgs += toIrArg(x)]
 		returnType = t.toIrBaseType
 		body = f.body.toIrInstruction
+		constExpr = false
 	}
 
 	def create IrFactory::eINSTANCE.createInternFunction toIrInternFunction(Function f)
@@ -55,6 +58,7 @@ class IrFunctionFactory
 		f.inArgs.forEach[x | inArgs += toIrArg(x)]
 		body = f.body.toIrInstruction
 		returnType = f.toIrReturnType
+		constExpr = constExprServices.isConstExpr(f)
 	}
 
 	def create IrFactory::eINSTANCE.createExternFunction toIrExternFunction(Function f)

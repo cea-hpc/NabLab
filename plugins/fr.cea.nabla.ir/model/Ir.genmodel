@@ -116,6 +116,7 @@
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//InternFunction">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//InternFunction/body"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//InternFunction/constExpr"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//ExternFunction">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//ExternFunction/provider"/>

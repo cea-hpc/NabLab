@@ -73,12 +73,13 @@ public interface Variable extends ArgOrVar {
 
 	/**
 	 * Returns the value of the '<em><b>Const Expr</b></em>' attribute.
+	 * The default value is <code>"false"</code>.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Const Expr</em>' attribute.
 	 * @see #setConstExpr(boolean)
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getVariable_ConstExpr()
-	 * @model required="true"
+	 * @model default="false" required="true"
 	 * @generated
 	 */
 	boolean isConstExpr();

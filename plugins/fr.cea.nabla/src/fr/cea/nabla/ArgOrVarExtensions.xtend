@@ -79,23 +79,6 @@ class ArgOrVarExtensions
 			false
 	}
 
-	def boolean isConstExpr(ArgOrVar it)
-	{
-		if (eContainer !== null)
-		{
-			val c = eContainer
-			switch c
-			{
-				// options are not constexpr because they are initialized by a file in the generated code
-				SimpleVarDeclaration: (c.value !== null && c.variable.const && c.value.constExpr)
-				Function, Reduction: true
-				default: false
-			}
-		}
-		else
-			false
-	}
-
 	def boolean isNablaEvaluable(ArgOrVar it)
 	{
 		switch it

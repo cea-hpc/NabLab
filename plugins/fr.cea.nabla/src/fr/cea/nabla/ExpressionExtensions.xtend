@@ -24,7 +24,6 @@ class ExpressionExtensions
 
 	def boolean isReductionLess(Expression e) { check(e, [checkReductionLess]) }
 	def boolean isNablaEvaluable(Expression e) { check(e, [checkNablaEvaluable]) }
-	def boolean isConstExpr(Expression e) { check(e, [checkConstExpr]) }
 
 	private def check(Expression e, (Expression) => boolean checker)
 	{
@@ -47,16 +46,6 @@ class ExpressionExtensions
 				! ((nablaExt !== null) && e.function.external && (nablaExt.name != "Math"))
 			}
 			ArgOrVarRef: e.timeIterators.empty && e.spaceIterators.empty && e.target.nablaEvaluable
-			default: true
-		}
-	}
-
-	private def boolean checkConstExpr(Expression e)
-	{
-		switch e
-		{
-			ReductionCall, FunctionCall, Cardinality: false
-			ArgOrVarRef: e.timeIterators.empty && e.spaceIterators.empty && e.target.constExpr
 			default: true
 		}
 	}

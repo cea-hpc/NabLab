@@ -225,18 +225,10 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	«FOR v : variablesWithDefaultValue.filter[x | !x.constExpr]»
 	, «v.name»(«expressionContentProvider.getContent(v.defaultValue)»)
 	«ENDFOR»
-	«FOR v : variables.filter[needStaticAllocation]»
+	«FOR v : variables.filter[needAllocation]»
 	, «v.name»(«typeContentProvider.getCstrInit(v.type, v.name)»)
 	«ENDFOR»
 	{
-		«val dynamicArrayVariables = variables.filter[needDynamicAllocation]»
-		«IF !dynamicArrayVariables.empty»
-			// Allocate dynamic arrays (RealArrays with at least a dynamic dimension)
-			«FOR v : dynamicArrayVariables»
-				«typeContentProvider.initCppTypeContent(v.name, v.type)»
-			«ENDFOR»
-
-		«ENDIF»
 		«IF main»
 		// Copy node coordinates
 		const auto& gNodes = mesh.getGeometry()->getNodes();
@@ -502,15 +494,10 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		}
 	}
 
-	/** BaseType never need explicit static allocation: it is either scalar or MultiArray default cstr */
-	private def needStaticAllocation(Variable v)
+	/** BaseType never need explicit allocation: it is either scalar or MultiArray default cstr */
+	private def needAllocation(Variable v)
 	{
-		!(v.type instanceof BaseType) && v.type.isBaseTypeStatic
-	}
-
-	private def needDynamicAllocation(Variable v)
-	{
-		!v.type.isBaseTypeStatic
+		!(v.type instanceof BaseType)
 	}
 
 	private def isKokkosTeamThread()

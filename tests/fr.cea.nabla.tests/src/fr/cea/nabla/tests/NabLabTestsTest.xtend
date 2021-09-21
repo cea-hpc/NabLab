@@ -48,4 +48,10 @@ class NabLabTestsTest extends GenerateAndExecuteTestBase
 	{
 		testGenerateModule("Iteration")
 	}
+
+	@Test
+	def void testGenerateVariables()
+	{
+		testGenerateModule("Variables")
+	}
 }

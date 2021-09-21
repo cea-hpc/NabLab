@@ -1,0 +1,32 @@
+/*******************************************************************************
+ * Copyright (c) 2021 CEA
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * Contributors: see AUTHORS file
+ *******************************************************************************/
+module Variables;
+
+with CartesianMesh2D.*;
+
+// Simulation options
+let ℝ maxTime = 0.1;
+let ℕ maxIter = 500;
+let ℝ δt = 1.0;
+ℝ t;
+
+let ℕ dim = 2;
+ℝ[2] v1;
+ℝ[dim] v2;
+ℝ[dim] X{nodes};
+//let ℕ myNbNodes = card(nodes());
+//ℝ[myNbNodes] v3;
+//ℝ[myNbNodes] v4{cells};
+
+NewVar: ∀ r∈nodes(), 
+{
+	let ℕ localNbCells = card(cellsOfNode(r));
+	ℝ[localNbCells] tmp;
+}

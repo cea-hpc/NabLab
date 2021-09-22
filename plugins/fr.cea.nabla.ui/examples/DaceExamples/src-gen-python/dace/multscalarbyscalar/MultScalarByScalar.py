@@ -33,4 +33,4 @@ AddJob.add_memlet_path(AddJob_tasklet, map_exit, AddJob.add_write('AddJob_valOut
 mysdfg(AddJob_valInput=valInput,AddJob_valOutput=valOutput)
 
 
-mysdfg.view('MultScalarByScalar.html')
+mysdfg.view('MultScalarByScalar')

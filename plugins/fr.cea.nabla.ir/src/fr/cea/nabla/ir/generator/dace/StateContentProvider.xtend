@@ -13,96 +13,58 @@ import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 
 class StateContentProvider
 {
-	static def dispatch CharSequence getContent(InstructionBlock i, String stateName, int compteur)
-	//static def dispatch CharSequence getContent(InstructionBlock i, String stateName)
+	static def dispatch CharSequence getContent(InstructionBlock i, String stateName)
 	'''
-		«var count=0»
-		«FOR innerInstruction : i.instructions SEPARATOR '\n'»
-			«getContent(innerInstruction, stateName + "_" + (count++), (count++))»
+		«FOR instructionIndex : 0..<i.instructions.size SEPARATOR '\n'»
+			«getContent(i.instructions.get(instructionIndex), stateName + "_" + instructionIndex+1)»
 		«ENDFOR»
 	'''
 
-	static def dispatch CharSequence getContent(Affectation i, String stateName, int count)
-	//static def dispatch CharSequence getContent(Affectation i, String stateName)
+	static def dispatch CharSequence getContent(Affectation i, String stateName)
 	'''
-		
-		«getAddState(stateName, count)»
-«««		«stateName» = mysdfg.add_state()
+		«stateName» = mysdfg.add_state("«stateName»", is_start_state=True)
 
 		«stateName»_tasklet = «stateName».add_tasklet('«stateName»', «FOR v : getInVars(i) + getOutVars(i)»{'«v.name»'}, «ENDFOR»'«i.left.target.name»=«Utils.getLabel(i.right)»')
 
 		«FOR v : getInVars(i) + getOutVars(i)»
 			«stateName»_«v.name» = mysdfg.«getTypeContent(v.type, stateName +'_'+ v.name)»
 		«ENDFOR»
-		
+
 		«FOR v : getOutVars(i)»
 			«getAddMap(i, v.type, stateName)»
 			«getAddMemletPath(i, v.type, stateName)»
-			
-		«ENDFOR»
-		
-		
-		mysdfg(«FOR v : getInVars(i) + getOutVars(i) SEPARATOR ','»«stateName»_«v.name»=«v.name»«ENDFOR»)
-		
 
-		
+		«ENDFOR»
+
+
+		mysdfg(«FOR v : getInVars(i) + getOutVars(i) SEPARATOR ','»«stateName»_«v.name»=«v.name»«ENDFOR»)
 	'''
-	
-	private static def getAddState(String stateName, int count)
+
+	static def dispatch CharSequence getContent(Instruction i, String stateName)
 	{
-		if(count == 0)
-		{
-			'''
-				«stateName» = mysdfg.add_state()
-			'''
-		}
-		else if(count == 1)
-		{
-			'''
-				«stateName» = mysdfg.add_state("state2",is_start_state=True)
-			'''
-		}
+		throw new RuntimeException("Not yet implemented")
 	}
+
 	private static def getAddMap(Affectation i, IrType t, String stateName)
 	{
 		switch t
 		{
-			BaseType:
-			{
-				switch(t.sizes.size)
-				{
-					case 1:'''map_entry, map_exit = «stateName».add_map('«stateName»_map', dict(i='«t.arrayDimension»'))'''
-					case 2: '''map_entry, map_exit = «stateName».add_map('«stateName»_map', dict(i='0:«Utils.getDaceType(t.sizes.get(0))»',j='0:«Utils.getDaceType(t.sizes.get(1))»'))'''
-				}
-			}
+			BaseType: '''map_entry, map_exit = «stateName».add_map('«stateName»_map', dict(«FOR sizeIndex : 0..<t.sizes.size SEPARATOR ','»i«sizeIndex»='0:«Utils.getDaceType(t.sizes.get(sizeIndex))»'«ENDFOR»))'''
+			default: throw new RuntimeException("Not yet implemented")
 		}
 	}
+
 	private static def getAddMemletPath(Affectation i, IrType t, String stateName)
 	{
 		switch t
 		{
 			BaseType:
-			{
-				switch(t.sizes.size)
-				{
-					case 1:'''						
-						«stateName».add_memlet_path(«stateName».add_read(«FOR iv : getInVars(i) »'«stateName»_«iv.name»'),map_entry, «stateName»_tasklet, dst_conn='«iv.name»',memlet=dace.Memlet('«stateName»_«iv.name»[i]')«ENDFOR»)
-						«stateName».add_memlet_path(«stateName»_tasklet, map_exit, «stateName».add_write(«FOR iv : getOutVars(i) »'«stateName»_«iv.name»'), src_conn='«iv.name»',memlet=dace.Memlet('«stateName»_«iv.name»[i]')«ENDFOR»)
-					'''
-					
-					case 2:'''						
-						«stateName».add_memlet_path(«stateName».add_read(«FOR iv : getInVars(i) »'«stateName»_«iv.name»'),map_entry, «stateName»_tasklet, dst_conn='«iv.name»',memlet=dace.Memlet('«stateName»_«iv.name»[i,j]')«ENDFOR»)
-						«stateName».add_memlet_path(«stateName»_tasklet, map_exit, «stateName».add_write(«FOR iv : getOutVars(i) »'«stateName»_«iv.name»'), src_conn='«iv.name»',memlet=dace.Memlet('«stateName»_«iv.name»[i,j]')«ENDFOR»)
-					'''
-						
-				}
-			}
+			'''
+				«stateName».add_memlet_path(«stateName».add_read(«FOR iv : getInVars(i) »'«stateName»_«iv.name»'),map_entry, «stateName»_tasklet, dst_conn='«iv.name»',memlet=dace.Memlet('«stateName»_«iv.name»[«FOR sizeIndex : 0..<t.sizes.size SEPARATOR ','»i«sizeIndex»«ENDFOR»]')«ENDFOR»)
+				«stateName».add_memlet_path(«stateName»_tasklet, map_exit, «stateName».add_write(«FOR iv : getOutVars(i) »'«stateName»_«iv.name»'), src_conn='«iv.name»',memlet=dace.Memlet('«stateName»_«iv.name»[«FOR sizeIndex : 0..<t.sizes.size SEPARATOR ','»i«sizeIndex»«ENDFOR»]')«ENDFOR»)
+			'''
+			default: throw new RuntimeException("Not yet implemented")
 		}
-	}
-
-	static def dispatch CharSequence getContent(Instruction i, String stateName, int count)
-	{
-		throw new RuntimeException("Not yet implemented")
 	}
 
 	private static def Iterable<Variable> getInVars(Affectation i)
@@ -123,38 +85,8 @@ class StateContentProvider
 		switch t
 		{
 			BaseType:
-			{
-				switch (t.sizes.size)
-				{
-					case 0: '''add_array('«varName»', [«Utils.getDaceType(t.sizes.get(0))»], «Utils.getDaceType(t.primitive)»)'''
-					case 1: '''add_array('«varName»', [«Utils.getDaceType(t.sizes.get(0))»], «Utils.getDaceType(t.primitive)»)'''
-					case 2: '''add_array('«varName»', [«Utils.getDaceType(t.sizes.get(0))», «Utils.getDaceType(t.sizes.get(1))»], «Utils.getDaceType(t.primitive)»)'''
-					default: throw new RuntimeException("Not yet implemented")
-				}
-			}
+			'''add_array('«varName»', «FOR size : t.sizes BEFORE '[' SEPARATOR ',' AFTER '], '»«Utils.getDaceType(size)»«ENDFOR»«Utils.getDaceType(t.primitive)»)'''
 			default: throw new RuntimeException("Not yet implemented")
-		}
-	}
-
-	private static def boolean isArray(IrType t)
-	{
-		getArrayDimension(t) !== null
-	}
-	
-
-	private static def getArrayDimension(IrType t)
-	{
-		switch t
-		{
-			BaseType:
-			{
-				switch (t.sizes.size)
-				{
-					case 1: "0:" + Utils.getDaceType(t.sizes.get(0))
-					default: null
-				}
-			}
-			default: null
 		}
 	}
 }

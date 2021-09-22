@@ -1,0 +1,14 @@
+Application MultMatrixByScalar;
+
+MainModule MultMatrixByScalar multMatrixByScalar
+{
+	nodeCoord = X;
+	time = t;
+	timeStep = δt;
+}
+
+[WriteIr]
+Dace
+{
+	outputPath = "/DaceExamples/src-gen-python/dace";
+}

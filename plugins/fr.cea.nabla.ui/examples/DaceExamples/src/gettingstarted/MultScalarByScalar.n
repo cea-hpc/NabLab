@@ -1,0 +1,12 @@
+module MultScalarByScalar;
+
+with CartesianMesh2D.*;
+
+// Simulation options
+ℝ t, δt;
+ℝ[2] X{nodes};
+
+let ℕ valInput = 4;
+ℕ valOutput ;
+
+AddJob: valOutput = valInput * 25 + 1;

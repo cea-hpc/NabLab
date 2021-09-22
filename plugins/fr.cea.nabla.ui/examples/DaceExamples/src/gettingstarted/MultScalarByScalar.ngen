@@ -1,0 +1,14 @@
+Application MultScalarByScalar;
+
+MainModule MultScalarByScalar multScalarByScalar
+{
+	nodeCoord = X;
+	time = t;
+	timeStep = δt;
+}
+
+[WriteIr]
+Dace
+{
+	outputPath = "/DaceExamples/src-gen-python/dace";
+}

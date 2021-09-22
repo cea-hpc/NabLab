@@ -1,0 +1,15 @@
+module MultMatrixByScalar;
+
+with CartesianMesh2D.*;
+
+// Simulation options
+ℝ t, δt;
+ℝ[2] X{nodes};
+
+let ℕ[2,2] a =  ℕ[2,2](5);
+let ℕ[2,2] b =  ℕ[2,2](0);
+
+AddJob: b = a * 25 + 1;
+
+
+

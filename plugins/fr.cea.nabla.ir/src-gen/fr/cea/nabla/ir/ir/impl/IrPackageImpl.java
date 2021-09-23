@@ -2580,6 +2580,26 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
+	public EAttribute getBaseType_IntSizes() {
+		return (EAttribute)baseTypeEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getBaseType_IsStatic() {
+		return (EAttribute)baseTypeEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EClass getConnectivityType() {
 		return connectivityTypeEClass;
 	}
@@ -2632,6 +2652,26 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	@Override
 	public EReference getLinearAlgebraType_Provider() {
 		return (EReference)linearAlgebraTypeEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getLinearAlgebraType_IntSizes() {
+		return (EAttribute)linearAlgebraTypeEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getLinearAlgebraType_IsStatic() {
+		return (EAttribute)linearAlgebraTypeEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -3133,6 +3173,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		baseTypeEClass = createEClass(BASE_TYPE);
 		createEAttribute(baseTypeEClass, BASE_TYPE__PRIMITIVE);
 		createEReference(baseTypeEClass, BASE_TYPE__SIZES);
+		createEAttribute(baseTypeEClass, BASE_TYPE__INT_SIZES);
+		createEAttribute(baseTypeEClass, BASE_TYPE__IS_STATIC);
 
 		connectivityTypeEClass = createEClass(CONNECTIVITY_TYPE);
 		createEReference(connectivityTypeEClass, CONNECTIVITY_TYPE__CONNECTIVITIES);
@@ -3141,6 +3183,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		linearAlgebraTypeEClass = createEClass(LINEAR_ALGEBRA_TYPE);
 		createEReference(linearAlgebraTypeEClass, LINEAR_ALGEBRA_TYPE__SIZES);
 		createEReference(linearAlgebraTypeEClass, LINEAR_ALGEBRA_TYPE__PROVIDER);
+		createEAttribute(linearAlgebraTypeEClass, LINEAR_ALGEBRA_TYPE__INT_SIZES);
+		createEAttribute(linearAlgebraTypeEClass, LINEAR_ALGEBRA_TYPE__IS_STATIC);
 
 		containerEClass = createEClass(CONTAINER);
 
@@ -3521,6 +3565,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEClass(baseTypeEClass, BaseType.class, "BaseType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getBaseType_Primitive(), this.getPrimitiveType(), "primitive", null, 1, 1, BaseType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getBaseType_Sizes(), this.getExpression(), null, "sizes", null, 0, -1, BaseType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getBaseType_IntSizes(), ecorePackage.getEInt(), "intSizes", null, 0, -1, BaseType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getBaseType_IsStatic(), ecorePackage.getEBoolean(), "isStatic", null, 1, 1, BaseType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(connectivityTypeEClass, ConnectivityType.class, "ConnectivityType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getConnectivityType_Connectivities(), this.getConnectivity(), null, "connectivities", null, 0, -1, ConnectivityType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3529,6 +3575,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEClass(linearAlgebraTypeEClass, LinearAlgebraType.class, "LinearAlgebraType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getLinearAlgebraType_Sizes(), this.getExpression(), null, "sizes", null, 0, -1, LinearAlgebraType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getLinearAlgebraType_Provider(), this.getDefaultExtensionProvider(), null, "provider", null, 1, 1, LinearAlgebraType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getLinearAlgebraType_IntSizes(), ecorePackage.getEInt(), "intSizes", null, 0, -1, LinearAlgebraType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getLinearAlgebraType_IsStatic(), ecorePackage.getEBoolean(), "isStatic", null, 1, 1, LinearAlgebraType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(containerEClass, fr.cea.nabla.ir.ir.Container.class, "Container", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 

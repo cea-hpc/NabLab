@@ -214,7 +214,14 @@ class NablagenApplication2Ir
 		switch t
 		{
 			case BOOL: f.createBoolConstant => [ value = false ]
-			default: f.createMinConstant => [ type = f.createBaseType => [ primitive = t] ]
+			default: f.createMinConstant =>
+			[
+				type = f.createBaseType =>
+				[
+					primitive = t
+					isStatic = true
+				]
+			]
 		}
 	}
 }

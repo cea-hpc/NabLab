@@ -3975,13 +3975,31 @@ public interface IrPackage extends EPackage {
 	int BASE_TYPE__SIZES = IR_TYPE_FEATURE_COUNT + 1;
 
 	/**
+	 * The feature id for the '<em><b>Int Sizes</b></em>' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BASE_TYPE__INT_SIZES = IR_TYPE_FEATURE_COUNT + 2;
+
+	/**
+	 * The feature id for the '<em><b>Is Static</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BASE_TYPE__IS_STATIC = IR_TYPE_FEATURE_COUNT + 3;
+
+	/**
 	 * The number of structural features of the '<em>Base Type</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int BASE_TYPE_FEATURE_COUNT = IR_TYPE_FEATURE_COUNT + 2;
+	int BASE_TYPE_FEATURE_COUNT = IR_TYPE_FEATURE_COUNT + 4;
 
 	/**
 	 * The number of operations of the '<em>Base Type</em>' class.
@@ -4085,13 +4103,31 @@ public interface IrPackage extends EPackage {
 	int LINEAR_ALGEBRA_TYPE__PROVIDER = IR_TYPE_FEATURE_COUNT + 1;
 
 	/**
+	 * The feature id for the '<em><b>Int Sizes</b></em>' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LINEAR_ALGEBRA_TYPE__INT_SIZES = IR_TYPE_FEATURE_COUNT + 2;
+
+	/**
+	 * The feature id for the '<em><b>Is Static</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LINEAR_ALGEBRA_TYPE__IS_STATIC = IR_TYPE_FEATURE_COUNT + 3;
+
+	/**
 	 * The number of structural features of the '<em>Linear Algebra Type</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int LINEAR_ALGEBRA_TYPE_FEATURE_COUNT = IR_TYPE_FEATURE_COUNT + 2;
+	int LINEAR_ALGEBRA_TYPE_FEATURE_COUNT = IR_TYPE_FEATURE_COUNT + 4;
 
 	/**
 	 * The number of operations of the '<em>Linear Algebra Type</em>' class.
@@ -6644,6 +6680,28 @@ public interface IrPackage extends EPackage {
 	EReference getBaseType_Sizes();
 
 	/**
+	 * Returns the meta object for the attribute list '{@link fr.cea.nabla.ir.ir.BaseType#getIntSizes <em>Int Sizes</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute list '<em>Int Sizes</em>'.
+	 * @see fr.cea.nabla.ir.ir.BaseType#getIntSizes()
+	 * @see #getBaseType()
+	 * @generated
+	 */
+	EAttribute getBaseType_IntSizes();
+
+	/**
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.BaseType#isIsStatic <em>Is Static</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Is Static</em>'.
+	 * @see fr.cea.nabla.ir.ir.BaseType#isIsStatic()
+	 * @see #getBaseType()
+	 * @generated
+	 */
+	EAttribute getBaseType_IsStatic();
+
+	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.ConnectivityType <em>Connectivity Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -6706,6 +6764,28 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getLinearAlgebraType_Provider();
+
+	/**
+	 * Returns the meta object for the attribute list '{@link fr.cea.nabla.ir.ir.LinearAlgebraType#getIntSizes <em>Int Sizes</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute list '<em>Int Sizes</em>'.
+	 * @see fr.cea.nabla.ir.ir.LinearAlgebraType#getIntSizes()
+	 * @see #getLinearAlgebraType()
+	 * @generated
+	 */
+	EAttribute getLinearAlgebraType_IntSizes();
+
+	/**
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.LinearAlgebraType#isIsStatic <em>Is Static</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Is Static</em>'.
+	 * @see fr.cea.nabla.ir.ir.LinearAlgebraType#isIsStatic()
+	 * @see #getLinearAlgebraType()
+	 * @generated
+	 */
+	EAttribute getLinearAlgebraType_IsStatic();
 
 	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.Container <em>Container</em>}'.
@@ -8635,6 +8715,22 @@ public interface IrPackage extends EPackage {
 		EReference BASE_TYPE__SIZES = eINSTANCE.getBaseType_Sizes();
 
 		/**
+		 * The meta object literal for the '<em><b>Int Sizes</b></em>' attribute list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute BASE_TYPE__INT_SIZES = eINSTANCE.getBaseType_IntSizes();
+
+		/**
+		 * The meta object literal for the '<em><b>Is Static</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute BASE_TYPE__IS_STATIC = eINSTANCE.getBaseType_IsStatic();
+
+		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.ConnectivityTypeImpl <em>Connectivity Type</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -8685,6 +8781,22 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EReference LINEAR_ALGEBRA_TYPE__PROVIDER = eINSTANCE.getLinearAlgebraType_Provider();
+
+		/**
+		 * The meta object literal for the '<em><b>Int Sizes</b></em>' attribute list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute LINEAR_ALGEBRA_TYPE__INT_SIZES = eINSTANCE.getLinearAlgebraType_IntSizes();
+
+		/**
+		 * The meta object literal for the '<em><b>Is Static</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute LINEAR_ALGEBRA_TYPE__IS_STATIC = eINSTANCE.getLinearAlgebraType_IsStatic();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.ContainerImpl <em>Container</em>}' class.

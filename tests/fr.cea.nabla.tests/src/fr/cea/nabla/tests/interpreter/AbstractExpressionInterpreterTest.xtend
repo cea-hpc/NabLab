@@ -46,7 +46,7 @@ abstract class AbstractExpressionInterpreterTest
 		let ℾ b0 = !false; // -> true
 		let ℕ n0 = -(1); // -> -1
 		let ℝ r0 = -(1.); // -> -1.
-		let ℕ[2]n1 = [1, 2];
+		let ℕ[2] n1 = [1, 2];
 		let ℕ[2] n2 = -n1; // -> [-1, -2]
 		let ℝ[2] r1 = [1., 2.];
 		let ℝ[2] r2 = -r1; // -> [-1., -2]

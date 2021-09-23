@@ -11,6 +11,7 @@ package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
 import com.google.inject.Singleton
+import fr.cea.nabla.BaseTypeSizeEvaluator
 import fr.cea.nabla.ConstExprServices
 import fr.cea.nabla.LinearAlgebraUtils
 import fr.cea.nabla.ir.ir.IrFactory
@@ -28,6 +29,7 @@ class IrFunctionFactory
 	@Inject extension IrInstructionFactory
 	@Inject extension IrExpressionFactory
 	@Inject extension LinearAlgebraUtils
+	@Inject extension BaseTypeSizeEvaluator
 	@Inject ConstExprServices constExprServices
 
 	def toIrFunction(Function f)
@@ -86,7 +88,12 @@ class IrFunctionFactory
 			IrFactory.eINSTANCE.createLinearAlgebraType =>
 			[
 				provider = la.toIrDefaultExtensionProvider
-				f.typeDeclaration.returnType.sizes.forEach[x | sizes += x.toIrExpression]
+				for (s : f.typeDeclaration.returnType.sizes)
+				{
+					sizes += s.toIrExpression
+					intSizes += getIntSizeFor(s)
+				}
+				isStatic = intSizes.forall[x | x != -1]
 			]
 		}
 	}

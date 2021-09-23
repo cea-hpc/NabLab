@@ -131,7 +131,7 @@ class ExpressionValidatorTest
 			ExpressionValidator::getFunctionCallArgsMsg(
 				#[PrimitiveType::BOOL.literal,
 				PrimitiveType::INT.literal,
-				new NSTRealArray1D(createIntConstant(2)).label]
+				new NSTRealArray1D(createIntConstant(2), 2).label]
 		))
 
 		val moduleOk = parseHelper.parse(
@@ -350,9 +350,9 @@ class ExpressionValidatorTest
 		moduleKo.assertError(NablaPackage.eINSTANCE.minus,
 			ExpressionValidator::MINUS_TYPE,
 			ExpressionValidator::getBinaryOpTypeMsg("-",
-				new NSTRealArray1D(createIntConstant(2)).label,
+				new NSTRealArray1D(createIntConstant(2), 2).label,
 
-				new NSTRealArray1D(createIntConstant(3)).label
+				new NSTRealArray1D(createIntConstant(3), 3).label
 			))
 
 		val moduleOk = parseHelper.parse(
@@ -382,7 +382,7 @@ class ExpressionValidatorTest
 			ExpressionValidator::COMPARISON_TYPE,
 			ExpressionValidator::getBinaryOpTypeMsg(">",
 				PrimitiveType::REAL.literal,
-				new NSTRealArray1D(createIntConstant(2)).label
+				new NSTRealArray1D(createIntConstant(2), 2).label
 			))
 
 		val moduleOk = parseHelper.parse(
@@ -412,7 +412,7 @@ class ExpressionValidatorTest
 			ExpressionValidator::EQUALITY_TYPE,
 			ExpressionValidator::getBinaryOpTypeMsg("==",
 				PrimitiveType::REAL.literal,
-				new NSTRealArray1D(createIntConstant(2)).label
+				new NSTRealArray1D(createIntConstant(2), 2).label
 			))
 
 		val moduleOk = parseHelper.parse(
@@ -444,7 +444,7 @@ class ExpressionValidatorTest
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.modulo,
 			ExpressionValidator::MODULO_TYPE,
-			getTypeMsg(new NSTRealArray1D(createIntConstant(2)).label, "ℕ"))
+			getTypeMsg(new NSTRealArray1D(createIntConstant(2), 2).label, "ℕ"))
 
 		val moduleOk = parseHelper.parse(
 			'''

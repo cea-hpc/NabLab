@@ -32,6 +32,7 @@ import static extension fr.cea.nabla.ir.IrUtils.*
 
 class IrTypeExtensions
 {
+	public static val int DYNAMIC_SIZE = -1
 	public static val VectorClass = 'Vector'
 	public static val MatrixClass = 'Matrix'
 

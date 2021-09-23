@@ -15,6 +15,8 @@ import org.eclipse.emf.common.util.EList;
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.BaseType#getPrimitive <em>Primitive</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.BaseType#getSizes <em>Sizes</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.BaseType#getIntSizes <em>Int Sizes</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.BaseType#isIsStatic <em>Is Static</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getBaseType()
@@ -58,5 +60,39 @@ public interface BaseType extends IrType {
 	 * @generated
 	 */
 	EList<Expression> getSizes();
+
+	/**
+	 * Returns the value of the '<em><b>Int Sizes</b></em>' attribute list.
+	 * The list contents are of type {@link java.lang.Integer}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Int Sizes</em>' attribute list.
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getBaseType_IntSizes()
+	 * @model unique="false"
+	 * @generated
+	 */
+	EList<Integer> getIntSizes();
+
+	/**
+	 * Returns the value of the '<em><b>Is Static</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Is Static</em>' attribute.
+	 * @see #setIsStatic(boolean)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getBaseType_IsStatic()
+	 * @model required="true"
+	 * @generated
+	 */
+	boolean isIsStatic();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.BaseType#isIsStatic <em>Is Static</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Is Static</em>' attribute.
+	 * @see #isIsStatic()
+	 * @generated
+	 */
+	void setIsStatic(boolean value);
 
 } // BaseType

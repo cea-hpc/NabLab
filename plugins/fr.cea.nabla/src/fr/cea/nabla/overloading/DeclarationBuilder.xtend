@@ -10,6 +10,7 @@
 package fr.cea.nabla.overloading
 
 import com.google.inject.Inject
+import fr.cea.nabla.BaseTypeSizeEvaluator
 import fr.cea.nabla.LinearAlgebraUtils
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.BaseType
@@ -32,6 +33,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil
 
 class DeclarationBuilder
 {
+	@Inject extension BaseTypeSizeEvaluator
 	@Inject extension LinearAlgebraUtils
 	@Inject extension BaseTypeTypeProvider
 
@@ -137,7 +139,10 @@ class DeclarationBuilder
 				if (laExtension === null)
 					getNSTArray1DFor(argType.primitive, argType.sizes.get(0).replaceValuesAndCompact)
 				else
-					new NLATVector(laExtension, argType.sizes.get(0).replaceValuesAndCompact)
+				{
+					val size = argType.sizes.get(0).replaceValuesAndCompact
+					new NLATVector(laExtension, size, getIntSizeFor(size))
+				}
 			}
 			case 2:
 			{
@@ -145,7 +150,11 @@ class DeclarationBuilder
 				if (laExtension === null)
 					getNSTArray2DFor(argType.primitive, argType.sizes.get(0).replaceValuesAndCompact, argType.sizes.get(1).replaceValuesAndCompact)
 				else
-					new NLATMatrix(laExtension, argType.sizes.get(0).replaceValuesAndCompact, argType.sizes.get(1).replaceValuesAndCompact)
+				{
+					val nbRows = argType.sizes.get(0).replaceValuesAndCompact
+					val nbCols = argType.sizes.get(1).replaceValuesAndCompact
+					new NLATMatrix(laExtension, nbRows, nbCols, getIntSizeFor(nbRows), getIntSizeFor(nbCols))
+				}
 			}
 			default: throw new RuntimeException("Unmanaged array sizes:" + argType.sizes.size)
 		}

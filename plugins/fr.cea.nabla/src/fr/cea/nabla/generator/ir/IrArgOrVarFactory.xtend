@@ -234,7 +234,11 @@ class IrArgOrVarFactory
 	{
 		annotations += t.toNabLabFileAnnotation
 		name = t.name
-		type = IrFactory.eINSTANCE.createBaseType => [ primitive = PrimitiveType::INT ]
+		type = IrFactory.eINSTANCE.createBaseType =>
+		[ 
+			primitive = PrimitiveType::INT
+			isStatic = true
+		]
 		const = false
 		constExpr = false
 		option = false

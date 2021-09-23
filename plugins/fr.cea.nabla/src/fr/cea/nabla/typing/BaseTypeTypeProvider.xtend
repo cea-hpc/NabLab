@@ -10,6 +10,7 @@
 package fr.cea.nabla.typing
 
 import com.google.inject.Inject
+import fr.cea.nabla.BaseTypeSizeEvaluator
 import fr.cea.nabla.ExpressionExtensions
 import fr.cea.nabla.LinearAlgebraUtils
 import fr.cea.nabla.nabla.BaseType
@@ -18,6 +19,7 @@ import fr.cea.nabla.nabla.PrimitiveType
 
 class BaseTypeTypeProvider
 {
+	@Inject extension BaseTypeSizeEvaluator
 	@Inject extension PrimitiveTypeTypeProvider
 	@Inject extension ExpressionExtensions
 	@Inject extension LinearAlgebraUtils
@@ -37,9 +39,9 @@ class BaseTypeTypeProvider
 				{
 					val laExtension = linearAlgebraExtension
 					if (laExtension === null)
-						getNSTArray1DFor(primitive, sizes.get(0))
+						getNSTArray1DFor(primitive, size)
 					else
-						new NLATVector(laExtension, sizes.get(0))
+						new NLATVector(laExtension, size, getIntSizeFor(size))
 				}
 			}
 			case 2:
@@ -54,7 +56,7 @@ class BaseTypeTypeProvider
 					if (laExtension === null)
 						getNSTArray2DFor(primitive, nbRows, nbCols)
 					else
-						new NLATMatrix(laExtension, sizes.get(0), sizes.get(1))
+						new NLATMatrix(laExtension, nbRows, nbCols, getIntSizeFor(nbRows), getIntSizeFor(nbCols))
 				}
 			}
 			default: null
@@ -66,9 +68,9 @@ class BaseTypeTypeProvider
 		if (size === null) null
 		else switch primitive
 		{
-			case INT: new NSTIntArray1D(size)
-			case REAL: new NSTRealArray1D(size)
-			case BOOL: new NSTBoolArray1D(size)
+			case INT: new NSTIntArray1D(size, getIntSizeFor(size))
+			case REAL: new NSTRealArray1D(size, getIntSizeFor(size))
+			case BOOL: new NSTBoolArray1D(size, getIntSizeFor(size))
 		}
 	}
 
@@ -77,9 +79,9 @@ class BaseTypeTypeProvider
 		if (nbRows === null || nbCols === null) null
 		else switch primitive
 		{
-			case INT: new NSTIntArray2D(nbRows, nbCols)
-			case REAL: new NSTRealArray2D(nbRows, nbCols)
-			case BOOL: new NSTBoolArray2D(nbRows, nbCols)
+			case INT: new NSTIntArray2D(nbRows, nbCols, getIntSizeFor(nbRows), getIntSizeFor(nbCols))
+			case REAL: new NSTRealArray2D(nbRows, nbCols, getIntSizeFor(nbRows), getIntSizeFor(nbCols))
+			case BOOL: new NSTBoolArray2D(nbRows, nbCols, getIntSizeFor(nbRows), getIntSizeFor(nbCols))
 		}
 	}
 }

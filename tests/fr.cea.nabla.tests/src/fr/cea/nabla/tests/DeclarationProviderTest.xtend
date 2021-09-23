@@ -118,7 +118,7 @@ class DeclarationProviderTest
 		val cells = xVar.supports.head
 		module.assertError(NablaPackage.eINSTANCE.functionCall,
 		ExpressionValidator::FUNCTION_CALL_ARGS,
-		ExpressionValidator::getFunctionCallArgsMsg(#[new NablaConnectivityType(#[cells], new NSTRealArray1D(createIntConstant(2))).label]))
+		ExpressionValidator::getFunctionCallArgsMsg(#[new NablaConnectivityType(#[cells], new NSTRealArray1D(createIntConstant(2), 2)).label]))
 		module.assertError(NablaPackage.eINSTANCE.functionCall,
 		ExpressionValidator::FUNCTION_CALL_ARGS,
 		ExpressionValidator::getFunctionCallArgsMsg(#[new NablaConnectivityType(#[cells], new NSTRealScalar).label, new NablaConnectivityType(#[cells], new NSTRealScalar).label]))
@@ -138,16 +138,16 @@ class DeclarationProviderTest
 		val gFunctions = nablaExt.functions.filter(Function).filter[x | x.name == 'g']
 		val j5Gdecl = getFunctionDeclarationOfJob(module, 5)
 		Assert.assertEquals(gFunctions.get(0), j5Gdecl.model)
-		Assert.assertEquals(new NSTRealArray1D(createIntConstant(2)), j5Gdecl.returnType)
+		Assert.assertEquals(new NSTRealArray1D(createIntConstant(2), 2), j5Gdecl.returnType)
 		val j6Gdecl = getFunctionDeclarationOfJob(module, 6)
 		Assert.assertEquals(gFunctions.get(1), j6Gdecl.model)
-		Assert.assertEquals(new NSTRealArray1D(createIntConstant(6)), j6Gdecl.returnType)
+		Assert.assertEquals(new NSTRealArray1D(createIntConstant(6), 6), j6Gdecl.returnType)
 		val j7Gdecl = getFunctionDeclarationOfJob(module, 7)
 		Assert.assertEquals(gFunctions.get(2), j7Gdecl.model)
-		Assert.assertEquals(new NSTRealArray1D(createIntConstant(5)), j7Gdecl.returnType)
+		Assert.assertEquals(new NSTRealArray1D(createIntConstant(5), 5), j7Gdecl.returnType)
 		val j8Gdecl = getFunctionDeclarationOfJob(module, 8)
 		Assert.assertEquals(gFunctions.get(0), j8Gdecl.model)
-		Assert.assertEquals(new NSTRealArray1D(createIntConstant(3)), j8Gdecl.returnType)
+		Assert.assertEquals(new NSTRealArray1D(createIntConstant(3), 3), j8Gdecl.returnType)
 		val j9Gdecl = getFunctionDeclarationOfJob(module, 9)
 		Assert.assertNull(j9Gdecl)
 		val j10Gdecl = getFunctionDeclarationOfJob(module, 10)
@@ -235,7 +235,7 @@ class DeclarationProviderTest
 		Assert.assertEquals(fReductions.get(0), j0Fdecl.model)
 		val j1Fdecl = getReductionDeclarationOfJob(module, 1)
 		Assert.assertEquals(fReductions.get(1), j1Fdecl.model)
-		Assert.assertEquals(new NSTRealArray1D(createIntConstant(2)), j1Fdecl.type)
+		Assert.assertEquals(new NSTRealArray1D(createIntConstant(2), 2), j1Fdecl.type)
 		val j2Fdecl = getReductionDeclarationOfJob(module, 2)
 		Assert.assertNull(j2Fdecl)
 	}

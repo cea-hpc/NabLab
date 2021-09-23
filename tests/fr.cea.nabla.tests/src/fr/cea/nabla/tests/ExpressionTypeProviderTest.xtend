@@ -163,9 +163,9 @@ class ExpressionTypeProviderTest
 		assertTypesFor(new NSTIntScalar, module, "a1")
 		assertTypesFor(new NSTIntScalar, module, "a2")
 		assertTypesFor(new NSTIntScalar, module, "a3")
-		assertTypesFor(new NSTIntArray1D(createIntConstant(2)), module, "a4")
-		assertTypesFor(new NSTIntArray1D(createIntConstant(2)), module, "a5")
-		assertTypesFor(new NSTIntArray2D(createIntConstant(2), createIntConstant(2)), module, "a6")
+		assertTypesFor(new NSTIntArray1D(createIntConstant(2), 2), module, "a4")
+		assertTypesFor(new NSTIntArray1D(createIntConstant(2), 2), module, "a5")
+		assertTypesFor(new NSTIntArray2D(createIntConstant(2), createIntConstant(2), 2, 2), module, "a6")
 		assertTypesFor(new NSTIntScalar, module, "a7")
 
 		assertTypesFor(new NSTBoolScalar, module, "b1")
@@ -187,26 +187,26 @@ class ExpressionTypeProviderTest
 		assertTypesFor(new NSTRealScalar, module, "c6")
 		assertTypesFor(new NSTRealScalar, module, "c7")
 
-		assertTypesFor(new NSTRealArray1D(createIntConstant(2)), module, "d1")
-		assertTypesFor(new NSTRealArray1D(createIntConstant(2)), module, "d2")
-		assertTypesFor(new NSTRealArray1D(createIntConstant(2)), module, "d3")
+		assertTypesFor(new NSTRealArray1D(createIntConstant(2), 2), module, "d1")
+		assertTypesFor(new NSTRealArray1D(createIntConstant(2), 2), module, "d2")
+		assertTypesFor(new NSTRealArray1D(createIntConstant(2), 2), module, "d3")
 
-		assertTypesFor(new NSTRealArray1D(createIntConstant(3)), module, "e")
+		assertTypesFor(new NSTRealArray1D(createIntConstant(3), 3), module, "e")
 
-		assertTypesFor(new NSTRealArray2D(createIntConstant(2), createIntConstant(2)), module, "g")
+		assertTypesFor(new NSTRealArray2D(createIntConstant(2), createIntConstant(2), 2, 2), module, "g")
 		assertTypesFor(new NSTRealScalar, module, "h")
 
 		assertTypesFor(new NSTIntScalar, module, "i1")
-		assertTypesFor(new NSTIntArray1D(createIntConstant(2)), module, "i2")
+		assertTypesFor(new NSTIntArray1D(createIntConstant(2), 2), module, "i2")
 
 		assertTypesFor(new NablaConnectivityType(#[cells], new NSTIntScalar), module, "s")
 
 		assertTypesFor(new NablaConnectivityType(#[cells], new NSTRealScalar), module, "v")
-		assertTypesFor(new NablaConnectivityType(#[cells, nodesOfCell], new NSTRealArray1D(createIntConstant(2))), module, "w")
+		assertTypesFor(new NablaConnectivityType(#[cells, nodesOfCell], new NSTRealArray1D(createIntConstant(2), 2)), module, "w")
 		assertTypesFor(new NablaConnectivityType(#[cells, nodesOfCell], new NSTRealScalar), module, "x")
 
-		assertTypesFor(new NLATMatrix(linearAlgebraExt, createCardExpression(cells), createCardExpression(cells)), module, "α")
-		assertTypesFor(new NLATVector(linearAlgebraExt, createCardExpression(cells)), module, "u")
+		assertTypesFor(new NLATMatrix(linearAlgebraExt, createCardExpression(cells), createCardExpression(cells), -1, -1), module, "α")
+		assertTypesFor(new NLATVector(linearAlgebraExt, createCardExpression(cells), -1), module, "u")
 
 		assertTypesFor(new NSTRealScalar, computeV, "v")
 

@@ -273,6 +273,8 @@
     <genClasses ecoreClass="Ir.ecore#//BaseType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//BaseType/primitive"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//BaseType/sizes"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//BaseType/intSizes"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//BaseType/isStatic"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//ConnectivityType">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//ConnectivityType/connectivities"/>
@@ -281,6 +283,8 @@
     <genClasses ecoreClass="Ir.ecore#//LinearAlgebraType">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//LinearAlgebraType/sizes"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//LinearAlgebraType/provider"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//LinearAlgebraType/intSizes"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//LinearAlgebraType/isStatic"/>
     </genClasses>
     <genClasses image="false" ecoreClass="Ir.ecore#//Container"/>
     <genClasses ecoreClass="Ir.ecore#//ConnectivityCall">

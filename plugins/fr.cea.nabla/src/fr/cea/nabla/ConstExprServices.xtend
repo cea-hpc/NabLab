@@ -26,9 +26,17 @@ import fr.cea.nabla.nabla.SimpleVarDeclaration
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VectorConstant
 import org.eclipse.xtext.EcoreUtil2
+import fr.cea.nabla.overloading.DeclarationProvider
 
+/**
+ * Note that FunctionCall is not constexpr for NabLab.
+ * If it is constexpr, int functions have to be evaluated to fix size of types.
+ * For example, if a function f is constexpr, a variable x can be declared like this: R[f(3)] x;
+ * Consequently, f has to be evaluated to know the real size of x. That is not yet possible on NabLab model (only IR).
+ */
 class ConstExprServices
 {
+	@Inject extension DeclarationProvider
 	@Inject extension ArgOrVarExtensions
 
 	def boolean isConstExpr(Expression e)
@@ -38,8 +46,9 @@ class ConstExprServices
 			ArgOrVarRef: e.timeIterators.empty && e.indices.forall[constExpr] && e.target.constExpr
 			FunctionCall:
 			{
-				val nablaRoot = EcoreUtil2.getContainerOfType(e.function, NablaRoot)
-				! ((nablaRoot !== null) && e.function.external && (nablaRoot.name != "Math"))
+				val decl = e.declaration
+				if (decl === null) false
+				else isConstExpr(decl.model)
 			}
 			ReductionCall, Cardinality: false
 			ContractedIf: e.condition.constExpr && e.then.constExpr && e.^else.constExpr
@@ -80,6 +89,9 @@ class ConstExprServices
 	def boolean isConstExpr(Function f)
 	{
 		val nablaRoot = EcoreUtil2.getContainerOfType(f, NablaRoot)
-		nablaRoot !== null && !f.external
+		if (nablaRoot === null)
+			false
+		else
+			!f.external || nablaRoot.name == "Math"
 	}
 }

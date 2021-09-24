@@ -26,6 +26,7 @@ import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 import fr.cea.nabla.nabla.OptionDeclaration
+import fr.cea.nabla.NablaModuleExtensions
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
@@ -34,6 +35,7 @@ class ConstExprServicesTest
 	@Inject extension TestUtils
 	@Inject extension BaseTypeTypeProvider
 	@Inject extension ArgOrVarTypeProvider
+	@Inject extension NablaModuleExtensions
 	@Inject ConstExprServices constExprServices
 	@Inject ParseHelper<NablaModule> parseHelper
 	@Inject Provider<ResourceSet> resourceSetProvider

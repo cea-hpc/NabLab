@@ -114,7 +114,7 @@ class DeclarationProviderTest
 		module.assertError(NablaPackage.eINSTANCE.functionCall,
 		ExpressionValidator::FUNCTION_CALL_ARGS,
 		ExpressionValidator::getFunctionCallArgsMsg(#[PrimitiveType::REAL.literal, PrimitiveType::BOOL.literal]))
-		val xVar = module.getVariableByName("x") as ConnectivityVar
+		val xVar = module.getVarByName("x") as ConnectivityVar
 		val cells = xVar.supports.head
 		module.assertError(NablaPackage.eINSTANCE.functionCall,
 		ExpressionValidator::FUNCTION_CALL_ARGS,

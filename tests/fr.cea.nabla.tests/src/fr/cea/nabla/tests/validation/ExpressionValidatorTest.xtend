@@ -195,9 +195,9 @@ class ExpressionValidatorTest
 			let ℝ W = (cond ? U : V);
 			''')
 		Assert.assertNotNull(moduleKo)
-		val cond = moduleKo.getVariableByName("cond")
-		val u = moduleKo.getVariableByName("U")
-		val v = moduleKo.getVariableByName("V")
+		val cond = moduleKo.getVarByName("cond")
+		val u = moduleKo.getVarByName("U")
+		val v = moduleKo.getVarByName("V")
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.contractedIf,
 			ExpressionValidator::CONTRACTED_IF_CONDITION_TYPE,
@@ -229,7 +229,7 @@ class ExpressionValidatorTest
 			let ℾ ok = !cond; 
 			''')
 		Assert.assertNotNull(moduleKo)
-		val cond = moduleKo.getVariableByName("cond")
+		val cond = moduleKo.getVarByName("cond")
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.not,
 			ExpressionValidator::NOT_EXPRESSION_TYPE,

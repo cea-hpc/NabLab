@@ -26,6 +26,7 @@ import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
 import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.nabla.SimpleVarDeclaration
+import fr.cea.nabla.nabla.VarDeclaration
 
 /**
  * This class evaluates the value of a BaseType.sizes expression.
@@ -91,6 +92,8 @@ class BaseTypeSizeEvaluator
 						return DYNAMIC_SIZE
 					else
 						return getIntSizeFor(c.value)
+				VarDeclaration case (c.type.primitive == PrimitiveType::INT):
+					return DYNAMIC_SIZE
 				FunctionOrReduction:
 					return DYNAMIC_SIZE
 			}

@@ -17,12 +17,8 @@ import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.NablaFactory
-import fr.cea.nabla.nabla.SimpleVarDeclaration
-import fr.cea.nabla.nabla.Var
-import fr.cea.nabla.nabla.VarGroupDeclaration
 import java.nio.file.Files
 import java.nio.file.Paths
-import java.util.ArrayList
 import org.eclipse.emf.ecore.EObject
 import org.junit.Assert
 
@@ -41,26 +37,9 @@ class TestUtils
 	public static val CartesianMesh2DGenPath = PluginsBasePath + "/nablalib/CartesianMesh2D.ngen"
 	public static val LinearAlgebraGenPath = PluginsBasePath + "/nablalib/LinearAlgebra.ngen"
 
-	def getAllVars(EObject it)
-	{
-		val allVariables = new ArrayList<Var>
-		for (i : eAllContents.toIterable)
-			switch i
-			{
-				VarGroupDeclaration : allVariables += i.variables
-				SimpleVarDeclaration : allVariables += i.variable
-			}
-		return allVariables
-	}
-
 	def getAllAffectations(EObject it)
 	{
 		eAllContents.filter(Affectation)
-	}
-
-	def getVarByName(EObject it, String variableName)
-	{
-		allVars.findFirst[v | v.name == variableName]
 	}
 
 	def getVarAffectationByName(EObject it, String variableName)

@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 import fr.cea.nabla.tests.interpreter.NabLabInterpreterTestSuite;
+import fr.cea.nabla.tests.typeprovider.NabLabTypeProviderTestSuite;
 import fr.cea.nabla.tests.validation.NabLabValidationTestSuite;
 
 @RunWith(Suite.class)
@@ -21,7 +22,6 @@ import fr.cea.nabla.tests.validation.NabLabValidationTestSuite;
 ({
 	ConstExprServicesTest.class,
 	DeclarationProviderTest.class,
-	ExpressionTypeProviderTest.class,
 	IteratorExtensionsTest.class,
 	NabLabTestsTest.class,
 	NabLabExamplesTest.class,
@@ -30,6 +30,7 @@ import fr.cea.nabla.tests.validation.NabLabValidationTestSuite;
 	NablaParsingTest.class,
 	NablaScopeProviderTest.class,
 	NabLabInterpreterTestSuite.class,
+	NabLabTypeProviderTestSuite.class,
 	NabLabValidationTestSuite.class
 })
 

@@ -31,6 +31,16 @@ class ArgOrVarTypeProvider
 	@Inject extension BaseTypeTypeProvider
 	@Inject extension LinearAlgebraUtils
 
+	def dispatch NablaType getTypeFor(Arg it)
+	{
+		type.typeFor
+	}
+
+	def dispatch NablaType getTypeFor(TimeIterator it)
+	{
+		new NSTIntScalar
+	}
+
 	def dispatch NablaType getTypeFor(SimpleVar it)
 	{
 		val c = eContainer
@@ -69,15 +79,5 @@ class ArgOrVarTypeProvider
 	{
 		val connectivityCall = NablaFactory.eINSTANCE.createConnectivityCall => [ connectivity = c ]
 		NablaFactory.eINSTANCE.createCardinality => [ container = connectivityCall ]
-	}
-
-	def dispatch NablaType getTypeFor(Arg it)
-	{
-		type.typeFor
-	}
-
-	def dispatch NablaType getTypeFor(TimeIterator it)
-	{
-		new NSTIntScalar
 	}
 }

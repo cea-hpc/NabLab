@@ -284,13 +284,13 @@ class NablaScopeProviderTest
 		Assert.assertNotNull(nRefInCondOfK)
 		nRefInCondOfK.assertScope(eref, "δt, t, a, b1, b2, X, c1, c2, n, k")
 
-		val aDeclaration = module.getVariableByName("a").eContainer as SimpleVarDeclaration
+		val aDeclaration = module.getVarByName("a").eContainer as SimpleVarDeclaration
 		aDeclaration.assertScope(eref, "δt, t")
 
-		val b1Declaration = module.getVariableByName("b1").eContainer as SimpleVarDeclaration
+		val b1Declaration = module.getVarByName("b1").eContainer as SimpleVarDeclaration
 		b1Declaration.assertScope(eref, "δt, t, a")
 
-		val b2Declaration = module.getVariableByName("b2").eContainer as SimpleVarDeclaration
+		val b2Declaration = module.getVarByName("b2").eContainer as SimpleVarDeclaration
 		b2Declaration.assertScope(eref, "δt, t, a, b1")
 		
 		val j1 = module.getJobByName("j1")

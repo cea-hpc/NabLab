@@ -1,47 +1,47 @@
 <?xml version="1.0" encoding="ASCII"?>
-<ir:IrRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ir="http://www.cea.fr/nabla/ir" name="MultVectorByScalar" variables="//@modules.0/@variables.0 //@modules.0/@variables.1 //@modules.0/@variables.2 //@modules.0/@variables.3 //@modules.0/@variables.4"
+<ir:IrRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ir="http://www.cea.fr/nabla/ir" name="InitializationVectorWithSameValues" variables="//@modules.0/@variables.0 //@modules.0/@variables.1 //@modules.0/@variables.2 //@modules.0/@variables.3 //@modules.0/@variables.4"
     jobs="//@modules.0/@jobs.0" initNodeCoordVariable="//@modules.0/@variables.2" nodeCoordVariable="//@modules.0/@variables.2" currentTimeVariable="//@modules.0/@variables.0"
     nextTimeVariable="//@modules.0/@variables.0" timeStepVariable="//@modules.0/@variables.1">
   <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-    <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.ngen"/>
+    <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/InitializationVectorWithSameValues.ngen"/>
     <details key="offset" value="0"/>
-    <details key="length" value="199"/>
+    <details key="length" value="247"/>
   </annotations>
   <main calls="//@modules.0/@jobs.0" allInVars="//@modules.0/@variables.4" allOutVars="//@modules.0/@variables.3"/>
-  <modules name="multVectorByScalar" main="true">
+  <modules name="initializationVectorWithSameValues" main="true">
     <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-      <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.ngen"/>
-      <details key="offset" value="33"/>
-      <details key="length" value="95"/>
+      <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/InitializationVectorWithSameValues.ngen"/>
+      <details key="offset" value="49"/>
+      <details key="length" value="127"/>
     </annotations>
     <variables name="t" originName="t">
       <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-        <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-        <details key="offset" value="77"/>
+        <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/InitializationVectorWithSameValues.n"/>
+        <details key="offset" value="93"/>
         <details key="length" value="1"/>
       </annotations>
       <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
     </variables>
     <variables name="deltat" originName="deltat">
       <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-        <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-        <details key="offset" value="80"/>
+        <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/InitializationVectorWithSameValues.n"/>
+        <details key="offset" value="96"/>
         <details key="length" value="2"/>
       </annotations>
       <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
     </variables>
     <variables name="X" originName="X">
       <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-        <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-        <details key="offset" value="89"/>
+        <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/InitializationVectorWithSameValues.n"/>
+        <details key="offset" value="105"/>
         <details key="length" value="8"/>
       </annotations>
       <type xsi:type="ir:ConnectivityType" connectivities="//@mesh/@connectivities.0">
         <base primitive="&#x211d;">
           <sizes xsi:type="ir:IntConstant" constExpr="true" value="2">
             <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-              <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-              <details key="offset" value="86"/>
+              <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/InitializationVectorWithSameValues.n"/>
+              <details key="offset" value="102"/>
               <details key="length" value="1"/>
             </annotations>
             <type xsi:type="ir:BaseType"/>
@@ -51,15 +51,15 @@
     </variables>
     <variables name="array1" previousJobs="//@modules.0/@jobs.0" originName="array1">
       <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-        <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-        <details key="offset" value="109"/>
+        <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/InitializationVectorWithSameValues.n"/>
+        <details key="offset" value="125"/>
         <details key="length" value="6"/>
       </annotations>
       <type xsi:type="ir:BaseType" primitive="&#x211d;">
         <sizes xsi:type="ir:IntConstant" constExpr="true" value="5">
           <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-            <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-            <details key="offset" value="106"/>
+            <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/InitializationVectorWithSameValues.n"/>
+            <details key="offset" value="122"/>
             <details key="length" value="1"/>
           </annotations>
           <type xsi:type="ir:BaseType"/>
@@ -67,15 +67,15 @@
       </type>
       <defaultValue xsi:type="ir:BaseTypeConstant" constExpr="true">
         <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-          <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-          <details key="offset" value="118"/>
+          <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/InitializationVectorWithSameValues.n"/>
+          <details key="offset" value="134"/>
           <details key="length" value="9"/>
         </annotations>
         <type xsi:type="ir:BaseType" primitive="&#x211d;">
           <sizes xsi:type="ir:IntConstant" constExpr="true" value="5">
             <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-              <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-              <details key="offset" value="120"/>
+              <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/InitializationVectorWithSameValues.n"/>
+              <details key="offset" value="136"/>
               <details key="length" value="1"/>
             </annotations>
             <type xsi:type="ir:BaseType"/>
@@ -83,8 +83,8 @@
         </type>
         <value xsi:type="ir:RealConstant" constExpr="true">
           <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-            <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-            <details key="offset" value="123"/>
+            <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/InitializationVectorWithSameValues.n"/>
+            <details key="offset" value="139"/>
             <details key="length" value="3"/>
           </annotations>
           <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
@@ -93,15 +93,15 @@
     </variables>
     <variables name="array2" const="true" constExpr="true" nextJobs="//@modules.0/@jobs.0" originName="array2">
       <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-        <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-        <details key="offset" value="138"/>
+        <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/InitializationVectorWithSameValues.n"/>
+        <details key="offset" value="154"/>
         <details key="length" value="6"/>
       </annotations>
       <type xsi:type="ir:BaseType" primitive="&#x211d;">
         <sizes xsi:type="ir:IntConstant" constExpr="true" value="5">
           <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-            <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-            <details key="offset" value="135"/>
+            <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/InitializationVectorWithSameValues.n"/>
+            <details key="offset" value="151"/>
             <details key="length" value="1"/>
           </annotations>
           <type xsi:type="ir:BaseType"/>
@@ -109,24 +109,24 @@
       </type>
       <defaultValue xsi:type="ir:BaseTypeConstant" constExpr="true">
         <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-          <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-          <details key="offset" value="147"/>
+          <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/InitializationVectorWithSameValues.n"/>
+          <details key="offset" value="163"/>
           <details key="length" value="9"/>
         </annotations>
         <type xsi:type="ir:BaseType" primitive="&#x211d;">
           <sizes xsi:type="ir:IntConstant" constExpr="true" value="5">
             <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-              <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-              <details key="offset" value="149"/>
+              <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/InitializationVectorWithSameValues.n"/>
+              <details key="offset" value="165"/>
               <details key="length" value="1"/>
             </annotations>
             <type xsi:type="ir:BaseType"/>
           </sizes>
         </type>
-        <value xsi:type="ir:RealConstant" constExpr="true" value="1.0">
+        <value xsi:type="ir:RealConstant" constExpr="true" value="4.0">
           <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-            <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-            <details key="offset" value="152"/>
+            <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/InitializationVectorWithSameValues.n"/>
+            <details key="offset" value="168"/>
             <details key="length" value="3"/>
           </annotations>
           <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
@@ -135,27 +135,27 @@
     </variables>
     <jobs name="AddJob" at="1.0" caller="//@main" inVars="//@modules.0/@variables.4" outVars="//@modules.0/@variables.3">
       <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-        <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-        <details key="offset" value="160"/>
-        <details key="length" value="30"/>
+        <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/InitializationVectorWithSameValues.n"/>
+        <details key="offset" value="175"/>
+        <details key="length" value="28"/>
       </annotations>
       <instruction xsi:type="ir:Affectation">
         <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-          <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-          <details key="offset" value="168"/>
-          <details key="length" value="22"/>
+          <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/InitializationVectorWithSameValues.n"/>
+          <details key="offset" value="183"/>
+          <details key="length" value="20"/>
         </annotations>
         <left target="//@modules.0/@variables.3">
           <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-            <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-            <details key="offset" value="168"/>
+            <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/InitializationVectorWithSameValues.n"/>
+            <details key="offset" value="183"/>
             <details key="length" value="6"/>
           </annotations>
           <type xsi:type="ir:BaseType" primitive="&#x211d;">
             <sizes xsi:type="ir:IntConstant" constExpr="true" value="5">
               <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-                <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-                <details key="offset" value="106"/>
+                <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/InitializationVectorWithSameValues.n"/>
+                <details key="offset" value="122"/>
                 <details key="length" value="1"/>
               </annotations>
               <type xsi:type="ir:BaseType"/>
@@ -164,15 +164,15 @@
         </left>
         <right xsi:type="ir:BinaryExpression" constExpr="true" operator="*">
           <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-            <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-            <details key="offset" value="177"/>
-            <details key="length" value="12"/>
+            <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/InitializationVectorWithSameValues.n"/>
+            <details key="offset" value="192"/>
+            <details key="length" value="10"/>
           </annotations>
           <type xsi:type="ir:BaseType" primitive="&#x211d;">
             <sizes xsi:type="ir:IntConstant" constExpr="true" value="5">
               <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-                <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-                <details key="offset" value="135"/>
+                <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/InitializationVectorWithSameValues.n"/>
+                <details key="offset" value="151"/>
                 <details key="length" value="1"/>
               </annotations>
               <type xsi:type="ir:BaseType"/>
@@ -180,15 +180,15 @@
           </type>
           <left xsi:type="ir:ArgOrVarRef" constExpr="true" target="//@modules.0/@variables.4">
             <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-              <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-              <details key="offset" value="177"/>
+              <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/InitializationVectorWithSameValues.n"/>
+              <details key="offset" value="192"/>
               <details key="length" value="6"/>
             </annotations>
             <type xsi:type="ir:BaseType" primitive="&#x211d;">
               <sizes xsi:type="ir:IntConstant" constExpr="true" value="5">
                 <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-                  <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-                  <details key="offset" value="135"/>
+                  <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/InitializationVectorWithSameValues.n"/>
+                  <details key="offset" value="151"/>
                   <details key="length" value="1"/>
                 </annotations>
                 <type xsi:type="ir:BaseType"/>
@@ -197,8 +197,8 @@
           </left>
           <right xsi:type="ir:RealConstant" constExpr="true" value="3.0">
             <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-              <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-              <details key="offset" value="186"/>
+              <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/InitializationVectorWithSameValues.n"/>
+              <details key="offset" value="199"/>
               <details key="length" value="3"/>
             </annotations>
             <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
@@ -209,21 +209,6 @@
   </modules>
   <mesh extensionName="CartesianMesh2D">
     <itemTypes name="node">
-      <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-        <details key="uri" value="platform:/resource/fr.cea.nabla/nablalib/CartesianMesh2D.n"/>
-        <details key="offset" value="490"/>
-        <details key="length" value="4"/>
-      </annotations>
-      <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-        <details key="uri" value="platform:/resource/fr.cea.nabla/nablalib/CartesianMesh2D.n"/>
-        <details key="offset" value="490"/>
-        <details key="length" value="4"/>
-      </annotations>
-      <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-        <details key="uri" value="platform:/resource/fr.cea.nabla/nablalib/CartesianMesh2D.n"/>
-        <details key="offset" value="490"/>
-        <details key="length" value="4"/>
-      </annotations>
       <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
         <details key="uri" value="platform:/resource/fr.cea.nabla/nablalib/CartesianMesh2D.n"/>
         <details key="offset" value="490"/>

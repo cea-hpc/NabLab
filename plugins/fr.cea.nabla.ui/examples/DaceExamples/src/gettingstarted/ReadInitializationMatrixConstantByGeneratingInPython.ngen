@@ -1,0 +1,14 @@
+Application ReadInitializationMatrixConstantByGeneratingInPython;
+
+MainModule ReadInitializationMatrixConstantByGeneratingInPython readInitializationMatrixConstantByGeneratingInPython
+{
+	nodeCoord = X;
+	time = t;
+	timeStep = δt;
+}
+
+[WriteIr]
+Dace
+{
+	outputPath = "/DaceExamples/src-gen-python/dace";
+}

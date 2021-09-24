@@ -10,14 +10,14 @@ from dace.codegen import codegen, compiler
 from dace.codegen.compiled_sdfg import CompiledSDFG
 import dace.config
 
-array1 = [0.0] * 5
+array1 = [0.0, 0.0, 0.0, 0.0, 0.0 ]
 array1 = np.array(array1 )
 array1.astype(np.float64)
-array2 = [1.0] * 5
+array2 = [1.0, 2.0, 3.0, 4.0, 5.0 ]
 array2 = np.array(array2 )
 array2.astype(np.float64)
 
-mysdfg = SDFG('MultVectorByScalar')
+mysdfg = SDFG('ReadInitializationVectorConstantByGeneratingInPython')
 
 
 AddJob = mysdfg.add_state("AddJob", is_start_state=True)
@@ -34,6 +34,6 @@ AddJob.add_memlet_path(AddJob_tasklet, map_exit, AddJob.add_write('AddJob_array1
 
 
 mysdfg(AddJob_array2=array2,AddJob_array1=array1)
-print(array1)
 
-mysdfg.view('MultVectorByScalar')
+print(array1)
+mysdfg.view('ReadInitializationVectorConstantByGeneratingInPython')

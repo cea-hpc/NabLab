@@ -7,6 +7,7 @@ with CartesianMesh2D.*;
 ℝ[2] X{nodes};
 
 let ℕ valInput = 4;
-ℕ valOutput ;
+let ℕ valOutput = 1;
+//ℕ valOutput;
 
 AddJob: valOutput = valInput * 25 + 1;

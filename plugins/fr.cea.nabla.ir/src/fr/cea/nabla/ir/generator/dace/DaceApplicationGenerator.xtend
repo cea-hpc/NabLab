@@ -33,7 +33,7 @@ class DaceApplicationGenerator implements ApplicationGenerator
 		import dace.config
 
 		«FOR v : getUsedVariables(ir)»
-			«DefinitionContentProvider.getDefinitionContent(v)»
+			«DefinitionContentProvider.getDefinitionContent(v, v.name)»
 		«ENDFOR»
 
 		mysdfg = SDFG('«ir.name»')

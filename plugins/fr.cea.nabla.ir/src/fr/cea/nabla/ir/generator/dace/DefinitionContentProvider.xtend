@@ -11,10 +11,12 @@ import fr.cea.nabla.ir.ir.VectorConstant
 
 class DefinitionContentProvider
 {
-	static def getDefinitionContent(Variable v)
+	static def getDefinitionContent(Variable v, String varName)
 	'''
-		«v.name» = dp.«getTypeContent(v.type, v.name)»
-		«IF v.defaultValue !== null»«v.name» = «getDefaultValueContent(v.defaultValue)»«ENDIF»
+«««		«v.name» = dp.«getTypeContent(v.type, v.name)»
+«««		«IF v.defaultValue !== null»«v.name» = «getDefaultValueContent(v.defaultValue)»«ENDIF»
+		«IF v.defaultValue !== null»«v.name» = «getDefaultValueContent(v.defaultValue, varName)»«ENDIF»
+		«v.name» = «getTypeContent(v.type, v.name)» 
 	'''
 
 	private static def getTypeContent(IrType t, String varName)
@@ -23,29 +25,59 @@ class DefinitionContentProvider
 		{
 			BaseType:
 			{
+
 				if (t.sizes.size == 0)
-					'''np.(«Utils.getDaceType(t.primitive)»)'''
+					'''
+						[«varName»]
+						«varName» = np.array(«varName» )
+						«varName».astype(«Utils.getNumpyType(t.primitive)»)
+						
+					'''
 				else
-					'''ndarray(«FOR s: t.sizes»[«Utils.getDaceType(s)»], «Utils.getDaceType(t.primitive)»«ENDFOR»)'''
+				{
+					//'''ndarray(«FOR s: t.sizes»[«Utils.getDaceType(s)»], «Utils.getDaceType(t.primitive)»«ENDFOR»)'''
+					''' 
+						np.array(«varName» )
+						«varName».astype(«Utils.getNumpyType(t.primitive)»)
+					'''
+				}
+
 			}
 			default: throw new RuntimeException("Not yet implemented")
 		}
 	}
 
-	private static def CharSequence getDefaultValueContent(Expression e)
+	private static def CharSequence getDefaultValueContent(Expression e, String varName)
 	{
 		switch e
 		{
 			IntConstant: '''«e.value»'''
 			RealConstant: '''«e.value»'''
-			VectorConstant: '''[«FOR innerE : e.values SEPARATOR ','»«getDefaultValueContent(innerE)»«ENDFOR»]'''
+			VectorConstant: 
+			{
+				'''[«FOR innerE : e.values SEPARATOR ','»«getDefaultValueContent(innerE, varName)» «ENDFOR»]'''
+			
+
+			}
 			BaseTypeConstant:
 			{
 				val t = e.type as BaseType
-				'''[«Utils.getDaceType(e.value)»]«FOR s : t.sizes» * «getDefaultValueContent(s)»«ENDFOR»'''
+				if(t.sizes.size==1)
+				{
+					'''
+						[«Utils.getDaceType(e.value)»]«FOR s : t.sizes» * «getDefaultValueContent(s, varName)»«ENDFOR»
+					'''
+				}
+				else if(t.sizes.size==2)
+				{
+					'''
+					[[«Utils.getDaceType(e.value)»] * «Utils.getDaceType(t.sizes.get(1))» for _ in range(«Utils.getDaceType(t.sizes.get(0))»)]
+				'''
+				}
 //				'''«FOR sizeIndex:0..<t.sizes.size SEPARATOR ','»«Utils.getDaceType(t.primitive)»(«Utils.getDaceType(e.value)»)«ENDFOR»'''
 			}
 			default: throw new RuntimeException("Not yet implemented")
 		}
 	}
+
 }

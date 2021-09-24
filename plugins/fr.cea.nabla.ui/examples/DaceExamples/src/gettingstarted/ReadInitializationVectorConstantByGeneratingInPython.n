@@ -1,0 +1,12 @@
+module ReadInitializationVectorConstantByGeneratingInPython;
+
+with CartesianMesh2D.*;
+
+// Simulation options
+ℝ t, δt;
+ℝ[2] X{nodes};
+
+let ℝ[5] array1 = [0.0, 0.0, 0.0, 0.0, 0.0];
+let ℝ[5] array2 = [1.0, 2.0, 3.0, 4.0, 5.0];
+
+AddJob: array1 = array2*3.0;

@@ -49,7 +49,15 @@ class StateContentProvider
 	{
 		switch t
 		{
-			BaseType: '''map_entry, map_exit = «stateName».add_map('«stateName»_map', dict(«FOR sizeIndex : 0..<t.sizes.size SEPARATOR ','»i«sizeIndex»='0:«Utils.getDaceType(t.sizes.get(sizeIndex))»'«ENDFOR»))'''
+			BaseType:
+			if (t.sizes.size == 0)
+			{
+				'''map_entry, map_exit = «stateName».add_map('«stateName»_map', dict(i='0:1'))'''
+			} 
+			else
+			{
+				'''map_entry, map_exit = «stateName».add_map('«stateName»_map', dict(«FOR sizeIndex : 0..<t.sizes.size SEPARATOR ','»i«sizeIndex»='0:«Utils.getDaceType(t.sizes.get(sizeIndex))»'«ENDFOR»))'''
+			}
 			default: throw new RuntimeException("Not yet implemented")
 		}
 	}
@@ -59,10 +67,20 @@ class StateContentProvider
 		switch t
 		{
 			BaseType:
-			'''
-				«stateName».add_memlet_path(«stateName».add_read(«FOR iv : getInVars(i) »'«stateName»_«iv.name»'),map_entry, «stateName»_tasklet, dst_conn='«iv.name»',memlet=dace.Memlet('«stateName»_«iv.name»[«FOR sizeIndex : 0..<t.sizes.size SEPARATOR ','»i«sizeIndex»«ENDFOR»]')«ENDFOR»)
-				«stateName».add_memlet_path(«stateName»_tasklet, map_exit, «stateName».add_write(«FOR iv : getOutVars(i) »'«stateName»_«iv.name»'), src_conn='«iv.name»',memlet=dace.Memlet('«stateName»_«iv.name»[«FOR sizeIndex : 0..<t.sizes.size SEPARATOR ','»i«sizeIndex»«ENDFOR»]')«ENDFOR»)
-			'''
+			if (t.sizes.size == 0)
+			{
+				'''
+					«stateName».add_memlet_path(«stateName».add_read(«FOR iv : getInVars(i) »'«stateName»_«iv.name»'),map_entry, «stateName»_tasklet, dst_conn='«iv.name»',memlet=dace.Memlet.simple('«stateName»_«iv.name»','i')«ENDFOR»)
+					«stateName».add_memlet_path(«stateName»_tasklet, map_exit, «stateName».add_write(«FOR iv : getOutVars(i) »'«stateName»_«iv.name»'), src_conn='«iv.name»',memlet=dace.Memlet.simple('«stateName»_«iv.name»','i')«ENDFOR»)
+				'''
+			}
+			else
+			{
+				'''
+					«stateName».add_memlet_path(«stateName».add_read(«FOR iv : getInVars(i) »'«stateName»_«iv.name»'),map_entry, «stateName»_tasklet, dst_conn='«iv.name»',memlet=dace.Memlet('«stateName»_«iv.name»[«FOR sizeIndex : 0..<t.sizes.size SEPARATOR ','»i«sizeIndex»«ENDFOR»]')«ENDFOR»)
+					«stateName».add_memlet_path(«stateName»_tasklet, map_exit, «stateName».add_write(«FOR iv : getOutVars(i) »'«stateName»_«iv.name»'), src_conn='«iv.name»',memlet=dace.Memlet('«stateName»_«iv.name»[«FOR sizeIndex : 0..<t.sizes.size SEPARATOR ','»i«sizeIndex»«ENDFOR»]')«ENDFOR»)
+				'''
+			}
 			default: throw new RuntimeException("Not yet implemented")
 		}
 	}
@@ -85,7 +103,14 @@ class StateContentProvider
 		switch t
 		{
 			BaseType:
-			'''add_array('«varName»', «FOR size : t.sizes BEFORE '[' SEPARATOR ',' AFTER '], '»«Utils.getDaceType(size)»«ENDFOR»«Utils.getDaceType(t.primitive)»)'''
+			if (t.sizes.size == 0)
+			{
+				'''add_array('«varName»', [1], «Utils.getDaceType(t.primitive)»)'''
+			}
+			else
+			{
+				'''add_array('«varName»', «FOR size : t.sizes BEFORE '[' SEPARATOR ',' AFTER '], '»«Utils.getDaceType(size)»«ENDFOR»«Utils.getDaceType(t.primitive)»)'''
+			}
 			default: throw new RuntimeException("Not yet implemented")
 		}
 	}

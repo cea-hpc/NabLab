@@ -10,24 +10,24 @@ from dace.codegen import codegen, compiler
 from dace.codegen.compiled_sdfg import CompiledSDFG
 import dace.config
 
-b = [[0.0] * 2 for _ in range(6)]
+b = [[0] * 5 for _ in range(6)]
 b = np.array(b )
-b.astype(np.float64)
-a = [[5.0] * 2 for _ in range(6)]
+b.astype(np.int64)
+a = [[5] * 5 for _ in range(6)]
 a = np.array(a )
-a.astype(np.float64)
+a.astype(np.int64)
 
-mysdfg = SDFG('MultMatrixByScalar')
+mysdfg = SDFG('InitializationMatrixWithSameValues')
 
 
 AddJob = mysdfg.add_state("AddJob", is_start_state=True)
 
-AddJob_tasklet = AddJob.add_tasklet('AddJob', {'a'}, {'b'}, 'b=a*25.0+1.0')
+AddJob_tasklet = AddJob.add_tasklet('AddJob', {'a'}, {'b'}, 'b=a*25+1')
 
-AddJob_a = mysdfg.add_array('AddJob_a', [6,2], dp.float64)
-AddJob_b = mysdfg.add_array('AddJob_b', [6,2], dp.float64)
+AddJob_a = mysdfg.add_array('AddJob_a', [6,5], dp.int64)
+AddJob_b = mysdfg.add_array('AddJob_b', [6,5], dp.int64)
 
-map_entry, map_exit = AddJob.add_map('AddJob_map', dict(i0='0:6',i1='0:2'))
+map_entry, map_exit = AddJob.add_map('AddJob_map', dict(i0='0:6',i1='0:5'))
 AddJob.add_memlet_path(AddJob.add_read('AddJob_a'),map_entry, AddJob_tasklet, dst_conn='a',memlet=dace.Memlet('AddJob_a[i0,i1]'))
 AddJob.add_memlet_path(AddJob_tasklet, map_exit, AddJob.add_write('AddJob_b'), src_conn='b',memlet=dace.Memlet('AddJob_b[i0,i1]'))
 
@@ -36,4 +36,5 @@ AddJob.add_memlet_path(AddJob_tasklet, map_exit, AddJob.add_write('AddJob_b'), s
 mysdfg(AddJob_a=a,AddJob_b=b)
 
 print(b)
-mysdfg.view('MultMatrixByScalar')
+
+mysdfg.view('InitializationMatrixWithSameValues')

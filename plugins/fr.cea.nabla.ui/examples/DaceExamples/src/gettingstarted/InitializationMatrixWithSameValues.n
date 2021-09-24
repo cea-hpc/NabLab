@@ -1,0 +1,12 @@
+module InitializationMatrixWithSameValues;
+
+with CartesianMesh2D.*;
+
+// Simulation options
+ℝ t, δt;
+ℝ[2] X{nodes};
+
+let ℕ[6,5] a =  ℕ[6,5](5);
+let ℕ[6,5] b =  ℕ[6,5](0);
+
+AddJob: b = a * 25 + 1;

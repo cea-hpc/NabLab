@@ -1,47 +1,47 @@
 <?xml version="1.0" encoding="ASCII"?>
-<ir:IrRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ir="http://www.cea.fr/nabla/ir" name="MultVectorByScalar" variables="//@modules.0/@variables.0 //@modules.0/@variables.1 //@modules.0/@variables.2 //@modules.0/@variables.3 //@modules.0/@variables.4"
+<ir:IrRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ir="http://www.cea.fr/nabla/ir" name="ReadInitializationMatrixConstantByGeneratingInPython" variables="//@modules.0/@variables.0 //@modules.0/@variables.1 //@modules.0/@variables.2 //@modules.0/@variables.3 //@modules.0/@variables.4"
     jobs="//@modules.0/@jobs.0" initNodeCoordVariable="//@modules.0/@variables.2" nodeCoordVariable="//@modules.0/@variables.2" currentTimeVariable="//@modules.0/@variables.0"
     nextTimeVariable="//@modules.0/@variables.0" timeStepVariable="//@modules.0/@variables.1">
   <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-    <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.ngen"/>
+    <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationMatrixConstantByGeneratingInPython.ngen"/>
     <details key="offset" value="0"/>
-    <details key="length" value="199"/>
+    <details key="length" value="301"/>
   </annotations>
   <main calls="//@modules.0/@jobs.0" allInVars="//@modules.0/@variables.4" allOutVars="//@modules.0/@variables.3"/>
-  <modules name="multVectorByScalar" main="true">
+  <modules name="readInitializationMatrixConstantByGeneratingInPython" main="true">
     <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-      <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.ngen"/>
-      <details key="offset" value="33"/>
-      <details key="length" value="95"/>
+      <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationMatrixConstantByGeneratingInPython.ngen"/>
+      <details key="offset" value="67"/>
+      <details key="length" value="163"/>
     </annotations>
     <variables name="t" originName="t">
       <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-        <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-        <details key="offset" value="77"/>
+        <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationMatrixConstantByGeneratingInPython.n"/>
+        <details key="offset" value="111"/>
         <details key="length" value="1"/>
       </annotations>
       <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
     </variables>
     <variables name="deltat" originName="deltat">
       <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-        <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-        <details key="offset" value="80"/>
+        <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationMatrixConstantByGeneratingInPython.n"/>
+        <details key="offset" value="114"/>
         <details key="length" value="2"/>
       </annotations>
       <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
     </variables>
     <variables name="X" originName="X">
       <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-        <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-        <details key="offset" value="89"/>
+        <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationMatrixConstantByGeneratingInPython.n"/>
+        <details key="offset" value="123"/>
         <details key="length" value="8"/>
       </annotations>
       <type xsi:type="ir:ConnectivityType" connectivities="//@mesh/@connectivities.0">
         <base primitive="&#x211d;">
           <sizes xsi:type="ir:IntConstant" constExpr="true" value="2">
             <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-              <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-              <details key="offset" value="86"/>
+              <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationMatrixConstantByGeneratingInPython.n"/>
+              <details key="offset" value="120"/>
               <details key="length" value="1"/>
             </annotations>
             <type xsi:type="ir:BaseType"/>
@@ -49,113 +49,269 @@
         </base>
       </type>
     </variables>
-    <variables name="array1" previousJobs="//@modules.0/@jobs.0" originName="array1">
+    <variables name="matrix1" previousJobs="//@modules.0/@jobs.0" originName="matrix1">
       <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-        <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-        <details key="offset" value="109"/>
-        <details key="length" value="6"/>
+        <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationMatrixConstantByGeneratingInPython.n"/>
+        <details key="offset" value="145"/>
+        <details key="length" value="7"/>
       </annotations>
       <type xsi:type="ir:BaseType" primitive="&#x211d;">
-        <sizes xsi:type="ir:IntConstant" constExpr="true" value="5">
+        <sizes xsi:type="ir:IntConstant" constExpr="true" value="2">
           <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-            <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-            <details key="offset" value="106"/>
+            <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationMatrixConstantByGeneratingInPython.n"/>
+            <details key="offset" value="140"/>
+            <details key="length" value="1"/>
+          </annotations>
+          <type xsi:type="ir:BaseType"/>
+        </sizes>
+        <sizes xsi:type="ir:IntConstant" constExpr="true" value="2">
+          <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
+            <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationMatrixConstantByGeneratingInPython.n"/>
+            <details key="offset" value="142"/>
             <details key="length" value="1"/>
           </annotations>
           <type xsi:type="ir:BaseType"/>
         </sizes>
       </type>
-      <defaultValue xsi:type="ir:BaseTypeConstant" constExpr="true">
+      <defaultValue xsi:type="ir:VectorConstant" constExpr="true">
         <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-          <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-          <details key="offset" value="118"/>
-          <details key="length" value="9"/>
+          <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationMatrixConstantByGeneratingInPython.n"/>
+          <details key="offset" value="155"/>
+          <details key="length" value="26"/>
         </annotations>
         <type xsi:type="ir:BaseType" primitive="&#x211d;">
-          <sizes xsi:type="ir:IntConstant" constExpr="true" value="5">
+          <sizes xsi:type="ir:IntConstant" constExpr="true" value="2">
             <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-              <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-              <details key="offset" value="120"/>
-              <details key="length" value="1"/>
+              <details key="uri"/>
+              <details key="offset" value="0"/>
+              <details key="length" value="0"/>
+            </annotations>
+            <type xsi:type="ir:BaseType"/>
+          </sizes>
+          <sizes xsi:type="ir:IntConstant" constExpr="true" value="2">
+            <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
+              <details key="uri"/>
+              <details key="offset" value="0"/>
+              <details key="length" value="0"/>
             </annotations>
             <type xsi:type="ir:BaseType"/>
           </sizes>
         </type>
-        <value xsi:type="ir:RealConstant" constExpr="true">
+        <values xsi:type="ir:VectorConstant" constExpr="true">
           <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-            <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-            <details key="offset" value="123"/>
-            <details key="length" value="3"/>
+            <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationMatrixConstantByGeneratingInPython.n"/>
+            <details key="offset" value="157"/>
+            <details key="length" value="10"/>
           </annotations>
-          <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
-        </value>
+          <type xsi:type="ir:BaseType" primitive="&#x211d;">
+            <sizes xsi:type="ir:IntConstant" constExpr="true" value="2">
+              <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
+                <details key="uri"/>
+                <details key="offset" value="0"/>
+                <details key="length" value="0"/>
+              </annotations>
+              <type xsi:type="ir:BaseType"/>
+            </sizes>
+          </type>
+          <values xsi:type="ir:RealConstant" constExpr="true" value="1.0">
+            <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
+              <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationMatrixConstantByGeneratingInPython.n"/>
+              <details key="offset" value="158"/>
+              <details key="length" value="3"/>
+            </annotations>
+            <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
+          </values>
+          <values xsi:type="ir:RealConstant" constExpr="true" value="2.0">
+            <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
+              <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationMatrixConstantByGeneratingInPython.n"/>
+              <details key="offset" value="163"/>
+              <details key="length" value="3"/>
+            </annotations>
+            <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
+          </values>
+        </values>
+        <values xsi:type="ir:VectorConstant" constExpr="true">
+          <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
+            <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationMatrixConstantByGeneratingInPython.n"/>
+            <details key="offset" value="169"/>
+            <details key="length" value="10"/>
+          </annotations>
+          <type xsi:type="ir:BaseType" primitive="&#x211d;">
+            <sizes xsi:type="ir:IntConstant" constExpr="true" value="2">
+              <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
+                <details key="uri"/>
+                <details key="offset" value="0"/>
+                <details key="length" value="0"/>
+              </annotations>
+              <type xsi:type="ir:BaseType"/>
+            </sizes>
+          </type>
+          <values xsi:type="ir:RealConstant" constExpr="true" value="4.0">
+            <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
+              <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationMatrixConstantByGeneratingInPython.n"/>
+              <details key="offset" value="170"/>
+              <details key="length" value="3"/>
+            </annotations>
+            <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
+          </values>
+          <values xsi:type="ir:RealConstant" constExpr="true" value="5.0">
+            <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
+              <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationMatrixConstantByGeneratingInPython.n"/>
+              <details key="offset" value="175"/>
+              <details key="length" value="3"/>
+            </annotations>
+            <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
+          </values>
+        </values>
       </defaultValue>
     </variables>
-    <variables name="array2" const="true" constExpr="true" nextJobs="//@modules.0/@jobs.0" originName="array2">
+    <variables name="matrix2" const="true" constExpr="true" nextJobs="//@modules.0/@jobs.0" originName="matrix2">
       <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-        <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-        <details key="offset" value="138"/>
-        <details key="length" value="6"/>
+        <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationMatrixConstantByGeneratingInPython.n"/>
+        <details key="offset" value="194"/>
+        <details key="length" value="7"/>
       </annotations>
       <type xsi:type="ir:BaseType" primitive="&#x211d;">
-        <sizes xsi:type="ir:IntConstant" constExpr="true" value="5">
+        <sizes xsi:type="ir:IntConstant" constExpr="true" value="2">
           <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-            <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-            <details key="offset" value="135"/>
+            <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationMatrixConstantByGeneratingInPython.n"/>
+            <details key="offset" value="189"/>
+            <details key="length" value="1"/>
+          </annotations>
+          <type xsi:type="ir:BaseType"/>
+        </sizes>
+        <sizes xsi:type="ir:IntConstant" constExpr="true" value="2">
+          <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
+            <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationMatrixConstantByGeneratingInPython.n"/>
+            <details key="offset" value="191"/>
             <details key="length" value="1"/>
           </annotations>
           <type xsi:type="ir:BaseType"/>
         </sizes>
       </type>
-      <defaultValue xsi:type="ir:BaseTypeConstant" constExpr="true">
+      <defaultValue xsi:type="ir:VectorConstant" constExpr="true">
         <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-          <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-          <details key="offset" value="147"/>
-          <details key="length" value="9"/>
+          <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationMatrixConstantByGeneratingInPython.n"/>
+          <details key="offset" value="204"/>
+          <details key="length" value="28"/>
         </annotations>
         <type xsi:type="ir:BaseType" primitive="&#x211d;">
-          <sizes xsi:type="ir:IntConstant" constExpr="true" value="5">
+          <sizes xsi:type="ir:IntConstant" constExpr="true" value="2">
             <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-              <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-              <details key="offset" value="149"/>
-              <details key="length" value="1"/>
+              <details key="uri"/>
+              <details key="offset" value="0"/>
+              <details key="length" value="0"/>
+            </annotations>
+            <type xsi:type="ir:BaseType"/>
+          </sizes>
+          <sizes xsi:type="ir:IntConstant" constExpr="true" value="2">
+            <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
+              <details key="uri"/>
+              <details key="offset" value="0"/>
+              <details key="length" value="0"/>
             </annotations>
             <type xsi:type="ir:BaseType"/>
           </sizes>
         </type>
-        <value xsi:type="ir:RealConstant" constExpr="true" value="1.0">
+        <values xsi:type="ir:VectorConstant" constExpr="true">
           <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-            <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-            <details key="offset" value="152"/>
-            <details key="length" value="3"/>
+            <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationMatrixConstantByGeneratingInPython.n"/>
+            <details key="offset" value="206"/>
+            <details key="length" value="12"/>
           </annotations>
-          <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
-        </value>
+          <type xsi:type="ir:BaseType" primitive="&#x211d;">
+            <sizes xsi:type="ir:IntConstant" constExpr="true" value="2">
+              <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
+                <details key="uri"/>
+                <details key="offset" value="0"/>
+                <details key="length" value="0"/>
+              </annotations>
+              <type xsi:type="ir:BaseType"/>
+            </sizes>
+          </type>
+          <values xsi:type="ir:RealConstant" constExpr="true" value="15.0">
+            <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
+              <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationMatrixConstantByGeneratingInPython.n"/>
+              <details key="offset" value="207"/>
+              <details key="length" value="4"/>
+            </annotations>
+            <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
+          </values>
+          <values xsi:type="ir:RealConstant" constExpr="true" value="12.0">
+            <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
+              <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationMatrixConstantByGeneratingInPython.n"/>
+              <details key="offset" value="213"/>
+              <details key="length" value="4"/>
+            </annotations>
+            <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
+          </values>
+        </values>
+        <values xsi:type="ir:VectorConstant" constExpr="true">
+          <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
+            <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationMatrixConstantByGeneratingInPython.n"/>
+            <details key="offset" value="220"/>
+            <details key="length" value="10"/>
+          </annotations>
+          <type xsi:type="ir:BaseType" primitive="&#x211d;">
+            <sizes xsi:type="ir:IntConstant" constExpr="true" value="2">
+              <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
+                <details key="uri"/>
+                <details key="offset" value="0"/>
+                <details key="length" value="0"/>
+              </annotations>
+              <type xsi:type="ir:BaseType"/>
+            </sizes>
+          </type>
+          <values xsi:type="ir:RealConstant" constExpr="true" value="7.0">
+            <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
+              <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationMatrixConstantByGeneratingInPython.n"/>
+              <details key="offset" value="221"/>
+              <details key="length" value="3"/>
+            </annotations>
+            <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
+          </values>
+          <values xsi:type="ir:RealConstant" constExpr="true" value="8.0">
+            <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
+              <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationMatrixConstantByGeneratingInPython.n"/>
+              <details key="offset" value="226"/>
+              <details key="length" value="3"/>
+            </annotations>
+            <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
+          </values>
+        </values>
       </defaultValue>
     </variables>
     <jobs name="AddJob" at="1.0" caller="//@main" inVars="//@modules.0/@variables.4" outVars="//@modules.0/@variables.3">
       <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-        <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-        <details key="offset" value="160"/>
+        <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationMatrixConstantByGeneratingInPython.n"/>
+        <details key="offset" value="235"/>
         <details key="length" value="30"/>
       </annotations>
       <instruction xsi:type="ir:Affectation">
         <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-          <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-          <details key="offset" value="168"/>
+          <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationMatrixConstantByGeneratingInPython.n"/>
+          <details key="offset" value="243"/>
           <details key="length" value="22"/>
         </annotations>
         <left target="//@modules.0/@variables.3">
           <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-            <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-            <details key="offset" value="168"/>
-            <details key="length" value="6"/>
+            <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationMatrixConstantByGeneratingInPython.n"/>
+            <details key="offset" value="243"/>
+            <details key="length" value="7"/>
           </annotations>
           <type xsi:type="ir:BaseType" primitive="&#x211d;">
-            <sizes xsi:type="ir:IntConstant" constExpr="true" value="5">
+            <sizes xsi:type="ir:IntConstant" constExpr="true" value="2">
               <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-                <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-                <details key="offset" value="106"/>
+                <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationMatrixConstantByGeneratingInPython.n"/>
+                <details key="offset" value="140"/>
+                <details key="length" value="1"/>
+              </annotations>
+              <type xsi:type="ir:BaseType"/>
+            </sizes>
+            <sizes xsi:type="ir:IntConstant" constExpr="true" value="2">
+              <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
+                <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationMatrixConstantByGeneratingInPython.n"/>
+                <details key="offset" value="142"/>
                 <details key="length" value="1"/>
               </annotations>
               <type xsi:type="ir:BaseType"/>
@@ -164,15 +320,23 @@
         </left>
         <right xsi:type="ir:BinaryExpression" constExpr="true" operator="*">
           <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-            <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-            <details key="offset" value="177"/>
-            <details key="length" value="12"/>
+            <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationMatrixConstantByGeneratingInPython.n"/>
+            <details key="offset" value="253"/>
+            <details key="length" value="11"/>
           </annotations>
           <type xsi:type="ir:BaseType" primitive="&#x211d;">
-            <sizes xsi:type="ir:IntConstant" constExpr="true" value="5">
+            <sizes xsi:type="ir:IntConstant" constExpr="true" value="2">
               <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-                <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-                <details key="offset" value="135"/>
+                <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationMatrixConstantByGeneratingInPython.n"/>
+                <details key="offset" value="189"/>
+                <details key="length" value="1"/>
+              </annotations>
+              <type xsi:type="ir:BaseType"/>
+            </sizes>
+            <sizes xsi:type="ir:IntConstant" constExpr="true" value="2">
+              <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
+                <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationMatrixConstantByGeneratingInPython.n"/>
+                <details key="offset" value="191"/>
                 <details key="length" value="1"/>
               </annotations>
               <type xsi:type="ir:BaseType"/>
@@ -180,15 +344,23 @@
           </type>
           <left xsi:type="ir:ArgOrVarRef" constExpr="true" target="//@modules.0/@variables.4">
             <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-              <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-              <details key="offset" value="177"/>
-              <details key="length" value="6"/>
+              <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationMatrixConstantByGeneratingInPython.n"/>
+              <details key="offset" value="253"/>
+              <details key="length" value="7"/>
             </annotations>
             <type xsi:type="ir:BaseType" primitive="&#x211d;">
-              <sizes xsi:type="ir:IntConstant" constExpr="true" value="5">
+              <sizes xsi:type="ir:IntConstant" constExpr="true" value="2">
                 <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-                  <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-                  <details key="offset" value="135"/>
+                  <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationMatrixConstantByGeneratingInPython.n"/>
+                  <details key="offset" value="189"/>
+                  <details key="length" value="1"/>
+                </annotations>
+                <type xsi:type="ir:BaseType"/>
+              </sizes>
+              <sizes xsi:type="ir:IntConstant" constExpr="true" value="2">
+                <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
+                  <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationMatrixConstantByGeneratingInPython.n"/>
+                  <details key="offset" value="191"/>
                   <details key="length" value="1"/>
                 </annotations>
                 <type xsi:type="ir:BaseType"/>
@@ -197,8 +369,8 @@
           </left>
           <right xsi:type="ir:RealConstant" constExpr="true" value="3.0">
             <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-              <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultVectorByScalar.n"/>
-              <details key="offset" value="186"/>
+              <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationMatrixConstantByGeneratingInPython.n"/>
+              <details key="offset" value="261"/>
               <details key="length" value="3"/>
             </annotations>
             <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
@@ -209,16 +381,6 @@
   </modules>
   <mesh extensionName="CartesianMesh2D">
     <itemTypes name="node">
-      <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-        <details key="uri" value="platform:/resource/fr.cea.nabla/nablalib/CartesianMesh2D.n"/>
-        <details key="offset" value="490"/>
-        <details key="length" value="4"/>
-      </annotations>
-      <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-        <details key="uri" value="platform:/resource/fr.cea.nabla/nablalib/CartesianMesh2D.n"/>
-        <details key="offset" value="490"/>
-        <details key="length" value="4"/>
-      </annotations>
       <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
         <details key="uri" value="platform:/resource/fr.cea.nabla/nablalib/CartesianMesh2D.n"/>
         <details key="offset" value="490"/>

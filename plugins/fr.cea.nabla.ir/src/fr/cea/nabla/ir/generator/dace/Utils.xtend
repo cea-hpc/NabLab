@@ -29,6 +29,16 @@ class Utils
 		}
 	}
 
+	static def getNumpyType(PrimitiveType t)
+	{
+		switch t
+		{
+			case BOOL: "np.bool"
+			case INT: "np.int64"
+			case REAL: "np.float64"
+		}
+	}
+
 	static def getDaceType(Expression e)
 	{
 		switch e

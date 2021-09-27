@@ -20,18 +20,26 @@ import fr.cea.nabla.tests.validation.NabLabValidationTestSuite;
 
 @Suite.SuiteClasses
 ({
+	// base parsing
+	NablaParsingTest.class,
+	NablagenParsingTest.class,
+
+	// scope providers
+	NablagenScopeProviderTest.class,
+	NablaScopeProviderTest.class,
+
+	IteratorExtensionsTest.class,
+
+	NabLabTypeProviderTestSuite.class,
+	NabLabValidationTestSuite.class,
+
 	ConstExprServicesTest.class,
 	DeclarationProviderTest.class,
-	IteratorExtensionsTest.class,
+
+	// integrated tests
+	NabLabInterpreterTestSuite.class,
 	NabLabTestsTest.class,
 	NabLabExamplesTest.class,
-	NablagenParsingTest.class,
-	NablagenScopeProviderTest.class,
-	NablaParsingTest.class,
-	NablaScopeProviderTest.class,
-	NabLabInterpreterTestSuite.class,
-	NabLabTypeProviderTestSuite.class,
-	NabLabValidationTestSuite.class
 })
 
 public class NabLabTestSuite {}

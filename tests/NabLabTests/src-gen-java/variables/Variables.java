@@ -29,6 +29,8 @@ public final class Variables
 	double[] v1;
 	double[] v2;
 	double[][] X;
+	int unknownDim;
+	double[] dynamicArray;
 
 	public Variables(CartesianMesh2D aMesh)
 	{
@@ -47,6 +49,7 @@ public final class Variables
 		v1 = new double[2];
 		v2 = new double[dim];
 		X = new double[nbNodes][dim];
+		dynamicArray = new double[unknownDim];
 
 		// Copy node coordinates
 		double[][] gNodes = mesh.getGeometry().getNodes();

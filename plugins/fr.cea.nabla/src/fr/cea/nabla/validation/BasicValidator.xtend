@@ -10,7 +10,9 @@
 package fr.cea.nabla.validation
 
 import com.google.inject.Inject
+import fr.cea.nabla.BaseTypeSizeEvaluator
 import fr.cea.nabla.ExpressionExtensions
+import fr.cea.nabla.InvalidBaseTypeSize
 import fr.cea.nabla.NablaModuleExtensions
 import fr.cea.nabla.SpaceIteratorExtensions
 import fr.cea.nabla.nabla.AbstractTimeIterator
@@ -48,6 +50,7 @@ class BasicValidator extends UnusedValidator
 	@Inject extension ExpressionExtensions
 	@Inject extension ExpressionTypeProvider
 	@Inject extension NablaModuleExtensions
+	@Inject extension BaseTypeSizeEvaluator
 
 	// ===== Module ====
 
@@ -93,7 +96,7 @@ class BasicValidator extends UnusedValidator
 	def void checkNbElems(Interval it)
 	{
 		if (nbElems !== null) 
-			checkExpressionValidityAndType(nbElems, NablaPackage.Literals.INTERVAL__NB_ELEMS)
+			checkSizeExpressionValidityAndType(nbElems, NablaPackage.Literals.INTERVAL__NB_ELEMS)
 	}
 
 	// ===== Names format  =====
@@ -224,7 +227,7 @@ class BasicValidator extends UnusedValidator
 	def checkSizeExpression(BaseType it)
 	{
 		for (i : 0..<sizes.size)
-			checkExpressionValidityAndType(sizes.get(i), NablaPackage.Literals.BASE_TYPE__SIZES, i)
+			checkSizeExpressionValidityAndType(sizes.get(i), NablaPackage.Literals.BASE_TYPE__SIZES, i)
 	}
 
 
@@ -281,22 +284,34 @@ class BasicValidator extends UnusedValidator
 	public static val VALIDITY_EXPRESSION = "Expressions::ValidityExpression"
 	public static val TYPE_EXPRESSION_TYPE = "Expressions::TypeExpression"
 
-	static def getValidityExpressionMsg() { "Reductions not allowed in types" }
+	static def getValidityExpressionMsg() { "Invalid expression for size: only simple integer expression" }
 
-	protected def void checkExpressionValidityAndType(Expression it, EStructuralFeature feature)
+	protected def void checkSizeExpressionValidityAndType(Expression it, EStructuralFeature feature)
 	{
-		if (!reductionLess)
+		try
+		{
+			getIntSizeFor(it)
+		}
+		catch (InvalidBaseTypeSize e)
+		{
 			error(getValidityExpressionMsg(), feature, VALIDITY_EXPRESSION);
+		}
 
 		val t = typeFor
 		if (t !== null && !(t instanceof NSTIntScalar))
 			error(getTypeMsg(t.label, ValidationUtils::INT.label), feature, TYPE_EXPRESSION_TYPE);
 	}
 
-	protected def void checkExpressionValidityAndType(Expression it, EStructuralFeature feature, int index)
+	protected def void checkSizeExpressionValidityAndType(Expression it, EStructuralFeature feature, int index)
 	{
-		if (!reductionLess)
+		try
+		{
+			getIntSizeFor(it)
+		}
+		catch (InvalidBaseTypeSize e)
+		{
 			error(getValidityExpressionMsg(), feature, index, VALIDITY_EXPRESSION);
+		}
 
 		val t = typeFor
 		if (t !== null && !(t instanceof NSTIntScalar))

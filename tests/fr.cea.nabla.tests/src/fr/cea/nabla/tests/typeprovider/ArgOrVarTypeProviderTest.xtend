@@ -143,6 +143,9 @@ class ArgOrVarTypeProviderTest
 			u^{n}{j} = ee * 4;
 			∀r∈nodesOfCell(j), Cjr{j,r} = norm(w{j,r});
 		}
+
+		TestSpaceIteratorIndex: ∀r, spaceIteratorIndex ∈ nodes(), X{r}[spaceIteratorIndex] = 0.0;
+		TestIntervalIndex: ∀r∈nodes(), ∀intervalIndex∈[0;2[, X{r}[intervalIndex] = 0.0;
 		'''
 
 		val rs = resourceSetProvider.get
@@ -150,8 +153,6 @@ class ArgOrVarTypeProviderTest
 		val linearAlgebraExt = parseHelper.parse(lightLinearAlgebraModel, rs) as DefaultExtension
 		val module = parseHelper.parse(nablaModel, rs) as NablaModule
 		Assert.assertNotNull(module)
-//		for (e : module.validate.filter(i | i.severity == Severity.ERROR))
-//			println(e)
 		Assert.assertEquals(0, module.validate.filter(i | i.severity == Severity.ERROR).size)
 
 		// bool scalar

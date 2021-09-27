@@ -114,7 +114,7 @@ class ArgOrVarRefValidator extends InstructionValidator
 	def checkIndicesExpressionAndType(ArgOrVarRef it)
 	{
 		for (i : 0..<indices.size)
-			checkExpressionValidityAndType(indices.get(i), NablaPackage.Literals.ARG_OR_VAR_REF__INDICES, i)
+			checkSizeExpressionValidityAndType(indices.get(i), NablaPackage.Literals.ARG_OR_VAR_REF__INDICES, i)
 	}
 
 	@Check(CheckType.NORMAL)

@@ -137,7 +137,11 @@ class DeclarationBuilder
 			{
 				val laExtension = argType.linearAlgebraExtension
 				if (laExtension === null)
-					getNSTArray1DFor(argType.primitive, argType.sizes.get(0).replaceValuesAndCompact)
+				{
+					val arraySize = argType.sizes.get(0).replaceValuesAndCompact
+					val intArraySize = getIntSizeFor(arraySize)
+					getNSTArray1DFor(argType.primitive, arraySize, intArraySize)
+				}
 				else
 				{
 					val size = argType.sizes.get(0).replaceValuesAndCompact
@@ -148,7 +152,13 @@ class DeclarationBuilder
 			{
 				val laExtension = argType.linearAlgebraExtension
 				if (laExtension === null)
-					getNSTArray2DFor(argType.primitive, argType.sizes.get(0).replaceValuesAndCompact, argType.sizes.get(1).replaceValuesAndCompact)
+				{
+					val nbRows = argType.sizes.get(0).replaceValuesAndCompact
+					val nbCols = argType.sizes.get(1).replaceValuesAndCompact
+					val intNbRows = getIntSizeFor(nbRows)
+					val intNbCols = getIntSizeFor(nbCols)
+					getNSTArray2DFor(argType.primitive, nbRows, nbCols, intNbRows, intNbCols)
+				}
 				else
 				{
 					val nbRows = argType.sizes.get(0).replaceValuesAndCompact

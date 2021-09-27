@@ -21,6 +21,10 @@ let ℕ dim = 2;
 ℝ[2] v1;
 ℝ[dim] v2;
 ℝ[dim] X{nodes};
+
+ℕ unknownDim;
+ℝ[unknownDim] dynamicArray;
+
 //let ℕ myNbNodes = card(nodes());
 //ℝ[myNbNodes] v3;
 //ℝ[myNbNodes] v4{cells};

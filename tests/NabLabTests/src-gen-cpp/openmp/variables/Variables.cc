@@ -15,6 +15,9 @@ Variables::Variables(CartesianMesh2D& aMesh)
 , maxCellsOfNode(CartesianMesh2D::MaxNbCellsOfNode)
 , X(nbNodes)
 {
+	// Allocate dynamic arrays (RealArrays with at least a dynamic dimension)
+	dynamicArray.initSize(unknownDim);
+
 	// Copy node coordinates
 	const auto& gNodes = mesh.getGeometry()->getNodes();
 	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)

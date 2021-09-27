@@ -11,7 +11,7 @@ package fr.cea.nabla.typing
 
 import com.google.inject.Inject
 import fr.cea.nabla.BaseTypeSizeEvaluator
-import fr.cea.nabla.ExpressionExtensions
+import fr.cea.nabla.InvalidBaseTypeSize
 import fr.cea.nabla.LinearAlgebraUtils
 import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.Expression
@@ -21,7 +21,6 @@ class BaseTypeTypeProvider
 {
 	@Inject extension BaseTypeSizeEvaluator
 	@Inject extension PrimitiveTypeTypeProvider
-	@Inject extension ExpressionExtensions
 	@Inject extension LinearAlgebraUtils
 
 	def NablaType getTypeFor(BaseType it)
@@ -32,56 +31,74 @@ class BaseTypeTypeProvider
 			case 1:
 			{
 				val size = sizes.get(0)
-				// if the label is null, the expression is not consistent
-				if (size === null || !size.reductionLess)
-					null
-				else
+				if (size === null) return null
+
+				var int intSize
+				try 
 				{
-					val laExtension = linearAlgebraExtension
-					if (laExtension === null)
-						getNSTArray1DFor(primitive, size)
-					else
-						new NLATVector(laExtension, size, getIntSizeFor(size))
+					intSize = getIntSizeFor(size)
 				}
+				catch (InvalidBaseTypeSize e)
+				{
+					return null
+				}
+
+				// if the label is null, the expression is not consistent
+				val laExtension = linearAlgebraExtension
+				if (laExtension === null)
+					return getNSTArray1DFor(primitive, size, intSize)
+				else
+					return new NLATVector(laExtension, size, intSize)
 			}
 			case 2:
 			{
 				val nbRows = sizes.get(0)
+				if (nbRows === null) return null
+
 				val nbCols = sizes.get(1)
-				if (nbRows === null || nbCols === null || !nbRows.reductionLess || !nbCols.reductionLess)
-					null
-				else
+				if (nbCols === null) return null
+
+				var int intNbRows
+				var int intNbCols
+				try 
 				{
-					val laExtension = linearAlgebraExtension
-					if (laExtension === null)
-						getNSTArray2DFor(primitive, nbRows, nbCols)
-					else
-						new NLATMatrix(laExtension, nbRows, nbCols, getIntSizeFor(nbRows), getIntSizeFor(nbCols))
+					intNbRows = getIntSizeFor(nbRows)
+					intNbCols = getIntSizeFor(nbCols)
 				}
+				catch (InvalidBaseTypeSize e)
+				{
+					return null
+				}
+
+				val laExtension = linearAlgebraExtension
+				if (laExtension === null)
+					return getNSTArray2DFor(primitive, nbRows, nbCols, intNbRows, intNbCols)
+				else
+					return new NLATMatrix(laExtension, nbRows, nbCols, intNbRows, intNbCols)
 			}
 			default: null
 		}
 	}
 
-	def NSTArray1D getNSTArray1DFor(PrimitiveType primitive, Expression size)
+	def NSTArray1D getNSTArray1DFor(PrimitiveType primitive, Expression size, int intSize)
 	{
 		if (size === null) null
 		else switch primitive
 		{
-			case INT: new NSTIntArray1D(size, getIntSizeFor(size))
-			case REAL: new NSTRealArray1D(size, getIntSizeFor(size))
-			case BOOL: new NSTBoolArray1D(size, getIntSizeFor(size))
+			case INT: new NSTIntArray1D(size, intSize)
+			case REAL: new NSTRealArray1D(size, intSize)
+			case BOOL: new NSTBoolArray1D(size, intSize)
 		}
 	}
 
-	def NSTArray2D getNSTArray2DFor(PrimitiveType primitive, Expression nbRows, Expression nbCols)
+	def NSTArray2D getNSTArray2DFor(PrimitiveType primitive, Expression nbRows, Expression nbCols, int intNbRows, int intNbCols)
 	{
 		if (nbRows === null || nbCols === null) null
 		else switch primitive
 		{
-			case INT: new NSTIntArray2D(nbRows, nbCols, getIntSizeFor(nbRows), getIntSizeFor(nbCols))
-			case REAL: new NSTRealArray2D(nbRows, nbCols, getIntSizeFor(nbRows), getIntSizeFor(nbCols))
-			case BOOL: new NSTBoolArray2D(nbRows, nbCols, getIntSizeFor(nbRows), getIntSizeFor(nbCols))
+			case INT: new NSTIntArray2D(nbRows, nbCols, intNbRows, intNbCols)
+			case REAL: new NSTRealArray2D(nbRows, nbCols, intNbRows, intNbCols)
+			case BOOL: new NSTBoolArray2D(nbRows, nbCols, intNbRows, intNbCols)
 		}
 	}
 }

@@ -36,17 +36,6 @@ class IrTypeExtensions
 	public static val VectorClass = 'Vector'
 	public static val MatrixClass = 'Matrix'
 
-	static def boolean isBaseTypeStatic(IrType it)
-	{
-		switch it
-		{
-			BaseType: sizes.empty || sizes.forall[x | x.constExpr]
-			ConnectivityType: base.baseTypeStatic
-			LinearAlgebraType: sizes.empty || sizes.forall[x | x.constExpr]
-			default: throw new RuntimeException("Unhandled parameter")
-		}
-	}
-
 	static def String getLabel(IrType it)
 	{
 		switch it

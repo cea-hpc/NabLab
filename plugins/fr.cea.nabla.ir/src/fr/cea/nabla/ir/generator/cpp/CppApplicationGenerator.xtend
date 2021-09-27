@@ -230,6 +230,14 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		«ENDIF»
 	«ENDFOR»
 	{
+		«val dynamicArrayVariables = variables.filter[x | x.type instanceof BaseType && !(x.type as BaseType).isStatic]»
+		«IF !dynamicArrayVariables.empty»
+			// Allocate dynamic arrays (RealArrays with at least a dynamic dimension)
+			«FOR v : dynamicArrayVariables»
+				«typeContentProvider.initCppTypeContent(v.name, v.type)»
+			«ENDFOR»
+
+		«ENDIF»
 		«IF main»
 		// Copy node coordinates
 		const auto& gNodes = mesh.getGeometry()->getNodes();

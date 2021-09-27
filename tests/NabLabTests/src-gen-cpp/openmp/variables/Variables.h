@@ -45,6 +45,8 @@ private:
 	RealArray1D<2> v1;
 	RealArray1D<dim> v2;
 	std::vector<RealArray1D<dim>> X;
+	int unknownDim;
+	RealArray1D<0> dynamicArray;
 
 	// Timers
 	Timer globalTimer;

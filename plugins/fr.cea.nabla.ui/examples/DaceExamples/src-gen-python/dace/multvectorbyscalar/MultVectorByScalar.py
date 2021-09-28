@@ -10,7 +10,6 @@ from dace.codegen import codegen, compiler
 from dace.codegen.compiled_sdfg import CompiledSDFG
 import dace.config
 
-array1 = [0.0] * 5
 array1 = np.array(array1 )
 array1.astype(np.float64)
 array2 = [1.0] * 5
@@ -34,6 +33,6 @@ AddJob.add_memlet_path(AddJob_tasklet, map_exit, AddJob.add_write('AddJob_array1
 
 
 mysdfg(AddJob_array2=array2,AddJob_array1=array1)
-print(array1)
+
 
 mysdfg.view('MultVectorByScalar')

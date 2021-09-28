@@ -85,13 +85,26 @@ class StateContentProvider
 		}
 	}
 
-	private static def Iterable<Variable> getInVars(Affectation i)
+//	private static def Iterable<Variable> getInVars(Affectation i)
+//	{
+//		val allReferencedVars = i.eAllContents.filter(ArgOrVarRef).filter[x|x.eContainingFeature != IrPackage::eINSTANCE.affectation_Left].map[target]
+//		allReferencedVars.filter(Variable).filter[global].toSet
+//	}
+
+		static def Iterable<Variable> getInVars(Affectation i)
 	{
 		val allReferencedVars = i.eAllContents.filter(ArgOrVarRef).filter[x|x.eContainingFeature != IrPackage::eINSTANCE.affectation_Left].map[target]
 		allReferencedVars.filter(Variable).filter[global].toSet
 	}
 
-	private static def Iterable<Variable> getOutVars(Affectation i)
+//	private static def Iterable<Variable> getOutVars(Affectation i)
+//	{
+//		val v = i.left.target
+//		if (v.global) #[v as Variable]
+//		else #[]
+//	}
+
+		static def Iterable<Variable> getOutVars(Affectation i)
 	{
 		val v = i.left.target
 		if (v.global) #[v as Variable]

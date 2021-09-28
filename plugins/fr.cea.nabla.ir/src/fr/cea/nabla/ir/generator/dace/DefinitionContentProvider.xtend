@@ -9,13 +9,20 @@ import fr.cea.nabla.ir.ir.IntConstant
 import fr.cea.nabla.ir.ir.RealConstant
 import fr.cea.nabla.ir.ir.VectorConstant
 
-class DefinitionContentProvider
+
+class DefinitionContentProvider extends StateContentProvider
 {
 	static def getDefinitionContent(Variable v, String varName)
 	'''
 «««		«v.name» = dp.«getTypeContent(v.type, v.name)»
 «««		«IF v.defaultValue !== null»«v.name» = «getDefaultValueContent(v.defaultValue)»«ENDIF»
-		«IF v.defaultValue !== null»«v.name» = «getDefaultValueContent(v.defaultValue, varName)»«ENDIF»
+«««		«IF v.defaultValue !== null»«v.name» = «getDefaultValueContent(v.defaultValue, varName)»«ENDIF»
+		«IF v.defaultValue !== null»
+			«v.name» = «getDefaultValueContent(v.defaultValue, varName)»
+		«ENDIF»
+		«IF  v.defaultValue === null»
+		«v.name» = «getInitializationOutputVariables(v.type, v.name)»
+		«ENDIF»
 		«v.name» = «getTypeContent(v.type, v.name)» 
 	'''
 
@@ -31,7 +38,6 @@ class DefinitionContentProvider
 						[«varName»]
 						«varName» = np.array(«varName» )
 						«varName».astype(«Utils.getNumpyType(t.primitive)»)
-						
 					'''
 				else
 				{
@@ -71,12 +77,24 @@ class DefinitionContentProvider
 				else if(t.sizes.size==2)
 				{
 					'''
-					[[«Utils.getDaceType(e.value)»] * «Utils.getDaceType(t.sizes.get(1))» for _ in range(«Utils.getDaceType(t.sizes.get(0))»)]
-				'''
+						[[«Utils.getDaceType(e.value)»] * «Utils.getDaceType(t.sizes.get(1))» for _ in range(«Utils.getDaceType(t.sizes.get(0))»)]
+					'''
 				}
 //				'''«FOR sizeIndex:0..<t.sizes.size SEPARATOR ','»«Utils.getDaceType(t.primitive)»(«Utils.getDaceType(e.value)»)«ENDFOR»'''
 			}
 			default: throw new RuntimeException("Not yet implemented")
+		}
+	}
+
+	private static def getInitializationOutputVariables(IrType t, String varName)
+	{
+		switch t
+		{
+			BaseType:
+				'''
+					«Utils.initializedVariablesType(t.primitive)»
+				'''
+			
 		}
 	}
 

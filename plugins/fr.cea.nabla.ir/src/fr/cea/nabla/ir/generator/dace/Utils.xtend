@@ -29,6 +29,16 @@ class Utils
 		}
 	}
 
+	static def initializedVariablesType(PrimitiveType t)
+	{
+		switch t
+		{
+			case BOOL: '''true'''
+			case INT: ''' 0'''
+			case REAL: ''' 0.0'''
+		}
+	}
+
 	static def getNumpyType(PrimitiveType t)
 	{
 		switch t

@@ -8,5 +8,6 @@ with CartesianMesh2D.*;
 
 let ℕ[6,5] a =  ℕ[6,5](5);
 let ℕ[6,5] b =  ℕ[6,5](0);
+//ℕ[6,5] b;
 
 AddJob: b = a * 25 + 1;

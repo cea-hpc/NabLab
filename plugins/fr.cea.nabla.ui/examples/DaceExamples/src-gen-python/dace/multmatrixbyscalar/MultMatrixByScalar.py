@@ -34,6 +34,6 @@ AddJob.add_memlet_path(AddJob_tasklet, map_exit, AddJob.add_write('AddJob_b'), s
 
 
 mysdfg(AddJob_a=a,AddJob_b=b)
-
+print('Valeur de b ', b)
 
 mysdfg.view('MultMatrixByScalar')

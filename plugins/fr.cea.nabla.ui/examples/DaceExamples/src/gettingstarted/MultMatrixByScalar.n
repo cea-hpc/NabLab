@@ -11,6 +11,7 @@ with CartesianMesh2D.*;
 
 let ℝ[6,2] a =  ℝ[6,2](5.0);
 let ℝ[6,2] b =  ℝ[6,2](0.0);
+//ℝ[6,2] b;
 
 AddJob: b = a * 25.0 + 1.0;
 

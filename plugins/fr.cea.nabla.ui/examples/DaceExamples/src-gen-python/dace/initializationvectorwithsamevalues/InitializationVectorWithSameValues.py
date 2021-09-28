@@ -35,5 +35,5 @@ AddJob.add_memlet_path(AddJob_tasklet, map_exit, AddJob.add_write('AddJob_array1
 
 mysdfg(AddJob_array2=array2,AddJob_array1=array1)
 
-print(array1)
+
 mysdfg.view('InitializationVectorWithSameValues')

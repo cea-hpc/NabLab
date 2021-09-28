@@ -7,6 +7,7 @@ with CartesianMesh2D.*;
 ℝ[2] X{nodes};
 
 let ℝ[2,2] matrix1 = [ [1.0, 2.0], [4.0, 5.0] ];
+//ℝ[2,2] matrix1;
 let ℝ[2,2] matrix2 = [ [15.0, 12.0], [7.0, 8.0] ];
 
 AddJob: matrix1 = matrix2*3.0;

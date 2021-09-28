@@ -21,7 +21,7 @@ class DefinitionContentProvider extends StateContentProvider
 			«v.name» = «getDefaultValueContent(v.defaultValue, varName)»
 		«ENDIF»
 		«IF  v.defaultValue === null»
-		«v.name» = «getInitializationOutputVariables(v.type, v.name)»
+		«v.name» = «getInitializationVariables(v.type, v.name)»
 		«ENDIF»
 		«v.name» = «getTypeContent(v.type, v.name)» 
 	'''
@@ -86,15 +86,42 @@ class DefinitionContentProvider extends StateContentProvider
 		}
 	}
 
-	private static def getInitializationOutputVariables(IrType t, String varName)
+	private static def getInitializationVariables(IrType t, String varName)
 	{
 		switch t
 		{
 			BaseType:
-				'''
-					«Utils.initializedVariablesType(t.primitive)»
-				'''
-			
+			{
+				if(t.sizes.size == 0)
+				{
+					switch t.primitive
+					{
+						case BOOL: '''true'''
+						case INT: ''' 0'''
+						case REAL: '''0.0'''
+					}
+				}
+				
+				else if(t.sizes.size == 1)
+				{
+					switch t.primitive
+					{
+						case BOOL: '''true'''
+						case INT: ''' [0]«FOR s : t.sizes» * «getDefaultValueContent(s, varName)»«ENDFOR»'''
+						case REAL: '''[0.0]«FOR s : t.sizes» * «getDefaultValueContent(s, varName)»«ENDFOR»'''
+					}
+				}
+				else if(t.sizes.size == 2)
+				{
+					switch t.primitive
+					{
+						case BOOL: '''true'''
+						case INT: ''' [[0] * «Utils.getDaceType(t.sizes.get(1))» for _ in range(«Utils.getDaceType(t.sizes.get(0))»)]'''
+						case REAL: '''[[0.0] * «Utils.getDaceType(t.sizes.get(1))» for _ in range(«Utils.getDaceType(t.sizes.get(0))»)]'''
+					}
+				}
+			}
+			default: throw new RuntimeException("Not yet implemented")
 		}
 	}
 

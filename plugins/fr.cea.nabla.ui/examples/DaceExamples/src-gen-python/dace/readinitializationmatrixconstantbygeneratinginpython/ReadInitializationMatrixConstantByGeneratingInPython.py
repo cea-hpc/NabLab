@@ -35,5 +35,5 @@ AddJob.add_memlet_path(AddJob_tasklet, map_exit, AddJob.add_write('AddJob_matrix
 
 mysdfg(AddJob_matrix2=matrix2,AddJob_matrix1=matrix1)
 
-print(matrix1)
+
 mysdfg.view('ReadInitializationMatrixConstantByGeneratingInPython')

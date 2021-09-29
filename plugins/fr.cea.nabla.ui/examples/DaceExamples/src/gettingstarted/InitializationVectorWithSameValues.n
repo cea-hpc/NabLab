@@ -6,8 +6,8 @@ with CartesianMesh2D.*;
 ℝ t, δt;
 ℝ[2] X{nodes};
 
-let ℝ[5] array1 = ℝ[5](0.0);
-//ℝ[5] array1;
+//let ℝ[5] array1 = ℝ[5](0.0);
+ℝ[5] array1;
 let ℝ[5] array2 = ℝ[5](4.0);
 
 AddJob: array1 = array2*3.0;

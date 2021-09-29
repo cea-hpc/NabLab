@@ -7,8 +7,8 @@ with CartesianMesh2D.*;
 ℝ[2] X{nodes};
 
 let ℕ valInput = 4;
-let ℕ valOutput = 1;
-//ℕ valOutput;
+//let ℕ valOutput = 1;
+ℕ valOutput;
 
 //let ℝ valInput = 4.0;
 //ℝ valOutput;

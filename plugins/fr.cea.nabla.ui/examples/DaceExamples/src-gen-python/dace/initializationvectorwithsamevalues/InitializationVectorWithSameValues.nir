@@ -52,44 +52,19 @@
     <variables name="array1" previousJobs="//@modules.0/@jobs.0" originName="array1">
       <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
         <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/InitializationVectorWithSameValues.n"/>
-        <details key="offset" value="125"/>
+        <details key="offset" value="152"/>
         <details key="length" value="6"/>
       </annotations>
       <type xsi:type="ir:BaseType" primitive="&#x211d;">
         <sizes xsi:type="ir:IntConstant" constExpr="true" value="5">
           <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
             <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/InitializationVectorWithSameValues.n"/>
-            <details key="offset" value="122"/>
+            <details key="offset" value="149"/>
             <details key="length" value="1"/>
           </annotations>
           <type xsi:type="ir:BaseType"/>
         </sizes>
       </type>
-      <defaultValue xsi:type="ir:BaseTypeConstant" constExpr="true">
-        <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-          <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/InitializationVectorWithSameValues.n"/>
-          <details key="offset" value="134"/>
-          <details key="length" value="9"/>
-        </annotations>
-        <type xsi:type="ir:BaseType" primitive="&#x211d;">
-          <sizes xsi:type="ir:IntConstant" constExpr="true" value="5">
-            <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-              <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/InitializationVectorWithSameValues.n"/>
-              <details key="offset" value="136"/>
-              <details key="length" value="1"/>
-            </annotations>
-            <type xsi:type="ir:BaseType"/>
-          </sizes>
-        </type>
-        <value xsi:type="ir:RealConstant" constExpr="true">
-          <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-            <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/InitializationVectorWithSameValues.n"/>
-            <details key="offset" value="139"/>
-            <details key="length" value="3"/>
-          </annotations>
-          <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
-        </value>
-      </defaultValue>
     </variables>
     <variables name="array2" const="true" constExpr="true" nextJobs="//@modules.0/@jobs.0" originName="array2">
       <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
@@ -155,7 +130,7 @@
             <sizes xsi:type="ir:IntConstant" constExpr="true" value="5">
               <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
                 <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/InitializationVectorWithSameValues.n"/>
-                <details key="offset" value="122"/>
+                <details key="offset" value="149"/>
                 <details key="length" value="1"/>
               </annotations>
               <type xsi:type="ir:BaseType"/>
@@ -209,16 +184,6 @@
   </modules>
   <mesh extensionName="CartesianMesh2D">
     <itemTypes name="node">
-      <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-        <details key="uri" value="platform:/resource/fr.cea.nabla/nablalib/CartesianMesh2D.n"/>
-        <details key="offset" value="490"/>
-        <details key="length" value="4"/>
-      </annotations>
-      <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-        <details key="uri" value="platform:/resource/fr.cea.nabla/nablalib/CartesianMesh2D.n"/>
-        <details key="offset" value="490"/>
-        <details key="length" value="4"/>
-      </annotations>
       <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
         <details key="uri" value="platform:/resource/fr.cea.nabla/nablalib/CartesianMesh2D.n"/>
         <details key="offset" value="490"/>

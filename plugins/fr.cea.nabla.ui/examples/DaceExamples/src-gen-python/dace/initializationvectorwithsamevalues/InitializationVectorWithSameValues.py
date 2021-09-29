@@ -10,11 +10,11 @@ from dace.codegen import codegen, compiler
 from dace.codegen.compiled_sdfg import CompiledSDFG
 import dace.config
 
-array1 = [0.0] * 5
-array1 = np.array(array1 )
+array1 = np.full((fr.cea.nabla.ir.ir.impl.IntConstantImpl@d33aba4 (constExpr: true) (value: 5)), 0.0)
+array1 = np.array(array1)
 array1.astype(np.float64)
 array2 = [4.0] * 5
-array2 = np.array(array2 )
+array2 = np.array(array2)
 array2.astype(np.float64)
 
 mysdfg = SDFG('InitializationVectorWithSameValues')

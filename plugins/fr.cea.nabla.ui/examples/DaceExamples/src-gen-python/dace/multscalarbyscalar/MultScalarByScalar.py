@@ -10,13 +10,12 @@ from dace.codegen import codegen, compiler
 from dace.codegen.compiled_sdfg import CompiledSDFG
 import dace.config
 
-valOutput = 1
-valOutput = [valOutput]
-valOutput = np.array(valOutput )
+valOutput = np.full((1), 0)
+valOutput = np.array(valOutput)
 valOutput.astype(np.int64)
 valInput = 4
 valInput = [valInput]
-valInput = np.array(valInput )
+valInput = np.array(valInput)
 valInput.astype(np.int64)
 
 mysdfg = SDFG('MultScalarByScalar')
@@ -36,6 +35,6 @@ AddJob.add_memlet_path(AddJob_tasklet, map_exit, AddJob.add_write('AddJob_valOut
 
 
 mysdfg(AddJob_valInput=valInput,AddJob_valOutput=valOutput)
-print(valOutput)
 
+print(valOutput)
 mysdfg.view('MultScalarByScalar')

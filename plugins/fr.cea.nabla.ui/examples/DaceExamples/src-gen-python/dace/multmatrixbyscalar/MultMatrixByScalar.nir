@@ -64,7 +64,7 @@
           </annotations>
           <type xsi:type="ir:BaseType"/>
         </sizes>
-        <sizes xsi:type="ir:IntConstant" constExpr="true" value="2">
+        <sizes xsi:type="ir:IntConstant" constExpr="true" value="4">
           <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
             <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultMatrixByScalar.n"/>
             <details key="offset" value="167"/>
@@ -88,7 +88,7 @@
             </annotations>
             <type xsi:type="ir:BaseType"/>
           </sizes>
-          <sizes xsi:type="ir:IntConstant" constExpr="true" value="2">
+          <sizes xsi:type="ir:IntConstant" constExpr="true" value="4">
             <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
               <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultMatrixByScalar.n"/>
               <details key="offset" value="179"/>
@@ -110,60 +110,27 @@
     <variables name="b" previousJobs="//@modules.0/@jobs.0" originName="b">
       <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
         <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultMatrixByScalar.n"/>
-        <details key="offset" value="199"/>
+        <details key="offset" value="226"/>
         <details key="length" value="1"/>
       </annotations>
       <type xsi:type="ir:BaseType" primitive="&#x211d;">
         <sizes xsi:type="ir:IntConstant" constExpr="true" value="6">
           <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
             <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultMatrixByScalar.n"/>
-            <details key="offset" value="194"/>
+            <details key="offset" value="221"/>
             <details key="length" value="1"/>
           </annotations>
           <type xsi:type="ir:BaseType"/>
         </sizes>
-        <sizes xsi:type="ir:IntConstant" constExpr="true" value="2">
+        <sizes xsi:type="ir:IntConstant" constExpr="true" value="4">
           <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
             <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultMatrixByScalar.n"/>
-            <details key="offset" value="196"/>
+            <details key="offset" value="223"/>
             <details key="length" value="1"/>
           </annotations>
           <type xsi:type="ir:BaseType"/>
         </sizes>
       </type>
-      <defaultValue xsi:type="ir:BaseTypeConstant" constExpr="true">
-        <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-          <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultMatrixByScalar.n"/>
-          <details key="offset" value="204"/>
-          <details key="length" value="11"/>
-        </annotations>
-        <type xsi:type="ir:BaseType" primitive="&#x211d;">
-          <sizes xsi:type="ir:IntConstant" constExpr="true" value="6">
-            <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-              <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultMatrixByScalar.n"/>
-              <details key="offset" value="206"/>
-              <details key="length" value="1"/>
-            </annotations>
-            <type xsi:type="ir:BaseType"/>
-          </sizes>
-          <sizes xsi:type="ir:IntConstant" constExpr="true" value="2">
-            <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-              <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultMatrixByScalar.n"/>
-              <details key="offset" value="208"/>
-              <details key="length" value="1"/>
-            </annotations>
-            <type xsi:type="ir:BaseType"/>
-          </sizes>
-        </type>
-        <value xsi:type="ir:RealConstant" constExpr="true">
-          <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-            <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultMatrixByScalar.n"/>
-            <details key="offset" value="211"/>
-            <details key="length" value="3"/>
-          </annotations>
-          <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
-        </value>
-      </defaultValue>
     </variables>
     <jobs name="AddJob" at="1.0" caller="//@main" inVars="//@modules.0/@variables.3" outVars="//@modules.0/@variables.4">
       <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
@@ -187,15 +154,15 @@
             <sizes xsi:type="ir:IntConstant" constExpr="true" value="6">
               <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
                 <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultMatrixByScalar.n"/>
-                <details key="offset" value="194"/>
+                <details key="offset" value="221"/>
                 <details key="length" value="1"/>
               </annotations>
               <type xsi:type="ir:BaseType"/>
             </sizes>
-            <sizes xsi:type="ir:IntConstant" constExpr="true" value="2">
+            <sizes xsi:type="ir:IntConstant" constExpr="true" value="4">
               <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
                 <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultMatrixByScalar.n"/>
-                <details key="offset" value="196"/>
+                <details key="offset" value="223"/>
                 <details key="length" value="1"/>
               </annotations>
               <type xsi:type="ir:BaseType"/>
@@ -217,7 +184,7 @@
               </annotations>
               <type xsi:type="ir:BaseType"/>
             </sizes>
-            <sizes xsi:type="ir:IntConstant" constExpr="true" value="2">
+            <sizes xsi:type="ir:IntConstant" constExpr="true" value="4">
               <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
                 <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultMatrixByScalar.n"/>
                 <details key="offset" value="167"/>
@@ -241,7 +208,7 @@
                 </annotations>
                 <type xsi:type="ir:BaseType"/>
               </sizes>
-              <sizes xsi:type="ir:IntConstant" constExpr="true" value="2">
+              <sizes xsi:type="ir:IntConstant" constExpr="true" value="4">
                 <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
                   <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultMatrixByScalar.n"/>
                   <details key="offset" value="167"/>
@@ -265,7 +232,7 @@
                   </annotations>
                   <type xsi:type="ir:BaseType"/>
                 </sizes>
-                <sizes xsi:type="ir:IntConstant" constExpr="true" value="2">
+                <sizes xsi:type="ir:IntConstant" constExpr="true" value="4">
                   <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
                     <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/MultMatrixByScalar.n"/>
                     <details key="offset" value="167"/>
@@ -298,46 +265,6 @@
   </modules>
   <mesh extensionName="CartesianMesh2D">
     <itemTypes name="node">
-      <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-        <details key="uri" value="platform:/resource/fr.cea.nabla/nablalib/CartesianMesh2D.n"/>
-        <details key="offset" value="490"/>
-        <details key="length" value="4"/>
-      </annotations>
-      <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-        <details key="uri" value="platform:/resource/fr.cea.nabla/nablalib/CartesianMesh2D.n"/>
-        <details key="offset" value="490"/>
-        <details key="length" value="4"/>
-      </annotations>
-      <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-        <details key="uri" value="platform:/resource/fr.cea.nabla/nablalib/CartesianMesh2D.n"/>
-        <details key="offset" value="490"/>
-        <details key="length" value="4"/>
-      </annotations>
-      <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-        <details key="uri" value="platform:/resource/fr.cea.nabla/nablalib/CartesianMesh2D.n"/>
-        <details key="offset" value="490"/>
-        <details key="length" value="4"/>
-      </annotations>
-      <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-        <details key="uri" value="platform:/resource/fr.cea.nabla/nablalib/CartesianMesh2D.n"/>
-        <details key="offset" value="490"/>
-        <details key="length" value="4"/>
-      </annotations>
-      <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-        <details key="uri" value="platform:/resource/fr.cea.nabla/nablalib/CartesianMesh2D.n"/>
-        <details key="offset" value="490"/>
-        <details key="length" value="4"/>
-      </annotations>
-      <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-        <details key="uri" value="platform:/resource/fr.cea.nabla/nablalib/CartesianMesh2D.n"/>
-        <details key="offset" value="490"/>
-        <details key="length" value="4"/>
-      </annotations>
-      <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-        <details key="uri" value="platform:/resource/fr.cea.nabla/nablalib/CartesianMesh2D.n"/>
-        <details key="offset" value="490"/>
-        <details key="length" value="4"/>
-      </annotations>
       <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
         <details key="uri" value="platform:/resource/fr.cea.nabla/nablalib/CartesianMesh2D.n"/>
         <details key="offset" value="490"/>

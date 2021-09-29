@@ -39,6 +39,16 @@ class Utils
 		}
 	}
 
+	static def getDefaultValue(PrimitiveType t)
+	{
+		switch t
+		{
+			case BOOL: "true"
+			case INT: "0"
+			case REAL: "0.0"
+		}
+	}
+
 	static def getDaceType(Expression e)
 	{
 		switch e

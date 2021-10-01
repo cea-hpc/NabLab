@@ -1,0 +1,29 @@
+module VariableDefinition;
+
+with CartesianMesh2D.*;
+with Math.*;
+with LinearAlgebra.*;
+
+// Simulation options
+ℝ t, δt;
+ℝ[2] X{nodes};
+
+/* For each test, input variables are declared and initialized with values */
+
+let ℕ valInput_test1 = 4;
+ℕ valOutput_test1;
+
+let ℝ valInput_test2 = 4.0;
+ℝ valOutput_test2;
+
+/********Test on multiplication between 2 scalars of int type 
+ 	* Test with a declared but uninitialized output scalar 
+***************************************************************************/
+MultiScalarByScalar_test1: valOutput_test1 = valInput_test1*3;
+
+
+/********Test on multiplication between 2 scalars of real type  
+ 	* Test with a declared but uninitialized output scalar 
+***************************************************************************/
+MultiScalarByScalar_test2: valOutput_test2 = valInput_test2*3.0;
+

@@ -6,12 +6,13 @@ import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.Variable
 
+import fr.cea.nabla.ir.ir.Instruction
+
 class DaceApplicationGenerator implements ApplicationGenerator
 {
 	override getName() { 'DaCe' }
 
 	override getIrTransformationStep() { null }
-
 	// Only one file generated corresponding to the application
 	override getGenerationContents(IrRoot ir)
 	{
@@ -34,6 +35,7 @@ class DaceApplicationGenerator implements ApplicationGenerator
 
 		«FOR v : getUsedVariables(ir)»
 			«DefinitionContentProvider.getDefinitionContent(v, v.name)»
+			
 		«ENDFOR»
 
 		mysdfg = SDFG('«ir.name»')
@@ -43,12 +45,21 @@ class DaceApplicationGenerator implements ApplicationGenerator
 			«StateContentProvider.getContent(j.instruction, j.name)»
 		«ENDFOR»
 
+		mysdfg.add_edge(«FOR j : ir.main.calls SEPARATOR ','»«j.name»«ENDFOR», dace.InterstateEdge())
 
+		
+		mysdfg(«FOR j : ir.main.calls  SEPARATOR ','»«FOR v : getUsedVariablesJobs(j.instruction) SEPARATOR ','»«j.name»_«v.name»=«v.name»«ENDFOR»«ENDFOR»)
+		
 		mysdfg.view('«ir.name»')
 	'''
 
 		private def getUsedVariables(IrRoot ir)
 		{
 			ir.eAllContents.filter(ArgOrVarRef).map[target].filter(Variable).toIterable
+		}
+		
+		private def getUsedVariablesJobs(Instruction i)
+		{
+			i.eAllContents.filter(ArgOrVarRef).map[target].filter(Variable).toIterable
 		}
 }

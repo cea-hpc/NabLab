@@ -1,0 +1,63 @@
+/*******************************************************************************
+ * Copyright (c) 2021 CEA
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * Contributors: see AUTHORS file
+ *******************************************************************************/
+module ImplicitHeatEquation;
+
+with Math.*;
+with LinearAlgebra.*;
+with CartesianMesh2D.*;
+
+option ℝ u0 = 1.0;
+let ℝ[2] vectOne = ℝ[2](1.0);
+
+// Simulation options
+option ℝ stopTime = 1.0;
+option ℕ maxIterations = 500000000;
+
+let ℝ δt = 0.001;
+ℝ t;
+ℝ[2] X{nodes}, Xc{cells}; // Position of nodes and cells center of gravity 
+ℝ u{cells}; // Temperature
+ℝ V{cells}; // Volume of cells
+ℝ D{cells}; // Cell centered conductivity
+ℝ faceLength{faces}, faceConductivity{faces};
+ℝ α{cells, cells}; 
+
+iterate n while (t^{n+1} < stopTime && n+1 < maxIterations);
+
+InitTime: t^{n=0} = 0.0;
+
+InitXc: ∀c∈cells(), Xc{c} = 0.25 * ∑{p∈nodesOfCell(c)}(X{p});  // Only valid on parallelograms
+
+InitU: ∀c∈cells(),
+	if (norm(Xc{c} - vectOne) < 0.5)
+		u^{n}{c} = u0;
+	else 
+		u^{n}{c} = 0.0; // Initial circle in the center with value u0
+
+InitD: ∀c∈cells(), D{c} = 1.0; 
+
+ComputeDeltaTn: δt = Min{c∈cells()}(V{c}/D{c}) * 0.24;
+ComputeV: ∀j∈cells(), V{j} = 0.5 * ∑{p∈nodesOfCell(j)}(det(X{p}, X{p+1}));
+ComputeFaceLength: ∀f∈faces(), faceLength{f} = 0.5 * ∑{p∈nodesOfFace(f)}(norm(X{p} - X{p+1}));
+ComputeFaceConductivity: ∀f∈faces(), faceConductivity{f} = 2.0 * ∏{c1∈cellsOfFace(f)}(D{c1}) / ∑{c2∈cellsOfFace(f)}(D{c2});
+
+// Assembling of the diffusion matrix
+ComputeAlphaCoeff: ∀c∈cells(), {
+	let ℝ αDiag = 0.0;
+	∀d∈neighbourCells(c), ∀f∈commonFace(c,d), {
+		let ℝ αExtraDiag = - δt / V{c} * (faceLength{f} *  faceConductivity{f}) / norm(Xc{c} - Xc{d});
+		α{c, d} = αExtraDiag;
+		αDiag = αDiag + αExtraDiag;
+	}
+	α{c, c} = 1 - αDiag;
+}
+
+UpdateU: u^{n+1} = solveLinearSystem(α, u^{n});
+ComputeTn: t^{n+1} = t^{n} + δt;

@@ -15,8 +15,10 @@ class StateContentProvider
 {
 	static def dispatch CharSequence getContent(InstructionBlock i, String stateName)
 	'''
+		«var count = 0»
 		«FOR instructionIndex : 0..<i.instructions.size SEPARATOR '\n'»
 			«getContent(i.instructions.get(instructionIndex), stateName + "_" + instructionIndex+1)»
+			«count = count +1»
 		«ENDFOR»
 	'''
 
@@ -33,11 +35,9 @@ class StateContentProvider
 		«FOR v : getOutVars(i)»
 			«getAddMap(i, v.type, stateName)»
 			«getAddMemletPath(i, v.type, stateName)»
-
 		«ENDFOR»
 
-
-		mysdfg(«FOR v : getInVars(i) + getOutVars(i) SEPARATOR ','»«stateName»_«v.name»=«v.name»«ENDFOR»)
+«««		mysdfg(«FOR v : getInVars(i) + getOutVars(i) SEPARATOR ','»«stateName»_«v.name»=«v.name»«ENDFOR»)
 	'''
 
 	static def dispatch CharSequence getContent(Instruction i, String stateName)
@@ -45,6 +45,16 @@ class StateContentProvider
 		throw new RuntimeException("Not yet implemented")
 	}
 
+	static def CharSequence getSDFG(Affectation a, String stateName, int count)
+	'''
+		mysdfg(«FOR v : getInVars(a) + getOutVars(a) SEPARATOR ','»«stateName»_«v.name»=«v.name»«ENDFOR»)
+
+	'''
+
+	static def CharSequence getAddEdge()
+	'''
+		mysdfg.add_edge()
+	'''
 	private static def getAddMap(Affectation i, IrType t, String stateName)
 	{
 		switch t

@@ -13,9 +13,6 @@ class DefinitionContentProvider extends StateContentProvider
 {
 	static def getDefinitionContent(Variable v, String varName)
 	'''
-«««		«v.name» = dp.«getTypeContent(v.type, v.name)»
-«««		«IF v.defaultValue !== null»«v.name» = «getDefaultValueContent(v.defaultValue)»«ENDIF»
-«««		«IF v.defaultValue !== null»«v.name» = «getDefaultValueContent(v.defaultValue, varName)»«ENDIF»
 		«IF  v.defaultValue === null»
 			«varName» = np.full(«getNpArrayAllocation(v.type, varName)»)
 		«ELSE»

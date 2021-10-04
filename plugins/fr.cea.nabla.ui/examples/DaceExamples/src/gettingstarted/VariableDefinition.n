@@ -50,7 +50,18 @@ let ℕ[5] valInput_test11  = [4, 7, 3, 8, 5];
 let ℕ[5] valInput_test12  = [4, 7, 3, 8, 5];
 let ℕ[5] valOutput_test12 = [0, 0, 0, 0, 0];
 
+/******* Cases : matrices initialized with a single value *******/
+let ℝ[6,5] valInput_test13 =  ℝ[6,5](5.0);
+ℝ[6,5] valOutput_test13;
 
+let ℝ[6,5] valInput_test14 =  ℝ[6,5](5.0);
+let ℝ[6,5] valOutput_test14 =  ℝ[6,5](0.0);
+
+let ℕ[6,5] valInput_test15 =  ℕ[6,5](4);
+ℕ[6,5] valOutput_test15;
+
+let ℕ[6,5] valInput_test16 =  ℕ[6,5](4);
+let ℕ[6,5] valOutput_test16 = ℕ[6,5](0);
 
 /********Test 1 on multiplication between 2 scalars of integer type 
  	* Test with a declared but uninitialized output scalar 
@@ -120,3 +131,27 @@ MultiVectorByScalar_test11: valOutput_test11 = valInput_test11*2 +3;
  	* Test with an output array initialized with the values at 0 : [0.0, ...,0.0] 
 ***************************************************************************/
 MultiVectorByScalar_test12: valOutput_test12 = valInput_test12*3 +7;
+
+/********Test 13 on multiplication between a matrice and a scalar of real type  
+ 	* Test with an input array initialized with the same values (5.0)
+ 	* Test with an output array uninitialized
+***************************************************************************/
+MultiVectorByScalar_test13: valOutput_test13 = valInput_test13*2 + 5;
+
+/********Test 14 on multiplication between a matrice and a scalar of real type  
+ 	* Test with an input array initialized with the same values (5.0)
+ 	* Test with an output array initialized with a single value (0.0)
+***************************************************************************/
+MultiVectorByScalar_test14: valOutput_test14 = valInput_test14*3 + 6;
+
+/********Test 15 on multiplication between a matrice and a scalar of integer type  
+ 	* Test with an input array initialized with the same values (4)
+ 	* Test with an output array uninitialized
+***************************************************************************/
+MultiVectorByScalar_test15: valOutput_test15 = valInput_test15*5 + 1;
+
+/********Test 16 on multiplication between a matrice and a scalar of integer type  
+ 	* Test with an input array initialized with the same values (4)
+ 	* Test with an output array initialized with a single value (0)
+***************************************************************************/
+MultiVectorByScalar_test16: valOutput_test16 = valInput_test16*2 + 3;

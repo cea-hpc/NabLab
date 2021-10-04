@@ -72,6 +72,38 @@ valInput_test12 = [4, 7, 3, 8, 5 ]
 valInput_test12 = np.array(valInput_test12)
 valInput_test12.astype(np.int64)
 
+valOutput_test13 = np.full((6,5), 0.0)
+valOutput_test13 = np.array(valOutput_test13)
+valOutput_test13.astype(np.float64)
+
+valInput_test13 = [[5.0] * 5 for _ in range(6)]
+valInput_test13 = np.array(valInput_test13)
+valInput_test13.astype(np.float64)
+
+valOutput_test14 = [[0.0] * 5 for _ in range(6)]
+valOutput_test14 = np.array(valOutput_test14)
+valOutput_test14.astype(np.float64)
+
+valInput_test14 = [[5.0] * 5 for _ in range(6)]
+valInput_test14 = np.array(valInput_test14)
+valInput_test14.astype(np.float64)
+
+valOutput_test15 = np.full((6,5), 0)
+valOutput_test15 = np.array(valOutput_test15)
+valOutput_test15.astype(np.int64)
+
+valInput_test15 = [[4] * 5 for _ in range(6)]
+valInput_test15 = np.array(valInput_test15)
+valInput_test15.astype(np.int64)
+
+valOutput_test16 = [[0] * 5 for _ in range(6)]
+valOutput_test16 = np.array(valOutput_test16)
+valOutput_test16.astype(np.int64)
+
+valInput_test16 = [[4] * 5 for _ in range(6)]
+valInput_test16 = np.array(valInput_test16)
+valInput_test16.astype(np.int64)
+
 valOutput_test5 = np.full((5), 0.0)
 valOutput_test5 = np.array(valOutput_test5)
 valOutput_test5.astype(np.float64)
@@ -200,6 +232,54 @@ MultiVectorByScalar_test12.add_memlet_path(MultiVectorByScalar_test12.add_read('
 MultiVectorByScalar_test12.add_memlet_path(MultiVectorByScalar_test12_tasklet, map_exit, MultiVectorByScalar_test12.add_write('MultiVectorByScalar_test12_valOutput_test12'), src_conn='valOutput_test12',memlet=dace.Memlet('MultiVectorByScalar_test12_valOutput_test12[i0]'))
 
 
+MultiVectorByScalar_test13 = mysdfg.add_state("MultiVectorByScalar_test13", is_start_state=True)
+
+MultiVectorByScalar_test13_tasklet = MultiVectorByScalar_test13.add_tasklet('MultiVectorByScalar_test13', {'valInput_test13'}, {'valOutput_test13'}, 'valOutput_test13=valInput_test13*2+5')
+
+MultiVectorByScalar_test13_valInput_test13 = mysdfg.add_array('MultiVectorByScalar_test13_valInput_test13', [6,5], dp.float64)
+MultiVectorByScalar_test13_valOutput_test13 = mysdfg.add_array('MultiVectorByScalar_test13_valOutput_test13', [6,5], dp.float64)
+
+map_entry, map_exit = MultiVectorByScalar_test13.add_map('MultiVectorByScalar_test13_map', dict(i0='0:6',i1='0:5'))
+MultiVectorByScalar_test13.add_memlet_path(MultiVectorByScalar_test13.add_read('MultiVectorByScalar_test13_valInput_test13'),map_entry, MultiVectorByScalar_test13_tasklet, dst_conn='valInput_test13',memlet=dace.Memlet('MultiVectorByScalar_test13_valInput_test13[i0,i1]'))
+MultiVectorByScalar_test13.add_memlet_path(MultiVectorByScalar_test13_tasklet, map_exit, MultiVectorByScalar_test13.add_write('MultiVectorByScalar_test13_valOutput_test13'), src_conn='valOutput_test13',memlet=dace.Memlet('MultiVectorByScalar_test13_valOutput_test13[i0,i1]'))
+
+
+MultiVectorByScalar_test14 = mysdfg.add_state("MultiVectorByScalar_test14", is_start_state=True)
+
+MultiVectorByScalar_test14_tasklet = MultiVectorByScalar_test14.add_tasklet('MultiVectorByScalar_test14', {'valInput_test14'}, {'valOutput_test14'}, 'valOutput_test14=valInput_test14*3+6')
+
+MultiVectorByScalar_test14_valInput_test14 = mysdfg.add_array('MultiVectorByScalar_test14_valInput_test14', [6,5], dp.float64)
+MultiVectorByScalar_test14_valOutput_test14 = mysdfg.add_array('MultiVectorByScalar_test14_valOutput_test14', [6,5], dp.float64)
+
+map_entry, map_exit = MultiVectorByScalar_test14.add_map('MultiVectorByScalar_test14_map', dict(i0='0:6',i1='0:5'))
+MultiVectorByScalar_test14.add_memlet_path(MultiVectorByScalar_test14.add_read('MultiVectorByScalar_test14_valInput_test14'),map_entry, MultiVectorByScalar_test14_tasklet, dst_conn='valInput_test14',memlet=dace.Memlet('MultiVectorByScalar_test14_valInput_test14[i0,i1]'))
+MultiVectorByScalar_test14.add_memlet_path(MultiVectorByScalar_test14_tasklet, map_exit, MultiVectorByScalar_test14.add_write('MultiVectorByScalar_test14_valOutput_test14'), src_conn='valOutput_test14',memlet=dace.Memlet('MultiVectorByScalar_test14_valOutput_test14[i0,i1]'))
+
+
+MultiVectorByScalar_test15 = mysdfg.add_state("MultiVectorByScalar_test15", is_start_state=True)
+
+MultiVectorByScalar_test15_tasklet = MultiVectorByScalar_test15.add_tasklet('MultiVectorByScalar_test15', {'valInput_test15'}, {'valOutput_test15'}, 'valOutput_test15=valInput_test15*5+1')
+
+MultiVectorByScalar_test15_valInput_test15 = mysdfg.add_array('MultiVectorByScalar_test15_valInput_test15', [6,5], dp.int64)
+MultiVectorByScalar_test15_valOutput_test15 = mysdfg.add_array('MultiVectorByScalar_test15_valOutput_test15', [6,5], dp.int64)
+
+map_entry, map_exit = MultiVectorByScalar_test15.add_map('MultiVectorByScalar_test15_map', dict(i0='0:6',i1='0:5'))
+MultiVectorByScalar_test15.add_memlet_path(MultiVectorByScalar_test15.add_read('MultiVectorByScalar_test15_valInput_test15'),map_entry, MultiVectorByScalar_test15_tasklet, dst_conn='valInput_test15',memlet=dace.Memlet('MultiVectorByScalar_test15_valInput_test15[i0,i1]'))
+MultiVectorByScalar_test15.add_memlet_path(MultiVectorByScalar_test15_tasklet, map_exit, MultiVectorByScalar_test15.add_write('MultiVectorByScalar_test15_valOutput_test15'), src_conn='valOutput_test15',memlet=dace.Memlet('MultiVectorByScalar_test15_valOutput_test15[i0,i1]'))
+
+
+MultiVectorByScalar_test16 = mysdfg.add_state("MultiVectorByScalar_test16", is_start_state=True)
+
+MultiVectorByScalar_test16_tasklet = MultiVectorByScalar_test16.add_tasklet('MultiVectorByScalar_test16', {'valInput_test16'}, {'valOutput_test16'}, 'valOutput_test16=valInput_test16*2+3')
+
+MultiVectorByScalar_test16_valInput_test16 = mysdfg.add_array('MultiVectorByScalar_test16_valInput_test16', [6,5], dp.int64)
+MultiVectorByScalar_test16_valOutput_test16 = mysdfg.add_array('MultiVectorByScalar_test16_valOutput_test16', [6,5], dp.int64)
+
+map_entry, map_exit = MultiVectorByScalar_test16.add_map('MultiVectorByScalar_test16_map', dict(i0='0:6',i1='0:5'))
+MultiVectorByScalar_test16.add_memlet_path(MultiVectorByScalar_test16.add_read('MultiVectorByScalar_test16_valInput_test16'),map_entry, MultiVectorByScalar_test16_tasklet, dst_conn='valInput_test16',memlet=dace.Memlet('MultiVectorByScalar_test16_valInput_test16[i0,i1]'))
+MultiVectorByScalar_test16.add_memlet_path(MultiVectorByScalar_test16_tasklet, map_exit, MultiVectorByScalar_test16.add_write('MultiVectorByScalar_test16_valOutput_test16'), src_conn='valOutput_test16',memlet=dace.Memlet('MultiVectorByScalar_test16_valOutput_test16[i0,i1]'))
+
+
 MultiVectorByScalar_test5 = mysdfg.add_state("MultiVectorByScalar_test5", is_start_state=True)
 
 MultiVectorByScalar_test5_tasklet = MultiVectorByScalar_test5.add_tasklet('MultiVectorByScalar_test5', {'valInput_test5'}, {'valOutput_test5'}, 'valOutput_test5=valInput_test5*6.0+2')
@@ -266,7 +346,11 @@ mysdfg.add_edge(MultiScalarByScalar_test3, MultiScalarByScalar_test4,dace.Inters
 mysdfg.add_edge(MultiScalarByScalar_test4, MultiVectorByScalar_test10,dace.InterstateEdge())
 mysdfg.add_edge(MultiVectorByScalar_test10, MultiVectorByScalar_test11,dace.InterstateEdge())
 mysdfg.add_edge(MultiVectorByScalar_test11, MultiVectorByScalar_test12,dace.InterstateEdge())
-mysdfg.add_edge(MultiVectorByScalar_test12, MultiVectorByScalar_test5,dace.InterstateEdge())
+mysdfg.add_edge(MultiVectorByScalar_test12, MultiVectorByScalar_test13,dace.InterstateEdge())
+mysdfg.add_edge(MultiVectorByScalar_test13, MultiVectorByScalar_test14,dace.InterstateEdge())
+mysdfg.add_edge(MultiVectorByScalar_test14, MultiVectorByScalar_test15,dace.InterstateEdge())
+mysdfg.add_edge(MultiVectorByScalar_test15, MultiVectorByScalar_test16,dace.InterstateEdge())
+mysdfg.add_edge(MultiVectorByScalar_test16, MultiVectorByScalar_test5,dace.InterstateEdge())
 mysdfg.add_edge(MultiVectorByScalar_test5, MultiVectorByScalar_test6,dace.InterstateEdge())
 mysdfg.add_edge(MultiVectorByScalar_test6, MultiVectorByScalar_test7,dace.InterstateEdge())
 mysdfg.add_edge(MultiVectorByScalar_test7, MultiVectorByScalar_test8,dace.InterstateEdge())
@@ -280,10 +364,30 @@ MultiScalarByScalar_test4_valOutput_test4=valOutput_test4, MultiScalarByScalar_t
 MultiVectorByScalar_test10_valOutput_test10=valOutput_test10, MultiVectorByScalar_test10_valInput_test10=valInput_test10, 
 MultiVectorByScalar_test11_valOutput_test11=valOutput_test11, MultiVectorByScalar_test11_valInput_test11=valInput_test11, 
 MultiVectorByScalar_test12_valOutput_test12=valOutput_test12, MultiVectorByScalar_test12_valInput_test12=valInput_test12, 
+MultiVectorByScalar_test13_valOutput_test13=valOutput_test13, MultiVectorByScalar_test13_valInput_test13=valInput_test13, 
+MultiVectorByScalar_test14_valOutput_test14=valOutput_test14, MultiVectorByScalar_test14_valInput_test14=valInput_test14, 
+MultiVectorByScalar_test15_valOutput_test15=valOutput_test15, MultiVectorByScalar_test15_valInput_test15=valInput_test15, 
+MultiVectorByScalar_test16_valOutput_test16=valOutput_test16, MultiVectorByScalar_test16_valInput_test16=valInput_test16, 
 MultiVectorByScalar_test5_valOutput_test5=valOutput_test5, MultiVectorByScalar_test5_valInput_test5=valInput_test5, 
 MultiVectorByScalar_test6_valOutput_test6=valOutput_test6, MultiVectorByScalar_test6_valInput_test6=valInput_test6, 
 MultiVectorByScalar_test7_valOutput_test7=valOutput_test7, MultiVectorByScalar_test7_valInput_test7=valInput_test7, 
 MultiVectorByScalar_test8_valOutput_test8=valOutput_test8, MultiVectorByScalar_test8_valInput_test8=valInput_test8, 
 MultiVectorByScalar_test9_valOutput_test9=valOutput_test9, MultiVectorByScalar_test9_valInput_test9=valInput_test9)
 
+print('valOutput_test1', valOutput_test1)
+print('valOutput_test2', valOutput_test2)
+print('valOutput_test3', valOutput_test3)
+print('valOutput_test4', valOutput_test4)
+print('valOutput_test5', valOutput_test5)
+print('valOutput_test6', valOutput_test6)
+print('valOutput_test7', valOutput_test7)
+print('valOutput_test8', valOutput_test8)
+print('valOutput_test9', valOutput_test9)
+print('valOutput_test10', valOutput_test10)
+print('valOutput_test11', valOutput_test11)
+print('valOutput_test12', valOutput_test12)
+print('valOutput_test13', valOutput_test13)
+print('valOutput_test14', valOutput_test14)
+print('valOutput_test15', valOutput_test15)
+print('valOutput_test16', valOutput_test16)
 mysdfg.view('VariableDefinition')

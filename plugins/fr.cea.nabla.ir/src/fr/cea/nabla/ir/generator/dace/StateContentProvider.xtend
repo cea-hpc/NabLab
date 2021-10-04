@@ -51,9 +51,9 @@ class StateContentProvider
 
 	'''
 
-	static def CharSequence getAddEdge()
+	static def CharSequence getAddEdge(Instruction i, String stateName)
 	'''
-		mysdfg.add_edge()
+		mysdfg.add_edge(«i», «stateName»)
 	'''
 	private static def getAddMap(Affectation i, IrType t, String stateName)
 	{

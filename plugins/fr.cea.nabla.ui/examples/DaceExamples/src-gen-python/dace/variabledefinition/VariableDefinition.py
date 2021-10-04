@@ -28,6 +28,16 @@ valInput_test2 = [valInput_test2]
 valInput_test2 = np.array(valInput_test2)
 valInput_test2.astype(np.float64)
 
+valOutput_test3 = 0
+valOutput_test3 = [valOutput_test3]
+valOutput_test3 = np.array(valOutput_test3)
+valOutput_test3.astype(np.int64)
+
+valInput_test3 = 4
+valInput_test3 = [valInput_test3]
+valInput_test3 = np.array(valInput_test3)
+valInput_test3.astype(np.int64)
+
 
 mysdfg = SDFG('VariableDefinition')
 
@@ -56,9 +66,22 @@ MultiScalarByScalar_test2.add_memlet_path(MultiScalarByScalar_test2.add_read('Mu
 MultiScalarByScalar_test2.add_memlet_path(MultiScalarByScalar_test2_tasklet, map_exit, MultiScalarByScalar_test2.add_write('MultiScalarByScalar_test2_valOutput_test2'), src_conn='valOutput_test2',memlet=dace.Memlet.simple('MultiScalarByScalar_test2_valOutput_test2','i'))
 
 
-mysdfg.add_edge(MultiScalarByScalar_test1,MultiScalarByScalar_test2, dace.InterstateEdge())
+MultiScalarByScalar_test3 = mysdfg.add_state("MultiScalarByScalar_test3", is_start_state=True)
+
+MultiScalarByScalar_test3_tasklet = MultiScalarByScalar_test3.add_tasklet('MultiScalarByScalar_test3', {'valInput_test3'}, {'valOutput_test3'}, 'valOutput_test3=valInput_test3*5')
+
+MultiScalarByScalar_test3_valInput_test3 = mysdfg.add_array('MultiScalarByScalar_test3_valInput_test3', [1], dp.int64)
+MultiScalarByScalar_test3_valOutput_test3 = mysdfg.add_array('MultiScalarByScalar_test3_valOutput_test3', [1], dp.int64)
+
+map_entry, map_exit = MultiScalarByScalar_test3.add_map('MultiScalarByScalar_test3_map', dict(i='0:1'))
+MultiScalarByScalar_test3.add_memlet_path(MultiScalarByScalar_test3.add_read('MultiScalarByScalar_test3_valInput_test3'),map_entry, MultiScalarByScalar_test3_tasklet, dst_conn='valInput_test3',memlet=dace.Memlet.simple('MultiScalarByScalar_test3_valInput_test3','i'))
+MultiScalarByScalar_test3.add_memlet_path(MultiScalarByScalar_test3_tasklet, map_exit, MultiScalarByScalar_test3.add_write('MultiScalarByScalar_test3_valOutput_test3'), src_conn='valOutput_test3',memlet=dace.Memlet.simple('MultiScalarByScalar_test3_valOutput_test3','i'))
 
 
-mysdfg(MultiScalarByScalar_test1_valOutput_test1=valOutput_test1,MultiScalarByScalar_test1_valInput_test1=valInput_test1,MultiScalarByScalar_test2_valOutput_test2=valOutput_test2,MultiScalarByScalar_test2_valInput_test2=valInput_test2)
+mysdfg.add_edge(MultiScalarByScalar_test1, MultiScalarByScalar_test2,dace.InterstateEdge())
+mysdfg.add_edge(MultiScalarByScalar_test2, MultiScalarByScalar_test3,dace.InterstateEdge())
+
+
+mysdfg(MultiScalarByScalar_test1_valOutput_test1=valOutput_test1,MultiScalarByScalar_test1_valInput_test1=valInput_test1,MultiScalarByScalar_test2_valOutput_test2=valOutput_test2,MultiScalarByScalar_test2_valInput_test2=valInput_test2,MultiScalarByScalar_test3_valOutput_test3=valOutput_test3,MultiScalarByScalar_test3_valInput_test3=valInput_test3)
 
 mysdfg.view('VariableDefinition')

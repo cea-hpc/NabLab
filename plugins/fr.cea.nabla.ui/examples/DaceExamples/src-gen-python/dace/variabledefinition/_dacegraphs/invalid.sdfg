@@ -99,6 +99,54 @@
           "location": {},
           "debuginfo": null
         }
+      },
+      "MultiScalarByScalar_test3_valInput_test3": {
+        "type": "Array",
+        "attributes": {
+          "allow_conflicts": false,
+          "strides": [
+            "1"
+          ],
+          "total_size": "1",
+          "offset": [
+            "0"
+          ],
+          "may_alias": false,
+          "alignment": 0,
+          "dtype": "int64",
+          "shape": [
+            "1"
+          ],
+          "transient": false,
+          "storage": "Default",
+          "lifetime": "Scope",
+          "location": {},
+          "debuginfo": null
+        }
+      },
+      "MultiScalarByScalar_test3_valOutput_test3": {
+        "type": "Array",
+        "attributes": {
+          "allow_conflicts": false,
+          "strides": [
+            "1"
+          ],
+          "total_size": "1",
+          "offset": [
+            "0"
+          ],
+          "may_alias": false,
+          "alignment": 0,
+          "dtype": "int64",
+          "shape": [
+            "1"
+          ],
+          "transient": false,
+          "storage": "Default",
+          "lifetime": "Scope",
+          "location": {},
+          "debuginfo": null
+        }
       }
     },
     "symbols": {},
@@ -124,12 +172,12 @@
     "orig_sdfg": null,
     "transformation_hist": [],
     "name": "VariableDefinition",
-    "hash": "dfce20295faf9cdf3d709fe14569c9c592ccb962ee89f17ee7627d6f032b61b4"
+    "hash": "42e0052c752457c4ce9a01330cf57bb13a6f603de0a83e0d7bf0fb3832142623"
   },
   "nodes": [
     {
       "type": "SDFGState",
-      "label": "MultiScalarByScalar_test1fr.cea.nabla.ir.ir.impl.AffectationImpl@d63d928",
+      "label": "MultiScalarByScalar_test1",
       "id": 0,
       "collapsed": false,
       "scope_dict": {
@@ -154,8 +202,8 @@
             },
             "debuginfo": {
               "type": "DebugInfo",
-              "start_line": 37,
-              "end_line": 37,
+              "start_line": 48,
+              "end_line": 48,
               "start_column": 0,
               "end_column": 0,
               "filename": "/home/meynardr/workspaces/NabLab/plugins/fr.cea.nabla.ui/examples/DaceExamples/src-gen-python/dace/variabledefinition/VariableDefinition.py"
@@ -199,8 +247,8 @@
             "collapse": 1,
             "debuginfo": {
               "type": "DebugInfo",
-              "start_line": 42,
-              "end_line": 42,
+              "start_line": 53,
+              "end_line": 53,
               "start_column": 0,
               "end_column": 0,
               "filename": "/home/meynardr/workspaces/NabLab/plugins/fr.cea.nabla.ui/examples/DaceExamples/src-gen-python/dace/variabledefinition/VariableDefinition.py"
@@ -241,8 +289,8 @@
             "setzero": false,
             "debuginfo": {
               "type": "DebugInfo",
-              "start_line": 43,
-              "end_line": 43,
+              "start_line": 54,
+              "end_line": 54,
               "start_column": 0,
               "end_column": 0,
               "filename": "/home/meynardr/workspaces/NabLab/plugins/fr.cea.nabla.ui/examples/DaceExamples/src-gen-python/dace/variabledefinition/VariableDefinition.py"
@@ -263,8 +311,8 @@
             "setzero": false,
             "debuginfo": {
               "type": "DebugInfo",
-              "start_line": 44,
-              "end_line": 44,
+              "start_line": 55,
+              "end_line": 55,
               "start_column": 0,
               "end_column": 0,
               "filename": "/home/meynardr/workspaces/NabLab/plugins/fr.cea.nabla.ui/examples/DaceExamples/src-gen-python/dace/variabledefinition/VariableDefinition.py"
@@ -476,7 +524,7 @@
     },
     {
       "type": "SDFGState",
-      "label": "MultiScalarByScalar_test2fr.cea.nabla.ir.ir.impl.AffectationImpl@3ecffb7d",
+      "label": "MultiScalarByScalar_test2",
       "id": 1,
       "collapsed": false,
       "scope_dict": {
@@ -501,8 +549,8 @@
             },
             "debuginfo": {
               "type": "DebugInfo",
-              "start_line": 50,
-              "end_line": 50,
+              "start_line": 60,
+              "end_line": 60,
               "start_column": 0,
               "end_column": 0,
               "filename": "/home/meynardr/workspaces/NabLab/plugins/fr.cea.nabla.ui/examples/DaceExamples/src-gen-python/dace/variabledefinition/VariableDefinition.py"
@@ -546,8 +594,8 @@
             "collapse": 1,
             "debuginfo": {
               "type": "DebugInfo",
-              "start_line": 55,
-              "end_line": 55,
+              "start_line": 65,
+              "end_line": 65,
               "start_column": 0,
               "end_column": 0,
               "filename": "/home/meynardr/workspaces/NabLab/plugins/fr.cea.nabla.ui/examples/DaceExamples/src-gen-python/dace/variabledefinition/VariableDefinition.py"
@@ -588,8 +636,8 @@
             "setzero": false,
             "debuginfo": {
               "type": "DebugInfo",
-              "start_line": 56,
-              "end_line": 56,
+              "start_line": 66,
+              "end_line": 66,
               "start_column": 0,
               "end_column": 0,
               "filename": "/home/meynardr/workspaces/NabLab/plugins/fr.cea.nabla.ui/examples/DaceExamples/src-gen-python/dace/variabledefinition/VariableDefinition.py"
@@ -610,8 +658,8 @@
             "setzero": false,
             "debuginfo": {
               "type": "DebugInfo",
-              "start_line": 57,
-              "end_line": 57,
+              "start_line": 67,
+              "end_line": 67,
               "start_column": 0,
               "end_column": 0,
               "filename": "/home/meynardr/workspaces/NabLab/plugins/fr.cea.nabla.ui/examples/DaceExamples/src-gen-python/dace/variabledefinition/VariableDefinition.py"
@@ -820,32 +868,360 @@
         "ranges": {},
         "location": {}
       }
-    }
-  ],
-  "edges": [
+    },
     {
-      "type": "Edge",
-      "attributes": {
-        "data": {
-          "type": "InterstateEdge",
+      "type": "SDFGState",
+      "label": "MultiScalarByScalar_test3",
+      "id": 2,
+      "collapsed": false,
+      "scope_dict": {
+        "-1": [
+          1,
+          3,
+          4
+        ],
+        "1": [
+          0,
+          2
+        ]
+      },
+      "nodes": [
+        {
+          "type": "Tasklet",
+          "label": "MultiScalarByScalar_test3",
           "attributes": {
-            "assignments": {},
-            "condition": {
-              "string_data": "1",
+            "code": {
+              "string_data": "valOutput_test3 = (valInput_test3 * 5)",
               "language": "Python"
+            },
+            "debuginfo": {
+              "type": "DebugInfo",
+              "start_line": 72,
+              "end_line": 72,
+              "start_column": 0,
+              "end_column": 0,
+              "filename": "/home/meynardr/workspaces/NabLab/plugins/fr.cea.nabla.ui/examples/DaceExamples/src-gen-python/dace/variabledefinition/VariableDefinition.py"
+            },
+            "instrument": "No_Instrumentation",
+            "label": "MultiScalarByScalar_test3",
+            "location": {},
+            "environments": [],
+            "in_connectors": {
+              "valInput_test3": null
+            },
+            "out_connectors": {
+              "valOutput_test3": null
             }
           },
-          "label": ""
+          "id": 0,
+          "scope_entry": "1",
+          "scope_exit": "2"
+        },
+        {
+          "type": "MapEntry",
+          "label": "MultiScalarByScalar_test3_map[i=0]",
+          "attributes": {
+            "label": "MultiScalarByScalar_test3_map",
+            "params": [
+              "i"
+            ],
+            "range": {
+              "type": "Range",
+              "ranges": [
+                {
+                  "start": "0",
+                  "end": "0",
+                  "step": "1",
+                  "tile": "1"
+                }
+              ]
+            },
+            "schedule": "Default",
+            "unroll": false,
+            "collapse": 1,
+            "debuginfo": {
+              "type": "DebugInfo",
+              "start_line": 77,
+              "end_line": 77,
+              "start_column": 0,
+              "end_column": 0,
+              "filename": "/home/meynardr/workspaces/NabLab/plugins/fr.cea.nabla.ui/examples/DaceExamples/src-gen-python/dace/variabledefinition/VariableDefinition.py"
+            },
+            "is_collapsed": false,
+            "instrument": "No_Instrumentation",
+            "in_connectors": {
+              "IN_MultiScalarByScalar_test3_valInput_test3": null
+            },
+            "out_connectors": {
+              "OUT_MultiScalarByScalar_test3_valInput_test3": null
+            }
+          },
+          "id": 1,
+          "scope_entry": null,
+          "scope_exit": "2"
+        },
+        {
+          "type": "MapExit",
+          "label": "MultiScalarByScalar_test3_map[i=0]",
+          "attributes": {
+            "in_connectors": {
+              "IN_MultiScalarByScalar_test3_valOutput_test3": null
+            },
+            "out_connectors": {
+              "OUT_MultiScalarByScalar_test3_valOutput_test3": null
+            }
+          },
+          "id": 2,
+          "scope_entry": "1",
+          "scope_exit": "2"
+        },
+        {
+          "type": "AccessNode",
+          "label": "MultiScalarByScalar_test3_valInput_test3",
+          "attributes": {
+            "access": "ReadOnly",
+            "setzero": false,
+            "debuginfo": {
+              "type": "DebugInfo",
+              "start_line": 78,
+              "end_line": 78,
+              "start_column": 0,
+              "end_column": 0,
+              "filename": "/home/meynardr/workspaces/NabLab/plugins/fr.cea.nabla.ui/examples/DaceExamples/src-gen-python/dace/variabledefinition/VariableDefinition.py"
+            },
+            "data": "MultiScalarByScalar_test3_valInput_test3",
+            "in_connectors": {},
+            "out_connectors": {}
+          },
+          "id": 3,
+          "scope_entry": null,
+          "scope_exit": null
+        },
+        {
+          "type": "AccessNode",
+          "label": "MultiScalarByScalar_test3_valOutput_test3",
+          "attributes": {
+            "access": "WriteOnly",
+            "setzero": false,
+            "debuginfo": {
+              "type": "DebugInfo",
+              "start_line": 79,
+              "end_line": 79,
+              "start_column": 0,
+              "end_column": 0,
+              "filename": "/home/meynardr/workspaces/NabLab/plugins/fr.cea.nabla.ui/examples/DaceExamples/src-gen-python/dace/variabledefinition/VariableDefinition.py"
+            },
+            "data": "MultiScalarByScalar_test3_valOutput_test3",
+            "in_connectors": {},
+            "out_connectors": {}
+          },
+          "id": 4,
+          "scope_entry": null,
+          "scope_exit": null
         }
-      },
-      "src": "0",
-      "dst": "1"
+      ],
+      "edges": [
+        {
+          "type": "MultiConnectorEdge",
+          "attributes": {
+            "data": {
+              "type": "Memlet",
+              "attributes": {
+                "volume": "1",
+                "dynamic": false,
+                "subset": {
+                  "type": "Range",
+                  "ranges": [
+                    {
+                      "start": "0",
+                      "end": "0",
+                      "step": "1",
+                      "tile": "1"
+                    }
+                  ]
+                },
+                "other_subset": null,
+                "data": "MultiScalarByScalar_test3_valInput_test3",
+                "wcr": null,
+                "debuginfo": null,
+                "wcr_nonatomic": false,
+                "allow_oob": false,
+                "src_subset": {
+                  "type": "Range",
+                  "ranges": [
+                    {
+                      "start": "0",
+                      "end": "0",
+                      "step": "1",
+                      "tile": "1"
+                    }
+                  ]
+                },
+                "dst_subset": null,
+                "num_accesses": "1"
+              }
+            }
+          },
+          "src": "3",
+          "dst": "1",
+          "dst_connector": "IN_MultiScalarByScalar_test3_valInput_test3",
+          "src_connector": null
+        },
+        {
+          "type": "MultiConnectorEdge",
+          "attributes": {
+            "data": {
+              "type": "Memlet",
+              "attributes": {
+                "volume": "1",
+                "dynamic": false,
+                "subset": {
+                  "type": "Range",
+                  "ranges": [
+                    {
+                      "start": "i",
+                      "end": "i",
+                      "step": "1",
+                      "tile": "1"
+                    }
+                  ]
+                },
+                "other_subset": null,
+                "data": "MultiScalarByScalar_test3_valInput_test3",
+                "wcr": null,
+                "debuginfo": null,
+                "wcr_nonatomic": false,
+                "allow_oob": false,
+                "src_subset": {
+                  "type": "Range",
+                  "ranges": [
+                    {
+                      "start": "i",
+                      "end": "i",
+                      "step": "1",
+                      "tile": "1"
+                    }
+                  ]
+                },
+                "dst_subset": null,
+                "num_accesses": "1"
+              }
+            }
+          },
+          "src": "1",
+          "dst": "0",
+          "dst_connector": "valInput_test3",
+          "src_connector": "OUT_MultiScalarByScalar_test3_valInput_test3"
+        },
+        {
+          "type": "MultiConnectorEdge",
+          "attributes": {
+            "data": {
+              "type": "Memlet",
+              "attributes": {
+                "volume": "1",
+                "dynamic": false,
+                "subset": {
+                  "type": "Range",
+                  "ranges": [
+                    {
+                      "start": "0",
+                      "end": "0",
+                      "step": "1",
+                      "tile": "1"
+                    }
+                  ]
+                },
+                "other_subset": null,
+                "data": "MultiScalarByScalar_test3_valOutput_test3",
+                "wcr": null,
+                "debuginfo": null,
+                "wcr_nonatomic": false,
+                "allow_oob": false,
+                "src_subset": null,
+                "dst_subset": {
+                  "type": "Range",
+                  "ranges": [
+                    {
+                      "start": "0",
+                      "end": "0",
+                      "step": "1",
+                      "tile": "1"
+                    }
+                  ]
+                },
+                "num_accesses": "1"
+              }
+            }
+          },
+          "src": "2",
+          "dst": "4",
+          "dst_connector": null,
+          "src_connector": "OUT_MultiScalarByScalar_test3_valOutput_test3"
+        },
+        {
+          "type": "MultiConnectorEdge",
+          "attributes": {
+            "data": {
+              "type": "Memlet",
+              "attributes": {
+                "volume": "1",
+                "dynamic": false,
+                "subset": {
+                  "type": "Range",
+                  "ranges": [
+                    {
+                      "start": "i",
+                      "end": "i",
+                      "step": "1",
+                      "tile": "1"
+                    }
+                  ]
+                },
+                "other_subset": null,
+                "data": "MultiScalarByScalar_test3_valOutput_test3",
+                "wcr": null,
+                "debuginfo": null,
+                "wcr_nonatomic": false,
+                "allow_oob": false,
+                "src_subset": null,
+                "dst_subset": {
+                  "type": "Range",
+                  "ranges": [
+                    {
+                      "start": "i",
+                      "end": "i",
+                      "step": "1",
+                      "tile": "1"
+                    }
+                  ]
+                },
+                "num_accesses": "1"
+              }
+            }
+          },
+          "src": "0",
+          "dst": "2",
+          "dst_connector": "IN_MultiScalarByScalar_test3_valOutput_test3",
+          "src_connector": "valOutput_test3"
+        }
+      ],
+      "attributes": {
+        "is_collapsed": false,
+        "nosync": false,
+        "instrument": "No_Instrumentation",
+        "executions": "0",
+        "dynamic_executions": true,
+        "ranges": {},
+        "location": {}
+      }
     }
   ],
+  "edges": [],
   "sdfg_list_id": 0,
   "error": {
-    "message": "Invalid state name",
+    "message": "Unreachable state",
     "sdfg_id": 0,
-    "state_id": 0
+    "state_id": 2
   }
 }

@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="ASCII"?>
-<ir:IrRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ir="http://www.cea.fr/nabla/ir" name="VariableDefinition" variables="//@modules.0/@variables.0 //@modules.0/@variables.1 //@modules.0/@variables.2 //@modules.0/@variables.3 //@modules.0/@variables.4 //@modules.0/@variables.5 //@modules.0/@variables.6"
-    jobs="//@modules.0/@jobs.0 //@modules.0/@jobs.1" initNodeCoordVariable="//@modules.0/@variables.2" nodeCoordVariable="//@modules.0/@variables.2" currentTimeVariable="//@modules.0/@variables.0"
-    nextTimeVariable="//@modules.0/@variables.0" timeStepVariable="//@modules.0/@variables.1">
+<ir:IrRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ir="http://www.cea.fr/nabla/ir" name="VariableDefinition" variables="//@modules.0/@variables.0 //@modules.0/@variables.1 //@modules.0/@variables.2 //@modules.0/@variables.3 //@modules.0/@variables.4 //@modules.0/@variables.5 //@modules.0/@variables.6 //@modules.0/@variables.7 //@modules.0/@variables.8"
+    jobs="//@modules.0/@jobs.0 //@modules.0/@jobs.1 //@modules.0/@jobs.2" initNodeCoordVariable="//@modules.0/@variables.2" nodeCoordVariable="//@modules.0/@variables.2"
+    currentTimeVariable="//@modules.0/@variables.0" nextTimeVariable="//@modules.0/@variables.0" timeStepVariable="//@modules.0/@variables.1">
   <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
     <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/VariableDefinition.ngen"/>
     <details key="offset" value="0"/>
     <details key="length" value="199"/>
   </annotations>
-  <main calls="//@modules.0/@jobs.0 //@modules.0/@jobs.1" allInVars="//@modules.0/@variables.3 //@modules.0/@variables.5" allOutVars="//@modules.0/@variables.4 //@modules.0/@variables.6"/>
+  <main calls="//@modules.0/@jobs.0 //@modules.0/@jobs.1 //@modules.0/@jobs.2" allInVars="//@modules.0/@variables.3 //@modules.0/@variables.5 //@modules.0/@variables.7"
+      allOutVars="//@modules.0/@variables.4 //@modules.0/@variables.6 //@modules.0/@variables.8"/>
   <modules name="variableDefinition" main="true">
     <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
       <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/VariableDefinition.ngen"/>
@@ -97,22 +98,54 @@
       </annotations>
       <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
     </variables>
+    <variables name="valInput_test3" const="true" constExpr="true" nextJobs="//@modules.0/@jobs.2" originName="valInput_test3">
+      <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
+        <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/VariableDefinition.n"/>
+        <details key="offset" value="314"/>
+        <details key="length" value="14"/>
+      </annotations>
+      <type xsi:type="ir:BaseType"/>
+      <defaultValue xsi:type="ir:IntConstant" constExpr="true" value="4">
+        <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
+          <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/VariableDefinition.n"/>
+          <details key="offset" value="331"/>
+          <details key="length" value="1"/>
+        </annotations>
+        <type xsi:type="ir:BaseType"/>
+      </defaultValue>
+    </variables>
+    <variables name="valOutput_test3" previousJobs="//@modules.0/@jobs.2" originName="valOutput_test3">
+      <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
+        <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/VariableDefinition.n"/>
+        <details key="offset" value="341"/>
+        <details key="length" value="15"/>
+      </annotations>
+      <type xsi:type="ir:BaseType"/>
+      <defaultValue xsi:type="ir:IntConstant" constExpr="true">
+        <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
+          <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/VariableDefinition.n"/>
+          <details key="offset" value="359"/>
+          <details key="length" value="1"/>
+        </annotations>
+        <type xsi:type="ir:BaseType"/>
+      </defaultValue>
+    </variables>
     <jobs name="MultiScalarByScalar_test1" at="1.0" caller="//@main" inVars="//@modules.0/@variables.3" outVars="//@modules.0/@variables.4">
       <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
         <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/VariableDefinition.n"/>
-        <details key="offset" value="506"/>
+        <details key="offset" value="561"/>
         <details key="length" value="62"/>
       </annotations>
       <instruction xsi:type="ir:Affectation">
         <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
           <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/VariableDefinition.n"/>
-          <details key="offset" value="533"/>
+          <details key="offset" value="588"/>
           <details key="length" value="35"/>
         </annotations>
         <left target="//@modules.0/@variables.4">
           <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
             <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/VariableDefinition.n"/>
-            <details key="offset" value="533"/>
+            <details key="offset" value="588"/>
             <details key="length" value="15"/>
           </annotations>
           <type xsi:type="ir:BaseType"/>
@@ -120,14 +153,14 @@
         <right xsi:type="ir:BinaryExpression" constExpr="true" operator="*">
           <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
             <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/VariableDefinition.n"/>
-            <details key="offset" value="551"/>
+            <details key="offset" value="606"/>
             <details key="length" value="16"/>
           </annotations>
           <type xsi:type="ir:BaseType"/>
           <left xsi:type="ir:ArgOrVarRef" constExpr="true" target="//@modules.0/@variables.3">
             <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
               <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/VariableDefinition.n"/>
-              <details key="offset" value="551"/>
+              <details key="offset" value="606"/>
               <details key="length" value="14"/>
             </annotations>
             <type xsi:type="ir:BaseType"/>
@@ -135,7 +168,7 @@
           <right xsi:type="ir:IntConstant" constExpr="true" value="3">
             <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
               <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/VariableDefinition.n"/>
-              <details key="offset" value="566"/>
+              <details key="offset" value="621"/>
               <details key="length" value="1"/>
             </annotations>
             <type xsi:type="ir:BaseType"/>
@@ -146,19 +179,19 @@
     <jobs name="MultiScalarByScalar_test2" at="1.0" caller="//@main" inVars="//@modules.0/@variables.5" outVars="//@modules.0/@variables.6">
       <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
         <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/VariableDefinition.n"/>
-        <details key="offset" value="771"/>
+        <details key="offset" value="826"/>
         <details key="length" value="64"/>
       </annotations>
       <instruction xsi:type="ir:Affectation">
         <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
           <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/VariableDefinition.n"/>
-          <details key="offset" value="798"/>
+          <details key="offset" value="853"/>
           <details key="length" value="37"/>
         </annotations>
         <left target="//@modules.0/@variables.6">
           <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
             <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/VariableDefinition.n"/>
-            <details key="offset" value="798"/>
+            <details key="offset" value="853"/>
             <details key="length" value="15"/>
           </annotations>
           <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
@@ -166,14 +199,14 @@
         <right xsi:type="ir:BinaryExpression" constExpr="true" operator="*">
           <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
             <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/VariableDefinition.n"/>
-            <details key="offset" value="816"/>
+            <details key="offset" value="871"/>
             <details key="length" value="18"/>
           </annotations>
           <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
           <left xsi:type="ir:ArgOrVarRef" constExpr="true" target="//@modules.0/@variables.5">
             <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
               <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/VariableDefinition.n"/>
-              <details key="offset" value="816"/>
+              <details key="offset" value="871"/>
               <details key="length" value="14"/>
             </annotations>
             <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
@@ -181,7 +214,7 @@
           <right xsi:type="ir:RealConstant" constExpr="true" value="3.0">
             <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
               <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/VariableDefinition.n"/>
-              <details key="offset" value="831"/>
+              <details key="offset" value="886"/>
               <details key="length" value="3"/>
             </annotations>
             <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
@@ -189,9 +222,75 @@
         </right>
       </instruction>
     </jobs>
+    <jobs name="MultiScalarByScalar_test3" at="1.0" caller="//@main" inVars="//@modules.0/@variables.7" outVars="//@modules.0/@variables.8">
+      <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
+        <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/VariableDefinition.n"/>
+        <details key="offset" value="1089"/>
+        <details key="length" value="62"/>
+      </annotations>
+      <instruction xsi:type="ir:Affectation">
+        <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
+          <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/VariableDefinition.n"/>
+          <details key="offset" value="1116"/>
+          <details key="length" value="35"/>
+        </annotations>
+        <left target="//@modules.0/@variables.8">
+          <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
+            <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/VariableDefinition.n"/>
+            <details key="offset" value="1116"/>
+            <details key="length" value="15"/>
+          </annotations>
+          <type xsi:type="ir:BaseType"/>
+        </left>
+        <right xsi:type="ir:BinaryExpression" constExpr="true" operator="*">
+          <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
+            <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/VariableDefinition.n"/>
+            <details key="offset" value="1134"/>
+            <details key="length" value="16"/>
+          </annotations>
+          <type xsi:type="ir:BaseType"/>
+          <left xsi:type="ir:ArgOrVarRef" constExpr="true" target="//@modules.0/@variables.7">
+            <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
+              <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/VariableDefinition.n"/>
+              <details key="offset" value="1134"/>
+              <details key="length" value="14"/>
+            </annotations>
+            <type xsi:type="ir:BaseType"/>
+          </left>
+          <right xsi:type="ir:IntConstant" constExpr="true" value="5">
+            <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
+              <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/VariableDefinition.n"/>
+              <details key="offset" value="1149"/>
+              <details key="length" value="1"/>
+            </annotations>
+            <type xsi:type="ir:BaseType"/>
+          </right>
+        </right>
+      </instruction>
+    </jobs>
   </modules>
   <mesh extensionName="CartesianMesh2D">
     <itemTypes name="node">
+      <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
+        <details key="uri" value="platform:/resource/fr.cea.nabla/nablalib/CartesianMesh2D.n"/>
+        <details key="offset" value="490"/>
+        <details key="length" value="4"/>
+      </annotations>
+      <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
+        <details key="uri" value="platform:/resource/fr.cea.nabla/nablalib/CartesianMesh2D.n"/>
+        <details key="offset" value="490"/>
+        <details key="length" value="4"/>
+      </annotations>
+      <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
+        <details key="uri" value="platform:/resource/fr.cea.nabla/nablalib/CartesianMesh2D.n"/>
+        <details key="offset" value="490"/>
+        <details key="length" value="4"/>
+      </annotations>
+      <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
+        <details key="uri" value="platform:/resource/fr.cea.nabla/nablalib/CartesianMesh2D.n"/>
+        <details key="offset" value="490"/>
+        <details key="length" value="4"/>
+      </annotations>
       <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
         <details key="uri" value="platform:/resource/fr.cea.nabla/nablalib/CartesianMesh2D.n"/>
         <details key="offset" value="490"/>

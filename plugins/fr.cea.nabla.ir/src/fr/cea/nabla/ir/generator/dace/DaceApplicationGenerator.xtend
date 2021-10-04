@@ -35,7 +35,6 @@ class DaceApplicationGenerator implements ApplicationGenerator
 
 		«FOR v : getUsedVariables(ir)»
 			«DefinitionContentProvider.getDefinitionContent(v, v.name)»
-			
 		«ENDFOR»
 
 		mysdfg = SDFG('«ir.name»')
@@ -45,11 +44,14 @@ class DaceApplicationGenerator implements ApplicationGenerator
 			«StateContentProvider.getContent(j.instruction, j.name)»
 		«ENDFOR»
 
-		mysdfg.add_edge(«FOR j : ir.main.calls SEPARATOR ','»«j.name»«ENDFOR», dace.InterstateEdge())
+		«FOR i : 0..<ir.main.calls.length - 1»
+			mysdfg.add_edge(«ir.main.calls.get(i).name», «ir.main.calls.get(i+1).name»,dace.InterstateEdge())
+		«ENDFOR»
 
-		
+«««		mysdfg.add_edge(«FOR j : ir.main.calls SEPARATOR ','»«j.name»«ENDFOR», dace.InterstateEdge())
+
 		mysdfg(«FOR j : ir.main.calls  SEPARATOR ','»«FOR v : getUsedVariablesJobs(j.instruction) SEPARATOR ','»«j.name»_«v.name»=«v.name»«ENDFOR»«ENDFOR»)
-		
+
 		mysdfg.view('«ir.name»')
 	'''
 
@@ -57,7 +59,7 @@ class DaceApplicationGenerator implements ApplicationGenerator
 		{
 			ir.eAllContents.filter(ArgOrVarRef).map[target].filter(Variable).toIterable
 		}
-		
+
 		private def getUsedVariablesJobs(Instruction i)
 		{
 			i.eAllContents.filter(ArgOrVarRef).map[target].filter(Variable).toIterable

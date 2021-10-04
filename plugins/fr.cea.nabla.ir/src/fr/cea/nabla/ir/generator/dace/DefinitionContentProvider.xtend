@@ -20,6 +20,7 @@ class DefinitionContentProvider extends StateContentProvider
 			«varName» = [«varName»]
 		«ENDIF»
 		«getTypeContent(v.type, varName)»
+
 	'''
 
 	private static def getTypeContent(IrType t, String varName)
@@ -69,6 +70,5 @@ class DefinitionContentProvider extends StateContentProvider
 			default: throw new RuntimeException("Not yet implemented")
 		}
 	}
-
 
 }

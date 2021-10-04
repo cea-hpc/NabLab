@@ -50,7 +50,7 @@ class DaceApplicationGenerator implements ApplicationGenerator
 
 «««		mysdfg.add_edge(«FOR j : ir.main.calls SEPARATOR ','»«j.name»«ENDFOR», dace.InterstateEdge())
 
-		mysdfg(«FOR j : ir.main.calls  SEPARATOR ','»«FOR v : getUsedVariablesJobs(j.instruction) SEPARATOR ','»«j.name»_«v.name»=«v.name»«ENDFOR»«ENDFOR»)
+		mysdfg(«FOR j : ir.main.calls  SEPARATOR ', \n'»«FOR v : getUsedVariablesJobs(j.instruction) SEPARATOR ', '»«j.name»_«v.name»=«v.name»«ENDFOR»«ENDFOR»)
 
 		mysdfg.view('«ir.name»')
 	'''

@@ -17,7 +17,10 @@ class DefinitionContentProvider extends StateContentProvider
 			«varName» = np.full(«getNpArrayAllocation(v.type, varName)»)
 		«ELSE»
 			«varName» = «getDefaultValueContent(v.defaultValue, varName)»
-			«varName» = [«varName»]
+			«val t = v.type as BaseType»
+			«IF (t.sizes.size==0)»
+				«varName» = [«varName»]
+			«ENDIF»
 		«ENDIF»
 		«getTypeContent(v.type, varName)»
 

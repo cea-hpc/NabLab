@@ -10,27 +10,74 @@ with LinearAlgebra.*;
 
 /* For each test, input variables are declared and initialized with values */
 
+/******* Cases : scalars *******/
 let ℕ valInput_test1 = 4;
 ℕ valOutput_test1;
 
-let ℝ valInput_test2 = 4.0;
-ℝ valOutput_test2;
+let ℕ valInput_test2 = 9;
+let ℕ  valOutput_test2 = 0;
 
-let ℕ valInput_test3 = 4;
-let ℕ  valOutput_test3 = 0;
+let ℝ valInput_test3 = 4.0;
+ℝ valOutput_test3;
 
-/********Test on multiplication between 2 scalars of int type 
+let ℝ valInput_test4 = 7.0;
+let ℝ valOutput_test4 = 0.0;
+
+/******* Cases : arrays with the same values *******/
+
+let ℝ[5] valInput_test5 = ℝ[5](5.0);
+ℝ[5] valOutput_test5;
+
+let ℝ[5] valInput_test6 = ℝ[5](2.0);
+let ℝ[5] valOutput_test6 = ℝ[5](0.0);
+
+let ℕ[5] valInput_test7 = ℕ[5](5);
+ℕ[5] valOutput_test7;
+
+let ℕ[5] valInput_test8 = ℕ[5](5);
+let ℕ[5] valOutput_test8 = ℕ[5](0);
+
+/********Test 1 on multiplication between 2 scalars of int type 
  	* Test with a declared but uninitialized output scalar 
 ***************************************************************************/
 MultiScalarByScalar_test1: valOutput_test1 = valInput_test1*3;
 
 
-/********Test on multiplication between 2 scalars of real type  
+/********Test 2 on multiplication between 2 scalars of int type  
  	* Test with a declared but uninitialized output scalar 
 ***************************************************************************/
-MultiScalarByScalar_test2: valOutput_test2 = valInput_test2*3.0;
+MultiScalarByScalar_test2: valOutput_test2 = valInput_test2*3;
 
-/********Test on multiplication between 2 scalars of int type  
+/********Test 3 on multiplication between 2 scalars of real type  
+ 	* Test with a declared and but uninitialized output scalar  
+***************************************************************************/
+MultiScalarByScalar_test3: valOutput_test3 = valInput_test3*5.0;
+
+/********Test 4 on multiplication between 2 scalars of real type  
  	* Test with a declared and initialized output scalar 
 ***************************************************************************/
-MultiScalarByScalar_test3: valOutput_test3 = valInput_test3*5;
+MultiScalarByScalar_test4: valOutput_test4 = valInput_test4*12;
+
+/********Test 5 on multiplication between an array and a scalar of real type  
+ 	* Test with an input array initialized with the same values (5.0)
+ 	* Test with an output array uninitialized
+***************************************************************************/
+MultiVectorByScalar_test5: valOutput_test5 = valInput_test5*6.0 + 2;
+
+/********Test 6 on multiplication between an array and a scalar of real type  
+ 	* Test with an input array initialized with the same values (2.0)
+ 	* Test with an output array initialized with the same values (0.0)
+***************************************************************************/
+MultiVectorByScalar_test6: valOutput_test6 = valInput_test6*6.0 + 2;
+
+/********Test 7 on multiplication between an array and a scalar of int type  
+ 	* Test with an input array initialized with the same values (5)
+ 	* Test with an output array uninitialized
+***************************************************************************/
+MultiVectorByScalar_test7: valOutput_test7 = valInput_test7*4 + 2;
+
+/********Test 7 on multiplication between an array and a scalar of int type  
+ 	* Test with an input array initialized with the same values (5)
+ 	* Test with an output array initialized with the same values (0)
+***************************************************************************/
+MultiVectorByScalar_test8: valOutput_test8 = valInput_test8*4 + 2;

@@ -63,6 +63,19 @@ let ℕ[6,5] valInput_test15 =  ℕ[6,5](4);
 let ℕ[6,5] valInput_test16 =  ℕ[6,5](4);
 let ℕ[6,5] valOutput_test16 = ℕ[6,5](0);
 
+/******* Cases : matrices with different values *******/
+let ℝ[2,2] valInput_test17  = [ [1.0, 2.0], [4.0, 5.0] ];
+ℝ[2,2] valOutput_test17;
+
+let ℝ[2,2] valInput_test18  = [ [1.0, 2.0], [4.0, 5.0] ];
+let ℝ[2,2] valOutput_test18 = [ [0.0, 0.0], [0.0, 0.0] ];
+
+let ℕ[2,2] valInput_test19  = [ [3, 4], [7, 5] ];
+ℕ[2,2] valOutput_test19;
+
+let ℕ[2,2] valInput_test20  = [ [3, 4], [7, 5] ];
+let ℕ[2,2] valOutput_test20 = [ [0, 0], [0, 0] ];
+
 /********Test 1 on multiplication between 2 scalars of integer type 
  	* Test with a declared but uninitialized output scalar 
 ***************************************************************************/
@@ -155,3 +168,27 @@ MultiVectorByScalar_test15: valOutput_test15 = valInput_test15*5 + 1;
  	* Test with an output array initialized with a single value (0)
 ***************************************************************************/
 MultiVectorByScalar_test16: valOutput_test16 = valInput_test16*2 + 3;
+
+/********Test 17 on multiplication between a matrice and a scalar of real type  
+ 	* Test with an input array initialized with the different values
+ 	* Test with an output array uninitialized
+***************************************************************************/
+MultiVectorByScalar_test17: valOutput_test17 = valInput_test17*2.0 +3.0;
+
+/********Test 18 on multiplication between a matrice and a scalar of real type  
+ 	* Test with an input array initialized with the different values
+ 	* Test with an output matrice initialized with the values at 0 : [[0.0, ...,0.0], ..., [0.0, ...,0.0]] 
+***************************************************************************/
+MultiVectorByScalar_test18: valOutput_test18 = valInput_test18*3.0 +4.0;
+
+/********Test 19 on multiplication between a matrice and a scalar of integer type  
+ 	* Test with an input array initialized with the different values
+ 	* Test with an output array uninitialized
+***************************************************************************/
+MultiVectorByScalar_test19: valOutput_test19 = valInput_test19*2 +3;
+
+/********Test 20 on multiplication between a matrice and a scalar of integer type  
+ 	* Test with an input array initialized with the different values
+ 	* Test with an output matrice initialized with the values at 0 : [[0.0, ...,0.0], ..., [0.0, ...,0.0]] 
+***************************************************************************/
+MultiVectorByScalar_test20: valOutput_test20 = valInput_test20*3 +4;

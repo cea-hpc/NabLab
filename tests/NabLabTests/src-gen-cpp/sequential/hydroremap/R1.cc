@@ -24,11 +24,9 @@ R1::~R1()
 void
 R1::jsonInit(const char* jsonContent)
 {
-	rapidjson::Document document;
-	assert(!document.Parse(jsonContent).HasParseError());
-	assert(document.IsObject());
-	const rapidjson::Value::Object& o = document.GetObject();
-
+	assert(!jsonDocument.Parse(jsonContent).HasParseError());
+	assert(jsonDocument.IsObject());
+	rapidjson::Value::Object options = jsonDocument.GetObject();
 }
 
 

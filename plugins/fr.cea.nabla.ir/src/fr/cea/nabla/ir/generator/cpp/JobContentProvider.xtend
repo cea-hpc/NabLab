@@ -10,7 +10,9 @@
 package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.IrUtils
+import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
+import fr.cea.nabla.ir.ir.InitVariableJob
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Job
@@ -19,6 +21,7 @@ import java.util.List
 import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
+import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.JobCallerExtensions.*
 import static extension fr.cea.nabla.ir.JobExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
@@ -30,6 +33,7 @@ abstract class JobContentProvider
 	protected val extension ExpressionContentProvider
 	protected val extension InstructionContentProvider
 	protected val extension JobCallerContentProvider
+	protected val extension JsonContentProvider
 
 	def getDeclarationContent(Job it)
 	'''
@@ -47,6 +51,18 @@ abstract class JobContentProvider
 	protected def dispatch CharSequence getInnerContent(Job it)
 	'''
 		«instruction.innerContent»
+	'''
+
+	protected def dispatch CharSequence getInnerContent(InitVariableJob it)
+	'''
+		«IF target.type.dynamicBaseType»
+			«typeContentProvider.initCppTypeContent(target.name, target.type)»
+		«ENDIF»
+		«IF target.option»
+			«getJsonContent(target.name, target.type as BaseType, instruction)»
+		«ELSEIF instruction !== null»
+			«instruction.content»
+		«ENDIF»
 	'''
 
 	protected def dispatch CharSequence getInnerContent(ExecuteTimeLoopJob it)

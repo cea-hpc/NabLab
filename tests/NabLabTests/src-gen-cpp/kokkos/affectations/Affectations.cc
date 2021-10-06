@@ -40,11 +40,9 @@ Affectations::~Affectations()
 void
 Affectations::jsonInit(const char* jsonContent)
 {
-	rapidjson::Document document;
-	assert(!document.Parse(jsonContent).HasParseError());
-	assert(document.IsObject());
-	const rapidjson::Value::Object& o = document.GetObject();
-
+	assert(!jsonDocument.Parse(jsonContent).HasParseError());
+	assert(jsonDocument.IsObject());
+	rapidjson::Value::Object options = jsonDocument.GetObject();
 }
 
 
@@ -157,7 +155,7 @@ void Affectations::setUpTimeLoopN() noexcept
 
 /**
  * Job executeTimeLoopN called @3.0 in simulate method.
- * In variables: e2_n, e_n, t_n, u_n
+ * In variables: e2_n, e_n, maxIter, maxTime, n, t_n, t_nplus1, u_n
  * Out variables: e2_nplus1, e_nplus1, t_nplus1, u_nplus1
  */
 void Affectations::executeTimeLoopN() noexcept
@@ -242,7 +240,7 @@ void Affectations::setUpTimeLoopK() noexcept
 
 /**
  * Job executeTimeLoopK called @4.0 in executeTimeLoopN method.
- * In variables: e2_nplus1_k
+ * In variables: e2_nplus1_k, k
  * Out variables: e2_nplus1_kplus1
  */
 void Affectations::executeTimeLoopK() noexcept

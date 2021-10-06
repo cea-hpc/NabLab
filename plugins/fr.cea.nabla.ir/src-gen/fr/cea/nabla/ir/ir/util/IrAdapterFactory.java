@@ -148,6 +148,10 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createJobAdapter();
 			}
 			@Override
+			public Adapter caseInitVariableJob(InitVariableJob object) {
+				return createInitVariableJobAdapter();
+			}
+			@Override
 			public Adapter caseExecuteTimeLoopJob(ExecuteTimeLoopJob object) {
 				return createExecuteTimeLoopJobAdapter();
 			}
@@ -632,6 +636,20 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createJobAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.InitVariableJob <em>Init Variable Job</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.InitVariableJob
+	 * @generated
+	 */
+	public Adapter createInitVariableJobAdapter() {
 		return null;
 	}
 

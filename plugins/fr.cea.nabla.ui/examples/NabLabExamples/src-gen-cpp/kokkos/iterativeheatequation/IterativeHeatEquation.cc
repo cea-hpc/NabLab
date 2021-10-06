@@ -88,8 +88,6 @@ IterativeHeatEquation::IterativeHeatEquation(CartesianMesh2D& aMesh)
 , maxNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
 , maxCellsOfFace(CartesianMesh2D::MaxNbCellsOfFace)
 , maxNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
-, lastDump(numeric_limits<int>::min())
-, deltat(0.001)
 , X("X", nbNodes)
 , Xc("Xc", nbCells)
 , u_n("u_n", nbCells)
@@ -118,67 +116,15 @@ IterativeHeatEquation::~IterativeHeatEquation()
 void
 IterativeHeatEquation::jsonInit(const char* jsonContent)
 {
-	rapidjson::Document document;
-	assert(!document.Parse(jsonContent).HasParseError());
-	assert(document.IsObject());
-	const rapidjson::Value::Object& o = document.GetObject();
-
+	assert(!jsonDocument.Parse(jsonContent).HasParseError());
+	assert(jsonDocument.IsObject());
+	rapidjson::Value::Object options = jsonDocument.GetObject();
 	// outputPath
-	assert(o.HasMember("outputPath"));
-	const rapidjson::Value& valueof_outputPath = o["outputPath"];
+	assert(options.HasMember("outputPath"));
+	const rapidjson::Value& valueof_outputPath = options["outputPath"];
 	assert(valueof_outputPath.IsString());
 	outputPath = valueof_outputPath.GetString();
 	writer = new PvdFileWriter2D("IterativeHeatEquation", outputPath);
-	// outputPeriod
-	assert(o.HasMember("outputPeriod"));
-	const rapidjson::Value& valueof_outputPeriod = o["outputPeriod"];
-	assert(valueof_outputPeriod.IsInt());
-	outputPeriod = valueof_outputPeriod.GetInt();
-	// u0
-	if (o.HasMember("u0"))
-	{
-		const rapidjson::Value& valueof_u0 = o["u0"];
-		assert(valueof_u0.IsDouble());
-		u0 = valueof_u0.GetDouble();
-	}
-	else
-		u0 = 1.0;
-	// stopTime
-	if (o.HasMember("stopTime"))
-	{
-		const rapidjson::Value& valueof_stopTime = o["stopTime"];
-		assert(valueof_stopTime.IsDouble());
-		stopTime = valueof_stopTime.GetDouble();
-	}
-	else
-		stopTime = 0.1;
-	// maxIterations
-	if (o.HasMember("maxIterations"))
-	{
-		const rapidjson::Value& valueof_maxIterations = o["maxIterations"];
-		assert(valueof_maxIterations.IsInt());
-		maxIterations = valueof_maxIterations.GetInt();
-	}
-	else
-		maxIterations = 500000000;
-	// maxIterationsK
-	if (o.HasMember("maxIterationsK"))
-	{
-		const rapidjson::Value& valueof_maxIterationsK = o["maxIterationsK"];
-		assert(valueof_maxIterationsK.IsInt());
-		maxIterationsK = valueof_maxIterationsK.GetInt();
-	}
-	else
-		maxIterationsK = 1000;
-	// epsilon
-	if (o.HasMember("epsilon"))
-	{
-		const rapidjson::Value& valueof_epsilon = o["epsilon"];
-		assert(valueof_epsilon.IsDouble());
-		epsilon = valueof_epsilon.GetDouble();
-	}
-	else
-		epsilon = 1.0E-8;
 }
 
 
@@ -295,6 +241,146 @@ void IterativeHeatEquation::initXc() noexcept
 }
 
 /**
+ * Job init_deltat called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: deltat
+ */
+void IterativeHeatEquation::init_deltat() noexcept
+{
+	deltat = 0.001;
+}
+
+/**
+ * Job init_epsilon called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: epsilon
+ */
+void IterativeHeatEquation::init_epsilon() noexcept
+{
+	// epsilon
+	rapidjson::Value::Object options = jsonDocument.GetObject();
+	if (options.HasMember("epsilon"))
+	{
+		const rapidjson::Value& valueof_epsilon = options["epsilon"];
+		assert(valueof_epsilon.IsDouble());
+		epsilon = valueof_epsilon.GetDouble();
+	}
+	else
+	{
+		epsilon = 1.0E-8;
+	}
+}
+
+/**
+ * Job init_lastDump called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: lastDump
+ */
+void IterativeHeatEquation::init_lastDump() noexcept
+{
+	lastDump = numeric_limits<int>::min();
+}
+
+/**
+ * Job init_maxIterations called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: maxIterations
+ */
+void IterativeHeatEquation::init_maxIterations() noexcept
+{
+	// maxIterations
+	rapidjson::Value::Object options = jsonDocument.GetObject();
+	if (options.HasMember("maxIterations"))
+	{
+		const rapidjson::Value& valueof_maxIterations = options["maxIterations"];
+		assert(valueof_maxIterations.IsInt());
+		maxIterations = valueof_maxIterations.GetInt();
+	}
+	else
+	{
+		maxIterations = 500000000;
+	}
+}
+
+/**
+ * Job init_maxIterationsK called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: maxIterationsK
+ */
+void IterativeHeatEquation::init_maxIterationsK() noexcept
+{
+	// maxIterationsK
+	rapidjson::Value::Object options = jsonDocument.GetObject();
+	if (options.HasMember("maxIterationsK"))
+	{
+		const rapidjson::Value& valueof_maxIterationsK = options["maxIterationsK"];
+		assert(valueof_maxIterationsK.IsInt());
+		maxIterationsK = valueof_maxIterationsK.GetInt();
+	}
+	else
+	{
+		maxIterationsK = 1000;
+	}
+}
+
+/**
+ * Job init_outputPeriod called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: outputPeriod
+ */
+void IterativeHeatEquation::init_outputPeriod() noexcept
+{
+	// outputPeriod
+	rapidjson::Value::Object options = jsonDocument.GetObject();
+	assert(options.HasMember("outputPeriod"));
+	const rapidjson::Value& valueof_outputPeriod = options["outputPeriod"];
+	assert(valueof_outputPeriod.IsInt());
+	outputPeriod = valueof_outputPeriod.GetInt();
+}
+
+/**
+ * Job init_stopTime called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: stopTime
+ */
+void IterativeHeatEquation::init_stopTime() noexcept
+{
+	// stopTime
+	rapidjson::Value::Object options = jsonDocument.GetObject();
+	if (options.HasMember("stopTime"))
+	{
+		const rapidjson::Value& valueof_stopTime = options["stopTime"];
+		assert(valueof_stopTime.IsDouble());
+		stopTime = valueof_stopTime.GetDouble();
+	}
+	else
+	{
+		stopTime = 0.1;
+	}
+}
+
+/**
+ * Job init_u0 called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: u0
+ */
+void IterativeHeatEquation::init_u0() noexcept
+{
+	// u0
+	rapidjson::Value::Object options = jsonDocument.GetObject();
+	if (options.HasMember("u0"))
+	{
+		const rapidjson::Value& valueof_u0 = options["u0"];
+		assert(valueof_u0.IsDouble());
+		u0 = valueof_u0.GetDouble();
+	}
+	else
+	{
+		u0 = 1.0;
+	}
+}
+
+/**
  * Job setUpTimeLoopK called @1.0 in executeTimeLoopN method.
  * In variables: u_n
  * Out variables: u_nplus1_k
@@ -400,7 +486,7 @@ void IterativeHeatEquation::computeResidual() noexcept
 
 /**
  * Job executeTimeLoopK called @2.0 in executeTimeLoopN method.
- * In variables: u_nplus1_k
+ * In variables: epsilon, k, maxIterationsK, residual, u_nplus1_k
  * Out variables: u_nplus1_kplus1
  */
 void IterativeHeatEquation::executeTimeLoopK() noexcept
@@ -494,7 +580,7 @@ void IterativeHeatEquation::tearDownTimeLoopK() noexcept
 
 /**
  * Job executeTimeLoopN called @4.0 in simulate method.
- * In variables: t_n, u_n
+ * In variables: lastDump, maxIterations, n, outputPeriod, stopTime, t_n, t_nplus1, u_n
  * Out variables: t_nplus1, u_nplus1
  */
 void IterativeHeatEquation::executeTimeLoopN() noexcept
@@ -606,6 +692,14 @@ void IterativeHeatEquation::simulate()
 	initD(); // @1.0
 	initTime(); // @1.0
 	initXc(); // @1.0
+	init_deltat(); // @1.0
+	init_epsilon(); // @1.0
+	init_lastDump(); // @1.0
+	init_maxIterations(); // @1.0
+	init_maxIterationsK(); // @1.0
+	init_outputPeriod(); // @1.0
+	init_stopTime(); // @1.0
+	init_u0(); // @1.0
 	computeDeltaTn(); // @2.0
 	computeFaceConductivity(); // @2.0
 	initU(); // @2.0

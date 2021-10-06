@@ -9,6 +9,7 @@
 #include <limits>
 #include <utility>
 #include <cmath>
+#include <rapidjson/document.h>
 #include <omp.h>
 #include "nablalib/utils/Utils.h"
 #include "nablalib/utils/Timer.h"
@@ -42,6 +43,9 @@ public:
 	void rj2() noexcept;
 
 private:
+	// Json block of options
+	rapidjson::Document jsonDocument;
+
 	// Mesh and mesh variables
 	CartesianMesh2D& mesh;
 	size_t nbNodes, nbCells;
@@ -49,7 +53,7 @@ private:
 	// Main module
 	Hydro* mainModule;
 
-	// Option and global variables
+	// Options and global variables
 	std::vector<double> rv2;
 
 	// Timers

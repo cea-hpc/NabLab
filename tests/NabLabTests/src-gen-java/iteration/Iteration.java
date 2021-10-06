@@ -15,20 +15,23 @@ import fr.cea.nabla.javalib.mesh.*;
 
 public final class Iteration
 {
+	// Json block of options
+	private JsonObject options;
+
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
 	@SuppressWarnings("unused")
 	private final int nbNodes, nbCells;
 
-	// Option and global variables
+	// Options and global variables
 	int n;
 	int k;
 	int l;
-	final double maxTime;
-	final int maxIter;
-	final int maxIterK;
-	final int maxIterL;
-	final double deltat;
+	static final double maxTime = 0.1;
+	static final int maxIter = 500;
+	static final int maxIterK = 500;
+	static final int maxIterL = 500;
+	static final double deltat = 1.0;
 	double t_n;
 	double t_nplus1;
 	double t_n0;
@@ -52,13 +55,6 @@ public final class Iteration
 		mesh = aMesh;
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
-
-		// Initialize variables with default values
-		maxTime = 0.1;
-		maxIter = 500;
-		maxIterK = 500;
-		maxIterL = 500;
-		deltat = 1.0;
 
 		// Allocate arrays
 		X = new double[nbNodes][2];
@@ -87,7 +83,7 @@ public final class Iteration
 	public void jsonInit(final String jsonContent)
 	{
 		final Gson gson = new Gson();
-		final JsonObject o = gson.fromJson(jsonContent, JsonObject.class);
+		options = gson.fromJson(jsonContent, JsonObject.class);
 	}
 
 	/**
@@ -187,7 +183,7 @@ public final class Iteration
 
 	/**
 	 * Job executeTimeLoopK called @3.0 in executeTimeLoopN method.
-	 * In variables: v_nplus1_k
+	 * In variables: k, maxIterK, v_nplus1_k
 	 * Out variables: v_nplus1_kplus1
 	 */
 	protected void executeTimeLoopK()
@@ -213,7 +209,7 @@ public final class Iteration
 
 	/**
 	 * Job executeTimeLoopN called @3.0 in simulate method.
-	 * In variables: t_n, u_n, v_n, w_n
+	 * In variables: maxIter, maxTime, n, t_n, t_nplus1, u_n, v_n, w_n
 	 * Out variables: t_nplus1, u_nplus1, v_nplus1, w_nplus1
 	 */
 	protected void executeTimeLoopN()
@@ -298,7 +294,7 @@ public final class Iteration
 
 	/**
 	 * Job executeTimeLoopL called @7.0 in executeTimeLoopN method.
-	 * In variables: w_nplus1_l
+	 * In variables: l, maxIterL, w_nplus1_l
 	 * Out variables: w_nplus1_lplus1
 	 */
 	protected void executeTimeLoopL()

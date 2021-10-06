@@ -102,6 +102,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Variable/option"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//Variable/producerJobs"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//Variable/consumerJobs"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//Variable/initJob"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//TimeVariable">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//TimeVariable/originName"/>
@@ -147,6 +148,9 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//Job/nextJobsWithSameCaller"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Job/instruction"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Job/timeLoopJob"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//InitVariableJob">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//InitVariableJob/target"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//ExecuteTimeLoopJob">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//ExecuteTimeLoopJob/whileCondition"/>

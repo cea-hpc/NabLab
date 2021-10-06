@@ -9,6 +9,7 @@
 #include <limits>
 #include <utility>
 #include <cmath>
+#include <rapidjson/document.h>
 #include "nablalib/utils/Utils.h"
 #include "nablalib/utils/Timer.h"
 #include "nablalib/types/Types.h"
@@ -53,6 +54,12 @@ public:
 	void initD() noexcept;
 	void initTime() noexcept;
 	void initXc() noexcept;
+	void init_deltat() noexcept;
+	void init_lastDump() noexcept;
+	void init_maxIterations() noexcept;
+	void init_outputPeriod() noexcept;
+	void init_stopTime() noexcept;
+	void init_u0() noexcept;
 	void updateU() noexcept;
 	void computeDeltaTn() noexcept;
 	void computeFaceConductivity() noexcept;
@@ -64,11 +71,14 @@ public:
 private:
 	void dumpVariables(int iteration, bool useTimer=true);
 
+	// Json block of options
+	rapidjson::Document jsonDocument;
+
 	// Mesh and mesh variables
 	CartesianMesh2D& mesh;
 	size_t nbNodes, nbCells, nbFaces, maxNodesOfCell, maxNodesOfFace, maxCellsOfFace, maxNeighbourCells;
 
-	// Option and global variables
+	// Options and global variables
 	PvdFileWriter2D* writer;
 	std::string outputPath;
 	int outputPeriod;

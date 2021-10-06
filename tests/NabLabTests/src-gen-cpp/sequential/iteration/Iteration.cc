@@ -43,11 +43,9 @@ Iteration::~Iteration()
 void
 Iteration::jsonInit(const char* jsonContent)
 {
-	rapidjson::Document document;
-	assert(!document.Parse(jsonContent).HasParseError());
-	assert(document.IsObject());
-	const rapidjson::Value::Object& o = document.GetObject();
-
+	assert(!jsonDocument.Parse(jsonContent).HasParseError());
+	assert(jsonDocument.IsObject());
+	rapidjson::Value::Object options = jsonDocument.GetObject();
 }
 
 
@@ -148,7 +146,7 @@ void Iteration::setUpTimeLoopN() noexcept
 
 /**
  * Job executeTimeLoopK called @3.0 in executeTimeLoopN method.
- * In variables: v_nplus1_k
+ * In variables: k, maxIterK, v_nplus1_k
  * Out variables: v_nplus1_kplus1
  */
 void Iteration::executeTimeLoopK() noexcept
@@ -173,7 +171,7 @@ void Iteration::executeTimeLoopK() noexcept
 
 /**
  * Job executeTimeLoopN called @3.0 in simulate method.
- * In variables: t_n, u_n, v_n, w_n
+ * In variables: maxIter, maxTime, n, t_n, t_nplus1, u_n, v_n, w_n
  * Out variables: t_nplus1, u_nplus1, v_nplus1, w_nplus1
  */
 void Iteration::executeTimeLoopN() noexcept
@@ -277,7 +275,7 @@ void Iteration::setUpTimeLoopL() noexcept
 
 /**
  * Job executeTimeLoopL called @7.0 in executeTimeLoopN method.
- * In variables: w_nplus1_l
+ * In variables: l, maxIterL, w_nplus1_l
  * Out variables: w_nplus1_lplus1
  */
 void Iteration::executeTimeLoopL() noexcept

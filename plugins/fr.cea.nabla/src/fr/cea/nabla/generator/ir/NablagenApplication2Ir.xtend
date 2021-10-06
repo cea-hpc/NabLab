@@ -72,10 +72,6 @@ class NablagenApplication2Ir
 			}
 		}
 
-		// set variables/jobs dependencies. 2 loops necessary: allin/out vars needed to computer next/previous jobs
-		jobs.forEach[x | JobDependencies.computeAndSetInOutVars(x)]
-		jobs.forEach[x | JobDependencies.computeAndSetNextJobs(x)]
-
 		// set simulation variables
 		initNodeCoordVariable = getIrVariable(mainIrModule, ngenApp.mainModule.nodeCoord, initTimeIteratorIndex)
 		nodeCoordVariable = getIrVariable(mainIrModule, ngenApp.mainModule.nodeCoord, currentTimeIteratorIndex)
@@ -151,6 +147,10 @@ class NablagenApplication2Ir
 			mainIrModule.variables.add(0, postProcessing.periodValue)
 			variables.add(0, postProcessing.periodValue)
 		}
+
+		// set variables/jobs dependencies. 2 loops necessary: allin/out vars needed to computer next/previous jobs
+		jobs.forEach[x | JobDependencies.computeAndSetInOutVars(x)]
+		jobs.forEach[x | JobDependencies.computeAndSetNextJobs(x)]
 
 		main.calls += jobs.filter(j | j.timeLoopJob).filter[x | x.caller === null]
 	}

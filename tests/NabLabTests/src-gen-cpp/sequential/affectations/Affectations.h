@@ -9,6 +9,7 @@
 #include <limits>
 #include <utility>
 #include <cmath>
+#include <rapidjson/document.h>
 #include "nablalib/utils/Utils.h"
 #include "nablalib/utils/Timer.h"
 #include "nablalib/types/Types.h"
@@ -43,11 +44,14 @@ public:
 	void updateE() noexcept;
 
 private:
+	// Json block of options
+	rapidjson::Document jsonDocument;
+
 	// Mesh and mesh variables
 	CartesianMesh2D& mesh;
 	size_t nbNodes, nbCells;
 
-	// Option and global variables
+	// Options and global variables
 	int n;
 	int k;
 	static constexpr double maxTime = 0.1;

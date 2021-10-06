@@ -24,6 +24,7 @@ import fr.cea.nabla.ir.ir.ExternFunction;
 import fr.cea.nabla.ir.ir.Function;
 import fr.cea.nabla.ir.ir.FunctionCall;
 import fr.cea.nabla.ir.ir.If;
+import fr.cea.nabla.ir.ir.InitVariableJob;
 import fr.cea.nabla.ir.ir.Instruction;
 import fr.cea.nabla.ir.ir.InstructionBlock;
 import fr.cea.nabla.ir.ir.IntConstant;
@@ -226,6 +227,13 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	private EClass jobEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass initVariableJobEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -1250,6 +1258,16 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
+	public EReference getVariable_InitJob() {
+		return (EReference)variableEClass.getEStructuralFeatures().get(6);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EClass getTimeVariable() {
 		return timeVariableEClass;
 	}
@@ -1622,6 +1640,26 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	@Override
 	public EAttribute getJob_TimeLoopJob() {
 		return (EAttribute)jobEClass.getEStructuralFeatures().get(11);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EClass getInitVariableJob() {
+		return initVariableJobEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getInitVariableJob_Target() {
+		return (EReference)initVariableJobEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -2997,6 +3035,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEAttribute(variableEClass, VARIABLE__OPTION);
 		createEReference(variableEClass, VARIABLE__PRODUCER_JOBS);
 		createEReference(variableEClass, VARIABLE__CONSUMER_JOBS);
+		createEReference(variableEClass, VARIABLE__INIT_JOB);
 
 		timeVariableEClass = createEClass(TIME_VARIABLE);
 		createEAttribute(timeVariableEClass, TIME_VARIABLE__ORIGIN_NAME);
@@ -3042,6 +3081,9 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEReference(jobEClass, JOB__NEXT_JOBS_WITH_SAME_CALLER);
 		createEReference(jobEClass, JOB__INSTRUCTION);
 		createEAttribute(jobEClass, JOB__TIME_LOOP_JOB);
+
+		initVariableJobEClass = createEClass(INIT_VARIABLE_JOB);
+		createEReference(initVariableJobEClass, INIT_VARIABLE_JOB__TARGET);
 
 		executeTimeLoopJobEClass = createEClass(EXECUTE_TIME_LOOP_JOB);
 		createEReference(executeTimeLoopJobEClass, EXECUTE_TIME_LOOP_JOB__WHILE_CONDITION);
@@ -3265,6 +3307,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		connectivityEClass.getESuperTypes().add(this.getIrAnnotable());
 		jobCallerEClass.getESuperTypes().add(this.getIrAnnotable());
 		jobEClass.getESuperTypes().add(this.getIrAnnotable());
+		initVariableJobEClass.getESuperTypes().add(this.getJob());
 		executeTimeLoopJobEClass.getESuperTypes().add(this.getJobCaller());
 		executeTimeLoopJobEClass.getESuperTypes().add(this.getJob());
 		instructionEClass.getESuperTypes().add(this.getIrAnnotable());
@@ -3389,6 +3432,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEAttribute(getVariable_Option(), ecorePackage.getEBoolean(), "option", null, 1, 1, Variable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getVariable_ProducerJobs(), this.getJob(), this.getJob_OutVars(), "producerJobs", null, 0, -1, Variable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getVariable_ConsumerJobs(), this.getJob(), this.getJob_InVars(), "consumerJobs", null, 0, -1, Variable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getVariable_InitJob(), this.getInitVariableJob(), this.getInitVariableJob_Target(), "initJob", null, 0, 1, Variable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(timeVariableEClass, TimeVariable.class, "TimeVariable", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getTimeVariable_OriginName(), ecorePackage.getEString(), "originName", null, 1, 1, TimeVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -3434,6 +3478,9 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEReference(getJob_NextJobsWithSameCaller(), this.getJob(), this.getJob_PreviousJobsWithSameCaller(), "nextJobsWithSameCaller", null, 0, -1, Job.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getJob_Instruction(), this.getInstruction(), null, "instruction", null, 1, 1, Job.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getJob_TimeLoopJob(), ecorePackage.getEBoolean(), "timeLoopJob", null, 0, 1, Job.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(initVariableJobEClass, InitVariableJob.class, "InitVariableJob", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getInitVariableJob_Target(), this.getVariable(), this.getVariable_InitJob(), "target", null, 1, 1, InitVariableJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(executeTimeLoopJobEClass, ExecuteTimeLoopJob.class, "ExecuteTimeLoopJob", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getExecuteTimeLoopJob_WhileCondition(), this.getExpression(), null, "whileCondition", null, 1, 1, ExecuteTimeLoopJob.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

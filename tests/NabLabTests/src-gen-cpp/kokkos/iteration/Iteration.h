@@ -9,6 +9,7 @@
 #include <limits>
 #include <utility>
 #include <cmath>
+#include <rapidjson/document.h>
 #include <Kokkos_Core.hpp>
 #include <Kokkos_hwloc.hpp>
 #include "nablalib/utils/Utils.h"
@@ -66,11 +67,14 @@ public:
 	void updateU() noexcept;
 
 private:
+	// Json block of options
+	rapidjson::Document jsonDocument;
+
 	// Mesh and mesh variables
 	CartesianMesh2D& mesh;
 	size_t nbNodes, nbCells;
 
-	// Option and global variables
+	// Options and global variables
 	int n;
 	int k;
 	int l;

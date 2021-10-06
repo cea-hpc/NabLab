@@ -11,6 +11,7 @@ package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.Expression
+import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.PrimitiveType
 import org.eclipse.xtend.lib.annotations.Data
 
@@ -18,24 +19,29 @@ import org.eclipse.xtend.lib.annotations.Data
 class JsonContentProvider
 {
 	val extension ExpressionContentProvider
+	val extension InstructionContentProvider
 
 	def getJsonName(String varName) { 'valueof_' + varName }
 
-	def getJsonContent(String name, BaseType type, Expression defaultValue)
+	def getJsonContent(String name, BaseType type, Instruction defaultValue)
 	'''
 		// «name»
 		«IF defaultValue === null»
-			assert(o.HasMember("«name»"));
-			const rapidjson::Value& «name.jsonName» = o["«name»"];
+			rapidjson::Value::Object options = jsonDocument.GetObject();
+			assert(options.HasMember("«name»"));
+			const rapidjson::Value& «name.jsonName» = options["«name»"];
 			«getJsonContent(name, type, type.sizes, #[])»
 		«ELSE»
-			if (o.HasMember("«name»"))
+			rapidjson::Value::Object options = jsonDocument.GetObject();
+			if (options.HasMember("«name»"))
 			{
-				const rapidjson::Value& «name.jsonName» = o["«name»"];
+				const rapidjson::Value& «name.jsonName» = options["«name»"];
 				«getJsonContent(name, type, type.sizes, #[])»
 			}
 			else
-				«name» = «defaultValue.content»;
+			{
+				«defaultValue.innerContent»
+			}
 		«ENDIF»
 	'''
 

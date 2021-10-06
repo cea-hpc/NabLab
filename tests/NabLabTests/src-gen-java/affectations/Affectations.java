@@ -15,17 +15,20 @@ import fr.cea.nabla.javalib.mesh.*;
 
 public final class Affectations
 {
+	// Json block of options
+	private JsonObject options;
+
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
 	@SuppressWarnings("unused")
 	private final int nbNodes, nbCells;
 
-	// Option and global variables
+	// Options and global variables
 	int n;
 	int k;
-	final double maxTime;
-	final int maxIter;
-	final double deltat;
+	static final double maxTime = 0.1;
+	static final int maxIter = 500;
+	static final double deltat = 1.0;
 	double t_n;
 	double t_nplus1;
 	double t_n0;
@@ -49,11 +52,6 @@ public final class Affectations
 		mesh = aMesh;
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
-
-		// Initialize variables with default values
-		maxTime = 0.1;
-		maxIter = 500;
-		deltat = 1.0;
 
 		// Allocate arrays
 		u_n = new double[2];
@@ -82,7 +80,7 @@ public final class Affectations
 	public void jsonInit(final String jsonContent)
 	{
 		final Gson gson = new Gson();
-		final JsonObject o = gson.fromJson(jsonContent, JsonObject.class);
+		options = gson.fromJson(jsonContent, JsonObject.class);
 	}
 
 	/**
@@ -194,7 +192,7 @@ public final class Affectations
 
 	/**
 	 * Job executeTimeLoopN called @3.0 in simulate method.
-	 * In variables: e2_n, e_n, t_n, u_n
+	 * In variables: e2_n, e_n, maxIter, maxTime, n, t_n, t_nplus1, u_n
 	 * Out variables: e2_nplus1, e_nplus1, t_nplus1, u_nplus1
 	 */
 	protected void executeTimeLoopN()
@@ -260,7 +258,7 @@ public final class Affectations
 
 	/**
 	 * Job executeTimeLoopK called @4.0 in executeTimeLoopN method.
-	 * In variables: e2_nplus1_k
+	 * In variables: e2_nplus1_k, k
 	 * Out variables: e2_nplus1_kplus1
 	 */
 	protected void executeTimeLoopK()

@@ -133,7 +133,6 @@ Glace2d::Glace2d(CartesianMesh2D& aMesh)
 , nbBottomNodes(mesh.getNbBottomNodes())
 , nbLeftNodes(mesh.getNbLeftNodes())
 , nbRightNodes(mesh.getNbRightNodes())
-, lastDump(numeric_limits<int>::min())
 , X_n("X_n", nbNodes)
 , X_nplus1("X_nplus1", nbNodes)
 , X_n0("X_n0", nbNodes)
@@ -175,103 +174,15 @@ Glace2d::~Glace2d()
 void
 Glace2d::jsonInit(const char* jsonContent)
 {
-	rapidjson::Document document;
-	assert(!document.Parse(jsonContent).HasParseError());
-	assert(document.IsObject());
-	const rapidjson::Value::Object& o = document.GetObject();
-
+	assert(!jsonDocument.Parse(jsonContent).HasParseError());
+	assert(jsonDocument.IsObject());
+	rapidjson::Value::Object options = jsonDocument.GetObject();
 	// outputPath
-	assert(o.HasMember("outputPath"));
-	const rapidjson::Value& valueof_outputPath = o["outputPath"];
+	assert(options.HasMember("outputPath"));
+	const rapidjson::Value& valueof_outputPath = options["outputPath"];
 	assert(valueof_outputPath.IsString());
 	outputPath = valueof_outputPath.GetString();
 	writer = new PvdFileWriter2D("Glace2d", outputPath);
-	// outputPeriod
-	assert(o.HasMember("outputPeriod"));
-	const rapidjson::Value& valueof_outputPeriod = o["outputPeriod"];
-	assert(valueof_outputPeriod.IsInt());
-	outputPeriod = valueof_outputPeriod.GetInt();
-	// stopTime
-	if (o.HasMember("stopTime"))
-	{
-		const rapidjson::Value& valueof_stopTime = o["stopTime"];
-		assert(valueof_stopTime.IsDouble());
-		stopTime = valueof_stopTime.GetDouble();
-	}
-	else
-		stopTime = 0.2;
-	// maxIterations
-	if (o.HasMember("maxIterations"))
-	{
-		const rapidjson::Value& valueof_maxIterations = o["maxIterations"];
-		assert(valueof_maxIterations.IsInt());
-		maxIterations = valueof_maxIterations.GetInt();
-	}
-	else
-		maxIterations = 20000;
-	// gamma
-	if (o.HasMember("gamma"))
-	{
-		const rapidjson::Value& valueof_gamma = o["gamma"];
-		assert(valueof_gamma.IsDouble());
-		gamma = valueof_gamma.GetDouble();
-	}
-	else
-		gamma = 1.4;
-	// xInterface
-	if (o.HasMember("xInterface"))
-	{
-		const rapidjson::Value& valueof_xInterface = o["xInterface"];
-		assert(valueof_xInterface.IsDouble());
-		xInterface = valueof_xInterface.GetDouble();
-	}
-	else
-		xInterface = 0.5;
-	// deltatCfl
-	if (o.HasMember("deltatCfl"))
-	{
-		const rapidjson::Value& valueof_deltatCfl = o["deltatCfl"];
-		assert(valueof_deltatCfl.IsDouble());
-		deltatCfl = valueof_deltatCfl.GetDouble();
-	}
-	else
-		deltatCfl = 0.4;
-	// rhoIniZg
-	if (o.HasMember("rhoIniZg"))
-	{
-		const rapidjson::Value& valueof_rhoIniZg = o["rhoIniZg"];
-		assert(valueof_rhoIniZg.IsDouble());
-		rhoIniZg = valueof_rhoIniZg.GetDouble();
-	}
-	else
-		rhoIniZg = 1.0;
-	// rhoIniZd
-	if (o.HasMember("rhoIniZd"))
-	{
-		const rapidjson::Value& valueof_rhoIniZd = o["rhoIniZd"];
-		assert(valueof_rhoIniZd.IsDouble());
-		rhoIniZd = valueof_rhoIniZd.GetDouble();
-	}
-	else
-		rhoIniZd = 0.125;
-	// pIniZg
-	if (o.HasMember("pIniZg"))
-	{
-		const rapidjson::Value& valueof_pIniZg = o["pIniZg"];
-		assert(valueof_pIniZg.IsDouble());
-		pIniZg = valueof_pIniZg.GetDouble();
-	}
-	else
-		pIniZg = 1.0;
-	// pIniZd
-	if (o.HasMember("pIniZd"))
-	{
-		const rapidjson::Value& valueof_pIniZd = o["pIniZd"];
-		assert(valueof_pIniZd.IsDouble());
-		pIniZd = valueof_pIniZd.GetDouble();
-	}
-	else
-		pIniZd = 0.1;
 }
 
 
@@ -346,6 +257,220 @@ void Glace2d::iniCjrIc() noexcept
 void Glace2d::iniTime() noexcept
 {
 	t_n0 = 0.0;
+}
+
+/**
+ * Job init_deltatCfl called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: deltatCfl
+ */
+void Glace2d::init_deltatCfl() noexcept
+{
+	// deltatCfl
+	rapidjson::Value::Object options = jsonDocument.GetObject();
+	if (options.HasMember("deltatCfl"))
+	{
+		const rapidjson::Value& valueof_deltatCfl = options["deltatCfl"];
+		assert(valueof_deltatCfl.IsDouble());
+		deltatCfl = valueof_deltatCfl.GetDouble();
+	}
+	else
+	{
+		deltatCfl = 0.4;
+	}
+}
+
+/**
+ * Job init_gamma called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: gamma
+ */
+void Glace2d::init_gamma() noexcept
+{
+	// gamma
+	rapidjson::Value::Object options = jsonDocument.GetObject();
+	if (options.HasMember("gamma"))
+	{
+		const rapidjson::Value& valueof_gamma = options["gamma"];
+		assert(valueof_gamma.IsDouble());
+		gamma = valueof_gamma.GetDouble();
+	}
+	else
+	{
+		gamma = 1.4;
+	}
+}
+
+/**
+ * Job init_lastDump called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: lastDump
+ */
+void Glace2d::init_lastDump() noexcept
+{
+	lastDump = numeric_limits<int>::min();
+}
+
+/**
+ * Job init_maxIterations called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: maxIterations
+ */
+void Glace2d::init_maxIterations() noexcept
+{
+	// maxIterations
+	rapidjson::Value::Object options = jsonDocument.GetObject();
+	if (options.HasMember("maxIterations"))
+	{
+		const rapidjson::Value& valueof_maxIterations = options["maxIterations"];
+		assert(valueof_maxIterations.IsInt());
+		maxIterations = valueof_maxIterations.GetInt();
+	}
+	else
+	{
+		maxIterations = 20000;
+	}
+}
+
+/**
+ * Job init_outputPeriod called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: outputPeriod
+ */
+void Glace2d::init_outputPeriod() noexcept
+{
+	// outputPeriod
+	rapidjson::Value::Object options = jsonDocument.GetObject();
+	assert(options.HasMember("outputPeriod"));
+	const rapidjson::Value& valueof_outputPeriod = options["outputPeriod"];
+	assert(valueof_outputPeriod.IsInt());
+	outputPeriod = valueof_outputPeriod.GetInt();
+}
+
+/**
+ * Job init_pIniZd called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: pIniZd
+ */
+void Glace2d::init_pIniZd() noexcept
+{
+	// pIniZd
+	rapidjson::Value::Object options = jsonDocument.GetObject();
+	if (options.HasMember("pIniZd"))
+	{
+		const rapidjson::Value& valueof_pIniZd = options["pIniZd"];
+		assert(valueof_pIniZd.IsDouble());
+		pIniZd = valueof_pIniZd.GetDouble();
+	}
+	else
+	{
+		pIniZd = 0.1;
+	}
+}
+
+/**
+ * Job init_pIniZg called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: pIniZg
+ */
+void Glace2d::init_pIniZg() noexcept
+{
+	// pIniZg
+	rapidjson::Value::Object options = jsonDocument.GetObject();
+	if (options.HasMember("pIniZg"))
+	{
+		const rapidjson::Value& valueof_pIniZg = options["pIniZg"];
+		assert(valueof_pIniZg.IsDouble());
+		pIniZg = valueof_pIniZg.GetDouble();
+	}
+	else
+	{
+		pIniZg = 1.0;
+	}
+}
+
+/**
+ * Job init_rhoIniZd called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: rhoIniZd
+ */
+void Glace2d::init_rhoIniZd() noexcept
+{
+	// rhoIniZd
+	rapidjson::Value::Object options = jsonDocument.GetObject();
+	if (options.HasMember("rhoIniZd"))
+	{
+		const rapidjson::Value& valueof_rhoIniZd = options["rhoIniZd"];
+		assert(valueof_rhoIniZd.IsDouble());
+		rhoIniZd = valueof_rhoIniZd.GetDouble();
+	}
+	else
+	{
+		rhoIniZd = 0.125;
+	}
+}
+
+/**
+ * Job init_rhoIniZg called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: rhoIniZg
+ */
+void Glace2d::init_rhoIniZg() noexcept
+{
+	// rhoIniZg
+	rapidjson::Value::Object options = jsonDocument.GetObject();
+	if (options.HasMember("rhoIniZg"))
+	{
+		const rapidjson::Value& valueof_rhoIniZg = options["rhoIniZg"];
+		assert(valueof_rhoIniZg.IsDouble());
+		rhoIniZg = valueof_rhoIniZg.GetDouble();
+	}
+	else
+	{
+		rhoIniZg = 1.0;
+	}
+}
+
+/**
+ * Job init_stopTime called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: stopTime
+ */
+void Glace2d::init_stopTime() noexcept
+{
+	// stopTime
+	rapidjson::Value::Object options = jsonDocument.GetObject();
+	if (options.HasMember("stopTime"))
+	{
+		const rapidjson::Value& valueof_stopTime = options["stopTime"];
+		assert(valueof_stopTime.IsDouble());
+		stopTime = valueof_stopTime.GetDouble();
+	}
+	else
+	{
+		stopTime = 0.2;
+	}
+}
+
+/**
+ * Job init_xInterface called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: xInterface
+ */
+void Glace2d::init_xInterface() noexcept
+{
+	// xInterface
+	rapidjson::Value::Object options = jsonDocument.GetObject();
+	if (options.HasMember("xInterface"))
+	{
+		const rapidjson::Value& valueof_xInterface = options["xInterface"];
+		assert(valueof_xInterface.IsDouble());
+		xInterface = valueof_xInterface.GetDouble();
+	}
+	else
+	{
+		xInterface = 0.5;
+	}
 }
 
 /**
@@ -480,7 +605,7 @@ void Glace2d::computeDensity() noexcept
 
 /**
  * Job executeTimeLoopN called @3.0 in simulate method.
- * In variables: E_n, X_n, t_n, uj_n
+ * In variables: E_n, X_n, lastDump, maxIterations, n, outputPeriod, stopTime, t_n, t_nplus1, uj_n
  * Out variables: E_nplus1, X_nplus1, t_nplus1, uj_nplus1
  */
 void Glace2d::executeTimeLoopN() noexcept
@@ -992,6 +1117,17 @@ void Glace2d::simulate()
 
 	iniCjrIc(); // @1.0
 	iniTime(); // @1.0
+	init_deltatCfl(); // @1.0
+	init_gamma(); // @1.0
+	init_lastDump(); // @1.0
+	init_maxIterations(); // @1.0
+	init_outputPeriod(); // @1.0
+	init_pIniZd(); // @1.0
+	init_pIniZg(); // @1.0
+	init_rhoIniZd(); // @1.0
+	init_rhoIniZg(); // @1.0
+	init_stopTime(); // @1.0
+	init_xInterface(); // @1.0
 	initialize(); // @2.0
 	setUpTimeLoopN(); // @2.0
 	executeTimeLoopN(); // @3.0

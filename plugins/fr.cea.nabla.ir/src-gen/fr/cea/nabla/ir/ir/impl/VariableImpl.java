@@ -3,6 +3,7 @@
 package fr.cea.nabla.ir.ir.impl;
 
 import fr.cea.nabla.ir.ir.Expression;
+import fr.cea.nabla.ir.ir.InitVariableJob;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.Job;
 import fr.cea.nabla.ir.ir.Variable;
@@ -30,6 +31,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#isOption <em>Option</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#getProducerJobs <em>Producer Jobs</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#getConsumerJobs <em>Consumer Jobs</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#getInitJob <em>Init Job</em>}</li>
  * </ul>
  *
  * @generated
@@ -117,6 +119,15 @@ public class VariableImpl extends ArgOrVarImpl implements Variable {
 	 * @ordered
 	 */
 	protected EList<Job> consumerJobs;
+	/**
+	 * The cached value of the '{@link #getInitJob() <em>Init Job</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getInitJob()
+	 * @generated
+	 * @ordered
+	 */
+	protected InitVariableJob initJob;
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -281,6 +292,68 @@ public class VariableImpl extends ArgOrVarImpl implements Variable {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
+	public InitVariableJob getInitJob() {
+		if (initJob != null && initJob.eIsProxy()) {
+			InternalEObject oldInitJob = (InternalEObject)initJob;
+			initJob = (InitVariableJob)eResolveProxy(oldInitJob);
+			if (initJob != oldInitJob) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.VARIABLE__INIT_JOB, oldInitJob, initJob));
+			}
+		}
+		return initJob;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public InitVariableJob basicGetInitJob() {
+		return initJob;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetInitJob(InitVariableJob newInitJob, NotificationChain msgs) {
+		InitVariableJob oldInitJob = initJob;
+		initJob = newInitJob;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.VARIABLE__INIT_JOB, oldInitJob, newInitJob);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setInitJob(InitVariableJob newInitJob) {
+		if (newInitJob != initJob) {
+			NotificationChain msgs = null;
+			if (initJob != null)
+				msgs = ((InternalEObject)initJob).eInverseRemove(this, IrPackage.INIT_VARIABLE_JOB__TARGET, InitVariableJob.class, msgs);
+			if (newInitJob != null)
+				msgs = ((InternalEObject)newInitJob).eInverseAdd(this, IrPackage.INIT_VARIABLE_JOB__TARGET, InitVariableJob.class, msgs);
+			msgs = basicSetInitJob(newInitJob, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.VARIABLE__INIT_JOB, newInitJob, newInitJob));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
@@ -289,6 +362,10 @@ public class VariableImpl extends ArgOrVarImpl implements Variable {
 				return ((InternalEList<InternalEObject>)(InternalEList<?>)getProducerJobs()).basicAdd(otherEnd, msgs);
 			case IrPackage.VARIABLE__CONSUMER_JOBS:
 				return ((InternalEList<InternalEObject>)(InternalEList<?>)getConsumerJobs()).basicAdd(otherEnd, msgs);
+			case IrPackage.VARIABLE__INIT_JOB:
+				if (initJob != null)
+					msgs = ((InternalEObject)initJob).eInverseRemove(this, IrPackage.INIT_VARIABLE_JOB__TARGET, InitVariableJob.class, msgs);
+				return basicSetInitJob((InitVariableJob)otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
@@ -307,6 +384,8 @@ public class VariableImpl extends ArgOrVarImpl implements Variable {
 				return ((InternalEList<?>)getProducerJobs()).basicRemove(otherEnd, msgs);
 			case IrPackage.VARIABLE__CONSUMER_JOBS:
 				return ((InternalEList<?>)getConsumerJobs()).basicRemove(otherEnd, msgs);
+			case IrPackage.VARIABLE__INIT_JOB:
+				return basicSetInitJob(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -331,6 +410,9 @@ public class VariableImpl extends ArgOrVarImpl implements Variable {
 				return getProducerJobs();
 			case IrPackage.VARIABLE__CONSUMER_JOBS:
 				return getConsumerJobs();
+			case IrPackage.VARIABLE__INIT_JOB:
+				if (resolve) return getInitJob();
+				return basicGetInitJob();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -364,6 +446,9 @@ public class VariableImpl extends ArgOrVarImpl implements Variable {
 				getConsumerJobs().clear();
 				getConsumerJobs().addAll((Collection<? extends Job>)newValue);
 				return;
+			case IrPackage.VARIABLE__INIT_JOB:
+				setInitJob((InitVariableJob)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -394,6 +479,9 @@ public class VariableImpl extends ArgOrVarImpl implements Variable {
 			case IrPackage.VARIABLE__CONSUMER_JOBS:
 				getConsumerJobs().clear();
 				return;
+			case IrPackage.VARIABLE__INIT_JOB:
+				setInitJob((InitVariableJob)null);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -418,6 +506,8 @@ public class VariableImpl extends ArgOrVarImpl implements Variable {
 				return producerJobs != null && !producerJobs.isEmpty();
 			case IrPackage.VARIABLE__CONSUMER_JOBS:
 				return consumerJobs != null && !consumerJobs.isEmpty();
+			case IrPackage.VARIABLE__INIT_JOB:
+				return initJob != null;
 		}
 		return super.eIsSet(featureID);
 	}

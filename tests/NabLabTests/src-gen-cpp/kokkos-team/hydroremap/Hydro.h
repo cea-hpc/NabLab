@@ -9,6 +9,7 @@
 #include <limits>
 #include <utility>
 #include <cmath>
+#include <rapidjson/document.h>
 #include <Kokkos_Core.hpp>
 #include <Kokkos_hwloc.hpp>
 #include "nablalib/utils/Utils.h"
@@ -42,6 +43,12 @@ public:
 	KOKKOS_INLINE_FUNCTION
 	void hj1(const member_type& teamMember) noexcept;
 	KOKKOS_INLINE_FUNCTION
+	void init_deltat() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void init_maxIter() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void init_maxTime() noexcept;
+	KOKKOS_INLINE_FUNCTION
 	void hj2(const member_type& teamMember) noexcept;
 	KOKKOS_INLINE_FUNCTION
 	void hj3(const member_type& teamMember) noexcept;
@@ -54,6 +61,9 @@ private:
 	 */
 	const std::pair<size_t, size_t> computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept;
 
+	// Json block of options
+	rapidjson::Document jsonDocument;
+
 	// Mesh and mesh variables
 	CartesianMesh2D& mesh;
 	size_t nbNodes, nbCells;
@@ -62,7 +72,7 @@ private:
 	R1* r1;
 	R2* r2;
 
-	// Option and global variables
+	// Options and global variables
 	double maxTime;
 	int maxIter;
 	double deltat;

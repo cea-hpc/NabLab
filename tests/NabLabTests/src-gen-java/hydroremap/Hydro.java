@@ -15,6 +15,9 @@ import fr.cea.nabla.javalib.mesh.*;
 
 public final class Hydro
 {
+	// Json block of options
+	private JsonObject options;
+
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
 	@SuppressWarnings("unused")
@@ -24,11 +27,11 @@ public final class Hydro
 	protected R1 r1;
 	protected R2 r2;
 
-	// Option and global variables
+	// Options and global variables
 	double maxTime;
 	int maxIter;
 	double deltat;
-	final double t;
+	static final double t = 0.0;
 	double[][] X;
 	double[] hv1;
 	double[] hv2;
@@ -44,9 +47,6 @@ public final class Hydro
 		mesh = aMesh;
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
-
-		// Initialize variables with default values
-		t = 0.0;
 
 		// Allocate arrays
 		X = new double[nbNodes][2];
@@ -70,34 +70,7 @@ public final class Hydro
 	public void jsonInit(final String jsonContent)
 	{
 		final Gson gson = new Gson();
-		final JsonObject o = gson.fromJson(jsonContent, JsonObject.class);
-		// maxTime
-		if (o.has("maxTime"))
-		{
-			final JsonElement valueof_maxTime = o.get("maxTime");
-			assert(valueof_maxTime.isJsonPrimitive());
-			maxTime = valueof_maxTime.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			maxTime = 0.1;
-		// maxIter
-		if (o.has("maxIter"))
-		{
-			final JsonElement valueof_maxIter = o.get("maxIter");
-			assert(valueof_maxIter.isJsonPrimitive());
-			maxIter = valueof_maxIter.getAsJsonPrimitive().getAsInt();
-		}
-		else
-			maxIter = 500;
-		// deltat
-		if (o.has("deltat"))
-		{
-			final JsonElement valueof_deltat = o.get("deltat");
-			assert(valueof_deltat.isJsonPrimitive());
-			deltat = valueof_deltat.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			deltat = 1.0;
+		options = gson.fromJson(jsonContent, JsonObject.class);
 	}
 
 	/**
@@ -111,6 +84,63 @@ public final class Hydro
 		{
 			hv3[cCells] = hv2[cCells];
 		});
+	}
+
+	/**
+	 * Job init_deltat called @1.0 in simulate method.
+	 * In variables: 
+	 * Out variables: deltat
+	 */
+	protected void init_deltat()
+	{
+		if (options.has("deltat"))
+		{
+			final JsonElement valueof_deltat = options.get("deltat");
+			assert(valueof_deltat.isJsonPrimitive());
+			deltat = valueof_deltat.getAsJsonPrimitive().getAsDouble();
+		}
+		else
+		{
+			deltat = 1.0;
+		}
+	}
+
+	/**
+	 * Job init_maxIter called @1.0 in simulate method.
+	 * In variables: 
+	 * Out variables: maxIter
+	 */
+	protected void init_maxIter()
+	{
+		if (options.has("maxIter"))
+		{
+			final JsonElement valueof_maxIter = options.get("maxIter");
+			assert(valueof_maxIter.isJsonPrimitive());
+			maxIter = valueof_maxIter.getAsJsonPrimitive().getAsInt();
+		}
+		else
+		{
+			maxIter = 500;
+		}
+	}
+
+	/**
+	 * Job init_maxTime called @1.0 in simulate method.
+	 * In variables: 
+	 * Out variables: maxTime
+	 */
+	protected void init_maxTime()
+	{
+		if (options.has("maxTime"))
+		{
+			final JsonElement valueof_maxTime = options.get("maxTime");
+			assert(valueof_maxTime.isJsonPrimitive());
+			maxTime = valueof_maxTime.getAsJsonPrimitive().getAsDouble();
+		}
+		else
+		{
+			maxTime = 0.1;
+		}
 	}
 
 	/**
@@ -143,6 +173,9 @@ public final class Hydro
 	{
 		System.out.println("Start execution of hydro");
 		hj1(); // @1.0
+		init_deltat(); // @1.0
+		init_maxIter(); // @1.0
+		init_maxTime(); // @1.0
 		r1.rj1(); // @1.0
 		hj2(); // @2.0
 		r2.rj1(); // @2.0

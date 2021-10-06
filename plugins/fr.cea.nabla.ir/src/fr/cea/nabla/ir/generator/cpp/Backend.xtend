@@ -51,9 +51,9 @@ class SequentialBackend extends Backend
 		functionContentProvider = new DefaultFunctionContentProvider(typeContentProvider, expressionContentProvider, instructionContentProvider)
 		traceContentProvider = new TraceContentProvider
 		includesContentProvider = new IncludesContentProvider
-		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
+		jsonContentProvider = new JsonContentProvider(expressionContentProvider, instructionContentProvider)
 		jobCallerContentProvider = new JobCallerContentProvider
-		jobContentProvider = new StlThreadJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider)
+		jobContentProvider = new StlThreadJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider, jsonContentProvider)
 		mainContentProvider = new MainContentProvider(jsonContentProvider)
 	}
 }
@@ -70,9 +70,9 @@ class StlThreadBackend extends Backend
 		functionContentProvider = new DefaultFunctionContentProvider(typeContentProvider, expressionContentProvider, instructionContentProvider)
 		traceContentProvider = new TraceContentProvider
 		includesContentProvider = new StlThreadIncludesContentProvider
-		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
+		jsonContentProvider = new JsonContentProvider(expressionContentProvider, instructionContentProvider)
 		jobCallerContentProvider = new JobCallerContentProvider
-		jobContentProvider = new StlThreadJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider)
+		jobContentProvider = new StlThreadJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider, jsonContentProvider)
 		mainContentProvider = new MainContentProvider(jsonContentProvider)
 	}
 }
@@ -89,9 +89,9 @@ class KokkosBackend extends Backend
 		functionContentProvider = new KokkosFunctionContentProvider(typeContentProvider, expressionContentProvider, instructionContentProvider)
 		traceContentProvider = new KokkosTraceContentProvider
 		includesContentProvider = new KokkosIncludesContentProvider
-		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
+		jsonContentProvider = new JsonContentProvider(expressionContentProvider, instructionContentProvider)
 		jobCallerContentProvider = new JobCallerContentProvider
-		jobContentProvider = new KokkosJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider)
+		jobContentProvider = new KokkosJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider, jsonContentProvider)
 		mainContentProvider = new KokkosMainContentProvider(jsonContentProvider)
 	}
 }
@@ -108,9 +108,9 @@ class KokkosTeamThreadBackend extends Backend
 		functionContentProvider = new KokkosFunctionContentProvider(typeContentProvider, expressionContentProvider, instructionContentProvider)
 		traceContentProvider = new KokkosTraceContentProvider
 		includesContentProvider = new KokkosIncludesContentProvider
-		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
+		jsonContentProvider = new JsonContentProvider(expressionContentProvider, instructionContentProvider)
 		jobCallerContentProvider = new KokkosTeamThreadJobCallerContentProvider
-		jobContentProvider = new KokkosTeamThreadJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider)
+		jobContentProvider = new KokkosTeamThreadJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider, jsonContentProvider)
 		mainContentProvider = new KokkosMainContentProvider(jsonContentProvider)
 	}
 }
@@ -127,9 +127,9 @@ class OpenMpBackend extends Backend
 		functionContentProvider = new DefaultFunctionContentProvider(typeContentProvider, expressionContentProvider, instructionContentProvider)
 		traceContentProvider = new TraceContentProvider
 		includesContentProvider = new OpenMpIncludesContentProvider
-		jsonContentProvider = new JsonContentProvider(expressionContentProvider)
+		jsonContentProvider = new JsonContentProvider(expressionContentProvider, instructionContentProvider)
 		jobCallerContentProvider = new JobCallerContentProvider
-		jobContentProvider = new StlThreadJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider)
+		jobContentProvider = new StlThreadJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider, jsonContentProvider)
 		mainContentProvider = new MainContentProvider(jsonContentProvider)
 	}
 }

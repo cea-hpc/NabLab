@@ -15,22 +15,29 @@ import fr.cea.nabla.javalib.mesh.*;
 
 public final class Variables
 {
+	// Json block of options
+	private JsonObject options;
+
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
 	@SuppressWarnings("unused")
 	private final int nbNodes, maxCellsOfNode;
 
-	// Option and global variables
-	final double maxTime;
-	final int maxIter;
-	final double deltat;
+	// Options and global variables
+	static final double maxTime = 0.1;
+	static final int maxIter = 500;
+	static final double deltat = 1.0;
 	double t;
-	final int dim;
+	double[] arrayOption;
+	static final int dim = 2;
 	double[] v1;
 	double[] v2;
 	double[][] X;
 	int unknownDim;
 	double[] dynamicArray;
+	int optionDim;
+	double[] dynamicOptArray;
+	double[] optionArray;
 
 	public Variables(CartesianMesh2D aMesh)
 	{
@@ -39,17 +46,11 @@ public final class Variables
 		nbNodes = mesh.getNbNodes();
 		maxCellsOfNode = CartesianMesh2D.MaxNbCellsOfNode;
 
-		// Initialize variables with default values
-		maxTime = 0.1;
-		maxIter = 500;
-		deltat = 1.0;
-		dim = 2;
-
 		// Allocate arrays
+		arrayOption = new double[2];
 		v1 = new double[2];
 		v2 = new double[dim];
 		X = new double[nbNodes][dim];
-		dynamicArray = new double[unknownDim];
 
 		// Copy node coordinates
 		double[][] gNodes = mesh.getGeometry().getNodes();
@@ -63,7 +64,38 @@ public final class Variables
 	public void jsonInit(final String jsonContent)
 	{
 		final Gson gson = new Gson();
-		final JsonObject o = gson.fromJson(jsonContent, JsonObject.class);
+		options = gson.fromJson(jsonContent, JsonObject.class);
+	}
+
+	/**
+	 * Job init_arrayOption called @1.0 in simulate method.
+	 * In variables: 
+	 * Out variables: arrayOption
+	 */
+	protected void init_arrayOption()
+	{
+		assert(options.has("arrayOption"));
+		final JsonElement valueof_arrayOption = options.get("arrayOption");
+		assert(valueof_arrayOption.isJsonArray());
+		assert(valueof_arrayOption.getAsJsonArray().size() == 2);
+		for (int i1=0 ; i1<2 ; i1++)
+		{
+			assert(valueof_arrayOption.getAsJsonArray().get(i1).isJsonPrimitive());
+			arrayOption[i1] = valueof_arrayOption.getAsJsonArray().get(i1).getAsJsonPrimitive().getAsDouble();
+		}
+	}
+
+	/**
+	 * Job init_optionDim called @1.0 in simulate method.
+	 * In variables: 
+	 * Out variables: optionDim
+	 */
+	protected void init_optionDim()
+	{
+		assert(options.has("optionDim"));
+		final JsonElement valueof_optionDim = options.get("optionDim");
+		assert(valueof_optionDim.isJsonPrimitive());
+		optionDim = valueof_optionDim.getAsJsonPrimitive().getAsInt();
 	}
 
 	/**
@@ -81,10 +113,65 @@ public final class Variables
 		});
 	}
 
+	/**
+	 * Job setUnknownDim called @1.0 in simulate method.
+	 * In variables: 
+	 * Out variables: unknownDim
+	 */
+	protected void setUnknownDim()
+	{
+		unknownDim = 4;
+	}
+
+	/**
+	 * Job init_dynamicArray called @2.0 in simulate method.
+	 * In variables: unknownDim
+	 * Out variables: dynamicArray
+	 */
+	protected void init_dynamicArray()
+	{
+		dynamicArray = new double[unknownDim];
+	}
+
+	/**
+	 * Job init_dynamicOptArray called @2.0 in simulate method.
+	 * In variables: optionDim
+	 * Out variables: dynamicOptArray
+	 */
+	protected void init_dynamicOptArray()
+	{
+		dynamicOptArray = new double[optionDim];
+	}
+
+	/**
+	 * Job init_optionArray called @2.0 in simulate method.
+	 * In variables: optionDim
+	 * Out variables: optionArray
+	 */
+	protected void init_optionArray()
+	{
+		optionArray = new double[optionDim];
+		assert(options.has("optionArray"));
+		final JsonElement valueof_optionArray = options.get("optionArray");
+		assert(valueof_optionArray.isJsonArray());
+		assert(valueof_optionArray.getAsJsonArray().size() == optionDim);
+		for (int i1=0 ; i1<optionDim ; i1++)
+		{
+			assert(valueof_optionArray.getAsJsonArray().get(i1).isJsonPrimitive());
+			optionArray[i1] = valueof_optionArray.getAsJsonArray().get(i1).getAsJsonPrimitive().getAsDouble();
+		}
+	}
+
 	public void simulate()
 	{
 		System.out.println("Start execution of variables");
+		init_arrayOption(); // @1.0
+		init_optionDim(); // @1.0
 		newVar(); // @1.0
+		setUnknownDim(); // @1.0
+		init_dynamicArray(); // @2.0
+		init_dynamicOptArray(); // @2.0
+		init_optionArray(); // @2.0
 		System.out.println("End of execution of variables");
 	}
 

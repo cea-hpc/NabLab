@@ -13,7 +13,6 @@ import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.generator.ApplicationGenerator
 import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.generator.Utils
-import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.IrModule
@@ -83,6 +82,9 @@ class JavaApplicationGenerator implements ApplicationGenerator
 
 		public final class «className»
 		{
+			// Json block of options
+			private JsonObject options;
+
 			// Mesh and mesh variables
 			private final «irRoot.mesh.className» mesh;
 			@SuppressWarnings("unused")
@@ -100,7 +102,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 				«ENDIF»
 
 			«ENDIF»
-			// Option and global variables
+			// Options and global variables
 			«IF postProcessing !== null»
 				private PvdFileWriter2D writer;
 				private String «IrUtils.OutputPathNameAndValue.key»;
@@ -112,8 +114,11 @@ class JavaApplicationGenerator implements ApplicationGenerator
 				private String «IrUtils.NonRegressionNameAndValue.key»;
 			«ENDIF»
 			«FOR v : variables»
-				««« package visibility for multi modules
-				«IF v.const»final «ENDIF»«v.type.javaType» «v.name»;
+				«IF v.constExpr»
+					static final «v.type.javaType» «v.name» = «v.defaultValue.content»;
+				«ELSE»
+					«IF v.const»final «ENDIF»«v.type.javaType» «v.name»;
+				«ENDIF»
 			«ENDFOR»
 
 			public «className»(«irRoot.mesh.className» aMesh)
@@ -124,14 +129,9 @@ class JavaApplicationGenerator implements ApplicationGenerator
 					«c.nbElemsVar» = «c.connectivityAccessor»;
 				«ENDFOR»
 
-				// Initialize variables with default values
-				«FOR v : variables.filter[x | !x.option && x.defaultValue !== null]»
-					«v.name» = «v.defaultValue.content»;
-				«ENDFOR»
-
 				// Allocate arrays
-				«FOR v : variables.filter[!option && defaultValue === null && !type.scalar]»
-						«v.name»«getJavaAllocation(v.type, v.name)»;
+				«FOR v : variables.filter[!constExpr && !type.scalar && !type.dynamicBaseType]»
+					«v.name»«getJavaAllocation(v.type, v.name)»;
 				«ENDFOR»
 				«IF main»
 
@@ -148,31 +148,28 @@ class JavaApplicationGenerator implements ApplicationGenerator
 			public void jsonInit(final String jsonContent)
 			{
 				final Gson gson = new Gson();
-				final JsonObject o = gson.fromJson(jsonContent, JsonObject.class);
+				options = gson.fromJson(jsonContent, JsonObject.class);
 				«IF postProcessing !== null»
 				«val opName = IrUtils.OutputPathNameAndValue.key»
 				// «opName»
-				assert(o.has("«opName»"));
-				final JsonElement «opName.jsonName» = o.get("«opName»");
+				assert(options.has("«opName»"));
+				final JsonElement «opName.jsonName» = options.get("«opName»");
 				«opName» = «opName.jsonName».getAsJsonPrimitive().getAsString();
 				writer = new PvdFileWriter2D("«irRoot.name»", «opName»);
 				«ENDIF»
-				«FOR v : options»
-				«getJsonContent(v.name, v.type as BaseType, v.defaultValue)»
-				«ENDFOR»
 				«FOR v : externalProviders»
 				«val vName = v.instanceName»
 				// «vName»
 				«vName» = new «v.packageName».«v.className»();
-				if (o.has("«vName»"))
-					«vName».jsonInit(o.get("«vName»").toString());
+				if (options.has("«vName»"))
+					«vName».jsonInit(options.get("«vName»").toString());
 				«ENDFOR»
 				«val nrName = IrUtils.NonRegressionNameAndValue.key»
 				«IF levelDB»
 				// Non regression
-				if (o.has("«nrName»"))
+				if (options.has("«nrName»"))
 				{
-					final JsonElement «nrName.jsonName» = o.get("«nrName»");
+					final JsonElement «nrName.jsonName» = options.get("«nrName»");
 					«nrName» = «nrName.jsonName».getAsJsonPrimitive().getAsString();
 				}
 				«ENDIF»

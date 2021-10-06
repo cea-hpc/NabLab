@@ -19,6 +19,7 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link fr.cea.nabla.ir.ir.Variable#isOption <em>Option</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Variable#getProducerJobs <em>Producer Jobs</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Variable#getConsumerJobs <em>Consumer Jobs</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.Variable#getInitJob <em>Init Job</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getVariable()
@@ -143,5 +144,29 @@ public interface Variable extends ArgOrVar {
 	 * @generated
 	 */
 	EList<Job> getConsumerJobs();
+
+	/**
+	 * Returns the value of the '<em><b>Init Job</b></em>' reference.
+	 * It is bidirectional and its opposite is '{@link fr.cea.nabla.ir.ir.InitVariableJob#getTarget <em>Target</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Init Job</em>' reference.
+	 * @see #setInitJob(InitVariableJob)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getVariable_InitJob()
+	 * @see fr.cea.nabla.ir.ir.InitVariableJob#getTarget
+	 * @model opposite="target"
+	 * @generated
+	 */
+	InitVariableJob getInitJob();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Variable#getInitJob <em>Init Job</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Init Job</em>' reference.
+	 * @see #getInitJob()
+	 * @generated
+	 */
+	void setInitJob(InitVariableJob value);
 
 } // Variable

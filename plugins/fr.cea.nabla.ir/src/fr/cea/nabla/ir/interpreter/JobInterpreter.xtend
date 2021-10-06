@@ -10,6 +10,8 @@
 package fr.cea.nabla.ir.interpreter
 
 import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
+import fr.cea.nabla.ir.ir.InitVariableJob
+import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
@@ -17,6 +19,7 @@ import java.util.Locale
 
 import static fr.cea.nabla.ir.interpreter.ExpressionInterpreter.*
 import static fr.cea.nabla.ir.interpreter.InstructionInterpreter.*
+import static fr.cea.nabla.ir.interpreter.VariableValueFactory.*
 
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.JobCallerExtensions.*
@@ -27,10 +30,12 @@ class JobInterpreter
 	// Switch to more efficient dispatch (also clearer for profiling)
 	static def void interprete(Job j, Context context)
 	{
-		if (j instanceof ExecuteTimeLoopJob)
-			interpreteExecuteTimeLoopJob(j, context)
-		else
-			interpreteJob(j, context)
+		switch j
+		{
+			InitVariableJob: interpreteInitJob(j, context)
+			ExecuteTimeLoopJob: interpreteExecuteTimeLoopJob(j, context)
+			default: interpreteJob(j, context)
+		}
 	}
 
 	private static def void interpreteJob(Job it, Context context)
@@ -38,6 +43,36 @@ class JobInterpreter
 		context.logFiner("Interprete Job " + name + " @ " + at)
 		val innerContext = new Context(context)
 		interprete(instruction, innerContext)
+	}
+
+	private static def void interpreteInitJob(InitVariableJob it, Context context)
+	{
+		context.logFiner("Interprete InitVariableJob " + name + " @ " + at)
+		val innerContext = new Context(context)
+		if (target.type.dynamicBaseType)
+			context.addVariableValue(target, createValue(target.type, target.name, target.defaultValue, context))
+		if (target.option)
+		{
+			val module = eContainer as IrModule
+			val moduleOptions = context.options.get(module)
+			if (moduleOptions !== null && moduleOptions.has(target.name))
+			{
+				val vValue = context.getVariableValue(target)
+				val jsonOpt = moduleOptions.get(target.name)
+				NablaValueJsonSetter::setValue(vValue, jsonOpt)
+			}
+			else
+			{
+				if (instruction === null)
+					// v is not present in json file and is mandatory 
+					// (no instruction to set default value)
+					throw new IllegalStateException("Mandatory option missing in Json file: " + target.name)
+				else
+					InstructionInterpreter.interprete(instruction, innerContext)
+			}
+		}
+		else if (instruction !== null)
+			interprete(instruction, innerContext)
 	}
 
 	private static def void interpreteExecuteTimeLoopJob(ExecuteTimeLoopJob it, Context context)

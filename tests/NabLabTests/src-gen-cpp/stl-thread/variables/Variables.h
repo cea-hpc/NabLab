@@ -9,6 +9,7 @@
 #include <limits>
 #include <utility>
 #include <cmath>
+#include <rapidjson/document.h>
 #include "nablalib/utils/Utils.h"
 #include "nablalib/utils/Timer.h"
 #include "nablalib/types/Types.h"
@@ -30,24 +31,37 @@ public:
 	void jsonInit(const char* jsonContent);
 
 	void simulate();
+	void init_arrayOption() noexcept;
+	void init_optionDim() noexcept;
 	void newVar() noexcept;
+	void setUnknownDim() noexcept;
+	void init_dynamicArray() noexcept;
+	void init_dynamicOptArray() noexcept;
+	void init_optionArray() noexcept;
 
 private:
+	// Json block of options
+	rapidjson::Document jsonDocument;
+
 	// Mesh and mesh variables
 	CartesianMesh2D& mesh;
 	size_t nbNodes, maxCellsOfNode;
 
-	// Option and global variables
+	// Options and global variables
 	static constexpr double maxTime = 0.1;
 	static constexpr int maxIter = 500;
 	static constexpr double deltat = 1.0;
 	double t;
+	RealArray1D<2> arrayOption;
 	static constexpr int dim = 2;
 	RealArray1D<2> v1;
 	RealArray1D<dim> v2;
 	std::vector<RealArray1D<dim>> X;
 	int unknownDim;
 	RealArray1D<0> dynamicArray;
+	int optionDim;
+	RealArray1D<0> dynamicOptArray;
+	RealArray1D<0> optionArray;
 
 	// Timers
 	Timer globalTimer;

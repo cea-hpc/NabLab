@@ -40,38 +40,9 @@ Hydro::~Hydro()
 void
 Hydro::jsonInit(const char* jsonContent)
 {
-	rapidjson::Document document;
-	assert(!document.Parse(jsonContent).HasParseError());
-	assert(document.IsObject());
-	const rapidjson::Value::Object& o = document.GetObject();
-
-	// maxTime
-	if (o.HasMember("maxTime"))
-	{
-		const rapidjson::Value& valueof_maxTime = o["maxTime"];
-		assert(valueof_maxTime.IsDouble());
-		maxTime = valueof_maxTime.GetDouble();
-	}
-	else
-		maxTime = 0.1;
-	// maxIter
-	if (o.HasMember("maxIter"))
-	{
-		const rapidjson::Value& valueof_maxIter = o["maxIter"];
-		assert(valueof_maxIter.IsInt());
-		maxIter = valueof_maxIter.GetInt();
-	}
-	else
-		maxIter = 500;
-	// deltat
-	if (o.HasMember("deltat"))
-	{
-		const rapidjson::Value& valueof_deltat = o["deltat"];
-		assert(valueof_deltat.IsDouble());
-		deltat = valueof_deltat.GetDouble();
-	}
-	else
-		deltat = 1.0;
+	assert(!jsonDocument.Parse(jsonContent).HasParseError());
+	assert(jsonDocument.IsObject());
+	rapidjson::Value::Object options = jsonDocument.GetObject();
 }
 
 
@@ -86,6 +57,69 @@ void Hydro::hj1() noexcept
 	{
 		hv3[cCells] = hv2[cCells];
 	});
+}
+
+/**
+ * Job init_deltat called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: deltat
+ */
+void Hydro::init_deltat() noexcept
+{
+	// deltat
+	rapidjson::Value::Object options = jsonDocument.GetObject();
+	if (options.HasMember("deltat"))
+	{
+		const rapidjson::Value& valueof_deltat = options["deltat"];
+		assert(valueof_deltat.IsDouble());
+		deltat = valueof_deltat.GetDouble();
+	}
+	else
+	{
+		deltat = 1.0;
+	}
+}
+
+/**
+ * Job init_maxIter called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: maxIter
+ */
+void Hydro::init_maxIter() noexcept
+{
+	// maxIter
+	rapidjson::Value::Object options = jsonDocument.GetObject();
+	if (options.HasMember("maxIter"))
+	{
+		const rapidjson::Value& valueof_maxIter = options["maxIter"];
+		assert(valueof_maxIter.IsInt());
+		maxIter = valueof_maxIter.GetInt();
+	}
+	else
+	{
+		maxIter = 500;
+	}
+}
+
+/**
+ * Job init_maxTime called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: maxTime
+ */
+void Hydro::init_maxTime() noexcept
+{
+	// maxTime
+	rapidjson::Value::Object options = jsonDocument.GetObject();
+	if (options.HasMember("maxTime"))
+	{
+		const rapidjson::Value& valueof_maxTime = options["maxTime"];
+		assert(valueof_maxTime.IsDouble());
+		maxTime = valueof_maxTime.GetDouble();
+	}
+	else
+	{
+		maxTime = 0.1;
+	}
 }
 
 /**
@@ -123,6 +157,9 @@ void Hydro::simulate()
 	std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    " << __BOLD__ << "Disabled" << __RESET__ << std::endl;
 
 	hj1(); // @1.0
+	init_deltat(); // @1.0
+	init_maxIter(); // @1.0
+	init_maxTime(); // @1.0
 	r1->rj1(); // @1.0
 	hj2(); // @2.0
 	r2->rj1(); // @2.0

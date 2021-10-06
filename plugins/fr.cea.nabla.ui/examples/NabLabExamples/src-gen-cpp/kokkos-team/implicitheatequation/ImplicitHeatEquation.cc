@@ -73,8 +73,6 @@ ImplicitHeatEquation::ImplicitHeatEquation(CartesianMesh2D& aMesh)
 , maxNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
 , maxCellsOfFace(CartesianMesh2D::MaxNbCellsOfFace)
 , maxNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
-, lastDump(numeric_limits<int>::min())
-, deltat(0.001)
 , X("X", nbNodes)
 , Xc("Xc", nbCells)
 , u_n("u_n", nbCells)
@@ -101,55 +99,21 @@ ImplicitHeatEquation::~ImplicitHeatEquation()
 void
 ImplicitHeatEquation::jsonInit(const char* jsonContent)
 {
-	rapidjson::Document document;
-	assert(!document.Parse(jsonContent).HasParseError());
-	assert(document.IsObject());
-	const rapidjson::Value::Object& o = document.GetObject();
-
+	assert(!jsonDocument.Parse(jsonContent).HasParseError());
+	assert(jsonDocument.IsObject());
+	rapidjson::Value::Object options = jsonDocument.GetObject();
 	// outputPath
-	assert(o.HasMember("outputPath"));
-	const rapidjson::Value& valueof_outputPath = o["outputPath"];
+	assert(options.HasMember("outputPath"));
+	const rapidjson::Value& valueof_outputPath = options["outputPath"];
 	assert(valueof_outputPath.IsString());
 	outputPath = valueof_outputPath.GetString();
 	writer = new PvdFileWriter2D("ImplicitHeatEquation", outputPath);
-	// outputPeriod
-	assert(o.HasMember("outputPeriod"));
-	const rapidjson::Value& valueof_outputPeriod = o["outputPeriod"];
-	assert(valueof_outputPeriod.IsInt());
-	outputPeriod = valueof_outputPeriod.GetInt();
-	// u0
-	if (o.HasMember("u0"))
-	{
-		const rapidjson::Value& valueof_u0 = o["u0"];
-		assert(valueof_u0.IsDouble());
-		u0 = valueof_u0.GetDouble();
-	}
-	else
-		u0 = 1.0;
-	// stopTime
-	if (o.HasMember("stopTime"))
-	{
-		const rapidjson::Value& valueof_stopTime = o["stopTime"];
-		assert(valueof_stopTime.IsDouble());
-		stopTime = valueof_stopTime.GetDouble();
-	}
-	else
-		stopTime = 1.0;
-	// maxIterations
-	if (o.HasMember("maxIterations"))
-	{
-		const rapidjson::Value& valueof_maxIterations = o["maxIterations"];
-		assert(valueof_maxIterations.IsInt());
-		maxIterations = valueof_maxIterations.GetInt();
-	}
-	else
-		maxIterations = 500000000;
 	// linearAlgebra
-	if (o.HasMember("linearAlgebra"))
+	if (options.HasMember("linearAlgebra"))
 	{
 		rapidjson::StringBuffer strbuf;
 		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
-		o["linearAlgebra"].Accept(writer);
+		options["linearAlgebra"].Accept(writer);
 		linearAlgebra.jsonInit(strbuf.GetString());
 	}
 }
@@ -319,6 +283,104 @@ void ImplicitHeatEquation::initXc(const member_type& teamMember) noexcept
 }
 
 /**
+ * Job init_deltat called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: deltat
+ */
+void ImplicitHeatEquation::init_deltat() noexcept
+{
+	deltat = 0.001;
+}
+
+/**
+ * Job init_lastDump called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: lastDump
+ */
+void ImplicitHeatEquation::init_lastDump() noexcept
+{
+	lastDump = numeric_limits<int>::min();
+}
+
+/**
+ * Job init_maxIterations called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: maxIterations
+ */
+void ImplicitHeatEquation::init_maxIterations() noexcept
+{
+	// maxIterations
+	rapidjson::Value::Object options = jsonDocument.GetObject();
+	if (options.HasMember("maxIterations"))
+	{
+		const rapidjson::Value& valueof_maxIterations = options["maxIterations"];
+		assert(valueof_maxIterations.IsInt());
+		maxIterations = valueof_maxIterations.GetInt();
+	}
+	else
+	{
+		maxIterations = 500000000;
+	}
+}
+
+/**
+ * Job init_outputPeriod called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: outputPeriod
+ */
+void ImplicitHeatEquation::init_outputPeriod() noexcept
+{
+	// outputPeriod
+	rapidjson::Value::Object options = jsonDocument.GetObject();
+	assert(options.HasMember("outputPeriod"));
+	const rapidjson::Value& valueof_outputPeriod = options["outputPeriod"];
+	assert(valueof_outputPeriod.IsInt());
+	outputPeriod = valueof_outputPeriod.GetInt();
+}
+
+/**
+ * Job init_stopTime called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: stopTime
+ */
+void ImplicitHeatEquation::init_stopTime() noexcept
+{
+	// stopTime
+	rapidjson::Value::Object options = jsonDocument.GetObject();
+	if (options.HasMember("stopTime"))
+	{
+		const rapidjson::Value& valueof_stopTime = options["stopTime"];
+		assert(valueof_stopTime.IsDouble());
+		stopTime = valueof_stopTime.GetDouble();
+	}
+	else
+	{
+		stopTime = 1.0;
+	}
+}
+
+/**
+ * Job init_u0 called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: u0
+ */
+void ImplicitHeatEquation::init_u0() noexcept
+{
+	// u0
+	rapidjson::Value::Object options = jsonDocument.GetObject();
+	if (options.HasMember("u0"))
+	{
+		const rapidjson::Value& valueof_u0 = options["u0"];
+		assert(valueof_u0.IsDouble());
+		u0 = valueof_u0.GetDouble();
+	}
+	else
+	{
+		u0 = 1.0;
+	}
+}
+
+/**
  * Job updateU called @1.0 in executeTimeLoopN method.
  * In variables: alpha, u_n
  * Out variables: u_nplus1
@@ -457,7 +519,7 @@ void ImplicitHeatEquation::computeAlphaCoeff(const member_type& teamMember) noex
 
 /**
  * Job executeTimeLoopN called @4.0 in simulate method.
- * In variables: t_n, u_n
+ * In variables: lastDump, maxIterations, n, outputPeriod, stopTime, t_n, t_nplus1, u_n
  * Out variables: t_nplus1, u_nplus1
  */
 void ImplicitHeatEquation::executeTimeLoopN() noexcept
@@ -577,6 +639,18 @@ void ImplicitHeatEquation::simulate()
 		if (thread.league_rank() == 0)
 			Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){initTime();});
 		initXc(thread);
+		if (thread.league_rank() == 0)
+			Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){init_deltat();});
+		if (thread.league_rank() == 0)
+			Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){init_lastDump();});
+		if (thread.league_rank() == 0)
+			Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){init_maxIterations();});
+		if (thread.league_rank() == 0)
+			Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){init_outputPeriod();});
+		if (thread.league_rank() == 0)
+			Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){init_stopTime();});
+		if (thread.league_rank() == 0)
+			Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){init_u0();});
 	});
 	
 	// @2.0

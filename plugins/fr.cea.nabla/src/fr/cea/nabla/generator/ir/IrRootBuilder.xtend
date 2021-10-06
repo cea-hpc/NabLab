@@ -16,6 +16,7 @@ import fr.cea.nabla.generator.NablagenExtensionHelper
 import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.transformers.CompositeTransformationStep
+import fr.cea.nabla.ir.transformers.CreateInitVariableJobs
 import fr.cea.nabla.ir.transformers.FillJobHLTs
 import fr.cea.nabla.ir.transformers.OptimizeConnectivities
 import fr.cea.nabla.ir.transformers.ReplaceAffectations
@@ -41,7 +42,7 @@ class IrRootBuilder
 	{
 		try
 		{
-			val ir = buildIr(ngenApp, true)
+			val ir = buildIr(ngenApp, getCommonTransformation(true))
 
 			val target = ngenApp.targets.findFirst[x | x.interpreter]
 			var ok = false
@@ -75,24 +76,37 @@ class IrRootBuilder
 	 */
 	def IrRoot buildGeneratorGenericIr(NablagenApplication ngenApp)
 	{
-		buildIr(ngenApp, false)
+		buildIr(ngenApp, getCommonTransformation(false))
 	}
 
-	private def IrRoot buildIr(NablagenApplication ngenApp, boolean replaceAllReductions)
+	/**
+	 * Build a raw IR: an IR built from the NabLab model with no transformation step applied.
+	 */
+	def IrRoot buildRawIr(NablagenApplication ngenApp)
+	{
+		buildIr(ngenApp, null)
+	}
+
+	private def IrRoot buildIr(NablagenApplication ngenApp, CompositeTransformationStep transformation)
 	{
 		dispatcher.post(MessageType.Exec, "Starting NabLab to IR model transformation")
 		val startTime = System.currentTimeMillis
 		val ir = nablagen2Ir.toIrRoot(ngenApp)
-		val commonTransformation = new CompositeTransformationStep('Common transformations', #[
-			new ReplaceUtf8Chars, 
-			new OptimizeConnectivities(#['cells', 'nodes', 'faces']),
-			new ReplaceReductions(replaceAllReductions),
-			new ReplaceAffectations,
-			new FillJobHLTs])
-		commonTransformation.transformIr(ir, [msg | dispatcher.post(MessageType::Exec, msg)])
+		if (transformation !== null) transformation.transformIr(ir, [msg | dispatcher.post(MessageType::Exec, msg)])
 		val endTime = System.currentTimeMillis
 		dispatcher.post(MessageType.Exec, "NabLab to IR model transformation ended in " + (endTime-startTime)/1000.0 + "s")
 		return ir
+	}
+
+	private def getCommonTransformation(boolean replaceAllReductions)
+	{
+		new CompositeTransformationStep('Common transformations', #[
+			new ReplaceUtf8Chars,
+			new OptimizeConnectivities(#['cells', 'nodes', 'faces']),
+			new CreateInitVariableJobs,
+			new ReplaceReductions(replaceAllReductions),
+			new ReplaceAffectations,
+			new FillJobHLTs])
 	}
 
 	private def boolean setDefaultInterpreterProviders(EObject ngenContext, IrRoot ir)

@@ -73,6 +73,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.CONNECTIVITY: return createConnectivity();
 			case IrPackage.JOB_CALLER: return createJobCaller();
 			case IrPackage.JOB: return createJob();
+			case IrPackage.INIT_VARIABLE_JOB: return createInitVariableJob();
 			case IrPackage.EXECUTE_TIME_LOOP_JOB: return createExecuteTimeLoopJob();
 			case IrPackage.INSTRUCTION_BLOCK: return createInstructionBlock();
 			case IrPackage.VARIABLE_DECLARATION: return createVariableDeclaration();
@@ -323,6 +324,17 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	public Job createJob() {
 		JobImpl job = new JobImpl();
 		return job;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public InitVariableJob createInitVariableJob() {
+		InitVariableJobImpl initVariableJob = new InitVariableJobImpl();
+		return initVariableJob;
 	}
 
 	/**

@@ -22,6 +22,7 @@ class JobExtensions
 	public static val String SETUP_TIMELOOP_PREFIX = "SetUpTimeLoop"
 	public static val String TEARDOWN_TIMELOOP_PREFIX = "TearDownTimeLoop"
 	public static val String EXECUTE_TIMELOOP_PREFIX = "ExecuteTimeLoop"
+	public static val String INIT_VARIABLE_PREFIX = "Init_"
 
 	static def hasIterable(Job it)
 	{

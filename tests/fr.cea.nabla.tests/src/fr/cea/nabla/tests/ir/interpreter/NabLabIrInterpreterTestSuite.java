@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-package fr.cea.nabla.tests.interpreter;
+package fr.cea.nabla.tests.ir.interpreter;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -25,4 +25,4 @@ import org.junit.runners.Suite;
 	NablaExamplesInterpreterTest.class
 })
 
-public class NabLabInterpreterTestSuite {}
+public class NabLabIrInterpreterTestSuite {}

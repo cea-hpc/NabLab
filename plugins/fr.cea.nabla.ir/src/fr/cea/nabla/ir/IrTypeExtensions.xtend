@@ -87,6 +87,11 @@ class IrTypeExtensions
 		(t instanceof BaseType) && (t as BaseType).sizes.empty
 	}
 
+	static def isDynamicBaseType(IrType t)
+	{
+		t instanceof BaseType && !(t as BaseType).isStatic
+	}
+
 	static def getPrimitive(IrType t)
 	{
 		switch t

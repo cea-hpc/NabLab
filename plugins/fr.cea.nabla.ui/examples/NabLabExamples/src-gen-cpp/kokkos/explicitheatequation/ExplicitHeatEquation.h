@@ -9,6 +9,7 @@
 #include <limits>
 #include <utility>
 #include <cmath>
+#include <rapidjson/document.h>
 #include <Kokkos_Core.hpp>
 #include <Kokkos_hwloc.hpp>
 #include "nablalib/utils/Utils.h"
@@ -69,6 +70,18 @@ public:
 	KOKKOS_INLINE_FUNCTION
 	void initXc() noexcept;
 	KOKKOS_INLINE_FUNCTION
+	void init_deltat() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void init_lastDump() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void init_maxIterations() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void init_outputPeriod() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void init_stopTime() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void init_u0() noexcept;
+	KOKKOS_INLINE_FUNCTION
 	void updateU() noexcept;
 	KOKKOS_INLINE_FUNCTION
 	void computeDeltaTn() noexcept;
@@ -86,11 +99,14 @@ public:
 private:
 	void dumpVariables(int iteration, bool useTimer=true);
 
+	// Json block of options
+	rapidjson::Document jsonDocument;
+
 	// Mesh and mesh variables
 	CartesianMesh2D& mesh;
 	size_t nbNodes, nbCells, nbFaces, maxNodesOfCell, maxNodesOfFace, maxCellsOfFace, maxNeighbourCells;
 
-	// Option and global variables
+	// Options and global variables
 	PvdFileWriter2D* writer;
 	std::string outputPath;
 	int outputPeriod;

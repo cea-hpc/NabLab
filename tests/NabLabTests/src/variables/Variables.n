@@ -17,6 +17,8 @@ let ℕ maxIter = 500;
 let ℝ δt = 1.0;
 ℝ t;
 
+option ℝ[2] arrayOption;
+
 let ℕ dim = 2;
 ℝ[2] v1;
 ℝ[dim] v2;
@@ -24,6 +26,10 @@ let ℕ dim = 2;
 
 ℕ unknownDim;
 ℝ[unknownDim] dynamicArray;
+
+option ℕ optionDim;
+ℝ[optionDim] dynamicOptArray;
+option ℝ[optionDim] optionArray;
 
 //let ℕ myNbNodes = card(nodes());
 //ℝ[myNbNodes] v3;
@@ -34,3 +40,5 @@ NewVar: ∀ r∈nodes(),
 	let ℕ localNbCells = card(cellsOfNode(r));
 	ℝ[localNbCells] tmp;
 }
+
+SetUnknownDim: unknownDim = 4;

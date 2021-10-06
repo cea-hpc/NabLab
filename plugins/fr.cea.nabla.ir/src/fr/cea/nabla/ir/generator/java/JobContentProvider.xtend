@@ -10,10 +10,16 @@
 package fr.cea.nabla.ir.generator.java
 
 import fr.cea.nabla.ir.IrUtils
+import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
+import fr.cea.nabla.ir.ir.InitVariableJob
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Job
 
+import static fr.cea.nabla.ir.generator.java.JsonContentProvider.*
+import static fr.cea.nabla.ir.generator.java.TypeContentProvider.*
+
+import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.JobCallerExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
@@ -33,6 +39,18 @@ class JobContentProvider
 	private static def dispatch CharSequence getInnerContent(Job it)
 	'''
 		«instruction.innerContent»
+	'''
+
+	private static def dispatch CharSequence getInnerContent(InitVariableJob it)
+	'''
+		«IF target.type.dynamicBaseType»
+			«target.name»«getJavaAllocation(target.type, target.name)»;
+		«ENDIF»
+		«IF target.option»
+			«getJsonContent(target.name, target.type as BaseType, instruction)»
+		«ELSEIF instruction !== null»
+			«instruction.content»
+		«ENDIF»
 	'''
 
 	private static def dispatch CharSequence getInnerContent(ExecuteTimeLoopJob it)

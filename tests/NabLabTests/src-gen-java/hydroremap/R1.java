@@ -15,6 +15,9 @@ import fr.cea.nabla.javalib.mesh.*;
 
 public final class R1
 {
+	// Json block of options
+	private JsonObject options;
+
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
 	@SuppressWarnings("unused")
@@ -23,7 +26,7 @@ public final class R1
 	// Main module
 	private Hydro mainModule;
 
-	// Option and global variables
+	// Options and global variables
 	double[] rv3;
 
 	public R1(CartesianMesh2D aMesh)
@@ -33,8 +36,6 @@ public final class R1
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
 
-		// Initialize variables with default values
-
 		// Allocate arrays
 		rv3 = new double[nbCells];
 	}
@@ -42,7 +43,7 @@ public final class R1
 	public void jsonInit(final String jsonContent)
 	{
 		final Gson gson = new Gson();
-		final JsonObject o = gson.fromJson(jsonContent, JsonObject.class);
+		options = gson.fromJson(jsonContent, JsonObject.class);
 	}
 
 	/**

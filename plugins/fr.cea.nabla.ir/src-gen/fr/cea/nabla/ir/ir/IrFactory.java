@@ -166,6 +166,15 @@ public interface IrFactory extends EFactory {
 	Job createJob();
 
 	/**
+	 * Returns a new object of class '<em>Init Variable Job</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Init Variable Job</em>'.
+	 * @generated
+	 */
+	InitVariableJob createInitVariableJob();
+
+	/**
 	 * Returns a new object of class '<em>Execute Time Loop Job</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

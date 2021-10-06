@@ -15,12 +15,15 @@ import fr.cea.nabla.javalib.mesh.*;
 
 public final class Glace2d
 {
+	// Json block of options
+	private JsonObject options;
+
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
 	@SuppressWarnings("unused")
 	private final int nbNodes, nbCells, maxNodesOfCell, maxCellsOfNode, nbInnerNodes, nbTopNodes, nbBottomNodes, nbLeftNodes, nbRightNodes;
 
-	// Option and global variables
+	// Options and global variables
 	private PvdFileWriter2D writer;
 	private String outputPath;
 	int outputPeriod;
@@ -78,9 +81,6 @@ public final class Glace2d
 		nbLeftNodes = mesh.getNbLeftNodes();
 		nbRightNodes = mesh.getNbRightNodes();
 
-		// Initialize variables with default values
-		lastDump = Integer.MIN_VALUE;
-
 		// Allocate arrays
 		X_n = new double[nbNodes][2];
 		X_nplus1 = new double[nbNodes][2];
@@ -119,98 +119,12 @@ public final class Glace2d
 	public void jsonInit(final String jsonContent)
 	{
 		final Gson gson = new Gson();
-		final JsonObject o = gson.fromJson(jsonContent, JsonObject.class);
+		options = gson.fromJson(jsonContent, JsonObject.class);
 		// outputPath
-		assert(o.has("outputPath"));
-		final JsonElement valueof_outputPath = o.get("outputPath");
+		assert(options.has("outputPath"));
+		final JsonElement valueof_outputPath = options.get("outputPath");
 		outputPath = valueof_outputPath.getAsJsonPrimitive().getAsString();
 		writer = new PvdFileWriter2D("Glace2d", outputPath);
-		// outputPeriod
-		assert(o.has("outputPeriod"));
-		final JsonElement valueof_outputPeriod = o.get("outputPeriod");
-		assert(valueof_outputPeriod.isJsonPrimitive());
-		outputPeriod = valueof_outputPeriod.getAsJsonPrimitive().getAsInt();
-		// stopTime
-		if (o.has("stopTime"))
-		{
-			final JsonElement valueof_stopTime = o.get("stopTime");
-			assert(valueof_stopTime.isJsonPrimitive());
-			stopTime = valueof_stopTime.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			stopTime = 0.2;
-		// maxIterations
-		if (o.has("maxIterations"))
-		{
-			final JsonElement valueof_maxIterations = o.get("maxIterations");
-			assert(valueof_maxIterations.isJsonPrimitive());
-			maxIterations = valueof_maxIterations.getAsJsonPrimitive().getAsInt();
-		}
-		else
-			maxIterations = 20000;
-		// gamma
-		if (o.has("gamma"))
-		{
-			final JsonElement valueof_gamma = o.get("gamma");
-			assert(valueof_gamma.isJsonPrimitive());
-			gamma = valueof_gamma.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			gamma = 1.4;
-		// xInterface
-		if (o.has("xInterface"))
-		{
-			final JsonElement valueof_xInterface = o.get("xInterface");
-			assert(valueof_xInterface.isJsonPrimitive());
-			xInterface = valueof_xInterface.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			xInterface = 0.5;
-		// deltatCfl
-		if (o.has("deltatCfl"))
-		{
-			final JsonElement valueof_deltatCfl = o.get("deltatCfl");
-			assert(valueof_deltatCfl.isJsonPrimitive());
-			deltatCfl = valueof_deltatCfl.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			deltatCfl = 0.4;
-		// rhoIniZg
-		if (o.has("rhoIniZg"))
-		{
-			final JsonElement valueof_rhoIniZg = o.get("rhoIniZg");
-			assert(valueof_rhoIniZg.isJsonPrimitive());
-			rhoIniZg = valueof_rhoIniZg.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			rhoIniZg = 1.0;
-		// rhoIniZd
-		if (o.has("rhoIniZd"))
-		{
-			final JsonElement valueof_rhoIniZd = o.get("rhoIniZd");
-			assert(valueof_rhoIniZd.isJsonPrimitive());
-			rhoIniZd = valueof_rhoIniZd.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			rhoIniZd = 0.125;
-		// pIniZg
-		if (o.has("pIniZg"))
-		{
-			final JsonElement valueof_pIniZg = o.get("pIniZg");
-			assert(valueof_pIniZg.isJsonPrimitive());
-			pIniZg = valueof_pIniZg.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			pIniZg = 1.0;
-		// pIniZd
-		if (o.has("pIniZd"))
-		{
-			final JsonElement valueof_pIniZd = o.get("pIniZd");
-			assert(valueof_pIniZd.isJsonPrimitive());
-			pIniZd = valueof_pIniZd.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			pIniZd = 0.1;
 	}
 
 	/**
@@ -284,6 +198,200 @@ public final class Glace2d
 	protected void iniTime()
 	{
 		t_n0 = 0.0;
+	}
+
+	/**
+	 * Job init_deltatCfl called @1.0 in simulate method.
+	 * In variables: 
+	 * Out variables: deltatCfl
+	 */
+	protected void init_deltatCfl()
+	{
+		if (options.has("deltatCfl"))
+		{
+			final JsonElement valueof_deltatCfl = options.get("deltatCfl");
+			assert(valueof_deltatCfl.isJsonPrimitive());
+			deltatCfl = valueof_deltatCfl.getAsJsonPrimitive().getAsDouble();
+		}
+		else
+		{
+			deltatCfl = 0.4;
+		}
+	}
+
+	/**
+	 * Job init_gamma called @1.0 in simulate method.
+	 * In variables: 
+	 * Out variables: gamma
+	 */
+	protected void init_gamma()
+	{
+		if (options.has("gamma"))
+		{
+			final JsonElement valueof_gamma = options.get("gamma");
+			assert(valueof_gamma.isJsonPrimitive());
+			gamma = valueof_gamma.getAsJsonPrimitive().getAsDouble();
+		}
+		else
+		{
+			gamma = 1.4;
+		}
+	}
+
+	/**
+	 * Job init_lastDump called @1.0 in simulate method.
+	 * In variables: 
+	 * Out variables: lastDump
+	 */
+	protected void init_lastDump()
+	{
+		lastDump = Integer.MIN_VALUE;
+	}
+
+	/**
+	 * Job init_maxIterations called @1.0 in simulate method.
+	 * In variables: 
+	 * Out variables: maxIterations
+	 */
+	protected void init_maxIterations()
+	{
+		if (options.has("maxIterations"))
+		{
+			final JsonElement valueof_maxIterations = options.get("maxIterations");
+			assert(valueof_maxIterations.isJsonPrimitive());
+			maxIterations = valueof_maxIterations.getAsJsonPrimitive().getAsInt();
+		}
+		else
+		{
+			maxIterations = 20000;
+		}
+	}
+
+	/**
+	 * Job init_outputPeriod called @1.0 in simulate method.
+	 * In variables: 
+	 * Out variables: outputPeriod
+	 */
+	protected void init_outputPeriod()
+	{
+		assert(options.has("outputPeriod"));
+		final JsonElement valueof_outputPeriod = options.get("outputPeriod");
+		assert(valueof_outputPeriod.isJsonPrimitive());
+		outputPeriod = valueof_outputPeriod.getAsJsonPrimitive().getAsInt();
+	}
+
+	/**
+	 * Job init_pIniZd called @1.0 in simulate method.
+	 * In variables: 
+	 * Out variables: pIniZd
+	 */
+	protected void init_pIniZd()
+	{
+		if (options.has("pIniZd"))
+		{
+			final JsonElement valueof_pIniZd = options.get("pIniZd");
+			assert(valueof_pIniZd.isJsonPrimitive());
+			pIniZd = valueof_pIniZd.getAsJsonPrimitive().getAsDouble();
+		}
+		else
+		{
+			pIniZd = 0.1;
+		}
+	}
+
+	/**
+	 * Job init_pIniZg called @1.0 in simulate method.
+	 * In variables: 
+	 * Out variables: pIniZg
+	 */
+	protected void init_pIniZg()
+	{
+		if (options.has("pIniZg"))
+		{
+			final JsonElement valueof_pIniZg = options.get("pIniZg");
+			assert(valueof_pIniZg.isJsonPrimitive());
+			pIniZg = valueof_pIniZg.getAsJsonPrimitive().getAsDouble();
+		}
+		else
+		{
+			pIniZg = 1.0;
+		}
+	}
+
+	/**
+	 * Job init_rhoIniZd called @1.0 in simulate method.
+	 * In variables: 
+	 * Out variables: rhoIniZd
+	 */
+	protected void init_rhoIniZd()
+	{
+		if (options.has("rhoIniZd"))
+		{
+			final JsonElement valueof_rhoIniZd = options.get("rhoIniZd");
+			assert(valueof_rhoIniZd.isJsonPrimitive());
+			rhoIniZd = valueof_rhoIniZd.getAsJsonPrimitive().getAsDouble();
+		}
+		else
+		{
+			rhoIniZd = 0.125;
+		}
+	}
+
+	/**
+	 * Job init_rhoIniZg called @1.0 in simulate method.
+	 * In variables: 
+	 * Out variables: rhoIniZg
+	 */
+	protected void init_rhoIniZg()
+	{
+		if (options.has("rhoIniZg"))
+		{
+			final JsonElement valueof_rhoIniZg = options.get("rhoIniZg");
+			assert(valueof_rhoIniZg.isJsonPrimitive());
+			rhoIniZg = valueof_rhoIniZg.getAsJsonPrimitive().getAsDouble();
+		}
+		else
+		{
+			rhoIniZg = 1.0;
+		}
+	}
+
+	/**
+	 * Job init_stopTime called @1.0 in simulate method.
+	 * In variables: 
+	 * Out variables: stopTime
+	 */
+	protected void init_stopTime()
+	{
+		if (options.has("stopTime"))
+		{
+			final JsonElement valueof_stopTime = options.get("stopTime");
+			assert(valueof_stopTime.isJsonPrimitive());
+			stopTime = valueof_stopTime.getAsJsonPrimitive().getAsDouble();
+		}
+		else
+		{
+			stopTime = 0.2;
+		}
+	}
+
+	/**
+	 * Job init_xInterface called @1.0 in simulate method.
+	 * In variables: 
+	 * Out variables: xInterface
+	 */
+	protected void init_xInterface()
+	{
+		if (options.has("xInterface"))
+		{
+			final JsonElement valueof_xInterface = options.get("xInterface");
+			assert(valueof_xInterface.isJsonPrimitive());
+			xInterface = valueof_xInterface.getAsJsonPrimitive().getAsDouble();
+		}
+		else
+		{
+			xInterface = 0.5;
+		}
 	}
 
 	/**
@@ -418,7 +526,7 @@ public final class Glace2d
 
 	/**
 	 * Job executeTimeLoopN called @3.0 in simulate method.
-	 * In variables: E_n, X_n, t_n, uj_n
+	 * In variables: E_n, X_n, lastDump, maxIterations, n, outputPeriod, stopTime, t_n, t_nplus1, uj_n
 	 * Out variables: E_nplus1, X_nplus1, t_nplus1, uj_nplus1
 	 */
 	protected void executeTimeLoopN()
@@ -953,6 +1061,17 @@ public final class Glace2d
 		System.out.println("Start execution of glace2d");
 		iniCjrIc(); // @1.0
 		iniTime(); // @1.0
+		init_deltatCfl(); // @1.0
+		init_gamma(); // @1.0
+		init_lastDump(); // @1.0
+		init_maxIterations(); // @1.0
+		init_outputPeriod(); // @1.0
+		init_pIniZd(); // @1.0
+		init_pIniZg(); // @1.0
+		init_rhoIniZd(); // @1.0
+		init_rhoIniZg(); // @1.0
+		init_stopTime(); // @1.0
+		init_xInterface(); // @1.0
 		initialize(); // @2.0
 		setUpTimeLoopN(); // @2.0
 		executeTimeLoopN(); // @3.0

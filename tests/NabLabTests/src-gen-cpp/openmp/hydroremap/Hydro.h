@@ -9,6 +9,7 @@
 #include <limits>
 #include <utility>
 #include <cmath>
+#include <rapidjson/document.h>
 #include <omp.h>
 #include "nablalib/utils/Utils.h"
 #include "nablalib/utils/Timer.h"
@@ -35,10 +36,16 @@ public:
 
 	void simulate();
 	void hj1() noexcept;
+	void init_deltat() noexcept;
+	void init_maxIter() noexcept;
+	void init_maxTime() noexcept;
 	void hj2() noexcept;
 	void hj3() noexcept;
 
 private:
+	// Json block of options
+	rapidjson::Document jsonDocument;
+
 	// Mesh and mesh variables
 	CartesianMesh2D& mesh;
 	size_t nbNodes, nbCells;
@@ -47,7 +54,7 @@ private:
 	R1* r1;
 	R2* r2;
 
-	// Option and global variables
+	// Options and global variables
 	double maxTime;
 	int maxIter;
 	double deltat;

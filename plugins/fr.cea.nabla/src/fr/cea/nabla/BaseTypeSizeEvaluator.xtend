@@ -84,11 +84,10 @@ class BaseTypeSizeEvaluator
 		{
 			switch c
 			{
+				// option always dynamic, even if it has a default value,
+				// the value can be overwritten with the json file value
 				OptionDeclaration case (c.type.primitive == PrimitiveType::INT):
-					if (c.value === null)
 						return DYNAMIC_SIZE
-					else
-						return getIntSizeFor(c.value)
 				SimpleVarDeclaration case (c.type.primitive == PrimitiveType::INT):
 					if (c.value === null)
 						return DYNAMIC_SIZE

@@ -72,6 +72,8 @@ abstract class NSTArray1D extends NablaSimpleType
 	{
 		if (intSize == DYNAMIC_SIZE)
 			primitive.literal + '[' + size.label + ']'
+		else if (intSize > 9)
+			primitive.literal + '[' + intSize + ']'
 		else
 			primitive.literal + IrUtils.getUtfExponent(intSize)
 	}
@@ -94,10 +96,10 @@ abstract class NSTArray1D extends NablaSimpleType
 		}
 		else
 		{
-			if (this.intSize == DYNAMIC_SIZE) 
+			if (this.intSize != other.intSize)
+				return false
+			else if (this.intSize == DYNAMIC_SIZE)
 				return EcoreUtil::equals(this.size, other.size)
-			else
-				return (this.intSize == other.intSize)
 		}
 		return true
 	}
@@ -118,6 +120,8 @@ abstract class NSTArray2D extends NablaSimpleType
 	{
 		if (intNbRows == DYNAMIC_SIZE || intNbCols == DYNAMIC_SIZE)
 			primitive.literal + '[' + nbRows.label + ',' + nbCols.label + ']'
+		else if (intNbRows > 9 || intNbCols > 9)
+			primitive.literal + '[' + intNbRows + ',' + intNbCols + ']'
 		else
 			primitive.literal + IrUtils.getUtfExponent((nbRows as IntConstant).value) + '\u02E3' + IrUtils.getUtfExponent((nbCols as IntConstant).value)
 	}
@@ -140,10 +144,10 @@ abstract class NSTArray2D extends NablaSimpleType
 		}
 		else
 		{
-			if (this.intNbRows == DYNAMIC_SIZE)
+			if (this.intNbRows != other.intNbRows)
+				return false
+			else if (this.intNbRows == DYNAMIC_SIZE)
 				return EcoreUtil::equals(this.nbRows, other.nbRows)
-			else
-				return (this.intNbRows == other.intNbRows)
 		}
 
 		if (this.nbCols === null)
@@ -152,10 +156,10 @@ abstract class NSTArray2D extends NablaSimpleType
 		} 
 		else
 		{
-			if (this.intNbCols == DYNAMIC_SIZE)
+			if (this.intNbCols != other.intNbCols)
+				return false
+			else if (this.intNbCols == DYNAMIC_SIZE)
 				return EcoreUtil::equals(this.nbCols, other.nbCols)
-			else
-				return (this.intNbCols == other.intNbCols)
 		}
 		return true
 	}
@@ -246,10 +250,10 @@ class NLATVector extends NablaLinearAlgebraType
 		}
 		else
 		{
-			if (this.intSize == DYNAMIC_SIZE) 
+			if (this.intSize != other.intSize)
+				return false
+			else if (this.intSize == DYNAMIC_SIZE) 
 				return EcoreUtil::equals(this.size, other.size)
-			else
-				return (this.intSize == other.intSize)
 		}
 		return true
 	}
@@ -282,10 +286,10 @@ class NLATMatrix extends NablaLinearAlgebraType
 		}
 		else
 		{
-			if (this.intNbRows == DYNAMIC_SIZE)
+			if (this.intNbRows != other.intNbRows)
+				return false
+			else if (this.intNbRows == DYNAMIC_SIZE)
 				return EcoreUtil::equals(this.nbRows, other.nbRows)
-			else
-				return (this.intNbRows == other.intNbRows)
 		}
 
 		if (this.nbCols === null)
@@ -294,10 +298,10 @@ class NLATMatrix extends NablaLinearAlgebraType
 		}
 		else
 		{
-			if (this.intNbCols == DYNAMIC_SIZE)
+			if (this.intNbCols != other.intNbCols)
+				return false
+			else if (this.intNbCols == DYNAMIC_SIZE)
 				return EcoreUtil::equals(this.nbCols, other.nbCols)
-			else
-				return (this.intNbCols == other.intNbCols)
 		}
 		return true
 	}

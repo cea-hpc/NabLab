@@ -15,9 +15,6 @@ Variables::Variables(CartesianMesh2D& aMesh)
 , maxCellsOfNode(CartesianMesh2D::MaxNbCellsOfNode)
 , X("X", nbNodes)
 {
-	// Allocate dynamic arrays (RealArrays with at least a dynamic dimension)
-	dynamicArray.initSize(unknownDim);
-
 	// Copy node coordinates
 	const auto& gNodes = mesh.getGeometry()->getNodes();
 	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
@@ -34,13 +31,46 @@ Variables::~Variables()
 void
 Variables::jsonInit(const char* jsonContent)
 {
-	rapidjson::Document document;
-	assert(!document.Parse(jsonContent).HasParseError());
-	assert(document.IsObject());
-	const rapidjson::Value::Object& o = document.GetObject();
-
+	assert(!jsonDocument.Parse(jsonContent).HasParseError());
+	assert(jsonDocument.IsObject());
+	rapidjson::Value::Object options = jsonDocument.GetObject();
 }
 
+
+/**
+ * Job init_arrayOption called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: arrayOption
+ */
+void Variables::init_arrayOption() noexcept
+{
+	// arrayOption
+	rapidjson::Value::Object options = jsonDocument.GetObject();
+	assert(options.HasMember("arrayOption"));
+	const rapidjson::Value& valueof_arrayOption = options["arrayOption"];
+	assert(valueof_arrayOption.IsArray());
+	assert(valueof_arrayOption.Size() == 2);
+	for (size_t i1=0 ; i1<2 ; i1++)
+	{
+		assert(valueof_arrayOption[i1].IsDouble());
+		arrayOption[i1] = valueof_arrayOption[i1].GetDouble();
+	}
+}
+
+/**
+ * Job init_optionDim called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: optionDim
+ */
+void Variables::init_optionDim() noexcept
+{
+	// optionDim
+	rapidjson::Value::Object options = jsonDocument.GetObject();
+	assert(options.HasMember("optionDim"));
+	const rapidjson::Value& valueof_optionDim = options["optionDim"];
+	assert(valueof_optionDim.IsInt());
+	optionDim = valueof_optionDim.GetInt();
+}
 
 /**
  * Job newVar called @1.0 in simulate method.
@@ -56,6 +86,57 @@ void Variables::newVar() noexcept
 		RealArray1D<0> tmp;
 		tmp.initSize(localNbCells);
 	});
+}
+
+/**
+ * Job setUnknownDim called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: unknownDim
+ */
+void Variables::setUnknownDim() noexcept
+{
+	unknownDim = 4;
+}
+
+/**
+ * Job init_dynamicArray called @2.0 in simulate method.
+ * In variables: unknownDim
+ * Out variables: dynamicArray
+ */
+void Variables::init_dynamicArray() noexcept
+{
+	dynamicArray.initSize(unknownDim);
+}
+
+/**
+ * Job init_dynamicOptArray called @2.0 in simulate method.
+ * In variables: optionDim
+ * Out variables: dynamicOptArray
+ */
+void Variables::init_dynamicOptArray() noexcept
+{
+	dynamicOptArray.initSize(optionDim);
+}
+
+/**
+ * Job init_optionArray called @2.0 in simulate method.
+ * In variables: optionDim
+ * Out variables: optionArray
+ */
+void Variables::init_optionArray() noexcept
+{
+	optionArray.initSize(optionDim);
+	// optionArray
+	rapidjson::Value::Object options = jsonDocument.GetObject();
+	assert(options.HasMember("optionArray"));
+	const rapidjson::Value& valueof_optionArray = options["optionArray"];
+	assert(valueof_optionArray.IsArray());
+	assert(valueof_optionArray.Size() == optionDim);
+	for (size_t i1=0 ; i1<optionDim ; i1++)
+	{
+		assert(valueof_optionArray[i1].IsDouble());
+		optionArray[i1] = valueof_optionArray[i1].GetDouble();
+	}
 }
 
 void Variables::simulate()
@@ -77,7 +158,13 @@ void Variables::simulate()
 	
 	std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    " << __BOLD__ << "Disabled" << __RESET__ << std::endl;
 
+	init_arrayOption(); // @1.0
+	init_optionDim(); // @1.0
 	newVar(); // @1.0
+	setUnknownDim(); // @1.0
+	init_dynamicArray(); // @2.0
+	init_dynamicOptArray(); // @2.0
+	init_optionArray(); // @2.0
 	
 	std::cout << "\nFinal time = " << t << endl;
 	std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << globalTimer.print() << __RESET__ << std::endl;

@@ -9,6 +9,7 @@
 #include <limits>
 #include <utility>
 #include <cmath>
+#include <rapidjson/document.h>
 #include <Kokkos_Core.hpp>
 #include <Kokkos_hwloc.hpp>
 #include "nablalib/utils/Utils.h"
@@ -35,7 +36,19 @@ public:
 
 	void simulate();
 	KOKKOS_INLINE_FUNCTION
+	void init_arrayOption() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void init_optionDim() noexcept;
+	KOKKOS_INLINE_FUNCTION
 	void newVar(const member_type& teamMember) noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void setUnknownDim() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void init_dynamicArray() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void init_dynamicOptArray() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void init_optionArray() noexcept;
 
 private:
 	/**
@@ -45,21 +58,28 @@ private:
 	 */
 	const std::pair<size_t, size_t> computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept;
 
+	// Json block of options
+	rapidjson::Document jsonDocument;
+
 	// Mesh and mesh variables
 	CartesianMesh2D& mesh;
 	size_t nbNodes, maxCellsOfNode;
 
-	// Option and global variables
+	// Options and global variables
 	static constexpr double maxTime = 0.1;
 	static constexpr int maxIter = 500;
 	static constexpr double deltat = 1.0;
 	double t;
+	RealArray1D<2> arrayOption;
 	static constexpr int dim = 2;
 	RealArray1D<2> v1;
 	RealArray1D<dim> v2;
 	Kokkos::View<RealArray1D<dim>*> X;
 	int unknownDim;
 	RealArray1D<0> dynamicArray;
+	int optionDim;
+	RealArray1D<0> dynamicOptArray;
+	RealArray1D<0> optionArray;
 
 	// Timers
 	Timer globalTimer;

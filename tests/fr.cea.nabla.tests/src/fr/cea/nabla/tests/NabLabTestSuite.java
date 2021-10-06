@@ -12,7 +12,8 @@ package fr.cea.nabla.tests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import fr.cea.nabla.tests.interpreter.NabLabInterpreterTestSuite;
+import fr.cea.nabla.tests.ir.interpreter.NabLabIrInterpreterTestSuite;
+import fr.cea.nabla.tests.ir.transformers.NabLabIrTransformersTestSuite;
 import fr.cea.nabla.tests.typeprovider.NabLabTypeProviderTestSuite;
 import fr.cea.nabla.tests.validation.NabLabValidationTestSuite;
 
@@ -37,7 +38,8 @@ import fr.cea.nabla.tests.validation.NabLabValidationTestSuite;
 	DeclarationProviderTest.class,
 
 	// integrated tests
-	NabLabInterpreterTestSuite.class,
+	NabLabIrTransformersTestSuite.class,
+	NabLabIrInterpreterTestSuite.class,
 	NabLabTestsTest.class,
 	NabLabExamplesTest.class,
 })

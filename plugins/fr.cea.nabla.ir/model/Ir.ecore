@@ -127,6 +127,8 @@
         eType="#//Job" eOpposite="#//Job/outVars"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="consumerJobs" upperBound="-1"
         eType="#//Job" eOpposite="#//Job/inVars"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="initJob" eType="#//InitVariableJob"
+        eOpposite="#//InitVariableJob/target"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TimeVariable" eSuperTypes="#//Variable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="originName" lowerBound="1"
@@ -200,6 +202,10 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="instruction" lowerBound="1"
         eType="#//Instruction" containment="true" resolveProxies="false"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="timeLoopJob" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="InitVariableJob" eSuperTypes="#//Job">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" lowerBound="1"
+        eType="#//Variable" eOpposite="#//Variable/initJob"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ExecuteTimeLoopJob" eSuperTypes="#//JobCaller #//Job">
     <eStructuralFeatures xsi:type="ecore:EReference" name="whileCondition" lowerBound="1"

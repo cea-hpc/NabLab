@@ -123,6 +123,10 @@ class ArgOrVarTypeProviderTest
 		ℕ dyndim;
 		ℝ[dyndim] dyndimtab;
 
+		// dynamic array with option
+		option ℕ dyndimopt = 5;
+		ℝ[dyndimopt] dyndimtabopt;
+
 		// connectivity variables
 		ℝ[2] X{nodes};
 		ℝ pressure{cells};
@@ -195,13 +199,19 @@ class ArgOrVarTypeProviderTest
 		val dimtab = module.getVarByName("dimtab")
 		val dimref = ((dimtab.eContainer as VarDeclaration).type as BaseType).sizes.head
 		Assert.assertEquals(new NSTIntScalar, module.getVarByName("dim").typeFor)
-		Assert.assertEquals(new NSTRealArray1D(dimref, 6), module.getVarByName("dimtab").typeFor)
+		Assert.assertEquals(new NSTRealArray1D(dimref, 6), dimtab.typeFor)
 
 		// dynamic array
 		val dyndimtab = module.getVarByName("dyndimtab")
 		val dyndimref = ((dyndimtab.eContainer as VarDeclaration).type as BaseType).sizes.head
 		Assert.assertEquals(new NSTIntScalar, module.getVarByName("dyndim").typeFor)
-		Assert.assertEquals(new NSTRealArray1D(dyndimref, -1), module.getVarByName("dyndimtab").typeFor)
+		Assert.assertEquals(new NSTRealArray1D(dyndimref, -1), dyndimtab.typeFor)
+
+		// dynamic array with options
+		val dyndimtabopt = module.getVarByName("dyndimtabopt")
+		val dyndimoptref = ((dyndimtabopt.eContainer as VarDeclaration).type as BaseType).sizes.head
+		Assert.assertEquals(new NSTIntScalar, module.getVarByName("dyndimopt").typeFor)
+		Assert.assertEquals(new NSTRealArray1D(dyndimoptref, -1), dyndimtabopt.typeFor)
 
 		// connectivity variables
 		val cjrVar = module.getVarByName("Cjr") as ConnectivityVar

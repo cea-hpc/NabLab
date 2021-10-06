@@ -1,6 +1,6 @@
-Application VariableDefinition;
+Application VariableAffectations;
 
-MainModule VariableDefinition variableDefinition
+MainModule VariableAffectations variableAffectation
 {
 	nodeCoord = X;
 	time = t;

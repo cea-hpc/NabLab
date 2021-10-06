@@ -14,7 +14,7 @@ valOutput_test1 = np.full((1), 0)
 valOutput_test1 = np.array(valOutput_test1)
 valOutput_test1.astype(np.int64)
 
-valInput_test1 = 4
+valInput_test1 = 8
 valInput_test1 = [valInput_test1]
 valInput_test1 = np.array(valInput_test1)
 valInput_test1.astype(np.int64)
@@ -177,7 +177,7 @@ valInput_test9 = np.array(valInput_test9)
 valInput_test9.astype(np.float64)
 
 
-mysdfg = SDFG('VariableDefinition')
+mysdfg = SDFG('VariableAffectations')
 
 
 MultiScalarByScalar_test1 = mysdfg.add_state("MultiScalarByScalar_test1", is_start_state=True)
@@ -350,7 +350,7 @@ MultiVectorByScalar_test19.add_memlet_path(MultiVectorByScalar_test19_tasklet, m
 
 MultiVectorByScalar_test20 = mysdfg.add_state("MultiVectorByScalar_test20", is_start_state=True)
 
-MultiVectorByScalar_test20_tasklet = MultiVectorByScalar_test20.add_tasklet('MultiVectorByScalar_test20', {'valInput_test20'}, {'valOutput_test20'}, 'valOutput_test20=valInput_test20*3.0+4.0')
+MultiVectorByScalar_test20_tasklet = MultiVectorByScalar_test20.add_tasklet('MultiVectorByScalar_test20', {'valInput_test20'}, {'valOutput_test20'}, 'valOutput_test20=valInput_test20*3+4')
 
 MultiVectorByScalar_test20_valInput_test20 = mysdfg.add_array('MultiVectorByScalar_test20_valInput_test20', [2,2], dp.int64)
 MultiVectorByScalar_test20_valOutput_test20 = mysdfg.add_array('MultiVectorByScalar_test20_valOutput_test20', [2,2], dp.int64)
@@ -462,25 +462,4 @@ MultiVectorByScalar_test7_valOutput_test7=valOutput_test7, MultiVectorByScalar_t
 MultiVectorByScalar_test8_valOutput_test8=valOutput_test8, MultiVectorByScalar_test8_valInput_test8=valInput_test8, 
 MultiVectorByScalar_test9_valOutput_test9=valOutput_test9, MultiVectorByScalar_test9_valInput_test9=valInput_test9)
 
-print('valOutput_test1', valOutput_test1)
-print('valOutput_test2', valOutput_test2)
-print('valOutput_test3', valOutput_test3)
-print('valOutput_test4', valOutput_test4)
-print('valOutput_test5', valOutput_test5)
-print('valOutput_test6', valOutput_test6)
-print('valOutput_test7', valOutput_test7)
-print('valOutput_test8', valOutput_test8)
-print('valOutput_test9', valOutput_test9)
-print('valOutput_test10', valOutput_test10)
-print('valOutput_test11', valOutput_test11)
-print('valOutput_test12', valOutput_test12)
-print('valOutput_test13', valOutput_test13)
-print('valOutput_test14', valOutput_test14)
-print('valOutput_test15', valOutput_test15)
-print('valOutput_test16', valOutput_test16)
-print('valOutput_test17', valOutput_test17)
-print('valOutput_test18', valOutput_test18)
-print('valOutput_test19', valOutput_test19)
-print('valOutput_test20', valOutput_test20)
-
-mysdfg.view('VariableDefinition')
+mysdfg.view('VariableAffectations')

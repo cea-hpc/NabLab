@@ -44,7 +44,7 @@ class DaceApplicationGenerator implements ApplicationGenerator
 			«StateContentProvider.getContent(j.instruction, j.name)»
 		«ENDFOR»
 
-		«FOR i : 0..<ir.main.calls.length - 1»
+		«FOR i : 0..<ir.main.calls.sortBy[j | j.at].length - 1»
 			mysdfg.add_edge(«ir.main.calls.get(i).name», «ir.main.calls.get(i+1).name»,dace.InterstateEdge())
 		«ENDFOR»
 

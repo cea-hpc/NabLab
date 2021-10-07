@@ -16,6 +16,7 @@ import fr.cea.nabla.nabla.Div
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.FunctionOrReduction
 import fr.cea.nabla.nabla.IntConstant
+import fr.cea.nabla.nabla.Interval
 import fr.cea.nabla.nabla.MaxConstant
 import fr.cea.nabla.nabla.MinConstant
 import fr.cea.nabla.nabla.Minus
@@ -26,9 +27,8 @@ import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
 import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.nabla.SimpleVarDeclaration
-import fr.cea.nabla.nabla.VarDeclaration
-import fr.cea.nabla.nabla.Interval
 import fr.cea.nabla.nabla.SpaceIterator
+import fr.cea.nabla.nabla.VarDeclaration
 
 /**
  * This class evaluates the value of a BaseType.sizes expression.

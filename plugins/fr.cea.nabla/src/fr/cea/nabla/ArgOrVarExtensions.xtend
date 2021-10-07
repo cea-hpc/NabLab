@@ -9,7 +9,6 @@
  *******************************************************************************/
 package fr.cea.nabla
 
-import com.google.inject.Inject
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.Arg
 import fr.cea.nabla.nabla.ArgOrVar
@@ -33,8 +32,6 @@ import org.eclipse.xtext.EcoreUtil2
  */
 class ArgOrVarExtensions
 {
-	@Inject extension ExpressionExtensions
-
 	def BaseType getType(ConnectivityVar it)
 	{
 		(eContainer as VarGroupDeclaration).type
@@ -77,15 +74,6 @@ class ArgOrVarExtensions
 		}
 		else
 			false
-	}
-
-	def boolean isNablaEvaluable(ArgOrVar it)
-	{
-		switch it
-		{
-			SimpleVar: (option && value === null) || (value !== null && value.nablaEvaluable)
-			default: false
-		}
 	}
 
 	def isGlobal(Var it) 

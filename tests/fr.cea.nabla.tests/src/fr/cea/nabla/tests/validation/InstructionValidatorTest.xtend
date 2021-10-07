@@ -38,6 +38,32 @@ class InstructionValidatorTest
 	@Inject extension TestUtils
 
 	@Test
+	def void testDynamicConnectivityVars() 
+	{
+		val rs = resourceSetProvider.get
+		parseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DPath), rs)
+		val moduleKo = parseHelper.parse(
+			'''
+			«testModule»
+			ℕ dim;
+			ℝ[dim] X{nodes};
+			''', rs)
+		Assert.assertNotNull(moduleKo)
+		moduleKo.assertError(NablaPackage.eINSTANCE.varGroupDeclaration,
+			InstructionValidator::DYNAMIC_CONNECTIVITY_VAR,
+			InstructionValidator::getDynamicConnectivityVarMsg)
+
+		val moduleOk =  parseHelper.parse(
+			'''
+			«testModule»
+			let ℕ dim = 2;
+			ℝ[dim] X{nodes};
+			''', rs)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+
+	@Test
 	def void testCheckLocalConnectivityVars() 
 	{
 		val rs = resourceSetProvider.get
@@ -225,58 +251,5 @@ class InstructionValidatorTest
 		moduleKo2.assertError(NablaPackage.eINSTANCE.optionDeclaration,
 			InstructionValidator::GLOBAL_VAR_VALUE,
 			InstructionValidator::getGlobalVarValueMsg)
-
-		val moduleKo3 = parseHelper.parse(
-			'''
-			«emptyTestModule»
-			let ℕ[3] coef = [2, 3, 4];
-			option ℕ c = coef[0];
-			''')
-		Assert.assertNotNull(moduleKo3)
-		moduleKo3.assertError(NablaPackage.eINSTANCE.optionDeclaration,
-			InstructionValidator::OPTION_DEFAULT_VALUE,
-			InstructionValidator::getOptionDefaultValueMsg)
-
-		val moduleOk = parseHelper.parse(
-			'''
-			«emptyTestModule»
-			option ℕ alpha = 1;
-			''')
-		Assert.assertNotNull(moduleOk)
-		moduleOk.assertNoErrors
-	}
-
-	@Test
-	def void testCheckExternFunctionCallInFunctionBody()
-	{
-		val moduleKo = parseHelper.parse(
-			'''
-			extension Test;
-			def f: → ℝ;
-			def g: → ℝ, () →
-			{
-				ℝ[4] n;
-				∀ i∈[0;4[, n[i] = 0.0;
-				return f();
-			}
-			''')
-		Assert.assertNotNull(moduleKo)
-		moduleKo.assertError(NablaPackage.eINSTANCE.functionCall,
-			InstructionValidator::EXTERN_FUNCTION_CALL_IN_FUNCTION_BODY,
-			InstructionValidator::getExternFunctionCallInFunctionBodyMsg())
-
-		val moduleOk = parseHelper.parse(
-			'''
-			extension Test;
-			def f: → ℝ;
-			def g: → ℝ, () →
-			{
-				ℝ[4] n;
-				∀ i∈[0;4[, n[i] = 0.0;
-				return 4.0;
-			}
-			''')
-		Assert.assertNotNull(moduleOk)
-		moduleOk.assertNoErrors
 	}
 }

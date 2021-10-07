@@ -54,22 +54,9 @@ class BasicValidator extends UnusedValidator
 
 	// ===== Module ====
 
-	/**
-	 * A module must have at least one variable or job or iterate.
-	 * That is a way to differentiate between modules and extensions.
-	 */
-	public static val MODULE_BASE = "Module::ModuleBase"
 	public static val MODULE_UNIQUE_MESH_EXTENSION = "Module::UniqueMeshExtension"
 
-	static def getModuleBaseMsg() { "Module must contains at least a variable declaration, a job definition or an iterate instruction"}
 	static def getModuleUniqueMeshExtensionMsg(Iterable<String> names) { "Module must use only one mesh extension. Multiple meshes not yet implemented: " + names.join(", ") }
-
-	@Check(CheckType.NORMAL)
-	def void checkModuleBase(NablaModule it)
-	{
-		if (declarations.empty && iteration === null && jobs.empty)
-			error(getModuleBaseMsg(), NablaPackage.Literals.NABLA_ROOT__NAME, MODULE_BASE);
-	}
 
 	@Check(CheckType.NORMAL)
 	def void checkModuleUniqueMeshExtension(NablaModule it)

@@ -10,12 +10,14 @@
 package fr.cea.nabla
 
 import com.google.inject.Inject
+import fr.cea.nabla.nabla.ArgOrVar
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.Cardinality
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.NablaExtension
 import fr.cea.nabla.nabla.ReductionCall
+import fr.cea.nabla.nabla.SimpleVar
 import org.eclipse.xtext.EcoreUtil2
 
 class ExpressionExtensions
@@ -47,6 +49,15 @@ class ExpressionExtensions
 			}
 			ArgOrVarRef: e.timeIterators.empty && e.spaceIterators.empty && e.target.nablaEvaluable
 			default: true
+		}
+	}
+
+	private def boolean isNablaEvaluable(ArgOrVar it)
+	{
+		switch it
+		{
+			SimpleVar: (option && value === null) || (value !== null && value.nablaEvaluable)
+			default: false
 		}
 	}
 }

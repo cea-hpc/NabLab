@@ -40,43 +40,6 @@ class BasicValidatorTest
 	// ===== Module ====
 
 	@Test
-	def void testCheckModuleBase()
-	{
-		val moduleKo = parseHelper.parse(
-			'''
-			module Test;
-			def g: → ℝ, () → return 3.0;
-			''')
-		moduleKo.assertError(NablaPackage.eINSTANCE.nablaRoot,
-			BasicValidator::MODULE_BASE,
-			BasicValidator::getModuleBaseMsg())
-
-		val moduleOk = parseHelper.parse(
-			'''
-			module Test;
-			ℝ a;
-			''')
-		Assert.assertNotNull(moduleOk)
-		moduleOk.assertNoErrors
-
-		val moduleOk2 = parseHelper.parse(
-			'''
-			module Test;
-			iterate n while (true);
-			''')
-		Assert.assertNotNull(moduleOk2)
-		moduleOk2.assertNoErrors
-
-		val moduleOk3 = parseHelper.parse(
-			'''
-			module Test;
-			J: let ℝ x = 3.3;
-			''')
-		Assert.assertNotNull(moduleOk3)
-		moduleOk3.assertNoErrors
-	}
-
-	@Test
 	def void testCheckModuleUniqueMeshExtension()
 	{
 		var rs = resourceSetProvider.get

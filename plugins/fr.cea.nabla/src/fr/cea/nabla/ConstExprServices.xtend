@@ -4,6 +4,7 @@ import com.google.inject.Inject
 import fr.cea.nabla.nabla.And
 import fr.cea.nabla.nabla.ArgOrVar
 import fr.cea.nabla.nabla.ArgOrVarRef
+import fr.cea.nabla.nabla.BaseTypeConstant
 import fr.cea.nabla.nabla.Cardinality
 import fr.cea.nabla.nabla.Comparison
 import fr.cea.nabla.nabla.ContractedIf
@@ -25,8 +26,8 @@ import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.SimpleVarDeclaration
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VectorConstant
-import org.eclipse.xtext.EcoreUtil2
 import fr.cea.nabla.overloading.DeclarationProvider
+import org.eclipse.xtext.EcoreUtil2
 
 /**
  * Note that FunctionCall is not constexpr for NabLab.
@@ -65,6 +66,7 @@ class ConstExprServices
 			UnaryMinus: e.expression.constExpr
 			Not: e.expression.constExpr
 			VectorConstant: e.values.forall[constExpr]
+			BaseTypeConstant: e.type.sizes.forall[constExpr] && e.value.constExpr
 			default: true
 		}
 	}

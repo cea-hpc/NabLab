@@ -78,7 +78,7 @@ class ExpressionTypeProvider
 	def dispatch NablaType getTypeFor(Modulo it) { new NSTIntScalar }
 	def dispatch NablaType getTypeFor(Parenthesis it) { expression?.typeFor }
 	def dispatch NablaType getTypeFor(UnaryMinus it) { expression?.typeFor }
-	def dispatch NablaType getTypeFor(Not it) { expression?.typeFor }
+	def dispatch NablaType getTypeFor(Not it) { new NSTBoolScalar }
 	def dispatch NablaType getTypeFor(IntConstant it) { new NSTIntScalar }
 	def dispatch NablaType getTypeFor(RealConstant it) { new NSTRealScalar }
 	def dispatch NablaType getTypeFor(BoolConstant it)  { new NSTBoolScalar }

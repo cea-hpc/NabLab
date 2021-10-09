@@ -20,6 +20,17 @@ using namespace nablalib::utils;
 using namespace nablalib::types;
 using namespace nablalib::utils::stl;
 
+/******************** Free functions declarations ********************/
+
+namespace variablesfreefuncs
+{
+bool assertEquals(int expected, int actual);
+template<size_t x>
+bool assertEquals(RealArray1D<x> expected, RealArray1D<x> actual);
+template<size_t x>
+bool assertEquals(IntArray1D<x> expected, IntArray1D<x> actual);
+}
+
 /******************** Module declaration ********************/
 
 class Variables
@@ -31,13 +42,16 @@ public:
 	void jsonInit(const char* jsonContent);
 
 	void simulate();
-	void init_arrayOption() noexcept;
-	void init_optionDim() noexcept;
-	void newVar() noexcept;
-	void setUnknownDim() noexcept;
-	void init_dynamicArray() noexcept;
-	void init_dynamicOptArray() noexcept;
-	void init_optionArray() noexcept;
+	void initDynamicDim() noexcept;
+	void initVarVec() noexcept;
+	void init_mandatoryOptDim() noexcept;
+	void init_mandatoryOptVect() noexcept;
+	void init_optDim() noexcept;
+	void init_optVect1() noexcept;
+	void init_optVect2() noexcept;
+	void init_varVec() noexcept;
+	void init_dynamicVec() noexcept;
+	void testJob() noexcept;
 
 private:
 	// Json block of options
@@ -45,23 +59,24 @@ private:
 
 	// Mesh and mesh variables
 	CartesianMesh2D& mesh;
-	size_t nbNodes, maxCellsOfNode;
+	size_t nbNodes;
 
 	// Options and global variables
 	static constexpr double maxTime = 0.1;
 	static constexpr int maxIter = 500;
 	static constexpr double deltat = 1.0;
+	std::vector<RealArray1D<2>> X;
 	double t;
-	RealArray1D<2> arrayOption;
-	static constexpr int dim = 2;
-	RealArray1D<2> v1;
-	RealArray1D<dim> v2;
-	std::vector<RealArray1D<dim>> X;
-	int unknownDim;
-	RealArray1D<0> dynamicArray;
-	int optionDim;
-	RealArray1D<0> dynamicOptArray;
-	RealArray1D<0> optionArray;
+	int optDim;
+	RealArray1D<2> optVect1;
+	RealArray1D<2> optVect2;
+	int mandatoryOptDim;
+	IntArray1D<2> mandatoryOptVect;
+	static constexpr int constexprDim = 2;
+	static constexpr RealArray1D<constexprDim> constexprVec = {1.1, 1.1};
+	RealArray1D<constexprDim> varVec;
+	int dynamicDim;
+	RealArray1D<0> dynamicVec;
 
 	// Timers
 	Timer globalTimer;

@@ -105,7 +105,10 @@ class ReplaceKnownSizeValues implements ExpressionTransformer
  */
 class ApplyPossibleBinaryOperations implements ExpressionTransformer
 {
-	override transform(Expression it) { dispatchTransform }
+	override transform(Expression it)
+	{
+		dispatchTransform
+	}
 
 	private def dispatch Expression dispatchTransform(Expression it)
 	{

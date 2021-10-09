@@ -63,12 +63,12 @@ class JobInterpreter
 			}
 			else
 			{
+				// The instruction of an InitVariablejob instance sets of the default value of the variable.
+				// if it is null => no default value. The option is mandatory.
 				if (instruction === null)
-					// v is not present in json file and is mandatory 
-					// (no instruction to set default value)
 					throw new IllegalStateException("Mandatory option missing in Json file: " + target.name)
 				else
-					InstructionInterpreter.interprete(instruction, innerContext)
+					interprete(instruction, innerContext)
 			}
 		}
 		else if (instruction !== null)

@@ -41,6 +41,10 @@ class JobContentProvider
 		«instruction.innerContent»
 	'''
 
+	/* 
+	 * The instruction of an InitVariablejob instance sets of the default value of the variable.
+	 * It can be null if the variable has no default value.
+	 */
 	private static def dispatch CharSequence getInnerContent(InitVariableJob it)
 	'''
 		«IF target.type.dynamicBaseType»

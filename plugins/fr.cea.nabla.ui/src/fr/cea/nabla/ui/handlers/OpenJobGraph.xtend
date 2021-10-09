@@ -88,6 +88,7 @@ abstract class OpenJobGraph extends AbstractHandler
 		}
 		catch (Exception e)
 		{
+			consoleFactory.printConsole(MessageType.Error, e.message)
 			// An exception can occured during IR building if environment is not configured,
 			// for example compilation not done, or during transformation step. Whatever... 
 			// irModule stays null. Error message printed below.

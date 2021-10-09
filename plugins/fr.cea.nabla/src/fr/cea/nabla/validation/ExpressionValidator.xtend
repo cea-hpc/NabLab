@@ -84,9 +84,11 @@ class ExpressionValidator extends ArgOrVarRefValidator
 	@Check(CheckType.NORMAL)
 	def checkFunctionCallArgs(FunctionCall it)
 	{
-		val inTypes = args.map[typeFor]
 		if (typeFor === null)
+		{
+			val inTypes = args.map[typeFor]
 			error(getFunctionCallArgsMsg(inTypes.map[label]), NablaPackage.Literals::FUNCTION_CALL__FUNCTION, FUNCTION_CALL_ARGS)
+		}
 	}
 
 	@Check(CheckType.NORMAL)

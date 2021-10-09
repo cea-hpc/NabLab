@@ -11,34 +11,101 @@ module Variables;
 
 with CartesianMesh2D.*;
 
+def assertEquals: ℕ × ℕ → ℾ, (expected, actual) →
+{
+	let ℾ ret = (expected == actual);
+	if (!ret) exit "** Assertion failed";
+	return ret;
+}
+
+def assertEquals: ℝ × ℝ → ℾ, (expected, actual) →
+{
+	let ℾ ret = (expected == actual);
+	if (!ret) exit "** Assertion failed";
+	return ret;
+}
+
+def assertEquals: x | ℕ[x] × ℕ[x] → ℾ, (expected, actual) →
+{
+	∀i∈[0;x[,
+		if (expected[i] != actual[i])
+			exit "** Assertion failed";
+	return true;
+}
+
+def assertEquals: x | ℝ[x] × ℝ[x] → ℾ, (expected, actual) →
+{
+	∀i∈[0;x[,
+		if (expected[i] != actual[i])
+			exit "** Assertion failed";
+	return true;
+}
+
 // Simulation options
 let ℝ maxTime = 0.1;
 let ℕ maxIter = 500;
 let ℝ δt = 1.0;
+ℝ[2] X{nodes};
 ℝ t;
 
-option ℝ[2] arrayOption;
+// options with default values
+option ℕ optDim = 2;
+option ℝ[2] optVect1 = [1.0, 1.0];
+option ℝ[2] optVect2 = [1.0, 1.0]; // value overwritten in Json
 
-let ℕ dim = 2;
-ℝ[2] v1;
-ℝ[dim] v2;
-ℝ[dim] X{nodes};
+// options with no default values
+option ℕ mandatoryOptDim;
+option ℕ[2] mandatoryOptVect;
 
-ℕ unknownDim;
-ℝ[unknownDim] dynamicArray;
+// const expr var
+let ℕ constexprDim = 2;
+let ℝ[constexprDim] constexprVec = [1.1, 1.1];
 
-option ℕ optionDim;
-ℝ[optionDim] dynamicOptArray;
-option ℝ[optionDim] optionArray;
+// variables with default value but overwritten in TestJob
+let ℝ[constexprDim] varVec = [1.0, 1.0];
+ 
+// variables needing allocation
+ℕ dynamicDim;
+ℝ[dynamicDim] dynamicVec;
 
-//let ℕ myNbNodes = card(nodes());
-//ℝ[myNbNodes] v3;
-//ℝ[myNbNodes] v4{cells};
+InitDynamicDim: dynamicDim = 4;
 
-NewVar: ∀ r∈nodes(), 
+InitVarVec: varVec = [2.2, 2.2];
+
+TestJob:
 {
-	let ℕ localNbCells = card(cellsOfNode(r));
-	ℝ[localNbCells] tmp;
-}
+	// options with default values
+	let ℾ testOptDim = assertEquals(2, optDim);
+	let ℾ testOptVect1 = assertEquals([1.0, 1.0], optVect1);
+	let ℾ testOptVect2 = assertEquals([2.0, 2.0], optVect2);
 
-SetUnknownDim: unknownDim = 4;
+	// options with no default values
+	let ℾ testMandatoryOptDim = assertEquals(3, mandatoryOptDim);
+	let ℾ testMandatoryOptVect = assertEquals([3, 3], mandatoryOptVect);
+
+	// const expr var
+	let ℾ testConstexprDim = assertEquals(2, constexprDim);
+	let ℾ testConstexprVec = assertEquals([1.1, 1.1], constexprVec);
+
+	// variables with default value but overwritten in InitJob
+	let ℾ testVarVec = assertEquals([2.2, 2.2], varVec);
+
+	// variables needing allocation
+	let ℾ testDynamicDim = assertEquals(4, dynamicDim);
+	let ℕ cpt = 1;
+	∀i∈[0;dynamicDim[,
+	{
+		cpt = cpt + 1;
+		dynamicVec[i] = 3.3;
+	}
+	let ℾ testDynamicVecLength = assertEquals(4, cpt);
+//	let ℾ testDynamicVec = assertEquals(dynamicVec, ℝ[dynamicDim](3.3));
+
+	// local variables
+//	∀ r∈nodes(), 
+//	{
+//		let ℕ localNbCells = card(cellsOfNode(r));
+//		let ℝ[localNbCells] tmp = ℝ[localNbCells](0.0);
+//		let ℾ testTmp = assertEquals(tmp, ℝ[localNbCells](0.0));
+//	}
+}

@@ -85,13 +85,52 @@ class CreateInitVariableJobsTest
 
 		val init_my_real_job = getInitJobFor(ir, "my_real")
 		Assert.assertNotNull(init_my_real_job)
+		Assert.assertNotNull(init_my_real_job.instruction)
 
 		val init_my_array_int_job = getInitJobFor(ir, "my_array_int")
 		Assert.assertNotNull(init_my_array_int_job)
+		Assert.assertNotNull(init_my_array_int_job.instruction)
 
 		Assert.assertEquals(1.0, job.at, 0.0)
 		Assert.assertEquals(1.0, init_my_real_job.at, 0.0)
 		Assert.assertEquals(1.0, init_my_array_int_job.at, 0.0)
+	}
+
+
+	@Test
+	def void testJobForDynamicVar()
+	{
+		val model =
+		'''
+		«testModule»
+		ℝ[2] X{nodes};
+		ℕ dim;
+		ℝ[dim] array;
+
+		Job: { 
+			dim = 2;
+		}
+		'''
+
+		val ir = compilationHelper.getRawIr(model, testGenModel)
+		Assert.assertEquals(1, ir.jobs.size)
+		Assert.assertEquals("Job", ir.jobs.head.name)
+		Assert.assertFalse(isConstExpr(ir, "dim"))
+		Assert.assertFalse(isConstExpr(ir, "array"))
+
+		Assert.assertTrue(step.transform(ir))
+
+		Assert.assertEquals(2, ir.jobs.size)
+
+		val job = ir.jobs.findFirst[x | x.name == "Job"]
+		Assert.assertNotNull(job)
+
+		val init_array_job = getInitJobFor(ir, "array")
+		Assert.assertNotNull(init_array_job)
+		Assert.assertNull(init_array_job.instruction)
+
+		Assert.assertEquals(1.0, job.at, 0.0)
+		Assert.assertEquals(2.0, init_array_job.at, 0.0)
 	}
 
 	@Test
@@ -104,6 +143,7 @@ class CreateInitVariableJobsTest
 		option ℝ my_real = 3.3;
 		option ℕ[3] my_array_int = [1 , 2 , 3];
 		option ℝ my_second_real = 2.0 * my_real;
+		option ℝ mandatory_real;
 		'''
 
 		val ir = compilationHelper.getRawIr(model, testGenModel)
@@ -114,16 +154,23 @@ class CreateInitVariableJobsTest
 
 		Assert.assertTrue(step.transform(ir))
 
-		Assert.assertEquals(3, ir.jobs.size)
+		Assert.assertEquals(4, ir.jobs.size)
 
 		val init_my_real_job = getInitJobFor(ir, "my_real")
 		Assert.assertNotNull(init_my_real_job)
+		Assert.assertNotNull(init_my_real_job.instruction)
 
 		val init_my_array_int_job = getInitJobFor(ir, "my_array_int")
 		Assert.assertNotNull(init_my_array_int_job)
+		Assert.assertNotNull(init_my_array_int_job.instruction)
 
 		val init_my_second_real_job = getInitJobFor(ir, "my_second_real")
 		Assert.assertNotNull(init_my_second_real_job)
+		Assert.assertNotNull(init_my_second_real_job.instruction)
+
+		val mandatory_real_job = getInitJobFor(ir, "mandatory_real")
+		Assert.assertNotNull(mandatory_real_job)
+		Assert.assertNull(mandatory_real_job.instruction)
 
 		Assert.assertEquals("my_real", init_my_real_job.outVars.head.name)
 		Assert.assertEquals("my_real", init_my_second_real_job.inVars.head.name)

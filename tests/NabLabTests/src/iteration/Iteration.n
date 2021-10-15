@@ -20,10 +20,9 @@ let ℝ δt = 1.0;
 ℝ t;
 ℝ[2] X{nodes};
 ℝ u{cells}; // Temperature
-ℝ v{cells}; // vn+1 computed with iteration on k
+ℝ v1{cells}; // vn+1 computed with iteration on k (exists k=0)
+ℝ v2{cells}; // vn+1 computed with iteration on k (not exists k=0)
 ℝ w{cells}; // wn+1 computed with iteration on l
-
-//iterate n while (t^{n+1} < maxTime && n+1 < maxIter), k while (k+1 < maxIterK);
 
 iterate n while (t^{n+1} < maxTime && n+1 < maxIter), { 
 			k while (k+1 < maxIterK);
@@ -32,10 +31,16 @@ iterate n while (t^{n+1} < maxTime && n+1 < maxIter), {
 
 IniTime: t^{n=0} = 0.0;
 IniU: ∀c∈cells(), u^{n}{c} = 0.0;
-IniV: ∀c∈cells(), v^{n+1, k=0}{c} = u^{n}{c} + 1;
-UpdateV: ∀c∈cells(), v^{n+1, k+1}{c} = v^{n+1, k}{c} + 1.5;
-IniW: ∀c∈cells(), w^{n+1, l=0}{c} = v^{n+1}{c};
+
+IniV1: ∀c∈cells(), v1^{n+1, k=0}{c} = u^{n}{c} + 1;
+UpdateV1: ∀c∈cells(), v1^{n+1, k+1}{c} = v1^{n+1, k}{c} + 1.5;
+
+IniV2: ∀c∈cells(), v2^{n=0}{c} = 1.0;
+UpdateV2: ∀c∈cells(), v2^{n+1, k+1}{c} = v2^{n+1, k}{c} + 2;
+
+IniW: ∀c∈cells(), w^{n+1, l=0}{c} = v1^{n+1}{c};
+
 UpdateW: ∀c∈cells(), w^{n+1, l+1}{c} = w^{n+1, l}{c} + 2.5;
 UpdateU: ∀c∈cells(), u^{n+1}{c} = w^{n+1}{c};
-//UpdateU: ∀c∈cells(), u^{n+1}{c} = v^{n+1}{c};
+
 ComputeTn: t^{n+1} = t^{n} + δt;

@@ -16,11 +16,16 @@ Iteration::Iteration(CartesianMesh2D& aMesh)
 , X("X", nbNodes)
 , u_n("u_n", nbCells)
 , u_nplus1("u_nplus1", nbCells)
-, v_n("v_n", nbCells)
-, v_nplus1("v_nplus1", nbCells)
-, v_nplus1_k("v_nplus1_k", nbCells)
-, v_nplus1_kplus1("v_nplus1_kplus1", nbCells)
-, v_nplus1_k0("v_nplus1_k0", nbCells)
+, v1_n("v1_n", nbCells)
+, v1_nplus1("v1_nplus1", nbCells)
+, v1_nplus1_k("v1_nplus1_k", nbCells)
+, v1_nplus1_kplus1("v1_nplus1_kplus1", nbCells)
+, v1_nplus1_k0("v1_nplus1_k0", nbCells)
+, v2_n("v2_n", nbCells)
+, v2_nplus1("v2_nplus1", nbCells)
+, v2_n0("v2_n0", nbCells)
+, v2_nplus1_k("v2_nplus1_k", nbCells)
+, v2_nplus1_kplus1("v2_nplus1_kplus1", nbCells)
 , w_n("w_n", nbCells)
 , w_nplus1("w_nplus1", nbCells)
 , w_nplus1_l("w_nplus1_l", nbCells)
@@ -85,28 +90,54 @@ void Iteration::iniU() noexcept
 }
 
 /**
- * Job iniV called @1.0 in executeTimeLoopN method.
+ * Job iniV1 called @1.0 in executeTimeLoopN method.
  * In variables: u_n
- * Out variables: v_nplus1_k0
+ * Out variables: v1_nplus1_k0
  */
-void Iteration::iniV() noexcept
+void Iteration::iniV1() noexcept
 {
 	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& cCells)
 	{
-		v_nplus1_k0(cCells) = u_n(cCells) + 1;
+		v1_nplus1_k0(cCells) = u_n(cCells) + 1;
 	});
 }
 
 /**
- * Job updateV called @1.0 in executeTimeLoopK method.
- * In variables: v_nplus1_k
- * Out variables: v_nplus1_kplus1
+ * Job iniV2 called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: v2_n0
  */
-void Iteration::updateV() noexcept
+void Iteration::iniV2() noexcept
 {
 	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& cCells)
 	{
-		v_nplus1_kplus1(cCells) = v_nplus1_k(cCells) + 1.5;
+		v2_n0(cCells) = 1.0;
+	});
+}
+
+/**
+ * Job updateV1 called @1.0 in executeTimeLoopK method.
+ * In variables: v1_nplus1_k
+ * Out variables: v1_nplus1_kplus1
+ */
+void Iteration::updateV1() noexcept
+{
+	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& cCells)
+	{
+		v1_nplus1_kplus1(cCells) = v1_nplus1_k(cCells) + 1.5;
+	});
+}
+
+/**
+ * Job updateV2 called @1.0 in executeTimeLoopK method.
+ * In variables: v2_nplus1_k
+ * Out variables: v2_nplus1_kplus1
+ */
+void Iteration::updateV2() noexcept
+{
+	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& cCells)
+	{
+		v2_nplus1_kplus1(cCells) = v2_nplus1_k(cCells) + 2;
 	});
 }
 
@@ -125,31 +156,39 @@ void Iteration::updateW() noexcept
 
 /**
  * Job setUpTimeLoopK called @2.0 in executeTimeLoopN method.
- * In variables: v_nplus1_k0
- * Out variables: v_nplus1_k
+ * In variables: v1_nplus1_k0, v2_n
+ * Out variables: v1_nplus1_k, v2_nplus1_k
  */
 void Iteration::setUpTimeLoopK() noexcept
 {
 	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& i1Cells)
 	{
-		v_nplus1_k(i1Cells) = v_nplus1_k0(i1Cells);
+		v1_nplus1_k(i1Cells) = v1_nplus1_k0(i1Cells);
+	});
+	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& i1Cells)
+	{
+		v2_nplus1_k(i1Cells) = v2_n(i1Cells);
 	});
 }
 
 /**
  * Job setUpTimeLoopN called @2.0 in simulate method.
- * In variables: t_n0
- * Out variables: t_n
+ * In variables: t_n0, v2_n0
+ * Out variables: t_n, v2_n
  */
 void Iteration::setUpTimeLoopN() noexcept
 {
 	t_n = t_n0;
+	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& i1Cells)
+	{
+		v2_n(i1Cells) = v2_n0(i1Cells);
+	});
 }
 
 /**
  * Job executeTimeLoopK called @3.0 in executeTimeLoopN method.
- * In variables: v_nplus1_k
- * Out variables: v_nplus1_kplus1
+ * In variables: v1_nplus1_k, v2_nplus1_k
+ * Out variables: v1_nplus1_kplus1, v2_nplus1_kplus1
  */
 void Iteration::executeTimeLoopK() noexcept
 {
@@ -158,7 +197,8 @@ void Iteration::executeTimeLoopK() noexcept
 	do
 	{
 		k++;
-		updateV(); // @1.0
+		updateV1(); // @1.0
+		updateV2(); // @1.0
 		
 	
 		// Evaluate loop condition with variables at time n
@@ -166,15 +206,19 @@ void Iteration::executeTimeLoopK() noexcept
 	
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& i1Cells)
 		{
-			v_nplus1_k(i1Cells) = v_nplus1_kplus1(i1Cells);
+			v1_nplus1_k(i1Cells) = v1_nplus1_kplus1(i1Cells);
+		});
+		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& i1Cells)
+		{
+			v2_nplus1_k(i1Cells) = v2_nplus1_kplus1(i1Cells);
 		});
 	} while (continueLoop);
 }
 
 /**
  * Job executeTimeLoopN called @3.0 in simulate method.
- * In variables: t_n, u_n, v_n, w_n
- * Out variables: t_nplus1, u_nplus1, v_nplus1, w_nplus1
+ * In variables: t_n, u_n, v1_n, v2_n, w_n
+ * Out variables: t_nplus1, u_nplus1, v1_nplus1, v2_nplus1, w_nplus1
  */
 void Iteration::executeTimeLoopN() noexcept
 {
@@ -190,7 +234,7 @@ void Iteration::executeTimeLoopN() noexcept
 				<< setiosflags(std::ios::scientific) << setprecision(8) << setw(16) << t_n << __RESET__;
 	
 		computeTn(); // @1.0
-		iniV(); // @1.0
+		iniV1(); // @1.0
 		setUpTimeLoopK(); // @2.0
 		executeTimeLoopK(); // @3.0
 		tearDownTimeLoopK(); // @4.0
@@ -211,7 +255,11 @@ void Iteration::executeTimeLoopN() noexcept
 		});
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& i1Cells)
 		{
-			v_n(i1Cells) = v_nplus1(i1Cells);
+			v1_n(i1Cells) = v1_nplus1(i1Cells);
+		});
+		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& i1Cells)
+		{
+			v2_n(i1Cells) = v2_nplus1(i1Cells);
 		});
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& i1Cells)
 		{
@@ -238,27 +286,31 @@ void Iteration::executeTimeLoopN() noexcept
 
 /**
  * Job tearDownTimeLoopK called @4.0 in executeTimeLoopN method.
- * In variables: v_nplus1_kplus1
- * Out variables: v_nplus1
+ * In variables: v1_nplus1_kplus1, v2_nplus1_kplus1
+ * Out variables: v1_nplus1, v2_nplus1
  */
 void Iteration::tearDownTimeLoopK() noexcept
 {
 	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& i1Cells)
 	{
-		v_nplus1(i1Cells) = v_nplus1_kplus1(i1Cells);
+		v1_nplus1(i1Cells) = v1_nplus1_kplus1(i1Cells);
+	});
+	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& i1Cells)
+	{
+		v2_nplus1(i1Cells) = v2_nplus1_kplus1(i1Cells);
 	});
 }
 
 /**
  * Job iniW called @5.0 in executeTimeLoopN method.
- * In variables: v_nplus1
+ * In variables: v1_nplus1
  * Out variables: w_nplus1_l0
  */
 void Iteration::iniW() noexcept
 {
 	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& cCells)
 	{
-		w_nplus1_l0(cCells) = v_nplus1(cCells);
+		w_nplus1_l0(cCells) = v1_nplus1(cCells);
 	});
 }
 
@@ -347,6 +399,7 @@ void Iteration::simulate()
 
 	iniTime(); // @1.0
 	iniU(); // @1.0
+	iniV2(); // @1.0
 	setUpTimeLoopN(); // @2.0
 	executeTimeLoopN(); // @3.0
 	

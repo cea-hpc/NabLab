@@ -66,13 +66,25 @@ let ℝ[constexprDim] varVec = [1.0, 1.0];
  
 // variables needing allocation
 ℕ dynamicDim;
+ℕ checkDynamicDim;
 ℝ[dynamicDim] dynamicVec;
 
-InitDynamicDim: dynamicDim = 4;
+DynamicDimInitialization: dynamicDim = 4;
 
-InitVarVec: varVec = [2.2, 2.2];
+DynamicVecInitialization: 
+{
+	let ℕ cpt = 0;
+	∀i∈[0;dynamicDim[,
+	{
+		cpt = cpt + 1;
+		dynamicVec[i] = 3.3;
+	}
+	checkDynamicDim = cpt;
+}
 
-TestJob:
+VarVecInitialization: varVec = [2.2, 2.2];
+
+Oracle:
 {
 	// options with default values
 	let ℾ testOptDim = assertEquals(2, optDim);
@@ -92,13 +104,9 @@ TestJob:
 
 	// variables needing allocation
 	let ℾ testDynamicDim = assertEquals(4, dynamicDim);
-	let ℕ cpt = 1;
-	∀i∈[0;dynamicDim[,
-	{
-		cpt = cpt + 1;
-		dynamicVec[i] = 3.3;
-	}
-	let ℾ testDynamicVecLength = assertEquals(4, cpt);
+	let ℾ testDynamicVecLength = assertEquals(4, checkDynamicDim);
+	
+// NOT YET IMPLEMENTED : BaseTypeConstants on a dynamic size
 //	let ℾ testDynamicVec = assertEquals(dynamicVec, ℝ[dynamicDim](3.3));
 
 	// local variables

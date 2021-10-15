@@ -1,0 +1,15 @@
+{
+	"_comment": "GENERATED FILE - DO NOT OVERWRITE",
+	"variables":
+	{
+		"mandatoryOptDim":3,
+		"mandatoryOptVect":[3,3]
+	},
+	"mesh":
+	{
+		"nbXQuads":100,
+		"nbYQuads":10,
+		"xSize":0.01,
+		"ySize":0.01
+	}
+}

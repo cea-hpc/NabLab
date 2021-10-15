@@ -27,7 +27,8 @@ Consequently, NabLab provides a way for domain scientists and software engineers
 ## Publications
 
 - [Fostering metamodels and grammars within a dedicated environment for HPC: the NabLab environment](https://hal.inria.fr/hal-01910139)
-- [Applying Model-Driven Engineering to High-Performance Computing: Experience Report, Lessons Learned, and Remaining Challenges ](https://hal.inria.fr/hal-02296030)
+- [Applying Model-Driven Engineering to High-Performance Computing: Experience Report, Lessons Learned, and Remaining Challenges](https://hal.inria.fr/hal-02296030)
+- [Monilogging for Executable Domain-Specific Languages](https://hal.inria.fr/hal-03358061)
 
 
 ## Licence and copyright

@@ -22,6 +22,8 @@ import static extension fr.cea.nabla.ir.IrRootExtensions.getExecName
 
 class CMakeContentProvider
 {
+	val debug = true
+
 	protected def Iterable<String> getNeededVariables(IrRoot irRoot)
 	{
 		#[]
@@ -64,9 +66,15 @@ class CMakeContentProvider
 
 		«CMakeUtils.addSubDirectories(true, externalProviders)»
 
+		«IF debug»
+		# Python embedding
+		set(PYBIND11_PYTHON_VERSION 3.8)
+		find_package(pybind11 REQUIRED)
+		«ENDIF»
+
 		# EXECUTABLE «execName»
 		add_executable(«execName»«FOR m : modules» «m.className + '.cc'»«ENDFOR»)
-		target_link_libraries(«execName» PUBLIC«FOR l : getRootTargetLinkLibraries(it, hasLevelDB)» «l»«ENDFOR»)
+		target_link_libraries(«execName» PUBLIC«FOR l : getRootTargetLinkLibraries(it, hasLevelDB)» «l»«ENDFOR»«IF debug» pybind11::embed«ENDIF»)
 
 		«CMakeUtils.fileFooter»
 	'''

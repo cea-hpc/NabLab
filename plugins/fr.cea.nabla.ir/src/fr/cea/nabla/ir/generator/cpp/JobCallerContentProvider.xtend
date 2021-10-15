@@ -17,13 +17,21 @@ import static extension fr.cea.nabla.ir.generator.Utils.*
 
 class JobCallerContentProvider
 {
+	val debug = true
+
 	def getCallsHeader(JobCaller it) ''''''
 
 	def getCallsContent(JobCaller it)
 	'''
-		«FOR j : calls»
-		«j.callName.replace('.', '->')»(); // @«j.at»
-		«ENDFOR»
+		«IF debug»
+			«FOR j : calls»
+				(this->*(«j.callName.replace('.', '->')»Ptr))(); // @«j.at»
+			«ENDFOR»
+		«ELSE»
+			«FOR j : calls»
+				«j.callName.replace('.', '->')»(); // @«j.at»
+			«ENDFOR»
+		«ENDIF»
 
 	'''
 }

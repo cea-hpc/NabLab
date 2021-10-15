@@ -20,10 +20,16 @@ import static extension fr.cea.nabla.ir.IrRootExtensions.*
 @Data
 class MainContentProvider
 {
+	val debug = true
+	
 	val extension JsonContentProvider jsonContentProvider
 
 	def getContentFor(IrModule it, boolean hasLevelDB)
 	'''
+		«IF debug»
+		py::scoped_interpreter guard{};
+
+		«ENDIF»
 		string dataFile;
 		int ret = 0;
 

@@ -36,6 +36,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 {
 	val boolean hasLevelDB
 	val cMakeVars = new LinkedHashSet<Pair<String, String>>
+	val debug = true
 
 	new(Backend backend, String wsPath, boolean hasLevelDB, Iterable<Pair<String, String>> cmakeVars)
 	{
@@ -78,12 +79,18 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	«ENDIF»
 
 	«backend.includesContentProvider.getUsings(hasLevelDB)»
+	
+	«IF debug»
+	namespace py = pybind11;
+	«ENDIF»
+	
 	«IF main && irRoot.modules.size > 1»
 
 		«FOR m : irRoot.modules.filter[x | x !== it]»
 			class «m.className»;
 		«ENDFOR»
 	«ENDIF»
+	
 	«IF !functions.empty»
 
 	/******************** Free functions declarations ********************/
@@ -135,8 +142,20 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		«ENDIF»
 
 	private:
+		«IF debug»
+		«FOR j : jobs»
+		«backend.jobContentProvider.getWrapperDeclarationContent(j)»
+		«ENDFOR»
+		«FOR j : jobs»
+		«backend.jobContentProvider.getPointerDeclarationContent(j)»
+		«ENDFOR»
+		«ENDIF»
 		«IF postProcessing !== null»
 		void dumpVariables(int iteration, bool useTimer=true);
+
+		«ENDIF»
+		«IF debug»
+		void pythonInitialize();
 
 		«ENDIF»
 		«IF kokkosTeamThread»
@@ -175,14 +194,31 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		«IF levelDB»
 			std::string «IrUtils.NonRegressionNameAndValue.key»;
 		«ENDIF»
+		«IF !debug»
 		«FOR v : variables»
 			«v.variableDeclaration»
 		«ENDFOR»
+		«ELSE»
+			std::string pythonPath;
+			std::string pythonFile;
+		«ENDIF»
 
 		// Timers
 		Timer globalTimer;
 		Timer cpuTimer;
 		Timer ioTimer;
+		«IF debug»
+
+			map<string, std::list<py::function>> before;
+			map<string, std::list<py::function>> after;
+		«ENDIF»
+
+	«IF debug»
+	public:
+		«FOR v : variables»
+			«v.variableDeclaration»
+		«ENDFOR»
+	«ENDIF»
 	};
 
 	#endif
@@ -201,6 +237,10 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		«FOR m : irRoot.modules.filter[x | x !== it]»
 			#include "«m.className».h"
 		«ENDFOR»
+	«ENDIF»
+
+	«IF debug»
+	namespace py = pybind11;
 	«ENDIF»
 
 	«IF !functions.empty»
@@ -247,6 +287,11 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 			«irRoot.initNodeCoordVariable.name»«iterator»[1] = gNodes[rNodes][1];
 		}
 		«ENDIF»
+		«IF debug»
+			«FOR j : jobs»
+				this->«Utils.getCodeName(j)»Ptr = &«className»::«Utils.getCodeName(j)»Wrapper;
+			«ENDFOR»
+		«ENDIF»
 	}
 
 	«className»::~«className»()
@@ -292,6 +337,18 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		assert(«jsonContentProvider.getJsonName(nrName)».IsString());
 		«nrName» = «jsonContentProvider.getJsonName(nrName)».GetString();
 		«ENDIF»
+		«IF debug»
+		if (o.HasMember("pythonPath")) {
+			const rapidjson::Value &valueof_pythonPath = o["pythonPath"];
+			assert(valueof_pythonPath.IsString());
+			pythonPath = valueof_pythonPath.GetString();
+		}
+		if (o.HasMember("pythonFile")) {
+			const rapidjson::Value &valueof_pythonFile = o["pythonFile"];
+			assert(valueof_pythonFile.IsString());
+			pythonFile = valueof_pythonFile.GetString();
+		}
+		«ENDIF»
 	}
 
 	«IF kokkosTeamThread»
@@ -319,10 +376,17 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		return std::pair<size_t, size_t>(team_offset, team_chunk);
 	}
 	«ENDIF»
-
+	
 	«FOR j : jobs SEPARATOR '\n'»
 		«backend.jobContentProvider.getDefinitionContent(j)»
 	«ENDFOR»
+	
+	«IF debug»
+	«FOR j : jobs SEPARATOR '\n'»
+		«backend.jobContentProvider.getWrapperDefinitionContent(j)»
+	«ENDFOR»
+	«ENDIF»
+	
 	«IF main»
 	«IF postProcessing !== null»
 
@@ -371,8 +435,45 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	}
 	«ENDIF»
 
+	«IF debug»
+	PYBIND11_EMBEDDED_MODULE(«className.toLowerCase»internal, m) {
+		«FOR v : variables»
+		m.def("«v.name»", []() {
+			static «className» *instance = («className» *) py::module_::import("«className.toLowerCase»internal")
+					.attr("_«className»_C_API").cast<py::capsule>().get_pointer();
+			return instance->«v.name»;
+		});
+		«ENDFOR»
+	}
+
+	void «className»::pythonInitialize() {
+		py::module_::import("sys").attr("path").attr("append")(pythonPath);
+		py::module_::import("«className.toLowerCase»internal").add_object("_«className»_C_API", py::capsule(this));
+		py::module_ pScript = py::module_::import(pythonFile.c_str());
+		py::dict hooks = py::reinterpret_borrow <py::dict>(py::module_::import("monilog").attr("hooks"));
+
+		py::dict pBefore = py::reinterpret_borrow<py::dict>(hooks["before"]);
+		for (auto item : pBefore) {
+			for (auto f : item.second) {
+				before[py::str(item.first)].push_back(py::reinterpret_borrow<py::function>(pScript.attr(f)));
+			}
+		};
+
+		py::dict pAfter = py::reinterpret_borrow<py::dict>(hooks["after"]);
+		for (auto item : pAfter) {
+			for (auto f : item.second) {
+				after[py::str(item.first)].push_back(py::reinterpret_borrow<py::function>(pScript.attr(f)));
+			}
+		};
+	}
+	«ENDIF»
+
 	void «className»::«Utils.getCodeName(irRoot.main)»()
 	{
+		«IF debug»
+		pythonInitialize();
+		«ENDIF»
+		
 		«backend.traceContentProvider.getBeginOfSimuTrace(it)»
 
 		«jobCallerContentProvider.getCallsHeader(irRoot.main)»

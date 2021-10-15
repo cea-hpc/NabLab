@@ -761,6 +761,22 @@
 				</visibleWhen>
 			</command>
 			<command
+				commandId="fr.cea.nabla.GeneratePythonModuleCommand"
+				icon="icons/Nablagen.gif"
+				label="Generate Python module"
+				style="push">
+				<visibleWhen checkEnabled="false">
+					<with variable="activeMenuSelection">
+						<count value="1"/>
+						<iterate>
+							<adapt type="org.eclipse.core.resources.IResource">
+								<test property="org.eclipse.core.resources.extension" value="ngen"/>
+							</adapt>
+						</iterate>
+					</with>
+				</visibleWhen>
+			</command>
+			<command
 				commandId="fr.cea.nabla.GenerateNablagenCommand"
 				icon="icons/NabLab.gif"
 				label="Generate nablagen file"
@@ -792,6 +808,11 @@
 			defaultHandler="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.handlers.GenerateCodeHandler"
 			id="fr.cea.nabla.GenerateCodeCommand"
 			name="Generate code">
+		</command>
+		<command 
+			defaultHandler="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.handlers.GeneratePythonModuleHandler"
+			id="fr.cea.nabla.GeneratePythonModuleCommand"
+			name="Generate Python module">
 		</command>
 		<command
         defaultHandler="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.handlers.GenerateNablagenHandler"

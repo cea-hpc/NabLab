@@ -13,11 +13,18 @@ import java.util.LinkedHashSet
 
 class IncludesContentProvider
 {
+	val debug = true
+	
 	def getIncludes(boolean hasLevelDB, boolean hasPostProcessing)
 	'''
 		«FOR include : getSystemIncludes(hasLevelDB)»
 		#include <«include»>
 		«ENDFOR»
+		«IF debug»
+		#include <Python.h>
+		#include <pybind11/embed.h>
+		#include <pybind11/stl.h>
+		«ENDIF»
 		«FOR include : getUserIncludes(hasLevelDB, hasPostProcessing)»
 		#include "«include»"
 		«ENDFOR»

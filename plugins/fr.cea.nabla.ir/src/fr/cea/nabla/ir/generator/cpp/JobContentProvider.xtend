@@ -35,12 +35,35 @@ abstract class JobContentProvider
 	'''
 		void «codeName»() noexcept;'''
 
+	def getWrapperDeclarationContent(Job it)
+	'''
+		void «codeName»Wrapper() noexcept;'''
+
+	def getPointerDeclarationContent(Job it)
+	'''
+		void («IrUtils.getContainerOfType(it, IrModule).className»::*«codeName»Ptr)();'''
+
 	def getDefinitionContent(Job it)
 	'''
 		«comment»
 		void «IrUtils.getContainerOfType(it, IrModule).className»::«codeName»() noexcept
 		{
 			«innerContent»
+		}
+	'''
+
+	def getWrapperDefinitionContent(Job it)
+	'''
+		«comment»
+		void «IrUtils.getContainerOfType(it, IrModule).className»::«codeName»Wrapper() noexcept
+		{
+			for (auto monilogger : before["«it.name.toFirstUpper»"]) {
+				monilogger();
+			}
+			«codeName»();
+			for (auto monilogger : after["«it.name.toFirstUpper»"]) {
+				monilogger();
+			}
 		}
 	'''
 

@@ -38,11 +38,16 @@ public final class Iteration
 	double[][] X;
 	double[] u_n;
 	double[] u_nplus1;
-	double[] v_n;
-	double[] v_nplus1;
-	double[] v_nplus1_k;
-	double[] v_nplus1_kplus1;
-	double[] v_nplus1_k0;
+	double[] v1_n;
+	double[] v1_nplus1;
+	double[] v1_nplus1_k;
+	double[] v1_nplus1_kplus1;
+	double[] v1_nplus1_k0;
+	double[] v2_n;
+	double[] v2_nplus1;
+	double[] v2_n0;
+	double[] v2_nplus1_k;
+	double[] v2_nplus1_kplus1;
 	double[] w_n;
 	double[] w_nplus1;
 	double[] w_nplus1_l;
@@ -60,11 +65,16 @@ public final class Iteration
 		X = new double[nbNodes][2];
 		u_n = new double[nbCells];
 		u_nplus1 = new double[nbCells];
-		v_n = new double[nbCells];
-		v_nplus1 = new double[nbCells];
-		v_nplus1_k = new double[nbCells];
-		v_nplus1_kplus1 = new double[nbCells];
-		v_nplus1_k0 = new double[nbCells];
+		v1_n = new double[nbCells];
+		v1_nplus1 = new double[nbCells];
+		v1_nplus1_k = new double[nbCells];
+		v1_nplus1_kplus1 = new double[nbCells];
+		v1_nplus1_k0 = new double[nbCells];
+		v2_n = new double[nbCells];
+		v2_nplus1 = new double[nbCells];
+		v2_n0 = new double[nbCells];
+		v2_nplus1_k = new double[nbCells];
+		v2_nplus1_kplus1 = new double[nbCells];
 		w_n = new double[nbCells];
 		w_nplus1 = new double[nbCells];
 		w_nplus1_l = new double[nbCells];
@@ -120,28 +130,54 @@ public final class Iteration
 	}
 
 	/**
-	 * Job iniV called @1.0 in executeTimeLoopN method.
+	 * Job iniV1 called @1.0 in executeTimeLoopN method.
 	 * In variables: u_n
-	 * Out variables: v_nplus1_k0
+	 * Out variables: v1_nplus1_k0
 	 */
-	protected void iniV()
+	protected void iniV1()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
-			v_nplus1_k0[cCells] = u_n[cCells] + 1;
+			v1_nplus1_k0[cCells] = u_n[cCells] + 1;
 		});
 	}
 
 	/**
-	 * Job updateV called @1.0 in executeTimeLoopK method.
-	 * In variables: v_nplus1_k
-	 * Out variables: v_nplus1_kplus1
+	 * Job iniV2 called @1.0 in simulate method.
+	 * In variables: 
+	 * Out variables: v2_n0
 	 */
-	protected void updateV()
+	protected void iniV2()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
-			v_nplus1_kplus1[cCells] = v_nplus1_k[cCells] + 1.5;
+			v2_n0[cCells] = 1.0;
+		});
+	}
+
+	/**
+	 * Job updateV1 called @1.0 in executeTimeLoopK method.
+	 * In variables: v1_nplus1_k
+	 * Out variables: v1_nplus1_kplus1
+	 */
+	protected void updateV1()
+	{
+		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
+		{
+			v1_nplus1_kplus1[cCells] = v1_nplus1_k[cCells] + 1.5;
+		});
+	}
+
+	/**
+	 * Job updateV2 called @1.0 in executeTimeLoopK method.
+	 * In variables: v2_nplus1_k
+	 * Out variables: v2_nplus1_kplus1
+	 */
+	protected void updateV2()
+	{
+		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
+		{
+			v2_nplus1_kplus1[cCells] = v2_nplus1_k[cCells] + 2;
 		});
 	}
 
@@ -160,31 +196,39 @@ public final class Iteration
 
 	/**
 	 * Job setUpTimeLoopK called @2.0 in executeTimeLoopN method.
-	 * In variables: v_nplus1_k0
-	 * Out variables: v_nplus1_k
+	 * In variables: v1_nplus1_k0, v2_n
+	 * Out variables: v1_nplus1_k, v2_nplus1_k
 	 */
 	protected void setUpTimeLoopK()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
 		{
-			v_nplus1_k[i1Cells] = v_nplus1_k0[i1Cells];
+			v1_nplus1_k[i1Cells] = v1_nplus1_k0[i1Cells];
+		});
+		IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
+		{
+			v2_nplus1_k[i1Cells] = v2_n[i1Cells];
 		});
 	}
 
 	/**
 	 * Job setUpTimeLoopN called @2.0 in simulate method.
-	 * In variables: t_n0
-	 * Out variables: t_n
+	 * In variables: t_n0, v2_n0
+	 * Out variables: t_n, v2_n
 	 */
 	protected void setUpTimeLoopN()
 	{
 		t_n = t_n0;
+		IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
+		{
+			v2_n[i1Cells] = v2_n0[i1Cells];
+		});
 	}
 
 	/**
 	 * Job executeTimeLoopK called @3.0 in executeTimeLoopN method.
-	 * In variables: k, maxIterK, v_nplus1_k
-	 * Out variables: v_nplus1_kplus1
+	 * In variables: k, maxIterK, v1_nplus1_k, v2_nplus1_k
+	 * Out variables: v1_nplus1_kplus1, v2_nplus1_kplus1
 	 */
 	protected void executeTimeLoopK()
 	{
@@ -195,22 +239,27 @@ public final class Iteration
 			k++;
 			System.out.printf("Start iteration k: %5d\n", k);
 		
-			updateV(); // @1.0
+			updateV1(); // @1.0
+			updateV2(); // @1.0
 		
 			// Evaluate loop condition with variables at time n
 			continueLoop = (k + 1 < maxIterK);
 		
 			IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
 			{
-				v_nplus1_k[i1Cells] = v_nplus1_kplus1[i1Cells];
+				v1_nplus1_k[i1Cells] = v1_nplus1_kplus1[i1Cells];
+			});
+			IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
+			{
+				v2_nplus1_k[i1Cells] = v2_nplus1_kplus1[i1Cells];
 			});
 		} while (continueLoop);
 	}
 
 	/**
 	 * Job executeTimeLoopN called @3.0 in simulate method.
-	 * In variables: maxIter, maxTime, n, t_n, t_nplus1, u_n, v_n, w_n
-	 * Out variables: t_nplus1, u_nplus1, v_nplus1, w_nplus1
+	 * In variables: maxIter, maxTime, n, t_n, t_nplus1, u_n, v1_n, v2_n, w_n
+	 * Out variables: t_nplus1, u_nplus1, v1_nplus1, v2_nplus1, w_nplus1
 	 */
 	protected void executeTimeLoopN()
 	{
@@ -222,7 +271,7 @@ public final class Iteration
 			System.out.printf("START ITERATION n: %5d - t: %5.5f - deltat: %5.5f\n", n, t_n, deltat);
 		
 			computeTn(); // @1.0
-			iniV(); // @1.0
+			iniV1(); // @1.0
 			setUpTimeLoopK(); // @2.0
 			executeTimeLoopK(); // @3.0
 			tearDownTimeLoopK(); // @4.0
@@ -242,7 +291,11 @@ public final class Iteration
 			});
 			IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
 			{
-				v_n[i1Cells] = v_nplus1[i1Cells];
+				v1_n[i1Cells] = v1_nplus1[i1Cells];
+			});
+			IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
+			{
+				v2_n[i1Cells] = v2_nplus1[i1Cells];
 			});
 			IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
 			{
@@ -255,27 +308,31 @@ public final class Iteration
 
 	/**
 	 * Job tearDownTimeLoopK called @4.0 in executeTimeLoopN method.
-	 * In variables: v_nplus1_kplus1
-	 * Out variables: v_nplus1
+	 * In variables: v1_nplus1_kplus1, v2_nplus1_kplus1
+	 * Out variables: v1_nplus1, v2_nplus1
 	 */
 	protected void tearDownTimeLoopK()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
 		{
-			v_nplus1[i1Cells] = v_nplus1_kplus1[i1Cells];
+			v1_nplus1[i1Cells] = v1_nplus1_kplus1[i1Cells];
+		});
+		IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
+		{
+			v2_nplus1[i1Cells] = v2_nplus1_kplus1[i1Cells];
 		});
 	}
 
 	/**
 	 * Job iniW called @5.0 in executeTimeLoopN method.
-	 * In variables: v_nplus1
+	 * In variables: v1_nplus1
 	 * Out variables: w_nplus1_l0
 	 */
 	protected void iniW()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
-			w_nplus1_l0[cCells] = v_nplus1[cCells];
+			w_nplus1_l0[cCells] = v1_nplus1[cCells];
 		});
 	}
 
@@ -349,6 +406,7 @@ public final class Iteration
 		System.out.println("Start execution of iteration");
 		iniTime(); // @1.0
 		iniU(); // @1.0
+		iniV2(); // @1.0
 		setUpTimeLoopN(); // @2.0
 		executeTimeLoopN(); // @3.0
 		System.out.println("End of execution of iteration");

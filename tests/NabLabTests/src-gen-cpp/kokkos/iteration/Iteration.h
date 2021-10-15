@@ -40,9 +40,13 @@ public:
 	KOKKOS_INLINE_FUNCTION
 	void iniU() noexcept;
 	KOKKOS_INLINE_FUNCTION
-	void iniV() noexcept;
+	void iniV1() noexcept;
 	KOKKOS_INLINE_FUNCTION
-	void updateV() noexcept;
+	void iniV2() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void updateV1() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void updateV2() noexcept;
 	KOKKOS_INLINE_FUNCTION
 	void updateW() noexcept;
 	KOKKOS_INLINE_FUNCTION
@@ -89,11 +93,16 @@ private:
 	Kokkos::View<RealArray1D<2>*> X;
 	Kokkos::View<double*> u_n;
 	Kokkos::View<double*> u_nplus1;
-	Kokkos::View<double*> v_n;
-	Kokkos::View<double*> v_nplus1;
-	Kokkos::View<double*> v_nplus1_k;
-	Kokkos::View<double*> v_nplus1_kplus1;
-	Kokkos::View<double*> v_nplus1_k0;
+	Kokkos::View<double*> v1_n;
+	Kokkos::View<double*> v1_nplus1;
+	Kokkos::View<double*> v1_nplus1_k;
+	Kokkos::View<double*> v1_nplus1_kplus1;
+	Kokkos::View<double*> v1_nplus1_k0;
+	Kokkos::View<double*> v2_n;
+	Kokkos::View<double*> v2_nplus1;
+	Kokkos::View<double*> v2_n0;
+	Kokkos::View<double*> v2_nplus1_k;
+	Kokkos::View<double*> v2_nplus1_kplus1;
 	Kokkos::View<double*> w_n;
 	Kokkos::View<double*> w_nplus1;
 	Kokkos::View<double*> w_nplus1_l;

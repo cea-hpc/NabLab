@@ -42,15 +42,19 @@ public:
 	KOKKOS_INLINE_FUNCTION
 	void iniU(const member_type& teamMember) noexcept;
 	KOKKOS_INLINE_FUNCTION
-	void iniV(const member_type& teamMember) noexcept;
+	void iniV1(const member_type& teamMember) noexcept;
 	KOKKOS_INLINE_FUNCTION
-	void updateV(const member_type& teamMember) noexcept;
+	void iniV2(const member_type& teamMember) noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void updateV1(const member_type& teamMember) noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void updateV2(const member_type& teamMember) noexcept;
 	KOKKOS_INLINE_FUNCTION
 	void updateW(const member_type& teamMember) noexcept;
 	KOKKOS_INLINE_FUNCTION
 	void setUpTimeLoopK(const member_type& teamMember) noexcept;
 	KOKKOS_INLINE_FUNCTION
-	void setUpTimeLoopN() noexcept;
+	void setUpTimeLoopN(const member_type& teamMember) noexcept;
 	KOKKOS_INLINE_FUNCTION
 	void executeTimeLoopK() noexcept;
 	KOKKOS_INLINE_FUNCTION
@@ -98,11 +102,16 @@ private:
 	Kokkos::View<RealArray1D<2>*> X;
 	Kokkos::View<double*> u_n;
 	Kokkos::View<double*> u_nplus1;
-	Kokkos::View<double*> v_n;
-	Kokkos::View<double*> v_nplus1;
-	Kokkos::View<double*> v_nplus1_k;
-	Kokkos::View<double*> v_nplus1_kplus1;
-	Kokkos::View<double*> v_nplus1_k0;
+	Kokkos::View<double*> v1_n;
+	Kokkos::View<double*> v1_nplus1;
+	Kokkos::View<double*> v1_nplus1_k;
+	Kokkos::View<double*> v1_nplus1_kplus1;
+	Kokkos::View<double*> v1_nplus1_k0;
+	Kokkos::View<double*> v2_n;
+	Kokkos::View<double*> v2_nplus1;
+	Kokkos::View<double*> v2_n0;
+	Kokkos::View<double*> v2_nplus1_k;
+	Kokkos::View<double*> v2_nplus1_kplus1;
 	Kokkos::View<double*> w_n;
 	Kokkos::View<double*> w_nplus1;
 	Kokkos::View<double*> w_nplus1_l;

@@ -19,16 +19,24 @@ $\texttt{IniTime} : t^{n=0} = 0.0$
 $\texttt{IniU} : \forall{c\in cells()}, \ u^{n}_{c} = 0.0$
 
 
-\section{IniV}
-$\texttt{IniV} : \forall{c\in cells()}, \ v^{n+1, k=0}_{c} = u^{n}_{c} + 1$
+\section{IniV1}
+$\texttt{IniV1} : \forall{c\in cells()}, \ v1^{n+1, k=0}_{c} = u^{n}_{c} + 1$
 
 
-\section{UpdateV}
-$\texttt{UpdateV} : \forall{c\in cells()}, \ v^{n+1, k+1}_{c} = v^{n+1, k}_{c} + 1.5$
+\section{UpdateV1}
+$\texttt{UpdateV1} : \forall{c\in cells()}, \ v1^{n+1, k+1}_{c} = v1^{n+1, k}_{c} + 1.5$
+
+
+\section{IniV2}
+$\texttt{IniV2} : \forall{c\in cells()}, \ v2^{n=0}_{c} = 1.0$
+
+
+\section{UpdateV2}
+$\texttt{UpdateV2} : \forall{c\in cells()}, \ v2^{n+1, k+1}_{c} = v2^{n+1, k}_{c} + 2$
 
 
 \section{IniW}
-$\texttt{IniW} : \forall{c\in cells()}, \ w^{n+1, l=0}_{c} = v^{n+1}_{c}$
+$\texttt{IniW} : \forall{c\in cells()}, \ w^{n+1, l=0}_{c} = v1^{n+1}_{c}$
 
 
 \section{UpdateW}

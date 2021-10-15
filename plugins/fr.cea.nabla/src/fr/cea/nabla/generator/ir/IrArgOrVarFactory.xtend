@@ -75,7 +75,6 @@ class IrArgOrVarFactory
 		else
 		{
 			// Fill time loop variables for all iterators
-			val boolean existsInitTi = existsInitTimeIteratorRef(vRefsWithTimeIterators)
 			for (ti : vTimeIterators)
 			{
 				val boolean existsInitTiForTi = existsInitTimeIteratorRefForTimeIterator(vRefsWithTimeIterators, ti)
@@ -97,13 +96,13 @@ class IrArgOrVarFactory
 				val tiSetUpJob = tlJobs.findFirst[name == ti.setUpTimeLoopJobName]
 				if (tiSetUpJob !== null)
 				{
-					if (initTiVar !== null)
+					if (existsInitTiForTi)
 					{
 						addAffectation(tiSetUpJob, initTiVar, currentTiVar)
 						tiSetUpJob.inVars += initTiVar
 						tiSetUpJob.outVars += currentTiVar
 					}
-					else if (parentTi !== null && !existsInitTi) // inner time iterator
+					else if (parentTi !== null) // inner time iterator
 					{
 						val parentCurrentTiVar = toIrTimeVariable(v, parentTi, currentTimeIteratorIndex)
 						addAffectation(tiSetUpJob, parentCurrentTiVar, currentTiVar)
@@ -257,14 +256,6 @@ class IrArgOrVarFactory
 		timeIteratorIndex = index
 		val value = v.value
 		if (value !== null) defaultValue = value.toIrExpression
-	}
-
-	private def existsInitTimeIteratorRef(Iterable<ArgOrVarRef> l)
-	{
-		for (argOrVarRef : l)
-			if (argOrVarRef.timeIterators.exists[x | x instanceof InitTimeIteratorRef])
-				return true
-		return false
 	}
 
 	private def existsInitTimeIteratorRefForTimeIterator(Iterable<ArgOrVarRef> l, TimeIterator ti)

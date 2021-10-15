@@ -16,7 +16,7 @@
         <link rel="canonical" href="https://cea-hpc.github.io/NabLab/nablablanguage/">
       
       <link rel="icon" href="../img/logo_512.png">
-      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.5">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.3.3">
     
     
       
@@ -24,7 +24,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.be71726b.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.5143246d.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.3f5d1f46.min.css">
@@ -80,7 +80,9 @@
       
     </div>
     
-      <header class="md-header" data-md-component="header">
+      
+
+<header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href=".." title="NabLab documentation" class="md-header__button md-logo" aria-label="NabLab documentation" data-md-component="logo">
       
@@ -145,11 +147,14 @@
     
     
   </nav>
+  
 </header>
     
     <div class="md-container" data-md-component="container">
       
       
+        
+          
         
       
       <main class="md-main" data-md-component="main">
@@ -527,6 +532,21 @@
   
 
     
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../arcane/" class="md-nav__link">
+        Arcane code generation
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -810,7 +830,7 @@ Moreover, functions' arguments of type ℝ[x] and ℝ[x, x] will be respectively
 </div>
 <h2 id="imports">Imports</h2>
 <p>The <code>with</code> keyword allows to import NabLab extensions, libraries of reductions and functions external to the module.</p>
-<p>NabLab provides two native extensions: <a href="https://github.com/cea-hpc/NabLab/blob/master/plugins/fr.cea.nabla/nablalib/math.n">Math</a> and <a href="https://github.com/cea-hpc/NabLab/blob/master/plugins/fr.cea.nabla/nablalib/linearalgebra.n">Linear Algebra</a> (follow the link to see the available functions and reductions).</p>
+<p>NabLab provides two native extensions: <a href="https://github.com/cea-hpc/NabLab/blob/master/plugins/fr.cea.nabla/nablalib/Math.n">Math</a> and <a href="https://github.com/cea-hpc/NabLab/blob/master/plugins/fr.cea.nabla/nablalib/LinearAlgebra.n">Linear Algebra</a> (follow the link to see the available functions and reductions).</p>
 <p>To use them in your own module, just create an import section as follow:</p>
 <div class="highlight"><pre><span></span><code>module ImplicitHeatEquation;
 
@@ -1087,10 +1107,12 @@ while (residual &gt; ε) {
             Copyright &copy; 2021 CEA
           </div>
         
-        Made with
-        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
-          Material for MkDocs
-        </a>
+        
+          Made with
+          <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+            Material for MkDocs
+          </a>
+        
         
       </div>
       
@@ -1115,10 +1137,10 @@ while (residual &gt; ε) {
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.409db549.min.js", "version": "0.4.0"}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.8397ff9e.min.js", "version": "0.4.0"}</script>
     
     
-      <script src="../assets/javascripts/bundle.56a63758.min.js"></script>
+      <script src="../assets/javascripts/bundle.f89c2efe.min.js"></script>
       
         <script src="../javascripts/config.js"></script>
       

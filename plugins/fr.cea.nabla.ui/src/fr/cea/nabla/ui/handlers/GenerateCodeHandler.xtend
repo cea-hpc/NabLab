@@ -15,6 +15,7 @@ import com.google.inject.Singleton
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
 import fr.cea.nabla.generator.application.NablagenApplicationGenerator
 import fr.cea.nabla.generator.providers.NablagenProviderGenerator
+import fr.cea.nabla.generator.python.PythonModuleGenerator
 import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.nablagen.NablagenApplication
 import fr.cea.nabla.nablagen.NablagenProviderList
@@ -33,8 +34,11 @@ class GenerateCodeHandler extends AbstractGenerateHandler
 	@Inject Provider<ResourceSet> resourceSetProvider
 	@Inject Provider<NablagenApplicationGenerator> applicationGeneratorProvider
 	@Inject Provider<NablagenProviderGenerator> providerGeneratorProvider
+	@Inject Provider<PythonModuleGenerator> pythonModuleGeneratorProvider
 
 	val traceFunction = [MessageType type, String msg | consoleFactory.printConsole(type, msg)]
+	
+	val debug = true
 
 	override generate(IFile nablagenFile, Shell shell)
 	{
@@ -60,7 +64,14 @@ class GenerateCodeHandler extends AbstractGenerateHandler
 				val wsPath = projectFolder.parent.fullPath.toString
 				switch (ngen)
 				{
-					NablagenApplication: applicationGeneratorProvider.get.generateApplication(ngen, wsPath, project.name)
+					NablagenApplication:
+					{
+						applicationGeneratorProvider.get.generateApplication(ngen, wsPath, project.name)
+						if (debug)
+						{
+							pythonModuleGeneratorProvider.get.generate(ngen, nablagenFile.parent.location.toString)
+						}
+					}
 					NablagenProviderList: providerGeneratorProvider.get.generateProviders(ngen, wsPath)
 				}
 

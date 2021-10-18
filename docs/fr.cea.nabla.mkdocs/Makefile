@@ -1,5 +1,5 @@
 # Variables necessary to publish nablab update site on github pages to compile Monilog4Nablab
-LAST=0.4.2
+LAST=0.4.3
 UPDATE_SITE_TAG=202107011253
 UPDATE_SITE=fr.cea.nabla.updatesite-${LAST}.${UPDATE_SITE_TAG}.zip
 # end of necessary variables

@@ -80,9 +80,6 @@ private:
 	 */
 	const std::pair<size_t, size_t> computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept;
 
-	// Json block of options
-	rapidjson::Document jsonDocument;
-
 	// Mesh and mesh variables
 	CartesianMesh2D& mesh;
 	size_t nbNodes, nbCells;

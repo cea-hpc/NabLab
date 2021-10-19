@@ -15,9 +15,6 @@ import fr.cea.nabla.javalib.mesh.*;
 
 public final class Iteration
 {
-	// Json block of options
-	private JsonObject options;
-
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
 	@SuppressWarnings("unused")
@@ -60,8 +57,12 @@ public final class Iteration
 		mesh = aMesh;
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
+	}
 
-		// Allocate arrays
+	public void jsonInit(final String jsonContent)
+	{
+		final Gson gson = new Gson();
+		final JsonObject options = gson.fromJson(jsonContent, JsonObject.class);
 		X = new double[nbNodes][2];
 		u_n = new double[nbCells];
 		u_nplus1 = new double[nbCells];
@@ -88,12 +89,6 @@ public final class Iteration
 			X[rNodes][0] = gNodes[rNodes][0];
 			X[rNodes][1] = gNodes[rNodes][1];
 		});
-	}
-
-	public void jsonInit(final String jsonContent)
-	{
-		final Gson gson = new Gson();
-		options = gson.fromJson(jsonContent, JsonObject.class);
 	}
 
 	/**

@@ -32,13 +32,6 @@ Iteration::Iteration(CartesianMesh2D& aMesh)
 , w_nplus1_lplus1("w_nplus1_lplus1", nbCells)
 , w_nplus1_l0("w_nplus1_l0", nbCells)
 {
-	// Copy node coordinates
-	const auto& gNodes = mesh.getGeometry()->getNodes();
-	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
-	{
-		X(rNodes)[0] = gNodes[rNodes][0];
-		X(rNodes)[1] = gNodes[rNodes][1];
-	}
 }
 
 Iteration::~Iteration()
@@ -48,9 +41,19 @@ Iteration::~Iteration()
 void
 Iteration::jsonInit(const char* jsonContent)
 {
-	assert(!jsonDocument.Parse(jsonContent).HasParseError());
-	assert(jsonDocument.IsObject());
-	rapidjson::Value::Object options = jsonDocument.GetObject();
+	rapidjson::Document document;
+	assert(!document.Parse(jsonContent).HasParseError());
+	assert(document.IsObject());
+	const rapidjson::Value::Object& options = document.GetObject();
+
+
+	// Copy node coordinates
+	const auto& gNodes = mesh.getGeometry()->getNodes();
+	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
+	{
+		X(rNodes)[0] = gNodes[rNodes][0];
+		X(rNodes)[1] = gNodes[rNodes][1];
+	}
 }
 
 

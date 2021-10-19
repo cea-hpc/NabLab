@@ -37,16 +37,10 @@ public:
 
 	void simulate();
 	void hj1() noexcept;
-	void init_deltat() noexcept;
-	void init_maxIter() noexcept;
-	void init_maxTime() noexcept;
 	void hj2() noexcept;
 	void hj3() noexcept;
 
 private:
-	// Json block of options
-	rapidjson::Document jsonDocument;
-
 	// Mesh and mesh variables
 	CartesianMesh2D& mesh;
 	size_t nbNodes, nbCells;

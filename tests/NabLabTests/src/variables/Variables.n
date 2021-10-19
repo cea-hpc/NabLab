@@ -65,16 +65,13 @@ let ℝ[constexprDim] constexprVec = [1.1, 1.1];
 let ℝ[constexprDim] varVec = [1.0, 1.0];
  
 // variables needing allocation
-ℕ dynamicDim;
 ℕ checkDynamicDim;
-ℝ[dynamicDim] dynamicVec;
-
-DynamicDimInitialization: dynamicDim = 4;
+ℝ[optDim] dynamicVec;
 
 DynamicVecInitialization: 
 {
 	let ℕ cpt = 0;
-	∀i∈[0;dynamicDim[,
+	∀i∈[0;optDim[,
 	{
 		cpt = cpt + 1;
 		dynamicVec[i] = 3.3;
@@ -103,11 +100,10 @@ Oracle:
 	let ℾ testVarVec = assertEquals([2.2, 2.2], varVec);
 
 	// variables needing allocation
-	let ℾ testDynamicDim = assertEquals(4, dynamicDim);
-	let ℾ testDynamicVecLength = assertEquals(4, checkDynamicDim);
+	let ℾ testDynamicVecLength = assertEquals(2, checkDynamicDim);
 	
 // NOT YET IMPLEMENTED : BaseTypeConstants on a dynamic size
-//	let ℾ testDynamicVec = assertEquals(dynamicVec, ℝ[dynamicDim](3.3));
+//	let ℾ testDynamicVec = assertEquals(dynamicVec, ℝ[optDim](3.3));
 
 	// local variables
 //	∀ r∈nodes(), 

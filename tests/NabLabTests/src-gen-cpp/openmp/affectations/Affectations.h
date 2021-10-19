@@ -45,9 +45,6 @@ public:
 	void updateE() noexcept;
 
 private:
-	// Json block of options
-	rapidjson::Document jsonDocument;
-
 	// Mesh and mesh variables
 	CartesianMesh2D& mesh;
 	size_t nbNodes, nbCells;

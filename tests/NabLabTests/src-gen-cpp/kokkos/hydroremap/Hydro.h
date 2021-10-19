@@ -41,20 +41,11 @@ public:
 	KOKKOS_INLINE_FUNCTION
 	void hj1() noexcept;
 	KOKKOS_INLINE_FUNCTION
-	void init_deltat() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void init_maxIter() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void init_maxTime() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void hj2() noexcept;
 	KOKKOS_INLINE_FUNCTION
 	void hj3() noexcept;
 
 private:
-	// Json block of options
-	rapidjson::Document jsonDocument;
-
 	// Mesh and mesh variables
 	CartesianMesh2D& mesh;
 	size_t nbNodes, nbCells;

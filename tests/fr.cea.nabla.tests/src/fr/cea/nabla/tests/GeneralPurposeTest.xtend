@@ -30,13 +30,13 @@ class GeneralPurposeTest
 
     static val WINDOWS_PATH_SEPARATOR = "\\" //$NON-NLS-1$
  
-	static val PLUGINS_FOLDER_PATH = "plugins" //$NON-NLS-1$
-	
 	static val GIT_FOLDER_NAME = ".git" //$NON-NLS-1$
 	
 	static val XTEND_FILE_EXTENSION = "xtend" //$NON-NLS-1$
 	
-    static val COPYRIGHT_HEADER = List.of(
+	static val XML_FILE_EXTENSION = "xml" //$NON-NLS-1$
+	
+    static val XTEND_COPYRIGHT_HEADER = List.of(
             Pattern.compile(Pattern.quote("/*******************************************************************************")), //$NON-NLS-1$
             Pattern.compile(" \\* Copyright \\(c\\) [0-9]{4}(, [0-9]{4})* (.*)$"), //$NON-NLS-1$
             Pattern.compile(Pattern.quote(" * This program and the accompanying materials are made available under the")), //$NON-NLS-1$
@@ -47,6 +47,17 @@ class GeneralPurposeTest
             Pattern.compile(Pattern.quote(" * Contributors: see AUTHORS file")), //$NON-NLS-1$
             Pattern.compile(Pattern.quote(" *******************************************************************************/"))) //$NON-NLS-1$
  
+ 	static val XML_COPYRIGHT_HEADER = List.of(
+            Pattern.compile(Pattern.quote("<!--")), //$NON-NLS-1$
+            Pattern.compile("    Copyright \\(c\\) [0-9]{4}(, [0-9]{4})* (.*)$"), //$NON-NLS-1$
+            Pattern.compile(Pattern.quote("    This program and the accompanying materials are made available under the")), //$NON-NLS-1$
+            Pattern.compile(Pattern.quote("    terms of the Eclipse Public License 2.0 which is available at")), //$NON-NLS-1$
+            Pattern.compile(Pattern.quote("    http://www.eclipse.org/legal/epl-2.0.")), //$NON-NLS-1$
+            Pattern.compile(Pattern.quote("")), //$NON-NLS-1$
+            Pattern.compile(Pattern.quote("    SPDX-License-Identifier: EPL-2.0")), //$NON-NLS-1$
+            Pattern.compile(Pattern.quote("    Contributors: see AUTHORS file")), //$NON-NLS-1$
+            Pattern.compile(Pattern.quote(" -->"))) //$NON-NLS-1$
+            
     def getRootFolder()
 	{
         val path = System.getProperty("user.dir") //$NON-NLS-1$
@@ -72,7 +83,7 @@ class GeneralPurposeTest
                     .filter(filePath | filePath.toFile().getName().endsWith(ext))
                     .filter(filePath | !filePath.toString().replace(WINDOWS_PATH_SEPARATOR, UNIX_PATH_SEPARATOR).contains("/bin/")) //$NON-NLS-1$
                     .filter(filePath | !filePath.toString().replace(WINDOWS_PATH_SEPARATOR, UNIX_PATH_SEPARATOR).contains("/target/")) //$NON-NLS-1$
-                    .filter(filePath | !filePath.toString().replace(WINDOWS_PATH_SEPARATOR, UNIX_PATH_SEPARATOR).contains("/xtend-gen/")) //$NON-NLS-1$
+                    .filter(filePath | !filePath.toString().replace(WINDOWS_PATH_SEPARATOR, UNIX_PATH_SEPARATOR).contains("/.settings/")) //$NON-NLS-1$
                     .filter(filePath | !filePath.toString().replace(WINDOWS_PATH_SEPARATOR, UNIX_PATH_SEPARATOR).contains("/src-gen/")) //$NON-NLS-1$
                     .filter(filePath | !filePath.toString().replace(WINDOWS_PATH_SEPARATOR, UNIX_PATH_SEPARATOR).contains("/jgrapht-core")) //$NON-NLS-1$
                     .filter(filePath | !filePath.toString().replace(WINDOWS_PATH_SEPARATOR, UNIX_PATH_SEPARATOR).contains("/jlatexmath")) //$NON-NLS-1$
@@ -90,27 +101,41 @@ class GeneralPurposeTest
         return filesPaths;
     }
     
-    def void testCopyrightHeader(Path filePath, List<String> lines)
+    def void testXtendCopyrightHeader(Path filePath, List<String> lines)
     {
-        Assert.assertTrue(lines.size() >= COPYRIGHT_HEADER.size())
-        for (var i = 0; i < COPYRIGHT_HEADER.size(); i++)
+        Assert.assertTrue(lines.size() >= fr.cea.nabla.tests.GeneralPurposeTest.XTEND_COPYRIGHT_HEADER.size())
+        for (var i = 0; i < fr.cea.nabla.tests.GeneralPurposeTest.XTEND_COPYRIGHT_HEADER.size(); i++)
         {
-           MatcherAssert.assertThat("Invalid copyright header in " + filePath, lines.get(i), MatchesPattern.matchesPattern(COPYRIGHT_HEADER.get(i))) //$NON-NLS-1$
+           MatcherAssert.assertThat("Invalid copyright header in " + filePath, lines.get(i), MatchesPattern.matchesPattern(fr.cea.nabla.tests.GeneralPurposeTest.XTEND_COPYRIGHT_HEADER.get(i))) //$NON-NLS-1$
+        } 
+    }
+    
+    def void testXmlCopyrightHeader(Path filePath, List<String> lines)
+    {
+        var xmlHeaderIncrement = 0
+        while (lines.get(xmlHeaderIncrement).startsWith("<?"))
+        {
+        	xmlHeaderIncrement++
+        }
+        Assert.assertTrue("Copyright missing in XML file " + filePath, lines.size() >= fr.cea.nabla.tests.GeneralPurposeTest.XML_COPYRIGHT_HEADER.size() + xmlHeaderIncrement)
+        
+        for (var i = 0; i < fr.cea.nabla.tests.GeneralPurposeTest.XML_COPYRIGHT_HEADER.size(); i++)
+        {
+           MatcherAssert.assertThat("Invalid copyright header in " + filePath, lines.get(i + xmlHeaderIncrement), MatchesPattern.matchesPattern(fr.cea.nabla.tests.GeneralPurposeTest.XML_COPYRIGHT_HEADER.get(i))) //$NON-NLS-1$
         } 
     }
     
 	@Test
     def void checkXtendCode()
     {
-        val rootFolder = this.getRootFolder()
-        val pluginsFolderPath = Paths.get(rootFolder.getAbsolutePath(), fr.cea.nabla.tests.GeneralPurposeTest.PLUGINS_FOLDER_PATH)
-        val xtendFilePaths = this.findFilePaths(pluginsFolderPath, XTEND_FILE_EXTENSION)
+        val rootFolderPath = Paths.get(this.getRootFolder().getAbsolutePath())
+        val xtendFilePaths = this.findFilePaths(rootFolderPath, XTEND_FILE_EXTENSION)
         for (Path xtendFilePath : xtendFilePaths)
         {
             try
             {
                 val lines = Files.readAllLines(xtendFilePath)
-                this.testCopyrightHeader(xtendFilePath, lines)
+                this.testXtendCopyrightHeader(xtendFilePath, lines)
             } 
             catch (IOException exception)
             {
@@ -119,5 +144,23 @@ class GeneralPurposeTest
         }
     }
 
+	@Test
+    def void checkXmlFiles()
+    {
+        val pluginsFolderPath = Paths.get(this.getRootFolder().getAbsolutePath())
+        val xmlFilePaths = this.findFilePaths(pluginsFolderPath, XML_FILE_EXTENSION)
+        for (Path xmlFilePath : xmlFilePaths)
+        {
+            try
+            {
+                val lines = Files.readAllLines(xmlFilePath)
+                this.testXmlCopyrightHeader(xmlFilePath, lines)
+            } 
+            catch (IOException exception)
+            {
+                Assert.fail(exception.getMessage())
+            }
+        }
+    }
 	
 }

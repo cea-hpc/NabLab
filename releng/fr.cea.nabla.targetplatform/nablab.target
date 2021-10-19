@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="NabLab Target platform" sequenceNumber="1634544901">
+<target name="NabLab Target platform" sequenceNumber="1634636371">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.sdk.feature.group" version="4.21.0.v20210906-0842"/>
@@ -55,6 +55,7 @@
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.apache.batik.script" version="1.14.0.v20210324-0332"/>
+      <unit id="org.hamcrest" version="2.2.0.v20210711-0821"/>
       <repository location="https://download.eclipse.org/tools/orbit/downloads/drops/R20210825222808/repository"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">

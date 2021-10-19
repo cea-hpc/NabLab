@@ -20,6 +20,7 @@ import fr.cea.nabla.tests.validation.NabLabValidationTestSuite;
 @Suite.SuiteClasses
 ({
 	GeneralPurposeTest.class,
+	GitCommitMessageTest.class,
 	DeclarationProviderTest.class,
 	ExpressionTypeProviderTest.class,
 	IteratorExtensionsTest.class,

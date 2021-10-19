@@ -68,18 +68,6 @@ public:
 	KOKKOS_INLINE_FUNCTION
 	void iniTime() noexcept;
 	KOKKOS_INLINE_FUNCTION
-	void init_PI() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void init_alpha() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void init_lastDump() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void init_maxIterations() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void init_outputPeriod() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void init_stopTime() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void computeUn() noexcept;
 	KOKKOS_INLINE_FUNCTION
 	void iniUn() noexcept;
@@ -90,9 +78,6 @@ public:
 
 private:
 	void dumpVariables(int iteration, bool useTimer=true);
-
-	// Json block of options
-	rapidjson::Document jsonDocument;
 
 	// Mesh and mesh variables
 	CartesianMesh2D& mesh;

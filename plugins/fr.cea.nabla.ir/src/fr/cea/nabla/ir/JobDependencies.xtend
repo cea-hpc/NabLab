@@ -12,7 +12,6 @@ package fr.cea.nabla.ir
 import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
-import fr.cea.nabla.ir.ir.InitVariableJob
 import fr.cea.nabla.ir.ir.IrPackage
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Job
@@ -57,12 +56,6 @@ class JobDependencies
 						inVars += irRoot.postProcessing.periodValue
 					}
 				}
-			}
-			InitVariableJob:
-			{
-				outVars += target
-				inVars += getInVars(target) // useful to link dependencies on target.type sizes expressions
-				inVars += getInVars(it)
 			}
 			case !timeLoopJob:
 			{

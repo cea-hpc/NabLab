@@ -17,7 +17,6 @@ import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.PrimitiveType
-import fr.cea.nabla.ir.ir.Variable
 import java.util.ArrayList
 
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
@@ -67,7 +66,7 @@ class JsonGenerator implements ApplicationGenerator
 			values += new Pair('_outputPath_comment', '"empty outputPath to disable output"')
 			values += new Pair(IrUtils.OutputPathNameAndValue.key, '"' + IrUtils.OutputPathNameAndValue.value + '"')
 		}
-		for (mandatoryOption : irModule.options.filter[x | x.mandatoryOption])
+		for (mandatoryOption : irModule.options.filter[x | x.defaultValue === null])
 			values += new Pair(mandatoryOption.name, (mandatoryOption.type as BaseType).defaultValue)
 		for (extensionProvider : irModule.externalProviders)
 			values += new Pair(extensionProvider.instanceName, '{}')
@@ -109,14 +108,5 @@ class JsonGenerator implements ApplicationGenerator
 			case INT: DEFAULT_VALUE.toString
 			case REAL: (DEFAULT_VALUE * 1.0).toString
 		}
-	}
-
-	/**
-	 * An option is mandatory if it has an init job and
-	 * no instruction to set the default value in its job.
-	 */
-	private def isMandatoryOption(Variable v)
-	{
-		v.initJob !== null && v.initJob.instruction === null
 	}
 }

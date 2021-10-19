@@ -42,21 +42,11 @@ public:
 	void jsonInit(const char* jsonContent);
 
 	void simulate();
-	void initDynamicDim() noexcept;
-	void initVarVec() noexcept;
-	void init_mandatoryOptDim() noexcept;
-	void init_mandatoryOptVect() noexcept;
-	void init_optDim() noexcept;
-	void init_optVect1() noexcept;
-	void init_optVect2() noexcept;
-	void init_varVec() noexcept;
-	void init_dynamicVec() noexcept;
-	void testJob() noexcept;
+	void dynamicVecInitialization() noexcept;
+	void varVecInitialization() noexcept;
+	void oracle() noexcept;
 
 private:
-	// Json block of options
-	rapidjson::Document jsonDocument;
-
 	// Mesh and mesh variables
 	CartesianMesh2D& mesh;
 	size_t nbNodes;
@@ -75,7 +65,7 @@ private:
 	static constexpr int constexprDim = 2;
 	static constexpr RealArray1D<constexprDim> constexprVec = {1.1, 1.1};
 	RealArray1D<constexprDim> varVec;
-	int dynamicDim;
+	int checkDynamicDim;
 	RealArray1D<0> dynamicVec;
 
 	// Timers

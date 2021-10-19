@@ -52,13 +52,6 @@ Variables::Variables(CartesianMesh2D& aMesh)
 , nbNodes(mesh.getNbNodes())
 , X("X", nbNodes)
 {
-	// Copy node coordinates
-	const auto& gNodes = mesh.getGeometry()->getNodes();
-	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
-	{
-		X(rNodes)[0] = gNodes[rNodes][0];
-		X(rNodes)[1] = gNodes[rNodes][1];
-	}
 }
 
 Variables::~Variables()
@@ -68,9 +61,79 @@ Variables::~Variables()
 void
 Variables::jsonInit(const char* jsonContent)
 {
-	assert(!jsonDocument.Parse(jsonContent).HasParseError());
-	assert(jsonDocument.IsObject());
-	rapidjson::Value::Object options = jsonDocument.GetObject();
+	rapidjson::Document document;
+	assert(!document.Parse(jsonContent).HasParseError());
+	assert(document.IsObject());
+	const rapidjson::Value::Object& options = document.GetObject();
+
+	// optDim
+	if (options.HasMember("optDim"))
+	{
+		const rapidjson::Value& valueof_optDim = options["optDim"];
+		assert(valueof_optDim.IsInt());
+		optDim = valueof_optDim.GetInt();
+	}
+	else
+	{
+		optDim = 2;
+	}
+	// optVect1
+	if (options.HasMember("optVect1"))
+	{
+		const rapidjson::Value& valueof_optVect1 = options["optVect1"];
+		assert(valueof_optVect1.IsArray());
+		assert(valueof_optVect1.Size() == 2);
+		for (size_t i1=0 ; i1<2 ; i1++)
+		{
+			assert(valueof_optVect1[i1].IsDouble());
+			optVect1[i1] = valueof_optVect1[i1].GetDouble();
+		}
+	}
+	else
+	{
+		optVect1 = {1.0, 1.0};
+	}
+	// optVect2
+	if (options.HasMember("optVect2"))
+	{
+		const rapidjson::Value& valueof_optVect2 = options["optVect2"];
+		assert(valueof_optVect2.IsArray());
+		assert(valueof_optVect2.Size() == 2);
+		for (size_t i1=0 ; i1<2 ; i1++)
+		{
+			assert(valueof_optVect2[i1].IsDouble());
+			optVect2[i1] = valueof_optVect2[i1].GetDouble();
+		}
+	}
+	else
+	{
+		optVect2 = {1.0, 1.0};
+	}
+	// mandatoryOptDim
+	assert(options.HasMember("mandatoryOptDim"));
+	const rapidjson::Value& valueof_mandatoryOptDim = options["mandatoryOptDim"];
+	assert(valueof_mandatoryOptDim.IsInt());
+	mandatoryOptDim = valueof_mandatoryOptDim.GetInt();
+	// mandatoryOptVect
+	assert(options.HasMember("mandatoryOptVect"));
+	const rapidjson::Value& valueof_mandatoryOptVect = options["mandatoryOptVect"];
+	assert(valueof_mandatoryOptVect.IsArray());
+	assert(valueof_mandatoryOptVect.Size() == 2);
+	for (size_t i1=0 ; i1<2 ; i1++)
+	{
+		assert(valueof_mandatoryOptVect[i1].IsInt());
+		mandatoryOptVect[i1] = valueof_mandatoryOptVect[i1].GetInt();
+	}
+	varVec = {1.0, 1.0};
+	dynamicVec.initSize(optDim);
+
+	// Copy node coordinates
+	const auto& gNodes = mesh.getGeometry()->getNodes();
+	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
+	{
+		X(rNodes)[0] = gNodes[rNodes][0];
+		X(rNodes)[1] = gNodes[rNodes][1];
+	}
 }
 
 
@@ -98,159 +161,37 @@ const std::pair<size_t, size_t> Variables::computeTeamWorkRange(const member_typ
 }
 
 /**
- * Job initDynamicDim called @1.0 in simulate method.
- * In variables: 
- * Out variables: dynamicDim
+ * Job dynamicVecInitialization called @1.0 in simulate method.
+ * In variables: optDim
+ * Out variables: checkDynamicDim, dynamicVec
  */
-void Variables::initDynamicDim() noexcept
+void Variables::dynamicVecInitialization(const member_type& teamMember) noexcept
 {
-	dynamicDim = 4;
+	int cpt(0);
+	for (size_t i=0; i<optDim; i++)
+	{
+		cpt = cpt + 1;
+		dynamicVec[i] = 3.3;
+	}
+	checkDynamicDim = cpt;
 }
 
 /**
- * Job initVarVec called @1.0 in simulate method.
+ * Job varVecInitialization called @1.0 in simulate method.
  * In variables: constexprDim
  * Out variables: varVec
  */
-void Variables::initVarVec() noexcept
+void Variables::varVecInitialization() noexcept
 {
 	varVec = {2.2, 2.2};
 }
 
 /**
- * Job init_mandatoryOptDim called @1.0 in simulate method.
- * In variables: 
- * Out variables: mandatoryOptDim
+ * Job oracle called @2.0 in simulate method.
+ * In variables: checkDynamicDim, constexprDim, constexprVec, mandatoryOptDim, mandatoryOptVect, optDim, optVect1, optVect2, varVec
+ * Out variables: 
  */
-void Variables::init_mandatoryOptDim() noexcept
-{
-	// mandatoryOptDim
-	rapidjson::Value::Object options = jsonDocument.GetObject();
-	assert(options.HasMember("mandatoryOptDim"));
-	const rapidjson::Value& valueof_mandatoryOptDim = options["mandatoryOptDim"];
-	assert(valueof_mandatoryOptDim.IsInt());
-	mandatoryOptDim = valueof_mandatoryOptDim.GetInt();
-}
-
-/**
- * Job init_mandatoryOptVect called @1.0 in simulate method.
- * In variables: 
- * Out variables: mandatoryOptVect
- */
-void Variables::init_mandatoryOptVect() noexcept
-{
-	// mandatoryOptVect
-	rapidjson::Value::Object options = jsonDocument.GetObject();
-	assert(options.HasMember("mandatoryOptVect"));
-	const rapidjson::Value& valueof_mandatoryOptVect = options["mandatoryOptVect"];
-	assert(valueof_mandatoryOptVect.IsArray());
-	assert(valueof_mandatoryOptVect.Size() == 2);
-	for (size_t i1=0 ; i1<2 ; i1++)
-	{
-		assert(valueof_mandatoryOptVect[i1].IsInt());
-		mandatoryOptVect[i1] = valueof_mandatoryOptVect[i1].GetInt();
-	}
-}
-
-/**
- * Job init_optDim called @1.0 in simulate method.
- * In variables: 
- * Out variables: optDim
- */
-void Variables::init_optDim() noexcept
-{
-	// optDim
-	rapidjson::Value::Object options = jsonDocument.GetObject();
-	if (options.HasMember("optDim"))
-	{
-		const rapidjson::Value& valueof_optDim = options["optDim"];
-		assert(valueof_optDim.IsInt());
-		optDim = valueof_optDim.GetInt();
-	}
-	else
-	{
-		optDim = 2;
-	}
-}
-
-/**
- * Job init_optVect1 called @1.0 in simulate method.
- * In variables: 
- * Out variables: optVect1
- */
-void Variables::init_optVect1() noexcept
-{
-	// optVect1
-	rapidjson::Value::Object options = jsonDocument.GetObject();
-	if (options.HasMember("optVect1"))
-	{
-		const rapidjson::Value& valueof_optVect1 = options["optVect1"];
-		assert(valueof_optVect1.IsArray());
-		assert(valueof_optVect1.Size() == 2);
-		for (size_t i1=0 ; i1<2 ; i1++)
-		{
-			assert(valueof_optVect1[i1].IsDouble());
-			optVect1[i1] = valueof_optVect1[i1].GetDouble();
-		}
-	}
-	else
-	{
-		optVect1 = {1.0, 1.0};
-	}
-}
-
-/**
- * Job init_optVect2 called @1.0 in simulate method.
- * In variables: 
- * Out variables: optVect2
- */
-void Variables::init_optVect2() noexcept
-{
-	// optVect2
-	rapidjson::Value::Object options = jsonDocument.GetObject();
-	if (options.HasMember("optVect2"))
-	{
-		const rapidjson::Value& valueof_optVect2 = options["optVect2"];
-		assert(valueof_optVect2.IsArray());
-		assert(valueof_optVect2.Size() == 2);
-		for (size_t i1=0 ; i1<2 ; i1++)
-		{
-			assert(valueof_optVect2[i1].IsDouble());
-			optVect2[i1] = valueof_optVect2[i1].GetDouble();
-		}
-	}
-	else
-	{
-		optVect2 = {1.0, 1.0};
-	}
-}
-
-/**
- * Job init_varVec called @1.0 in simulate method.
- * In variables: constexprDim
- * Out variables: varVec
- */
-void Variables::init_varVec() noexcept
-{
-	varVec = {1.0, 1.0};
-}
-
-/**
- * Job init_dynamicVec called @2.0 in simulate method.
- * In variables: dynamicDim
- * Out variables: dynamicVec
- */
-void Variables::init_dynamicVec() noexcept
-{
-	dynamicVec.initSize(dynamicDim);
-}
-
-/**
- * Job testJob called @2.0 in simulate method.
- * In variables: constexprDim, constexprVec, dynamicDim, mandatoryOptDim, mandatoryOptVect, optDim, optVect1, optVect2, varVec
- * Out variables: dynamicVec
- */
-void Variables::testJob(const member_type& teamMember) noexcept
+void Variables::oracle() noexcept
 {
 	const bool testOptDim(variablesfreefuncs::assertEquals(2, optDim));
 	const bool testOptVect1(variablesfreefuncs::assertEquals({1.0, 1.0}, optVect1));
@@ -260,14 +201,7 @@ void Variables::testJob(const member_type& teamMember) noexcept
 	const bool testConstexprDim(variablesfreefuncs::assertEquals(2, constexprDim));
 	const bool testConstexprVec(variablesfreefuncs::assertEquals({1.1, 1.1}, constexprVec));
 	const bool testVarVec(variablesfreefuncs::assertEquals({2.2, 2.2}, varVec));
-	const bool testDynamicDim(variablesfreefuncs::assertEquals(4, dynamicDim));
-	int cpt(1);
-	for (size_t i=0; i<dynamicDim; i++)
-	{
-		cpt = cpt + 1;
-		dynamicVec[i] = 3.3;
-	}
-	const bool testDynamicVecLength(variablesfreefuncs::assertEquals(4, cpt));
+	const bool testDynamicVecLength(variablesfreefuncs::assertEquals(2, checkDynamicDim));
 }
 
 void Variables::simulate()
@@ -294,26 +228,19 @@ void Variables::simulate()
 		Kokkos::hwloc::get_available_cores_per_numa() * Kokkos::hwloc::get_available_threads_per_core()));
 	
 	// @1.0
-	initDynamicDim();
-	initVarVec();
-	init_mandatoryOptDim();
-	init_mandatoryOptVect();
-	init_optDim();
-	init_optVect1();
-	init_optVect2();
-	init_varVec();
-	
-	// @2.0
 	Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
 	{
 		if (thread.league_rank() == 0)
 			Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){
 				std::cout << "[" << __GREEN__ << "RUNTIME" << __RESET__ << "]   Using " << __BOLD__ << setw(3) << thread.league_size() << __RESET__ << " team(s) of "
 					<< __BOLD__ << setw(3) << thread.team_size() << __RESET__<< " thread(s)" << std::endl;});
+		dynamicVecInitialization(thread);
 		if (thread.league_rank() == 0)
-			Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){init_dynamicVec();});
-		testJob(thread);
+			Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){varVecInitialization();});
 	});
+	
+	// @2.0
+	oracle();
 	
 	std::cout << "\nFinal time = " << t << endl;
 	std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << globalTimer.print() << __RESET__ << std::endl;

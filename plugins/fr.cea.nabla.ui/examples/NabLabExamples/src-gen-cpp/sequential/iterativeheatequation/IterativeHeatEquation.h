@@ -54,14 +54,6 @@ public:
 	void initD() noexcept;
 	void initTime() noexcept;
 	void initXc() noexcept;
-	void init_deltat() noexcept;
-	void init_epsilon() noexcept;
-	void init_lastDump() noexcept;
-	void init_maxIterations() noexcept;
-	void init_maxIterationsK() noexcept;
-	void init_outputPeriod() noexcept;
-	void init_stopTime() noexcept;
-	void init_u0() noexcept;
 	void setUpTimeLoopK() noexcept;
 	void updateU() noexcept;
 	void computeDeltaTn() noexcept;
@@ -76,9 +68,6 @@ public:
 
 private:
 	void dumpVariables(int iteration, bool useTimer=true);
-
-	// Json block of options
-	rapidjson::Document jsonDocument;
 
 	// Mesh and mesh variables
 	CartesianMesh2D& mesh;

@@ -83,13 +83,6 @@ ExplicitHeatEquation::ExplicitHeatEquation(CartesianMesh2D& aMesh)
 , faceConductivity("faceConductivity", nbFaces)
 , alpha("alpha", nbCells, nbCells)
 {
-	// Copy node coordinates
-	const auto& gNodes = mesh.getGeometry()->getNodes();
-	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
-	{
-		X(rNodes)[0] = gNodes[rNodes][0];
-		X(rNodes)[1] = gNodes[rNodes][1];
-	}
 }
 
 ExplicitHeatEquation::~ExplicitHeatEquation()
@@ -99,15 +92,65 @@ ExplicitHeatEquation::~ExplicitHeatEquation()
 void
 ExplicitHeatEquation::jsonInit(const char* jsonContent)
 {
-	assert(!jsonDocument.Parse(jsonContent).HasParseError());
-	assert(jsonDocument.IsObject());
-	rapidjson::Value::Object options = jsonDocument.GetObject();
+	rapidjson::Document document;
+	assert(!document.Parse(jsonContent).HasParseError());
+	assert(document.IsObject());
+	const rapidjson::Value::Object& options = document.GetObject();
+
 	// outputPath
 	assert(options.HasMember("outputPath"));
 	const rapidjson::Value& valueof_outputPath = options["outputPath"];
 	assert(valueof_outputPath.IsString());
 	outputPath = valueof_outputPath.GetString();
 	writer = new PvdFileWriter2D("ExplicitHeatEquation", outputPath);
+	// outputPeriod
+	assert(options.HasMember("outputPeriod"));
+	const rapidjson::Value& valueof_outputPeriod = options["outputPeriod"];
+	assert(valueof_outputPeriod.IsInt());
+	outputPeriod = valueof_outputPeriod.GetInt();
+	lastDump = numeric_limits<int>::min();
+	// u0
+	if (options.HasMember("u0"))
+	{
+		const rapidjson::Value& valueof_u0 = options["u0"];
+		assert(valueof_u0.IsDouble());
+		u0 = valueof_u0.GetDouble();
+	}
+	else
+	{
+		u0 = 1.0;
+	}
+	// stopTime
+	if (options.HasMember("stopTime"))
+	{
+		const rapidjson::Value& valueof_stopTime = options["stopTime"];
+		assert(valueof_stopTime.IsDouble());
+		stopTime = valueof_stopTime.GetDouble();
+	}
+	else
+	{
+		stopTime = 1.0;
+	}
+	// maxIterations
+	if (options.HasMember("maxIterations"))
+	{
+		const rapidjson::Value& valueof_maxIterations = options["maxIterations"];
+		assert(valueof_maxIterations.IsInt());
+		maxIterations = valueof_maxIterations.GetInt();
+	}
+	else
+	{
+		maxIterations = 500000000;
+	}
+	deltat = 0.001;
+
+	// Copy node coordinates
+	const auto& gNodes = mesh.getGeometry()->getNodes();
+	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
+	{
+		X(rNodes)[0] = gNodes[rNodes][0];
+		X(rNodes)[1] = gNodes[rNodes][1];
+	}
 }
 
 
@@ -271,104 +314,6 @@ void ExplicitHeatEquation::initXc(const member_type& teamMember) noexcept
 			}
 			Xc(cCells) = 0.25 * reduction0;
 		});
-	}
-}
-
-/**
- * Job init_deltat called @1.0 in simulate method.
- * In variables: 
- * Out variables: deltat
- */
-void ExplicitHeatEquation::init_deltat() noexcept
-{
-	deltat = 0.001;
-}
-
-/**
- * Job init_lastDump called @1.0 in simulate method.
- * In variables: 
- * Out variables: lastDump
- */
-void ExplicitHeatEquation::init_lastDump() noexcept
-{
-	lastDump = numeric_limits<int>::min();
-}
-
-/**
- * Job init_maxIterations called @1.0 in simulate method.
- * In variables: 
- * Out variables: maxIterations
- */
-void ExplicitHeatEquation::init_maxIterations() noexcept
-{
-	// maxIterations
-	rapidjson::Value::Object options = jsonDocument.GetObject();
-	if (options.HasMember("maxIterations"))
-	{
-		const rapidjson::Value& valueof_maxIterations = options["maxIterations"];
-		assert(valueof_maxIterations.IsInt());
-		maxIterations = valueof_maxIterations.GetInt();
-	}
-	else
-	{
-		maxIterations = 500000000;
-	}
-}
-
-/**
- * Job init_outputPeriod called @1.0 in simulate method.
- * In variables: 
- * Out variables: outputPeriod
- */
-void ExplicitHeatEquation::init_outputPeriod() noexcept
-{
-	// outputPeriod
-	rapidjson::Value::Object options = jsonDocument.GetObject();
-	assert(options.HasMember("outputPeriod"));
-	const rapidjson::Value& valueof_outputPeriod = options["outputPeriod"];
-	assert(valueof_outputPeriod.IsInt());
-	outputPeriod = valueof_outputPeriod.GetInt();
-}
-
-/**
- * Job init_stopTime called @1.0 in simulate method.
- * In variables: 
- * Out variables: stopTime
- */
-void ExplicitHeatEquation::init_stopTime() noexcept
-{
-	// stopTime
-	rapidjson::Value::Object options = jsonDocument.GetObject();
-	if (options.HasMember("stopTime"))
-	{
-		const rapidjson::Value& valueof_stopTime = options["stopTime"];
-		assert(valueof_stopTime.IsDouble());
-		stopTime = valueof_stopTime.GetDouble();
-	}
-	else
-	{
-		stopTime = 1.0;
-	}
-}
-
-/**
- * Job init_u0 called @1.0 in simulate method.
- * In variables: 
- * Out variables: u0
- */
-void ExplicitHeatEquation::init_u0() noexcept
-{
-	// u0
-	rapidjson::Value::Object options = jsonDocument.GetObject();
-	if (options.HasMember("u0"))
-	{
-		const rapidjson::Value& valueof_u0 = options["u0"];
-		assert(valueof_u0.IsDouble());
-		u0 = valueof_u0.GetDouble();
-	}
-	else
-	{
-		u0 = 1.0;
 	}
 }
 
@@ -664,18 +609,6 @@ void ExplicitHeatEquation::simulate()
 		if (thread.league_rank() == 0)
 			Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){initTime();});
 		initXc(thread);
-		if (thread.league_rank() == 0)
-			Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){init_deltat();});
-		if (thread.league_rank() == 0)
-			Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){init_lastDump();});
-		if (thread.league_rank() == 0)
-			Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){init_maxIterations();});
-		if (thread.league_rank() == 0)
-			Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){init_outputPeriod();});
-		if (thread.league_rank() == 0)
-			Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){init_stopTime();});
-		if (thread.league_rank() == 0)
-			Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){init_u0();});
 	});
 	
 	// @2.0

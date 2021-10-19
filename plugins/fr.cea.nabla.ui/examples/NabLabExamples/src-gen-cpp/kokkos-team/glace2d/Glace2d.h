@@ -82,28 +82,6 @@ public:
 	KOKKOS_INLINE_FUNCTION
 	void iniTime() noexcept;
 	KOKKOS_INLINE_FUNCTION
-	void init_deltatCfl() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void init_gamma() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void init_lastDump() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void init_maxIterations() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void init_outputPeriod() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void init_pIniZd() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void init_pIniZg() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void init_rhoIniZd() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void init_rhoIniZg() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void init_stopTime() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void init_xInterface() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void computeLjr(const member_type& teamMember) noexcept;
 	KOKKOS_INLINE_FUNCTION
 	void computeV(const member_type& teamMember) noexcept;
@@ -157,9 +135,6 @@ private:
 	 * Out : pair of indexes, 1st one for start of chunk, 2nd one for size of chunk
 	 */
 	const std::pair<size_t, size_t> computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept;
-
-	// Json block of options
-	rapidjson::Document jsonDocument;
 
 	// Mesh and mesh variables
 	CartesianMesh2D& mesh;

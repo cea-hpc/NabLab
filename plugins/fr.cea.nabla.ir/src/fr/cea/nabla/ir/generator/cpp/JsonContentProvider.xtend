@@ -11,7 +11,6 @@ package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.Expression
-import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.PrimitiveType
 import org.eclipse.xtend.lib.annotations.Data
 
@@ -23,16 +22,14 @@ class JsonContentProvider
 
 	def getJsonName(String varName) { 'valueof_' + varName }
 
-	def getJsonContent(String name, BaseType type, Instruction defaultValue)
+	def getJsonContent(String name, BaseType type, Expression defaultValue)
 	'''
 		// «name»
 		«IF defaultValue === null»
-			rapidjson::Value::Object options = jsonDocument.GetObject();
 			assert(options.HasMember("«name»"));
 			const rapidjson::Value& «name.jsonName» = options["«name»"];
 			«getJsonContent(name, type, type.sizes, #[])»
 		«ELSE»
-			rapidjson::Value::Object options = jsonDocument.GetObject();
 			if (options.HasMember("«name»"))
 			{
 				const rapidjson::Value& «name.jsonName» = options["«name»"];
@@ -40,7 +37,7 @@ class JsonContentProvider
 			}
 			else
 			{
-				«defaultValue.innerContent»
+				«name» = «defaultValue.content»;
 			}
 		«ENDIF»
 	'''

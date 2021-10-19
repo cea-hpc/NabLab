@@ -148,9 +148,6 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		const std::pair<size_t, size_t> computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept;
 
 		«ENDIF»
-		// Json block of options
-		rapidjson::Document jsonDocument;
-
 		// Mesh and mesh variables
 		«irRoot.mesh.className»& mesh;
 		«FOR c : irRoot.mesh.connectivities.filter[multiple] BEFORE 'size_t ' SEPARATOR ', ' AFTER ';'»«c.nbElemsVar»«ENDFOR»
@@ -229,24 +226,10 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	«FOR c : irRoot.mesh.connectivities.filter[multiple]»
 	, «c.nbElemsVar»(«c.connectivityAccessor»)
 	«ENDFOR»
-	«FOR v : variables»
-		«IF !v.option && v.defaultValue !== null && !v.constExpr»
-			, «v.name»(«expressionContentProvider.getContent(v.defaultValue)»)
-		«ELSEIF !(v.type instanceof BaseType)»
-			, «v.name»(«typeContentProvider.getCstrInit(v.type, v.name)»)
-		«ENDIF»
+	«FOR v : variables.filter[x | !(x.type instanceof BaseType)]»
+		, «v.name»(«typeContentProvider.getCstrInit(v.type, v.name)»)
 	«ENDFOR»
 	{
-		«IF main»
-		// Copy node coordinates
-		const auto& gNodes = mesh.getGeometry()->getNodes();
-		«val iterator = backend.typeContentProvider.formatIterators(irRoot.initNodeCoordVariable.type as ConnectivityType, #["rNodes"])»
-		for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
-		{
-			«irRoot.initNodeCoordVariable.name»«iterator»[0] = gNodes[rNodes][0];
-			«irRoot.initNodeCoordVariable.name»«iterator»[1] = gNodes[rNodes][1];
-		}
-		«ENDIF»
 	}
 
 	«className»::~«className»()
@@ -256,9 +239,11 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	void
 	«className»::jsonInit(const char* jsonContent)
 	{
-		assert(!jsonDocument.Parse(jsonContent).HasParseError());
-		assert(jsonDocument.IsObject());
-		rapidjson::Value::Object options = jsonDocument.GetObject();
+		rapidjson::Document document;
+		assert(!document.Parse(jsonContent).HasParseError());
+		assert(document.IsObject());
+		const rapidjson::Value::Object& options = document.GetObject();
+
 		«IF postProcessing !== null»
 		«val opName = IrUtils.OutputPathNameAndValue.key»
 		// «opName»
@@ -268,6 +253,16 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		«opName» = «jsonContentProvider.getJsonName(opName)».GetString();
 		writer = new PvdFileWriter2D("«irRoot.name»", «opName»);
 		«ENDIF»
+		«FOR v : variables.filter[!constExpr]»
+			«IF v.type.dynamicBaseType»
+				«typeContentProvider.initCppTypeContent(v.name, v.type)»
+			«ENDIF»
+			«IF v.option»
+				«jsonContentProvider.getJsonContent(v.name, v.type as BaseType, v.defaultValue)»
+			«ELSEIF v.defaultValue !== null»
+				«v.name» = «expressionContentProvider.getContent(v.defaultValue)»;
+			«ENDIF»
+		«ENDFOR»
 		«FOR v : externalProviders»
 		«val vName = v.instanceName»
 		// «vName»
@@ -286,6 +281,17 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		const rapidjson::Value& «jsonContentProvider.getJsonName(nrName)» = options["«nrName»"];
 		assert(«jsonContentProvider.getJsonName(nrName)».IsString());
 		«nrName» = «jsonContentProvider.getJsonName(nrName)».GetString();
+		«ENDIF»
+		«IF main»
+
+			// Copy node coordinates
+			const auto& gNodes = mesh.getGeometry()->getNodes();
+			«val iterator = backend.typeContentProvider.formatIterators(irRoot.initNodeCoordVariable.type as ConnectivityType, #["rNodes"])»
+			for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
+			{
+				«irRoot.initNodeCoordVariable.name»«iterator»[0] = gNodes[rNodes][0];
+				«irRoot.initNodeCoordVariable.name»«iterator»[1] = gNodes[rNodes][1];
+			}
 		«ENDIF»
 	}
 

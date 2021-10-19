@@ -16,7 +16,6 @@ import fr.cea.nabla.generator.NablagenExtensionHelper
 import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.transformers.CompositeTransformationStep
-import fr.cea.nabla.ir.transformers.CreateInitVariableJobs
 import fr.cea.nabla.ir.transformers.FillJobHLTs
 import fr.cea.nabla.ir.transformers.OptimizeConnectivities
 import fr.cea.nabla.ir.transformers.ReplaceAffectations
@@ -103,7 +102,6 @@ class IrRootBuilder
 		new CompositeTransformationStep('Common transformations', #[
 			new ReplaceUtf8Chars,
 			new OptimizeConnectivities(#['cells', 'nodes', 'faces']),
-			new CreateInitVariableJobs,
 			new ReplaceReductions(replaceAllReductions),
 			new ReplaceAffectations,
 			new FillJobHLTs])

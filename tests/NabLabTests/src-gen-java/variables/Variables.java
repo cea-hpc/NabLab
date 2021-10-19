@@ -15,9 +15,6 @@ import fr.cea.nabla.javalib.mesh.*;
 
 public final class Variables
 {
-	// Json block of options
-	private JsonObject options;
-
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
 	@SuppressWarnings("unused")
@@ -37,7 +34,7 @@ public final class Variables
 	static final int constexprDim = 2;
 	static final double[] constexprVec = new double[] {1.1, 1.1};
 	double[] varVec;
-	int dynamicDim;
+	int checkDynamicDim;
 	double[] dynamicVec;
 
 	public Variables(CartesianMesh2D aMesh)
@@ -45,87 +42,13 @@ public final class Variables
 		// Mesh and mesh variables initialization
 		mesh = aMesh;
 		nbNodes = mesh.getNbNodes();
-
-		// Allocate arrays
-		X = new double[nbNodes][2];
-		optVect1 = new double[2];
-		optVect2 = new double[2];
-		mandatoryOptVect = new int[2];
-		varVec = new double[constexprDim];
-
-		// Copy node coordinates
-		double[][] gNodes = mesh.getGeometry().getNodes();
-		IntStream.range(0, nbNodes).parallel().forEach(rNodes ->
-		{
-			X[rNodes][0] = gNodes[rNodes][0];
-			X[rNodes][1] = gNodes[rNodes][1];
-		});
 	}
 
 	public void jsonInit(final String jsonContent)
 	{
 		final Gson gson = new Gson();
-		options = gson.fromJson(jsonContent, JsonObject.class);
-	}
-
-	/**
-	 * Job initDynamicDim called @1.0 in simulate method.
-	 * In variables: 
-	 * Out variables: dynamicDim
-	 */
-	protected void initDynamicDim()
-	{
-		dynamicDim = 4;
-	}
-
-	/**
-	 * Job initVarVec called @1.0 in simulate method.
-	 * In variables: constexprDim
-	 * Out variables: varVec
-	 */
-	protected void initVarVec()
-	{
-		varVec = new double[] {2.2, 2.2};
-	}
-
-	/**
-	 * Job init_mandatoryOptDim called @1.0 in simulate method.
-	 * In variables: 
-	 * Out variables: mandatoryOptDim
-	 */
-	protected void init_mandatoryOptDim()
-	{
-		assert(options.has("mandatoryOptDim"));
-		final JsonElement valueof_mandatoryOptDim = options.get("mandatoryOptDim");
-		assert(valueof_mandatoryOptDim.isJsonPrimitive());
-		mandatoryOptDim = valueof_mandatoryOptDim.getAsJsonPrimitive().getAsInt();
-	}
-
-	/**
-	 * Job init_mandatoryOptVect called @1.0 in simulate method.
-	 * In variables: 
-	 * Out variables: mandatoryOptVect
-	 */
-	protected void init_mandatoryOptVect()
-	{
-		assert(options.has("mandatoryOptVect"));
-		final JsonElement valueof_mandatoryOptVect = options.get("mandatoryOptVect");
-		assert(valueof_mandatoryOptVect.isJsonArray());
-		assert(valueof_mandatoryOptVect.getAsJsonArray().size() == 2);
-		for (int i1=0 ; i1<2 ; i1++)
-		{
-			assert(valueof_mandatoryOptVect.getAsJsonArray().get(i1).isJsonPrimitive());
-			mandatoryOptVect[i1] = valueof_mandatoryOptVect.getAsJsonArray().get(i1).getAsJsonPrimitive().getAsInt();
-		}
-	}
-
-	/**
-	 * Job init_optDim called @1.0 in simulate method.
-	 * In variables: 
-	 * Out variables: optDim
-	 */
-	protected void init_optDim()
-	{
+		final JsonObject options = gson.fromJson(jsonContent, JsonObject.class);
+		X = new double[nbNodes][2];
 		if (options.has("optDim"))
 		{
 			final JsonElement valueof_optDim = options.get("optDim");
@@ -133,18 +56,8 @@ public final class Variables
 			optDim = valueof_optDim.getAsJsonPrimitive().getAsInt();
 		}
 		else
-		{
 			optDim = 2;
-		}
-	}
-
-	/**
-	 * Job init_optVect1 called @1.0 in simulate method.
-	 * In variables: 
-	 * Out variables: optVect1
-	 */
-	protected void init_optVect1()
-	{
+		optVect1 = new double[2];
 		if (options.has("optVect1"))
 		{
 			final JsonElement valueof_optVect1 = options.get("optVect1");
@@ -157,18 +70,8 @@ public final class Variables
 			}
 		}
 		else
-		{
 			optVect1 = new double[] {1.0, 1.0};
-		}
-	}
-
-	/**
-	 * Job init_optVect2 called @1.0 in simulate method.
-	 * In variables: 
-	 * Out variables: optVect2
-	 */
-	protected void init_optVect2()
-	{
+		optVect2 = new double[2];
 		if (options.has("optVect2"))
 		{
 			final JsonElement valueof_optVect2 = options.get("optVect2");
@@ -181,37 +84,66 @@ public final class Variables
 			}
 		}
 		else
-		{
 			optVect2 = new double[] {1.0, 1.0};
+		assert(options.has("mandatoryOptDim"));
+		final JsonElement valueof_mandatoryOptDim = options.get("mandatoryOptDim");
+		assert(valueof_mandatoryOptDim.isJsonPrimitive());
+		mandatoryOptDim = valueof_mandatoryOptDim.getAsJsonPrimitive().getAsInt();
+		mandatoryOptVect = new int[2];
+		assert(options.has("mandatoryOptVect"));
+		final JsonElement valueof_mandatoryOptVect = options.get("mandatoryOptVect");
+		assert(valueof_mandatoryOptVect.isJsonArray());
+		assert(valueof_mandatoryOptVect.getAsJsonArray().size() == 2);
+		for (int i1=0 ; i1<2 ; i1++)
+		{
+			assert(valueof_mandatoryOptVect.getAsJsonArray().get(i1).isJsonPrimitive());
+			mandatoryOptVect[i1] = valueof_mandatoryOptVect.getAsJsonArray().get(i1).getAsJsonPrimitive().getAsInt();
 		}
+		varVec = new double[constexprDim];
+		varVec = new double[] {1.0, 1.0};
+		dynamicVec = new double[optDim];
+
+		// Copy node coordinates
+		double[][] gNodes = mesh.getGeometry().getNodes();
+		IntStream.range(0, nbNodes).parallel().forEach(rNodes ->
+		{
+			X[rNodes][0] = gNodes[rNodes][0];
+			X[rNodes][1] = gNodes[rNodes][1];
+		});
 	}
 
 	/**
-	 * Job init_varVec called @1.0 in simulate method.
+	 * Job dynamicVecInitialization called @1.0 in simulate method.
+	 * In variables: optDim
+	 * Out variables: checkDynamicDim, dynamicVec
+	 */
+	protected void dynamicVecInitialization()
+	{
+		int cpt = 0;
+		for (int i=0; i<optDim; i++)
+		{
+			cpt = cpt + 1;
+			dynamicVec[i] = 3.3;
+		}
+		checkDynamicDim = cpt;
+	}
+
+	/**
+	 * Job varVecInitialization called @1.0 in simulate method.
 	 * In variables: constexprDim
 	 * Out variables: varVec
 	 */
-	protected void init_varVec()
+	protected void varVecInitialization()
 	{
-		varVec = new double[] {1.0, 1.0};
+		varVec = new double[] {2.2, 2.2};
 	}
 
 	/**
-	 * Job init_dynamicVec called @2.0 in simulate method.
-	 * In variables: dynamicDim
-	 * Out variables: dynamicVec
+	 * Job oracle called @2.0 in simulate method.
+	 * In variables: checkDynamicDim, constexprDim, constexprVec, mandatoryOptDim, mandatoryOptVect, optDim, optVect1, optVect2, varVec
+	 * Out variables: 
 	 */
-	protected void init_dynamicVec()
-	{
-		dynamicVec = new double[dynamicDim];
-	}
-
-	/**
-	 * Job testJob called @2.0 in simulate method.
-	 * In variables: constexprDim, constexprVec, dynamicDim, mandatoryOptDim, mandatoryOptVect, optDim, optVect1, optVect2, varVec
-	 * Out variables: dynamicVec
-	 */
-	protected void testJob()
+	protected void oracle()
 	{
 		final boolean testOptDim = assertEquals(2, optDim);
 		final boolean testOptVect1 = assertEquals(new double[] {1.0, 1.0}, optVect1);
@@ -221,14 +153,7 @@ public final class Variables
 		final boolean testConstexprDim = assertEquals(2, constexprDim);
 		final boolean testConstexprVec = assertEquals(new double[] {1.1, 1.1}, constexprVec);
 		final boolean testVarVec = assertEquals(new double[] {2.2, 2.2}, varVec);
-		final boolean testDynamicDim = assertEquals(4, dynamicDim);
-		int cpt = 1;
-		for (int i=0; i<dynamicDim; i++)
-		{
-			cpt = cpt + 1;
-			dynamicVec[i] = 3.3;
-		}
-		final boolean testDynamicVecLength = assertEquals(4, cpt);
+		final boolean testDynamicVecLength = assertEquals(2, checkDynamicDim);
 	}
 
 	private static boolean assertEquals(int expected, int actual)
@@ -262,16 +187,9 @@ public final class Variables
 	public void simulate()
 	{
 		System.out.println("Start execution of variables");
-		initDynamicDim(); // @1.0
-		initVarVec(); // @1.0
-		init_mandatoryOptDim(); // @1.0
-		init_mandatoryOptVect(); // @1.0
-		init_optDim(); // @1.0
-		init_optVect1(); // @1.0
-		init_optVect2(); // @1.0
-		init_varVec(); // @1.0
-		init_dynamicVec(); // @2.0
-		testJob(); // @2.0
+		dynamicVecInitialization(); // @1.0
+		varVecInitialization(); // @1.0
+		oracle(); // @2.0
 		System.out.println("End of execution of variables");
 	}
 

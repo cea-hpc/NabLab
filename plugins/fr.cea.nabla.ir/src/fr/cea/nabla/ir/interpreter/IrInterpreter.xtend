@@ -28,7 +28,6 @@ import static org.iq80.leveldb.impl.Iq80DBFactory.factory
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
-import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.interpreter.NablaValueExtensions.*
 
 class IrInterpreter
@@ -61,16 +60,12 @@ class IrInterpreter
 		mesh.createProviderInstance(null)
 		mesh.jsonInit(null, jsonObject.get("mesh").toString)
 
-		// Interprete variables with known dimensions
-		for (v : context.ir.variables.filter[!type.dynamicBaseType])
-			context.addVariableValue(v, createValue(v.type, v.name, v.defaultValue, context))
+		// Interprete variables and options
+		for (m : context.ir.modules)
+			jsonInit(context, m, jsonObject.get(m.name), wsPath)
 
 		// Copy Node Cooords
 		context.addVariableValue(context.ir.initNodeCoordVariable, new NV2Real(context.mesh.nodes))
-
-		// Read options in Json
-		for (m : context.ir.modules)
-			jsonInit(context, m, jsonObject.get(m.name), wsPath)
 
 		// Interprete Top level jobs
 		for (j : context.ir.main.calls)
@@ -109,8 +104,26 @@ class IrInterpreter
 	{
 		val jsonOptions = (jsonElt === null ? null : jsonElt.asJsonObject)
 
-		if (jsonOptions !== null)
-			context.options.put(m, jsonOptions)
+		for (v : m.variables)
+		{
+			context.addVariableValue(v, createValue(v.type, v.name, v.defaultValue, context))
+
+			if (v.option)
+			{
+				if (jsonOptions !== null && jsonOptions.has(v.name))
+				{
+					val vValue = context.getVariableValue(v)
+					val jsonOpt = jsonOptions.get(v.name)
+					NablaValueJsonSetter::setValue(vValue, jsonOpt)
+				}
+				else
+				{
+					// No default value => the option is mandatory.
+					if (v.defaultValue === null)
+						throw new IllegalStateException("Mandatory option missing in Json file: " + v.name)
+				}
+			}
+		}
 
 		if (m.postProcessing !== null && jsonOptions !== null)
 		{

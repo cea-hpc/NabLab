@@ -74,22 +74,6 @@ public:
 	KOKKOS_INLINE_FUNCTION
 	void initXc() noexcept;
 	KOKKOS_INLINE_FUNCTION
-	void init_deltat() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void init_epsilon() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void init_lastDump() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void init_maxIterations() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void init_maxIterationsK() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void init_outputPeriod() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void init_stopTime() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void init_u0() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void setUpTimeLoopK() noexcept;
 	KOKKOS_INLINE_FUNCTION
 	void updateU() noexcept;
@@ -114,9 +98,6 @@ public:
 
 private:
 	void dumpVariables(int iteration, bool useTimer=true);
-
-	// Json block of options
-	rapidjson::Document jsonDocument;
 
 	// Mesh and mesh variables
 	CartesianMesh2D& mesh;

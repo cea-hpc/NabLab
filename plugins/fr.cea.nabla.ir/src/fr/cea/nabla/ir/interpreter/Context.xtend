@@ -9,13 +9,11 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.interpreter
 
-import com.google.gson.JsonObject
 import fr.cea.nabla.ir.ir.ArgOrVar
 import fr.cea.nabla.ir.ir.ConnectivityCall
 import fr.cea.nabla.ir.ir.Container
 import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.ExtensionProvider
-import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.ItemId
 import fr.cea.nabla.ir.ir.ItemIndex
@@ -40,7 +38,6 @@ class Context
 	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) val IrRoot ir
 	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) PvdFileWriter2D writer
 	@Accessors(PUBLIC_GETTER, PACKAGE_SETTER) boolean levelDBCompareResult
-	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) val HashMap<IrModule, JsonObject> options
 	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) val HashMap<ExtensionProvider, ExtensionProviderHelper> providers
 
 	new(Logger logger, IrRoot ir, String wsPath)
@@ -49,7 +46,6 @@ class Context
 		this.logger = logger
 		this.ir = ir
 		this.levelDBCompareResult = true
-		this.options = new HashMap<IrModule, JsonObject>
 		this.providers = new HashMap<ExtensionProvider, ExtensionProviderHelper>
 
 		// providerName can be null when default option are interpreted for json generation
@@ -99,7 +95,6 @@ class Context
 		this.ir = outerContext.ir
 		this.writer = outerContext.writer
 		this.levelDBCompareResult = outerContext.levelDBCompareResult
-		this.options = outerContext.options
 		this.providers = outerContext.providers
 	}
 

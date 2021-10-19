@@ -31,6 +31,7 @@ import static extension fr.cea.nabla.ir.generator.java.FunctionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.JobContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.JsonContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.TypeContentProvider.*
+import fr.cea.nabla.ir.ir.BaseType
 
 class JavaApplicationGenerator implements ApplicationGenerator
 {
@@ -82,9 +83,6 @@ class JavaApplicationGenerator implements ApplicationGenerator
 
 		public final class «className»
 		{
-			// Json block of options
-			private JsonObject options;
-
 			// Mesh and mesh variables
 			private final «irRoot.mesh.className» mesh;
 			@SuppressWarnings("unused")
@@ -128,50 +126,54 @@ class JavaApplicationGenerator implements ApplicationGenerator
 				«FOR c : irRoot.mesh.connectivities.filter[multiple]»
 					«c.nbElemsVar» = «c.connectivityAccessor»;
 				«ENDFOR»
-
-				// Allocate arrays
-				«FOR v : variables.filter[!constExpr && !type.scalar && !type.dynamicBaseType]»
-					«v.name»«getJavaAllocation(v.type, v.name)»;
-				«ENDFOR»
-				«IF main»
-
-				// Copy node coordinates
-				double[][] gNodes = mesh.getGeometry().getNodes();
-				IntStream.range(0, nbNodes).parallel().forEach(rNodes ->
-				{
-					«irRoot.initNodeCoordVariable.name»[rNodes][0] = gNodes[rNodes][0];
-					«irRoot.initNodeCoordVariable.name»[rNodes][1] = gNodes[rNodes][1];
-				});
-				«ENDIF»
 			}
 
 			public void jsonInit(final String jsonContent)
 			{
 				final Gson gson = new Gson();
-				options = gson.fromJson(jsonContent, JsonObject.class);
+				final JsonObject options = gson.fromJson(jsonContent, JsonObject.class);
 				«IF postProcessing !== null»
-				«val opName = IrUtils.OutputPathNameAndValue.key»
-				// «opName»
-				assert(options.has("«opName»"));
-				final JsonElement «opName.jsonName» = options.get("«opName»");
-				«opName» = «opName.jsonName».getAsJsonPrimitive().getAsString();
-				writer = new PvdFileWriter2D("«irRoot.name»", «opName»);
+					«val opName = IrUtils.OutputPathNameAndValue.key»
+					assert(options.has("«opName»"));
+					final JsonElement «opName.jsonName» = options.get("«opName»");
+					«opName» = «opName.jsonName».getAsJsonPrimitive().getAsString();
+					writer = new PvdFileWriter2D("«irRoot.name»", «opName»);
 				«ENDIF»
+				«FOR v : variables.filter[!constExpr]»
+					«IF !v.type.scalar»
+						«v.name»«getJavaAllocation(v.type, v.name)»;
+					«ENDIF»
+					«IF v.option»
+						«getJsonContent(v.name, v.type as BaseType, v.defaultValue)»
+					«ELSEIF v.defaultValue !== null»
+						«v.name» = «getContent(v.defaultValue)»;
+					«ENDIF»
+				«ENDFOR»
 				«FOR v : externalProviders»
-				«val vName = v.instanceName»
-				// «vName»
-				«vName» = new «v.packageName».«v.className»();
-				if (options.has("«vName»"))
-					«vName».jsonInit(options.get("«vName»").toString());
+					«val vName = v.instanceName»
+					// «vName»
+					«vName» = new «v.packageName».«v.className»();
+					if (options.has("«vName»"))
+						«vName».jsonInit(options.get("«vName»").toString());
 				«ENDFOR»
 				«val nrName = IrUtils.NonRegressionNameAndValue.key»
 				«IF levelDB»
-				// Non regression
-				if (options.has("«nrName»"))
-				{
-					final JsonElement «nrName.jsonName» = options.get("«nrName»");
-					«nrName» = «nrName.jsonName».getAsJsonPrimitive().getAsString();
-				}
+					// Non regression
+					if (options.has("«nrName»"))
+					{
+						final JsonElement «nrName.jsonName» = options.get("«nrName»");
+						«nrName» = «nrName.jsonName».getAsJsonPrimitive().getAsString();
+					}
+				«ENDIF»
+				«IF main»
+
+					// Copy node coordinates
+					double[][] gNodes = mesh.getGeometry().getNodes();
+					IntStream.range(0, nbNodes).parallel().forEach(rNodes ->
+					{
+						«irRoot.initNodeCoordVariable.name»[rNodes][0] = gNodes[rNodes][0];
+						«irRoot.initNodeCoordVariable.name»[rNodes][1] = gNodes[rNodes][1];
+					});
 				«ENDIF»
 			}
 			«FOR j : jobs»

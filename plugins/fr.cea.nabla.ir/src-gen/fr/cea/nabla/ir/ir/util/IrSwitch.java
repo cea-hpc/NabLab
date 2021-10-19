@@ -211,14 +211,6 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case IrPackage.INIT_VARIABLE_JOB: {
-				InitVariableJob initVariableJob = (InitVariableJob)theEObject;
-				T result = caseInitVariableJob(initVariableJob);
-				if (result == null) result = caseJob(initVariableJob);
-				if (result == null) result = caseIrAnnotable(initVariableJob);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
 			case IrPackage.EXECUTE_TIME_LOOP_JOB: {
 				ExecuteTimeLoopJob executeTimeLoopJob = (ExecuteTimeLoopJob)theEObject;
 				T result = caseExecuteTimeLoopJob(executeTimeLoopJob);
@@ -889,21 +881,6 @@ public class IrSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseJob(Job object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Init Variable Job</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Init Variable Job</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseInitVariableJob(InitVariableJob object) {
 		return null;
 	}
 

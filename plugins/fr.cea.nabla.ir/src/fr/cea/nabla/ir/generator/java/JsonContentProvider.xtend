@@ -11,11 +11,9 @@ package fr.cea.nabla.ir.generator.java
 
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.Expression
-import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.PrimitiveType
 
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
-import static extension fr.cea.nabla.ir.generator.java.InstructionContentProvider.*
 
 class JsonContentProvider
 {
@@ -24,7 +22,7 @@ class JsonContentProvider
 		'valueof_' + varName
 	}
 
-	static def getJsonContent(String name, BaseType type, Instruction defaultValue)
+	static def getJsonContent(String name, BaseType type, Expression defaultValue)
 	'''
 		«IF defaultValue === null»
 			assert(options.has("«name»"));
@@ -37,9 +35,7 @@ class JsonContentProvider
 				«getJsonContent(name, type, type.sizes, #[])»
 			}
 			else
-			{
-				«defaultValue.innerContent»
-			}
+				«name» = «defaultValue.content»;
 		«ENDIF»
 	'''
 

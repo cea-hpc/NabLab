@@ -52,12 +52,6 @@ public:
 	void iniCenter() noexcept;
 	void iniF() noexcept;
 	void iniTime() noexcept;
-	void init_PI() noexcept;
-	void init_alpha() noexcept;
-	void init_lastDump() noexcept;
-	void init_maxIterations() noexcept;
-	void init_outputPeriod() noexcept;
-	void init_stopTime() noexcept;
 	void computeUn() noexcept;
 	void iniUn() noexcept;
 	void setUpTimeLoopN() noexcept;
@@ -65,9 +59,6 @@ public:
 
 private:
 	void dumpVariables(int iteration, bool useTimer=true);
-
-	// Json block of options
-	rapidjson::Document jsonDocument;
 
 	// Mesh and mesh variables
 	CartesianMesh2D& mesh;

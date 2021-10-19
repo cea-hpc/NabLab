@@ -48,30 +48,13 @@ public:
 
 	void simulate();
 	KOKKOS_INLINE_FUNCTION
-	void initDynamicDim() noexcept;
+	void dynamicVecInitialization() noexcept;
 	KOKKOS_INLINE_FUNCTION
-	void initVarVec() noexcept;
+	void varVecInitialization() noexcept;
 	KOKKOS_INLINE_FUNCTION
-	void init_mandatoryOptDim() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void init_mandatoryOptVect() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void init_optDim() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void init_optVect1() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void init_optVect2() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void init_varVec() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void init_dynamicVec() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void testJob() noexcept;
+	void oracle() noexcept;
 
 private:
-	// Json block of options
-	rapidjson::Document jsonDocument;
-
 	// Mesh and mesh variables
 	CartesianMesh2D& mesh;
 	size_t nbNodes;
@@ -90,7 +73,7 @@ private:
 	static constexpr int constexprDim = 2;
 	static constexpr RealArray1D<constexprDim> constexprVec = {1.1, 1.1};
 	RealArray1D<constexprDim> varVec;
-	int dynamicDim;
+	int checkDynamicDim;
 	RealArray1D<0> dynamicVec;
 
 	// Timers

@@ -50,25 +50,11 @@ public:
 
 	void simulate();
 	KOKKOS_INLINE_FUNCTION
-	void initDynamicDim() noexcept;
+	void dynamicVecInitialization(const member_type& teamMember) noexcept;
 	KOKKOS_INLINE_FUNCTION
-	void initVarVec() noexcept;
+	void varVecInitialization() noexcept;
 	KOKKOS_INLINE_FUNCTION
-	void init_mandatoryOptDim() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void init_mandatoryOptVect() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void init_optDim() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void init_optVect1() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void init_optVect2() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void init_varVec() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void init_dynamicVec() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void testJob(const member_type& teamMember) noexcept;
+	void oracle() noexcept;
 
 private:
 	/**
@@ -77,9 +63,6 @@ private:
 	 * Out : pair of indexes, 1st one for start of chunk, 2nd one for size of chunk
 	 */
 	const std::pair<size_t, size_t> computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept;
-
-	// Json block of options
-	rapidjson::Document jsonDocument;
 
 	// Mesh and mesh variables
 	CartesianMesh2D& mesh;
@@ -99,7 +82,7 @@ private:
 	static constexpr int constexprDim = 2;
 	static constexpr RealArray1D<constexprDim> constexprVec = {1.1, 1.1};
 	RealArray1D<constexprDim> varVec;
-	int dynamicDim;
+	int checkDynamicDim;
 	RealArray1D<0> dynamicVec;
 
 	// Timers

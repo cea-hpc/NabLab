@@ -119,11 +119,8 @@ class ArgOrVarTypeProviderTest
 		let ℕ dim = 6;
 		ℝ[dim] dimtab;
 
-		// dynamic array
-		ℕ dyndim;
-		ℝ[dyndim] dyndimtab;
-
-		// dynamic array with option
+		// dynamic array not allowed on global variables
+		// except with options
 		option ℕ dyndimopt = 5;
 		ℝ[dyndimopt] dyndimtabopt;
 
@@ -200,12 +197,6 @@ class ArgOrVarTypeProviderTest
 		val dimref = ((dimtab.eContainer as VarDeclaration).type as BaseType).sizes.head
 		Assert.assertEquals(new NSTIntScalar, module.getVarByName("dim").typeFor)
 		Assert.assertEquals(new NSTRealArray1D(dimref, 6), dimtab.typeFor)
-
-		// dynamic array
-		val dyndimtab = module.getVarByName("dyndimtab")
-		val dyndimref = ((dyndimtab.eContainer as VarDeclaration).type as BaseType).sizes.head
-		Assert.assertEquals(new NSTIntScalar, module.getVarByName("dyndim").typeFor)
-		Assert.assertEquals(new NSTRealArray1D(dyndimref, -1), dyndimtab.typeFor)
 
 		// dynamic array with options
 		val dyndimtabopt = module.getVarByName("dyndimtabopt")

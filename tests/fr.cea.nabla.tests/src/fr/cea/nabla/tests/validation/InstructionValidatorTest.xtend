@@ -38,7 +38,7 @@ class InstructionValidatorTest
 	@Inject extension TestUtils
 
 	@Test
-	def void testDynamicConnectivityVars() 
+	def void testDynamicGlobalVars() 
 	{
 		val rs = resourceSetProvider.get
 		parseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DPath), rs)
@@ -50,14 +50,26 @@ class InstructionValidatorTest
 			''', rs)
 		Assert.assertNotNull(moduleKo)
 		moduleKo.assertError(NablaPackage.eINSTANCE.varGroupDeclaration,
-			InstructionValidator::DYNAMIC_CONNECTIVITY_VAR,
-			InstructionValidator::getDynamicConnectivityVarMsg)
+			InstructionValidator::DYNAMIC_GLOBAL_VAR,
+			InstructionValidator::getDynamicGlobalVarMsg)
+
+		val moduleKo2 = parseHelper.parse(
+			'''
+			«testModule»
+			ℕ dim;
+			ℝ[dim] tab;
+			''', rs)
+		Assert.assertNotNull(moduleKo2)
+		moduleKo.assertError(NablaPackage.eINSTANCE.varGroupDeclaration,
+			InstructionValidator::DYNAMIC_GLOBAL_VAR,
+			InstructionValidator::getDynamicGlobalVarMsg)
 
 		val moduleOk =  parseHelper.parse(
 			'''
 			«testModule»
 			let ℕ dim = 2;
 			ℝ[dim] X{nodes};
+			ℝ[dim] tab;
 			''', rs)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -105,13 +117,15 @@ class InstructionValidatorTest
 		val moduleKo = parseHelper.parse(
 			'''
 			«testModule»
+			option ℕ dim = 2;
 			ℕ U{cells};
 			ℕ V{nodes};
 			ComputeU: ∀ j∈cells(), {
-					let ℝ e = 1.0;
-					U{j} = e * 4;
+				let ℝ e = 1.0;
+				U{j} = e * 4;
 			}
 			ComputeV: V = U;
+			SetDim: dim = 3;
 			''', rs)
 		Assert.assertNotNull(moduleKo)
 
@@ -124,10 +138,14 @@ class InstructionValidatorTest
 		moduleKo.assertError(NablaPackage.eINSTANCE.affectation,
 			InstructionValidator::AFFECTATION_ON_CONNECTIVITY_TYPE,
 			InstructionValidator.getAffectationOnConnectivityTypeMsg)
+		moduleKo.assertError(NablaPackage.eINSTANCE.affectation,
+			InstructionValidator::AFFECTATION_ON_OPTION,
+			InstructionValidator.getAffectationOnOptionMsg)
 
 		val moduleOk = parseHelper.parse(
 			'''
 			«testModule»
+			option ℕ dim = 2;
 			ℕ U{cells}; 
 			ℕ V{cells};
 			ComputeU: ∀ j∈cells(), {

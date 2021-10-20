@@ -31,6 +31,7 @@ class TestUtils
 
 	public static val TestProjectPath = System.getProperty("user.dir")
 	public static val PluginsBasePath = TestProjectPath.replace("/tests/fr.cea.nabla.tests", "/plugins/fr.cea.nabla")
+	public static val AssertPath = PluginsBasePath + "/nablalib/Assert.n"
 	public static val MathPath = PluginsBasePath + "/nablalib/Math.n"
 	public static val CartesianMesh2DPath = PluginsBasePath + "/nablalib/CartesianMesh2D.n"
 	public static val LinearAlgebraPath = PluginsBasePath + "/nablalib/LinearAlgebra.n"

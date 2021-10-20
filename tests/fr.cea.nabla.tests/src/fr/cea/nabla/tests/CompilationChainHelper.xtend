@@ -76,6 +76,7 @@ class CompilationChainHelper
 
 		nablaParseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DPath), rs)
 		nablagenParseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DGenPath), rs)
+		nablaParseHelper.parse(readFileAsString(TestUtils.AssertPath), rs)
 		nablaParseHelper.parse(readFileAsString(TestUtils.MathPath), rs)
 		nablaParseHelper.parse(readFileAsString(TestUtils.LinearAlgebraPath), rs)
 		nablagenParseHelper.parse(readFileAsString(TestUtils.LinearAlgebraGenPath), rs)

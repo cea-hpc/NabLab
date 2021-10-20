@@ -22,6 +22,14 @@ using namespace nablalib::utils;
 using namespace nablalib::types;
 using namespace nablalib::utils::kokkos;
 
+/******************** Free functions declarations ********************/
+
+namespace iterationfreefuncs
+{
+KOKKOS_INLINE_FUNCTION
+bool assertEquals(double expected, double actual);
+}
+
 /******************** Module declaration ********************/
 
 class Iteration
@@ -38,29 +46,27 @@ public:
 	KOKKOS_INLINE_FUNCTION
 	void iniTime() noexcept;
 	KOKKOS_INLINE_FUNCTION
-	void iniU() noexcept;
+	void iniVk() noexcept;
 	KOKKOS_INLINE_FUNCTION
-	void iniV1() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void iniV2() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void updateV1() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void updateV2() noexcept;
-	KOKKOS_INLINE_FUNCTION
-	void updateW() noexcept;
+	void iniVn() noexcept;
 	KOKKOS_INLINE_FUNCTION
 	void setUpTimeLoopK() noexcept;
 	KOKKOS_INLINE_FUNCTION
-	void setUpTimeLoopN() noexcept;
+	void updateVk() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void updateVl() noexcept;
 	KOKKOS_INLINE_FUNCTION
 	void executeTimeLoopK() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void setUpTimeLoopN() noexcept;
 	KOKKOS_INLINE_FUNCTION
 	void executeTimeLoopN() noexcept;
 	KOKKOS_INLINE_FUNCTION
 	void tearDownTimeLoopK() noexcept;
 	KOKKOS_INLINE_FUNCTION
-	void iniW() noexcept;
+	void iniVl() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void oracleVk() noexcept;
 	KOKKOS_INLINE_FUNCTION
 	void setUpTimeLoopL() noexcept;
 	KOKKOS_INLINE_FUNCTION
@@ -68,7 +74,11 @@ public:
 	KOKKOS_INLINE_FUNCTION
 	void tearDownTimeLoopL() noexcept;
 	KOKKOS_INLINE_FUNCTION
-	void updateU() noexcept;
+	void oracleVl() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void updateVn() noexcept;
+	KOKKOS_INLINE_FUNCTION
+	void oracleVn() noexcept;
 
 private:
 	// Mesh and mesh variables
@@ -80,31 +90,27 @@ private:
 	int k;
 	int l;
 	static constexpr double maxTime = 0.1;
-	static constexpr int maxIter = 500;
-	static constexpr int maxIterK = 500;
-	static constexpr int maxIterL = 500;
 	static constexpr double deltat = 1.0;
 	double t_n;
 	double t_nplus1;
 	double t_n0;
 	Kokkos::View<RealArray1D<2>*> X;
-	Kokkos::View<double*> u_n;
-	Kokkos::View<double*> u_nplus1;
-	Kokkos::View<double*> v1_n;
-	Kokkos::View<double*> v1_nplus1;
-	Kokkos::View<double*> v1_nplus1_k;
-	Kokkos::View<double*> v1_nplus1_kplus1;
-	Kokkos::View<double*> v1_nplus1_k0;
-	Kokkos::View<double*> v2_n;
-	Kokkos::View<double*> v2_nplus1;
-	Kokkos::View<double*> v2_n0;
-	Kokkos::View<double*> v2_nplus1_k;
-	Kokkos::View<double*> v2_nplus1_kplus1;
-	Kokkos::View<double*> w_n;
-	Kokkos::View<double*> w_nplus1;
-	Kokkos::View<double*> w_nplus1_l;
-	Kokkos::View<double*> w_nplus1_lplus1;
-	Kokkos::View<double*> w_nplus1_l0;
+	static constexpr int maxIterN = 10;
+	static constexpr int maxIterK = 6;
+	static constexpr int maxIterL = 7;
+	Kokkos::View<double*> vn_n;
+	Kokkos::View<double*> vn_nplus1;
+	Kokkos::View<double*> vn_n0;
+	Kokkos::View<double*> vk_n;
+	Kokkos::View<double*> vk_nplus1;
+	Kokkos::View<double*> vk_nplus1_k;
+	Kokkos::View<double*> vk_nplus1_kplus1;
+	Kokkos::View<double*> vk_nplus1_k0;
+	Kokkos::View<double*> vl_n;
+	Kokkos::View<double*> vl_nplus1;
+	Kokkos::View<double*> vl_nplus1_l;
+	Kokkos::View<double*> vl_nplus1_lplus1;
+	Kokkos::View<double*> vl_nplus1_l0;
 
 	// Timers
 	Timer globalTimer;

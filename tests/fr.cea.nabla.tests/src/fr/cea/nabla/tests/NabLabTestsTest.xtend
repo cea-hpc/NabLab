@@ -44,14 +44,26 @@ class NabLabTestsTest extends GenerateAndExecuteTestBase
 	}
 
 	@Test
-	def void testGenerateIteration()
+	def void test1GenerateIteration()
 	{
 		testGenerateModule("Iteration")
 	}
 
 	@Test
-	def void testGenerateVariables()
+	def void test2ExecuteIteration()
+	{
+		testExecuteModule("Iteration")
+	}
+
+	@Test
+	def void test1GenerateVariables()
 	{
 		testGenerateModule("Variables")
+	}
+
+	@Test
+	def void test2ExecuteVariables()
+	{
+		testExecuteModule("Variables")
 	}
 }

@@ -7,6 +7,20 @@
 #include <rapidjson/writer.h>
 
 
+/******************** Free functions definitions ********************/
+
+namespace iterationfreefuncs
+{
+KOKKOS_INLINE_FUNCTION
+bool assertEquals(double expected, double actual)
+{
+	const bool ret((expected == actual));
+	if (!ret) 
+		throw std::runtime_error("** Assertion failed");
+	return ret;
+}
+}
+
 /******************** Module definition ********************/
 
 Iteration::Iteration(CartesianMesh2D& aMesh)
@@ -14,23 +28,19 @@ Iteration::Iteration(CartesianMesh2D& aMesh)
 , nbNodes(mesh.getNbNodes())
 , nbCells(mesh.getNbCells())
 , X("X", nbNodes)
-, u_n("u_n", nbCells)
-, u_nplus1("u_nplus1", nbCells)
-, v1_n("v1_n", nbCells)
-, v1_nplus1("v1_nplus1", nbCells)
-, v1_nplus1_k("v1_nplus1_k", nbCells)
-, v1_nplus1_kplus1("v1_nplus1_kplus1", nbCells)
-, v1_nplus1_k0("v1_nplus1_k0", nbCells)
-, v2_n("v2_n", nbCells)
-, v2_nplus1("v2_nplus1", nbCells)
-, v2_n0("v2_n0", nbCells)
-, v2_nplus1_k("v2_nplus1_k", nbCells)
-, v2_nplus1_kplus1("v2_nplus1_kplus1", nbCells)
-, w_n("w_n", nbCells)
-, w_nplus1("w_nplus1", nbCells)
-, w_nplus1_l("w_nplus1_l", nbCells)
-, w_nplus1_lplus1("w_nplus1_lplus1", nbCells)
-, w_nplus1_l0("w_nplus1_l0", nbCells)
+, vn_n("vn_n", nbCells)
+, vn_nplus1("vn_nplus1", nbCells)
+, vn_n0("vn_n0", nbCells)
+, vk_n("vk_n", nbCells)
+, vk_nplus1("vk_nplus1", nbCells)
+, vk_nplus1_k("vk_nplus1_k", nbCells)
+, vk_nplus1_kplus1("vk_nplus1_kplus1", nbCells)
+, vk_nplus1_k0("vk_nplus1_k0", nbCells)
+, vl_n("vl_n", nbCells)
+, vl_nplus1("vl_nplus1", nbCells)
+, vl_nplus1_l("vl_nplus1_l", nbCells)
+, vl_nplus1_lplus1("vl_nplus1_lplus1", nbCells)
+, vl_nplus1_l0("vl_nplus1_l0", nbCells)
 {
 }
 
@@ -101,129 +111,49 @@ void Iteration::iniTime() noexcept
 }
 
 /**
- * Job iniU called @1.0 in simulate method.
+ * Job iniVk called @1.0 in simulate method.
  * In variables: 
- * Out variables: u_n
+ * Out variables: vk_nplus1_k0
  */
-void Iteration::iniU(const member_type& teamMember) noexcept
+void Iteration::iniVk(const member_type& teamMember) noexcept
 {
 	{
 		const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
 		if (!teamWork.second)
 			return;
 	
-		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& cCellsTeam)
+		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& jCellsTeam)
 		{
-			int cCells(cCellsTeam + teamWork.first);
-			u_n(cCells) = 0.0;
+			int jCells(jCellsTeam + teamWork.first);
+			vk_nplus1_k0(jCells) = 0.0;
 		});
 	}
 }
 
 /**
- * Job iniV1 called @1.0 in executeTimeLoopN method.
- * In variables: u_n
- * Out variables: v1_nplus1_k0
- */
-void Iteration::iniV1(const member_type& teamMember) noexcept
-{
-	{
-		const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
-		if (!teamWork.second)
-			return;
-	
-		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& cCellsTeam)
-		{
-			int cCells(cCellsTeam + teamWork.first);
-			v1_nplus1_k0(cCells) = u_n(cCells) + 1;
-		});
-	}
-}
-
-/**
- * Job iniV2 called @1.0 in simulate method.
+ * Job iniVn called @1.0 in simulate method.
  * In variables: 
- * Out variables: v2_n0
+ * Out variables: vn_n0
  */
-void Iteration::iniV2(const member_type& teamMember) noexcept
+void Iteration::iniVn(const member_type& teamMember) noexcept
 {
 	{
 		const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
 		if (!teamWork.second)
 			return;
 	
-		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& cCellsTeam)
+		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& jCellsTeam)
 		{
-			int cCells(cCellsTeam + teamWork.first);
-			v2_n0(cCells) = 1.0;
+			int jCells(jCellsTeam + teamWork.first);
+			vn_n0(jCells) = 0.0;
 		});
 	}
 }
 
 /**
- * Job updateV1 called @1.0 in executeTimeLoopK method.
- * In variables: v1_nplus1_k
- * Out variables: v1_nplus1_kplus1
- */
-void Iteration::updateV1(const member_type& teamMember) noexcept
-{
-	{
-		const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
-		if (!teamWork.second)
-			return;
-	
-		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& cCellsTeam)
-		{
-			int cCells(cCellsTeam + teamWork.first);
-			v1_nplus1_kplus1(cCells) = v1_nplus1_k(cCells) + 1.5;
-		});
-	}
-}
-
-/**
- * Job updateV2 called @1.0 in executeTimeLoopK method.
- * In variables: v2_nplus1_k
- * Out variables: v2_nplus1_kplus1
- */
-void Iteration::updateV2(const member_type& teamMember) noexcept
-{
-	{
-		const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
-		if (!teamWork.second)
-			return;
-	
-		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& cCellsTeam)
-		{
-			int cCells(cCellsTeam + teamWork.first);
-			v2_nplus1_kplus1(cCells) = v2_nplus1_k(cCells) + 2;
-		});
-	}
-}
-
-/**
- * Job updateW called @1.0 in executeTimeLoopL method.
- * In variables: w_nplus1_l
- * Out variables: w_nplus1_lplus1
- */
-void Iteration::updateW(const member_type& teamMember) noexcept
-{
-	{
-		const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
-		if (!teamWork.second)
-			return;
-	
-		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& cCellsTeam)
-		{
-			int cCells(cCellsTeam + teamWork.first);
-			w_nplus1_lplus1(cCells) = w_nplus1_l(cCells) + 2.5;
-		});
-	}
-}
-
-/**
- * Job setUpTimeLoopK called @2.0 in executeTimeLoopN method.
- * In variables: v1_nplus1_k0, v2_n
- * Out variables: v1_nplus1_k, v2_nplus1_k
+ * Job setUpTimeLoopK called @1.0 in executeTimeLoopN method.
+ * In variables: vk_nplus1_k0
+ * Out variables: vk_nplus1_k
  */
 void Iteration::setUpTimeLoopK(const member_type& teamMember) noexcept
 {
@@ -235,47 +165,55 @@ void Iteration::setUpTimeLoopK(const member_type& teamMember) noexcept
 		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& i1CellsTeam)
 		{
 			int i1Cells(i1CellsTeam + teamWork.first);
-			v1_nplus1_k(i1Cells) = v1_nplus1_k0(i1Cells);
-		});
-	}
-	{
-		const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
-		if (!teamWork.second)
-			return;
-	
-		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& i1CellsTeam)
-		{
-			int i1Cells(i1CellsTeam + teamWork.first);
-			v2_nplus1_k(i1Cells) = v2_n(i1Cells);
+			vk_nplus1_k(i1Cells) = vk_nplus1_k0(i1Cells);
 		});
 	}
 }
 
 /**
- * Job setUpTimeLoopN called @2.0 in simulate method.
- * In variables: t_n0, v2_n0
- * Out variables: t_n, v2_n
+ * Job updateVk called @1.0 in executeTimeLoopK method.
+ * In variables: vk_nplus1_k
+ * Out variables: vk_nplus1_kplus1
  */
-void Iteration::setUpTimeLoopN(const member_type& teamMember) noexcept
+void Iteration::updateVk(const member_type& teamMember) noexcept
 {
-	t_n = t_n0;
 	{
 		const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
 		if (!teamWork.second)
 			return;
 	
-		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& i1CellsTeam)
+		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& jCellsTeam)
 		{
-			int i1Cells(i1CellsTeam + teamWork.first);
-			v2_n(i1Cells) = v2_n0(i1Cells);
+			int jCells(jCellsTeam + teamWork.first);
+			vk_nplus1_kplus1(jCells) = vk_nplus1_k(jCells) + 2;
 		});
 	}
 }
 
 /**
- * Job executeTimeLoopK called @3.0 in executeTimeLoopN method.
- * In variables: k, maxIterK, v1_nplus1_k, v2_nplus1_k
- * Out variables: v1_nplus1_kplus1, v2_nplus1_kplus1
+ * Job updateVl called @1.0 in executeTimeLoopL method.
+ * In variables: vl_nplus1_l
+ * Out variables: vl_nplus1_lplus1
+ */
+void Iteration::updateVl(const member_type& teamMember) noexcept
+{
+	{
+		const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
+		if (!teamWork.second)
+			return;
+	
+		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& jCellsTeam)
+		{
+			int jCells(jCellsTeam + teamWork.first);
+			vl_nplus1_lplus1(jCells) = vl_nplus1_l(jCells) + 1;
+		});
+	}
+}
+
+/**
+ * Job executeTimeLoopK called @2.0 in executeTimeLoopN method.
+ * In variables: k, maxIterK, vk_nplus1_k
+ * Out variables: vk_nplus1_kplus1
  */
 void Iteration::executeTimeLoopK() noexcept
 {
@@ -291,29 +229,45 @@ void Iteration::executeTimeLoopK() noexcept
 		// @1.0
 		Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
 		{
-			updateV1(thread);
-			updateV2(thread);
+			updateVk(thread);
 		});
 		
 	
 		// Evaluate loop condition with variables at time n
-		continueLoop = (k + 1 < maxIterK);
+		continueLoop = (k < maxIterK);
 	
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& i1Cells)
 		{
-			v1_nplus1_k(i1Cells) = v1_nplus1_kplus1(i1Cells);
-		});
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& i1Cells)
-		{
-			v2_nplus1_k(i1Cells) = v2_nplus1_kplus1(i1Cells);
+			vk_nplus1_k(i1Cells) = vk_nplus1_kplus1(i1Cells);
 		});
 	} while (continueLoop);
 }
 
 /**
+ * Job setUpTimeLoopN called @2.0 in simulate method.
+ * In variables: t_n0, vn_n0
+ * Out variables: t_n, vn_n
+ */
+void Iteration::setUpTimeLoopN(const member_type& teamMember) noexcept
+{
+	t_n = t_n0;
+	{
+		const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
+		if (!teamWork.second)
+			return;
+	
+		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& i1CellsTeam)
+		{
+			int i1Cells(i1CellsTeam + teamWork.first);
+			vn_n(i1Cells) = vn_n0(i1Cells);
+		});
+	}
+}
+
+/**
  * Job executeTimeLoopN called @3.0 in simulate method.
- * In variables: maxIter, maxTime, n, t_n, t_nplus1, u_n, v1_n, v2_n, w_n
- * Out variables: t_nplus1, u_nplus1, v1_nplus1, v2_nplus1, w_nplus1
+ * In variables: maxIterN, n, t_n, vk_n, vl_n, vn_n
+ * Out variables: t_nplus1, vk_nplus1, vl_nplus1, vn_nplus1
  */
 void Iteration::executeTimeLoopN() noexcept
 {
@@ -337,71 +291,69 @@ void Iteration::executeTimeLoopN() noexcept
 		{
 			if (thread.league_rank() == 0)
 				Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){computeTn();});
-			iniV1(thread);
-		});
-		
-		// @2.0
-		Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
-		{
 			setUpTimeLoopK(thread);
 		});
 		
-		// @3.0
+		// @2.0
 		executeTimeLoopK();
 		
-		// @4.0
+		// @3.0
 		Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
 		{
 			tearDownTimeLoopK(thread);
 		});
 		
-		// @5.0
+		// @4.0
 		Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
 		{
-			iniW(thread);
+			iniVl(thread);
+			oracleVk(thread);
 		});
 		
-		// @6.0
+		// @5.0
 		Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
 		{
 			setUpTimeLoopL(thread);
 		});
 		
-		// @7.0
+		// @6.0
 		executeTimeLoopL();
 		
-		// @8.0
+		// @7.0
 		Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
 		{
 			tearDownTimeLoopL(thread);
 		});
 		
+		// @8.0
+		Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
+		{
+			oracleVl(thread);
+			updateVn(thread);
+		});
+		
 		// @9.0
 		Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
 		{
-			updateU(thread);
+			oracleVn(thread);
 		});
 		
 	
 		// Evaluate loop condition with variables at time n
-		continueLoop = (t_nplus1 < maxTime && n + 1 < maxIter);
+		continueLoop = (n < maxIterN);
 	
 		t_n = t_nplus1;
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& i1Cells)
 		{
-			u_n(i1Cells) = u_nplus1(i1Cells);
+			vn_n(i1Cells) = vn_nplus1(i1Cells);
 		});
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& i1Cells)
 		{
-			v1_n(i1Cells) = v1_nplus1(i1Cells);
+			vk_n(i1Cells) = vk_nplus1(i1Cells);
 		});
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& i1Cells)
 		{
-			v2_n(i1Cells) = v2_nplus1(i1Cells);
-		});
-		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& i1Cells)
-		{
-			w_n(i1Cells) = w_nplus1(i1Cells);
+			vl_n(i1Cells) = vl_nplus1(i1Cells);
 		});
 	
 		cpuTimer.stop();
@@ -411,9 +363,9 @@ void Iteration::executeTimeLoopN() noexcept
 			std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __RED__ << "none" << __RESET__ << "} ";
 		
 		// Progress
-		std::cout << progress_bar(n, maxIter, t_n, maxTime, 25);
+		std::cout << progress_bar(n, maxIterN, t_n, maxTime, 25);
 		std::cout << __BOLD__ << __CYAN__ << Timer::print(
-			eta(n, maxIter, t_n, maxTime, deltat, globalTimer), true)
+			eta(n, maxIterN, t_n, maxTime, deltat, globalTimer), true)
 			<< __RESET__ << "\r";
 		std::cout.flush();
 	
@@ -423,9 +375,9 @@ void Iteration::executeTimeLoopN() noexcept
 }
 
 /**
- * Job tearDownTimeLoopK called @4.0 in executeTimeLoopN method.
- * In variables: v1_nplus1_kplus1, v2_nplus1_kplus1
- * Out variables: v1_nplus1, v2_nplus1
+ * Job tearDownTimeLoopK called @3.0 in executeTimeLoopN method.
+ * In variables: vk_nplus1_kplus1
+ * Out variables: vk_nplus1
  */
 void Iteration::tearDownTimeLoopK(const member_type& teamMember) noexcept
 {
@@ -437,46 +389,55 @@ void Iteration::tearDownTimeLoopK(const member_type& teamMember) noexcept
 		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& i1CellsTeam)
 		{
 			int i1Cells(i1CellsTeam + teamWork.first);
-			v1_nplus1(i1Cells) = v1_nplus1_kplus1(i1Cells);
-		});
-	}
-	{
-		const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
-		if (!teamWork.second)
-			return;
-	
-		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& i1CellsTeam)
-		{
-			int i1Cells(i1CellsTeam + teamWork.first);
-			v2_nplus1(i1Cells) = v2_nplus1_kplus1(i1Cells);
+			vk_nplus1(i1Cells) = vk_nplus1_kplus1(i1Cells);
 		});
 	}
 }
 
 /**
- * Job iniW called @5.0 in executeTimeLoopN method.
- * In variables: v1_nplus1
- * Out variables: w_nplus1_l0
+ * Job iniVl called @4.0 in executeTimeLoopN method.
+ * In variables: vk_nplus1
+ * Out variables: vl_nplus1_l0
  */
-void Iteration::iniW(const member_type& teamMember) noexcept
+void Iteration::iniVl(const member_type& teamMember) noexcept
 {
 	{
 		const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
 		if (!teamWork.second)
 			return;
 	
-		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& cCellsTeam)
+		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& jCellsTeam)
 		{
-			int cCells(cCellsTeam + teamWork.first);
-			w_nplus1_l0(cCells) = v1_nplus1(cCells);
+			int jCells(jCellsTeam + teamWork.first);
+			vl_nplus1_l0(jCells) = vk_nplus1(jCells) + 8;
 		});
 	}
 }
 
 /**
- * Job setUpTimeLoopL called @6.0 in executeTimeLoopN method.
- * In variables: w_nplus1_l0
- * Out variables: w_nplus1_l
+ * Job oracleVk called @4.0 in executeTimeLoopN method.
+ * In variables: vk_nplus1
+ * Out variables: 
+ */
+void Iteration::oracleVk(const member_type& teamMember) noexcept
+{
+	{
+		const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
+		if (!teamWork.second)
+			return;
+	
+		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& jCellsTeam)
+		{
+			int jCells(jCellsTeam + teamWork.first);
+			const bool testVk(iterationfreefuncs::assertEquals(12.0, vk_nplus1(jCells)));
+		});
+	}
+}
+
+/**
+ * Job setUpTimeLoopL called @5.0 in executeTimeLoopN method.
+ * In variables: vl_nplus1_l0
+ * Out variables: vl_nplus1_l
  */
 void Iteration::setUpTimeLoopL(const member_type& teamMember) noexcept
 {
@@ -488,15 +449,15 @@ void Iteration::setUpTimeLoopL(const member_type& teamMember) noexcept
 		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& i1CellsTeam)
 		{
 			int i1Cells(i1CellsTeam + teamWork.first);
-			w_nplus1_l(i1Cells) = w_nplus1_l0(i1Cells);
+			vl_nplus1_l(i1Cells) = vl_nplus1_l0(i1Cells);
 		});
 	}
 }
 
 /**
- * Job executeTimeLoopL called @7.0 in executeTimeLoopN method.
- * In variables: l, maxIterL, w_nplus1_l
- * Out variables: w_nplus1_lplus1
+ * Job executeTimeLoopL called @6.0 in executeTimeLoopN method.
+ * In variables: l, maxIterL, vl_nplus1_l
+ * Out variables: vl_nplus1_lplus1
  */
 void Iteration::executeTimeLoopL() noexcept
 {
@@ -512,24 +473,24 @@ void Iteration::executeTimeLoopL() noexcept
 		// @1.0
 		Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
 		{
-			updateW(thread);
+			updateVl(thread);
 		});
 		
 	
 		// Evaluate loop condition with variables at time n
-		continueLoop = (l + 1 < maxIterL);
+		continueLoop = (l < maxIterL);
 	
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& i1Cells)
 		{
-			w_nplus1_l(i1Cells) = w_nplus1_lplus1(i1Cells);
+			vl_nplus1_l(i1Cells) = vl_nplus1_lplus1(i1Cells);
 		});
 	} while (continueLoop);
 }
 
 /**
- * Job tearDownTimeLoopL called @8.0 in executeTimeLoopN method.
- * In variables: w_nplus1_lplus1
- * Out variables: w_nplus1
+ * Job tearDownTimeLoopL called @7.0 in executeTimeLoopN method.
+ * In variables: vl_nplus1_lplus1
+ * Out variables: vl_nplus1
  */
 void Iteration::tearDownTimeLoopL(const member_type& teamMember) noexcept
 {
@@ -541,27 +502,67 @@ void Iteration::tearDownTimeLoopL(const member_type& teamMember) noexcept
 		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& i1CellsTeam)
 		{
 			int i1Cells(i1CellsTeam + teamWork.first);
-			w_nplus1(i1Cells) = w_nplus1_lplus1(i1Cells);
+			vl_nplus1(i1Cells) = vl_nplus1_lplus1(i1Cells);
 		});
 	}
 }
 
 /**
- * Job updateU called @9.0 in executeTimeLoopN method.
- * In variables: w_nplus1
- * Out variables: u_nplus1
+ * Job oracleVl called @8.0 in executeTimeLoopN method.
+ * In variables: vl_nplus1
+ * Out variables: 
  */
-void Iteration::updateU(const member_type& teamMember) noexcept
+void Iteration::oracleVl(const member_type& teamMember) noexcept
 {
 	{
 		const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
 		if (!teamWork.second)
 			return;
 	
-		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& cCellsTeam)
+		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& jCellsTeam)
 		{
-			int cCells(cCellsTeam + teamWork.first);
-			u_nplus1(cCells) = w_nplus1(cCells);
+			int jCells(jCellsTeam + teamWork.first);
+			const bool testVl(iterationfreefuncs::assertEquals(27.0, vl_nplus1(jCells)));
+		});
+	}
+}
+
+/**
+ * Job updateVn called @8.0 in executeTimeLoopN method.
+ * In variables: vl_nplus1, vn_n
+ * Out variables: vn_nplus1
+ */
+void Iteration::updateVn(const member_type& teamMember) noexcept
+{
+	{
+		const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
+		if (!teamWork.second)
+			return;
+	
+		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& jCellsTeam)
+		{
+			int jCells(jCellsTeam + teamWork.first);
+			vn_nplus1(jCells) = vn_n(jCells) + vl_nplus1(jCells) * 2;
+		});
+	}
+}
+
+/**
+ * Job oracleVn called @9.0 in executeTimeLoopN method.
+ * In variables: n, vn_nplus1
+ * Out variables: 
+ */
+void Iteration::oracleVn(const member_type& teamMember) noexcept
+{
+	{
+		const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
+		if (!teamWork.second)
+			return;
+	
+		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& jCellsTeam)
+		{
+			int jCells(jCellsTeam + teamWork.first);
+			const bool testVn(iterationfreefuncs::assertEquals(54.0 * n, vn_nplus1(jCells)));
 		});
 	}
 }
@@ -598,8 +599,8 @@ void Iteration::simulate()
 					<< __BOLD__ << setw(3) << thread.team_size() << __RESET__<< " thread(s)" << std::endl;});
 		if (thread.league_rank() == 0)
 			Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){iniTime();});
-		iniU(thread);
-		iniV2(thread);
+		iniVk(thread);
+		iniVn(thread);
 	});
 	
 	// @2.0

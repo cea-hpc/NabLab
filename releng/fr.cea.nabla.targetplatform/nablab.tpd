@@ -64,6 +64,8 @@ location gmf-runtime-diagram "https://download.eclipse.org/modeling/gmp/gmf-runt
 
 location "https://download.eclipse.org/tools/orbit/downloads/drops/R20210825222808/repository" {
 	org.apache.batik.script [1.14.0,2.0.0)
+	org.hamcrest [2.2.0,3.0.0)
+	org.assertj [3.20.2,4.0.0)
 }
 
 location python "http://www.pydev.org/update_sites/9.1.0" {

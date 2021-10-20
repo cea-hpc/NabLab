@@ -34,6 +34,10 @@ jobs:
 
       - name: Checkout NabLab code
         uses: actions/checkout@v2
+      
+      # Set environment variable for tests execution
+      - name: Set environment variable
+        run: echo "CI=true" >> $GITHUB_ENV
 
       # Runs the maven build (build + tests)
       - name: Run maven build

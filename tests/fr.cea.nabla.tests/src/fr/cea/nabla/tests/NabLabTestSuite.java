@@ -24,6 +24,8 @@ import fr.cea.nabla.tests.validation.NabLabValidationTestSuite;
 	// base parsing
 	NablaParsingTest.class,
 	NablagenParsingTest.class,
+	GeneralPurposeTest.class,
+	GitCommitMessageTest.class,
 
 	// scope providers
 	NablagenScopeProviderTest.class,

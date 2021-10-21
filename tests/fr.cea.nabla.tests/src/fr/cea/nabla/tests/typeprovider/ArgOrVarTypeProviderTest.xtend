@@ -12,7 +12,6 @@ package fr.cea.nabla.tests.typeprovider
 import com.google.inject.Inject
 import com.google.inject.Provider
 import fr.cea.nabla.NablaModuleExtensions
-import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.DefaultExtension
 import fr.cea.nabla.nabla.NablaModule
@@ -194,13 +193,13 @@ class ArgOrVarTypeProviderTest
 
 		// array with size from a const
 		val dimtab = module.getVarByName("dimtab")
-		val dimref = ((dimtab.eContainer as VarDeclaration).type as BaseType).sizes.head
+		val dimref = (dimtab.eContainer as VarDeclaration).type.sizes.head
 		Assert.assertEquals(new NSTIntScalar, module.getVarByName("dim").typeFor)
 		Assert.assertEquals(new NSTRealArray1D(dimref, 6), dimtab.typeFor)
 
 		// dynamic array with options
 		val dyndimtabopt = module.getVarByName("dyndimtabopt")
-		val dyndimoptref = ((dyndimtabopt.eContainer as VarDeclaration).type as BaseType).sizes.head
+		val dyndimoptref = (dyndimtabopt.eContainer as VarDeclaration).type.sizes.head
 		Assert.assertEquals(new NSTIntScalar, module.getVarByName("dyndimopt").typeFor)
 		Assert.assertEquals(new NSTRealArray1D(dyndimoptref, -1), dyndimtabopt.typeFor)
 

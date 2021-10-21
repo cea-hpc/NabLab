@@ -148,7 +148,7 @@ class GeneralPurposeTest
 	{
 		val pluginsFolderPath = Paths.get(this.getRootFolder().getAbsolutePath())
 		val xmlFilePaths = this.findFilePaths(pluginsFolderPath, XML_FILE_EXTENSION)
-		for (Path xmlFilePath : xmlFilePaths)
+		for (Path xmlFilePath : xmlFilePaths.filter[x | x.toString.indexOf(".venv") == -1 && x.toString.indexOf(".metadata") == -1])
 		{
 			try
 			{

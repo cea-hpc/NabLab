@@ -55,7 +55,7 @@ jobs:
       - name: Tar nablabtestdir.tgz
         if: failure()
         shell: bash
-        run: ls /tmp; tar -c -v -z -C /tmp -f nablabtestdir.tgz nablabtest-*
+        run: cd /tmp && tar cvfz nablabtestdir.tgz nablabtest-*
         env:
           USERNAME: ${{ github.actor }}
           PASSWORD: ${{ secrets.GITHUB_TOKEN }}

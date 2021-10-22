@@ -67,7 +67,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: nablabtestdir
-          path: ${GITHUB_WORKSPACE}/nablabtestdir.tgz
+          path: /tmp/nablabtestdir.tgz
           retention-days: 1
         env:
           USERNAME: ${{ github.actor }}

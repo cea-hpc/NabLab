@@ -55,7 +55,7 @@ jobs:
       - name: Tar nablabtestdir.tar
         if: failure()
         shell: bash
-        run: cd /tmp && tar -c -v --exclude="*/output" nablabtestdir.tar nablabtest-*
+        run: cd /tmp && tar -c -v --exclude="*/output" -f nablabtestdir.tar nablabtest-*
         env:
           USERNAME: ${{ github.actor }}
           PASSWORD: ${{ secrets.GITHUB_TOKEN }}

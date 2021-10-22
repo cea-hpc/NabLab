@@ -51,6 +51,21 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
+      # Tar tmp tests directory in case of error
+      - name: Tar nablatestdir.tgz
+        if: failure()
+        shell: bash
+        run: tar cvfz nablatestdir.tgz /tmp/nablatest-*
+        
+      # Upload nablatest.tgz artifact
+      - name: Upload nablatestdir.tgz
+        if: failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: nablatestdir
+          path: nablatestdir.tgz
+          retention-days: 1
+
       # Deploy maven artifacts to github
       - name: Deploy maven artifact to github (fr.cea.nabla)
         if: startsWith(github.ref, 'refs/tags/v')

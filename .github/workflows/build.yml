@@ -55,7 +55,7 @@ jobs:
       - name: Tar nablatestdir.tgz
         if: failure()
         shell: bash
-        run: tar cvfz nablatestdir.tgz /tmp/nablatest-*
+        run: tar -C /tmp cvfz ${GITHUB_WORKSPACE}/nablatestdir.tgz nablatest-*
         
       # Upload nablatestdir.tgz artifact
       - name: Upload nablatestdir.tgz
@@ -63,7 +63,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: nablatestdir
-          path: nablatestdir.tgz
+          path: ${GITHUB_WORKSPACE}/nablatestdir.tgz
           retention-days: 1
 
       # Deploy maven artifacts to github

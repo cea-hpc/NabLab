@@ -56,6 +56,10 @@ jobs:
         if: failure()
         shell: bash
         run: tar -c -v -z -C /tmp -f nablabtestdir.tgz nablabtest-*
+        env:
+          USERNAME: ${{ github.actor }}
+          PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
       # Upload nablabtestdir.tgz artifact
       - name: Upload nablabtestdir.tgz
@@ -65,6 +69,10 @@ jobs:
           name: nablabtestdir
           path: ${GITHUB_WORKSPACE}/nablabtestdir.tgz
           retention-days: 1
+        env:
+          USERNAME: ${{ github.actor }}
+          PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Deploy maven artifacts to github
       - name: Deploy maven artifact to github (fr.cea.nabla)

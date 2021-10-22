@@ -52,18 +52,18 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       # Tar tmp tests directory in case of error
-      - name: Tar nablatestdir.tgz
+      - name: Tar nablabtestdir.tgz
         if: failure()
         shell: bash
-        run: tar -C /tmp cvfz ${GITHUB_WORKSPACE}/nablatestdir.tgz nablatest-*
+        run: tar -c -v -z -C /tmp -f nablabtestdir.tgz nablabtest-*
         
-      # Upload nablatestdir.tgz artifact
-      - name: Upload nablatestdir.tgz
+      # Upload nablabtestdir.tgz artifact
+      - name: Upload nablabtestdir.tgz
         if: failure()
         uses: actions/upload-artifact@v2
         with:
-          name: nablatestdir
-          path: ${GITHUB_WORKSPACE}/nablatestdir.tgz
+          name: nablabtestdir
+          path: ${GITHUB_WORKSPACE}/nablabtestdir.tgz
           retention-days: 1
 
       # Deploy maven artifacts to github

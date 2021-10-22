@@ -57,7 +57,7 @@ jobs:
         shell: bash
         run: tar cvfz nablatestdir.tgz /tmp/nablatest-*
         
-      # Upload nablatest.tgz artifact
+      # Upload nablatestdir.tgz artifact
       - name: Upload nablatestdir.tgz
         if: failure()
         uses: actions/upload-artifact@v2

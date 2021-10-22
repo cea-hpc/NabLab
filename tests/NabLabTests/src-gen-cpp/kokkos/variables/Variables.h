@@ -63,8 +63,8 @@ private:
 	static constexpr double maxTime = 0.1;
 	static constexpr int maxIter = 500;
 	static constexpr double deltat = 1.0;
+	static constexpr double t = 0.0;
 	Kokkos::View<RealArray1D<2>*> X;
-	double t;
 	int optDim;
 	RealArray1D<2> optVect1;
 	RealArray1D<2> optVect2;

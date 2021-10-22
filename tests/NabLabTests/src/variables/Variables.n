@@ -16,8 +16,8 @@ with Assert.*;
 let ℝ maxTime = 0.1;
 let ℕ maxIter = 500;
 let ℝ δt = 1.0;
+let ℝ t = 0.0;
 ℝ[2] X{nodes};
-ℝ t;
 
 // options with default values
 option ℕ optDim = 2;

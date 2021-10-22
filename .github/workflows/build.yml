@@ -52,22 +52,22 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       # Tar tmp tests directory in case of error
-      - name: Tar nablabtestdir.tgz
+      - name: Tar nablabtestdir.tar
         if: failure()
         shell: bash
-        run: cd /tmp && tar cvfz nablabtestdir.tgz nablabtest-*
+        run: cd /tmp && tar -c -v --exclude="*/output" nablabtestdir.tar nablabtest-*
         env:
           USERNAME: ${{ github.actor }}
           PASSWORD: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
-      # Upload nablabtestdir.tgz artifact
-      - name: Upload nablabtestdir.tgz
+      # Upload nablabtestdir.tar artifact
+      - name: Upload nablabtestdir
         if: failure()
         uses: actions/upload-artifact@v2
         with:
           name: nablabtestdir
-          path: /tmp/nablabtestdir.tgz
+          path: /tmp/nablabtestdir.tar
           retention-days: 1
         env:
           USERNAME: ${{ github.actor }}

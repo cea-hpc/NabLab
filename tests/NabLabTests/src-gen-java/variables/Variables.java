@@ -24,8 +24,8 @@ public final class Variables
 	static final double maxTime = 0.1;
 	static final int maxIter = 500;
 	static final double deltat = 1.0;
+	static final double t = 0.0;
 	double[][] X;
-	double t;
 	int optDim;
 	double[] optVect1;
 	double[] optVect2;

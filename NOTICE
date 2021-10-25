@@ -1,6 +1,6 @@
 # Notices for NabLab
 
-This content is produced and maintained by Commissariat à l'Energie Atomique - CEA.
+This content is produced and maintained by Commissariat ï¿½ l'Energie Atomique - CEA.
 
  * Project home: https://github.com/cea-hpc/NabLab
 
@@ -24,15 +24,17 @@ The project maintains the following source code repository : https://github.com/
 
 ## Third-party Content
 
-Xtext (2.19)
+Xtext (2.25.0)
 
- * License: EPL-1.0
+ * License: EPL-2.0
  * Project: http://projects.eclipse.org/projects/modeling.tmf.xtext
+ * Source: https://github.com/eclipse/xtext
 
-Sirius (6.2.2)
+Sirius (6.5.1)
 
- * License: EPL-1.0
+ * License: EPL-2.0
  * Project: http://projects.eclipse.org/projects/modeling.sirius
+ * Source: https://git.eclipse.org/c/sirius/org.eclipse.sirius.git
 
 JGraphT (1.3.0)
 
@@ -46,4 +48,7 @@ JLatexMath (1.0.3)
  * Project: http://www.scilab.org/projects/thirdparty_project/jlatexmath
  * Source: http://forge.scilab.org/index.php/p/jlatexmath
 
-
+Commons-Math3 (3.6.1)
+  * License: Apache v2
+  * Project: https://commons.apache.org/proper/commons-math/
+  * Source: https://github.com/apache/commons-math

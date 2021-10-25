@@ -20,13 +20,14 @@ import fr.cea.nabla.ir.ir.ArgOrVar
 class PythonModuleGenerator extends StandaloneGeneratorBase {
 	@Inject IrRootBuilder irRootBuilder
 
-	def void generate(NablagenApplication ngenApp, String genDir) {
+	def void generatePythonModule(NablagenApplication ngenApp, String wsPath, String projectName) {
 		try {
 			val ir = irRootBuilder.buildGeneratorGenericIr(ngenApp)
 			dispatcher.post(MessageType.Exec, "Starting instrumentation interface generation")
 			val startTime = System.currentTimeMillis
 
-			var fsa = getConfiguredFileSystemAccess(genDir, false)
+			val srcDirPath = wsPath + '/' + projectName + '/src'
+			var fsa = getConfiguredFileSystemAccess(srcDirPath, false)
 
 			val content = getPythonModuleContent(ir)
 

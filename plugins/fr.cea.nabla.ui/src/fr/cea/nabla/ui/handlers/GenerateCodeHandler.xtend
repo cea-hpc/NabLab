@@ -38,8 +38,6 @@ class GenerateCodeHandler extends AbstractGenerateHandler
 
 	val traceFunction = [MessageType type, String msg | consoleFactory.printConsole(type, msg)]
 	
-	val debug = true
-
 	override generate(IFile nablagenFile, Shell shell)
 	{
 		new Thread
@@ -67,10 +65,7 @@ class GenerateCodeHandler extends AbstractGenerateHandler
 					NablagenApplication:
 					{
 						applicationGeneratorProvider.get.generateApplication(ngen, wsPath, project.name)
-						if (debug)
-						{
-							pythonModuleGeneratorProvider.get.generate(ngen, nablagenFile.parent.location.toString)
-						}
+						pythonModuleGeneratorProvider.get.generatePythonModule(ngen, wsPath, project.name)
 					}
 					NablagenProviderList: providerGeneratorProvider.get.generateProviders(ngen, wsPath)
 				}

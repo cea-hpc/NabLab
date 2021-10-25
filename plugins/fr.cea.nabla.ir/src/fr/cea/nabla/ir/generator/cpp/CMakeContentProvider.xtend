@@ -22,7 +22,6 @@ import static extension fr.cea.nabla.ir.IrRootExtensions.getExecName
 
 class CMakeContentProvider
 {
-	val debug = true
 
 	protected def Iterable<String> getNeededVariables(IrRoot irRoot)
 	{
@@ -66,15 +65,26 @@ class CMakeContentProvider
 
 		«CMakeUtils.addSubDirectories(true, externalProviders)»
 
-		«IF debug»
+		if (CMAKE_BUILD_TYPE STREQUAL Debug)
+			set(NABLAB_DEBUG TRUE)
+		endif()
+		configure_file(nablabdefs.h.in ${CMAKE_BINARY_DIR}/nablabdefs.h)
+
 		# Python embedding
-		set(PYBIND11_PYTHON_VERSION 3.8)
-		find_package(pybind11 REQUIRED)
-		«ENDIF»
+		if (NABLAB_DEBUG)
+			set(PYBIND11_PYTHON_VERSION 3.8)
+			find_package(pybind11 REQUIRED)
+		endif()
 
 		# EXECUTABLE «execName»
 		add_executable(«execName»«FOR m : modules» «m.className + '.cc'»«ENDFOR»)
-		target_link_libraries(«execName» PUBLIC«FOR l : getRootTargetLinkLibraries(it, hasLevelDB)» «l»«ENDFOR»«IF debug» pybind11::embed«ENDIF»)
+«««		FIXME Include only when in debug build mode?
+		target_include_directories(«execName» PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
+		if (NABLAB_DEBUG)
+			target_link_libraries(«execName» PUBLIC«FOR l : getRootTargetLinkLibraries(it, hasLevelDB)» «l»«ENDFOR» pybind11::embed)
+		else()
+			target_link_libraries(«execName» PUBLIC«FOR l : getRootTargetLinkLibraries(it, hasLevelDB)» «l»«ENDFOR»)
+		endif()
 
 		«CMakeUtils.fileFooter»
 	'''

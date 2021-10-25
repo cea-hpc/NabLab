@@ -36,7 +36,6 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 {
 	val boolean hasLevelDB
 	val cMakeVars = new LinkedHashSet<Pair<String, String>>
-	val debug = true
 
 	new(Backend backend, String wsPath, boolean hasLevelDB, Iterable<Pair<String, String>> cmakeVars)
 	{
@@ -58,6 +57,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 			fileContents += new GenerationContent(module.className + '.cc', module.sourceFileContent, false)
 		}
 		fileContents += new GenerationContent('CMakeLists.txt', backend.cmakeContentProvider.getContentFor(ir, hasLevelDB, cMakeVars), false)
+		fileContents += new GenerationContent('nablabdefs.h.in', '#cmakedefine NABLAB_DEBUG', false)
 		return fileContents
 	}
 
@@ -68,6 +68,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	#ifndef «name.HDefineName»
 	#define «name.HDefineName»
 
+	#include "nablabdefs.h"
 	«backend.includesContentProvider.getIncludes(hasLevelDB, (irRoot.postProcessing !== null))»
 	#include "«irRoot.mesh.className».h"
 	«IF irRoot.postProcessing !== null»#include "PvdFileWriter2D.h"«ENDIF»
@@ -80,9 +81,9 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 
 	«backend.includesContentProvider.getUsings(hasLevelDB)»
 	
-	«IF debug»
+	#ifdef NABLAB_DEBUG
 	namespace py = pybind11;
-	«ENDIF»
+	#endif
 	
 	«IF main && irRoot.modules.size > 1»
 
@@ -142,22 +143,22 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		«ENDIF»
 
 	private:
-		«IF debug»
+		#ifdef NABLAB_DEBUG
 		«FOR j : jobs»
 		«backend.jobContentProvider.getWrapperDeclarationContent(j)»
 		«ENDFOR»
 		«FOR j : jobs»
 		«backend.jobContentProvider.getPointerDeclarationContent(j)»
 		«ENDFOR»
-		«ENDIF»
+		#endif
 		«IF postProcessing !== null»
 		void dumpVariables(int iteration, bool useTimer=true);
 
 		«ENDIF»
-		«IF debug»
+		#ifdef NABLAB_DEBUG
 		void pythonInitialize();
 
-		«ENDIF»
+		#endif
 		«IF kokkosTeamThread»
 		/**
 		 * Utility function to get work load for each team of threads
@@ -194,31 +195,31 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		«IF levelDB»
 			std::string «IrUtils.NonRegressionNameAndValue.key»;
 		«ENDIF»
-		«IF !debug»
+		#ifdef NABLAB_DEBUG
+		std::string pythonPath;
+		std::string pythonFile;
+		#else
 		«FOR v : variables»
 			«v.variableDeclaration»
 		«ENDFOR»
-		«ELSE»
-			std::string pythonPath;
-			std::string pythonFile;
-		«ENDIF»
+		#endif
 
 		// Timers
 		Timer globalTimer;
 		Timer cpuTimer;
 		Timer ioTimer;
-		«IF debug»
 
-			map<string, std::list<py::function>> before;
-			map<string, std::list<py::function>> after;
-		«ENDIF»
+		#ifdef NABLAB_DEBUG
+		map<string, std::list<py::function>> before;
+		map<string, std::list<py::function>> after;
+		#endif
 
-	«IF debug»
+	#ifdef NABLAB_DEBUG
 	public:
 		«FOR v : variables»
 			«v.variableDeclaration»
 		«ENDFOR»
-	«ENDIF»
+	#endif
 	};
 
 	#endif
@@ -239,9 +240,9 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		«ENDFOR»
 	«ENDIF»
 
-	«IF debug»
+	#ifdef NABLAB_DEBUG
 	namespace py = pybind11;
-	«ENDIF»
+	#endif
 
 	«IF !functions.empty»
 
@@ -287,11 +288,11 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 			«irRoot.initNodeCoordVariable.name»«iterator»[1] = gNodes[rNodes][1];
 		}
 		«ENDIF»
-		«IF debug»
-			«FOR j : jobs»
-				this->«Utils.getCodeName(j)»Ptr = &«className»::«Utils.getCodeName(j)»Wrapper;
-			«ENDFOR»
-		«ENDIF»
+		#ifdef NABLAB_DEBUG
+		«FOR j : jobs»
+			this->«Utils.getCodeName(j)»Ptr = &«className»::«Utils.getCodeName(j)»Wrapper;
+		«ENDFOR»
+		#endif
 	}
 
 	«className»::~«className»()
@@ -337,7 +338,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		assert(«jsonContentProvider.getJsonName(nrName)».IsString());
 		«nrName» = «jsonContentProvider.getJsonName(nrName)».GetString();
 		«ENDIF»
-		«IF debug»
+		#ifdef NABLAB_DEBUG
 		if (o.HasMember("pythonPath")) {
 			const rapidjson::Value &valueof_pythonPath = o["pythonPath"];
 			assert(valueof_pythonPath.IsString());
@@ -348,7 +349,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 			assert(valueof_pythonFile.IsString());
 			pythonFile = valueof_pythonFile.GetString();
 		}
-		«ENDIF»
+		#endif
 	}
 
 	«IF kokkosTeamThread»
@@ -381,11 +382,11 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		«backend.jobContentProvider.getDefinitionContent(j)»
 	«ENDFOR»
 	
-	«IF debug»
+	#ifdef NABLAB_DEBUG
 	«FOR j : jobs SEPARATOR '\n'»
 		«backend.jobContentProvider.getWrapperDefinitionContent(j)»
 	«ENDFOR»
-	«ENDIF»
+	#endif
 	
 	«IF main»
 	«IF postProcessing !== null»
@@ -435,7 +436,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	}
 	«ENDIF»
 
-	«IF debug»
+	#ifdef NABLAB_DEBUG
 	PYBIND11_EMBEDDED_MODULE(«className.toLowerCase»internal, m) {
 		«FOR v : variables»
 		m.def("«v.name»", []() {
@@ -466,13 +467,13 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 			}
 		};
 	}
-	«ENDIF»
+	#endif
 
 	void «className»::«Utils.getCodeName(irRoot.main)»()
 	{
-		«IF debug»
+		#ifdef NABLAB_DEBUG
 		pythonInitialize();
-		«ENDIF»
+		#endif
 		
 		«backend.traceContentProvider.getBeginOfSimuTrace(it)»
 

@@ -21,8 +21,6 @@ import static extension fr.cea.nabla.ir.generator.java.InstructionContentProvide
 
 class JobContentProvider 
 {
-	static val debug = true
-	
 	static def getContent(Job it)
 	'''
 		«comment»
@@ -59,15 +57,9 @@ class JobContentProvider
 				System.out.printf("Start iteration «iterationCounter.name»: %5d\n", «itVar»);
 			«ENDIF»
 
-			«IF debug»
-				«FOR j : calls»
-					(this->*(«j.callName»Ptr))(); // @«j.at»
-				«ENDFOR»
-			«ELSE»
-				«FOR j : calls»
-					«j.callName»(); // @«j.at»
-				«ENDFOR»
-			«ENDIF»
+			«FOR j : calls»
+				«j.callName»(); // @«j.at»
+			«ENDFOR»
 
 			// Evaluate loop condition with variables at time n
 			continueLoop = («whileCondition.content»);

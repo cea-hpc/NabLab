@@ -48,7 +48,7 @@ class SequentialBackend extends Backend
 		typeContentProvider = new StlThreadTypeContentProvider
 		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
 		instructionContentProvider = new SequentialInstructionContentProvider(typeContentProvider, expressionContentProvider)
-		functionContentProvider = new DefaultFunctionContentProvider(typeContentProvider, expressionContentProvider, instructionContentProvider)
+		functionContentProvider = new FunctionContentProvider(typeContentProvider, expressionContentProvider, instructionContentProvider)
 		traceContentProvider = new TraceContentProvider
 		includesContentProvider = new IncludesContentProvider
 		jsonContentProvider = new JsonContentProvider(expressionContentProvider, instructionContentProvider)
@@ -67,7 +67,7 @@ class StlThreadBackend extends Backend
 		typeContentProvider = new StlThreadTypeContentProvider
 		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
 		instructionContentProvider = new StlThreadInstructionContentProvider(typeContentProvider, expressionContentProvider)
-		functionContentProvider = new DefaultFunctionContentProvider(typeContentProvider, expressionContentProvider, instructionContentProvider)
+		functionContentProvider = new FunctionContentProvider(typeContentProvider, expressionContentProvider, instructionContentProvider)
 		traceContentProvider = new TraceContentProvider
 		includesContentProvider = new StlThreadIncludesContentProvider
 		jsonContentProvider = new JsonContentProvider(expressionContentProvider, instructionContentProvider)
@@ -86,7 +86,7 @@ class KokkosBackend extends Backend
 		typeContentProvider = new KokkosTypeContentProvider
 		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
 		instructionContentProvider = new KokkosInstructionContentProvider(typeContentProvider, expressionContentProvider)
-		functionContentProvider = new KokkosFunctionContentProvider(typeContentProvider, expressionContentProvider, instructionContentProvider)
+		functionContentProvider = new FunctionContentProvider(typeContentProvider, expressionContentProvider, instructionContentProvider)
 		traceContentProvider = new KokkosTraceContentProvider
 		includesContentProvider = new KokkosIncludesContentProvider
 		jsonContentProvider = new JsonContentProvider(expressionContentProvider, instructionContentProvider)
@@ -105,7 +105,7 @@ class KokkosTeamThreadBackend extends Backend
 		typeContentProvider = new KokkosTypeContentProvider
 		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
 		instructionContentProvider = new KokkosTeamThreadInstructionContentProvider(typeContentProvider, expressionContentProvider)
-		functionContentProvider = new KokkosFunctionContentProvider(typeContentProvider, expressionContentProvider, instructionContentProvider)
+		functionContentProvider = new FunctionContentProvider(typeContentProvider, expressionContentProvider, instructionContentProvider)
 		traceContentProvider = new KokkosTraceContentProvider
 		includesContentProvider = new KokkosIncludesContentProvider
 		jsonContentProvider = new JsonContentProvider(expressionContentProvider, instructionContentProvider)
@@ -124,7 +124,7 @@ class OpenMpBackend extends Backend
 		typeContentProvider = new StlThreadTypeContentProvider
 		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
 		instructionContentProvider = new OpenMpInstructionContentProvider(typeContentProvider, expressionContentProvider)
-		functionContentProvider = new DefaultFunctionContentProvider(typeContentProvider, expressionContentProvider, instructionContentProvider)
+		functionContentProvider = new FunctionContentProvider(typeContentProvider, expressionContentProvider, instructionContentProvider)
 		traceContentProvider = new TraceContentProvider
 		includesContentProvider = new OpenMpIncludesContentProvider
 		jsonContentProvider = new JsonContentProvider(expressionContentProvider, instructionContentProvider)

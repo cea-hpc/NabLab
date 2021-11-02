@@ -42,7 +42,7 @@ public final class R2
 	}
 
 	/**
-	 * Job rj1 called @2.0 in simulate method.
+	 * Job rj1 called @3.0 in simulate method.
 	 * In variables: hv3
 	 * Out variables: rv2
 	 */
@@ -50,12 +50,12 @@ public final class R2
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
-			rv2[cCells] = mainModule.hv3[cCells];
+			rv2[cCells] = mainModule.hv3[cCells] * 2.0;
 		});
 	}
 
 	/**
-	 * Job rj2 called @3.0 in simulate method.
+	 * Job rj2 called @4.0 in simulate method.
 	 * In variables: rv2
 	 * Out variables: hv6
 	 */
@@ -63,7 +63,7 @@ public final class R2
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
-			mainModule.hv6[cCells] = rv2[cCells];
+			mainModule.hv6[cCells] = rv2[cCells] * 3.0;
 		});
 	}
 

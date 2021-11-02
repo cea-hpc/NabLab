@@ -9,6 +9,19 @@
 #include "R2.h"
 
 
+/******************** Free functions definitions ********************/
+
+namespace hydrofreefuncs
+{
+bool assertEquals(double expected, double actual)
+{
+	const bool ret((expected == actual));
+	if (!ret) 
+		throw std::runtime_error("** Assertion failed");
+	return ret;
+}
+}
+
 /******************** Module definition ********************/
 
 Hydro::Hydro(CartesianMesh2D& aMesh)
@@ -83,7 +96,33 @@ Hydro::jsonInit(const char* jsonContent)
 
 
 /**
- * Job hj1 called @1.0 in simulate method.
+ * Job iniHv1 called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: hv1
+ */
+void Hydro::iniHv1() noexcept
+{
+	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& cCells)
+	{
+		hv1(cCells) = 2.0;
+	});
+}
+
+/**
+ * Job iniHv2 called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: hv2
+ */
+void Hydro::iniHv2() noexcept
+{
+	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& cCells)
+	{
+		hv2(cCells) = 0.0;
+	});
+}
+
+/**
+ * Job hj1 called @2.0 in simulate method.
  * In variables: hv2
  * Out variables: hv3
  */
@@ -91,12 +130,38 @@ void Hydro::hj1() noexcept
 {
 	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& cCells)
 	{
-		hv3(cCells) = hv2(cCells);
+		hv3(cCells) = hv2(cCells) + 1.0;
 	});
 }
 
 /**
- * Job hj2 called @2.0 in simulate method.
+ * Job oracleHv1 called @2.0 in simulate method.
+ * In variables: hv1
+ * Out variables: 
+ */
+void Hydro::oracleHv1() noexcept
+{
+	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& cCells)
+	{
+		const bool testHv1(hydrofreefuncs::assertEquals(2.0, hv1(cCells)));
+	});
+}
+
+/**
+ * Job oracleHv2 called @2.0 in simulate method.
+ * In variables: hv2
+ * Out variables: 
+ */
+void Hydro::oracleHv2() noexcept
+{
+	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& cCells)
+	{
+		const bool testHv2(hydrofreefuncs::assertEquals(0.0, hv2(cCells)));
+	});
+}
+
+/**
+ * Job hj2 called @3.0 in simulate method.
  * In variables: hv3
  * Out variables: hv5
  */
@@ -104,12 +169,51 @@ void Hydro::hj2() noexcept
 {
 	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& cCells)
 	{
-		hv5(cCells) = hv3(cCells);
+		hv5(cCells) = hv3(cCells) + 2.0;
 	});
 }
 
 /**
- * Job hj3 called @4.0 in simulate method.
+ * Job oracleHv3 called @3.0 in simulate method.
+ * In variables: hv3
+ * Out variables: 
+ */
+void Hydro::oracleHv3() noexcept
+{
+	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& cCells)
+	{
+		const bool testHv3(hydrofreefuncs::assertEquals(1.0, hv3(cCells)));
+	});
+}
+
+/**
+ * Job oracleHv4 called @3.0 in simulate method.
+ * In variables: hv4
+ * Out variables: 
+ */
+void Hydro::oracleHv4() noexcept
+{
+	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& cCells)
+	{
+		const bool testHv4(hydrofreefuncs::assertEquals(4.0, hv4(cCells)));
+	});
+}
+
+/**
+ * Job oracleHv5 called @4.0 in simulate method.
+ * In variables: hv5
+ * Out variables: 
+ */
+void Hydro::oracleHv5() noexcept
+{
+	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& cCells)
+	{
+		const bool testHv5(hydrofreefuncs::assertEquals(3.0, hv5(cCells)));
+	});
+}
+
+/**
+ * Job hj3 called @5.0 in simulate method.
  * In variables: hv4, hv5, hv6
  * Out variables: hv7
  */
@@ -118,6 +222,32 @@ void Hydro::hj3() noexcept
 	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& cCells)
 	{
 		hv7(cCells) = hv4(cCells) + hv5(cCells) + hv6(cCells);
+	});
+}
+
+/**
+ * Job oracleHv6 called @5.0 in simulate method.
+ * In variables: hv6
+ * Out variables: 
+ */
+void Hydro::oracleHv6() noexcept
+{
+	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& cCells)
+	{
+		const bool testHv6(hydrofreefuncs::assertEquals(6.0, hv6(cCells)));
+	});
+}
+
+/**
+ * Job oracleHv7 called @6.0 in simulate method.
+ * In variables: hv7
+ * Out variables: 
+ */
+void Hydro::oracleHv7() noexcept
+{
+	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& cCells)
+	{
+		const bool testHv7(hydrofreefuncs::assertEquals(13.0, hv7(cCells)));
 	});
 }
 
@@ -140,13 +270,22 @@ void Hydro::simulate()
 	
 	std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    " << __BOLD__ << "Disabled" << __RESET__ << std::endl;
 
-	hj1(); // @1.0
-	r1->rj1(); // @1.0
-	hj2(); // @2.0
-	r2->rj1(); // @2.0
-	r1->rj2(); // @2.0
-	r2->rj2(); // @3.0
-	hj3(); // @4.0
+	iniHv1(); // @1.0
+	iniHv2(); // @1.0
+	hj1(); // @2.0
+	oracleHv1(); // @2.0
+	oracleHv2(); // @2.0
+	r1->rj1(); // @2.0
+	hj2(); // @3.0
+	oracleHv3(); // @3.0
+	oracleHv4(); // @3.0
+	r2->rj1(); // @3.0
+	r1->rj2(); // @3.0
+	oracleHv5(); // @4.0
+	r2->rj2(); // @4.0
+	hj3(); // @5.0
+	oracleHv6(); // @5.0
+	oracleHv7(); // @6.0
 	
 	std::cout << "\nFinal time = " << t << endl;
 	std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << globalTimer.print() << __RESET__ << std::endl;

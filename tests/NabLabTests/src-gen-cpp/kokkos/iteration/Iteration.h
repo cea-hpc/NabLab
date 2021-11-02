@@ -26,7 +26,6 @@ using namespace nablalib::utils::kokkos;
 
 namespace iterationfreefuncs
 {
-KOKKOS_INLINE_FUNCTION
 bool assertEquals(double expected, double actual);
 }
 
@@ -41,43 +40,24 @@ public:
 	void jsonInit(const char* jsonContent);
 
 	void simulate();
-	KOKKOS_INLINE_FUNCTION
 	void computeTn() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void iniTime() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void iniVk() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void iniVn() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void setUpTimeLoopK() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void updateVk() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void updateVl() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void executeTimeLoopK() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void setUpTimeLoopN() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void executeTimeLoopN() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void tearDownTimeLoopK() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void iniVl() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void oracleVk() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void setUpTimeLoopL() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void executeTimeLoopL() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void tearDownTimeLoopL() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void oracleVl() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void updateVn() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void oracleVn() noexcept;
 
 private:

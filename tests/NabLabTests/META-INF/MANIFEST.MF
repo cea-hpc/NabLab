@@ -13,6 +13,6 @@ Require-Bundle: fr.cea.nabla,
  com.google.gson,
  commons-math3,
  leveldb
-Export-Package: affectations,
- hydroremap,
- iteration
+Export-Package: hydroremap,
+ iteration,
+ variables

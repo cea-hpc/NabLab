@@ -29,6 +29,7 @@ class R2
 {
 	friend class Hydro;
 	friend class R1;
+
 	typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
 
 public:
@@ -44,9 +45,7 @@ public:
 	}
 
 	void simulate();
-	KOKKOS_INLINE_FUNCTION
 	void rj1(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void rj2(const member_type& teamMember) noexcept;
 
 private:

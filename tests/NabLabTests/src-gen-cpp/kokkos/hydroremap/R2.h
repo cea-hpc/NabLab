@@ -29,6 +29,7 @@ class R2
 {
 	friend class Hydro;
 	friend class R1;
+
 public:
 	R2(CartesianMesh2D& aMesh);
 	~R2();
@@ -42,9 +43,7 @@ public:
 	}
 
 	void simulate();
-	KOKKOS_INLINE_FUNCTION
 	void rj1() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void rj2() noexcept;
 
 private:

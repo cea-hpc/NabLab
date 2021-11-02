@@ -12,14 +12,12 @@
 namespace implicitheatequationfreefuncs
 {
 template<size_t x>
-KOKKOS_INLINE_FUNCTION
 double norm(RealArray1D<x> a)
 {
 	return std::sqrt(implicitheatequationfreefuncs::dot(a, a));
 }
 
 template<size_t x>
-KOKKOS_INLINE_FUNCTION
 double dot(RealArray1D<x> a, RealArray1D<x> b)
 {
 	double result(0.0);
@@ -30,32 +28,27 @@ double dot(RealArray1D<x> a, RealArray1D<x> b)
 	return result;
 }
 
-KOKKOS_INLINE_FUNCTION
 double det(RealArray1D<2> a, RealArray1D<2> b)
 {
 	return (a[0] * b[1] - a[1] * b[0]);
 }
 
 template<size_t x>
-KOKKOS_INLINE_FUNCTION
 RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b)
 {
 	return a + b;
 }
 
-KOKKOS_INLINE_FUNCTION
 double minR0(double a, double b)
 {
 	return std::min(a, b);
 }
 
-KOKKOS_INLINE_FUNCTION
 double sumR0(double a, double b)
 {
 	return a + b;
 }
 
-KOKKOS_INLINE_FUNCTION
 double prodR0(double a, double b)
 {
 	return a * b;

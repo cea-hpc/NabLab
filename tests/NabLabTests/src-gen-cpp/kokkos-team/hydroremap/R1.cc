@@ -56,7 +56,7 @@ const std::pair<size_t, size_t> R1::computeTeamWorkRange(const member_type& thre
 }
 
 /**
- * Job rj1 called @1.0 in simulate method.
+ * Job rj1 called @2.0 in simulate method.
  * In variables: hv1
  * Out variables: hv4
  */
@@ -70,13 +70,13 @@ void R1::rj1(const member_type& teamMember) noexcept
 		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& cCellsTeam)
 		{
 			int cCells(cCellsTeam + teamWork.first);
-			mainModule->hv4(cCells) = mainModule->hv1(cCells);
+			mainModule->hv4(cCells) = mainModule->hv1(cCells) * 2.0;
 		});
 	}
 }
 
 /**
- * Job rj2 called @2.0 in simulate method.
+ * Job rj2 called @3.0 in simulate method.
  * In variables: hv4
  * Out variables: rv3
  */
@@ -90,7 +90,7 @@ void R1::rj2(const member_type& teamMember) noexcept
 		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& cCellsTeam)
 		{
 			int cCells(cCellsTeam + teamWork.first);
-			rv3(cCells) = mainModule->hv4(cCells);
+			rv3(cCells) = mainModule->hv4(cCells) * 3.0;
 		});
 	}
 }

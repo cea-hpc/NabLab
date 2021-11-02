@@ -14,7 +14,6 @@ import com.google.gson.Gson
 import com.google.inject.Inject
 import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.UnzipHelper
-import fr.cea.nabla.nablagen.Target
 import fr.cea.nabla.nablagen.TargetType
 import java.io.File
 import java.nio.file.Files
@@ -86,6 +85,7 @@ abstract class GenerateAndExecuteTestBase
 		testExecuteModule(moduleName, #[moduleName])
 	}
 
+	// nFileNames[0] is considered to be the main module foor java execution
 	protected def testExecuteModule(String ngenFileName, String[] nFileNames)
 	{
 		println("\n" + ngenFileName)
@@ -117,9 +117,19 @@ abstract class GenerateAndExecuteTestBase
 		Files.writeString(cmakePath, cmakeContent)
 
 		var nbErrors = 0
+		val testProjectPath = System.getProperty("user.dir")
 		for (target : compilationHelper.getNgenApp(models, genmodel).targets.filter[!interpreter])
 		{
-			(!testExecute(target, ngenFileName) ? nbErrors++)
+			val outputPath = WsPath + "/" + target.outputPath
+			val targetName = (target.type == TargetType::JAVA ? "src-gen-java" : "src-gen-cpp/" + outputPath.split("/").last)
+			val levelDBRef = testProjectPath + "/results/compiler/" + targetName + "/" + packageName + "/" + ngenFileName + "DB.ref"
+			val jsonFile = GenerateAndExecuteTestBase.projectAbsolutePath + "/src/" + packageName + "/" + ngenFileName + ".json"
+
+			print("\tStarting " + target.type.literal)
+			if (target.type == TargetType::JAVA)
+				(!testExecuteJava(outputPath, packageName, levelDBRef, jsonFile, nFileNames.get(0)) ? nbErrors++)
+			else
+				(!testExecuteCpp(outputPath, packageName, levelDBRef, jsonFile, ngenFileName) ? nbErrors++)
 		}
 		(nbErrors > 0 ? Assert.fail(nbErrors + " error(s) !"))
 	}
@@ -159,29 +169,8 @@ abstract class GenerateAndExecuteTestBase
 		'''
 	}
 
-	private def testExecute(Target target, String moduleName)
-	{
-		val testProjectPath = System.getProperty("user.dir")
-		val packageName = moduleName.toLowerCase
-		val outputPath = WsPath + "/" + target.outputPath
-		val targetName = (target.type == TargetType::JAVA ? "src-gen-java" : "src-gen-cpp/" + outputPath.split("/").last)
-		val levelDBRef = testProjectPath + "/results/compiler/" + targetName + "/" + packageName + "/" + moduleName + "DB.ref"
-		val jsonFile = GenerateAndExecuteTestBase.projectAbsolutePath + "/src/" + packageName + "/" + moduleName + ".json"
-
-		print("\tStarting " + target.type.literal)
-		if (target.type == TargetType::JAVA)
-			testExecuteJava(outputPath, packageName, levelDBRef, jsonFile, moduleName)
-		else
-			testExecuteCpp(outputPath, packageName, levelDBRef, jsonFile, moduleName)
-	}
-
 	private def testExecuteCpp(String outputPath, String packageName, String levelDBRef, String jsonFile, String moduleName)
 	{
-//		println("$2= " + cppLibPath)
-//		println("$3= " + packageName)
-//		println("$4= " + levelDBRef)
-//		println("$5= " + jsonFile)
-//		println("$6= " + moduleName)
 		var pb = new ProcessBuilder("/bin/bash",
 			System.getProperty("user.dir") + "/src/fr/cea/nabla/tests/executeCpp.sh",
 			outputPath, // output src-gen path

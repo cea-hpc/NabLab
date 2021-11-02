@@ -33,7 +33,7 @@ R1::jsonInit(const char* jsonContent)
 
 
 /**
- * Job rj1 called @1.0 in simulate method.
+ * Job rj1 called @2.0 in simulate method.
  * In variables: hv1
  * Out variables: hv4
  */
@@ -41,12 +41,12 @@ void R1::rj1() noexcept
 {
 	parallel_exec(nbCells, [&](const size_t& cCells)
 	{
-		mainModule->hv4[cCells] = mainModule->hv1[cCells];
+		mainModule->hv4[cCells] = mainModule->hv1[cCells] * 2.0;
 	});
 }
 
 /**
- * Job rj2 called @2.0 in simulate method.
+ * Job rj2 called @3.0 in simulate method.
  * In variables: hv4
  * Out variables: rv3
  */
@@ -54,6 +54,6 @@ void R1::rj2() noexcept
 {
 	parallel_exec(nbCells, [&](const size_t& cCells)
 	{
-		rv3[cCells] = mainModule->hv4[cCells];
+		rv3[cCells] = mainModule->hv4[cCells] * 3.0;
 	});
 }

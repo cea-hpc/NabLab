@@ -191,7 +191,7 @@ IterativeHeatEquation::jsonInit(const char* jsonContent)
  */
 void IterativeHeatEquation::computeFaceLength() noexcept
 {
-	#pragma omp parallel for shared(faceLength)
+	#pragma omp parallel
 	for (size_t fFaces=0; fFaces<nbFaces; fFaces++)
 	{
 		const Id fId(fFaces);
@@ -229,7 +229,7 @@ void IterativeHeatEquation::computeTn() noexcept
  */
 void IterativeHeatEquation::computeV() noexcept
 {
-	#pragma omp parallel for shared(V)
+	#pragma omp parallel
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		const Id jId(jCells);
@@ -257,7 +257,7 @@ void IterativeHeatEquation::computeV() noexcept
  */
 void IterativeHeatEquation::initD() noexcept
 {
-	#pragma omp parallel for shared(D)
+	#pragma omp parallel
 	for (size_t cCells=0; cCells<nbCells; cCells++)
 	{
 		D[cCells] = 1.0;
@@ -281,7 +281,7 @@ void IterativeHeatEquation::initTime() noexcept
  */
 void IterativeHeatEquation::initXc() noexcept
 {
-	#pragma omp parallel for shared(Xc)
+	#pragma omp parallel
 	for (size_t cCells=0; cCells<nbCells; cCells++)
 	{
 		const Id cId(cCells);
@@ -307,7 +307,7 @@ void IterativeHeatEquation::initXc() noexcept
  */
 void IterativeHeatEquation::setUpTimeLoopK() noexcept
 {
-	#pragma omp parallel for shared(u_nplus1_k)
+	#pragma omp parallel
 	for (size_t i1Cells=0; i1Cells<nbCells; i1Cells++)
 	{
 		u_nplus1_k[i1Cells] = u_n[i1Cells];
@@ -321,7 +321,7 @@ void IterativeHeatEquation::setUpTimeLoopK() noexcept
  */
 void IterativeHeatEquation::updateU() noexcept
 {
-	#pragma omp parallel for shared(u_nplus1_kplus1)
+	#pragma omp parallel
 	for (size_t cCells=0; cCells<nbCells; cCells++)
 	{
 		const Id cId(cCells);
@@ -363,7 +363,7 @@ void IterativeHeatEquation::computeDeltaTn() noexcept
  */
 void IterativeHeatEquation::computeFaceConductivity() noexcept
 {
-	#pragma omp parallel for shared(faceConductivity)
+	#pragma omp parallel
 	for (size_t fFaces=0; fFaces<nbFaces; fFaces++)
 	{
 		const Id fId(fFaces);
@@ -428,7 +428,7 @@ void IterativeHeatEquation::executeTimeLoopK() noexcept
 		// Evaluate loop condition with variables at time n
 		continueLoop = (residual > epsilon && iterativeheatequationfreefuncs::check(k + 1 < maxIterationsK));
 	
-		#pragma omp parallel for shared(u_nplus1_k)
+		#pragma omp parallel
 		for (size_t i1Cells=0; i1Cells<nbCells; i1Cells++)
 		{
 			u_nplus1_k[i1Cells] = u_nplus1_kplus1[i1Cells];
@@ -443,7 +443,7 @@ void IterativeHeatEquation::executeTimeLoopK() noexcept
  */
 void IterativeHeatEquation::initU() noexcept
 {
-	#pragma omp parallel for shared(u_n)
+	#pragma omp parallel
 	for (size_t cCells=0; cCells<nbCells; cCells++)
 	{
 		if (iterativeheatequationfreefuncs::norm(Xc[cCells] - vectOne) < 0.5) 
@@ -470,7 +470,7 @@ void IterativeHeatEquation::setUpTimeLoopN() noexcept
  */
 void IterativeHeatEquation::computeAlphaCoeff() noexcept
 {
-	#pragma omp parallel for shared(alpha)
+	#pragma omp parallel
 	for (size_t cCells=0; cCells<nbCells; cCells++)
 	{
 		const Id cId(cCells);
@@ -500,7 +500,7 @@ void IterativeHeatEquation::computeAlphaCoeff() noexcept
  */
 void IterativeHeatEquation::tearDownTimeLoopK() noexcept
 {
-	#pragma omp parallel for shared(u_nplus1)
+	#pragma omp parallel
 	for (size_t i1Cells=0; i1Cells<nbCells; i1Cells++)
 	{
 		u_nplus1[i1Cells] = u_nplus1_kplus1[i1Cells];
@@ -537,7 +537,7 @@ void IterativeHeatEquation::executeTimeLoopN() noexcept
 		continueLoop = (t_nplus1 < stopTime && n + 1 < maxIterations);
 	
 		t_n = t_nplus1;
-		#pragma omp parallel for shared(u_n)
+		#pragma omp parallel
 		for (size_t i1Cells=0; i1Cells<nbCells; i1Cells++)
 		{
 			u_n[i1Cells] = u_nplus1[i1Cells];

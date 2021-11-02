@@ -11,20 +11,17 @@
 
 namespace glace2dfreefuncs
 {
-KOKKOS_INLINE_FUNCTION
 double det(RealArray2D<2,2> a)
 {
 	return a[0][0] * a[1][1] - a[0][1] * a[1][0];
 }
 
-KOKKOS_INLINE_FUNCTION
 RealArray1D<2> perp(RealArray1D<2> a)
 {
 	return {a[1], -a[0]};
 }
 
 template<size_t x>
-KOKKOS_INLINE_FUNCTION
 double dot(RealArray1D<x> a, RealArray1D<x> b)
 {
 	double result(0.0);
@@ -36,14 +33,12 @@ double dot(RealArray1D<x> a, RealArray1D<x> b)
 }
 
 template<size_t x>
-KOKKOS_INLINE_FUNCTION
 double norm(RealArray1D<x> a)
 {
 	return std::sqrt(glace2dfreefuncs::dot(a, a));
 }
 
 template<size_t l>
-KOKKOS_INLINE_FUNCTION
 RealArray2D<l,l> tensProduct(RealArray1D<l> a, RealArray1D<l> b)
 {
 	RealArray2D<l,l> result;
@@ -58,7 +53,6 @@ RealArray2D<l,l> tensProduct(RealArray1D<l> a, RealArray1D<l> b)
 }
 
 template<size_t x, size_t y>
-KOKKOS_INLINE_FUNCTION
 RealArray1D<x> matVectProduct(RealArray2D<x,y> a, RealArray1D<y> b)
 {
 	RealArray1D<x> result;
@@ -75,7 +69,6 @@ RealArray1D<x> matVectProduct(RealArray2D<x,y> a, RealArray1D<y> b)
 }
 
 template<size_t l>
-KOKKOS_INLINE_FUNCTION
 double trace(RealArray2D<l,l> a)
 {
 	double result(0.0);
@@ -86,7 +79,6 @@ double trace(RealArray2D<l,l> a)
 	return result;
 }
 
-KOKKOS_INLINE_FUNCTION
 RealArray2D<2,2> inverse(RealArray2D<2,2> a)
 {
 	const double alpha(1.0 / glace2dfreefuncs::det(a));
@@ -94,26 +86,22 @@ RealArray2D<2,2> inverse(RealArray2D<2,2> a)
 }
 
 template<size_t x>
-KOKKOS_INLINE_FUNCTION
 RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b)
 {
 	return a + b;
 }
 
-KOKKOS_INLINE_FUNCTION
 double sumR0(double a, double b)
 {
 	return a + b;
 }
 
 template<size_t x>
-KOKKOS_INLINE_FUNCTION
 RealArray2D<x,x> sumR2(RealArray2D<x,x> a, RealArray2D<x,x> b)
 {
 	return a + b;
 }
 
-KOKKOS_INLINE_FUNCTION
 double minR0(double a, double b)
 {
 	return std::min(a, b);

@@ -93,7 +93,7 @@ void Iteration::iniTime() noexcept
  */
 void Iteration::iniVk() noexcept
 {
-	#pragma omp parallel for shared(vk_nplus1_k0)
+	#pragma omp parallel
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		vk_nplus1_k0[jCells] = 0.0;
@@ -107,7 +107,7 @@ void Iteration::iniVk() noexcept
  */
 void Iteration::iniVn() noexcept
 {
-	#pragma omp parallel for shared(vn_n0)
+	#pragma omp parallel
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		vn_n0[jCells] = 0.0;
@@ -121,7 +121,7 @@ void Iteration::iniVn() noexcept
  */
 void Iteration::setUpTimeLoopK() noexcept
 {
-	#pragma omp parallel for shared(vk_nplus1_k)
+	#pragma omp parallel
 	for (size_t i1Cells=0; i1Cells<nbCells; i1Cells++)
 	{
 		vk_nplus1_k[i1Cells] = vk_nplus1_k0[i1Cells];
@@ -135,7 +135,7 @@ void Iteration::setUpTimeLoopK() noexcept
  */
 void Iteration::updateVk() noexcept
 {
-	#pragma omp parallel for shared(vk_nplus1_kplus1)
+	#pragma omp parallel
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		vk_nplus1_kplus1[jCells] = vk_nplus1_k[jCells] + 2;
@@ -149,7 +149,7 @@ void Iteration::updateVk() noexcept
  */
 void Iteration::updateVl() noexcept
 {
-	#pragma omp parallel for shared(vl_nplus1_lplus1)
+	#pragma omp parallel
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		vl_nplus1_lplus1[jCells] = vl_nplus1_l[jCells] + 1;
@@ -174,7 +174,7 @@ void Iteration::executeTimeLoopK() noexcept
 		// Evaluate loop condition with variables at time n
 		continueLoop = (k < maxIterK);
 	
-		#pragma omp parallel for shared(vk_nplus1_k)
+		#pragma omp parallel
 		for (size_t i1Cells=0; i1Cells<nbCells; i1Cells++)
 		{
 			vk_nplus1_k[i1Cells] = vk_nplus1_kplus1[i1Cells];
@@ -190,7 +190,7 @@ void Iteration::executeTimeLoopK() noexcept
 void Iteration::setUpTimeLoopN() noexcept
 {
 	t_n = t_n0;
-	#pragma omp parallel for shared(vn_n)
+	#pragma omp parallel
 	for (size_t i1Cells=0; i1Cells<nbCells; i1Cells++)
 	{
 		vn_n[i1Cells] = vn_n0[i1Cells];
@@ -233,17 +233,17 @@ void Iteration::executeTimeLoopN() noexcept
 		continueLoop = (n < maxIterN);
 	
 		t_n = t_nplus1;
-		#pragma omp parallel for shared(vn_n)
+		#pragma omp parallel
 		for (size_t i1Cells=0; i1Cells<nbCells; i1Cells++)
 		{
 			vn_n[i1Cells] = vn_nplus1[i1Cells];
 		}
-		#pragma omp parallel for shared(vk_n)
+		#pragma omp parallel
 		for (size_t i1Cells=0; i1Cells<nbCells; i1Cells++)
 		{
 			vk_n[i1Cells] = vk_nplus1[i1Cells];
 		}
-		#pragma omp parallel for shared(vl_n)
+		#pragma omp parallel
 		for (size_t i1Cells=0; i1Cells<nbCells; i1Cells++)
 		{
 			vl_n[i1Cells] = vl_nplus1[i1Cells];
@@ -274,7 +274,7 @@ void Iteration::executeTimeLoopN() noexcept
  */
 void Iteration::tearDownTimeLoopK() noexcept
 {
-	#pragma omp parallel for shared(vk_nplus1)
+	#pragma omp parallel
 	for (size_t i1Cells=0; i1Cells<nbCells; i1Cells++)
 	{
 		vk_nplus1[i1Cells] = vk_nplus1_kplus1[i1Cells];
@@ -288,7 +288,7 @@ void Iteration::tearDownTimeLoopK() noexcept
  */
 void Iteration::iniVl() noexcept
 {
-	#pragma omp parallel for shared(vl_nplus1_l0)
+	#pragma omp parallel
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		vl_nplus1_l0[jCells] = vk_nplus1[jCells] + 8;
@@ -316,7 +316,7 @@ void Iteration::oracleVk() noexcept
  */
 void Iteration::setUpTimeLoopL() noexcept
 {
-	#pragma omp parallel for shared(vl_nplus1_l)
+	#pragma omp parallel
 	for (size_t i1Cells=0; i1Cells<nbCells; i1Cells++)
 	{
 		vl_nplus1_l[i1Cells] = vl_nplus1_l0[i1Cells];
@@ -341,7 +341,7 @@ void Iteration::executeTimeLoopL() noexcept
 		// Evaluate loop condition with variables at time n
 		continueLoop = (l < maxIterL);
 	
-		#pragma omp parallel for shared(vl_nplus1_l)
+		#pragma omp parallel
 		for (size_t i1Cells=0; i1Cells<nbCells; i1Cells++)
 		{
 			vl_nplus1_l[i1Cells] = vl_nplus1_lplus1[i1Cells];
@@ -356,7 +356,7 @@ void Iteration::executeTimeLoopL() noexcept
  */
 void Iteration::tearDownTimeLoopL() noexcept
 {
-	#pragma omp parallel for shared(vl_nplus1)
+	#pragma omp parallel
 	for (size_t i1Cells=0; i1Cells<nbCells; i1Cells++)
 	{
 		vl_nplus1[i1Cells] = vl_nplus1_lplus1[i1Cells];
@@ -384,7 +384,7 @@ void Iteration::oracleVl() noexcept
  */
 void Iteration::updateVn() noexcept
 {
-	#pragma omp parallel for shared(vn_nplus1)
+	#pragma omp parallel
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		vn_nplus1[jCells] = vn_n[jCells] + vl_nplus1[jCells] * 2;

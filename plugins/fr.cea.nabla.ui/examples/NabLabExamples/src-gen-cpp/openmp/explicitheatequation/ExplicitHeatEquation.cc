@@ -154,7 +154,7 @@ ExplicitHeatEquation::jsonInit(const char* jsonContent)
  */
 void ExplicitHeatEquation::computeFaceLength() noexcept
 {
-	#pragma omp parallel for shared(faceLength)
+	#pragma omp parallel
 	for (size_t fFaces=0; fFaces<nbFaces; fFaces++)
 	{
 		const Id fId(fFaces);
@@ -192,7 +192,7 @@ void ExplicitHeatEquation::computeTn() noexcept
  */
 void ExplicitHeatEquation::computeV() noexcept
 {
-	#pragma omp parallel for shared(V)
+	#pragma omp parallel
 	for (size_t cCells=0; cCells<nbCells; cCells++)
 	{
 		const Id cId(cCells);
@@ -220,7 +220,7 @@ void ExplicitHeatEquation::computeV() noexcept
  */
 void ExplicitHeatEquation::initD() noexcept
 {
-	#pragma omp parallel for shared(D)
+	#pragma omp parallel
 	for (size_t cCells=0; cCells<nbCells; cCells++)
 	{
 		D[cCells] = 1.0;
@@ -244,7 +244,7 @@ void ExplicitHeatEquation::initTime() noexcept
  */
 void ExplicitHeatEquation::initXc() noexcept
 {
-	#pragma omp parallel for shared(Xc)
+	#pragma omp parallel
 	for (size_t cCells=0; cCells<nbCells; cCells++)
 	{
 		const Id cId(cCells);
@@ -270,7 +270,7 @@ void ExplicitHeatEquation::initXc() noexcept
  */
 void ExplicitHeatEquation::updateU() noexcept
 {
-	#pragma omp parallel for shared(u_nplus1)
+	#pragma omp parallel
 	for (size_t cCells=0; cCells<nbCells; cCells++)
 	{
 		const Id cId(cCells);
@@ -312,7 +312,7 @@ void ExplicitHeatEquation::computeDeltaTn() noexcept
  */
 void ExplicitHeatEquation::computeFaceConductivity() noexcept
 {
-	#pragma omp parallel for shared(faceConductivity)
+	#pragma omp parallel
 	for (size_t fFaces=0; fFaces<nbFaces; fFaces++)
 	{
 		const Id fId(fFaces);
@@ -349,7 +349,7 @@ void ExplicitHeatEquation::computeFaceConductivity() noexcept
  */
 void ExplicitHeatEquation::initU() noexcept
 {
-	#pragma omp parallel for shared(u_n)
+	#pragma omp parallel
 	for (size_t cCells=0; cCells<nbCells; cCells++)
 	{
 		if (explicitheatequationfreefuncs::norm(Xc[cCells] - vectOne) < 0.5) 
@@ -376,7 +376,7 @@ void ExplicitHeatEquation::setUpTimeLoopN() noexcept
  */
 void ExplicitHeatEquation::computeAlphaCoeff() noexcept
 {
-	#pragma omp parallel for shared(alpha)
+	#pragma omp parallel
 	for (size_t cCells=0; cCells<nbCells; cCells++)
 	{
 		const Id cId(cCells);
@@ -427,7 +427,7 @@ void ExplicitHeatEquation::executeTimeLoopN() noexcept
 		continueLoop = (t_nplus1 < stopTime && n + 1 < maxIterations);
 	
 		t_n = t_nplus1;
-		#pragma omp parallel for shared(u_n)
+		#pragma omp parallel
 		for (size_t i1Cells=0; i1Cells<nbCells; i1Cells++)
 		{
 			u_n[i1Cells] = u_nplus1[i1Cells];

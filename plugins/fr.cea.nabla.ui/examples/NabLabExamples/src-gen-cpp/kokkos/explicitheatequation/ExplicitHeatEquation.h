@@ -28,21 +28,14 @@ using namespace nablalib::utils::kokkos;
 namespace explicitheatequationfreefuncs
 {
 template<size_t x>
-KOKKOS_INLINE_FUNCTION
 double norm(RealArray1D<x> a);
 template<size_t x>
-KOKKOS_INLINE_FUNCTION
 double dot(RealArray1D<x> a, RealArray1D<x> b);
-KOKKOS_INLINE_FUNCTION
 double det(RealArray1D<2> a, RealArray1D<2> b);
 template<size_t x>
-KOKKOS_INLINE_FUNCTION
 RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b);
-KOKKOS_INLINE_FUNCTION
 double minR0(double a, double b);
-KOKKOS_INLINE_FUNCTION
 double sumR0(double a, double b);
-KOKKOS_INLINE_FUNCTION
 double prodR0(double a, double b);
 }
 
@@ -57,31 +50,18 @@ public:
 	void jsonInit(const char* jsonContent);
 
 	void simulate();
-	KOKKOS_INLINE_FUNCTION
 	void computeFaceLength() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void computeTn() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void computeV() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void initD() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void initTime() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void initXc() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void updateU() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void computeDeltaTn() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void computeFaceConductivity() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void initU() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void setUpTimeLoopN() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void computeAlphaCoeff() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void executeTimeLoopN() noexcept;
 
 private:

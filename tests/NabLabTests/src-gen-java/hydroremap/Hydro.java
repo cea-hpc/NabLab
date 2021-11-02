@@ -93,7 +93,33 @@ public final class Hydro
 	}
 
 	/**
-	 * Job hj1 called @1.0 in simulate method.
+	 * Job iniHv1 called @1.0 in simulate method.
+	 * In variables: 
+	 * Out variables: hv1
+	 */
+	protected void iniHv1()
+	{
+		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
+		{
+			hv1[cCells] = 2.0;
+		});
+	}
+
+	/**
+	 * Job iniHv2 called @1.0 in simulate method.
+	 * In variables: 
+	 * Out variables: hv2
+	 */
+	protected void iniHv2()
+	{
+		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
+		{
+			hv2[cCells] = 0.0;
+		});
+	}
+
+	/**
+	 * Job hj1 called @2.0 in simulate method.
 	 * In variables: hv2
 	 * Out variables: hv3
 	 */
@@ -101,12 +127,38 @@ public final class Hydro
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
-			hv3[cCells] = hv2[cCells];
+			hv3[cCells] = hv2[cCells] + 1.0;
 		});
 	}
 
 	/**
-	 * Job hj2 called @2.0 in simulate method.
+	 * Job oracleHv1 called @2.0 in simulate method.
+	 * In variables: hv1
+	 * Out variables: 
+	 */
+	protected void oracleHv1()
+	{
+		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
+		{
+			final boolean testHv1 = assertEquals(2.0, hv1[cCells]);
+		});
+	}
+
+	/**
+	 * Job oracleHv2 called @2.0 in simulate method.
+	 * In variables: hv2
+	 * Out variables: 
+	 */
+	protected void oracleHv2()
+	{
+		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
+		{
+			final boolean testHv2 = assertEquals(0.0, hv2[cCells]);
+		});
+	}
+
+	/**
+	 * Job hj2 called @3.0 in simulate method.
 	 * In variables: hv3
 	 * Out variables: hv5
 	 */
@@ -114,12 +166,51 @@ public final class Hydro
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
-			hv5[cCells] = hv3[cCells];
+			hv5[cCells] = hv3[cCells] + 2.0;
 		});
 	}
 
 	/**
-	 * Job hj3 called @4.0 in simulate method.
+	 * Job oracleHv3 called @3.0 in simulate method.
+	 * In variables: hv3
+	 * Out variables: 
+	 */
+	protected void oracleHv3()
+	{
+		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
+		{
+			final boolean testHv3 = assertEquals(1.0, hv3[cCells]);
+		});
+	}
+
+	/**
+	 * Job oracleHv4 called @3.0 in simulate method.
+	 * In variables: hv4
+	 * Out variables: 
+	 */
+	protected void oracleHv4()
+	{
+		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
+		{
+			final boolean testHv4 = assertEquals(4.0, hv4[cCells]);
+		});
+	}
+
+	/**
+	 * Job oracleHv5 called @4.0 in simulate method.
+	 * In variables: hv5
+	 * Out variables: 
+	 */
+	protected void oracleHv5()
+	{
+		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
+		{
+			final boolean testHv5 = assertEquals(3.0, hv5[cCells]);
+		});
+	}
+
+	/**
+	 * Job hj3 called @5.0 in simulate method.
 	 * In variables: hv4, hv5, hv6
 	 * Out variables: hv7
 	 */
@@ -131,16 +222,59 @@ public final class Hydro
 		});
 	}
 
+	/**
+	 * Job oracleHv6 called @5.0 in simulate method.
+	 * In variables: hv6
+	 * Out variables: 
+	 */
+	protected void oracleHv6()
+	{
+		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
+		{
+			final boolean testHv6 = assertEquals(6.0, hv6[cCells]);
+		});
+	}
+
+	/**
+	 * Job oracleHv7 called @6.0 in simulate method.
+	 * In variables: hv7
+	 * Out variables: 
+	 */
+	protected void oracleHv7()
+	{
+		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
+		{
+			final boolean testHv7 = assertEquals(13.0, hv7[cCells]);
+		});
+	}
+
+	private static boolean assertEquals(double expected, double actual)
+	{
+		final boolean ret = (expected == actual);
+		if (!ret)
+			throw new RuntimeException("** Assertion failed");
+		return ret;
+	}
+
 	public void simulate()
 	{
 		System.out.println("Start execution of hydro");
-		hj1(); // @1.0
-		r1.rj1(); // @1.0
-		hj2(); // @2.0
-		r2.rj1(); // @2.0
-		r1.rj2(); // @2.0
-		r2.rj2(); // @3.0
-		hj3(); // @4.0
+		iniHv1(); // @1.0
+		iniHv2(); // @1.0
+		hj1(); // @2.0
+		oracleHv1(); // @2.0
+		oracleHv2(); // @2.0
+		r1.rj1(); // @2.0
+		hj2(); // @3.0
+		oracleHv3(); // @3.0
+		oracleHv4(); // @3.0
+		r2.rj1(); // @3.0
+		r1.rj2(); // @3.0
+		oracleHv5(); // @4.0
+		r2.rj2(); // @4.0
+		hj3(); // @5.0
+		oracleHv6(); // @5.0
+		oracleHv7(); // @6.0
 		System.out.println("End of execution of hydro");
 	}
 

@@ -26,6 +26,7 @@ class R1
 {
 	friend class Hydro;
 	friend class R2;
+
 public:
 	R1(CartesianMesh2D& aMesh);
 	~R1();

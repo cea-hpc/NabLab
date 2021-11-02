@@ -11,7 +11,6 @@
 
 namespace iterationfreefuncs
 {
-KOKKOS_INLINE_FUNCTION
 bool assertEquals(double expected, double actual)
 {
 	const bool ret((expected == actual));

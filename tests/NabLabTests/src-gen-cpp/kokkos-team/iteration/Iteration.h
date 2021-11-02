@@ -26,7 +26,6 @@ using namespace nablalib::utils::kokkos;
 
 namespace iterationfreefuncs
 {
-KOKKOS_INLINE_FUNCTION
 bool assertEquals(double expected, double actual);
 }
 
@@ -43,43 +42,24 @@ public:
 	void jsonInit(const char* jsonContent);
 
 	void simulate();
-	KOKKOS_INLINE_FUNCTION
 	void computeTn() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void iniTime() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void iniVk(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void iniVn(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void setUpTimeLoopK(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void updateVk(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void updateVl(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void executeTimeLoopK() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void setUpTimeLoopN(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void executeTimeLoopN() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void tearDownTimeLoopK(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void iniVl(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void oracleVk(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void setUpTimeLoopL(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void executeTimeLoopL() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void tearDownTimeLoopL(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void oracleVl(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void updateVn(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void oracleVn(const member_type& teamMember) noexcept;
 
 private:

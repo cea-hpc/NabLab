@@ -11,7 +11,6 @@
 
 namespace variablesfreefuncs
 {
-KOKKOS_INLINE_FUNCTION
 bool assertEquals(int expected, int actual)
 {
 	const bool ret((expected == actual));
@@ -21,7 +20,6 @@ bool assertEquals(int expected, int actual)
 }
 
 template<size_t x>
-KOKKOS_INLINE_FUNCTION
 bool assertEquals(RealArray1D<x> expected, RealArray1D<x> actual)
 {
 	for (size_t i=0; i<x; i++)
@@ -33,7 +31,6 @@ bool assertEquals(RealArray1D<x> expected, RealArray1D<x> actual)
 }
 
 template<size_t x>
-KOKKOS_INLINE_FUNCTION
 bool assertEquals(IntArray1D<x> expected, IntArray1D<x> actual)
 {
 	for (size_t i=0; i<x; i++)

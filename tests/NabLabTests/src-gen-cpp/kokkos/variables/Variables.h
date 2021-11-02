@@ -26,13 +26,10 @@ using namespace nablalib::utils::kokkos;
 
 namespace variablesfreefuncs
 {
-KOKKOS_INLINE_FUNCTION
 bool assertEquals(int expected, int actual);
 template<size_t x>
-KOKKOS_INLINE_FUNCTION
 bool assertEquals(RealArray1D<x> expected, RealArray1D<x> actual);
 template<size_t x>
-KOKKOS_INLINE_FUNCTION
 bool assertEquals(IntArray1D<x> expected, IntArray1D<x> actual);
 }
 
@@ -47,11 +44,8 @@ public:
 	void jsonInit(const char* jsonContent);
 
 	void simulate();
-	KOKKOS_INLINE_FUNCTION
 	void dynamicVecInitialization() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void varVecInitialization() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void oracle() noexcept;
 
 private:

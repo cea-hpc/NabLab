@@ -25,12 +25,20 @@ using namespace nablalib::utils::kokkos;
 class R1;
 class R2;
 
+/******************** Free functions declarations ********************/
+
+namespace hydrofreefuncs
+{
+bool assertEquals(double expected, double actual);
+}
+
 /******************** Module declaration ********************/
 
 class Hydro
 {
 	friend class R1;
 	friend class R2;
+
 public:
 	Hydro(CartesianMesh2D& aMesh);
 	~Hydro();
@@ -38,12 +46,18 @@ public:
 	void jsonInit(const char* jsonContent);
 
 	void simulate();
-	KOKKOS_INLINE_FUNCTION
+	void iniHv1() noexcept;
+	void iniHv2() noexcept;
 	void hj1() noexcept;
-	KOKKOS_INLINE_FUNCTION
+	void oracleHv1() noexcept;
+	void oracleHv2() noexcept;
 	void hj2() noexcept;
-	KOKKOS_INLINE_FUNCTION
+	void oracleHv3() noexcept;
+	void oracleHv4() noexcept;
+	void oracleHv5() noexcept;
 	void hj3() noexcept;
+	void oracleHv6() noexcept;
+	void oracleHv7() noexcept;
 
 private:
 	// Mesh and mesh variables

@@ -1,5 +1,5 @@
 cd $1/$2 # cd target dir / module folder
-javac -classpath $4:${10}:$5:$6 $3.java 2> javac.err
+javac -classpath $4:${10}:$5:$6 *.java 2> javac.err
 [ $? -eq 0 ] || exit 10 # Compile error
 cp -r $7 . # Copy levelDBRef
 cp $8 ./test.json

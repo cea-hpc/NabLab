@@ -33,29 +33,29 @@ R2::jsonInit(const char* jsonContent)
 
 
 /**
- * Job rj1 called @2.0 in simulate method.
+ * Job rj1 called @3.0 in simulate method.
  * In variables: hv3
  * Out variables: rv2
  */
 void R2::rj1() noexcept
 {
-	#pragma omp parallel for shared(rv2)
+	#pragma omp parallel
 	for (size_t cCells=0; cCells<nbCells; cCells++)
 	{
-		rv2[cCells] = mainModule->hv3[cCells];
+		rv2[cCells] = mainModule->hv3[cCells] * 2.0;
 	}
 }
 
 /**
- * Job rj2 called @3.0 in simulate method.
+ * Job rj2 called @4.0 in simulate method.
  * In variables: rv2
  * Out variables: hv6
  */
 void R2::rj2() noexcept
 {
-	#pragma omp parallel for shared(hv6)
+	#pragma omp parallel
 	for (size_t cCells=0; cCells<nbCells; cCells++)
 	{
-		mainModule->hv6[cCells] = rv2[cCells];
+		mainModule->hv6[cCells] = rv2[cCells] * 3.0;
 	}
 }

@@ -100,11 +100,15 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 
 	class «className»
 	{
-		«FOR adm : irRoot.modules.filter[x | x !== it]»
-		friend class «adm.className»;
-		«ENDFOR»
+		«val otherModules = irRoot.modules.filter[x | x !== it]»
+		«IF otherModules.size > 0»
+			«FOR adm : otherModules»
+				friend class «adm.className»;
+			«ENDFOR»
+
+		«ENDIF»
 		«IF kokkosTeamThread»
-		typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
+			typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
 
 		«ENDIF»
 	public:

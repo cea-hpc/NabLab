@@ -32,15 +32,15 @@ class NabLabTestsTest extends GenerateAndExecuteTestBase
 	}
 
 	@Test
-	def void testGenerateAffectations()
+	def void test1GenerateHydroRemap()
 	{
-		testGenerateModule("Affectations")
+		testGenerateModule("HydroRemap", #["Hydro", "Remap"])
 	}
 
 	@Test
-	def void testGenerateHydroRemap()
+	def void test2ExecuteHydroRemap()
 	{
-		testGenerateModule("HydroRemap", #["Hydro", "Remap"])
+		testExecuteModule("HydroRemap", #["Hydro", "Remap"])
 	}
 
 	@Test

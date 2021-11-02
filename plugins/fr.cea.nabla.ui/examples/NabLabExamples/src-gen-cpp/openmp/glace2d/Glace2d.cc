@@ -289,7 +289,7 @@ Glace2d::jsonInit(const char* jsonContent)
  */
 void Glace2d::computeCjr() noexcept
 {
-	#pragma omp parallel for shared(C)
+	#pragma omp parallel
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		const Id jId(jCells);
@@ -315,7 +315,7 @@ void Glace2d::computeCjr() noexcept
  */
 void Glace2d::computeInternalEnergy() noexcept
 {
-	#pragma omp parallel for shared(e)
+	#pragma omp parallel
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		e[jCells] = E_n[jCells] - 0.5 * glace2dfreefuncs::dot(uj_n[jCells], uj_n[jCells]);
@@ -329,7 +329,7 @@ void Glace2d::computeInternalEnergy() noexcept
  */
 void Glace2d::iniCjrIc() noexcept
 {
-	#pragma omp parallel for shared(Cjr_ic)
+	#pragma omp parallel
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		const Id jId(jCells);
@@ -365,7 +365,7 @@ void Glace2d::iniTime() noexcept
  */
 void Glace2d::computeLjr() noexcept
 {
-	#pragma omp parallel for shared(l)
+	#pragma omp parallel
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		const Id jId(jCells);
@@ -387,7 +387,7 @@ void Glace2d::computeLjr() noexcept
  */
 void Glace2d::computeV() noexcept
 {
-	#pragma omp parallel for shared(V)
+	#pragma omp parallel
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		const Id jId(jCells);
@@ -413,7 +413,7 @@ void Glace2d::computeV() noexcept
  */
 void Glace2d::initialize() noexcept
 {
-	#pragma omp parallel for shared(m, p, rho, E_n, uj_n)
+	#pragma omp parallel
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		const Id jId(jCells);
@@ -469,7 +469,7 @@ void Glace2d::initialize() noexcept
 void Glace2d::setUpTimeLoopN() noexcept
 {
 	t_n = t_n0;
-	#pragma omp parallel for shared(X_n)
+	#pragma omp parallel
 	for (size_t i1Nodes=0; i1Nodes<nbNodes; i1Nodes++)
 	{
 		for (size_t i1=0; i1<2; i1++)
@@ -486,7 +486,7 @@ void Glace2d::setUpTimeLoopN() noexcept
  */
 void Glace2d::computeDensity() noexcept
 {
-	#pragma omp parallel for shared(rho)
+	#pragma omp parallel
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		rho[jCells] = m[jCells] / V[jCells];
@@ -540,7 +540,7 @@ void Glace2d::executeTimeLoopN() noexcept
 		continueLoop = (t_nplus1 < stopTime && n + 1 < maxIterations);
 	
 		t_n = t_nplus1;
-		#pragma omp parallel for shared(X_n)
+		#pragma omp parallel
 		for (size_t i1Nodes=0; i1Nodes<nbNodes; i1Nodes++)
 		{
 			for (size_t i1=0; i1<2; i1++)
@@ -548,12 +548,12 @@ void Glace2d::executeTimeLoopN() noexcept
 				X_n[i1Nodes][i1] = X_nplus1[i1Nodes][i1];
 			}
 		}
-		#pragma omp parallel for shared(E_n)
+		#pragma omp parallel
 		for (size_t i1Cells=0; i1Cells<nbCells; i1Cells++)
 		{
 			E_n[i1Cells] = E_nplus1[i1Cells];
 		}
-		#pragma omp parallel for shared(uj_n)
+		#pragma omp parallel
 		for (size_t i1Cells=0; i1Cells<nbCells; i1Cells++)
 		{
 			for (size_t i1=0; i1<2; i1++)
@@ -592,7 +592,7 @@ void Glace2d::executeTimeLoopN() noexcept
  */
 void Glace2d::computeEOSp() noexcept
 {
-	#pragma omp parallel for shared(p)
+	#pragma omp parallel
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		p[jCells] = (gamma - 1.0) * rho[jCells] * e[jCells];
@@ -606,7 +606,7 @@ void Glace2d::computeEOSp() noexcept
  */
 void Glace2d::computeEOSc() noexcept
 {
-	#pragma omp parallel for shared(c)
+	#pragma omp parallel
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		c[jCells] = std::sqrt(gamma * p[jCells] / rho[jCells]);
@@ -620,7 +620,7 @@ void Glace2d::computeEOSc() noexcept
  */
 void Glace2d::computeAjr() noexcept
 {
-	#pragma omp parallel for shared(Ajr)
+	#pragma omp parallel
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		const Id jId(jCells);
@@ -642,7 +642,7 @@ void Glace2d::computeAjr() noexcept
  */
 void Glace2d::computedeltatj() noexcept
 {
-	#pragma omp parallel for shared(deltatj)
+	#pragma omp parallel
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		const Id jId(jCells);
@@ -666,7 +666,7 @@ void Glace2d::computedeltatj() noexcept
  */
 void Glace2d::computeAr() noexcept
 {
-	#pragma omp parallel for shared(Ar)
+	#pragma omp parallel
 	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
 	{
 		const Id rId(rNodes);
@@ -699,7 +699,7 @@ void Glace2d::computeAr() noexcept
  */
 void Glace2d::computeBr() noexcept
 {
-	#pragma omp parallel for shared(b)
+	#pragma omp parallel
 	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
 	{
 		const Id rId(rNodes);
@@ -749,7 +749,7 @@ void Glace2d::computeBoundaryConditions() noexcept
 	{
 		const auto topNodes(mesh.getTopNodes());
 		const size_t nbTopNodes(topNodes.size());
-		#pragma omp parallel for shared(bt, Mt)
+		#pragma omp parallel
 		for (size_t rTopNodes=0; rTopNodes<nbTopNodes; rTopNodes++)
 		{
 			const Id rId(topNodes[rTopNodes]);
@@ -764,7 +764,7 @@ void Glace2d::computeBoundaryConditions() noexcept
 	{
 		const auto bottomNodes(mesh.getBottomNodes());
 		const size_t nbBottomNodes(bottomNodes.size());
-		#pragma omp parallel for shared(bt, Mt)
+		#pragma omp parallel
 		for (size_t rBottomNodes=0; rBottomNodes<nbBottomNodes; rBottomNodes++)
 		{
 			const Id rId(bottomNodes[rBottomNodes]);
@@ -779,7 +779,7 @@ void Glace2d::computeBoundaryConditions() noexcept
 	{
 		const auto leftNodes(mesh.getLeftNodes());
 		const size_t nbLeftNodes(leftNodes.size());
-		#pragma omp parallel for shared(Mt, bt)
+		#pragma omp parallel
 		for (size_t rLeftNodes=0; rLeftNodes<nbLeftNodes; rLeftNodes++)
 		{
 			const Id rId(leftNodes[rLeftNodes]);
@@ -797,7 +797,7 @@ void Glace2d::computeBoundaryConditions() noexcept
 	{
 		const auto rightNodes(mesh.getRightNodes());
 		const size_t nbRightNodes(rightNodes.size());
-		#pragma omp parallel for shared(Mt, bt)
+		#pragma omp parallel
 		for (size_t rRightNodes=0; rRightNodes<nbRightNodes; rRightNodes++)
 		{
 			const Id rId(rightNodes[rRightNodes]);
@@ -824,7 +824,7 @@ void Glace2d::computeBt() noexcept
 	{
 		const auto innerNodes(mesh.getInnerNodes());
 		const size_t nbInnerNodes(innerNodes.size());
-		#pragma omp parallel for shared(bt)
+		#pragma omp parallel
 		for (size_t rInnerNodes=0; rInnerNodes<nbInnerNodes; rInnerNodes++)
 		{
 			const Id rId(innerNodes[rInnerNodes]);
@@ -847,7 +847,7 @@ void Glace2d::computeMt() noexcept
 	{
 		const auto innerNodes(mesh.getInnerNodes());
 		const size_t nbInnerNodes(innerNodes.size());
-		#pragma omp parallel for shared(Mt)
+		#pragma omp parallel
 		for (size_t rInnerNodes=0; rInnerNodes<nbInnerNodes; rInnerNodes++)
 		{
 			const Id rId(innerNodes[rInnerNodes]);
@@ -880,7 +880,7 @@ void Glace2d::computeTn() noexcept
  */
 void Glace2d::computeU() noexcept
 {
-	#pragma omp parallel for shared(ur)
+	#pragma omp parallel
 	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
 	{
 		ur[rNodes] = glace2dfreefuncs::matVectProduct(glace2dfreefuncs::inverse(Mt[rNodes]), bt[rNodes]);
@@ -894,7 +894,7 @@ void Glace2d::computeU() noexcept
  */
 void Glace2d::computeFjr() noexcept
 {
-	#pragma omp parallel for shared(F)
+	#pragma omp parallel
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		const Id jId(jCells);
@@ -918,7 +918,7 @@ void Glace2d::computeFjr() noexcept
  */
 void Glace2d::computeXn() noexcept
 {
-	#pragma omp parallel for shared(X_nplus1)
+	#pragma omp parallel
 	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
 	{
 		X_nplus1[rNodes] = X_n[rNodes] + deltat * ur[rNodes];
@@ -932,7 +932,7 @@ void Glace2d::computeXn() noexcept
  */
 void Glace2d::computeEn() noexcept
 {
-	#pragma omp parallel for shared(E_nplus1)
+	#pragma omp parallel
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		const Id jId(jCells);
@@ -958,7 +958,7 @@ void Glace2d::computeEn() noexcept
  */
 void Glace2d::computeUn() noexcept
 {
-	#pragma omp parallel for shared(uj_nplus1)
+	#pragma omp parallel
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		const Id jId(jCells);

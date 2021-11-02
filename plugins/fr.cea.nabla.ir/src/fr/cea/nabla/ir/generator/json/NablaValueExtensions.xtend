@@ -26,7 +26,7 @@ import fr.cea.nabla.ir.interpreter.NV4Bool
 import fr.cea.nabla.ir.interpreter.NV4Int
 import fr.cea.nabla.ir.interpreter.NV4Real
 
-class NablaValueExtensions 
+class NablaValueExtensions
 {
 	val gson = new Gson
 

@@ -46,7 +46,7 @@ class IrJobFactory
 
 	/** TearDownTimeLoopJob in/out vars are set in ArgOrVarFactory during time variable creation */
 	def create IrFactory::eINSTANCE.createJob toIrTearDownTimeLoopJob(TimeIterator ti)
-	{ 
+	{
 		annotations += ti.toNabLabFileAnnotation
 		name = ti.tearDownTimeLoopJobName
 		onCycle = false

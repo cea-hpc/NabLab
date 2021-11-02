@@ -79,8 +79,6 @@ IterativeHeatEquation::IterativeHeatEquation(CartesianMesh2D& aMesh)
 , maxNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
 , maxCellsOfFace(CartesianMesh2D::MaxNbCellsOfFace)
 , maxNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
-, lastDump(numeric_limits<int>::min())
-, deltat(0.001)
 , X(nbNodes)
 , Xc(nbCells)
 , u_n(nbCells)
@@ -93,13 +91,6 @@ IterativeHeatEquation::IterativeHeatEquation(CartesianMesh2D& aMesh)
 , faceConductivity(nbFaces)
 , alpha(nbCells, std::vector<double>(nbCells))
 {
-	// Copy node coordinates
-	const auto& gNodes = mesh.getGeometry()->getNodes();
-	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
-	{
-		X[rNodes][0] = gNodes[rNodes][0];
-		X[rNodes][1] = gNodes[rNodes][1];
-	}
 }
 
 IterativeHeatEquation::~IterativeHeatEquation()
@@ -112,64 +103,84 @@ IterativeHeatEquation::jsonInit(const char* jsonContent)
 	rapidjson::Document document;
 	assert(!document.Parse(jsonContent).HasParseError());
 	assert(document.IsObject());
-	const rapidjson::Value::Object& o = document.GetObject();
+	const rapidjson::Value::Object& options = document.GetObject();
 
 	// outputPath
-	assert(o.HasMember("outputPath"));
-	const rapidjson::Value& valueof_outputPath = o["outputPath"];
+	assert(options.HasMember("outputPath"));
+	const rapidjson::Value& valueof_outputPath = options["outputPath"];
 	assert(valueof_outputPath.IsString());
 	outputPath = valueof_outputPath.GetString();
 	writer = new PvdFileWriter2D("IterativeHeatEquation", outputPath);
 	// outputPeriod
-	assert(o.HasMember("outputPeriod"));
-	const rapidjson::Value& valueof_outputPeriod = o["outputPeriod"];
+	assert(options.HasMember("outputPeriod"));
+	const rapidjson::Value& valueof_outputPeriod = options["outputPeriod"];
 	assert(valueof_outputPeriod.IsInt());
 	outputPeriod = valueof_outputPeriod.GetInt();
+	lastDump = numeric_limits<int>::min();
 	// u0
-	if (o.HasMember("u0"))
+	if (options.HasMember("u0"))
 	{
-		const rapidjson::Value& valueof_u0 = o["u0"];
+		const rapidjson::Value& valueof_u0 = options["u0"];
 		assert(valueof_u0.IsDouble());
 		u0 = valueof_u0.GetDouble();
 	}
 	else
-		u0 = 1.0;
-	// stopTime
-	if (o.HasMember("stopTime"))
 	{
-		const rapidjson::Value& valueof_stopTime = o["stopTime"];
+		u0 = 1.0;
+	}
+	// stopTime
+	if (options.HasMember("stopTime"))
+	{
+		const rapidjson::Value& valueof_stopTime = options["stopTime"];
 		assert(valueof_stopTime.IsDouble());
 		stopTime = valueof_stopTime.GetDouble();
 	}
 	else
-		stopTime = 0.1;
-	// maxIterations
-	if (o.HasMember("maxIterations"))
 	{
-		const rapidjson::Value& valueof_maxIterations = o["maxIterations"];
+		stopTime = 0.1;
+	}
+	// maxIterations
+	if (options.HasMember("maxIterations"))
+	{
+		const rapidjson::Value& valueof_maxIterations = options["maxIterations"];
 		assert(valueof_maxIterations.IsInt());
 		maxIterations = valueof_maxIterations.GetInt();
 	}
 	else
-		maxIterations = 500000000;
-	// maxIterationsK
-	if (o.HasMember("maxIterationsK"))
 	{
-		const rapidjson::Value& valueof_maxIterationsK = o["maxIterationsK"];
+		maxIterations = 500000000;
+	}
+	// maxIterationsK
+	if (options.HasMember("maxIterationsK"))
+	{
+		const rapidjson::Value& valueof_maxIterationsK = options["maxIterationsK"];
 		assert(valueof_maxIterationsK.IsInt());
 		maxIterationsK = valueof_maxIterationsK.GetInt();
 	}
 	else
-		maxIterationsK = 1000;
-	// epsilon
-	if (o.HasMember("epsilon"))
 	{
-		const rapidjson::Value& valueof_epsilon = o["epsilon"];
+		maxIterationsK = 1000;
+	}
+	// epsilon
+	if (options.HasMember("epsilon"))
+	{
+		const rapidjson::Value& valueof_epsilon = options["epsilon"];
 		assert(valueof_epsilon.IsDouble());
 		epsilon = valueof_epsilon.GetDouble();
 	}
 	else
+	{
 		epsilon = 1.0E-8;
+	}
+	deltat = 0.001;
+
+	// Copy node coordinates
+	const auto& gNodes = mesh.getGeometry()->getNodes();
+	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
+	{
+		X[rNodes][0] = gNodes[rNodes][0];
+		X[rNodes][1] = gNodes[rNodes][1];
+	}
 }
 
 
@@ -393,7 +404,7 @@ void IterativeHeatEquation::computeResidual() noexcept
 
 /**
  * Job executeTimeLoopK called @2.0 in executeTimeLoopN method.
- * In variables: u_nplus1_k
+ * In variables: epsilon, k, maxIterationsK, residual, u_nplus1_k
  * Out variables: u_nplus1_kplus1
  */
 void IterativeHeatEquation::executeTimeLoopK() noexcept
@@ -487,7 +498,7 @@ void IterativeHeatEquation::tearDownTimeLoopK() noexcept
 
 /**
  * Job executeTimeLoopN called @4.0 in simulate method.
- * In variables: t_n, u_n
+ * In variables: lastDump, maxIterations, n, outputPeriod, stopTime, t_n, t_nplus1, u_n
  * Out variables: t_nplus1, u_nplus1
  */
 void IterativeHeatEquation::executeTimeLoopN() noexcept

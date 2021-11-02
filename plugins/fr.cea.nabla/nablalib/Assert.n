@@ -1,0 +1,40 @@
+/*******************************************************************************
+ * Copyright (c) 2021 CEA
+ * This program and the accompanying materials are made available under the 
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * Contributors: see AUTHORS file
+ *******************************************************************************/
+extension Assert;
+
+def assertEquals: ℕ × ℕ → ℾ, (expected, actual) →
+{
+	let ℾ ret = (expected == actual);
+	if (!ret) exit "** Assertion failed";
+	return ret;
+}
+
+def assertEquals: ℝ × ℝ → ℾ, (expected, actual) →
+{
+	let ℾ ret = (expected == actual);
+	if (!ret) exit "** Assertion failed";
+	return ret;
+}
+
+def assertEquals: x | ℕ[x] × ℕ[x] → ℾ, (expected, actual) →
+{
+	∀i∈[0;x[,
+		if (expected[i] != actual[i])
+			exit "** Assertion failed";
+	return true;
+}
+
+def assertEquals: x | ℝ[x] × ℝ[x] → ℾ, (expected, actual) →
+{
+	∀i∈[0;x[,
+		if (expected[i] != actual[i])
+			exit "** Assertion failed";
+	return true;
+}

@@ -70,18 +70,13 @@ class ExpressionInterpreter
 		}
 	}
 
-	static def int[] interpreteDimensionExpressions(Iterable<Expression> dimensionExpressions, Context context)
+	static def int interpreteSize(Expression size, Context context)
 	{
-		val values = newIntArrayOfSize(dimensionExpressions.size)
-		for (i : 0..<dimensionExpressions.size)
-		{
-			val value = interprete(dimensionExpressions.get(i), context)
-			if (value instanceof NV0Int)
-				values.set(i, value.data)
-			else
-				throw new RuntimeException("Unsupported type for Dimension: " + value.class)
-		}
-		return values
+		val value = interprete(size, context)
+		if (value instanceof NV0Int)
+			return value.data
+		else
+			throw new RuntimeException("Unsupported type for Dimension: " + value.class)
 	}
 
 	private static def NablaValue interpreteContractedIf(ContractedIf it, Context context)
@@ -194,7 +189,7 @@ class ExpressionInterpreter
 		val expressionValues = values.map[x | interprete(x, context)]
 		val t = type as BaseType
 		val value = BaseTypeValueFactory.createValue(t, "O", context)
-		for (i : 0..<expressionValues.length)
+		for (i : 0..<expressionValues.size)
 			setValue(value, #[i], expressionValues.get(i))
 		return value
 	}
@@ -257,10 +252,12 @@ class ExpressionInterpreter
 			else
 				context.getVariableValue(target)
 
-		// Switch to more efficient implementation (avoid costly toList calls)
-		val allIndices = newArrayList
-		iterators.forEach[x|allIndices.add(context.getIndexValue(x))]
-		allIndices.addAll(interpreteDimensionExpressions(indices, context))
+		val allIndices = newIntArrayOfSize(iterators.size + indices.size)
+		var i = 0
+		for (iterator : iterators)
+			allIndices.set(i++, context.getIndexValue(iterator))
+		for (index : indices)
+			allIndices.set(i++, interpreteSize(index, context))
 		getValue(value, allIndices)
 	}
 

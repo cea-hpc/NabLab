@@ -20,7 +20,7 @@ public final class ImplicitHeatEquation
 	@SuppressWarnings("unused")
 	private final int nbNodes, nbCells, nbFaces, maxNodesOfCell, maxNodesOfFace, maxCellsOfFace, maxNeighbourCells;
 
-	// Option and global variables
+	// Options and global variables
 	private PvdFileWriter2D writer;
 	private String outputPath;
 	private linearalgebrajava.LinearAlgebra linearAlgebra;
@@ -28,7 +28,7 @@ public final class ImplicitHeatEquation
 	int lastDump;
 	int n;
 	double u0;
-	final double[] vectOne;
+	static final double[] vectOne = new double[] {1.0, 1.0};
 	double stopTime;
 	int maxIterations;
 	double deltat;
@@ -56,13 +56,46 @@ public final class ImplicitHeatEquation
 		maxNodesOfFace = CartesianMesh2D.MaxNbNodesOfFace;
 		maxCellsOfFace = CartesianMesh2D.MaxNbCellsOfFace;
 		maxNeighbourCells = CartesianMesh2D.MaxNbNeighbourCells;
+	}
 
-		// Initialize variables with default values
+	public void jsonInit(final String jsonContent)
+	{
+		final Gson gson = new Gson();
+		final JsonObject options = gson.fromJson(jsonContent, JsonObject.class);
+		assert(options.has("outputPath"));
+		final JsonElement valueof_outputPath = options.get("outputPath");
+		outputPath = valueof_outputPath.getAsJsonPrimitive().getAsString();
+		writer = new PvdFileWriter2D("ImplicitHeatEquation", outputPath);
+		assert(options.has("outputPeriod"));
+		final JsonElement valueof_outputPeriod = options.get("outputPeriod");
+		assert(valueof_outputPeriod.isJsonPrimitive());
+		outputPeriod = valueof_outputPeriod.getAsJsonPrimitive().getAsInt();
 		lastDump = Integer.MIN_VALUE;
-		vectOne = new double[] {1.0, 1.0};
+		if (options.has("u0"))
+		{
+			final JsonElement valueof_u0 = options.get("u0");
+			assert(valueof_u0.isJsonPrimitive());
+			u0 = valueof_u0.getAsJsonPrimitive().getAsDouble();
+		}
+		else
+			u0 = 1.0;
+		if (options.has("stopTime"))
+		{
+			final JsonElement valueof_stopTime = options.get("stopTime");
+			assert(valueof_stopTime.isJsonPrimitive());
+			stopTime = valueof_stopTime.getAsJsonPrimitive().getAsDouble();
+		}
+		else
+			stopTime = 1.0;
+		if (options.has("maxIterations"))
+		{
+			final JsonElement valueof_maxIterations = options.get("maxIterations");
+			assert(valueof_maxIterations.isJsonPrimitive());
+			maxIterations = valueof_maxIterations.getAsJsonPrimitive().getAsInt();
+		}
+		else
+			maxIterations = 500000000;
 		deltat = 0.001;
-
-		// Allocate arrays
 		X = new double[nbNodes][2];
 		Xc = new double[nbCells][2];
 		u_n = new linearalgebrajava.Vector("u_n", nbCells);
@@ -72,6 +105,10 @@ public final class ImplicitHeatEquation
 		faceLength = new double[nbFaces];
 		faceConductivity = new double[nbFaces];
 		alpha = new linearalgebrajava.Matrix("alpha", nbCells, nbCells);
+		// linearAlgebra
+		linearAlgebra = new linearalgebrajava.LinearAlgebra();
+		if (options.has("linearAlgebra"))
+			linearAlgebra.jsonInit(options.get("linearAlgebra").toString());
 
 		// Copy node coordinates
 		double[][] gNodes = mesh.getGeometry().getNodes();
@@ -80,53 +117,6 @@ public final class ImplicitHeatEquation
 			X[rNodes][0] = gNodes[rNodes][0];
 			X[rNodes][1] = gNodes[rNodes][1];
 		});
-	}
-
-	public void jsonInit(final String jsonContent)
-	{
-		final Gson gson = new Gson();
-		final JsonObject o = gson.fromJson(jsonContent, JsonObject.class);
-		// outputPath
-		assert(o.has("outputPath"));
-		final JsonElement valueof_outputPath = o.get("outputPath");
-		outputPath = valueof_outputPath.getAsJsonPrimitive().getAsString();
-		writer = new PvdFileWriter2D("ImplicitHeatEquation", outputPath);
-		// outputPeriod
-		assert(o.has("outputPeriod"));
-		final JsonElement valueof_outputPeriod = o.get("outputPeriod");
-		assert(valueof_outputPeriod.isJsonPrimitive());
-		outputPeriod = valueof_outputPeriod.getAsJsonPrimitive().getAsInt();
-		// u0
-		if (o.has("u0"))
-		{
-			final JsonElement valueof_u0 = o.get("u0");
-			assert(valueof_u0.isJsonPrimitive());
-			u0 = valueof_u0.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			u0 = 1.0;
-		// stopTime
-		if (o.has("stopTime"))
-		{
-			final JsonElement valueof_stopTime = o.get("stopTime");
-			assert(valueof_stopTime.isJsonPrimitive());
-			stopTime = valueof_stopTime.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			stopTime = 1.0;
-		// maxIterations
-		if (o.has("maxIterations"))
-		{
-			final JsonElement valueof_maxIterations = o.get("maxIterations");
-			assert(valueof_maxIterations.isJsonPrimitive());
-			maxIterations = valueof_maxIterations.getAsJsonPrimitive().getAsInt();
-		}
-		else
-			maxIterations = 500000000;
-		// linearAlgebra
-		linearAlgebra = new linearalgebrajava.LinearAlgebra();
-		if (o.has("linearAlgebra"))
-			linearAlgebra.jsonInit(o.get("linearAlgebra").toString());
 	}
 
 	/**
@@ -364,7 +354,7 @@ public final class ImplicitHeatEquation
 
 	/**
 	 * Job executeTimeLoopN called @4.0 in simulate method.
-	 * In variables: t_n, u_n
+	 * In variables: lastDump, maxIterations, n, outputPeriod, stopTime, t_n, t_nplus1, u_n
 	 * Out variables: t_nplus1, u_nplus1
 	 */
 	protected void executeTimeLoopN()

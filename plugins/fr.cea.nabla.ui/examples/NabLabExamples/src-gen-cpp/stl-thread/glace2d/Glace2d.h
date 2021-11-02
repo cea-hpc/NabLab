@@ -9,6 +9,7 @@
 #include <limits>
 #include <utility>
 #include <cmath>
+#include <rapidjson/document.h>
 #include "nablalib/utils/Utils.h"
 #include "nablalib/utils/Timer.h"
 #include "nablalib/types/Types.h"
@@ -90,7 +91,7 @@ private:
 	CartesianMesh2D& mesh;
 	size_t nbNodes, nbCells, maxNodesOfCell, maxCellsOfNode, nbInnerNodes, nbTopNodes, nbBottomNodes, nbLeftNodes, nbRightNodes;
 
-	// Option and global variables
+	// Options and global variables
 	PvdFileWriter2D* writer;
 	std::string outputPath;
 	int outputPeriod;

@@ -121,7 +121,6 @@ Glace2d::Glace2d(CartesianMesh2D& aMesh)
 , nbBottomNodes(mesh.getNbBottomNodes())
 , nbLeftNodes(mesh.getNbLeftNodes())
 , nbRightNodes(mesh.getNbRightNodes())
-, lastDump(numeric_limits<int>::min())
 , X_n(nbNodes)
 , X_nplus1(nbNodes)
 , X_n0(nbNodes)
@@ -147,13 +146,6 @@ Glace2d::Glace2d(CartesianMesh2D& aMesh)
 , F(nbCells, std::vector<RealArray1D<2>>(maxNodesOfCell))
 , Ajr(nbCells, std::vector<RealArray2D<2,2>>(maxNodesOfCell))
 {
-	// Copy node coordinates
-	const auto& gNodes = mesh.getGeometry()->getNodes();
-	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
-	{
-		X_n0[rNodes][0] = gNodes[rNodes][0];
-		X_n0[rNodes][1] = gNodes[rNodes][1];
-	}
 }
 
 Glace2d::~Glace2d()
@@ -166,100 +158,127 @@ Glace2d::jsonInit(const char* jsonContent)
 	rapidjson::Document document;
 	assert(!document.Parse(jsonContent).HasParseError());
 	assert(document.IsObject());
-	const rapidjson::Value::Object& o = document.GetObject();
+	const rapidjson::Value::Object& options = document.GetObject();
 
 	// outputPath
-	assert(o.HasMember("outputPath"));
-	const rapidjson::Value& valueof_outputPath = o["outputPath"];
+	assert(options.HasMember("outputPath"));
+	const rapidjson::Value& valueof_outputPath = options["outputPath"];
 	assert(valueof_outputPath.IsString());
 	outputPath = valueof_outputPath.GetString();
 	writer = new PvdFileWriter2D("Glace2d", outputPath);
 	// outputPeriod
-	assert(o.HasMember("outputPeriod"));
-	const rapidjson::Value& valueof_outputPeriod = o["outputPeriod"];
+	assert(options.HasMember("outputPeriod"));
+	const rapidjson::Value& valueof_outputPeriod = options["outputPeriod"];
 	assert(valueof_outputPeriod.IsInt());
 	outputPeriod = valueof_outputPeriod.GetInt();
+	lastDump = numeric_limits<int>::min();
 	// stopTime
-	if (o.HasMember("stopTime"))
+	if (options.HasMember("stopTime"))
 	{
-		const rapidjson::Value& valueof_stopTime = o["stopTime"];
+		const rapidjson::Value& valueof_stopTime = options["stopTime"];
 		assert(valueof_stopTime.IsDouble());
 		stopTime = valueof_stopTime.GetDouble();
 	}
 	else
-		stopTime = 0.2;
-	// maxIterations
-	if (o.HasMember("maxIterations"))
 	{
-		const rapidjson::Value& valueof_maxIterations = o["maxIterations"];
+		stopTime = 0.2;
+	}
+	// maxIterations
+	if (options.HasMember("maxIterations"))
+	{
+		const rapidjson::Value& valueof_maxIterations = options["maxIterations"];
 		assert(valueof_maxIterations.IsInt());
 		maxIterations = valueof_maxIterations.GetInt();
 	}
 	else
-		maxIterations = 20000;
-	// gamma
-	if (o.HasMember("gamma"))
 	{
-		const rapidjson::Value& valueof_gamma = o["gamma"];
+		maxIterations = 20000;
+	}
+	// gamma
+	if (options.HasMember("gamma"))
+	{
+		const rapidjson::Value& valueof_gamma = options["gamma"];
 		assert(valueof_gamma.IsDouble());
 		gamma = valueof_gamma.GetDouble();
 	}
 	else
-		gamma = 1.4;
-	// xInterface
-	if (o.HasMember("xInterface"))
 	{
-		const rapidjson::Value& valueof_xInterface = o["xInterface"];
+		gamma = 1.4;
+	}
+	// xInterface
+	if (options.HasMember("xInterface"))
+	{
+		const rapidjson::Value& valueof_xInterface = options["xInterface"];
 		assert(valueof_xInterface.IsDouble());
 		xInterface = valueof_xInterface.GetDouble();
 	}
 	else
-		xInterface = 0.5;
-	// deltatCfl
-	if (o.HasMember("deltatCfl"))
 	{
-		const rapidjson::Value& valueof_deltatCfl = o["deltatCfl"];
+		xInterface = 0.5;
+	}
+	// deltatCfl
+	if (options.HasMember("deltatCfl"))
+	{
+		const rapidjson::Value& valueof_deltatCfl = options["deltatCfl"];
 		assert(valueof_deltatCfl.IsDouble());
 		deltatCfl = valueof_deltatCfl.GetDouble();
 	}
 	else
-		deltatCfl = 0.4;
-	// rhoIniZg
-	if (o.HasMember("rhoIniZg"))
 	{
-		const rapidjson::Value& valueof_rhoIniZg = o["rhoIniZg"];
+		deltatCfl = 0.4;
+	}
+	// rhoIniZg
+	if (options.HasMember("rhoIniZg"))
+	{
+		const rapidjson::Value& valueof_rhoIniZg = options["rhoIniZg"];
 		assert(valueof_rhoIniZg.IsDouble());
 		rhoIniZg = valueof_rhoIniZg.GetDouble();
 	}
 	else
-		rhoIniZg = 1.0;
-	// rhoIniZd
-	if (o.HasMember("rhoIniZd"))
 	{
-		const rapidjson::Value& valueof_rhoIniZd = o["rhoIniZd"];
+		rhoIniZg = 1.0;
+	}
+	// rhoIniZd
+	if (options.HasMember("rhoIniZd"))
+	{
+		const rapidjson::Value& valueof_rhoIniZd = options["rhoIniZd"];
 		assert(valueof_rhoIniZd.IsDouble());
 		rhoIniZd = valueof_rhoIniZd.GetDouble();
 	}
 	else
-		rhoIniZd = 0.125;
-	// pIniZg
-	if (o.HasMember("pIniZg"))
 	{
-		const rapidjson::Value& valueof_pIniZg = o["pIniZg"];
+		rhoIniZd = 0.125;
+	}
+	// pIniZg
+	if (options.HasMember("pIniZg"))
+	{
+		const rapidjson::Value& valueof_pIniZg = options["pIniZg"];
 		assert(valueof_pIniZg.IsDouble());
 		pIniZg = valueof_pIniZg.GetDouble();
 	}
 	else
-		pIniZg = 1.0;
-	// pIniZd
-	if (o.HasMember("pIniZd"))
 	{
-		const rapidjson::Value& valueof_pIniZd = o["pIniZd"];
+		pIniZg = 1.0;
+	}
+	// pIniZd
+	if (options.HasMember("pIniZd"))
+	{
+		const rapidjson::Value& valueof_pIniZd = options["pIniZd"];
 		assert(valueof_pIniZd.IsDouble());
 		pIniZd = valueof_pIniZd.GetDouble();
 	}
 	else
+	{
 		pIniZd = 0.1;
+	}
+
+	// Copy node coordinates
+	const auto& gNodes = mesh.getGeometry()->getNodes();
+	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
+	{
+		X_n0[rNodes][0] = gNodes[rNodes][0];
+		X_n0[rNodes][1] = gNodes[rNodes][1];
+	}
 }
 
 
@@ -468,7 +487,7 @@ void Glace2d::computeDensity() noexcept
 
 /**
  * Job executeTimeLoopN called @3.0 in simulate method.
- * In variables: E_n, X_n, t_n, uj_n
+ * In variables: E_n, X_n, lastDump, maxIterations, n, outputPeriod, stopTime, t_n, t_nplus1, uj_n
  * Out variables: E_nplus1, X_nplus1, t_nplus1, uj_nplus1
  */
 void Glace2d::executeTimeLoopN() noexcept

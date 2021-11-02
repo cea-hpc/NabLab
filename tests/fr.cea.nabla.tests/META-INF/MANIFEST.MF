@@ -20,7 +20,7 @@ Require-Bundle: fr.cea.nabla,
  org.hamcrest;bundle-version="2.2.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: fr.cea.nabla.tests;x-internal=true,
- fr.cea.nabla.tests.interpreter,
+ fr.cea.nabla.tests.ir.interpreter,
  fr.cea.nabla.tests.validation,
  test
 Import-Package: org.assertj.core.api;version="3.20.2",

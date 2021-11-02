@@ -42,11 +42,6 @@ class IrModuleExtensions
 		variables.filter[option]
 	}
 
-	static def getVariablesWithDefaultValue(IrModule it)
-	{
-		variables.filter[x | !x.option && x.defaultValue !== null]
-	}
-
 	static def isLinearAlgebra(IrModule it)
 	{
 		variables.exists[v | v.linearAlgebra]

@@ -1,0 +1,18 @@
+{
+	"_comment": "GENERATED FILE - DO NOT OVERWRITE",
+	"variables":
+	{
+		"optVect2":[2.0,2.0],
+		"mandatoryOptDim":3,
+		"mandatoryOptVect":[3,3],
+		"_nonRegression_comment":"empty value to disable, CreateReference or CompareToReference to take action",
+		"nonRegression":""
+	},
+	"mesh":
+	{
+		"nbXQuads":100,
+		"nbYQuads":10,
+		"xSize":0.01,
+		"ySize":0.01
+	}
+}

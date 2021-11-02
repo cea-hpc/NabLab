@@ -120,6 +120,10 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createVariableAdapter();
 			}
 			@Override
+			public Adapter caseTimeVariable(TimeVariable object) {
+				return createTimeVariableAdapter();
+			}
+			@Override
 			public Adapter caseFunction(Function object) {
 				return createFunctionAdapter();
 			}
@@ -516,6 +520,20 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createVariableAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.TimeVariable <em>Time Variable</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.TimeVariable
+	 * @generated
+	 */
+	public Adapter createTimeVariableAdapter() {
 		return null;
 	}
 

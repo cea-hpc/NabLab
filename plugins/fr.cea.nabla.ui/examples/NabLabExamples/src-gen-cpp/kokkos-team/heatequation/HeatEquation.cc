@@ -11,21 +11,18 @@
 
 namespace heatequationfreefuncs
 {
-KOKKOS_INLINE_FUNCTION
 double det(RealArray1D<2> a, RealArray1D<2> b)
 {
 	return (a[0] * b[1] - a[1] * b[0]);
 }
 
 template<size_t x>
-KOKKOS_INLINE_FUNCTION
 double norm(RealArray1D<x> a)
 {
 	return std::sqrt(heatequationfreefuncs::dot(a, a));
 }
 
 template<size_t x>
-KOKKOS_INLINE_FUNCTION
 double dot(RealArray1D<x> a, RealArray1D<x> b)
 {
 	double result(0.0);
@@ -37,13 +34,11 @@ double dot(RealArray1D<x> a, RealArray1D<x> b)
 }
 
 template<size_t x>
-KOKKOS_INLINE_FUNCTION
 RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b)
 {
 	return a + b;
 }
 
-KOKKOS_INLINE_FUNCTION
 double sumR0(double a, double b)
 {
 	return a + b;
@@ -60,7 +55,6 @@ HeatEquation::HeatEquation(CartesianMesh2D& aMesh)
 , maxNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
 , maxNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
 , maxNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
-, lastDump(numeric_limits<int>::min())
 , X("X", nbNodes)
 , center("center", nbCells)
 , u_n("u_n", nbCells)
@@ -70,13 +64,6 @@ HeatEquation::HeatEquation(CartesianMesh2D& aMesh)
 , outgoingFlux("outgoingFlux", nbCells)
 , surface("surface", nbFaces)
 {
-	// Copy node coordinates
-	const auto& gNodes = mesh.getGeometry()->getNodes();
-	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
-	{
-		X(rNodes)[0] = gNodes[rNodes][0];
-		X(rNodes)[1] = gNodes[rNodes][1];
-	}
 }
 
 HeatEquation::~HeatEquation()
@@ -89,55 +76,72 @@ HeatEquation::jsonInit(const char* jsonContent)
 	rapidjson::Document document;
 	assert(!document.Parse(jsonContent).HasParseError());
 	assert(document.IsObject());
-	const rapidjson::Value::Object& o = document.GetObject();
+	const rapidjson::Value::Object& options = document.GetObject();
 
 	// outputPath
-	assert(o.HasMember("outputPath"));
-	const rapidjson::Value& valueof_outputPath = o["outputPath"];
+	assert(options.HasMember("outputPath"));
+	const rapidjson::Value& valueof_outputPath = options["outputPath"];
 	assert(valueof_outputPath.IsString());
 	outputPath = valueof_outputPath.GetString();
 	writer = new PvdFileWriter2D("HeatEquation", outputPath);
 	// outputPeriod
-	assert(o.HasMember("outputPeriod"));
-	const rapidjson::Value& valueof_outputPeriod = o["outputPeriod"];
+	assert(options.HasMember("outputPeriod"));
+	const rapidjson::Value& valueof_outputPeriod = options["outputPeriod"];
 	assert(valueof_outputPeriod.IsInt());
 	outputPeriod = valueof_outputPeriod.GetInt();
+	lastDump = numeric_limits<int>::min();
 	// stopTime
-	if (o.HasMember("stopTime"))
+	if (options.HasMember("stopTime"))
 	{
-		const rapidjson::Value& valueof_stopTime = o["stopTime"];
+		const rapidjson::Value& valueof_stopTime = options["stopTime"];
 		assert(valueof_stopTime.IsDouble());
 		stopTime = valueof_stopTime.GetDouble();
 	}
 	else
-		stopTime = 0.1;
-	// maxIterations
-	if (o.HasMember("maxIterations"))
 	{
-		const rapidjson::Value& valueof_maxIterations = o["maxIterations"];
+		stopTime = 0.1;
+	}
+	// maxIterations
+	if (options.HasMember("maxIterations"))
+	{
+		const rapidjson::Value& valueof_maxIterations = options["maxIterations"];
 		assert(valueof_maxIterations.IsInt());
 		maxIterations = valueof_maxIterations.GetInt();
 	}
 	else
-		maxIterations = 500;
-	// PI
-	if (o.HasMember("PI"))
 	{
-		const rapidjson::Value& valueof_PI = o["PI"];
+		maxIterations = 500;
+	}
+	// PI
+	if (options.HasMember("PI"))
+	{
+		const rapidjson::Value& valueof_PI = options["PI"];
 		assert(valueof_PI.IsDouble());
 		PI = valueof_PI.GetDouble();
 	}
 	else
-		PI = 3.1415926;
-	// alpha
-	if (o.HasMember("alpha"))
 	{
-		const rapidjson::Value& valueof_alpha = o["alpha"];
+		PI = 3.1415926;
+	}
+	// alpha
+	if (options.HasMember("alpha"))
+	{
+		const rapidjson::Value& valueof_alpha = options["alpha"];
 		assert(valueof_alpha.IsDouble());
 		alpha = valueof_alpha.GetDouble();
 	}
 	else
+	{
 		alpha = 1.0;
+	}
+
+	// Copy node coordinates
+	const auto& gNodes = mesh.getGeometry()->getNodes();
+	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
+	{
+		X(rNodes)[0] = gNodes[rNodes][0];
+		X(rNodes)[1] = gNodes[rNodes][1];
+	}
 }
 
 
@@ -391,7 +395,7 @@ void HeatEquation::setUpTimeLoopN() noexcept
 
 /**
  * Job executeTimeLoopN called @3.0 in simulate method.
- * In variables: t_n, u_n
+ * In variables: lastDump, maxIterations, n, outputPeriod, stopTime, t_n, t_nplus1, u_n
  * Out variables: t_nplus1, u_nplus1
  */
 void HeatEquation::executeTimeLoopN() noexcept

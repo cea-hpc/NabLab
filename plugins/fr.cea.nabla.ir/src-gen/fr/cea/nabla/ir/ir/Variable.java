@@ -19,9 +19,6 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link fr.cea.nabla.ir.ir.Variable#isOption <em>Option</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Variable#getProducerJobs <em>Producer Jobs</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Variable#getConsumerJobs <em>Consumer Jobs</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.Variable#getOriginName <em>Origin Name</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.Variable#getTimeIterator <em>Time Iterator</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.Variable#getTimeIteratorIndex <em>Time Iterator Index</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getVariable()
@@ -76,12 +73,13 @@ public interface Variable extends ArgOrVar {
 
 	/**
 	 * Returns the value of the '<em><b>Const Expr</b></em>' attribute.
+	 * The default value is <code>"false"</code>.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Const Expr</em>' attribute.
 	 * @see #setConstExpr(boolean)
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getVariable_ConstExpr()
-	 * @model required="true"
+	 * @model default="false" required="true"
 	 * @generated
 	 */
 	boolean isConstExpr();
@@ -145,73 +143,5 @@ public interface Variable extends ArgOrVar {
 	 * @generated
 	 */
 	EList<Job> getConsumerJobs();
-
-	/**
-	 * Returns the value of the '<em><b>Origin Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Origin Name</em>' attribute.
-	 * @see #setOriginName(String)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getVariable_OriginName()
-	 * @model required="true"
-	 * @generated
-	 */
-	String getOriginName();
-
-	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Variable#getOriginName <em>Origin Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Origin Name</em>' attribute.
-	 * @see #getOriginName()
-	 * @generated
-	 */
-	void setOriginName(String value);
-
-	/**
-	 * Returns the value of the '<em><b>Time Iterator</b></em>' reference.
-	 * It is bidirectional and its opposite is '{@link fr.cea.nabla.ir.ir.TimeIterator#getVariables <em>Variables</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Time Iterator</em>' reference.
-	 * @see #setTimeIterator(TimeIterator)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getVariable_TimeIterator()
-	 * @see fr.cea.nabla.ir.ir.TimeIterator#getVariables
-	 * @model opposite="variables"
-	 * @generated
-	 */
-	TimeIterator getTimeIterator();
-
-	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Variable#getTimeIterator <em>Time Iterator</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Time Iterator</em>' reference.
-	 * @see #getTimeIterator()
-	 * @generated
-	 */
-	void setTimeIterator(TimeIterator value);
-
-	/**
-	 * Returns the value of the '<em><b>Time Iterator Index</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Time Iterator Index</em>' attribute.
-	 * @see #setTimeIteratorIndex(int)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getVariable_TimeIteratorIndex()
-	 * @model
-	 * @generated
-	 */
-	int getTimeIteratorIndex();
-
-	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Variable#getTimeIteratorIndex <em>Time Iterator Index</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Time Iterator Index</em>' attribute.
-	 * @see #getTimeIteratorIndex()
-	 * @generated
-	 */
-	void setTimeIteratorIndex(int value);
 
 } // Variable

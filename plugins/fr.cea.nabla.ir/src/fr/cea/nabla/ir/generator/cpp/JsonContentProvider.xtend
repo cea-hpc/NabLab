@@ -18,6 +18,7 @@ import org.eclipse.xtend.lib.annotations.Data
 class JsonContentProvider
 {
 	val extension ExpressionContentProvider
+	val extension InstructionContentProvider
 
 	def getJsonName(String varName) { 'valueof_' + varName }
 
@@ -25,17 +26,19 @@ class JsonContentProvider
 	'''
 		// «name»
 		«IF defaultValue === null»
-			assert(o.HasMember("«name»"));
-			const rapidjson::Value& «name.jsonName» = o["«name»"];
+			assert(options.HasMember("«name»"));
+			const rapidjson::Value& «name.jsonName» = options["«name»"];
 			«getJsonContent(name, type, type.sizes, #[])»
 		«ELSE»
-			if (o.HasMember("«name»"))
+			if (options.HasMember("«name»"))
 			{
-				const rapidjson::Value& «name.jsonName» = o["«name»"];
+				const rapidjson::Value& «name.jsonName» = options["«name»"];
 				«getJsonContent(name, type, type.sizes, #[])»
 			}
 			else
+			{
 				«name» = «defaultValue.content»;
+			}
 		«ENDIF»
 	'''
 

@@ -27,35 +27,35 @@ R1::jsonInit(const char* jsonContent)
 	rapidjson::Document document;
 	assert(!document.Parse(jsonContent).HasParseError());
 	assert(document.IsObject());
-	const rapidjson::Value::Object& o = document.GetObject();
+	const rapidjson::Value::Object& options = document.GetObject();
 
 }
 
 
 /**
- * Job rj1 called @1.0 in simulate method.
+ * Job rj1 called @2.0 in simulate method.
  * In variables: hv1
  * Out variables: hv4
  */
 void R1::rj1() noexcept
 {
-	#pragma omp parallel for shared(hv4)
+	#pragma omp parallel
 	for (size_t cCells=0; cCells<nbCells; cCells++)
 	{
-		mainModule->hv4[cCells] = mainModule->hv1[cCells];
+		mainModule->hv4[cCells] = mainModule->hv1[cCells] * 2.0;
 	}
 }
 
 /**
- * Job rj2 called @2.0 in simulate method.
+ * Job rj2 called @3.0 in simulate method.
  * In variables: hv4
  * Out variables: rv3
  */
 void R1::rj2() noexcept
 {
-	#pragma omp parallel for shared(rv3)
+	#pragma omp parallel
 	for (size_t cCells=0; cCells<nbCells; cCells++)
 	{
-		rv3[cCells] = mainModule->hv4[cCells];
+		rv3[cCells] = mainModule->hv4[cCells] * 3.0;
 	}
 }

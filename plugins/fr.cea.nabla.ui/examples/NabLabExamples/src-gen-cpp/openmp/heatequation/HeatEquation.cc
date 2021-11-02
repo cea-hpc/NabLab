@@ -55,7 +55,6 @@ HeatEquation::HeatEquation(CartesianMesh2D& aMesh)
 , maxNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
 , maxNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
 , maxNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
-, lastDump(numeric_limits<int>::min())
 , X(nbNodes)
 , center(nbCells)
 , u_n(nbCells)
@@ -65,13 +64,6 @@ HeatEquation::HeatEquation(CartesianMesh2D& aMesh)
 , outgoingFlux(nbCells)
 , surface(nbFaces)
 {
-	// Copy node coordinates
-	const auto& gNodes = mesh.getGeometry()->getNodes();
-	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
-	{
-		X[rNodes][0] = gNodes[rNodes][0];
-		X[rNodes][1] = gNodes[rNodes][1];
-	}
 }
 
 HeatEquation::~HeatEquation()
@@ -84,55 +76,72 @@ HeatEquation::jsonInit(const char* jsonContent)
 	rapidjson::Document document;
 	assert(!document.Parse(jsonContent).HasParseError());
 	assert(document.IsObject());
-	const rapidjson::Value::Object& o = document.GetObject();
+	const rapidjson::Value::Object& options = document.GetObject();
 
 	// outputPath
-	assert(o.HasMember("outputPath"));
-	const rapidjson::Value& valueof_outputPath = o["outputPath"];
+	assert(options.HasMember("outputPath"));
+	const rapidjson::Value& valueof_outputPath = options["outputPath"];
 	assert(valueof_outputPath.IsString());
 	outputPath = valueof_outputPath.GetString();
 	writer = new PvdFileWriter2D("HeatEquation", outputPath);
 	// outputPeriod
-	assert(o.HasMember("outputPeriod"));
-	const rapidjson::Value& valueof_outputPeriod = o["outputPeriod"];
+	assert(options.HasMember("outputPeriod"));
+	const rapidjson::Value& valueof_outputPeriod = options["outputPeriod"];
 	assert(valueof_outputPeriod.IsInt());
 	outputPeriod = valueof_outputPeriod.GetInt();
+	lastDump = numeric_limits<int>::min();
 	// stopTime
-	if (o.HasMember("stopTime"))
+	if (options.HasMember("stopTime"))
 	{
-		const rapidjson::Value& valueof_stopTime = o["stopTime"];
+		const rapidjson::Value& valueof_stopTime = options["stopTime"];
 		assert(valueof_stopTime.IsDouble());
 		stopTime = valueof_stopTime.GetDouble();
 	}
 	else
-		stopTime = 0.1;
-	// maxIterations
-	if (o.HasMember("maxIterations"))
 	{
-		const rapidjson::Value& valueof_maxIterations = o["maxIterations"];
+		stopTime = 0.1;
+	}
+	// maxIterations
+	if (options.HasMember("maxIterations"))
+	{
+		const rapidjson::Value& valueof_maxIterations = options["maxIterations"];
 		assert(valueof_maxIterations.IsInt());
 		maxIterations = valueof_maxIterations.GetInt();
 	}
 	else
-		maxIterations = 500;
-	// PI
-	if (o.HasMember("PI"))
 	{
-		const rapidjson::Value& valueof_PI = o["PI"];
+		maxIterations = 500;
+	}
+	// PI
+	if (options.HasMember("PI"))
+	{
+		const rapidjson::Value& valueof_PI = options["PI"];
 		assert(valueof_PI.IsDouble());
 		PI = valueof_PI.GetDouble();
 	}
 	else
-		PI = 3.1415926;
-	// alpha
-	if (o.HasMember("alpha"))
 	{
-		const rapidjson::Value& valueof_alpha = o["alpha"];
+		PI = 3.1415926;
+	}
+	// alpha
+	if (options.HasMember("alpha"))
+	{
+		const rapidjson::Value& valueof_alpha = options["alpha"];
 		assert(valueof_alpha.IsDouble());
 		alpha = valueof_alpha.GetDouble();
 	}
 	else
+	{
 		alpha = 1.0;
+	}
+
+	// Copy node coordinates
+	const auto& gNodes = mesh.getGeometry()->getNodes();
+	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
+	{
+		X[rNodes][0] = gNodes[rNodes][0];
+		X[rNodes][1] = gNodes[rNodes][1];
+	}
 }
 
 
@@ -143,7 +152,7 @@ HeatEquation::jsonInit(const char* jsonContent)
  */
 void HeatEquation::computeOutgoingFlux() noexcept
 {
-	#pragma omp parallel for shared(outgoingFlux)
+	#pragma omp parallel
 	for (size_t j1Cells=0; j1Cells<nbCells; j1Cells++)
 	{
 		const Id j1Id(j1Cells);
@@ -172,7 +181,7 @@ void HeatEquation::computeOutgoingFlux() noexcept
  */
 void HeatEquation::computeSurface() noexcept
 {
-	#pragma omp parallel for shared(surface)
+	#pragma omp parallel
 	for (size_t fFaces=0; fFaces<nbFaces; fFaces++)
 	{
 		const Id fId(fFaces);
@@ -210,7 +219,7 @@ void HeatEquation::computeTn() noexcept
  */
 void HeatEquation::computeV() noexcept
 {
-	#pragma omp parallel for shared(V)
+	#pragma omp parallel
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		const Id jId(jCells);
@@ -238,7 +247,7 @@ void HeatEquation::computeV() noexcept
  */
 void HeatEquation::iniCenter() noexcept
 {
-	#pragma omp parallel for shared(center)
+	#pragma omp parallel
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		const Id jId(jCells);
@@ -264,7 +273,7 @@ void HeatEquation::iniCenter() noexcept
  */
 void HeatEquation::iniF() noexcept
 {
-	#pragma omp parallel for shared(f)
+	#pragma omp parallel
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		f[jCells] = 0.0;
@@ -288,7 +297,7 @@ void HeatEquation::iniTime() noexcept
  */
 void HeatEquation::computeUn() noexcept
 {
-	#pragma omp parallel for shared(u_nplus1)
+	#pragma omp parallel
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		u_nplus1[jCells] = f[jCells] * deltat + u_n[jCells] + outgoingFlux[jCells];
@@ -302,7 +311,7 @@ void HeatEquation::computeUn() noexcept
  */
 void HeatEquation::iniUn() noexcept
 {
-	#pragma omp parallel for shared(u_n)
+	#pragma omp parallel
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		u_n[jCells] = std::cos(2 * PI * alpha * center[jCells][0]);
@@ -321,7 +330,7 @@ void HeatEquation::setUpTimeLoopN() noexcept
 
 /**
  * Job executeTimeLoopN called @3.0 in simulate method.
- * In variables: t_n, u_n
+ * In variables: lastDump, maxIterations, n, outputPeriod, stopTime, t_n, t_nplus1, u_n
  * Out variables: t_nplus1, u_nplus1
  */
 void HeatEquation::executeTimeLoopN() noexcept
@@ -348,7 +357,7 @@ void HeatEquation::executeTimeLoopN() noexcept
 		continueLoop = (t_nplus1 < stopTime && n + 1 < maxIterations);
 	
 		t_n = t_nplus1;
-		#pragma omp parallel for shared(u_n)
+		#pragma omp parallel
 		for (size_t i1Cells=0; i1Cells<nbCells; i1Cells++)
 		{
 			u_n[i1Cells] = u_nplus1[i1Cells];

@@ -12,6 +12,7 @@ package fr.cea.nabla.generator.ir
 import com.google.inject.Inject
 import com.google.inject.Singleton
 import fr.cea.nabla.ArgOrVarExtensions
+import fr.cea.nabla.ConstExprServices
 import fr.cea.nabla.ir.ir.InstructionBlock
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.Job
@@ -21,11 +22,13 @@ import fr.cea.nabla.nabla.Arg
 import fr.cea.nabla.nabla.ArgOrVar
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.BaseType
-import fr.cea.nabla.nabla.ConnectivityVar
+import fr.cea.nabla.nabla.CurrentTimeIteratorRef
 import fr.cea.nabla.nabla.InitTimeIteratorRef
 import fr.cea.nabla.nabla.NablaModule
+import fr.cea.nabla.nabla.NextTimeIteratorRef
 import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.TimeIterator
+import fr.cea.nabla.nabla.TimeIteratorRef
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.typing.ArgOrVarTypeProvider
 import fr.cea.nabla.typing.BaseTypeTypeProvider
@@ -45,6 +48,7 @@ class IrArgOrVarFactory
 	@Inject extension ArgOrVarTypeProvider
 	@Inject extension BaseTypeTypeProvider
 	@Inject NablaType2IrType nablaType2IrType
+	@Inject ConstExprServices constExprServices
 
 	/**
 	 * If v variable is referenced with time iterators, create the associated time variables.
@@ -77,9 +81,9 @@ class IrArgOrVarFactory
 				val parentTi = ti.parentTimeIterator
 
 				// Create variables
-				val currentTiVar = createIrTimeVariable(v, ti, currentTimeIteratorName, currentTimeIteratorIndex)
-				val nextTiVar = createIrTimeVariable(v, ti, nextTimeIteratorName, nextTimeIteratorIndex)
-				val initTiVar = (existsInitTiForTi? createIrTimeVariable(v, ti, initTimeIteratorName, initTimeIteratorIndex) : null)
+				val currentTiVar = toIrTimeVariable(v, ti, currentTimeIteratorIndex)
+				val nextTiVar = toIrTimeVariable(v, ti, nextTimeIteratorIndex)
+				val initTiVar = (existsInitTiForTi? toIrTimeVariable(v, ti, initTimeIteratorIndex) : null)
 
 				// Add variables to the list
 				createdVariables += currentTiVar
@@ -100,7 +104,7 @@ class IrArgOrVarFactory
 					}
 					else if (parentTi !== null) // inner time iterator
 					{
-						val parentCurrentTiVar = createIrTimeVariable(v, parentTi, currentTimeIteratorName, currentTimeIteratorIndex)
+						val parentCurrentTiVar = toIrTimeVariable(v, parentTi, currentTimeIteratorIndex)
 						addAffectation(tiSetUpJob, parentCurrentTiVar, currentTiVar)
 						tiSetUpJob.inVars += parentCurrentTiVar
 						tiSetUpJob.outVars += currentTiVar
@@ -120,7 +124,7 @@ class IrArgOrVarFactory
 				val tiTearDownJob = tlJobs.findFirst[name == ti.tearDownTimeLoopJobName]
 				if (tiTearDownJob !== null && parentTi !== null)
 				{
-					val parentNextTiVar = createIrTimeVariable(v, parentTi, nextTimeIteratorName, nextTimeIteratorIndex)
+					val parentNextTiVar = toIrTimeVariable(v, parentTi, nextTimeIteratorIndex)
 					addAffectation(tiTearDownJob, nextTiVar, parentNextTiVar)
 					tiTearDownJob.inVars += nextTiVar
 					tiTearDownJob.outVars += parentNextTiVar
@@ -166,20 +170,26 @@ class IrArgOrVarFactory
 		]
 	}
 
-	def toIrArgOrVar(ArgOrVar v, String timeSuffix)
+	def toIrArgOrVar(ArgOrVar v, Iterable<TimeIteratorRef> timeIteratorRefs)
 	{
-		val name = v.name + timeSuffix
 		switch v
 		{
-			SimpleVar : toIrVariable(v, name)
-			ConnectivityVar : toIrVariable(v, name)
-			Arg: toIrArg(v, name)
+			Var:
+			{
+				if (v.option)
+					toIrOption(v as SimpleVar)
+				else if (timeIteratorRefs.empty)
+					toIrVariable(v)
+				else
+				{
+					val tiRef = timeIteratorRefs.last
+					toIrTimeVariable(v, tiRef.target, tiRef.timeIteratorIndex)
+				}
+			}
+			Arg: toIrArg(v)
 			TimeIterator: toIrIterationCounter(v)
 		}
 	}
-
-	def dispatch Variable toIrVariable(SimpleVar v) { toIrVariable(v, v.name) }
-	def dispatch Variable toIrVariable(ConnectivityVar v) { toIrVariable(v, v.name) }
 
 	def create IrFactory::eINSTANCE.createArg toIrArg(BaseType nablaType, String nablaName)
 	{
@@ -188,60 +198,64 @@ class IrArgOrVarFactory
 		type = nablaType2IrType.toIrType(nablaType.typeFor)
 	}
 
-	def create IrFactory::eINSTANCE.createArg toIrArg(Arg v, String varName)
+	def create IrFactory::eINSTANCE.createArg toIrArg(Arg v)
 	{
 		annotations += v.toNabLabFileAnnotation
-		name = varName
+		name = v.name
 		type = nablaType2IrType.toIrType(v.typeFor)
 	}
 
-	def create IrFactory::eINSTANCE.createVariable toIrVariable(SimpleVar v, String varName)
+	def create IrFactory::eINSTANCE.createVariable toIrOption(SimpleVar v)
 	{
 		annotations += v.toNabLabFileAnnotation
-		name = varName
-		originName = name
+		name = v.name
 		type = nablaType2IrType.toIrType(v.typeFor)
-		const = v.const
-		constExpr = v.constExpr
-		option = false
+		const = false
+		constExpr = false
+		option = true
 		val value = v.value
 		if (value !== null) defaultValue = value.toIrExpression
 	}
 
-	def create IrFactory::eINSTANCE.createVariable toIrVariable(ConnectivityVar v, String varName)
+	def create IrFactory::eINSTANCE.createVariable toIrVariable(Var v)
 	{
 		annotations += v.toNabLabFileAnnotation
-		name = varName
-		originName = name
+		name = v.name
 		type = nablaType2IrType.toIrType(v.typeFor)
-		const = false
-		constExpr = false
+		const = v.const
+		constExpr = constExprServices.isConstExpr(v)
 		option = false
+		val value = v.value
+		if (value !== null) defaultValue = value.toIrExpression
 	}
 
 	def create IrFactory::eINSTANCE.createVariable toIrIterationCounter(TimeIterator t)
 	{
 		annotations += t.toNabLabFileAnnotation
 		name = t.name
-		originName = name
-		type = IrFactory.eINSTANCE.createBaseType => [ primitive = PrimitiveType::INT ]
+		type = IrFactory.eINSTANCE.createBaseType =>
+		[ 
+			primitive = PrimitiveType::INT
+			isStatic = true
+		]
 		const = false
 		constExpr = false
 		option = false
 	}
 
-	private def createIrTimeVariable(Var v, TimeIterator ti, String timeIteratorSuffix, int timeIteratorIndex)
+	def create IrFactory::eINSTANCE.createTimeVariable toIrTimeVariable(Var v, TimeIterator ti, int index)
 	{
-		val name = v.name + getIrVarTimeSuffix(ti, timeIteratorSuffix)
-		val irV = switch v
-		{
-			SimpleVar : toIrVariable(v, name) => [const = false]
-			ConnectivityVar : toIrVariable(v, name)
-		}
-		irV.originName = v.name
-		irV.timeIterator = ti.toIrTimeIterator
-		irV.timeIteratorIndex = timeIteratorIndex
-		return irV
+		annotations += v.toNabLabFileAnnotation
+		name = v.name + getIrVarTimeSuffix(ti, index)
+		type = nablaType2IrType.toIrType(v.typeFor)
+		const = false
+		constExpr = false
+		option = false
+		originName = v.name
+		timeIterator = ti.toIrTimeIterator
+		timeIteratorIndex = index
+		val value = v.value
+		if (value !== null) defaultValue = value.toIrExpression
 	}
 
 	private def existsInitTimeIteratorRefForTimeIterator(Iterable<ArgOrVarRef> l, TimeIterator ti)
@@ -250,5 +264,15 @@ class IrArgOrVarFactory
 			if (argOrVarRef.timeIterators.exists[x | x instanceof InitTimeIteratorRef && x.target === ti])
 				return true
 		return false
+	}
+
+	private def getTimeIteratorIndex(TimeIteratorRef tiRef)
+	{
+		switch tiRef
+		{
+			CurrentTimeIteratorRef: currentTimeIteratorIndex
+			InitTimeIteratorRef: initTimeIteratorIndex
+			NextTimeIteratorRef: nextTimeIteratorIndex
+		}
 	}
 }

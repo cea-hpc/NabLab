@@ -83,14 +83,8 @@ class IrModuleFactory
 		for (d : nablaModule.declarations)
 			switch d
 			{
-				OptionDeclaration:
-				{
-					val options = createIrVariables(d.variable, tlJobs)
-					options.forEach[option = true]
-					variables += options
-				}
-				SimpleVarDeclaration:
-					variables += createIrVariables(d.variable, tlJobs)
+				OptionDeclaration: variables += d.variable.toIrOption
+				SimpleVarDeclaration: variables += createIrVariables(d.variable, tlJobs)
 				VarGroupDeclaration:
 					for (v : d.variables)
 						variables += createIrVariables(v, tlJobs)

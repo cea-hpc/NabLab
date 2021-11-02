@@ -9,6 +9,7 @@
 #include <limits>
 #include <utility>
 #include <cmath>
+#include <rapidjson/document.h>
 #include <Kokkos_Core.hpp>
 #include <Kokkos_hwloc.hpp>
 #include "nablalib/utils/Utils.h"
@@ -28,6 +29,7 @@ class R2
 {
 	friend class Hydro;
 	friend class R1;
+
 public:
 	R2(CartesianMesh2D& aMesh);
 	~R2();
@@ -41,9 +43,7 @@ public:
 	}
 
 	void simulate();
-	KOKKOS_INLINE_FUNCTION
 	void rj1() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void rj2() noexcept;
 
 private:
@@ -54,7 +54,7 @@ private:
 	// Main module
 	Hydro* mainModule;
 
-	// Option and global variables
+	// Options and global variables
 	Kokkos::View<double*> rv2;
 
 	// Timers

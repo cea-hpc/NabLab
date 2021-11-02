@@ -9,10 +9,11 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.transformers
 
+import fr.cea.nabla.ir.ir.ArgOrVar
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.ReductionInstruction
-import fr.cea.nabla.ir.ir.Variable
+import fr.cea.nabla.ir.ir.TimeVariable
 
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 
@@ -54,10 +55,11 @@ class ReplaceUtf8Chars extends IrTransformationStep
 	override transform(IrRoot ir)
 	{
 		trace('    IR -> IR: ' + description)
-		for (v : ir.eAllContents.filter(Variable).toIterable)
+		for (v : ir.eAllContents.filter(ArgOrVar).toIterable)
 		{
 			v.name = v.name.noUtf8
-			v.originName = v.originName.noUtf8
+			if (v instanceof TimeVariable)
+				v.originName = v.originName.noUtf8
 		}
 		ir.eAllContents.filter(ReductionInstruction).forEach[x | x.result.name = x.result.name.noUtf8]
 		ir.eAllContents.filter(Function).forEach[x | x.name = x.name.noUtf8]

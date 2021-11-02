@@ -9,7 +9,6 @@
  *******************************************************************************/
 package fr.cea.nabla
 
-import com.google.inject.Inject
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.Arg
 import fr.cea.nabla.nabla.ArgOrVar
@@ -33,8 +32,6 @@ import org.eclipse.xtext.EcoreUtil2
  */
 class ArgOrVarExtensions
 {
-	@Inject extension ExpressionExtensions
-
 	def BaseType getType(ConnectivityVar it)
 	{
 		(eContainer as VarGroupDeclaration).type
@@ -67,42 +64,16 @@ class ArgOrVarExtensions
 	}
 
 	/** Return true if 'it' has a default value and is never affected */
-	def boolean isConst(SimpleVar it)
+	def boolean isConst(Var it)
 	{
 		// Only SimpleVar defined with a value can be const
-		if (eContainer !== null && eContainer instanceof SimpleVarDeclaration && (eContainer as SimpleVarDeclaration).value !== null)
+		if (it instanceof SimpleVar && eContainer !== null && eContainer instanceof SimpleVarDeclaration && (eContainer as SimpleVarDeclaration).value !== null)
 		{
 			val root = EcoreUtil2::getContainerOfType(it, NablaRoot)
 			root.eAllContents.filter(Affectation).forall[x | x.left.target !== it]
 		}
 		else
 			false
-	}
-
-	def boolean isConstExpr(ArgOrVar it)
-	{
-		if (eContainer !== null)
-		{
-			val c = eContainer
-			switch c
-			{
-				// options are not constexpr because they are initialized by a file in the generated code
-				SimpleVarDeclaration: (c.value !== null && c.variable.const && c.value.constExpr)
-				Function, Reduction: true
-				default: false
-			}
-		}
-		else
-			false
-	}
-
-	def boolean isNablaEvaluable(ArgOrVar it)
-	{
-		switch it
-		{
-			SimpleVar: (option && value === null) || (value !== null && value.nablaEvaluable)
-			default: false
-		}
 	}
 
 	def isGlobal(Var it) 

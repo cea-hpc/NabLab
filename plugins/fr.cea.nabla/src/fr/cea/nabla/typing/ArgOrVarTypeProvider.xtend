@@ -11,6 +11,7 @@ package fr.cea.nabla.typing
 
 import com.google.inject.Inject
 import fr.cea.nabla.ArgOrVarExtensions
+import fr.cea.nabla.BaseTypeSizeEvaluator
 import fr.cea.nabla.LinearAlgebraUtils
 import fr.cea.nabla.nabla.Arg
 import fr.cea.nabla.nabla.Connectivity
@@ -25,9 +26,20 @@ import fr.cea.nabla.nabla.VarDeclaration
 
 class ArgOrVarTypeProvider
 {
+	@Inject extension BaseTypeSizeEvaluator
 	@Inject extension ArgOrVarExtensions
 	@Inject extension BaseTypeTypeProvider
 	@Inject extension LinearAlgebraUtils
+
+	def dispatch NablaType getTypeFor(Arg it)
+	{
+		type.typeFor
+	}
+
+	def dispatch NablaType getTypeFor(TimeIterator it)
+	{
+		new NSTIntScalar
+	}
 
 	def dispatch NablaType getTypeFor(SimpleVar it)
 	{
@@ -48,14 +60,17 @@ class ArgOrVarTypeProvider
 		else
 		{
 			if (dimension == 1)
-				// Dimension == 1 && ConnectivityVar -> dimension = supports.size
-				new NLATVector(laExtension, getCardinality(supports.get(0)))
+				// Dimension == 1 && ConnectivityVar => dimension = supports.size
+				new NLATVector(laExtension, getCardinality(supports.get(0)), -1)
 			else if (dimension == 2)
 			{
 				if (supports.size > 1)
-					new NLATMatrix(laExtension, getCardinality(supports.get(0)), getCardinality(supports.get(1)))
+					new NLATMatrix(laExtension, getCardinality(supports.get(0)), getCardinality(supports.get(1)), -1, -1)
 				else
-					new NLATMatrix(laExtension, getCardinality(supports.get(0)),	type.getSizes.get(0))
+				{
+					val nbCols = type.getSizes.get(0)
+					new NLATMatrix(laExtension, getCardinality(supports.get(0)), nbCols, -1, getIntSizeFor(nbCols))
+				}
 			}
 		}
 	}
@@ -64,15 +79,5 @@ class ArgOrVarTypeProvider
 	{
 		val connectivityCall = NablaFactory.eINSTANCE.createConnectivityCall => [ connectivity = c ]
 		NablaFactory.eINSTANCE.createCardinality => [ container = connectivityCall ]
-	}
-
-	def dispatch NablaType getTypeFor(Arg it)
-	{
-		type.typeFor
-	}
-
-	def dispatch NablaType getTypeFor(TimeIterator it)
-	{
-		new NSTIntScalar
 	}
 }

@@ -12,26 +12,38 @@ package fr.cea.nabla.tests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import fr.cea.nabla.tests.interpreter.NabLabInterpreterTestSuite;
+import fr.cea.nabla.tests.ir.interpreter.NabLabIrInterpreterTestSuite;
+import fr.cea.nabla.tests.ir.transformers.NabLabIrTransformersTestSuite;
+import fr.cea.nabla.tests.typeprovider.NabLabTypeProviderTestSuite;
 import fr.cea.nabla.tests.validation.NabLabValidationTestSuite;
 
 @RunWith(Suite.class)
 
 @Suite.SuiteClasses
 ({
+	// base parsing
+	NablaParsingTest.class,
+	NablagenParsingTest.class,
 	GeneralPurposeTest.class,
 	GitCommitMessageTest.class,
-	DeclarationProviderTest.class,
-	ExpressionTypeProviderTest.class,
+
+	// scope providers
+	NablagenScopeProviderTest.class,
+	NablaScopeProviderTest.class,
+
 	IteratorExtensionsTest.class,
+
+	NabLabTypeProviderTestSuite.class,
+	NabLabValidationTestSuite.class,
+
+	ConstExprServicesTest.class,
+	DeclarationProviderTest.class,
+
+	// integrated tests
+	NabLabIrTransformersTestSuite.class,
+	NabLabIrInterpreterTestSuite.class,
 	NabLabTestsTest.class,
 	NabLabExamplesTest.class,
-	NablagenParsingTest.class,
-	NablagenScopeProviderTest.class,
-	NablaParsingTest.class,
-	NablaScopeProviderTest.class,
-	NabLabInterpreterTestSuite.class,
-	NabLabValidationTestSuite.class
 })
 
 public class NabLabTestSuite {}

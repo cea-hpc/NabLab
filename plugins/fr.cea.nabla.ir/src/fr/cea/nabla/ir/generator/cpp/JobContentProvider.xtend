@@ -31,6 +31,7 @@ abstract class JobContentProvider
 	protected val extension ExpressionContentProvider
 	protected val extension InstructionContentProvider
 	protected val extension JobCallerContentProvider
+	protected val extension JsonContentProvider
 
 	def getDeclarationContent(Job it)
 	'''
@@ -137,7 +138,6 @@ class KokkosJobContentProvider extends JobContentProvider
 {
 	override getDeclarationContent(Job it)
 	'''
-		KOKKOS_INLINE_FUNCTION
 		void «codeName»(«FOR a : arguments SEPARATOR ', '»«a»«ENDFOR») noexcept;'''
 
 	override getDefinitionContent(Job it)

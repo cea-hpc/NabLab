@@ -9,6 +9,7 @@
 #include <limits>
 #include <utility>
 #include <cmath>
+#include <rapidjson/document.h>
 #include "nablalib/utils/Utils.h"
 #include "nablalib/utils/Timer.h"
 #include "nablalib/types/Types.h"
@@ -18,6 +19,13 @@
 using namespace nablalib::utils;
 using namespace nablalib::types;
 using namespace nablalib::utils::stl;
+
+/******************** Free functions declarations ********************/
+
+namespace iterationfreefuncs
+{
+bool assertEquals(double expected, double actual);
+}
 
 /******************** Module declaration ********************/
 
@@ -32,58 +40,55 @@ public:
 	void simulate();
 	void computeTn() noexcept;
 	void iniTime() noexcept;
-	void iniU() noexcept;
-	void iniV1() noexcept;
-	void iniV2() noexcept;
-	void updateV1() noexcept;
-	void updateV2() noexcept;
-	void updateW() noexcept;
+	void iniVk() noexcept;
+	void iniVn() noexcept;
 	void setUpTimeLoopK() noexcept;
-	void setUpTimeLoopN() noexcept;
+	void updateVk() noexcept;
+	void updateVl() noexcept;
 	void executeTimeLoopK() noexcept;
+	void setUpTimeLoopN() noexcept;
 	void executeTimeLoopN() noexcept;
 	void tearDownTimeLoopK() noexcept;
-	void iniW() noexcept;
+	void iniVl() noexcept;
+	void oracleVk() noexcept;
 	void setUpTimeLoopL() noexcept;
 	void executeTimeLoopL() noexcept;
 	void tearDownTimeLoopL() noexcept;
-	void updateU() noexcept;
+	void oracleVl() noexcept;
+	void updateVn() noexcept;
+	void oracleVn() noexcept;
 
 private:
 	// Mesh and mesh variables
 	CartesianMesh2D& mesh;
 	size_t nbNodes, nbCells;
 
-	// Option and global variables
+	// Options and global variables
 	int n;
 	int k;
 	int l;
 	static constexpr double maxTime = 0.1;
-	static constexpr int maxIter = 500;
-	static constexpr int maxIterK = 500;
-	static constexpr int maxIterL = 500;
 	static constexpr double deltat = 1.0;
 	double t_n;
 	double t_nplus1;
 	double t_n0;
 	std::vector<RealArray1D<2>> X;
-	std::vector<double> u_n;
-	std::vector<double> u_nplus1;
-	std::vector<double> v1_n;
-	std::vector<double> v1_nplus1;
-	std::vector<double> v1_nplus1_k;
-	std::vector<double> v1_nplus1_kplus1;
-	std::vector<double> v1_nplus1_k0;
-	std::vector<double> v2_n;
-	std::vector<double> v2_nplus1;
-	std::vector<double> v2_n0;
-	std::vector<double> v2_nplus1_k;
-	std::vector<double> v2_nplus1_kplus1;
-	std::vector<double> w_n;
-	std::vector<double> w_nplus1;
-	std::vector<double> w_nplus1_l;
-	std::vector<double> w_nplus1_lplus1;
-	std::vector<double> w_nplus1_l0;
+	static constexpr int maxIterN = 10;
+	static constexpr int maxIterK = 6;
+	static constexpr int maxIterL = 7;
+	std::vector<double> vn_n;
+	std::vector<double> vn_nplus1;
+	std::vector<double> vn_n0;
+	std::vector<double> vk_n;
+	std::vector<double> vk_nplus1;
+	std::vector<double> vk_nplus1_k;
+	std::vector<double> vk_nplus1_kplus1;
+	std::vector<double> vk_nplus1_k0;
+	std::vector<double> vl_n;
+	std::vector<double> vl_nplus1;
+	std::vector<double> vl_nplus1_l;
+	std::vector<double> vl_nplus1_lplus1;
+	std::vector<double> vl_nplus1_l0;
 
 	// Timers
 	Timer globalTimer;

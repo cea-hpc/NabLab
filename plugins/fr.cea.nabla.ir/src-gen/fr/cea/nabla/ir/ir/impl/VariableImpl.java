@@ -5,7 +5,6 @@ package fr.cea.nabla.ir.ir.impl;
 import fr.cea.nabla.ir.ir.Expression;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.Job;
-import fr.cea.nabla.ir.ir.TimeIterator;
 import fr.cea.nabla.ir.ir.Variable;
 import java.util.Collection;
 import org.eclipse.emf.common.notify.Notification;
@@ -31,9 +30,6 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#isOption <em>Option</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#getProducerJobs <em>Producer Jobs</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#getConsumerJobs <em>Consumer Jobs</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#getOriginName <em>Origin Name</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#getTimeIterator <em>Time Iterator</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.VariableImpl#getTimeIteratorIndex <em>Time Iterator Index</em>}</li>
  * </ul>
  *
  * @generated
@@ -121,52 +117,6 @@ public class VariableImpl extends ArgOrVarImpl implements Variable {
 	 * @ordered
 	 */
 	protected EList<Job> consumerJobs;
-	/**
-	 * The default value of the '{@link #getOriginName() <em>Origin Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getOriginName()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final String ORIGIN_NAME_EDEFAULT = null;
-	/**
-	 * The cached value of the '{@link #getOriginName() <em>Origin Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getOriginName()
-	 * @generated
-	 * @ordered
-	 */
-	protected String originName = ORIGIN_NAME_EDEFAULT;
-	/**
-	 * The cached value of the '{@link #getTimeIterator() <em>Time Iterator</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getTimeIterator()
-	 * @generated
-	 * @ordered
-	 */
-	protected TimeIterator timeIterator;
-
-	/**
-	 * The default value of the '{@link #getTimeIteratorIndex() <em>Time Iterator Index</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getTimeIteratorIndex()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final int TIME_ITERATOR_INDEX_EDEFAULT = 0;
-	/**
-	 * The cached value of the '{@link #getTimeIteratorIndex() <em>Time Iterator Index</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getTimeIteratorIndex()
-	 * @generated
-	 * @ordered
-	 */
-	protected int timeIteratorIndex = TIME_ITERATOR_INDEX_EDEFAULT;
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -331,114 +281,6 @@ public class VariableImpl extends ArgOrVarImpl implements Variable {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public String getOriginName() {
-		return originName;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public void setOriginName(String newOriginName) {
-		String oldOriginName = originName;
-		originName = newOriginName;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.VARIABLE__ORIGIN_NAME, oldOriginName, originName));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public TimeIterator getTimeIterator() {
-		if (timeIterator != null && timeIterator.eIsProxy()) {
-			InternalEObject oldTimeIterator = (InternalEObject)timeIterator;
-			timeIterator = (TimeIterator)eResolveProxy(oldTimeIterator);
-			if (timeIterator != oldTimeIterator) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, IrPackage.VARIABLE__TIME_ITERATOR, oldTimeIterator, timeIterator));
-			}
-		}
-		return timeIterator;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public TimeIterator basicGetTimeIterator() {
-		return timeIterator;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public NotificationChain basicSetTimeIterator(TimeIterator newTimeIterator, NotificationChain msgs) {
-		TimeIterator oldTimeIterator = timeIterator;
-		timeIterator = newTimeIterator;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, IrPackage.VARIABLE__TIME_ITERATOR, oldTimeIterator, newTimeIterator);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
-		return msgs;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public void setTimeIterator(TimeIterator newTimeIterator) {
-		if (newTimeIterator != timeIterator) {
-			NotificationChain msgs = null;
-			if (timeIterator != null)
-				msgs = ((InternalEObject)timeIterator).eInverseRemove(this, IrPackage.TIME_ITERATOR__VARIABLES, TimeIterator.class, msgs);
-			if (newTimeIterator != null)
-				msgs = ((InternalEObject)newTimeIterator).eInverseAdd(this, IrPackage.TIME_ITERATOR__VARIABLES, TimeIterator.class, msgs);
-			msgs = basicSetTimeIterator(newTimeIterator, msgs);
-			if (msgs != null) msgs.dispatch();
-		}
-		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.VARIABLE__TIME_ITERATOR, newTimeIterator, newTimeIterator));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public int getTimeIteratorIndex() {
-		return timeIteratorIndex;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public void setTimeIteratorIndex(int newTimeIteratorIndex) {
-		int oldTimeIteratorIndex = timeIteratorIndex;
-		timeIteratorIndex = newTimeIteratorIndex;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.VARIABLE__TIME_ITERATOR_INDEX, oldTimeIteratorIndex, timeIteratorIndex));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
@@ -447,10 +289,6 @@ public class VariableImpl extends ArgOrVarImpl implements Variable {
 				return ((InternalEList<InternalEObject>)(InternalEList<?>)getProducerJobs()).basicAdd(otherEnd, msgs);
 			case IrPackage.VARIABLE__CONSUMER_JOBS:
 				return ((InternalEList<InternalEObject>)(InternalEList<?>)getConsumerJobs()).basicAdd(otherEnd, msgs);
-			case IrPackage.VARIABLE__TIME_ITERATOR:
-				if (timeIterator != null)
-					msgs = ((InternalEObject)timeIterator).eInverseRemove(this, IrPackage.TIME_ITERATOR__VARIABLES, TimeIterator.class, msgs);
-				return basicSetTimeIterator((TimeIterator)otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
@@ -469,8 +307,6 @@ public class VariableImpl extends ArgOrVarImpl implements Variable {
 				return ((InternalEList<?>)getProducerJobs()).basicRemove(otherEnd, msgs);
 			case IrPackage.VARIABLE__CONSUMER_JOBS:
 				return ((InternalEList<?>)getConsumerJobs()).basicRemove(otherEnd, msgs);
-			case IrPackage.VARIABLE__TIME_ITERATOR:
-				return basicSetTimeIterator(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -495,13 +331,6 @@ public class VariableImpl extends ArgOrVarImpl implements Variable {
 				return getProducerJobs();
 			case IrPackage.VARIABLE__CONSUMER_JOBS:
 				return getConsumerJobs();
-			case IrPackage.VARIABLE__ORIGIN_NAME:
-				return getOriginName();
-			case IrPackage.VARIABLE__TIME_ITERATOR:
-				if (resolve) return getTimeIterator();
-				return basicGetTimeIterator();
-			case IrPackage.VARIABLE__TIME_ITERATOR_INDEX:
-				return getTimeIteratorIndex();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -535,15 +364,6 @@ public class VariableImpl extends ArgOrVarImpl implements Variable {
 				getConsumerJobs().clear();
 				getConsumerJobs().addAll((Collection<? extends Job>)newValue);
 				return;
-			case IrPackage.VARIABLE__ORIGIN_NAME:
-				setOriginName((String)newValue);
-				return;
-			case IrPackage.VARIABLE__TIME_ITERATOR:
-				setTimeIterator((TimeIterator)newValue);
-				return;
-			case IrPackage.VARIABLE__TIME_ITERATOR_INDEX:
-				setTimeIteratorIndex((Integer)newValue);
-				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -574,15 +394,6 @@ public class VariableImpl extends ArgOrVarImpl implements Variable {
 			case IrPackage.VARIABLE__CONSUMER_JOBS:
 				getConsumerJobs().clear();
 				return;
-			case IrPackage.VARIABLE__ORIGIN_NAME:
-				setOriginName(ORIGIN_NAME_EDEFAULT);
-				return;
-			case IrPackage.VARIABLE__TIME_ITERATOR:
-				setTimeIterator((TimeIterator)null);
-				return;
-			case IrPackage.VARIABLE__TIME_ITERATOR_INDEX:
-				setTimeIteratorIndex(TIME_ITERATOR_INDEX_EDEFAULT);
-				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -607,12 +418,6 @@ public class VariableImpl extends ArgOrVarImpl implements Variable {
 				return producerJobs != null && !producerJobs.isEmpty();
 			case IrPackage.VARIABLE__CONSUMER_JOBS:
 				return consumerJobs != null && !consumerJobs.isEmpty();
-			case IrPackage.VARIABLE__ORIGIN_NAME:
-				return ORIGIN_NAME_EDEFAULT == null ? originName != null : !ORIGIN_NAME_EDEFAULT.equals(originName);
-			case IrPackage.VARIABLE__TIME_ITERATOR:
-				return timeIterator != null;
-			case IrPackage.VARIABLE__TIME_ITERATOR_INDEX:
-				return timeIteratorIndex != TIME_ITERATOR_INDEX_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -633,10 +438,6 @@ public class VariableImpl extends ArgOrVarImpl implements Variable {
 		result.append(constExpr);
 		result.append(", option: ");
 		result.append(option);
-		result.append(", originName: ");
-		result.append(originName);
-		result.append(", timeIteratorIndex: ");
-		result.append(timeIteratorIndex);
 		result.append(')');
 		return result.toString();
 	}

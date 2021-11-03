@@ -12,14 +12,12 @@
 namespace explicitheatequationfreefuncs
 {
 template<size_t x>
-KOKKOS_INLINE_FUNCTION
 double norm(RealArray1D<x> a)
 {
 	return std::sqrt(explicitheatequationfreefuncs::dot(a, a));
 }
 
 template<size_t x>
-KOKKOS_INLINE_FUNCTION
 double dot(RealArray1D<x> a, RealArray1D<x> b)
 {
 	double result(0.0);
@@ -30,32 +28,27 @@ double dot(RealArray1D<x> a, RealArray1D<x> b)
 	return result;
 }
 
-KOKKOS_INLINE_FUNCTION
 double det(RealArray1D<2> a, RealArray1D<2> b)
 {
 	return (a[0] * b[1] - a[1] * b[0]);
 }
 
 template<size_t x>
-KOKKOS_INLINE_FUNCTION
 RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b)
 {
 	return a + b;
 }
 
-KOKKOS_INLINE_FUNCTION
 double minR0(double a, double b)
 {
 	return std::min(a, b);
 }
 
-KOKKOS_INLINE_FUNCTION
 double sumR0(double a, double b)
 {
 	return a + b;
 }
 
-KOKKOS_INLINE_FUNCTION
 double prodR0(double a, double b)
 {
 	return a * b;
@@ -73,8 +66,6 @@ ExplicitHeatEquation::ExplicitHeatEquation(CartesianMesh2D& aMesh)
 , maxNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
 , maxCellsOfFace(CartesianMesh2D::MaxNbCellsOfFace)
 , maxNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
-, lastDump(numeric_limits<int>::min())
-, deltat(0.001)
 , X("X", nbNodes)
 , Xc("Xc", nbCells)
 , u_n("u_n", nbCells)
@@ -85,13 +76,6 @@ ExplicitHeatEquation::ExplicitHeatEquation(CartesianMesh2D& aMesh)
 , faceConductivity("faceConductivity", nbFaces)
 , alpha("alpha", nbCells, nbCells)
 {
-	// Copy node coordinates
-	const auto& gNodes = mesh.getGeometry()->getNodes();
-	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
-	{
-		X(rNodes)[0] = gNodes[rNodes][0];
-		X(rNodes)[1] = gNodes[rNodes][1];
-	}
 }
 
 ExplicitHeatEquation::~ExplicitHeatEquation()
@@ -104,46 +88,62 @@ ExplicitHeatEquation::jsonInit(const char* jsonContent)
 	rapidjson::Document document;
 	assert(!document.Parse(jsonContent).HasParseError());
 	assert(document.IsObject());
-	const rapidjson::Value::Object& o = document.GetObject();
+	const rapidjson::Value::Object& options = document.GetObject();
 
 	// outputPath
-	assert(o.HasMember("outputPath"));
-	const rapidjson::Value& valueof_outputPath = o["outputPath"];
+	assert(options.HasMember("outputPath"));
+	const rapidjson::Value& valueof_outputPath = options["outputPath"];
 	assert(valueof_outputPath.IsString());
 	outputPath = valueof_outputPath.GetString();
 	writer = new PvdFileWriter2D("ExplicitHeatEquation", outputPath);
 	// outputPeriod
-	assert(o.HasMember("outputPeriod"));
-	const rapidjson::Value& valueof_outputPeriod = o["outputPeriod"];
+	assert(options.HasMember("outputPeriod"));
+	const rapidjson::Value& valueof_outputPeriod = options["outputPeriod"];
 	assert(valueof_outputPeriod.IsInt());
 	outputPeriod = valueof_outputPeriod.GetInt();
+	lastDump = numeric_limits<int>::min();
 	// u0
-	if (o.HasMember("u0"))
+	if (options.HasMember("u0"))
 	{
-		const rapidjson::Value& valueof_u0 = o["u0"];
+		const rapidjson::Value& valueof_u0 = options["u0"];
 		assert(valueof_u0.IsDouble());
 		u0 = valueof_u0.GetDouble();
 	}
 	else
-		u0 = 1.0;
-	// stopTime
-	if (o.HasMember("stopTime"))
 	{
-		const rapidjson::Value& valueof_stopTime = o["stopTime"];
+		u0 = 1.0;
+	}
+	// stopTime
+	if (options.HasMember("stopTime"))
+	{
+		const rapidjson::Value& valueof_stopTime = options["stopTime"];
 		assert(valueof_stopTime.IsDouble());
 		stopTime = valueof_stopTime.GetDouble();
 	}
 	else
-		stopTime = 1.0;
-	// maxIterations
-	if (o.HasMember("maxIterations"))
 	{
-		const rapidjson::Value& valueof_maxIterations = o["maxIterations"];
+		stopTime = 1.0;
+	}
+	// maxIterations
+	if (options.HasMember("maxIterations"))
+	{
+		const rapidjson::Value& valueof_maxIterations = options["maxIterations"];
 		assert(valueof_maxIterations.IsInt());
 		maxIterations = valueof_maxIterations.GetInt();
 	}
 	else
+	{
 		maxIterations = 500000000;
+	}
+	deltat = 0.001;
+
+	// Copy node coordinates
+	const auto& gNodes = mesh.getGeometry()->getNodes();
+	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
+	{
+		X(rNodes)[0] = gNodes[rNodes][0];
+		X(rNodes)[1] = gNodes[rNodes][1];
+	}
 }
 
 
@@ -392,7 +392,7 @@ void ExplicitHeatEquation::computeAlphaCoeff() noexcept
 
 /**
  * Job executeTimeLoopN called @4.0 in simulate method.
- * In variables: t_n, u_n
+ * In variables: lastDump, maxIterations, n, outputPeriod, stopTime, t_n, t_nplus1, u_n
  * Out variables: t_nplus1, u_nplus1
  */
 void ExplicitHeatEquation::executeTimeLoopN() noexcept

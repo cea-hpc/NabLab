@@ -11,6 +11,8 @@ package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
 import com.google.inject.Singleton
+import fr.cea.nabla.BaseTypeSizeEvaluator
+import fr.cea.nabla.ConstExprServices
 import fr.cea.nabla.LinearAlgebraUtils
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.nabla.DefaultExtension
@@ -27,6 +29,8 @@ class IrFunctionFactory
 	@Inject extension IrInstructionFactory
 	@Inject extension IrExpressionFactory
 	@Inject extension LinearAlgebraUtils
+	@Inject extension BaseTypeSizeEvaluator
+	@Inject ConstExprServices constExprServices
 
 	def toIrFunction(Function f)
 	{
@@ -41,9 +45,10 @@ class IrFunctionFactory
 		// build a unique name with name and type
 		name = f.name.toFirstLower + t.primitive.getName().charAt(0) + t.sizes.size
 		f.variables.forEach[x | variables += x.toIrVariable]
-		f.inArgs.forEach[x | inArgs += toIrArg(x, x.name)]
+		f.inArgs.forEach[x | inArgs += toIrArg(x)]
 		returnType = t.toIrBaseType
 		body = f.body.toIrInstruction
+		constExpr = false
 	}
 
 	def create IrFactory::eINSTANCE.createInternFunction toIrInternFunction(Function f)
@@ -52,9 +57,10 @@ class IrFunctionFactory
 		name = f.name
 		f.variables.forEach[x | variables += x.toIrVariable]
 		// f is internal, it has a inArgs and a body
-		f.inArgs.forEach[x | inArgs += toIrArg(x, x.name)]
+		f.inArgs.forEach[x | inArgs += toIrArg(x)]
 		body = f.body.toIrInstruction
 		returnType = f.toIrReturnType
+		constExpr = constExprServices.isConstExpr(f)
 	}
 
 	def create IrFactory::eINSTANCE.createExternFunction toIrExternFunction(Function f)
@@ -82,7 +88,12 @@ class IrFunctionFactory
 			IrFactory.eINSTANCE.createLinearAlgebraType =>
 			[
 				provider = la.toIrDefaultExtensionProvider
-				f.typeDeclaration.returnType.sizes.forEach[x | sizes += x.toIrExpression]
+				for (s : f.typeDeclaration.returnType.sizes)
+				{
+					sizes += s.toIrExpression
+					intSizes += getIntSizeFor(s)
+				}
+				isStatic = intSizes.forall[x | x != -1]
 			]
 		}
 	}

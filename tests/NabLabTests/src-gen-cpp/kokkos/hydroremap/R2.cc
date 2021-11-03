@@ -27,13 +27,13 @@ R2::jsonInit(const char* jsonContent)
 	rapidjson::Document document;
 	assert(!document.Parse(jsonContent).HasParseError());
 	assert(document.IsObject());
-	const rapidjson::Value::Object& o = document.GetObject();
+	const rapidjson::Value::Object& options = document.GetObject();
 
 }
 
 
 /**
- * Job rj1 called @2.0 in simulate method.
+ * Job rj1 called @3.0 in simulate method.
  * In variables: hv3
  * Out variables: rv2
  */
@@ -41,12 +41,12 @@ void R2::rj1() noexcept
 {
 	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& cCells)
 	{
-		rv2(cCells) = mainModule->hv3(cCells);
+		rv2(cCells) = mainModule->hv3(cCells) * 2.0;
 	});
 }
 
 /**
- * Job rj2 called @3.0 in simulate method.
+ * Job rj2 called @4.0 in simulate method.
  * In variables: rv2
  * Out variables: hv6
  */
@@ -54,6 +54,6 @@ void R2::rj2() noexcept
 {
 	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& cCells)
 	{
-		mainModule->hv6(cCells) = rv2(cCells);
+		mainModule->hv6(cCells) = rv2(cCells) * 3.0;
 	});
 }

@@ -103,7 +103,6 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 			class «m.className»;
 		«ENDFOR»
 	«ENDIF»
-	
 	«IF !functions.empty»
 
 	/******************** Free functions declarations ********************/
@@ -120,11 +119,15 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 
 	class «className»
 	{
-		«FOR adm : irRoot.modules.filter[x | x !== it]»
-		friend class «adm.className»;
-		«ENDFOR»
+		«val otherModules = irRoot.modules.filter[x | x !== it]»
+		«IF otherModules.size > 0»
+			«FOR adm : otherModules»
+				friend class «adm.className»;
+			«ENDFOR»
+
+		«ENDIF»
 		«IF kokkosTeamThread»
-		typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
+			typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
 
 		«ENDIF»
 	public:
@@ -196,7 +199,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 			«ENDIF»
 
 		«ENDIF»
-		// Option and global variables
+		// Options and global variables
 		«IF postProcessing !== null»
 			PvdFileWriter2D* writer;
 			std::string «IrUtils.OutputPathNameAndValue.key»;
@@ -212,7 +215,11 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		std::string pythonFile;
 		#else
 		«FOR v : variables»
-			«v.variableDeclaration»
+			«IF v.constExpr»
+				static constexpr «typeContentProvider.getCppType(v.type)» «v.name» = «expressionContentProvider.getContent(v.defaultValue)»;
+			«ELSE»
+				«IF v.const»const «ENDIF»«typeContentProvider.getCppType(v.type)» «v.name»;
+			«ENDIF»
 		«ENDFOR»
 		#endif
 
@@ -229,7 +236,11 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	#ifdef NABLAB_DEBUG
 	public:
 		«FOR v : variables»
-			«v.variableDeclaration»
+			«IF v.constExpr»
+				static constexpr «typeContentProvider.getCppType(v.type)» «v.name» = «expressionContentProvider.getContent(v.defaultValue)»;
+			«ELSE»
+				«IF v.const»const «ENDIF»«typeContentProvider.getCppType(v.type)» «v.name»;
+			«ENDIF»
 		«ENDFOR»
 		std::map<string, int> executionEvents;
 	#endif
@@ -276,31 +287,10 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	«FOR c : irRoot.mesh.connectivities.filter[multiple]»
 	, «c.nbElemsVar»(«c.connectivityAccessor»)
 	«ENDFOR»
-	«FOR v : variablesWithDefaultValue.filter[x | !x.constExpr]»
-	, «v.name»(«expressionContentProvider.getContent(v.defaultValue)»)
-	«ENDFOR»
-	«FOR v : variables.filter[needStaticAllocation]»
-	, «v.name»(«typeContentProvider.getCstrInit(v.type, v.name)»)
+	«FOR v : variables.filter[x | !(x.type instanceof BaseType)]»
+		, «v.name»(«typeContentProvider.getCstrInit(v.type, v.name)»)
 	«ENDFOR»
 	{
-		«val dynamicArrayVariables = variables.filter[needDynamicAllocation]»
-		«IF !dynamicArrayVariables.empty»
-			// Allocate dynamic arrays (RealArrays with at least a dynamic dimension)
-			«FOR v : dynamicArrayVariables»
-				«typeContentProvider.initCppTypeContent(v.name, v.type)»
-			«ENDFOR»
-
-		«ENDIF»
-		«IF main»
-		// Copy node coordinates
-		const auto& gNodes = mesh.getGeometry()->getNodes();
-		«val iterator = backend.typeContentProvider.formatIterators(irRoot.initNodeCoordVariable.type as ConnectivityType, #["rNodes"])»
-		for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
-		{
-			«irRoot.initNodeCoordVariable.name»«iterator»[0] = gNodes[rNodes][0];
-			«irRoot.initNodeCoordVariable.name»«iterator»[1] = gNodes[rNodes][1];
-		}
-		«ENDIF»
 		#ifdef NABLAB_DEBUG
 		«FOR j : jobs»
 			this->«Utils.getCodeName(j)»Ptr = &«className»::«Utils.getCodeName(j)»;
@@ -323,36 +313,43 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		rapidjson::Document document;
 		assert(!document.Parse(jsonContent).HasParseError());
 		assert(document.IsObject());
-		const rapidjson::Value::Object& o = document.GetObject();
+		const rapidjson::Value::Object& options = document.GetObject();
 
 		«IF postProcessing !== null»
 		«val opName = IrUtils.OutputPathNameAndValue.key»
 		// «opName»
-		assert(o.HasMember("«opName»"));
-		const rapidjson::Value& «jsonContentProvider.getJsonName(opName)» = o["«opName»"];
+		assert(options.HasMember("«opName»"));
+		const rapidjson::Value& «jsonContentProvider.getJsonName(opName)» = options["«opName»"];
 		assert(«jsonContentProvider.getJsonName(opName)».IsString());
 		«opName» = «jsonContentProvider.getJsonName(opName)».GetString();
 		writer = new PvdFileWriter2D("«irRoot.name»", «opName»);
 		«ENDIF»
-		«FOR v : options»
-		«jsonContentProvider.getJsonContent(v.name, v.type as BaseType, v.defaultValue)»
+		«FOR v : variables.filter[!constExpr]»
+			«IF v.type.dynamicBaseType»
+				«typeContentProvider.initCppTypeContent(v.name, v.type)»
+			«ENDIF»
+			«IF v.option»
+				«jsonContentProvider.getJsonContent(v.name, v.type as BaseType, v.defaultValue)»
+			«ELSEIF v.defaultValue !== null»
+				«v.name» = «expressionContentProvider.getContent(v.defaultValue)»;
+			«ENDIF»
 		«ENDFOR»
 		«FOR v : externalProviders»
 		«val vName = v.instanceName»
 		// «vName»
-		if (o.HasMember("«vName»"))
+		if (options.HasMember("«vName»"))
 		{
 			rapidjson::StringBuffer strbuf;
 			rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
-			o["«vName»"].Accept(writer);
+			options["«vName»"].Accept(writer);
 			«vName».jsonInit(strbuf.GetString());
 		}
 		«ENDFOR»
 		«IF levelDB»
 		// Non regression
 		«val nrName = IrUtils.NonRegressionNameAndValue.key»
-		assert(o.HasMember("«nrName»"));
-		const rapidjson::Value& «jsonContentProvider.getJsonName(nrName)» = o["«nrName»"];
+		assert(options.HasMember("«nrName»"));
+		const rapidjson::Value& «jsonContentProvider.getJsonName(nrName)» = options["«nrName»"];
 		assert(«jsonContentProvider.getJsonName(nrName)».IsString());
 		«nrName» = «jsonContentProvider.getJsonName(nrName)».GetString();
 		«ENDIF»
@@ -368,6 +365,17 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 			pythonFile = valueof_pythonFile.GetString();
 		}
 		#endif
+		«IF main»
+
+			// Copy node coordinates
+			const auto& gNodes = mesh.getGeometry()->getNodes();
+			«val iterator = backend.typeContentProvider.formatIterators(irRoot.initNodeCoordVariable.type as ConnectivityType, #["rNodes"])»
+			for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
+			{
+				«irRoot.initNodeCoordVariable.name»«iterator»[0] = gNodes[rNodes][0];
+				«irRoot.initNodeCoordVariable.name»«iterator»[1] = gNodes[rNodes][1];
+			}
+		«ENDIF»
 	}
 
 	«IF kokkosTeamThread»
@@ -395,7 +403,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		return std::pair<size_t, size_t>(team_offset, team_chunk);
 	}
 	«ENDIF»
-	
+
 	«FOR j : jobs SEPARATOR '\n'»
 		«backend.jobContentProvider.getDefinitionContent(j)»
 	«ENDFOR»
@@ -571,14 +579,14 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	void «className»::createDB(const std::string& db_name)
 	{
 		leveldb::DB* db;
-		leveldb::Options options;
+		leveldb::Options db_options;
 
 		// Destroy if exists
-		leveldb::DestroyDB(db_name, options);
+		leveldb::DestroyDB(db_name, db_options);
 
 		// Create data base
-		options.create_if_missing = true;
-		leveldb::Status status = leveldb::DB::Open(options, db_name, &db);
+		db_options.create_if_missing = true;
+		leveldb::Status status = leveldb::DB::Open(db_options, db_name, &db);
 		assert(status.ok());
 		// Batch to write all data at once
 		leveldb::WriteBatch batch;
@@ -602,9 +610,9 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 
 		// Loading ref DB
 		leveldb::DB* db_ref;
-		leveldb::Options options_ref;
-		options_ref.create_if_missing = false;
-		leveldb::Status status = leveldb::DB::Open(options_ref, ref, &db_ref);
+		leveldb::Options db_options_ref;
+		db_options_ref.create_if_missing = false;
+		leveldb::Status status = leveldb::DB::Open(db_options_ref, ref, &db_ref);
 		if (!status.ok())
 		{
 			std::cerr << "No ref database to compare with ! Looking for " << ref << std::endl;
@@ -614,9 +622,9 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 
 		// Loading current DB
 		leveldb::DB* db;
-		leveldb::Options options;
-		options.create_if_missing = false;
-		status = leveldb::DB::Open(options, current, &db);
+		leveldb::Options db_options;
+		db_options.create_if_missing = false;
+		status = leveldb::DB::Open(db_options, current, &db);
 		assert(status.ok());
 		leveldb::Iterator* it = db->NewIterator(leveldb::ReadOptions());
 
@@ -677,27 +685,6 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	private def isLevelDB(IrModule it)
 	{
 		main && hasLevelDB
-	}
-
-	private def CharSequence getVariableDeclaration(Variable v)
-	{
-		switch v
-		{
-			case v.constExpr: '''static constexpr «typeContentProvider.getCppType(v.type)» «v.name» = «expressionContentProvider.getContent(v.defaultValue)»;'''
-			case v.const: '''const «typeContentProvider.getCppType(v.type)» «v.name»;'''
-			default: '''«typeContentProvider.getCppType(v.type)» «v.name»;'''
-		}
-	}
-
-	/** BaseType never need explicit static allocation: it is either scalar or MultiArray default cstr */
-	private def needStaticAllocation(Variable v)
-	{
-		!(v.type instanceof BaseType) && v.type.isBaseTypeStatic
-	}
-
-	private def needDynamicAllocation(Variable v)
-	{
-		!v.type.isBaseTypeStatic
 	}
 
 	private def isKokkosTeamThread()

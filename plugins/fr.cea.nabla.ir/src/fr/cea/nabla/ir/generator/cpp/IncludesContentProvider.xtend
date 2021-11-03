@@ -54,6 +54,7 @@ class IncludesContentProvider
 			systemIncludes += "leveldb/db.h"
 			systemIncludes += "leveldb/write_batch.h"
 		}
+		systemIncludes += "rapidjson/document.h"
 
 		return systemIncludes
 	}

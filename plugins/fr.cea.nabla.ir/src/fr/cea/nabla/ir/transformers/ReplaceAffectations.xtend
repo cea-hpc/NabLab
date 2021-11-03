@@ -121,7 +121,11 @@ class ReplaceAffectations  extends IrTransformationStep
 		IrFactory::eINSTANCE.createVariable =>
 		[
 			name = "i" + depth
-			type = IrFactory.eINSTANCE.createBaseType => [ primitive = PrimitiveType::INT ]
+			type = IrFactory.eINSTANCE.createBaseType =>
+			[
+				primitive = PrimitiveType::INT
+				isStatic = true
+			]
 			const = false
 			constExpr = false
 			option = false

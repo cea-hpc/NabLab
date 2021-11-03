@@ -19,6 +19,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
+import org.eclipse.emf.ecore.util.EDataTypeEList;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
@@ -32,6 +33,8 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.BaseTypeImpl#getPrimitive <em>Primitive</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.BaseTypeImpl#getSizes <em>Sizes</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.BaseTypeImpl#getIntSizes <em>Int Sizes</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.BaseTypeImpl#isIsStatic <em>Is Static</em>}</li>
  * </ul>
  *
  * @generated
@@ -66,6 +69,36 @@ public class BaseTypeImpl extends IrTypeImpl implements BaseType {
 	 * @ordered
 	 */
 	protected EList<Expression> sizes;
+
+	/**
+	 * The cached value of the '{@link #getIntSizes() <em>Int Sizes</em>}' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getIntSizes()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<Integer> intSizes;
+
+	/**
+	 * The default value of the '{@link #isIsStatic() <em>Is Static</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isIsStatic()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean IS_STATIC_EDEFAULT = false;
+
+	/**
+	 * The cached value of the '{@link #isIsStatic() <em>Is Static</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isIsStatic()
+	 * @generated
+	 * @ordered
+	 */
+	protected boolean isStatic = IS_STATIC_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -128,6 +161,42 @@ public class BaseTypeImpl extends IrTypeImpl implements BaseType {
 	 * @generated
 	 */
 	@Override
+	public EList<Integer> getIntSizes() {
+		if (intSizes == null) {
+			intSizes = new EDataTypeEList<Integer>(Integer.class, this, IrPackage.BASE_TYPE__INT_SIZES);
+		}
+		return intSizes;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public boolean isIsStatic() {
+		return isStatic;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setIsStatic(boolean newIsStatic) {
+		boolean oldIsStatic = isStatic;
+		isStatic = newIsStatic;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.BASE_TYPE__IS_STATIC, oldIsStatic, isStatic));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case IrPackage.BASE_TYPE__SIZES:
@@ -148,6 +217,10 @@ public class BaseTypeImpl extends IrTypeImpl implements BaseType {
 				return getPrimitive();
 			case IrPackage.BASE_TYPE__SIZES:
 				return getSizes();
+			case IrPackage.BASE_TYPE__INT_SIZES:
+				return getIntSizes();
+			case IrPackage.BASE_TYPE__IS_STATIC:
+				return isIsStatic();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -168,6 +241,13 @@ public class BaseTypeImpl extends IrTypeImpl implements BaseType {
 				getSizes().clear();
 				getSizes().addAll((Collection<? extends Expression>)newValue);
 				return;
+			case IrPackage.BASE_TYPE__INT_SIZES:
+				getIntSizes().clear();
+				getIntSizes().addAll((Collection<? extends Integer>)newValue);
+				return;
+			case IrPackage.BASE_TYPE__IS_STATIC:
+				setIsStatic((Boolean)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -186,6 +266,12 @@ public class BaseTypeImpl extends IrTypeImpl implements BaseType {
 			case IrPackage.BASE_TYPE__SIZES:
 				getSizes().clear();
 				return;
+			case IrPackage.BASE_TYPE__INT_SIZES:
+				getIntSizes().clear();
+				return;
+			case IrPackage.BASE_TYPE__IS_STATIC:
+				setIsStatic(IS_STATIC_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -202,6 +288,10 @@ public class BaseTypeImpl extends IrTypeImpl implements BaseType {
 				return primitive != PRIMITIVE_EDEFAULT;
 			case IrPackage.BASE_TYPE__SIZES:
 				return sizes != null && !sizes.isEmpty();
+			case IrPackage.BASE_TYPE__INT_SIZES:
+				return intSizes != null && !intSizes.isEmpty();
+			case IrPackage.BASE_TYPE__IS_STATIC:
+				return isStatic != IS_STATIC_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -218,6 +308,10 @@ public class BaseTypeImpl extends IrTypeImpl implements BaseType {
 		StringBuilder result = new StringBuilder(super.toString());
 		result.append(" (primitive: ");
 		result.append(primitive);
+		result.append(", intSizes: ");
+		result.append(intSizes);
+		result.append(", isStatic: ");
+		result.append(isStatic);
 		result.append(')');
 		return result.toString();
 	}

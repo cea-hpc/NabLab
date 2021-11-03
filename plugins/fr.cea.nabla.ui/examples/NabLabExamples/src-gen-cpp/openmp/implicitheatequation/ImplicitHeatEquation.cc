@@ -66,8 +66,6 @@ ImplicitHeatEquation::ImplicitHeatEquation(CartesianMesh2D& aMesh)
 , maxNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
 , maxCellsOfFace(CartesianMesh2D::MaxNbCellsOfFace)
 , maxNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
-, lastDump(numeric_limits<int>::min())
-, deltat(0.001)
 , X(nbNodes)
 , Xc(nbCells)
 , u_n("u_n", nbCells)
@@ -78,13 +76,6 @@ ImplicitHeatEquation::ImplicitHeatEquation(CartesianMesh2D& aMesh)
 , faceConductivity(nbFaces)
 , alpha("alpha", nbCells, nbCells)
 {
-	// Copy node coordinates
-	const auto& gNodes = mesh.getGeometry()->getNodes();
-	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
-	{
-		X[rNodes][0] = gNodes[rNodes][0];
-		X[rNodes][1] = gNodes[rNodes][1];
-	}
 }
 
 ImplicitHeatEquation::~ImplicitHeatEquation()
@@ -97,53 +88,69 @@ ImplicitHeatEquation::jsonInit(const char* jsonContent)
 	rapidjson::Document document;
 	assert(!document.Parse(jsonContent).HasParseError());
 	assert(document.IsObject());
-	const rapidjson::Value::Object& o = document.GetObject();
+	const rapidjson::Value::Object& options = document.GetObject();
 
 	// outputPath
-	assert(o.HasMember("outputPath"));
-	const rapidjson::Value& valueof_outputPath = o["outputPath"];
+	assert(options.HasMember("outputPath"));
+	const rapidjson::Value& valueof_outputPath = options["outputPath"];
 	assert(valueof_outputPath.IsString());
 	outputPath = valueof_outputPath.GetString();
 	writer = new PvdFileWriter2D("ImplicitHeatEquation", outputPath);
 	// outputPeriod
-	assert(o.HasMember("outputPeriod"));
-	const rapidjson::Value& valueof_outputPeriod = o["outputPeriod"];
+	assert(options.HasMember("outputPeriod"));
+	const rapidjson::Value& valueof_outputPeriod = options["outputPeriod"];
 	assert(valueof_outputPeriod.IsInt());
 	outputPeriod = valueof_outputPeriod.GetInt();
+	lastDump = numeric_limits<int>::min();
 	// u0
-	if (o.HasMember("u0"))
+	if (options.HasMember("u0"))
 	{
-		const rapidjson::Value& valueof_u0 = o["u0"];
+		const rapidjson::Value& valueof_u0 = options["u0"];
 		assert(valueof_u0.IsDouble());
 		u0 = valueof_u0.GetDouble();
 	}
 	else
-		u0 = 1.0;
-	// stopTime
-	if (o.HasMember("stopTime"))
 	{
-		const rapidjson::Value& valueof_stopTime = o["stopTime"];
+		u0 = 1.0;
+	}
+	// stopTime
+	if (options.HasMember("stopTime"))
+	{
+		const rapidjson::Value& valueof_stopTime = options["stopTime"];
 		assert(valueof_stopTime.IsDouble());
 		stopTime = valueof_stopTime.GetDouble();
 	}
 	else
-		stopTime = 1.0;
-	// maxIterations
-	if (o.HasMember("maxIterations"))
 	{
-		const rapidjson::Value& valueof_maxIterations = o["maxIterations"];
+		stopTime = 1.0;
+	}
+	// maxIterations
+	if (options.HasMember("maxIterations"))
+	{
+		const rapidjson::Value& valueof_maxIterations = options["maxIterations"];
 		assert(valueof_maxIterations.IsInt());
 		maxIterations = valueof_maxIterations.GetInt();
 	}
 	else
+	{
 		maxIterations = 500000000;
+	}
+	deltat = 0.001;
 	// linearAlgebra
-	if (o.HasMember("linearAlgebra"))
+	if (options.HasMember("linearAlgebra"))
 	{
 		rapidjson::StringBuffer strbuf;
 		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
-		o["linearAlgebra"].Accept(writer);
+		options["linearAlgebra"].Accept(writer);
 		linearAlgebra.jsonInit(strbuf.GetString());
+	}
+
+	// Copy node coordinates
+	const auto& gNodes = mesh.getGeometry()->getNodes();
+	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
+	{
+		X[rNodes][0] = gNodes[rNodes][0];
+		X[rNodes][1] = gNodes[rNodes][1];
 	}
 }
 
@@ -155,7 +162,7 @@ ImplicitHeatEquation::jsonInit(const char* jsonContent)
  */
 void ImplicitHeatEquation::computeFaceLength() noexcept
 {
-	#pragma omp parallel for shared(faceLength)
+	#pragma omp parallel
 	for (size_t fFaces=0; fFaces<nbFaces; fFaces++)
 	{
 		const Id fId(fFaces);
@@ -193,7 +200,7 @@ void ImplicitHeatEquation::computeTn() noexcept
  */
 void ImplicitHeatEquation::computeV() noexcept
 {
-	#pragma omp parallel for shared(V)
+	#pragma omp parallel
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		const Id jId(jCells);
@@ -221,7 +228,7 @@ void ImplicitHeatEquation::computeV() noexcept
  */
 void ImplicitHeatEquation::initD() noexcept
 {
-	#pragma omp parallel for shared(D)
+	#pragma omp parallel
 	for (size_t cCells=0; cCells<nbCells; cCells++)
 	{
 		D[cCells] = 1.0;
@@ -245,7 +252,7 @@ void ImplicitHeatEquation::initTime() noexcept
  */
 void ImplicitHeatEquation::initXc() noexcept
 {
-	#pragma omp parallel for shared(Xc)
+	#pragma omp parallel
 	for (size_t cCells=0; cCells<nbCells; cCells++)
 	{
 		const Id cId(cCells);
@@ -297,7 +304,7 @@ void ImplicitHeatEquation::computeDeltaTn() noexcept
  */
 void ImplicitHeatEquation::computeFaceConductivity() noexcept
 {
-	#pragma omp parallel for shared(faceConductivity)
+	#pragma omp parallel
 	for (size_t fFaces=0; fFaces<nbFaces; fFaces++)
 	{
 		const Id fId(fFaces);
@@ -334,7 +341,7 @@ void ImplicitHeatEquation::computeFaceConductivity() noexcept
  */
 void ImplicitHeatEquation::initU() noexcept
 {
-	#pragma omp parallel for shared(u_n)
+	#pragma omp parallel
 	for (size_t cCells=0; cCells<nbCells; cCells++)
 	{
 		if (implicitheatequationfreefuncs::norm(Xc[cCells] - vectOne) < 0.5) 
@@ -361,7 +368,7 @@ void ImplicitHeatEquation::setUpTimeLoopN() noexcept
  */
 void ImplicitHeatEquation::computeAlphaCoeff() noexcept
 {
-	#pragma omp parallel for shared(alpha)
+	#pragma omp parallel
 	for (size_t cCells=0; cCells<nbCells; cCells++)
 	{
 		const Id cId(cCells);
@@ -386,7 +393,7 @@ void ImplicitHeatEquation::computeAlphaCoeff() noexcept
 
 /**
  * Job executeTimeLoopN called @4.0 in simulate method.
- * In variables: t_n, u_n
+ * In variables: lastDump, maxIterations, n, outputPeriod, stopTime, t_n, t_nplus1, u_n
  * Out variables: t_nplus1, u_nplus1
  */
 void ImplicitHeatEquation::executeTimeLoopN() noexcept

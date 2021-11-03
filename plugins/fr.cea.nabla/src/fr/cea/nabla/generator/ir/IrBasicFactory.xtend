@@ -11,6 +11,7 @@ package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
 import com.google.inject.Singleton
+import fr.cea.nabla.BaseTypeSizeEvaluator
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.Connectivity
@@ -25,6 +26,7 @@ class IrBasicFactory
 {
 	@Inject extension NabLabFileAnnotationFactory
 	@Inject extension IrExpressionFactory
+	@Inject extension BaseTypeSizeEvaluator
 
 	// No create method to ensure a new instance every time (for n+1 time variables)
 	def fr.cea.nabla.ir.ir.BaseType toIrBaseType(BaseType t)
@@ -32,7 +34,12 @@ class IrBasicFactory
 		IrFactory::eINSTANCE.createBaseType =>
 		[
 			primitive = t.primitive.toIrPrimitiveType
-			t.sizes.forEach[x | sizes += x.toIrExpression]
+			for (s : t.sizes)
+			{
+				sizes += s.toIrExpression
+				intSizes += getIntSizeFor(s)
+			}
+			isStatic = intSizes.forall[x | x !== BaseTypeSizeEvaluator::DYNAMIC_SIZE]
 		]
 	}
 
@@ -65,15 +72,6 @@ class IrBasicFactory
 			provider = ext.toIrMeshExtensionProvider
 		]
 	}
-
-//	def toIrExtensionProvider(NablaExtension ext)
-//	{
-//		switch ext
-//		{
-//			DefaultExtension: ext.toIrDefaultExtensionProvider
-//			MeshExtension: ext.toIrMeshExtensionProvider
-//		}
-//	}
 
 	def create IrFactory::eINSTANCE.createMeshExtensionProvider toIrMeshExtensionProvider(MeshExtension ext)
 	{

@@ -65,7 +65,7 @@ class NablaModuleExtensions
 		jobs.findFirst[j | j.name == jobName]
 	}
 
-	def getVariableByName(NablaModule it, String variableName)
+	def getVarByName(NablaModule it, String variableName)
 	{
 		allVars.filter(Var).findFirst[v | v.name == variableName]
 	}

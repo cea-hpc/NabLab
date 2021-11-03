@@ -27,10 +27,11 @@ class JobInterpreter
 	// Switch to more efficient dispatch (also clearer for profiling)
 	static def void interprete(Job j, Context context)
 	{
-		if (j instanceof ExecuteTimeLoopJob)
-			interpreteExecuteTimeLoopJob(j, context)
-		else
-			interpreteJob(j, context)
+		switch j
+		{
+			ExecuteTimeLoopJob: interpreteExecuteTimeLoopJob(j, context)
+			default: interpreteJob(j, context)
+		}
 	}
 
 	private static def void interpreteJob(Job it, Context context)

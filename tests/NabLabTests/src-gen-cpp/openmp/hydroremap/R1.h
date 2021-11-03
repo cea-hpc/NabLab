@@ -9,6 +9,7 @@
 #include <limits>
 #include <utility>
 #include <cmath>
+#include <rapidjson/document.h>
 #include <omp.h>
 #include "nablalib/utils/Utils.h"
 #include "nablalib/utils/Timer.h"
@@ -25,6 +26,7 @@ class R1
 {
 	friend class Hydro;
 	friend class R2;
+
 public:
 	R1(CartesianMesh2D& aMesh);
 	~R1();
@@ -49,7 +51,7 @@ private:
 	// Main module
 	Hydro* mainModule;
 
-	// Option and global variables
+	// Options and global variables
 	std::vector<double> rv3;
 
 	// Timers

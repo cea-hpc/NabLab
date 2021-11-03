@@ -14,7 +14,7 @@ MainModule Iteration iteration
 	nodeCoord = X;
 	time = t;
 	timeStep = δt;
-	iterationMax = maxIter;
+	iterationMax = maxIterN;
 	timeMax = maxTime;
 }
 

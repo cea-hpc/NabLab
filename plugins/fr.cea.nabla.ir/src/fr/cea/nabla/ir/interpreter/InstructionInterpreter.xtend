@@ -86,10 +86,14 @@ class InstructionInterpreter
 	{
 		context.logFinest("Interprete Affectation")
 		val rightValue = interprete(right, context)
-		// Switch to more efficient implementation (avoid costly toList calls)
-		val allIndices = newArrayList
-		left.iterators.forEach[x|allIndices.add(context.getIndexValue(x))]
-		allIndices.addAll(interpreteDimensionExpressions(left.indices, context))
+
+		val allIndices = newIntArrayOfSize(left.iterators.size + left.indices.size)
+		var i = 0
+		for (iterator : left.iterators)
+			allIndices.set(i++, context.getIndexValue(iterator))
+		for (index : left.indices)
+			allIndices.set(i++, interpreteSize(index, context))
+
 		setValue(context.getVariableValue(left.target), allIndices, rightValue)
 		return null
 	}

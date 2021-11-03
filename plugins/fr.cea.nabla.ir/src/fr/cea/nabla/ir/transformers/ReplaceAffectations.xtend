@@ -27,6 +27,13 @@ import org.eclipse.emf.ecore.util.EcoreUtil
 
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 
+/**
+ * Replace affectations to avoid aliasing.
+ * Affectations on connectivity and array variables at left and ArgOrVarRef instance at right
+ * are replaced by a loop to avoid aliasing.
+ * Note that an affectation on a connectivity variable is an error in the NabLab language but it 
+ * can be created during IR transformation (for example Un = Un+1 at the end of time loop).
+ */
 class ReplaceAffectations  extends IrTransformationStep
 {
 	new()

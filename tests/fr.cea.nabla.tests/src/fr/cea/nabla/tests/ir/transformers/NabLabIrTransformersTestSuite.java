@@ -16,7 +16,7 @@ import org.junit.runners.Suite;
 
 @Suite.SuiteClasses
 ({
-	//CreateInitVariableJobsTest.class,
+	ReplaceAffectationsTest.class,
 })
 
 public class NabLabIrTransformersTestSuite {}

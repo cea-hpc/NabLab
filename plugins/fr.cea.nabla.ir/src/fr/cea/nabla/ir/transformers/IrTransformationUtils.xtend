@@ -37,12 +37,17 @@ class IrTransformationUtils
 			}
 			else
 			{
-				val replacementBlock = IrFactory::eINSTANCE.createInstructionBlock =>
-				[
-					for (toAdd : newInstructions)
-						instructions += toAdd
-				]
-				container.eSet(feature, replacementBlock)
+				if (newInstructions.size == 1)
+					container.eSet(feature, newInstructions.get(0))
+				else
+				{
+					val replacementBlock = IrFactory::eINSTANCE.createInstructionBlock =>
+					[
+						for (toAdd : newInstructions)
+							instructions += toAdd
+					]
+					container.eSet(feature, replacementBlock)
+				}
 			}
 		}
 	}
@@ -66,12 +71,17 @@ class IrTransformationUtils
 			}
 			else
 			{
-				val replacementBlock = IrFactory::eINSTANCE.createInstructionBlock =>
-				[
-					for (toAdd : instructionsToInsert) instructions += toAdd
-					instructions += existingInstruction
-				]
-				container.eSet(feature, replacementBlock)
+				if (instructionsToInsert.size == 1)
+					container.eSet(feature, instructionsToInsert.get(0))
+				else
+				{
+					val replacementBlock = IrFactory::eINSTANCE.createInstructionBlock =>
+					[
+						for (toAdd : instructionsToInsert) instructions += toAdd
+						instructions += existingInstruction
+					]
+					container.eSet(feature, replacementBlock)
+				}
 			}
 		}
 	}

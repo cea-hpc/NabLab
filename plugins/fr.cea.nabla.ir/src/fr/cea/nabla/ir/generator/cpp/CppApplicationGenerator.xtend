@@ -24,6 +24,7 @@ import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.Variable
 import java.util.ArrayList
 import java.util.LinkedHashSet
+import java.util.Map
 
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
@@ -59,6 +60,17 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		fileContents += new GenerationContent('CMakeLists.txt', backend.cmakeContentProvider.getContentFor(ir, hasLevelDB, cMakeVars), false)
 		fileContents += new GenerationContent('nablabdefs.h.in', '#cmakedefine NABLAB_DEBUG', false)
 		return fileContents
+	}
+	
+	val Map<String, Integer> _executionEvents = newHashMap
+	
+	private def getExecutionEvents(IrModule it)
+	{
+		if (_executionEvents.empty)
+		{
+			jobs.forEach[j, i|_executionEvents.put(j.name.toFirstUpper, i)]
+		}
+		return _executionEvents
 	}
 
 	private def getHeaderFileContent(IrModule it)
@@ -157,8 +169,8 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		«ENDIF»
 		#ifdef NABLAB_DEBUG
 		void pythonInitialize();
-
 		#endif
+
 		«IF kokkosTeamThread»
 		/**
 		 * Utility function to get work load for each team of threads
@@ -210,8 +222,8 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		Timer ioTimer;
 
 		#ifdef NABLAB_DEBUG
-		map<string, std::list<py::function>> before;
-		map<string, std::list<py::function>> after;
+		std::list<py::function> before[«executionEvents.size»];
+		std::list<py::function> after[«executionEvents.size»];
 		#endif
 
 	#ifdef NABLAB_DEBUG
@@ -219,6 +231,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		«FOR v : variables»
 			«v.variableDeclaration»
 		«ENDFOR»
+		std::map<string, int> executionEvents;
 	#endif
 	};
 
@@ -290,8 +303,13 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		«ENDIF»
 		#ifdef NABLAB_DEBUG
 		«FOR j : jobs»
-			this->«Utils.getCodeName(j)»Ptr = &«className»::«Utils.getCodeName(j)»Wrapper;
+			this->«Utils.getCodeName(j)»Ptr = &«className»::«Utils.getCodeName(j)»;
 		«ENDFOR»
+		this->executionEvents = {
+			«FOR p : executionEvents.entrySet.sortBy[value] SEPARATOR ','»
+			{"«p.key»", «p.value»}
+			«ENDFOR»
+		};
 		#endif
 	}
 
@@ -384,8 +402,10 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	
 	#ifdef NABLAB_DEBUG
 	«FOR j : jobs SEPARATOR '\n'»
-		«backend.jobContentProvider.getWrapperDefinitionContent(j)»
+		«backend.jobContentProvider.getWrapperDefinitionContent(j, executionEvents)»
 	«ENDFOR»
+«««	TODO: add function wrappers
+«««	TODO: add variable assignment wrappers
 	#endif
 	
 	«IF main»
@@ -447,25 +467,90 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		«ENDFOR»
 	}
 
-	void «className»::pythonInitialize() {
+	void «className»::setFunctionPtr(int idx, bool wrapper)
+	{
+		if (wrapper)
+		{
+			«FOR p : executionEvents.entrySet.sortBy[value]»
+			case «p.value»:
+				«p.key.toFirstLower»Ptr = &«className»::«p.key.toFirstLower»Wrapper;
+				break;
+			«ENDFOR»
+		}
+		else
+		{
+			«FOR p : executionEvents.entrySet.sortBy[value]»
+			case «p.value»:
+				«p.key.toFirstLower»Ptr = &«className»::«p.key.toFirstLower»;
+				break;
+			«ENDFOR»
+		}
+	}
+
+	void «className»::pythonInitialize()
+	{
 		py::module_::import("sys").attr("path").attr("append")(pythonPath);
+		py::module_ monilogModule = py::module_::import("monilog");
+		monilogModule.def("_register_before", [&](py::str event, py::function monilogger)
+		{
+			int idx = executionEvents[event];
+			std::list<py::function> beforeMoniloggers = before[idx];
+			std::list<py::function>::iterator it = std::find(beforeMoniloggers.begin(), beforeMoniloggers.end(), monilogger);
+			if (it == beforeMoniloggers.end())
+			{
+				before[idx].push_back(monilogger);
+				setFunctionPtr(idx, true);
+			}
+		});
+		monilogModule.def("_register_after", [&](py::str event, py::function monilogger)
+		{
+			int idx = executionEvents[event];
+			std::list<py::function> afterMoniloggers = after[idx];
+			std::list<py::function>::iterator it = std::find(afterMoniloggers.begin(), afterMoniloggers.end(), monilogger);
+			if (it == afterMoniloggers.end())
+			{
+				after[idx].push_back(monilogger);
+				setFunctionPtr(idx, true);
+			}
+		});
+		monilogModule.def("_stop", [&](py::str event, py::function monilogger)
+		{
+			int idx = executionEvents[event];
+			{
+				std::list<py::function> beforeMoniloggers = before[idx];
+				std::list<py::function>::iterator it = std::find(beforeMoniloggers.begin(), beforeMoniloggers.end(), monilogger);
+				if (it != beforeMoniloggers.end())
+				{
+					beforeMoniloggers.erase(it);
+					before[idx] = beforeMoniloggers;
+					if (beforeMoniloggers.empty() && after[idx].empty())
+					{
+						setFunctionPtr(idx, false);
+					}
+				}
+			}
+			{
+				std::list<py::function> afterMoniloggers = after[idx];
+				std::list<py::function>::iterator it = std::find(afterMoniloggers.begin(), afterMoniloggers.end(), monilogger);
+				if (it != afterMoniloggers.end())
+				{
+					afterMoniloggers.erase(it);
+					after[idx] = afterMoniloggers;
+					if (before[idx].empty() && afterMoniloggers.empty())
+					{
+						switch (idx)
+						{
+							setFunctionPtr(idx, false);
+						}
+					}
+				}
+			}
+		});
 		py::module_::import("«className.toLowerCase»internal").add_object("_«className»_C_API", py::capsule(this));
-		py::module_ pScript = py::module_::import(pythonFile.c_str());
-		py::dict hooks = py::reinterpret_borrow <py::dict>(py::module_::import("monilog").attr("hooks"));
-
-		py::dict pBefore = py::reinterpret_borrow<py::dict>(hooks["before"]);
-		for (auto item : pBefore) {
-			for (auto f : item.second) {
-				before[py::str(item.first)].push_back(py::reinterpret_borrow<py::function>(pScript.attr(f)));
-			}
-		};
-
-		py::dict pAfter = py::reinterpret_borrow<py::dict>(hooks["after"]);
-		for (auto item : pAfter) {
-			for (auto f : item.second) {
-				after[py::str(item.first)].push_back(py::reinterpret_borrow<py::function>(pScript.attr(f)));
-			}
-		};
+		if (pythonFile != "")
+		{
+			py::module_ pScript = py::module_::import(pythonFile.c_str());
+		}
 	}
 	#endif
 

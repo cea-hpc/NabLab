@@ -49,6 +49,9 @@ abstract class InstructionContentProvider
 	def dispatch CharSequence getContent(VariableDeclaration it)
 	'''
 		«IF variable.type.baseTypeStatic»
+			«IF variable.defaultValue !== null»
+			// TODO instrument assign
+			«ENDIF»
 			«IF variable.const»const «ENDIF»«variable.type.cppType» «variable.name»«IF variable.defaultValue !== null»(«variable.defaultValue.content»)«ENDIF»;
 		«ELSE»
 			«IF variable.const»const «ENDIF»«variable.type.cppType» «variable.name»;
@@ -67,9 +70,15 @@ abstract class InstructionContentProvider
 	def dispatch CharSequence getContent(Affectation it)
 	{
 		if (left.target.linearAlgebra && !(left.iterators.empty && left.indices.empty))
-			'''«left.codeName».setValue(«formatIteratorsAndIndices(left.target.type, left.iterators, left.indices)», «right.content»);'''
+			'''
+			// TODO instrument assign
+			«left.codeName».setValue(«formatIteratorsAndIndices(left.target.type, left.iterators, left.indices)», «right.content»);
+			'''
 		else
-			'''«left.content» = «right.content»;'''
+			'''
+			// TODO instrument assign
+			«left.content» = «right.content»;
+			'''
 	}
 
 	def dispatch CharSequence getContent(ReductionInstruction it)

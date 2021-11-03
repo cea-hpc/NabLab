@@ -72,78 +72,78 @@ class PythonModuleGenerator extends StandaloneGeneratorBase {
 				from singleton import *
 				
 				class «ir.name.toFirstUpper»GlobalContext(metaclass=Singleton):
-				  «FOR v : allGlobals»
-				  @property
-				  def «v.name»(self):
-				    return internal.«v.name»()
-				  
-				  «ENDFOR»
+				    «FOR v : allGlobals»
+				    @property
+				    def «v.name»(self):
+				        return internal.«v.name»()
+				    
+				    «ENDFOR»
 				
 				«FOR j : allJobs»
 				class «j.name.toFirstUpper»Context(«ir.name.toFirstUpper»GlobalContext):
-				  pass
+				    pass
 				
 				«FOR l : allLocals.getOrDefault(j, emptyList)»
 				class «j.name.toFirstUpper»«l.name.toFirstUpper»Context(«j.name.toFirstUpper»Context):
-				  @property
-				  def «l.name»(self):
-				    return internal.«j.name»_«l.name»()
+				    @property
+				    def «l.name»(self):
+				        return internal.«j.name»_«l.name»()
 				
 				«ENDFOR»
 				
 				class «j.name.toFirstUpper»(metaclass=Singleton):
-				  context = «j.name.toFirstUpper»Context()
-				  
-				  «FOR l : allLocals.getOrDefault(j, emptyList)»
-				  @property
-				  def «l.name»(self):
-				    return «l.name.toFirstUpper»()
-				  
-				  class «l.name.toFirstUpper»(metaclass=Singleton):
-				    context = «j.name.toFirstUpper»«l.name.toFirstUpper»Context()
-				  
-				  «ENDFOR»
+				    context = «j.name.toFirstUpper»Context()
+				    
+				    «FOR l : allLocals.getOrDefault(j, emptyList)»
+				    @property
+				    def «l.name»(self):
+				        return «l.name.toFirstUpper»()
+				    
+				    class «l.name.toFirstUpper»(metaclass=Singleton):
+				        context = «j.name.toFirstUpper»«l.name.toFirstUpper»Context()
+				    
+				    «ENDFOR»
 				
 				«ENDFOR»
 				
 				«FOR f : allFunctions»
 				class «f.name.toFirstUpper»Context(«ir.name.toFirstUpper»GlobalContext):
-				  «FOR v : f.inArgs»
-				  @property
-				  def «v.name»(self):
-				    return internal.«f.name»_«v.name»()
-				  
-				  «ENDFOR»
+				    «FOR v : f.inArgs»
+				    @property
+				    def «v.name»(self):
+				        return internal.«f.name»_«v.name»()
+				    
+				    «ENDFOR»
 				
 				«FOR l : allLocals.getOrDefault(f, emptyList)»
 				class «f.name.toFirstUpper»«l.name.toFirstUpper»Context(«f.name.toFirstUpper»Context):
-				  @property
-				  def «l.name»(self):
-				    return internal.«f.name»_«l.name»()
+				    @property
+				    def «l.name»(self):
+				        return internal.«f.name»_«l.name»()
 				
 				«ENDFOR»
 				
 				class «f.name.toFirstUpper»(metaclass=Singleton):
-				  context = «f.name.toFirstUpper»Context()
-				  
-				  «FOR l : allLocals.getOrDefault(f, emptyList)»
-				  @property
-				  def «l.name»(self):
-				    return «l.name.toFirstUpper»()
-				  
-				  class «l.name.toFirstUpper»(metaclass=Singleton):
-				    context = «f.name.toFirstUpper»«l.name.toFirstUpper»Context()
-				  
-				  «ENDFOR»
+				    context = «f.name.toFirstUpper»Context()
+				    
+				    «FOR l : allLocals.getOrDefault(f, emptyList)»
+				    @property
+				    def «l.name»(self):
+				        return «l.name.toFirstUpper»()
+				    
+				    class «l.name.toFirstUpper»(metaclass=Singleton):
+				        context = «f.name.toFirstUpper»«l.name.toFirstUpper»Context()
+				    
+				    «ENDFOR»
 				
 				«ENDFOR»
 				
 				«FOR a : allAssigns.filter[assign|assign.eContainer instanceof IrModule]»
 				class «a.name.toFirstUpper»Context(«ir.name.toFirstUpper»GlobalContext):
-				  pass
+				    pass
 				
 				class «a.name.toFirstUpper»(metaclass=Singleton):
-				  context = «a.name.toFirstUpper»Context()
+				    context = «a.name.toFirstUpper»Context()
 				
 				«ENDFOR»
 			'''

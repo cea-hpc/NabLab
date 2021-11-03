@@ -16,6 +16,7 @@ import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.JobCaller
 import java.util.List
+import java.util.Map
 import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
@@ -52,16 +53,20 @@ abstract class JobContentProvider
 		}
 	'''
 
-	def getWrapperDefinitionContent(Job it)
+	def getWrapperDefinitionContent(Job it, Map<String, Integer> executionEvents)
 	'''
-		«comment»
+		«wrapperComment»
 		void «IrUtils.getContainerOfType(it, IrModule).className»::«codeName»Wrapper() noexcept
 		{
-			for (auto monilogger : before["«it.name.toFirstUpper»"]) {
+			std::list<py::function> beforeMoniloggers = before[«executionEvents.get(it.name.toFirstUpper)»];
+			for (py::function monilogger : beforeMoniloggers)
+			{
 				monilogger();
 			}
 			«codeName»();
-			for (auto monilogger : after["«it.name.toFirstUpper»"]) {
+			std::list<py::function> afterMoniloggers = after[«executionEvents.get(it.name.toFirstUpper)»];
+			for (py::function monilogger : afterMoniloggers)
+			{
 				monilogger();
 			}
 		}

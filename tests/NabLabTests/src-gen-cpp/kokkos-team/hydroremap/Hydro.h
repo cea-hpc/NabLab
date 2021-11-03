@@ -9,6 +9,7 @@
 #include <limits>
 #include <utility>
 #include <cmath>
+#include <rapidjson/document.h>
 #include <Kokkos_Core.hpp>
 #include <Kokkos_hwloc.hpp>
 #include "nablalib/utils/Utils.h"
@@ -24,12 +25,20 @@ using namespace nablalib::utils::kokkos;
 class R1;
 class R2;
 
+/******************** Free functions declarations ********************/
+
+namespace hydrofreefuncs
+{
+bool assertEquals(double expected, double actual);
+}
+
 /******************** Module declaration ********************/
 
 class Hydro
 {
 	friend class R1;
 	friend class R2;
+
 	typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
 
 public:
@@ -39,12 +48,18 @@ public:
 	void jsonInit(const char* jsonContent);
 
 	void simulate();
-	KOKKOS_INLINE_FUNCTION
+	void iniHv1(const member_type& teamMember) noexcept;
+	void iniHv2(const member_type& teamMember) noexcept;
 	void hj1(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
+	void oracleHv1(const member_type& teamMember) noexcept;
+	void oracleHv2(const member_type& teamMember) noexcept;
 	void hj2(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
+	void oracleHv3(const member_type& teamMember) noexcept;
+	void oracleHv4(const member_type& teamMember) noexcept;
+	void oracleHv5(const member_type& teamMember) noexcept;
 	void hj3(const member_type& teamMember) noexcept;
+	void oracleHv6(const member_type& teamMember) noexcept;
+	void oracleHv7(const member_type& teamMember) noexcept;
 
 private:
 	/**
@@ -62,7 +77,7 @@ private:
 	R1* r1;
 	R2* r2;
 
-	// Option and global variables
+	// Options and global variables
 	double maxTime;
 	int maxIter;
 	double deltat;

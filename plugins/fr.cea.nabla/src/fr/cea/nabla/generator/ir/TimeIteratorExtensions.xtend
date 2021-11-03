@@ -81,25 +81,32 @@ class TimeIteratorExtensions
 		}
 	}
 
-	def String getIrVarTimeSuffix(AbstractTimeIterator ti, String type)
+	def String getIrVarTimeSuffix(AbstractTimeIterator ti, int index)
 	{
 		val suffix = switch ti
 		{
-			TimeIterator: '_' + ti.name + type
+			TimeIterator: '_' + ti.name + getTimeIteratorIndexName(index)
 			TimeIteratorBlock: ''
 		}
 
 		if (ti.eContainer !== null && ti.eContainer instanceof AbstractTimeIterator)
-			getIrVarTimeSuffix(ti.eContainer as AbstractTimeIterator, nextTimeIteratorName) + suffix
+			getIrVarTimeSuffix(ti.eContainer as AbstractTimeIterator, nextTimeIteratorIndex) + suffix
 		else
 			suffix
 	}
 
-	def getCurrentTimeIteratorName() { '' }
-	def getInitTimeIteratorName() { '0' }
-	def getNextTimeIteratorName() { 'plus1' }
-
 	def getCurrentTimeIteratorIndex() { 0 }
-	def getInitTimeIteratorIndex() { Integer.MIN_VALUE }
+	def getInitTimeIteratorIndex() { Integer.MIN_VALUE } // Init stays first when index are sorted
 	def getNextTimeIteratorIndex() { 1 }
+
+	def getTimeIteratorIndexName(int index)
+	{
+		switch index
+		{
+			case 0: ''
+			case Integer.MIN_VALUE: '0'
+			case 1: 'plus1'
+			default: throw new Exception("Index not yet implemented")
+		}
+	}
 }

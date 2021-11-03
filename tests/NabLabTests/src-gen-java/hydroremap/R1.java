@@ -23,7 +23,7 @@ public final class R1
 	// Main module
 	private Hydro mainModule;
 
-	// Option and global variables
+	// Options and global variables
 	double[] rv3;
 
 	public R1(CartesianMesh2D aMesh)
@@ -32,21 +32,17 @@ public final class R1
 		mesh = aMesh;
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
-
-		// Initialize variables with default values
-
-		// Allocate arrays
-		rv3 = new double[nbCells];
 	}
 
 	public void jsonInit(final String jsonContent)
 	{
 		final Gson gson = new Gson();
-		final JsonObject o = gson.fromJson(jsonContent, JsonObject.class);
+		final JsonObject options = gson.fromJson(jsonContent, JsonObject.class);
+		rv3 = new double[nbCells];
 	}
 
 	/**
-	 * Job rj1 called @1.0 in simulate method.
+	 * Job rj1 called @2.0 in simulate method.
 	 * In variables: hv1
 	 * Out variables: hv4
 	 */
@@ -54,12 +50,12 @@ public final class R1
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
-			mainModule.hv4[cCells] = mainModule.hv1[cCells];
+			mainModule.hv4[cCells] = mainModule.hv1[cCells] * 2.0;
 		});
 	}
 
 	/**
-	 * Job rj2 called @2.0 in simulate method.
+	 * Job rj2 called @3.0 in simulate method.
 	 * In variables: hv4
 	 * Out variables: rv3
 	 */
@@ -67,7 +63,7 @@ public final class R1
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
-			rv3[cCells] = mainModule.hv4[cCells];
+			rv3[cCells] = mainModule.hv4[cCells] * 3.0;
 		});
 	}
 

@@ -31,19 +31,17 @@ import fr.cea.nabla.ir.ir.While
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
-import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.arcane.ExpressionContentProvider.*
-import static extension fr.cea.nabla.ir.generator.arcane.TypeContentProvider.*
 
 class InstructionContentProvider
 {
 	static def dispatch CharSequence getContent(VariableDeclaration it)
 	'''
-		«IF variable.type.isBaseTypeStatic»
-			«IF variable.const»const «ENDIF»«variable.type.typeName» «variable.name»«IF variable.defaultValue !== null»(«variable.defaultValue.content»)«ENDIF»;
-		«ELSE»
-			«IF variable.const»const «ENDIF»«variable.type.typeName» «variable.name»;
-		«ENDIF»
+«««		«IF variable.type.isBaseTypeStatic»
+«««			«IF variable.const»const «ENDIF»«variable.type.typeName» «variable.name»«IF variable.defaultValue !== null»(«variable.defaultValue.content»)«ENDIF»;
+«««		«ELSE»
+«««			«IF variable.const»const «ENDIF»«variable.type.typeName» «variable.name»;
+«««		«ENDIF»
 	'''
 
 	static def dispatch CharSequence getContent(InstructionBlock it)

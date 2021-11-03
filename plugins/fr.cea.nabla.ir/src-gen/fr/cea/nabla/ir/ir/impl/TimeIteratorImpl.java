@@ -5,8 +5,7 @@ package fr.cea.nabla.ir.ir.impl;
 import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob;
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.TimeIterator;
-import fr.cea.nabla.ir.ir.Variable;
-
+import fr.cea.nabla.ir.ir.TimeVariable;
 import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -80,7 +79,7 @@ public class TimeIteratorImpl extends IrAnnotableImpl implements TimeIterator {
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<Variable> variables;
+	protected EList<TimeVariable> variables;
 
 	/**
 	 * The cached value of the '{@link #getTimeLoopJob() <em>Time Loop Job</em>}' reference.
@@ -206,9 +205,9 @@ public class TimeIteratorImpl extends IrAnnotableImpl implements TimeIterator {
 	 * @generated
 	 */
 	@Override
-	public EList<Variable> getVariables() {
+	public EList<TimeVariable> getVariables() {
 		if (variables == null) {
-			variables = new EObjectWithInverseResolvingEList<Variable>(Variable.class, this, IrPackage.TIME_ITERATOR__VARIABLES, IrPackage.VARIABLE__TIME_ITERATOR);
+			variables = new EObjectWithInverseResolvingEList<TimeVariable>(TimeVariable.class, this, IrPackage.TIME_ITERATOR__VARIABLES, IrPackage.TIME_VARIABLE__TIME_ITERATOR);
 		}
 		return variables;
 	}
@@ -379,7 +378,7 @@ public class TimeIteratorImpl extends IrAnnotableImpl implements TimeIterator {
 				return;
 			case IrPackage.TIME_ITERATOR__VARIABLES:
 				getVariables().clear();
-				getVariables().addAll((Collection<? extends Variable>)newValue);
+				getVariables().addAll((Collection<? extends TimeVariable>)newValue);
 				return;
 			case IrPackage.TIME_ITERATOR__TIME_LOOP_JOB:
 				setTimeLoopJob((ExecuteTimeLoopJob)newValue);

@@ -11,6 +11,7 @@ package fr.cea.nabla.typing
 
 import com.google.inject.Inject
 import fr.cea.nabla.ArgOrVarExtensions
+import fr.cea.nabla.BaseTypeSizeEvaluator
 import fr.cea.nabla.nabla.And
 import fr.cea.nabla.nabla.Arg
 import fr.cea.nabla.nabla.ArgOrVarRef
@@ -47,6 +48,7 @@ import java.util.List
 
 class ExpressionTypeProvider
 {
+	@Inject extension BaseTypeSizeEvaluator
 	@Inject extension DeclarationProvider
 	@Inject extension BinaryOperationsTypeProvider
 	@Inject extension PrimitiveTypeTypeProvider
@@ -76,7 +78,7 @@ class ExpressionTypeProvider
 	def dispatch NablaType getTypeFor(Modulo it) { new NSTIntScalar }
 	def dispatch NablaType getTypeFor(Parenthesis it) { expression?.typeFor }
 	def dispatch NablaType getTypeFor(UnaryMinus it) { expression?.typeFor }
-	def dispatch NablaType getTypeFor(Not it) { expression?.typeFor }
+	def dispatch NablaType getTypeFor(Not it) { new NSTBoolScalar }
 	def dispatch NablaType getTypeFor(IntConstant it) { new NSTIntScalar }
 	def dispatch NablaType getTypeFor(RealConstant it) { new NSTRealScalar }
 	def dispatch NablaType getTypeFor(BoolConstant it)  { new NSTBoolScalar }
@@ -107,14 +109,15 @@ class ExpressionTypeProvider
 		if (values.size > 0)
 		{
 			val eltType = values.get(0).typeFor
+			val intConst = createIntConstant(values.size)
 			switch eltType
 			{
-				NSTBoolScalar: new NSTBoolArray1D(createIntConstant(values.size))
-				NSTIntScalar: new NSTIntArray1D(createIntConstant(values.size))
-				NSTRealScalar: new NSTRealArray1D(createIntConstant(values.size))
-				NSTBoolArray1D: new NSTBoolArray2D(createIntConstant(values.size), eltType.size)
-				NSTIntArray1D: new NSTIntArray2D(createIntConstant(values.size), eltType.size)
-				NSTRealArray1D: new NSTRealArray2D(createIntConstant(values.size), eltType.size)
+				NSTBoolScalar: new NSTBoolArray1D(intConst, values.size)
+				NSTIntScalar: new NSTIntArray1D(intConst, values.size)
+				NSTRealScalar: new NSTRealArray1D(intConst, values.size)
+				NSTBoolArray1D: new NSTBoolArray2D(intConst, eltType.size, values.size, getIntSizeFor(eltType.size))
+				NSTIntArray1D: new NSTIntArray2D(intConst, eltType.size, values.size, getIntSizeFor(eltType.size))
+				NSTRealArray1D: new NSTRealArray2D(intConst, eltType.size, values.size, getIntSizeFor(eltType.size))
 				default: null
 			}
 		}
@@ -122,7 +125,10 @@ class ExpressionTypeProvider
 			null
 	}
 
-	def dispatch NablaType getTypeFor(Cardinality it) { new NSTIntScalar }
+	def dispatch NablaType getTypeFor(Cardinality it)
+	{
+		new NSTIntScalar
+	}
 
 	def dispatch NablaType getTypeFor(ArgOrVarRef it)
 	{

@@ -21,6 +21,7 @@ import fr.cea.nabla.ir.ir.IrPackage;
  * </p>
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.InternFunctionImpl#getBody <em>Body</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.InternFunctionImpl#isConstExpr <em>Const Expr</em>}</li>
  * </ul>
  *
  * @generated
@@ -35,6 +36,25 @@ public class InternFunctionImpl extends FunctionImpl implements InternFunction {
 	 * @ordered
 	 */
 	protected Instruction body;
+
+	/**
+	 * The default value of the '{@link #isConstExpr() <em>Const Expr</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isConstExpr()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean CONST_EXPR_EDEFAULT = false;
+	/**
+	 * The cached value of the '{@link #isConstExpr() <em>Const Expr</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isConstExpr()
+	 * @generated
+	 * @ordered
+	 */
+	protected boolean constExpr = CONST_EXPR_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -129,6 +149,29 @@ public class InternFunctionImpl extends FunctionImpl implements InternFunction {
 	 * @generated
 	 */
 	@Override
+	public boolean isConstExpr() {
+		return constExpr;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setConstExpr(boolean newConstExpr) {
+		boolean oldConstExpr = constExpr;
+		constExpr = newConstExpr;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.INTERN_FUNCTION__CONST_EXPR, oldConstExpr, constExpr));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case IrPackage.INTERN_FUNCTION__BODY:
@@ -148,6 +191,8 @@ public class InternFunctionImpl extends FunctionImpl implements InternFunction {
 			case IrPackage.INTERN_FUNCTION__BODY:
 				if (resolve) return getBody();
 				return basicGetBody();
+			case IrPackage.INTERN_FUNCTION__CONST_EXPR:
+				return isConstExpr();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -162,6 +207,9 @@ public class InternFunctionImpl extends FunctionImpl implements InternFunction {
 		switch (featureID) {
 			case IrPackage.INTERN_FUNCTION__BODY:
 				setBody((Instruction)newValue);
+				return;
+			case IrPackage.INTERN_FUNCTION__CONST_EXPR:
+				setConstExpr((Boolean)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -178,6 +226,9 @@ public class InternFunctionImpl extends FunctionImpl implements InternFunction {
 			case IrPackage.INTERN_FUNCTION__BODY:
 				setBody((Instruction)null);
 				return;
+			case IrPackage.INTERN_FUNCTION__CONST_EXPR:
+				setConstExpr(CONST_EXPR_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -192,8 +243,26 @@ public class InternFunctionImpl extends FunctionImpl implements InternFunction {
 		switch (featureID) {
 			case IrPackage.INTERN_FUNCTION__BODY:
 				return body != null;
+			case IrPackage.INTERN_FUNCTION__CONST_EXPR:
+				return constExpr != CONST_EXPR_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public String toString() {
+		if (eIsProxy()) return super.toString();
+
+		StringBuilder result = new StringBuilder(super.toString());
+		result.append(" (constExpr: ");
+		result.append(constExpr);
+		result.append(')');
+		return result.toString();
 	}
 
 } //InternFunctionImpl

@@ -13,7 +13,6 @@ import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.generator.ApplicationGenerator
 import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.generator.Utils
-import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.IrModule
@@ -32,6 +31,7 @@ import static extension fr.cea.nabla.ir.generator.java.FunctionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.JobContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.JsonContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.TypeContentProvider.*
+import fr.cea.nabla.ir.ir.BaseType
 
 class JavaApplicationGenerator implements ApplicationGenerator
 {
@@ -100,7 +100,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 				«ENDIF»
 
 			«ENDIF»
-			// Option and global variables
+			// Options and global variables
 			«IF postProcessing !== null»
 				private PvdFileWriter2D writer;
 				private String «IrUtils.OutputPathNameAndValue.key»;
@@ -112,8 +112,11 @@ class JavaApplicationGenerator implements ApplicationGenerator
 				private String «IrUtils.NonRegressionNameAndValue.key»;
 			«ENDIF»
 			«FOR v : variables»
-				««« package visibility for multi modules
-				«IF v.const»final «ENDIF»«v.type.javaType» «v.name»;
+				«IF v.constExpr»
+					static final «v.type.javaType» «v.name» = «v.defaultValue.content»;
+				«ELSE»
+					«IF v.const»final «ENDIF»«v.type.javaType» «v.name»;
+				«ENDIF»
 			«ENDFOR»
 
 			public «className»(«irRoot.mesh.className» aMesh)
@@ -123,58 +126,54 @@ class JavaApplicationGenerator implements ApplicationGenerator
 				«FOR c : irRoot.mesh.connectivities.filter[multiple]»
 					«c.nbElemsVar» = «c.connectivityAccessor»;
 				«ENDFOR»
-
-				// Initialize variables with default values
-				«FOR v : variablesWithDefaultValue»
-					«v.name» = «v.defaultValue.content»;
-				«ENDFOR»
-
-				// Allocate arrays
-				«FOR v : variables.filter[!option && defaultValue === null && !type.scalar]»
-						«v.name»«getJavaAllocation(v.type, v.name)»;
-				«ENDFOR»
-				«IF main»
-
-				// Copy node coordinates
-				double[][] gNodes = mesh.getGeometry().getNodes();
-				IntStream.range(0, nbNodes).parallel().forEach(rNodes ->
-				{
-					«irRoot.initNodeCoordVariable.name»[rNodes][0] = gNodes[rNodes][0];
-					«irRoot.initNodeCoordVariable.name»[rNodes][1] = gNodes[rNodes][1];
-				});
-				«ENDIF»
 			}
 
 			public void jsonInit(final String jsonContent)
 			{
 				final Gson gson = new Gson();
-				final JsonObject o = gson.fromJson(jsonContent, JsonObject.class);
+				final JsonObject options = gson.fromJson(jsonContent, JsonObject.class);
 				«IF postProcessing !== null»
-				«val opName = IrUtils.OutputPathNameAndValue.key»
-				// «opName»
-				assert(o.has("«opName»"));
-				final JsonElement «opName.jsonName» = o.get("«opName»");
-				«opName» = «opName.jsonName».getAsJsonPrimitive().getAsString();
-				writer = new PvdFileWriter2D("«irRoot.name»", «opName»);
+					«val opName = IrUtils.OutputPathNameAndValue.key»
+					assert(options.has("«opName»"));
+					final JsonElement «opName.jsonName» = options.get("«opName»");
+					«opName» = «opName.jsonName».getAsJsonPrimitive().getAsString();
+					writer = new PvdFileWriter2D("«irRoot.name»", «opName»);
 				«ENDIF»
-				«FOR v : options»
-				«getJsonContent(v.name, v.type as BaseType, v.defaultValue)»
+				«FOR v : variables.filter[!constExpr]»
+					«IF !v.type.scalar»
+						«v.name»«getJavaAllocation(v.type, v.name)»;
+					«ENDIF»
+					«IF v.option»
+						«getJsonContent(v.name, v.type as BaseType, v.defaultValue)»
+					«ELSEIF v.defaultValue !== null»
+						«v.name» = «getContent(v.defaultValue)»;
+					«ENDIF»
 				«ENDFOR»
 				«FOR v : externalProviders»
-				«val vName = v.instanceName»
-				// «vName»
-				«vName» = new «v.packageName».«v.className»();
-				if (o.has("«vName»"))
-					«vName».jsonInit(o.get("«vName»").toString());
+					«val vName = v.instanceName»
+					// «vName»
+					«vName» = new «v.packageName».«v.className»();
+					if (options.has("«vName»"))
+						«vName».jsonInit(options.get("«vName»").toString());
 				«ENDFOR»
 				«val nrName = IrUtils.NonRegressionNameAndValue.key»
 				«IF levelDB»
-				// Non regression
-				if (o.has("«nrName»"))
-				{
-					final JsonElement «nrName.jsonName» = o.get("«nrName»");
-					«nrName» = «nrName.jsonName».getAsJsonPrimitive().getAsString();
-				}
+					// Non regression
+					if (options.has("«nrName»"))
+					{
+						final JsonElement «nrName.jsonName» = options.get("«nrName»");
+						«nrName» = «nrName.jsonName».getAsJsonPrimitive().getAsString();
+					}
+				«ENDIF»
+				«IF main»
+
+					// Copy node coordinates
+					double[][] gNodes = mesh.getGeometry().getNodes();
+					IntStream.range(0, nbNodes).parallel().forEach(rNodes ->
+					{
+						«irRoot.initNodeCoordVariable.name»[rNodes][0] = gNodes[rNodes][0];
+						«irRoot.initNodeCoordVariable.name»[rNodes][1] = gNodes[rNodes][1];
+					});
 				«ENDIF»
 			}
 			«FOR j : jobs»

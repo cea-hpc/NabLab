@@ -112,6 +112,15 @@ public interface IrFactory extends EFactory {
 	Variable createVariable();
 
 	/**
+	 * Returns a new object of class '<em>Time Variable</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Time Variable</em>'.
+	 * @generated
+	 */
+	TimeVariable createTimeVariable();
+
+	/**
 	 * Returns a new object of class '<em>Intern Function</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

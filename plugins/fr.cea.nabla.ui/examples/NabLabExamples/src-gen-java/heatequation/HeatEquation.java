@@ -20,7 +20,7 @@ public final class HeatEquation
 	@SuppressWarnings("unused")
 	private final int nbNodes, nbCells, nbFaces, maxNodesOfCell, maxNodesOfFace, maxNeighbourCells;
 
-	// Option and global variables
+	// Options and global variables
 	private PvdFileWriter2D writer;
 	private String outputPath;
 	int outputPeriod;
@@ -30,7 +30,7 @@ public final class HeatEquation
 	int maxIterations;
 	double PI;
 	double alpha;
-	final double deltat;
+	static final double deltat = 0.001;
 	double t_n;
 	double t_nplus1;
 	double t_n0;
@@ -53,12 +53,53 @@ public final class HeatEquation
 		maxNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
 		maxNodesOfFace = CartesianMesh2D.MaxNbNodesOfFace;
 		maxNeighbourCells = CartesianMesh2D.MaxNbNeighbourCells;
+	}
 
-		// Initialize variables with default values
+	public void jsonInit(final String jsonContent)
+	{
+		final Gson gson = new Gson();
+		final JsonObject options = gson.fromJson(jsonContent, JsonObject.class);
+		assert(options.has("outputPath"));
+		final JsonElement valueof_outputPath = options.get("outputPath");
+		outputPath = valueof_outputPath.getAsJsonPrimitive().getAsString();
+		writer = new PvdFileWriter2D("HeatEquation", outputPath);
+		assert(options.has("outputPeriod"));
+		final JsonElement valueof_outputPeriod = options.get("outputPeriod");
+		assert(valueof_outputPeriod.isJsonPrimitive());
+		outputPeriod = valueof_outputPeriod.getAsJsonPrimitive().getAsInt();
 		lastDump = Integer.MIN_VALUE;
-		deltat = 0.001;
-
-		// Allocate arrays
+		if (options.has("stopTime"))
+		{
+			final JsonElement valueof_stopTime = options.get("stopTime");
+			assert(valueof_stopTime.isJsonPrimitive());
+			stopTime = valueof_stopTime.getAsJsonPrimitive().getAsDouble();
+		}
+		else
+			stopTime = 0.1;
+		if (options.has("maxIterations"))
+		{
+			final JsonElement valueof_maxIterations = options.get("maxIterations");
+			assert(valueof_maxIterations.isJsonPrimitive());
+			maxIterations = valueof_maxIterations.getAsJsonPrimitive().getAsInt();
+		}
+		else
+			maxIterations = 500;
+		if (options.has("PI"))
+		{
+			final JsonElement valueof_PI = options.get("PI");
+			assert(valueof_PI.isJsonPrimitive());
+			PI = valueof_PI.getAsJsonPrimitive().getAsDouble();
+		}
+		else
+			PI = 3.1415926;
+		if (options.has("alpha"))
+		{
+			final JsonElement valueof_alpha = options.get("alpha");
+			assert(valueof_alpha.isJsonPrimitive());
+			alpha = valueof_alpha.getAsJsonPrimitive().getAsDouble();
+		}
+		else
+			alpha = 1.0;
 		X = new double[nbNodes][2];
 		center = new double[nbCells][2];
 		u_n = new double[nbCells];
@@ -75,58 +116,6 @@ public final class HeatEquation
 			X[rNodes][0] = gNodes[rNodes][0];
 			X[rNodes][1] = gNodes[rNodes][1];
 		});
-	}
-
-	public void jsonInit(final String jsonContent)
-	{
-		final Gson gson = new Gson();
-		final JsonObject o = gson.fromJson(jsonContent, JsonObject.class);
-		// outputPath
-		assert(o.has("outputPath"));
-		final JsonElement valueof_outputPath = o.get("outputPath");
-		outputPath = valueof_outputPath.getAsJsonPrimitive().getAsString();
-		writer = new PvdFileWriter2D("HeatEquation", outputPath);
-		// outputPeriod
-		assert(o.has("outputPeriod"));
-		final JsonElement valueof_outputPeriod = o.get("outputPeriod");
-		assert(valueof_outputPeriod.isJsonPrimitive());
-		outputPeriod = valueof_outputPeriod.getAsJsonPrimitive().getAsInt();
-		// stopTime
-		if (o.has("stopTime"))
-		{
-			final JsonElement valueof_stopTime = o.get("stopTime");
-			assert(valueof_stopTime.isJsonPrimitive());
-			stopTime = valueof_stopTime.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			stopTime = 0.1;
-		// maxIterations
-		if (o.has("maxIterations"))
-		{
-			final JsonElement valueof_maxIterations = o.get("maxIterations");
-			assert(valueof_maxIterations.isJsonPrimitive());
-			maxIterations = valueof_maxIterations.getAsJsonPrimitive().getAsInt();
-		}
-		else
-			maxIterations = 500;
-		// PI
-		if (o.has("PI"))
-		{
-			final JsonElement valueof_PI = o.get("PI");
-			assert(valueof_PI.isJsonPrimitive());
-			PI = valueof_PI.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			PI = 3.1415926;
-		// alpha
-		if (o.has("alpha"))
-		{
-			final JsonElement valueof_alpha = o.get("alpha");
-			assert(valueof_alpha.isJsonPrimitive());
-			alpha = valueof_alpha.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			alpha = 1.0;
 	}
 
 	/**
@@ -307,7 +296,7 @@ public final class HeatEquation
 
 	/**
 	 * Job executeTimeLoopN called @3.0 in simulate method.
-	 * In variables: t_n, u_n
+	 * In variables: lastDump, maxIterations, n, outputPeriod, stopTime, t_n, t_nplus1, u_n
 	 * Out variables: t_nplus1, u_nplus1
 	 */
 	protected void executeTimeLoopN()

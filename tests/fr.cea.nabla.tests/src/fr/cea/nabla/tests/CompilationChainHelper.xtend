@@ -63,12 +63,20 @@ class CompilationChainHelper
 		return irRootBuilder.buildInterpreterIr(ngen, wsPath)
 	}
 
+	def getRawIr(CharSequence model, CharSequence genModel)
+	{
+		val irRootBuilder = irRootBuilderProvider.get
+		val ngen = getNgenApp(#[model], genModel)
+		return irRootBuilder.buildRawIr(ngen)
+	}
+
 	def getNgenApp(CharSequence[] models, CharSequence genModel)
 	{
 		val rs = resourceSetProvider.get
 
 		nablaParseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DPath), rs)
 		nablagenParseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DGenPath), rs)
+		nablaParseHelper.parse(readFileAsString(TestUtils.AssertPath), rs)
 		nablaParseHelper.parse(readFileAsString(TestUtils.MathPath), rs)
 		nablaParseHelper.parse(readFileAsString(TestUtils.LinearAlgebraPath), rs)
 		nablagenParseHelper.parse(readFileAsString(TestUtils.LinearAlgebraGenPath), rs)

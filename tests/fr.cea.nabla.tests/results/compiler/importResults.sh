@@ -25,7 +25,7 @@ done
 echo "  Moving and extracting tar file to: " $HERE
 mv $TARNAME $HERE
 cd $HERE
-rm -rf src-gen-*
+#rm -rf src-gen-*
 tar xvf $TARNAME
 
 rm $TARNAME

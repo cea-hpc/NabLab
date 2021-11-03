@@ -32,19 +32,9 @@ import static extension fr.cea.nabla.ir.IrUtils.*
 
 class IrTypeExtensions
 {
+	public static val int DYNAMIC_SIZE = -1
 	public static val VectorClass = 'Vector'
 	public static val MatrixClass = 'Matrix'
-
-	static def boolean isBaseTypeStatic(IrType it)
-	{
-		switch it
-		{
-			BaseType: sizes.empty || sizes.forall[x | x.constExpr]
-			ConnectivityType: base.baseTypeStatic
-			LinearAlgebraType: sizes.empty || sizes.forall[x | x.constExpr]
-			default: throw new RuntimeException("Unhandled parameter")
-		}
-	}
 
 	static def String getLabel(IrType it)
 	{
@@ -95,6 +85,11 @@ class IrTypeExtensions
 	static def isScalar(IrType t)
 	{
 		(t instanceof BaseType) && (t as BaseType).sizes.empty
+	}
+
+	static def isDynamicBaseType(IrType t)
+	{
+		t instanceof BaseType && !(t as BaseType).isStatic
 	}
 
 	static def getPrimitive(IrType t)

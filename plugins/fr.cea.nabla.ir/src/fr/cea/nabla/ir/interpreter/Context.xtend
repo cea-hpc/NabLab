@@ -37,7 +37,7 @@ class Context
 
 	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) val IrRoot ir
 	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) PvdFileWriter2D writer
-	@Accessors(PUBLIC_GETTER, PUBLIC_SETTER)  boolean levelDBCompareResult
+	@Accessors(PUBLIC_GETTER, PACKAGE_SETTER) boolean levelDBCompareResult
 	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) val HashMap<ExtensionProvider, ExtensionProviderHelper> providers
 
 	new(Logger logger, IrRoot ir, String wsPath)
@@ -74,7 +74,7 @@ class Context
 								helper = new LinearAlgebraExtensionProviderHelper(p, wsPath)
 							else
 								helper = new DefaultExtensionProviderHelper(p, wsPath)
-		
+
 							helper.init(p.functions)
 							providers.put(p, helper)
 						}
@@ -84,10 +84,6 @@ class Context
 				{
 					throw new ExtensionProviderNotFound(p, e)
 				}
-			}
-
-			if (ir.mesh !== null)
-			{
 			}
 		}
 	}

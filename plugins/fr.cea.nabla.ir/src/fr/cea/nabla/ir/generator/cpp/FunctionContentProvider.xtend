@@ -26,13 +26,11 @@ import org.eclipse.xtend.lib.annotations.Data
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 
 @Data
-abstract class FunctionContentProvider
+class FunctionContentProvider
 {
 	protected val extension TypeContentProvider
 	protected val extension ExpressionContentProvider
 	protected val extension InstructionContentProvider
-
-	protected abstract def String getMacro()
 
 	def getDeclarationContent(Function it)
 	{
@@ -76,7 +74,6 @@ abstract class FunctionContentProvider
 	private def getDeclarationContent(Function it, String name)
 	'''
 	«FOR v : variables BEFORE "template<" SEPARATOR ", " AFTER ">"»size_t «v.name»«ENDFOR»
-	«IF !macro.nullOrEmpty»«macro»«ENDIF»
 	«returnType.cppType» «name»(«FOR a : inArgs SEPARATOR ', '»«a.type.cppType» «a.name»«ENDFOR»)'''
 
 	private def getJniInArgContent(Arg it)
@@ -197,16 +194,4 @@ abstract class FunctionContentProvider
 		else
 			'Object'
 	}
-}
-
-@Data
-class DefaultFunctionContentProvider extends FunctionContentProvider
-{
-	override getMacro() { "" }
-}
-
-@Data
-class KokkosFunctionContentProvider extends FunctionContentProvider
-{
-	override getMacro() { "KOKKOS_INLINE_FUNCTION" }
 }

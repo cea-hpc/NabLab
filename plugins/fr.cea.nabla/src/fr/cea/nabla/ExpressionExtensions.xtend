@@ -10,12 +10,14 @@
 package fr.cea.nabla
 
 import com.google.inject.Inject
+import fr.cea.nabla.nabla.ArgOrVar
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.Cardinality
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.NablaExtension
 import fr.cea.nabla.nabla.ReductionCall
+import fr.cea.nabla.nabla.SimpleVar
 import org.eclipse.xtext.EcoreUtil2
 
 class ExpressionExtensions
@@ -24,7 +26,6 @@ class ExpressionExtensions
 
 	def boolean isReductionLess(Expression e) { check(e, [checkReductionLess]) }
 	def boolean isNablaEvaluable(Expression e) { check(e, [checkNablaEvaluable]) }
-	def boolean isConstExpr(Expression e) { check(e, [checkConstExpr]) }
 
 	private def check(Expression e, (Expression) => boolean checker)
 	{
@@ -51,13 +52,12 @@ class ExpressionExtensions
 		}
 	}
 
-	private def boolean checkConstExpr(Expression e)
+	private def boolean isNablaEvaluable(ArgOrVar it)
 	{
-		switch e
+		switch it
 		{
-			ReductionCall, FunctionCall, Cardinality: false
-			ArgOrVarRef: e.timeIterators.empty && e.spaceIterators.empty && e.target.constExpr
-			default: true
+			SimpleVar: (option && value === null) || (value !== null && value.nablaEvaluable)
+			default: false
 		}
 	}
 }

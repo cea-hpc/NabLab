@@ -9,6 +9,19 @@
 #include "R2.h"
 
 
+/******************** Free functions definitions ********************/
+
+namespace hydrofreefuncs
+{
+bool assertEquals(double expected, double actual)
+{
+	const bool ret((expected == actual));
+	if (!ret) 
+		throw std::runtime_error("** Assertion failed");
+	return ret;
+}
+}
+
 /******************** Module definition ********************/
 
 Hydro::Hydro(CartesianMesh2D& aMesh)
@@ -24,13 +37,6 @@ Hydro::Hydro(CartesianMesh2D& aMesh)
 , hv6("hv6", nbCells)
 , hv7("hv7", nbCells)
 {
-	// Copy node coordinates
-	const auto& gNodes = mesh.getGeometry()->getNodes();
-	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
-	{
-		X(rNodes)[0] = gNodes[rNodes][0];
-		X(rNodes)[1] = gNodes[rNodes][1];
-	}
 }
 
 Hydro::~Hydro()
@@ -43,35 +49,49 @@ Hydro::jsonInit(const char* jsonContent)
 	rapidjson::Document document;
 	assert(!document.Parse(jsonContent).HasParseError());
 	assert(document.IsObject());
-	const rapidjson::Value::Object& o = document.GetObject();
+	const rapidjson::Value::Object& options = document.GetObject();
 
 	// maxTime
-	if (o.HasMember("maxTime"))
+	if (options.HasMember("maxTime"))
 	{
-		const rapidjson::Value& valueof_maxTime = o["maxTime"];
+		const rapidjson::Value& valueof_maxTime = options["maxTime"];
 		assert(valueof_maxTime.IsDouble());
 		maxTime = valueof_maxTime.GetDouble();
 	}
 	else
-		maxTime = 0.1;
-	// maxIter
-	if (o.HasMember("maxIter"))
 	{
-		const rapidjson::Value& valueof_maxIter = o["maxIter"];
+		maxTime = 0.1;
+	}
+	// maxIter
+	if (options.HasMember("maxIter"))
+	{
+		const rapidjson::Value& valueof_maxIter = options["maxIter"];
 		assert(valueof_maxIter.IsInt());
 		maxIter = valueof_maxIter.GetInt();
 	}
 	else
-		maxIter = 500;
-	// deltat
-	if (o.HasMember("deltat"))
 	{
-		const rapidjson::Value& valueof_deltat = o["deltat"];
+		maxIter = 500;
+	}
+	// deltat
+	if (options.HasMember("deltat"))
+	{
+		const rapidjson::Value& valueof_deltat = options["deltat"];
 		assert(valueof_deltat.IsDouble());
 		deltat = valueof_deltat.GetDouble();
 	}
 	else
+	{
 		deltat = 1.0;
+	}
+
+	// Copy node coordinates
+	const auto& gNodes = mesh.getGeometry()->getNodes();
+	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
+	{
+		X(rNodes)[0] = gNodes[rNodes][0];
+		X(rNodes)[1] = gNodes[rNodes][1];
+	}
 }
 
 
@@ -99,7 +119,47 @@ const std::pair<size_t, size_t> Hydro::computeTeamWorkRange(const member_type& t
 }
 
 /**
- * Job hj1 called @1.0 in simulate method.
+ * Job iniHv1 called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: hv1
+ */
+void Hydro::iniHv1(const member_type& teamMember) noexcept
+{
+	{
+		const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
+		if (!teamWork.second)
+			return;
+	
+		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& cCellsTeam)
+		{
+			int cCells(cCellsTeam + teamWork.first);
+			hv1(cCells) = 2.0;
+		});
+	}
+}
+
+/**
+ * Job iniHv2 called @1.0 in simulate method.
+ * In variables: 
+ * Out variables: hv2
+ */
+void Hydro::iniHv2(const member_type& teamMember) noexcept
+{
+	{
+		const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
+		if (!teamWork.second)
+			return;
+	
+		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& cCellsTeam)
+		{
+			int cCells(cCellsTeam + teamWork.first);
+			hv2(cCells) = 0.0;
+		});
+	}
+}
+
+/**
+ * Job hj1 called @2.0 in simulate method.
  * In variables: hv2
  * Out variables: hv3
  */
@@ -113,13 +173,53 @@ void Hydro::hj1(const member_type& teamMember) noexcept
 		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& cCellsTeam)
 		{
 			int cCells(cCellsTeam + teamWork.first);
-			hv3(cCells) = hv2(cCells);
+			hv3(cCells) = hv2(cCells) + 1.0;
 		});
 	}
 }
 
 /**
- * Job hj2 called @2.0 in simulate method.
+ * Job oracleHv1 called @2.0 in simulate method.
+ * In variables: hv1
+ * Out variables: 
+ */
+void Hydro::oracleHv1(const member_type& teamMember) noexcept
+{
+	{
+		const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
+		if (!teamWork.second)
+			return;
+	
+		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& cCellsTeam)
+		{
+			int cCells(cCellsTeam + teamWork.first);
+			const bool testHv1(hydrofreefuncs::assertEquals(2.0, hv1(cCells)));
+		});
+	}
+}
+
+/**
+ * Job oracleHv2 called @2.0 in simulate method.
+ * In variables: hv2
+ * Out variables: 
+ */
+void Hydro::oracleHv2(const member_type& teamMember) noexcept
+{
+	{
+		const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
+		if (!teamWork.second)
+			return;
+	
+		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& cCellsTeam)
+		{
+			int cCells(cCellsTeam + teamWork.first);
+			const bool testHv2(hydrofreefuncs::assertEquals(0.0, hv2(cCells)));
+		});
+	}
+}
+
+/**
+ * Job hj2 called @3.0 in simulate method.
  * In variables: hv3
  * Out variables: hv5
  */
@@ -133,13 +233,73 @@ void Hydro::hj2(const member_type& teamMember) noexcept
 		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& cCellsTeam)
 		{
 			int cCells(cCellsTeam + teamWork.first);
-			hv5(cCells) = hv3(cCells);
+			hv5(cCells) = hv3(cCells) + 2.0;
 		});
 	}
 }
 
 /**
- * Job hj3 called @4.0 in simulate method.
+ * Job oracleHv3 called @3.0 in simulate method.
+ * In variables: hv3
+ * Out variables: 
+ */
+void Hydro::oracleHv3(const member_type& teamMember) noexcept
+{
+	{
+		const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
+		if (!teamWork.second)
+			return;
+	
+		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& cCellsTeam)
+		{
+			int cCells(cCellsTeam + teamWork.first);
+			const bool testHv3(hydrofreefuncs::assertEquals(1.0, hv3(cCells)));
+		});
+	}
+}
+
+/**
+ * Job oracleHv4 called @3.0 in simulate method.
+ * In variables: hv4
+ * Out variables: 
+ */
+void Hydro::oracleHv4(const member_type& teamMember) noexcept
+{
+	{
+		const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
+		if (!teamWork.second)
+			return;
+	
+		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& cCellsTeam)
+		{
+			int cCells(cCellsTeam + teamWork.first);
+			const bool testHv4(hydrofreefuncs::assertEquals(4.0, hv4(cCells)));
+		});
+	}
+}
+
+/**
+ * Job oracleHv5 called @4.0 in simulate method.
+ * In variables: hv5
+ * Out variables: 
+ */
+void Hydro::oracleHv5(const member_type& teamMember) noexcept
+{
+	{
+		const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
+		if (!teamWork.second)
+			return;
+	
+		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& cCellsTeam)
+		{
+			int cCells(cCellsTeam + teamWork.first);
+			const bool testHv5(hydrofreefuncs::assertEquals(3.0, hv5(cCells)));
+		});
+	}
+}
+
+/**
+ * Job hj3 called @5.0 in simulate method.
  * In variables: hv4, hv5, hv6
  * Out variables: hv7
  */
@@ -154,6 +314,46 @@ void Hydro::hj3(const member_type& teamMember) noexcept
 		{
 			int cCells(cCellsTeam + teamWork.first);
 			hv7(cCells) = hv4(cCells) + hv5(cCells) + hv6(cCells);
+		});
+	}
+}
+
+/**
+ * Job oracleHv6 called @5.0 in simulate method.
+ * In variables: hv6
+ * Out variables: 
+ */
+void Hydro::oracleHv6(const member_type& teamMember) noexcept
+{
+	{
+		const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
+		if (!teamWork.second)
+			return;
+	
+		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& cCellsTeam)
+		{
+			int cCells(cCellsTeam + teamWork.first);
+			const bool testHv6(hydrofreefuncs::assertEquals(6.0, hv6(cCells)));
+		});
+	}
+}
+
+/**
+ * Job oracleHv7 called @6.0 in simulate method.
+ * In variables: hv7
+ * Out variables: 
+ */
+void Hydro::oracleHv7(const member_type& teamMember) noexcept
+{
+	{
+		const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
+		if (!teamWork.second)
+			return;
+	
+		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& cCellsTeam)
+		{
+			int cCells(cCellsTeam + teamWork.first);
+			const bool testHv7(hydrofreefuncs::assertEquals(13.0, hv7(cCells)));
 		});
 	}
 }
@@ -188,28 +388,47 @@ void Hydro::simulate()
 			Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){
 				std::cout << "[" << __GREEN__ << "RUNTIME" << __RESET__ << "]   Using " << __BOLD__ << setw(3) << thread.league_size() << __RESET__ << " team(s) of "
 					<< __BOLD__ << setw(3) << thread.team_size() << __RESET__<< " thread(s)" << std::endl;});
-		hj1(thread);
-		r1->rj1(thread);
+		iniHv1(thread);
+		iniHv2(thread);
 	});
 	
 	// @2.0
 	Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
 	{
-		hj2(thread);
-		r2->rj1(thread);
-		r1->rj2(thread);
+		hj1(thread);
+		oracleHv1(thread);
+		oracleHv2(thread);
+		r1->rj1(thread);
 	});
 	
 	// @3.0
 	Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
 	{
-		r2->rj2(thread);
+		hj2(thread);
+		oracleHv3(thread);
+		oracleHv4(thread);
+		r2->rj1(thread);
+		r1->rj2(thread);
 	});
 	
 	// @4.0
 	Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
 	{
+		oracleHv5(thread);
+		r2->rj2(thread);
+	});
+	
+	// @5.0
+	Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
+	{
 		hj3(thread);
+		oracleHv6(thread);
+	});
+	
+	// @6.0
+	Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
+	{
+		oracleHv7(thread);
 	});
 	
 	std::cout << "\nFinal time = " << t << endl;

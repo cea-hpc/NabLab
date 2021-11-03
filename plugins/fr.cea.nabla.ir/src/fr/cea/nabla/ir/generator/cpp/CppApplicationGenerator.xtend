@@ -172,6 +172,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		«ENDIF»
 		#ifdef NABLAB_DEBUG
 		void pythonInitialize();
+		void setFunctionPtr(int idx, bool wrapper);
 		#endif
 
 		«IF kokkosTeamThread»
@@ -354,13 +355,15 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		«nrName» = «jsonContentProvider.getJsonName(nrName)».GetString();
 		«ENDIF»
 		#ifdef NABLAB_DEBUG
-		if (o.HasMember("pythonPath")) {
-			const rapidjson::Value &valueof_pythonPath = o["pythonPath"];
+		if (options.HasMember("pythonPath"))
+		{
+			const rapidjson::Value &valueof_pythonPath = options["pythonPath"];
 			assert(valueof_pythonPath.IsString());
 			pythonPath = valueof_pythonPath.GetString();
 		}
-		if (o.HasMember("pythonFile")) {
-			const rapidjson::Value &valueof_pythonFile = o["pythonFile"];
+		if (options.HasMember("pythonFile"))
+		{
+			const rapidjson::Value &valueof_pythonFile = options["pythonFile"];
 			assert(valueof_pythonFile.IsString());
 			pythonFile = valueof_pythonFile.GetString();
 		}
@@ -479,19 +482,25 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	{
 		if (wrapper)
 		{
-			«FOR p : executionEvents.entrySet.sortBy[value]»
-			case «p.value»:
-				«p.key.toFirstLower»Ptr = &«className»::«p.key.toFirstLower»Wrapper;
-				break;
-			«ENDFOR»
+			switch (idx)
+			{
+				«FOR p : executionEvents.entrySet.sortBy[value]»
+				case «p.value»:
+					«p.key.toFirstLower»Ptr = &«className»::«p.key.toFirstLower»Wrapper;
+					break;
+				«ENDFOR»
+			}
 		}
 		else
 		{
-			«FOR p : executionEvents.entrySet.sortBy[value]»
-			case «p.value»:
-				«p.key.toFirstLower»Ptr = &«className»::«p.key.toFirstLower»;
-				break;
-			«ENDFOR»
+			switch (idx)
+			{
+				«FOR p : executionEvents.entrySet.sortBy[value]»
+				case «p.value»:
+					«p.key.toFirstLower»Ptr = &«className»::«p.key.toFirstLower»;
+					break;
+				«ENDFOR»
+			}
 		}
 	}
 
@@ -565,7 +574,10 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	void «className»::«Utils.getCodeName(irRoot.main)»()
 	{
 		#ifdef NABLAB_DEBUG
-		pythonInitialize();
+		if (!pythonFile.empty())
+		{
+			pythonInitialize();
+		}
 		#endif
 		
 		«backend.traceContentProvider.getBeginOfSimuTrace(it)»

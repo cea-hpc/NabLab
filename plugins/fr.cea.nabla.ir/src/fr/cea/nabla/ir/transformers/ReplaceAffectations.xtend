@@ -34,7 +34,7 @@ import static extension fr.cea.nabla.ir.IrTypeExtensions.*
  * Note that an affectation on a connectivity variable is an error in the NabLab language but it 
  * can be created during IR transformation (for example Un = Un+1 at the end of time loop).
  */
-class ReplaceAffectations  extends IrTransformationStep
+class ReplaceAffectations extends IrTransformationStep
 {
 	new()
 	{

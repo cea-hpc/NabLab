@@ -94,12 +94,24 @@ class ExpressionContentProvider
 	{
 		val t = type as BaseType
 
-		if (t.sizes.exists[x | !(x instanceof IntConstant)])
-			throw new RuntimeException("BaseTypeConstants size expressions must be IntConstant.")
-
-		val sizes = t.sizes.map[x | (x as IntConstant).value]
-		if (sizes.empty) value.content
-		else '''new «type.javaType» «initArray(sizes, value.content)»'''
+		if (t.sizes.empty)
+		{
+			// scalar type
+			value.content
+		}
+		else
+		{
+			if (t.isStatic)
+				'''new «t.javaType» «initArray(t.intSizes, value.content)»'''
+			else
+			{
+				// The array must be allocated and initialized by loops
+				// No expression value can be produced in dynamic mode
+				// Two instructions must be encapsulated in a function and a function call must be done
+				throw new RuntimeException("Not yet implemented")
+				//'''new «t.primitive.javaType»«formatIteratorsAndIndices(t, t.sizes.map[content])»'''
+			}
+		}
 	}
 
 	static def dispatch CharSequence getContent(VectorConstant it)

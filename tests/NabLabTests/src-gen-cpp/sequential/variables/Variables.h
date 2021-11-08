@@ -58,6 +58,7 @@ private:
 	int optDim;
 	RealArray1D<2> optVect1;
 	RealArray1D<2> optVect2;
+	RealArray1D<2> optVect3;
 	int mandatoryOptDim;
 	IntArray1D<2> mandatoryOptVect;
 	static constexpr int constexprDim = 2;

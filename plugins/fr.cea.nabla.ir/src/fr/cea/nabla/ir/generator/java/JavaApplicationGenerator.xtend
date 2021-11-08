@@ -115,7 +115,9 @@ class JavaApplicationGenerator implements ApplicationGenerator
 				«IF v.constExpr»
 					static final «v.type.javaType» «v.name» = «v.defaultValue.content»;
 				«ELSE»
-					«IF v.const»final «ENDIF»«v.type.javaType» «v.name»;
+					««« Must not be declared final even it the const attribute is true
+					««« because it will be initialized in the jsonInit function (not in cstr)
+					«v.type.javaType» «v.name»;
 				«ENDIF»
 			«ENDFOR»
 

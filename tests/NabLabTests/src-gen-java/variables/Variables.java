@@ -29,6 +29,7 @@ public final class Variables
 	int optDim;
 	double[] optVect1;
 	double[] optVect2;
+	double[] optVect3;
 	int mandatoryOptDim;
 	int[] mandatoryOptVect;
 	static final int constexprDim = 2;
@@ -85,6 +86,8 @@ public final class Variables
 		}
 		else
 			optVect2 = new double[] {1.0, 1.0};
+		optVect3 = new double[2];
+		optVect3 = ArrayOperations.plus(optVect1, optVect2);
 		assert(options.has("mandatoryOptDim"));
 		final JsonElement valueof_mandatoryOptDim = options.get("mandatoryOptDim");
 		assert(valueof_mandatoryOptDim.isJsonPrimitive());
@@ -140,7 +143,7 @@ public final class Variables
 
 	/**
 	 * Job oracle called @2.0 in simulate method.
-	 * In variables: checkDynamicDim, constexprDim, constexprVec, mandatoryOptDim, mandatoryOptVect, optDim, optVect1, optVect2, varVec
+	 * In variables: checkDynamicDim, constexprDim, constexprVec, mandatoryOptDim, mandatoryOptVect, optDim, optVect1, optVect2, optVect3, varVec
 	 * Out variables: 
 	 */
 	protected void oracle()
@@ -148,6 +151,7 @@ public final class Variables
 		final boolean testOptDim = assertEquals(2, optDim);
 		final boolean testOptVect1 = assertEquals(new double[] {1.0, 1.0}, optVect1);
 		final boolean testOptVect2 = assertEquals(new double[] {2.0, 2.0}, optVect2);
+		final boolean testOptVect3 = assertEquals(new double[] {3.0, 3.0}, optVect3);
 		final boolean testMandatoryOptDim = assertEquals(3, mandatoryOptDim);
 		final boolean testMandatoryOptVect = assertEquals(new int[] {3, 3}, mandatoryOptVect);
 		final boolean testConstexprDim = assertEquals(2, constexprDim);

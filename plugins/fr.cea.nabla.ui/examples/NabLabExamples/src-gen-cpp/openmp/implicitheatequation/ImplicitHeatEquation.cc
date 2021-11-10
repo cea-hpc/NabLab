@@ -162,7 +162,7 @@ ImplicitHeatEquation::jsonInit(const char* jsonContent)
  */
 void ImplicitHeatEquation::computeFaceLength() noexcept
 {
-	#pragma omp parallel
+	#pragma omp parallel for
 	for (size_t fFaces=0; fFaces<nbFaces; fFaces++)
 	{
 		const Id fId(fFaces);
@@ -200,7 +200,7 @@ void ImplicitHeatEquation::computeTn() noexcept
  */
 void ImplicitHeatEquation::computeV() noexcept
 {
-	#pragma omp parallel
+	#pragma omp parallel for
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		const Id jId(jCells);
@@ -228,7 +228,7 @@ void ImplicitHeatEquation::computeV() noexcept
  */
 void ImplicitHeatEquation::initD() noexcept
 {
-	#pragma omp parallel
+	#pragma omp parallel for
 	for (size_t cCells=0; cCells<nbCells; cCells++)
 	{
 		D[cCells] = 1.0;
@@ -252,7 +252,7 @@ void ImplicitHeatEquation::initTime() noexcept
  */
 void ImplicitHeatEquation::initXc() noexcept
 {
-	#pragma omp parallel
+	#pragma omp parallel for
 	for (size_t cCells=0; cCells<nbCells; cCells++)
 	{
 		const Id cId(cCells);
@@ -304,7 +304,7 @@ void ImplicitHeatEquation::computeDeltaTn() noexcept
  */
 void ImplicitHeatEquation::computeFaceConductivity() noexcept
 {
-	#pragma omp parallel
+	#pragma omp parallel for
 	for (size_t fFaces=0; fFaces<nbFaces; fFaces++)
 	{
 		const Id fId(fFaces);
@@ -341,7 +341,7 @@ void ImplicitHeatEquation::computeFaceConductivity() noexcept
  */
 void ImplicitHeatEquation::initU() noexcept
 {
-	#pragma omp parallel
+	#pragma omp parallel for
 	for (size_t cCells=0; cCells<nbCells; cCells++)
 	{
 		if (implicitheatequationfreefuncs::norm(Xc[cCells] - vectOne) < 0.5) 
@@ -368,7 +368,7 @@ void ImplicitHeatEquation::setUpTimeLoopN() noexcept
  */
 void ImplicitHeatEquation::computeAlphaCoeff() noexcept
 {
-	#pragma omp parallel
+	#pragma omp parallel for
 	for (size_t cCells=0; cCells<nbCells; cCells++)
 	{
 		const Id cId(cCells);

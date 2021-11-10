@@ -152,7 +152,7 @@ HeatEquation::jsonInit(const char* jsonContent)
  */
 void HeatEquation::computeOutgoingFlux() noexcept
 {
-	#pragma omp parallel
+	#pragma omp parallel for
 	for (size_t j1Cells=0; j1Cells<nbCells; j1Cells++)
 	{
 		const Id j1Id(j1Cells);
@@ -181,7 +181,7 @@ void HeatEquation::computeOutgoingFlux() noexcept
  */
 void HeatEquation::computeSurface() noexcept
 {
-	#pragma omp parallel
+	#pragma omp parallel for
 	for (size_t fFaces=0; fFaces<nbFaces; fFaces++)
 	{
 		const Id fId(fFaces);
@@ -219,7 +219,7 @@ void HeatEquation::computeTn() noexcept
  */
 void HeatEquation::computeV() noexcept
 {
-	#pragma omp parallel
+	#pragma omp parallel for
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		const Id jId(jCells);
@@ -247,7 +247,7 @@ void HeatEquation::computeV() noexcept
  */
 void HeatEquation::iniCenter() noexcept
 {
-	#pragma omp parallel
+	#pragma omp parallel for
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		const Id jId(jCells);
@@ -273,7 +273,7 @@ void HeatEquation::iniCenter() noexcept
  */
 void HeatEquation::iniF() noexcept
 {
-	#pragma omp parallel
+	#pragma omp parallel for
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		f[jCells] = 0.0;
@@ -297,7 +297,7 @@ void HeatEquation::iniTime() noexcept
  */
 void HeatEquation::computeUn() noexcept
 {
-	#pragma omp parallel
+	#pragma omp parallel for
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		u_nplus1[jCells] = f[jCells] * deltat + u_n[jCells] + outgoingFlux[jCells];
@@ -311,7 +311,7 @@ void HeatEquation::computeUn() noexcept
  */
 void HeatEquation::iniUn() noexcept
 {
-	#pragma omp parallel
+	#pragma omp parallel for
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		u_n[jCells] = std::cos(2 * PI * alpha * center[jCells][0]);
@@ -357,7 +357,7 @@ void HeatEquation::executeTimeLoopN() noexcept
 		continueLoop = (t_nplus1 < stopTime && n + 1 < maxIterations);
 	
 		t_n = t_nplus1;
-		#pragma omp parallel
+		#pragma omp parallel for
 		for (size_t i1Cells=0; i1Cells<nbCells; i1Cells++)
 		{
 			u_n[i1Cells] = u_nplus1[i1Cells];

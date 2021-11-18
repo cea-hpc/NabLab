@@ -10,7 +10,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonElement;
 
-import fr.cea.nabla.javalib.*;
 import fr.cea.nabla.javalib.mesh.*;
 
 public final class Variables
@@ -87,7 +86,7 @@ public final class Variables
 		else
 			optVect2 = new double[] {1.0, 1.0};
 		optVect3 = new double[2];
-		optVect3 = ArrayOperations.plus(optVect1, optVect2);
+		optVect3 = plus(optVect1, optVect2);
 		assert(options.has("mandatoryOptDim"));
 		final JsonElement valueof_mandatoryOptDim = options.get("mandatoryOptDim");
 		assert(valueof_mandatoryOptDim.isJsonPrimitive());
@@ -186,6 +185,16 @@ public final class Variables
 				throw new RuntimeException("** Assertion failed");
 		}
 		return true;
+	}
+
+	private static double[] plus(double[] a, double[] b)
+	{
+		double[] result = new double[a.length];
+		for (int ix0=0; ix0<a.length; ix0++)
+		{
+			result[ix0] = a[ix0] + b[ix0];
+		}
+		return result;
 	}
 
 	public void simulate()

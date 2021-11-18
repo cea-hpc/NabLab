@@ -33,7 +33,7 @@ class ReplaceAffectationsTest
 	val step = new ReplaceAffectations
 
 	@Test
-	def void testNoJobForConstExprVar()
+	def void test1()
 	{
 		val model =
 		'''
@@ -74,7 +74,7 @@ class ReplaceAffectationsTest
 		Assert.assertTrue(j2.instruction instanceof Affectation)
 		Assert.assertTrue(timeLoopJob.instruction instanceof InstructionBlock)
 		val timeLoopJobBlock = timeLoopJob.instruction as InstructionBlock
-		Assert.assertTrue(timeLoopJobBlock.instructions.size == 2)
+		Assert.assertEquals(2, timeLoopJobBlock.instructions.size)
 		Assert.assertTrue(timeLoopJobBlock.instructions.forall[x | x instanceof Affectation])
 
 		// Apply the transformation
@@ -83,7 +83,7 @@ class ReplaceAffectationsTest
 		// After transformation
 		Assert.assertTrue(j1.instruction instanceof Affectation)
 		Assert.assertTrue(j2.instruction instanceof Loop)
-		Assert.assertTrue(timeLoopJobBlock.instructions.size == 2)
+		Assert.assertEquals(2, timeLoopJobBlock.instructions.size)
 		Assert.assertTrue(timeLoopJobBlock.instructions.forall[x | x instanceof Loop])
 	}
 }

@@ -40,6 +40,17 @@ bool assertEquals(IntArray1D<x> expected, IntArray1D<x> actual)
 	}
 	return true;
 }
+
+template<size_t x0>
+RealArray1D<x0> operator+(RealArray1D<x0> a, RealArray1D<x0> b)
+{
+	RealArray1D<x0> result;
+	for (size_t ix0=0; ix0<x0; ix0++)
+	{
+		result[ix0] = a[ix0] + b[ix0];
+	}
+	return result;
+}
 }
 
 /******************** Module definition ********************/
@@ -106,7 +117,7 @@ Variables::jsonInit(const char* jsonContent)
 	{
 		optVect2 = {1.0, 1.0};
 	}
-	optVect3 = optVect1 + optVect2;
+	optVect3 = variablesfreefuncs::operator+(optVect1, optVect2);
 	// mandatoryOptDim
 	assert(options.HasMember("mandatoryOptDim"));
 	const rapidjson::Value& valueof_mandatoryOptDim = options["mandatoryOptDim"];

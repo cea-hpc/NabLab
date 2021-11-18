@@ -240,6 +240,7 @@ abstract class AbstractExpressionInterpreterTest
 		let ℝ[2,2] ρ = ℝ[2,2](2.);
 		let ℝ[2,2] res2 = add(δ,ρ); //-> [3., 3][3., 3.]
 
+		let ℝ[3] res3 = add(res1 + α, β);  //-> [6., 6., 6.]
 		ℝ[2] X{nodes};
 		'''
 		assertInterpreteFunctionCall(model)

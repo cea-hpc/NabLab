@@ -37,6 +37,7 @@ class ReductionCallExtensions
 		type = vType
 		const = false
 		constExpr = false
+		option = false
 
 		val seedExpression = d.model.seed.toIrExpression
 		if (vType.sizes.empty) // scalar type

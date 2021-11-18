@@ -36,7 +36,7 @@ double det(RealArray1D<2> a, RealArray1D<2> b)
 template<size_t x>
 RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b)
 {
-	return a + b;
+	return explicitheatequationfreefuncs::operator+(a, b);
 }
 
 double minR0(double a, double b)
@@ -52,6 +52,39 @@ double sumR0(double a, double b)
 double prodR0(double a, double b)
 {
 	return a * b;
+}
+
+template<size_t x0>
+RealArray1D<x0> operator+(RealArray1D<x0> a, RealArray1D<x0> b)
+{
+	RealArray1D<x0> result;
+	for (size_t ix0=0; ix0<x0; ix0++)
+	{
+		result[ix0] = a[ix0] + b[ix0];
+	}
+	return result;
+}
+
+template<size_t x0>
+RealArray1D<x0> operator*(double a, RealArray1D<x0> b)
+{
+	RealArray1D<x0> result;
+	for (size_t ix0=0; ix0<x0; ix0++)
+	{
+		result[ix0] = a * b[ix0];
+	}
+	return result;
+}
+
+template<size_t x0>
+RealArray1D<x0> operator-(RealArray1D<x0> a, RealArray1D<x0> b)
+{
+	RealArray1D<x0> result;
+	for (size_t ix0=0; ix0<x0; ix0++)
+	{
+		result[ix0] = a[ix0] - b[ix0];
+	}
+	return result;
 }
 }
 
@@ -168,7 +201,7 @@ void ExplicitHeatEquation::computeFaceLength() noexcept
 				const Id pPlus1Id(nodesOfFaceF[(pNodesOfFaceF+1+maxNodesOfFace)%maxNodesOfFace]);
 				const size_t pNodes(pId);
 				const size_t pPlus1Nodes(pPlus1Id);
-				reduction0 = explicitheatequationfreefuncs::sumR0(reduction0, explicitheatequationfreefuncs::norm(X[pNodes] - X[pPlus1Nodes]));
+				reduction0 = explicitheatequationfreefuncs::sumR0(reduction0, explicitheatequationfreefuncs::norm(explicitheatequationfreefuncs::operator-(X[pNodes], X[pPlus1Nodes])));
 			}
 		}
 		faceLength[fFaces] = 0.5 * reduction0;
@@ -259,7 +292,7 @@ void ExplicitHeatEquation::initXc() noexcept
 				reduction0 = explicitheatequationfreefuncs::sumR1(reduction0, X[pNodes]);
 			}
 		}
-		Xc[cCells] = 0.25 * reduction0;
+		Xc[cCells] = explicitheatequationfreefuncs::operator*(0.25, reduction0);
 	}
 }
 
@@ -352,7 +385,7 @@ void ExplicitHeatEquation::initU() noexcept
 	#pragma omp parallel for
 	for (size_t cCells=0; cCells<nbCells; cCells++)
 	{
-		if (explicitheatequationfreefuncs::norm(Xc[cCells] - vectOne) < 0.5) 
+		if (explicitheatequationfreefuncs::norm(explicitheatequationfreefuncs::operator-(Xc[cCells], vectOne)) < 0.5) 
 			u_n[cCells] = u0;
 		else
 			u_n[cCells] = 0.0;
@@ -390,7 +423,7 @@ void ExplicitHeatEquation::computeAlphaCoeff() noexcept
 				const size_t dCells(dId);
 				const Id fId(mesh.getCommonFace(cId, dId));
 				const size_t fFaces(fId);
-				const double alphaExtraDiag(deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / explicitheatequationfreefuncs::norm(Xc[cCells] - Xc[dCells]));
+				const double alphaExtraDiag(deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / explicitheatequationfreefuncs::norm(explicitheatequationfreefuncs::operator-(Xc[cCells], Xc[dCells])));
 				alpha[cCells][dCells] = alphaExtraDiag;
 				alphaDiag = alphaDiag + alphaExtraDiag;
 			}

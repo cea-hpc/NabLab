@@ -227,7 +227,7 @@ class ExpressionInterpreter
 					val callerArg = args.get(iArg)
 					val calleeArg = f.inArgs.get(iArg)
 					val callerArgTypeSizes = getIntSizes(callerArg.type, context)
-					for (iSize : 0..<callerArgTypeSizes.length)
+					for (iSize : 0..<callerArgTypeSizes.size)
 					{
 						val callerArgTypeSize = callerArgTypeSizes.get(iSize)
 						val calleeArgTypeDimension = calleeArg.type.sizes.get(iSize)

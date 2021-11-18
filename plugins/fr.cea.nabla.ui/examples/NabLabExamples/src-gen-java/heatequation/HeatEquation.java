@@ -10,7 +10,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonElement;
 
-import fr.cea.nabla.javalib.*;
 import fr.cea.nabla.javalib.mesh.*;
 
 public final class HeatEquation
@@ -138,7 +137,7 @@ public final class HeatEquation
 					final int j2Cells = j2Id;
 					final int cfId = mesh.getCommonFace(j1Id, j2Id);
 					final int cfFaces = cfId;
-					double reduction1 = (u_n[j2Cells] - u_n[j1Cells]) / norm(ArrayOperations.minus(center[j2Cells], center[j1Cells])) * surface[cfFaces];
+					double reduction1 = (u_n[j2Cells] - u_n[j1Cells]) / norm(minus(center[j2Cells], center[j1Cells])) * surface[cfFaces];
 					reduction0 = sumR0(reduction0, reduction1);
 				}
 			}
@@ -166,7 +165,7 @@ public final class HeatEquation
 					final int rPlus1Id = nodesOfFaceF[(rNodesOfFaceF+1+nbNodesOfFaceF)%nbNodesOfFaceF];
 					final int rNodes = rId;
 					final int rPlus1Nodes = rPlus1Id;
-					reduction0 = sumR0(reduction0, norm(ArrayOperations.minus(X[rNodes], X[rPlus1Nodes])));
+					reduction0 = sumR0(reduction0, norm(minus(X[rNodes], X[rPlus1Nodes])));
 				}
 			}
 			surface[fFaces] = 0.5 * reduction0;
@@ -231,7 +230,7 @@ public final class HeatEquation
 					reduction0 = sumR1(reduction0, X[rNodes]);
 				}
 			}
-			center[jCells] = ArrayOperations.multiply(0.25, reduction0);
+			center[jCells] = multiply(0.25, reduction0);
 		});
 	}
 
@@ -350,12 +349,42 @@ public final class HeatEquation
 
 	private static double[] sumR1(double[] a, double[] b)
 	{
-		return ArrayOperations.plus(a, b);
+		return plus(a, b);
 	}
 
 	private static double sumR0(double a, double b)
 	{
 		return a + b;
+	}
+
+	private static double[] plus(double[] a, double[] b)
+	{
+		double[] result = new double[a.length];
+		for (int ix0=0; ix0<a.length; ix0++)
+		{
+			result[ix0] = a[ix0] + b[ix0];
+		}
+		return result;
+	}
+
+	private static double[] multiply(double a, double[] b)
+	{
+		double[] result = new double[b.length];
+		for (int ix0=0; ix0<b.length; ix0++)
+		{
+			result[ix0] = a * b[ix0];
+		}
+		return result;
+	}
+
+	private static double[] minus(double[] a, double[] b)
+	{
+		double[] result = new double[a.length];
+		for (int ix0=0; ix0<a.length; ix0++)
+		{
+			result[ix0] = a[ix0] - b[ix0];
+		}
+		return result;
 	}
 
 	public void simulate()

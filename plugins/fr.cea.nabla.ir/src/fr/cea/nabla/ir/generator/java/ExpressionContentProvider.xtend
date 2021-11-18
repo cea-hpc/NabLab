@@ -39,35 +39,21 @@ import static extension fr.cea.nabla.ir.generator.java.TypeContentProvider.*
 
 class ExpressionContentProvider
 {
-	static def dispatch CharSequence getContent(ContractedIf it) 
+	static def dispatch CharSequence getContent(ContractedIf it)
 	'''(«condition.content» ? «thenExpression.content» : «elseExpression.content»)'''
 
-	static def dispatch CharSequence getContent(BinaryExpression it) 
-	{
-		val lContent = left.content
-		val rContent = right.content
-
-		if (left.type.scalar && right.type.scalar)
-			'''«lContent» «operator» «rContent»'''
-		else
-			'''ArrayOperations.«operator.operatorName»(«lContent», «rContent»)'''
-	}
+	static def dispatch CharSequence getContent(BinaryExpression it)
+	'''«left.content» «operator» «right.content»'''
 
 	static def dispatch CharSequence getContent(UnaryExpression it)
-	{
-		val content = expression.content
-		if (expression.type.scalar)
-			'''«operator»«expression.content»'''
-		else
-			'''ArrayOperations.«operator.operatorName»(«content»)'''
-	}
+	'''«operator»«expression.content»'''
 
 	static def dispatch CharSequence getContent(Parenthesis it) '''(«expression.content»)'''
 	static def dispatch CharSequence getContent(IntConstant it) '''«value»'''
 	static def dispatch CharSequence getContent(RealConstant it) '''«value»'''
 	static def dispatch CharSequence getContent(BoolConstant it) '''«value»'''
 
-	static def dispatch CharSequence getContent(MinConstant it) 
+	static def dispatch CharSequence getContent(MinConstant it)
 	{
 		val t = type
 		switch t
@@ -79,7 +65,7 @@ class ExpressionContentProvider
 		}
 	}
 
-	static def dispatch CharSequence getContent(MaxConstant it) 
+	static def dispatch CharSequence getContent(MaxConstant it)
 	{
 		val t = type
 		switch t
@@ -90,7 +76,7 @@ class ExpressionContentProvider
 		}
 	}
 
-	static def dispatch CharSequence getContent(BaseTypeConstant it) 
+	static def dispatch CharSequence getContent(BaseTypeConstant it)
 	{
 		val t = type as BaseType
 
@@ -131,7 +117,7 @@ class ExpressionContentProvider
 			'''1'''
 	}
 
-	static def dispatch CharSequence getContent(FunctionCall it) 
+	static def dispatch CharSequence getContent(FunctionCall it)
 	'''«function.codeName»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
 
 	static def dispatch CharSequence getContent(ArgOrVarRef it)

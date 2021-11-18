@@ -10,7 +10,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonElement;
 
-import fr.cea.nabla.javalib.*;
 import fr.cea.nabla.javalib.mesh.*;
 
 public final class IterativeHeatEquation
@@ -158,7 +157,7 @@ public final class IterativeHeatEquation
 					final int pPlus1Id = nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFaceF)%nbNodesOfFaceF];
 					final int pNodes = pId;
 					final int pPlus1Nodes = pPlus1Id;
-					reduction0 = sumR0(reduction0, norm(ArrayOperations.minus(X[pNodes], X[pPlus1Nodes])));
+					reduction0 = sumR0(reduction0, norm(minus(X[pNodes], X[pPlus1Nodes])));
 				}
 			}
 			faceLength[fFaces] = 0.5 * reduction0;
@@ -246,7 +245,7 @@ public final class IterativeHeatEquation
 					reduction0 = sumR1(reduction0, X[pNodes]);
 				}
 			}
-			Xc[cCells] = ArrayOperations.multiply(0.25, reduction0);
+			Xc[cCells] = multiply(0.25, reduction0);
 		});
 	}
 
@@ -400,7 +399,7 @@ public final class IterativeHeatEquation
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
-			if (norm(ArrayOperations.minus(Xc[cCells], vectOne)) < 0.5)
+			if (norm(minus(Xc[cCells], vectOne)) < 0.5)
 				u_n[cCells] = u0;
 			else
 				u_n[cCells] = 0.0;
@@ -437,7 +436,7 @@ public final class IterativeHeatEquation
 					final int dCells = dId;
 					final int fId = mesh.getCommonFace(cId, dId);
 					final int fFaces = fId;
-					final double alphaExtraDiag = deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / norm(ArrayOperations.minus(Xc[cCells], Xc[dCells]));
+					final double alphaExtraDiag = deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / norm(minus(Xc[cCells], Xc[dCells]));
 					alpha[cCells][dCells] = alphaExtraDiag;
 					alphaDiag = alphaDiag + alphaExtraDiag;
 				}
@@ -524,7 +523,7 @@ public final class IterativeHeatEquation
 
 	private static double[] sumR1(double[] a, double[] b)
 	{
-		return ArrayOperations.plus(a, b);
+		return plus(a, b);
 	}
 
 	private static double minR0(double a, double b)
@@ -545,6 +544,36 @@ public final class IterativeHeatEquation
 	private static double maxR0(double a, double b)
 	{
 		return Math.max(a, b);
+	}
+
+	private static double[] plus(double[] a, double[] b)
+	{
+		double[] result = new double[a.length];
+		for (int ix0=0; ix0<a.length; ix0++)
+		{
+			result[ix0] = a[ix0] + b[ix0];
+		}
+		return result;
+	}
+
+	private static double[] multiply(double a, double[] b)
+	{
+		double[] result = new double[b.length];
+		for (int ix0=0; ix0<b.length; ix0++)
+		{
+			result[ix0] = a * b[ix0];
+		}
+		return result;
+	}
+
+	private static double[] minus(double[] a, double[] b)
+	{
+		double[] result = new double[a.length];
+		for (int ix0=0; ix0<a.length; ix0++)
+		{
+			result[ix0] = a[ix0] - b[ix0];
+		}
+		return result;
 	}
 
 	public void simulate()

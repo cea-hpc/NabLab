@@ -24,7 +24,6 @@ import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.Variable
 import java.util.ArrayList
 import java.util.LinkedHashSet
-import java.util.Map
 
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
@@ -54,23 +53,13 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		val fileContents = new ArrayList<GenerationContent>
 		for (module : ir.modules)
 		{
+			backend.pythonEmbeddingContentProvider.computeExecutionEvents(module)
 			fileContents += new GenerationContent(module.className + '.h', module.headerFileContent, false)
 			fileContents += new GenerationContent(module.className + '.cc', module.sourceFileContent, false)
 		}
 		fileContents += new GenerationContent('CMakeLists.txt', backend.cmakeContentProvider.getContentFor(ir, hasLevelDB, cMakeVars), false)
 		fileContents += new GenerationContent('nablabdefs.h.in', '#cmakedefine NABLAB_DEBUG', false)
 		return fileContents
-	}
-	
-	val Map<String, Integer> _executionEvents = newHashMap
-	
-	private def getExecutionEvents(IrModule it)
-	{
-		if (_executionEvents.empty)
-		{
-			jobs.forEach[j, i|_executionEvents.put(j.name.toFirstUpper, i)]
-		}
-		return _executionEvents
 	}
 
 	private def getHeaderFileContent(IrModule it)
@@ -92,11 +81,11 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	«ENDIF»
 
 	«backend.includesContentProvider.getUsings(hasLevelDB)»
-	
+
 	#ifdef NABLAB_DEBUG
 	namespace py = pybind11;
 	#endif
-	
+
 	«IF main && irRoot.modules.size > 1»
 
 		«FOR m : irRoot.modules.filter[x | x !== it]»
@@ -156,14 +145,16 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 
 			void createDB(const std::string& db_name);
 		«ENDIF»
+		
+		«backend.pythonEmbeddingContentProvider.getGlobalScopeStructContent(it)»
 
 	private:
 		#ifdef NABLAB_DEBUG
 		«FOR j : jobs»
-		«backend.jobContentProvider.getWrapperDeclarationContent(j)»
+		«backend.pythonEmbeddingContentProvider.getWrapperDeclarationContent(j)»
 		«ENDFOR»
 		«FOR j : jobs»
-		«backend.jobContentProvider.getPointerDeclarationContent(j)»
+		«backend.pythonEmbeddingContentProvider.getPointerDeclarationContent(j)»
 		«ENDFOR»
 		#endif
 		«IF postProcessing !== null»
@@ -230,8 +221,9 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		Timer ioTimer;
 
 		#ifdef NABLAB_DEBUG
-		std::list<py::function> before[«executionEvents.size»];
-		std::list<py::function> after[«executionEvents.size»];
+		«className»Context globalScope;
+		std::list<py::function> before[«backend.pythonEmbeddingContentProvider.executionEvents.size»];
+		std::list<py::function> after[«backend.pythonEmbeddingContentProvider.executionEvents.size»];
 		#endif
 
 	#ifdef NABLAB_DEBUG
@@ -246,6 +238,12 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		std::map<string, int> executionEvents;
 	#endif
 	};
+	
+	#ifdef NABLAB_DEBUG
+	«FOR j : jobs»
+		«backend.pythonEmbeddingContentProvider.getLocalScopeStructContent(j)»
+	«ENDFOR»
+	#endif
 
 	#endif
 	'''
@@ -297,10 +295,11 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 			this->«Utils.getCodeName(j)»Ptr = &«className»::«Utils.getCodeName(j)»;
 		«ENDFOR»
 		this->executionEvents = {
-			«FOR p : executionEvents.entrySet.sortBy[value] SEPARATOR ','»
-			{"«p.key»", «p.value»}
+			«FOR e : backend.pythonEmbeddingContentProvider.executionEvents.keySet.sortBy[k|eventGetter.apply(k)] SEPARATOR ','»
+			{"«e»", «eventGetter.apply(e)»}
 			«ENDFOR»
 		};
+		this->globalScope = «className»Context(this);
 		#endif
 	}
 
@@ -354,20 +353,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		assert(«jsonContentProvider.getJsonName(nrName)».IsString());
 		«nrName» = «jsonContentProvider.getJsonName(nrName)».GetString();
 		«ENDIF»
-		#ifdef NABLAB_DEBUG
-		if (options.HasMember("pythonPath"))
-		{
-			const rapidjson::Value &valueof_pythonPath = options["pythonPath"];
-			assert(valueof_pythonPath.IsString());
-			pythonPath = valueof_pythonPath.GetString();
-		}
-		if (options.HasMember("pythonFile"))
-		{
-			const rapidjson::Value &valueof_pythonFile = options["pythonFile"];
-			assert(valueof_pythonFile.IsString());
-			pythonFile = valueof_pythonFile.GetString();
-		}
-		#endif
+		«backend.pythonEmbeddingContentProvider.pythonJsonInitContent»
 		«IF main»
 
 			// Copy node coordinates
@@ -413,7 +399,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	
 	#ifdef NABLAB_DEBUG
 	«FOR j : jobs SEPARATOR '\n'»
-		«backend.jobContentProvider.getWrapperDefinitionContent(j, executionEvents)»
+		«backend.pythonEmbeddingContentProvider.getWrapperDefinitionContent(j)»
 	«ENDFOR»
 «««	TODO: add function wrappers
 «««	TODO: add variable assignment wrappers
@@ -468,107 +454,11 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	«ENDIF»
 
 	#ifdef NABLAB_DEBUG
-	PYBIND11_EMBEDDED_MODULE(«className.toLowerCase»internal, m) {
-		«FOR v : variables»
-		m.def("«v.name»", []() {
-			static «className» *instance = («className» *) py::module_::import("«className.toLowerCase»internal")
-					.attr("_«className»_C_API").cast<py::capsule>().get_pointer();
-			return instance->«v.name»;
-		});
-		«ENDFOR»
-	}
+	«backend.pythonEmbeddingContentProvider.getEmbeddedModule(it)»
 
-	void «className»::setFunctionPtr(int idx, bool wrapper)
-	{
-		if (wrapper)
-		{
-			switch (idx)
-			{
-				«FOR p : executionEvents.entrySet.sortBy[value]»
-				case «p.value»:
-					«p.key.toFirstLower»Ptr = &«className»::«p.key.toFirstLower»Wrapper;
-					break;
-				«ENDFOR»
-			}
-		}
-		else
-		{
-			switch (idx)
-			{
-				«FOR p : executionEvents.entrySet.sortBy[value]»
-				case «p.value»:
-					«p.key.toFirstLower»Ptr = &«className»::«p.key.toFirstLower»;
-					break;
-				«ENDFOR»
-			}
-		}
-	}
+	«backend.pythonEmbeddingContentProvider.getSetFunctionPtrContent(it)»
 
-	void «className»::pythonInitialize()
-	{
-		py::module_::import("sys").attr("path").attr("append")(pythonPath);
-		py::module_ monilogModule = py::module_::import("monilog");
-		monilogModule.def("_register_before", [&](py::str event, py::function monilogger)
-		{
-			int idx = executionEvents[event];
-			std::list<py::function> beforeMoniloggers = before[idx];
-			std::list<py::function>::iterator it = std::find(beforeMoniloggers.begin(), beforeMoniloggers.end(), monilogger);
-			if (it == beforeMoniloggers.end())
-			{
-				before[idx].push_back(monilogger);
-				setFunctionPtr(idx, true);
-			}
-		});
-		monilogModule.def("_register_after", [&](py::str event, py::function monilogger)
-		{
-			int idx = executionEvents[event];
-			std::list<py::function> afterMoniloggers = after[idx];
-			std::list<py::function>::iterator it = std::find(afterMoniloggers.begin(), afterMoniloggers.end(), monilogger);
-			if (it == afterMoniloggers.end())
-			{
-				after[idx].push_back(monilogger);
-				setFunctionPtr(idx, true);
-			}
-		});
-		monilogModule.def("_stop", [&](py::str event, py::function monilogger)
-		{
-			int idx = executionEvents[event];
-			{
-				std::list<py::function> beforeMoniloggers = before[idx];
-				std::list<py::function>::iterator it = std::find(beforeMoniloggers.begin(), beforeMoniloggers.end(), monilogger);
-				if (it != beforeMoniloggers.end())
-				{
-					beforeMoniloggers.erase(it);
-					before[idx] = beforeMoniloggers;
-					if (beforeMoniloggers.empty() && after[idx].empty())
-					{
-						setFunctionPtr(idx, false);
-					}
-				}
-			}
-			{
-				std::list<py::function> afterMoniloggers = after[idx];
-				std::list<py::function>::iterator it = std::find(afterMoniloggers.begin(), afterMoniloggers.end(), monilogger);
-				if (it != afterMoniloggers.end())
-				{
-					afterMoniloggers.erase(it);
-					after[idx] = afterMoniloggers;
-					if (before[idx].empty() && afterMoniloggers.empty())
-					{
-						switch (idx)
-						{
-							setFunctionPtr(idx, false);
-						}
-					}
-				}
-			}
-		});
-		py::module_::import("«className.toLowerCase»internal").add_object("_«className»_C_API", py::capsule(this));
-		if (pythonFile != "")
-		{
-			py::module_ pScript = py::module_::import(pythonFile.c_str());
-		}
-	}
+	«backend.pythonEmbeddingContentProvider.getPythonInitializeContent(it)»
 	#endif
 
 	void «className»::«Utils.getCodeName(irRoot.main)»()

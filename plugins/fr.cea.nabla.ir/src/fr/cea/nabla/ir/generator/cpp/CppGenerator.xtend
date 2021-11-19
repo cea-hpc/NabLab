@@ -10,10 +10,12 @@
 package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.transformers.IrTransformationStep
+import java.util.function.Function
 
 abstract class CppGenerator
 {
 	protected val Backend backend
+	protected val Function<String, Integer> eventGetter
 
 	def String getName() { backend.name }
 	def IrTransformationStep getIrTransformationStep() { backend.irTransformationStep }
@@ -32,5 +34,6 @@ abstract class CppGenerator
 	new(Backend backend)
 	{
 		this.backend = backend
+		this.eventGetter = [k|backend.pythonEmbeddingContentProvider.executionEvents.get(k)]
 	}
 }

@@ -33,29 +33,49 @@ import fr.cea.nabla.ir.ir.VariableDeclaration
 import fr.cea.nabla.ir.ir.While
 import org.eclipse.xtend.lib.annotations.Data
 
+import static fr.cea.nabla.ir.generator.cpp.PythonEmbeddingContentProvider.*
+import static fr.cea.nabla.ir.IrUtils.*
+
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.cpp.ItemIndexAndIdValueContentProvider.*
+import fr.cea.nabla.ir.ir.InternFunction
 
 @Data
 abstract class InstructionContentProvider
 {
 	protected val extension TypeContentProvider
 	protected val extension ExpressionContentProvider
+	protected val extension PythonEmbeddingContentProvider
 	protected abstract def CharSequence getReductionContent(ReductionInstruction it)
 	protected abstract def CharSequence getParallelLoopContent(Loop it)
 
 	def dispatch CharSequence getContent(VariableDeclaration it)
 	'''
 		«IF variable.type.baseTypeStatic»
-			«IF variable.defaultValue !== null»
-			// TODO instrument assign
+			«IF getContainerOfType(it, InternFunction) === null»
+			«getBeforeInstrumentation(executionEvent, LOCAL_SCOPE).ifdefGuard»
 			«ENDIF»
 			«IF variable.const»const «ENDIF»«variable.type.cppType» «variable.name»«IF variable.defaultValue !== null»(«variable.defaultValue.content»)«ENDIF»;
+			«IF getContainerOfType(it, InternFunction) === null»
+			#ifdef NABLAB_DEBUG
+			scope.«variable.name» = &«variable.name»;
+			«getAfterInstrumentation(executionEvent, LOCAL_SCOPE)»
+			#endif
+			«ENDIF»
 		«ELSE»
+			«IF getContainerOfType(it, InternFunction) === null»
+			«getBeforeInstrumentation(executionEvent, LOCAL_SCOPE).ifdefGuard»
+			«ENDIF»
 			«IF variable.const»const «ENDIF»«variable.type.cppType» «variable.name»;
+			«IF getContainerOfType(it, InternFunction) === null»
 			«initCppTypeContent(variable.name, variable.type)»
+			#ifdef NABLAB_DEBUG
+			scope.«variable.name» = &«variable.name»;
+			«getAfterInstrumentation(executionEvent, LOCAL_SCOPE)»
+			#endif
+			«ENDIF»
 		«ENDIF»
 	'''
 
@@ -71,13 +91,33 @@ abstract class InstructionContentProvider
 	{
 		if (left.target.linearAlgebra && !(left.iterators.empty && left.indices.empty))
 			'''
-			// TODO instrument assign
+			«IF getContainerOfType(it, InternFunction) === null»
+			«getBeforeInstrumentation(executionEvent, LOCAL_SCOPE).ifdefGuard»
+			«ENDIF»
 			«left.codeName».setValue(«formatIteratorsAndIndices(left.target.type, left.iterators, left.indices)», «right.content»);
+			«IF getContainerOfType(it, InternFunction) === null»
+			#ifdef NABLAB_DEBUG
+			«IF !left.target.global»
+			scope.«left.codeName» = &«left.codeName»;
+			«ENDIF»
+			«getAfterInstrumentation(executionEvent, LOCAL_SCOPE)»
+			#endif
+			«ENDIF»
 			'''
 		else
 			'''
-			// TODO instrument assign
+			«IF getContainerOfType(it, InternFunction) === null»
+			«getBeforeInstrumentation(executionEvent, LOCAL_SCOPE).ifdefGuard»
+			«ENDIF»
 			«left.content» = «right.content»;
+			«IF getContainerOfType(it, InternFunction) === null»
+			#ifdef NABLAB_DEBUG
+			«IF !left.target.global»
+			scope.«left.content» = &«left.content»;
+			«ENDIF»
+			«getAfterInstrumentation(executionEvent, LOCAL_SCOPE)»
+			#endif
+			«ENDIF»
 			'''
 	}
 
@@ -96,13 +136,15 @@ abstract class InstructionContentProvider
 
 	def dispatch CharSequence getContent(If it)
 	'''
-		if («condition.content») 
-		«val thenContent = thenInstruction.content»
-		«IF !(thenContent.charAt(0) == '{'.charAt(0))»	«ENDIF»«thenContent»
+		if («condition.content»)
+		{
+			«thenInstruction.content»
+		}
 		«IF (elseInstruction !== null)»
-			«val elseContent = elseInstruction.content»
-			else
-			«IF !(elseContent.charAt(0) == '{'.charAt(0))»	«ENDIF»«elseContent»
+		else
+		{
+			«elseInstruction.content»
+		}
 		«ENDIF»
 	'''
 

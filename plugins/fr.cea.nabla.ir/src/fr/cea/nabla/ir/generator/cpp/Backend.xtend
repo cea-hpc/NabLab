@@ -31,6 +31,7 @@ abstract class Backend implements Jniable
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) JobCallerContentProvider jobCallerContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) JobContentProvider jobContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) MainContentProvider mainContentProvider
+	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) PythonEmbeddingContentProvider pythonEmbeddingContentProvider
 
 	override getJniDefinitionContent(ExternFunction f, ExtensionProvider provider)
 	{
@@ -46,14 +47,15 @@ class SequentialBackend extends Backend
 		irTransformationStep = new ReplaceReductions(true)
 		cmakeContentProvider = new CMakeContentProvider
 		typeContentProvider = new StlThreadTypeContentProvider
+		pythonEmbeddingContentProvider = new PythonEmbeddingContentProvider(typeContentProvider)
 		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
-		instructionContentProvider = new SequentialInstructionContentProvider(typeContentProvider, expressionContentProvider)
-		functionContentProvider = new FunctionContentProvider(typeContentProvider, expressionContentProvider, instructionContentProvider)
+		instructionContentProvider = new SequentialInstructionContentProvider(typeContentProvider, expressionContentProvider, pythonEmbeddingContentProvider)
+		functionContentProvider = new FunctionContentProvider(typeContentProvider, expressionContentProvider, instructionContentProvider, pythonEmbeddingContentProvider)
 		traceContentProvider = new TraceContentProvider
 		includesContentProvider = new IncludesContentProvider
 		jsonContentProvider = new JsonContentProvider(expressionContentProvider, instructionContentProvider)
 		jobCallerContentProvider = new JobCallerContentProvider
-		jobContentProvider = new StlThreadJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider, jsonContentProvider)
+		jobContentProvider = new StlThreadJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider, jsonContentProvider, typeContentProvider, pythonEmbeddingContentProvider)
 		mainContentProvider = new MainContentProvider(jsonContentProvider)
 	}
 }
@@ -65,14 +67,15 @@ class StlThreadBackend extends Backend
 		name = 'StlThread'
 		cmakeContentProvider = new StlThreadCMakeContentProvider
 		typeContentProvider = new StlThreadTypeContentProvider
+		pythonEmbeddingContentProvider = new PythonEmbeddingContentProvider(typeContentProvider)
 		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
-		instructionContentProvider = new StlThreadInstructionContentProvider(typeContentProvider, expressionContentProvider)
-		functionContentProvider = new FunctionContentProvider(typeContentProvider, expressionContentProvider, instructionContentProvider)
+		instructionContentProvider = new StlThreadInstructionContentProvider(typeContentProvider, expressionContentProvider, pythonEmbeddingContentProvider)
+		functionContentProvider = new FunctionContentProvider(typeContentProvider, expressionContentProvider, instructionContentProvider, pythonEmbeddingContentProvider)
 		traceContentProvider = new TraceContentProvider
 		includesContentProvider = new StlThreadIncludesContentProvider
 		jsonContentProvider = new JsonContentProvider(expressionContentProvider, instructionContentProvider)
 		jobCallerContentProvider = new JobCallerContentProvider
-		jobContentProvider = new StlThreadJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider, jsonContentProvider)
+		jobContentProvider = new StlThreadJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider, jsonContentProvider, typeContentProvider, pythonEmbeddingContentProvider)
 		mainContentProvider = new MainContentProvider(jsonContentProvider)
 	}
 }
@@ -84,14 +87,15 @@ class KokkosBackend extends Backend
 		name = 'Kokkos'
 		cmakeContentProvider = new KokkosCMakeContentProvider
 		typeContentProvider = new KokkosTypeContentProvider
+		pythonEmbeddingContentProvider = new PythonEmbeddingContentProvider(typeContentProvider)
 		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
-		instructionContentProvider = new KokkosInstructionContentProvider(typeContentProvider, expressionContentProvider)
-		functionContentProvider = new FunctionContentProvider(typeContentProvider, expressionContentProvider, instructionContentProvider)
+		instructionContentProvider = new KokkosInstructionContentProvider(typeContentProvider, expressionContentProvider, pythonEmbeddingContentProvider)
+		functionContentProvider = new FunctionContentProvider(typeContentProvider, expressionContentProvider, instructionContentProvider, pythonEmbeddingContentProvider)
 		traceContentProvider = new KokkosTraceContentProvider
 		includesContentProvider = new KokkosIncludesContentProvider
 		jsonContentProvider = new JsonContentProvider(expressionContentProvider, instructionContentProvider)
 		jobCallerContentProvider = new JobCallerContentProvider
-		jobContentProvider = new KokkosJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider, jsonContentProvider)
+		jobContentProvider = new KokkosJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider, jsonContentProvider, typeContentProvider, pythonEmbeddingContentProvider)
 		mainContentProvider = new KokkosMainContentProvider(jsonContentProvider)
 	}
 }
@@ -103,14 +107,15 @@ class KokkosTeamThreadBackend extends Backend
 		name = 'Kokkos Team Thread'
 		cmakeContentProvider = new KokkosCMakeContentProvider
 		typeContentProvider = new KokkosTypeContentProvider
+		pythonEmbeddingContentProvider = new PythonEmbeddingContentProvider(typeContentProvider)
 		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
-		instructionContentProvider = new KokkosTeamThreadInstructionContentProvider(typeContentProvider, expressionContentProvider)
-		functionContentProvider = new FunctionContentProvider(typeContentProvider, expressionContentProvider, instructionContentProvider)
+		instructionContentProvider = new KokkosTeamThreadInstructionContentProvider(typeContentProvider, expressionContentProvider, pythonEmbeddingContentProvider)
+		functionContentProvider = new FunctionContentProvider(typeContentProvider, expressionContentProvider, instructionContentProvider, pythonEmbeddingContentProvider)
 		traceContentProvider = new KokkosTraceContentProvider
 		includesContentProvider = new KokkosIncludesContentProvider
 		jsonContentProvider = new JsonContentProvider(expressionContentProvider, instructionContentProvider)
 		jobCallerContentProvider = new KokkosTeamThreadJobCallerContentProvider
-		jobContentProvider = new KokkosTeamThreadJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider, jsonContentProvider)
+		jobContentProvider = new KokkosTeamThreadJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider, jsonContentProvider, typeContentProvider, pythonEmbeddingContentProvider)
 		mainContentProvider = new KokkosMainContentProvider(jsonContentProvider)
 	}
 }
@@ -122,14 +127,15 @@ class OpenMpBackend extends Backend
 		name = 'OpenMP'
 		cmakeContentProvider = new OpenMpCMakeContentProvider
 		typeContentProvider = new StlThreadTypeContentProvider
+		pythonEmbeddingContentProvider = new PythonEmbeddingContentProvider(typeContentProvider)
 		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
-		instructionContentProvider = new OpenMpInstructionContentProvider(typeContentProvider, expressionContentProvider)
-		functionContentProvider = new FunctionContentProvider(typeContentProvider, expressionContentProvider, instructionContentProvider)
+		instructionContentProvider = new OpenMpInstructionContentProvider(typeContentProvider, expressionContentProvider, pythonEmbeddingContentProvider)
+		functionContentProvider = new FunctionContentProvider(typeContentProvider, expressionContentProvider, instructionContentProvider, pythonEmbeddingContentProvider)
 		traceContentProvider = new TraceContentProvider
 		includesContentProvider = new OpenMpIncludesContentProvider
 		jsonContentProvider = new JsonContentProvider(expressionContentProvider, instructionContentProvider)
 		jobCallerContentProvider = new JobCallerContentProvider
-		jobContentProvider = new StlThreadJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider, jsonContentProvider)
+		jobContentProvider = new StlThreadJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider, jsonContentProvider, typeContentProvider, pythonEmbeddingContentProvider)
 		mainContentProvider = new MainContentProvider(jsonContentProvider)
 	}
 }

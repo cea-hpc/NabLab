@@ -16,7 +16,6 @@ import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.JobCaller
 import java.util.List
-import java.util.Map
 import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
@@ -32,44 +31,20 @@ abstract class JobContentProvider
 	protected val extension InstructionContentProvider
 	protected val extension JobCallerContentProvider
 	protected val extension JsonContentProvider
+	protected val extension TypeContentProvider
+	protected val extension PythonEmbeddingContentProvider
 
 	def getDeclarationContent(Job it)
 	'''
 		void «codeName»() noexcept;'''
-
-	def getWrapperDeclarationContent(Job it)
-	'''
-		void «codeName»Wrapper() noexcept;'''
-
-	def getPointerDeclarationContent(Job it)
-	'''
-		void («IrUtils.getContainerOfType(it, IrModule).className»::*«codeName»Ptr)();'''
 
 	def getDefinitionContent(Job it)
 	'''
 		«comment»
 		void «IrUtils.getContainerOfType(it, IrModule).className»::«codeName»() noexcept
 		{
+			«localScopeDefinition.ifdefGuard»
 			«innerContent»
-		}
-	'''
-
-	def getWrapperDefinitionContent(Job it, Map<String, Integer> executionEvents)
-	'''
-		«wrapperComment»
-		void «IrUtils.getContainerOfType(it, IrModule).className»::«codeName»Wrapper() noexcept
-		{
-			std::list<py::function> beforeMoniloggers = before[«executionEvents.get(it.name.toFirstUpper)»];
-			for (py::function monilogger : beforeMoniloggers)
-			{
-				monilogger();
-			}
-			«codeName»();
-			std::list<py::function> afterMoniloggers = after[«executionEvents.get(it.name.toFirstUpper)»];
-			for (py::function monilogger : afterMoniloggers)
-			{
-				monilogger();
-			}
 		}
 	'''
 

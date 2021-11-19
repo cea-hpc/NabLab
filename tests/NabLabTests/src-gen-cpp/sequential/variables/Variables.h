@@ -27,6 +27,8 @@ template<size_t x>
 bool assertEquals(RealArray1D<x> expected, RealArray1D<x> actual);
 template<size_t x>
 bool assertEquals(IntArray1D<x> expected, IntArray1D<x> actual);
+template<size_t x0>
+RealArray1D<x0> operator+(RealArray1D<x0> a, RealArray1D<x0> b);
 }
 
 /******************** Module declaration ********************/
@@ -58,6 +60,7 @@ private:
 	int optDim;
 	RealArray1D<2> optVect1;
 	RealArray1D<2> optVect2;
+	RealArray1D<2> optVect3;
 	int mandatoryOptDim;
 	IntArray1D<2> mandatoryOptVect;
 	static constexpr int constexprDim = 2;

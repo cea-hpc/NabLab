@@ -19,10 +19,7 @@ class NablaValueGetter
 		switch indices.size
 		{
 			case 0 : it
-			default : {
-				println(it.toString + " - " + indices.toString)
-				throw new RuntimeException("Wrong access")
-				}
+			default : throw new RuntimeException("Wrong access")
 		}
 	}
 

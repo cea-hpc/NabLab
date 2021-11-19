@@ -40,6 +40,17 @@ bool assertEquals(IntArray1D<x> expected, IntArray1D<x> actual)
 	}
 	return true;
 }
+
+template<size_t x0>
+RealArray1D<x0> operator+(RealArray1D<x0> a, RealArray1D<x0> b)
+{
+	RealArray1D<x0> result;
+	for (size_t ix0=0; ix0<x0; ix0++)
+	{
+		result[ix0] = a[ix0] + b[ix0];
+	}
+	return result;
+}
 }
 
 /******************** Module definition ********************/
@@ -106,6 +117,7 @@ Variables::jsonInit(const char* jsonContent)
 	{
 		optVect2 = {1.0, 1.0};
 	}
+	optVect3 = variablesfreefuncs::operator+(optVect1, optVect2);
 	// mandatoryOptDim
 	assert(options.HasMember("mandatoryOptDim"));
 	const rapidjson::Value& valueof_mandatoryOptDim = options["mandatoryOptDim"];
@@ -185,7 +197,7 @@ void Variables::varVecInitialization() noexcept
 
 /**
  * Job oracle called @2.0 in simulate method.
- * In variables: checkDynamicDim, constexprDim, constexprVec, mandatoryOptDim, mandatoryOptVect, optDim, optVect1, optVect2, varVec
+ * In variables: checkDynamicDim, constexprDim, constexprVec, mandatoryOptDim, mandatoryOptVect, optDim, optVect1, optVect2, optVect3, varVec
  * Out variables: 
  */
 void Variables::oracle() noexcept
@@ -193,6 +205,7 @@ void Variables::oracle() noexcept
 	const bool testOptDim(variablesfreefuncs::assertEquals(2, optDim));
 	const bool testOptVect1(variablesfreefuncs::assertEquals({1.0, 1.0}, optVect1));
 	const bool testOptVect2(variablesfreefuncs::assertEquals({2.0, 2.0}, optVect2));
+	const bool testOptVect3(variablesfreefuncs::assertEquals({3.0, 3.0}, optVect3));
 	const bool testMandatoryOptDim(variablesfreefuncs::assertEquals(3, mandatoryOptDim));
 	const bool testMandatoryOptVect(variablesfreefuncs::assertEquals({3, 3}, mandatoryOptVect));
 	const bool testConstexprDim(variablesfreefuncs::assertEquals(2, constexprDim));

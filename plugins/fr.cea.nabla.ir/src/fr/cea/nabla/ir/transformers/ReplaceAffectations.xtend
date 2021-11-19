@@ -27,7 +27,14 @@ import org.eclipse.emf.ecore.util.EcoreUtil
 
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 
-class ReplaceAffectations  extends IrTransformationStep
+/**
+ * Replace affectations to avoid aliasing.
+ * Affectations on connectivity and array variables at left and ArgOrVarRef instance at right
+ * are replaced by a loop to avoid aliasing.
+ * Note that an affectation on a connectivity variable is an error in the NabLab language but it 
+ * can be created during IR transformation (for example Un = Un+1 at the end of time loop).
+ */
+class ReplaceAffectations extends IrTransformationStep
 {
 	new()
 	{
@@ -94,13 +101,16 @@ class ReplaceAffectations  extends IrTransformationStep
 		if (connectivities.size > 1 && !connectivities.get(1).inTypes.empty)
 		{
 			// SubConnectivity will need Id on ItemIndex
-			val itemId = IrFactory.eINSTANCE.createItemId => [
+			val itemId = IrFactory.eINSTANCE.createItemId =>
+			[
 				name = itemIndex.name + 'Id'
 				itemName = itemIndex.name
 			]
-			val itemIdDefinition = IrFactory.eINSTANCE.createItemIdDefinition => [
+			val itemIdDefinition = IrFactory.eINSTANCE.createItemIdDefinition =>
+			[
 				id = itemId
-				value = IrFactory::eINSTANCE.createItemIdValueIterator => [
+				value = IrFactory::eINSTANCE.createItemIdValueIterator =>
+				[
 					iterator = iter
 					shift = 0
 				]
@@ -155,7 +165,8 @@ class ReplaceAffectations  extends IrTransformationStep
 		IrFactory::eINSTANCE.createIterator =>
 		[
 			index = id
-			container = IrFactory::eINSTANCE.createConnectivityCall => [
+			container = IrFactory::eINSTANCE.createConnectivityCall =>
+			[
 				connectivity = c
 				args += argsIds
 			]

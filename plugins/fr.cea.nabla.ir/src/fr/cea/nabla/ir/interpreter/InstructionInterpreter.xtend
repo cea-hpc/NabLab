@@ -86,7 +86,6 @@ class InstructionInterpreter
 	{
 		context.logFinest("Interprete Affectation")
 		val rightValue = interprete(right, context)
-
 		val allIndices = newIntArrayOfSize(left.iterators.size + left.indices.size)
 		var i = 0
 		for (iterator : left.iterators)

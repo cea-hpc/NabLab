@@ -43,6 +43,22 @@ double sumR0(double a, double b);
 template<size_t x>
 RealArray2D<x,x> sumR2(RealArray2D<x,x> a, RealArray2D<x,x> b);
 double minR0(double a, double b);
+template<size_t x0>
+RealArray1D<x0> operator+(RealArray1D<x0> a, RealArray1D<x0> b);
+template<size_t x0, size_t x1>
+RealArray2D<x0,x1> operator+(RealArray2D<x0,x1> a, RealArray2D<x0,x1> b);
+template<size_t x0>
+RealArray1D<x0> operator*(double a, RealArray1D<x0> b);
+template<size_t x0>
+RealArray1D<x0> operator-(RealArray1D<x0> a, RealArray1D<x0> b);
+template<size_t x0, size_t x1>
+RealArray2D<x0,x1> operator*(double a, RealArray2D<x0,x1> b);
+template<size_t x0, size_t x1>
+RealArray2D<x0,x1> operator-(RealArray2D<x0,x1> a, RealArray2D<x0,x1> b);
+template<size_t x0, size_t x1>
+RealArray2D<x0,x1> operator*(RealArray2D<x0,x1> a, RealArray2D<x0,x1> b);
+template<size_t x0, size_t x1>
+RealArray2D<x0,x1> operator*(RealArray2D<x0,x1> a, double b);
 }
 
 /******************** Module declaration ********************/

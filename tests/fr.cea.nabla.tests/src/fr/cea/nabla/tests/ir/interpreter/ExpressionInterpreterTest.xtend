@@ -177,6 +177,7 @@ class ExpressionInterpreterTest extends AbstractExpressionInterpreterTest
 		assertVariableValueInContext(ir.mainModule, context, "w", new NV1Real(#[3.0, 3.0]))
 		assertVariableValueInContext(ir.mainModule, context, "res1", new NV1Real(#[3.0, 3.0, 3.0]))
 		assertVariableValueInContext(ir.mainModule, context, "res2", new NV2Real(#[#[3.0, 3.0],#[3.0, 3.0]]))
+		assertVariableValueInContext(ir.mainModule, context, "res3", new NV1Real(#[6.0, 6.0, 6.0]))
 	}
 
 	override assertInterpreteFunctionCallWithBody(String model)

@@ -36,12 +36,45 @@ double dot(RealArray1D<x> a, RealArray1D<x> b)
 template<size_t x>
 RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b)
 {
-	return a + b;
+	return heatequationfreefuncs::operator+(a, b);
 }
 
 double sumR0(double a, double b)
 {
 	return a + b;
+}
+
+template<size_t x0>
+RealArray1D<x0> operator+(RealArray1D<x0> a, RealArray1D<x0> b)
+{
+	RealArray1D<x0> result;
+	for (size_t ix0=0; ix0<x0; ix0++)
+	{
+		result[ix0] = a[ix0] + b[ix0];
+	}
+	return result;
+}
+
+template<size_t x0>
+RealArray1D<x0> operator*(double a, RealArray1D<x0> b)
+{
+	RealArray1D<x0> result;
+	for (size_t ix0=0; ix0<x0; ix0++)
+	{
+		result[ix0] = a * b[ix0];
+	}
+	return result;
+}
+
+template<size_t x0>
+RealArray1D<x0> operator-(RealArray1D<x0> a, RealArray1D<x0> b)
+{
+	RealArray1D<x0> result;
+	for (size_t ix0=0; ix0<x0; ix0++)
+	{
+		result[ix0] = a[ix0] - b[ix0];
+	}
+	return result;
 }
 }
 
@@ -152,7 +185,7 @@ HeatEquation::jsonInit(const char* jsonContent)
  */
 void HeatEquation::computeOutgoingFlux() noexcept
 {
-	#pragma omp parallel
+	#pragma omp parallel for
 	for (size_t j1Cells=0; j1Cells<nbCells; j1Cells++)
 	{
 		const Id j1Id(j1Cells);
@@ -166,7 +199,7 @@ void HeatEquation::computeOutgoingFlux() noexcept
 				const size_t j2Cells(j2Id);
 				const Id cfId(mesh.getCommonFace(j1Id, j2Id));
 				const size_t cfFaces(cfId);
-				double reduction1((u_n[j2Cells] - u_n[j1Cells]) / heatequationfreefuncs::norm(center[j2Cells] - center[j1Cells]) * surface[cfFaces]);
+				double reduction1((u_n[j2Cells] - u_n[j1Cells]) / heatequationfreefuncs::norm(heatequationfreefuncs::operator-(center[j2Cells], center[j1Cells])) * surface[cfFaces]);
 				reduction0 = heatequationfreefuncs::sumR0(reduction0, reduction1);
 			}
 		}
@@ -181,7 +214,7 @@ void HeatEquation::computeOutgoingFlux() noexcept
  */
 void HeatEquation::computeSurface() noexcept
 {
-	#pragma omp parallel
+	#pragma omp parallel for
 	for (size_t fFaces=0; fFaces<nbFaces; fFaces++)
 	{
 		const Id fId(fFaces);
@@ -195,7 +228,7 @@ void HeatEquation::computeSurface() noexcept
 				const Id rPlus1Id(nodesOfFaceF[(rNodesOfFaceF+1+maxNodesOfFace)%maxNodesOfFace]);
 				const size_t rNodes(rId);
 				const size_t rPlus1Nodes(rPlus1Id);
-				reduction0 = heatequationfreefuncs::sumR0(reduction0, heatequationfreefuncs::norm(X[rNodes] - X[rPlus1Nodes]));
+				reduction0 = heatequationfreefuncs::sumR0(reduction0, heatequationfreefuncs::norm(heatequationfreefuncs::operator-(X[rNodes], X[rPlus1Nodes])));
 			}
 		}
 		surface[fFaces] = 0.5 * reduction0;
@@ -219,7 +252,7 @@ void HeatEquation::computeTn() noexcept
  */
 void HeatEquation::computeV() noexcept
 {
-	#pragma omp parallel
+	#pragma omp parallel for
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		const Id jId(jCells);
@@ -247,7 +280,7 @@ void HeatEquation::computeV() noexcept
  */
 void HeatEquation::iniCenter() noexcept
 {
-	#pragma omp parallel
+	#pragma omp parallel for
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		const Id jId(jCells);
@@ -262,7 +295,7 @@ void HeatEquation::iniCenter() noexcept
 				reduction0 = heatequationfreefuncs::sumR1(reduction0, X[rNodes]);
 			}
 		}
-		center[jCells] = 0.25 * reduction0;
+		center[jCells] = heatequationfreefuncs::operator*(0.25, reduction0);
 	}
 }
 
@@ -273,7 +306,7 @@ void HeatEquation::iniCenter() noexcept
  */
 void HeatEquation::iniF() noexcept
 {
-	#pragma omp parallel
+	#pragma omp parallel for
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		f[jCells] = 0.0;
@@ -297,7 +330,7 @@ void HeatEquation::iniTime() noexcept
  */
 void HeatEquation::computeUn() noexcept
 {
-	#pragma omp parallel
+	#pragma omp parallel for
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		u_nplus1[jCells] = f[jCells] * deltat + u_n[jCells] + outgoingFlux[jCells];
@@ -311,7 +344,7 @@ void HeatEquation::computeUn() noexcept
  */
 void HeatEquation::iniUn() noexcept
 {
-	#pragma omp parallel
+	#pragma omp parallel for
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		u_n[jCells] = std::cos(2 * PI * alpha * center[jCells][0]);
@@ -357,7 +390,7 @@ void HeatEquation::executeTimeLoopN() noexcept
 		continueLoop = (t_nplus1 < stopTime && n + 1 < maxIterations);
 	
 		t_n = t_nplus1;
-		#pragma omp parallel
+		#pragma omp parallel for
 		for (size_t i1Cells=0; i1Cells<nbCells; i1Cells++)
 		{
 			u_n[i1Cells] = u_nplus1[i1Cells];

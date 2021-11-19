@@ -371,7 +371,7 @@ class OpenMpInstructionContentProvider extends InstructionContentProvider
 
 	override getParallelLoopContent(Loop it)
 	'''
-		#pragma omp parallel
+		#pragma omp parallel for
 		«sequentialLoopContent»
 	'''
 }

@@ -39,7 +39,7 @@ R1::jsonInit(const char* jsonContent)
  */
 void R1::rj1() noexcept
 {
-	#pragma omp parallel
+	#pragma omp parallel for
 	for (size_t cCells=0; cCells<nbCells; cCells++)
 	{
 		mainModule->hv4[cCells] = mainModule->hv1[cCells] * 2.0;
@@ -53,7 +53,7 @@ void R1::rj1() noexcept
  */
 void R1::rj2() noexcept
 {
-	#pragma omp parallel
+	#pragma omp parallel for
 	for (size_t cCells=0; cCells<nbCells; cCells++)
 	{
 		rv3[cCells] = mainModule->hv4[cCells] * 3.0;

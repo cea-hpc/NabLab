@@ -19,6 +19,7 @@ import fr.cea.nabla.ir.transformers.CompositeTransformationStep
 import fr.cea.nabla.ir.transformers.FillJobHLTs
 import fr.cea.nabla.ir.transformers.OptimizeConnectivities
 import fr.cea.nabla.ir.transformers.ReplaceAffectations
+import fr.cea.nabla.ir.transformers.CreateArrayOperations
 import fr.cea.nabla.ir.transformers.ReplaceReductions
 import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
 import fr.cea.nabla.nabla.DefaultExtension
@@ -104,6 +105,7 @@ class IrRootBuilder
 			new OptimizeConnectivities(#['cells', 'nodes', 'faces']),
 			new ReplaceReductions(replaceAllReductions),
 			new ReplaceAffectations,
+			new CreateArrayOperations,
 			new FillJobHLTs])
 	}
 

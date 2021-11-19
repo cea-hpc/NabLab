@@ -210,7 +210,9 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 			«IF v.constExpr»
 				static constexpr «typeContentProvider.getCppType(v.type)» «v.name» = «expressionContentProvider.getContent(v.defaultValue)»;
 			«ELSE»
-				«IF v.const»const «ENDIF»«typeContentProvider.getCppType(v.type)» «v.name»;
+				««« Must not be declared const even it the const attribute is true
+				««« because it will be initialized in the jsonInit function (not in cstr)
+				«typeContentProvider.getCppType(v.type)» «v.name»;
 			«ENDIF»
 		«ENDFOR»
 		#endif

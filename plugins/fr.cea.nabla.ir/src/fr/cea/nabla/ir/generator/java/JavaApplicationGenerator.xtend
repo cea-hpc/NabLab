@@ -13,12 +13,14 @@ import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.generator.ApplicationGenerator
 import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.generator.Utils
+import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.Variable
+import fr.cea.nabla.ir.transformers.ReplaceOperatorNames
 import java.util.ArrayList
 
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
@@ -31,7 +33,6 @@ import static extension fr.cea.nabla.ir.generator.java.FunctionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.JobContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.JsonContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.TypeContentProvider.*
-import fr.cea.nabla.ir.ir.BaseType
 
 class JavaApplicationGenerator implements ApplicationGenerator
 {
@@ -44,7 +45,10 @@ class JavaApplicationGenerator implements ApplicationGenerator
 
 	override getName() { 'Java' }
 
-	override getIrTransformationStep() { null }
+	override getIrTransformationStep()
+	{
+		new ReplaceOperatorNames
+	}
 
 	override getGenerationContents(IrRoot ir)
 	{
@@ -78,7 +82,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 		import com.google.gson.JsonObject;
 		import com.google.gson.JsonElement;
 
-		import fr.cea.nabla.javalib.*;
+		«IF levelDB»import fr.cea.nabla.javalib.LevelDBUtils;«ENDIF»
 		import fr.cea.nabla.javalib.mesh.*;
 
 		public final class «className»
@@ -115,7 +119,9 @@ class JavaApplicationGenerator implements ApplicationGenerator
 				«IF v.constExpr»
 					static final «v.type.javaType» «v.name» = «v.defaultValue.content»;
 				«ELSE»
-					«IF v.const»final «ENDIF»«v.type.javaType» «v.name»;
+					««« Must not be declared final even it the const attribute is true
+					««« because it will be initialized in the jsonInit function (not in cstr)
+					«v.type.javaType» «v.name»;
 				«ENDIF»
 			«ENDFOR»
 

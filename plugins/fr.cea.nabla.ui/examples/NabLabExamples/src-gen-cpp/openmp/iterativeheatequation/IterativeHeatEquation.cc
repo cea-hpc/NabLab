@@ -44,7 +44,7 @@ double det(RealArray1D<2> a, RealArray1D<2> b)
 template<size_t x>
 RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b)
 {
-	return a + b;
+	return iterativeheatequationfreefuncs::operator+(a, b);
 }
 
 double minR0(double a, double b)
@@ -65,6 +65,39 @@ double prodR0(double a, double b)
 double maxR0(double a, double b)
 {
 	return std::max(a, b);
+}
+
+template<size_t x0>
+RealArray1D<x0> operator+(RealArray1D<x0> a, RealArray1D<x0> b)
+{
+	RealArray1D<x0> result;
+	for (size_t ix0=0; ix0<x0; ix0++)
+	{
+		result[ix0] = a[ix0] + b[ix0];
+	}
+	return result;
+}
+
+template<size_t x0>
+RealArray1D<x0> operator*(double a, RealArray1D<x0> b)
+{
+	RealArray1D<x0> result;
+	for (size_t ix0=0; ix0<x0; ix0++)
+	{
+		result[ix0] = a * b[ix0];
+	}
+	return result;
+}
+
+template<size_t x0>
+RealArray1D<x0> operator-(RealArray1D<x0> a, RealArray1D<x0> b)
+{
+	RealArray1D<x0> result;
+	for (size_t ix0=0; ix0<x0; ix0++)
+	{
+		result[ix0] = a[ix0] - b[ix0];
+	}
+	return result;
 }
 }
 
@@ -191,7 +224,7 @@ IterativeHeatEquation::jsonInit(const char* jsonContent)
  */
 void IterativeHeatEquation::computeFaceLength() noexcept
 {
-	#pragma omp parallel
+	#pragma omp parallel for
 	for (size_t fFaces=0; fFaces<nbFaces; fFaces++)
 	{
 		const Id fId(fFaces);
@@ -205,7 +238,7 @@ void IterativeHeatEquation::computeFaceLength() noexcept
 				const Id pPlus1Id(nodesOfFaceF[(pNodesOfFaceF+1+maxNodesOfFace)%maxNodesOfFace]);
 				const size_t pNodes(pId);
 				const size_t pPlus1Nodes(pPlus1Id);
-				reduction0 = iterativeheatequationfreefuncs::sumR0(reduction0, iterativeheatequationfreefuncs::norm(X[pNodes] - X[pPlus1Nodes]));
+				reduction0 = iterativeheatequationfreefuncs::sumR0(reduction0, iterativeheatequationfreefuncs::norm(iterativeheatequationfreefuncs::operator-(X[pNodes], X[pPlus1Nodes])));
 			}
 		}
 		faceLength[fFaces] = 0.5 * reduction0;
@@ -229,7 +262,7 @@ void IterativeHeatEquation::computeTn() noexcept
  */
 void IterativeHeatEquation::computeV() noexcept
 {
-	#pragma omp parallel
+	#pragma omp parallel for
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		const Id jId(jCells);
@@ -257,7 +290,7 @@ void IterativeHeatEquation::computeV() noexcept
  */
 void IterativeHeatEquation::initD() noexcept
 {
-	#pragma omp parallel
+	#pragma omp parallel for
 	for (size_t cCells=0; cCells<nbCells; cCells++)
 	{
 		D[cCells] = 1.0;
@@ -281,7 +314,7 @@ void IterativeHeatEquation::initTime() noexcept
  */
 void IterativeHeatEquation::initXc() noexcept
 {
-	#pragma omp parallel
+	#pragma omp parallel for
 	for (size_t cCells=0; cCells<nbCells; cCells++)
 	{
 		const Id cId(cCells);
@@ -296,7 +329,7 @@ void IterativeHeatEquation::initXc() noexcept
 				reduction0 = iterativeheatequationfreefuncs::sumR1(reduction0, X[pNodes]);
 			}
 		}
-		Xc[cCells] = 0.25 * reduction0;
+		Xc[cCells] = iterativeheatequationfreefuncs::operator*(0.25, reduction0);
 	}
 }
 
@@ -307,7 +340,7 @@ void IterativeHeatEquation::initXc() noexcept
  */
 void IterativeHeatEquation::setUpTimeLoopK() noexcept
 {
-	#pragma omp parallel
+	#pragma omp parallel for
 	for (size_t i1Cells=0; i1Cells<nbCells; i1Cells++)
 	{
 		u_nplus1_k[i1Cells] = u_n[i1Cells];
@@ -321,7 +354,7 @@ void IterativeHeatEquation::setUpTimeLoopK() noexcept
  */
 void IterativeHeatEquation::updateU() noexcept
 {
-	#pragma omp parallel
+	#pragma omp parallel for
 	for (size_t cCells=0; cCells<nbCells; cCells++)
 	{
 		const Id cId(cCells);
@@ -363,7 +396,7 @@ void IterativeHeatEquation::computeDeltaTn() noexcept
  */
 void IterativeHeatEquation::computeFaceConductivity() noexcept
 {
-	#pragma omp parallel
+	#pragma omp parallel for
 	for (size_t fFaces=0; fFaces<nbFaces; fFaces++)
 	{
 		const Id fId(fFaces);
@@ -428,7 +461,7 @@ void IterativeHeatEquation::executeTimeLoopK() noexcept
 		// Evaluate loop condition with variables at time n
 		continueLoop = (residual > epsilon && iterativeheatequationfreefuncs::check(k + 1 < maxIterationsK));
 	
-		#pragma omp parallel
+		#pragma omp parallel for
 		for (size_t i1Cells=0; i1Cells<nbCells; i1Cells++)
 		{
 			u_nplus1_k[i1Cells] = u_nplus1_kplus1[i1Cells];
@@ -443,10 +476,10 @@ void IterativeHeatEquation::executeTimeLoopK() noexcept
  */
 void IterativeHeatEquation::initU() noexcept
 {
-	#pragma omp parallel
+	#pragma omp parallel for
 	for (size_t cCells=0; cCells<nbCells; cCells++)
 	{
-		if (iterativeheatequationfreefuncs::norm(Xc[cCells] - vectOne) < 0.5) 
+		if (iterativeheatequationfreefuncs::norm(iterativeheatequationfreefuncs::operator-(Xc[cCells], vectOne)) < 0.5) 
 			u_n[cCells] = u0;
 		else
 			u_n[cCells] = 0.0;
@@ -470,7 +503,7 @@ void IterativeHeatEquation::setUpTimeLoopN() noexcept
  */
 void IterativeHeatEquation::computeAlphaCoeff() noexcept
 {
-	#pragma omp parallel
+	#pragma omp parallel for
 	for (size_t cCells=0; cCells<nbCells; cCells++)
 	{
 		const Id cId(cCells);
@@ -484,7 +517,7 @@ void IterativeHeatEquation::computeAlphaCoeff() noexcept
 				const size_t dCells(dId);
 				const Id fId(mesh.getCommonFace(cId, dId));
 				const size_t fFaces(fId);
-				const double alphaExtraDiag(deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / iterativeheatequationfreefuncs::norm(Xc[cCells] - Xc[dCells]));
+				const double alphaExtraDiag(deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / iterativeheatequationfreefuncs::norm(iterativeheatequationfreefuncs::operator-(Xc[cCells], Xc[dCells])));
 				alpha[cCells][dCells] = alphaExtraDiag;
 				alphaDiag = alphaDiag + alphaExtraDiag;
 			}
@@ -500,7 +533,7 @@ void IterativeHeatEquation::computeAlphaCoeff() noexcept
  */
 void IterativeHeatEquation::tearDownTimeLoopK() noexcept
 {
-	#pragma omp parallel
+	#pragma omp parallel for
 	for (size_t i1Cells=0; i1Cells<nbCells; i1Cells++)
 	{
 		u_nplus1[i1Cells] = u_nplus1_kplus1[i1Cells];
@@ -537,7 +570,7 @@ void IterativeHeatEquation::executeTimeLoopN() noexcept
 		continueLoop = (t_nplus1 < stopTime && n + 1 < maxIterations);
 	
 		t_n = t_nplus1;
-		#pragma omp parallel
+		#pragma omp parallel for
 		for (size_t i1Cells=0; i1Cells<nbCells; i1Cells++)
 		{
 			u_n[i1Cells] = u_nplus1[i1Cells];

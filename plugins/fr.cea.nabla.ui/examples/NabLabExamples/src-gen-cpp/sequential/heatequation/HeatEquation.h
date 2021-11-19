@@ -31,6 +31,12 @@ double dot(RealArray1D<x> a, RealArray1D<x> b);
 template<size_t x>
 RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b);
 double sumR0(double a, double b);
+template<size_t x0>
+RealArray1D<x0> operator+(RealArray1D<x0> a, RealArray1D<x0> b);
+template<size_t x0>
+RealArray1D<x0> operator*(double a, RealArray1D<x0> b);
+template<size_t x0>
+RealArray1D<x0> operator-(RealArray1D<x0> a, RealArray1D<x0> b);
 }
 
 /******************** Module declaration ********************/

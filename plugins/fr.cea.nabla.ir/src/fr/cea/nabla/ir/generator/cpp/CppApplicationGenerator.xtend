@@ -146,7 +146,9 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 			void createDB(const std::string& db_name);
 		«ENDIF»
 		
+		#ifdef NABLAB_DEBUG
 		«backend.pythonEmbeddingContentProvider.getGlobalScopeStructContent(it)»
+		#endif
 
 	private:
 		#ifdef NABLAB_DEBUG

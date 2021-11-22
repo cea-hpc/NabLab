@@ -40,11 +40,8 @@ class PythonEmbeddingContentProvider
 	val Set<String> callExecutionEvents = newHashSet
 	
 	def computeExecutionEvents(IrModule it) {
-		val moduleName = name.toFirstUpper
 		jobs.forEach[j|
-			val jobName = j.name.toFirstUpper
-//			val jobEventName = '''«moduleName».«jobName»'''
-			val jobEventName = jobName
+			val jobEventName = j.name.toFirstUpper
 			executionEvents.computeIfAbsent(jobEventName, [executionEvents.size])
 			callExecutionEvents.add(jobEventName)
 			j.eAllContents.filter[o|o instanceof VariableDeclaration || o instanceof Affectation].forEach[a|
@@ -90,8 +87,6 @@ class PythonEmbeddingContentProvider
 	
 	def dispatch int getExecutionEvent(Job it)
 	{
-		val module = getContainerOfType(it, IrModule).name.toFirstUpper
-//		val eventName = '''«module».«name.toFirstUpper»'''
 		val eventName = name.toFirstUpper
 		return executionEvents.get(eventName)
 	}
@@ -116,18 +111,14 @@ class PythonEmbeddingContentProvider
 	
 	def dispatch int getExecutionEvent(VariableDeclaration it)
 	{
-		val module = getContainerOfType(it, IrModule).name.toFirstUpper
 		val container = getContainerName(it).toFirstUpper
-//		val eventName = '''«module».«container».«variable.name.toFirstUpper»'''
 		val eventName = '''«container».«variable.name.toFirstUpper»'''
 		return executionEvents.get(eventName)
 	}
 	
 	def dispatch int getExecutionEvent(Affectation it)
 	{
-		val module = getContainerOfType(it, IrModule).name.toFirstUpper
 		val container = getContainerName(it).toFirstUpper
-//		val eventName = '''«module».«container».«left.target.name.toFirstUpper»'''
 		val eventName = '''«container».«left.target.name.toFirstUpper»'''
 		return executionEvents.get(eventName)
 	}
@@ -270,17 +261,17 @@ class PythonEmbeddingContentProvider
 	'''
 		PYBIND11_EMBEDDED_MODULE(«className.toLowerCase»internal, m)
 		{
-			py::class_<«className»::«className»Context>(m, "«className»Context")
-				«FOR v : variables»
-				«IF !v.constExpr»
-				.def_property_readonly("«v.name»", &«className»::«className»Context::get«v.name.toFirstUpper»)
-				«ENDIF»
-				«ENDFOR»;
+			«val globalContextName = '''«className»Context'''»
+			py::class_<«className»::«globalContextName»>(m, "«globalContextName»")
+				«val vars = variables.filter[!constExpr]»
+				«FOR v : vars SEPARATOR '\n'».def_property_readonly("«v.name»", &«className»::«globalContextName»::get«v.name.toFirstUpper»)«ENDFOR»;
 			«FOR job : jobs»
-			py::class_<«job.codeName.toFirstUpper»Context, «className»::«className»Context>(m, "«job.codeName.toFirstUpper»Context")
-				«FOR local : job.eAllContents.filter(VariableDeclaration).toList»
-				.def_property_readonly("«local.variable.name»", &«job.codeName.toFirstUpper»Context::get«local.variable.name.toFirstUpper»)
-				«ENDFOR»;
+			«val varDecs = job.eAllContents.filter(VariableDeclaration).toList»
+			«val jobContextName = '''«job.codeName.toFirstUpper»Context'''»
+			py::class_<«jobContextName», «className»::«globalContextName»>(m, "«jobContextName»")«IF varDecs.empty»;«ENDIF»
+				«IF !varDecs.empty»
+				«FOR local : varDecs SEPARATOR '\n'».def_property_readonly("«local.variable.name»", &«jobContextName»::get«local.variable.name.toFirstUpper»)«ENDFOR»;
+				«ENDIF»
 			«ENDFOR»
 		}
 	'''
@@ -319,6 +310,7 @@ class PythonEmbeddingContentProvider
 		void «className»::pythonInitialize()
 		{
 			py::module_::import("sys").attr("path").attr("append")(pythonPath);
+			py::module_::import("«className.toLowerCase»internal");
 			py::module_ monilogModule = py::module_::import("monilog");
 			monilogModule.def("_register_before", [&](py::str event, py::function monilogger)
 			{

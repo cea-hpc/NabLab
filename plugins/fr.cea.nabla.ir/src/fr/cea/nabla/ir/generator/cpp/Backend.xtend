@@ -19,7 +19,7 @@ import org.eclipse.xtend.lib.annotations.Accessors
 abstract class Backend implements Jniable
 {
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) String name
-	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) IrTransformationStep irTransformationStep = null
+	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) IrTransformationStep[] irTransformationSteps = #[]
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) CMakeContentProvider cmakeContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) TypeContentProvider typeContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) ExpressionContentProvider expressionContentProvider
@@ -43,7 +43,7 @@ class SequentialBackend extends Backend
 	new()
 	{
 		name = 'Sequential'
-		irTransformationStep = new ReplaceReductions(true)
+		irTransformationSteps = #[new ReplaceReductions(true)]
 		cmakeContentProvider = new CMakeContentProvider
 		typeContentProvider = new StlThreadTypeContentProvider
 		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)

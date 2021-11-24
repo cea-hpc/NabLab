@@ -74,13 +74,13 @@ public class LinearAlgebra implements ILinearAlgebra
 	@Override
 	public Vector solveLinearSystem(Matrix x0, Vector x1, Matrix x2)
 	{
-		throw new RuntimeException("Not implemented exception");
+		throw new RuntimeException("Not yet implemented");
 	}
 
 	@Override
 	public Vector solveLinearSystem(Matrix x0, Vector x1, Vector x2, int x3)
 	{
-		throw new RuntimeException("Not implemented exception");
+		throw new RuntimeException("Not yet implemented");
 	}
 
 	@Override
@@ -93,13 +93,13 @@ public class LinearAlgebra implements ILinearAlgebra
 	@Override
 	public Vector solveLinearSystem(Matrix x0, Vector x1, Vector x2, int x3, double x4)
 	{
-		throw new RuntimeException("Not implemented exception");
+		throw new RuntimeException("Not yet implemented");
 	}
 
 	@Override
 	public Vector solveLinearSystem(Matrix x0, Vector x1, Matrix x2, Vector x3, int x4)
 	{
-		throw new RuntimeException("Not implemented exception");
+		throw new RuntimeException("Not yet implemented");
 	}
 
 	@Override

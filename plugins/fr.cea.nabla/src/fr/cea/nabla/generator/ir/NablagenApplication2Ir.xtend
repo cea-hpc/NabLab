@@ -96,7 +96,7 @@ class NablagenApplication2Ir
 						meshes += s.provider
 
 				if (meshes.size > 1)
-					throw new Exception("Multi mesh not yet implemented")
+					throw new RuntimeException("Multi mesh not yet implemented")
 				else if (meshes.size == 1)
 					providers += meshes.head
 			}

@@ -45,9 +45,9 @@ class JavaApplicationGenerator implements ApplicationGenerator
 
 	override getName() { 'Java' }
 
-	override getIrTransformationStep()
+	override getIrTransformationSteps()
 	{
-		new ReplaceOperatorNames
+		#[new ReplaceOperatorNames]
 	}
 
 	override getGenerationContents(IrRoot ir)

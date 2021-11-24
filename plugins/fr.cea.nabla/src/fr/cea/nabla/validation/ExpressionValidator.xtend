@@ -68,7 +68,7 @@ class ExpressionValidator extends ArgOrVarRefValidator
 	static def getReductionCallOnConnectivitiesVariableMsg() { "No reduction on connectivities variable" }
 	static def getReductionCallArgsMsg(String inType) { "No candidate reduction found. Wrong arguments: " + inType }
 	static def getBinaryOpTypeMsg(String op, String leftType, String rightType) { "Binary operator " + op + " undefined on types " + leftType + " and " + rightType }
-	static def getVectorConstantSizeMsg(int size) { "Unsupported vector size: " + size }
+	static def getVectorConstantSizeMsg(int size) { "Unexpected vector size: " + size }
 	static def getVectorConstantInconsistentTypeMsg() { "All values must have the same type" }
 	static def getVectorConstantTypeMsg(String actualType)  { "Expected only scalar and vector types, but was " + actualType }
 	static def getExternFunctionCallInFunctionBodyMsg() { "External function can not be called in inline function" }

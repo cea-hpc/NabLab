@@ -46,7 +46,7 @@ class IrBasicFactory
 	def toIrPrimitiveType(PrimitiveType t)
 	{
 		val type = fr.cea.nabla.ir.ir.PrimitiveType::get(t.value + 1) // First literal is VOID in the IR model
-		if (type === null) throw new RuntimeException('Conversion Nabla --> IR impossible : type inconnu ' + t.literal)
+		if (type === null) throw new RuntimeException('Nabla --> IR problem: unknown type ' + t.literal)
 		return type
 	}
 

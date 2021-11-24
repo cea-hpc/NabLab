@@ -31,7 +31,7 @@ class ReplaceOperatorNames extends IrTransformationStep
 		for (m : ir.modules)
 			for (f : m.functions)
 				for (opName : OperatorNames.entrySet)
-					if (f.name == CreateArrayOperations.OperatorPrefix + opName.key)
+					if (f.name == OperatorUtils.OperatorPrefix + opName.key)
 						f.name = opName.value
 
 		return true

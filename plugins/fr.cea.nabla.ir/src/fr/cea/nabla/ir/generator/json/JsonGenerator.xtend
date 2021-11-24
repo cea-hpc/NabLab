@@ -33,7 +33,7 @@ class JsonGenerator implements ApplicationGenerator
 
 	override getName() { 'Json' }
 
-	override getIrTransformationStep() { null }
+	override getIrTransformationSteps() { #[] }
 
 	override getGenerationContents(IrRoot ir)
 	{

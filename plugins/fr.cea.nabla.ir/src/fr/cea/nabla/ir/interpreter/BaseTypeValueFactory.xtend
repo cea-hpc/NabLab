@@ -23,7 +23,7 @@ class BaseTypeValueFactory
 			case 0: NablaValueFactory::createValue(t.primitive)
 			case 1: NablaValueFactory::createValue(t.primitive, name, sizes.get(0), null)
 			case 2: NablaValueFactory::createValue(t.primitive, name, sizes.get(0), sizes.get(1), null)
-			default: throw new RuntimeException('Dimension not supported: ' + sizes.size)
+			default: throw new RuntimeException('Unexpected dimension: ' + sizes.size)
 		}
 	}
 }

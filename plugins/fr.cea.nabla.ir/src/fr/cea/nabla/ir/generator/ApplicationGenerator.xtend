@@ -15,6 +15,6 @@ import fr.cea.nabla.ir.transformers.IrTransformationStep
 interface ApplicationGenerator
 {
 	def String getName()
-	def IrTransformationStep getIrTransformationStep()
+	def IrTransformationStep[] getIrTransformationSteps()
 	def Iterable<GenerationContent> getGenerationContents(IrRoot ir)
 }

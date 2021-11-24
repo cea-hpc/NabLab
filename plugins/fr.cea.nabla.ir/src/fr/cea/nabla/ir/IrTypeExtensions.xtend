@@ -56,7 +56,7 @@ class IrTypeExtensions
 		{
 			case 1: VectorClass
 			case 2: MatrixClass
-			default: throw new RuntimeException("Unexpected dimension")
+			default: throw new RuntimeException("Unexpected dimension: " + t.sizes.size)
 		}
 	}
 
@@ -85,6 +85,17 @@ class IrTypeExtensions
 	static def isScalar(IrType t)
 	{
 		(t instanceof BaseType) && (t as BaseType).sizes.empty
+	}
+
+	static def boolean isBaseTypeConstExpr(IrType it)
+	{
+		switch it
+		{
+			BaseType: sizes.empty || sizes.forall[x | x.constExpr]
+			ConnectivityType: base.baseTypeConstExpr
+			LinearAlgebraType: sizes.empty || sizes.forall[x | x.constExpr]
+			default: throw new RuntimeException("Unhandled parameter")
+		}
 	}
 
 	static def isDynamicBaseType(IrType t)

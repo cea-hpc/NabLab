@@ -71,7 +71,7 @@ class ExpressionContentProvider
 			case (t.scalar && t.primitive == PrimitiveType::INT): '''numeric_limits<int>::min()'''
 			// Be careful at MIN_VALUE which is a positive value for double.
 			case (t.scalar && t.primitive == PrimitiveType::REAL): '''-numeric_limits<double>::max()'''
-			default: throw new Exception('Invalid expression Min for type: ' + t.label)
+			default: throw new RuntimeException('Invalid expression Min for type: ' + t.label)
 		}
 	}
 
@@ -82,7 +82,7 @@ class ExpressionContentProvider
 		{
 			case (t.scalar && t.primitive == PrimitiveType::INT): '''numeric_limits<int>::max()'''
 			case (t.scalar && t.primitive == PrimitiveType::REAL): '''numeric_limits<double>::max()'''
-			default: throw new Exception('Invalid expression Max for type: ' + t.label)
+			default: throw new RuntimeException('Invalid expression Max for type: ' + t.label)
 		}
 	}
 
@@ -91,7 +91,7 @@ class ExpressionContentProvider
 		val t = type as BaseType
 
 		if (t.sizes.exists[x | !(x instanceof IntConstant)])
-			throw new RuntimeException("BaseTypeConstants size expressions must be IntConstant.")
+			throw new RuntimeException("BaseTypeConstants size expressions must be IntConstant")
 
 		val sizes = t.sizes.map[x | (x as IntConstant).value]
 		'''{«initArray(sizes, value.content)»}'''

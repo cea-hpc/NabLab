@@ -16,7 +16,7 @@ abstract class CppGenerator
 	protected val Backend backend
 
 	def String getName() { backend.name }
-	def IrTransformationStep getIrTransformationStep() { backend.irTransformationStep }
+	def IrTransformationStep[] getIrTransformationSteps() { backend.irTransformationSteps }
 	def CMakeContentProvider getIrRoot2CMake() { backend.cmakeContentProvider }
 	def TypeContentProvider getTypeContentProvider() { backend.typeContentProvider }
 	def ExpressionContentProvider getExpressionContentProvider() { backend.expressionContentProvider }

@@ -12,15 +12,13 @@ package fr.cea.nabla.ir.generator.arcane
 import fr.cea.nabla.ir.IrTypeExtensions
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityType
-import fr.cea.nabla.ir.ir.Expression
-import fr.cea.nabla.ir.ir.IntConstant
 import fr.cea.nabla.ir.ir.IrType
 import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.PrimitiveType
 
 class TypeContentProvider
 {
-	static def getTypeName(IrType it)
+	static def getTypeName(IrType it, boolean const)
 	{
 		switch it
 		{
@@ -31,9 +29,9 @@ class TypeContentProvider
 				val dimension = t.value
 				switch dimension
 				{
-					case 0: t.key
-					case 1: '''ConstArrayView<«t.key»>'''
-					default: '''ConstArray«dimension»View<«t.key»>'''
+					case 0: '''«IF const»const «ENDIF»«t.key»'''
+					case 1: '''«IF const»Const«ENDIF»ArrayView<«t.key»>'''
+					default: '''«IF const»Const«ENDIF»Array«dimension»View<«t.key»>'''
 				}
 			}
 			ConnectivityType: getVariableTypeName(it)
@@ -58,23 +56,23 @@ class TypeContentProvider
 
 	static def dispatch getVariableTypeName(LinearAlgebraType it)
 	{
-		throw new Exception("Not yet implemented")
+		throw new RuntimeException("Not yet implemented")
 	}
 
 	static def Pair<String, Integer> getTypeNameAndDimension(BaseType it)
 	{
 		if (primitive == PrimitiveType.REAL)
 		{
-			if (sizes.size == 1)
+			if (intSizes.size == 1)
 			{
-				val s = sizes.get(0).intValue
+				val s = intSizes.get(0)
 				if (s == 2) return 'Real2' -> 0
 				if (s == 3) return 'Real3' -> 0
 			}
-			else if (sizes.size == 2)
+			else if (intSizes.size == 2)
 			{
-				val x = sizes.get(0).intValue
-				val y = sizes.get(1).intValue
+				val x = intSizes.get(0)
+				val y = intSizes.get(1)
 				if (x == 2 && y == 2) return 'Real2x2' -> 0
 				if (x == 3 && y == 3) return 'Real3x3' -> 0
 			}
@@ -97,13 +95,7 @@ class TypeContentProvider
 			case 0: (hasSupport ? "" : "Scalar")
 			case 1: "Array"
 			case 2: "Array2"
-			default: throw new Exception("Unsupported dimension for variable type: " + dimension)
+			default: throw new RuntimeException("Unexpected dimension for variable type: " + dimension)
 		}
-	}
-
-	private static def getIntValue(Expression e)
-	{
-		if (e instanceof IntConstant) e.value
-		else -1
 	}
 }

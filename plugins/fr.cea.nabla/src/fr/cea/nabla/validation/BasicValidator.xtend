@@ -199,15 +199,15 @@ class BasicValidator extends UnusedValidator
 
 	// ===== BaseType =====
 
-	public static val UNSUPPORTED_DIMENSION = "BaseType::UnsupportedDimension"
+	public static val UNEXPECTED_DIMENSION = "BaseType::UnexpectedDimension"
 
-	static def getUnsupportedDimensionMsg(int dimension) { "Unsupported dimension: " + dimension }
+	static def getUnexpectedDimensionMsg(int dimension) { "Unexpected dimension: " + dimension }
 
 	@Check(CheckType.NORMAL)
-	def checkUnsupportedDimension(BaseType it)
+	def checkUnexpectedDimension(BaseType it)
 	{
 		if (sizes.size > 2)
-			error(getUnsupportedDimensionMsg(sizes.size), NablaPackage.Literals.BASE_TYPE__SIZES, UNSUPPORTED_DIMENSION)
+			error(getUnexpectedDimensionMsg(sizes.size), NablaPackage.Literals.BASE_TYPE__SIZES, UNEXPECTED_DIMENSION)
 	}
 
 	@Check(CheckType.NORMAL)

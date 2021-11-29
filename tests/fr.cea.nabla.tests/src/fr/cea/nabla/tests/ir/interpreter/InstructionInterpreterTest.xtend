@@ -23,6 +23,7 @@ import org.junit.runner.RunWith
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
+import fr.cea.nabla.ir.interpreter.NV0Int
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
@@ -78,10 +79,17 @@ class InstructionInterpreterTest extends AbstractInstructionInterpreterTest
 			}
 		}
 
-		// Test reduction
+		// Test reductions
 		val bminVar = mainModule.getVariableByName("Bmin")
 		val bmin = (context.getVariableValue(bminVar) as NV0Real).data
 		Assert.assertEquals(-0.00390625, bmin, TestUtils.DoubleTolerance)
+
+		// Test loop on interval
+		val sizeVar = mainModule.getVariableByName("size")
+		val size = (context.getVariableValue(sizeVar) as NV0Int).data
+		val tabVar = mainModule.getVariableByName("tab")
+		val tab = (context.getVariableValue(tabVar) as NV1Real).data
+		for (int i : 0..<size) Assert.assertEquals(2.3, tab.get(i), TestUtils.DoubleTolerance)
 	}
 
 	override assertInterpreteIf(String model, int xQuads, int yQuads)
@@ -134,7 +142,7 @@ class InstructionInterpreterTest extends AbstractInstructionInterpreterTest
 			compilationHelper.getInterpreterContext(ir, jsonDefaultContent)
 			Assert::fail("Should throw exception")
 		} 
-		catch (RuntimeException e)
+		catch (Exception e)
 		{
 			Assert.assertEquals("V must be less than 100", e.message)
 		}

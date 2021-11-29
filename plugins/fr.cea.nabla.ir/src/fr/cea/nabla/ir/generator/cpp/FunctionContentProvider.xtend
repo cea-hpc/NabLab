@@ -104,7 +104,7 @@ class FunctionContentProvider
 			'''
 				auto& «nativeVarName» = *get«IrTypeExtensions.getLinearAlgebraClass(t)»(env, «name»);
 			'''
-			default: throw new RuntimeException("Ooops. Can not be there, normally...")
+			default: throw new RuntimeException("Unexpected type: " + class.name)
 		}
 	}
 
@@ -145,7 +145,7 @@ class FunctionContentProvider
 			'''
 				auto ret = newJava«IrTypeExtensions.getLinearAlgebraClass(t)»(env, self, new «IrTypeExtensions.getLinearAlgebraClass(t)»(c_ret));
 			'''
-			default: throw new RuntimeException("Ooops. Can not be there, normally...")
+			default: throw new RuntimeException("Unexpected type: " + t.class.name)
 		}
 	}
 

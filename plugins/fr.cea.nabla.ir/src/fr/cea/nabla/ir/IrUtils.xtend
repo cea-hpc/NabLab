@@ -72,7 +72,7 @@ class IrUtils
 		val gson = new Gson
 		val jsonObject = gson.fromJson(jsonContent, JsonObject)
 		// Read options in Json
-		if (!jsonObject.has(moduleName.toFirstLower)) throw new RuntimeException("Options block missing in Json")
+		if (!jsonObject.has(moduleName.toFirstLower)) throw new RuntimeException("Options block is missing in Json data file")
 		val jsonOptions = jsonObject.get(moduleName.toFirstLower).asJsonObject
 		val nrName = NonRegressionNameAndValue.key
 		jsonOptions.addProperty(nrName, value)

@@ -76,7 +76,7 @@ class ExpressionInterpreter
 		if (value instanceof NV0Int)
 			return value.data
 		else
-			throw new RuntimeException("Unsupported type for Dimension: " + value.class)
+			throw new RuntimeException("Unexpected type for dimension: " + value.class)
 	}
 
 	private static def NablaValue interpreteContractedIf(ContractedIf it, Context context)
@@ -115,7 +115,7 @@ class ExpressionInterpreter
 		} else if (eValue instanceof NV2Real && it.operator == '-') {
 			return computeUnaryMinus(eValue as NV2Real)
 		} else {
-			throw new RuntimeException('Wrong unary operator: ' + operator)
+			throw new RuntimeException('Unexpected unary operator: ' + operator)
 		}
 	}
 
@@ -179,7 +179,7 @@ class ExpressionInterpreter
 			case 0: expressionValue
 			case 1: buildArrayValue(sizes.get(0), expressionValue)
 			case 2: buildArrayValue(sizes.get(0), sizes.get(1), expressionValue)
-			default: throw new RuntimeException('Wrong path...')
+			default: throw new RuntimeException('Unexpected dimension: ' + sizes.size)
 		}
 	}
 
@@ -330,7 +330,7 @@ class ExpressionInterpreter
 		{
 			BaseType: getSizes
 			LinearAlgebraType: getSizes
-			default: throw new RuntimeException("Unsuported argument")
+			default: throw new RuntimeException("Unexpected type: " + class.name)
 		}
 	}
 }

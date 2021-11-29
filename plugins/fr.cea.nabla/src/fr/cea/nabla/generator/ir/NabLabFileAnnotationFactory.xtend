@@ -21,7 +21,7 @@ class NabLabFileAnnotationFactory
 	def toNabLabFileAnnotation(EObject o)
 	{
 		val region = locationProvider.getFullTextRegion(o)
-		if (region === null) throw new RuntimeException('Ooops : impossible de créer une annotation pour : ' + o)
+		if (region === null) throw new RuntimeException('Annotation creation error for: ' + o)
 		val uri = ((o.eResource === null || o.eResource.URI === null) ? null : o.eResource.URI.toString)
 		NabLabFileAnnotation.create(uri, region.offset, region.length).irAnnotation
 	}

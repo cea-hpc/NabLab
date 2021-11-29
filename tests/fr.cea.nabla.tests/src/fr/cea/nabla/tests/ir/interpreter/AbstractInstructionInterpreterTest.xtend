@@ -70,6 +70,8 @@ abstract class AbstractInstructionInterpreterTest
 		ℝ U{cells};
 		ℝ[2] X{nodes}, B{nodes}, C{cells, nodesOfCell};
 		ℝ Bmin, Bmax;
+		let ℕ size = 4;
+		ℝ[size] tab;
 
 		iterate n while (n+1 < maxIter && t^{n+1} < maxTime);
 
@@ -91,8 +93,13 @@ abstract class AbstractInstructionInterpreterTest
 			B^{n=0}{r}[1] = -X{r}[1];
 		}
 		ComputeB: ∀r∈nodes(), B^{n+1}{r} = B^{n}{r} / 2;
+
+		// reductions
 		ComputeBmin: Bmin = Min{r∈nodes()}(B^{n}{r}[0]);
 		ComputeBmax: Bmax = Max{r∈nodes()}(B^{n}{r}[0]);
+
+		// loop on interval
+		InitTab: ∀i∈[0;size[, tab[i] = 2.3;
 
 		InitT: t^{n=0} = 0.0;
 		ComputeTn: t^{n+1} = t^{n} + δt;

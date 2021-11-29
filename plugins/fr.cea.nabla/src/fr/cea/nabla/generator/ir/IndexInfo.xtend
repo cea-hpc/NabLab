@@ -57,7 +57,7 @@ class IndexInfo
 		this.varRef = varRef
 		this.itemRef = itemRef
 		this.iteratorIndexInVarIterators = varRef.spaceIterators.indexOf(itemRef)
-		if (iteratorIndexInVarIterators == -1) throw new RuntimeException("** Ooops: iterator does not belong to variable")
+		if (iteratorIndexInVarIterators == -1) throw new RuntimeException("Iterator does not belong to variable")
 	}
 
 	def getName()

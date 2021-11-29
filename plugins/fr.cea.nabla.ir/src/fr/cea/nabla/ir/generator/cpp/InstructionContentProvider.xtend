@@ -38,6 +38,7 @@ import static fr.cea.nabla.ir.IrUtils.*
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
+import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.cpp.ItemIndexAndIdValueContentProvider.*
 import fr.cea.nabla.ir.ir.InternFunction
@@ -53,7 +54,7 @@ abstract class InstructionContentProvider
 
 	def dispatch CharSequence getContent(VariableDeclaration it)
 	'''
-		«IF variable.type.baseTypeStatic»
+		«IF variable.type.baseTypeConstExpr»
 «««			FIXME add support for internal functions
 			«IF getContainerOfType(it, InternFunction) === null»
 			#ifdef NABLAB_DEBUG
@@ -266,7 +267,7 @@ class SequentialInstructionContentProvider extends InstructionContentProvider
 
 	override protected getReductionContent(ReductionInstruction it)
 	{
-		throw new UnsupportedOperationException("ReductionInstruction must have been replaced before using this code generator")
+		throw new RuntimeException("ReductionInstruction must have been replaced before using this code generator")
 	}
 
 	override protected getParallelLoopContent(Loop it)

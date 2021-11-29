@@ -25,7 +25,7 @@ class ProviderGeneratorFactory
 		switch targetType
 		{
 			case JAVA: new JavaProviderGenerator
-			case ARCANE : throw new Exception("Not yet implemented")
+			case ARCANE : throw new RuntimeException("Not yet implemented")
 			default: new CppProviderGenerator(backendFactory.getCppBackend(targetType))
 		}
 	}

@@ -18,7 +18,7 @@ import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.UnaryExpression
-import fr.cea.nabla.ir.transformers.CreateArrayOperations
+import fr.cea.nabla.ir.transformers.CreateArrayOperators
 import fr.cea.nabla.tests.CompilationChainHelper
 import fr.cea.nabla.tests.NablaInjectorProvider
 import fr.cea.nabla.tests.TestUtils
@@ -30,11 +30,11 @@ import org.junit.runner.RunWith
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
-class CreateArrayOperationsTest
+class CreateArrayOperatorsTest
 {
 	@Inject extension TestUtils
 	@Inject CompilationChainHelper compilationHelper
-	val step = new CreateArrayOperations
+	val step = new CreateArrayOperators
 
 	@Test
 	def void checkNoArrayOperationCreated()

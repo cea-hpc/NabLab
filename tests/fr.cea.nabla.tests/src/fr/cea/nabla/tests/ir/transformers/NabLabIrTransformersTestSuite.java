@@ -16,7 +16,7 @@ import org.junit.runners.Suite;
 
 @Suite.SuiteClasses
 ({
-	CreateArrayOperationsTest.class,
+	CreateArrayOperatorsTest.class,
 	ReplaceAffectationsTest.class
 })
 

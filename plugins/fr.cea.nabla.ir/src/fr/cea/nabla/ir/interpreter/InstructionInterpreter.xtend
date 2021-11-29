@@ -100,7 +100,7 @@ class InstructionInterpreter
 	private static def NablaValue interpreteReductionInstruction(ReductionInstruction it, Context context)
 	{
 		// All reductionInstruction have been replaced by specific Ir Transformation Step
-		throw new RuntimeException('Wrong path...')
+		throw new RuntimeException('Unexpected reduction instruction: apply the "ReplaceReduction(true)" transformation step')
 	}
 
 	private static def NablaValue interpreteLoop(Loop it, Context context)
@@ -121,7 +121,7 @@ class InstructionInterpreter
 						innerContext.addIndexValue(b.index, loopIteratorValue)
 						val ret = interprete(body, innerContext)
 						if (ret !== null)
-							throw new RuntimeException("No return in parallel loop ! " + ret)
+							throw new RuntimeException("Unexpected return in parallel loop: " + ret)
 					}])
 				}
 				else

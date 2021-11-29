@@ -10,8 +10,6 @@
 package fr.cea.nabla.ir.transformers
 
 import fr.cea.nabla.ir.IrUtils
-import fr.cea.nabla.ir.ir.ArgOrVar
-import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.BaseTypeConstant
 import fr.cea.nabla.ir.ir.BinaryExpression
@@ -30,12 +28,11 @@ import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.ir.ir.VectorConstant
 import java.util.ArrayList
 import org.eclipse.emf.ecore.util.EcoreUtil
+import fr.cea.nabla.ir.ir.Interval
 
-class CreateArrayOperations extends IrTransformationStep
+class CreateArrayOperators extends IrTransformationStep
 {
-	public static val OperatorPrefix = "operator"
-
-	private enum BinOpType { ArrayArray, ArrayScalar, ScalarArray }
+	val opUtils = new OperatorUtils
 	val expressionsToDelete = new ArrayList<Expression>
 
 	new()
@@ -108,7 +105,7 @@ class CreateArrayOperations extends IrTransformationStep
 					val module = IrUtils.getContainerOfType(e, IrModule)
 					val leftType = e.left.type as BaseType
 					val rightType = e.right.type as BaseType
-					val binOpType = getBinOpType(leftType, rightType)
+					val binOpType = opUtils.getBinOpType(leftType, rightType)
 					val binaryOp = toIrBinaryOperation(leftType.primitive, rightType.primitive, dimension, binOpType, e.operator)
 					module.functions += binaryOp
 					expressionsToDelete += e
@@ -163,14 +160,14 @@ class CreateArrayOperations extends IrTransformationStep
 
 	private def create IrFactory::eINSTANCE.createInternFunction toIrUnaryOperation(PrimitiveType primitiveType, int dimension, String op)
 	{
-		name = OperatorPrefix + op
+		name = OperatorUtils.OperatorPrefix + op
 
 		// create size variables
 		for (i : 0..<dimension)
 		{
 			val v = IrFactory::eINSTANCE.createVariable
 			v.name = "x" + i
-			v.type = createScalarBaseType(PrimitiveType.INT)
+			v.type = opUtils.createScalarBaseType(PrimitiveType.INT)
 			v.option = false
 			v.const = true
 			v.constExpr = true
@@ -202,22 +199,26 @@ class CreateArrayOperations extends IrTransformationStep
 		block.instructions += IrFactory::eINSTANCE.createVariableDeclaration => [ variable = result ]
 
 		// loops and binary operation
-		block.instructions += createLoopWithInterval(createArgOrVarRef(result), createArgOrVarRef(a), variables, op)
+		val resultRef = opUtils.createArgOrVarRef(result)
+		val aRef = opUtils.createArgOrVarRef(a)
+		val Interval[] intervals = newArrayOfSize(variables.size)
+		for (i : 0..<intervals.size) intervals.set(i, createInterval(variables.get(i)))
+		block.instructions += opUtils.createLoopForUnaryOp(resultRef, aRef, intervals, op)
 
 		// return instruction to return the result
-		block.instructions += IrFactory::eINSTANCE.createReturn => [ expression = createArgOrVarRef(result) ]
+		block.instructions += IrFactory::eINSTANCE.createReturn => [ expression = opUtils.createArgOrVarRef(result) ]
 	}
 
-	private def create IrFactory::eINSTANCE.createInternFunction toIrBinaryOperation(PrimitiveType aPrimitive, PrimitiveType bPrimitive, int dimension, BinOpType binOpType, String op)
+	private def create IrFactory::eINSTANCE.createInternFunction toIrBinaryOperation(PrimitiveType aPrimitive, PrimitiveType bPrimitive, int dimension, OperatorUtils.BinOpType binOpType, String op)
 	{
-		name = OperatorPrefix + op
+		name = OperatorUtils.OperatorPrefix + op
 
 		// create size variables
 		for (i : 0..<dimension)
 		{
 			val v = IrFactory::eINSTANCE.createVariable
 			v.name = "x" + i
-			v.type = createScalarBaseType(PrimitiveType.INT)
+			v.type = opUtils.createScalarBaseType(PrimitiveType.INT)
 			v.option = false
 			v.const = true
 			v.constExpr = true
@@ -225,14 +226,14 @@ class CreateArrayOperations extends IrTransformationStep
 		}
 
 		// return type
-		val returnPrimitiveType = (binOpType == BinOpType::ScalarArray ? bPrimitive : aPrimitive)
+		val returnPrimitiveType = (binOpType == OperatorUtils.BinOpType::ScalarArray ? bPrimitive : aPrimitive)
 		returnType = createArrayBaseType(returnPrimitiveType, variables)
 
 		// create first argument
 		val a = IrFactory::eINSTANCE.createArg
 		a.name = "a"
-		if (binOpType == BinOpType::ScalarArray)
-			a.type = createScalarBaseType(aPrimitive)
+		if (binOpType == OperatorUtils.BinOpType::ScalarArray)
+			a.type = opUtils.createScalarBaseType(aPrimitive)
 		else
 			a.type = createArrayBaseType(aPrimitive, variables)
 		inArgs += a
@@ -240,8 +241,8 @@ class CreateArrayOperations extends IrTransformationStep
 		// create second argument
 		val b = IrFactory::eINSTANCE.createArg
 		b.name = "b"
-		if (binOpType == BinOpType::ArrayScalar)
-			b.type = createScalarBaseType(bPrimitive)
+		if (binOpType == OperatorUtils.BinOpType::ArrayScalar)
+			b.type = opUtils.createScalarBaseType(bPrimitive)
 		else
 			b.type = createArrayBaseType(bPrimitive, variables)
 		inArgs += b
@@ -262,109 +263,30 @@ class CreateArrayOperations extends IrTransformationStep
 		block.instructions += IrFactory::eINSTANCE.createVariableDeclaration => [ variable = result ]
 
 		// loops and binary operation
-		block.instructions += createLoopWithInterval(createArgOrVarRef(result), createArgOrVarRef(a), createArgOrVarRef(b), variables, binOpType, op)
+		val resultRef = opUtils.createArgOrVarRef(result)
+		val aRef = opUtils.createArgOrVarRef(a)
+		val bRef = opUtils.createArgOrVarRef(b)
+		val Interval[] intervals = newArrayOfSize(variables.size)
+		for (i : 0..<intervals.size) intervals.set(i, createInterval(variables.get(i)))
+		block.instructions += opUtils.createLoopForBinaryOp(resultRef, aRef, bRef, intervals, binOpType, op)
 
 		// return instruction to return the result
-		block.instructions += IrFactory::eINSTANCE.createReturn => [ expression = createArgOrVarRef(result) ]
+		block.instructions += IrFactory::eINSTANCE.createReturn => [ expression = opUtils.createArgOrVarRef(result) ]
 	}
 
-	private def create IrFactory::eINSTANCE.createLoop createLoopWithInterval(ArgOrVarRef result, ArgOrVarRef a, Iterable<Variable> sizeVariables, String op)
+	private def createInterval(Variable sizeVariable)
 	{
-		val counter = createIterationCounter(sizeVariables.head)
-		iterationBlock = IrFactory::eINSTANCE.createInterval =>
+		IrFactory::eINSTANCE.createInterval =>
 		[
-			index = counter
-			nbElems = createArgOrVarRef(sizeVariables.head)
-		]
-
-		result.indices += createArgOrVarRef(counter)
-		a.indices += createArgOrVarRef(counter)
-
-		if (sizeVariables.size > 1)
-			body = createLoopWithInterval(result, a, sizeVariables.tail, op)
-		else
-			body = IrFactory::eINSTANCE.createAffectation =>
+			index = IrFactory::eINSTANCE.createVariable =>
 			[
-				left = result
-				right = IrFactory::eINSTANCE.createUnaryExpression =>
-				[
-					type = createScalarBaseType((a.type as BaseType).primitive)
-					constExpr = true
-					expression = a
-					operator = op
-				]
+				name = "i" + sizeVariable.name
+				type = opUtils.createScalarBaseType(PrimitiveType::INT)
+				const = false
+				constExpr = false
+				option = false
 			]
-
-		multithreadable = true
-	}
-
-	private def create IrFactory::eINSTANCE.createLoop createLoopWithInterval(ArgOrVarRef result, ArgOrVarRef a, ArgOrVarRef b, Iterable<Variable> sizeVariables, BinOpType binOpType, String op)
-	{
-		val counter = createIterationCounter(sizeVariables.head)
-		iterationBlock = IrFactory::eINSTANCE.createInterval =>
-		[
-			index = counter
-			nbElems = createArgOrVarRef(sizeVariables.head)
-		]
-
-		result.indices += createArgOrVarRef(counter)
-		if (binOpType != BinOpType::ScalarArray) a.indices += createArgOrVarRef(counter)
-		if (binOpType != BinOpType::ArrayScalar) b.indices += createArgOrVarRef(counter)
-
-		if (sizeVariables.size > 1)
-			body = createLoopWithInterval(result, a, b, sizeVariables.tail, binOpType, op)
-		else
-			body = IrFactory::eINSTANCE.createAffectation =>
-			[
-				left = result
-				right = IrFactory::eINSTANCE.createBinaryExpression =>
-				[
-					type = createScalarBaseType((a.type as BaseType).primitive)
-					constExpr = true
-					left = a
-					right = b
-					operator = op
-				]
-			]
-
-		multithreadable = true
-	}
-
-	private def createArgOrVarRef(ArgOrVar v)
-	{
-		IrFactory::eINSTANCE.createArgOrVarRef =>
-		[
-			target = v
-			type = EcoreUtil::copy(v.type)
-			constExpr = true
-		]
-	}
-
-	private def createIterationCounter(Variable v)
-	{
-		IrFactory::eINSTANCE.createVariable =>
-		[
-			name = "i" + v.name
-			type = createScalarBaseType(PrimitiveType::INT)
-			const = false
-			constExpr = false
-			option = false
-		]
-	}
-
-	private def getBinOpType(BaseType leftType, BaseType rightType)
-	{
-		if (leftType.sizes.empty) BinOpType::ScalarArray
-		else if (rightType.sizes.empty) BinOpType::ArrayScalar
-		else BinOpType::ArrayArray
-	}
-
-	private def createScalarBaseType(PrimitiveType t)
-	{
-		IrFactory::eINSTANCE.createBaseType =>
-		[
-			primitive = t
-			isStatic = true
+			nbElems = opUtils.createArgOrVarRef(sizeVariable)
 		]
 	}
 
@@ -376,7 +298,7 @@ class CreateArrayOperations extends IrTransformationStep
 			isStatic = false
 			for (x : sizeVariables)
 			{
-				sizes += createArgOrVarRef(x)
+				sizes += opUtils.createArgOrVarRef(x)
 				intSizes += -1
 			}
 		]

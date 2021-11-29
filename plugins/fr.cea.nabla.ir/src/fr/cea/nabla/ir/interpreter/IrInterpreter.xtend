@@ -55,7 +55,7 @@ class IrInterpreter
 		val jsonObject = gson.fromJson(jsonContent, JsonObject)
 
 		// Create mesh and mesh variables
-		if (!jsonObject.has("mesh")) throw new RuntimeException("Mesh block missing in Json")
+		if (!jsonObject.has("mesh")) throw new RuntimeException("Mesh block is missing in Json data file")
 		val mesh = context.mesh
 		mesh.createProviderInstance(null)
 		mesh.jsonInit(null, jsonObject.get("mesh").toString)

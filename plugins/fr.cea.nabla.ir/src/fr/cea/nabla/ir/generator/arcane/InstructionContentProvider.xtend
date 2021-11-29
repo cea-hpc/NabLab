@@ -29,19 +29,22 @@ import fr.cea.nabla.ir.ir.SetRef
 import fr.cea.nabla.ir.ir.VariableDeclaration
 import fr.cea.nabla.ir.ir.While
 
+import static fr.cea.nabla.ir.generator.arcane.TypeContentProvider.*
+
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
+import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.arcane.ExpressionContentProvider.*
 
 class InstructionContentProvider
 {
 	static def dispatch CharSequence getContent(VariableDeclaration it)
 	'''
-«««		«IF variable.type.isBaseTypeStatic»
-«««			«IF variable.const»const «ENDIF»«variable.type.typeName» «variable.name»«IF variable.defaultValue !== null»(«variable.defaultValue.content»)«ENDIF»;
-«««		«ELSE»
-«««			«IF variable.const»const «ENDIF»«variable.type.typeName» «variable.name»;
-«««		«ENDIF»
+		«IF variable.type.baseTypeConstExpr»
+			«getTypeName(variable.type, variable.const)» «variable.name»«IF variable.defaultValue !== null»(«variable.defaultValue.content»)«ENDIF»;
+		«ELSE»
+			throw Exception("Not Yet Implemented");
+		«ENDIF»
 	'''
 
 	static def dispatch CharSequence getContent(InstructionBlock it)
@@ -62,7 +65,7 @@ class InstructionContentProvider
 
 	static def dispatch CharSequence getContent(ReductionInstruction it)
 	{
-		throw new UnsupportedOperationException("ReductionInstruction must have been replaced before using this code generator")
+		throw new RuntimeException("ReductionInstruction must have been replaced before using this code generator")
 	}
 
 	static def dispatch CharSequence getContent(Loop it)
@@ -146,10 +149,17 @@ class InstructionContentProvider
 
 	private static def getSequentialLoopContent(Iterator iterator, Instruction loopBody)
 	'''
-		for («iterator.container.itemType.name.toFirstUpper»LocalId «iterator.index.itemName» : «getContainerCall(iterator.container)»)
-		{
-			«loopBody.innerContent»
-		}
+		«IF iterator.container.connectivityCall.args.empty»
+			ENUMERATE_«iterator.container.itemType.name.toUpperCase»(«iterator.index.itemName», view)
+			{
+				«loopBody.innerContent»
+			}
+		«ELSE»
+			for («iterator.container.itemType.name.toFirstUpper»LocalId «iterator.index.itemName» : «getContainerCall(iterator.container)»)
+			{
+				«loopBody.innerContent»
+			}
+		«ENDIF»
 	'''
 
 	private static def getSequentialLoopContent(Interval iterator, Instruction loopBody)
@@ -165,7 +175,7 @@ class InstructionContentProvider
 		switch c
 		{
 			SetRef: c.uniqueName
-			ConnectivityCall: '''m_mesh->get«c.connectivity.name.toFirstUpper»(«c.args.map[itemName].join(', ')»)'''
+			ConnectivityCall: '''m_mesh->get«c.connectivity.name.toFirstUpper»(«c.args.map['*' + itemName].join(', ')»)'''
 		}
 	}
 }

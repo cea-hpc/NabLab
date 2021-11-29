@@ -53,7 +53,7 @@ class VariableValueFactory
 			case 2: createValue(p, name, sizes.get(0), sizes.get(1), null)
 			case 3: createValue(p, sizes.get(0), sizes.get(1), sizes.get(2))
 			case 4: createValue(p, sizes.get(0), sizes.get(1), sizes.get(2), sizes.get(3))
-			default: throw new RuntimeException("Dimension not yet implemented: " + sizes.size)
+			default: throw new RuntimeException("Unexpected dimension: " + sizes.size)
 		}
 	}
 
@@ -66,7 +66,7 @@ class VariableValueFactory
 		{
 			case 1: createValue(p, name, sizes.get(0), provider)
 			case 2: createValue(p, name, sizes.get(0), sizes.get(1), provider)
-			default: throw new RuntimeException("Dimension not yet implemented: " + sizes.size)
+			default: throw new RuntimeException("Unexpected dimension: " + sizes.size)
 		}
 	}
 }

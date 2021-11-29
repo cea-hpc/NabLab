@@ -416,7 +416,7 @@ class BasicValidatorTest
 	// ===== BaseType =====	
 
 	@Test
-	def void testCheckUnsupportedDimension()
+	def void testCheckUnexpectedDimension()
 	{
 		val moduleKo = parseHelper.parse(
 			'''
@@ -426,8 +426,8 @@ class BasicValidatorTest
 
 		Assert.assertNotNull(moduleKo)
 		moduleKo.assertError(NablaPackage.eINSTANCE.baseType,
-			BasicValidator::UNSUPPORTED_DIMENSION,
-			BasicValidator::getUnsupportedDimensionMsg(3))
+			BasicValidator::UNEXPECTED_DIMENSION,
+			BasicValidator::getUnexpectedDimensionMsg(3))
 
 		val moduleOk = parseHelper.parse(
 			'''

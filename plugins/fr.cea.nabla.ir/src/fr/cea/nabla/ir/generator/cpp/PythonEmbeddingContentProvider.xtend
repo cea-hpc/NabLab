@@ -18,6 +18,7 @@ import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.ItemIndexDefinition
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.VariableDeclaration
+import java.util.List
 import java.util.Map
 import java.util.Set
 import org.eclipse.emf.ecore.EObject
@@ -37,24 +38,50 @@ class PythonEmbeddingContentProvider
 	protected val extension TypeContentProvider
 	
 	val Map<String, Integer> executionEvents = newHashMap
+	val Map<String, List<Integer>> globalVariableWriteEvents = newHashMap
 	val Set<String> callExecutionEvents = newHashSet
+	
+	def getExecutionEvents(IrModule it)
+	'''
+		this->executionEvents =
+		{
+			«FOR e : executionEvents.keySet.sortBy[k|executionEvents.get(k)]»
+			{"«e»", {«executionEvents.get(e)»}},
+			«ENDFOR»
+			«FOR e : globalVariableWriteEvents.keySet SEPARATOR ','»
+			{"«e»", {«globalVariableWriteEvents.get(e).join(',')»}}
+			«ENDFOR»
+		};
+	'''
 	
 	def computeExecutionEvents(IrModule it) {
 		jobs.forEach[j|
 			val jobEventName = j.name.toFirstUpper
 			executionEvents.computeIfAbsent(jobEventName, [executionEvents.size])
 			callExecutionEvents.add(jobEventName)
-			j.eAllContents.filter[o|o instanceof VariableDeclaration || o instanceof Affectation].forEach[a|
-				val assignEventName = if (a instanceof VariableDeclaration)
-				{
-					'''«jobEventName».«(a as VariableDeclaration).variable.name.toFirstUpper»'''
-				}
-				else
-				{
-					'''«jobEventName».«(a as Affectation).left.target.name.toFirstUpper»'''
-				}
-				executionEvents.computeIfAbsent(assignEventName, [executionEvents.size])
-			]
+			j.eAllContents.filter[o|o instanceof VariableDeclaration || o instanceof Affectation]
+					.map[o|
+						if (o instanceof VariableDeclaration)
+						{
+							(o as VariableDeclaration).variable
+						}
+						else
+						{
+							(o as Affectation).left.target
+						}
+					]
+					.forEach[v|
+						val assignEventName = '''«jobEventName».«v.name.toFirstUpper»'''
+						if (!executionEvents.containsKey(assignEventName))
+						{
+							val eventIndex = executionEvents.size
+							executionEvents.put(assignEventName, eventIndex)
+							if (v.eContainer instanceof IrModule)
+							{
+								globalVariableWriteEvents.computeIfAbsent(v.name.toFirstUpper, [newArrayList]).add(eventIndex)
+							}
+						}
+					]
 		]
 //		functions.forEach[f|
 //			val functionName = f.name.toFirstUpper
@@ -73,6 +100,7 @@ class PythonEmbeddingContentProvider
 //				executionEvents.computeIfAbsent(assignEventName, [executionEvents.size])
 //			]
 //		]
+		
 	}
 	
 	def getExecutionEvents()
@@ -135,13 +163,6 @@ class PythonEmbeddingContentProvider
 	}
 	
 	def ifdefGuard(String content)
-	'''
-		#ifdef NABLAB_DEBUG
-		«content»
-		#endif
-	'''
-	
-	def ifdefGuard(CharSequence content)
 	'''
 		#ifdef NABLAB_DEBUG
 		«content»
@@ -222,14 +243,17 @@ class PythonEmbeddingContentProvider
 			'''
 				struct «name.toFirstUpper»Context : «moduleName»::«moduleName»Context
 				{
-					«FOR local : eAllContents.filter(VariableDeclaration).toList»
+					«val locals = eAllContents.filter(VariableDeclaration).toList»
+					«IF !locals.empty»
+					«FOR local : locals»
 					const py::object get«local.variable.name.toFirstUpper»() const { if («local.variable.name» != nullptr) return py::cast(*«local.variable.name»); else return py::cast<py::none>(Py_None); }
 					«ENDFOR»
-				
-					«FOR local : eAllContents.filter(VariableDeclaration).toList»
+					
+					«FOR local : locals»
 					«IF local.variable.const»const «ENDIF»«local.variable.type.cppType» *«local.variable.name» = nullptr;
 					«ENDFOR»
 					
+					«ENDIF»
 					using «moduleName»::«moduleName»Context::«moduleName»Context;
 				};
 				
@@ -314,57 +338,87 @@ class PythonEmbeddingContentProvider
 			py::module_ monilogModule = py::module_::import("monilog");
 			monilogModule.def("_register_before", [&](py::str event, py::function monilogger)
 			{
-				int idx = executionEvents[event];
-				std::list<py::function> beforeMoniloggers = before[idx];
-				std::list<py::function>::iterator it = std::find(beforeMoniloggers.begin(), beforeMoniloggers.end(), monilogger);
-				if (it == beforeMoniloggers.end())
+				try
 				{
-					before[idx].push_back(monilogger);
-					setFunctionPtr(idx, true);
+					std::vector<int> indexes = executionEvents.at(event);
+					for (auto idx : indexes)
+					{
+						std::list<py::function> beforeMoniloggers = before[idx];
+						std::list<py::function>::iterator it = std::find(beforeMoniloggers.begin(), beforeMoniloggers.end(), monilogger);
+						if (it == beforeMoniloggers.end())
+						{
+							before[idx].push_back(monilogger);
+							setFunctionPtr(idx, true);
+						}
+					}
+				}
+				catch (const std::out_of_range& e)
+				{
+					std::cout << "No event named " << event << " was found." << std::endl;
 				}
 			});
 			monilogModule.def("_register_after", [&](py::str event, py::function monilogger)
 			{
-				int idx = executionEvents[event];
-				std::list<py::function> afterMoniloggers = after[idx];
-				std::list<py::function>::iterator it = std::find(afterMoniloggers.begin(), afterMoniloggers.end(), monilogger);
-				if (it == afterMoniloggers.end())
+				try
 				{
-					after[idx].push_back(monilogger);
-					setFunctionPtr(idx, true);
+					std::vector<int> indexes = executionEvents.at(event);
+					for (auto idx : indexes)
+					{
+						std::list<py::function> afterMoniloggers = after[idx];
+						std::list<py::function>::iterator it = std::find(afterMoniloggers.begin(), afterMoniloggers.end(), monilogger);
+						if (it == afterMoniloggers.end())
+						{
+							after[idx].push_back(monilogger);
+							setFunctionPtr(idx, true);
+						}
+					}
+				}
+				catch (const std::out_of_range& e)
+				{
+					std::cout << "No event named " << event << " was found." << std::endl;
 				}
 			});
 			monilogModule.def("_stop", [&](py::str event, py::function monilogger)
 			{
-				int idx = executionEvents[event];
+				try
 				{
-					std::list<py::function> beforeMoniloggers = before[idx];
-					std::list<py::function>::iterator it = std::find(beforeMoniloggers.begin(), beforeMoniloggers.end(), monilogger);
-					if (it != beforeMoniloggers.end())
+					std::vector<int> indexes = executionEvents.at(event);
+					for (auto idx : indexes)
 					{
-						beforeMoniloggers.erase(it);
-						before[idx] = beforeMoniloggers;
-						if (beforeMoniloggers.empty() && after[idx].empty())
 						{
-							setFunctionPtr(idx, false);
-						}
-					}
-				}
-				{
-					std::list<py::function> afterMoniloggers = after[idx];
-					std::list<py::function>::iterator it = std::find(afterMoniloggers.begin(), afterMoniloggers.end(), monilogger);
-					if (it != afterMoniloggers.end())
-					{
-						afterMoniloggers.erase(it);
-						after[idx] = afterMoniloggers;
-						if (before[idx].empty() && afterMoniloggers.empty())
-						{
-							switch (idx)
+							std::list<py::function> beforeMoniloggers = before[idx];
+							std::list<py::function>::iterator it = std::find(beforeMoniloggers.begin(), beforeMoniloggers.end(), monilogger);
+							if (it != beforeMoniloggers.end())
 							{
-								setFunctionPtr(idx, false);
+								beforeMoniloggers.erase(it);
+								before[idx] = beforeMoniloggers;
+								if (beforeMoniloggers.empty() && after[idx].empty())
+								{
+									setFunctionPtr(idx, false);
+								}
+							}
+						}
+						{
+							std::list<py::function> afterMoniloggers = after[idx];
+							std::list<py::function>::iterator it = std::find(afterMoniloggers.begin(), afterMoniloggers.end(), monilogger);
+							if (it != afterMoniloggers.end())
+							{
+								afterMoniloggers.erase(it);
+								after[idx] = afterMoniloggers;
+								if (before[idx].empty() && afterMoniloggers.empty())
+								{
+									switch (idx)
+									{
+										setFunctionPtr(idx, false);
+									}
+								}
 							}
 						}
 					}
+				}
+				catch (const std::out_of_range& e)
+				{
+					std::cout << "No event named " << event << " was found." << std::endl;
 				}
 			});
 			if (pythonFile != "")

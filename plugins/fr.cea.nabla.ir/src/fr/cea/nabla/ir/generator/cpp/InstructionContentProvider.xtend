@@ -54,10 +54,14 @@ abstract class InstructionContentProvider
 	def dispatch CharSequence getContent(VariableDeclaration it)
 	'''
 		«IF variable.type.baseTypeStatic»
+«««			FIXME add support for internal functions
 			«IF getContainerOfType(it, InternFunction) === null»
-			«getBeforeInstrumentation(executionEvent, LOCAL_SCOPE).ifdefGuard»
+			#ifdef NABLAB_DEBUG
+			«getBeforeInstrumentation(executionEvent, LOCAL_SCOPE)»
+			#endif
 			«ENDIF»
 			«IF variable.const»const «ENDIF»«variable.type.cppType» «variable.name»«IF variable.defaultValue !== null»(«variable.defaultValue.content»)«ENDIF»;
+«««			FIXME add support for internal functions
 			«IF getContainerOfType(it, InternFunction) === null»
 			#ifdef NABLAB_DEBUG
 			scope.«variable.name» = &«variable.name»;
@@ -65,10 +69,14 @@ abstract class InstructionContentProvider
 			#endif
 			«ENDIF»
 		«ELSE»
+«««			FIXME add support for internal functions
 			«IF getContainerOfType(it, InternFunction) === null»
-			«getBeforeInstrumentation(executionEvent, LOCAL_SCOPE).ifdefGuard»
+			#ifdef NABLAB_DEBUG
+			«getBeforeInstrumentation(executionEvent, LOCAL_SCOPE)»
+			#endif
 			«ENDIF»
 			«IF variable.const»const «ENDIF»«variable.type.cppType» «variable.name»;
+«««			FIXME add support for internal functions
 			«IF getContainerOfType(it, InternFunction) === null»
 			«initCppTypeContent(variable.name, variable.type)»
 			#ifdef NABLAB_DEBUG
@@ -91,10 +99,14 @@ abstract class InstructionContentProvider
 	{
 		if (left.target.linearAlgebra && !(left.iterators.empty && left.indices.empty))
 			'''
+«««			FIXME add support for internal functions
 			«IF getContainerOfType(it, InternFunction) === null»
-			«getBeforeInstrumentation(executionEvent, LOCAL_SCOPE).ifdefGuard»
+			#ifdef NABLAB_DEBUG
+			«getBeforeInstrumentation(executionEvent, LOCAL_SCOPE)»
+			#endif
 			«ENDIF»
 			«left.codeName».setValue(«formatIteratorsAndIndices(left.target.type, left.iterators, left.indices)», «right.content»);
+«««			FIXME add support for internal functions
 			«IF getContainerOfType(it, InternFunction) === null»
 			#ifdef NABLAB_DEBUG
 			«IF !left.target.global»
@@ -106,10 +118,14 @@ abstract class InstructionContentProvider
 			'''
 		else
 			'''
+«««			FIXME add support for internal functions
 			«IF getContainerOfType(it, InternFunction) === null»
-			«getBeforeInstrumentation(executionEvent, LOCAL_SCOPE).ifdefGuard»
+			#ifdef NABLAB_DEBUG
+			«getBeforeInstrumentation(executionEvent, LOCAL_SCOPE)»
+			#endif
 			«ENDIF»
 			«left.content» = «right.content»;
+«««			FIXME add support for internal functions
 			«IF getContainerOfType(it, InternFunction) === null»
 			#ifdef NABLAB_DEBUG
 			«IF !left.target.global»

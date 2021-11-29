@@ -58,14 +58,15 @@ class PythonModuleGenerator extends StandaloneGeneratorBase {
 
 	def List<GenerationContent> getPythonModuleContent(IrRoot ir) {
 		val allJobs = ir.eAllContents.filter[o|o instanceof Job].map[o|o as Job].toList
-		val allAssigns = ir.eAllContents.filter[o|o instanceof Affectation].map[o|(o as Affectation).left.target].toList
-		val Map<Object, List<ArgOrVar>> allLocals = newHashMap
-		allAssigns.filter[a|!(a.eContainer instanceof IrModule)].forEach[a|
+		val allAssigns = ir.eAllContents.filter[o|o instanceof Affectation].map[o|o as Affectation].toList
+		val Map<Object, List<ArgOrVar>> allWrites = newHashMap
+		allAssigns.forEach[a|
+			val target = a.left.target
 			var c = a.eContainer
 			var continue = true
 			while (c !== null && continue) {
-				if (c instanceof Function || c instanceof Job) {
-					allLocals.computeIfAbsent(c, [newArrayList]).add(a)
+				if (c instanceof Function || c instanceof Job || c instanceof IrModule) {
+					allWrites.computeIfAbsent(c, [newArrayList]).add(target)
 					continue = false
 				} else {
 					c = c.eContainer
@@ -80,17 +81,18 @@ class PythonModuleGenerator extends StandaloneGeneratorBase {
 				«FOR j : allJobs SEPARATOR '\n'»
 				class «j.name.toFirstUpper»(metaclass=Singleton):
 				    pass
+				    «val jobWrites = allWrites.getOrDefault(j, emptyList).map[name.toFirstUpper].toSet»
+				    «FOR w : jobWrites»
 				    
-				    «FOR l : allLocals.getOrDefault(j, emptyList)»
-				    
-				    class «l.name.toFirstUpper»(metaclass=Singleton):
+				    class «w»(metaclass=Singleton):
 				        pass
-				    
 				    «ENDFOR»
 				«ENDFOR»
 				
-				«FOR a : allAssigns.filter[assign|assign.eContainer instanceof IrModule] SEPARATOR '\n'»
-				class «a.name.toFirstUpper»(metaclass=Singleton):
+				«val allAssignStrings = allAssigns.map[a|a.left.target].filter[target|target.eContainer instanceof IrModule]
+					.map[name.toFirstUpper].toSet»
+				«FOR a : allAssignStrings SEPARATOR '\n'»
+				class «a»(metaclass=Singleton):
 				    pass
 				«ENDFOR»
 			'''

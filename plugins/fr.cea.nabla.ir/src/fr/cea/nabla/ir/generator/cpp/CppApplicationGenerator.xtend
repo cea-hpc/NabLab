@@ -239,7 +239,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 				«IF v.const»const «ENDIF»«typeContentProvider.getCppType(v.type)» «v.name»;
 			«ENDIF»
 		«ENDFOR»
-		std::map<string, int> executionEvents;
+		std::map<string, std::vector<int>> executionEvents;
 	#endif
 	};
 	
@@ -298,11 +298,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		«FOR j : jobs»
 			this->«Utils.getCodeName(j)»Ptr = &«className»::«Utils.getCodeName(j)»;
 		«ENDFOR»
-		this->executionEvents = {
-			«FOR e : backend.pythonEmbeddingContentProvider.executionEvents.keySet.sortBy[k|eventGetter.apply(k)] SEPARATOR ','»
-			{"«e»", «eventGetter.apply(e)»}
-			«ENDFOR»
-		};
+		«backend.pythonEmbeddingContentProvider.getExecutionEvents(it)»
 		this->globalScope = «className»Context(this);
 		#endif
 	}

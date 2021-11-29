@@ -43,7 +43,9 @@ abstract class JobContentProvider
 		«comment»
 		void «IrUtils.getContainerOfType(it, IrModule).className»::«codeName»() noexcept
 		{
-			«localScopeDefinition.ifdefGuard»
+			#ifdef NABLAB_DEBUG
+			«localScopeDefinition»
+			#endif
 			«innerContent»
 		}
 	'''

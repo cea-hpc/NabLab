@@ -111,7 +111,7 @@ class BinaryOperationsInterpreter
 			case '-':  new NV0Real(a.data - b.data)
 			case '*':  new NV0Real(a.data * b.data)
 			case '/':  { if (b.data == 0.0)
-							throw new RuntimeException('Dividing by 0 is not possible') 
+							throw new RuntimeException('Division by 0') 
 						else
 							new NV0Real(a.data / b.data) }
 			default: null

@@ -48,7 +48,7 @@ class MeshExtensionProviderHelper implements ExtensionProviderHelper
 
 	def int getIndexOf(Iterator iterator, int id)
 	{
-		throw new RuntimeException("Not implemented yet")
+		throw new RuntimeException("Not yet implemented")
 	}
 
 	def int[] getElements(Connectivity connectivity, int[] args)

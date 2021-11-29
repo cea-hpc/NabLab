@@ -64,7 +64,7 @@ class JniNameMangler
 			}
 			LinearAlgebraType case sizes.size == 1: 'J' + provider.jniFileName + '_Vector2'
 			LinearAlgebraType case sizes.size == 2: 'J' + provider.jniFileName + '_Matrix2'
-			default: throw new RuntimeException("Ooops. Can not be there, normally...")
+			default: throw new RuntimeException("Unexpected type: " + class.name)
 		}
 	}
 }

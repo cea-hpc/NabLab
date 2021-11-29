@@ -9,12 +9,12 @@ using namespace Arcane;
 
 namespace explicitheatequationfreefuncs
 {
-Real norm(ConstArrayView<Real> a)
+const Real norm(ConstArrayView<Real> a)
 {
 	return std::sqrt(explicitheatequationfreefuncs::dot(a, a));
 }
 
-Real dot(ConstArrayView<Real> a, ConstArrayView<Real> b)
+const Real dot(ConstArrayView<Real> a, ConstArrayView<Real> b)
 {
 	Real result(0.0);
 	for (Integer i=0; i<a.size(); i++)
@@ -24,29 +24,59 @@ Real dot(ConstArrayView<Real> a, ConstArrayView<Real> b)
 	return result;
 }
 
-Real det(Real2 a, Real2 b)
+const Real det(const Real2 a, const Real2 b)
 {
 	return (a[0] * b[1] - a[1] * b[0]);
 }
 
 ConstArrayView<Real> sumR1(ConstArrayView<Real> a, ConstArrayView<Real> b)
 {
-	return a + b;
+	return explicitheatequationfreefuncs::operator+(a, b);
 }
 
-Real minR0(Real a, Real b)
+const Real minR0(const Real a, const Real b)
 {
 	return std::min(a, b);
 }
 
-Real sumR0(Real a, Real b)
+const Real sumR0(const Real a, const Real b)
 {
 	return a + b;
 }
 
-Real prodR0(Real a, Real b)
+const Real prodR0(const Real a, const Real b)
 {
 	return a * b;
+}
+
+ConstArrayView<Real> operator+(ConstArrayView<Real> a, ConstArrayView<Real> b)
+{
+	ArrayView<Real> result;
+	for (Integer ix0=0; ix0<a.size(); ix0++)
+	{
+		result[ix0] = a[ix0] + b[ix0];
+	}
+	return result;
+}
+
+const Real2 operator-(const Real2 a, const Real2 b)
+{
+	Real2 result;
+	for (Integer i0=0; i0<2; i0++)
+	{
+		result[i0] = a[i0] - b[i0];
+	}
+	return result;
+}
+
+const Real2 operator*(const Real a, const Real2 b)
+{
+	Real2 result;
+	for (Integer i0=0; i0<2; i0++)
+	{
+		result[i0] = a * b[i0];
+	}
+	return result;
 }
 }
 
@@ -56,7 +86,7 @@ Real prodR0(Real a, Real b)
 void ExplicitHeatEquationModule::init()
 {
 	// mesh initialisation
-	m_mesh = CartesianMesh2D::create(mesh);
+	m_mesh = CartesianMesh2D::createInstance(mesh());
 
 	computeFaceLength(); // @1.0
 	computeV(); // @1.0
@@ -91,9 +121,9 @@ void ExplicitHeatEquationModule::computeFaceLength()
 		ENUMERATE_FACE(f, view)
 		{
 			Real reduction0(0.0);
-			for (NodeLocalId p : m_mesh->getNodesOfFace(f))
+			for (NodeLocalId p : m_mesh->getNodesOfFace(*f))
 			{
-				reduction0 = explicitheatequationfreefuncs::sumR0(reduction0, explicitheatequationfreefuncs::norm(m_x[p] - m_x[p]));
+				reduction0 = explicitheatequationfreefuncs::sumR0(reduction0, explicitheatequationfreefuncs::norm(explicitheatequationfreefuncs::operator-(m_x[p], m_x[p])));
 			}
 			m_face_length[f] = 0.5 * reduction0;
 		}
@@ -122,7 +152,7 @@ void ExplicitHeatEquationModule::computeV()
 		ENUMERATE_CELL(c, view)
 		{
 			Real reduction0(0.0);
-			for (NodeLocalId p : m_mesh->getNodesOfCell(c))
+			for (NodeLocalId p : m_mesh->getNodesOfCell(*c))
 			{
 				reduction0 = explicitheatequationfreefuncs::sumR0(reduction0, explicitheatequationfreefuncs::det(m_x[p], m_x[p]));
 			}
@@ -169,11 +199,11 @@ void ExplicitHeatEquationModule::initXc()
 		ENUMERATE_CELL(c, view)
 		{
 			Real2 reduction0({0.0, 0.0});
-			for (NodeLocalId p : m_mesh->getNodesOfCell(c))
+			for (NodeLocalId p : m_mesh->getNodesOfCell(*c))
 			{
 				reduction0 = explicitheatequationfreefuncs::sumR1(reduction0, m_x[p]);
 			}
-			m_xc[c] = 0.25 * reduction0;
+			m_xc[c] = explicitheatequationfreefuncs::operator*(0.25, reduction0);
 		}
 	});
 }
@@ -190,7 +220,7 @@ void ExplicitHeatEquationModule::updateU()
 		ENUMERATE_CELL(c, view)
 		{
 			Real reduction0(0.0);
-			for (CellLocalId d : m_mesh->getNeighbourCells(c))
+			for (CellLocalId d : m_mesh->getNeighbourCells(*c))
 			{
 				reduction0 = explicitheatequationfreefuncs::sumR0(reduction0, m_alpha[c][d] * m_u_n[d]);
 			}
@@ -207,7 +237,7 @@ void ExplicitHeatEquationModule::updateU()
 void ExplicitHeatEquationModule::computeDeltaTn()
 {
 	Real reduction0(numeric_limits<double>::max());
-	for (CellLocalId c : m_mesh->getCells())
+	ENUMERATE_CELL(c, view)
 	{
 		reduction0 = explicitheatequationfreefuncs::minR0(reduction0, m_v[c] / m_d[c]);
 	}
@@ -226,12 +256,12 @@ void ExplicitHeatEquationModule::computeFaceConductivity()
 		ENUMERATE_FACE(f, view)
 		{
 			Real reduction0(1.0);
-			for (CellLocalId c1 : m_mesh->getCellsOfFace(f))
+			for (CellLocalId c1 : m_mesh->getCellsOfFace(*f))
 			{
 				reduction0 = explicitheatequationfreefuncs::prodR0(reduction0, m_d[c1]);
 			}
 			Real reduction1(0.0);
-			for (CellLocalId c2 : m_mesh->getCellsOfFace(f))
+			for (CellLocalId c2 : m_mesh->getCellsOfFace(*f))
 			{
 				reduction1 = explicitheatequationfreefuncs::sumR0(reduction1, m_d[c2]);
 			}
@@ -251,7 +281,7 @@ void ExplicitHeatEquationModule::initU()
 	{
 		ENUMERATE_CELL(c, view)
 		{
-			if (explicitheatequationfreefuncs::norm(m_xc[c] - m_vect_one) < 0.5) 
+			if (explicitheatequationfreefuncs::norm(explicitheatequationfreefuncs::operator-(m_xc[c], m_vect_one)) < 0.5) 
 				m_u_n[c] = options.u0;
 			else
 				m_u_n[c] = 0.0;
@@ -281,9 +311,9 @@ void ExplicitHeatEquationModule::computeAlphaCoeff()
 		ENUMERATE_CELL(c, view)
 		{
 			Real alphaDiag(0.0);
-			for (CellLocalId d : m_mesh->getNeighbourCells(c))
+			for (CellLocalId d : m_mesh->getNeighbourCells(*c))
 			{
-				const Real alphaExtraDiag(m_deltat / m_v[c] * (m_face_length[f] * m_face_conductivity[f]) / explicitheatequationfreefuncs::norm(m_xc[c] - m_xc[d]));
+				const Real alphaExtraDiag(m_deltat / m_v[c] * (m_face_length[f] * m_face_conductivity[f]) / explicitheatequationfreefuncs::norm(explicitheatequationfreefuncs::operator-(m_xc[c], m_xc[d])));
 				m_alpha[c][d] = alpha_extra_diag;
 				alpha_diag = alpha_diag + alpha_extra_diag;
 			}

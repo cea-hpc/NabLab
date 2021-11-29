@@ -56,7 +56,7 @@ class FunctionContentProvider
 				skippedDimensions += "[0]"
 			}
 		}
-		throw new RuntimeException("No arg corresponding to dimension symbol " + v.name)
+		throw new RuntimeException("No arg corresponding to dimension symbol: " + v.name)
 	}
 
 	private static def getSizes(IrType it)
@@ -65,10 +65,10 @@ class FunctionContentProvider
 		{
 			BaseType: getSizes
 			LinearAlgebraType: getSizes
-			default: throw new RuntimeException("Unsuported argument")
+			default: throw new RuntimeException("Unexpected type: " + class.name)
 		}
 	}
 
 	private static def getDeclarationContent(Function it, String name)
-	'''«returnType.typeName» «name»(«FOR a : inArgs SEPARATOR ', '»«a.type.typeName» «a.name»«ENDFOR»)'''
+	'''«getTypeName(returnType, true)» «name»(«FOR a : inArgs SEPARATOR ', '»«getTypeName(a.type, true)» «a.name»«ENDFOR»)'''
 }

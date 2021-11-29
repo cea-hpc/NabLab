@@ -35,6 +35,7 @@ import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
+import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.cpp.ItemIndexAndIdValueContentProvider.*
 
@@ -48,7 +49,7 @@ abstract class InstructionContentProvider
 
 	def dispatch CharSequence getContent(VariableDeclaration it)
 	'''
-		«IF variable.type.baseTypeStatic»
+		«IF variable.type.baseTypeConstExpr»
 			«IF variable.const»const «ENDIF»«variable.type.cppType» «variable.name»«IF variable.defaultValue !== null»(«variable.defaultValue.content»)«ENDIF»;
 		«ELSE»
 			«IF variable.const»const «ENDIF»«variable.type.cppType» «variable.name»;
@@ -199,7 +200,7 @@ class SequentialInstructionContentProvider extends InstructionContentProvider
 
 	override protected getReductionContent(ReductionInstruction it)
 	{
-		throw new UnsupportedOperationException("ReductionInstruction must have been replaced before using this code generator")
+		throw new RuntimeException("ReductionInstruction must have been replaced before using this code generator")
 	}
 
 	override protected getParallelLoopContent(Loop it)

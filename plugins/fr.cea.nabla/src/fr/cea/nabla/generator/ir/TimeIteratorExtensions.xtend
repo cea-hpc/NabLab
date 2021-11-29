@@ -106,7 +106,7 @@ class TimeIteratorExtensions
 			case 0: ''
 			case Integer.MIN_VALUE: '0'
 			case 1: 'plus1'
-			default: throw new Exception("Index not yet implemented")
+			default: throw new RuntimeException("Index not yet implemented")
 		}
 	}
 }

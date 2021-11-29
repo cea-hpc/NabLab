@@ -126,7 +126,7 @@ class AxlContentProvider
 		{
 			case 0: (optional ? '''optional="true"''' : '''minOccurs="1" maxOccurs="1"''')
 			case 1 : '''minOccurs="«IF optional»0«ELSE»1«ENDIF»" maxOccurs="unbounded"'''
-			default : throw new Exception("Dimension greater than 1 not yet suported in options: " + d)
+			default : throw new RuntimeException("Dimension greater than 1 not yet suported in options: " + d)
 		}
 	}
 }

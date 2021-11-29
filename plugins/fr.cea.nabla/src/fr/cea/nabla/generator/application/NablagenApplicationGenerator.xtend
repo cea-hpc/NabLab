@@ -77,12 +77,9 @@ class NablagenApplicationGenerator extends StandaloneGeneratorBase
 						val g = generatorFactory.create(target, ngenApp, wsPath)
 	
 						// Apply IR transformations dedicated to this target (if necessary)
-						var IrRoot genIr = ir
-						if (g.irTransformationStep !== null)
-						{
-							genIr = EcoreUtil::copy(ir)
-							g.irTransformationStep.transformIr(genIr, [msg | dispatcher.post(MessageType::Exec, msg)])
-						}
+						val IrRoot genIr = (g.irTransformationSteps.empty ? ir : EcoreUtil::copy(ir))
+						for (s : g.irTransformationSteps)
+							s.transformIr(genIr, [msg | dispatcher.post(MessageType::Exec, msg)])
 						if (target.writeIR)
 						{
 							val fileName = irWriter.createAndSaveResource(fsa, genIr)

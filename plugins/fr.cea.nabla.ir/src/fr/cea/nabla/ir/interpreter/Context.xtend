@@ -163,7 +163,7 @@ class Context
 			if (outerContext !== null)
 				outerContext.setVariableValue(it, value)
 			else
-				throw new RuntimeException('Variable not found ' + name)
+				throw new RuntimeException('Variable not found: ' + name)
 	}
 
 	// ContainerValues
@@ -209,7 +209,7 @@ class Context
 			if (outerContext !== null)
 				outerContext.setIndexValue(index, value)
 			else
-				throw new RuntimeException('Index not found ' + index.name)
+				throw new RuntimeException('Index not found: ' + index.name)
 	}
 
 	// IdValues
@@ -231,7 +231,7 @@ class Context
 			if (outerContext !== null)
 				outerContext.setIdValue(id, value)
 			else
-				throw new RuntimeException('Unique identifier not found ' + id.name)
+				throw new RuntimeException('Unique identifier not found: ' + id.name)
 	}
 
 	def int getSingleton(ConnectivityCall it)

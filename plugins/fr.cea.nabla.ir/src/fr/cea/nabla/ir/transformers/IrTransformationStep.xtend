@@ -20,22 +20,22 @@ abstract class IrTransformationStep
 	@Accessors val traceListeners = new ArrayList<(String) => void>
 	val String description
 
-	def void trace(String msg)
-	{
-		traceListeners.forEach[apply(msg)]
-	}
-
-	def void transformIr(IrRoot ir) throws RuntimeException
+	def void transformIr(IrRoot ir) throws Exception
 	{
 		transformIr(ir, null)
 	}
 
-	def void transformIr(IrRoot ir, (String)=>void traceNotifier) throws RuntimeException
+	def void transformIr(IrRoot ir, (String)=>void traceNotifier) throws Exception
 	{
 		if (traceNotifier !== null) traceListeners += traceNotifier
 		val ok = transform(ir)
 		if (traceNotifier !== null) traceListeners -= traceNotifier
 		if (!ok) throw new RuntimeException('Exception in IR transformation step: ' + description)
+	}
+
+	protected def void trace(String msg)
+	{
+		traceListeners.forEach[apply(msg)]
 	}
 
 	protected abstract def boolean transform(IrRoot ir)

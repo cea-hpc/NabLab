@@ -13,13 +13,16 @@ using namespace Arcane;
 
 namespace explicitheatequationfreefuncs
 {
-Real norm(ConstArrayView<Real> a);
-Real dot(ConstArrayView<Real> a, ConstArrayView<Real> b);
-Real det(Real2 a, Real2 b);
+const Real norm(ConstArrayView<Real> a);
+const Real dot(ConstArrayView<Real> a, ConstArrayView<Real> b);
+const Real det(const Real2 a, const Real2 b);
 ConstArrayView<Real> sumR1(ConstArrayView<Real> a, ConstArrayView<Real> b);
-Real minR0(Real a, Real b);
-Real sumR0(Real a, Real b);
-Real prodR0(Real a, Real b);
+const Real minR0(const Real a, const Real b);
+const Real sumR0(const Real a, const Real b);
+const Real prodR0(const Real a, const Real b);
+ConstArrayView<Real> operator+(ConstArrayView<Real> a, ConstArrayView<Real> b);
+const Real2 operator-(const Real2 a, const Real2 b);
+const Real2 operator*(const Real a, const Real2 b);
 }
 
 /******************** Module declaration ********************/

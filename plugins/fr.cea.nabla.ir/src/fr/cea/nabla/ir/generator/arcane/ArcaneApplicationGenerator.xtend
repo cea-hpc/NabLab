@@ -20,6 +20,7 @@ import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Job
+import fr.cea.nabla.ir.transformers.AddOperatorsForArcaneRealNTypes
 import fr.cea.nabla.ir.transformers.ReplaceReductions
 import java.util.ArrayList
 import java.util.LinkedHashSet
@@ -34,9 +35,9 @@ class ArcaneApplicationGenerator implements ApplicationGenerator
 
 	override getName() { 'Arcane' }
 
-	override getIrTransformationStep()
+	override getIrTransformationSteps()
 	{
-		new ReplaceReductions(true)
+		#[new ReplaceReductions(true), new AddOperatorsForArcaneRealNTypes]
 	}
 
 	new(String wsPath, Iterable<Pair<String, String>> cmakeVars)
@@ -143,7 +144,7 @@ class ArcaneApplicationGenerator implements ApplicationGenerator
 	void «className»::init()
 	{
 		// mesh initialisation
-		m_mesh = «irRoot.mesh.className»::create(mesh);
+		m_mesh = «irRoot.mesh.className»::createInstance(mesh());
 
 		«FOR c : irRoot.main.calls.filter[!mainTimeLoop]»
 		«Utils::getCallName(c).replace('.', '->')»(); // @«c.at»

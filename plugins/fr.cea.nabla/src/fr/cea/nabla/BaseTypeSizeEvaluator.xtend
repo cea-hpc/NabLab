@@ -22,7 +22,6 @@ import fr.cea.nabla.nabla.MinConstant
 import fr.cea.nabla.nabla.Minus
 import fr.cea.nabla.nabla.Modulo
 import fr.cea.nabla.nabla.Mul
-import fr.cea.nabla.nabla.OptionDeclaration
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
 import fr.cea.nabla.nabla.PrimitiveType
@@ -84,10 +83,6 @@ class BaseTypeSizeEvaluator
 		{
 			switch c
 			{
-				// option always dynamic, even if it has a default value,
-				// the value can be overwritten with the json file value
-				OptionDeclaration case (c.type.primitive == PrimitiveType::INT):
-						return DYNAMIC_SIZE
 				SimpleVarDeclaration case (c.type.primitive == PrimitiveType::INT):
 					if (c.value === null)
 						return DYNAMIC_SIZE

@@ -4,7 +4,6 @@
 		"_outputPath_comment":"empty outputPath to disable output",
 		"outputPath":"output",
 		"outputPeriod":1,
-		"u0":1.0,
 		"stopTime":1.0,
 		"maxIterations":500000000,
 		"linearAlgebra":{},

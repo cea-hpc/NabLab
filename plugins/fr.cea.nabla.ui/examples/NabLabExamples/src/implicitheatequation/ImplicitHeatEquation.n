@@ -13,12 +13,12 @@ with Math.*;
 with LinearAlgebra.*;
 with CartesianMesh2D.*;
 
-option ℝ u0 = 1.0;
+let ℝ u0 = 1.0;
 let ℝ[2] vectOne = ℝ[2](1.0);
 
 // Simulation options
-option ℝ stopTime = 1.0;
-option ℕ maxIterations = 500000000;
+ℝ stopTime;
+ℕ maxIterations;
 
 let ℝ δt = 0.001;
 ℝ t;

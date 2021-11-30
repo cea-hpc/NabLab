@@ -24,19 +24,9 @@ class JsonContentProvider
 
 	static def getJsonContent(String name, BaseType type, Expression defaultValue)
 	'''
-		«IF defaultValue === null»
-			assert(options.has("«name»"));
-			final JsonElement «name.jsonName» = options.get("«name»");
-			«getJsonContent(name, type, type.sizes, #[])»
-		«ELSE»
-			if (options.has("«name»"))
-			{
-				final JsonElement «name.jsonName» = options.get("«name»");
-				«getJsonContent(name, type, type.sizes, #[])»
-			}
-			else
-				«name» = «defaultValue.content»;
-		«ENDIF»
+		assert(options.has("«name»"));
+		final JsonElement «name.jsonName» = options.get("«name»");
+		«getJsonContent(name, type, type.sizes, #[])»
 	'''
 
 	private static def CharSequence getJsonContent(String name, BaseType type, Iterable<Expression> sizes, String[] indices)

@@ -16,7 +16,6 @@ import fr.cea.nabla.nabla.ArgOrVar
 import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.NablaModule
-import fr.cea.nabla.nabla.OptionDeclaration
 import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.SimpleVarDeclaration
@@ -160,7 +159,6 @@ class NablagenScopeProvider extends AbstractNablagenScopeProvider
 		{
 			switch d
 			{
-				OptionDeclaration case checkScalar(d.type, primitiveTypes): candidates += d.variable
 				SimpleVarDeclaration case checkScalar(d.type, primitiveTypes): candidates += d.variable
 				VarGroupDeclaration case checkScalar(d.type, primitiveTypes): candidates += d.variables.filter(SimpleVar)
 			}

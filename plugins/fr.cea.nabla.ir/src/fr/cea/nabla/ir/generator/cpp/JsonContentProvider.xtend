@@ -24,22 +24,9 @@ class JsonContentProvider
 
 	def getJsonContent(String name, BaseType type, Expression defaultValue)
 	'''
-		// «name»
-		«IF defaultValue === null»
-			assert(options.HasMember("«name»"));
-			const rapidjson::Value& «name.jsonName» = options["«name»"];
-			«getJsonContent(name, type, type.sizes, #[])»
-		«ELSE»
-			if (options.HasMember("«name»"))
-			{
-				const rapidjson::Value& «name.jsonName» = options["«name»"];
-				«getJsonContent(name, type, type.sizes, #[])»
-			}
-			else
-			{
-				«name» = «defaultValue.content»;
-			}
-		«ENDIF»
+		assert(options.HasMember("«name»"));
+		const rapidjson::Value& «name.jsonName» = options["«name»"];
+		«getJsonContent(name, type, type.sizes, #[])»
 	'''
 
 	private def CharSequence getJsonContent(String name, BaseType type, Iterable<Expression> sizes, String[] indices)

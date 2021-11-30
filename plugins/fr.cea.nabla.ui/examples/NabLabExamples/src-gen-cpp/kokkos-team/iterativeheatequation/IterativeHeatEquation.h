@@ -99,12 +99,12 @@ private:
 	int lastDump;
 	int n;
 	int k;
-	double u0;
+	static constexpr double u0 = 1.0;
 	static constexpr RealArray1D<2> vectOne = {1.0, 1.0};
 	double stopTime;
 	int maxIterations;
-	int maxIterationsK;
-	double epsilon;
+	static constexpr int maxIterationsK = 1000;
+	static constexpr double epsilon = 1.0E-8;
 	double deltat;
 	double t_n;
 	double t_nplus1;

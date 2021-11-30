@@ -58,6 +58,9 @@ public final class Iteration
 	{
 		final Gson gson = new Gson();
 		final JsonObject options = gson.fromJson(jsonContent, JsonObject.class);
+		n = 0;
+		k = 0;
+		l = 0;
 		X = new double[nbNodes][2];
 		vn_n = new double[nbCells];
 		vn_nplus1 = new double[nbCells];

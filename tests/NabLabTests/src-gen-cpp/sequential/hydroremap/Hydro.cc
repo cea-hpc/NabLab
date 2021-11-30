@@ -51,39 +51,18 @@ Hydro::jsonInit(const char* jsonContent)
 	assert(document.IsObject());
 	const rapidjson::Value::Object& options = document.GetObject();
 
-	// maxTime
-	if (options.HasMember("maxTime"))
-	{
-		const rapidjson::Value& valueof_maxTime = options["maxTime"];
-		assert(valueof_maxTime.IsDouble());
-		maxTime = valueof_maxTime.GetDouble();
-	}
-	else
-	{
-		maxTime = 0.1;
-	}
-	// maxIter
-	if (options.HasMember("maxIter"))
-	{
-		const rapidjson::Value& valueof_maxIter = options["maxIter"];
-		assert(valueof_maxIter.IsInt());
-		maxIter = valueof_maxIter.GetInt();
-	}
-	else
-	{
-		maxIter = 500;
-	}
-	// deltat
-	if (options.HasMember("deltat"))
-	{
-		const rapidjson::Value& valueof_deltat = options["deltat"];
-		assert(valueof_deltat.IsDouble());
-		deltat = valueof_deltat.GetDouble();
-	}
-	else
-	{
-		deltat = 1.0;
-	}
+	assert(options.HasMember("maxIter"));
+	const rapidjson::Value& valueof_maxIter = options["maxIter"];
+	assert(valueof_maxIter.IsInt());
+	maxIter = valueof_maxIter.GetInt();
+	assert(options.HasMember("maxTime"));
+	const rapidjson::Value& valueof_maxTime = options["maxTime"];
+	assert(valueof_maxTime.IsDouble());
+	maxTime = valueof_maxTime.GetDouble();
+	assert(options.HasMember("deltat"));
+	const rapidjson::Value& valueof_deltat = options["deltat"];
+	assert(valueof_deltat.IsDouble());
+	deltat = valueof_deltat.GetDouble();
 
 	// Copy node coordinates
 	const auto& gNodes = mesh.getGeometry()->getNodes();

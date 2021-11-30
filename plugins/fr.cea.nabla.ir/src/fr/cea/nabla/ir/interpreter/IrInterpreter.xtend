@@ -117,11 +117,7 @@ class IrInterpreter
 					NablaValueJsonSetter::setValue(vValue, jsonOpt)
 				}
 				else
-				{
-					// No default value => the option is mandatory.
-					if (v.defaultValue === null)
-						throw new IllegalStateException("Mandatory option missing in Json file: " + v.name)
-				}
+					throw new IllegalStateException("Missing option in Json file: " + v.name)
 			}
 		}
 
@@ -134,7 +130,7 @@ class IrInterpreter
 				context.initWriter(wsPath + File.separator + outputPath.asString)
 			}
 			else
-				throw new IllegalStateException("Mandatory option missing in Json file: outputPath")
+				throw new IllegalStateException("Missing option in Json file: outputPath")
 		}
 
 		for (provider : m.providers)

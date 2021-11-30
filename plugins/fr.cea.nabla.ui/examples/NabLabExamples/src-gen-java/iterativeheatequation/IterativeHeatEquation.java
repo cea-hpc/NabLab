@@ -26,12 +26,12 @@ public final class IterativeHeatEquation
 	int lastDump;
 	int n;
 	int k;
-	double u0;
+	static final double u0 = 1.0;
 	static final double[] vectOne = new double[] {1.0, 1.0};
 	double stopTime;
 	int maxIterations;
-	int maxIterationsK;
-	double epsilon;
+	static final int maxIterationsK = 1000;
+	static final double epsilon = 1.0E-8;
 	double deltat;
 	double t_n;
 	double t_nplus1;
@@ -75,46 +75,16 @@ public final class IterativeHeatEquation
 		assert(valueof_outputPeriod.isJsonPrimitive());
 		outputPeriod = valueof_outputPeriod.getAsJsonPrimitive().getAsInt();
 		lastDump = Integer.MIN_VALUE;
-		if (options.has("u0"))
-		{
-			final JsonElement valueof_u0 = options.get("u0");
-			assert(valueof_u0.isJsonPrimitive());
-			u0 = valueof_u0.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			u0 = 1.0;
-		if (options.has("stopTime"))
-		{
-			final JsonElement valueof_stopTime = options.get("stopTime");
-			assert(valueof_stopTime.isJsonPrimitive());
-			stopTime = valueof_stopTime.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			stopTime = 0.1;
-		if (options.has("maxIterations"))
-		{
-			final JsonElement valueof_maxIterations = options.get("maxIterations");
-			assert(valueof_maxIterations.isJsonPrimitive());
-			maxIterations = valueof_maxIterations.getAsJsonPrimitive().getAsInt();
-		}
-		else
-			maxIterations = 500000000;
-		if (options.has("maxIterationsK"))
-		{
-			final JsonElement valueof_maxIterationsK = options.get("maxIterationsK");
-			assert(valueof_maxIterationsK.isJsonPrimitive());
-			maxIterationsK = valueof_maxIterationsK.getAsJsonPrimitive().getAsInt();
-		}
-		else
-			maxIterationsK = 1000;
-		if (options.has("epsilon"))
-		{
-			final JsonElement valueof_epsilon = options.get("epsilon");
-			assert(valueof_epsilon.isJsonPrimitive());
-			epsilon = valueof_epsilon.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			epsilon = 1.0E-8;
+		n = 0;
+		k = 0;
+		assert(options.has("stopTime"));
+		final JsonElement valueof_stopTime = options.get("stopTime");
+		assert(valueof_stopTime.isJsonPrimitive());
+		stopTime = valueof_stopTime.getAsJsonPrimitive().getAsDouble();
+		assert(options.has("maxIterations"));
+		final JsonElement valueof_maxIterations = options.get("maxIterations");
+		assert(valueof_maxIterations.isJsonPrimitive());
+		maxIterations = valueof_maxIterations.getAsJsonPrimitive().getAsInt();
 		deltat = 0.001;
 		X = new double[nbNodes][2];
 		Xc = new double[nbCells][2];

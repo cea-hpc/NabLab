@@ -6,8 +6,6 @@
 		"outputPeriod":1,
 		"stopTime":0.1,
 		"maxIterations":500,
-		"PI":3.1415926,
-		"alpha":1.0,
 		"_nonRegression_comment":"empty value to disable, CreateReference or CompareToReference to take action",
 		"nonRegression":""
 	},

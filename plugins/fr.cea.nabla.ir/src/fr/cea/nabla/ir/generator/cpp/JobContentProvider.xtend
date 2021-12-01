@@ -122,6 +122,9 @@ class KokkosJobContentProvider extends JobContentProvider
 		«comment»
 		void «IrUtils.getContainerOfType(it, IrModule).className»::«codeName»(«FOR a : arguments SEPARATOR ', '»«a»«ENDFOR») noexcept
 		{
+			#ifdef NABLAB_DEBUG
+			«localScopeDefinition»
+			#endif
 			«innerContent»
 		}
 	'''

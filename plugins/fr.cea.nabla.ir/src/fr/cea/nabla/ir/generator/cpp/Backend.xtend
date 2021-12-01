@@ -87,7 +87,7 @@ class KokkosBackend extends Backend
 		name = 'Kokkos'
 		cmakeContentProvider = new KokkosCMakeContentProvider
 		typeContentProvider = new KokkosTypeContentProvider
-		pythonEmbeddingContentProvider = new PythonEmbeddingContentProvider(typeContentProvider)
+		pythonEmbeddingContentProvider = new KokkosPythonEmbeddingContentProvider(typeContentProvider)
 		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
 		instructionContentProvider = new KokkosInstructionContentProvider(typeContentProvider, expressionContentProvider, pythonEmbeddingContentProvider)
 		functionContentProvider = new FunctionContentProvider(typeContentProvider, expressionContentProvider, instructionContentProvider, pythonEmbeddingContentProvider)
@@ -107,7 +107,7 @@ class KokkosTeamThreadBackend extends Backend
 		name = 'Kokkos Team Thread'
 		cmakeContentProvider = new KokkosCMakeContentProvider
 		typeContentProvider = new KokkosTypeContentProvider
-		pythonEmbeddingContentProvider = new PythonEmbeddingContentProvider(typeContentProvider)
+		pythonEmbeddingContentProvider = new KokkosTeamThreadPythonEmbeddingContentProvider(typeContentProvider)
 		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
 		instructionContentProvider = new KokkosTeamThreadInstructionContentProvider(typeContentProvider, expressionContentProvider, pythonEmbeddingContentProvider)
 		functionContentProvider = new FunctionContentProvider(typeContentProvider, expressionContentProvider, instructionContentProvider, pythonEmbeddingContentProvider)

@@ -27,7 +27,9 @@ import org.eclipse.xtend.lib.annotations.Data
 import static fr.cea.nabla.ir.IrUtils.*
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
+import static extension fr.cea.nabla.ir.JobExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
+import fr.cea.nabla.ir.ir.JobCaller
 
 @Data
 class PythonEmbeddingContentProvider
@@ -449,5 +451,46 @@ class PythonEmbeddingContentProvider
 			}
 		}
 	'''
+}
+
+@Data
+class KokkosPythonEmbeddingContentProvider extends PythonEmbeddingContentProvider
+{
+	override getPointerDeclarationContent(Job it)
+	'''
+		void («getContainerOfType(it, IrModule).className»::*«codeName»Ptr)(«FOR a : arguments SEPARATOR ', '»«a»«ENDFOR»);'''
+
+	override getWrapperDeclarationContent(Job it)
+	'''
+		void «codeName»Wrapper(«FOR a : arguments SEPARATOR ', '»«a»«ENDFOR») noexcept;'''
+
+	override getWrapperDefinitionContent(Job it)
+	'''
+		«wrapperComment»
+		void «IrUtils.getContainerOfType(it, IrModule).className»::«codeName»Wrapper(«FOR a : arguments SEPARATOR ', '»«a»«ENDFOR») noexcept
+		{
+			«getBeforeInstrumentation(executionEvent, GLOBAL_SCOPE)»
+			«codeName»(«FOR a : arguments SEPARATOR ', '»«a.split(' ').last»«ENDFOR»);
+			«getAfterInstrumentation(executionEvent, GLOBAL_SCOPE)»
+		}
+	'''
 	
+	override getLocalScopeDefinition(Job it)
+	'''
+		«name.toFirstUpper»Context scope(this);
+		«name.toFirstUpper»Context *scopeRef = &scope;
+	'''
+
+	protected def List<String> getArguments(Job it) { #[] }
+}
+
+@Data
+class KokkosTeamThreadPythonEmbeddingContentProvider extends KokkosPythonEmbeddingContentProvider
+{
+	override getArguments(Job it)
+	{
+		// JobCaller never in a team
+		if (!hasIterable || it instanceof JobCaller) #[]
+		else #["const member_type& teamMember"]
+	}
 }

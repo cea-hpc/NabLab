@@ -1,0 +1,31 @@
+/*******************************************************************************
+ * Copyright (c) 2021 CEA
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * Contributors: see AUTHORS file
+ *******************************************************************************/
+module SimpleMeshExample;
+
+with Assert.*;
+with Math.*;
+with CartesianMesh2D.*;
+
+let ℝ stopTime = 1.0;
+let ℕ maxIterations = 1;
+let ℝ δt = 0.001;
+
+ℝ t;
+ℝ[2] X{nodes};
+ℝ nodes_sum{cells};
+ℝ cst{nodes};
+
+iterate n while (n < maxIterations);
+
+InitTime: t^{n=0} = 0.0;
+ComputeCst: ∀r∈nodes(), cst{r} = 1.0;
+ComputeSum: ∀j,i∈cells(), nodes_sum{j} = ∑{r∈nodesOfCell(j)}(cst{r}*i);
+AssertSum: ∀j,i∈cells(), let ℾ b = assertEquals(4.0*i, nodes_sum{j}); 
+ComputeTn: t^{n+1} = t^{n} + δt;

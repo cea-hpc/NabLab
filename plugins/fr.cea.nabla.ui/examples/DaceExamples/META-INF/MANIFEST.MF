@@ -5,4 +5,6 @@ Bundle-SymbolicName: DaceExamples
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: gettingstarted
-Require-Bundle: fr.cea.nabla
+Require-Bundle: fr.cea.nabla,
+ fr.cea.nabla.javalib,
+ com.google.gson

@@ -1,0 +1,15 @@
+Application SimpleMeshExample;
+
+MainModule SimpleMeshExample simpleMeshExample
+{
+	nodeCoord = X;
+	time = t;
+	timeStep = δt;
+	iterationMax = maxIterations;
+	timeMax = stopTime;
+}
+
+Java
+{
+	outputPath = "/DaceExamples/src-gen-java";
+}

@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -11,7 +11,6 @@ package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
 import com.google.inject.Singleton
-import fr.cea.nabla.ir.JobDependencies
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.nabla.Job
 import fr.cea.nabla.nabla.TimeIterator
@@ -32,8 +31,8 @@ class IrJobFactory
 		annotations += j.toNabLabFileAnnotation
 		name = j.name
 		onCycle = false
+		timeLoopJob = false
 		instruction = j.instruction.toIrInstruction
-		JobDependencies.computeAndSetInOutVars(it)
 	}
 
 	/** SetUpTimeLoopJob in/out vars are set in ArgOrVarFactory during time variable creation */
@@ -47,7 +46,7 @@ class IrJobFactory
 
 	/** TearDownTimeLoopJob in/out vars are set in ArgOrVarFactory during time variable creation */
 	def create IrFactory::eINSTANCE.createJob toIrTearDownTimeLoopJob(TimeIterator ti)
-	{ 
+	{
 		annotations += ti.toNabLabFileAnnotation
 		name = ti.tearDownTimeLoopJobName
 		onCycle = false

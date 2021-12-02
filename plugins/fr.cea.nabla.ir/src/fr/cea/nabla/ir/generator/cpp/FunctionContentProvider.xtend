@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -31,8 +31,6 @@ class FunctionContentProvider
 	protected val extension TypeContentProvider
 	protected val extension ExpressionContentProvider
 	protected val extension InstructionContentProvider
-
-	protected def String getMacro() { null }
 
 	def getDeclarationContent(Function it)
 	{
@@ -76,7 +74,6 @@ class FunctionContentProvider
 	private def getDeclarationContent(Function it, String name)
 	'''
 	«FOR v : variables BEFORE "template<" SEPARATOR ", " AFTER ">"»size_t «v.name»«ENDFOR»
-	«IF macro !== null»«macro»«ENDIF»
 	«returnType.cppType» «name»(«FOR a : inArgs SEPARATOR ', '»«a.type.cppType» «a.name»«ENDFOR»)'''
 
 	private def getJniInArgContent(Arg it)
@@ -106,7 +103,7 @@ class FunctionContentProvider
 			'''
 				auto& «nativeVarName» = *get«IrTypeExtensions.getLinearAlgebraClass(t)»(env, «name»);
 			'''
-			default: throw new RuntimeException("Ooops. Can not be there, normally...")
+			default: throw new RuntimeException("Unexpected type: " + class.name)
 		}
 	}
 
@@ -147,7 +144,7 @@ class FunctionContentProvider
 			'''
 				auto ret = newJava«IrTypeExtensions.getLinearAlgebraClass(t)»(env, self, new «IrTypeExtensions.getLinearAlgebraClass(t)»(c_ret));
 			'''
-			default: throw new RuntimeException("Ooops. Can not be there, normally...")
+			default: throw new RuntimeException("Unexpected type: " + t.class.name)
 		}
 	}
 
@@ -196,14 +193,5 @@ class FunctionContentProvider
 			}
 		else
 			'Object'
-	}
-}
-
-@Data
-class KokkosFunctionContentProvider extends FunctionContentProvider
-{
-	override getMacro()
-	{
-		"KOKKOS_INLINE_FUNCTION"
 	}
 }

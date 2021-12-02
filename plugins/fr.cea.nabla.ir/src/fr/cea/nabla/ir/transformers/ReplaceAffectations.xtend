@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -25,11 +25,16 @@ import java.util.ArrayList
 import java.util.List
 import org.eclipse.emf.ecore.util.EcoreUtil
 
-import static fr.cea.nabla.ir.transformers.IrTransformationUtils.*
-
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 
-class ReplaceAffectations  extends IrTransformationStep
+/**
+ * Replace affectations to avoid aliasing.
+ * Affectations on connectivity and array variables at left and ArgOrVarRef instance at right
+ * are replaced by a loop to avoid aliasing.
+ * Note that an affectation on a connectivity variable is an error in the NabLab language but it 
+ * can be created during IR transformation (for example Un = Un+1 at the end of time loop).
+ */
+class ReplaceAffectations extends IrTransformationStep
 {
 	new()
 	{
@@ -45,7 +50,7 @@ class ReplaceAffectations  extends IrTransformationStep
 			// we know that left and right have same type
 			// For connectivityTypes, we generate loops on connectivities
 			val loop = createLoopWithIterator(affectation.left, affectation.right as ArgOrVarRef, (affectation.left.type as ConnectivityType).connectivities, 1, new ArrayList<ItemId>)
-			replace(affectation, #[loop])
+			IrTransformationUtils.replace(affectation, #[loop])
 		}
 
 		for (affectation : ir.eAllContents.filter(Affectation).toList)
@@ -57,7 +62,7 @@ class ReplaceAffectations  extends IrTransformationStep
 				&& affectation.right instanceof ArgOrVarRef)
 			{
 				val loop = createLoopWithInterval(affectation.left, affectation.right as ArgOrVarRef, affectation.left.type.baseSizes, 1)
-				replace(affectation, #[loop])
+				IrTransformationUtils.replace(affectation, #[loop])
 			}
 		}
 		return true
@@ -96,13 +101,16 @@ class ReplaceAffectations  extends IrTransformationStep
 		if (connectivities.size > 1 && !connectivities.get(1).inTypes.empty)
 		{
 			// SubConnectivity will need Id on ItemIndex
-			val itemId = IrFactory.eINSTANCE.createItemId => [
+			val itemId = IrFactory.eINSTANCE.createItemId =>
+			[
 				name = itemIndex.name + 'Id'
 				itemName = itemIndex.name
 			]
-			val itemIdDefinition = IrFactory.eINSTANCE.createItemIdDefinition => [
+			val itemIdDefinition = IrFactory.eINSTANCE.createItemIdDefinition =>
+			[
 				id = itemId
-				value = IrFactory::eINSTANCE.createItemIdValueIterator => [
+				value = IrFactory::eINSTANCE.createItemIdValueIterator =>
+				[
 					iterator = iter
 					shift = 0
 				]
@@ -123,7 +131,11 @@ class ReplaceAffectations  extends IrTransformationStep
 		IrFactory::eINSTANCE.createVariable =>
 		[
 			name = "i" + depth
-			type = IrFactory.eINSTANCE.createBaseType => [ primitive = PrimitiveType::INT ]
+			type = IrFactory.eINSTANCE.createBaseType =>
+			[
+				primitive = PrimitiveType::INT
+				isStatic = true
+			]
 			const = false
 			constExpr = false
 			option = false
@@ -153,7 +165,8 @@ class ReplaceAffectations  extends IrTransformationStep
 		IrFactory::eINSTANCE.createIterator =>
 		[
 			index = id
-			container = IrFactory::eINSTANCE.createConnectivityCall => [
+			container = IrFactory::eINSTANCE.createConnectivityCall =>
+			[
 				connectivity = c
 				args += argsIds
 			]

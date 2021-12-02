@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -26,7 +26,7 @@ import fr.cea.nabla.ir.interpreter.NV4Bool
 import fr.cea.nabla.ir.interpreter.NV4Int
 import fr.cea.nabla.ir.interpreter.NV4Real
 
-class NablaValueExtensions 
+class NablaValueExtensions
 {
 	val gson = new Gson
 

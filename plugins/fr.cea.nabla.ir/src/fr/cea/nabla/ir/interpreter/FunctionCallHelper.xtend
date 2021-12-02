@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -38,7 +38,7 @@ class FunctionCallHelper
 					case 0: typeof(boolean)
 					case 1: typeof(boolean[])
 					case 2: typeof(boolean[][])
-					default: throw new RuntimeException("Dimension not implemented: " + dimension) 
+					default: throw new RuntimeException("Unexpected dimension: " + dimension) 
 				}
 			}
 			case INT:
@@ -48,7 +48,7 @@ class FunctionCallHelper
 					case 0: typeof(int)
 					case 1: typeof(int[])
 					case 2: typeof(int[][])
-					default: throw new RuntimeException("Dimension not implemented: " + dimension) 
+					default: throw new RuntimeException("Unexpected dimension: " + dimension) 
 				}
 			}
 			case REAL:
@@ -58,7 +58,7 @@ class FunctionCallHelper
 					case 0: typeof(double)
 					case 1: (provider instanceof LinearAlgebraExtensionProviderHelper ? provider.vectorClass : typeof(double[]))
 					case 2: (provider instanceof LinearAlgebraExtensionProviderHelper ? provider.matrixClass : typeof(double[][]))
-					default: throw new RuntimeException("Dimension not implemented: " + dimension) 
+					default: throw new RuntimeException("Unexpected dimension: " + dimension) 
 				}
 			}
 		}
@@ -99,7 +99,7 @@ class FunctionCallHelper
 			{
 				LinearAlgebraExtensionProviderHelper case provider.vectorClass == o.class: new NVVector(o, provider)
 				LinearAlgebraExtensionProviderHelper case provider.matrixClass == o.class: new NVMatrix(o, provider)
-				default: throw new RuntimeException('Not yet implemented')
+				default: throw new RuntimeException('Unexpected provider: ' + provider.class.name)
 			}
 		}
 	}

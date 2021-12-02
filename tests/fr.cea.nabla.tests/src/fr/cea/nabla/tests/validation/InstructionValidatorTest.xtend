@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -36,6 +36,44 @@ class InstructionValidatorTest
 	@Inject extension ValidationUtils
 	@Inject extension ValidationTestHelper
 	@Inject extension TestUtils
+
+	@Test
+	def void testDynamicGlobalVars() 
+	{
+		val rs = resourceSetProvider.get
+		parseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DPath), rs)
+		val moduleKo = parseHelper.parse(
+			'''
+			«testModule»
+			ℕ dim;
+			ℝ[dim] X{nodes};
+			''', rs)
+		Assert.assertNotNull(moduleKo)
+		moduleKo.assertError(NablaPackage.eINSTANCE.varGroupDeclaration,
+			InstructionValidator::DYNAMIC_GLOBAL_VAR,
+			InstructionValidator::getDynamicGlobalVarMsg)
+
+		val moduleKo2 = parseHelper.parse(
+			'''
+			«testModule»
+			ℕ dim;
+			ℝ[dim] tab;
+			''', rs)
+		Assert.assertNotNull(moduleKo2)
+		moduleKo.assertError(NablaPackage.eINSTANCE.varGroupDeclaration,
+			InstructionValidator::DYNAMIC_GLOBAL_VAR,
+			InstructionValidator::getDynamicGlobalVarMsg)
+
+		val moduleOk =  parseHelper.parse(
+			'''
+			«testModule»
+			let ℕ dim = 2;
+			ℝ[dim] X{nodes};
+			ℝ[dim] tab;
+			''', rs)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
 
 	@Test
 	def void testCheckLocalConnectivityVars() 
@@ -79,13 +117,15 @@ class InstructionValidatorTest
 		val moduleKo = parseHelper.parse(
 			'''
 			«testModule»
+			option ℕ dim = 2;
 			ℕ U{cells};
 			ℕ V{nodes};
 			ComputeU: ∀ j∈cells(), {
-					let ℝ e = 1.0;
-					U{j} = e * 4;
+				let ℝ e = 1.0;
+				U{j} = e * 4;
 			}
 			ComputeV: V = U;
+			SetDim: dim = 3;
 			''', rs)
 		Assert.assertNotNull(moduleKo)
 
@@ -98,10 +138,14 @@ class InstructionValidatorTest
 		moduleKo.assertError(NablaPackage.eINSTANCE.affectation,
 			InstructionValidator::AFFECTATION_ON_CONNECTIVITY_TYPE,
 			InstructionValidator.getAffectationOnConnectivityTypeMsg)
+		moduleKo.assertError(NablaPackage.eINSTANCE.affectation,
+			InstructionValidator::AFFECTATION_ON_OPTION,
+			InstructionValidator.getAffectationOnOptionMsg)
 
 		val moduleOk = parseHelper.parse(
 			'''
 			«testModule»
+			option ℕ dim = 2;
 			ℕ U{cells}; 
 			ℕ V{cells};
 			ComputeU: ∀ j∈cells(), {
@@ -225,58 +269,5 @@ class InstructionValidatorTest
 		moduleKo2.assertError(NablaPackage.eINSTANCE.optionDeclaration,
 			InstructionValidator::GLOBAL_VAR_VALUE,
 			InstructionValidator::getGlobalVarValueMsg)
-
-		val moduleKo3 = parseHelper.parse(
-			'''
-			«emptyTestModule»
-			let ℕ[3] coef = [2, 3, 4];
-			option ℕ c = coef[0];
-			''')
-		Assert.assertNotNull(moduleKo3)
-		moduleKo3.assertError(NablaPackage.eINSTANCE.optionDeclaration,
-			InstructionValidator::OPTION_DEFAULT_VALUE,
-			InstructionValidator::getOptionDefaultValueMsg)
-
-		val moduleOk = parseHelper.parse(
-			'''
-			«emptyTestModule»
-			option ℕ alpha = 1;
-			''')
-		Assert.assertNotNull(moduleOk)
-		moduleOk.assertNoErrors
-	}
-
-	@Test
-	def void testCheckExternFunctionCallInFunctionBody()
-	{
-		val moduleKo = parseHelper.parse(
-			'''
-			extension Test;
-			def f: → ℝ;
-			def g: → ℝ, () →
-			{
-				ℝ[4] n;
-				∀ i∈[0;4[, n[i] = 0.0;
-				return f();
-			}
-			''')
-		Assert.assertNotNull(moduleKo)
-		moduleKo.assertError(NablaPackage.eINSTANCE.functionCall,
-			InstructionValidator::EXTERN_FUNCTION_CALL_IN_FUNCTION_BODY,
-			InstructionValidator::getExternFunctionCallInFunctionBodyMsg())
-
-		val moduleOk = parseHelper.parse(
-			'''
-			extension Test;
-			def f: → ℝ;
-			def g: → ℝ, () →
-			{
-				ℝ[4] n;
-				∀ i∈[0;4[, n[i] = 0.0;
-				return 4.0;
-			}
-			''')
-		Assert.assertNotNull(moduleOk)
-		moduleOk.assertNoErrors
 	}
 }

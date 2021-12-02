@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -32,12 +32,12 @@ class ReductionCallExtensions
 	{
 		annotations += rc.toNabLabFileAnnotation
 		name = "reduction" + rc.number
-		originName = name
 		val d = rc.declaration
 		val vType = d.type.toIrBaseType
 		type = vType
 		const = false
 		constExpr = false
+		option = false
 
 		val seedExpression = d.model.seed.toIrExpression
 		if (vType.sizes.empty) // scalar type

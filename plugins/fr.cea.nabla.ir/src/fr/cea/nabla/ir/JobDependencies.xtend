@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -13,29 +13,62 @@ import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
 import fr.cea.nabla.ir.ir.IrPackage
+import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.JobCaller
 import fr.cea.nabla.ir.ir.Variable
+import org.eclipse.emf.ecore.EObject
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
+import static extension fr.cea.nabla.ir.JobCallerExtensions.*
 
 class JobDependencies
 {
 	static def void computeAndSetNextJobs(Job it)
 	{
-		outVars.forEach[x | nextJobs += x.nextJobs]
+		outVars.forEach[x | nextJobs += x.consumerJobs]
 	}
 
+	/**
+	 * Set in and out variables collection of each job.
+	 * In/out variables of time loop jobs (SetUp/TearDown/Execute) are set during IR building (NabLab -> IR) to avoid cycle.
+	 * For other jobs they are computed through ArgOrVarRef instances.
+	 * For ExecuteTimeLoop jobs, two groups of in variables have to be added:
+	 *   - variables used in the time loop condition
+	 *   - variables used in post processing (only for root loop)
+	 * For InitVariablesJob with no default value, there is no Affectation instruction,
+	 * consequently, outVars must be set with the target variable (variable initialized with the job).
+	 */
 	static def void computeAndSetInOutVars(Job it)
 	{
-		outVars += eAllContents.filter(Affectation).map[left.target].filter(Variable).filter[global].toSet
-		val allReferencedVars = eAllContents.filter(ArgOrVarRef).filter[x|x.eContainingFeature != IrPackage::eINSTANCE.affectation_Left].map[target]
-		inVars += allReferencedVars.filter(Variable).filter[global].toSet
+		switch it
+		{
+			ExecuteTimeLoopJob:
+			{
+				inVars += getInVars(whileCondition)
+				// main loop ?
+				if (caller.main)
+				{
+					val irRoot = IrUtils.getContainerOfType(it, IrRoot)
+					if (irRoot.postProcessing !== null)
+					{
+						inVars += irRoot.postProcessing.lastDumpVariable
+						inVars += irRoot.postProcessing.periodValue
+					}
+				}
+			}
+			case !timeLoopJob:
+			{
+				outVars += eAllContents.filter(Affectation).map[left.target].filter(Variable).filter[global].toSet
+				inVars += getInVars(it)
+			}
+		}
 	}
 
 	static def void computeAndSetNextJobsWithSameCaller(Job it)
 	{
 		for (j : nextJobs)
+		{
 			if (j.caller === caller)
 				nextJobsWithSameCaller += j
 			else
@@ -44,6 +77,7 @@ class JobDependencies
 				if (parent !== null)
 					nextJobsWithSameCaller += parent
 			}
+		}
 	}
 
 	private static def ExecuteTimeLoopJob getExecuteTimeLoopJobWithSameCaller(Job j, JobCaller parentCaller)
@@ -56,5 +90,11 @@ class JobDependencies
 		}
 		else
 			null
+	}
+
+	private static def getInVars(EObject it)
+	{
+		val allReferencedVars = eAllContents.filter(ArgOrVarRef).filter[x|x.eContainingFeature != IrPackage::eINSTANCE.affectation_Left].map[target]
+		allReferencedVars.filter(Variable).filter[global].toSet
 	}
 }

@@ -9,14 +9,14 @@
 #include <limits>
 #include <utility>
 #include <cmath>
-#include "nablalib/mesh/CartesianMesh2D.h"
-#include "nablalib/mesh/PvdFileWriter2D.h"
+#include <rapidjson/document.h>
 #include "nablalib/utils/Utils.h"
 #include "nablalib/utils/Timer.h"
 #include "nablalib/types/Types.h"
 #include "nablalib/utils/stl/Parallel.h"
+#include "CartesianMesh2D.h"
+#include "PvdFileWriter2D.h"
 
-using namespace nablalib::mesh;
 using namespace nablalib::utils;
 using namespace nablalib::types;
 using namespace nablalib::utils::stl;
@@ -33,6 +33,12 @@ double dot(RealArray1D<x> a, RealArray1D<x> b);
 template<size_t x>
 RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b);
 double sumR0(double a, double b);
+template<size_t x0>
+RealArray1D<x0> operator+(RealArray1D<x0> a, RealArray1D<x0> b);
+template<size_t x0>
+RealArray1D<x0> operator*(double a, RealArray1D<x0> b);
+template<size_t x0>
+RealArray1D<x0> operator-(RealArray1D<x0> a, RealArray1D<x0> b);
 }
 
 /******************** Module declaration ********************/
@@ -40,20 +46,10 @@ double sumR0(double a, double b);
 class HeatEquation
 {
 public:
-	struct Options
-	{
-		std::string outputPath;
-		int outputPeriod;
-		double stopTime;
-		int maxIterations;
-		double PI;
-		double alpha;
-
-		void jsonInit(const char* jsonContent);
-	};
-
-	HeatEquation(CartesianMesh2D& aMesh, Options& aOptions);
+	HeatEquation(CartesianMesh2D& aMesh);
 	~HeatEquation();
+
+	void jsonInit(const char* jsonContent);
 
 	void simulate();
 	void computeOutgoingFlux() noexcept;
@@ -75,19 +71,16 @@ private:
 	CartesianMesh2D& mesh;
 	size_t nbNodes, nbCells, nbFaces, maxNodesOfCell, maxNodesOfFace, maxNeighbourCells;
 
-	// User options
-	Options& options;
-	PvdFileWriter2D writer;
-
-	// Timers
-	Timer globalTimer;
-	Timer cpuTimer;
-	Timer ioTimer;
-
-public:
-	// Global variables
+	// Options and global variables
+	PvdFileWriter2D* writer;
+	std::string outputPath;
+	int outputPeriod;
 	int lastDump;
 	int n;
+	double stopTime;
+	int maxIterations;
+	double PI;
+	double alpha;
 	static constexpr double deltat = 0.001;
 	double t_n;
 	double t_nplus1;
@@ -100,6 +93,11 @@ public:
 	std::vector<double> f;
 	std::vector<double> outgoingFlux;
 	std::vector<double> surface;
+
+	// Timers
+	Timer globalTimer;
+	Timer cpuTimer;
+	Timer ioTimer;
 };
 
 #endif

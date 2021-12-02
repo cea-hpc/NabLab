@@ -2,14 +2,13 @@
 <?eclipse version="3.0"?>
 <!--
     Copyright (c) 2021 CEA
-    This program and the accompanying materials are made available under the 
+    This program and the accompanying materials are made available under the
     terms of the Eclipse Public License 2.0 which is available at
     http://www.eclipse.org/legal/epl-2.0.
-   
- * SPDX-License-Identifier: EPL-2.0
- * Contributors: see AUTHORS file
- -->
 
+    SPDX-License-Identifier: EPL-2.0
+    Contributors: see AUTHORS file
+ -->
 <plugin>
 	<extension
 		point="org.eclipse.ui.editors">
@@ -697,24 +696,24 @@
  <extension
        point="org.eclipse.ui.commands">
     <command
-          id="fr.cea.nabla.ui.NotifyViewsId"
-          name="Notify view">
+          id="fr.cea.nabla.ui.OpenZestJobGraph"
+          name="Zest Jobs Graph">
     </command>
     <command
-          id="fr.cea.nabla.ui.OpenSiriusJobsGraph"
+          id="fr.cea.nabla.ui.OpenSiriusJobGraph"
           name="Sirius Jobs Graph">
     </command>
  </extension>
  <extension
        point="org.eclipse.ui.bindings">
     <key
-          commandId="fr.cea.nabla.ui.NotifyViewsId"
+          commandId="fr.cea.nabla.ui.OpenZestJobGraph"
           contextId="org.eclipse.xtext.ui.XtextEditorScope"
           schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
           sequence="F1">
     </key>
     <key
-          commandId="fr.cea.nabla.ui.OpenSiriusJobsGraph"
+          commandId="fr.cea.nabla.ui.OpenSiriusJobGraph"
           contextId="org.eclipse.xtext.ui.XtextEditorScope"
           schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
           sequence="F2">
@@ -723,12 +722,12 @@
  <extension
        point="org.eclipse.ui.handlers">
     <handler
-          class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.views.NotifyViewsHandler"
-          commandId="fr.cea.nabla.ui.NotifyViewsId">
+          class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.handlers.OpenZestJobGraph"
+          commandId="fr.cea.nabla.ui.OpenZestJobGraph">
     </handler>
     <handler
-          class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.views.OpenSiriusJobsGraph"
-          commandId="fr.cea.nabla.ui.OpenSiriusJobsGraph">
+          class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:fr.cea.nabla.ui.handlers.OpenSiriusJobGraph"
+          commandId="fr.cea.nabla.ui.OpenSiriusJobGraph">
     </handler>
  </extension>
 

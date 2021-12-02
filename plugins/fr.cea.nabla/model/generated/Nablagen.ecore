@@ -91,6 +91,7 @@
     <eLiterals name="OpenMP" value="3" literal="OpenMP"/>
     <eLiterals name="Kokkos" value="4" literal="Kokkos"/>
     <eLiterals name="KokkosTeamThread" value="5" literal="KokkosTeamThread"/>
-    <eLiterals name="Dace" value="6" literal="Dace"/>
+    <eLiterals name="Arcane" value="6" literal="Arcane"/>
+    <eLiterals name="Dace" value="7" literal="Dace"/>
   </eClassifiers>
 </ecore:EPackage>

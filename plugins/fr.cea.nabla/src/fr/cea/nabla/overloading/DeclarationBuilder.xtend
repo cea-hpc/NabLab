@@ -1,6 +1,6 @@
 /*******************************************************************************
-- * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * Copyright (c) 2021 CEA
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -10,6 +10,7 @@
 package fr.cea.nabla.overloading
 
 import com.google.inject.Inject
+import fr.cea.nabla.BaseTypeSizeEvaluator
 import fr.cea.nabla.LinearAlgebraUtils
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.BaseType
@@ -17,6 +18,7 @@ import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionOrReduction
 import fr.cea.nabla.nabla.IntConstant
+import fr.cea.nabla.nabla.NablaFactory
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.typing.BaseTypeTypeProvider
@@ -32,6 +34,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil
 
 class DeclarationBuilder
 {
+	@Inject extension BaseTypeSizeEvaluator
 	@Inject extension LinearAlgebraUtils
 	@Inject extension BaseTypeTypeProvider
 
@@ -42,15 +45,11 @@ class DeclarationBuilder
 	{
 		var ReductionDeclaration declaration = null
 		val calleeInType = r.typeDeclaration.type.typeFor
-		if (calleeInType !== null && callerInType !== null && calleeInType.class == callerInType.class)
+		if (typesMatch(r, calleeInType, callerInType))
 		{
-			val match = sizesMatch(r, calleeInType.sizeExpressions, callerInType.sizeExpressions)
-			if (match)
-			{
-				val type = r.typeDeclaration.type.computeExpressionType
-				if (type instanceof NablaSimpleType)
-					declaration = new ReductionDeclaration(r, type)		
-			}
+			val type = r.typeDeclaration.type.computeExpressionType
+			if (type instanceof NablaSimpleType)
+				declaration = new ReductionDeclaration(r, type)
 		}
 		return declaration
 	}
@@ -61,9 +60,7 @@ class DeclarationBuilder
 		{
 			val calleeIemeType = f.typeDeclaration.inTypes.get(i).typeFor
 			val callerIemeType = callerInTypes.get(i)
-			if (calleeIemeType !== null && callerIemeType !== null && calleeIemeType.class != callerIemeType.class) 
-				return null
-			if (!sizesMatch(f, calleeIemeType.sizeExpressions, callerIemeType.sizeExpressions))
+			if (!typesMatch(f, calleeIemeType, callerIemeType))
 				return null
 		}
 
@@ -73,7 +70,7 @@ class DeclarationBuilder
 		return fd
 	}
 
-	private def  Iterable<Expression> getSizeExpressions(NablaType it)
+	private def Iterable<Expression> getSizeExpressions(NablaType it)
 	{
 		switch it
 		{
@@ -86,38 +83,64 @@ class DeclarationBuilder
 		}
 	}
 
-	private def boolean sizesMatch(FunctionOrReduction f, Iterable<Expression> expectedSizes, Iterable<Expression> actualSizes)
+	private def int[] getIntSizes(NablaType it)
 	{
-		for (i : 0..<expectedSizes.size)
+		switch it
 		{
-			val actualSize = actualSizes.get(i)
-			val expectedSize = expectedSizes.get(i)
+			NSTScalar: newIntArrayOfSize(0)
+			NSTArray1D: #[intSize]
+			NSTArray2D: #[intNbRows, intNbCols]
+			NLATVector: #[intSize]
+			NLATMatrix: #[intNbRows, intNbCols]
+			default: throw new RuntimeException("Unmanaged type for function/reduction: " + toString)
+		}
+	}
 
-			// ExpectedType represents the type of the dimension of the declaration.
+	private def boolean typesMatch(FunctionOrReduction f, NablaType calleeType, NablaType callerType)
+	{
+		if (calleeType === null || callerType === null) return false;
+		if (calleeType.class != callerType.class) return false
+
+		val calleeSizes = calleeType.sizeExpressions
+		val callerSizes = callerType.sizeExpressions
+		val callerIntSizes = callerType.intSizes
+		for (i : 0..<calleeSizes.size)
+		{
+			val callerSize = callerSizes.get(i)
+			val callerIntSize = callerIntSizes.get(i)
+			val calleeSize = calleeSizes.get(i)
+
+			// CalleeType represents the type of the dimension of the declaration.
 			// Validation ensures it is only IntConstant or ArgOrVarRef of a size variable
 			// declared in the function/reduction header
-			switch expectedSize
+			switch calleeSize
 			{
-				IntConstant: 
-					if (! (actualSize instanceof IntConstant && expectedSize.value == (actualSize as IntConstant).value)) 
+				IntConstant:
+					if (calleeSize.value != callerIntSize)
 						return false
 				ArgOrVarRef:
 				{
 					// The referenced variable must be contained by f.
-					if (expectedSize.target.eContainer !== f) return false
+					if (calleeSize.target.eContainer !== f) return false
 
 					// Consequently, it is a SimpleVar
-					val simpleVar = expectedSize.target as SimpleVar
+					val simpleVar = calleeSize.target as SimpleVar
 					val dimVarValue = sizeVarValues.get(simpleVar)
 					if (dimVarValue === null)
 					{
 						// The variable has not yet been encountered.
 						// Fix the value for the rest of the loop.
-						sizeVarValues.put(simpleVar, actualSize)
+						if (callerIntSize == NablaType.DYNAMIC_SIZE)
+							sizeVarValues.put(simpleVar, callerSize)
+						else
+							sizeVarValues.put(simpleVar, NablaFactory::eINSTANCE.createIntConstant => [value = callerIntSize])
 					}
 					else
 					{
-						if (!EcoreUtil.equals(dimVarValue, actualSize)) return false
+						val simplifiedActualSize = if (callerIntSize == NablaType.DYNAMIC_SIZE) callerSize
+						else NablaFactory::eINSTANCE.createIntConstant => [value = callerIntSize]
+
+						if (!EcoreUtil.equals(dimVarValue, simplifiedActualSize)) return false
 					}
 				} 
 				default: return false
@@ -135,17 +158,34 @@ class DeclarationBuilder
 			{
 				val laExtension = argType.linearAlgebraExtension
 				if (laExtension === null)
-					getNSTArray1DFor(argType.primitive, argType.sizes.get(0).replaceValuesAndCompact)
+				{
+					val arraySize = argType.sizes.get(0).replaceValuesAndCompact
+					val intArraySize = getIntSizeFor(arraySize)
+					getNSTArray1DFor(argType.primitive, arraySize, intArraySize)
+				}
 				else
-					new NLATVector(laExtension, argType.sizes.get(0).replaceValuesAndCompact)
+				{
+					val size = argType.sizes.get(0).replaceValuesAndCompact
+					new NLATVector(laExtension, size, getIntSizeFor(size))
+				}
 			}
 			case 2:
 			{
 				val laExtension = argType.linearAlgebraExtension
 				if (laExtension === null)
-					getNSTArray2DFor(argType.primitive, argType.sizes.get(0).replaceValuesAndCompact, argType.sizes.get(1).replaceValuesAndCompact)
+				{
+					val nbRows = argType.sizes.get(0).replaceValuesAndCompact
+					val nbCols = argType.sizes.get(1).replaceValuesAndCompact
+					val intNbRows = getIntSizeFor(nbRows)
+					val intNbCols = getIntSizeFor(nbCols)
+					getNSTArray2DFor(argType.primitive, nbRows, nbCols, intNbRows, intNbCols)
+				}
 				else
-					new NLATMatrix(laExtension, argType.sizes.get(0).replaceValuesAndCompact, argType.sizes.get(1).replaceValuesAndCompact)
+				{
+					val nbRows = argType.sizes.get(0).replaceValuesAndCompact
+					val nbCols = argType.sizes.get(1).replaceValuesAndCompact
+					new NLATMatrix(laExtension, nbRows, nbCols, getIntSizeFor(nbRows), getIntSizeFor(nbCols))
+				}
 			}
 			default: throw new RuntimeException("Unmanaged array sizes:" + argType.sizes.size)
 		}

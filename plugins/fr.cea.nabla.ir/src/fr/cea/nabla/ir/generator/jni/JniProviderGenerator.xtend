@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -12,8 +12,6 @@ package fr.cea.nabla.ir.generator.jni
 import fr.cea.nabla.ir.generator.CMakeUtils
 import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.generator.Utils
-import fr.cea.nabla.ir.generator.cpp.Backend
-import fr.cea.nabla.ir.generator.cpp.CMakeContentProvider
 import fr.cea.nabla.ir.generator.java.FunctionContentProvider
 import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import java.util.ArrayList
@@ -30,11 +28,11 @@ import static extension fr.cea.nabla.ir.generator.JniNameMangler.*
 class JniProviderGenerator
 {
 	static val userDir = System.getProperty("user.home")
-	val Backend cppBackend
+	val Jniable jniContentProvider
 
-	new(Backend cppBackend)
+	new(Jniable jniContentProvider)
 	{
-		this.cppBackend = cppBackend
+		this.jniContentProvider = jniContentProvider
 	}
 
 	def getGenerationContents(DefaultExtensionProvider jniProvider, DefaultExtensionProvider cppProvider, String wsPath)
@@ -55,7 +53,7 @@ class JniProviderGenerator
 
 	private def getJavaFacadeClassContent(DefaultExtensionProvider provider, String wsPath)
 	'''
-	«Utils.fileHeader»
+	/* «Utils::doNotEditWarning» */
 
 	/**
 	 * Design Pattern inspired from https://dhilst.github.io/2016/10/15/JNI-CPP.html
@@ -97,7 +95,7 @@ class JniProviderGenerator
 
 	def getJavaVectorClassContent(DefaultExtensionProvider provider)
 	'''
-	«Utils.fileHeader»
+	/* «Utils::doNotEditWarning» */
 
 	package «provider.packageName»;
 
@@ -147,7 +145,7 @@ class JniProviderGenerator
 
 	def getJavaMatrixClassContent(DefaultExtensionProvider provider)
 	'''
-	«Utils.fileHeader»
+	/* «Utils::doNotEditWarning» */
 
 	package «provider.packageName»;
 
@@ -207,7 +205,7 @@ class JniProviderGenerator
 	'''
 	«CMakeUtils::getFileHeader(true)»
 
-	«CMakeUtils.checkVariables(#[CMakeContentProvider.WS_PATH, 'JAVA_HOME'])»
+	«CMakeUtils.checkVariables(true, #['JAVA_HOME'])»
 
 	«CMakeUtils.setVariables(#[], #[cppProvider])»
 
@@ -246,7 +244,7 @@ class JniProviderGenerator
 	/** Single .cc file to get access to getVector/getMatrix functions */
 	private def getCppFacadeClassContent(DefaultExtensionProvider provider)
 	'''
-	«Utils.fileHeader»
+	/* «Utils::doNotEditWarning» */
 
 	#include "«provider.jniFileName».h"
 	#include "«provider.className».h"
@@ -300,7 +298,7 @@ class JniProviderGenerator
 	}
 	«FOR f : provider.functions»
 
-		«cppBackend.functionContentProvider.getJniDefinitionContent(f, provider)»
+		«jniContentProvider.getJniDefinitionContent(f, provider)»
 	«ENDFOR»
 
 	#ifdef __cplusplus

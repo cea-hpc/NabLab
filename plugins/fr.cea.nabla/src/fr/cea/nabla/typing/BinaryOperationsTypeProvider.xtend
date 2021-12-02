@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -9,15 +9,19 @@
  *******************************************************************************/
 package fr.cea.nabla.typing
 
+import com.google.inject.Inject
+import fr.cea.nabla.BaseTypeSizeEvaluator
 import org.eclipse.emf.ecore.util.EcoreUtil
 
-class BinaryOperationsTypeProvider 
+class BinaryOperationsTypeProvider
 {
+	@Inject extension BaseTypeSizeEvaluator
+
 	def dispatch NablaSimpleType getTypeFor(NablaSimpleType a, NablaSimpleType b, String op)
 	{
 		null
 	}	
-	
+
 	// BOOL: useful for type validator (unused by type provider)
 	def dispatch NablaSimpleType getTypeFor(NSTBoolScalar a, NSTBoolScalar b, String op)
 	{
@@ -58,7 +62,7 @@ class BinaryOperationsTypeProvider
 	{
 		getTypeFor(new NSTRealScalar, b, op)
 	}
-	
+
 	def dispatch NablaSimpleType getTypeFor(NSTIntScalar a, NSTIntArray2D b, String op)
 	{
 		switch op
@@ -103,7 +107,7 @@ class BinaryOperationsTypeProvider
 	{
 		switch op
 		{
-			case '+', case '*': new NSTRealArray1D(b.size)
+			case '+', case '*': new NSTRealArray1D(b.size, getIntSizeFor(b.size))
 			default: null
 		}
 	}
@@ -140,7 +144,7 @@ class BinaryOperationsTypeProvider
 	{
 		switch op
 		{
-			case '+', case '-', case '*', case '/': new NSTRealArray1D(a.size)
+			case '+', case '-', case '*', case '/': new NSTRealArray1D(a.size, getIntSizeFor(a.size))
 			default: null
 		}
 	}
@@ -214,11 +218,11 @@ class BinaryOperationsTypeProvider
 	{
 		switch op
 		{
-			case '+', case '-', case '*', case '/': new NSTRealArray2D(a.nbRows, a.nbCols)
+			case '+', case '-', case '*', case '/': new NSTRealArray2D(a.nbRows, a.nbCols, getIntSizeFor(a.nbRows), getIntSizeFor(a.nbCols))
 			default: null
 		}
 	}
-	
+
 	def dispatch NablaSimpleType getTypeFor(NSTIntArray2D a, NSTIntArray2D b, String op)
 	{
 		switch op
@@ -228,7 +232,7 @@ class BinaryOperationsTypeProvider
 			default: null
 		}
 	}
-	
+
 	// REAL ARRAYS 2D
 	def dispatch NablaSimpleType getTypeFor(NSTRealArray2D a, NSTIntScalar b, String op)
 	{

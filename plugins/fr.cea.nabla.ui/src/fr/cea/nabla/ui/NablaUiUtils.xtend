@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -11,6 +11,7 @@ package fr.cea.nabla.ui
 
 import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Variable
 import org.eclipse.core.resources.IFile
@@ -67,6 +68,11 @@ class NablaUiUtils
 
 	private static def String getDisplayName(Variable v)
 	{
-		IrUtils.getContainerOfType(v, IrModule).name + "::" + v.name
+		val module = IrUtils.getContainerOfType(v, IrModule)
+		val root = module.eContainer as IrRoot
+		if (root.modules.size > 1)
+			module.name + "::" + v.name
+		else
+			v.name
 	}
 }

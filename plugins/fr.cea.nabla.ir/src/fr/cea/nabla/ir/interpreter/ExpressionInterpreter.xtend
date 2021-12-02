@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
@@ -70,18 +70,13 @@ class ExpressionInterpreter
 		}
 	}
 
-	static def int[] interpreteDimensionExpressions(Iterable<Expression> dimensionExpressions, Context context)
+	static def int interpreteSize(Expression size, Context context)
 	{
-		val values = newIntArrayOfSize(dimensionExpressions.size)
-		for (i : 0..<dimensionExpressions.size)
-		{
-			val value = interprete(dimensionExpressions.get(i), context)
-			if (value instanceof NV0Int)
-				values.set(i, value.data)
-			else
-				throw new RuntimeException("Unsupported type for Dimension: " + value.class)
-		}
-		return values
+		val value = interprete(size, context)
+		if (value instanceof NV0Int)
+			return value.data
+		else
+			throw new RuntimeException("Unexpected type for dimension: " + value.class)
 	}
 
 	private static def NablaValue interpreteContractedIf(ContractedIf it, Context context)
@@ -120,7 +115,7 @@ class ExpressionInterpreter
 		} else if (eValue instanceof NV2Real && it.operator == '-') {
 			return computeUnaryMinus(eValue as NV2Real)
 		} else {
-			throw new RuntimeException('Wrong unary operator: ' + operator)
+			throw new RuntimeException('Unexpected unary operator: ' + operator)
 		}
 	}
 
@@ -184,7 +179,7 @@ class ExpressionInterpreter
 			case 0: expressionValue
 			case 1: buildArrayValue(sizes.get(0), expressionValue)
 			case 2: buildArrayValue(sizes.get(0), sizes.get(1), expressionValue)
-			default: throw new RuntimeException('Wrong path...')
+			default: throw new RuntimeException('Unexpected dimension: ' + sizes.size)
 		}
 	}
 
@@ -194,7 +189,7 @@ class ExpressionInterpreter
 		val expressionValues = values.map[x | interprete(x, context)]
 		val t = type as BaseType
 		val value = BaseTypeValueFactory.createValue(t, "O", context)
-		for (i : 0..<expressionValues.length)
+		for (i : 0..<expressionValues.size)
 			setValue(value, #[i], expressionValues.get(i))
 		return value
 	}
@@ -220,7 +215,7 @@ class ExpressionInterpreter
 		{
 			ExternFunction:
 			{
-				val provider = context.providers.get(f.provider)
+				val provider = context.providers.get(f.provider) as CallableExtensionProviderHelper
 				return provider.call(IrUtils.getContainerOfType(it, IrModule), f, argValues)
 			}
 			InternFunction:
@@ -232,7 +227,7 @@ class ExpressionInterpreter
 					val callerArg = args.get(iArg)
 					val calleeArg = f.inArgs.get(iArg)
 					val callerArgTypeSizes = getIntSizes(callerArg.type, context)
-					for (iSize : 0..<callerArgTypeSizes.length)
+					for (iSize : 0..<callerArgTypeSizes.size)
 					{
 						val callerArgTypeSize = callerArgTypeSizes.get(iSize)
 						val calleeArgTypeDimension = calleeArg.type.sizes.get(iSize)
@@ -257,10 +252,12 @@ class ExpressionInterpreter
 			else
 				context.getVariableValue(target)
 
-		// Switch to more efficient implementation (avoid costly toList calls)
-		val allIndices = newArrayList
-		iterators.forEach[x|allIndices.add(context.getIndexValue(x))]
-		allIndices.addAll(interpreteDimensionExpressions(indices, context))
+		val allIndices = newIntArrayOfSize(iterators.size + indices.size)
+		var i = 0
+		for (iterator : iterators)
+			allIndices.set(i++, context.getIndexValue(iterator))
+		for (index : indices)
+			allIndices.set(i++, interpreteSize(index, context))
 		getValue(value, allIndices)
 	}
 
@@ -333,7 +330,7 @@ class ExpressionInterpreter
 		{
 			BaseType: getSizes
 			LinearAlgebraType: getSizes
-			default: throw new RuntimeException("Unsuported argument")
+			default: throw new RuntimeException("Unexpected type: " + class.name)
 		}
 	}
 }

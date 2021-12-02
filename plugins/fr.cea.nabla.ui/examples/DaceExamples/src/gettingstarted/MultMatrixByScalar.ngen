@@ -11,4 +11,5 @@ MainModule MultMatrixByScalar multMatrixByScalar
 Dace
 {
 	outputPath = "/DaceExamples/src-gen-python/dace";
+	extension CartesianMesh2D providedBy CartesianMesh2DJava;
 }

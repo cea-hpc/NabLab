@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -12,14 +12,15 @@ package fr.cea.nabla.ir.generator.java
 import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.generator.ApplicationGenerator
 import fr.cea.nabla.ir.generator.GenerationContent
+import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityType
-import fr.cea.nabla.ir.ir.InternFunction
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.Variable
+import fr.cea.nabla.ir.transformers.ReplaceOperatorNames
 import java.util.ArrayList
 
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
@@ -27,10 +28,8 @@ import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
-import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.FunctionContentProvider.*
-import static extension fr.cea.nabla.ir.generator.java.JavaGeneratorUtils.*
 import static extension fr.cea.nabla.ir.generator.java.JobContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.JsonContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.TypeContentProvider.*
@@ -46,7 +45,10 @@ class JavaApplicationGenerator implements ApplicationGenerator
 
 	override getName() { 'Java' }
 
-	override getIrTransformationStep() { null }
+	override getIrTransformationSteps()
+	{
+		#[new ReplaceOperatorNames]
+	}
 
 	override getGenerationContents(IrRoot ir)
 	{
@@ -58,12 +60,12 @@ class JavaApplicationGenerator implements ApplicationGenerator
 
 	private def getFileContent(IrModule it)
 	'''
-		«fileHeader»
+		/* «Utils.doNotEditWarning» */
 
 		«val mainModule = irRoot.mainModule»
-		package «packageName»;
+		package «JavaGeneratorUtils.getPackageName(it)»;
 
-		«IF hasLevelDB»
+		«IF levelDB»
 		import static org.iq80.leveldb.impl.Iq80DBFactory.bytes;
 		import static org.iq80.leveldb.impl.Iq80DBFactory.factory;
 
@@ -80,65 +82,15 @@ class JavaApplicationGenerator implements ApplicationGenerator
 		import com.google.gson.JsonObject;
 		import com.google.gson.JsonElement;
 
-		import fr.cea.nabla.javalib.*;
+		«IF levelDB»import fr.cea.nabla.javalib.LevelDBUtils;«ENDIF»
 		import fr.cea.nabla.javalib.mesh.*;
 
 		public final class «className»
 		{
-			public final static class Options
-			{
-				«IF postProcessing !== null»
-				public String «IrUtils.OutputPathNameAndValue.key»;
-				«ENDIF»
-				«FOR v : options»
-				public «v.type.javaType» «v.name»;
-				«ENDFOR»
-				«FOR v : validExtensionProviders»
-				public «v.packageName».«v.className» «v.instanceName»;
-				«ENDFOR»
-				public String «IrUtils.NonRegressionNameAndValue.key»;
-
-				public void jsonInit(final String jsonContent)
-				{
-					final Gson gson = new Gson();
-					final JsonObject o = gson.fromJson(jsonContent, JsonObject.class);
-					«IF postProcessing !== null»
-					«val opName = IrUtils.OutputPathNameAndValue.key»
-					// «opName»
-					assert(o.has("«opName»"));
-					final JsonElement «opName.jsonName» = o.get("«opName»");
-					«opName» = «opName.jsonName».getAsJsonPrimitive().getAsString();
-					«ENDIF»
-					«FOR v : options»
-					«getJsonContent(v.name, v.type as BaseType, v.defaultValue)»
-					«ENDFOR»
-					«FOR v : validExtensionProviders»
-					«val vName = v.instanceName»
-					// «vName»
-					«vName» = new «v.packageName».«v.className»();
-					if (o.has("«vName»"))
-						«vName».jsonInit(o.get("«vName»").toString());
-					«ENDFOR»
-					«val nrName = IrUtils.NonRegressionNameAndValue.key»
-					«IF hasLevelDB»
-					// Non regression
-					if (o.has("«nrName»"))
-					{
-						final JsonElement «nrName.jsonName» = o.get("«nrName»");
-						«nrName» = «nrName.jsonName».getAsJsonPrimitive().getAsString();
-					}
-					«ENDIF»
-				}
-			}
-
 			// Mesh and mesh variables
-			private final «meshClassName» mesh;
+			private final «irRoot.mesh.className» mesh;
 			@SuppressWarnings("unused")
 			«FOR c : irRoot.mesh.connectivities.filter[multiple] BEFORE 'private final int ' SEPARATOR ', ' AFTER ';'»«c.nbElemsVar»«ENDFOR»
-
-			// User options
-			private final Options options;
-			«IF postProcessing !== null»private final PvdFileWriter2D writer;«ENDIF»
 
 			«IF irRoot.modules.size > 1»
 				«IF main»
@@ -152,58 +104,99 @@ class JavaApplicationGenerator implements ApplicationGenerator
 				«ENDIF»
 
 			«ENDIF»
-			// Global variables
-			«FOR v : variables.filter[!option]»
-			protected «IF v.const»final «ENDIF»«v.type.javaType» «v.name»;
+			// Options and global variables
+			«IF postProcessing !== null»
+				private PvdFileWriter2D writer;
+				private String «IrUtils.OutputPathNameAndValue.key»;
+			«ENDIF»
+			«FOR v : externalProviders»
+				private «v.packageName».«v.className» «v.instanceName»;
+			«ENDFOR»
+			«IF levelDB»
+				private String «IrUtils.NonRegressionNameAndValue.key»;
+			«ENDIF»
+			«FOR v : variables»
+				«IF v.constExpr»
+					static final «v.type.javaType» «v.name» = «v.defaultValue.content»;
+				«ELSE»
+					««« Must not be declared final even it the const attribute is true
+					««« because it will be initialized in the jsonInit function (not in cstr)
+					«v.type.javaType» «v.name»;
+				«ENDIF»
 			«ENDFOR»
 
-			public «className»(«meshClassName» aMesh, Options aOptions)
+			public «className»(«irRoot.mesh.className» aMesh)
 			{
 				// Mesh and mesh variables initialization
 				mesh = aMesh;
 				«FOR c : irRoot.mesh.connectivities.filter[multiple]»
 					«c.nbElemsVar» = «c.connectivityAccessor»;
 				«ENDFOR»
+			}
 
-				// User options
-				options = aOptions;
-				«IF postProcessing !== null»writer = new PvdFileWriter2D("«irRoot.name»", options.«IrUtils.OutputPathNameAndValue.key»);«ENDIF»
-
-				// Initialize variables with default values
-				«FOR v : variablesWithDefaultValue»
-					«v.name» = «v.defaultValue.content»;
-				«ENDFOR»
-
-				// Allocate arrays
-				«FOR v : variables.filter[!option && defaultValue === null && !type.scalar]»
+			public void jsonInit(final String jsonContent)
+			{
+				final Gson gson = new Gson();
+				final JsonObject options = gson.fromJson(jsonContent, JsonObject.class);
+				«IF postProcessing !== null»
+					«val opName = IrUtils.OutputPathNameAndValue.key»
+					assert(options.has("«opName»"));
+					final JsonElement «opName.jsonName» = options.get("«opName»");
+					«opName» = «opName.jsonName».getAsJsonPrimitive().getAsString();
+					writer = new PvdFileWriter2D("«irRoot.name»", «opName»);
+				«ENDIF»
+				«FOR v : variables.filter[!constExpr]»
+					«IF !v.type.scalar»
 						«v.name»«getJavaAllocation(v.type, v.name)»;
+					«ENDIF»
+					«IF v.option»
+						«getJsonContent(v.name, v.type as BaseType, v.defaultValue)»
+					«ELSEIF v.defaultValue !== null»
+						«v.name» = «getContent(v.defaultValue)»;
+					«ENDIF»
 				«ENDFOR»
+				«FOR v : externalProviders»
+					«val vName = v.instanceName»
+					// «vName»
+					«vName» = new «v.packageName».«v.className»();
+					if (options.has("«vName»"))
+						«vName».jsonInit(options.get("«vName»").toString());
+				«ENDFOR»
+				«val nrName = IrUtils.NonRegressionNameAndValue.key»
+				«IF levelDB»
+					// Non regression
+					if (options.has("«nrName»"))
+					{
+						final JsonElement «nrName.jsonName» = options.get("«nrName»");
+						«nrName» = «nrName.jsonName».getAsJsonPrimitive().getAsString();
+					}
+				«ENDIF»
 				«IF main»
 
-				// Copy node coordinates
-				double[][] gNodes = mesh.getGeometry().getNodes();
-				IntStream.range(0, nbNodes).parallel().forEach(rNodes ->
-				{
-					«irRoot.initNodeCoordVariable.name»[rNodes][0] = gNodes[rNodes][0];
-					«irRoot.initNodeCoordVariable.name»[rNodes][1] = gNodes[rNodes][1];
-				});
+					// Copy node coordinates
+					double[][] gNodes = mesh.getGeometry().getNodes();
+					IntStream.range(0, nbNodes).parallel().forEach(rNodes ->
+					{
+						«irRoot.initNodeCoordVariable.name»[rNodes][0] = gNodes[rNodes][0];
+						«irRoot.initNodeCoordVariable.name»[rNodes][1] = gNodes[rNodes][1];
+					});
 				«ENDIF»
 			}
 			«FOR j : jobs»
 
 				«j.content»
 			«ENDFOR»
-			«FOR f : functions.filter(InternFunction)»
+			«FOR f : functions»
 
 				«f.content»
 			«ENDFOR»
 
 			«IF main»
-			public void «irRoot.main.codeName»()
+			public void «Utils.getCodeName(irRoot.main)»()
 			{
 				System.out.println("Start execution of «name»");
 				«FOR j : irRoot.main.calls»
-					«j.callName»(); // @«j.at»
+					«Utils.getCallName(j)»(); // @«j.at»
 				«ENDFOR»
 				System.out.println("End of execution of «name»");
 			}
@@ -218,7 +211,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 
 					// Mesh instanciation
 					assert(o.has("mesh"));
-					«meshClassName» mesh = new «meshClassName»();
+					«irRoot.mesh.className» mesh = new «irRoot.mesh.className»();
 					mesh.jsonInit(o.get("mesh").toString());
 
 					// Module instanciation(s)
@@ -228,13 +221,13 @@ class JavaApplicationGenerator implements ApplicationGenerator
 
 					// Start simulation
 					«name».simulate();
-					«IF hasLevelDB»
+					«IF levelDB»
 
 					«val dbName = irRoot.name + "DB"»
 					// Non regression testing
-					if («name»Options.«nrName» != null && «name»Options.«nrName».equals("«IrUtils.NonRegressionValues.CreateReference.toString»"))
+					if («name».«nrName» != null && «name».«nrName».equals("«IrUtils.NonRegressionValues.CreateReference.toString»"))
 						«name».createDB("«dbName».ref");
-					if («name»Options.«nrName» != null && «name»Options.«nrName».equals("«IrUtils.NonRegressionValues.CompareToReference.toString»"))
+					if («name».«nrName» != null && «name».«nrName».equals("«IrUtils.NonRegressionValues.CompareToReference.toString»"))
 					{
 						«name».createDB("«dbName».current");
 						boolean ok = LevelDBUtils.compareDB("«dbName».current", "«dbName».ref");
@@ -293,7 +286,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 				}
 			}
 			«ENDIF»
-			«IF hasLevelDB»
+			«IF levelDB»
 
 			private void createDB(String db_name) throws IOException
 			{
@@ -310,7 +303,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 				try
 				{
 					«FOR v : irRoot.variables.filter[!option]»
-					batch.put(bytes("«getDbKey(v)»"), LevelDBUtils.serialize(«getDbValue(it, v, '.')»));
+					batch.put(bytes("«Utils.getDbKey(v)»"), LevelDBUtils.serialize(«Utils.getDbValue(it, v, '.')»));
 					«ENDFOR»
 
 					db.write(batch);
@@ -336,9 +329,8 @@ class JavaApplicationGenerator implements ApplicationGenerator
 
 	private def getInstanciation(IrModule it)
 	'''
-		«className».Options «name»Options = new «className».Options();
-		if (o.has("«name»")) «name»Options.jsonInit(o.get("«name»").toString());
-		«className» «name» = new «className»(mesh, «name»Options);
+		«className» «name» = new «className»(mesh);
+		if (o.has("«name»")) «name».jsonInit(o.get("«name»").toString());
 		«IF !main»«name».setMainModule(«irRoot.mainModule.name»);«ENDIF»
 	'''
 
@@ -348,6 +340,11 @@ class JavaApplicationGenerator implements ApplicationGenerator
 			'''mesh.getNb«c.name.toFirstUpper»()'''
 		else
 			'''CartesianMesh2D.MaxNb«c.name.toFirstUpper»'''
+	}
+
+	private def isLevelDB(IrModule it)
+	{
+		main && hasLevelDB
 	}
 
 	private def getWriteCallContent(Variable v)

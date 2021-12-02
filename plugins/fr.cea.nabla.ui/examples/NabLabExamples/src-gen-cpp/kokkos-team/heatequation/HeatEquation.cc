@@ -11,21 +11,18 @@
 
 namespace heatequationfreefuncs
 {
-KOKKOS_INLINE_FUNCTION
 double det(RealArray1D<2> a, RealArray1D<2> b)
 {
 	return (a[0] * b[1] - a[1] * b[0]);
 }
 
 template<size_t x>
-KOKKOS_INLINE_FUNCTION
 double norm(RealArray1D<x> a)
 {
 	return std::sqrt(heatequationfreefuncs::dot(a, a));
 }
 
 template<size_t x>
-KOKKOS_INLINE_FUNCTION
 double dot(RealArray1D<x> a, RealArray1D<x> b)
 {
 	double result(0.0);
@@ -37,80 +34,53 @@ double dot(RealArray1D<x> a, RealArray1D<x> b)
 }
 
 template<size_t x>
-KOKKOS_INLINE_FUNCTION
 RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b)
 {
-	return a + b;
+	return heatequationfreefuncs::operator+(a, b);
 }
 
-KOKKOS_INLINE_FUNCTION
 double sumR0(double a, double b)
 {
 	return a + b;
 }
+
+template<size_t x0>
+RealArray1D<x0> operator+(RealArray1D<x0> a, RealArray1D<x0> b)
+{
+	RealArray1D<x0> result;
+	for (size_t ix0=0; ix0<x0; ix0++)
+	{
+		result[ix0] = a[ix0] + b[ix0];
+	}
+	return result;
 }
 
-/******************** Options definition ********************/
-
-void
-HeatEquation::Options::jsonInit(const char* jsonContent)
+template<size_t x0>
+RealArray1D<x0> operator*(double a, RealArray1D<x0> b)
 {
-	rapidjson::Document document;
-	assert(!document.Parse(jsonContent).HasParseError());
-	assert(document.IsObject());
-	const rapidjson::Value::Object& o = document.GetObject();
+	RealArray1D<x0> result;
+	for (size_t ix0=0; ix0<x0; ix0++)
+	{
+		result[ix0] = a * b[ix0];
+	}
+	return result;
+}
 
-	// outputPath
-	assert(o.HasMember("outputPath"));
-	const rapidjson::Value& valueof_outputPath = o["outputPath"];
-	assert(valueof_outputPath.IsString());
-	outputPath = valueof_outputPath.GetString();
-	// outputPeriod
-	assert(o.HasMember("outputPeriod"));
-	const rapidjson::Value& valueof_outputPeriod = o["outputPeriod"];
-	assert(valueof_outputPeriod.IsInt());
-	outputPeriod = valueof_outputPeriod.GetInt();
-	// stopTime
-	if (o.HasMember("stopTime"))
+template<size_t x0>
+RealArray1D<x0> operator-(RealArray1D<x0> a, RealArray1D<x0> b)
+{
+	RealArray1D<x0> result;
+	for (size_t ix0=0; ix0<x0; ix0++)
 	{
-		const rapidjson::Value& valueof_stopTime = o["stopTime"];
-		assert(valueof_stopTime.IsDouble());
-		stopTime = valueof_stopTime.GetDouble();
+		result[ix0] = a[ix0] - b[ix0];
 	}
-	else
-		stopTime = 0.1;
-	// maxIterations
-	if (o.HasMember("maxIterations"))
-	{
-		const rapidjson::Value& valueof_maxIterations = o["maxIterations"];
-		assert(valueof_maxIterations.IsInt());
-		maxIterations = valueof_maxIterations.GetInt();
-	}
-	else
-		maxIterations = 500;
-	// PI
-	if (o.HasMember("PI"))
-	{
-		const rapidjson::Value& valueof_PI = o["PI"];
-		assert(valueof_PI.IsDouble());
-		PI = valueof_PI.GetDouble();
-	}
-	else
-		PI = 3.1415926;
-	// alpha
-	if (o.HasMember("alpha"))
-	{
-		const rapidjson::Value& valueof_alpha = o["alpha"];
-		assert(valueof_alpha.IsDouble());
-		alpha = valueof_alpha.GetDouble();
-	}
-	else
-		alpha = 1.0;
+	return result;
+}
 }
 
 /******************** Module definition ********************/
 
-HeatEquation::HeatEquation(CartesianMesh2D& aMesh, Options& aOptions)
+HeatEquation::HeatEquation(CartesianMesh2D& aMesh)
 : mesh(aMesh)
 , nbNodes(mesh.getNbNodes())
 , nbCells(mesh.getNbCells())
@@ -118,9 +88,6 @@ HeatEquation::HeatEquation(CartesianMesh2D& aMesh, Options& aOptions)
 , maxNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
 , maxNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
 , maxNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
-, options(aOptions)
-, writer("HeatEquation", options.outputPath)
-, lastDump(numeric_limits<int>::min())
 , X("X", nbNodes)
 , center("center", nbCells)
 , u_n("u_n", nbCells)
@@ -130,6 +97,77 @@ HeatEquation::HeatEquation(CartesianMesh2D& aMesh, Options& aOptions)
 , outgoingFlux("outgoingFlux", nbCells)
 , surface("surface", nbFaces)
 {
+}
+
+HeatEquation::~HeatEquation()
+{
+}
+
+void
+HeatEquation::jsonInit(const char* jsonContent)
+{
+	rapidjson::Document document;
+	assert(!document.Parse(jsonContent).HasParseError());
+	assert(document.IsObject());
+	const rapidjson::Value::Object& options = document.GetObject();
+
+	// outputPath
+	assert(options.HasMember("outputPath"));
+	const rapidjson::Value& valueof_outputPath = options["outputPath"];
+	assert(valueof_outputPath.IsString());
+	outputPath = valueof_outputPath.GetString();
+	writer = new PvdFileWriter2D("HeatEquation", outputPath);
+	// outputPeriod
+	assert(options.HasMember("outputPeriod"));
+	const rapidjson::Value& valueof_outputPeriod = options["outputPeriod"];
+	assert(valueof_outputPeriod.IsInt());
+	outputPeriod = valueof_outputPeriod.GetInt();
+	lastDump = numeric_limits<int>::min();
+	// stopTime
+	if (options.HasMember("stopTime"))
+	{
+		const rapidjson::Value& valueof_stopTime = options["stopTime"];
+		assert(valueof_stopTime.IsDouble());
+		stopTime = valueof_stopTime.GetDouble();
+	}
+	else
+	{
+		stopTime = 0.1;
+	}
+	// maxIterations
+	if (options.HasMember("maxIterations"))
+	{
+		const rapidjson::Value& valueof_maxIterations = options["maxIterations"];
+		assert(valueof_maxIterations.IsInt());
+		maxIterations = valueof_maxIterations.GetInt();
+	}
+	else
+	{
+		maxIterations = 500;
+	}
+	// PI
+	if (options.HasMember("PI"))
+	{
+		const rapidjson::Value& valueof_PI = options["PI"];
+		assert(valueof_PI.IsDouble());
+		PI = valueof_PI.GetDouble();
+	}
+	else
+	{
+		PI = 3.1415926;
+	}
+	// alpha
+	if (options.HasMember("alpha"))
+	{
+		const rapidjson::Value& valueof_alpha = options["alpha"];
+		assert(valueof_alpha.IsDouble());
+		alpha = valueof_alpha.GetDouble();
+	}
+	else
+	{
+		alpha = 1.0;
+	}
+
 	// Copy node coordinates
 	const auto& gNodes = mesh.getGeometry()->getNodes();
 	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
@@ -139,9 +177,6 @@ HeatEquation::HeatEquation(CartesianMesh2D& aMesh, Options& aOptions)
 	}
 }
 
-HeatEquation::~HeatEquation()
-{
-}
 
 const std::pair<size_t, size_t> HeatEquation::computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept
 {
@@ -192,7 +227,7 @@ void HeatEquation::computeOutgoingFlux(const member_type& teamMember) noexcept
 					const size_t j2Cells(j2Id);
 					const Id cfId(mesh.getCommonFace(j1Id, j2Id));
 					const size_t cfFaces(cfId);
-					double reduction1((u_n(j2Cells) - u_n(j1Cells)) / heatequationfreefuncs::norm(center(j2Cells) - center(j1Cells)) * surface(cfFaces));
+					double reduction1((u_n(j2Cells) - u_n(j1Cells)) / heatequationfreefuncs::norm(heatequationfreefuncs::operator-(center(j2Cells), center(j1Cells))) * surface(cfFaces));
 					reduction0 = heatequationfreefuncs::sumR0(reduction0, reduction1);
 				}
 			}
@@ -227,7 +262,7 @@ void HeatEquation::computeSurface(const member_type& teamMember) noexcept
 					const Id rPlus1Id(nodesOfFaceF[(rNodesOfFaceF+1+maxNodesOfFace)%maxNodesOfFace]);
 					const size_t rNodes(rId);
 					const size_t rPlus1Nodes(rPlus1Id);
-					reduction0 = heatequationfreefuncs::sumR0(reduction0, heatequationfreefuncs::norm(X(rNodes) - X(rPlus1Nodes)));
+					reduction0 = heatequationfreefuncs::sumR0(reduction0, heatequationfreefuncs::norm(heatequationfreefuncs::operator-(X(rNodes), X(rPlus1Nodes))));
 				}
 			}
 			surface(fFaces) = 0.5 * reduction0;
@@ -306,7 +341,7 @@ void HeatEquation::iniCenter(const member_type& teamMember) noexcept
 					reduction0 = heatequationfreefuncs::sumR1(reduction0, X(rNodes));
 				}
 			}
-			center(jCells) = 0.25 * reduction0;
+			center(jCells) = heatequationfreefuncs::operator*(0.25, reduction0);
 		});
 	}
 }
@@ -376,7 +411,7 @@ void HeatEquation::iniUn(const member_type& teamMember) noexcept
 		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& jCellsTeam)
 		{
 			int jCells(jCellsTeam + teamWork.first);
-			u_n(jCells) = std::cos(2 * options.PI * options.alpha * center(jCells)[0]);
+			u_n(jCells) = std::cos(2 * PI * alpha * center(jCells)[0]);
 		});
 	}
 }
@@ -393,7 +428,7 @@ void HeatEquation::setUpTimeLoopN() noexcept
 
 /**
  * Job executeTimeLoopN called @3.0 in simulate method.
- * In variables: t_n, u_n
+ * In variables: lastDump, maxIterations, n, outputPeriod, stopTime, t_n, t_nplus1, u_n
  * Out variables: t_nplus1, u_nplus1
  */
 void HeatEquation::executeTimeLoopN() noexcept
@@ -409,7 +444,7 @@ void HeatEquation::executeTimeLoopN() noexcept
 		globalTimer.start();
 		cpuTimer.start();
 		n++;
-		if (!writer.isDisabled() && n >= lastDump + options.outputPeriod)
+		if (writer != NULL && !writer->isDisabled() && n >= lastDump + outputPeriod)
 			dumpVariables(n);
 		if (n!=1)
 			std::cout << "[" << __CYAN__ << __BOLD__ << setw(3) << n << __RESET__ "] t = " << __BOLD__
@@ -431,7 +466,7 @@ void HeatEquation::executeTimeLoopN() noexcept
 		
 	
 		// Evaluate loop condition with variables at time n
-		continueLoop = (t_nplus1 < options.stopTime && n + 1 < options.maxIterations);
+		continueLoop = (t_nplus1 < stopTime && n + 1 < maxIterations);
 	
 		t_n = t_nplus1;
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& i1Cells)
@@ -443,28 +478,28 @@ void HeatEquation::executeTimeLoopN() noexcept
 		globalTimer.stop();
 	
 		// Timers display
-		if (!writer.isDisabled())
+		if (writer != NULL && !writer->isDisabled())
 			std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __BLUE__ << ioTimer.print(true) << __RESET__ "} ";
 		else
 			std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __RED__ << "none" << __RESET__ << "} ";
 		
 		// Progress
-		std::cout << progress_bar(n, options.maxIterations, t_n, options.stopTime, 25);
+		std::cout << progress_bar(n, maxIterations, t_n, stopTime, 25);
 		std::cout << __BOLD__ << __CYAN__ << Timer::print(
-			eta(n, options.maxIterations, t_n, options.stopTime, deltat, globalTimer), true)
+			eta(n, maxIterations, t_n, stopTime, deltat, globalTimer), true)
 			<< __RESET__ << "\r";
 		std::cout.flush();
 	
 		cpuTimer.reset();
 		ioTimer.reset();
 	} while (continueLoop);
-	if (!writer.isDisabled())
+	if (writer != NULL && !writer->isDisabled())
 		dumpVariables(n+1, false);
 }
 
 void HeatEquation::dumpVariables(int iteration, bool useTimer)
 {
-	if (!writer.isDisabled())
+	if (writer != NULL && !writer->isDisabled())
 	{
 		if (useTimer)
 		{
@@ -472,16 +507,16 @@ void HeatEquation::dumpVariables(int iteration, bool useTimer)
 			ioTimer.start();
 		}
 		auto quads = mesh.getGeometry()->getQuads();
-		writer.startVtpFile(iteration, t_n, nbNodes, X.data(), nbCells, quads.data());
-		writer.openNodeData();
-		writer.closeNodeData();
-		writer.openCellData();
-		writer.openCellArray("Temperature", 0);
+		writer->startVtpFile(iteration, t_n, nbNodes, X.data(), nbCells, quads.data());
+		writer->openNodeData();
+		writer->closeNodeData();
+		writer->openCellData();
+		writer->openCellArray("Temperature", 0);
 		for (size_t i=0 ; i<nbCells ; ++i)
-			writer.write(u_n(i));
-		writer.closeCellArray();
-		writer.closeCellData();
-		writer.closeVtpFile();
+			writer->write(u_n(i));
+		writer->closeCellArray();
+		writer->closeCellData();
+		writer->closeVtpFile();
 		lastDump = n;
 		if (useTimer)
 		{
@@ -508,8 +543,8 @@ void HeatEquation::simulate()
 	
 	// std::cout << "[" << __GREEN__ << "KOKKOS" << __RESET__ << "]    " << __BOLD__ << (is_same<MyLayout,Kokkos::LayoutLeft>::value?"Left":"Right")" << __RESET__ << " layout" << std::endl;
 	
-	if (!writer.isDisabled())
-		std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    VTK files stored in " << __BOLD__ << writer.outputDirectory() << __RESET__ << " directory" << std::endl;
+	if (writer != NULL && !writer->isDisabled())
+		std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    VTK files stored in " << __BOLD__ << writer->outputDirectory() << __RESET__ << " directory" << std::endl;
 	else
 		std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    " << __BOLD__ << "Disabled" << __RESET__ << std::endl;
 
@@ -580,15 +615,14 @@ int main(int argc, char* argv[])
 	mesh.jsonInit(strbuf.GetString());
 	
 	// Module instanciation(s)
-	HeatEquation::Options heatEquationOptions;
+	HeatEquation* heatEquation = new HeatEquation(mesh);
 	if (d.HasMember("heatEquation"))
 	{
 		rapidjson::StringBuffer strbuf;
 		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
 		d["heatEquation"].Accept(writer);
-		heatEquationOptions.jsonInit(strbuf.GetString());
+		heatEquation->jsonInit(strbuf.GetString());
 	}
-	HeatEquation* heatEquation = new HeatEquation(mesh, heatEquationOptions);
 	
 	// Start simulation
 	// Simulator must be a pointer when a finalize is needed at the end (Kokkos, omp...)

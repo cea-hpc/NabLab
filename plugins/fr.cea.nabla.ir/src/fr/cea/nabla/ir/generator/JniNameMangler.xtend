@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -64,7 +64,7 @@ class JniNameMangler
 			}
 			LinearAlgebraType case sizes.size == 1: 'J' + provider.jniFileName + '_Vector2'
 			LinearAlgebraType case sizes.size == 2: 'J' + provider.jniFileName + '_Matrix2'
-			default: throw new RuntimeException("Ooops. Can not be there, normally...")
+			default: throw new RuntimeException("Unexpected type: " + class.name)
 		}
 	}
 }

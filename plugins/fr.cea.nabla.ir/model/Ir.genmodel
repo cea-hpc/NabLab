@@ -49,7 +49,6 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//IrRoot/timeStepVariable"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrRoot/postProcessing"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrRoot/providers"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrRoot/mesh"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//IrRoot/timeIterators"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//IrModule">
@@ -101,11 +100,13 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Variable/const"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Variable/constExpr"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Variable/option"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//Variable/previousJobs"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//Variable/nextJobs"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Variable/originName"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//Variable/timeIterator"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Variable/timeIteratorIndex"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//Variable/producerJobs"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//Variable/consumerJobs"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//TimeVariable">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//TimeVariable/originName"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//TimeVariable/timeIterator"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//TimeVariable/timeIteratorIndex"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//Function">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Function/name"/>
@@ -115,6 +116,7 @@
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//InternFunction">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//InternFunction/body"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//InternFunction/constExpr"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//ExternFunction">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//ExternFunction/provider"/>
@@ -271,6 +273,8 @@
     <genClasses ecoreClass="Ir.ecore#//BaseType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//BaseType/primitive"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//BaseType/sizes"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//BaseType/intSizes"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//BaseType/isStatic"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//ConnectivityType">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//ConnectivityType/connectivities"/>
@@ -279,6 +283,8 @@
     <genClasses ecoreClass="Ir.ecore#//LinearAlgebraType">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//LinearAlgebraType/sizes"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//LinearAlgebraType/provider"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//LinearAlgebraType/intSizes"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//LinearAlgebraType/isStatic"/>
     </genClasses>
     <genClasses image="false" ecoreClass="Ir.ecore#//Container"/>
     <genClasses ecoreClass="Ir.ecore#//ConnectivityCall">

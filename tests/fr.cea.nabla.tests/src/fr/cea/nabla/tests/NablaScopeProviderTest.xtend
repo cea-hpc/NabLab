@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -284,13 +284,13 @@ class NablaScopeProviderTest
 		Assert.assertNotNull(nRefInCondOfK)
 		nRefInCondOfK.assertScope(eref, "δt, t, a, b1, b2, X, c1, c2, n, k")
 
-		val aDeclaration = module.getVariableByName("a").eContainer as SimpleVarDeclaration
+		val aDeclaration = module.getVarByName("a").eContainer as SimpleVarDeclaration
 		aDeclaration.assertScope(eref, "δt, t")
 
-		val b1Declaration = module.getVariableByName("b1").eContainer as SimpleVarDeclaration
+		val b1Declaration = module.getVarByName("b1").eContainer as SimpleVarDeclaration
 		b1Declaration.assertScope(eref, "δt, t, a")
 
-		val b2Declaration = module.getVariableByName("b2").eContainer as SimpleVarDeclaration
+		val b2Declaration = module.getVarByName("b2").eContainer as SimpleVarDeclaration
 		b2Declaration.assertScope(eref, "δt, t, a, b1")
 		
 		val j1 = module.getJobByName("j1")
@@ -339,7 +339,6 @@ class NablaScopeProviderTest
 		val model =
 		'''
 		«emptyTestModule»
-		def inverse: ℝ[2,2] → ℝ[2,2];
 		def f: x,y | ℝ[x] × ℝ[y] → ℝ[x+y], (a, b) →
 		{
 			let ℝ c = 2.0;
@@ -362,10 +361,6 @@ class NablaScopeProviderTest
 		val module = parseHelper.parse(model)
 		Assert.assertNotNull(module)
 		val eref = NablaPackage::eINSTANCE.argOrVarRef_Target
-
-		val inverse = module.getFunctionByName("inverse")
-		Assert.assertNotNull(inverse)
-		inverse.assertScope(eref, "")
 
 		val f = module.getFunctionByName("f")
 		Assert.assertNotNull(f)
@@ -396,11 +391,11 @@ class NablaScopeProviderTest
 		«testModule»
 		ℝ[2] X{nodes};
 		ℝ c1 {cells};
-		
+
 		j1: ∀ j∈cells(), {
 			c1{j} = 2.0;
 		}
-		
+
 		j2: {
 			ℝ[4] n;
 			ℝ[4, 2] m;
@@ -453,7 +448,6 @@ class NablaScopeProviderTest
 		val model =
 		'''
 		«emptyTestModule»
-		def inverse: ℝ[2,2] → ℝ[2,2];
 		def f: x,y | ℝ[x] × ℝ[y] → ℝ[x+y], (a, b) →
 		{
 			ℝ[x,y] c;
@@ -475,10 +469,6 @@ class NablaScopeProviderTest
 		val module = parseHelper.parse(model)
 		Assert.assertNotNull(module)
 		val eref = NablaPackage::eINSTANCE.argOrVarRef_Target
-
-		val inverse = module.getFunctionByName("inverse")
-		Assert.assertNotNull(inverse)
-		inverse.assertScope(eref, "")
 
 		val f = module.getFunctionByName("f")
 		Assert.assertNotNull(f)

@@ -42,9 +42,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="postProcessing" eType="#//PostProcessing"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="providers" upperBound="-1"
-        eType="#//DefaultExtensionProvider" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="mesh" lowerBound="1" eType="#//MeshExtensionProvider"
-        containment="true"/>
+        eType="#//ExtensionProvider" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="timeIterators" upperBound="-1"
         eType="#//TimeIterator" containment="true"/>
   </eClassifiers>
@@ -69,7 +67,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="parentIterator" eType="#//TimeIterator"
         eOpposite="#//TimeIterator/innerIterators"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="variables" upperBound="-1"
-        eType="#//Variable" eOpposite="#//Variable/timeIterator"/>
+        eType="#//TimeVariable" eOpposite="#//TimeVariable/timeIterator"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="timeLoopJob" lowerBound="1"
         eType="#//ExecuteTimeLoopJob" eOpposite="#//ExecuteTimeLoopJob/timeIterator"/>
   </eClassifiers>
@@ -122,13 +120,15 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="const" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
         defaultValueLiteral="false"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="constExpr" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean" defaultValueLiteral="false"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="option" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="previousJobs" upperBound="-1"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="producerJobs" upperBound="-1"
         eType="#//Job" eOpposite="#//Job/outVars"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="nextJobs" upperBound="-1"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="consumerJobs" upperBound="-1"
         eType="#//Job" eOpposite="#//Job/inVars"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TimeVariable" eSuperTypes="#//Variable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="originName" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="timeIterator" eType="#//TimeIterator"
@@ -148,6 +148,8 @@
   <eClassifiers xsi:type="ecore:EClass" name="InternFunction" eSuperTypes="#//Function">
     <eStructuralFeatures xsi:type="ecore:EReference" name="body" eType="#//Instruction"
         containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="constExpr" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean" defaultValueLiteral="false"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ExternFunction" eSuperTypes="#//Function">
     <eStructuralFeatures xsi:type="ecore:EReference" name="provider" eType="#//DefaultExtensionProvider"
@@ -184,9 +186,9 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="caller" eType="#//JobCaller"
         eOpposite="#//JobCaller/calls"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="inVars" upperBound="-1"
-        eType="#//Variable" eOpposite="#//Variable/nextJobs"/>
+        eType="#//Variable" eOpposite="#//Variable/consumerJobs"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="outVars" upperBound="-1"
-        eType="#//Variable" eOpposite="#//Variable/previousJobs"/>
+        eType="#//Variable" eOpposite="#//Variable/producerJobs"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="previousJobs" upperBound="-1"
         eType="#//Job" eOpposite="#//Job/nextJobs"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="nextJobs" upperBound="-1"
@@ -303,7 +305,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="type" lowerBound="1" eType="#//IrType"
         containment="true" resolveProxies="false"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="constExpr" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean" defaultValueLiteral="false"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ContractedIf" eSuperTypes="#//Expression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="condition" lowerBound="1"
@@ -387,6 +389,10 @@
         eType="#//PrimitiveType"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="sizes" upperBound="-1"
         eType="#//Expression" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="intSizes" unique="false"
+        upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isStatic" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ConnectivityType" eSuperTypes="#//IrType">
     <eStructuralFeatures xsi:type="ecore:EReference" name="connectivities" unique="false"
@@ -399,6 +405,10 @@
         eType="#//Expression" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="provider" lowerBound="1"
         eType="#//DefaultExtensionProvider"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="intSizes" unique="false"
+        upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isStatic" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Container" abstract="true" eSuperTypes="#//IrAnnotable"/>
   <eClassifiers xsi:type="ecore:EClass" name="ConnectivityCall" eSuperTypes="#//Container">

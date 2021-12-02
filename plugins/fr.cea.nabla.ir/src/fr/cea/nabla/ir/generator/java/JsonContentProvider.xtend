@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -12,13 +12,9 @@ package fr.cea.nabla.ir.generator.java
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.PrimitiveType
-import org.eclipse.xtend.lib.annotations.Data
-
-import static fr.cea.nabla.ir.generator.java.TypeContentProvider.*
 
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
 
-@Data
 class JsonContentProvider
 {
 	static def getJsonName(String varName)
@@ -28,15 +24,14 @@ class JsonContentProvider
 
 	static def getJsonContent(String name, BaseType type, Expression defaultValue)
 	'''
-		// «name»
 		«IF defaultValue === null»
-			assert(o.has("«name»"));
-			final JsonElement «name.jsonName» = o.get("«name»");
+			assert(options.has("«name»"));
+			final JsonElement «name.jsonName» = options.get("«name»");
 			«getJsonContent(name, type, type.sizes, #[])»
 		«ELSE»
-			if (o.has("«name»"))
+			if (options.has("«name»"))
 			{
-				final JsonElement «name.jsonName» = o.get("«name»");
+				final JsonElement «name.jsonName» = options.get("«name»");
 				«getJsonContent(name, type, type.sizes, #[])»
 			}
 			else
@@ -56,7 +51,6 @@ class JsonContentProvider
 		'''
 			assert(«name.jsonName»«FOR i : indices».getAsJsonArray().get(«i»)«ENDFOR».isJsonArray());
 			assert(«name.jsonName».getAsJsonArray()«FOR i : indices».get(«i»).getAsJsonArray()«ENDFOR».size() == «sizes.head.content»);
-			«IF indices.empty»«name»«getJavaAllocation(type, name)»;«ENDIF»
 			«val indexName = 'i' + sizes.size»
 			for (int «indexName»=0 ; «indexName»<«sizes.head.content» ; «indexName»++)
 			{

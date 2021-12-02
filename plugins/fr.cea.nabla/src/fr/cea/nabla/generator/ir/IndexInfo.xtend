@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -57,7 +57,7 @@ class IndexInfo
 		this.varRef = varRef
 		this.itemRef = itemRef
 		this.iteratorIndexInVarIterators = varRef.spaceIterators.indexOf(itemRef)
-		if (iteratorIndexInVarIterators == -1) throw new RuntimeException("** Ooops: iterator does not belong to variable")
+		if (iteratorIndexInVarIterators == -1) throw new RuntimeException("Iterator does not belong to variable")
 	}
 
 	def getName()

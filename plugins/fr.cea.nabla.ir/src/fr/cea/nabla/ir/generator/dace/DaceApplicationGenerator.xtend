@@ -12,7 +12,8 @@ class DaceApplicationGenerator implements ApplicationGenerator
 {
 	override getName() { 'DaCe' }
 
-	override getIrTransformationStep() { null }
+	override getIrTransformationSteps() { #[] }
+
 	// Only one file generated corresponding to the application
 	override getGenerationContents(IrRoot ir)
 	{

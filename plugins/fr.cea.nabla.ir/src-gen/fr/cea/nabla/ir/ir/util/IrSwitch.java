@@ -158,6 +158,15 @@ public class IrSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case IrPackage.TIME_VARIABLE: {
+				TimeVariable timeVariable = (TimeVariable)theEObject;
+				T result = caseTimeVariable(timeVariable);
+				if (result == null) result = caseVariable(timeVariable);
+				if (result == null) result = caseArgOrVar(timeVariable);
+				if (result == null) result = caseIrAnnotable(timeVariable);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			case IrPackage.FUNCTION: {
 				Function function = (Function)theEObject;
 				T result = caseFunction(function);
@@ -752,6 +761,21 @@ public class IrSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseVariable(Variable object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Time Variable</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Time Variable</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseTimeVariable(TimeVariable object) {
 		return null;
 	}
 

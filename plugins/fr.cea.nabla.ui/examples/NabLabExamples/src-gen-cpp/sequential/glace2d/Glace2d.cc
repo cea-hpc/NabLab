@@ -88,7 +88,7 @@ RealArray2D<2,2> inverse(RealArray2D<2,2> a)
 template<size_t x>
 RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b)
 {
-	return a + b;
+	return glace2dfreefuncs::operator+(a, b);
 }
 
 double sumR0(double a, double b)
@@ -99,121 +99,121 @@ double sumR0(double a, double b)
 template<size_t x>
 RealArray2D<x,x> sumR2(RealArray2D<x,x> a, RealArray2D<x,x> b)
 {
-	return a + b;
+	return glace2dfreefuncs::operator+(a, b);
 }
 
 double minR0(double a, double b)
 {
 	return std::min(a, b);
 }
+
+template<size_t x0>
+RealArray1D<x0> operator+(RealArray1D<x0> a, RealArray1D<x0> b)
+{
+	RealArray1D<x0> result;
+	for (size_t ix0=0; ix0<x0; ix0++)
+	{
+		result[ix0] = a[ix0] + b[ix0];
+	}
+	return result;
 }
 
-/******************** Options definition ********************/
-
-void
-Glace2d::Options::jsonInit(const char* jsonContent)
+template<size_t x0, size_t x1>
+RealArray2D<x0,x1> operator+(RealArray2D<x0,x1> a, RealArray2D<x0,x1> b)
 {
-	rapidjson::Document document;
-	assert(!document.Parse(jsonContent).HasParseError());
-	assert(document.IsObject());
-	const rapidjson::Value::Object& o = document.GetObject();
+	RealArray2D<x0,x1> result;
+	for (size_t ix0=0; ix0<x0; ix0++)
+	{
+		for (size_t ix1=0; ix1<x1; ix1++)
+		{
+			result[ix0][ix1] = a[ix0][ix1] + b[ix0][ix1];
+		}
+	}
+	return result;
+}
 
-	// outputPath
-	assert(o.HasMember("outputPath"));
-	const rapidjson::Value& valueof_outputPath = o["outputPath"];
-	assert(valueof_outputPath.IsString());
-	outputPath = valueof_outputPath.GetString();
-	// outputPeriod
-	assert(o.HasMember("outputPeriod"));
-	const rapidjson::Value& valueof_outputPeriod = o["outputPeriod"];
-	assert(valueof_outputPeriod.IsInt());
-	outputPeriod = valueof_outputPeriod.GetInt();
-	// stopTime
-	if (o.HasMember("stopTime"))
+template<size_t x0>
+RealArray1D<x0> operator*(double a, RealArray1D<x0> b)
+{
+	RealArray1D<x0> result;
+	for (size_t ix0=0; ix0<x0; ix0++)
 	{
-		const rapidjson::Value& valueof_stopTime = o["stopTime"];
-		assert(valueof_stopTime.IsDouble());
-		stopTime = valueof_stopTime.GetDouble();
+		result[ix0] = a * b[ix0];
 	}
-	else
-		stopTime = 0.2;
-	// maxIterations
-	if (o.HasMember("maxIterations"))
+	return result;
+}
+
+template<size_t x0>
+RealArray1D<x0> operator-(RealArray1D<x0> a, RealArray1D<x0> b)
+{
+	RealArray1D<x0> result;
+	for (size_t ix0=0; ix0<x0; ix0++)
 	{
-		const rapidjson::Value& valueof_maxIterations = o["maxIterations"];
-		assert(valueof_maxIterations.IsInt());
-		maxIterations = valueof_maxIterations.GetInt();
+		result[ix0] = a[ix0] - b[ix0];
 	}
-	else
-		maxIterations = 20000;
-	// gamma
-	if (o.HasMember("gamma"))
+	return result;
+}
+
+template<size_t x0, size_t x1>
+RealArray2D<x0,x1> operator*(double a, RealArray2D<x0,x1> b)
+{
+	RealArray2D<x0,x1> result;
+	for (size_t ix0=0; ix0<x0; ix0++)
 	{
-		const rapidjson::Value& valueof_gamma = o["gamma"];
-		assert(valueof_gamma.IsDouble());
-		gamma = valueof_gamma.GetDouble();
+		for (size_t ix1=0; ix1<x1; ix1++)
+		{
+			result[ix0][ix1] = a * b[ix0][ix1];
+		}
 	}
-	else
-		gamma = 1.4;
-	// xInterface
-	if (o.HasMember("xInterface"))
+	return result;
+}
+
+template<size_t x0, size_t x1>
+RealArray2D<x0,x1> operator-(RealArray2D<x0,x1> a, RealArray2D<x0,x1> b)
+{
+	RealArray2D<x0,x1> result;
+	for (size_t ix0=0; ix0<x0; ix0++)
 	{
-		const rapidjson::Value& valueof_xInterface = o["xInterface"];
-		assert(valueof_xInterface.IsDouble());
-		xInterface = valueof_xInterface.GetDouble();
+		for (size_t ix1=0; ix1<x1; ix1++)
+		{
+			result[ix0][ix1] = a[ix0][ix1] - b[ix0][ix1];
+		}
 	}
-	else
-		xInterface = 0.5;
-	// deltatCfl
-	if (o.HasMember("deltatCfl"))
+	return result;
+}
+
+template<size_t x0, size_t x1>
+RealArray2D<x0,x1> operator*(RealArray2D<x0,x1> a, RealArray2D<x0,x1> b)
+{
+	RealArray2D<x0,x1> result;
+	for (size_t ix0=0; ix0<x0; ix0++)
 	{
-		const rapidjson::Value& valueof_deltatCfl = o["deltatCfl"];
-		assert(valueof_deltatCfl.IsDouble());
-		deltatCfl = valueof_deltatCfl.GetDouble();
+		for (size_t ix1=0; ix1<x1; ix1++)
+		{
+			result[ix0][ix1] = a[ix0][ix1] * b[ix0][ix1];
+		}
 	}
-	else
-		deltatCfl = 0.4;
-	// rhoIniZg
-	if (o.HasMember("rhoIniZg"))
+	return result;
+}
+
+template<size_t x0, size_t x1>
+RealArray2D<x0,x1> operator*(RealArray2D<x0,x1> a, double b)
+{
+	RealArray2D<x0,x1> result;
+	for (size_t ix0=0; ix0<x0; ix0++)
 	{
-		const rapidjson::Value& valueof_rhoIniZg = o["rhoIniZg"];
-		assert(valueof_rhoIniZg.IsDouble());
-		rhoIniZg = valueof_rhoIniZg.GetDouble();
+		for (size_t ix1=0; ix1<x1; ix1++)
+		{
+			result[ix0][ix1] = a[ix0][ix1] * b;
+		}
 	}
-	else
-		rhoIniZg = 1.0;
-	// rhoIniZd
-	if (o.HasMember("rhoIniZd"))
-	{
-		const rapidjson::Value& valueof_rhoIniZd = o["rhoIniZd"];
-		assert(valueof_rhoIniZd.IsDouble());
-		rhoIniZd = valueof_rhoIniZd.GetDouble();
-	}
-	else
-		rhoIniZd = 0.125;
-	// pIniZg
-	if (o.HasMember("pIniZg"))
-	{
-		const rapidjson::Value& valueof_pIniZg = o["pIniZg"];
-		assert(valueof_pIniZg.IsDouble());
-		pIniZg = valueof_pIniZg.GetDouble();
-	}
-	else
-		pIniZg = 1.0;
-	// pIniZd
-	if (o.HasMember("pIniZd"))
-	{
-		const rapidjson::Value& valueof_pIniZd = o["pIniZd"];
-		assert(valueof_pIniZd.IsDouble());
-		pIniZd = valueof_pIniZd.GetDouble();
-	}
-	else
-		pIniZd = 0.1;
+	return result;
+}
 }
 
 /******************** Module definition ********************/
 
-Glace2d::Glace2d(CartesianMesh2D& aMesh, Options& aOptions)
+Glace2d::Glace2d(CartesianMesh2D& aMesh)
 : mesh(aMesh)
 , nbNodes(mesh.getNbNodes())
 , nbCells(mesh.getNbCells())
@@ -224,9 +224,6 @@ Glace2d::Glace2d(CartesianMesh2D& aMesh, Options& aOptions)
 , nbBottomNodes(mesh.getNbBottomNodes())
 , nbLeftNodes(mesh.getNbLeftNodes())
 , nbRightNodes(mesh.getNbRightNodes())
-, options(aOptions)
-, writer("Glace2d", options.outputPath)
-, lastDump(numeric_limits<int>::min())
 , X_n(nbNodes)
 , X_nplus1(nbNodes)
 , X_n0(nbNodes)
@@ -252,6 +249,132 @@ Glace2d::Glace2d(CartesianMesh2D& aMesh, Options& aOptions)
 , F(nbCells, std::vector<RealArray1D<2>>(maxNodesOfCell))
 , Ajr(nbCells, std::vector<RealArray2D<2,2>>(maxNodesOfCell))
 {
+}
+
+Glace2d::~Glace2d()
+{
+}
+
+void
+Glace2d::jsonInit(const char* jsonContent)
+{
+	rapidjson::Document document;
+	assert(!document.Parse(jsonContent).HasParseError());
+	assert(document.IsObject());
+	const rapidjson::Value::Object& options = document.GetObject();
+
+	// outputPath
+	assert(options.HasMember("outputPath"));
+	const rapidjson::Value& valueof_outputPath = options["outputPath"];
+	assert(valueof_outputPath.IsString());
+	outputPath = valueof_outputPath.GetString();
+	writer = new PvdFileWriter2D("Glace2d", outputPath);
+	// outputPeriod
+	assert(options.HasMember("outputPeriod"));
+	const rapidjson::Value& valueof_outputPeriod = options["outputPeriod"];
+	assert(valueof_outputPeriod.IsInt());
+	outputPeriod = valueof_outputPeriod.GetInt();
+	lastDump = numeric_limits<int>::min();
+	// stopTime
+	if (options.HasMember("stopTime"))
+	{
+		const rapidjson::Value& valueof_stopTime = options["stopTime"];
+		assert(valueof_stopTime.IsDouble());
+		stopTime = valueof_stopTime.GetDouble();
+	}
+	else
+	{
+		stopTime = 0.2;
+	}
+	// maxIterations
+	if (options.HasMember("maxIterations"))
+	{
+		const rapidjson::Value& valueof_maxIterations = options["maxIterations"];
+		assert(valueof_maxIterations.IsInt());
+		maxIterations = valueof_maxIterations.GetInt();
+	}
+	else
+	{
+		maxIterations = 20000;
+	}
+	// gamma
+	if (options.HasMember("gamma"))
+	{
+		const rapidjson::Value& valueof_gamma = options["gamma"];
+		assert(valueof_gamma.IsDouble());
+		gamma = valueof_gamma.GetDouble();
+	}
+	else
+	{
+		gamma = 1.4;
+	}
+	// xInterface
+	if (options.HasMember("xInterface"))
+	{
+		const rapidjson::Value& valueof_xInterface = options["xInterface"];
+		assert(valueof_xInterface.IsDouble());
+		xInterface = valueof_xInterface.GetDouble();
+	}
+	else
+	{
+		xInterface = 0.5;
+	}
+	// deltatCfl
+	if (options.HasMember("deltatCfl"))
+	{
+		const rapidjson::Value& valueof_deltatCfl = options["deltatCfl"];
+		assert(valueof_deltatCfl.IsDouble());
+		deltatCfl = valueof_deltatCfl.GetDouble();
+	}
+	else
+	{
+		deltatCfl = 0.4;
+	}
+	// rhoIniZg
+	if (options.HasMember("rhoIniZg"))
+	{
+		const rapidjson::Value& valueof_rhoIniZg = options["rhoIniZg"];
+		assert(valueof_rhoIniZg.IsDouble());
+		rhoIniZg = valueof_rhoIniZg.GetDouble();
+	}
+	else
+	{
+		rhoIniZg = 1.0;
+	}
+	// rhoIniZd
+	if (options.HasMember("rhoIniZd"))
+	{
+		const rapidjson::Value& valueof_rhoIniZd = options["rhoIniZd"];
+		assert(valueof_rhoIniZd.IsDouble());
+		rhoIniZd = valueof_rhoIniZd.GetDouble();
+	}
+	else
+	{
+		rhoIniZd = 0.125;
+	}
+	// pIniZg
+	if (options.HasMember("pIniZg"))
+	{
+		const rapidjson::Value& valueof_pIniZg = options["pIniZg"];
+		assert(valueof_pIniZg.IsDouble());
+		pIniZg = valueof_pIniZg.GetDouble();
+	}
+	else
+	{
+		pIniZg = 1.0;
+	}
+	// pIniZd
+	if (options.HasMember("pIniZd"))
+	{
+		const rapidjson::Value& valueof_pIniZd = options["pIniZd"];
+		assert(valueof_pIniZd.IsDouble());
+		pIniZd = valueof_pIniZd.GetDouble();
+	}
+	else
+	{
+		pIniZd = 0.1;
+	}
+
 	// Copy node coordinates
 	const auto& gNodes = mesh.getGeometry()->getNodes();
 	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
@@ -261,9 +384,6 @@ Glace2d::Glace2d(CartesianMesh2D& aMesh, Options& aOptions)
 	}
 }
 
-Glace2d::~Glace2d()
-{
-}
 
 /**
  * Job computeCjr called @1.0 in executeTimeLoopN method.
@@ -284,7 +404,7 @@ void Glace2d::computeCjr() noexcept
 				const Id rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+maxNodesOfCell)%maxNodesOfCell]);
 				const size_t rPlus1Nodes(rPlus1Id);
 				const size_t rMinus1Nodes(rMinus1Id);
-				C[jCells][rNodesOfCellJ] = 0.5 * glace2dfreefuncs::perp(X_n[rPlus1Nodes] - X_n[rMinus1Nodes]);
+				C[jCells][rNodesOfCellJ] = glace2dfreefuncs::operator*(0.5, glace2dfreefuncs::perp(glace2dfreefuncs::operator-(X_n[rPlus1Nodes], X_n[rMinus1Nodes])));
 			}
 		}
 	}
@@ -322,7 +442,7 @@ void Glace2d::iniCjrIc() noexcept
 				const Id rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+maxNodesOfCell)%maxNodesOfCell]);
 				const size_t rPlus1Nodes(rPlus1Id);
 				const size_t rMinus1Nodes(rMinus1Id);
-				Cjr_ic[jCells][rNodesOfCellJ] = 0.5 * glace2dfreefuncs::perp(X_n0[rPlus1Nodes] - X_n0[rMinus1Nodes]);
+				Cjr_ic[jCells][rNodesOfCellJ] = glace2dfreefuncs::operator*(0.5, glace2dfreefuncs::perp(glace2dfreefuncs::operator-(X_n0[rPlus1Nodes], X_n0[rMinus1Nodes])));
 			}
 		}
 	}
@@ -407,16 +527,16 @@ void Glace2d::initialize() noexcept
 				reduction0 = glace2dfreefuncs::sumR1(reduction0, X_n0[rNodes]);
 			}
 		}
-		const RealArray1D<2> center(0.25 * reduction0);
-		if (center[0] < options.xInterface) 
+		const RealArray1D<2> center(glace2dfreefuncs::operator*(0.25, reduction0));
+		if (center[0] < xInterface) 
 		{
-			rho_ic = options.rhoIniZg;
-			p_ic = options.pIniZg;
+			rho_ic = rhoIniZg;
+			p_ic = pIniZg;
 		}
 		else
 		{
-			rho_ic = options.rhoIniZd;
-			p_ic = options.pIniZd;
+			rho_ic = rhoIniZd;
+			p_ic = pIniZd;
 		}
 		double reduction1(0.0);
 		{
@@ -433,7 +553,7 @@ void Glace2d::initialize() noexcept
 		m[jCells] = rho_ic * V_ic;
 		p[jCells] = p_ic;
 		rho[jCells] = rho_ic;
-		E_n[jCells] = p_ic / ((options.gamma - 1.0) * rho_ic);
+		E_n[jCells] = p_ic / ((gamma - 1.0) * rho_ic);
 		uj_n[jCells] = {0.0, 0.0};
 	}
 }
@@ -470,7 +590,7 @@ void Glace2d::computeDensity() noexcept
 
 /**
  * Job executeTimeLoopN called @3.0 in simulate method.
- * In variables: E_n, X_n, t_n, uj_n
+ * In variables: E_n, X_n, lastDump, maxIterations, n, outputPeriod, stopTime, t_n, t_nplus1, uj_n
  * Out variables: E_nplus1, X_nplus1, t_nplus1, uj_nplus1
  */
 void Glace2d::executeTimeLoopN() noexcept
@@ -482,7 +602,7 @@ void Glace2d::executeTimeLoopN() noexcept
 		globalTimer.start();
 		cpuTimer.start();
 		n++;
-		if (!writer.isDisabled() && n >= lastDump + options.outputPeriod)
+		if (writer != NULL && !writer->isDisabled() && n >= lastDump + outputPeriod)
 			dumpVariables(n);
 		if (n!=1)
 			std::cout << "[" << __CYAN__ << __BOLD__ << setw(3) << n << __RESET__ "] t = " << __BOLD__
@@ -512,7 +632,7 @@ void Glace2d::executeTimeLoopN() noexcept
 		
 	
 		// Evaluate loop condition with variables at time n
-		continueLoop = (t_nplus1 < options.stopTime && n + 1 < options.maxIterations);
+		continueLoop = (t_nplus1 < stopTime && n + 1 < maxIterations);
 	
 		t_n = t_nplus1;
 		for (size_t i1Nodes=0; i1Nodes<nbNodes; i1Nodes++)
@@ -538,22 +658,22 @@ void Glace2d::executeTimeLoopN() noexcept
 		globalTimer.stop();
 	
 		// Timers display
-		if (!writer.isDisabled())
+		if (writer != NULL && !writer->isDisabled())
 			std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __BLUE__ << ioTimer.print(true) << __RESET__ "} ";
 		else
 			std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __RED__ << "none" << __RESET__ << "} ";
 		
 		// Progress
-		std::cout << progress_bar(n, options.maxIterations, t_n, options.stopTime, 25);
+		std::cout << progress_bar(n, maxIterations, t_n, stopTime, 25);
 		std::cout << __BOLD__ << __CYAN__ << Timer::print(
-			eta(n, options.maxIterations, t_n, options.stopTime, deltat, globalTimer), true)
+			eta(n, maxIterations, t_n, stopTime, deltat, globalTimer), true)
 			<< __RESET__ << "\r";
 		std::cout.flush();
 	
 		cpuTimer.reset();
 		ioTimer.reset();
 	} while (continueLoop);
-	if (!writer.isDisabled())
+	if (writer != NULL && !writer->isDisabled())
 		dumpVariables(n+1, false);
 }
 
@@ -566,7 +686,7 @@ void Glace2d::computeEOSp() noexcept
 {
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
-		p[jCells] = (options.gamma - 1.0) * rho[jCells] * e[jCells];
+		p[jCells] = (gamma - 1.0) * rho[jCells] * e[jCells];
 	}
 }
 
@@ -579,7 +699,7 @@ void Glace2d::computeEOSc() noexcept
 {
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
-		c[jCells] = std::sqrt(options.gamma * p[jCells] / rho[jCells]);
+		c[jCells] = std::sqrt(gamma * p[jCells] / rho[jCells]);
 	}
 }
 
@@ -598,7 +718,7 @@ void Glace2d::computeAjr() noexcept
 			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
 			for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 			{
-				Ajr[jCells][rNodesOfCellJ] = ((rho[jCells] * c[jCells]) / l[jCells][rNodesOfCellJ]) * glace2dfreefuncs::tensProduct(C[jCells][rNodesOfCellJ], C[jCells][rNodesOfCellJ]);
+				Ajr[jCells][rNodesOfCellJ] = glace2dfreefuncs::operator*(((rho[jCells] * c[jCells]) / l[jCells][rNodesOfCellJ]), glace2dfreefuncs::tensProduct(C[jCells][rNodesOfCellJ], C[jCells][rNodesOfCellJ]));
 			}
 		}
 	}
@@ -678,7 +798,7 @@ void Glace2d::computeBr() noexcept
 				const Id jId(cellsOfNodeR[jCellsOfNodeR]);
 				const size_t jCells(jId);
 				const size_t rNodesOfCellJ(indexOf(mesh.getNodesOfCell(jId), rId));
-				reduction0 = glace2dfreefuncs::sumR1(reduction0, p[jCells] * C[jCells][rNodesOfCellJ] + glace2dfreefuncs::matVectProduct(Ajr[jCells][rNodesOfCellJ], uj_n[jCells]));
+				reduction0 = glace2dfreefuncs::sumR1(reduction0, glace2dfreefuncs::operator+(glace2dfreefuncs::operator*(p[jCells], C[jCells][rNodesOfCellJ]), glace2dfreefuncs::matVectProduct(Ajr[jCells][rNodesOfCellJ], uj_n[jCells])));
 			}
 		}
 		for (size_t i1=0; i1<2; i1++)
@@ -700,7 +820,7 @@ void Glace2d::computeDt() noexcept
 	{
 		reduction0 = glace2dfreefuncs::minR0(reduction0, deltatj[jCells]);
 	}
-	deltat = std::min((options.deltatCfl * reduction0), (options.stopTime - t_n));
+	deltat = std::min((deltatCfl * reduction0), (stopTime - t_n));
 }
 
 /**
@@ -720,9 +840,9 @@ void Glace2d::computeBoundaryConditions() noexcept
 			const size_t rNodes(rId);
 			const RealArray1D<2> N({0.0, 1.0});
 			const RealArray2D<2,2> NxN(glace2dfreefuncs::tensProduct(N, N));
-			const RealArray2D<2,2> IcP(I - NxN);
+			const RealArray2D<2,2> IcP(glace2dfreefuncs::operator-(I, NxN));
 			bt[rNodes] = glace2dfreefuncs::matVectProduct(IcP, b[rNodes]);
-			Mt[rNodes] = IcP * (Ar[rNodes] * IcP) + NxN * glace2dfreefuncs::trace(Ar[rNodes]);
+			Mt[rNodes] = glace2dfreefuncs::operator+(glace2dfreefuncs::operator*(IcP, (glace2dfreefuncs::operator*(Ar[rNodes], IcP))), glace2dfreefuncs::operator*(NxN, glace2dfreefuncs::trace(Ar[rNodes])));
 		}
 	}
 	{
@@ -734,9 +854,9 @@ void Glace2d::computeBoundaryConditions() noexcept
 			const size_t rNodes(rId);
 			const RealArray1D<2> N({0.0, -1.0});
 			const RealArray2D<2,2> NxN(glace2dfreefuncs::tensProduct(N, N));
-			const RealArray2D<2,2> IcP(I - NxN);
+			const RealArray2D<2,2> IcP(glace2dfreefuncs::operator-(I, NxN));
 			bt[rNodes] = glace2dfreefuncs::matVectProduct(IcP, b[rNodes]);
-			Mt[rNodes] = IcP * (Ar[rNodes] * IcP) + NxN * glace2dfreefuncs::trace(Ar[rNodes]);
+			Mt[rNodes] = glace2dfreefuncs::operator+(glace2dfreefuncs::operator*(IcP, (glace2dfreefuncs::operator*(Ar[rNodes], IcP))), glace2dfreefuncs::operator*(NxN, glace2dfreefuncs::trace(Ar[rNodes])));
 		}
 	}
 	{
@@ -862,7 +982,7 @@ void Glace2d::computeFjr() noexcept
 			{
 				const Id rId(nodesOfCellJ[rNodesOfCellJ]);
 				const size_t rNodes(rId);
-				F[jCells][rNodesOfCellJ] = p[jCells] * C[jCells][rNodesOfCellJ] + glace2dfreefuncs::matVectProduct(Ajr[jCells][rNodesOfCellJ], (uj_n[jCells] - ur[rNodes]));
+				F[jCells][rNodesOfCellJ] = glace2dfreefuncs::operator+(glace2dfreefuncs::operator*(p[jCells], C[jCells][rNodesOfCellJ]), glace2dfreefuncs::matVectProduct(Ajr[jCells][rNodesOfCellJ], (glace2dfreefuncs::operator-(uj_n[jCells], ur[rNodes]))));
 			}
 		}
 	}
@@ -877,7 +997,7 @@ void Glace2d::computeXn() noexcept
 {
 	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
 	{
-		X_nplus1[rNodes] = X_n[rNodes] + deltat * ur[rNodes];
+		X_nplus1[rNodes] = glace2dfreefuncs::operator+(X_n[rNodes], glace2dfreefuncs::operator*(deltat, ur[rNodes]));
 	}
 }
 
@@ -925,13 +1045,13 @@ void Glace2d::computeUn() noexcept
 				reduction0 = glace2dfreefuncs::sumR1(reduction0, F[jCells][rNodesOfCellJ]);
 			}
 		}
-		uj_nplus1[jCells] = uj_n[jCells] - (deltat / m[jCells]) * reduction0;
+		uj_nplus1[jCells] = glace2dfreefuncs::operator-(uj_n[jCells], glace2dfreefuncs::operator*((deltat / m[jCells]), reduction0));
 	}
 }
 
 void Glace2d::dumpVariables(int iteration, bool useTimer)
 {
-	if (!writer.isDisabled())
+	if (writer != NULL && !writer->isDisabled())
 	{
 		if (useTimer)
 		{
@@ -939,16 +1059,16 @@ void Glace2d::dumpVariables(int iteration, bool useTimer)
 			ioTimer.start();
 		}
 		auto quads = mesh.getGeometry()->getQuads();
-		writer.startVtpFile(iteration, t_n, nbNodes, X_n.data(), nbCells, quads.data());
-		writer.openNodeData();
-		writer.closeNodeData();
-		writer.openCellData();
-		writer.openCellArray("Density", 0);
+		writer->startVtpFile(iteration, t_n, nbNodes, X_n.data(), nbCells, quads.data());
+		writer->openNodeData();
+		writer->closeNodeData();
+		writer->openCellData();
+		writer->openCellArray("Density", 0);
 		for (size_t i=0 ; i<nbCells ; ++i)
-			writer.write(rho[i]);
-		writer.closeCellArray();
-		writer.closeCellData();
-		writer.closeVtpFile();
+			writer->write(rho[i]);
+		writer->closeCellArray();
+		writer->closeCellData();
+		writer->closeVtpFile();
 		lastDump = n;
 		if (useTimer)
 		{
@@ -964,8 +1084,8 @@ void Glace2d::simulate()
 	
 	std::cout << "[" << __GREEN__ << "TOPOLOGY" << __RESET__ << "]  HWLOC unavailable cannot get topological informations" << std::endl;
 	
-	if (!writer.isDisabled())
-		std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    VTK files stored in " << __BOLD__ << writer.outputDirectory() << __RESET__ << " directory" << std::endl;
+	if (writer != NULL && !writer->isDisabled())
+		std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    VTK files stored in " << __BOLD__ << writer->outputDirectory() << __RESET__ << " directory" << std::endl;
 	else
 		std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    " << __BOLD__ << "Disabled" << __RESET__ << std::endl;
 
@@ -1011,15 +1131,14 @@ int main(int argc, char* argv[])
 	mesh.jsonInit(strbuf.GetString());
 	
 	// Module instanciation(s)
-	Glace2d::Options glace2dOptions;
+	Glace2d* glace2d = new Glace2d(mesh);
 	if (d.HasMember("glace2d"))
 	{
 		rapidjson::StringBuffer strbuf;
 		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
 		d["glace2d"].Accept(writer);
-		glace2dOptions.jsonInit(strbuf.GetString());
+		glace2d->jsonInit(strbuf.GetString());
 	}
-	Glace2d* glace2d = new Glace2d(mesh, glace2dOptions);
 	
 	// Start simulation
 	// Simulator must be a pointer when a finalize is needed at the end (Kokkos, omp...)

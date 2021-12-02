@@ -11,7 +11,6 @@
 
 namespace iterativeheatequationfreefuncs
 {
-KOKKOS_INLINE_FUNCTION
 bool check(bool a)
 {
 	if (a) 
@@ -21,14 +20,12 @@ bool check(bool a)
 }
 
 template<size_t x>
-KOKKOS_INLINE_FUNCTION
 double norm(RealArray1D<x> a)
 {
 	return std::sqrt(iterativeheatequationfreefuncs::dot(a, a));
 }
 
 template<size_t x>
-KOKKOS_INLINE_FUNCTION
 double dot(RealArray1D<x> a, RealArray1D<x> b)
 {
 	double result(0.0);
@@ -39,114 +36,74 @@ double dot(RealArray1D<x> a, RealArray1D<x> b)
 	return result;
 }
 
-KOKKOS_INLINE_FUNCTION
 double det(RealArray1D<2> a, RealArray1D<2> b)
 {
 	return (a[0] * b[1] - a[1] * b[0]);
 }
 
 template<size_t x>
-KOKKOS_INLINE_FUNCTION
 RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b)
 {
-	return a + b;
+	return iterativeheatequationfreefuncs::operator+(a, b);
 }
 
-KOKKOS_INLINE_FUNCTION
 double minR0(double a, double b)
 {
 	return std::min(a, b);
 }
 
-KOKKOS_INLINE_FUNCTION
 double sumR0(double a, double b)
 {
 	return a + b;
 }
 
-KOKKOS_INLINE_FUNCTION
 double prodR0(double a, double b)
 {
 	return a * b;
 }
 
-KOKKOS_INLINE_FUNCTION
 double maxR0(double a, double b)
 {
 	return std::max(a, b);
 }
+
+template<size_t x0>
+RealArray1D<x0> operator+(RealArray1D<x0> a, RealArray1D<x0> b)
+{
+	RealArray1D<x0> result;
+	for (size_t ix0=0; ix0<x0; ix0++)
+	{
+		result[ix0] = a[ix0] + b[ix0];
+	}
+	return result;
 }
 
-/******************** Options definition ********************/
-
-void
-IterativeHeatEquation::Options::jsonInit(const char* jsonContent)
+template<size_t x0>
+RealArray1D<x0> operator*(double a, RealArray1D<x0> b)
 {
-	rapidjson::Document document;
-	assert(!document.Parse(jsonContent).HasParseError());
-	assert(document.IsObject());
-	const rapidjson::Value::Object& o = document.GetObject();
+	RealArray1D<x0> result;
+	for (size_t ix0=0; ix0<x0; ix0++)
+	{
+		result[ix0] = a * b[ix0];
+	}
+	return result;
+}
 
-	// outputPath
-	assert(o.HasMember("outputPath"));
-	const rapidjson::Value& valueof_outputPath = o["outputPath"];
-	assert(valueof_outputPath.IsString());
-	outputPath = valueof_outputPath.GetString();
-	// outputPeriod
-	assert(o.HasMember("outputPeriod"));
-	const rapidjson::Value& valueof_outputPeriod = o["outputPeriod"];
-	assert(valueof_outputPeriod.IsInt());
-	outputPeriod = valueof_outputPeriod.GetInt();
-	// u0
-	if (o.HasMember("u0"))
+template<size_t x0>
+RealArray1D<x0> operator-(RealArray1D<x0> a, RealArray1D<x0> b)
+{
+	RealArray1D<x0> result;
+	for (size_t ix0=0; ix0<x0; ix0++)
 	{
-		const rapidjson::Value& valueof_u0 = o["u0"];
-		assert(valueof_u0.IsDouble());
-		u0 = valueof_u0.GetDouble();
+		result[ix0] = a[ix0] - b[ix0];
 	}
-	else
-		u0 = 1.0;
-	// stopTime
-	if (o.HasMember("stopTime"))
-	{
-		const rapidjson::Value& valueof_stopTime = o["stopTime"];
-		assert(valueof_stopTime.IsDouble());
-		stopTime = valueof_stopTime.GetDouble();
-	}
-	else
-		stopTime = 0.1;
-	// maxIterations
-	if (o.HasMember("maxIterations"))
-	{
-		const rapidjson::Value& valueof_maxIterations = o["maxIterations"];
-		assert(valueof_maxIterations.IsInt());
-		maxIterations = valueof_maxIterations.GetInt();
-	}
-	else
-		maxIterations = 500000000;
-	// maxIterationsK
-	if (o.HasMember("maxIterationsK"))
-	{
-		const rapidjson::Value& valueof_maxIterationsK = o["maxIterationsK"];
-		assert(valueof_maxIterationsK.IsInt());
-		maxIterationsK = valueof_maxIterationsK.GetInt();
-	}
-	else
-		maxIterationsK = 1000;
-	// epsilon
-	if (o.HasMember("epsilon"))
-	{
-		const rapidjson::Value& valueof_epsilon = o["epsilon"];
-		assert(valueof_epsilon.IsDouble());
-		epsilon = valueof_epsilon.GetDouble();
-	}
-	else
-		epsilon = 1.0E-8;
+	return result;
+}
 }
 
 /******************** Module definition ********************/
 
-IterativeHeatEquation::IterativeHeatEquation(CartesianMesh2D& aMesh, Options& aOptions)
+IterativeHeatEquation::IterativeHeatEquation(CartesianMesh2D& aMesh)
 : mesh(aMesh)
 , nbNodes(mesh.getNbNodes())
 , nbCells(mesh.getNbCells())
@@ -155,10 +112,6 @@ IterativeHeatEquation::IterativeHeatEquation(CartesianMesh2D& aMesh, Options& aO
 , maxNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
 , maxCellsOfFace(CartesianMesh2D::MaxNbCellsOfFace)
 , maxNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
-, options(aOptions)
-, writer("IterativeHeatEquation", options.outputPath)
-, lastDump(numeric_limits<int>::min())
-, deltat(0.001)
 , X("X", nbNodes)
 , Xc("Xc", nbCells)
 , u_n("u_n", nbCells)
@@ -171,6 +124,89 @@ IterativeHeatEquation::IterativeHeatEquation(CartesianMesh2D& aMesh, Options& aO
 , faceConductivity("faceConductivity", nbFaces)
 , alpha("alpha", nbCells, nbCells)
 {
+}
+
+IterativeHeatEquation::~IterativeHeatEquation()
+{
+}
+
+void
+IterativeHeatEquation::jsonInit(const char* jsonContent)
+{
+	rapidjson::Document document;
+	assert(!document.Parse(jsonContent).HasParseError());
+	assert(document.IsObject());
+	const rapidjson::Value::Object& options = document.GetObject();
+
+	// outputPath
+	assert(options.HasMember("outputPath"));
+	const rapidjson::Value& valueof_outputPath = options["outputPath"];
+	assert(valueof_outputPath.IsString());
+	outputPath = valueof_outputPath.GetString();
+	writer = new PvdFileWriter2D("IterativeHeatEquation", outputPath);
+	// outputPeriod
+	assert(options.HasMember("outputPeriod"));
+	const rapidjson::Value& valueof_outputPeriod = options["outputPeriod"];
+	assert(valueof_outputPeriod.IsInt());
+	outputPeriod = valueof_outputPeriod.GetInt();
+	lastDump = numeric_limits<int>::min();
+	// u0
+	if (options.HasMember("u0"))
+	{
+		const rapidjson::Value& valueof_u0 = options["u0"];
+		assert(valueof_u0.IsDouble());
+		u0 = valueof_u0.GetDouble();
+	}
+	else
+	{
+		u0 = 1.0;
+	}
+	// stopTime
+	if (options.HasMember("stopTime"))
+	{
+		const rapidjson::Value& valueof_stopTime = options["stopTime"];
+		assert(valueof_stopTime.IsDouble());
+		stopTime = valueof_stopTime.GetDouble();
+	}
+	else
+	{
+		stopTime = 0.1;
+	}
+	// maxIterations
+	if (options.HasMember("maxIterations"))
+	{
+		const rapidjson::Value& valueof_maxIterations = options["maxIterations"];
+		assert(valueof_maxIterations.IsInt());
+		maxIterations = valueof_maxIterations.GetInt();
+	}
+	else
+	{
+		maxIterations = 500000000;
+	}
+	// maxIterationsK
+	if (options.HasMember("maxIterationsK"))
+	{
+		const rapidjson::Value& valueof_maxIterationsK = options["maxIterationsK"];
+		assert(valueof_maxIterationsK.IsInt());
+		maxIterationsK = valueof_maxIterationsK.GetInt();
+	}
+	else
+	{
+		maxIterationsK = 1000;
+	}
+	// epsilon
+	if (options.HasMember("epsilon"))
+	{
+		const rapidjson::Value& valueof_epsilon = options["epsilon"];
+		assert(valueof_epsilon.IsDouble());
+		epsilon = valueof_epsilon.GetDouble();
+	}
+	else
+	{
+		epsilon = 1.0E-8;
+	}
+	deltat = 0.001;
+
 	// Copy node coordinates
 	const auto& gNodes = mesh.getGeometry()->getNodes();
 	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
@@ -180,9 +216,6 @@ IterativeHeatEquation::IterativeHeatEquation(CartesianMesh2D& aMesh, Options& aO
 	}
 }
 
-IterativeHeatEquation::~IterativeHeatEquation()
-{
-}
 
 const std::pair<size_t, size_t> IterativeHeatEquation::computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept
 {
@@ -233,7 +266,7 @@ void IterativeHeatEquation::computeFaceLength(const member_type& teamMember) noe
 					const Id pPlus1Id(nodesOfFaceF[(pNodesOfFaceF+1+maxNodesOfFace)%maxNodesOfFace]);
 					const size_t pNodes(pId);
 					const size_t pPlus1Nodes(pPlus1Id);
-					reduction0 = iterativeheatequationfreefuncs::sumR0(reduction0, iterativeheatequationfreefuncs::norm(X(pNodes) - X(pPlus1Nodes)));
+					reduction0 = iterativeheatequationfreefuncs::sumR0(reduction0, iterativeheatequationfreefuncs::norm(iterativeheatequationfreefuncs::operator-(X(pNodes), X(pPlus1Nodes))));
 				}
 			}
 			faceLength(fFaces) = 0.5 * reduction0;
@@ -342,7 +375,7 @@ void IterativeHeatEquation::initXc(const member_type& teamMember) noexcept
 					reduction0 = iterativeheatequationfreefuncs::sumR1(reduction0, X(pNodes));
 				}
 			}
-			Xc(cCells) = 0.25 * reduction0;
+			Xc(cCells) = iterativeheatequationfreefuncs::operator*(0.25, reduction0);
 		});
 	}
 }
@@ -474,7 +507,7 @@ void IterativeHeatEquation::computeResidual(const member_type& teamMember) noexc
 
 /**
  * Job executeTimeLoopK called @2.0 in executeTimeLoopN method.
- * In variables: u_nplus1_k
+ * In variables: epsilon, k, maxIterationsK, residual, u_nplus1_k
  * Out variables: u_nplus1_kplus1
  */
 void IterativeHeatEquation::executeTimeLoopK() noexcept
@@ -503,7 +536,7 @@ void IterativeHeatEquation::executeTimeLoopK() noexcept
 		
 	
 		// Evaluate loop condition with variables at time n
-		continueLoop = (residual > options.epsilon && iterativeheatequationfreefuncs::check(k + 1 < options.maxIterationsK));
+		continueLoop = (residual > epsilon && iterativeheatequationfreefuncs::check(k + 1 < maxIterationsK));
 	
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& i1Cells)
 		{
@@ -527,8 +560,8 @@ void IterativeHeatEquation::initU(const member_type& teamMember) noexcept
 		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& cCellsTeam)
 		{
 			int cCells(cCellsTeam + teamWork.first);
-			if (iterativeheatequationfreefuncs::norm(Xc(cCells) - vectOne) < 0.5) 
-				u_n(cCells) = options.u0;
+			if (iterativeheatequationfreefuncs::norm(iterativeheatequationfreefuncs::operator-(Xc(cCells), vectOne)) < 0.5) 
+				u_n(cCells) = u0;
 			else
 				u_n(cCells) = 0.0;
 		});
@@ -571,7 +604,7 @@ void IterativeHeatEquation::computeAlphaCoeff(const member_type& teamMember) noe
 					const size_t dCells(dId);
 					const Id fId(mesh.getCommonFace(cId, dId));
 					const size_t fFaces(fId);
-					const double alphaExtraDiag(deltat / V(cCells) * (faceLength(fFaces) * faceConductivity(fFaces)) / iterativeheatequationfreefuncs::norm(Xc(cCells) - Xc(dCells)));
+					const double alphaExtraDiag(deltat / V(cCells) * (faceLength(fFaces) * faceConductivity(fFaces)) / iterativeheatequationfreefuncs::norm(iterativeheatequationfreefuncs::operator-(Xc(cCells), Xc(dCells))));
 					alpha(cCells, dCells) = alphaExtraDiag;
 					alphaDiag = alphaDiag + alphaExtraDiag;
 				}
@@ -603,7 +636,7 @@ void IterativeHeatEquation::tearDownTimeLoopK(const member_type& teamMember) noe
 
 /**
  * Job executeTimeLoopN called @4.0 in simulate method.
- * In variables: t_n, u_n
+ * In variables: lastDump, maxIterations, n, outputPeriod, stopTime, t_n, t_nplus1, u_n
  * Out variables: t_nplus1, u_nplus1
  */
 void IterativeHeatEquation::executeTimeLoopN() noexcept
@@ -619,7 +652,7 @@ void IterativeHeatEquation::executeTimeLoopN() noexcept
 		globalTimer.start();
 		cpuTimer.start();
 		n++;
-		if (!writer.isDisabled() && n >= lastDump + options.outputPeriod)
+		if (writer != NULL && !writer->isDisabled() && n >= lastDump + outputPeriod)
 			dumpVariables(n);
 		if (n!=1)
 			std::cout << "[" << __CYAN__ << __BOLD__ << setw(3) << n << __RESET__ "] t = " << __BOLD__
@@ -644,7 +677,7 @@ void IterativeHeatEquation::executeTimeLoopN() noexcept
 		
 	
 		// Evaluate loop condition with variables at time n
-		continueLoop = (t_nplus1 < options.stopTime && n + 1 < options.maxIterations);
+		continueLoop = (t_nplus1 < stopTime && n + 1 < maxIterations);
 	
 		t_n = t_nplus1;
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& i1Cells)
@@ -656,28 +689,28 @@ void IterativeHeatEquation::executeTimeLoopN() noexcept
 		globalTimer.stop();
 	
 		// Timers display
-		if (!writer.isDisabled())
+		if (writer != NULL && !writer->isDisabled())
 			std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __BLUE__ << ioTimer.print(true) << __RESET__ "} ";
 		else
 			std::cout << " {CPU: " << __BLUE__ << cpuTimer.print(true) << __RESET__ ", IO: " << __RED__ << "none" << __RESET__ << "} ";
 		
 		// Progress
-		std::cout << progress_bar(n, options.maxIterations, t_n, options.stopTime, 25);
+		std::cout << progress_bar(n, maxIterations, t_n, stopTime, 25);
 		std::cout << __BOLD__ << __CYAN__ << Timer::print(
-			eta(n, options.maxIterations, t_n, options.stopTime, deltat, globalTimer), true)
+			eta(n, maxIterations, t_n, stopTime, deltat, globalTimer), true)
 			<< __RESET__ << "\r";
 		std::cout.flush();
 	
 		cpuTimer.reset();
 		ioTimer.reset();
 	} while (continueLoop);
-	if (!writer.isDisabled())
+	if (writer != NULL && !writer->isDisabled())
 		dumpVariables(n+1, false);
 }
 
 void IterativeHeatEquation::dumpVariables(int iteration, bool useTimer)
 {
-	if (!writer.isDisabled())
+	if (writer != NULL && !writer->isDisabled())
 	{
 		if (useTimer)
 		{
@@ -685,16 +718,16 @@ void IterativeHeatEquation::dumpVariables(int iteration, bool useTimer)
 			ioTimer.start();
 		}
 		auto quads = mesh.getGeometry()->getQuads();
-		writer.startVtpFile(iteration, t_n, nbNodes, X.data(), nbCells, quads.data());
-		writer.openNodeData();
-		writer.closeNodeData();
-		writer.openCellData();
-		writer.openCellArray("Temperature", 0);
+		writer->startVtpFile(iteration, t_n, nbNodes, X.data(), nbCells, quads.data());
+		writer->openNodeData();
+		writer->closeNodeData();
+		writer->openCellData();
+		writer->openCellArray("Temperature", 0);
 		for (size_t i=0 ; i<nbCells ; ++i)
-			writer.write(u_n(i));
-		writer.closeCellArray();
-		writer.closeCellData();
-		writer.closeVtpFile();
+			writer->write(u_n(i));
+		writer->closeCellArray();
+		writer->closeCellData();
+		writer->closeVtpFile();
 		lastDump = n;
 		if (useTimer)
 		{
@@ -721,8 +754,8 @@ void IterativeHeatEquation::simulate()
 	
 	// std::cout << "[" << __GREEN__ << "KOKKOS" << __RESET__ << "]    " << __BOLD__ << (is_same<MyLayout,Kokkos::LayoutLeft>::value?"Left":"Right")" << __RESET__ << " layout" << std::endl;
 	
-	if (!writer.isDisabled())
-		std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    VTK files stored in " << __BOLD__ << writer.outputDirectory() << __RESET__ << " directory" << std::endl;
+	if (writer != NULL && !writer->isDisabled())
+		std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    VTK files stored in " << __BOLD__ << writer->outputDirectory() << __RESET__ << " directory" << std::endl;
 	else
 		std::cout << "[" << __GREEN__ << "OUTPUT" << __RESET__ << "]    " << __BOLD__ << "Disabled" << __RESET__ << std::endl;
 
@@ -802,15 +835,14 @@ int main(int argc, char* argv[])
 	mesh.jsonInit(strbuf.GetString());
 	
 	// Module instanciation(s)
-	IterativeHeatEquation::Options iterativeHeatEquationOptions;
+	IterativeHeatEquation* iterativeHeatEquation = new IterativeHeatEquation(mesh);
 	if (d.HasMember("iterativeHeatEquation"))
 	{
 		rapidjson::StringBuffer strbuf;
 		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
 		d["iterativeHeatEquation"].Accept(writer);
-		iterativeHeatEquationOptions.jsonInit(strbuf.GetString());
+		iterativeHeatEquation->jsonInit(strbuf.GetString());
 	}
-	IterativeHeatEquation* iterativeHeatEquation = new IterativeHeatEquation(mesh, iterativeHeatEquationOptions);
 	
 	// Start simulation
 	// Simulator must be a pointer when a finalize is needed at the end (Kokkos, omp...)

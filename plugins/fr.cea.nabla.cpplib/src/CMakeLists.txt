@@ -14,8 +14,9 @@ set(CMAKE_VERBOSE_MAKEFILE FALSE)
 
 # SET VARIABLES
 set(N_WS_PATH ${CMAKE_SOURCE_DIR})
-set(Kokkos_ROOT $ENV{HOME}/kokkos/kokkos-install)
-set(KokkosKernels_ROOT $ENV{HOME}/kokkos/kokkos-install)
+set(Kokkos_ROOT $ENV{HOME}/kokkos/install)
+set(KokkosKernels_ROOT $ENV{HOME}/kokkos/install)
+set(Arcane_ROOT $ENV{HOME}/arcane/install)
 
 # PROJECT
 project(fr_cea_nabla_cpplib CXX)
@@ -33,5 +34,9 @@ endif()
 
 # SUB_DIRECTORIES
 add_subdirectory(nablalib ${CMAKE_BINARY_DIR}/nablalib)
+add_subdirectory(mesh/cartesianmesh2dstl ${CMAKE_BINARY_DIR}/cartesianmesh2dstl)
+if(TARGET cartesianmesh2darcane)
+	add_subdirectory(mesh/cartesianmesh2darcane ${CMAKE_BINARY_DIR}/cartesianmesh2darcane)
+endif()
 add_subdirectory(linearalgebra/linearalgebrastl ${CMAKE_BINARY_DIR}/linearalgebrastl)
 add_subdirectory(linearalgebra/linearalgebrakokkos ${CMAKE_BINARY_DIR}/linearalgebrakokkos)

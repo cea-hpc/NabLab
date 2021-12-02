@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -10,7 +10,9 @@
 package fr.cea.nabla.validation
 
 import com.google.inject.Inject
+import fr.cea.nabla.BaseTypeSizeEvaluator
 import fr.cea.nabla.ExpressionExtensions
+import fr.cea.nabla.InvalidBaseTypeSize
 import fr.cea.nabla.NablaModuleExtensions
 import fr.cea.nabla.SpaceIteratorExtensions
 import fr.cea.nabla.nabla.AbstractTimeIterator
@@ -48,25 +50,13 @@ class BasicValidator extends UnusedValidator
 	@Inject extension ExpressionExtensions
 	@Inject extension ExpressionTypeProvider
 	@Inject extension NablaModuleExtensions
+	@Inject extension BaseTypeSizeEvaluator
 
 	// ===== Module ====
 
-	/**
-	 * A module must have at least one variable or job or iterate.
-	 * That is a way to differentiate between modules and extensions.
-	 */
-	public static val MODULE_BASE = "Module::ModuleBase"
 	public static val MODULE_UNIQUE_MESH_EXTENSION = "Module::UniqueMeshExtension"
 
-	static def getModuleBaseMsg() { "Module must contains at least a variable declaration, a job definition or an iterate instruction"}
 	static def getModuleUniqueMeshExtensionMsg(Iterable<String> names) { "Module must use only one mesh extension. Multiple meshes not yet implemented: " + names.join(", ") }
-
-	@Check(CheckType.NORMAL)
-	def void checkModuleBase(NablaModule it)
-	{
-		if (declarations.empty && iteration === null && jobs.empty)
-			error(getModuleBaseMsg(), NablaPackage.Literals.NABLA_ROOT__NAME, MODULE_BASE);
-	}
 
 	@Check(CheckType.NORMAL)
 	def void checkModuleUniqueMeshExtension(NablaModule it)
@@ -93,7 +83,7 @@ class BasicValidator extends UnusedValidator
 	def void checkNbElems(Interval it)
 	{
 		if (nbElems !== null) 
-			checkExpressionValidityAndType(nbElems, NablaPackage.Literals.INTERVAL__NB_ELEMS)
+			checkSizeExpressionValidityAndType(nbElems, NablaPackage.Literals.INTERVAL__NB_ELEMS)
 	}
 
 	// ===== Names format  =====
@@ -209,22 +199,22 @@ class BasicValidator extends UnusedValidator
 
 	// ===== BaseType =====
 
-	public static val UNSUPPORTED_DIMENSION = "BaseType::UnsupportedDimension"
+	public static val UNEXPECTED_DIMENSION = "BaseType::UnexpectedDimension"
 
-	static def getUnsupportedDimensionMsg(int dimension) { "Unsupported dimension: " + dimension }
+	static def getUnexpectedDimensionMsg(int dimension) { "Unexpected dimension: " + dimension }
 
 	@Check(CheckType.NORMAL)
-	def checkUnsupportedDimension(BaseType it)
+	def checkUnexpectedDimension(BaseType it)
 	{
 		if (sizes.size > 2)
-			error(getUnsupportedDimensionMsg(sizes.size), NablaPackage.Literals.BASE_TYPE__SIZES, UNSUPPORTED_DIMENSION)
+			error(getUnexpectedDimensionMsg(sizes.size), NablaPackage.Literals.BASE_TYPE__SIZES, UNEXPECTED_DIMENSION)
 	}
 
 	@Check(CheckType.NORMAL)
 	def checkSizeExpression(BaseType it)
 	{
 		for (i : 0..<sizes.size)
-			checkExpressionValidityAndType(sizes.get(i), NablaPackage.Literals.BASE_TYPE__SIZES, i)
+			checkSizeExpressionValidityAndType(sizes.get(i), NablaPackage.Literals.BASE_TYPE__SIZES, i)
 	}
 
 
@@ -281,22 +271,34 @@ class BasicValidator extends UnusedValidator
 	public static val VALIDITY_EXPRESSION = "Expressions::ValidityExpression"
 	public static val TYPE_EXPRESSION_TYPE = "Expressions::TypeExpression"
 
-	static def getValidityExpressionMsg() { "Reductions not allowed in types" }
+	static def getValidityExpressionMsg() { "Invalid expression for size: only simple integer expression" }
 
-	protected def void checkExpressionValidityAndType(Expression it, EStructuralFeature feature)
+	protected def void checkSizeExpressionValidityAndType(Expression it, EStructuralFeature feature)
 	{
-		if (!reductionLess)
+		try
+		{
+			getIntSizeFor(it)
+		}
+		catch (InvalidBaseTypeSize e)
+		{
 			error(getValidityExpressionMsg(), feature, VALIDITY_EXPRESSION);
+		}
 
 		val t = typeFor
 		if (t !== null && !(t instanceof NSTIntScalar))
 			error(getTypeMsg(t.label, ValidationUtils::INT.label), feature, TYPE_EXPRESSION_TYPE);
 	}
 
-	protected def void checkExpressionValidityAndType(Expression it, EStructuralFeature feature, int index)
+	protected def void checkSizeExpressionValidityAndType(Expression it, EStructuralFeature feature, int index)
 	{
-		if (!reductionLess)
+		try
+		{
+			getIntSizeFor(it)
+		}
+		catch (InvalidBaseTypeSize e)
+		{
 			error(getValidityExpressionMsg(), feature, index, VALIDITY_EXPRESSION);
+		}
 
 		val t = typeFor
 		if (t !== null && !(t instanceof NSTIntScalar))

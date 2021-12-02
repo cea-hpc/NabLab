@@ -396,7 +396,7 @@ public class ExecuteTimeLoopJobImpl extends JobCallerImpl implements ExecuteTime
 	@Override
 	public EList<Variable> getInVars() {
 		if (inVars == null) {
-			inVars = new EObjectWithInverseResolvingEList.ManyInverse<Variable>(Variable.class, this, IrPackage.EXECUTE_TIME_LOOP_JOB__IN_VARS, IrPackage.VARIABLE__NEXT_JOBS);
+			inVars = new EObjectWithInverseResolvingEList.ManyInverse<Variable>(Variable.class, this, IrPackage.EXECUTE_TIME_LOOP_JOB__IN_VARS, IrPackage.VARIABLE__CONSUMER_JOBS);
 		}
 		return inVars;
 	}
@@ -409,7 +409,7 @@ public class ExecuteTimeLoopJobImpl extends JobCallerImpl implements ExecuteTime
 	@Override
 	public EList<Variable> getOutVars() {
 		if (outVars == null) {
-			outVars = new EObjectWithInverseResolvingEList.ManyInverse<Variable>(Variable.class, this, IrPackage.EXECUTE_TIME_LOOP_JOB__OUT_VARS, IrPackage.VARIABLE__PREVIOUS_JOBS);
+			outVars = new EObjectWithInverseResolvingEList.ManyInverse<Variable>(Variable.class, this, IrPackage.EXECUTE_TIME_LOOP_JOB__OUT_VARS, IrPackage.VARIABLE__PRODUCER_JOBS);
 		}
 		return outVars;
 	}

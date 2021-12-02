@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -34,7 +34,7 @@ import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
-import static extension fr.cea.nabla.ir.generator.cpp.CppGeneratorUtils.*
+import static extension fr.cea.nabla.ir.generator.CppGeneratorUtils.*
 
 @Data
 class ExpressionContentProvider
@@ -71,7 +71,7 @@ class ExpressionContentProvider
 			case (t.scalar && t.primitive == PrimitiveType::INT): '''numeric_limits<int>::min()'''
 			// Be careful at MIN_VALUE which is a positive value for double.
 			case (t.scalar && t.primitive == PrimitiveType::REAL): '''-numeric_limits<double>::max()'''
-			default: throw new Exception('Invalid expression Min for type: ' + t.label)
+			default: throw new RuntimeException('Invalid expression Min for type: ' + t.label)
 		}
 	}
 
@@ -82,7 +82,7 @@ class ExpressionContentProvider
 		{
 			case (t.scalar && t.primitive == PrimitiveType::INT): '''numeric_limits<int>::max()'''
 			case (t.scalar && t.primitive == PrimitiveType::REAL): '''numeric_limits<double>::max()'''
-			default: throw new Exception('Invalid expression Max for type: ' + t.label)
+			default: throw new RuntimeException('Invalid expression Max for type: ' + t.label)
 		}
 	}
 
@@ -91,7 +91,7 @@ class ExpressionContentProvider
 		val t = type as BaseType
 
 		if (t.sizes.exists[x | !(x instanceof IntConstant)])
-			throw new RuntimeException("BaseTypeConstants size expressions must be IntConstant.")
+			throw new RuntimeException("BaseTypeConstants size expressions must be IntConstant")
 
 		val sizes = t.sizes.map[x | (x as IntConstant).value]
 		'''{«initArray(sizes, value.content)»}'''
@@ -99,7 +99,6 @@ class ExpressionContentProvider
 
 	def dispatch CharSequence getContent(VectorConstant it)
 	'''{«innerContent»}'''
-
 	def dispatch CharSequence getContent(Cardinality it)
 	{
 		val call = container.connectivityCall
@@ -113,10 +112,8 @@ class ExpressionContentProvider
 		else
 			'''1'''
 	}
-
 	def dispatch CharSequence getContent(FunctionCall it)
 	'''«function.codeName»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
-
 	def dispatch CharSequence getContent(ArgOrVarRef it)
 	{
 		if (target.linearAlgebra && !(iterators.empty && indices.empty))
@@ -124,7 +121,6 @@ class ExpressionContentProvider
 		else
 			'''«codeName»«formatIteratorsAndIndices(target.type, iterators, indices)»'''
 	}
-
 	def CharSequence getCodeName(ArgOrVarRef it)
 	{
 		if (IrUtils.getContainerOfType(it, IrModule) === IrUtils.getContainerOfType(target, IrModule))
@@ -132,11 +128,9 @@ class ExpressionContentProvider
 		else
 			'mainModule->' + target.codeName
 	}
-
 	private def dispatch CharSequence getInnerContent(Expression it) { content }
 	private def dispatch CharSequence getInnerContent(VectorConstant it)
 	'''«FOR v : values SEPARATOR ', '»«v.innerContent»«ENDFOR»'''
-
 	private def CharSequence initArray(int[] sizes, CharSequence value)
 	'''«FOR size : sizes SEPARATOR ",  "»«FOR i : 0..<size SEPARATOR ', '»«value»«ENDFOR»«ENDFOR»'''
 }

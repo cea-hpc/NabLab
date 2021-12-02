@@ -1,0 +1,89 @@
+/*******************************************************************************
+ * Copyright (c) 2021 CEA
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * Contributors: see AUTHORS file
+ *******************************************************************************/
+module Variables;
+
+with CartesianMesh2D.*;
+with Assert.*;
+
+// Simulation options
+let ℝ maxTime = 0.1;
+let ℕ maxIter = 500;
+let ℝ δt = 1.0;
+let ℝ t = 0.0;
+ℝ[2] X{nodes};
+
+// options with default values
+option ℕ optDim = 2;
+option ℝ[2] optVect1 = [1.0, 1.0];
+option ℝ[2] optVect2 = [1.0, 1.0]; // value overwritten in Json
+let ℝ[2] optVect3 = optVect1 + optVect2; 
+
+
+// options with no default values
+option ℕ mandatoryOptDim;
+option ℕ[2] mandatoryOptVect;
+
+// const expr var
+let ℕ constexprDim = 2;
+let ℝ[constexprDim] constexprVec = [1.1, 1.1];
+
+// variables with default value but overwritten in TestJob
+let ℝ[constexprDim] varVec = [1.0, 1.0];
+ 
+// variables needing allocation
+ℕ checkDynamicDim;
+ℝ[optDim] dynamicVec;
+
+DynamicVecInitialization: 
+{
+	let ℕ cpt = 0;
+	∀i∈[0;optDim[,
+	{
+		cpt = cpt + 1;
+		dynamicVec[i] = 3.3;
+	}
+	checkDynamicDim = cpt;
+}
+
+VarVecInitialization: varVec = [2.2, 2.2];
+
+Oracle:
+{
+	// options with default values
+	let ℾ testOptDim = assertEquals(2, optDim);
+	let ℾ testOptVect1 = assertEquals([1.0, 1.0], optVect1);
+	let ℾ testOptVect2 = assertEquals([2.0, 2.0], optVect2);
+	let ℾ testOptVect3 = assertEquals([3.0, 3.0], optVect3);
+
+	// options with no default values
+	let ℾ testMandatoryOptDim = assertEquals(3, mandatoryOptDim);
+	let ℾ testMandatoryOptVect = assertEquals([3, 3], mandatoryOptVect);
+
+	// const expr var
+	let ℾ testConstexprDim = assertEquals(2, constexprDim);
+	let ℾ testConstexprVec = assertEquals([1.1, 1.1], constexprVec);
+
+	// variables with default value but overwritten in InitJob
+	let ℾ testVarVec = assertEquals([2.2, 2.2], varVec);
+
+	// variables needing allocation
+	let ℾ testDynamicVecLength = assertEquals(2, checkDynamicDim);
+	
+// NOT YET IMPLEMENTED : BaseTypeConstants on a dynamic size
+//	let ℾ testDynamicVec = assertEquals(dynamicVec, ℝ[optDim](3.3));
+
+	// local variables
+//	∀ r∈nodes(), 
+//	{
+//		let ℕ localNbCells = card(cellsOfNode(r));
+//		let ℝ[localNbCells] tmp = ℝ[localNbCells](0.0);
+//		let ℾ testTmp = assertEquals(tmp, ℝ[localNbCells](0.0));
+//	}
+}

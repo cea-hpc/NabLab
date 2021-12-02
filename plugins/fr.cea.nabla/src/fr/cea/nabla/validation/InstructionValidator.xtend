@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -15,11 +15,7 @@ import fr.cea.nabla.ExpressionExtensions
 import fr.cea.nabla.nabla.Affectation
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.ConnectivityVar
-import fr.cea.nabla.nabla.Expression
-import fr.cea.nabla.nabla.Function
-import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.If
-import fr.cea.nabla.nabla.NablaExtension
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.OptionDeclaration
@@ -29,7 +25,7 @@ import fr.cea.nabla.nabla.While
 import fr.cea.nabla.typing.BaseTypeTypeProvider
 import fr.cea.nabla.typing.ExpressionTypeProvider
 import fr.cea.nabla.typing.NablaConnectivityType
-import org.eclipse.xtext.EcoreUtil2
+import fr.cea.nabla.typing.NablaSimpleType
 import org.eclipse.xtext.validation.Check
 import org.eclipse.xtext.validation.CheckType
 
@@ -38,28 +34,43 @@ class InstructionValidator extends FunctionOrReductionValidator
 	@Inject extension ValidationUtils
 	@Inject extension BaseTypeTypeProvider
 	@Inject extension ExpressionTypeProvider
-	@Inject extension ExpressionExtensions
 	@Inject extension ArgOrVarExtensions
+	@Inject extension ExpressionExtensions
 
+	public static val DYNAMIC_GLOBAL_VAR = "Instructions::DynamicConnectivityVar"
 	public static val LOCAL_CONNECTIVITY_VAR = "Instructions::LocalConnectivityVar"
 	public static val AFFECTATION_TYPE = "Instructions::AffectationType"
 	public static val AFFECTATION_ON_CONNECTIVITY_TYPE = "Instructions::AffectationOnConnectivityType"
-	public static val SIMPLE_VAR_TYPE = "Instructions::SimpleVarType"
+	public static val AFFECTATION_ON_OPTION = "Instructions::AffectationOnOption"
 	public static val CONDITION_BOOL = "Instructions::ConditionBool"
+	public static val SIMPLE_VAR_TYPE = "Instructions::SimpleVarType"
 	public static val GLOBAL_VAR_VALUE = "Instructions::GlobalVarValue"
-	public static val OPTION_DEFAULT_VALUE = "Instructions::OptionDefaultValue"
-	public static val EXTERN_FUNCTION_CALL_IN_FUNCTION_BODY = "Instructions::ExternFunctionCallInFunctionBody"
 
-	static def getLocalConnectivityVarMsg() { "Local variables not allowed on connectivities"}
+	static def getDynamicGlobalVarMsg() { "Dynamic array not allowed on global variables"}
+	static def getLocalConnectivityVarMsg() { "Connectivities not allowed on local variables"}
 	static def getAffectationOnConnectivityTypeMsg() { "Assignment not allowed on connectivity variables: use loop instead" }
-	static def getGlobalVarValueMsg() { "Assignment with reduction, external function or card not allowed in options and global variables" }
-	static def getOptionDefaultValueMsg() { "Option default value can not depend on variables" }
-	static def getExternFunctionCallInFunctionBodyMsg() { "External function can not be called in inline function" }
+	static def getAffectationOnOptionMsg() { "Assignment not allowed on options"}
+	static def getGlobalVarValueMsg() { "Assignment with reduction, external function, card or dynamic variable not allowed in options and global variables" }
+
+	@Check(CheckType.NORMAL)
+	def checkDynamicGlobalVar(VarGroupDeclaration it)
+	{
+		// Global variable ?
+		if (eContainer !== null && eContainer instanceof NablaModule)
+		{
+			if (!type.sizes.empty)
+			{
+				val t = type.typeFor as NablaSimpleType
+				if (!t.isStatic && type.eAllContents.filter(ArgOrVarRef).exists[x | !x.target.option])
+					error(getDynamicGlobalVarMsg(), NablaPackage.Literals::VAR_DECLARATION__TYPE, DYNAMIC_GLOBAL_VAR)
+			}
+		}
+	}
 
 	@Check(CheckType.NORMAL)
 	def checkLocalConnectivitityVar(VarGroupDeclaration it)
 	{
-		// Global or local variable ?
+		// Local variable ?
 		if (eContainer !== null && !(eContainer instanceof NablaModule))
 		{
 			for (i : 0..<variables.size)
@@ -73,6 +84,9 @@ class InstructionValidator extends FunctionOrReductionValidator
 	{
 		if (right !== null&& left !== null)
 		{
+			if (left.target.option)
+				error(getAffectationOnOptionMsg(), NablaPackage.Literals.AFFECTATION__LEFT, AFFECTATION_ON_OPTION)
+
 			val leftType = left.typeFor
 			val rightType = right.typeFor
 			if (!checkExpectedType(rightType, leftType))
@@ -135,35 +149,7 @@ class InstructionValidator extends FunctionOrReductionValidator
 			{
 				if (!value.nablaEvaluable)
 					error(getGlobalVarValueMsg(), NablaPackage.Literals::OPTION_DECLARATION__VALUE, GLOBAL_VAR_VALUE)
-				else if (value.containsVariable)
-					error(getOptionDefaultValueMsg(), NablaPackage.Literals::OPTION_DECLARATION__VALUE, OPTION_DEFAULT_VALUE)
 			}
 		}
-	}
-
-	/**
-	 * Inline functions are generated as simple functions (not methods of class)
-	 * to be call in option initializations (before class instanciation).
-	 * Extern functions are holded by a provider, i.e. LinearAlgebra.
-	 * The provider is an option that can be initialized by a json data file.
-	 * Consequently, it can not be called in a free function.
-	 */
-	@Check(CheckType.NORMAL)
-	def checkExternFunctionCallInFunctionBody(FunctionCall it)
-	{
-		val nablaExt = EcoreUtil2.getContainerOfType(function, NablaExtension)
-		if ((nablaExt !== null) && function.external && (nablaExt.name != "Math"))
-		{
-			val function = EcoreUtil2.getContainerOfType(eContainer, Function)
-			if (function !== null)
-				error(getExternFunctionCallInFunctionBodyMsg(), NablaPackage.Literals.FUNCTION_CALL__FUNCTION, EXTERN_FUNCTION_CALL_IN_FUNCTION_BODY)
-		}
-	}
-
-	private def containsVariable(Expression e)
-	{
-		if (e instanceof ArgOrVarRef)
-			!e.target.option
-		else e.eAllContents.filter(ArgOrVarRef).exists[x | !x.target.option]
 	}
 }

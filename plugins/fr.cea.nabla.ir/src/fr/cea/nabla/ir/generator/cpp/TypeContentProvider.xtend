@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -54,7 +54,7 @@ abstract class TypeContentProvider
 			BaseType case sizes.size == 1: primitive.jniType + "Array"
 			BaseType: "jobjectArray"
 			LinearAlgebraType: "jobject"
-			default: throw new RuntimeException("Ooops. Can not be there, normally...")
+			default: throw new RuntimeException("Unexpected type: " + class.name)
 		}
 	}
 
@@ -113,22 +113,11 @@ abstract class TypeContentProvider
 		}
 	}
 
-	def boolean isBaseTypeStatic(IrType it)
-	{
-		switch it
-		{
-			BaseType: sizes.empty || sizes.forall[x | x.constExpr]
-			ConnectivityType: base.baseTypeStatic
-			LinearAlgebraType: sizes.empty || sizes.forall[x | x.constExpr]
-			default: throw new RuntimeException("Unhandled parameter")
-		}
-	}
-
 	private def getCppArrayType(PrimitiveType t, Iterable<Expression> sizes)
 	{
 		switch t
 		{
-			case null, case BOOL : throw new RuntimeException('Not implemented')
+			case null, case BOOL : throw new RuntimeException("Unexpected type: " + class.name)
 			default: t.getName() + 'Array' + sizes.size + 'D' + '<' + sizes.map[e | (e.constExpr?e.content:'0')].join(',') + '>'
 		}
 	}
@@ -161,7 +150,7 @@ class StlThreadTypeContentProvider extends TypeContentProvider
 	{
 		switch connectivities.size
 		{
-			case 0: throw new RuntimeException("Ooops. Can not be there, normally...")
+			case 0: throw new RuntimeException("Unexpected size: " + connectivities.size)
 			case 1: connectivities.get(0).nbElemsVar
 			default: '''«connectivities.get(0).nbElemsVar», «getCppType(baseType, connectivities.tail)»(«getCstrInit(name, baseType, connectivities.tail)»)''' 
 		}

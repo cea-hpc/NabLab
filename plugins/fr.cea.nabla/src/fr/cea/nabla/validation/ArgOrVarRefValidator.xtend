@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -114,7 +114,7 @@ class ArgOrVarRefValidator extends InstructionValidator
 	def checkIndicesExpressionAndType(ArgOrVarRef it)
 	{
 		for (i : 0..<indices.size)
-			checkExpressionValidityAndType(indices.get(i), NablaPackage.Literals.ARG_OR_VAR_REF__INDICES, i)
+			checkSizeExpressionValidityAndType(indices.get(i), NablaPackage.Literals.ARG_OR_VAR_REF__INDICES, i)
 	}
 
 	@Check(CheckType.NORMAL)

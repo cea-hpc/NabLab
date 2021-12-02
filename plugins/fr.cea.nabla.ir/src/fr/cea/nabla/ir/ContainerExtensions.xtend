@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -9,13 +9,22 @@
  *******************************************************************************/
 package fr.cea.nabla.ir
 
-import fr.cea.nabla.ir.ir.ConnectivityCall
-import fr.cea.nabla.ir.ir.SetRef
-import fr.cea.nabla.ir.ir.Container
 import fr.cea.nabla.ir.ir.Connectivity
+import fr.cea.nabla.ir.ir.ConnectivityCall
+import fr.cea.nabla.ir.ir.Container
+import fr.cea.nabla.ir.ir.SetRef
 
 class ContainerExtensions 
 {
+	static def getItemType(Container it)
+	{
+		switch it
+		{
+			ConnectivityCall: connectivity.returnType
+			SetRef: target.value.connectivity.returnType
+		}
+	}
+
 	static def getConnectivityCall(Container it)
 	{
 		switch it

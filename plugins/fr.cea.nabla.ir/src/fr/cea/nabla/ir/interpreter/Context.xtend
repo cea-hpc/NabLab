@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -13,14 +13,18 @@ import fr.cea.nabla.ir.ir.ArgOrVar
 import fr.cea.nabla.ir.ir.ConnectivityCall
 import fr.cea.nabla.ir.ir.Container
 import fr.cea.nabla.ir.ir.DefaultExtensionProvider
+import fr.cea.nabla.ir.ir.ExtensionProvider
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.ItemId
 import fr.cea.nabla.ir.ir.ItemIndex
+import fr.cea.nabla.ir.ir.MeshExtensionProvider
 import fr.cea.nabla.ir.ir.SetRef
 import fr.cea.nabla.javalib.mesh.PvdFileWriter2D
 import java.util.HashMap
 import java.util.logging.Logger
 import org.eclipse.xtend.lib.annotations.Accessors
+
+import static extension fr.cea.nabla.ir.IrRootExtensions.*
 
 class Context
 {
@@ -33,9 +37,8 @@ class Context
 
 	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) val IrRoot ir
 	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) PvdFileWriter2D writer
-	@Accessors(PUBLIC_GETTER, PUBLIC_SETTER)  boolean levelDBCompareResult
-	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) val HashMap<DefaultExtensionProvider, CallableExtensionProviderHelper> providers
-	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) MeshExtensionProviderHelper meshProvider
+	@Accessors(PUBLIC_GETTER, PACKAGE_SETTER) boolean levelDBCompareResult
+	@Accessors(PUBLIC_GETTER, PRIVATE_SETTER) val HashMap<ExtensionProvider, ExtensionProviderHelper> providers
 
 	new(Logger logger, IrRoot ir, String wsPath)
 	{
@@ -43,38 +46,44 @@ class Context
 		this.logger = logger
 		this.ir = ir
 		this.levelDBCompareResult = true
+		this.providers = new HashMap<ExtensionProvider, ExtensionProviderHelper>
 
-		providers = new HashMap<DefaultExtensionProvider, CallableExtensionProviderHelper>
 		// providerName can be null when default option are interpreted for json generation
 		// The providerName is set when the target is defined (json generation done before)
 		if (wsPath !== null)
 		{
+			
 			for (p : ir.providers)
 			{
 				try
 				{
-					// create the helper
-					var CallableExtensionProviderHelper helper
-					if (p.extensionName == "Math")
-						helper = new MathExtensionProviderHelper
-					else if (p.linearAlgebra)
-						helper = new LinearAlgebraExtensionProviderHelper(p, wsPath)
-					else
-						helper = new DefaultExtensionProviderHelper(p, wsPath)
+					switch p
+					{
+						MeshExtensionProvider:
+						{
+							val helper = new MeshExtensionProviderHelper
+							helper.init(ir.mesh.connectivities)
+							providers.put(p, helper)
+						}
+						DefaultExtensionProvider:
+						{
+							var CallableExtensionProviderHelper helper
+							if (p.extensionName == "Math")
+								helper = new MathExtensionProviderHelper
+							else if (p.linearAlgebra)
+								helper = new LinearAlgebraExtensionProviderHelper(p, wsPath)
+							else
+								helper = new DefaultExtensionProviderHelper(p, wsPath)
 
-					helper.init(p.functions)
-					providers.put(p, helper)
+							helper.init(p.functions)
+							providers.put(p, helper)
+						}
+					}
 				}
 				catch (ClassNotFoundException e)
 				{
 					throw new ExtensionProviderNotFound(p, e)
 				}
-			}
-
-			if (ir.mesh !== null)
-			{
-				meshProvider = new MeshExtensionProviderHelper
-				meshProvider.init(ir.mesh.connectivities)
 			}
 		}
 	}
@@ -87,7 +96,12 @@ class Context
 		this.writer = outerContext.writer
 		this.levelDBCompareResult = outerContext.levelDBCompareResult
 		this.providers = outerContext.providers
-		this.meshProvider = outerContext.meshProvider
+	}
+
+	def getMesh()
+	{
+		// only one mesh for the moment
+		providers.values.filter(MeshExtensionProviderHelper).head
 	}
 
 	def initWriter(String outputPath)
@@ -149,7 +163,7 @@ class Context
 			if (outerContext !== null)
 				outerContext.setVariableValue(it, value)
 			else
-				throw new RuntimeException('Variable not found ' + name)
+				throw new RuntimeException('Variable not found: ' + name)
 	}
 
 	// ContainerValues
@@ -165,14 +179,14 @@ class Context
 	def void addSetValue(String setName, ConnectivityCall value) 
 	{ 
 		val argIds =  value.args.map[x | getIdValue(x)]
-		val containerValue = meshProvider.getElements(value.connectivity, argIds)
+		val containerValue = mesh.getElements(value.connectivity, argIds)
 		setValues.put(setName, containerValue)
 	}
 
 	def int[] getConnectivityCallValue(ConnectivityCall it)
 	{
 		val argIds =  args.map[x | getIdValue(x)]
-		meshProvider.getElements(connectivity, argIds)
+		mesh.getElements(connectivity, argIds)
 	}
 
 	// IndexValues
@@ -195,7 +209,7 @@ class Context
 			if (outerContext !== null)
 				outerContext.setIndexValue(index, value)
 			else
-				throw new RuntimeException('Index not found ' + index.name)
+				throw new RuntimeException('Index not found: ' + index.name)
 	}
 
 	// IdValues
@@ -217,12 +231,12 @@ class Context
 			if (outerContext !== null)
 				outerContext.setIdValue(id, value)
 			else
-				throw new RuntimeException('Unique identifier not found ' + id.name)
+				throw new RuntimeException('Unique identifier not found: ' + id.name)
 	}
 
 	def int getSingleton(ConnectivityCall it)
 	{
-		meshProvider.getSingleton(connectivity, args.map[x | getIdValue(x)])
+		mesh.getSingleton(connectivity, args.map[x | getIdValue(x)])
 	}
 
 	def logVariables(String message)
@@ -239,7 +253,7 @@ class Context
 		if (logger.level.intValue <= Context.Level::FINER.intValue)
 		{
 			if (message !== null) logger.log(Context.Level::FINER, message)
-			meshProvider.logSizes(logger, Context.Level::FINER)
+			mesh.logSizes(logger, Context.Level::FINER)
 		}
 	}
 

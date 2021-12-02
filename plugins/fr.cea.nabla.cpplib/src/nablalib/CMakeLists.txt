@@ -11,10 +11,7 @@
 # This file is in a cmake sub_directory and is called by a root CMakeLists.txt 
 
 # LIBRARY nablalib
-add_library(nablalib 
-    nablalib/mesh/CartesianMesh2D.cc nablalib/mesh/PvdFileWriter2D.cc
-    nablalib/types/MultiArray.cc
-    nablalib/utils/Timer.cc nablalib/utils/Utils.cc)
+add_library(nablalib nablalib/types/MultiArray.cc nablalib/utils/Timer.cc nablalib/utils/Utils.cc)
 set_property(TARGET nablalib PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_compile_options(nablalib PUBLIC -g -Wall -O3 --std=c++17 -mtune=native)
 target_include_directories(nablalib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

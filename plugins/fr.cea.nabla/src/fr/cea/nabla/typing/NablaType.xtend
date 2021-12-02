@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -9,6 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.typing
 
+import fr.cea.nabla.ir.IrTypeExtensions
 import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.nabla.Connectivity
 import fr.cea.nabla.nabla.DefaultExtension
@@ -23,6 +24,7 @@ import static extension fr.cea.nabla.LabelServices.*
 @Data
 abstract class NablaType
 {
+	public static val int DYNAMIC_SIZE = IrTypeExtensions::DYNAMIC_SIZE
 	abstract def String getLabel()
 	abstract def PrimitiveType getPrimitive()
 }
@@ -46,6 +48,7 @@ class NablaConnectivityType extends NablaType
 abstract class NablaSimpleType extends NablaType
 {
 	abstract def int getDimension()
+	abstract def boolean isStatic()
 }
 
 @Data
@@ -53,21 +56,26 @@ abstract class NSTScalar extends NablaSimpleType
 {
 	override getLabel() { primitive.literal }
 	override getDimension() { 0 }
+	override isStatic() { true }
 }
 
 @Data
 abstract class NSTArray1D extends NablaSimpleType
 {
 	val Expression size
+	val int intSize
 
 	override getDimension() { 1 }
+	override isStatic() { intSize != DYNAMIC_SIZE }
 
 	override getLabel()
 	{
-		if (size instanceof IntConstant)
-			primitive.literal + IrUtils.getUtfExponent(size.value)
-		else
+		if (intSize == DYNAMIC_SIZE)
 			primitive.literal + '[' + size.label + ']'
+		else if (intSize > 9)
+			primitive.literal + '[' + intSize + ']'
+		else
+			primitive.literal + IrUtils.getUtfExponent(intSize)
 	}
 
 	/**
@@ -86,9 +94,13 @@ abstract class NSTArray1D extends NablaSimpleType
 		{
 			if (other.size !== null) return false
 		}
-		else 
-			if (!EcoreUtil::equals(this.size, other.size))
+		else
+		{
+			if (this.intSize != other.intSize)
 				return false
+			else if (this.intSize == DYNAMIC_SIZE)
+				return EcoreUtil::equals(this.size, other.size)
+		}
 		return true
 	}
 }
@@ -98,15 +110,20 @@ abstract class NSTArray2D extends NablaSimpleType
 {
 	val Expression nbRows
 	val Expression nbCols
+	val int intNbRows
+	val int intNbCols
 
 	override getDimension() { 2 }
+	override isStatic() { intNbRows != DYNAMIC_SIZE && intNbCols != DYNAMIC_SIZE }
 
 	override getLabel()
 	{
-		if (nbRows instanceof IntConstant && nbCols instanceof IntConstant)
-			primitive.literal + IrUtils.getUtfExponent((nbRows as IntConstant).value) + '\u02E3' + IrUtils.getUtfExponent((nbCols as IntConstant).value)
-		else
+		if (intNbRows == DYNAMIC_SIZE || intNbCols == DYNAMIC_SIZE)
 			primitive.literal + '[' + nbRows.label + ',' + nbCols.label + ']'
+		else if (intNbRows > 9 || intNbCols > 9)
+			primitive.literal + '[' + intNbRows + ',' + intNbCols + ']'
+		else
+			primitive.literal + IrUtils.getUtfExponent((nbRows as IntConstant).value) + '\u02E3' + IrUtils.getUtfExponent((nbCols as IntConstant).value)
 	}
 
 	/**
@@ -126,16 +143,24 @@ abstract class NSTArray2D extends NablaSimpleType
 			if (other.nbRows !== null) return false
 		}
 		else
-			if (!EcoreUtil::equals(this.nbRows, other.nbRows))
-				return false;
+		{
+			if (this.intNbRows != other.intNbRows)
+				return false
+			else if (this.intNbRows == DYNAMIC_SIZE)
+				return EcoreUtil::equals(this.nbRows, other.nbRows)
+		}
 
 		if (this.nbCols === null)
 		{
 			if (other.nbCols !== null) return false
 		} 
 		else
-			if (!EcoreUtil::equals(this.nbCols, other.nbCols))
+		{
+			if (this.intNbCols != other.intNbCols)
 				return false
+			else if (this.intNbCols == DYNAMIC_SIZE)
+				return EcoreUtil::equals(this.nbCols, other.nbCols)
+		}
 		return true
 	}
 }
@@ -197,6 +222,7 @@ class NSTRealArray2D extends NSTArray2D
 @Data
 abstract class NablaLinearAlgebraType extends NablaType
 {
+	abstract def boolean isStatic()
 }
 
 @Data
@@ -204,9 +230,11 @@ class NLATVector extends NablaLinearAlgebraType
 {
 	val DefaultExtension defaultExtension
 	val Expression size
+	val int intSize
 
 	override getLabel() { 'Vector[' + size.label +  ']' }
 	override getPrimitive() { PrimitiveType::REAL }
+	override isStatic() { intSize != DYNAMIC_SIZE }
 
 	override equals(Object obj)
 	{
@@ -221,8 +249,12 @@ class NLATVector extends NablaLinearAlgebraType
 			if (other.size !== null) return false
 		}
 		else
-			if (!EcoreUtil::equals(this.size, other.size))
+		{
+			if (this.intSize != other.intSize)
 				return false
+			else if (this.intSize == DYNAMIC_SIZE) 
+				return EcoreUtil::equals(this.size, other.size)
+		}
 		return true
 	}
 }
@@ -233,9 +265,12 @@ class NLATMatrix extends NablaLinearAlgebraType
 	val DefaultExtension defaultExtension
 	val Expression nbRows
 	val Expression nbCols
+	val int intNbRows
+	val int intNbCols
 
 	override getLabel() { 'Matrix['  + nbRows.label + ',' + nbCols.label +  ']' }
 	override getPrimitive() { PrimitiveType::REAL }
+	override isStatic() { intNbRows != DYNAMIC_SIZE && intNbCols != DYNAMIC_SIZE }
 
 	override equals(Object obj)
 	{
@@ -250,16 +285,24 @@ class NLATMatrix extends NablaLinearAlgebraType
 			if (other.nbRows !== null) return false
 		}
 		else
-			if (!EcoreUtil::equals(this.nbRows, other.nbRows))
-				return false;
+		{
+			if (this.intNbRows != other.intNbRows)
+				return false
+			else if (this.intNbRows == DYNAMIC_SIZE)
+				return EcoreUtil::equals(this.nbRows, other.nbRows)
+		}
 
 		if (this.nbCols === null)
 		{
 			if (other.nbCols !== null) return false
 		}
 		else
-			if (!EcoreUtil::equals(this.nbCols, other.nbCols))
+		{
+			if (this.intNbCols != other.intNbCols)
 				return false
+			else if (this.intNbCols == DYNAMIC_SIZE)
+				return EcoreUtil::equals(this.nbCols, other.nbCols)
+		}
 		return true
 	}
 }

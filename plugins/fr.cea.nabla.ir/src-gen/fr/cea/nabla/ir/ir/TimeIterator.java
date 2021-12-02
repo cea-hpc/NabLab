@@ -87,17 +87,17 @@ public interface TimeIterator extends IrAnnotable {
 
 	/**
 	 * Returns the value of the '<em><b>Variables</b></em>' reference list.
-	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Variable}.
-	 * It is bidirectional and its opposite is '{@link fr.cea.nabla.ir.ir.Variable#getTimeIterator <em>Time Iterator</em>}'.
+	 * The list contents are of type {@link fr.cea.nabla.ir.ir.TimeVariable}.
+	 * It is bidirectional and its opposite is '{@link fr.cea.nabla.ir.ir.TimeVariable#getTimeIterator <em>Time Iterator</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Variables</em>' reference list.
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getTimeIterator_Variables()
-	 * @see fr.cea.nabla.ir.ir.Variable#getTimeIterator
+	 * @see fr.cea.nabla.ir.ir.TimeVariable#getTimeIterator
 	 * @model opposite="timeIterator"
 	 * @generated
 	 */
-	EList<Variable> getVariables();
+	EList<TimeVariable> getVariables();
 
 	/**
 	 * Returns the value of the '<em><b>Time Loop Job</b></em>' reference.

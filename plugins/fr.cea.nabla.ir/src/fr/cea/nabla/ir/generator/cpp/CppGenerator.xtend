@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -16,7 +16,7 @@ abstract class CppGenerator
 	protected val Backend backend
 
 	def String getName() { backend.name }
-	def IrTransformationStep getIrTransformationStep() { backend.irTransformationStep }
+	def IrTransformationStep[] getIrTransformationSteps() { backend.irTransformationSteps }
 	def CMakeContentProvider getIrRoot2CMake() { backend.cmakeContentProvider }
 	def TypeContentProvider getTypeContentProvider() { backend.typeContentProvider }
 	def ExpressionContentProvider getExpressionContentProvider() { backend.expressionContentProvider }

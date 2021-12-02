@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -48,7 +48,7 @@ class MeshExtensionProviderHelper implements ExtensionProviderHelper
 
 	def int getIndexOf(Iterator iterator, int id)
 	{
-		throw new RuntimeException("Not implemented yet")
+		throw new RuntimeException("Not yet implemented")
 	}
 
 	def int[] getElements(Connectivity connectivity, int[] args)

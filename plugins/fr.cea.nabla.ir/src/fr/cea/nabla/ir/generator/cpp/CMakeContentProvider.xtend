@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -22,11 +22,9 @@ import static extension fr.cea.nabla.ir.IrRootExtensions.getExecName
 
 class CMakeContentProvider
 {
-	public static val WS_PATH = 'N_WS_PATH'
-
-	protected def Iterable<String> getNeededVariables()
+	protected def Iterable<String> getNeededVariables(IrRoot irRoot)
 	{
-		#[WS_PATH]
+		#[]
 	}
 
 	protected def CharSequence getFindPackageContent(IrRoot irRoot)
@@ -48,7 +46,7 @@ class CMakeContentProvider
 
 		«CMakeUtils.setVariables(variables, externalProviders)»
 
-		«CMakeUtils.checkVariables(neededVariables)»
+		«CMakeUtils.checkVariables(false, neededVariables)»
 
 		# PROJECT
 		project(«name»Project CXX)
@@ -68,7 +66,7 @@ class CMakeContentProvider
 
 		# EXECUTABLE «execName»
 		add_executable(«execName»«FOR m : modules» «m.className + '.cc'»«ENDFOR»)
-		target_link_libraries(«execName» PUBLIC«FOR l : getTargetLinkLibs(it, hasLevelDB)» «l»«ENDFOR»)
+		target_link_libraries(«execName» PUBLIC«FOR l : getRootTargetLinkLibraries(it, hasLevelDB)» «l»«ENDFOR»)
 
 		«CMakeUtils.fileFooter»
 	'''
@@ -77,7 +75,7 @@ class CMakeContentProvider
 	'''
 		«CMakeUtils.getFileHeader(true)»
 
-		«CMakeUtils.checkVariables(neededVariables)»
+		«CMakeUtils.checkVariables(true, #[])»
 
 		«CMakeUtils.addSubDirectories(true, #[])»
 
@@ -91,18 +89,13 @@ class CMakeContentProvider
 		«CMakeUtils.fileFooter»
 	'''
 
-	private def getTargetLinkLibs(IrRoot it, boolean hasLevelDB)
+	private def getRootTargetLinkLibraries(IrRoot it, boolean hasLevelDB)
 	{
 		val libs = new LinkedHashSet<String>
 		libs.addAll(targetLinkLibraries)
 		if (hasLevelDB) libs += "leveldb::leveldb Threads::Threads"
 		externalProviders.forEach[p | libs += p.libName]
 		return libs
-	}
-
-	private def getExternalProviders(IrRoot it)
-	{
-		providers.filter(DefaultExtensionProvider).filter[x | x.extensionName != "Math"]
 	}
 }
 
@@ -121,6 +114,11 @@ class StlThreadCMakeContentProvider extends CMakeContentProvider
 
 class KokkosCMakeContentProvider extends CMakeContentProvider
 {
+	override getNeededVariables(IrRoot irRoot)
+	{
+		#['Kokkos_ROOT']
+	}
+
 	override getFindPackageContent(IrRoot irRoot)
 	'''
 		find_package(Kokkos REQUIRED)

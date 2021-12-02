@@ -24,7 +24,7 @@ endif()
 add_library(linearalgebrastl Vector.cc Matrix.cc LinearAlgebra.cc)
 set_property(TARGET linearalgebrastl PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_compile_options(linearalgebrastl PUBLIC -g -Wall -O3 --std=c++17 -mtune=native)
-target_include_directories(nablalib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(linearalgebrastl PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(linearalgebrastl PUBLIC nablalib pthread)
 
 # OPTIONAL USER OPTIONS IN Project.cmake

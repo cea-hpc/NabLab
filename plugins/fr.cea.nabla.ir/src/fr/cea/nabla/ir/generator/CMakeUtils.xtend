@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -10,17 +10,18 @@
 package fr.cea.nabla.ir.generator
 
 import fr.cea.nabla.ir.IrUtils
-import fr.cea.nabla.ir.ir.DefaultExtensionProvider
+import fr.cea.nabla.ir.ir.ExtensionProvider
 
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 
 class CMakeUtils
 {
+	public static val WS_PATH = 'N_WS_PATH'
 	static val userDir = System.getProperty("user.home")
 
 	static def getFileHeader(boolean subDirectory)
 	'''
-		### GENERATED FILE - DO NOT OVERWRITE ###
+		### «Utils::doNotEditWarning» ###
 
 		«IF subDirectory»
 		# This file is in a cmake sub_directory and is called by a root CMakeLists.txt 
@@ -31,7 +32,7 @@ class CMakeUtils
 		«ENDIF»
 	'''
 
-	static def setVariables(Iterable<Pair<String, String>> variables, Iterable<DefaultExtensionProvider> providers)
+	static def setVariables(Iterable<Pair<String, String>> variables, Iterable<? extends ExtensionProvider> providers)
 	'''
 		# SET VARIABLES
 		«FOR v : variables»
@@ -42,10 +43,15 @@ class CMakeUtils
 		«ENDFOR»
 	'''
 
-	static def checkVariables(Iterable<String> variableNames)
+	static def checkVariables(boolean needNablalib, Iterable<String> variableNames)
 	'''
-		«IF !variableNames.empty»
+		«IF needNablalib»
 			# CHECK VARIABLES
+			if (NOT DEFINED «CMakeUtils::WS_PATH»)
+				message(FATAL_ERROR "«CMakeUtils::WS_PATH» variable must be set")
+			endif()
+		«ENDIF»
+		«IF !variableNames.empty»
 			«FOR v : variableNames»
 			if (NOT DEFINED «v»)
 				message(FATAL_ERROR "«v» variable must be set")
@@ -54,7 +60,7 @@ class CMakeUtils
 		«ENDIF»
 	'''
 
-	static def addSubDirectories(boolean needNablalib, Iterable<DefaultExtensionProvider> providers)
+	static def addSubDirectories(boolean needNablalib, Iterable<? extends ExtensionProvider> providers)
 	'''
 		«IF needNablalib || !providers.empty»
 			# SUB_DIRECTORIES

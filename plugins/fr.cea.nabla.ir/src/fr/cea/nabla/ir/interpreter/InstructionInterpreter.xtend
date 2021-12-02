@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -86,10 +86,13 @@ class InstructionInterpreter
 	{
 		context.logFinest("Interprete Affectation")
 		val rightValue = interprete(right, context)
-		// Switch to more efficient implementation (avoid costly toList calls)
-		val allIndices = newArrayList
-		left.iterators.forEach[x|allIndices.add(context.getIndexValue(x))]
-		allIndices.addAll(interpreteDimensionExpressions(left.indices, context))
+		val allIndices = newIntArrayOfSize(left.iterators.size + left.indices.size)
+		var i = 0
+		for (iterator : left.iterators)
+			allIndices.set(i++, context.getIndexValue(iterator))
+		for (index : left.indices)
+			allIndices.set(i++, interpreteSize(index, context))
+
 		setValue(context.getVariableValue(left.target), allIndices, rightValue)
 		return null
 	}
@@ -97,7 +100,7 @@ class InstructionInterpreter
 	private static def NablaValue interpreteReductionInstruction(ReductionInstruction it, Context context)
 	{
 		// All reductionInstruction have been replaced by specific Ir Transformation Step
-		throw new RuntimeException('Wrong path...')
+		throw new RuntimeException('Unexpected reduction instruction: apply the "ReplaceReduction(true)" transformation step')
 	}
 
 	private static def NablaValue interpreteLoop(Loop it, Context context)
@@ -118,7 +121,7 @@ class InstructionInterpreter
 						innerContext.addIndexValue(b.index, loopIteratorValue)
 						val ret = interprete(body, innerContext)
 						if (ret !== null)
-							throw new RuntimeException("No return in parallel loop ! " + ret)
+							throw new RuntimeException("Unexpected return in parallel loop: " + ret)
 					}])
 				}
 				else
@@ -242,7 +245,7 @@ class InstructionInterpreter
 			return iteratorRefIndex
 		else
 		{
-			val nbElems = context.meshProvider.getSize(iterator.container.connectivityCall.connectivity)
+			val nbElems = context.mesh.getSize(iterator.container.connectivityCall.connectivity)
 			return (iteratorRefIndex + shift + nbElems)%nbElems
 		}
 	}

@@ -5,7 +5,7 @@
   <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
     <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationVectorConstantByGeneratingInPython.ngen"/>
     <details key="offset" value="0"/>
-    <details key="length" value="301"/>
+    <details key="length" value="360"/>
   </annotations>
   <main calls="//@modules.0/@jobs.0" allInVars="//@modules.0/@variables.4" allOutVars="//@modules.0/@variables.3"/>
   <modules name="readInitializationVectorConstantByGeneratingInPython" main="true">
@@ -14,56 +14,58 @@
       <details key="offset" value="67"/>
       <details key="length" value="163"/>
     </annotations>
-    <variables name="t" originName="t">
+    <variables name="t">
       <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
         <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationVectorConstantByGeneratingInPython.n"/>
         <details key="offset" value="111"/>
         <details key="length" value="1"/>
       </annotations>
-      <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
+      <type xsi:type="ir:BaseType" primitive="&#x211d;" isStatic="true"/>
     </variables>
-    <variables name="deltat" originName="deltat">
+    <variables name="deltat">
       <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
         <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationVectorConstantByGeneratingInPython.n"/>
         <details key="offset" value="114"/>
         <details key="length" value="2"/>
       </annotations>
-      <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
+      <type xsi:type="ir:BaseType" primitive="&#x211d;" isStatic="true"/>
     </variables>
-    <variables name="X" originName="X">
+    <variables name="X">
       <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
         <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationVectorConstantByGeneratingInPython.n"/>
         <details key="offset" value="123"/>
         <details key="length" value="8"/>
       </annotations>
-      <type xsi:type="ir:ConnectivityType" connectivities="//@mesh/@connectivities.0">
-        <base primitive="&#x211d;">
+      <type xsi:type="ir:ConnectivityType" connectivities="//@providers.0/@connectivities.0">
+        <base primitive="&#x211d;" isStatic="true">
           <sizes xsi:type="ir:IntConstant" constExpr="true" value="2">
             <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
               <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationVectorConstantByGeneratingInPython.n"/>
               <details key="offset" value="120"/>
               <details key="length" value="1"/>
             </annotations>
-            <type xsi:type="ir:BaseType"/>
+            <type xsi:type="ir:BaseType" isStatic="true"/>
           </sizes>
+          <intSizes>2</intSizes>
         </base>
       </type>
     </variables>
-    <variables name="array1" previousJobs="//@modules.0/@jobs.0" originName="array1">
+    <variables name="array1" producerJobs="//@modules.0/@jobs.0">
       <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
         <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationVectorConstantByGeneratingInPython.n"/>
         <details key="offset" value="143"/>
         <details key="length" value="6"/>
       </annotations>
-      <type xsi:type="ir:BaseType" primitive="&#x211d;">
+      <type xsi:type="ir:BaseType" primitive="&#x211d;" isStatic="true">
         <sizes xsi:type="ir:IntConstant" constExpr="true" value="5">
           <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
             <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationVectorConstantByGeneratingInPython.n"/>
             <details key="offset" value="140"/>
             <details key="length" value="1"/>
           </annotations>
-          <type xsi:type="ir:BaseType"/>
+          <type xsi:type="ir:BaseType" isStatic="true"/>
         </sizes>
+        <intSizes>5</intSizes>
       </type>
       <defaultValue xsi:type="ir:VectorConstant" constExpr="true">
         <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
@@ -71,15 +73,16 @@
           <details key="offset" value="152"/>
           <details key="length" value="25"/>
         </annotations>
-        <type xsi:type="ir:BaseType" primitive="&#x211d;">
+        <type xsi:type="ir:BaseType" primitive="&#x211d;" isStatic="true">
           <sizes xsi:type="ir:IntConstant" constExpr="true" value="5">
             <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
               <details key="uri"/>
               <details key="offset" value="0"/>
               <details key="length" value="0"/>
             </annotations>
-            <type xsi:type="ir:BaseType"/>
+            <type xsi:type="ir:BaseType" isStatic="true"/>
           </sizes>
+          <intSizes>5</intSizes>
         </type>
         <values xsi:type="ir:RealConstant" constExpr="true">
           <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
@@ -87,7 +90,7 @@
             <details key="offset" value="153"/>
             <details key="length" value="3"/>
           </annotations>
-          <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
+          <type xsi:type="ir:BaseType" primitive="&#x211d;" isStatic="true"/>
         </values>
         <values xsi:type="ir:RealConstant" constExpr="true">
           <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
@@ -95,7 +98,7 @@
             <details key="offset" value="158"/>
             <details key="length" value="3"/>
           </annotations>
-          <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
+          <type xsi:type="ir:BaseType" primitive="&#x211d;" isStatic="true"/>
         </values>
         <values xsi:type="ir:RealConstant" constExpr="true">
           <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
@@ -103,7 +106,7 @@
             <details key="offset" value="163"/>
             <details key="length" value="3"/>
           </annotations>
-          <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
+          <type xsi:type="ir:BaseType" primitive="&#x211d;" isStatic="true"/>
         </values>
         <values xsi:type="ir:RealConstant" constExpr="true">
           <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
@@ -111,7 +114,7 @@
             <details key="offset" value="168"/>
             <details key="length" value="3"/>
           </annotations>
-          <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
+          <type xsi:type="ir:BaseType" primitive="&#x211d;" isStatic="true"/>
         </values>
         <values xsi:type="ir:RealConstant" constExpr="true">
           <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
@@ -119,25 +122,26 @@
             <details key="offset" value="173"/>
             <details key="length" value="3"/>
           </annotations>
-          <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
+          <type xsi:type="ir:BaseType" primitive="&#x211d;" isStatic="true"/>
         </values>
       </defaultValue>
     </variables>
-    <variables name="array2" const="true" constExpr="true" nextJobs="//@modules.0/@jobs.0" originName="array2">
+    <variables name="array2" const="true" constExpr="true" consumerJobs="//@modules.0/@jobs.0">
       <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
         <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationVectorConstantByGeneratingInPython.n"/>
         <details key="offset" value="203"/>
         <details key="length" value="6"/>
       </annotations>
-      <type xsi:type="ir:BaseType" primitive="&#x211d;">
+      <type xsi:type="ir:BaseType" primitive="&#x211d;" isStatic="true">
         <sizes xsi:type="ir:IntConstant" constExpr="true" value="5">
           <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
             <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationVectorConstantByGeneratingInPython.n"/>
             <details key="offset" value="200"/>
             <details key="length" value="1"/>
           </annotations>
-          <type xsi:type="ir:BaseType"/>
+          <type xsi:type="ir:BaseType" isStatic="true"/>
         </sizes>
+        <intSizes>5</intSizes>
       </type>
       <defaultValue xsi:type="ir:VectorConstant" constExpr="true">
         <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
@@ -145,15 +149,16 @@
           <details key="offset" value="212"/>
           <details key="length" value="25"/>
         </annotations>
-        <type xsi:type="ir:BaseType" primitive="&#x211d;">
+        <type xsi:type="ir:BaseType" primitive="&#x211d;" isStatic="true">
           <sizes xsi:type="ir:IntConstant" constExpr="true" value="5">
             <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
               <details key="uri"/>
               <details key="offset" value="0"/>
               <details key="length" value="0"/>
             </annotations>
-            <type xsi:type="ir:BaseType"/>
+            <type xsi:type="ir:BaseType" isStatic="true"/>
           </sizes>
+          <intSizes>5</intSizes>
         </type>
         <values xsi:type="ir:RealConstant" constExpr="true" value="1.0">
           <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
@@ -161,7 +166,7 @@
             <details key="offset" value="213"/>
             <details key="length" value="3"/>
           </annotations>
-          <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
+          <type xsi:type="ir:BaseType" primitive="&#x211d;" isStatic="true"/>
         </values>
         <values xsi:type="ir:RealConstant" constExpr="true" value="2.0">
           <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
@@ -169,7 +174,7 @@
             <details key="offset" value="218"/>
             <details key="length" value="3"/>
           </annotations>
-          <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
+          <type xsi:type="ir:BaseType" primitive="&#x211d;" isStatic="true"/>
         </values>
         <values xsi:type="ir:RealConstant" constExpr="true" value="3.0">
           <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
@@ -177,7 +182,7 @@
             <details key="offset" value="223"/>
             <details key="length" value="3"/>
           </annotations>
-          <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
+          <type xsi:type="ir:BaseType" primitive="&#x211d;" isStatic="true"/>
         </values>
         <values xsi:type="ir:RealConstant" constExpr="true" value="4.0">
           <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
@@ -185,7 +190,7 @@
             <details key="offset" value="228"/>
             <details key="length" value="3"/>
           </annotations>
-          <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
+          <type xsi:type="ir:BaseType" primitive="&#x211d;" isStatic="true"/>
         </values>
         <values xsi:type="ir:RealConstant" constExpr="true" value="5.0">
           <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
@@ -193,7 +198,7 @@
             <details key="offset" value="233"/>
             <details key="length" value="3"/>
           </annotations>
-          <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
+          <type xsi:type="ir:BaseType" primitive="&#x211d;" isStatic="true"/>
         </values>
       </defaultValue>
     </variables>
@@ -215,15 +220,16 @@
             <details key="offset" value="248"/>
             <details key="length" value="6"/>
           </annotations>
-          <type xsi:type="ir:BaseType" primitive="&#x211d;">
+          <type xsi:type="ir:BaseType" primitive="&#x211d;" isStatic="true">
             <sizes xsi:type="ir:IntConstant" constExpr="true" value="5">
               <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
                 <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationVectorConstantByGeneratingInPython.n"/>
                 <details key="offset" value="140"/>
                 <details key="length" value="1"/>
               </annotations>
-              <type xsi:type="ir:BaseType"/>
+              <type xsi:type="ir:BaseType" isStatic="true"/>
             </sizes>
+            <intSizes>5</intSizes>
           </type>
         </left>
         <right xsi:type="ir:BinaryExpression" constExpr="true" operator="*">
@@ -232,15 +238,16 @@
             <details key="offset" value="257"/>
             <details key="length" value="10"/>
           </annotations>
-          <type xsi:type="ir:BaseType" primitive="&#x211d;">
+          <type xsi:type="ir:BaseType" primitive="&#x211d;" isStatic="true">
             <sizes xsi:type="ir:IntConstant" constExpr="true" value="5">
               <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
                 <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationVectorConstantByGeneratingInPython.n"/>
                 <details key="offset" value="200"/>
                 <details key="length" value="1"/>
               </annotations>
-              <type xsi:type="ir:BaseType"/>
+              <type xsi:type="ir:BaseType" isStatic="true"/>
             </sizes>
+            <intSizes>5</intSizes>
           </type>
           <left xsi:type="ir:ArgOrVarRef" constExpr="true" target="//@modules.0/@variables.4">
             <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
@@ -248,15 +255,16 @@
               <details key="offset" value="257"/>
               <details key="length" value="6"/>
             </annotations>
-            <type xsi:type="ir:BaseType" primitive="&#x211d;">
+            <type xsi:type="ir:BaseType" primitive="&#x211d;" isStatic="true">
               <sizes xsi:type="ir:IntConstant" constExpr="true" value="5">
                 <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
                   <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/ReadInitializationVectorConstantByGeneratingInPython.n"/>
                   <details key="offset" value="200"/>
                   <details key="length" value="1"/>
                 </annotations>
-                <type xsi:type="ir:BaseType"/>
+                <type xsi:type="ir:BaseType" isStatic="true"/>
               </sizes>
+              <intSizes>5</intSizes>
             </type>
           </left>
           <right xsi:type="ir:RealConstant" constExpr="true" value="3.0">
@@ -265,13 +273,13 @@
               <details key="offset" value="264"/>
               <details key="length" value="3"/>
             </annotations>
-            <type xsi:type="ir:BaseType" primitive="&#x211d;"/>
+            <type xsi:type="ir:BaseType" primitive="&#x211d;" isStatic="true"/>
           </right>
         </right>
       </instruction>
     </jobs>
   </modules>
-  <mesh extensionName="CartesianMesh2D">
+  <providers xsi:type="ir:MeshExtensionProvider" extensionName="CartesianMesh2D" providerName="CartesianMesh2DJava" outputPath="/.nablab/mesh">
     <itemTypes name="node">
       <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
         <details key="uri" value="platform:/resource/fr.cea.nabla/nablalib/CartesianMesh2D.n"/>
@@ -303,13 +311,18 @@
         <details key="offset" value="490"/>
         <details key="length" value="4"/>
       </annotations>
+      <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
+        <details key="uri" value="platform:/resource/fr.cea.nabla/nablalib/CartesianMesh2D.n"/>
+        <details key="offset" value="490"/>
+        <details key="length" value="4"/>
+      </annotations>
     </itemTypes>
-    <connectivities name="nodes" returnType="//@mesh/@itemTypes.0" indexEqualId="true" multiple="true">
+    <connectivities name="nodes" returnType="//@providers.0/@itemTypes.0" indexEqualId="true" multiple="true">
       <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
         <details key="uri" value="platform:/resource/fr.cea.nabla/nablalib/CartesianMesh2D.n"/>
         <details key="offset" value="510"/>
         <details key="length" value="29"/>
       </annotations>
     </connectivities>
-  </mesh>
+  </providers>
 </ir:IrRoot>

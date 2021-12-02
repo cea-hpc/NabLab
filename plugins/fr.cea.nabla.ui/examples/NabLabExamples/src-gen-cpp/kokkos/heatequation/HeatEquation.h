@@ -9,16 +9,16 @@
 #include <limits>
 #include <utility>
 #include <cmath>
+#include <rapidjson/document.h>
 #include <Kokkos_Core.hpp>
 #include <Kokkos_hwloc.hpp>
-#include "nablalib/mesh/CartesianMesh2D.h"
-#include "nablalib/mesh/PvdFileWriter2D.h"
 #include "nablalib/utils/Utils.h"
 #include "nablalib/utils/Timer.h"
 #include "nablalib/types/Types.h"
 #include "nablalib/utils/kokkos/Parallel.h"
+#include "CartesianMesh2D.h"
+#include "PvdFileWriter2D.h"
 
-using namespace nablalib::mesh;
 using namespace nablalib::utils;
 using namespace nablalib::types;
 using namespace nablalib::utils::kokkos;
@@ -27,19 +27,20 @@ using namespace nablalib::utils::kokkos;
 
 namespace heatequationfreefuncs
 {
-KOKKOS_INLINE_FUNCTION
 double det(RealArray1D<2> a, RealArray1D<2> b);
 template<size_t x>
-KOKKOS_INLINE_FUNCTION
 double norm(RealArray1D<x> a);
 template<size_t x>
-KOKKOS_INLINE_FUNCTION
 double dot(RealArray1D<x> a, RealArray1D<x> b);
 template<size_t x>
-KOKKOS_INLINE_FUNCTION
 RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b);
-KOKKOS_INLINE_FUNCTION
 double sumR0(double a, double b);
+template<size_t x0>
+RealArray1D<x0> operator+(RealArray1D<x0> a, RealArray1D<x0> b);
+template<size_t x0>
+RealArray1D<x0> operator*(double a, RealArray1D<x0> b);
+template<size_t x0>
+RealArray1D<x0> operator-(RealArray1D<x0> a, RealArray1D<x0> b);
 }
 
 /******************** Module declaration ********************/
@@ -47,43 +48,22 @@ double sumR0(double a, double b);
 class HeatEquation
 {
 public:
-	struct Options
-	{
-		std::string outputPath;
-		int outputPeriod;
-		double stopTime;
-		int maxIterations;
-		double PI;
-		double alpha;
-
-		void jsonInit(const char* jsonContent);
-	};
-
-	HeatEquation(CartesianMesh2D& aMesh, Options& aOptions);
+	HeatEquation(CartesianMesh2D& aMesh);
 	~HeatEquation();
 
+	void jsonInit(const char* jsonContent);
+
 	void simulate();
-	KOKKOS_INLINE_FUNCTION
 	void computeOutgoingFlux() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void computeSurface() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void computeTn() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void computeV() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void iniCenter() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void iniF() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void iniTime() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void computeUn() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void iniUn() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void setUpTimeLoopN() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void executeTimeLoopN() noexcept;
 
 private:
@@ -93,19 +73,16 @@ private:
 	CartesianMesh2D& mesh;
 	size_t nbNodes, nbCells, nbFaces, maxNodesOfCell, maxNodesOfFace, maxNeighbourCells;
 
-	// User options
-	Options& options;
-	PvdFileWriter2D writer;
-
-	// Timers
-	Timer globalTimer;
-	Timer cpuTimer;
-	Timer ioTimer;
-
-public:
-	// Global variables
+	// Options and global variables
+	PvdFileWriter2D* writer;
+	std::string outputPath;
+	int outputPeriod;
 	int lastDump;
 	int n;
+	double stopTime;
+	int maxIterations;
+	double PI;
+	double alpha;
 	static constexpr double deltat = 0.001;
 	double t_n;
 	double t_nplus1;
@@ -118,6 +95,11 @@ public:
 	Kokkos::View<double*> f;
 	Kokkos::View<double*> outgoingFlux;
 	Kokkos::View<double*> surface;
+
+	// Timers
+	Timer globalTimer;
+	Timer cpuTimer;
+	Timer ioTimer;
 };
 
 #endif

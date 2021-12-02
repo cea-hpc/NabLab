@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -46,6 +46,7 @@ class NablaType2IrType
 		IrFactory.eINSTANCE.createBaseType =>
 		[
 			primitive = t.primitive.toIrPrimitiveType
+			isStatic = true
 		]
 	}
 
@@ -55,6 +56,8 @@ class NablaType2IrType
 		[
 			primitive = t.primitive.toIrPrimitiveType
 			sizes += t.size.toIrExpression
+			intSizes += t.intSize
+			isStatic = t.isStatic
 		]
 	}
 
@@ -65,6 +68,9 @@ class NablaType2IrType
 			primitive = t.primitive.toIrPrimitiveType
 			sizes += t.nbRows.toIrExpression
 			sizes += t.nbCols.toIrExpression
+			intSizes += t.intNbRows
+			intSizes += t.intNbCols
+			isStatic = t.isStatic
 		]
 	}
 
@@ -83,6 +89,8 @@ class NablaType2IrType
 		[
 			provider = t.defaultExtension.toIrDefaultExtensionProvider
 			sizes += t.size.toIrExpression
+			intSizes += t.intSize
+			isStatic = t.isStatic
 		]
 	}
 
@@ -93,6 +101,9 @@ class NablaType2IrType
 			provider = t.defaultExtension.toIrDefaultExtensionProvider
 			sizes += t.nbRows.toIrExpression
 			sizes += t.nbCols.toIrExpression
+			intSizes += t.intNbRows
+			intSizes += t.intNbCols
+			isStatic = t.isStatic
 		]
 	}
 }

@@ -9,16 +9,16 @@
 #include <limits>
 #include <utility>
 #include <cmath>
+#include <rapidjson/document.h>
 #include <Kokkos_Core.hpp>
 #include <Kokkos_hwloc.hpp>
-#include "nablalib/mesh/CartesianMesh2D.h"
-#include "nablalib/mesh/PvdFileWriter2D.h"
 #include "nablalib/utils/Utils.h"
 #include "nablalib/utils/Timer.h"
 #include "nablalib/types/Types.h"
 #include "nablalib/utils/kokkos/Parallel.h"
+#include "CartesianMesh2D.h"
+#include "PvdFileWriter2D.h"
 
-using namespace nablalib::mesh;
 using namespace nablalib::utils;
 using namespace nablalib::types;
 using namespace nablalib::utils::kokkos;
@@ -27,37 +27,41 @@ using namespace nablalib::utils::kokkos;
 
 namespace glace2dfreefuncs
 {
-KOKKOS_INLINE_FUNCTION
 double det(RealArray2D<2,2> a);
-KOKKOS_INLINE_FUNCTION
 RealArray1D<2> perp(RealArray1D<2> a);
 template<size_t x>
-KOKKOS_INLINE_FUNCTION
 double dot(RealArray1D<x> a, RealArray1D<x> b);
 template<size_t x>
-KOKKOS_INLINE_FUNCTION
 double norm(RealArray1D<x> a);
 template<size_t l>
-KOKKOS_INLINE_FUNCTION
 RealArray2D<l,l> tensProduct(RealArray1D<l> a, RealArray1D<l> b);
 template<size_t x, size_t y>
-KOKKOS_INLINE_FUNCTION
 RealArray1D<x> matVectProduct(RealArray2D<x,y> a, RealArray1D<y> b);
 template<size_t l>
-KOKKOS_INLINE_FUNCTION
 double trace(RealArray2D<l,l> a);
-KOKKOS_INLINE_FUNCTION
 RealArray2D<2,2> inverse(RealArray2D<2,2> a);
 template<size_t x>
-KOKKOS_INLINE_FUNCTION
 RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b);
-KOKKOS_INLINE_FUNCTION
 double sumR0(double a, double b);
 template<size_t x>
-KOKKOS_INLINE_FUNCTION
 RealArray2D<x,x> sumR2(RealArray2D<x,x> a, RealArray2D<x,x> b);
-KOKKOS_INLINE_FUNCTION
 double minR0(double a, double b);
+template<size_t x0>
+RealArray1D<x0> operator+(RealArray1D<x0> a, RealArray1D<x0> b);
+template<size_t x0, size_t x1>
+RealArray2D<x0,x1> operator+(RealArray2D<x0,x1> a, RealArray2D<x0,x1> b);
+template<size_t x0>
+RealArray1D<x0> operator*(double a, RealArray1D<x0> b);
+template<size_t x0>
+RealArray1D<x0> operator-(RealArray1D<x0> a, RealArray1D<x0> b);
+template<size_t x0, size_t x1>
+RealArray2D<x0,x1> operator*(double a, RealArray2D<x0,x1> b);
+template<size_t x0, size_t x1>
+RealArray2D<x0,x1> operator-(RealArray2D<x0,x1> a, RealArray2D<x0,x1> b);
+template<size_t x0, size_t x1>
+RealArray2D<x0,x1> operator*(RealArray2D<x0,x1> a, RealArray2D<x0,x1> b);
+template<size_t x0, size_t x1>
+RealArray2D<x0,x1> operator*(RealArray2D<x0,x1> a, double b);
 }
 
 /******************** Module declaration ********************/
@@ -67,78 +71,37 @@ class Glace2d
 	typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
 
 public:
-	struct Options
-	{
-		std::string outputPath;
-		int outputPeriod;
-		double stopTime;
-		int maxIterations;
-		double gamma;
-		double xInterface;
-		double deltatCfl;
-		double rhoIniZg;
-		double rhoIniZd;
-		double pIniZg;
-		double pIniZd;
-
-		void jsonInit(const char* jsonContent);
-	};
-
-	Glace2d(CartesianMesh2D& aMesh, Options& aOptions);
+	Glace2d(CartesianMesh2D& aMesh);
 	~Glace2d();
 
+	void jsonInit(const char* jsonContent);
+
 	void simulate();
-	KOKKOS_INLINE_FUNCTION
 	void computeCjr(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void computeInternalEnergy(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void iniCjrIc(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void iniTime() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void computeLjr(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void computeV(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void initialize(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void setUpTimeLoopN(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void computeDensity(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void executeTimeLoopN() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void computeEOSp(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void computeEOSc(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void computeAjr(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void computedeltatj(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void computeAr(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void computeBr(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void computeDt(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void computeBoundaryConditions(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void computeBt(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void computeMt(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void computeTn() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void computeU(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void computeFjr(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void computeXn(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void computeEn(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void computeUn(const member_type& teamMember) noexcept;
 
 private:
@@ -155,19 +118,21 @@ private:
 	CartesianMesh2D& mesh;
 	size_t nbNodes, nbCells, maxNodesOfCell, maxCellsOfNode, nbInnerNodes, nbTopNodes, nbBottomNodes, nbLeftNodes, nbRightNodes;
 
-	// User options
-	Options& options;
-	PvdFileWriter2D writer;
-
-	// Timers
-	Timer globalTimer;
-	Timer cpuTimer;
-	Timer ioTimer;
-
-public:
-	// Global variables
+	// Options and global variables
+	PvdFileWriter2D* writer;
+	std::string outputPath;
+	int outputPeriod;
 	int lastDump;
 	int n;
+	double stopTime;
+	int maxIterations;
+	double gamma;
+	double xInterface;
+	double deltatCfl;
+	double rhoIniZg;
+	double rhoIniZd;
+	double pIniZg;
+	double pIniZd;
 	double t_n;
 	double t_nplus1;
 	double t_n0;
@@ -196,6 +161,11 @@ public:
 	Kokkos::View<RealArray1D<2>**> C;
 	Kokkos::View<RealArray1D<2>**> F;
 	Kokkos::View<RealArray2D<2,2>**> Ajr;
+
+	// Timers
+	Timer globalTimer;
+	Timer cpuTimer;
+	Timer ioTimer;
 };
 
 #endif

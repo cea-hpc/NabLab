@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -72,7 +72,7 @@ class IrUtils
 		val gson = new Gson
 		val jsonObject = gson.fromJson(jsonContent, JsonObject)
 		// Read options in Json
-		if (!jsonObject.has(moduleName.toFirstLower)) throw new RuntimeException("Options block missing in Json")
+		if (!jsonObject.has(moduleName.toFirstLower)) throw new RuntimeException("Options block is missing in Json data file")
 		val jsonOptions = jsonObject.get(moduleName.toFirstLower).asJsonObject
 		val nrName = NonRegressionNameAndValue.key
 		jsonOptions.addProperty(nrName, value)

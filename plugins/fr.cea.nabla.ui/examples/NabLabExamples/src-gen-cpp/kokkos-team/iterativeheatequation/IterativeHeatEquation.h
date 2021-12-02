@@ -9,16 +9,16 @@
 #include <limits>
 #include <utility>
 #include <cmath>
+#include <rapidjson/document.h>
 #include <Kokkos_Core.hpp>
 #include <Kokkos_hwloc.hpp>
-#include "nablalib/mesh/CartesianMesh2D.h"
-#include "nablalib/mesh/PvdFileWriter2D.h"
 #include "nablalib/utils/Utils.h"
 #include "nablalib/utils/Timer.h"
 #include "nablalib/types/Types.h"
 #include "nablalib/utils/kokkos/Parallel.h"
+#include "CartesianMesh2D.h"
+#include "PvdFileWriter2D.h"
 
-using namespace nablalib::mesh;
 using namespace nablalib::utils;
 using namespace nablalib::types;
 using namespace nablalib::utils::kokkos;
@@ -27,27 +27,24 @@ using namespace nablalib::utils::kokkos;
 
 namespace iterativeheatequationfreefuncs
 {
-KOKKOS_INLINE_FUNCTION
 bool check(bool a);
 template<size_t x>
-KOKKOS_INLINE_FUNCTION
 double norm(RealArray1D<x> a);
 template<size_t x>
-KOKKOS_INLINE_FUNCTION
 double dot(RealArray1D<x> a, RealArray1D<x> b);
-KOKKOS_INLINE_FUNCTION
 double det(RealArray1D<2> a, RealArray1D<2> b);
 template<size_t x>
-KOKKOS_INLINE_FUNCTION
 RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b);
-KOKKOS_INLINE_FUNCTION
 double minR0(double a, double b);
-KOKKOS_INLINE_FUNCTION
 double sumR0(double a, double b);
-KOKKOS_INLINE_FUNCTION
 double prodR0(double a, double b);
-KOKKOS_INLINE_FUNCTION
 double maxR0(double a, double b);
+template<size_t x0>
+RealArray1D<x0> operator+(RealArray1D<x0> a, RealArray1D<x0> b);
+template<size_t x0>
+RealArray1D<x0> operator*(double a, RealArray1D<x0> b);
+template<size_t x0>
+RealArray1D<x0> operator-(RealArray1D<x0> a, RealArray1D<x0> b);
 }
 
 /******************** Module declaration ********************/
@@ -57,56 +54,28 @@ class IterativeHeatEquation
 	typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
 
 public:
-	struct Options
-	{
-		std::string outputPath;
-		int outputPeriod;
-		double u0;
-		double stopTime;
-		int maxIterations;
-		int maxIterationsK;
-		double epsilon;
-
-		void jsonInit(const char* jsonContent);
-	};
-
-	IterativeHeatEquation(CartesianMesh2D& aMesh, Options& aOptions);
+	IterativeHeatEquation(CartesianMesh2D& aMesh);
 	~IterativeHeatEquation();
 
+	void jsonInit(const char* jsonContent);
+
 	void simulate();
-	KOKKOS_INLINE_FUNCTION
 	void computeFaceLength(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void computeTn() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void computeV(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void initD(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void initTime() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void initXc(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void setUpTimeLoopK(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void updateU(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void computeDeltaTn(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void computeFaceConductivity(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void computeResidual(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void executeTimeLoopK() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void initU(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void setUpTimeLoopN() noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void computeAlphaCoeff(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void tearDownTimeLoopK(const member_type& teamMember) noexcept;
-	KOKKOS_INLINE_FUNCTION
 	void executeTimeLoopN() noexcept;
 
 private:
@@ -123,21 +92,19 @@ private:
 	CartesianMesh2D& mesh;
 	size_t nbNodes, nbCells, nbFaces, maxNodesOfCell, maxNodesOfFace, maxCellsOfFace, maxNeighbourCells;
 
-	// User options
-	Options& options;
-	PvdFileWriter2D writer;
-
-	// Timers
-	Timer globalTimer;
-	Timer cpuTimer;
-	Timer ioTimer;
-
-public:
-	// Global variables
+	// Options and global variables
+	PvdFileWriter2D* writer;
+	std::string outputPath;
+	int outputPeriod;
 	int lastDump;
 	int n;
 	int k;
+	double u0;
 	static constexpr RealArray1D<2> vectOne = {1.0, 1.0};
+	double stopTime;
+	int maxIterations;
+	int maxIterationsK;
+	double epsilon;
 	double deltat;
 	double t_n;
 	double t_nplus1;
@@ -154,6 +121,11 @@ public:
 	Kokkos::View<double*> faceConductivity;
 	Kokkos::View<double**> alpha;
 	double residual;
+
+	// Timers
+	Timer globalTimer;
+	Timer cpuTimer;
+	Timer ioTimer;
 };
 
 #endif

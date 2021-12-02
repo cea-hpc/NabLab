@@ -13,12 +13,12 @@ import fr.cea.nabla.ir.IrTypeExtensions
 import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.generator.ProviderGenerator
 import fr.cea.nabla.ir.generator.Utils
+import fr.cea.nabla.ir.generator.CppGeneratorUtils
 import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.Function
 import java.util.ArrayList
 
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
-import static extension fr.cea.nabla.ir.generator.cpp.CppGeneratorUtils.*
 
 class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 {
@@ -47,10 +47,10 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 
 	private def getInterfaceHeaderFileContent(DefaultExtensionProvider provider)
 	'''
-		«Utils::fileHeader»
+		/* «Utils::doNotEditWarning» */
 
-		#ifndef «provider.interfaceName.HDefineName»
-		#define «provider.interfaceName.HDefineName»
+		#ifndef «CppGeneratorUtils.getHDefineName(provider.interfaceName)»
+		#define «CppGeneratorUtils.getHDefineName(provider.interfaceName)»
 
 		«backend.includesContentProvider.getIncludes(false, false)»
 
@@ -78,8 +78,8 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 
 	private def getHeaderFileContent(DefaultExtensionProvider provider)
 	'''
-		#ifndef «provider.className.HDefineName»
-		#define «provider.className.HDefineName»
+		#ifndef «CppGeneratorUtils.getHDefineName(provider.className)»
+		#define «CppGeneratorUtils.getHDefineName(provider.className)»
 
 		#include "«provider.interfaceName».h"
 		«IF provider.linearAlgebra»
@@ -124,8 +124,8 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 
 	private def getVectorHeaderFileContent(DefaultExtensionProvider provider)
 	'''
-		#ifndef «IrTypeExtensions.VectorClass.HDefineName»
-		#define «IrTypeExtensions.VectorClass.HDefineName»
+		#ifndef «CppGeneratorUtils.getHDefineName(IrTypeExtensions.VectorClass)»
+		#define «CppGeneratorUtils.getHDefineName(IrTypeExtensions.VectorClass)»
 
 		#include <cstddef>
 		#include <string>
@@ -190,8 +190,8 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 
 	private def getMatrixHeaderFileContent(DefaultExtensionProvider provider)
 	'''
-		#ifndef «IrTypeExtensions.MatrixClass.HDefineName»
-		#define «IrTypeExtensions.MatrixClass.HDefineName»
+		#ifndef «CppGeneratorUtils.getHDefineName(IrTypeExtensions.MatrixClass)»
+		#define «CppGeneratorUtils.getHDefineName(IrTypeExtensions.MatrixClass)»
 
 		#include <cstddef>
 		#include <string>

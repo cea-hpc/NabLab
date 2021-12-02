@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -44,24 +44,24 @@ class GitUtils
 		val head = repository.resolve("HEAD^{tree}")
 		try( val reader = repository.newObjectReader())
 		{
-			headTreeParser.reset(reader, head)
+			headTreeParser.reset(reader, head) 
 		}
 
 		//formatter
-	    val outputStream = new ByteArrayOutputStream
+		val outputStream = new ByteArrayOutputStream
 		val formatter = new DiffFormatter(outputStream)
 		formatter.setRepository(git.repository)
 		formatter.setPathFilter(PathFilter.create(subPath))
 
 		var diffs = formatter.scan(workingTreeIterator, headTreeParser)
-		diffs =	diffs.filter[d | d.newPath.contains(moduleName)].toList
+		diffs = diffs.filter[d | d.newPath.contains(moduleName)].toList
 		var filteredDiffs = new ArrayList<DiffEntry>
 
 		for (diff : diffs)
 		{
 			formatter.format(diff)
 			formatter.flush();
-			if (isNotKnownDiff(diff.newPath, outputStream.toString))
+			if (!isWsPathDiff(diff.newPath, outputStream.toString))
 			{
 				println(diff.changeType + " " + diff.newPath)
 				filteredDiffs += diff
@@ -72,17 +72,22 @@ class GitUtils
 		return (filteredDiffs.empty)
 	}
 
-	private def isNotKnownDiff(String path, String diff)
+	/**
+	 * Check if the only difference is the WS_PATH.
+	 * In CMakeLists.txt, "set(N_WS_PATH $ENV{HOME}/workspaces/NabLab/*)" may be replaced by current workspace path
+	 */
+	private def isWsPathDiff(String path, String diff)
 	{
-		// In CMakeLists.txt, "set(N_WS_PATH $ENV{HOME}/workspaces/NabLab/plugins/fr.cea.nabla.ui/examples)" may be replaced by current workspace path
-		if (path.endsWith("CMakeLists.txt") && diff.contains("+set(N_WS_PATH $ENV{HOME}/workspaces/NabLab/plugins/fr.cea.nabla.ui/examples)"))
+		// In CMakeLists.txt, "set(N_WS_PATH $ENV{HOME}/workspaces/NabLab/*)" may be replaced by current workspace path
+		if (path.endsWith("CMakeLists.txt") && diff.contains("+set(N_WS_PATH $ENV{HOME}/workspaces/NabLab"))
 		{
+			// Check that it is the only difference
 			var nbDiffs = 0
 			val p = Pattern.compile("(@@)(.*?)(@@).*")
 			val m = p.matcher(diff)
 			while(m.find) nbDiffs ++
-			return (nbDiffs > 1)
+			return (nbDiffs == 1)
 		}
-		return true
+		return false
 	}
 }

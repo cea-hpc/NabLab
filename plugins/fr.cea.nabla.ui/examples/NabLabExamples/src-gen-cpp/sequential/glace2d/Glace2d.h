@@ -9,13 +9,13 @@
 #include <limits>
 #include <utility>
 #include <cmath>
-#include "nablalib/mesh/CartesianMesh2D.h"
-#include "nablalib/mesh/PvdFileWriter2D.h"
+#include <rapidjson/document.h>
 #include "nablalib/utils/Utils.h"
 #include "nablalib/utils/Timer.h"
 #include "nablalib/types/Types.h"
+#include "CartesianMesh2D.h"
+#include "PvdFileWriter2D.h"
 
-using namespace nablalib::mesh;
 using namespace nablalib::utils;
 using namespace nablalib::types;
 
@@ -42,6 +42,22 @@ double sumR0(double a, double b);
 template<size_t x>
 RealArray2D<x,x> sumR2(RealArray2D<x,x> a, RealArray2D<x,x> b);
 double minR0(double a, double b);
+template<size_t x0>
+RealArray1D<x0> operator+(RealArray1D<x0> a, RealArray1D<x0> b);
+template<size_t x0, size_t x1>
+RealArray2D<x0,x1> operator+(RealArray2D<x0,x1> a, RealArray2D<x0,x1> b);
+template<size_t x0>
+RealArray1D<x0> operator*(double a, RealArray1D<x0> b);
+template<size_t x0>
+RealArray1D<x0> operator-(RealArray1D<x0> a, RealArray1D<x0> b);
+template<size_t x0, size_t x1>
+RealArray2D<x0,x1> operator*(double a, RealArray2D<x0,x1> b);
+template<size_t x0, size_t x1>
+RealArray2D<x0,x1> operator-(RealArray2D<x0,x1> a, RealArray2D<x0,x1> b);
+template<size_t x0, size_t x1>
+RealArray2D<x0,x1> operator*(RealArray2D<x0,x1> a, RealArray2D<x0,x1> b);
+template<size_t x0, size_t x1>
+RealArray2D<x0,x1> operator*(RealArray2D<x0,x1> a, double b);
 }
 
 /******************** Module declaration ********************/
@@ -49,25 +65,10 @@ double minR0(double a, double b);
 class Glace2d
 {
 public:
-	struct Options
-	{
-		std::string outputPath;
-		int outputPeriod;
-		double stopTime;
-		int maxIterations;
-		double gamma;
-		double xInterface;
-		double deltatCfl;
-		double rhoIniZg;
-		double rhoIniZd;
-		double pIniZg;
-		double pIniZd;
-
-		void jsonInit(const char* jsonContent);
-	};
-
-	Glace2d(CartesianMesh2D& aMesh, Options& aOptions);
+	Glace2d(CartesianMesh2D& aMesh);
 	~Glace2d();
+
+	void jsonInit(const char* jsonContent);
 
 	void simulate();
 	void computeCjr() noexcept;
@@ -104,19 +105,21 @@ private:
 	CartesianMesh2D& mesh;
 	size_t nbNodes, nbCells, maxNodesOfCell, maxCellsOfNode, nbInnerNodes, nbTopNodes, nbBottomNodes, nbLeftNodes, nbRightNodes;
 
-	// User options
-	Options& options;
-	PvdFileWriter2D writer;
-
-	// Timers
-	Timer globalTimer;
-	Timer cpuTimer;
-	Timer ioTimer;
-
-public:
-	// Global variables
+	// Options and global variables
+	PvdFileWriter2D* writer;
+	std::string outputPath;
+	int outputPeriod;
 	int lastDump;
 	int n;
+	double stopTime;
+	int maxIterations;
+	double gamma;
+	double xInterface;
+	double deltatCfl;
+	double rhoIniZg;
+	double rhoIniZd;
+	double pIniZg;
+	double pIniZd;
 	double t_n;
 	double t_nplus1;
 	double t_n0;
@@ -145,6 +148,11 @@ public:
 	std::vector<std::vector<RealArray1D<2>>> C;
 	std::vector<std::vector<RealArray1D<2>>> F;
 	std::vector<std::vector<RealArray2D<2,2>>> Ajr;
+
+	// Timers
+	Timer globalTimer;
+	Timer cpuTimer;
+	Timer ioTimer;
 };
 
 #endif

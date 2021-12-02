@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -11,12 +11,12 @@ package fr.cea.nabla.ui.outline
 
 import fr.cea.nabla.nablagen.LevelDB
 import fr.cea.nabla.nablagen.NablagenModule
+import fr.cea.nabla.nablagen.NablagenProvider
 import fr.cea.nabla.nablagen.NablagenRoot
 import fr.cea.nabla.nablagen.OutputVar
 import fr.cea.nabla.nablagen.Target
 import fr.cea.nabla.ui.NablaUiUtils
 import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider
-import fr.cea.nabla.nablagen.NablagenProvider
 
 /**
  * Customization of the default outline structure.
@@ -61,6 +61,7 @@ class NablagenOutlineTreeProvider extends DefaultOutlineTreeProvider
 			case CPP_SEQUENTIAL: 'Sequential C++'
 			case STL_THREAD: 'Multi-thread STL C++'
 			case DACE: 'Data-Centric Parallel Programming'
+			case ARCANE: 'Arcane C++ framework'
 			default: 'Unknown target'
 		}
 	}
@@ -76,6 +77,7 @@ class NablagenOutlineTreeProvider extends DefaultOutlineTreeProvider
 			case CPP_SEQUENTIAL: NablaUiUtils.createImage('icons/CppSequential.gif')
 			case STL_THREAD: NablaUiUtils.createImage('icons/StlThread.gif')
 			case DACE: NablaUiUtils.createImage('icons/Dace.gif')
+			case ARCANE: NablaUiUtils.createImage('icons/StlThread.gif')
 			default: null
 		}
 	}

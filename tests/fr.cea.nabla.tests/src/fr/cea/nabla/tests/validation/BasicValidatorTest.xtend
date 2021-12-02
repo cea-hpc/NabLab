@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -38,43 +38,6 @@ class BasicValidatorTest
 	@Inject extension ValidationTestHelper
 
 	// ===== Module ====
-
-	@Test
-	def void testCheckModuleBase()
-	{
-		val moduleKo = parseHelper.parse(
-			'''
-			module Test;
-			def g: → ℝ, () → return 3.0;
-			''')
-		moduleKo.assertError(NablaPackage.eINSTANCE.nablaRoot,
-			BasicValidator::MODULE_BASE,
-			BasicValidator::getModuleBaseMsg())
-
-		val moduleOk = parseHelper.parse(
-			'''
-			module Test;
-			ℝ a;
-			''')
-		Assert.assertNotNull(moduleOk)
-		moduleOk.assertNoErrors
-
-		val moduleOk2 = parseHelper.parse(
-			'''
-			module Test;
-			iterate n while (true);
-			''')
-		Assert.assertNotNull(moduleOk2)
-		moduleOk2.assertNoErrors
-
-		val moduleOk3 = parseHelper.parse(
-			'''
-			module Test;
-			J: let ℝ x = 3.3;
-			''')
-		Assert.assertNotNull(moduleOk3)
-		moduleOk3.assertNoErrors
-	}
 
 	@Test
 	def void testCheckModuleUniqueMeshExtension()
@@ -453,7 +416,7 @@ class BasicValidatorTest
 	// ===== BaseType =====	
 
 	@Test
-	def void testCheckUnsupportedDimension()
+	def void testCheckUnexpectedDimension()
 	{
 		val moduleKo = parseHelper.parse(
 			'''
@@ -463,8 +426,8 @@ class BasicValidatorTest
 
 		Assert.assertNotNull(moduleKo)
 		moduleKo.assertError(NablaPackage.eINSTANCE.baseType,
-			BasicValidator::UNSUPPORTED_DIMENSION,
-			BasicValidator::getUnsupportedDimensionMsg(3))
+			BasicValidator::UNEXPECTED_DIMENSION,
+			BasicValidator::getUnexpectedDimensionMsg(3))
 
 		val moduleOk = parseHelper.parse(
 			'''

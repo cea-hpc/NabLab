@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -10,7 +10,6 @@
 package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
-import fr.cea.nabla.ir.JobDependencies
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.nabla.Function
@@ -84,14 +83,8 @@ class IrModuleFactory
 		for (d : nablaModule.declarations)
 			switch d
 			{
-				OptionDeclaration:
-				{
-					val options = createIrVariables(d.variable, tlJobs)
-					options.forEach[option = true]
-					variables += options
-				}
-				SimpleVarDeclaration:
-					variables += createIrVariables(d.variable, tlJobs)
+				OptionDeclaration: variables += d.variable.toIrOption
+				SimpleVarDeclaration: variables += createIrVariables(d.variable, tlJobs)
 				VarGroupDeclaration:
 					for (v : d.variables)
 						variables += createIrVariables(v, tlJobs)
@@ -99,7 +92,6 @@ class IrModuleFactory
 
 		// Job creation
 		nablaModule.jobs.forEach[x | jobs += x.toIrInstructionJob => [ it.caller = null ]]
-		jobs.forEach[x | JobDependencies.computeAndSetNextJobs(x)]
 	}
 
 	/**

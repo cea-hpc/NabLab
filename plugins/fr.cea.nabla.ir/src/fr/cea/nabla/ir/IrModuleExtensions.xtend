@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -9,7 +9,6 @@
  *******************************************************************************/
 package fr.cea.nabla.ir
 
-import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
 
@@ -33,17 +32,6 @@ class IrModuleExtensions
 		else null
 	}
 
-	static def getMeshClassName(IrModule it)
-	{
-		val root = eContainer as IrRoot
-		root.mesh.extensionName
-	}
-
-	static def DefaultExtensionProvider[] getValidExtensionProviders(IrModule it)
-	{
-		providers.filter[x | !x.providerName.nullOrEmpty]
-	}
-
 	static def getJobByName(IrModule it, String jobName)
 	{
 		jobs.findFirst[j | j.name == jobName]
@@ -54,11 +42,6 @@ class IrModuleExtensions
 		variables.filter[option]
 	}
 
-	static def getVariablesWithDefaultValue(IrModule it)
-	{
-		variables.filter[x | !x.option && x.defaultValue !== null]
-	}
-
 	static def isLinearAlgebra(IrModule it)
 	{
 		variables.exists[v | v.linearAlgebra]
@@ -67,5 +50,10 @@ class IrModuleExtensions
 	static def getVariableByName(IrModule it, String irVarName)
 	{
 		variables.findFirst[j | j.name == irVarName]
+	}
+
+	static def getExternalProviders(IrModule it)
+	{
+		providers.filter[x | x.extensionName != "Math"]
 	}
 }

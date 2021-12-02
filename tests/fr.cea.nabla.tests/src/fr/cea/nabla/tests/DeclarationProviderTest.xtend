@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -62,6 +62,8 @@ class DeclarationProviderTest
 		def g: a | ℝ[a] → ℝ[a];
 		def g: a, b | ℝ[a, b] → ℝ[a*b];
 		def g: a, b | ℝ[a] × ℝ[b] → ℝ[a+b];
+
+		def h: a | ℝ[a] × ℝ[a] → ℝ[a];
 		'''
 
 		val nablaModel =
@@ -76,6 +78,9 @@ class DeclarationProviderTest
 		ℝ[2] x2{cells};
 		ℝ[3] t;
 
+		let ℕ constexprDim = 2;
+		let ℝ[constexprDim] constexprVec = [1.1, 1.1];
+
 		// --- TEST DE F ---
 		J0: { let ℕ y = f(); }
 		J1: { let ℕ y = f(2); }
@@ -83,6 +88,7 @@ class DeclarationProviderTest
 		J3: {
 				let ℝ[2] b = [1.1, 2.2];
 				let ℝ[2] y = f(b);
+				y = f(constexprVec);
 		}
 		J4: { let ℝ y = f(3.0, true); } // Wrong arguments : ℝ, ℾ
 
@@ -103,6 +109,12 @@ class DeclarationProviderTest
 		J8: { let ℝ[3] gt = g(t); }
 		J9: { a = g(x, x); } // Wrong arguments : ℝ{cells}, ℝ{cells}
 		J10: { a = g(x2); } // Wrong arguments : ℝ²{cells}
+
+		// --- TEST DE H ---
+		J11: {
+			let ℝ[2] b = [1.1, 2.2];
+			let ℝ[2] y = h(b, constexprVec);
+		}
 		'''
 
 		val rs = resourceSetProvider.get
@@ -114,44 +126,48 @@ class DeclarationProviderTest
 		module.assertError(NablaPackage.eINSTANCE.functionCall,
 		ExpressionValidator::FUNCTION_CALL_ARGS,
 		ExpressionValidator::getFunctionCallArgsMsg(#[PrimitiveType::REAL.literal, PrimitiveType::BOOL.literal]))
-		val xVar = module.getVariableByName("x") as ConnectivityVar
+		val xVar = module.getVarByName("x") as ConnectivityVar
 		val cells = xVar.supports.head
 		module.assertError(NablaPackage.eINSTANCE.functionCall,
 		ExpressionValidator::FUNCTION_CALL_ARGS,
-		ExpressionValidator::getFunctionCallArgsMsg(#[new NablaConnectivityType(#[cells], new NSTRealArray1D(createIntConstant(2))).label]))
+		ExpressionValidator::getFunctionCallArgsMsg(#[new NablaConnectivityType(#[cells], new NSTRealArray1D(createIntConstant(2), 2)).label]))
 		module.assertError(NablaPackage.eINSTANCE.functionCall,
 		ExpressionValidator::FUNCTION_CALL_ARGS,
 		ExpressionValidator::getFunctionCallArgsMsg(#[new NablaConnectivityType(#[cells], new NSTRealScalar).label, new NablaConnectivityType(#[cells], new NSTRealScalar).label]))
 
 		val fFunctions = nablaExt.functions.filter[x | x.name == 'f']
-		val j0Fdecl = getFunctionDeclarationOfJob(module, 0)
+		val j0Fdecl = getFunctionCallOfJob(module, 0)
 		Assert.assertEquals(fFunctions.get(0), j0Fdecl.model)
-		val j1Fdecl = getFunctionDeclarationOfJob(module, 1)
+		val j1Fdecl = getFunctionCallOfJob(module, 1)
 		Assert.assertEquals(fFunctions.get(1), j1Fdecl.model)
-		val j2Fdecl = getFunctionDeclarationOfJob(module, 2)
+		val j2Fdecl = getFunctionCallOfJob(module, 2)
 		Assert.assertEquals(fFunctions.get(2), j2Fdecl.model)
-		val j3Fdecl = getFunctionDeclarationOfJob(module, 3)
+		val j3Fdecl = getFunctionCallOfJob(module, 3)
 		Assert.assertEquals(fFunctions.get(3), j3Fdecl.model)
-		val j4Fdecl = getFunctionDeclarationOfJob(module, 4)
+		val j4Fdecl = getFunctionCallOfJob(module, 4)
 		Assert.assertNull(j4Fdecl)
 
 		val gFunctions = nablaExt.functions.filter(Function).filter[x | x.name == 'g']
-		val j5Gdecl = getFunctionDeclarationOfJob(module, 5)
+		val j5Gdecl = getFunctionCallOfJob(module, 5)
 		Assert.assertEquals(gFunctions.get(0), j5Gdecl.model)
-		Assert.assertEquals(new NSTRealArray1D(createIntConstant(2)), j5Gdecl.returnType)
-		val j6Gdecl = getFunctionDeclarationOfJob(module, 6)
+		Assert.assertEquals(new NSTRealArray1D(createIntConstant(2), 2), j5Gdecl.returnType)
+		val j6Gdecl = getFunctionCallOfJob(module, 6)
 		Assert.assertEquals(gFunctions.get(1), j6Gdecl.model)
-		Assert.assertEquals(new NSTRealArray1D(createIntConstant(6)), j6Gdecl.returnType)
-		val j7Gdecl = getFunctionDeclarationOfJob(module, 7)
+		Assert.assertEquals(new NSTRealArray1D(createIntConstant(6), 6), j6Gdecl.returnType)
+		val j7Gdecl = getFunctionCallOfJob(module, 7)
 		Assert.assertEquals(gFunctions.get(2), j7Gdecl.model)
-		Assert.assertEquals(new NSTRealArray1D(createIntConstant(5)), j7Gdecl.returnType)
-		val j8Gdecl = getFunctionDeclarationOfJob(module, 8)
+		Assert.assertEquals(new NSTRealArray1D(createIntConstant(5), 5), j7Gdecl.returnType)
+		val j8Gdecl = getFunctionCallOfJob(module, 8)
 		Assert.assertEquals(gFunctions.get(0), j8Gdecl.model)
-		Assert.assertEquals(new NSTRealArray1D(createIntConstant(3)), j8Gdecl.returnType)
-		val j9Gdecl = getFunctionDeclarationOfJob(module, 9)
+		Assert.assertEquals(new NSTRealArray1D(createIntConstant(3), 3), j8Gdecl.returnType)
+		val j9Gdecl = getFunctionCallOfJob(module, 9)
 		Assert.assertNull(j9Gdecl)
-		val j10Gdecl = getFunctionDeclarationOfJob(module, 10)
+		val j10Gdecl = getFunctionCallOfJob(module, 10)
 		Assert.assertNull(j10Gdecl)
+
+		val hFunctions = nablaExt.functions.filter(Function).filter[x | x.name == 'h']
+		val j11Hdecl = getFunctionCallOfJob(module, 11)
+		Assert.assertEquals(hFunctions.get(0), j11Hdecl.model)
 	}
 
 	@Test
@@ -231,22 +247,22 @@ class DeclarationProviderTest
 		ExpressionValidator::getReductionCallArgsMsg(PrimitiveType::INT.literal))
 
 		val fReductions = module.reductions.filter[x | x.name == 'f']
-		val j0Fdecl = getReductionDeclarationOfJob(module, 0)
+		val j0Fdecl = getReductionCallOfJob(module, 0)
 		Assert.assertEquals(fReductions.get(0), j0Fdecl.model)
-		val j1Fdecl = getReductionDeclarationOfJob(module, 1)
+		val j1Fdecl = getReductionCallOfJob(module, 1)
 		Assert.assertEquals(fReductions.get(1), j1Fdecl.model)
-		Assert.assertEquals(new NSTRealArray1D(createIntConstant(2)), j1Fdecl.type)
-		val j2Fdecl = getReductionDeclarationOfJob(module, 2)
+		Assert.assertEquals(new NSTRealArray1D(createIntConstant(2), 2), j1Fdecl.type)
+		val j2Fdecl = getReductionCallOfJob(module, 2)
 		Assert.assertNull(j2Fdecl)
 	}
 
-	private def getFunctionDeclarationOfJob(NablaModule m, int jobIndex)
+	private def getFunctionCallOfJob(NablaModule m, int jobIndex)
 	{
 		val fcall = m.jobs.get(jobIndex).eAllContents.filter(FunctionCall).head
 		fcall.declaration
 	}
 
-	private def getReductionDeclarationOfJob(NablaModule m, int jobIndex)
+	private def getReductionCallOfJob(NablaModule m, int jobIndex)
 	{
 		val fcall = m.jobs.get(jobIndex).eAllContents.filter(ReductionCall).head
 		fcall.declaration

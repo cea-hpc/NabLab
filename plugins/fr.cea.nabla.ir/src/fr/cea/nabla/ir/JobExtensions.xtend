@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -15,12 +15,14 @@ import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.Variable
+import fr.cea.nabla.ir.ir.IrRoot
 
 class JobExtensions
 {
 	public static val String SETUP_TIMELOOP_PREFIX = "SetUpTimeLoop"
 	public static val String TEARDOWN_TIMELOOP_PREFIX = "TearDownTimeLoop"
 	public static val String EXECUTE_TIMELOOP_PREFIX = "ExecuteTimeLoop"
+	public static val String INIT_VARIABLE_PREFIX = "Init_"
 
 	static def hasIterable(Job it)
 	{
@@ -46,13 +48,10 @@ class JobExtensions
 
 	static def getDisplayName(Job it)
 	{
-		val irModule = IrUtils.getContainerOfType(it, IrModule)
-		irModule.name + "::" + name
-	}
-
-	static def getDiagramDisplayName(Job it)
-	{
-		val irModule = IrUtils.getContainerOfType(it, IrModule)
-		irModule.name + "::" + name
+		val module = IrUtils.getContainerOfType(it, IrModule)
+		if (module !== null && (module.eContainer as IrRoot).modules.size > 1)
+			module.name + "::" + name
+		else
+			name
 	}
 }

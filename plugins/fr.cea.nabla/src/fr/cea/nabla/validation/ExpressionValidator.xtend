@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -17,11 +17,12 @@ import fr.cea.nabla.nabla.ContractedIf
 import fr.cea.nabla.nabla.Div
 import fr.cea.nabla.nabla.Equality
 import fr.cea.nabla.nabla.Expression
+import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
-import fr.cea.nabla.nabla.IntConstant
 import fr.cea.nabla.nabla.Minus
 import fr.cea.nabla.nabla.Modulo
 import fr.cea.nabla.nabla.Mul
+import fr.cea.nabla.nabla.NablaExtension
 import fr.cea.nabla.nabla.NablaPackage
 import fr.cea.nabla.nabla.Not
 import fr.cea.nabla.nabla.Or
@@ -33,6 +34,7 @@ import fr.cea.nabla.typing.NSTArray1D
 import fr.cea.nabla.typing.NSTScalar
 import fr.cea.nabla.typing.NablaConnectivityType
 import java.util.List
+import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.validation.Check
 import org.eclipse.xtext.validation.CheckType
 
@@ -42,7 +44,6 @@ class ExpressionValidator extends ArgOrVarRefValidator
 	@Inject extension ExpressionTypeProvider
 
 	public static val BASE_TYPE_CONSTANT_VALUE = "Expressions::BaseTypeConstantValue"
-	public static val BASE_TYPE_CONSTANT_TYPE = "Expressions::BaseTypeConstantType"
 	public static val FUNCTION_CALL_ARGS = "Expressions::FunctionCallArgs"
 	public static val REDUCTION_CALL_ON_CONNECTIVITIES_VARIABLE = "Expressions::ReductionCallOnConnectivitiesVariable"
 	public static val REDUCTION_CALL_ARGS = "Expressions::ReductionArgs"
@@ -61,39 +62,33 @@ class ExpressionValidator extends ArgOrVarRefValidator
 	public static val VECTOR_CONSTANT_SIZE = "Expressions::VectorConstantSize"
 	public static val VECTOR_CONSTANT_INCONSISTENT_TYPE = "Expressions::VectorConstantInconsistentType"
 	public static val VECTOR_CONSTANT_TYPE = "Expressions::VectorConstantType"
+	public static val EXTERN_FUNCTION_CALL_IN_FUNCTION_BODY = "Instructions::ExternFunctionCallInFunctionBody"
 
-	static def getBaseTypeConstantValueMsg(String expectedTypeName) { "Initialization value must be of type " + expectedTypeName }
-	static def getBaseTypeConstantTypeMsg() { "Only integer constant allowed for initialization" }
 	static def getFunctionCallArgsMsg(List<String> inTypes) { "No candidate function found. Wrong arguments: " + inTypes.join(', ') }
 	static def getReductionCallOnConnectivitiesVariableMsg() { "No reduction on connectivities variable" }
 	static def getReductionCallArgsMsg(String inType) { "No candidate reduction found. Wrong arguments: " + inType }
 	static def getBinaryOpTypeMsg(String op, String leftType, String rightType) { "Binary operator " + op + " undefined on types " + leftType + " and " + rightType }
-	static def getVectorConstantSizeMsg(int size) { "Unsupported vector size: " + size }
+	static def getVectorConstantSizeMsg(int size) { "Unexpected vector size: " + size }
 	static def getVectorConstantInconsistentTypeMsg() { "All values must have the same type" }
 	static def getVectorConstantTypeMsg(String actualType)  { "Expected only scalar and vector types, but was " + actualType }
+	static def getExternFunctionCallInFunctionBodyMsg() { "External function can not be called in inline function" }
 
 	@Check(CheckType.NORMAL)
 	def checkBaseTypeConstantValue(BaseTypeConstant it)
 	{
 		val vType = value?.typeFor
 		if (vType !== null && !(vType instanceof NSTScalar && vType.primitive == type.primitive))
-			error(getBaseTypeConstantValueMsg(type.primitive.literal), NablaPackage.Literals.BASE_TYPE_CONSTANT__VALUE, BASE_TYPE_CONSTANT_VALUE)
-	}
-
-	@Check(CheckType.NORMAL)
-	def checkBaseTypeConstantType(BaseTypeConstant it)
-	{
-		for (i : 0..<type.sizes.size)
-			if (! (type.sizes.get(i) instanceof IntConstant))
-			error(getBaseTypeConstantTypeMsg(), NablaPackage.Literals.BASE_TYPE_CONSTANT__TYPE, i, BASE_TYPE_CONSTANT_TYPE)
+			error(getTypeMsg(vType.label, type.primitive.literal), NablaPackage.Literals.BASE_TYPE_CONSTANT__VALUE, BASE_TYPE_CONSTANT_VALUE)
 	}
 
 	@Check(CheckType.NORMAL)
 	def checkFunctionCallArgs(FunctionCall it)
 	{
-		val inTypes = args.map[typeFor]
 		if (typeFor === null)
+		{
+			val inTypes = args.map[typeFor]
 			error(getFunctionCallArgsMsg(inTypes.map[label]), NablaPackage.Literals::FUNCTION_CALL__FUNCTION, FUNCTION_CALL_ARGS)
+		}
 	}
 
 	@Check(CheckType.NORMAL)
@@ -214,6 +209,27 @@ class ExpressionValidator extends ArgOrVarRefValidator
 				error(getVectorConstantTypeMsg(firstEltType.label), NablaPackage.Literals.VECTOR_CONSTANT__VALUES, VECTOR_CONSTANT_TYPE)
 			else if (values.size > 1 && values.tail.exists[x | x.typeFor != firstEltType])
 				error(getVectorConstantInconsistentTypeMsg(), NablaPackage.Literals.VECTOR_CONSTANT__VALUES, VECTOR_CONSTANT_INCONSISTENT_TYPE)
+		}
+	}
+
+
+	/**
+	 * Inline functions are generated as simple functions (not methods of class)
+	 * to be call in option initializations (before class instanciation).
+	 * Extern functions are holded by a provider, i.e. LinearAlgebra.
+	 * The provider is an option that can be initialized by a json data file.
+	 * Consequently, it can not be called in a free function.
+	 */
+
+	@Check(CheckType.NORMAL)
+	def checkExternFunctionCallInFunctionBody(FunctionCall it)
+	{
+		val nablaExt = EcoreUtil2.getContainerOfType(function, NablaExtension)
+		if ((nablaExt !== null) && function.external && (nablaExt.name != "Math"))
+		{
+			val function = EcoreUtil2.getContainerOfType(eContainer, Function)
+			if (function !== null)
+				error(getExternFunctionCallInFunctionBodyMsg(), NablaPackage.Literals.FUNCTION_CALL__FUNCTION, EXTERN_FUNCTION_CALL_IN_FUNCTION_BODY)
 		}
 	}
 

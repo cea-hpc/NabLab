@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -27,10 +27,11 @@ class JobInterpreter
 	// Switch to more efficient dispatch (also clearer for profiling)
 	static def void interprete(Job j, Context context)
 	{
-		if (j instanceof ExecuteTimeLoopJob)
-			interpreteExecuteTimeLoopJob(j, context)
-		else
-			interpreteJob(j, context)
+		switch j
+		{
+			ExecuteTimeLoopJob: interpreteExecuteTimeLoopJob(j, context)
+			default: interpreteJob(j, context)
+		}
 	}
 
 	private static def void interpreteJob(Job it, Context context)
@@ -121,7 +122,7 @@ class JobInterpreter
 		{
 			val time = context.getReal(ir.currentTimeVariable)
 			val coords = (context.getVariableValue(ir.nodeCoordVariable) as NV2Real).data
-			val quads = context.meshProvider.quads
+			val quads = context.mesh.quads
 			w.startVtpFile(iteration, time, coords, quads);
 			val outputVars = ppInfo.outputVariables
 

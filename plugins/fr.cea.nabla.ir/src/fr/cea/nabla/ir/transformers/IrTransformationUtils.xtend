@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -30,19 +30,24 @@ class IrTransformationUtils
 			if (FeatureMapUtil.isMany(container, feature))
 			{
 				val list = container.eGet(feature) as List<Object>
-				val reductionIndex = list.indexOf(oldInstruction)
-				list.set(reductionIndex, newInstructions.get(0))
+				val index = list.indexOf(oldInstruction)
+				list.set(index, newInstructions.get(0))
 				for (i : 1..<newInstructions.length)
-					list.add(reductionIndex+i, newInstructions.get(i))
+					list.add(index+i, newInstructions.get(i))
 			}
 			else
 			{
-				val replacementBlock = IrFactory::eINSTANCE.createInstructionBlock =>
-				[
-					for (toAdd : newInstructions)
-						instructions += toAdd
-				]
-				container.eSet(feature, replacementBlock)
+				if (newInstructions.size == 1)
+					container.eSet(feature, newInstructions.get(0))
+				else
+				{
+					val replacementBlock = IrFactory::eINSTANCE.createInstructionBlock =>
+					[
+						for (toAdd : newInstructions)
+							instructions += toAdd
+					]
+					container.eSet(feature, replacementBlock)
+				}
 			}
 		}
 	}
@@ -66,12 +71,17 @@ class IrTransformationUtils
 			}
 			else
 			{
-				val replacementBlock = IrFactory::eINSTANCE.createInstructionBlock =>
-				[
-					for (toAdd : instructionsToInsert) instructions += toAdd
-					instructions += existingInstruction
-				]
-				container.eSet(feature, replacementBlock)
+				if (instructionsToInsert.size == 1)
+					container.eSet(feature, instructionsToInsert.get(0))
+				else
+				{
+					val replacementBlock = IrFactory::eINSTANCE.createInstructionBlock =>
+					[
+						for (toAdd : instructionsToInsert) instructions += toAdd
+						instructions += existingInstruction
+					]
+					container.eSet(feature, replacementBlock)
+				}
 			}
 		}
 	}

@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -10,23 +10,17 @@
 package fr.cea.nabla.generator.application
 
 import com.google.inject.Inject
-import fr.cea.nabla.generator.BackendFactory
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
 import fr.cea.nabla.generator.NablaIrWriter
 import fr.cea.nabla.generator.NablagenExtensionHelper
 import fr.cea.nabla.generator.StandaloneGeneratorBase
 import fr.cea.nabla.generator.ir.IrRootBuilder
 import fr.cea.nabla.ir.generator.GenerationContent
-import fr.cea.nabla.ir.generator.cpp.CppApplicationGenerator
-import fr.cea.nabla.ir.generator.dace.DaceApplicationGenerator
-import fr.cea.nabla.ir.generator.java.JavaApplicationGenerator
 import fr.cea.nabla.ir.generator.json.JsonGenerator
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.nabla.NablaModule
-import fr.cea.nabla.nablagen.LevelDB
 import fr.cea.nabla.nablagen.NablagenApplication
 import fr.cea.nabla.nablagen.Target
-import fr.cea.nabla.nablagen.TargetType
 import java.util.ArrayList
 import org.eclipse.emf.ecore.util.EcoreUtil
 
@@ -36,7 +30,7 @@ import static extension fr.cea.nabla.ir.IrRootExtensions.*
 class NablagenApplicationGenerator extends StandaloneGeneratorBase
 {
 	@Inject NablaIrWriter irWriter
-	@Inject BackendFactory backendFactory
+	@Inject ApplicationGeneratorFactory generatorFactory
 	@Inject IrRootBuilder irRootBuilder
 	@Inject NablagenExtensionHelper ngenExtHelper
 
@@ -80,22 +74,12 @@ class NablagenApplicationGenerator extends StandaloneGeneratorBase
 					if (!target.interpreter)
 					{
 						// Create code generator
-						var String iterationMax = null
-						var String timeMax = null
-						if (target.type !== TargetType.JAVA && target.type !== TargetType::DACE)
-						{
-							iterationMax = ngenApp.mainModule.iterationMax.name
-							timeMax = ngenApp.mainModule.timeMax.name
-						}
-						val g = getCodeGenerator(target, wsPath, iterationMax, timeMax, ngenApp.levelDB)
-	
+						val g = generatorFactory.create(target, ngenApp, wsPath)
+
 						// Apply IR transformations dedicated to this target (if necessary)
-						var IrRoot genIr = ir
-						if (g.irTransformationStep !== null)
-						{
-							genIr = EcoreUtil::copy(ir)
-							g.irTransformationStep.transformIr(genIr, [msg | dispatcher.post(MessageType::Exec, msg)])
-						}
+						val IrRoot genIr = (g.irTransformationSteps.empty ? ir : EcoreUtil::copy(ir))
+						for (s : g.irTransformationSteps)
+							s.transformIr(genIr, [msg | dispatcher.post(MessageType::Exec, msg)])
 						if (target.writeIR)
 						{
 							val fileName = irWriter.createAndSaveResource(fsa, genIr)
@@ -123,25 +107,6 @@ class NablagenApplicationGenerator extends StandaloneGeneratorBase
 				dispatcher.post(MessageType::Error, 'at ' + stack.className + '.' + stack.methodName + '(' + stack.fileName + ':' + stack.lineNumber + ')')
 			}
 			throw(e)
-		}
-	}
-
-	private def getCodeGenerator(Target it, String wsPath, String iterationMax, String timeMax, LevelDB levelDB)
-	{
-		switch type
-		{
-			case JAVA: new JavaApplicationGenerator(levelDB !== null)
-			case DACE: new DaceApplicationGenerator
-			default: // C++ 
-			{
-				val backend = backendFactory.getCppBackend(type)
-				backend.traceContentProvider.maxIterationsVarName = iterationMax
-				backend.traceContentProvider.stopTimeVarName = timeMax
-				val cmakeVars = new ArrayList<Pair<String, String>>
-				variables.forEach[x | cmakeVars += x.key -> x.value]
-				if (levelDB !== null) levelDB.variables.forEach[x | cmakeVars += x.key -> x.value]
-				new CppApplicationGenerator(backend, wsPath, (levelDB !== null), cmakeVars)
-			}
 		}
 	}
 

@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -13,6 +13,7 @@ import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.ir.IrModule
 import org.eclipse.xtend.lib.annotations.Data
 
+import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 
@@ -45,7 +46,7 @@ class MainContentProvider
 		assert(d.IsObject());
 
 		// Mesh instanciation
-		«meshClassName» mesh;
+		«irRoot.mesh.className» mesh;
 		assert(d.HasMember("mesh"));
 		rapidjson::StringBuffer strbuf;
 		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
@@ -65,9 +66,9 @@ class MainContentProvider
 			«val nrName = IrUtils.NonRegressionNameAndValue.key»
 			«val dbName = irRoot.name + "DB"»
 			// Non regression testing
-			if («name»Options.«nrName» == "«IrUtils.NonRegressionValues.CreateReference.toString»")
+			if («name»->get«nrName.toFirstUpper()»() == "«IrUtils.NonRegressionValues.CreateReference.toString»")
 				«name»->createDB("«dbName».ref");
-			if («name»Options.«nrName» == "«IrUtils.NonRegressionValues.CompareToReference.toString»") {
+			if («name»->get«nrName.toFirstUpper()»() == "«IrUtils.NonRegressionValues.CompareToReference.toString»") {
 				«name»->createDB("«dbName».current");
 				if (!compareDB("«dbName».current", "«dbName».ref"))
 					ret = 1;
@@ -82,15 +83,14 @@ class MainContentProvider
 
 	private def getInstanciation(IrModule it)
 	'''
-		«className»::Options «name»Options;
+		«className»* «name» = new «className»(mesh);
 		if (d.HasMember("«name»"))
 		{
 			rapidjson::StringBuffer strbuf;
 			rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
 			d["«name»"].Accept(writer);
-			«name»Options.jsonInit(strbuf.GetString());
+			«name»->jsonInit(strbuf.GetString());
 		}
-		«className»* «name» = new «className»(mesh, «name»Options);
 		«IF !main»«name»->setMainModule(«irRoot.mainModule.name»);«ENDIF»
 	'''
 }

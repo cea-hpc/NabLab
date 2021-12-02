@@ -48,6 +48,7 @@ class IncludesContentProvider
 			systemIncludes += "leveldb/db.h"
 			systemIncludes += "leveldb/write_batch.h"
 		}
+		systemIncludes += "rapidjson/document.h"
 
 		return systemIncludes
 	}
@@ -55,8 +56,6 @@ class IncludesContentProvider
 	protected def getUserIncludes(boolean hasLevelDB, boolean hasPostProcessing)
 	{
 		val userIncludes = new LinkedHashSet<String>
-		userIncludes += "nablalib/mesh/CartesianMesh2D.h"
-		if (hasPostProcessing) userIncludes += "nablalib/mesh/PvdFileWriter2D.h"
 		userIncludes +=  "nablalib/utils/Utils.h"
 		userIncludes +=  "nablalib/utils/Timer.h"
 		userIncludes +=  "nablalib/types/Types.h"
@@ -72,7 +71,6 @@ class IncludesContentProvider
 	protected def getUserNs(boolean hasLevelDB)
 	{
 		val userNs = new LinkedHashSet<String>
-		userNs += "nablalib::mesh"
 		userNs +=  "nablalib::utils"
 		userNs +=  "nablalib::types"
 		if (hasLevelDB) userNs +=  "nablalib::utils"

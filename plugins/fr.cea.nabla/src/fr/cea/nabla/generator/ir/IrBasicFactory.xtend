@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -11,6 +11,7 @@ package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
 import com.google.inject.Singleton
+import fr.cea.nabla.BaseTypeSizeEvaluator
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.Connectivity
@@ -25,6 +26,7 @@ class IrBasicFactory
 {
 	@Inject extension NabLabFileAnnotationFactory
 	@Inject extension IrExpressionFactory
+	@Inject extension BaseTypeSizeEvaluator
 
 	// No create method to ensure a new instance every time (for n+1 time variables)
 	def fr.cea.nabla.ir.ir.BaseType toIrBaseType(BaseType t)
@@ -32,14 +34,19 @@ class IrBasicFactory
 		IrFactory::eINSTANCE.createBaseType =>
 		[
 			primitive = t.primitive.toIrPrimitiveType
-			t.sizes.forEach[x | sizes += x.toIrExpression]
+			for (s : t.sizes)
+			{
+				sizes += s.toIrExpression
+				intSizes += getIntSizeFor(s)
+			}
+			isStatic = intSizes.forall[x | x !== BaseTypeSizeEvaluator::DYNAMIC_SIZE]
 		]
 	}
 
 	def toIrPrimitiveType(PrimitiveType t)
 	{
 		val type = fr.cea.nabla.ir.ir.PrimitiveType::get(t.value + 1) // First literal is VOID in the IR model
-		if (type === null) throw new RuntimeException('Conversion Nabla --> IR impossible : type inconnu ' + t.literal)
+		if (type === null) throw new RuntimeException('Nabla --> IR problem: unknown type ' + t.literal)
 		return type
 	}
 
@@ -65,15 +72,6 @@ class IrBasicFactory
 			provider = ext.toIrMeshExtensionProvider
 		]
 	}
-
-//	def toIrExtensionProvider(NablaExtension ext)
-//	{
-//		switch ext
-//		{
-//			DefaultExtension: ext.toIrDefaultExtensionProvider
-//			MeshExtension: ext.toIrMeshExtensionProvider
-//		}
-//	}
 
 	def create IrFactory::eINSTANCE.createMeshExtensionProvider toIrMeshExtensionProvider(MeshExtension ext)
 	{

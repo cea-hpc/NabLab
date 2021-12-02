@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -30,6 +30,7 @@ abstract class JobContentProvider
 	protected val extension ExpressionContentProvider
 	protected val extension InstructionContentProvider
 	protected val extension JobCallerContentProvider
+	protected val extension JsonContentProvider
 
 	def getDeclarationContent(Job it)
 	'''
@@ -67,7 +68,7 @@ abstract class JobContentProvider
 			«itVar»++;
 			«IF caller.main»
 				«IF ppInfo !== null»
-				if (!writer.isDisabled() && «ppInfo.periodReference.codeName» >= «ppInfo.lastDumpVariable.codeName» + «ppInfo.periodValue.codeName»)
+				if (writer != NULL && !writer->isDisabled() && «ppInfo.periodReference.codeName» >= «ppInfo.lastDumpVariable.codeName» + «ppInfo.periodValue.codeName»)
 					dumpVariables(«itVar»);
 				«ENDIF»
 				«traceContentProvider.getBeginOfLoopTrace(irModule, itVar)»
@@ -92,7 +93,7 @@ abstract class JobContentProvider
 		} while (continueLoop);
 		«IF caller.main»
 			«IF ppInfo !== null»
-			if (!writer.isDisabled())
+			if (writer != NULL && !writer->isDisabled())
 				dumpVariables(«itVar»+1, false);
 			«ENDIF»
 		«ENDIF»
@@ -109,7 +110,6 @@ class KokkosJobContentProvider extends JobContentProvider
 {
 	override getDeclarationContent(Job it)
 	'''
-		KOKKOS_INLINE_FUNCTION
 		void «codeName»(«FOR a : arguments SEPARATOR ', '»«a»«ENDFOR») noexcept;'''
 
 	override getDefinitionContent(Job it)

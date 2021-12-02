@@ -24,6 +24,7 @@ nav:
   - NabLab language reference: nablablanguage.md
   - Ngen language reference: ngenlanguage.md
   - Docker integration: docker.md 
+  - Arcane code generation: arcane.md
 
 theme:
   name: 'material'

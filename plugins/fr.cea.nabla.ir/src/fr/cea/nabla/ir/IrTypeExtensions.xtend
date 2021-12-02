@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -32,6 +32,7 @@ import static extension fr.cea.nabla.ir.IrUtils.*
 
 class IrTypeExtensions
 {
+	public static val int DYNAMIC_SIZE = -1
 	public static val VectorClass = 'Vector'
 	public static val MatrixClass = 'Matrix'
 
@@ -55,7 +56,7 @@ class IrTypeExtensions
 		{
 			case 1: VectorClass
 			case 2: MatrixClass
-			default: throw new RuntimeException("Unexpected dimension")
+			default: throw new RuntimeException("Unexpected dimension: " + t.sizes.size)
 		}
 	}
 
@@ -84,6 +85,22 @@ class IrTypeExtensions
 	static def isScalar(IrType t)
 	{
 		(t instanceof BaseType) && (t as BaseType).sizes.empty
+	}
+
+	static def boolean isBaseTypeConstExpr(IrType it)
+	{
+		switch it
+		{
+			BaseType: sizes.empty || sizes.forall[x | x.constExpr]
+			ConnectivityType: base.baseTypeConstExpr
+			LinearAlgebraType: sizes.empty || sizes.forall[x | x.constExpr]
+			default: throw new RuntimeException("Unhandled parameter")
+		}
+	}
+
+	static def isDynamicBaseType(IrType t)
+	{
+		t instanceof BaseType && !(t as BaseType).isStatic
 	}
 
 	static def getPrimitive(IrType t)

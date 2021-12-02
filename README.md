@@ -7,7 +7,7 @@ NabLab is a full-fledged industrial environment for scientific computing and Hig
 
 The NabLab documentation is available [here](https://cea-hpc.github.io/NabLab/).
 
-The latest NabLab environment can be downloaded [here](https://github.com/cea-hpc/NabLab/releases/tag/v0.4.2).
+The latest NabLab environment can be downloaded [here](https://github.com/cea-hpc/NabLab/releases/tag/v0.4.3).
 
 
 # Dependencies
@@ -16,16 +16,16 @@ NabLab requires Java 11 or later to build & run.
 
 It as based on:
 
-Eclipse 2021-03 for Java and DSL Developers
+Eclipse 2021-09 for Java and DSL Developers
  * License: EPL-2.0
- * Project: https://www.eclipse.org/downloads/packages/release/2021-03/r/eclipse-ide-java-and-dsl-developers
+ * Project: https://www.eclipse.org/downloads/packages/release/2021-09/r/eclipse-ide-java-and-dsl-developers
 
 Xtext (2.25.0)
  * License: EPL-2.0
  * Project: http://projects.eclipse.org/projects/modeling.tmf.xtext
  * Source: https://github.com/eclipse/xtext
 
-Sirius (6.4.2)
+Sirius (6.5.1)
  * License: EPL-2.0
  * Project: http://projects.eclipse.org/projects/modeling.sirius
  * Source: https://git.eclipse.org/c/sirius/org.eclipse.sirius.git
@@ -47,9 +47,9 @@ Commons-Math3 (3.6.1)
 
 # Installing Eclipse for NabLab contributors
 
-- Download and install [Eclipse 2021-03](https://www.eclipse.org/downloads/packages/release/2021-03/r/eclipse-ide-java-and-dsl-developers)
-- Install Zest: Help>Install New Software..., Work with http://download.eclipse.org/releases/2021-03, select Modeling>Zest SDK and install
-- Install Sirius via the MarketPlace: Help>Eclipse Marketplace... and Find Sirius 6.4. Do not forget to select *Sirius Integration With Xtext*. In case of message, choose proceed anyway
+- Download and install [Eclipse 2021-09](https://www.eclipse.org/downloads/packages/release/2021-09/r/eclipse-ide-java-and-dsl-developers)
+- Install Zest: Help>Install New Software..., Work with http://download.eclipse.org/releases/2021-09, select Modeling>Zest SDK and install
+- Install Sirius via the MarketPlace: Help>Eclipse Marketplace... and Find Sirius 6.5.1. Do not forget to select *Sirius Integration With Xtext* and *Sirius ELK Integration*. In case of message, choose proceed anyway
 
 Then clone NabLab from GitHub and import existing projects located in plugins, tests, releng and docs directories.
 
@@ -57,7 +57,7 @@ It is recommended to install a Markdown editor thanks to Eclipse Marketplace to 
 
 It is also recommended to install a Json editor thanks to Eclipse Marketplace to visualize/modify user data files.
 
-The launch of a runtime Eclipse displays a warning of unsatisfied dependency on `javax.xml.bind`. To suppress it: Help>Install New Software..., Work with http://download.eclipse.org/tools/orbit/downloads/drops/R20190226160451/repository and select *Java XML Streaming API* in Orbit.Bundles By Name:javax.*.
+The launch of a runtime Eclipse displays a warning of unsatisfied dependency on `javax.xml.bind`. To suppress it: Help>Install New Software..., Work with https://download.eclipse.org/tools/orbit/downloads/drops/R20210825222808/repository and select *Java XML Streaming API* in Orbit.Bundles By Name:javax.*.
 
 To first build NabLab from source
 - open fr.cea.nabla.ir/model/Ir.genmodel and Generate Model Code by right click on NablaIR

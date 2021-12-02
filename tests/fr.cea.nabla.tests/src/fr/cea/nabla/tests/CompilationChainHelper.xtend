@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -52,25 +52,41 @@ class CompilationChainHelper
 	 */
 	def getIrForInterpretation(CharSequence model, CharSequence genModel)
 	{
+		getIrForInterpretation(#[model], genModel)
+	}
+
+	def getIrForInterpretation(CharSequence[] models, CharSequence genModel)
+	{
 		val irRootBuilder = irRootBuilderProvider.get
 		val wsPath = TestUtils.PluginsBasePath + ".ui/examples"
-		val ngen = getNgenApp(model, genModel)
+		val ngen = getNgenApp(models, genModel)
 		return irRootBuilder.buildInterpreterIr(ngen, wsPath)
 	}
 
-	def getNgenApp(CharSequence model, CharSequence genModel)
+	def getRawIr(CharSequence model, CharSequence genModel)
+	{
+		val irRootBuilder = irRootBuilderProvider.get
+		val ngen = getNgenApp(#[model], genModel)
+		return irRootBuilder.buildRawIr(ngen)
+	}
+
+	def getNgenApp(CharSequence[] models, CharSequence genModel)
 	{
 		val rs = resourceSetProvider.get
 
 		nablaParseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DPath), rs)
 		nablagenParseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DGenPath), rs)
+		nablaParseHelper.parse(readFileAsString(TestUtils.AssertPath), rs)
 		nablaParseHelper.parse(readFileAsString(TestUtils.MathPath), rs)
 		nablaParseHelper.parse(readFileAsString(TestUtils.LinearAlgebraPath), rs)
 		nablagenParseHelper.parse(readFileAsString(TestUtils.LinearAlgebraGenPath), rs)
 
-		val nablaRoot = nablaParseHelper.parse(model, rs)
-		nablaRoot.assertNoErrors
-		rs.resources.add(nablaRoot.eResource)
+		for (model : models)
+		{
+			val nablaRoot = nablaParseHelper.parse(model, rs)
+			nablaRoot.assertNoErrors
+			rs.resources.add(nablaRoot.eResource)
+		}
 
 		val ngenApp = nablagenParseHelper.parse(genModel, rs) as NablagenApplication
 		ngenApp.assertNoErrors
@@ -88,10 +104,10 @@ class CompilationChainHelper
 		return interpreter.interprete(ir, jsonContent, wsPath)
 	}
 
-	def void generateCode(CharSequence model, CharSequence genModel, String wsPath, String projectName)
+	def void generateCode(CharSequence[] models, CharSequence genModel, String wsPath, String projectName)
 	{
 		val generator = ngenAppGeneratorProvider.get
-		val ngen = getNgenApp(model, genModel)
+		val ngen = getNgenApp(models, genModel)
 		generator.generateApplication(ngen, wsPath, projectName)
 	}
 }

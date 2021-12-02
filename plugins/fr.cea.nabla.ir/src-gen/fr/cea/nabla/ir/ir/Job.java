@@ -125,13 +125,13 @@ public interface Job extends IrAnnotable {
 	/**
 	 * Returns the value of the '<em><b>In Vars</b></em>' reference list.
 	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Variable}.
-	 * It is bidirectional and its opposite is '{@link fr.cea.nabla.ir.ir.Variable#getNextJobs <em>Next Jobs</em>}'.
+	 * It is bidirectional and its opposite is '{@link fr.cea.nabla.ir.ir.Variable#getConsumerJobs <em>Consumer Jobs</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>In Vars</em>' reference list.
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getJob_InVars()
-	 * @see fr.cea.nabla.ir.ir.Variable#getNextJobs
-	 * @model opposite="nextJobs"
+	 * @see fr.cea.nabla.ir.ir.Variable#getConsumerJobs
+	 * @model opposite="consumerJobs"
 	 * @generated
 	 */
 	EList<Variable> getInVars();
@@ -139,13 +139,13 @@ public interface Job extends IrAnnotable {
 	/**
 	 * Returns the value of the '<em><b>Out Vars</b></em>' reference list.
 	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Variable}.
-	 * It is bidirectional and its opposite is '{@link fr.cea.nabla.ir.ir.Variable#getPreviousJobs <em>Previous Jobs</em>}'.
+	 * It is bidirectional and its opposite is '{@link fr.cea.nabla.ir.ir.Variable#getProducerJobs <em>Producer Jobs</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Out Vars</em>' reference list.
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getJob_OutVars()
-	 * @see fr.cea.nabla.ir.ir.Variable#getPreviousJobs
-	 * @model opposite="previousJobs"
+	 * @see fr.cea.nabla.ir.ir.Variable#getProducerJobs
+	 * @model opposite="producerJobs"
 	 * @generated
 	 */
 	EList<Variable> getOutVars();

@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2021 CEA
- * This program and the accompanying materials are made available under the 
+ * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
  *
@@ -15,6 +15,6 @@ import fr.cea.nabla.ir.transformers.IrTransformationStep
 interface ApplicationGenerator
 {
 	def String getName()
-	def IrTransformationStep getIrTransformationStep()
+	def IrTransformationStep[] getIrTransformationSteps()
 	def Iterable<GenerationContent> getGenerationContents(IrRoot ir)
 }

@@ -10,91 +10,40 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonElement;
 
-import fr.cea.nabla.javalib.*;
 import fr.cea.nabla.javalib.mesh.*;
 
 public final class ExplicitHeatEquation
 {
-	public final static class Options
-	{
-		public String outputPath;
-		public int outputPeriod;
-		public double u0;
-		public double stopTime;
-		public int maxIterations;
-		public String nonRegression;
-
-		public void jsonInit(final String jsonContent)
-		{
-			final Gson gson = new Gson();
-			final JsonObject o = gson.fromJson(jsonContent, JsonObject.class);
-			// outputPath
-			assert(o.has("outputPath"));
-			final JsonElement valueof_outputPath = o.get("outputPath");
-			outputPath = valueof_outputPath.getAsJsonPrimitive().getAsString();
-			// outputPeriod
-			assert(o.has("outputPeriod"));
-			final JsonElement valueof_outputPeriod = o.get("outputPeriod");
-			assert(valueof_outputPeriod.isJsonPrimitive());
-			outputPeriod = valueof_outputPeriod.getAsJsonPrimitive().getAsInt();
-			// u0
-			if (o.has("u0"))
-			{
-				final JsonElement valueof_u0 = o.get("u0");
-				assert(valueof_u0.isJsonPrimitive());
-				u0 = valueof_u0.getAsJsonPrimitive().getAsDouble();
-			}
-			else
-				u0 = 1.0;
-			// stopTime
-			if (o.has("stopTime"))
-			{
-				final JsonElement valueof_stopTime = o.get("stopTime");
-				assert(valueof_stopTime.isJsonPrimitive());
-				stopTime = valueof_stopTime.getAsJsonPrimitive().getAsDouble();
-			}
-			else
-				stopTime = 1.0;
-			// maxIterations
-			if (o.has("maxIterations"))
-			{
-				final JsonElement valueof_maxIterations = o.get("maxIterations");
-				assert(valueof_maxIterations.isJsonPrimitive());
-				maxIterations = valueof_maxIterations.getAsJsonPrimitive().getAsInt();
-			}
-			else
-				maxIterations = 500000000;
-		}
-	}
-
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
 	@SuppressWarnings("unused")
 	private final int nbNodes, nbCells, nbFaces, maxNodesOfCell, maxNodesOfFace, maxCellsOfFace, maxNeighbourCells;
 
-	// User options
-	private final Options options;
-	private final PvdFileWriter2D writer;
+	// Options and global variables
+	private PvdFileWriter2D writer;
+	private String outputPath;
+	int outputPeriod;
+	int lastDump;
+	int n;
+	double u0;
+	static final double[] vectOne = new double[] {1.0, 1.0};
+	double stopTime;
+	int maxIterations;
+	double deltat;
+	double t_n;
+	double t_nplus1;
+	double t_n0;
+	double[][] X;
+	double[][] Xc;
+	double[] u_n;
+	double[] u_nplus1;
+	double[] V;
+	double[] D;
+	double[] faceLength;
+	double[] faceConductivity;
+	double[][] alpha;
 
-	// Global variables
-	protected int lastDump;
-	protected int n;
-	protected final double[] vectOne;
-	protected double deltat;
-	protected double t_n;
-	protected double t_nplus1;
-	protected double t_n0;
-	protected double[][] X;
-	protected double[][] Xc;
-	protected double[] u_n;
-	protected double[] u_nplus1;
-	protected double[] V;
-	protected double[] D;
-	protected double[] faceLength;
-	protected double[] faceConductivity;
-	protected double[][] alpha;
-
-	public ExplicitHeatEquation(CartesianMesh2D aMesh, Options aOptions)
+	public ExplicitHeatEquation(CartesianMesh2D aMesh)
 	{
 		// Mesh and mesh variables initialization
 		mesh = aMesh;
@@ -105,17 +54,46 @@ public final class ExplicitHeatEquation
 		maxNodesOfFace = CartesianMesh2D.MaxNbNodesOfFace;
 		maxCellsOfFace = CartesianMesh2D.MaxNbCellsOfFace;
 		maxNeighbourCells = CartesianMesh2D.MaxNbNeighbourCells;
+	}
 
-		// User options
-		options = aOptions;
-		writer = new PvdFileWriter2D("ExplicitHeatEquation", options.outputPath);
-
-		// Initialize variables with default values
+	public void jsonInit(final String jsonContent)
+	{
+		final Gson gson = new Gson();
+		final JsonObject options = gson.fromJson(jsonContent, JsonObject.class);
+		assert(options.has("outputPath"));
+		final JsonElement valueof_outputPath = options.get("outputPath");
+		outputPath = valueof_outputPath.getAsJsonPrimitive().getAsString();
+		writer = new PvdFileWriter2D("ExplicitHeatEquation", outputPath);
+		assert(options.has("outputPeriod"));
+		final JsonElement valueof_outputPeriod = options.get("outputPeriod");
+		assert(valueof_outputPeriod.isJsonPrimitive());
+		outputPeriod = valueof_outputPeriod.getAsJsonPrimitive().getAsInt();
 		lastDump = Integer.MIN_VALUE;
-		vectOne = new double[] {1.0, 1.0};
+		if (options.has("u0"))
+		{
+			final JsonElement valueof_u0 = options.get("u0");
+			assert(valueof_u0.isJsonPrimitive());
+			u0 = valueof_u0.getAsJsonPrimitive().getAsDouble();
+		}
+		else
+			u0 = 1.0;
+		if (options.has("stopTime"))
+		{
+			final JsonElement valueof_stopTime = options.get("stopTime");
+			assert(valueof_stopTime.isJsonPrimitive());
+			stopTime = valueof_stopTime.getAsJsonPrimitive().getAsDouble();
+		}
+		else
+			stopTime = 1.0;
+		if (options.has("maxIterations"))
+		{
+			final JsonElement valueof_maxIterations = options.get("maxIterations");
+			assert(valueof_maxIterations.isJsonPrimitive());
+			maxIterations = valueof_maxIterations.getAsJsonPrimitive().getAsInt();
+		}
+		else
+			maxIterations = 500000000;
 		deltat = 0.001;
-
-		// Allocate arrays
 		X = new double[nbNodes][2];
 		Xc = new double[nbCells][2];
 		u_n = new double[nbCells];
@@ -155,7 +133,7 @@ public final class ExplicitHeatEquation
 					final int pPlus1Id = nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFaceF)%nbNodesOfFaceF];
 					final int pNodes = pId;
 					final int pPlus1Nodes = pPlus1Id;
-					reduction0 = sumR0(reduction0, norm(ArrayOperations.minus(X[pNodes], X[pPlus1Nodes])));
+					reduction0 = sumR0(reduction0, norm(minus(X[pNodes], X[pPlus1Nodes])));
 				}
 			}
 			faceLength[fFaces] = 0.5 * reduction0;
@@ -243,7 +221,7 @@ public final class ExplicitHeatEquation
 					reduction0 = sumR1(reduction0, X[pNodes]);
 				}
 			}
-			Xc[cCells] = ArrayOperations.multiply(0.25, reduction0);
+			Xc[cCells] = multiply(0.25, reduction0);
 		});
 	}
 
@@ -337,8 +315,8 @@ public final class ExplicitHeatEquation
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
-			if (norm(ArrayOperations.minus(Xc[cCells], vectOne)) < 0.5)
-				u_n[cCells] = options.u0;
+			if (norm(minus(Xc[cCells], vectOne)) < 0.5)
+				u_n[cCells] = u0;
 			else
 				u_n[cCells] = 0.0;
 		});
@@ -374,7 +352,7 @@ public final class ExplicitHeatEquation
 					final int dCells = dId;
 					final int fId = mesh.getCommonFace(cId, dId);
 					final int fFaces = fId;
-					final double alphaExtraDiag = deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / norm(ArrayOperations.minus(Xc[cCells], Xc[dCells]));
+					final double alphaExtraDiag = deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / norm(minus(Xc[cCells], Xc[dCells]));
 					alpha[cCells][dCells] = alphaExtraDiag;
 					alphaDiag = alphaDiag + alphaExtraDiag;
 				}
@@ -385,7 +363,7 @@ public final class ExplicitHeatEquation
 
 	/**
 	 * Job executeTimeLoopN called @4.0 in simulate method.
-	 * In variables: t_n, u_n
+	 * In variables: lastDump, maxIterations, n, outputPeriod, stopTime, t_n, t_nplus1, u_n
 	 * Out variables: t_nplus1, u_nplus1
 	 */
 	protected void executeTimeLoopN()
@@ -396,14 +374,14 @@ public final class ExplicitHeatEquation
 		{
 			n++;
 			System.out.printf("START ITERATION n: %5d - t: %5.5f - deltat: %5.5f\n", n, t_n, deltat);
-			if (n >= lastDump + options.outputPeriod)
+			if (n >= lastDump + outputPeriod)
 				dumpVariables(n);
 		
 			computeTn(); // @1.0
 			updateU(); // @1.0
 		
 			// Evaluate loop condition with variables at time n
-			continueLoop = (t_nplus1 < options.stopTime && n + 1 < options.maxIterations);
+			continueLoop = (t_nplus1 < stopTime && n + 1 < maxIterations);
 		
 			t_n = t_nplus1;
 			IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
@@ -438,7 +416,7 @@ public final class ExplicitHeatEquation
 
 	private static double[] sumR1(double[] a, double[] b)
 	{
-		return ArrayOperations.plus(a, b);
+		return plus(a, b);
 	}
 
 	private static double minR0(double a, double b)
@@ -454,6 +432,36 @@ public final class ExplicitHeatEquation
 	private static double prodR0(double a, double b)
 	{
 		return a * b;
+	}
+
+	private static double[] plus(double[] a, double[] b)
+	{
+		double[] result = new double[a.length];
+		for (int ix0=0; ix0<a.length; ix0++)
+		{
+			result[ix0] = a[ix0] + b[ix0];
+		}
+		return result;
+	}
+
+	private static double[] multiply(double a, double[] b)
+	{
+		double[] result = new double[b.length];
+		for (int ix0=0; ix0<b.length; ix0++)
+		{
+			result[ix0] = a * b[ix0];
+		}
+		return result;
+	}
+
+	private static double[] minus(double[] a, double[] b)
+	{
+		double[] result = new double[a.length];
+		for (int ix0=0; ix0<a.length; ix0++)
+		{
+			result[ix0] = a[ix0] - b[ix0];
+		}
+		return result;
 	}
 
 	public void simulate()
@@ -487,9 +495,8 @@ public final class ExplicitHeatEquation
 			mesh.jsonInit(o.get("mesh").toString());
 
 			// Module instanciation(s)
-			ExplicitHeatEquation.Options explicitHeatEquationOptions = new ExplicitHeatEquation.Options();
-			if (o.has("explicitHeatEquation")) explicitHeatEquationOptions.jsonInit(o.get("explicitHeatEquation").toString());
-			ExplicitHeatEquation explicitHeatEquation = new ExplicitHeatEquation(mesh, explicitHeatEquationOptions);
+			ExplicitHeatEquation explicitHeatEquation = new ExplicitHeatEquation(mesh);
+			if (o.has("explicitHeatEquation")) explicitHeatEquation.jsonInit(o.get("explicitHeatEquation").toString());
 
 			// Start simulation
 			explicitHeatEquation.simulate();

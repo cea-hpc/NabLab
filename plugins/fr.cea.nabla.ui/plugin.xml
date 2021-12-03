@@ -279,12 +279,12 @@
 	<extension point="org.eclipse.xtext.builder.participant">
 		<participant
 			class="fr.cea.nabla.ui.NablaExecutableExtensionFactory:org.eclipse.xtext.builder.IXtextBuilderParticipant"
-			fileExtensions="nabla"/>
+			fileExtensions="n"/>
 	</extension>
 	<extension point="org.eclipse.xtext.builder.participant">
 		<participant
 			class="fr.cea.nabla.ui.NablagenExecutableExtensionFactory:org.eclipse.xtext.builder.IXtextBuilderParticipant"
-			fileExtensions="nablagen">
+			fileExtensions="ngen">
 		</participant>
 	</extension>
 	<extension point="org.eclipse.ui.preferencePages">

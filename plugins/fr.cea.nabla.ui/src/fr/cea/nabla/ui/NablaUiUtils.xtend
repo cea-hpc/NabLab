@@ -9,19 +9,12 @@
  *******************************************************************************/
 package fr.cea.nabla.ui
 
-import fr.cea.nabla.ir.IrUtils
-import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.ir.IrRoot
-import fr.cea.nabla.ir.ir.Job
-import fr.cea.nabla.ir.ir.Variable
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.IResource
 import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.jface.resource.ResourceLocator
 import org.eclipse.ui.PlatformUI
-
-import static extension fr.cea.nabla.ir.JobExtensions.*
 
 class NablaUiUtils
 {
@@ -34,13 +27,6 @@ class NablaUiUtils
 	{
 		val imageDescriptor = getImageDescriptor(path)
 		if (imageDescriptor.present) imageDescriptor.get.createImage
-	}
-
-	static def String getTooltip(Job it)
-	{
-		val inVarNames = "[" + inVars.map[displayName].join(', ') + "]"
-		val outVarNames = "[" + outVars.map[displayName].join(', ') + "]"
-		inVarNames + "  \u21E8  " + displayName + "  \u21E8  " + outVarNames
 	}
 
 	static def getActiveNablaDslEditor()
@@ -64,15 +50,5 @@ class NablaUiUtils
 				return resource as IFile
 		}
 		return null
-	}
-
-	private static def String getDisplayName(Variable v)
-	{
-		val module = IrUtils.getContainerOfType(v, IrModule)
-		val root = module.eContainer as IrRoot
-		if (root.modules.size > 1)
-			module.name + "::" + v.name
-		else
-			v.name
 	}
 }

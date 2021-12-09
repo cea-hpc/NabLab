@@ -48,7 +48,7 @@ class BackToParentNablaIrDiagramCommand extends AbstractHandler
 			var semanticTarget = diagram.target
 			if (semanticTarget instanceof Job)
 			{
-				new NablaSiriusServices().backToParentDiagram(diagram)
+				new NablaSiriusUIServices().backToParentDiagram(diagram)
 			}
 		}
 		return null

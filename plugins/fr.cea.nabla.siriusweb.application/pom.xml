@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	Copyright (c) 2021 CEA
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License 2.0 which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    SPDX-License-Identifier: EPL-2.0
+    Contributors: see AUTHORS file
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.6.1</version>
+		<relativePath /> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>fr.cea.nabla</groupId>
+	<artifactId>fr.cea.nabla.siriusweb.application</artifactId>
+	<version>0.4.4</version>
+	<name>fr.cea.nabla.siriusweb.application</name>
+	<description>CEA NabLab Sirius Web Application</description>
+
+	<properties>
+		<java.version>11</java.version>
+		<sirius.components.version>2021.12.4</sirius.components.version>
+	</properties>
+
+	<repositories>
+		<repository>
+			<id>Central</id>
+			<url>https://repo.maven.apache.org/maven2</url>
+		</repository>
+		<repository>
+			<id>github-sirius-components</id>
+			<url>https://maven.pkg.github.com/eclipse-sirius/sirius-components</url>
+		</repository>
+	</repositories>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.sirius.web</groupId>
+			<artifactId>sirius-web-spring-starter</artifactId>
+			<version>${sirius.components.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.sirius.web</groupId>
+			<artifactId>sirius-web-graphql</artifactId>
+			<version>2021.12.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.sirius.web</groupId>
+			<artifactId>sirius-web-services</artifactId>
+			<version>2021.12.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.sirius.web</groupId>
+			<artifactId>sirius-web-spring</artifactId>
+			<version>2021.12.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.sirius.web</groupId>
+			<artifactId>sirius-web-frontend</artifactId>
+			<version>2021.12.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.sirius.web</groupId>
+			<artifactId>sirius-web-graphiql</artifactId>
+			<version>${sirius.components.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.sirius.web</groupId>
+			<artifactId>sirius-web-graphql-voyager</artifactId>
+			<version>${sirius.components.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.sirius.web</groupId>
+			<artifactId>sirius-web-domain-edit</artifactId>
+			<version>${sirius.components.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.sirius.web</groupId>
+			<artifactId>sirius-web-domain-design</artifactId>
+			<version>${sirius.components.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.sirius.web</groupId>
+			<artifactId>sirius-web-view-edit</artifactId>
+			<version>${sirius.components.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>fr.cea.nabla</groupId>
+			<artifactId>fr.cea.nabla.ir</artifactId>
+			<version>0.4.4-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>fr.cea.nabla</groupId>
+			<artifactId>fr.cea.nabla.sirius</artifactId>
+			<version>0.4.4-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>build-info</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

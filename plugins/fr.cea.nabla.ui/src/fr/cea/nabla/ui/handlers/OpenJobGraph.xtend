@@ -17,6 +17,7 @@ import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.nablagen.NablagenApplication
 import fr.cea.nabla.ui.console.NabLabConsoleFactory
 import fr.cea.nabla.ui.internal.NablaActivator
+import java.util.Collections
 import org.eclipse.core.commands.AbstractHandler
 import org.eclipse.core.commands.ExecutionEvent
 import org.eclipse.core.commands.ExecutionException
@@ -66,6 +67,9 @@ abstract class OpenJobGraph extends AbstractHandler
 								emfResource.load(null)
 								val ngen = emfResource.contents.filter(NablagenApplication).head
 								val ir = buildIrFrom(ngen)
+								var resource = resourceSet.createResource(URI.createFileURI("/Users/arichard/tmp/ExplicitHeatEquation.ir"));
+								resource.getContents().add(ir);
+								resource.save(Collections.EMPTY_MAP);
 								displayIr(ir)
 							}
 						}

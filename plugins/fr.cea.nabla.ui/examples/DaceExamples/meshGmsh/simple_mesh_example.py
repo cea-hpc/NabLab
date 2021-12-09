@@ -13,7 +13,7 @@ class SimpleMeshExample(MeshGenerator):
     _t_nplus1 = 0
     _cst = []
     ''' Mesh and mesh variables'''
-    def __init__(self,MeshGenerator):
+    def __init__(self):
         super().__init__(nbXQuads, nbYQuads, xSize, ySize, modelName)
         self.__nbNodes = SimpleMeshExample.getNbNodes(self)
         print("Number of the noeuds : ", self.__nbNodes)
@@ -108,8 +108,7 @@ if __name__ == '__main__':
     
     nbXQuads, nbYQuads, xSize, ySize = readJsonFile()
     modelName = "generatingMesh2"
-    cartesianMesh2D = MeshGenerator(nbXQuads, nbYQuads, xSize, ySize, modelName)
-    simpleMeshExample = SimpleMeshExample(cartesianMesh2D)
+    simpleMeshExample = SimpleMeshExample()
     ''' Generate the simpleMeshExample mesh'''
     simpleMeshExample.generate()
     ''' Add constant values on nodes'''

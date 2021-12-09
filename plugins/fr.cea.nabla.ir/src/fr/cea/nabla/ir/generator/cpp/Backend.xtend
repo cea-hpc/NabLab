@@ -114,7 +114,7 @@ class KokkosTeamThreadBackend extends Backend
 		traceContentProvider = new KokkosTraceContentProvider
 		includesContentProvider = new KokkosIncludesContentProvider
 		jsonContentProvider = new JsonContentProvider(expressionContentProvider, instructionContentProvider)
-		jobCallerContentProvider = new KokkosTeamThreadJobCallerContentProvider
+		jobCallerContentProvider = new KokkosTeamThreadJobCallerContentProvider(pythonEmbeddingContentProvider)
 		jobContentProvider = new KokkosTeamThreadJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider, jsonContentProvider, typeContentProvider, pythonEmbeddingContentProvider)
 		mainContentProvider = new KokkosMainContentProvider(jsonContentProvider)
 	}

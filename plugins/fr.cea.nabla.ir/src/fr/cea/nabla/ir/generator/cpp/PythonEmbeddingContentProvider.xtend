@@ -43,6 +43,24 @@ class PythonEmbeddingContentProvider
 	val Map<String, List<Integer>> globalVariableWriteEvents = newHashMap
 	val Set<String> callExecutionEvents = newHashSet
 	
+	def getWriteEvents(EObject it)
+	{
+		eAllContents.filter[o|
+				o instanceof VariableDeclaration || o instanceof Affectation
+			]
+			.map[o|
+				if (o instanceof VariableDeclaration)
+				{
+					(o as VariableDeclaration).executionEvent
+				}
+				else
+				{
+					(o as Affectation).executionEvent
+				}
+			]
+			.toSet
+	}
+	
 	def getExecutionEvents(IrModule it)
 	'''
 		this->executionEvents =
@@ -450,6 +468,25 @@ class PythonEmbeddingContentProvider
 				monilogger(«scope»);
 			}
 		}
+	'''
+	
+	def wrapWithGILGuard(EObject it, String guardedContent, String unguardedContent)
+	'''
+		#ifdef NABLAB_DEBUG
+		const bool shouldReleaseGIL = !(«FOR event : writeEvents SEPARATOR ' && '»before[«event»].empty() && after[«event»].empty()«ENDFOR»);
+		if (shouldReleaseGIL)
+		{
+			py::gil_scoped_release release;
+			«guardedContent»
+			py::gil_scoped_acquire acquire;
+		}
+		else
+		{
+			«unguardedContent»
+		}
+		#else
+		«unguardedContent»
+		#endif
 	'''
 }
 

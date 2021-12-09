@@ -52,27 +52,13 @@ abstract class InstructionContentProvider
 	protected abstract def CharSequence getReductionContent(ReductionInstruction it)
 	protected abstract def CharSequence getParallelLoopContent(Loop it)
 
-	def getWriteEvents(Instruction it)
-	{
-		eAllContents.filter[o|
-				o instanceof VariableDeclaration || o instanceof Affectation
-			]
-			.map[o|
-				if (o instanceof VariableDeclaration)
-				{
-					(o as VariableDeclaration).executionEvent
-				}
-				else
-				{
-					(o as Affectation).executionEvent
-				}
-			]
-			.toSet
-	}
-
 	protected def getScopeUpdateContent(String variableName)
 	'''
 		scope.«variableName» = &«variableName»;'''
+	
+	protected def getScopeParameter()
+	'''
+		«LOCAL_SCOPE»'''
 
 	def dispatch CharSequence getContent(VariableDeclaration it)
 	'''
@@ -80,7 +66,7 @@ abstract class InstructionContentProvider
 «««			FIXME add support for internal functions
 			«IF getContainerOfType(it, InternFunction) === null»
 			#ifdef NABLAB_DEBUG
-			«getBeforeInstrumentation(executionEvent, LOCAL_SCOPE)»
+			«getBeforeInstrumentation(executionEvent, scopeParameter.toString)»
 			#endif
 			«ENDIF»
 			«IF variable.const»const «ENDIF»«variable.type.cppType» «variable.name»«IF variable.defaultValue !== null»(«variable.defaultValue.content»)«ENDIF»;
@@ -88,14 +74,14 @@ abstract class InstructionContentProvider
 			«IF getContainerOfType(it, InternFunction) === null»
 			#ifdef NABLAB_DEBUG
 			«variable.name.scopeUpdateContent»
-			«getAfterInstrumentation(executionEvent, LOCAL_SCOPE)»
+			«getAfterInstrumentation(executionEvent, scopeParameter.toString)»
 			#endif
 			«ENDIF»
 		«ELSE»
 «««			FIXME add support for internal functions
 			«IF getContainerOfType(it, InternFunction) === null»
 			#ifdef NABLAB_DEBUG
-			«getBeforeInstrumentation(executionEvent, LOCAL_SCOPE)»
+			«getBeforeInstrumentation(executionEvent, scopeParameter.toString)»
 			#endif
 			«ENDIF»
 			«IF variable.const»const «ENDIF»«variable.type.cppType» «variable.name»;
@@ -104,7 +90,7 @@ abstract class InstructionContentProvider
 			«initCppTypeContent(variable.name, variable.type)»
 			#ifdef NABLAB_DEBUG
 			«variable.name.scopeUpdateContent»
-			«getAfterInstrumentation(executionEvent, LOCAL_SCOPE)»
+			«getAfterInstrumentation(executionEvent, scopeParameter.toString)»
 			#endif
 			«ENDIF»
 		«ENDIF»
@@ -125,7 +111,7 @@ abstract class InstructionContentProvider
 «««			FIXME add support for internal functions
 			«IF getContainerOfType(it, InternFunction) === null»
 			#ifdef NABLAB_DEBUG
-			«getBeforeInstrumentation(executionEvent, LOCAL_SCOPE)»
+			«getBeforeInstrumentation(executionEvent, scopeParameter.toString)»
 			#endif
 			«ENDIF»
 			«left.codeName».setValue(«formatIteratorsAndIndices(left.target.type, left.iterators, left.indices)», «right.content»);
@@ -135,7 +121,7 @@ abstract class InstructionContentProvider
 			«IF !left.target.global»
 			«left.codeName.toString.scopeUpdateContent»
 			«ENDIF»
-			«getAfterInstrumentation(executionEvent, LOCAL_SCOPE)»
+			«getAfterInstrumentation(executionEvent, scopeParameter.toString)»
 			#endif
 			«ENDIF»
 			'''
@@ -144,7 +130,7 @@ abstract class InstructionContentProvider
 «««			FIXME add support for internal functions
 			«IF getContainerOfType(it, InternFunction) === null»
 			#ifdef NABLAB_DEBUG
-			«getBeforeInstrumentation(executionEvent, LOCAL_SCOPE)»
+			«getBeforeInstrumentation(executionEvent, scopeParameter.toString)»
 			#endif
 			«ENDIF»
 			«left.content» = «right.content»;
@@ -154,7 +140,7 @@ abstract class InstructionContentProvider
 			«IF !left.target.global»
 			«left.codeName.toString.scopeUpdateContent»
 			«ENDIF»
-			«getAfterInstrumentation(executionEvent, LOCAL_SCOPE)»
+			«getAfterInstrumentation(executionEvent, scopeParameter.toString)»
 			#endif
 			«ENDIF»
 			'''
@@ -317,32 +303,21 @@ class StlThreadInstructionContentProvider extends InstructionContentProvider
 
 	override getParallelLoopContent(Loop it)
 	'''
-		#ifdef NABLAB_DEBUG
-		const bool shouldReleaseGIL = !(«FOR event : writeEvents SEPARATOR ' && '»before[«event»].empty() && after[«event»].empty()«ENDFOR»);
-		if (shouldReleaseGIL)
-		{
-			py::gil_scoped_release release;
+		«wrapWithGILGuard(
+		'''
 			parallel_exec(«iterationBlock.nbElems», [&](const size_t& «iterationBlock.indexName»)
 			{
 				py::gil_scoped_acquire acquire;
 				«body.innerContent»
 				py::gil_scoped_release release;
 			});
-			py::gil_scoped_acquire acquire;
-		}
-		else
-		{
+		''',
+		'''
 			parallel_exec(«iterationBlock.nbElems», [&](const size_t& «iterationBlock.indexName»)
 			{
 				«body.innerContent»
 			});
-		}
-		#else
-		parallel_exec(«iterationBlock.nbElems», [&](const size_t& «iterationBlock.indexName»)
-		{
-			«body.innerContent»
-		});
-		#endif
+		''')»
 	'''
 }
 
@@ -374,6 +349,10 @@ class KokkosInstructionContentProvider extends InstructionContentProvider
 	'''
 		scopeRef->«variableName» = &«variableName»;'''
 
+	override getScopeParameter()
+	'''
+		py::cast(*scopeRef)'''
+
 	protected def getFirstArgument(ReductionInstruction it)
 	{
 		iterationBlock.nbElems
@@ -404,11 +383,23 @@ class KokkosTeamThreadInstructionContentProvider extends KokkosInstructionConten
 		{
 			«iterationBlock.autoTeamWork»
 
-			Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& «iterationBlock.indexName»Team)
-			{
-				int «iterationBlock.indexName»(«iterationBlock.indexName»Team + teamWork.first);
-				«body.innerContent»
-			});
+			«wrapWithGILGuard(
+			'''
+				Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& «iterationBlock.indexName»Team)
+				{
+					py::gil_scoped_acquire acquire;
+					int «iterationBlock.indexName»(«iterationBlock.indexName»Team + teamWork.first);
+					«body.innerContent»
+					py::gil_scoped_release release;
+				});
+			''',
+			'''
+				Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& «iterationBlock.indexName»Team)
+				{
+					int «iterationBlock.indexName»(«iterationBlock.indexName»Team + teamWork.first);
+					«body.innerContent»
+				});
+			''')»
 		}
 	'''
 	
@@ -436,11 +427,8 @@ class OpenMpInstructionContentProvider extends InstructionContentProvider
 
 	override getParallelLoopContent(Loop it)
 	'''
-		#ifdef NABLAB_DEBUG
-		const bool shouldReleaseGIL = !(«FOR event : writeEvents SEPARATOR ' && '»before[«event»].empty() && after[«event»].empty()«ENDFOR»);
-		if (shouldReleaseGIL)
-		{
-			py::gil_scoped_release release;
+		«wrapWithGILGuard(
+		'''
 			#pragma omp parallel for
 			for (size_t «iterationBlock.indexName»=0; «iterationBlock.indexName»<«iterationBlock.nbElems»; «iterationBlock.indexName»++)
 			{
@@ -448,16 +436,10 @@ class OpenMpInstructionContentProvider extends InstructionContentProvider
 				«body.innerContent»
 				py::gil_scoped_release release;
 			}
-			py::gil_scoped_acquire acquire;
-		}
-		else
-		{
+		''',
+		'''
 			#pragma omp parallel for
 			«sequentialLoopContent»
-		}
-		#else
-		#pragma omp parallel for
-		«sequentialLoopContent»
-		#endif
+		''')»
 	'''
 }

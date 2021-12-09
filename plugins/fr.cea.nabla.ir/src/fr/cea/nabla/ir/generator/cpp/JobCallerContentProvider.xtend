@@ -10,6 +10,7 @@
 package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.ir.JobCaller
+import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.JobCallerExtensions.*
 import static extension fr.cea.nabla.ir.JobExtensions.*
@@ -17,7 +18,7 @@ import static extension fr.cea.nabla.ir.generator.Utils.*
 
 class JobCallerContentProvider
 {
-
+	
 	def getCallsHeader(JobCaller it) ''''''
 
 	def getCallsContent(JobCaller it)
@@ -35,8 +36,11 @@ class JobCallerContentProvider
 	'''
 }
 
+@Data
 class KokkosTeamThreadJobCallerContentProvider extends JobCallerContentProvider
 {
+	protected val extension PythonEmbeddingContentProvider
+	
 	override getCallsHeader(JobCaller it)
 	{
 		if (calls.exists[x | x.hasIterable])
@@ -61,6 +65,69 @@ class KokkosTeamThreadJobCallerContentProvider extends JobCallerContentProvider
 				«j.callName.replace('.', '->')»();
 				«ENDFOR»
 			«ELSE»
+			#ifdef NABLAB_DEBUG
+			{
+				const bool shouldReleaseGIL = !(«FOR event : atJobs.map[executionEvent] SEPARATOR ' && '»before[«event»].empty() && after[«event»].empty()«ENDFOR»);
+				if (shouldReleaseGIL)
+				{
+					py::gil_scoped_release release;
+					Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
+					{
+						py::gil_scoped_acquire acquire;
+						«FOR j : atJobs.sortBy[name]»
+							«IF nbTimes++==0 && main»
+							if (thread.league_rank() == 0)
+								Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){
+									std::cout << "[" << __GREEN__ << "RUNTIME" << __RESET__ << "]   Using " << __BOLD__ << setw(3) << thread.league_size() << __RESET__ << " team(s) of "
+										<< __BOLD__ << setw(3) << thread.team_size() << __RESET__<< " thread(s)" << std::endl;});
+							«ENDIF»
+							«IF (!j.hasIterable || j instanceof JobCaller) /* Only simple instruction jobs && ExecuteTimeLoopJobs */»
+								if (thread.league_rank() == 0)
+									Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){«j.callName.replace('.', '->')»();});
+							«ELSE»
+								«IF j.hasLoop»
+									(this->*(«j.callName.replace('.', '->')»Ptr))(thread);
+								«ELSE /* Only for jobs containing ReductionInstruction */»
+									if (thread.league_rank() == 0)
+									{
+										(this->*(«j.callName.replace('.', '->')»Ptr))(thread);
+									}
+								«ENDIF»
+							«ENDIF»
+						«ENDFOR»
+						py::gil_scoped_release release;
+					});
+					py::gil_scoped_acquire acquire;
+				}
+				else
+				{
+					Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
+					{
+						«FOR j : atJobs.sortBy[name]»
+							«IF nbTimes++==0 && main»
+							if (thread.league_rank() == 0)
+								Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){
+									std::cout << "[" << __GREEN__ << "RUNTIME" << __RESET__ << "]   Using " << __BOLD__ << setw(3) << thread.league_size() << __RESET__ << " team(s) of "
+										<< __BOLD__ << setw(3) << thread.team_size() << __RESET__<< " thread(s)" << std::endl;});
+							«ENDIF»
+							«IF (!j.hasIterable || j instanceof JobCaller) /* Only simple instruction jobs && ExecuteTimeLoopJobs */»
+								if (thread.league_rank() == 0)
+									Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){«j.callName.replace('.', '->')»();});
+							«ELSE»
+								«IF j.hasLoop»
+									(this->*(«j.callName.replace('.', '->')»Ptr))(thread);
+								«ELSE /* Only for jobs containing ReductionInstruction */»
+									if (thread.league_rank() == 0)
+									{
+										(this->*(«j.callName.replace('.', '->')»Ptr))(thread);
+									}
+								«ENDIF»
+							«ENDIF»
+						«ENDFOR»
+					});
+				}
+			}
+			#else
 			Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
 			{
 				«FOR j : atJobs.sortBy[name]»
@@ -78,11 +145,14 @@ class KokkosTeamThreadJobCallerContentProvider extends JobCallerContentProvider
 							«j.callName.replace('.', '->')»(thread);
 						«ELSE /* Only for jobs containing ReductionInstruction */»
 							if (thread.league_rank() == 0)
+							{
 								«j.callName.replace('.', '->')»(thread);
+							}
 						«ENDIF»
 					«ENDIF»
 				«ENDFOR»
 			});
+			#endif
 			«ENDIF»
 
 		«ENDFOR»

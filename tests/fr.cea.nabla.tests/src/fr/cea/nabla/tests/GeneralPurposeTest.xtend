@@ -88,6 +88,7 @@ class GeneralPurposeTest
 				.filter(filePath | !filePath.toString().replace(WINDOWS_PATH_SEPARATOR, UNIX_PATH_SEPARATOR).contains("/jlatexmath")) //$NON-NLS-1$
 				.filter(filePath | !filePath.toString().replace(WINDOWS_PATH_SEPARATOR, UNIX_PATH_SEPARATOR).contains("/leveldb")) //$NON-NLS-1$
 				.filter(filePath | !filePath.toString().replace(WINDOWS_PATH_SEPARATOR, UNIX_PATH_SEPARATOR).contains("/commons-math3")) //$NON-NLS-1$
+				.filter(filePath | !filePath.toString().replace(WINDOWS_PATH_SEPARATOR, UNIX_PATH_SEPARATOR).contains(".polyglot")) //$NON-NLS-1$
 				.collect(Collectors.toList());
 
 			filesPaths.addAll(filePaths)

@@ -3,7 +3,8 @@ Created on 6 déc. 2021
 
 @author: meynardr
 '''
-from cartesian_mesh_2d import CartesianMesh2D
+from fullgmsh_cartesian_mesh_2d import CartesianMesh2D
+#from fullnp_cartesian_mesh_2d import CartesianMesh2D
 
 class SimpleMeshExample:
     
@@ -107,9 +108,10 @@ class SimpleMeshExample:
 
 if __name__ == '__main__':
     
-    simpleMeshExample = SimpleMeshExample()
+    mesh = CartesianMesh2D("simple_mesh_example")
     ''' Generate the simpleMeshExample mesh'''
-    simpleMeshExample.generate("simple_mesh_example")
+    mesh.jsonInit()
+    simpleMeshExample = SimpleMeshExample(mesh)
     ''' Add constant values on nodes'''
     tagViewConstantOnNodes = simpleMeshExample._computeCst()
     ''' Add values on cell corresponding to the sum of the values of each nodes of this cell'''

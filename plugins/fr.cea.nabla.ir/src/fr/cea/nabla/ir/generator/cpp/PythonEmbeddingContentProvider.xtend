@@ -281,25 +281,6 @@ class PythonEmbeddingContentProvider
 		«name.toFirstUpper»Context scope(this);
 	'''
 	
-	def getEmbeddedModule(IrModule it)
-	'''
-		PYBIND11_EMBEDDED_MODULE(«className.toLowerCase»internal, m)
-		{
-			«val globalContextName = '''«className»Context'''»
-			py::class_<«className»::«globalContextName»>(m, "«globalContextName»")
-				«val vars = variables.filter[!constExpr]»
-				«FOR v : vars SEPARATOR '\n'».def_property_readonly("«v.name»", &«className»::«globalContextName»::get«v.name.toFirstUpper»)«ENDFOR»;
-			«FOR job : jobs»
-			«val varDecs = job.eAllContents.filter(VariableDeclaration).toList»
-			«val jobContextName = '''«job.codeName.toFirstUpper»Context'''»
-			py::class_<«jobContextName», «className»::«globalContextName»>(m, "«jobContextName»")«IF varDecs.empty»;«ENDIF»
-				«IF !varDecs.empty»
-				«FOR local : varDecs SEPARATOR '\n'».def_property_readonly("«local.variable.name»", &«jobContextName»::get«local.variable.name.toFirstUpper»)«ENDFOR»;
-				«ENDIF»
-			«ENDFOR»
-		}
-	'''
-	
 	def getSetFunctionPtrContent(IrModule it)
 	'''
 		void «className»::setFunctionPtr(int idx, bool wrapper)
@@ -334,7 +315,19 @@ class PythonEmbeddingContentProvider
 		void «className»::pythonInitialize()
 		{
 			py::module_::import("sys").attr("path").attr("append")(pythonPath);
-			py::module_::import("«className.toLowerCase»internal");
+			py::module_ «className.toLowerCase»Module = py::module_::import("«className.toLowerCase»");
+			«val globalContextName = '''«className»Context'''»
+			py::class_<«className»::«globalContextName»>(«className.toLowerCase»Module, "«globalContextName»")
+				«val vars = variables.filter[!constExpr]»
+				«FOR v : vars SEPARATOR '\n'».def_property_readonly("«v.name»", &«className»::«globalContextName»::get«v.name.toFirstUpper»)«ENDFOR»;
+			«FOR job : jobs»
+			«val varDecs = job.eAllContents.filter(VariableDeclaration).toList»
+			«val jobContextName = '''«job.codeName.toFirstUpper»Context'''»
+			py::class_<«jobContextName», «className»::«globalContextName»>(«className.toLowerCase»Module, "«jobContextName»")«IF varDecs.empty»;«ENDIF»
+				«IF !varDecs.empty»
+				«FOR local : varDecs SEPARATOR '\n'».def_property_readonly("«local.variable.name»", &«jobContextName»::get«local.variable.name.toFirstUpper»)«ENDFOR»;
+				«ENDIF»
+			«ENDFOR»
 			py::module_ monilogModule = py::module_::import("monilog");
 			monilogModule.def("_register_before", [&](py::str event, py::function monilogger)
 			{

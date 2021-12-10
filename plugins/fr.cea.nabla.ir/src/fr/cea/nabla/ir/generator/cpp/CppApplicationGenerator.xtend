@@ -454,8 +454,6 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	«ENDIF»
 
 	#ifdef NABLAB_DEBUG
-	«backend.pythonEmbeddingContentProvider.getEmbeddedModule(it)»
-
 	«backend.pythonEmbeddingContentProvider.getSetFunctionPtrContent(it)»
 
 	«backend.pythonEmbeddingContentProvider.getPythonInitializeContent(it)»

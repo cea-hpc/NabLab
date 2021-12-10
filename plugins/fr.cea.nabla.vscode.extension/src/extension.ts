@@ -11,7 +11,7 @@ import * as path from 'path';
 import * as os from 'os';
 
 import {Trace} from 'vscode-jsonrpc';
-import { commands, window, workspace, ExtensionContext} from 'vscode';
+import { commands, window, workspace, ExtensionContext, Uri} from 'vscode';
 import { LanguageClient, LanguageClientOptions, ServerOptions } from 'vscode-languageclient';
 import LatexWebViewLoader from './view/LatexWebViewLoader';
 
@@ -42,7 +42,7 @@ export function activate(context: ExtensionContext) {
     // client can be deactivated on extension deactivation
     context.subscriptions.push(disposable);
 
-	let disposableLatexPanel = commands.registerCommand('nablabweb.showLatexView', () => {
+	const disposableLatexPanel = commands.registerCommand('nablabweb.showLatexView', () => {
         LatexWebViewLoader.createOrShow(context.extensionPath);
     });
 	context.subscriptions.push(disposableLatexPanel);
@@ -57,6 +57,15 @@ export function activate(context: ExtensionContext) {
             }
         }
     });
+    
+    const disposableGenerateNablagen = commands.registerCommand("nablabweb.generateNablagen.proxy", async (selectedFileURI: Uri) => {
+        const genDir = path.dirname(selectedFileURI.fsPath);
+        const projectFolder = workspace.getWorkspaceFolder(selectedFileURI);
+        if (genDir && projectFolder) {
+            commands.executeCommand("nablabweb.generateNablagen", selectedFileURI.fsPath, genDir, projectFolder.name);
+        }
+    })
+    context.subscriptions.push(disposableGenerateNablagen);
 }
 
 export function deactivate() {}

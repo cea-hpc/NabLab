@@ -7,7 +7,8 @@ Bundle-Vendor: CEA
 Automatic-Module-Name: fr.cea.nabla.ide.web
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: fr.cea.nabla,
-  fr.cea.nabla.ide,
+ fr.cea.nabla.ir,
+ fr.cea.nabla.ide,
  org.eclipse.xtext.ide,
  org.eclipse.xtext.xbase.ide,
  com.google.gson,
@@ -17,15 +18,13 @@ Require-Bundle: fr.cea.nabla,
  org.eclipse.jetty.server,
  org.eclipse.jetty.servlet,
  org.eclipse.jetty.util,
- fr.cea.nabla.ir
+ org.eclipse.lsp4j,
+ org.eclipse.lsp4j.jsonrpc
 Import-Package: javax.servlet,
  javax.servlet.http,
- org.apache.log4j,
  org.slf4j,
  org.slf4j.event,
  org.slf4j.helpers,
- org.eclipse.lsp4j;bundle-version="[0.10.0,0.11.0)",
- org.eclipse.lsp4j.jsonrpc;bundle-version="[0.10.0,0.11.0)",
  org.slf4j.spi
 Bundle-ClassPath: .
 Bundle-ActivationPolicy: lazy

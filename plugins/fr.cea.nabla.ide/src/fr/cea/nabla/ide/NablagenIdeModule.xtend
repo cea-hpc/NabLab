@@ -18,10 +18,10 @@ import fr.cea.nabla.services.NablaGrammarAccess
 class NablagenIdeModule extends AbstractNablagenIdeModule
 {
 	
-	override configure(Binder binder) {
+	override configure(Binder binder)
+	{
 		super.configure(binder)
 		// See https://www.eclipse.org/forums/index.php/m/1848471/
 		binder.bind(NablaGrammarAccess).toProvider([NablaIdeSetup.injector.getInstance(NablaGrammarAccess)])
 	}
-	
 }

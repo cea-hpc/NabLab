@@ -18,15 +18,17 @@ import org.eclipse.xtext.util.Modules2
 /**
  * Initialization support for running Xtext languages as language servers.
  */
-class NablaIdeSetup extends NablaStandaloneSetup {
+class NablaIdeSetup extends NablaStandaloneSetup
+{
 	
 	/*
 	 * Workaround for bug https://github.com/eclipse/xtext-core/issues/993 due to language dependency from NableGen to Nabla. See https://www.eclipse.org/forums/index.php/m/1848471/ for more details
 	 */
-	public static Injector injector;
+	public static Injector injector
 
-	override createInjector() {
+	override createInjector()
+	{
 		injector = Guice.createInjector(Modules2.mixin(new NablaRuntimeModule, new NablaIdeModule))
-		return injector;
+		return injector
 	}
 }

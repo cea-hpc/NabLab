@@ -9,9 +9,19 @@
  *******************************************************************************/
 package fr.cea.nabla.ide
 
+import com.google.inject.Binder
+import fr.cea.nabla.services.NablaGrammarAccess
+
 /**
  * Use this class to register ide components.
  */
 class NablagenIdeModule extends AbstractNablagenIdeModule
 {
+	
+	override configure(Binder binder) {
+		super.configure(binder)
+		// See https://www.eclipse.org/forums/index.php/m/1848471/
+		binder.bind(NablaGrammarAccess).toProvider([NablaIdeSetup.injector.getInstance(NablaGrammarAccess)])
+	}
+	
 }

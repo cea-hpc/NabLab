@@ -15,7 +15,7 @@ import fr.cea.nabla.ir.ir.ItemIdValueIterator
 import fr.cea.nabla.ir.ir.ItemIndexValue
 import fr.cea.nabla.ir.ir.SetRef
 
-import static extension fr.cea.nabla.ir.ContainerExtensions.*
+import static extension fr.cea.nabla.ir.generator.arcane.ContainerExtensions.*
 
 class ItemIndexAndIdValueContentProvider 
 {
@@ -29,7 +29,7 @@ class ItemIndexAndIdValueContentProvider
 
 	static def dispatch getContent(ItemIdValueIterator it)
 	{
-		if (iterator.container.connectivityCall.connectivity.indexEqualId) getIndexValue
+		if (iterator.container.connectivityCall.args.empty) '''«iterator.index.itemName».localId()'''
 		else iterator.container.uniqueName + '[' + getIndexValue + ']'
 	}
 

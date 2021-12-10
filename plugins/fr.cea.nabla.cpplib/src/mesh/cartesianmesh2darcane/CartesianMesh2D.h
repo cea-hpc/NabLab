@@ -31,7 +31,7 @@ public:
 	ItemLocalIdView<Node> getNodesOfFace(Face f) const;
 	ItemLocalIdView<Cell> getCellsOfNode(Node n) const;
 	ItemLocalIdView<Cell> getCellsOfFace(Face f) const;
-	IndexedItemConnectivityView<Cell, Cell> getNeighbourCells(Cell c) const;
+	ItemLocalIdView<Cell> getNeighbourCells(Cell c) const;
 	ItemLocalIdView<Face> getFacesOfCell(Cell c) const;
 
 private:

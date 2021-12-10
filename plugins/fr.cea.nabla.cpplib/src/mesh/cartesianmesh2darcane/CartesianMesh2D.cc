@@ -96,10 +96,10 @@ CartesianMesh2D::getCellsOfFace(Face f) const
 	return m_umcv.faceCell().items(f);
 }
 
-IndexedItemConnectivityView<Cell, Cell>
+ItemLocalIdView<Cell>
 CartesianMesh2D::getNeighbourCells(Cell c) const
 {
-	return m_neighbour_cells;
+	return m_neighbour_cells.items(c);
 }
 
 ItemLocalIdView<Face>

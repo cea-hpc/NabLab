@@ -118,17 +118,20 @@ void ExplicitHeatEquationModule::computeFaceLength()
 {
 	arcaneParallelForeach(m_mesh->getFaces(), [&](FaceVectorView view)
 	{
-		ENUMERATE_FACE(f, view)
+		ENUMERATE_(f, i_f, view)
 		{
-			final int fId = fFaces;
+			auto fId(f.localId());
 			Real reduction0(0.0);
-			for (NodeLocalId p : m_mesh->getNodesOfFace(*f))
 			{
-				final int pId = nodesOfFaceF[pNodesOfFaceF];
-				final int pPlus1Id = nodesOfFaceF[(pNodesOfFaceF+1+maxNodesOfFace)%maxNodesOfFace];
-				const size_t pNodes(pId);
-				const size_t pPlus1Nodes(pPlus1Id);
-				reduction0 = explicitheatequationfreefuncs::sumR0(reduction0, explicitheatequationfreefuncs::norm(explicitheatequationfreefuncs::operator-(m_x[p], m_x[p])));
+				const auto nodesOfFaceF(mesh->getNodesOfFace(fId));
+				const size_t nbNodesOfFaceF(nodesOfFaceF.size());
+				// for (NodeLocalId p : m_mesh->getNodesOfFace(fId))
+				for (size_t pNodesOfFaceF=0; pNodesOfFaceF<nbNodesOfFaceF; pNodesOfFaceF++)
+				{
+					auto pId(nodesOfFaceF[pNodesOfFaceF]);
+					auto pPlus1Id(nodesOfFaceF[(pNodesOfFaceF+1+maxNodesOfFace)%maxNodesOfFace]);
+					reduction0 = explicitheatequationfreefuncs::sumR0(reduction0, explicitheatequationfreefuncs::norm(explicitheatequationfreefuncs::operator-(m_x[p], m_x[p])));
+				}
 			}
 			m_face_length[f] = 0.5 * reduction0;
 		}
@@ -154,17 +157,20 @@ void ExplicitHeatEquationModule::computeV()
 {
 	arcaneParallelForeach(m_mesh->getCells(), [&](CellVectorView view)
 	{
-		ENUMERATE_CELL(c, view)
+		ENUMERATE_(c, i_c, view)
 		{
-			final int cId = cCells;
+			auto cId(c.localId());
 			Real reduction0(0.0);
-			for (NodeLocalId p : m_mesh->getNodesOfCell(*c))
 			{
-				final int pId = nodesOfCellC[pNodesOfCellC];
-				final int pPlus1Id = nodesOfCellC[(pNodesOfCellC+1+maxNodesOfCell)%maxNodesOfCell];
-				const size_t pNodes(pId);
-				const size_t pPlus1Nodes(pPlus1Id);
-				reduction0 = explicitheatequationfreefuncs::sumR0(reduction0, explicitheatequationfreefuncs::det(m_x[p], m_x[p]));
+				const auto nodesOfCellC(mesh->getNodesOfCell(cId));
+				const size_t nbNodesOfCellC(nodesOfCellC.size());
+				// for (NodeLocalId p : m_mesh->getNodesOfCell(cId))
+				for (size_t pNodesOfCellC=0; pNodesOfCellC<nbNodesOfCellC; pNodesOfCellC++)
+				{
+					auto pId(nodesOfCellC[pNodesOfCellC]);
+					auto pPlus1Id(nodesOfCellC[(pNodesOfCellC+1+maxNodesOfCell)%maxNodesOfCell]);
+					reduction0 = explicitheatequationfreefuncs::sumR0(reduction0, explicitheatequationfreefuncs::det(m_x[p], m_x[p]));
+				}
 			}
 			m_v[c] = 0.5 * reduction0;
 		}
@@ -180,7 +186,7 @@ void ExplicitHeatEquationModule::initD()
 {
 	arcaneParallelForeach(m_mesh->getCells(), [&](CellVectorView view)
 	{
-		ENUMERATE_CELL(c, view)
+		ENUMERATE_(c, i_c, view)
 		{
 			m_d[c] = 1.0;
 		}
@@ -206,15 +212,19 @@ void ExplicitHeatEquationModule::initXc()
 {
 	arcaneParallelForeach(m_mesh->getCells(), [&](CellVectorView view)
 	{
-		ENUMERATE_CELL(c, view)
+		ENUMERATE_(c, i_c, view)
 		{
-			final int cId = cCells;
+			auto cId(c.localId());
 			Real2 reduction0{0.0, 0.0};
-			for (NodeLocalId p : m_mesh->getNodesOfCell(*c))
 			{
-				final int pId = nodesOfCellC[pNodesOfCellC];
-				const size_t pNodes(pId);
-				reduction0 = explicitheatequationfreefuncs::sumR1(reduction0, m_x[p]);
+				const auto nodesOfCellC(mesh->getNodesOfCell(cId));
+				const size_t nbNodesOfCellC(nodesOfCellC.size());
+				// for (NodeLocalId p : m_mesh->getNodesOfCell(cId))
+				for (size_t pNodesOfCellC=0; pNodesOfCellC<nbNodesOfCellC; pNodesOfCellC++)
+				{
+					auto pId(nodesOfCellC[pNodesOfCellC]);
+					reduction0 = explicitheatequationfreefuncs::sumR1(reduction0, m_x[p]);
+				}
 			}
 			m_xc[c] = explicitheatequationfreefuncs::operator*(0.25, reduction0);
 		}
@@ -230,15 +240,19 @@ void ExplicitHeatEquationModule::updateU()
 {
 	arcaneParallelForeach(m_mesh->getCells(), [&](CellVectorView view)
 	{
-		ENUMERATE_CELL(c, view)
+		ENUMERATE_(c, i_c, view)
 		{
-			final int cId = cCells;
+			auto cId(c.localId());
 			Real reduction0(0.0);
-			for (CellLocalId d : m_mesh->getNeighbourCells(*c))
 			{
-				final int dId = neighbourCellsC[dNeighbourCellsC];
-				const size_t dCells(dId);
-				reduction0 = explicitheatequationfreefuncs::sumR0(reduction0, m_alpha[c][d] * m_u_n[d]);
+				const auto neighbourCellsC(mesh->getNeighbourCells(cId));
+				const size_t nbNeighbourCellsC(neighbourCellsC.size());
+				// for (CellLocalId d : m_mesh->getNeighbourCells(cId))
+				for (size_t dNeighbourCellsC=0; dNeighbourCellsC<nbNeighbourCellsC; dNeighbourCellsC++)
+				{
+					auto dId(neighbourCellsC[dNeighbourCellsC]);
+					reduction0 = explicitheatequationfreefuncs::sumR0(reduction0, m_alpha[c][d] * m_u_n[d]);
+				}
 			}
 			m_u_nplus1[c] = m_alpha[c][c] * m_u_n[c] + reduction0;
 		}
@@ -253,7 +267,7 @@ void ExplicitHeatEquationModule::updateU()
 void ExplicitHeatEquationModule::computeDeltaTn()
 {
 	Real reduction0(numeric_limits<double>::max());
-	ENUMERATE_CELL(c, m_mesh->getCells())
+	ENUMERATE_(c, i_c, m_mesh->getCells())
 	{
 		reduction0 = explicitheatequationfreefuncs::minR0(reduction0, m_v[c] / m_d[c]);
 	}
@@ -269,22 +283,30 @@ void ExplicitHeatEquationModule::computeFaceConductivity()
 {
 	arcaneParallelForeach(m_mesh->getFaces(), [&](FaceVectorView view)
 	{
-		ENUMERATE_FACE(f, view)
+		ENUMERATE_(f, i_f, view)
 		{
-			final int fId = fFaces;
+			auto fId(f.localId());
 			Real reduction0(1.0);
-			for (CellLocalId c1 : m_mesh->getCellsOfFace(*f))
 			{
-				final int c1Id = cellsOfFaceF[c1CellsOfFaceF];
-				const size_t c1Cells(c1Id);
-				reduction0 = explicitheatequationfreefuncs::prodR0(reduction0, m_d[c1]);
+				const auto cellsOfFaceF(mesh->getCellsOfFace(fId));
+				const size_t nbCellsOfFaceF(cellsOfFaceF.size());
+				// for (CellLocalId c1 : m_mesh->getCellsOfFace(fId))
+				for (size_t c1CellsOfFaceF=0; c1CellsOfFaceF<nbCellsOfFaceF; c1CellsOfFaceF++)
+				{
+					auto c1Id(cellsOfFaceF[c1CellsOfFaceF]);
+					reduction0 = explicitheatequationfreefuncs::prodR0(reduction0, m_d[c1]);
+				}
 			}
 			Real reduction1(0.0);
-			for (CellLocalId c2 : m_mesh->getCellsOfFace(*f))
 			{
-				final int c2Id = cellsOfFaceF[c2CellsOfFaceF];
-				const size_t c2Cells(c2Id);
-				reduction1 = explicitheatequationfreefuncs::sumR0(reduction1, m_d[c2]);
+				const auto cellsOfFaceF(mesh->getCellsOfFace(fId));
+				const size_t nbCellsOfFaceF(cellsOfFaceF.size());
+				// for (CellLocalId c2 : m_mesh->getCellsOfFace(fId))
+				for (size_t c2CellsOfFaceF=0; c2CellsOfFaceF<nbCellsOfFaceF; c2CellsOfFaceF++)
+				{
+					auto c2Id(cellsOfFaceF[c2CellsOfFaceF]);
+					reduction1 = explicitheatequationfreefuncs::sumR0(reduction1, m_d[c2]);
+				}
 			}
 			m_face_conductivity[f] = 2.0 * reduction0 / reduction1;
 		}
@@ -300,7 +322,7 @@ void ExplicitHeatEquationModule::initU()
 {
 	arcaneParallelForeach(m_mesh->getCells(), [&](CellVectorView view)
 	{
-		ENUMERATE_CELL(c, view)
+		ENUMERATE_(c, i_c, view)
 		{
 			if (explicitheatequationfreefuncs::norm(explicitheatequationfreefuncs::operator-(m_xc[c], m_vect_one)) < 0.5) 
 				m_u_n[c] = options.u0();
@@ -329,19 +351,22 @@ void ExplicitHeatEquationModule::computeAlphaCoeff()
 {
 	arcaneParallelForeach(m_mesh->getCells(), [&](CellVectorView view)
 	{
-		ENUMERATE_CELL(c, view)
+		ENUMERATE_(c, i_c, view)
 		{
-			final int cId = cCells;
+			auto cId(c.localId());
 			Real alpha_diag(0.0);
-			for (CellLocalId d : m_mesh->getNeighbourCells(*c))
 			{
-				final int dId = neighbourCellsC[dNeighbourCellsC];
-				const size_t dCells(dId);
-				final int fId = mesh.getCommonFace(cId, dId);
-				const size_t fFaces(fId);
-				const Real alpha_extra_diag(m_deltat() / m_v[c] * (m_face_length[f] * m_face_conductivity[f]) / explicitheatequationfreefuncs::norm(explicitheatequationfreefuncs::operator-(m_xc[c], m_xc[d])));
-				m_alpha[c][d] = alpha_extra_diag;
-				alpha_diag = alpha_diag + alpha_extra_diag;
+				const auto neighbourCellsC(mesh->getNeighbourCells(cId));
+				const size_t nbNeighbourCellsC(neighbourCellsC.size());
+				// for (CellLocalId d : m_mesh->getNeighbourCells(cId))
+				for (size_t dNeighbourCellsC=0; dNeighbourCellsC<nbNeighbourCellsC; dNeighbourCellsC++)
+				{
+					auto dId(neighbourCellsC[dNeighbourCellsC]);
+					auto fId(mesh.getCommonFace(cId, dId));
+					const Real alpha_extra_diag(m_deltat() / m_v[c] * (m_face_length[f] * m_face_conductivity[f]) / explicitheatequationfreefuncs::norm(explicitheatequationfreefuncs::operator-(m_xc[c], m_xc[d])));
+					m_alpha[c][d] = alpha_extra_diag;
+					alpha_diag = alpha_diag + alpha_extra_diag;
+				}
 			}
 			m_alpha[c][c] = 1 - alpha_diag;
 		}

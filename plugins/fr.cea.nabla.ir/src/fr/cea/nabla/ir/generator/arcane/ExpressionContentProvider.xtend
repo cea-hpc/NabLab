@@ -24,6 +24,7 @@ import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IntConstant
 import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.IrPackage
 import fr.cea.nabla.ir.ir.IrType
 import fr.cea.nabla.ir.ir.ItemIndex
 import fr.cea.nabla.ir.ir.Iterator
@@ -38,10 +39,9 @@ import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.ir.ir.VectorConstant
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
-import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
+import static extension fr.cea.nabla.ir.generator.arcane.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.generator.arcane.VariableExtensions.*
-import fr.cea.nabla.ir.ir.IrPackage
 
 class ExpressionContentProvider
 {

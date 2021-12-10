@@ -12,7 +12,6 @@ package fr.cea.nabla.ir.generator.arcane
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.ConnectivityCall
-import fr.cea.nabla.ir.ir.Container
 import fr.cea.nabla.ir.ir.Exit
 import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.If
@@ -26,18 +25,17 @@ import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.Return
 import fr.cea.nabla.ir.ir.SetDefinition
-import fr.cea.nabla.ir.ir.SetRef
 import fr.cea.nabla.ir.ir.VariableDeclaration
 import fr.cea.nabla.ir.ir.While
 
 import static fr.cea.nabla.ir.generator.arcane.TypeContentProvider.*
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
-import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
+import static extension fr.cea.nabla.ir.generator.arcane.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.generator.arcane.ExpressionContentProvider.*
-import static extension fr.cea.nabla.ir.generator.arcane.VariableExtensions.*
 import static extension fr.cea.nabla.ir.generator.arcane.ItemIndexAndIdValueContentProvider.*
+import static extension fr.cea.nabla.ir.generator.arcane.VariableExtensions.*
 
 class InstructionContentProvider
 {
@@ -94,14 +92,13 @@ class InstructionContentProvider
 		«ENDIF»
 	'''
 
+	// no index definition in Arcane => item instead
 	static def dispatch CharSequence getContent(ItemIndexDefinition it)
-	'''
-		const size_t «index.name»(«value.content»);
-	'''
+	''''''
 
 	static def dispatch CharSequence getContent(ItemIdDefinition it)
 	'''
-		final int «id.name» = «value.content»;
+		auto «id.name»(«value.content»);
 	'''
 
 	static def dispatch CharSequence getContent(SetDefinition it)
@@ -145,9 +142,9 @@ class InstructionContentProvider
 
 	private static def getParallelLoopContent(Iterator iterator, Instruction loopBody)
 	'''
-		arcaneParallelForeach(«getContainerCall(iterator.container)», [&](«iterator.container.itemType.name.toFirstUpper»VectorView view)
+		arcaneParallelForeach(«iterator.container.content», [&](«iterator.container.itemType.name.toFirstUpper»VectorView view)
 		{
-			ENUMERATE_«iterator.container.itemType.name.toUpperCase»(«iterator.index.itemName», view)
+			ENUMERATE_(«iterator.index.itemName», i_«iterator.index.itemName», view)
 			{
 				«loopBody.innerContent»
 			}
@@ -158,14 +155,19 @@ class InstructionContentProvider
 	'''
 		«val c = iterator.container»
 		«IF c.connectivityCall.args.empty»
-			ENUMERATE_«c.itemType.name.toUpperCase»(«iterator.index.itemName», «IF c.connectivityCall.args.empty»«getContainerCall(c)»«ELSE»view«ENDIF»)
+			ENUMERATE_(«iterator.index.itemName», i_«iterator.index.itemName», «c.content»)
 			{
 				«loopBody.innerContent»
 			}
 		«ELSE»
-			for («c.itemType.name.toFirstUpper»LocalId «iterator.index.itemName» : «getContainerCall(c)»)
 			{
-				«loopBody.innerContent»
+				«IF iterator.container instanceof ConnectivityCall»«getSetDefinitionContent(iterator.container.uniqueName, iterator.container as ConnectivityCall)»«ENDIF»
+				const size_t «iterator.container.nbElemsVar»(«iterator.container.uniqueName».size());
+				// for («c.itemType.name.toFirstUpper»LocalId «iterator.index.itemName» : «c.content»)
+				for (size_t «iterator.index.name»=0; «iterator.index.name»<«iterator.container.nbElemsVar»; «iterator.index.name»++)
+				{
+					«loopBody.innerContent»
+				}
 			}
 		«ENDIF»
 	'''
@@ -177,15 +179,6 @@ class InstructionContentProvider
 			«loopBody.innerContent»
 		}
 	'''
-
-	private static def getContainerCall(Container c)
-	{
-		switch c
-		{
-			SetRef: c.uniqueName
-			ConnectivityCall: '''m_mesh->get«c.connectivity.name.toFirstUpper»(«c.args.map['*' + itemName].join(', ')»)'''
-		}
-	}
 
 	private static def getVariableDefaultValue(Expression e)
 	{

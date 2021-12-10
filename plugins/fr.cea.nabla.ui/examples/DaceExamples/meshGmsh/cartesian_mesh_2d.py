@@ -5,35 +5,16 @@ import glob
 '''
     Get data from the json file
 '''    
-def readJsonFile():
-    # Looking at a file with the .json as extension
-    jsonFileFound = glob.glob('*.json')
-    if len(jsonFileFound) !=1:
-        raise ValueError('should be only one json file in the current directory')
-    
-    jsonFilename = jsonFileFound[0]
-    
-    # Open the json file and get data in this file
-    with open(jsonFilename) as f:
-        data = json.load(f)
-        
-    numberXQuads = data['mesh']['nbXQuads']
-    numberYQuads = data['mesh']['nbYQuads']
-    dxSize = data['mesh']['xSize']
-    dySize = data['mesh']['ySize']
-    
-    return numberXQuads, numberYQuads, dxSize, dySize
-
-class MeshGenerator:
+class CartesianMesh2D:
     
     ''' Protected  variables '''
     _maxNodesOfCell = 4
     
-    def __init__(self, nbXQuads, nbYQuads, xSize, ySize, modelName):
-        self.__nbXQuads = nbXQuads
-        self.__nbYQuads = nbYQuads
-        self.__xSize = xSize
-        self.__ySize = ySize
+    def __init__(self, modelName):
+        self.__nbXQuads = 0
+        self.__nbYQuads = 0
+        self.__xSize = 0.
+        self.__ySize = 0.
         self.__modelName = modelName
         self.__dimMesh = 2
         # The x, y, z coordinates of all the nodes:
@@ -62,8 +43,26 @@ class MeshGenerator:
     ''' Tag of different points'''    
     def tag(self, i, j):
         return i +j*(self.__nbXQuads+1) + 1
+    
+    def jsonInit(self):
+        # Looking at a file with the .json as extension
+        jsonFileFound = glob.glob('*.json')
+        if len(jsonFileFound) !=1:
+            raise ValueError('should be only one json file in the current directory')
         
-    def generate(self):
+        jsonFilename = jsonFileFound[0]
+        
+        # Open the json file and get data in this file
+        with open(jsonFilename) as f:
+            data = json.load(f)
+            
+        self.__nbXQuads = data['mesh']['nbXQuads']
+        self.__nbYQuads = data['mesh']['nbYQuads']
+        self.__xSize = data['mesh']['xSize']
+        self.__ySize = data['mesh']['ySize']
+        _generate(self)
+        
+    def _generate(self):
         
         ''' 
         Initialize Gmsh API. This must be called before any call to the other
@@ -204,8 +203,6 @@ class MeshGenerator:
     gmsh.finalize()
     
 if __name__ == '__main__':
-
-    nbXQuads, nbYQuads, xSize, ySize = readJsonFile()
     modelName = "generatingMesh2"
-    testMesh = MeshGenerator(nbXQuads, nbYQuads, xSize, ySize, modelName)
-    testMesh.generate()
+    testMesh = MeshGenerator(modelName)
+    testMesh.jsonInit()

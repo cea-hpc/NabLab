@@ -3,23 +3,24 @@ Created on 6 déc. 2021
 
 @author: meynardr
 '''
-from generator_mesh import readJsonFile, MeshGenerator
+from cartesian_mesh_2d import CartesianMesh2D
 
-class SimpleMeshExample(MeshGenerator):
+class SimpleMeshExample:
     
     ''' Options and global variables '''
     _deltat = 0.001
     _t_n = 0
     _t_nplus1 = 0
     _cst = []
+ 
     ''' Mesh and mesh variables'''
-    def __init__(self):
-        super().__init__(nbXQuads, nbYQuads, xSize, ySize, modelName)
-        self.__nbNodes = SimpleMeshExample.getNbNodes(self)
+    def __init__(self, mesh):
+        self.__mesh = mesh
+        self.__nbNodes = mesh.getNbNodes(self)
         print("Number of the noeuds : ", self.__nbNodes)
-        self.__nbCells = SimpleMeshExample.getNbCells(self)
+        self.__nbCells = mesh.getNbCells(self)
         print("Number of the cells : ", self.__nbCells)
-        self.__maxNodesOfCell = SimpleMeshExample._maxNodesOfCell 
+        self.__maxNodesOfCell = mesh._maxNodesOfCell 
         print("maxNodesofCell : ", self.__maxNodesOfCell)
         
     '''
@@ -106,11 +107,9 @@ class SimpleMeshExample(MeshGenerator):
 
 if __name__ == '__main__':
     
-    nbXQuads, nbYQuads, xSize, ySize = readJsonFile()
-    modelName = "generatingMesh2"
     simpleMeshExample = SimpleMeshExample()
     ''' Generate the simpleMeshExample mesh'''
-    simpleMeshExample.generate()
+    simpleMeshExample.generate("simple_mesh_example")
     ''' Add constant values on nodes'''
     tagViewConstantOnNodes = simpleMeshExample._computeCst()
     ''' Add values on cell corresponding to the sum of the values of each nodes of this cell'''

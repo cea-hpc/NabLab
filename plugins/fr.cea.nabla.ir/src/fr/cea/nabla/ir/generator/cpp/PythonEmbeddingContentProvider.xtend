@@ -18,6 +18,7 @@ import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.ItemIndexDefinition
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.VariableDeclaration
+import java.util.Collection
 import java.util.List
 import java.util.Map
 import java.util.Set
@@ -202,7 +203,7 @@ class PythonEmbeddingContentProvider
 		{
 			«FOR v : variables»
 			«IF !v.constExpr»
-				«IF v.const»const «ENDIF»«getCppType(v.type)» get«v.name.toFirstUpper»() const {return instance->«v.name»;}
+				«IF v.const»const «ENDIF»«getCppType(v.type)» get_«v.name»() const {return instance->«v.name»;}
 			«ENDIF»
 			«ENDFOR»
 			
@@ -217,48 +218,39 @@ class PythonEmbeddingContentProvider
 	
 	def getLocalScopeStructContent(InternFunction it)
 	{
-		val moduleName = getContainerOfType(it, IrModule).name.toFirstUpper
-		return
-			'''
-				struct «name.toFirstUpper»Context : «moduleName»::«moduleName»Context
-				{
-					«FOR local : eAllContents.filter(VariableDeclaration).toList»
-					const py::object get«local.variable.name.toFirstUpper»() const { if («local.variable.name» != nullptr) return py::cast(*«local.variable.name»); else return py::cast<py::none>(Py_None); }
-					«ENDFOR»
-				
-					«FOR local : eAllContents.filter(VariableDeclaration).toList»
-					«IF local.variable.const»const «ENDIF»«local.variable.type.cppType» *«local.variable.name» = nullptr;
-					«ENDFOR»
-					
-					using «moduleName»::«moduleName»Context::«moduleName»Context;
-				};
-				
-			'''
+		return getLocalScopeStructContent(it, name.toFirstUpper)
 	}
 	
 	def getLocalScopeStructContent(Job it)
 	{
-		val moduleName = getContainerOfType(it, IrModule).name.toFirstUpper
-		return
-			'''
-				struct «name.toFirstUpper»Context : «moduleName»::«moduleName»Context
-				{
-					«val locals = eAllContents.filter(VariableDeclaration).toList»
-					«IF !locals.empty»
-					«FOR local : locals»
-					const py::object get«local.variable.name.toFirstUpper»() const { if («local.variable.name» != nullptr) return py::cast(*«local.variable.name»); else return py::cast<py::none>(Py_None); }
-					«ENDFOR»
-					
-					«FOR local : locals»
-					«IF local.variable.const»const «ENDIF»«local.variable.type.cppType» *«local.variable.name» = nullptr;
-					«ENDFOR»
-					
-					«ENDIF»
-					using «moduleName»::«moduleName»Context::«moduleName»Context;
-				};
-				
-			'''
+		return getLocalScopeStructContent(it, name.toFirstUpper)
 	}
+	
+	def getLocalScopeStructContent(EObject it, String name)
+	{
+		val moduleName = getContainerOfType(it, IrModule).name.toFirstUpper
+		val locals = eAllContents.filter(VariableDeclaration).toMap[d|d.variable.name].values
+		return getLocalScopeStructContent(name + "Context", moduleName, locals)
+	}
+	
+	def getLocalScopeStructContent(String name, String moduleName, Collection<VariableDeclaration> locals)
+	'''
+		struct «name» : «moduleName»::«moduleName»Context
+		{
+			«IF !locals.empty»
+			«FOR local : locals»
+			const py::object get_«local.variable.name»() const { if («local.variable.name» != nullptr) return py::cast(*«local.variable.name»); else return py::cast<py::none>(Py_None); }
+			«ENDFOR»
+			
+			«FOR local : locals»
+			«IF local.variable.const»const «ENDIF»«local.variable.type.cppType» *«local.variable.name» = nullptr;
+			«ENDFOR»
+			
+			«ENDIF»
+			using «moduleName»::«moduleName»Context::«moduleName»Context;
+		};
+		
+	'''
 	
 	def getWrapperDefinitionContent(Job it)
 	'''
@@ -319,13 +311,13 @@ class PythonEmbeddingContentProvider
 			«val globalContextName = '''«className»Context'''»
 			py::class_<«className»::«globalContextName»>(«className.toLowerCase»Module, "«globalContextName»")
 				«val vars = variables.filter[!constExpr]»
-				«FOR v : vars SEPARATOR '\n'».def_property_readonly("«v.name»", &«className»::«globalContextName»::get«v.name.toFirstUpper»)«ENDFOR»;
+				«FOR v : vars SEPARATOR '\n'».def_property_readonly("«v.name»", &«className»::«globalContextName»::get_«v.name»)«ENDFOR»;
 			«FOR job : jobs»
 			«val varDecs = job.eAllContents.filter(VariableDeclaration).toList»
 			«val jobContextName = '''«job.codeName.toFirstUpper»Context'''»
 			py::class_<«jobContextName», «className»::«globalContextName»>(«className.toLowerCase»Module, "«jobContextName»")«IF varDecs.empty»;«ENDIF»
 				«IF !varDecs.empty»
-				«FOR local : varDecs SEPARATOR '\n'».def_property_readonly("«local.variable.name»", &«jobContextName»::get«local.variable.name.toFirstUpper»)«ENDFOR»;
+				«FOR local : varDecs SEPARATOR '\n'».def_property_readonly("«local.variable.name»", &«jobContextName»::get_«local.variable.name»)«ENDFOR»;
 				«ENDIF»
 			«ENDFOR»
 			py::module_ monilogModule = py::module_::import("monilog");

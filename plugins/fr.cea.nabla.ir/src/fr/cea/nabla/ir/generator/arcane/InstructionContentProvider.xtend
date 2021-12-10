@@ -14,6 +14,7 @@ import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.ConnectivityCall
 import fr.cea.nabla.ir.ir.Container
 import fr.cea.nabla.ir.ir.Exit
+import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.If
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.InstructionBlock
@@ -35,13 +36,15 @@ import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.arcane.ExpressionContentProvider.*
+import static extension fr.cea.nabla.ir.generator.arcane.VariableExtensions.*
+import static extension fr.cea.nabla.ir.generator.arcane.ItemIndexAndIdValueContentProvider.*
 
 class InstructionContentProvider
 {
 	static def dispatch CharSequence getContent(VariableDeclaration it)
 	'''
 		«IF variable.type.baseTypeConstExpr»
-			«getTypeName(variable.type, variable.const)» «variable.name»«IF variable.defaultValue !== null»(«variable.defaultValue.content»)«ENDIF»;
+			«getTypeName(variable.type, variable.const)» «variable.codeName»«getVariableDefaultValue(variable.defaultValue)»;
 		«ELSE»
 			throw Exception("Not Yet Implemented");
 		«ENDIF»
@@ -92,10 +95,14 @@ class InstructionContentProvider
 	'''
 
 	static def dispatch CharSequence getContent(ItemIndexDefinition it)
-	''''''
+	'''
+		const size_t «index.name»(«value.content»);
+	'''
 
 	static def dispatch CharSequence getContent(ItemIdDefinition it)
-	''''''
+	'''
+		final int «id.name» = «value.content»;
+	'''
 
 	static def dispatch CharSequence getContent(SetDefinition it)
 	{
@@ -149,13 +156,14 @@ class InstructionContentProvider
 
 	private static def getSequentialLoopContent(Iterator iterator, Instruction loopBody)
 	'''
-		«IF iterator.container.connectivityCall.args.empty»
-			ENUMERATE_«iterator.container.itemType.name.toUpperCase»(«iterator.index.itemName», view)
+		«val c = iterator.container»
+		«IF c.connectivityCall.args.empty»
+			ENUMERATE_«c.itemType.name.toUpperCase»(«iterator.index.itemName», «IF c.connectivityCall.args.empty»«getContainerCall(c)»«ELSE»view«ENDIF»)
 			{
 				«loopBody.innerContent»
 			}
 		«ELSE»
-			for («iterator.container.itemType.name.toFirstUpper»LocalId «iterator.index.itemName» : «getContainerCall(iterator.container)»)
+			for («c.itemType.name.toFirstUpper»LocalId «iterator.index.itemName» : «getContainerCall(c)»)
 			{
 				«loopBody.innerContent»
 			}
@@ -176,6 +184,17 @@ class InstructionContentProvider
 		{
 			SetRef: c.uniqueName
 			ConnectivityCall: '''m_mesh->get«c.connectivity.name.toFirstUpper»(«c.args.map['*' + itemName].join(', ')»)'''
+		}
+	}
+
+	private static def getVariableDefaultValue(Expression e)
+	{
+		if (e === null) ''''''
+		else
+		{
+			val econtent = e.content
+			if (econtent.charAt(0).compareTo('{') == 0) econtent
+			else '''(«econtent»)'''
 		}
 	}
 }

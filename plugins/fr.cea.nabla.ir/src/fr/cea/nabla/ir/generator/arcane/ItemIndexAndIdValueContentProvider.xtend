@@ -9,11 +9,9 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.arcane
 
-import fr.cea.nabla.ir.ir.ConnectivityCall
 import fr.cea.nabla.ir.ir.ItemIdValueContainer
 import fr.cea.nabla.ir.ir.ItemIdValueIterator
 import fr.cea.nabla.ir.ir.ItemIndexValue
-import fr.cea.nabla.ir.ir.SetRef
 
 import static extension fr.cea.nabla.ir.generator.arcane.ContainerExtensions.*
 
@@ -24,29 +22,24 @@ class ItemIndexAndIdValueContentProvider
 		if (container.connectivity.indexEqualId) 
 			'''«id.name»'''
 		else 
-			'''indexOf(mesh.«container.accessor», «id.name»)'''
+			'''indexOf(m_mesh->«container.accessor», «id.name»)'''
 	}
 
 	static def dispatch getContent(ItemIdValueIterator it)
 	{
-		if (iterator.container.connectivityCall.args.empty) '''«iterator.index.itemName».localId()'''
+		if (iterator.container.connectivityCall.args.empty) '''«iterator.index.itemName».itemLocalId()'''
 		else iterator.container.uniqueName + '[' + getIndexValue + ']'
 	}
 
 	static def dispatch getContent(ItemIdValueContainer it)
 	{
-		val c = container
-		switch c
-		{
-			ConnectivityCall: '''mesh.«c.accessor»'''
-			SetRef: '''«c.target.name»'''
-		}
+		container.content
 	}
 
 	private static def getIndexValue(ItemIdValueIterator it)
 	{
 		val index = iterator.index.name
-		val nbElems = iterator.container.connectivityCall.connectivity.nbElemsVar
+		val nbElems = iterator.container.connectivityCall.nbElemsVar
 		switch shift
 		{
 			case shift < 0: '''(«index»«shift»+«nbElems»)%«nbElems»'''

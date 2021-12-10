@@ -137,14 +137,14 @@ class InstructionContentProvider
 
 	private static def getSetDefinitionContent(String setName, ConnectivityCall call)
 	'''
-		const auto «setName»(mesh->«call.accessor»);
+		const auto «setName»(m_mesh->«call.accessor»);
 	'''
 
 	private static def getParallelLoopContent(Iterator iterator, Instruction loopBody)
 	'''
 		arcaneParallelForeach(«iterator.container.content», [&](«iterator.container.itemType.name.toFirstUpper»VectorView view)
 		{
-			ENUMERATE_(«iterator.index.itemName», i_«iterator.index.itemName», view)
+			ENUMERATE_«iterator.container.itemType.name.toUpperCase»(«iterator.index.itemName», view)
 			{
 				«loopBody.innerContent»
 			}
@@ -155,7 +155,7 @@ class InstructionContentProvider
 	'''
 		«val c = iterator.container»
 		«IF c.connectivityCall.args.empty»
-			ENUMERATE_(«iterator.index.itemName», i_«iterator.index.itemName», «c.content»)
+			ENUMERATE_«iterator.container.itemType.name.toUpperCase»(«iterator.index.itemName», «c.content»)
 			{
 				«loopBody.innerContent»
 			}
@@ -163,7 +163,6 @@ class InstructionContentProvider
 			{
 				«IF iterator.container instanceof ConnectivityCall»«getSetDefinitionContent(iterator.container.uniqueName, iterator.container as ConnectivityCall)»«ENDIF»
 				const size_t «iterator.container.nbElemsVar»(«iterator.container.uniqueName».size());
-				// for («c.itemType.name.toFirstUpper»LocalId «iterator.index.itemName» : «c.content»)
 				for (size_t «iterator.index.name»=0; «iterator.index.name»<«iterator.container.nbElemsVar»; «iterator.index.name»++)
 				{
 					«loopBody.innerContent»

@@ -62,12 +62,9 @@ class ContainerExtensions
 
 	static def getNbElemsVar(Connectivity it)
 	{
-		if (inTypes.empty)
-			'nb' + name.toFirstUpper
-		else
-			'max' + name.toFirstUpper
+		'nb' + name.toFirstUpper
 	}
 
 	static def getAccessor(ConnectivityCall it)
-	'''get«connectivity.name.toFirstUpper»(«args.map[name].join(', ')»)'''
+	'''get«connectivity.name.toFirstUpper»(«args.map['*' + itemName].join(', ')»)'''
 }

@@ -41,6 +41,7 @@ import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.arcane.VariableExtensions.*
+import fr.cea.nabla.ir.ir.IrPackage
 
 class ExpressionContentProvider
 {
@@ -129,7 +130,9 @@ class ExpressionContentProvider
 		}
 		else
 		{
-			if (target.linearAlgebra && !(iterators.empty && indices.empty))
+			if (target.global && target.type.dimension == 0 && eContainingFeature !== IrPackage.Literals.AFFECTATION__LEFT)
+				'''«codeName»()''' // get the value of a VariableScalarXXX
+			else if (target.linearAlgebra && !(iterators.empty && indices.empty))
 				'''«codeName».getValue(«formatIteratorsAndIndices(target.type, iterators, indices)»)'''
 			else
 				'''«codeName»«formatIteratorsAndIndices(target.type, iterators, indices)»'''

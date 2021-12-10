@@ -417,7 +417,7 @@ class OpenMpInstructionContentProvider extends InstructionContentProvider
 	override getReductionContent(ReductionInstruction it)
 	'''
 		«result.type.cppType» «result.name»(«result.defaultValue.content»);
-		#pragma omp parallel for reduction(min:«result.name»)
+		#pragma omp parallel for reduction(«reductionIdentifier»:«result.name»)
 		«iterationBlock.defineInterval('''
 		for (size_t «iterationBlock.indexName»=0; «iterationBlock.indexName»<«iterationBlock.nbElems»; «iterationBlock.indexName»++)
 		{
@@ -442,4 +442,14 @@ class OpenMpInstructionContentProvider extends InstructionContentProvider
 			«sequentialLoopContent»
 		''')»
 	'''
+
+	private def String getReductionIdentifier(ReductionInstruction it)
+	{
+		val n = binaryFunction.name
+		if (n.startsWith("sum")) "+"
+		else if (n.startsWith("prod")) "*"
+		else if (n.startsWith("min")) "min"
+		else if (n.startsWith("max")) "max"
+		else throw new RuntimeException("Open MP reduction not yet implemented: " + n)
+	}
 }

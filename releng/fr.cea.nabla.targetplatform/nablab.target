@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="NabLab Target platform" sequenceNumber="1634636457">
+<target name="NabLab Target platform" sequenceNumber="1638962151">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.sdk.feature.group" version="4.21.0.v20210906-0842"/>
@@ -50,11 +50,10 @@
       <repository id="gmf-runtime-notation" location="http://download.eclipse.org/modeling/gmp/gmf-notation/updates/releases/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="org.eclipse.gmf.runtime.sdk.feature.group" version="1.14.0.202107090702"/>
+      <unit id="org.eclipse.gmf.runtime.sdk.feature.group" version="1.13.1.202106221344"/>
       <repository id="gmf-runtime-diagram" location="https://download.eclipse.org/modeling/gmp/gmf-runtime/updates/releases/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="org.apache.batik.script" version="1.14.0.v20210324-0332"/>
       <unit id="org.hamcrest" version="2.2.0.v20210711-0821"/>
       <unit id="org.assertj" version="3.20.2.v20210706-1104"/>
       <repository location="https://download.eclipse.org/tools/orbit/downloads/drops/R20210825222808/repository"/>

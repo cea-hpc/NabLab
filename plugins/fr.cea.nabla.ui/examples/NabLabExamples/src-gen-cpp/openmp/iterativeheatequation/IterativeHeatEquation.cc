@@ -434,7 +434,7 @@ void IterativeHeatEquation::computeFaceConductivity() noexcept
 void IterativeHeatEquation::computeResidual() noexcept
 {
 	double reduction0(-numeric_limits<double>::max());
-	#pragma omp parallel for reduction(min:reduction0)
+	#pragma omp parallel for reduction(max:reduction0)
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		reduction0 = iterativeheatequationfreefuncs::maxR0(reduction0, std::abs(u_nplus1_kplus1[jCells] - u_nplus1_k[jCells]));

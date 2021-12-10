@@ -4,7 +4,7 @@
    inkscape:export-xdpi="96"
    inkscape:export-filename="/home/lelandaisb/workspaces/NabLab/plugins/fr.cea.nabla.rcp/splash.png"
    sodipodi:docname="splash.svg"
-   inkscape:version="1.1 (c4e8f9e, 2021-05-24)"
+   inkscape:version="1.1.1 (c3084ef, 2021-09-22)"
    id="svg8"
    version="1.1"
    viewBox="0 0 121.44375 91.810419"
@@ -156,6 +156,6 @@
          y="59.057201"
          x="87.662521"
          id="tspan2875"
-         sodipodi:role="line">v0.4.3</tspan></text>
+         sodipodi:role="line">v0.4.4</tspan></text>
   </g>
 </svg>

@@ -458,16 +458,18 @@ class PythonEmbeddingContentProvider
 	def wrapWithGILGuard(EObject it, String guardedContent, String unguardedContent)
 	'''
 		#ifdef NABLAB_DEBUG
-		const bool shouldReleaseGIL = !(«FOR event : writeEvents SEPARATOR ' && '»before[«event»].empty() && after[«event»].empty()«ENDFOR»);
-		if (shouldReleaseGIL)
 		{
-			py::gil_scoped_release release;
-			«guardedContent»
-			py::gil_scoped_acquire acquire;
-		}
-		else
-		{
-			«unguardedContent»
+			const bool shouldReleaseGIL = !(«FOR event : writeEvents SEPARATOR ' && '»before[«event»].empty() && after[«event»].empty()«ENDFOR»);
+			if (shouldReleaseGIL)
+			{
+				py::gil_scoped_release release;
+				«guardedContent»
+				py::gil_scoped_acquire acquire;
+			}
+			else
+			{
+				«unguardedContent»
+			}
 		}
 		#else
 		«unguardedContent»

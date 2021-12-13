@@ -60,7 +60,7 @@ class CartesianMesh2D:
         self.__nbYQuads = data['mesh']['nbYQuads']
         self.__xSize = data['mesh']['xSize']
         self.__ySize = data['mesh']['ySize']
-        _generate(self)
+        self._generate()
         
     def _generate(self):
         
@@ -94,7 +94,7 @@ class CartesianMesh2D:
                     self.lin.extend([self.tag(i,j-1), self.tag(i,j)])
         
         ''' Add the tags of the different nodes'''
-        for i in range(1, self.getNbNodes() + 1):
+        for i in range(1, self._getNbNodes() + 1):
             self.nodesTags.append(i)
         
         ''' Add discrete entity on surface '''
@@ -126,7 +126,7 @@ class CartesianMesh2D:
         gmsh.write(self.__modelName + ".msh")
     
     ''' Number of the nodes'''    
-    def getNbNodes(self):
+    def _getNbNodes(self):
         return (self.__nbXQuads + 1)*(self.__nbYQuads+1)
     
     ''' Number of the cells '''
@@ -204,5 +204,6 @@ class CartesianMesh2D:
     
 if __name__ == '__main__':
     modelName = "generatingMesh2"
-    testMesh = MeshGenerator(modelName)
+    testMesh = CartesianMesh2D(modelName)
     testMesh.jsonInit()
+    testMesh.launchVisualizationMesh()

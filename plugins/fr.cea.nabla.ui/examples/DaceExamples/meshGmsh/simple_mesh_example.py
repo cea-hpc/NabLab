@@ -17,9 +17,9 @@ class SimpleMeshExample:
     ''' Mesh and mesh variables'''
     def __init__(self, mesh):
         self.__mesh = mesh
-        self.__nbNodes = mesh.getNbNodes(self)
+        self.__nbNodes = mesh._getNbNodes()
         print("Number of the noeuds : ", self.__nbNodes)
-        self.__nbCells = mesh.getNbCells(self)
+        self.__nbCells = mesh.getNbCells()
         print("Number of the cells : ", self.__nbCells)
         self.__maxNodesOfCell = mesh._maxNodesOfCell 
         print("maxNodesofCell : ", self.__maxNodesOfCell)
@@ -34,7 +34,7 @@ class SimpleMeshExample:
         self._cst = [[1.0]]*(self.__nbNodes)
         
         ''' Add in each nodes the value 1.0'''
-        tagViewConstantOnNodes = self.addValuesOnNodes("constantOnNodes", self._cst, 1)
+        tagViewConstantOnNodes = self.__mesh.addValuesOnNodes("constantOnNodes", self._cst, 1)
         return  tagViewConstantOnNodes
     
     '''
@@ -70,16 +70,16 @@ class SimpleMeshExample:
     def _computeSum(self, tagViewOnNodes):
         
         ''' Get data on nodes '''
-        _, tags, data, _, _ =  simpleMeshExample.getValuesData(tagViewOnNodes, 1)
+        _, tags, data, _, _ =  simpleMeshExample.__mesh.getValuesData(tagViewOnNodes, 1)
         print("tags : ", tags)
         print("data : ", data)
     
-        lineTags, _  = self.getTagsEdges()
-        _, _  = self.getTagsQuadrangle()
+        lineTags, _  = self.__mesh.getTagsEdges()
+        _, _  = self.__mesh.getTagsQuadrangle()
         valuesOnCells = []
         for jcells in range(0, self.__nbCells):
             jId = jcells + 1
-            nodesOfCellJ_typeString = self.getQuadrangleNodes(jId + len(lineTags))
+            nodesOfCellJ_typeString = self.__mesh.getQuadrangleNodes(jId + len(lineTags))
             nodesOnCellJ_typeliste = nodesOfCellJ_typeString.strip('][').split(',')
             ''' Loop on the nodes of the cell '''
             nodes_sum = 0
@@ -89,7 +89,7 @@ class SimpleMeshExample:
             valuesOnCells.append([nodes_sum*jcells])
         print("valuesOnCells : ", valuesOnCells)
         ''' Add values on cells '''
-        tagView = self.addValuesOnCells("nodesSumOnCells", valuesOnCells, 0)    
+        tagView = self.__mesh.addValuesOnCells("nodesSumOnCells", valuesOnCells, 0)    
         return tagView
     
     '''
@@ -99,12 +99,14 @@ class SimpleMeshExample:
     '''
     def _assertSum(self, tagView):
         ''' Get data on nodes '''
-        _, tags, data, _, _ =  self.getValuesData(tagView, 0)
+        _, tags, data, _, _ =  self.__mesh.getValuesData(tagView, 0)
         print("tags : ", tags)
         print("data : ", data)
         for i in range(len(data)):
             assert([4*i] == data[i]), " Result is false for i = " + str(i)
-
+            
+    def visualizationMesh(self):
+        return self.__mesh.launchVisualizationMesh()
 
 if __name__ == '__main__':
     
@@ -119,4 +121,5 @@ if __name__ == '__main__':
     ''' Test if the values added on cells are correct'''
     simpleMeshExample._assertSum(valuesOnCells)
     ''' Launch graphic interface '''
-    simpleMeshExample.launchVisualizationMesh()
+    simpleMeshExample.visualizationMesh()
+    

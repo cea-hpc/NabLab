@@ -2,13 +2,11 @@ import gmsh
 import json
 import glob
 
-'''
-    Get data from the json file
-'''    
-class CartesianMesh2D:
+class FullGmshCartesianMesh2D:
     
     ''' Protected  variables '''
     _maxNodesOfCell = 4
+    _isfullnp = False
     
     def __init__(self, modelName):
         self.__nbXQuads = 0
@@ -19,8 +17,6 @@ class CartesianMesh2D:
         self.__dimMesh = 2
         # The x, y, z coordinates of all the nodes:
         self.coords = []
-        # The tags of the corresponding nodes:
-        self.nodes = []
         # The connectivities of the rectangle elements (4 node tags per rectangle)
         self.rect = []
         # The connectivities of the line elements (2 node tags for each line element):
@@ -44,6 +40,9 @@ class CartesianMesh2D:
     def tag(self, i, j):
         return i +j*(self.__nbXQuads+1) + 1
     
+    '''
+        Get data from the json file
+    '''  
     def jsonInit(self):
         # Looking at a file with the .json as extension
         jsonFileFound = glob.glob('*.json')
@@ -60,9 +59,9 @@ class CartesianMesh2D:
         self.__nbYQuads = data['mesh']['nbYQuads']
         self.__xSize = data['mesh']['xSize']
         self.__ySize = data['mesh']['ySize']
-        self._generate()
+        self._create()
         
-    def _generate(self):
+    def _create(self):
         
         ''' 
         Initialize Gmsh API. This must be called before any call to the other
@@ -94,14 +93,21 @@ class CartesianMesh2D:
                     self.lin.extend([self.tag(i,j-1), self.tag(i,j)])
         
         ''' Add the tags of the different nodes'''
-        for i in range(1, self._getNbNodes() + 1):
+        print("numberofNodes : ", self.getNbNodes())
+        for i in range(1, self.getNbNodes() + 1):
             self.nodesTags.append(i)
+        print("size of self.nodeTags : ", len(self.nodesTags))
         
         ''' Add discrete entity on surface '''
         self.tagSurface = gmsh.model.addDiscreteEntity(2)
         
         ''' Add all nodes on the surface '''
         gmsh.model.mesh.addNodes(2, self.tagSurface, self.nodesTags, self.coords)
+        print("coordinate of nodes : ", self.coords)
+        print("array of nodesTags : ", self.nodesTags)
+        print("type of nodesTags : ", type(self.nodesTags))
+        print("size of coords : ", len(self.coords))
+        print("size of nodesTags : ", len(self.nodesTags))
         
         ''' Add discrete entity for the lines '''
         self.tagDiscreteEntityLines = gmsh.model.addDiscreteEntity(1)
@@ -126,7 +132,7 @@ class CartesianMesh2D:
         gmsh.write(self.__modelName + ".msh")
     
     ''' Number of the nodes'''    
-    def _getNbNodes(self):
+    def getNbNodes(self):
         return (self.__nbXQuads + 1)*(self.__nbYQuads+1)
     
     ''' Number of the cells '''
@@ -168,15 +174,14 @@ class CartesianMesh2D:
         
         tagView = gmsh.view.add(name)
                 
-        # We add values of the temperature in nodes
+        # Add values of the temperature in nodes
         gmsh.view.addModelData(tagView, step, self.__modelName, 'ElementData', self.quadrangleTags, arrayDataInCells)
         return tagView
         
     ''' Add values on all nodes '''
     def addValuesOnNodes(self, name, arrayDataInNodes, step):
-
         tagView = gmsh.view.add(name)
-        # We add values of the volume in cells
+        # Add values of the volume in cells
         gmsh.view.addModelData(tagView, step, self.__modelName, 'NodeData', self.nodesTags, arrayDataInNodes)
         return tagView
         
@@ -204,6 +209,7 @@ class CartesianMesh2D:
     
 if __name__ == '__main__':
     modelName = "generatingMesh2"
-    testMesh = CartesianMesh2D(modelName)
+    testMesh = FullGmshCartesianMesh2D(modelName)
     testMesh.jsonInit()
-    testMesh.launchVisualizationMesh()
+    tagsQuadrangle = testMesh.getTagsQuadrangle()
+    print("tagsQuadrangle : ", tagsQuadrangle)

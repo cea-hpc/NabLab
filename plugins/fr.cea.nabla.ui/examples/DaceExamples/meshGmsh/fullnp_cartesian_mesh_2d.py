@@ -168,6 +168,15 @@ class FullNPCartesianMesh2D:
         ''' Add the tags of the different nodes'''
         for i in range(1, self.getNbNodes() + 1):
             self.nodesTags.append(i)
+            
+        '''
+            To visualize results with Gmsh, it is required to :
+                - add the tags of the different nodes
+                - add discrete entity on surface
+                - add nodes on surface
+                - add discrete entity for lines
+                - add lines and quads with addElementByType
+        '''
 
         ''' Add discrete entity on surface '''
         self.tagSurface = gmsh.model.addDiscreteEntity(2)

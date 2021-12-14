@@ -85,7 +85,7 @@ class SimpleMeshExample:
         
         ''' Determine if the test is with the fullgmsh_cartesian_mesh_2d or with the full_np_cartesian_mesh_2d'''
         if(self.__mesh._isfullnp==True):
-
+            ''' Case fullnp_cartesian_mesh_2d'''
             for jcells in range(0, self.__nbCells):
                 jId = jcells
                 nodesOfCellJ = self.__mesh.getNodesOfCell(jId)
@@ -130,8 +130,7 @@ class SimpleMeshExample:
                 valuesOnCells.append([nodes_sum*jcells])
             print("valuesOnCells : ", valuesOnCells)
             ''' Add values on cells '''
-            self.__tagViewOnCells  = self.__mesh.addValuesOnCells("nodesSumOnCells", valuesOnCells, 0)   
-            print("tagviewOnCells : ", self.__tagViewOnCells)     
+            self.__tagViewOnCells  = self.__mesh.addValuesOnCells("nodesSumOnCells", valuesOnCells, 0)       
             
     '''
         Job assertSum called @3.0 in simulate method.

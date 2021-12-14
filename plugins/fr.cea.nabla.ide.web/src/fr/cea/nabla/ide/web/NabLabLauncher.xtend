@@ -12,14 +12,13 @@ package fr.cea.nabla.ide.web
 import com.google.inject.Guice
 import com.google.inject.Inject
 import com.google.inject.Module
+import org.eclipse.lsp4j.MessageParams
+import org.eclipse.lsp4j.MessageType
 import org.eclipse.lsp4j.jsonrpc.Launcher
 import org.eclipse.lsp4j.services.LanguageClient
 import org.eclipse.xtext.ide.server.LaunchArgs
 import org.eclipse.xtext.ide.server.ServerLauncher
-import org.eclipse.xtext.ide.server.ServerModule
 import org.eclipse.xtext.resource.EObjectAtOffsetHelper
-import org.eclipse.lsp4j.MessageParams
-import org.eclipse.lsp4j.MessageType
 
 class NabLabLauncher extends ServerLauncher
 {
@@ -28,7 +27,7 @@ class NabLabLauncher extends ServerLauncher
 
 	def static void main(String[] args)
 	{
-		launch(ServerLauncher.name, args, new ServerModule())
+		launch(ServerLauncher.name, args, new NabLabServerModule())
 	}
 
 	def static void launch(String prefix, String[] args, Module... modules)

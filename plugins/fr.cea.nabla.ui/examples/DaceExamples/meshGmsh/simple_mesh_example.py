@@ -114,18 +114,23 @@ class SimpleMeshExample:
             _, _, data, _, _ =  self.__mesh.getValuesData(self.__tagViewOnNodes, 1)
             print("dataOnNodes : ", data)
     
+            ''' the getTagsEdges() and getTagsQuadrangle() are called in order to get ids of each edges and quads.'''
             lineTags, _  = self.__mesh.getTagsEdges()
             _, _  = self.__mesh.getTagsQuadrangle()
             
             valuesOnCells = []
             for jcells in range(0, self.__nbCells):
                 jId = jcells + 1
+                ''' Gmsh returns the nodes of a cell in a variable of type string.'''
                 nodesOfCellJ_typeString = self.__mesh.getQuadrangleNodes(jId + len(lineTags))
+                ''' The nodes of each cell are stored in a list type variable.'''
                 nodesOnCellJ_typeliste = nodesOfCellJ_typeString.strip('][').split(',')
                 ''' Loop on the nodes of the cell '''
                 nodes_sum = 0
                 for rNodes in range(4):
+                    ''' Get the tag of this node'''
                     nodeNumber = int(nodesOnCellJ_typeliste[rNodes])
+                    ''' The data variable has the values corresponding to the node'''
                     nodes_sum = nodes_sum + int(data[nodeNumber-1])
                 valuesOnCells.append([nodes_sum*jcells])
             print("valuesOnCells : ", valuesOnCells)

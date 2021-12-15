@@ -37,13 +37,13 @@ class FullGmshCartesianMesh2D:
         self.tagDiscreteEntityLines =  0
         
     ''' Tag of different points'''    
-    def tag(self, i, j):
+    def _tag(self, i, j):
         return i +j*(self.__nbXQuads+1) + 1
     
     '''
         Get data from the json file
     '''  
-    def jsonInit(self):
+    def _jsonInit(self):
         # Looking at a file with the .json as extension
         jsonFileFound = glob.glob('*.json')
         if len(jsonFileFound) !=1:
@@ -85,16 +85,16 @@ class FullGmshCartesianMesh2D:
                 ])
                 
                 if i > 0 and j > 0:
-                    self.rect.extend([self.tag(i-1, j-1), self.tag(i, j - 1), self.tag(i,j), self.tag(i - 1, j)])
+                    self.rect.extend([self._tag(i-1, j-1), self._tag(i, j - 1), self._tag(i,j), self._tag(i - 1, j)])
                 
                 if i > 0:
-                    self.lin.extend([self.tag(i-1, j), self.tag(i,j)])
+                    self.lin.extend([self._tag(i-1, j), self._tag(i,j)])
                 if j > 0:
-                    self.lin.extend([self.tag(i,j-1), self.tag(i,j)])
+                    self.lin.extend([self._tag(i,j-1), self._tag(i,j)])
         
         ''' Add the tags of the different nodes'''
-        print("numberofNodes : ", self.getNbNodes())
-        for i in range(1, self.getNbNodes() + 1):
+        print("numberofNodes : ", self._getNbNodes())
+        for i in range(1, self._getNbNodes() + 1):
             self.nodesTags.append(i)
         print("size of self.nodeTags : ", len(self.nodesTags))
         
@@ -132,25 +132,25 @@ class FullGmshCartesianMesh2D:
         gmsh.write(self.__modelName + ".msh")
     
     ''' Number of the nodes'''    
-    def getNbNodes(self):
+    def _getNbNodes(self):
         return (self.__nbXQuads + 1)*(self.__nbYQuads+1)
     
     ''' Number of the cells '''
-    def getNbCells(self):
+    def _getNbCells(self):
         return self.__nbXQuads * self.__nbYQuads
         
     ''' Get tags of the different cells '''
-    def getTagsQuadrangle(self):
+    def _getTagsQuadrangle(self):
         self.quadrangleTags, self.cellNodesTags = gmsh.model.mesh.getElementsByType(3)
         return self.quadrangleTags, self.cellNodesTags
     
     ''' Get tags of the different edges '''
-    def getTagsEdges(self):
+    def _getTagsEdges(self):
         self.lineTags, self.edgeNodesTags = gmsh.model.mesh.getElementsByType(1)
         return self.lineTags, self.edgeNodesTags
     
     ''' Get nodes of the quadrangles '''
-    def getQuadrangleNodes(self, quadrangleTag):
+    def _getQuadrangleNodes(self, quadrangleTag):
         listNodeTagsQuadrangle = []
         for i in range(0,len(self.cellNodesTags), 4):
             listNodeTagsQuadrangle.append([self.cellNodesTags[i], self.cellNodesTags[i+1], self.cellNodesTags[i+2], self.cellNodesTags[i+3]])
@@ -160,7 +160,7 @@ class FullGmshCartesianMesh2D:
             return str(listNodeTagsQuadrangle[quadrangleTag-(len(self.lineTags)+1)])
             
     ''' Get nodes of the edges '''
-    def getEdgeNodes(self, edgeTag):
+    def _getEdgeNodes(self, edgeTag):
         listNodeTagsLines = []
         for i in range(0,len(self.edgeNodesTags), 2):
             listNodeTagsLines.append([self.edgeNodesTags[i], self.edgeNodesTags[i+1]])
@@ -170,7 +170,7 @@ class FullGmshCartesianMesh2D:
             return str(listNodeTagsLines[edgeTag-1])
             
     ''' Add values on all cells '''
-    def addValuesOnCells(self, name, arrayDataInCells, step):
+    def _addValuesOnCells(self, name, arrayDataInCells, step):
         
         tagView = gmsh.view.add(name)
                 
@@ -179,14 +179,14 @@ class FullGmshCartesianMesh2D:
         return tagView
         
     ''' Add values on all nodes '''
-    def addValuesOnNodes(self, name, arrayDataInNodes, step):
+    def _addValuesOnNodes(self, name, arrayDataInNodes, step):
         tagView = gmsh.view.add(name)
         # Add values of the volume in cells
         gmsh.view.addModelData(tagView, step, self.__modelName, 'NodeData', self.nodesTags, arrayDataInNodes)
         return tagView
         
     ''' Add values on all edges '''
-    def addValuesOnEdges(self, name, arrayDataInNodes, step):
+    def _addValuesOnEdges(self, name, arrayDataInNodes, step):
         
         tagView = gmsh.view.add(name)
         
@@ -194,12 +194,12 @@ class FullGmshCartesianMesh2D:
         return tagView
         
     ''' Get values on elements (nodes, edges, or cells)'''
-    def getValuesData(self, tag, step=0):
+    def _getValuesData(self, tag, step=0):
         dataType, tags, data, time, numComp = gmsh.view.getModelData(tag, step)
         return dataType, tags, data, time, numComp
     
     ''' Run the event loop of the graphical user interface '''
-    def launchVisualizationMesh(self):
+    def _launchVisualizationMesh(self):
         gmsh.fltk.run()
     '''
         Finalize the Gmsh API. This must be called when you are done using the Gmsh
@@ -210,6 +210,6 @@ class FullGmshCartesianMesh2D:
 if __name__ == '__main__':
     modelName = "generatingMesh2"
     testMesh = FullGmshCartesianMesh2D(modelName)
-    testMesh.jsonInit()
-    tagsQuadrangle = testMesh.getTagsQuadrangle()
+    testMesh._jsonInit()
+    tagsQuadrangle = testMesh._getTagsQuadrangle()
     print("tagsQuadrangle : ", tagsQuadrangle)

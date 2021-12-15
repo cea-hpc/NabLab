@@ -30,7 +30,7 @@ class FullNPCartesianMesh2D:
     '''
         Get data from the json file
     '''      
-    def jsonInit(self):
+    def _jsonInit(self):
         # Looking at a file with the .json as extension
         jsonFileFound = glob.glob('*.json')
         if len(jsonFileFound) !=1:
@@ -64,7 +64,7 @@ class FullNPCartesianMesh2D:
         
         
         # Number of nodes
-        self.__numberNodes = self.getNbNodes()
+        self.__numberNodes = self._getNbNodes()
         # Array of nodes
         self.__nodes = np.zeros(self.__numberNodes)
         # List of nodes in all the mesh grid
@@ -166,7 +166,7 @@ class FullNPCartesianMesh2D:
         
         
         ''' Add the tags of the different nodes'''
-        for i in range(1, self.getNbNodes() + 1):
+        for i in range(1, self._getNbNodes() + 1):
             self.nodesTags.append(i)
             
         '''
@@ -217,28 +217,28 @@ class FullNPCartesianMesh2D:
         gmsh.write(self.__modelName + ".msh")        
         
     ''' Get number of nodes '''
-    def getNbNodes(self):
+    def _getNbNodes(self):
         return (self.__nbXQuads+1)*(self.__nbYQuads+1)
     
     ''' Number of the cells '''
-    def getNbCells(self):
+    def _getNbCells(self):
         return self.__nbXQuads * self.__nbYQuads
     ''' Tag of the quads '''
-    def getTagsQuadrangle(self):
+    def _getTagsQuadrangle(self):
         for i in range(len(self.__quadNodes)):
             self.__quads[i] = len(self.__edgeNode) + i + 1
             
         return self.__quads
     ''' Get nodes of edges'''
-    def getNodesOfEdges(self, edgeId):
+    def _getNodesOfEdges(self, edgeId):
         return self.__edgeNode[edgeId]
     
     ''' Get nodes of cell'''
-    def getNodesOfCell(self, cellId):
+    def _getNodesOfCell(self, cellId):
         return self.__quadNodes[cellId]
     
     ''' Add values on all nodes '''
-    def addValuesOnNodes(self, name, arrayDataInNodes, step):
+    def _addValuesOnNodes(self, name, arrayDataInNodes, step):
 
         tagView = gmsh.view.add(name)
         # We add values of the volume in cells
@@ -246,16 +246,16 @@ class FullNPCartesianMesh2D:
         return tagView
     
     ''' Add values on all cells '''
-    def addValuesOnCells(self, name, arrayDataInCells, step):
+    def _addValuesOnCells(self, name, arrayDataInCells, step):
         
         tagView = gmsh.view.add(name)
                 
         # We add values of the temperature in nodes
-        gmsh.view.addModelData(tagView, step, self.__modelName, 'ElementData', self.getTagsQuadrangle(), arrayDataInCells)
+        gmsh.view.addModelData(tagView, step, self.__modelName, 'ElementData', self._getTagsQuadrangle(), arrayDataInCells)
         return tagView
     
     ''' Run the event loop of the graphical user interface '''
-    def launchVisualizationMesh(self):
+    def _launchVisualizationMesh(self):
         gmsh.fltk.run()
     '''
         Finalize the Gmsh API. This must be called when you are done using the Gmsh
@@ -267,8 +267,8 @@ if __name__ == '__main__':
     
     modelName = "generatingMesh2"
     testMesh = FullNPCartesianMesh2D(modelName)
-    testMesh.jsonInit()
-    nodesCellId = testMesh.getNodesOfCell(4)
+    testMesh._jsonInit()
+    nodesCellId = testMesh._getNodesOfCell(4)
     print(" nodesCellId : ", nodesCellId)
     
     

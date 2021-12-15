@@ -17,9 +17,9 @@ class SimpleMeshExample:
     ''' Mesh and mesh variables'''
     def __init__(self, mesh):
         self.__mesh = mesh
-        self.__nbNodes = mesh.getNbNodes()
+        self.__nbNodes = mesh._getNbNodes()
         print("Number of the noeuds : ", self.__nbNodes)
-        self.__nbCells = mesh.getNbCells()
+        self.__nbCells = mesh._getNbCells()
         print("Number of the cells : ", self.__nbCells)
         self.__maxNodesOfCell = mesh._maxNodesOfCell 
         print("maxNodesofCell : ", self.__maxNodesOfCell)
@@ -49,7 +49,7 @@ class SimpleMeshExample:
             self.valuesOnNodes.append([self.__cst[i]])
             
         ''' Add in each nodes the value 1.0 with Gmsh'''
-        self.__tagViewOnNodes = self.__mesh.addValuesOnNodes("constantOnNodes", self.valuesOnNodes, 1)
+        self.__tagViewOnNodes = self.__mesh._addValuesOnNodes("constantOnNodes", self.valuesOnNodes, 1)
     
     '''
         Job computeTn called @1.0 in executeTimeLoopN method.
@@ -88,7 +88,7 @@ class SimpleMeshExample:
             ''' Case fullnp_cartesian_mesh_2d'''
             for jcells in range(0, self.__nbCells):
                 jId = jcells
-                nodesOfCellJ = self.__mesh.getNodesOfCell(jId)
+                nodesOfCellJ = self.__mesh._getNodesOfCell(jId)
                 nbNodesOfCellJ = len(nodesOfCellJ)
                 sumOnNodes = 0
                 print(" Nodes of the " + str(jId) + " cell " + "have the following values : ") 
@@ -101,29 +101,29 @@ class SimpleMeshExample:
                 self.__nodes_sum[jcells] = sumOnNodes*jcells
             print("nodes_sum = ", self.__nodes_sum)
             
-            ''' Convert __nodes_sum array in list to add data in the method addValuesOnCells which calls the method addModelData of Gmsh '''
+            ''' Convert __nodes_sum array in list to add data in the method _addValuesOnCells which calls the method addModelData of Gmsh '''
             self.valuesOnCells = []
             for i in range(len(self.__nodes_sum)):
                 self.valuesOnCells.append([self.__nodes_sum[i]])
             ''' Add data on cells to visualize results with Gmsh'''
-            self.__tagViewOnCells = self.__mesh.addValuesOnCells("nodesSumOnCells", self.valuesOnCells, 0) # Calling a method gmsh to put values in cells in order to visualize the result
+            self.__tagViewOnCells = self.__mesh._addValuesOnCells("nodesSumOnCells", self.valuesOnCells, 0) # Calling a method gmsh to put values in cells in order to visualize the result
             
         else:
             ''' Case fullgmsh_cartesian_mesh_2d'''
             ''' Get data on nodes '''
-            _, _, data, _, _ =  self.__mesh.getValuesData(self.__tagViewOnNodes, 1)
+            _, _, data, _, _ =  self.__mesh._getValuesData(self.__tagViewOnNodes, 1)
             print("dataOnNodes : ", data)
     
-            ''' the getTagsEdges() and getTagsQuadrangle() are called in order to get ids of each edges and quads.'''
-            lineTags, _  = self.__mesh.getTagsEdges()
-            _, _  = self.__mesh.getTagsQuadrangle()
+            ''' the _getTagsEdges() and _getTagsQuadrangle() are called in order to get ids of each edges and quads.'''
+            lineTags, _  = self.__mesh._getTagsEdges()
+            _, _  = self.__mesh._getTagsQuadrangle()
             
             valuesOnCells = []
             for jcells in range(0, self.__nbCells):
                 jId = jcells + 1
                 ''' Gmsh returns the nodes of a cell in a variable of type string.'''
-                nodesOfCellJ_typeString = self.__mesh.getQuadrangleNodes(jId + len(lineTags))
-                ''' The nodes of each cell are stored in a list type variable.'''
+                nodesOfCellJ_typeString = self.__mesh._getQuadrangleNodes(jId + len(lineTags))
+                ''' The nodes of each cell are stored in a list type variable in order to be used in Gmsh.'''
                 nodesOnCellJ_typeliste = nodesOfCellJ_typeString.strip('][').split(',')
                 ''' Loop on the nodes of the cell '''
                 nodes_sum = 0
@@ -135,7 +135,7 @@ class SimpleMeshExample:
                 valuesOnCells.append([nodes_sum*jcells])
             print("valuesOnCells : ", valuesOnCells)
             ''' Add values on cells '''
-            self.__tagViewOnCells  = self.__mesh.addValuesOnCells("nodesSumOnCells", valuesOnCells, 0)       
+            self.__tagViewOnCells  = self.__mesh._addValuesOnCells("nodesSumOnCells", valuesOnCells, 0)       
             
     '''
         Job assertSum called @3.0 in simulate method.
@@ -149,34 +149,34 @@ class SimpleMeshExample:
                 assert(4*i == self.__nodes_sum[i]), " Result is false for i = " + str(i)                
         else:
             ''' Get data on cells '''
-            _, _, data, _, _ =  self.__mesh.getValuesData(self.__tagViewOnCells , 0)
+            _, _, data, _, _ =  self.__mesh._getValuesData(self.__tagViewOnCells , 0)
             print("data : ", data)
             for i in range(0, self.__nbCells):
                 assert([4*i] == data[i]), " Result is false for i = " + str(i)
             
     
-    def simulate(self):
+    def _simulate(self):
         self._computeCst()
         self._computeSum()
         self._assertSum()
-        self.__mesh.launchVisualizationMesh()
+        self.__mesh._launchVisualizationMesh()
 
 if __name__ == '__main__':
     
     print(" ------------------------Test with FullNPCartesianMesh2D-------------------")
     modelName = "generatingMesh1"
     mesh = FullNPCartesianMesh2D(modelName)
-    mesh.jsonInit()
+    mesh._jsonInit()
     simpleMeshExample = SimpleMeshExample(mesh)
     ''' Gmsh displays only one interface graphic not several. To see results with Gmsh, run the simulate() method with FullNPCartesianMesh2D or with FullGmshCartesianMesh2D '''
-    simpleMeshExample.simulate()
+    #simpleMeshExample._simulate()
     
     print("")
     print(" ------------------------Test with FullGmshCartesianMesh2D-------------------")
     modelName = "generatingMesh2"
     testMesh = FullGmshCartesianMesh2D(modelName)
-    testMesh.jsonInit()
+    testMesh._jsonInit()
     simpleMeshExample2 = SimpleMeshExample(testMesh)
     ''' Gmsh displays only one interface graphic not several in the same time. To see results with Gmsh, run the simulate() method with FullNPCartesianMesh2D or with FullGmshCartesianMesh2D '''
-    #simpleMeshExample2.simulate()
+    simpleMeshExample2._simulate()
     

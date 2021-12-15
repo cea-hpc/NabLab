@@ -9,24 +9,45 @@
  *******************************************************************************/
 import * as path from 'path';
 import * as os from 'os';
-
+import * as net from 'net';
 import {Trace} from 'vscode-jsonrpc';
 import { commands, window, workspace, ExtensionContext, Uri} from 'vscode';
-import { LanguageClient, LanguageClientOptions, ServerOptions } from 'vscode-languageclient';
+import { LanguageClient,StreamInfo, LanguageClientOptions, ServerOptions } from 'vscode-languageclient';
 import LatexWebViewLoader from './view/LatexWebViewLoader';
 
 export function activate(context: ExtensionContext) {
-    // The server is a locally installed in src/mydsl
-    let launcher = os.platform() === 'win32' ? 'nabla-ls.bat' : 'nabla-ls';
-    let script = context.asAbsolutePath(path.join('src', 'nabla', 'bin', launcher));
 
-    let serverOptions: ServerOptions = {
-        run : { command: script },
-        args: ['-trace'],
-        debug: { command: script, args: [], options: { env: createDebugEnv() } }
-    };
+    let serverOptions : ServerOptions;
+    // Dev mode. In this mode the server is expected to be launched already
+    // The communication is done using socket
+    if(process.env.nablaLaunchingMode == 'socket'){
+
+        let connectionInfo = {
+            port: 5008
+        };
+    
+        serverOptions = () => {
+            // Connect to language server via socket
+            let socket = net.connect(connectionInfo);
+            let result: StreamInfo = {
+                writer: socket,
+                reader: socket
+            };
+            return Promise.resolve(result);
+        };
+    }else {
+         // The server is a locally installed in src/mydsl
+        let launcher = os.platform() === 'win32' ? 'nabla-ls.bat' : 'nabla-ls';
+        let script = context.asAbsolutePath(path.join('src', 'nabla', 'bin', launcher));
+        // Normal mode: The server is launch from embedded jars
+        serverOptions = {
+            run : { command: script },
+            args: ['-trace'],
+            debug: { command: script, args: [], options: { env: createDebugEnv() } }
+        };
+    }
     let clientOptions: LanguageClientOptions = {
-        documentSelector: ['nabla'],
+        documentSelector: ['nabla','nablegen'],
         synchronize: {
             fileEvents: workspace.createFileSystemWatcher('**/*.*')
         }

@@ -53,7 +53,7 @@ export function activate(context: ExtensionContext) {
             const projectFolder = workspace.getWorkspaceFolder(activeEditorFileURI);
 			const offset = e.textEditor.document.offsetAt(e.textEditor.selection?.anchor);
             if (projectFolder && offset) {
-                LatexWebViewLoader.update(context.extensionPath, projectFolder.name, activeEditorFileURI.fsPath, offset);
+                LatexWebViewLoader.update(context.extensionPath, projectFolder.name, activeEditorFileURI.toString(), offset);
             }
         }
     });

@@ -24,15 +24,18 @@ import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.nablagen.AdditionalModule
+import fr.cea.nabla.nablagen.ExtensionConfig
 import fr.cea.nabla.nablagen.NablagenApplication
 import fr.cea.nabla.nablagen.NablagenModule
 import fr.cea.nabla.nablagen.NablagenPackage
+import fr.cea.nabla.nablagen.NablagenProvider
 import fr.cea.nabla.nablagen.OutputVar
 import fr.cea.nabla.nablagen.VtkOutput
 import java.util.ArrayList
 import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
+import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.Scopes
@@ -100,6 +103,21 @@ class NablagenScopeProvider extends AbstractNablagenScopeProvider
 					Scopes::scopeFor(ngenApp.mainModule.type.allVars.filter(Var))
 				else
 					IScope.NULLSCOPE
+			}
+			case NablagenPackage.Literals.EXTENSION_CONFIG__PROVIDER:
+			{
+				val existingScope = super.getScope(context, r)
+				val extensionConfig = context as ExtensionConfig
+				new FilteringScope(existingScope, [e |
+					var t = e.EObjectOrProxy as NablagenProvider
+					if (t.eIsProxy)
+						t = EcoreUtil.resolve(e.EObjectOrProxy, context) as NablagenProvider
+					if (t.eIsProxy)
+						// no proxy resolution => no filter
+						true
+					else
+						t.extension.name == extensionConfig.extension.name
+				])
 			}
 			default: super.getScope(context, r)
 		}

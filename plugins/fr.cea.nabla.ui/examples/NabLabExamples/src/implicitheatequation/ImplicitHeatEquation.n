@@ -13,13 +13,12 @@ with Math.*;
 with LinearAlgebra.*;
 with CartesianMesh2D.*;
 
-let ℝ u0 = 1.0;
-let ℝ[2] vectOne = ℝ[2](1.0);
-
 // Simulation options
 ℝ stopTime;
 ℕ maxIterations;
 
+let ℝ u0 = 1.0;
+let ℝ[2] vectOne = ℝ[2](1.0);
 let ℝ δt = 0.001;
 ℝ t;
 ℝ[2] X{nodes}, Xc{cells}; // Position of nodes and cells center of gravity 

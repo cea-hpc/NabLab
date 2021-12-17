@@ -107,17 +107,22 @@ class NablagenScopeProvider extends AbstractNablagenScopeProvider
 			case NablagenPackage.Literals.EXTENSION_CONFIG__PROVIDER:
 			{
 				val existingScope = super.getScope(context, r)
-				val extensionConfig = context as ExtensionConfig
-				new FilteringScope(existingScope, [e |
-					var t = e.EObjectOrProxy as NablagenProvider
-					if (t.eIsProxy)
-						t = EcoreUtil.resolve(e.EObjectOrProxy, context) as NablagenProvider
-					if (t.eIsProxy)
-						// no proxy resolution => no filter
-						true
-					else
-						t.extension.name == extensionConfig.extension.name
-				])
+				if (context instanceof ExtensionConfig)
+				{
+					val extensionConfig = context as ExtensionConfig
+					new FilteringScope(existingScope, [e |
+						var t = e.EObjectOrProxy as NablagenProvider
+						if (t.eIsProxy)
+							t = EcoreUtil.resolve(e.EObjectOrProxy, context) as NablagenProvider
+						if (t.eIsProxy)
+							// no proxy resolution => no filter
+							true
+						else
+							t.extension.name == extensionConfig.extension.name
+					])
+				}
+				else
+					existingScope
 			}
 			default: super.getScope(context, r)
 		}

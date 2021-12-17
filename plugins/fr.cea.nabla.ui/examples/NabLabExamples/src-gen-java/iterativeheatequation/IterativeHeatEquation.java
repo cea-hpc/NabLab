@@ -26,10 +26,10 @@ public final class IterativeHeatEquation
 	int lastDump;
 	int n;
 	int k;
-	static final double u0 = 1.0;
-	static final double[] vectOne = new double[] {1.0, 1.0};
 	double stopTime;
 	int maxIterations;
+	static final double u0 = 1.0;
+	static final double[] vectOne = new double[] {1.0, 1.0};
 	static final int maxIterationsK = 1000;
 	static final double epsilon = 1.0E-8;
 	double deltat;

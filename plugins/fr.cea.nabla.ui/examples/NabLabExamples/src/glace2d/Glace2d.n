@@ -40,7 +40,6 @@ def inverse: ℝ[2,2] → ℝ[2,2], (a) → {
 ℝ stopTime;
 ℕ maxIterations;
 
-// User options
 let ℝ γ = 1.4;
 let ℝ xInterface = 0.5;
 let ℝ δtCfl = 0.4;
@@ -48,7 +47,6 @@ let ℝ ρIniZg = 1.0;
 let ℝ ρIniZd = 0.125;
 let ℝ pIniZg = 1.0;
 let ℝ pIniZd = 0.1;
-
 ℝ t, δt;
 ℝ[2] X{nodes}, b{nodes}, bt{nodes};
 ℝ[2,2] Ar{nodes}, Mt{nodes};

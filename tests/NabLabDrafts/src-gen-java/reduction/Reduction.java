@@ -10,7 +10,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonElement;
 
-import fr.cea.nabla.javalib.*;
 import fr.cea.nabla.javalib.mesh.*;
 
 public final class Reduction
@@ -20,11 +19,11 @@ public final class Reduction
 	@SuppressWarnings("unused")
 	private final int nbNodes, maxCellsOfNode, nbCells, maxNodesOfCell;
 
-	// Option and global variables
+	// Options and global variables
 	int n;
-	final double maxTime;
-	final int maxIter;
-	final double deltat;
+	static final double maxTime = 0.1;
+	static final int maxIter = 500;
+	static final double deltat = 0.01;
 	double t_n;
 	double t_nplus1;
 	double[][] X;
@@ -40,13 +39,13 @@ public final class Reduction
 		maxCellsOfNode = CartesianMesh2D.MaxNbCellsOfNode;
 		nbCells = mesh.getNbCells();
 		maxNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
+	}
 
-		// Initialize variables with default values
-		maxTime = 0.1;
-		maxIter = 500;
-		deltat = 0.01;
-
-		// Allocate arrays
+	public void jsonInit(final String jsonContent)
+	{
+		final Gson gson = new Gson();
+		final JsonObject options = gson.fromJson(jsonContent, JsonObject.class);
+		n = 0;
 		X = new double[nbNodes][2];
 		Vnode_n = new double[nbNodes][2];
 		Vnode_nplus1 = new double[nbNodes][2];
@@ -59,12 +58,6 @@ public final class Reduction
 			X[rNodes][0] = gNodes[rNodes][0];
 			X[rNodes][1] = gNodes[rNodes][1];
 		});
-	}
-
-	public void jsonInit(final String jsonContent)
-	{
-		final Gson gson = new Gson();
-		final JsonObject o = gson.fromJson(jsonContent, JsonObject.class);
 	}
 
 	/**
@@ -93,7 +86,7 @@ public final class Reduction
 
 	/**
 	 * Job executeTimeLoopN called @1.0 in simulate method.
-	 * In variables: Vnode_n, t_n
+	 * In variables: Vnode_n, n, t_n
 	 * Out variables: Vnode_nplus1, t_nplus1
 	 */
 	protected void executeTimeLoopN()
@@ -160,7 +153,17 @@ public final class Reduction
 
 	private static double[] sumR1(double[] a, double[] b)
 	{
-		return ArrayOperations.plus(a, b);
+		return plus(a, b);
+	}
+
+	private static double[] plus(double[] a, double[] b)
+	{
+		double[] result = new double[a.length];
+		for (int ix0=0; ix0<a.length; ix0++)
+		{
+			result[ix0] = a[ix0] + b[ix0];
+		}
+		return result;
 	}
 
 	public void simulate()

@@ -19,7 +19,18 @@ RealArray1D<2> nodeVelocityBoundaryConditionCorner(int BC1, RealArray1D<2> BCVal
 template<size_t x>
 RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b)
 {
-	return a + b;
+	return reductionfreefuncs::operator+(a, b);
+}
+
+template<size_t x0>
+RealArray1D<x0> operator+(RealArray1D<x0> a, RealArray1D<x0> b)
+{
+	RealArray1D<x0> result;
+	for (size_t ix0=0; ix0<x0; ix0++)
+	{
+		result[ix0] = a[ix0] + b[ix0];
+	}
+	return result;
 }
 }
 
@@ -36,13 +47,6 @@ Reduction::Reduction(CartesianMesh2D& aMesh)
 , Vnode_nplus1(nbNodes)
 , lpc_n(nbNodes, std::vector<RealArray1D<2>>(maxCellsOfNode))
 {
-	// Copy node coordinates
-	const auto& gNodes = mesh.getGeometry()->getNodes();
-	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
-	{
-		X[rNodes][0] = gNodes[rNodes][0];
-		X[rNodes][1] = gNodes[rNodes][1];
-	}
 }
 
 Reduction::~Reduction()
@@ -55,8 +59,17 @@ Reduction::jsonInit(const char* jsonContent)
 	rapidjson::Document document;
 	assert(!document.Parse(jsonContent).HasParseError());
 	assert(document.IsObject());
-	const rapidjson::Value::Object& o = document.GetObject();
+	const rapidjson::Value::Object& options = document.GetObject();
 
+	n = 0;
+
+	// Copy node coordinates
+	const auto& gNodes = mesh.getGeometry()->getNodes();
+	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
+	{
+		X[rNodes][0] = gNodes[rNodes][0];
+		X[rNodes][1] = gNodes[rNodes][1];
+	}
 }
 
 
@@ -86,7 +99,7 @@ void Reduction::computeGeometry() noexcept
 
 /**
  * Job executeTimeLoopN called @1.0 in simulate method.
- * In variables: Vnode_n, t_n
+ * In variables: Vnode_n, n, t_n
  * Out variables: Vnode_nplus1, t_nplus1
  */
 void Reduction::executeTimeLoopN() noexcept

@@ -26,10 +26,10 @@ public final class ImplicitHeatEquation
 	int outputPeriod;
 	int lastDump;
 	int n;
-	static final double u0 = 1.0;
-	static final double[] vectOne = new double[] {1.0, 1.0};
 	double stopTime;
 	int maxIterations;
+	static final double u0 = 1.0;
+	static final double[] vectOne = new double[] {1.0, 1.0};
 	double deltat;
 	double t_n;
 	double t_nplus1;

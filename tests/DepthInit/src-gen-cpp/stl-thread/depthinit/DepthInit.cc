@@ -17,63 +17,50 @@ double two()
 }
 }
 
-/******************** Options definition ********************/
+/******************** Module definition ********************/
+
+DepthInit::DepthInit(CartesianMesh2D& aMesh)
+: mesh(aMesh)
+, nbNodes(mesh.getNbNodes())
+, nbCells(mesh.getNbCells())
+, X(nbNodes)
+, eta(nbCells)
+{
+}
+
+DepthInit::~DepthInit()
+{
+}
 
 void
-DepthInit::Options::jsonInit(const char* jsonContent)
+DepthInit::jsonInit(const char* jsonContent)
 {
 	rapidjson::Document document;
 	assert(!document.Parse(jsonContent).HasParseError());
 	assert(document.IsObject());
-	const rapidjson::Value::Object& o = document.GetObject();
+	const rapidjson::Value::Object& options = document.GetObject();
 
-	// maxTime
-	if (o.HasMember("maxTime"))
-	{
-		const rapidjson::Value& valueof_maxTime = o["maxTime"];
-		assert(valueof_maxTime.IsDouble());
-		maxTime = valueof_maxTime.GetDouble();
-	}
-	else
-		maxTime = 0.1;
-	// maxIter
-	if (o.HasMember("maxIter"))
-	{
-		const rapidjson::Value& valueof_maxIter = o["maxIter"];
-		assert(valueof_maxIter.IsInt());
-		maxIter = valueof_maxIter.GetInt();
-	}
-	else
-		maxIter = 500;
-	// deltat
-	if (o.HasMember("deltat"))
-	{
-		const rapidjson::Value& valueof_deltat = o["deltat"];
-		assert(valueof_deltat.IsDouble());
-		deltat = valueof_deltat.GetDouble();
-	}
-	else
-		deltat = 1.0;
+	assert(options.HasMember("maxIter"));
+	const rapidjson::Value& valueof_maxIter = options["maxIter"];
+	assert(valueof_maxIter.IsInt());
+	maxIter = valueof_maxIter.GetInt();
+	assert(options.HasMember("maxTime"));
+	const rapidjson::Value& valueof_maxTime = options["maxTime"];
+	assert(valueof_maxTime.IsDouble());
+	maxTime = valueof_maxTime.GetDouble();
+	assert(options.HasMember("deltat"));
+	const rapidjson::Value& valueof_deltat = options["deltat"];
+	assert(valueof_deltat.IsDouble());
+	deltat = valueof_deltat.GetDouble();
 	// bathyLib
-	if (o.HasMember("bathyLib"))
+	if (options.HasMember("bathyLib"))
 	{
 		rapidjson::StringBuffer strbuf;
 		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
-		o["bathyLib"].Accept(writer);
+		options["bathyLib"].Accept(writer);
 		bathyLib.jsonInit(strbuf.GetString());
 	}
-}
 
-/******************** Module definition ********************/
-
-DepthInit::DepthInit(CartesianMesh2D& aMesh, Options& aOptions)
-: mesh(aMesh)
-, nbNodes(mesh.getNbNodes())
-, nbCells(mesh.getNbCells())
-, options(aOptions)
-, X(nbNodes)
-, eta(nbCells)
-{
 	// Copy node coordinates
 	const auto& gNodes = mesh.getGeometry()->getNodes();
 	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
@@ -83,9 +70,6 @@ DepthInit::DepthInit(CartesianMesh2D& aMesh, Options& aOptions)
 	}
 }
 
-DepthInit::~DepthInit()
-{
-}
 
 /**
  * Job initFromFile called @1.0 in simulate method.
@@ -96,7 +80,7 @@ void DepthInit::initFromFile() noexcept
 {
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
-		eta[jCells] = depthinitfreefuncs::two() * options.bathyLib.nextWaveHeight();
+		eta[jCells] = depthinitfreefuncs::two() * bathyLib.nextWaveHeight();
 	}
 }
 
@@ -146,15 +130,14 @@ int main(int argc, char* argv[])
 	mesh.jsonInit(strbuf.GetString());
 	
 	// Module instanciation(s)
-	DepthInit::Options depthInitOptions;
+	DepthInit* depthInit = new DepthInit(mesh);
 	if (d.HasMember("depthInit"))
 	{
 		rapidjson::StringBuffer strbuf;
 		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
 		d["depthInit"].Accept(writer);
-		depthInitOptions.jsonInit(strbuf.GetString());
+		depthInit->jsonInit(strbuf.GetString());
 	}
-	DepthInit* depthInit = new DepthInit(mesh, depthInitOptions);
 	
 	// Start simulation
 	// Simulator must be a pointer when a finalize is needed at the end (Kokkos, omp...)

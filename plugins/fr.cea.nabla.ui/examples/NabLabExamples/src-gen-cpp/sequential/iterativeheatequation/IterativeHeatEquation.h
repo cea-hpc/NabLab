@@ -86,10 +86,10 @@ private:
 	int lastDump;
 	int n;
 	int k;
-	static constexpr double u0 = 1.0;
-	static constexpr RealArray1D<2> vectOne = {1.0, 1.0};
 	double stopTime;
 	int maxIterations;
+	static constexpr double u0 = 1.0;
+	static constexpr RealArray1D<2> vectOne = {1.0, 1.0};
 	static constexpr int maxIterationsK = 1000;
 	static constexpr double epsilon = 1.0E-8;
 	double deltat;

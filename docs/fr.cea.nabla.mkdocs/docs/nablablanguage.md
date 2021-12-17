@@ -15,7 +15,7 @@ A `module` represents a NabLab program and its definition strictly follows the f
 - Imports
 - Reductions
 - Functions
-- Variables and options
+- Variables
 - Time iterators
 - Jobs
 
@@ -183,15 +183,13 @@ Multiple variables can be declared in the same instruction into a comma separate
 ```
 
 A variable initialized with a default value is preceded by the `let` keyword. It is not possible to assign several variables in one definition.
-A user option is preceded by the `option` keyword. The option can be set in a [Json](https://www.json.org) data file. If the option has a default value it becomes optional in the data file otherwise the execution will produce an error if the option has no default value and is not found in the data file.
+A variable with no default value and not set in the module is considered as a user's option: its value has to be set by the final user in a [Json](https://www.json.org) data file.
 
 ```
 let ℝ γ = 3.0;                      // real scalar
 let ℝ[2] N = [0.0, 1.0];            // 1 dimension real array
 let ℝ[2, 2] N = [ [0.0, 1.0], N ];  // 2 dimensions real array
 let ℕ[2,2] I = [ [1, 0], [0, 1] ];  // 2 dimensions int array
-option ℕ maxIter = 200;             // optional integer user option
-option ℝ maxTime;                   // mandatory real user option
 ```
 
 ## Time iterators
@@ -257,7 +255,7 @@ An instruction ends with the `;` character except blocks surrounded by curly bra
 
 ### Local variables and set definitions
 
-Local variables can be defined with the same syntax than global ones but local definitions include neither variables with supports nor user options.
+Local variables can be defined with the same syntax than global ones but local definitions include no variables with supports.
 
 Set of items can be defined locally by calling a connectivity, like this:
 ```

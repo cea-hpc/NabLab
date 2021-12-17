@@ -45,11 +45,15 @@ Commons-Math3 (3.6.1)
   * Project: https://commons.apache.org/proper/commons-math/
   * Source: https://github.com/apache/commons-math
 
-# Installing Eclipse for NabLab contributors
+# Guidelines for NabLab contributors
+
+## Installing Eclipse
 
 - Download and install [Eclipse 2021-09](https://www.eclipse.org/downloads/packages/release/2021-09/r/eclipse-ide-java-and-dsl-developers)
 - Install Zest: Help>Install New Software..., Work with http://download.eclipse.org/releases/2021-09, select Modeling>Zest SDK and install
 - Install Sirius via the MarketPlace: Help>Eclipse Marketplace... and Find Sirius 6.5.1. Do not forget to select *Sirius Integration With Xtext* and *Sirius ELK Integration*. In case of message, choose proceed anyway
+- Install Hamcrest 2.2.0 and AssertJ fluent assertions 3.20.2 : Help>Install New Software..., Work with  https://download.eclipse.org/tools/orbit/downloads/drops/R20210825222808/repository
+NotaBene : update sites to install all the necessary librairies for NabLab contributors can be found in nablab.tpd.
 
 Then clone NabLab from GitHub and import existing projects located in plugins, tests, releng and docs directories.
 
@@ -63,6 +67,15 @@ To first build NabLab from source
 - open fr.cea.nabla.ir/model/Ir.genmodel and Generate Model Code by right click on NablaIR
 - right click on fr.cea.nabla/src/fr.cea.nabla/GenerateNabla.mwe2 and choose Run As > MWE2 Workflow
 
+## Commit messages rules
+
+The title of the message can contain one of our standard keywords such as cleanup, doc, fix, releng, test, perf or dev in the following fashion:
+[doc] Title or even [cleanup] title.
+
+Those keywords should only be used in very specific situations, most of the time the title of a commit message should have a reference to a bug. On top of that the full bug URL should be available later in the commit message. [XXX] Title.
+
+The commit must always be signed-off.
+  
 # Licence and copyright
 
 This program and the accompanying materials are made available under the terms of the [Eclipse Public License v. 2.0](https://www.eclipse.org/legal/epl-v20.html). SPDX-License-Identifier: EPL-2.0. Please refer to the license for details.

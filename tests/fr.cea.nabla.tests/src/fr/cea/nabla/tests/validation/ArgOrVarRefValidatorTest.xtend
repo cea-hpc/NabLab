@@ -160,7 +160,7 @@ class ArgOrVarRefValidatorTest
 		val moduleKo2 = parseHelper.parse(
 			'''
 			«testModule»
-			option ℝ u;
+			let ℝ u = 3.4;
 			ℝ v;
 			iterate n while(true);
 			ComputeU: u^{n+1} = u^{n} + 6.0;

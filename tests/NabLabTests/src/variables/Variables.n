@@ -19,16 +19,12 @@ let ℝ δt = 1.0;
 let ℝ t = 0.0;
 ℝ[2] X{nodes};
 
-// options with default values
-option ℕ optDim = 2;
-option ℝ[2] optVect1 = [1.0, 1.0];
-option ℝ[2] optVect2 = [1.0, 1.0]; // value overwritten in Json
-let ℝ[2] optVect3 = optVect1 + optVect2; 
+// options
+ℕ optDim;
+ℝ[2] optVect1;
+ℝ[2] optVect2;
+let ℝ[2] optVect3 = optVect1 + optVect2;
 
-
-// options with no default values
-option ℕ mandatoryOptDim;
-option ℕ[2] mandatoryOptVect;
 
 // const expr var
 let ℕ constexprDim = 2;
@@ -61,10 +57,6 @@ Oracle:
 	let ℾ testOptVect1 = assertEquals([1.0, 1.0], optVect1);
 	let ℾ testOptVect2 = assertEquals([2.0, 2.0], optVect2);
 	let ℾ testOptVect3 = assertEquals([3.0, 3.0], optVect3);
-
-	// options with no default values
-	let ℾ testMandatoryOptDim = assertEquals(3, mandatoryOptDim);
-	let ℾ testMandatoryOptVect = assertEquals([3, 3], mandatoryOptVect);
 
 	// const expr var
 	let ℾ testConstexprDim = assertEquals(2, constexprDim);

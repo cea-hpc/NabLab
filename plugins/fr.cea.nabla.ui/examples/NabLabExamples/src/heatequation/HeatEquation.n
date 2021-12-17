@@ -13,12 +13,12 @@ with Math.*;
 with CartesianMesh2D.*;
 
 // Simulation options
-option ℝ stopTime = 0.1;
-option ℕ maxIterations = 500;
+ℝ stopTime;
+ℕ maxIterations;
 
 // User options
-option ℝ PI = 3.1415926;
-option ℝ α = 1.0;
+let ℝ PI = 3.1415926;
+let ℝ α = 1.0;
 
 let ℝ δt = 0.001;
 ℝ t;

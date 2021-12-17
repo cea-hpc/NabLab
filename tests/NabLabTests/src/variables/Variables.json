@@ -2,6 +2,8 @@
 	"_comment": "GENERATED FILE - DO NOT OVERWRITE",
 	"variables":
 	{
+		"optDim":2,
+		"optVect1":[1.0, 1.0],
 		"optVect2":[2.0,2.0],
 		"mandatoryOptDim":3,
 		"mandatoryOptVect":[3,3],

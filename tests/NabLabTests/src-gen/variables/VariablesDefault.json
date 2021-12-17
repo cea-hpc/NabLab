@@ -2,8 +2,9 @@
 	"_comment": "GENERATED FILE - DO NOT OVERWRITE",
 	"variables":
 	{
-		"mandatoryOptDim":3,
-		"mandatoryOptVect":[3,3]
+		"optDim":3,
+		"optVect1":[3.0,3.0],
+		"optVect2":[3.0,3.0]
 	},
 	"mesh":
 	{

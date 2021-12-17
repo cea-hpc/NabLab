@@ -94,7 +94,7 @@ class GitCommitMessageTest
 	 * </p>
 	 * <code>
 	 * <pre>
-	 * [XXX] Title
+	 * [xxx] Title
 	 * </pre>
 	 * </code>
 	 */

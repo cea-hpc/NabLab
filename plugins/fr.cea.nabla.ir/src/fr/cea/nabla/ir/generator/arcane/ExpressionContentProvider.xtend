@@ -131,7 +131,7 @@ class ExpressionContentProvider
 		else
 		{
 			if (target.global && target.type.dimension == 0 && eContainingFeature !== IrPackage.Literals.AFFECTATION__LEFT)
-				'''«codeName»()''' // get the value of a VariableScalarXXX
+				'''«codeName»()''' // get the value of a VariableScalar...
 			else if (target.linearAlgebra && !(iterators.empty && indices.empty))
 				'''«codeName».getValue(«formatIteratorsAndIndices(target.type, iterators, indices)»)'''
 			else

@@ -73,7 +73,7 @@ Just click on the *Finish* button to import the examples project that becomes av
 
 To launch code generation corresponding to the NabLab module, just right-click on the ngen file of the project of your choice, for example *NabLabExamples/src/explicitheatequation/ExplicitHeatEquation.ngen* and select *Generate Code*
 
-<img src="img/NabLab_generate_code.png" alt="NabLab Generate Code" title="NabLab Generate Code" width="50%" height="50%" />
+<img src="img/NabLab_generate_code.png" alt="NabLab Generate Code" title="NabLab Generate Code" width="40%" height="40%" />
 
 Java and C++ source code files are generated in *src-gen-java* and *src-gen-cpp* folders respectively. For each C++ folder a *CMakeLists.txt* file is generated.
 A LaTeX file containing the content of the jobs and an example of json data file are also generated in the *src-gen* folder.  

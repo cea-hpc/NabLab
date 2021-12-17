@@ -94,7 +94,7 @@ class NablagenExtensionHelper
 
 				if (provider.extension.name == extensionName && (provider.target == type || provider.compatibleTargets.contains(type)))
 				{
-					dispatcher.post(MessageType::Warning, '    Default provider found for extension ' + extensionName + ': ' + provider.name)
+					dispatcher.post(MessageType::Exec, '    Default provider found for extension ' + extensionName + ': ' + provider.name)
 					return provider
 				}
 			}

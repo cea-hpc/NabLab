@@ -16,10 +16,8 @@ with CartesianMesh2D.*;
 ℝ stopTime;
 ℕ maxIterations;
 
-// User options
 let ℝ PI = 3.1415926;
 let ℝ α = 1.0;
-
 let ℝ δt = 0.001;
 ℝ t;
 ℝ[2] X{nodes}, center{cells};

@@ -27,8 +27,8 @@ public final class HeatEquation
 	int n;
 	double stopTime;
 	int maxIterations;
-	double PI;
-	double alpha;
+	static final double PI = 3.1415926;
+	static final double alpha = 1.0;
 	static final double deltat = 0.001;
 	double t_n;
 	double t_nplus1;
@@ -67,38 +67,15 @@ public final class HeatEquation
 		assert(valueof_outputPeriod.isJsonPrimitive());
 		outputPeriod = valueof_outputPeriod.getAsJsonPrimitive().getAsInt();
 		lastDump = Integer.MIN_VALUE;
-		if (options.has("stopTime"))
-		{
-			final JsonElement valueof_stopTime = options.get("stopTime");
-			assert(valueof_stopTime.isJsonPrimitive());
-			stopTime = valueof_stopTime.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			stopTime = 0.1;
-		if (options.has("maxIterations"))
-		{
-			final JsonElement valueof_maxIterations = options.get("maxIterations");
-			assert(valueof_maxIterations.isJsonPrimitive());
-			maxIterations = valueof_maxIterations.getAsJsonPrimitive().getAsInt();
-		}
-		else
-			maxIterations = 500;
-		if (options.has("PI"))
-		{
-			final JsonElement valueof_PI = options.get("PI");
-			assert(valueof_PI.isJsonPrimitive());
-			PI = valueof_PI.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			PI = 3.1415926;
-		if (options.has("alpha"))
-		{
-			final JsonElement valueof_alpha = options.get("alpha");
-			assert(valueof_alpha.isJsonPrimitive());
-			alpha = valueof_alpha.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			alpha = 1.0;
+		n = 0;
+		assert(options.has("stopTime"));
+		final JsonElement valueof_stopTime = options.get("stopTime");
+		assert(valueof_stopTime.isJsonPrimitive());
+		stopTime = valueof_stopTime.getAsJsonPrimitive().getAsDouble();
+		assert(options.has("maxIterations"));
+		final JsonElement valueof_maxIterations = options.get("maxIterations");
+		assert(valueof_maxIterations.isJsonPrimitive());
+		maxIterations = valueof_maxIterations.getAsJsonPrimitive().getAsInt();
 		X = new double[nbNodes][2];
 		center = new double[nbCells][2];
 		u_n = new double[nbCells];

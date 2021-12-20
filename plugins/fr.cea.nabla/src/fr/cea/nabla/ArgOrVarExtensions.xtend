@@ -14,10 +14,10 @@ import fr.cea.nabla.nabla.Arg
 import fr.cea.nabla.nabla.ArgOrVar
 import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.ConnectivityVar
+import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaRoot
-import fr.cea.nabla.nabla.OptionDeclaration
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.SimpleVarDeclaration
@@ -76,25 +76,34 @@ class ArgOrVarExtensions
 			false
 	}
 
-	def isGlobal(Var it) 
+	def boolean isGlobal(Var it) 
 	{
 		(eContainer !== null && eContainer.eContainer !== null && eContainer.eContainer instanceof NablaModule)
 	}
 
-	def boolean isOption(ArgOrVar it) 
+	/**
+	 * An option is a global variable which value is given by a user data file.
+	 * => variable with no default value and with no affectation
+	 */
+	def boolean isOption(ArgOrVar it)
 	{
-		(eContainer !== null && eContainer instanceof OptionDeclaration)
+		if (it instanceof SimpleVar && (it as SimpleVar).isGlobal && (it as SimpleVar).value === null)
+		{
+			val root = EcoreUtil2::getContainerOfType(it, NablaRoot)
+			root.eAllContents.filter(Affectation).forall[x | x.left.target !== it]
+		}
+		else
+			false
 	}
 
-	def getValue(Var it)
+	def Expression getValue(Var it)
 	{
 		val decl = eContainer
-		if (decl === null) null
-		else switch decl
-		{
-			SimpleVarDeclaration : decl.value
-			OptionDeclaration : decl.value
-			default : null
-		}
+		if (decl === null) 
+			null
+		else if (decl instanceof SimpleVarDeclaration)
+			decl.value
+		else
+			null
 	}
 }

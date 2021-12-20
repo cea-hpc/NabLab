@@ -16,7 +16,6 @@ import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.FunctionOrReduction
 import fr.cea.nabla.nabla.NablaModule
-import fr.cea.nabla.nabla.OptionDeclaration
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.SimpleVarDeclaration
@@ -83,7 +82,6 @@ class IrModuleFactory
 		for (d : nablaModule.declarations)
 			switch d
 			{
-				OptionDeclaration: variables += d.variable.toIrOption
 				SimpleVarDeclaration: variables += createIrVariables(d.variable, tlJobs)
 				VarGroupDeclaration:
 					for (v : d.variables)

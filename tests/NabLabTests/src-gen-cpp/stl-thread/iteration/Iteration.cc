@@ -55,6 +55,9 @@ Iteration::jsonInit(const char* jsonContent)
 	assert(document.IsObject());
 	const rapidjson::Value::Object& options = document.GetObject();
 
+	n = 0;
+	k = 0;
+	l = 0;
 
 	// Copy node coordinates
 	const auto& gNodes = mesh.getGeometry()->getNodes();

@@ -239,8 +239,8 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 
 		with CartesianMesh2D.*;
 
-		option ℕ maxIter = 200;
-		option ℝ maxTime = 1.0;
+		let ℕ maxIter = 200;
+		let ℝ maxTime = 1.0;
 
 		ℝ t, δt;
 		ℝ[2] X{nodes};

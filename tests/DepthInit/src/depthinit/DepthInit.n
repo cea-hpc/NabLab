@@ -15,10 +15,8 @@ with CartesianMesh2D.*;
 def two: → ℝ, () → return 2.0;
 
 let ℝ t = 0.0;
-
-option ℝ maxTime = 0.1;
-option ℕ maxIter = 500;
-option ℝ δt = 1.0;
+ℕ maxIter;
+ℝ maxTime, δt;
 
 ℝ[2] X{nodes};
 ℝ η{cells};

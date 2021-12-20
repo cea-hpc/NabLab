@@ -51,10 +51,9 @@ Connectivity: 'connectivity' name=ID ':' (inTypes+=[ItemType|QualifiedName] ('\u
 /* JOBS & INSTRUCTIONS ***********************************/
 Job: name=ID ':' instruction=Instruction;
 Iterable: Loop | ReductionCall;
-VarDeclaration: OptionDeclaration | SimpleVarDeclaration | VarGroupDeclaration;
-Instruction: SimpleVarDeclaration | VarGroupDeclaration | InstructionBlock | Loop | Affectation | If | ItemSet | While | Return | Exit;
+VarDeclaration: SimpleVarDeclaration | VarGroupDeclaration;
+Instruction: VarDeclaration | InstructionBlock | Loop | Affectation | If | ItemSet | While | Return | Exit;
 
-OptionDeclaration: 'option' type=BaseType variable=SimpleVar ('=' value=Expression)? ';';
 SimpleVarDeclaration: 'let' type=BaseType variable=SimpleVar '=' value=Expression ';';
 VarGroupDeclaration: type=BaseType variables+=Var (',' variables+=Var)* ';';
 InstructionBlock: '{' instructions+=Instruction+ '}';

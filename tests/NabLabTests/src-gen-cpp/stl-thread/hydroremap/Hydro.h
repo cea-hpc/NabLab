@@ -67,8 +67,8 @@ private:
 	R2* r2;
 
 	// Options and global variables
-	double maxTime;
 	int maxIter;
+	double maxTime;
 	double deltat;
 	static constexpr double t = 0.0;
 	std::vector<RealArray1D<2>> X;

@@ -85,10 +85,10 @@ private:
 	int outputPeriod;
 	int lastDump;
 	int n;
-	double u0;
-	static constexpr RealArray1D<2> vectOne = {1.0, 1.0};
 	double stopTime;
 	int maxIterations;
+	static constexpr double u0 = 1.0;
+	static constexpr RealArray1D<2> vectOne = {1.0, 1.0};
 	double deltat;
 	double t_n;
 	double t_nplus1;

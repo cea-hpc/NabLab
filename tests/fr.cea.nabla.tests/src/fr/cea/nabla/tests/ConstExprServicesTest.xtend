@@ -12,6 +12,7 @@ package fr.cea.nabla.tests
 import com.google.inject.Inject
 import com.google.inject.Provider
 import fr.cea.nabla.ConstExprServices
+import fr.cea.nabla.NablaModuleExtensions
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.typing.ArgOrVarTypeProvider
 import fr.cea.nabla.typing.BaseTypeTypeProvider
@@ -25,8 +26,6 @@ import org.eclipse.xtext.testing.util.ParseHelper
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
-import fr.cea.nabla.nabla.OptionDeclaration
-import fr.cea.nabla.NablaModuleExtensions
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
@@ -47,7 +46,7 @@ class ConstExprServicesTest
 		'''
 		«testModule»
 		let ℕ dim = 2;
-		option ℕ unknownDim;
+		ℕ unknownDim;
 		ℝ[2] X{nodes};
 		ℝ[1 + 1, unknownDim] Y;
 		// let ℝ[dim] orig = [0.0, 1.1];
@@ -60,7 +59,7 @@ class ConstExprServicesTest
 
 		// Get the variables
 		val dim = module.getVarByName("dim")
-		val unknownDim = module.declarations.filter(OptionDeclaration).head.variable
+		val unknownDim = module.getVarByName("unknownDim")
 		val X = module.getVarByName("X")
 		val X_type = X.typeFor
 		val Y = module.getVarByName("Y")

@@ -77,8 +77,8 @@ private:
 	int n;
 	double stopTime;
 	int maxIterations;
-	double PI;
-	double alpha;
+	static constexpr double PI = 3.1415926;
+	static constexpr double alpha = 1.0;
 	static constexpr double deltat = 0.001;
 	double t_n;
 	double t_nplus1;

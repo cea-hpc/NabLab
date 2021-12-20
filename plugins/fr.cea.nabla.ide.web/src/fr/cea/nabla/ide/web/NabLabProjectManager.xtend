@@ -19,6 +19,7 @@ import org.eclipse.emf.common.util.URI
 import org.eclipse.xtext.ide.server.ProjectManager
 import org.eclipse.xtext.util.CancelIndicator
 import java.util.List
+import org.eclipse.xtext.workspace.ISourceFolder
 
 class NabLabProjectManager extends ProjectManager
 {
@@ -33,6 +34,10 @@ class NabLabProjectManager extends ProjectManager
 		val uris = newArrayList
 		val classPath = System.getProperty("java.class.path", ".")
 		val classPathElements = classPath.split(System.getProperty("path.separator"))
+		
+		for (ISourceFolder srcFolder : projectConfig.getSourceFolders()) {
+			uris.addAll(srcFolder.getAllResources(fileSystemScanner));
+		}
 
 		for (element : classPathElements)
 		{

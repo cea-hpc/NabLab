@@ -20,7 +20,7 @@ export function activate(context: ExtensionContext) {
     let serverOptions : ServerOptions;
     // Dev mode. In this mode the server is expected to be launched already
     // The communication is done using socket
-    if(process.env.nablaLaunchingMode == 'socket'){
+    if (process.env.nablaLaunchingMode == 'socket') {
 
         let connectionInfo = {
             port: 5008
@@ -35,7 +35,7 @@ export function activate(context: ExtensionContext) {
             };
             return Promise.resolve(result);
         };
-    }else {
+    } else {
          // The server is a locally installed in src/mydsl
         let launcher = os.platform() === 'win32' ? 'nabla-ls.bat' : 'nabla-ls';
         let script = context.asAbsolutePath(path.join('src', 'nabla', 'bin', launcher));
@@ -47,7 +47,7 @@ export function activate(context: ExtensionContext) {
         };
     }
     let clientOptions: LanguageClientOptions = {
-        documentSelector: ['nabla','nablegen'],
+        documentSelector: ['nabla','nablagen'],
         synchronize: {
             fileEvents: workspace.createFileSystemWatcher('**/*.*')
         }

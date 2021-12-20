@@ -14,14 +14,14 @@ import fr.cea.nabla.ArgOrVarExtensions
 import fr.cea.nabla.SpaceIteratorExtensions
 import fr.cea.nabla.nabla.ArgOrVarRef
 import fr.cea.nabla.nabla.ConnectivityVar
-import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
+import fr.cea.nabla.nabla.NablaRoot
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
+import fr.cea.nabla.typing.ExpressionTypeProvider
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.validation.Check
 import org.eclipse.xtext.validation.CheckType
-import fr.cea.nabla.typing.ExpressionTypeProvider
 
 class ArgOrVarRefValidator extends InstructionValidator
 {
@@ -86,10 +86,13 @@ class ArgOrVarRefValidator extends InstructionValidator
 	{
 		if (target !== null && timeIterators.empty)
 		{
-			val module = EcoreUtil2::getContainerOfType(it, NablaModule)
-			val argOrVarRefs = EcoreUtil2.getAllContentsOfType(module, ArgOrVarRef)
-			if (argOrVarRefs.exists[x | !x.timeIterators.empty && x.target === target])
-				error(getRequiredTimeIteratorMsg(), NablaPackage.Literals::ARG_OR_VAR_REF__TIME_ITERATORS, REQUIRED_TIME_ITERATOR)
+			val module = EcoreUtil2::getContainerOfType(it, NablaRoot)
+			if(module !== null)
+			{
+				val argOrVarRefs = EcoreUtil2.getAllContentsOfType(module, ArgOrVarRef)
+				if (argOrVarRefs.exists[x | !x.timeIterators.empty && x.target === target])
+					error(getRequiredTimeIteratorMsg(), NablaPackage.Literals::ARG_OR_VAR_REF__TIME_ITERATORS, REQUIRED_TIME_ITERATOR)
+			}
 		}
 	}
 

@@ -1,0 +1,51 @@
+{
+    "name": "nablagen",
+    "scopeName": "text.ngen",
+    "fileTypes": [
+        "ngen"
+    ],
+    "repository": {
+        "general": {
+            "patterns": [
+                {
+                    "include": "#linecomment"
+                },
+                {
+                    "include": "#blockcomment"
+                },
+                {
+                    "include": "#keyword"
+                },
+                {
+                    "include": "#strings"
+                }
+            ]
+        },
+        "linecomment": {
+            "name": "comment.line.double-dash.nablagen",
+            "begin": "(^[ \\t]+)?(?=//)",
+            "end": "(?=$)"
+        },
+        "blockcomment": {
+            "name": "comment.block.nablagen",
+            "begin": "/\\*(\\*)?(?!/)",
+            "end": "\\*/"
+        },
+        "keyword": {
+            "name": "keyword.control.nablagen",
+            "match": "\\b(Provider|target|compatibleTargets|outputPath|Application|MainModule|nodeCoord|time|timeStep|iterationMax|timeMax|AdditionalModule|VtkOutput|periodReferenceVariable|outputVariables|LevelDB|Interpreter|extension|providedBy|Java|CppSequential|StlThread|OpenMP|Kokkos|KokkosTeamThread|Arcane)\\b|\u2115|\u211D|\u213E|\u2200|\u2208|\u2192"
+
+        },
+        "strings": {
+            "name": "string.quoted.double.nabla",
+            "begin": "\"",
+            "end": "\""
+        }
+    },
+    "patterns": [
+        {
+            "include": "#general"
+        }
+    ],
+    "uuid": "5f86f92c-ee1d-41de-b532-a427f8251909"
+}

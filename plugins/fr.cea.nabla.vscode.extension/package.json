@@ -16,10 +16,11 @@
         "Other"
     ],
     "keywords": [
-        "nabla"
+        "nabla","nablagen"
     ],
     "activationEvents": [
         "onLanguage:nabla",
+        "onLanguage:nablagen",
         "onCommand:nablabweb.showLatexView"
     ],
     "main": "out/extension.js",
@@ -34,6 +35,15 @@
                     ".n"
                 ],
                 "configuration": "./nabla.configuration.json"
+            }, {
+                "id": "nablagen",
+                "aliases": [
+                    "nablagen"
+                ],
+                "extensions": [
+                    ".ngen"
+                ],
+                "configuration": "./nablagen.configuration.json"
             }
         ],
         "grammars": [
@@ -41,6 +51,11 @@
                 "language": "nabla",
                 "scopeName": "text.n",
                 "path": "./syntaxes/nabla.tmLanguage.json"
+            },
+            {
+                "language": "nablagen",
+                "scopeName": "text.ngen",
+                "path": "./syntaxes/nablagen.tmLanguage.json"
             }
         ],
         "commands": [

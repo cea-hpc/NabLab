@@ -34,12 +34,12 @@ class NablaEObjectHoverProvider extends DefaultEObjectHoverProvider
 
 	override String getFirstLine(EObject o)
 	{
-		if(resolvedContainedObject === null)
+		if (resolvedContainedObject === null)
 			super.getFirstLine(o)
 		else
 		{
 			val displayableObject = resolvedContainedObject.firstDisplayableObject
-			if(displayableObject === null || displayableObject.eIsProxy)
+			if (displayableObject === null || displayableObject.eIsProxy)
 				super.getFirstLine(o)
 			else
 				displayableObject.buildLabel
@@ -48,12 +48,12 @@ class NablaEObjectHoverProvider extends DefaultEObjectHoverProvider
 
 	override XtextBrowserInformationControlInput getHoverInfo(EObject object, IRegion region, XtextBrowserInformationControlInput prev)
 	{
-		if(resolvedContainedObject === null)
+		if (resolvedContainedObject === null)
 			super.getHoverInfo(object, region, prev)
 		else
 		{
 			val displayableObject = resolvedContainedObject.firstDisplayableObject
-			if(displayableObject === null || displayableObject.eIsProxy)
+			if (displayableObject === null || displayableObject.eIsProxy)
 				super.getHoverInfo(object, region, prev)
 			else
 			{
@@ -67,10 +67,10 @@ class NablaEObjectHoverProvider extends DefaultEObjectHoverProvider
 
 	override IInformationControlCreatorProvider getHoverInfo(EObject object, ITextViewer viewer, IRegion region)
 	{
-		if(viewer instanceof XtextSourceViewer)
+		if (viewer instanceof XtextSourceViewer)
 		{
 			val document = viewer.document
-			if(document instanceof IXtextDocument)
+			if (document instanceof IXtextDocument)
 				resolvedContainedObject = document.readOnly([ state |
 					eObjectAtOffsetHelper.resolveContainedElementAt(state, region.offset)
 				])

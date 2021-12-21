@@ -34,27 +34,23 @@ class NabLabProjectManager extends ProjectManager
 		val uris = newArrayList
 		val classPath = System.getProperty("java.class.path", ".")
 		val classPathElements = classPath.split(System.getProperty("path.separator"))
-		
-		for (ISourceFolder srcFolder : projectConfig.getSourceFolders()) {
-			uris.addAll(srcFolder.getAllResources(fileSystemScanner));
-		}
 
 		for (element : classPathElements)
 		{
 			val path = Path.of(element);
 			val file = path.toFile;
-			if(file.directory && path.nameCount >=2)
+			if (file.directory && path.nameCount >=2)
 			{
 				// Case for used for dev profile. The jar is not built instead we need to look for ".n" files inside the folder "fr.cea.nabla"
-				val subPath = path.subpath(path.nameCount - 2, path.nameCount);
-				if(isNablaBinFolder(subPath))
+				val subPath = path.subpath(path.nameCount - 2, path.nameCount)
+				if (isNablaBinFolder(subPath))
 				{
 					uris += path.collectNablaLibUris()
 				}
 			}
-			else if(file.isFile)
+			else if (file.isFile)
 			{
-				if(element !== null && frCeaNablaPluginPattern.matcher(element).matches())
+				if (element !== null && frCeaNablaPluginPattern.matcher(element).matches())
 				{
 					try
 					{
@@ -64,21 +60,25 @@ class NabLabProjectManager extends ProjectManager
 						{
 							val jarEntry = jarEntries.nextElement()
 							val jarEntryName = jarEntry.name
-							if(jarEntryName !== null && jarEntryName.endsWith(NABLA_EXT))
+							if (jarEntryName !== null && jarEntryName.endsWith(NABLA_EXT))
 							{
 								val resource = class.classLoader.getResource(jarEntryName)
 								uris += URI.createURI(resource.toString())
 							}
 						}
-						jar.close();
+						jar.close()
 					}
-					catch(IOException e)
+					catch (IOException e)
 					{
 					}
 				}
 			}
-
 		}
+
+		for (ISourceFolder srcFolder : projectConfig.sourceFolders) {
+			uris.addAll(srcFolder.getAllResources(fileSystemScanner))
+		}
+
 		return doBuild(uris, emptyList, emptyList, cancelIndicator)
 	}
 	

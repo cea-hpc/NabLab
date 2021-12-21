@@ -22,20 +22,19 @@ import org.eclipse.xtext.resource.EObjectAtOffsetHelper
 
 import static org.eclipse.xtext.util.Strings.isEmpty
 
-import static extension org.apache.commons.lang3.StringEscapeUtils.escapeHtml4
+import static extension org.apache.commons.lang.StringEscapeUtils.escapeHtml
 
 class NablaIdeHoverService extends HoverService
 {
-	@Inject
-	IQualifiedNameProvider nameProvider;
+	@Inject IQualifiedNameProvider nameProvider;
 	@Inject extension HoverHelper
 	@Inject extension IEObjectDocumentationProvider
 	@Inject INameLabelProvider nameLabelProvider
-	@Inject EObjectAtOffsetHelper eObjectAtOffsetHelper;
+	@Inject EObjectAtOffsetHelper eObjectAtOffsetHelper
 
 	override MarkupContent getMarkupContent(HoverContext ctx)
 	{
-		return toMarkupContent(getKind(ctx), getContents(ctx));
+		return toMarkupContent(getKind(ctx), getContents(ctx))
 	}
 
 	def String getContents(HoverContext context)
@@ -44,36 +43,36 @@ class NablaIdeHoverService extends HoverService
 		// * fr.cea.nabla.ui.hovers.NablaEObjectHoverProvider.getHoverInfo(EObject, ITextViewer, IRegion)
 		// * fr.cea.nabla.ui.hovers.NablaEObjectHoverProvider.getHoverInfo(EObject, IRegion, XtextBrowserInformationControlInput)
 		// * fr.cea.nabla.ui.hovers.NablaEObjectHoverProvider.getFirstLine(EObject)
-		val EObject resolvedContainedObject = eObjectAtOffsetHelper.resolveContainedElementAt(context.resource,
-			context.offset);
+		val EObject resolvedContainedObject = eObjectAtOffsetHelper.resolveContainedElementAt(context.resource, context.offset)
 		if(resolvedContainedObject !== null && !resolvedContainedObject.eIsProxy)
 		{
-			val element = resolvedContainedObject.firstDisplayableObject;
+			val element = resolvedContainedObject.firstDisplayableObject
 			if(element !== null && !element.eIsProxy)
 			{
 				val documentation = element.documentation
-				var content = getFirstLine(element);
+				var content = getFirstLine(element)
 				if(documentation !== null)
 				{
-					content += "  \n" + documentation;
+					content += "  \n" + documentation
 				}
-				return content;
+				return content
 			}
 
 		}
-		val element = context.element;
+		val element = context.element
 		
 		// Port from org.eclipse.xtext.ui.editor.hover.html.DefaultEObjectHoverProvider.getHoverInfoAsHtml(EObject)
-		if(hasHover(element)){
+		if (hasHover(element))
+		{
 			return element.defaultFirstLine
 		}
 		
-		return "";
+		return ""
 	}
 
 	private def boolean hasHover(EObject o)
 	{
-		return o !== null && nameProvider.getFullyQualifiedName(o) !== null;
+		return o !== null && nameProvider.getFullyQualifiedName(o) !== null
 	}
 
 	private def String getFirstLine(EObject o)
@@ -84,19 +83,19 @@ class NablaIdeHoverService extends HoverService
 	private def String getDefaultFirstLine(EObject o)
 	{
 		val label = o.label;
-		return o.eClass().getName() + ((label !== null) ? " <b>" + label + "</b>" : "");
+		return o.eClass().getName() + ((label !== null) ? " <b>" + label + "</b>" : "")
 	}
 
 	private def String getLabel(EObject o)
 	{
-		val String text = nameLabelProvider.getNameLabel(o);
+		val String text = nameLabelProvider.getNameLabel(o)
 		if(!isEmpty(text))
 		{
-			return text.escapeHtml4;
+			return text.escapeHtml
 		}
 		else
 		{
-			return null;
+			return null
 		}
 	}
 

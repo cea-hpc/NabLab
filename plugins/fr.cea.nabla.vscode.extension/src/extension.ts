@@ -14,6 +14,7 @@ import {Trace} from 'vscode-jsonrpc';
 import { commands, window, workspace, ExtensionContext, Uri} from 'vscode';
 import { LanguageClient,StreamInfo, LanguageClientOptions, ServerOptions } from 'vscode-languageclient';
 import LatexWebViewLoader from './view/LatexWebViewLoader';
+import JobsGraphWebViewLoader from './view/JobsGraphWebViewLoader';
 
 export function activate(context: ExtensionContext) {
 
@@ -67,6 +68,11 @@ export function activate(context: ExtensionContext) {
         LatexWebViewLoader.createOrShow(context.extensionPath);
     });
 	context.subscriptions.push(disposableLatexPanel);
+
+    const disposableJobsGraphPanel = commands.registerCommand('nablabweb.showJobsGraphView', () => {
+        JobsGraphWebViewLoader.createOrShow(context.extensionPath);
+    });
+	context.subscriptions.push(disposableJobsGraphPanel);
 
     window.onDidChangeTextEditorSelection((e) => {
         if (e?.textEditor?.document?.languageId === 'nabla') {

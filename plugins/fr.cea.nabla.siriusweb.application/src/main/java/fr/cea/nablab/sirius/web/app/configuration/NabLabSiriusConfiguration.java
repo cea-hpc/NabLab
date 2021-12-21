@@ -24,7 +24,7 @@ public class NabLabSiriusConfiguration implements ISiriusConfiguration {
 
     @Override
     public List<String> getODesignPaths() {
-        return List.of("desc/i1.odesign"); //$NON-NLS-1$
+        return List.of("description/i1.odesign"); //$NON-NLS-1$
     }
 
 }

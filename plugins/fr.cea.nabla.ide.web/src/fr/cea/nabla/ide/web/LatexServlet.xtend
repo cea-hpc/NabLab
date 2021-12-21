@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse
 import org.eclipse.emf.common.util.URI
 import org.eclipse.xtext.resource.EObjectAtOffsetHelper
 import org.eclipse.xtext.resource.XtextResource
+import org.eclipse.emf.ecore.EObject
 
 class LatexServlet extends HttpServlet
 {
@@ -44,52 +45,42 @@ class LatexServlet extends HttpServlet
 	override protected void doPost(HttpServletRequest request,
 		HttpServletResponse response) throws ServletException, IOException
 	{
-		val requestBody = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()))
+		val requestBody = request.reader.lines().collect(Collectors.joining(System.lineSeparator()))
 		val gson = new GsonBuilder().create()
 		val latexObject = gson.fromJson(requestBody, LatexHttpObject)
-		val projectManager = languageServer.getWorkspaceManager().getProjectManager(
-			latexObject.getProjectName())
-		if (projectManager !== null)
+		if (latexObject !== null)
 		{
-			val uri = URI.createURI(latexObject.getNablaModelPath())
-			val resource = projectManager.getResource(uri)
-			if (resource instanceof XtextResource)
+			val uri = URI.createURI(latexObject.nablaModelPath)
+			val displayableObject = languageServer.workspaceManager.<EObject>doRead(uri, 
+				[document, resource | getObjectAtPosition(resource, latexObject.offset)])
+			if (displayableObject !== null)
 			{
-				val selectedObject = this.eObjectAtOffsetHelper.resolveContainedElementAt(
-					(resource as XtextResource), latexObject.getOffset())
-				if (selectedObject !== null)
+				val latexFormula = LatexLabelServices.getLatex(displayableObject)
+				val formulaColor = Color.decode(latexObject.formulaColor);
+				val bufferedImage = LatexImageServices.createPngImage(latexFormula, 30, formulaColor)
+				response.reset()
+				response.setStatus(HttpServletResponse.SC_OK)
+				response.setBufferSize(DEFAULT_BUFFER_SIZE)
+				response.setContentType("image/png")
+				response.setHeader("Access-Control-Allow-Origin", "*")
+				var BufferedInputStream input = null
+				var BufferedOutputStream output = null
+				try
 				{
-					val displayableObject = LatexLabelServices.getClosestDisplayableNablaElt(selectedObject)
-					if (displayableObject !== null)
+					var InputStream is = new ByteArrayInputStream(bufferedImage)
+					input = new BufferedInputStream(is, DEFAULT_BUFFER_SIZE)
+					output = new BufferedOutputStream(response.outputStream, DEFAULT_BUFFER_SIZE)
+					var byte[] buffer = newByteArrayOfSize(DEFAULT_BUFFER_SIZE)
+					var int length
+					while ((length = input.read(buffer)) > 0)
 					{
-						val latexFormula = LatexLabelServices.getLatex(displayableObject)
-						val formulaColor = Color.decode(latexObject.formulaColor);
-						val bufferedImage = LatexImageServices.createPngImage(latexFormula, 30, formulaColor)
-						response.reset()
-						response.setStatus(HttpServletResponse.SC_OK)
-						response.setBufferSize(DEFAULT_BUFFER_SIZE)
-						response.setContentType("image/png")
-						response.setHeader("Access-Control-Allow-Origin", "*")
-						var BufferedInputStream input = null
-						var BufferedOutputStream output = null
-						try
-						{
-							var InputStream is = new ByteArrayInputStream(bufferedImage)
-							input = new BufferedInputStream(is, DEFAULT_BUFFER_SIZE)
-							output = new BufferedOutputStream(response.getOutputStream(), DEFAULT_BUFFER_SIZE)
-							var byte[] buffer = newByteArrayOfSize(DEFAULT_BUFFER_SIZE)
-							var int length
-							while ((length = input.read(buffer)) > 0)
-							{
-								output.write(buffer, 0, length)
-							}
-						}
-						finally
-						{
-							close(output)
-							close(input)
-						}
+						output.write(buffer, 0, length)
 					}
+				}
+				finally
+				{
+					close(output)
+					close(input)
 				}
 			}
 		}
@@ -108,5 +99,15 @@ class LatexServlet extends HttpServlet
 				e.printStackTrace()
 			}
 		}
+	}
+	
+	def private EObject getObjectAtPosition(XtextResource resource, int offset)
+	{
+		val selectedObject = this.eObjectAtOffsetHelper.resolveContainedElementAt(resource, offset)
+		if (selectedObject !== null)
+		{
+			return LatexLabelServices.getClosestDisplayableNablaElt(selectedObject)
+		}
+		return null
 	}
 }

@@ -12,17 +12,15 @@ import ReactDOM from 'react-dom';
 import { Latex } from './Latex';
 
 declare global {
-    interface Window {
-      acquireVsCodeApi(): any;
-      projectName: string;
-      nablaModelPath: string;
-      offset: number;
-    }
+  interface Window {
+    acquireVsCodeApi(): any;
+    projectName: string;
+    nablaModelPath: string;
+    offset: number;
+  }
 }
 
 ReactDOM.render(
-  <Latex projectName={window.projectName}
-         nablaModelPath={window.nablaModelPath}
-         offset={window.offset}/>,
+  <Latex projectName={window.projectName} nablaModelPath={window.nablaModelPath} offset={window.offset} />,
   document.getElementById('root')
 );

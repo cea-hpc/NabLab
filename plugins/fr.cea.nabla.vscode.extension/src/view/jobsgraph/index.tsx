@@ -17,11 +17,11 @@ import './index.css';
 import { JobsGraph } from './JobsGraph';
 
 declare global {
-    interface Window {
-      acquireVsCodeApi(): any;
-      projectName: string;
-      nablaModelPath: string;
-    }
+  interface Window {
+    acquireVsCodeApi(): any;
+    projectName: string;
+    nablaModelPath: string;
+  }
 }
 
 const siriusWebServerAddress = 'http://127.0.0.1:8080';
@@ -71,7 +71,7 @@ const ApolloGraphQLClient = new ApolloClient({
   cache: new InMemoryCache({ addTypename: true }),
   defaultOptions,
 });
-//http://localhost:3000/projects/f286e76a-05e6-4e43-a85a-179d5c7d7d72/edit/0b4045e2-0995-469f-94ce-12f43dd7d7d3
+
 ReactDOM.render(
   <ServerContext.Provider value={value}>
     <ApolloProvider client={ApolloGraphQLClient}>
@@ -79,7 +79,6 @@ ReactDOM.render(
         editingContextId={'f286e76a-05e6-4e43-a85a-179d5c7d7d72'}
         representationId={'0b4045e2-0995-469f-94ce-12f43dd7d7d3'}
         representationLabel={'ExplicitHeatEquation'}
-        representationKind={'Diagram'}
       />
     </ApolloProvider>
   </ServerContext.Provider>,

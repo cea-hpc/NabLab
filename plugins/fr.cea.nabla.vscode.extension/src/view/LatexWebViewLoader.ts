@@ -17,7 +17,7 @@ export default class LatexWebViewLoader {
 
   public static createOrShow(extensionPath: string) {
     const column = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.viewColumn : undefined;
-    const webViewContext = {extensionPath, projectName: '', nablaModelPath: '', offset: 0};
+    const webViewContext = { extensionPath, projectName: '', nablaModelPath: '', offset: 0 };
     // If we already have a panel, show it.
     if (LatexWebViewLoader.openedPanel) {
       LatexWebViewLoader.openedPanel.panel.reveal(column);
@@ -38,9 +38,10 @@ export default class LatexWebViewLoader {
     if (!LatexWebViewLoader.openedPanel) {
       return;
     }
-    LatexWebViewLoader.openedPanel.panel.webview.html = LatexWebViewLoader.getWebviewContent(LatexWebViewLoader.openedPanel.panel.webview, 
-      {extensionPath, projectName, nablaModelPath, offset});
-
+    LatexWebViewLoader.openedPanel.panel.webview.html = LatexWebViewLoader.getWebviewContent(
+      LatexWebViewLoader.openedPanel.panel.webview,
+      { extensionPath, projectName, nablaModelPath, offset }
+    );
   }
 
   constructor(panel: vscode.WebviewPanel, webViewContext: LatexWebViewContext) {
@@ -84,5 +85,5 @@ interface LatexWebViewContext {
   extensionPath: string;
   projectName: string;
   nablaModelPath: string;
-  offset: number
+  offset: number;
 }

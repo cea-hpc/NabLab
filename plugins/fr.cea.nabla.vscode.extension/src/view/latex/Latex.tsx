@@ -19,13 +19,8 @@ interface AppProps {
   offset: number;
 }
 
-export const Latex = ({
-  projectName,
-  nablaModelPath,
-  offset
-}: AppProps) => {
-  
-  const [state, setState] = useState<LatexState>({imgURL: ''});
+export const Latex = ({ projectName, nablaModelPath, offset }: AppProps) => {
+  const [state, setState] = useState<LatexState>({ imgURL: '' });
 
   useEffect(() => {
     if (projectName && offset) {
@@ -35,16 +30,21 @@ export const Latex = ({
         method: 'POST',
         mode: 'cors',
         headers: {
-          "Content-Type": "text/plain"
+          'Content-Type': 'text/plain',
         },
-        body: JSON.stringify({projectName: projectName, nablaModelPath: nablaModelPath, offset: offset, formulaColor: formulaColor}),
+        body: JSON.stringify({
+          projectName: projectName,
+          nablaModelPath: nablaModelPath,
+          offset: offset,
+          formulaColor: formulaColor,
+        }),
       })
-        .then(response => response.blob())
-        .then(blob => URL.createObjectURL(blob))
-        .then(url => {
+        .then((response) => response.blob())
+        .then((blob) => URL.createObjectURL(blob))
+        .then((url) => {
           setState((prevState) => {
             return { ...prevState, imgURL: url };
-          })
+          });
         })
         .catch((reason) => {
           console.log(reason);
@@ -54,7 +54,7 @@ export const Latex = ({
 
   return (
     <div>
-      <img src={state.imgURL} alt=""/>
+      <img src={state.imgURL} alt="" />
     </div>
   );
 };

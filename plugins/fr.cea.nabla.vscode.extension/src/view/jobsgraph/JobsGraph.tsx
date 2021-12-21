@@ -24,16 +24,9 @@ interface JobsGraphProps {
   editingContextId: string;
   representationId: string;
   representationLabel: string;
-  representationKind: string;
 }
 
-export const JobsGraph = ({
-  editingContextId,
-  representationId,
-  representationLabel,
-  representationKind,
-}: JobsGraphProps) => {
-
+export const JobsGraph = ({ editingContextId, representationId, representationLabel }: JobsGraphProps) => {
   const [state, setState] = useState<JobsGraphState>({
     editingContextId,
     representationId,
@@ -57,17 +50,17 @@ export const JobsGraph = ({
     display: 'grid',
     gridTemplateColumns: '1fr',
     gridTemplateRows: 'min-content 1fr',
-    rowGap: '16px',
+    rowGap: '1px',
     height: '1000px',
-    width: '1000px',
-    padding: '32px',
+    width: '100%',
+    padding: '24px',
   };
 
   const headerStyle = {
     display: 'grid',
     gridTemplateColumns: 'min-content min-content min-content min-content min-content',
     gridTemplateRows: '1fr',
-    columnGap: '16px',
+    columnGap: '1px',
   };
 
   const componentStyle = {
@@ -76,18 +69,16 @@ export const JobsGraph = ({
     gridTemplateRows: '1fr',
   };
 
-  let component;
-  if (representationKind === 'Diagram') {
-    component = (
-      <DiagramWebSocketContainer
-        editingContextId={state.editingContextId}
-        representationId={state.representationId}
-        readOnly={true}
-        selection={state.selection}
-        setSelection={setSelection}
-      />
-    );
-  }
+  const component = (
+    <DiagramWebSocketContainer
+      editingContextId={state.editingContextId}
+      representationId={state.representationId}
+      readOnly={true}
+      selection={state.selection}
+      setSelection={setSelection}
+    />
+  );
+
   return (
     <div style={appStyle}>
       <div style={headerStyle}></div>

@@ -17,7 +17,7 @@ export default class JobsGraphWebViewLoader {
 
   public static createOrShow(extensionPath: string) {
     const column = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.viewColumn : undefined;
-    const webViewContext = {extensionPath, projectName: '', nablaModelPath: '', offset: 0};
+    const webViewContext = { extensionPath, projectName: '', nablaModelPath: '', offset: 0 };
     // If we already have a panel, show it.
     if (JobsGraphWebViewLoader.openedPanel) {
       JobsGraphWebViewLoader.openedPanel.panel.reveal(column);
@@ -38,9 +38,10 @@ export default class JobsGraphWebViewLoader {
     if (!JobsGraphWebViewLoader.openedPanel) {
       return;
     }
-    JobsGraphWebViewLoader.openedPanel.panel.webview.html = JobsGraphWebViewLoader.getWebviewContent(JobsGraphWebViewLoader.openedPanel.panel.webview, 
-      {extensionPath, projectName, nablaModelPath});
-
+    JobsGraphWebViewLoader.openedPanel.panel.webview.html = JobsGraphWebViewLoader.getWebviewContent(
+      JobsGraphWebViewLoader.openedPanel.panel.webview,
+      { extensionPath, projectName, nablaModelPath }
+    );
   }
 
   constructor(panel: vscode.WebviewPanel, webViewContext: JobsGraphWebViewContext) {
@@ -57,7 +58,9 @@ export default class JobsGraphWebViewLoader {
 
   public static getWebviewContent(webView: vscode.Webview, webViewContext: JobsGraphWebViewContext): string {
     // Local path to main script run in the webview
-    const reactAppPathOnDisk = vscode.Uri.file(path.join(webViewContext.extensionPath, 'webviews', 'jobsgraphwebview.js'));
+    const reactAppPathOnDisk = vscode.Uri.file(
+      path.join(webViewContext.extensionPath, 'webviews', 'jobsgraphwebview.js')
+    );
     const reactAppUri = webView.asWebviewUri(reactAppPathOnDisk);
     return `<!DOCTYPE html>
       <html lang="en">

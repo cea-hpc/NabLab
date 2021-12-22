@@ -19,8 +19,8 @@ class CartesianMesh2D:
     __MaxNbFacesOfCell = 4
     __MaxNbNeighbourCells = 4
     
-    def __init__(self, nbXQuads, nbYQuads, xSize, ySize):
-        self.__create(nbXQuads, nbYQuads, xSize, ySize)
+    def jsonInit(self, jsonContent):
+        self.create(jsonContent["nbXQuads"], jsonContent["nbYQuads"], jsonContent["xSize"], jsonContent["ySize"])
     
     @property
     def geometry(self):
@@ -28,21 +28,21 @@ class CartesianMesh2D:
     
     @property
     def nbNodes(self):
-        return len(self.__geometry.getNodes())
+        return len(self.__geometry.nodes)
     @property
     def nodes(self):
         return range(self.nbNodes)
     
     @property
     def nbCells(self):
-        return len(self.__geometry.getQuads())
+        return len(self.__geometry.quads)
     @property
     def cells(self):
         return range(self.nbCells)
     
     @property
     def nbFaces(self):
-        return len(self.__geometry.getEdges())
+        return len(self.__geometry.edges)
     @property
     def faces(self):
          return range(self.nbFaces)
@@ -178,9 +178,9 @@ class CartesianMesh2D:
         return self.__bottomRightNode
     
     def getNodesOfCell(self, cellId):
-        return self.__geometry.quads[cellId].nodeIds
+        return self.__geometry.quads[cellId]
     def getNodesOfFace(self, faceId):
-        return self.__geometry.edges[faceId].nodeIds
+        return self.__geometry.edges[faceId]
     def getFirstNodeOfFace(self, faceId):
         return self.getNodesOfFace(faceId)[0]
     def getSecondNodeOfFace(self, faceId):
@@ -221,7 +221,7 @@ class CartesianMesh2D:
         else: # upper bound faces
             cellsOfFace.append(self.__index2IdCell(i_f - 1, k_f))
         return np.array(cellsOfFace)
-
+    
     def getNeighbourCells(self, cellId):
         i, j = self.__index2IdCell(cellId)
         neighbourCells = []
@@ -353,7 +353,7 @@ class CartesianMesh2D:
     def getLeftFaceNeighbour(self, faceId):
         return faceId - 2
     
-    def __create(self, nbXQuads, nbYQuads, xSize, ySize):
+    def create(self, nbXQuads, nbYQuads, xSize, ySize):
         if (nbXQuads == -1 or nbYQuads == -1 or xSize == -1 or ySize == -1):
             raise Exception("Mesh attributes uninitialized")
         
@@ -361,18 +361,18 @@ class CartesianMesh2D:
         self.__nbYQuads = nbYQuads
         
         nodes = np.empty(((nbXQuads + 1) * (nbYQuads + 1), 2), dtype=np.double)
-        quads = np.empty((nbXQuads * nbYQuads, 4), dtype=np.integer)
-        edges = np.empty((2 * len(quads) + nbXQuads + nbYQuads, 2), dtype=np.integer)
+        quads = np.empty((nbXQuads * nbYQuads, 4), dtype=np.int32)
+        edges = np.empty((2 * len(quads) + nbXQuads + nbYQuads, 2), dtype=np.int32)
 
-        outerNodesIds = np.empty(2 * (nbXQuads + nbYQuads), dtype=np.integer)
-        self.__innerNodes = np.empty(len(nodes) - len(outerNodesIds), dtype=np.integer)
-        self.__topNodes = np.empty(nbXQuads + 1, dtype=np.integer)
-        self.__bottomNodes = np.empty(nbXQuads + 1, dtype=np.integer)
-        self.__leftNodes = np.empty(nbYQuads + 1, dtype=np.integer)
-        self.__rightNodes = np.empty(nbYQuads + 1, dtype=np.integer)
+        outerNodesIds = np.empty(2 * (nbXQuads + nbYQuads), dtype=np.int32)
+        self.__innerNodes = np.empty(len(nodes) - len(outerNodesIds), dtype=np.int32)
+        self.__topNodes = np.empty(nbXQuads + 1, dtype=np.int32)
+        self.__bottomNodes = np.empty(nbXQuads + 1, dtype=np.int32)
+        self.__leftNodes = np.empty(nbYQuads + 1, dtype=np.int32)
+        self.__rightNodes = np.empty(nbYQuads + 1, dtype=np.int32)
 
-        self.__innerCells = np.empty((nbXQuads - 2)*(nbYQuads - 2), dtype=np.integer)
-        self.__outerCells = np.empty(2 * nbXQuads + 2 * (nbYQuads - 2), dtype=np.integer)
+        self.__innerCells = np.empty((nbXQuads - 2)*(nbYQuads - 2), dtype=np.int32)
+        self.__outerCells = np.empty(2 * nbXQuads + 2 * (nbYQuads - 2), dtype=np.int32)
         
         nodeId = innerNodeId = topNodeId = bottomNodeId = leftNodeId = rightNodeId = 0
         
@@ -510,8 +510,9 @@ class CartesianMesh2D:
         cellsOfNode = []
         for nodeId in nodeIds:
             for cellId in self.getCellsOfNode(nodeId):
-                cellsOfNode.append(cellId)
-        return np.array(set(cellsOfNode))
+                if not cellId in cellsOfNode:
+                    cellsOfNode.append(cellId)
+        return np.array(cellsOfNode)
     
     def dump(self):
         self.__geometry.dump()

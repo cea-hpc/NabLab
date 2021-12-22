@@ -61,7 +61,7 @@ class SimpleMeshExample:
 
     def _assertSum(self):
         for jCells in range(self.__nbCells):
-            b = self.__assertEquals(4.0 * jCells, self.nodes_sum[jCells])
+            b = self.__assertEquals(5.0 * jCells, self.nodes_sum[jCells])
 
     def _executeTimeLoopN(self):
         n = 0
@@ -80,10 +80,7 @@ class SimpleMeshExample:
         print("FINAL TIME: %5.5f - deltat: %5.5f\n" % (self.t_n, self.deltat))
 
     def __assertEquals(self, expected, actual):
-        ret = (expected == actual)
-        if not ret:
-            raise Exception("** Assertion failed")
-        return ret
+        assert (expected == actual)
 
     def __sumR0(self, a, b):
         return a + b

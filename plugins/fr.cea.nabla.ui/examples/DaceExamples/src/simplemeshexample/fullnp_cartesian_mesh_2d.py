@@ -11,11 +11,68 @@ import numpy as np
 from edge import Edge
 from quad import Quad
 
-class FullNPCartesianMesh2D:
+class FullNPCartesianMesh2D():
+    ''' Private  variables '''
+    __maxNodesOfCell = 4
     
-    ''' Protected  variables '''
-    _maxNodesOfCell = 4
-    _isfullnp = True
+    def getMaxNodesOfCell(self):
+        return self.__maxNodesOfCell
+    
+    '''Get data from the json file'''
+    def jsonInit(self):
+        # Looking at a file with the .json as extension
+        jsonFileFound = glob.glob('*.json')
+        if len(jsonFileFound) !=1:
+            raise ValueError('should be only one json file in the current directory')
+        jsonFilename = jsonFileFound[0]
+        # Open the json file and get data in this file
+        with open(jsonFilename) as f:
+            data = json.load(f)
+        self.__nbXQuads = data['mesh']['nbXQuads']
+        self.__nbYQuads = data['mesh']['nbYQuads']
+        self.__xSize = data['mesh']['xSize']
+        self.__ySize = data['mesh']['ySize']
+        self.__create()
+    
+    ''' Get number of nodes '''
+    def getNbNodes(self):
+        return (self.__nbXQuads+1)*(self.__nbYQuads+1)
+    
+    ''' Number of the cells '''
+    def getNbCells(self):
+        return self.__nbXQuads * self.__nbYQuads
+    
+    ''' Tag of the quads '''
+    def getTagsQuadrangle(self):
+        for i in range(len(self.__quadNodes)):
+            self.__quads[i] = len(self.__edgeNode) + i + 1
+        return self.__quads
+    
+    ''' Get nodes of edges '''
+    def getNodesOfEdges(self, edgeId):
+        return self.__edgeNode[edgeId]
+    
+    ''' Get nodes of cell '''
+    def getNodesOfCell(self, cellId):
+        return self.__quadNodes[cellId]
+    
+    ''' Add values on all nodes '''
+    def addValuesOnNodes(self, name, arrayDataInNodes, step):
+        tagView = gmsh.view.add(name)
+        # We add values of the volume in cells
+        gmsh.view.addModelData(tagView, step, self.__modelName, 'NodeData', self.__nodes, arrayDataInNodes, 0, 1)
+        return tagView
+    
+    ''' Add values on all cells '''
+    def addValuesOnCells(self, name, arrayDataInCells, step):
+        tagView = gmsh.view.add(name)
+        # We add values of the temperature in nodes
+        gmsh.view.addModelData(tagView, step, self.__modelName, 'ElementData', self.getTagsQuadrangle(), arrayDataInCells)
+        return tagView
+    
+    ''' Run the event loop of the graphical user interface '''
+    def launchVisualizationMesh(self):
+        gmsh.fltk.run()
     
     def __init__(self, modelName):
         self.__nbXQuads = 0
@@ -24,47 +81,18 @@ class FullNPCartesianMesh2D:
         self.__ySize = 0.
         # List tags of the nodes
         self.nodesTags = []
-        self.__modelName = modelName        
+        self.__modelName = modelName
         self.__dimMesh = 2
     
-    '''
-        Get data from the json file
-    '''      
-    def _jsonInit(self):
-        # Looking at a file with the .json as extension
-        jsonFileFound = glob.glob('*.json')
-        if len(jsonFileFound) !=1:
-            raise ValueError('should be only one json file in the current directory')
-        
-        jsonFilename = jsonFileFound[0]
-        
-        # Open the json file and get data in this file
-        with open(jsonFilename) as f:
-            data = json.load(f)
-            
-        self.__nbXQuads = data['mesh']['nbXQuads']
-        self.__nbYQuads = data['mesh']['nbYQuads']
-        self.__xSize = data['mesh']['xSize']
-        self.__ySize = data['mesh']['ySize']
-        self._create()
-        
-    def _create(self):
-        
-        ''' 
-        Initialize Gmsh API. This must be called before any call to the other
-        functions in the API
-        '''       
+    def __create(self):
+        ''' Initialize Gmsh API must be called before any call to the other functions in the API '''
         gmsh.initialize()
         
-        ''' 
-        gmsh.model.add(name)
-        Add a new model, with name 'name', and set it as the current model.
-        '''    
+        ''' Add a new model, with name 'name', and set it as the current model '''
         gmsh.model.add(self.__modelName)
         
-        
         # Number of nodes
-        self.__numberNodes = self._getNbNodes()
+        self.__numberNodes = self.getNbNodes()
         # Array of nodes
         self.__nodes = np.zeros(self.__numberNodes)
         # List of nodes in all the mesh grid
@@ -95,7 +123,6 @@ class FullNPCartesianMesh2D:
         # List of the inner cells
         self.__innerCells = np.zeros((self.__nbXQuads - 2)*(self.__nbYQuads - 2))
         self.__outerCells = np.zeros(2*self.__nbXQuads + 2 *(self.__nbYQuads - 2))
-        
         
         self.__nodeId = 0
         self.__innerNodeId = 0
@@ -164,9 +191,8 @@ class FullNPCartesianMesh2D:
                 quadId = quadId + 1 
         print("List of the quads : ", self.__quadNodes) 
         
-        
         ''' Add the tags of the different nodes'''
-        for i in range(1, self._getNbNodes() + 1):
+        for i in range(1, self.getNbNodes() + 1):
             self.nodesTags.append(i)
             
         '''
@@ -203,72 +229,17 @@ class FullNPCartesianMesh2D:
             quadNodesList[i] = quadNodesList[i] + 1
         gmsh.model.mesh.addElementsByType(self.tagSurface, 3, [], quadNodesList)
         
-        '''
-        gmsh.model.mesh.generate(dim=3)
-    
-        Generate a mesh of the current model, up to dimension `dim' (0, 1, 2 or 3).
-        '''
+        '''Generate a mesh of the current model, up to dimension `dim' (0, 1, 2 or 3) '''
         gmsh.model.mesh.generate(self.__dimMesh)
         
-        '''
-        gmsh.write(fileName)
-        Write a file. The export format is determined by the file extensimaxNodesOfCellon.
-        '''
+        ''' Write a file. The export format is determined by the file extension '''
         gmsh.write(self.__modelName + ".msh")        
-        
-    ''' Get number of nodes '''
-    def _getNbNodes(self):
-        return (self.__nbXQuads+1)*(self.__nbYQuads+1)
     
-    ''' Number of the cells '''
-    def _getNbCells(self):
-        return self.__nbXQuads * self.__nbYQuads
-    ''' Tag of the quads '''
-    def _getTagsQuadrangle(self):
-        for i in range(len(self.__quadNodes)):
-            self.__quads[i] = len(self.__edgeNode) + i + 1
-            
-        return self.__quads
-    ''' Get nodes of edges'''
-    def _getNodesOfEdges(self, edgeId):
-        return self.__edgeNode[edgeId]
-    
-    ''' Get nodes of cell'''
-    def _getNodesOfCell(self, cellId):
-        return self.__quadNodes[cellId]
-    
-    ''' Add values on all nodes '''
-    def _addValuesOnNodes(self, name, arrayDataInNodes, step):
-
-        tagView = gmsh.view.add(name)
-        # We add values of the volume in cells
-        gmsh.view.addModelData(tagView, step, self.__modelName, 'NodeData', self.__nodes, arrayDataInNodes)
-        return tagView
-    
-    ''' Add values on all cells '''
-    def _addValuesOnCells(self, name, arrayDataInCells, step):
-        
-        tagView = gmsh.view.add(name)
-                
-        # We add values of the temperature in nodes
-        gmsh.view.addModelData(tagView, step, self.__modelName, 'ElementData', self._getTagsQuadrangle(), arrayDataInCells)
-        return tagView
-    
-    ''' Run the event loop of the graphical user interface '''
-    def _launchVisualizationMesh(self):
-        gmsh.fltk.run()
-    '''
-        Finalize the Gmsh API. This must be called when you are done using the Gmsh
-        API.
-    '''   
-    gmsh.finalize()
+    def __del__(self):
+        ''' Finalize the Gmsh API. This must be called when you are done using the Gmsh API '''
+        gmsh.finalize()
     
 if __name__ == '__main__':
-    
-    modelName = "generatingMesh2"
-    testMesh = FullNPCartesianMesh2D(modelName)
-    testMesh._jsonInit()
-    nodesCellId = testMesh._getNodesOfCell(4)
-    print(" nodesCellId : ", nodesCellId)
-    
-    
+    testMesh = FullNPCartesianMesh2D("FullNPCartesianMesh2DTest")
+    testMesh.jsonInit()
+    testMesh.launchVisualizationMesh()

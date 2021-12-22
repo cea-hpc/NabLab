@@ -1,6 +1,4 @@
 import unittest
-import numpy as np
-import numpy.testing
 
 from cartesianmesh2d import CartesianMesh2D
 from numpy.testing import assert_array_equal

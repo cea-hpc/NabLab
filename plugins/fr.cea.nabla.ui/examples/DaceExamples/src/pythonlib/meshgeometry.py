@@ -28,9 +28,6 @@ class MeshGeometry:
     def dump(self):
         print("MESH GEOMETRY")
         print()
-        nodesList = ""
-        edgesList = ""
-        quadsList = ""
         print("Nodes (" + str(len(self.__nodes)) + "):")
         print(self.__nodes)
         print()

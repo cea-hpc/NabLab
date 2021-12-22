@@ -86,47 +86,39 @@ class CartesianMesh2DTest(unittest.TestCase):
         mesh = CartesianMesh2D()
         mesh.create(self.nbXQuads, self.nbYQuads, self.xSize, self.ySize)
         assert_array_equal([0, 1, 6, 5], mesh.getNodesOfCell(0))
-
         assert_array_equal([0, 1], mesh.getNodesOfFace(0))
         assert_array_equal([0, 5], mesh.getNodesOfFace(1))
-
         self.assertEqual(0, mesh.getFirstNodeOfFace(0))
         self.assertEqual(1, mesh.getSecondNodeOfFace(0))
-
         assert_array_equal([0], mesh.getCellsOfNode(0))
         assert_array_equal([0, 4], mesh.getCellsOfNode(5))
         assert_array_equal([0, 1, 4, 5], mesh.getCellsOfNode(6))
-
         assert_array_equal([0], mesh.getCellsOfFace(0))
         assert_array_equal([0, 1], mesh.getCellsOfFace(3))
-        '''
         assert_array_equal([1, 4], mesh.getNeighbourCells(0))
         assert_array_equal([0, 2, 5], mesh.getNeighbourCells(1))
         assert_array_equal([1, 4, 6, 9], mesh.getNeighbourCells(5))
-
         assert_array_equal([0, 1, 3, 9], mesh.getFacesOfCell(0))
-
         self.assertEqual(3, mesh.getCommonFace(0, 1))
         self.assertEqual(-1, mesh.getCommonFace(0, 5))
-
         self.assertEqual(0, mesh.getBackCell(3))
         self.assertEqual(1, mesh.getFrontCell(3))
-        try {
+        
+        try:
             self.assertEqual(-1, mesh.getBackCell(1))
-            fail()
-        } catch (Exception e1) {
-        }
-        try {
+            self.fail("Shouldn't happen")
+        except:
+            pass
+        try:
             self.assertEqual(-1, mesh.getFrontCell(1))
-            fail()
-        } catch (Exception e2) {
-        }
-
+            self.fail("Shouldn't happen")
+        except:
+            pass
+        
         self.assertEqual(9, mesh.getTopFaceOfCell(0))
         self.assertEqual(0, mesh.getBottomFaceOfCell(0))
         self.assertEqual(1, mesh.getLeftFaceOfCell(0))
         self.assertEqual(3, mesh.getRightFaceOfCell(0))
-
         self.assertEqual(4, mesh.getTopCell(0))
         self.assertEqual(11, mesh.getTopCell(11))
         self.assertEqual(4, mesh.getBottomCell(8))
@@ -135,24 +127,21 @@ class CartesianMesh2DTest(unittest.TestCase):
         self.assertEqual(8, mesh.getLeftCell(8))
         self.assertEqual(3, mesh.getRightCell(2))
         self.assertEqual(11, mesh.getRightCell(11))
-
         self.assertEqual(2, mesh.getBottomFaceNeighbour(11))
         self.assertEqual(3, mesh.getBottomLeftFaceNeighbour(11))
         self.assertEqual(5, mesh.getBottomRightFaceNeighbour(11))
         self.assertEqual(20, mesh.getTopFaceNeighbour(11))
         self.assertEqual(12, mesh.getTopLeftFaceNeighbour(11))
         self.assertEqual(14, mesh.getTopRightFaceNeighbour(11))
-
         self.assertEqual(3, mesh.getBottomFaceNeighbour(12))
         self.assertEqual(9, mesh.getBottomLeftFaceNeighbour(12))
         self.assertEqual(11, mesh.getBottomRightFaceNeighbour(12))
         self.assertEqual(21, mesh.getTopFaceNeighbour(12))
         self.assertEqual(18, mesh.getTopLeftFaceNeighbour(12))
         self.assertEqual(20, mesh.getTopRightFaceNeighbour(12))
-
         self.assertEqual(1, mesh.getLeftFaceNeighbour(3))
         self.assertEqual(5, mesh.getRightFaceNeighbour(3))
-        '''
+
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(CartesianMesh2DTest)
     unittest.TextTestRunner().run(suite)

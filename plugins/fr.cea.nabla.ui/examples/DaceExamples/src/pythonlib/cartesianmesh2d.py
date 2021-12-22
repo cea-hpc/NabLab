@@ -12,12 +12,12 @@ import numpy as np
 from meshgeometry import MeshGeometry
 
 class CartesianMesh2D:
-    __MaxNbNodesOfCell = 4
-    __MaxNbNodesOfFace = 2
-    __MaxNbCellsOfNode = 4
-    __MaxNbCellsOfFace = 2
-    __MaxNbFacesOfCell = 4
-    __MaxNbNeighbourCells = 4
+    MaxNbNodesOfCell = 4
+    MaxNbNodesOfFace = 2
+    MaxNbCellsOfNode = 4
+    MaxNbCellsOfFace = 2
+    MaxNbFacesOfCell = 4
+    MaxNbNeighbourCells = 4
     
     def jsonInit(self, jsonContent):
         self.create(jsonContent["nbXQuads"], jsonContent["nbYQuads"], jsonContent["xSize"], jsonContent["ySize"])
@@ -45,7 +45,7 @@ class CartesianMesh2D:
         return len(self.__geometry.edges)
     @property
     def faces(self):
-         return range(self.nbFaces)
+        return range(self.nbFaces)
     
     @property
     def nbInnerNodes(self):
@@ -206,7 +206,7 @@ class CartesianMesh2D:
         cellsOfFace = []
         if i_f < self.__nbYQuads: # all except upper bound faces
             if k_f == (2 * self.__nbXQuads):
-                cellsOfFace.append(self.__index2IdCell(i_f, nbXQuads - 1))
+                cellsOfFace.append(self.__index2IdCell(i_f, self.__nbXQuads - 1))
             else:
                 if k_f == 1: # left bound edge
                     cellsOfFace.append(self.__index2IdCell(i_f, 0))
@@ -223,23 +223,23 @@ class CartesianMesh2D:
         return np.array(cellsOfFace)
     
     def getNeighbourCells(self, cellId):
-        i, j = self.__index2IdCell(cellId)
+        i, j = self.__id2IndexCell(cellId)
         neighbourCells = []
         if i >= 1:
             neighbourCells.append(self.__index2IdCell(i-1, j))
-        if i < nbYQuads - 1:
+        if i < self.__nbYQuads - 1:
             neighbourCells.append(self.__index2IdCell(i+1, j))
         if j >= 1:
-            neighbourCells.append(index2IdCell(i, j-1))
-        if j < nbXQuads - 1:
-            neighbourCells.append(index2IdCell(i, j+1))
+            neighbourCells.append(self.__index2IdCell(i, j-1))
+        if j < self.__nbXQuads - 1:
+            neighbourCells.append(self.__index2IdCell(i, j+1))
         neighbourCells.sort()
         return np.array(neighbourCells)
     
     def getFacesOfCell(self, cellId):
         i, j = self.__id2IndexCell(cellId)
-        bottomFace = (2 * j + i * (2 * nbXQuads + 1))
-        leftFace = bottomFace;
+        bottomFace = (2 * j + i * (2 * self.__nbXQuads + 1))
+        leftFace = bottomFace + 1
         rightFace = bottomFace + (2 if j == self.__nbXQuads else 3)
         topFace = bottomFace + (2 *  self.__nbXQuads + 1 if i <  self.__nbYQuads - 1 else 2 *  self.__nbXQuads + 1 - j)
         return [bottomFace, leftFace, rightFace, topFace]
@@ -247,9 +247,9 @@ class CartesianMesh2D:
     def getCommonFace(self, cell1, cell2):
         cell1Faces = self.getFacesOfCell(cell1);
         cell2Faces = self.getFacesOfCell(cell2);
-        set = set(cell1Faces).intersection(cell2Faces)
-        if set:
-            return set[0]
+        commonFace = list(set(cell1Faces).intersection(cell2Faces))
+        if commonFace:
+            return commonFace[0]
         else:
             return -1;
         
@@ -279,7 +279,7 @@ class CartesianMesh2D:
         return bottomFace
     
     def getLeftFaceOfCell(self, cellId):
-        bottomFace = getBottomFaceOfCell(cellId)
+        bottomFace = self.getBottomFaceOfCell(cellId)
         leftFace = bottomFace + 1
         return leftFace
     
@@ -348,7 +348,7 @@ class CartesianMesh2D:
             return faceId + 3
         
     def getRightFaceNeighbour(self, faceId):
-         return faceId + 2
+        return faceId + 2
     
     def getLeftFaceNeighbour(self, faceId):
         return faceId - 2
@@ -504,6 +504,11 @@ class CartesianMesh2D:
     def __id2IndexNode(self, nodeId):
         i = nodeId // (self.__nbXQuads + 1)
         j = nodeId % (self.__nbXQuads + 1)
+        return i, j
+    
+    def __id2IndexCell(self, cellId):
+        i = cellId // self.__nbXQuads
+        j = cellId % self.__nbXQuads
         return i, j
     
     def __cellsOfNodeCollection(self, nodeIds):

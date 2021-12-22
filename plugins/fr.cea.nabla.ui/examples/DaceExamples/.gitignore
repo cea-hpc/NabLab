@@ -1,3 +1,5 @@
+*.msh
+__pycache__
 .dacecache
 *.html
 

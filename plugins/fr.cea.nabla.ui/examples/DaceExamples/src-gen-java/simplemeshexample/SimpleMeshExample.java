@@ -20,6 +20,10 @@ public final class SimpleMeshExample
 	private final int nbNodes, nbCells, maxNodesOfCell;
 
 	// Options and global variables
+	private PvdFileWriter2D writer;
+	private String outputPath;
+	int outputPeriod;
+	int lastDump;
 	int n;
 	static final double stopTime = 1.0;
 	static final int maxIterations = 1;
@@ -44,6 +48,15 @@ public final class SimpleMeshExample
 	{
 		final Gson gson = new Gson();
 		final JsonObject options = gson.fromJson(jsonContent, JsonObject.class);
+		assert(options.has("outputPath"));
+		final JsonElement valueof_outputPath = options.get("outputPath");
+		outputPath = valueof_outputPath.getAsJsonPrimitive().getAsString();
+		writer = new PvdFileWriter2D("SimpleMeshExample", outputPath);
+		assert(options.has("outputPeriod"));
+		final JsonElement valueof_outputPeriod = options.get("outputPeriod");
+		assert(valueof_outputPeriod.isJsonPrimitive());
+		outputPeriod = valueof_outputPeriod.getAsJsonPrimitive().getAsInt();
+		lastDump = Integer.MIN_VALUE;
 		X = new double[nbNodes][2];
 		nodes_sum = new double[nbCells];
 		cst = new double[nbNodes];
@@ -140,7 +153,7 @@ public final class SimpleMeshExample
 
 	/**
 	 * Job executeTimeLoopN called @3.0 in simulate method.
-	 * In variables: maxIterations, n, t_n
+	 * In variables: lastDump, maxIterations, n, outputPeriod, t_n
 	 * Out variables: t_nplus1
 	 */
 	protected void executeTimeLoopN()
@@ -151,6 +164,8 @@ public final class SimpleMeshExample
 		{
 			n++;
 			System.out.printf("START ITERATION n: %5d - t: %5.5f - deltat: %5.5f\n", n, t_n, deltat);
+			if (n >= lastDump + outputPeriod)
+				dumpVariables(n);
 		
 			computeTn(); // @1.0
 		
@@ -161,6 +176,7 @@ public final class SimpleMeshExample
 		} while (continueLoop);
 		
 		System.out.printf("FINAL TIME: %5.5f - deltat: %5.5f\n", t_n, deltat);
+		dumpVariables(n+1);
 	}
 
 	private static boolean assertEquals(double expected, double actual)
@@ -213,6 +229,32 @@ public final class SimpleMeshExample
 			System.err.println("[ERROR] Wrong number of arguments: expected 1, actual " + args.length);
 			System.err.println("        Expecting user data file name, for example SimpleMeshExample.json");
 			System.exit(1);
+		}
+	}
+
+	private void dumpVariables(int iteration)
+	{
+		if (!writer.isDisabled())
+		{
+			try
+			{
+				Quad[] quads = mesh.getGeometry().getQuads();
+				writer.startVtpFile(iteration, t_n, X, quads);
+				writer.openNodeData();
+				writer.closeNodeData();
+				writer.openCellData();
+				writer.openCellArray("sum", 0);
+				for (int i=0 ; i<nbCells ; ++i)
+					writer.write(nodes_sum[i]);
+				writer.closeCellArray();
+				writer.closeCellData();
+				writer.closeVtpFile();
+				lastDump = n;
+			}
+			catch (java.io.FileNotFoundException e)
+			{
+				System.out.println("* WARNING: no dump of variables. FileNotFoundException: " + e.getMessage());
+			}
 		}
 	}
 };

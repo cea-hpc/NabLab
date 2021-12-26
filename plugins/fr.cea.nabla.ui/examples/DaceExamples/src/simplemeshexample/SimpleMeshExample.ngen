@@ -9,6 +9,12 @@ MainModule SimpleMeshExample simpleMeshExample
 	timeMax = stopTime;
 }
 
+VtkOutput
+{
+	periodReferenceVariable = simpleMeshExample.n;
+	outputVariables = simpleMeshExample.nodes_sum as "sum";
+}
+
 Java
 {
 	outputPath = "/DaceExamples/src-gen-java";

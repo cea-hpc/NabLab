@@ -11,6 +11,7 @@ from cartesianmesh2d import CartesianMesh2D
 import numpy as np
 import json
 import sys
+from pvdfilewriter2d import PvdFileWriter2D
 
 class SimpleMeshExample:
     stopTime = 1.0
@@ -25,6 +26,10 @@ class SimpleMeshExample:
         self.__maxNodesOfCell = mesh.MaxNbNodesOfCell
 
     def jsonInit(self, jsonContent):
+        self.__outputPath = jsonContent["outputPath"]
+        self.__writer = PvdFileWriter2D("SimpleMeshExample", self.__outputPath)
+        self.outputPeriod = jsonContent["outputPeriod"]
+        self.lastDump = -sys.maxsize - 1 # Integer.MIN_VALUE
         self.X = np.empty((self.__nbNodes, 2), dtype=np.double)
         self.nodes_sum = np.empty(self.__nbCells, dtype=np.double)
         self.cst = np.empty(self.__nbNodes, dtype=np.double)
@@ -61,29 +66,48 @@ class SimpleMeshExample:
 
     def _assertSum(self):
         for jCells in range(self.__nbCells):
-            b = self.__assertEquals(5.0 * jCells, self.nodes_sum[jCells])
+            b = self.__assertEquals(4.0 * jCells, self.nodes_sum[jCells])
 
     def _executeTimeLoopN(self):
-        n = 0
+        self.n = 0
         continueLoop = True
         while continueLoop:
-            n += 1
-            print("START ITERATION n: %5d - t: %5.5f - deltat: %5.5f\n" % (n, self.t_n, self.deltat))
+            self.n += 1
+            print("START ITERATION n: %5d - t: %5.5f - deltat: %5.5f\n" % (self.n, self.t_n, self.deltat))
         
+            if (self.n >= self.lastDump + self.outputPeriod):
+                self.__dumpVariables(self.n)
+
             self._computeTn() # @1.0
         
             # Evaluate loop condition with variables at time n
-            continueLoop = (n < self.maxIterations)
+            continueLoop = (self.n < self.maxIterations)
         
             self.t_n = self.t_nplus1
         
         print("FINAL TIME: %5.5f - deltat: %5.5f\n" % (self.t_n, self.deltat))
+        self.__dumpVariables(self.n+1)
 
     def __assertEquals(self, expected, actual):
         assert (expected == actual)
 
     def __sumR0(self, a, b):
         return a + b
+
+    def __dumpVariables(self, iteration):
+        if not self.__writer.disabled:
+            quads = mesh.geometry.quads
+            self.__writer.startVtpFile(iteration, self.t_n, self.X, quads)
+            self.__writer.openNodeData()
+            self.__writer.closeNodeData()
+            self.__writer.openCellData()
+            self.__writer.openCellArray("sum", 0)
+            for i in range(self.__nbCells):
+                self.__writer.write(self.nodes_sum[i])
+            self.__writer.closeCellArray()
+            self.__writer.closeCellData()
+            self.__writer.closeVtpFile()
+            self.lastDump = self.n
 
     def simulate(self):
         print("Start execution of simpleMeshExample")

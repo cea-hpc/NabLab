@@ -9,19 +9,25 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.dace
 
+import fr.cea.nabla.ir.UnzipHelper
 import fr.cea.nabla.ir.generator.ApplicationGenerator
 import fr.cea.nabla.ir.generator.GenerationContent
-import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.ArgOrVarRef
-import fr.cea.nabla.ir.ir.Variable
-
 import fr.cea.nabla.ir.ir.Instruction
+import fr.cea.nabla.ir.ir.IrRoot
+import fr.cea.nabla.ir.ir.Variable
 
 class DaceApplicationGenerator implements ApplicationGenerator
 {
 	override getName() { 'DaCe' }
 
 	override getIrTransformationSteps() { #[] }
+
+	new(String wsPath)
+	{
+		// unzip NRepository if necessary
+		UnzipHelper::unzipNRepository(wsPath)
+	}
 
 	// Only one file generated corresponding to the application
 	override getGenerationContents(IrRoot ir)

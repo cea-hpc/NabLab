@@ -17,7 +17,7 @@
       <details key="offset" value="35"/>
       <details key="length" value="98"/>
     </annotations>
-    <variables name="t">
+    <variables name="t" option="true">
       <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
         <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/VariableAffectations.n"/>
         <details key="offset" value="114"/>
@@ -25,7 +25,7 @@
       </annotations>
       <type xsi:type="ir:BaseType" primitive="&#x211d;" isStatic="true"/>
     </variables>
-    <variables name="deltat">
+    <variables name="deltat" option="true">
       <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
         <details key="uri" value="platform:/resource/DaceExamples/src/gettingstarted/VariableAffectations.n"/>
         <details key="offset" value="117"/>
@@ -4276,31 +4276,6 @@
   </modules>
   <providers xsi:type="ir:MeshExtensionProvider" extensionName="CartesianMesh2D" providerName="CartesianMesh2DJava" outputPath="/.nablab/mesh">
     <itemTypes name="node">
-      <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-        <details key="uri" value="platform:/resource/fr.cea.nabla/nablalib/CartesianMesh2D.n"/>
-        <details key="offset" value="490"/>
-        <details key="length" value="4"/>
-      </annotations>
-      <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-        <details key="uri" value="platform:/resource/fr.cea.nabla/nablalib/CartesianMesh2D.n"/>
-        <details key="offset" value="490"/>
-        <details key="length" value="4"/>
-      </annotations>
-      <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-        <details key="uri" value="platform:/resource/fr.cea.nabla/nablalib/CartesianMesh2D.n"/>
-        <details key="offset" value="490"/>
-        <details key="length" value="4"/>
-      </annotations>
-      <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-        <details key="uri" value="platform:/resource/fr.cea.nabla/nablalib/CartesianMesh2D.n"/>
-        <details key="offset" value="490"/>
-        <details key="length" value="4"/>
-      </annotations>
-      <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
-        <details key="uri" value="platform:/resource/fr.cea.nabla/nablalib/CartesianMesh2D.n"/>
-        <details key="offset" value="490"/>
-        <details key="length" value="4"/>
-      </annotations>
       <annotations source="fr.cea.nabla.ir.annotations.NabLabFileAnnotation">
         <details key="uri" value="platform:/resource/fr.cea.nabla/nablalib/CartesianMesh2D.n"/>
         <details key="offset" value="490"/>

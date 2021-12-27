@@ -29,7 +29,7 @@ class ApplicationGeneratorFactory
 		switch target.type
 		{
 			case JAVA: new JavaApplicationGenerator(application.levelDB !== null)
-			case DACE: new DaceApplicationGenerator
+			case DACE: new DaceApplicationGenerator(wsPath)
 			case ARCANE:
 			{
 				val cmakeVars = new ArrayList<Pair<String, String>>

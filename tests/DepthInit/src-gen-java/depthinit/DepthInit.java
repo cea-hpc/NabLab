@@ -10,86 +10,54 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonElement;
 
-import fr.cea.nabla.javalib.*;
 import fr.cea.nabla.javalib.mesh.*;
 
 public final class DepthInit
 {
-	public final static class Options
-	{
-		public double maxTime;
-		public int maxIter;
-		public double deltat;
-		public bathylibjava.BathyLib bathyLib;
-		public String nonRegression;
-
-		public void jsonInit(final String jsonContent)
-		{
-			final Gson gson = new Gson();
-			final JsonObject o = gson.fromJson(jsonContent, JsonObject.class);
-			// maxTime
-			if (o.has("maxTime"))
-			{
-				final JsonElement valueof_maxTime = o.get("maxTime");
-				assert(valueof_maxTime.isJsonPrimitive());
-				maxTime = valueof_maxTime.getAsJsonPrimitive().getAsDouble();
-			}
-			else
-				maxTime = 0.1;
-			// maxIter
-			if (o.has("maxIter"))
-			{
-				final JsonElement valueof_maxIter = o.get("maxIter");
-				assert(valueof_maxIter.isJsonPrimitive());
-				maxIter = valueof_maxIter.getAsJsonPrimitive().getAsInt();
-			}
-			else
-				maxIter = 500;
-			// deltat
-			if (o.has("deltat"))
-			{
-				final JsonElement valueof_deltat = o.get("deltat");
-				assert(valueof_deltat.isJsonPrimitive());
-				deltat = valueof_deltat.getAsJsonPrimitive().getAsDouble();
-			}
-			else
-				deltat = 1.0;
-			// bathyLib
-			bathyLib = new bathylibjava.BathyLib();
-			if (o.has("bathyLib"))
-				bathyLib.jsonInit(o.get("bathyLib").toString());
-		}
-	}
-
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
 	@SuppressWarnings("unused")
 	private final int nbNodes, nbCells;
 
-	// User options
-	private final Options options;
+	// Options and global variables
+	private bathylibjava.BathyLib bathyLib;
+	static final double t = 0.0;
+	int maxIter;
+	double maxTime;
+	double deltat;
+	double[][] X;
+	double[] eta;
 
-	// Global variables
-	protected final double t;
-	protected double[][] X;
-	protected double[] eta;
-
-	public DepthInit(CartesianMesh2D aMesh, Options aOptions)
+	public DepthInit(CartesianMesh2D aMesh)
 	{
 		// Mesh and mesh variables initialization
 		mesh = aMesh;
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
+	}
 
-		// User options
-		options = aOptions;
-
-		// Initialize variables with default values
-		t = 0.0;
-
-		// Allocate arrays
+	public void jsonInit(final String jsonContent)
+	{
+		final Gson gson = new Gson();
+		final JsonObject options = gson.fromJson(jsonContent, JsonObject.class);
+		assert(options.has("maxIter"));
+		final JsonElement valueof_maxIter = options.get("maxIter");
+		assert(valueof_maxIter.isJsonPrimitive());
+		maxIter = valueof_maxIter.getAsJsonPrimitive().getAsInt();
+		assert(options.has("maxTime"));
+		final JsonElement valueof_maxTime = options.get("maxTime");
+		assert(valueof_maxTime.isJsonPrimitive());
+		maxTime = valueof_maxTime.getAsJsonPrimitive().getAsDouble();
+		assert(options.has("deltat"));
+		final JsonElement valueof_deltat = options.get("deltat");
+		assert(valueof_deltat.isJsonPrimitive());
+		deltat = valueof_deltat.getAsJsonPrimitive().getAsDouble();
 		X = new double[nbNodes][2];
 		eta = new double[nbCells];
+		// bathyLib
+		bathyLib = new bathylibjava.BathyLib();
+		if (options.has("bathyLib"))
+			bathyLib.jsonInit(options.get("bathyLib").toString());
 
 		// Copy node coordinates
 		double[][] gNodes = mesh.getGeometry().getNodes();
@@ -109,7 +77,7 @@ public final class DepthInit
 	{
 		for (int jCells=0; jCells<nbCells; jCells++)
 		{
-			eta[jCells] = two() * options.bathyLib.nextWaveHeight();
+			eta[jCells] = two() * bathyLib.nextWaveHeight();
 		}
 	}
 
@@ -139,9 +107,8 @@ public final class DepthInit
 			mesh.jsonInit(o.get("mesh").toString());
 
 			// Module instanciation(s)
-			DepthInit.Options depthInitOptions = new DepthInit.Options();
-			if (o.has("depthInit")) depthInitOptions.jsonInit(o.get("depthInit").toString());
-			DepthInit depthInit = new DepthInit(mesh, depthInitOptions);
+			DepthInit depthInit = new DepthInit(mesh);
+			if (o.has("depthInit")) depthInit.jsonInit(o.get("depthInit").toString());
 
 			// Start simulation
 			depthInit.simulate();

@@ -131,6 +131,8 @@ abstract class AbstractBinaryOperationsInterpreterTest
 		let ℕ[2] n3 = 3 * n1;
 
 		ℝ[2] X{nodes};
+
+		InitT: t=0.0;
 		'''
 		assertGetValueOfNV0Int_NV1Int(model)
 	}

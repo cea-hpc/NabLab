@@ -58,10 +58,6 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//VarDeclaration/type"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//Instruction"/>
-    <genClasses ecoreClass="Nabla.ecore#//OptionDeclaration">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//OptionDeclaration/variable"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//OptionDeclaration/value"/>
-    </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//SimpleVarDeclaration">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//SimpleVarDeclaration/variable"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//SimpleVarDeclaration/value"/>

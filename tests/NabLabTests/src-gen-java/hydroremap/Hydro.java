@@ -24,8 +24,8 @@ public final class Hydro
 	protected R2 r2;
 
 	// Options and global variables
-	double maxTime;
 	int maxIter;
+	double maxTime;
 	double deltat;
 	static final double t = 0.0;
 	double[][] X;
@@ -49,30 +49,18 @@ public final class Hydro
 	{
 		final Gson gson = new Gson();
 		final JsonObject options = gson.fromJson(jsonContent, JsonObject.class);
-		if (options.has("maxTime"))
-		{
-			final JsonElement valueof_maxTime = options.get("maxTime");
-			assert(valueof_maxTime.isJsonPrimitive());
-			maxTime = valueof_maxTime.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			maxTime = 0.1;
-		if (options.has("maxIter"))
-		{
-			final JsonElement valueof_maxIter = options.get("maxIter");
-			assert(valueof_maxIter.isJsonPrimitive());
-			maxIter = valueof_maxIter.getAsJsonPrimitive().getAsInt();
-		}
-		else
-			maxIter = 500;
-		if (options.has("deltat"))
-		{
-			final JsonElement valueof_deltat = options.get("deltat");
-			assert(valueof_deltat.isJsonPrimitive());
-			deltat = valueof_deltat.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			deltat = 1.0;
+		assert(options.has("maxIter"));
+		final JsonElement valueof_maxIter = options.get("maxIter");
+		assert(valueof_maxIter.isJsonPrimitive());
+		maxIter = valueof_maxIter.getAsJsonPrimitive().getAsInt();
+		assert(options.has("maxTime"));
+		final JsonElement valueof_maxTime = options.get("maxTime");
+		assert(valueof_maxTime.isJsonPrimitive());
+		maxTime = valueof_maxTime.getAsJsonPrimitive().getAsDouble();
+		assert(options.has("deltat"));
+		final JsonElement valueof_deltat = options.get("deltat");
+		assert(valueof_deltat.isJsonPrimitive());
+		deltat = valueof_deltat.getAsJsonPrimitive().getAsDouble();
 		X = new double[nbNodes][2];
 		hv1 = new double[nbCells];
 		hv2 = new double[nbCells];

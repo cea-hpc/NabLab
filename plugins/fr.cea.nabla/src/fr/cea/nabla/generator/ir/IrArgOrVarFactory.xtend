@@ -26,7 +26,6 @@ import fr.cea.nabla.nabla.CurrentTimeIteratorRef
 import fr.cea.nabla.nabla.InitTimeIteratorRef
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NextTimeIteratorRef
-import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.TimeIteratorRef
 import fr.cea.nabla.nabla.Var
@@ -176,9 +175,7 @@ class IrArgOrVarFactory
 		{
 			Var:
 			{
-				if (v.option)
-					toIrOption(v as SimpleVar)
-				else if (timeIteratorRefs.empty)
+				if (timeIteratorRefs.empty)
 					toIrVariable(v)
 				else
 				{
@@ -205,18 +202,6 @@ class IrArgOrVarFactory
 		type = nablaType2IrType.toIrType(v.typeFor)
 	}
 
-	def create IrFactory::eINSTANCE.createVariable toIrOption(SimpleVar v)
-	{
-		annotations += v.toNabLabFileAnnotation
-		name = v.name
-		type = nablaType2IrType.toIrType(v.typeFor)
-		const = false
-		constExpr = false
-		option = true
-		val value = v.value
-		if (value !== null) defaultValue = value.toIrExpression
-	}
-
 	def create IrFactory::eINSTANCE.createVariable toIrVariable(Var v)
 	{
 		annotations += v.toNabLabFileAnnotation
@@ -224,7 +209,7 @@ class IrArgOrVarFactory
 		type = nablaType2IrType.toIrType(v.typeFor)
 		const = v.const
 		constExpr = constExprServices.isConstExpr(v)
-		option = false
+		option = v.option
 		val value = v.value
 		if (value !== null) defaultValue = value.toIrExpression
 	}
@@ -241,6 +226,16 @@ class IrArgOrVarFactory
 		const = false
 		constExpr = false
 		option = false
+		defaultValue = IrFactory.eINSTANCE.createIntConstant =>
+		[
+			type = IrFactory.eINSTANCE.createBaseType =>
+			[ 
+				primitive = PrimitiveType::INT
+				isStatic = true
+			]
+			value = 0
+			constExpr = true
+		]
 	}
 
 	def create IrFactory::eINSTANCE.createTimeVariable toIrTimeVariable(Var v, TimeIterator ti, int index)

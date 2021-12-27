@@ -144,67 +144,21 @@ IterativeHeatEquation::jsonInit(const char* jsonContent)
 	assert(valueof_outputPath.IsString());
 	outputPath = valueof_outputPath.GetString();
 	writer = new PvdFileWriter2D("IterativeHeatEquation", outputPath);
-	// outputPeriod
 	assert(options.HasMember("outputPeriod"));
 	const rapidjson::Value& valueof_outputPeriod = options["outputPeriod"];
 	assert(valueof_outputPeriod.IsInt());
 	outputPeriod = valueof_outputPeriod.GetInt();
 	lastDump = numeric_limits<int>::min();
-	// u0
-	if (options.HasMember("u0"))
-	{
-		const rapidjson::Value& valueof_u0 = options["u0"];
-		assert(valueof_u0.IsDouble());
-		u0 = valueof_u0.GetDouble();
-	}
-	else
-	{
-		u0 = 1.0;
-	}
-	// stopTime
-	if (options.HasMember("stopTime"))
-	{
-		const rapidjson::Value& valueof_stopTime = options["stopTime"];
-		assert(valueof_stopTime.IsDouble());
-		stopTime = valueof_stopTime.GetDouble();
-	}
-	else
-	{
-		stopTime = 0.1;
-	}
-	// maxIterations
-	if (options.HasMember("maxIterations"))
-	{
-		const rapidjson::Value& valueof_maxIterations = options["maxIterations"];
-		assert(valueof_maxIterations.IsInt());
-		maxIterations = valueof_maxIterations.GetInt();
-	}
-	else
-	{
-		maxIterations = 500000000;
-	}
-	// maxIterationsK
-	if (options.HasMember("maxIterationsK"))
-	{
-		const rapidjson::Value& valueof_maxIterationsK = options["maxIterationsK"];
-		assert(valueof_maxIterationsK.IsInt());
-		maxIterationsK = valueof_maxIterationsK.GetInt();
-	}
-	else
-	{
-		maxIterationsK = 1000;
-	}
-	// epsilon
-	if (options.HasMember("epsilon"))
-	{
-		const rapidjson::Value& valueof_epsilon = options["epsilon"];
-		assert(valueof_epsilon.IsDouble());
-		epsilon = valueof_epsilon.GetDouble();
-	}
-	else
-	{
-		epsilon = 1.0E-8;
-	}
+	n = 0;
+	k = 0;
+	assert(options.HasMember("stopTime"));
+	const rapidjson::Value& valueof_stopTime = options["stopTime"];
+	assert(valueof_stopTime.IsDouble());
+	stopTime = valueof_stopTime.GetDouble();
+	assert(options.HasMember("maxIterations"));
+	const rapidjson::Value& valueof_maxIterations = options["maxIterations"];
+	assert(valueof_maxIterations.IsInt());
+	maxIterations = valueof_maxIterations.GetInt();
 	deltat = 0.001;
 
 	// Copy node coordinates
@@ -434,7 +388,7 @@ void IterativeHeatEquation::computeFaceConductivity() noexcept
 void IterativeHeatEquation::computeResidual() noexcept
 {
 	double reduction0(-numeric_limits<double>::max());
-	#pragma omp parallel for reduction(min:reduction0)
+	#pragma omp parallel for reduction(max:reduction0)
 	for (size_t jCells=0; jCells<nbCells; jCells++)
 	{
 		reduction0 = iterativeheatequationfreefuncs::maxR0(reduction0, std::abs(u_nplus1_kplus1[jCells] - u_nplus1_k[jCells]));

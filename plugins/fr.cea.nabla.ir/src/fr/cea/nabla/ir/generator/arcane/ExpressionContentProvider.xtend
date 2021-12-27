@@ -24,6 +24,7 @@ import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IntConstant
 import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.IrPackage
 import fr.cea.nabla.ir.ir.IrType
 import fr.cea.nabla.ir.ir.ItemIndex
 import fr.cea.nabla.ir.ir.Iterator
@@ -38,8 +39,8 @@ import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.ir.ir.VectorConstant
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
-import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
+import static extension fr.cea.nabla.ir.generator.arcane.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.generator.arcane.VariableExtensions.*
 
 class ExpressionContentProvider
@@ -108,7 +109,7 @@ class ExpressionContentProvider
 			if (call.args.empty)
 				call.connectivity.nbElemsVar
 			else
-				'''mesh->«call.accessor».size()'''
+				'''m_mesh->«call.accessor».size()'''
 		}
 		else
 			'''1'''
@@ -129,7 +130,9 @@ class ExpressionContentProvider
 		}
 		else
 		{
-			if (target.linearAlgebra && !(iterators.empty && indices.empty))
+			if (target.global && target.type.dimension == 0 && eContainingFeature !== IrPackage.Literals.AFFECTATION__LEFT)
+				'''«codeName»()''' // get the value of a VariableScalar...
+			else if (target.linearAlgebra && !(iterators.empty && indices.empty))
 				'''«codeName».getValue(«formatIteratorsAndIndices(target.type, iterators, indices)»)'''
 			else
 				'''«codeName»«formatIteratorsAndIndices(target.type, iterators, indices)»'''

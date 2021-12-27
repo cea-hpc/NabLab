@@ -117,56 +117,20 @@ HeatEquation::jsonInit(const char* jsonContent)
 	assert(valueof_outputPath.IsString());
 	outputPath = valueof_outputPath.GetString();
 	writer = new PvdFileWriter2D("HeatEquation", outputPath);
-	// outputPeriod
 	assert(options.HasMember("outputPeriod"));
 	const rapidjson::Value& valueof_outputPeriod = options["outputPeriod"];
 	assert(valueof_outputPeriod.IsInt());
 	outputPeriod = valueof_outputPeriod.GetInt();
 	lastDump = numeric_limits<int>::min();
-	// stopTime
-	if (options.HasMember("stopTime"))
-	{
-		const rapidjson::Value& valueof_stopTime = options["stopTime"];
-		assert(valueof_stopTime.IsDouble());
-		stopTime = valueof_stopTime.GetDouble();
-	}
-	else
-	{
-		stopTime = 0.1;
-	}
-	// maxIterations
-	if (options.HasMember("maxIterations"))
-	{
-		const rapidjson::Value& valueof_maxIterations = options["maxIterations"];
-		assert(valueof_maxIterations.IsInt());
-		maxIterations = valueof_maxIterations.GetInt();
-	}
-	else
-	{
-		maxIterations = 500;
-	}
-	// PI
-	if (options.HasMember("PI"))
-	{
-		const rapidjson::Value& valueof_PI = options["PI"];
-		assert(valueof_PI.IsDouble());
-		PI = valueof_PI.GetDouble();
-	}
-	else
-	{
-		PI = 3.1415926;
-	}
-	// alpha
-	if (options.HasMember("alpha"))
-	{
-		const rapidjson::Value& valueof_alpha = options["alpha"];
-		assert(valueof_alpha.IsDouble());
-		alpha = valueof_alpha.GetDouble();
-	}
-	else
-	{
-		alpha = 1.0;
-	}
+	n = 0;
+	assert(options.HasMember("stopTime"));
+	const rapidjson::Value& valueof_stopTime = options["stopTime"];
+	assert(valueof_stopTime.IsDouble());
+	stopTime = valueof_stopTime.GetDouble();
+	assert(options.HasMember("maxIterations"));
+	const rapidjson::Value& valueof_maxIterations = options["maxIterations"];
+	assert(valueof_maxIterations.IsInt());
+	maxIterations = valueof_maxIterations.GetInt();
 
 	// Copy node coordinates
 	const auto& gNodes = mesh.getGeometry()->getNodes();

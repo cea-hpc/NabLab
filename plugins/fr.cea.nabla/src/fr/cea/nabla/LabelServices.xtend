@@ -44,7 +44,6 @@ import fr.cea.nabla.nabla.Modulo
 import fr.cea.nabla.nabla.Mul
 import fr.cea.nabla.nabla.NextTimeIteratorRef
 import fr.cea.nabla.nabla.Not
-import fr.cea.nabla.nabla.OptionDeclaration
 import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
@@ -66,7 +65,6 @@ class LabelServices
 {
 	/* JOBS & INSTRUCTIONS ***********************************/
 	static def dispatch String getLabel(Job it) { name + ' : ' + instruction?.label }
-	static def dispatch String getLabel(OptionDeclaration it) { if (value === null) variable?.name else variable?.name + '=' + value.label }
 	static def dispatch String getLabel(SimpleVarDeclaration it) { if (value === null) variable?.name else variable?.name + '=' + value.label }
 	static def dispatch String getLabel(VarGroupDeclaration it) { type?.label + ' ' + variables?.map[x|x?.name].join(', ') }
 	static def dispatch String getLabel(InstructionBlock it) { '{ ... }' }

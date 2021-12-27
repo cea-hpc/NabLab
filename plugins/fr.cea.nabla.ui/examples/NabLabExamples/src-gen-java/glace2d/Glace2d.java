@@ -27,13 +27,13 @@ public final class Glace2d
 	int n;
 	double stopTime;
 	int maxIterations;
-	double gamma;
-	double xInterface;
-	double deltatCfl;
-	double rhoIniZg;
-	double rhoIniZd;
-	double pIniZg;
-	double pIniZd;
+	static final double gamma = 1.4;
+	static final double xInterface = 0.5;
+	static final double deltatCfl = 0.4;
+	static final double rhoIniZg = 1.0;
+	static final double rhoIniZd = 0.125;
+	static final double pIniZg = 1.0;
+	static final double pIniZd = 0.1;
 	double t_n;
 	double t_nplus1;
 	double t_n0;
@@ -91,78 +91,15 @@ public final class Glace2d
 		assert(valueof_outputPeriod.isJsonPrimitive());
 		outputPeriod = valueof_outputPeriod.getAsJsonPrimitive().getAsInt();
 		lastDump = Integer.MIN_VALUE;
-		if (options.has("stopTime"))
-		{
-			final JsonElement valueof_stopTime = options.get("stopTime");
-			assert(valueof_stopTime.isJsonPrimitive());
-			stopTime = valueof_stopTime.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			stopTime = 0.2;
-		if (options.has("maxIterations"))
-		{
-			final JsonElement valueof_maxIterations = options.get("maxIterations");
-			assert(valueof_maxIterations.isJsonPrimitive());
-			maxIterations = valueof_maxIterations.getAsJsonPrimitive().getAsInt();
-		}
-		else
-			maxIterations = 20000;
-		if (options.has("gamma"))
-		{
-			final JsonElement valueof_gamma = options.get("gamma");
-			assert(valueof_gamma.isJsonPrimitive());
-			gamma = valueof_gamma.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			gamma = 1.4;
-		if (options.has("xInterface"))
-		{
-			final JsonElement valueof_xInterface = options.get("xInterface");
-			assert(valueof_xInterface.isJsonPrimitive());
-			xInterface = valueof_xInterface.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			xInterface = 0.5;
-		if (options.has("deltatCfl"))
-		{
-			final JsonElement valueof_deltatCfl = options.get("deltatCfl");
-			assert(valueof_deltatCfl.isJsonPrimitive());
-			deltatCfl = valueof_deltatCfl.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			deltatCfl = 0.4;
-		if (options.has("rhoIniZg"))
-		{
-			final JsonElement valueof_rhoIniZg = options.get("rhoIniZg");
-			assert(valueof_rhoIniZg.isJsonPrimitive());
-			rhoIniZg = valueof_rhoIniZg.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			rhoIniZg = 1.0;
-		if (options.has("rhoIniZd"))
-		{
-			final JsonElement valueof_rhoIniZd = options.get("rhoIniZd");
-			assert(valueof_rhoIniZd.isJsonPrimitive());
-			rhoIniZd = valueof_rhoIniZd.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			rhoIniZd = 0.125;
-		if (options.has("pIniZg"))
-		{
-			final JsonElement valueof_pIniZg = options.get("pIniZg");
-			assert(valueof_pIniZg.isJsonPrimitive());
-			pIniZg = valueof_pIniZg.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			pIniZg = 1.0;
-		if (options.has("pIniZd"))
-		{
-			final JsonElement valueof_pIniZd = options.get("pIniZd");
-			assert(valueof_pIniZd.isJsonPrimitive());
-			pIniZd = valueof_pIniZd.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			pIniZd = 0.1;
+		n = 0;
+		assert(options.has("stopTime"));
+		final JsonElement valueof_stopTime = options.get("stopTime");
+		assert(valueof_stopTime.isJsonPrimitive());
+		stopTime = valueof_stopTime.getAsJsonPrimitive().getAsDouble();
+		assert(options.has("maxIterations"));
+		final JsonElement valueof_maxIterations = options.get("maxIterations");
+		assert(valueof_maxIterations.isJsonPrimitive());
+		maxIterations = valueof_maxIterations.getAsJsonPrimitive().getAsInt();
 		X_n = new double[nbNodes][2];
 		X_nplus1 = new double[nbNodes][2];
 		X_n0 = new double[nbNodes][2];

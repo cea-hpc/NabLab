@@ -12,8 +12,8 @@ package fr.cea.nabla.ir.generator.arcane
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.ConnectivityCall
-import fr.cea.nabla.ir.ir.Container
 import fr.cea.nabla.ir.ir.Exit
+import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.If
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.InstructionBlock
@@ -25,23 +25,24 @@ import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.Return
 import fr.cea.nabla.ir.ir.SetDefinition
-import fr.cea.nabla.ir.ir.SetRef
 import fr.cea.nabla.ir.ir.VariableDeclaration
 import fr.cea.nabla.ir.ir.While
 
 import static fr.cea.nabla.ir.generator.arcane.TypeContentProvider.*
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
-import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
+import static extension fr.cea.nabla.ir.generator.arcane.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.generator.arcane.ExpressionContentProvider.*
+import static extension fr.cea.nabla.ir.generator.arcane.ItemIndexAndIdValueContentProvider.*
+import static extension fr.cea.nabla.ir.generator.arcane.VariableExtensions.*
 
 class InstructionContentProvider
 {
 	static def dispatch CharSequence getContent(VariableDeclaration it)
 	'''
 		«IF variable.type.baseTypeConstExpr»
-			«getTypeName(variable.type, variable.const)» «variable.name»«IF variable.defaultValue !== null»(«variable.defaultValue.content»)«ENDIF»;
+			«getTypeName(variable.type, variable.const)» «variable.codeName»«getVariableDefaultValue(variable.defaultValue)»;
 		«ELSE»
 			throw Exception("Not Yet Implemented");
 		«ENDIF»
@@ -91,11 +92,14 @@ class InstructionContentProvider
 		«ENDIF»
 	'''
 
+	// no index definition in Arcane => item instead
 	static def dispatch CharSequence getContent(ItemIndexDefinition it)
 	''''''
 
 	static def dispatch CharSequence getContent(ItemIdDefinition it)
-	''''''
+	'''
+		auto «id.name»(«value.content»);
+	'''
 
 	static def dispatch CharSequence getContent(SetDefinition it)
 	{
@@ -133,12 +137,12 @@ class InstructionContentProvider
 
 	private static def getSetDefinitionContent(String setName, ConnectivityCall call)
 	'''
-		const auto «setName»(mesh->«call.accessor»);
+		const auto «setName»(m_mesh->«call.accessor»);
 	'''
 
 	private static def getParallelLoopContent(Iterator iterator, Instruction loopBody)
 	'''
-		arcaneParallelForeach(«getContainerCall(iterator.container)», [&](«iterator.container.itemType.name.toFirstUpper»VectorView view)
+		arcaneParallelForeach(«iterator.container.content», [&](«iterator.container.itemType.name.toFirstUpper»VectorView view)
 		{
 			ENUMERATE_«iterator.container.itemType.name.toUpperCase»(«iterator.index.itemName», view)
 			{
@@ -149,15 +153,20 @@ class InstructionContentProvider
 
 	private static def getSequentialLoopContent(Iterator iterator, Instruction loopBody)
 	'''
-		«IF iterator.container.connectivityCall.args.empty»
-			ENUMERATE_«iterator.container.itemType.name.toUpperCase»(«iterator.index.itemName», view)
+		«val c = iterator.container»
+		«IF c.connectivityCall.args.empty»
+			ENUMERATE_«iterator.container.itemType.name.toUpperCase»(«iterator.index.itemName», «c.content»)
 			{
 				«loopBody.innerContent»
 			}
 		«ELSE»
-			for («iterator.container.itemType.name.toFirstUpper»LocalId «iterator.index.itemName» : «getContainerCall(iterator.container)»)
 			{
-				«loopBody.innerContent»
+				«IF iterator.container instanceof ConnectivityCall»«getSetDefinitionContent(iterator.container.uniqueName, iterator.container as ConnectivityCall)»«ENDIF»
+				const size_t «iterator.container.nbElemsVar»(«iterator.container.uniqueName».size());
+				for (size_t «iterator.index.name»=0; «iterator.index.name»<«iterator.container.nbElemsVar»; «iterator.index.name»++)
+				{
+					«loopBody.innerContent»
+				}
 			}
 		«ENDIF»
 	'''
@@ -170,12 +179,14 @@ class InstructionContentProvider
 		}
 	'''
 
-	private static def getContainerCall(Container c)
+	private static def getVariableDefaultValue(Expression e)
 	{
-		switch c
+		if (e === null) ''''''
+		else
 		{
-			SetRef: c.uniqueName
-			ConnectivityCall: '''m_mesh->get«c.connectivity.name.toFirstUpper»(«c.args.map['*' + itemName].join(', ')»)'''
+			val econtent = e.content
+			if (econtent.charAt(0).compareTo('{') == 0) econtent
+			else '''(«econtent»)'''
 		}
 	}
 }

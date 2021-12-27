@@ -16,7 +16,6 @@ import fr.cea.nabla.nabla.ArgOrVar
 import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.NablaModule
-import fr.cea.nabla.nabla.OptionDeclaration
 import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.nabla.SimpleVar
 import fr.cea.nabla.nabla.SimpleVarDeclaration
@@ -24,15 +23,18 @@ import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.Var
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.nablagen.AdditionalModule
+import fr.cea.nabla.nablagen.ExtensionConfig
 import fr.cea.nabla.nablagen.NablagenApplication
 import fr.cea.nabla.nablagen.NablagenModule
 import fr.cea.nabla.nablagen.NablagenPackage
+import fr.cea.nabla.nablagen.NablagenProvider
 import fr.cea.nabla.nablagen.OutputVar
 import fr.cea.nabla.nablagen.VtkOutput
 import java.util.ArrayList
 import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
+import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.Scopes
@@ -101,6 +103,26 @@ class NablagenScopeProvider extends AbstractNablagenScopeProvider
 				else
 					IScope.NULLSCOPE
 			}
+			case NablagenPackage.Literals.EXTENSION_CONFIG__PROVIDER:
+			{
+				val existingScope = super.getScope(context, r)
+				if (context instanceof ExtensionConfig)
+				{
+					val extensionConfig = context as ExtensionConfig
+					new FilteringScope(existingScope, [e |
+						var t = e.EObjectOrProxy as NablagenProvider
+						if (t.eIsProxy)
+							t = EcoreUtil.resolve(e.EObjectOrProxy, context) as NablagenProvider
+						if (t.eIsProxy)
+							// no proxy resolution => no filter
+							true
+						else
+							t.extension.name == extensionConfig.extension.name
+					])
+				}
+				else
+					existingScope
+			}
 			default: super.getScope(context, r)
 		}
 	}
@@ -160,7 +182,6 @@ class NablagenScopeProvider extends AbstractNablagenScopeProvider
 		{
 			switch d
 			{
-				OptionDeclaration case checkScalar(d.type, primitiveTypes): candidates += d.variable
 				SimpleVarDeclaration case checkScalar(d.type, primitiveTypes): candidates += d.variable
 				VarGroupDeclaration case checkScalar(d.type, primitiveTypes): candidates += d.variables.filter(SimpleVar)
 			}

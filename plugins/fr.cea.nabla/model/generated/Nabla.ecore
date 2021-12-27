@@ -56,24 +56,18 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="iterationBlock" eType="#//IterationBlock"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="VarDeclaration">
+  <eClassifiers xsi:type="ecore:EClass" name="VarDeclaration" eSuperTypes="#//Instruction">
     <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//BaseType"
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Instruction"/>
-  <eClassifiers xsi:type="ecore:EClass" name="OptionDeclaration" eSuperTypes="#//VarDeclaration">
+  <eClassifiers xsi:type="ecore:EClass" name="SimpleVarDeclaration" eSuperTypes="#//VarDeclaration">
     <eStructuralFeatures xsi:type="ecore:EReference" name="variable" eType="#//SimpleVar"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="value" eType="#//Expression"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="SimpleVarDeclaration" eSuperTypes="#//VarDeclaration #//Instruction">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="variable" eType="#//SimpleVar"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="value" eType="#//Expression"
-        containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="VarGroupDeclaration" eSuperTypes="#//VarDeclaration #//Instruction">
+  <eClassifiers xsi:type="ecore:EClass" name="VarGroupDeclaration" eSuperTypes="#//VarDeclaration">
     <eStructuralFeatures xsi:type="ecore:EReference" name="variables" upperBound="-1"
         eType="#//Var" containment="true"/>
   </eClassifiers>

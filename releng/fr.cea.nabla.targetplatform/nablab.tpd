@@ -55,15 +55,14 @@ location sirius "https://download.eclipse.org/sirius/updates/releases/6.5.1/2020
 }
 
 location gmf-runtime-notation "http://download.eclipse.org/modeling/gmp/gmf-notation/updates/releases/" {
-	org.eclipse.gmf.runtime.notation.feature.group [1.13.0,2.0.0)
+	org.eclipse.gmf.runtime.notation.feature.group [1.13.0,1.14.0)
 }
 
 location gmf-runtime-diagram "https://download.eclipse.org/modeling/gmp/gmf-runtime/updates/releases/" {
-	org.eclipse.gmf.runtime.sdk.feature.group [1.14.0,2.0.0)
+	org.eclipse.gmf.runtime.sdk.feature.group [1.13.0,1.14.0)
 }
 
 location "https://download.eclipse.org/tools/orbit/downloads/drops/R20210825222808/repository" {
-	org.apache.batik.script [1.14.0,2.0.0)
 	org.hamcrest [2.2.0,3.0.0)
 	org.assertj [3.20.2,4.0.0)
 }

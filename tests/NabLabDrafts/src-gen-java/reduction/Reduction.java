@@ -17,7 +17,7 @@ public final class Reduction
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
 	@SuppressWarnings("unused")
-	private final int nbNodes, maxCellsOfNode, nbCells, maxNodesOfCell;
+	private final int nbNodes, maxNbCellsOfNode, nbCells, maxNbNodesOfCell;
 
 	// Options and global variables
 	int n;
@@ -36,9 +36,9 @@ public final class Reduction
 		// Mesh and mesh variables initialization
 		mesh = aMesh;
 		nbNodes = mesh.getNbNodes();
-		maxCellsOfNode = CartesianMesh2D.MaxNbCellsOfNode;
+		maxNbCellsOfNode = CartesianMesh2D.MaxNbCellsOfNode;
 		nbCells = mesh.getNbCells();
-		maxNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
+		maxNbNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
 	}
 
 	public void jsonInit(final String jsonContent)
@@ -49,7 +49,7 @@ public final class Reduction
 		X = new double[nbNodes][2];
 		Vnode_n = new double[nbNodes][2];
 		Vnode_nplus1 = new double[nbNodes][2];
-		lpc_n = new double[nbNodes][maxCellsOfNode][2];
+		lpc_n = new double[nbNodes][maxNbCellsOfNode][2];
 
 		// Copy node coordinates
 		double[][] gNodes = mesh.getGeometry().getNodes();
@@ -153,10 +153,10 @@ public final class Reduction
 
 	private static double[] sumR1(double[] a, double[] b)
 	{
-		return plus(a, b);
+		return operatorAdd(a, b);
 	}
 
-	private static double[] plus(double[] a, double[] b)
+	private static double[] operatorAdd(double[] a, double[] b)
 	{
 		double[] result = new double[a.length];
 		for (int ix0=0; ix0<a.length; ix0++)

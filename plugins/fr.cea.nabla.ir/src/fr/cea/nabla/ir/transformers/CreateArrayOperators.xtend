@@ -17,6 +17,7 @@ import fr.cea.nabla.ir.ir.ContractedIf
 import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.Instruction
+import fr.cea.nabla.ir.ir.Interval
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrPackage
@@ -28,12 +29,37 @@ import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.ir.ir.VectorConstant
 import java.util.ArrayList
 import org.eclipse.emf.ecore.util.EcoreUtil
-import fr.cea.nabla.ir.ir.Interval
 
+/**
+ * Unary/binary operators on non scalar types are replaced by functions within loops.
+ * Operators are renamed to have a valid function name in any language.
+ * Note that specializations can be done by languages supporting operator overload.
+ */
 class CreateArrayOperators extends IrTransformationStep
 {
 	val opUtils = new OperatorUtils
 	val expressionsToDelete = new ArrayList<Expression>
+
+	static val UnaryOperatorNames = #{
+		'-' -> 'Minus',
+		'!' -> 'Not'
+	}
+
+	static val BinaryOperatorNames = #{
+		'||' -> 'Or',
+		'&&' -> 'And',
+		'==' -> 'Equal',
+		'!=' -> 'NotEqual',
+		'>=' -> 'Gte',
+		'<=' -> 'Lte',
+		'>' -> 'Gt',
+		'<' -> 'Lt',
+		'+' -> 'Add',
+		'-' -> 'Sub',
+		'*' -> 'Mult',
+		'/' -> 'Div',
+		'%' -> 'Mod'
+	}
 
 	new()
 	{
@@ -44,27 +70,39 @@ class CreateArrayOperators extends IrTransformationStep
 	{
 		trace('    IR -> IR: ' + description)
 
-		for (o : ir.eAllContents.filter[x | x instanceof Instruction || x instanceof Variable].toIterable)
-			for (r : o.eClass.EAllReferences.filter[x | x.EType == IrPackage.Literals.EXPRESSION])
-			{
-				// No list of expressions in IR for the moment
-				if (r.many) throw new RuntimeException("Not yet implemented")
-
-				val refValue = o.eGet(r)
-				if (refValue !== null)
+		var boolean ret = false
+		try
+		{
+			for (o : ir.eAllContents.filter[x | x instanceof Instruction || x instanceof Variable].toIterable)
+				for (r : o.eClass.EAllReferences.filter[x | x.EType == IrPackage.Literals.EXPRESSION])
 				{
-					// Do not filter on scalar expressions :
-					// a function can return a scalar type and have array arguments
-					// f(R[3] x) : R
-					val expr = refValue as Expression
-					o.eSet(r, createArrayOperations(expr))
+					// No list of expressions in IR for the moment
+					if (r.many) throw new RuntimeException("Not yet implemented")
+	
+					val refValue = o.eGet(r)
+					if (refValue !== null)
+					{
+						// Do not filter on scalar expressions :
+						// a function can return a scalar type and have array arguments
+						// f(R[3] x) : R
+						val expr = refValue as Expression
+						o.eSet(r, createArrayOperations(expr))
+					}
 				}
-			}
+	
+			for (e : expressionsToDelete)
+				EcoreUtil.delete(e)
 
-		for (e : expressionsToDelete)
-			EcoreUtil.delete(e)
+			ret = true
+		}
+		catch (Exception e)
+		{
+			trace(e.class.name + ": " + e.message)
+			trace(IrUtils.getStackTrace(e))
+			ret = false
+		}
 
-		return true
+		return ret
 	}
 
 	private def Expression createArrayOperations(Expression e)
@@ -160,7 +198,9 @@ class CreateArrayOperators extends IrTransformationStep
 
 	private def create IrFactory::eINSTANCE.createInternFunction toIrUnaryOperation(PrimitiveType primitiveType, int dimension, String op)
 	{
-		name = OperatorUtils.OperatorPrefix + op
+		val suffix = UnaryOperatorNames.get(op)
+		if (suffix === null) throw new RuntimeException("Operator not supported: " + op)
+		name = OperatorUtils.OperatorPrefix + suffix
 
 		// create size variables
 		for (i : 0..<dimension)
@@ -211,7 +251,9 @@ class CreateArrayOperators extends IrTransformationStep
 
 	private def create IrFactory::eINSTANCE.createInternFunction toIrBinaryOperation(PrimitiveType aPrimitive, PrimitiveType bPrimitive, int dimension, OperatorUtils.BinOpType binOpType, String op)
 	{
-		name = OperatorUtils.OperatorPrefix + op
+		val suffix = BinaryOperatorNames.get(op)
+		if (suffix === null) throw new RuntimeException("Operator not supported: " + op)
+		name = OperatorUtils.OperatorPrefix + suffix
 
 		// create size variables
 		for (i : 0..<dimension)

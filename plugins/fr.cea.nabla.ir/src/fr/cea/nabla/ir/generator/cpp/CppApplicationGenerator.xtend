@@ -489,9 +489,9 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	private def getConnectivityAccessor(Connectivity c)
 	{
 		if (c.inTypes.empty)
-			'''mesh.getNb«c.name.toFirstUpper»()'''
+			'''mesh.get«c.nbElemsVar.toFirstUpper»()'''
 		else
-			'''CartesianMesh2D::MaxNb«c.name.toFirstUpper»'''
+			'''CartesianMesh2D::«c.nbElemsVar.toFirstUpper»'''
 	}
 
 	private def isLevelDB(IrModule it)

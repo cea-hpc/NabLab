@@ -22,7 +22,7 @@ class JsonContentProvider
 		'valueof_' + varName
 	}
 
-	static def getJsonContent(String name, BaseType type, Expression defaultValue)
+	static def getJsonContent(String name, BaseType type)
 	'''
 		assert(options.has("«name»"));
 		final JsonElement «name.jsonName» = options.get("«name»");

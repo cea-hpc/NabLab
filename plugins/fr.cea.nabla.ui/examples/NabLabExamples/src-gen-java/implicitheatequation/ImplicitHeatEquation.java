@@ -17,7 +17,7 @@ public final class ImplicitHeatEquation
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
 	@SuppressWarnings("unused")
-	private final int nbNodes, nbCells, nbFaces, maxNodesOfCell, maxNodesOfFace, maxCellsOfFace, maxNeighbourCells;
+	private final int nbNodes, nbCells, nbFaces, maxNbNodesOfCell, maxNbNodesOfFace, maxNbCellsOfFace, maxNbNeighbourCells;
 
 	// Options and global variables
 	private PvdFileWriter2D writer;
@@ -51,10 +51,10 @@ public final class ImplicitHeatEquation
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
 		nbFaces = mesh.getNbFaces();
-		maxNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
-		maxNodesOfFace = CartesianMesh2D.MaxNbNodesOfFace;
-		maxCellsOfFace = CartesianMesh2D.MaxNbCellsOfFace;
-		maxNeighbourCells = CartesianMesh2D.MaxNbNeighbourCells;
+		maxNbNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
+		maxNbNodesOfFace = CartesianMesh2D.MaxNbNodesOfFace;
+		maxNbCellsOfFace = CartesianMesh2D.MaxNbCellsOfFace;
+		maxNbNeighbourCells = CartesianMesh2D.MaxNbNeighbourCells;
 	}
 
 	public void jsonInit(final String jsonContent)
@@ -123,7 +123,7 @@ public final class ImplicitHeatEquation
 					final int pPlus1Id = nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFaceF)%nbNodesOfFaceF];
 					final int pNodes = pId;
 					final int pPlus1Nodes = pPlus1Id;
-					reduction0 = sumR0(reduction0, norm(minus(X[pNodes], X[pPlus1Nodes])));
+					reduction0 = sumR0(reduction0, norm(operatorSub(X[pNodes], X[pPlus1Nodes])));
 				}
 			}
 			faceLength[fFaces] = 0.5 * reduction0;
@@ -211,7 +211,7 @@ public final class ImplicitHeatEquation
 					reduction0 = sumR1(reduction0, X[pNodes]);
 				}
 			}
-			Xc[cCells] = multiply(0.25, reduction0);
+			Xc[cCells] = operatorMult(0.25, reduction0);
 		});
 	}
 
@@ -290,7 +290,7 @@ public final class ImplicitHeatEquation
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
-			if (norm(minus(Xc[cCells], vectOne)) < 0.5)
+			if (norm(operatorSub(Xc[cCells], vectOne)) < 0.5)
 				u_n.setValue(cCells, u0);
 			else
 				u_n.setValue(cCells, 0.0);
@@ -327,7 +327,7 @@ public final class ImplicitHeatEquation
 					final int dCells = dId;
 					final int fId = mesh.getCommonFace(cId, dId);
 					final int fFaces = fId;
-					final double alphaExtraDiag = -deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / norm(minus(Xc[cCells], Xc[dCells]));
+					final double alphaExtraDiag = -deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / norm(operatorSub(Xc[cCells], Xc[dCells]));
 					alpha.setValue(cCells, dCells, alphaExtraDiag);
 					alphaDiag = alphaDiag + alphaExtraDiag;
 				}
@@ -388,7 +388,7 @@ public final class ImplicitHeatEquation
 
 	private static double[] sumR1(double[] a, double[] b)
 	{
-		return plus(a, b);
+		return operatorAdd(a, b);
 	}
 
 	private static double minR0(double a, double b)
@@ -406,7 +406,7 @@ public final class ImplicitHeatEquation
 		return a * b;
 	}
 
-	private static double[] plus(double[] a, double[] b)
+	private static double[] operatorAdd(double[] a, double[] b)
 	{
 		double[] result = new double[a.length];
 		for (int ix0=0; ix0<a.length; ix0++)
@@ -416,7 +416,7 @@ public final class ImplicitHeatEquation
 		return result;
 	}
 
-	private static double[] multiply(double a, double[] b)
+	private static double[] operatorMult(double a, double[] b)
 	{
 		double[] result = new double[b.length];
 		for (int ix0=0; ix0<b.length; ix0++)
@@ -426,7 +426,7 @@ public final class ImplicitHeatEquation
 		return result;
 	}
 
-	private static double[] minus(double[] a, double[] b)
+	private static double[] operatorSub(double[] a, double[] b)
 	{
 		double[] result = new double[a.length];
 		for (int ix0=0; ix0<a.length; ix0++)

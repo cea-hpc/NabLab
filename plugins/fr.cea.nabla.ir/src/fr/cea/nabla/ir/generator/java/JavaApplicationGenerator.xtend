@@ -20,7 +20,6 @@ import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.Variable
-import fr.cea.nabla.ir.transformers.ReplaceOperatorNames
 import java.util.ArrayList
 
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
@@ -45,10 +44,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 
 	override getName() { 'Java' }
 
-	override getIrTransformationSteps()
-	{
-		#[new ReplaceOperatorNames]
-	}
+	override getIrTransformationSteps() { #[] }
 
 	override getGenerationContents(IrRoot ir)
 	{
@@ -150,7 +146,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 						«v.name»«getJavaAllocation(v.type, v.name)»;
 					«ENDIF»
 					«IF v.option»
-						«getJsonContent(v.name, v.type as BaseType, v.defaultValue)»
+						«getJsonContent(v.name, v.type as BaseType)»
 					«ELSEIF v.defaultValue !== null»
 						«v.name» = «getContent(v.defaultValue)»;
 					«ENDIF»
@@ -216,7 +212,9 @@ class JavaApplicationGenerator implements ApplicationGenerator
 
 					// Module instanciation(s)
 					«FOR m : irRoot.modules»
-						«m.instanciation»
+						«m.className» «m.name» = new «m.className»(mesh);
+						if (o.has("«m.name»")) «m.name».jsonInit(o.get("«m.name»").toString());
+						«IF !m.main»«m.name».setMainModule(«irRoot.mainModule.name»);«ENDIF»
 					«ENDFOR»
 
 					// Start simulation
@@ -327,19 +325,12 @@ class JavaApplicationGenerator implements ApplicationGenerator
 		};
 	'''
 
-	private def getInstanciation(IrModule it)
-	'''
-		«className» «name» = new «className»(mesh);
-		if (o.has("«name»")) «name».jsonInit(o.get("«name»").toString());
-		«IF !main»«name».setMainModule(«irRoot.mainModule.name»);«ENDIF»
-	'''
-
 	private def getConnectivityAccessor(Connectivity c)
 	{
 		if (c.inTypes.empty)
-			'''mesh.getNb«c.name.toFirstUpper»()'''
+			'''mesh.get«c.nbElemsVar.toFirstUpper»()'''
 		else
-			'''CartesianMesh2D.MaxNb«c.name.toFirstUpper»'''
+			'''CartesianMesh2D.«c.nbElemsVar.toFirstUpper»'''
 	}
 
 	private def isLevelDB(IrModule it)
@@ -352,7 +343,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 		val t = v.type
 		switch t
 		{
-			ConnectivityType: '''«v.name»«formatIteratorsAndIndices(t, #["i"])»'''
+			ConnectivityType: '''«v.name»[i]'''
 			LinearAlgebraType: '''«v.name».getValue(i)'''
 			default: throw new RuntimeException("Unexpected type: " + class.name)
 		}

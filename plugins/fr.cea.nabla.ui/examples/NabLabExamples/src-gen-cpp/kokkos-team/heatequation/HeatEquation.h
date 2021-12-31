@@ -36,11 +36,11 @@ template<size_t x>
 RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b);
 double sumR0(double a, double b);
 template<size_t x0>
-RealArray1D<x0> operator+(RealArray1D<x0> a, RealArray1D<x0> b);
+RealArray1D<x0> operatorAdd(RealArray1D<x0> a, RealArray1D<x0> b);
 template<size_t x0>
-RealArray1D<x0> operator*(double a, RealArray1D<x0> b);
+RealArray1D<x0> operatorMult(double a, RealArray1D<x0> b);
 template<size_t x0>
-RealArray1D<x0> operator-(RealArray1D<x0> a, RealArray1D<x0> b);
+RealArray1D<x0> operatorSub(RealArray1D<x0> a, RealArray1D<x0> b);
 }
 
 /******************** Module declaration ********************/
@@ -80,7 +80,7 @@ private:
 
 	// Mesh and mesh variables
 	CartesianMesh2D& mesh;
-	size_t nbNodes, nbCells, nbFaces, maxNodesOfCell, maxNodesOfFace, maxNeighbourCells;
+	size_t nbNodes, nbCells, nbFaces, maxNbNodesOfCell, maxNbNodesOfFace, maxNbNeighbourCells;
 
 	// Options and global variables
 	PvdFileWriter2D* writer;

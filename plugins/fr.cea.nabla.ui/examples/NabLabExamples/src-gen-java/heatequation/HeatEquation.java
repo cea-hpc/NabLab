@@ -17,7 +17,7 @@ public final class HeatEquation
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
 	@SuppressWarnings("unused")
-	private final int nbNodes, nbCells, nbFaces, maxNodesOfCell, maxNodesOfFace, maxNeighbourCells;
+	private final int nbNodes, nbCells, nbFaces, maxNbNodesOfCell, maxNbNodesOfFace, maxNbNeighbourCells;
 
 	// Options and global variables
 	private PvdFileWriter2D writer;
@@ -49,9 +49,9 @@ public final class HeatEquation
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
 		nbFaces = mesh.getNbFaces();
-		maxNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
-		maxNodesOfFace = CartesianMesh2D.MaxNbNodesOfFace;
-		maxNeighbourCells = CartesianMesh2D.MaxNbNeighbourCells;
+		maxNbNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
+		maxNbNodesOfFace = CartesianMesh2D.MaxNbNodesOfFace;
+		maxNbNeighbourCells = CartesianMesh2D.MaxNbNeighbourCells;
 	}
 
 	public void jsonInit(final String jsonContent)
@@ -114,7 +114,7 @@ public final class HeatEquation
 					final int j2Cells = j2Id;
 					final int cfId = mesh.getCommonFace(j1Id, j2Id);
 					final int cfFaces = cfId;
-					double reduction1 = (u_n[j2Cells] - u_n[j1Cells]) / norm(minus(center[j2Cells], center[j1Cells])) * surface[cfFaces];
+					double reduction1 = (u_n[j2Cells] - u_n[j1Cells]) / norm(operatorSub(center[j2Cells], center[j1Cells])) * surface[cfFaces];
 					reduction0 = sumR0(reduction0, reduction1);
 				}
 			}
@@ -142,7 +142,7 @@ public final class HeatEquation
 					final int rPlus1Id = nodesOfFaceF[(rNodesOfFaceF+1+nbNodesOfFaceF)%nbNodesOfFaceF];
 					final int rNodes = rId;
 					final int rPlus1Nodes = rPlus1Id;
-					reduction0 = sumR0(reduction0, norm(minus(X[rNodes], X[rPlus1Nodes])));
+					reduction0 = sumR0(reduction0, norm(operatorSub(X[rNodes], X[rPlus1Nodes])));
 				}
 			}
 			surface[fFaces] = 0.5 * reduction0;
@@ -207,7 +207,7 @@ public final class HeatEquation
 					reduction0 = sumR1(reduction0, X[rNodes]);
 				}
 			}
-			center[jCells] = multiply(0.25, reduction0);
+			center[jCells] = operatorMult(0.25, reduction0);
 		});
 	}
 
@@ -326,7 +326,7 @@ public final class HeatEquation
 
 	private static double[] sumR1(double[] a, double[] b)
 	{
-		return plus(a, b);
+		return operatorAdd(a, b);
 	}
 
 	private static double sumR0(double a, double b)
@@ -334,7 +334,7 @@ public final class HeatEquation
 		return a + b;
 	}
 
-	private static double[] plus(double[] a, double[] b)
+	private static double[] operatorAdd(double[] a, double[] b)
 	{
 		double[] result = new double[a.length];
 		for (int ix0=0; ix0<a.length; ix0++)
@@ -344,7 +344,7 @@ public final class HeatEquation
 		return result;
 	}
 
-	private static double[] multiply(double a, double[] b)
+	private static double[] operatorMult(double a, double[] b)
 	{
 		double[] result = new double[b.length];
 		for (int ix0=0; ix0<b.length; ix0++)
@@ -354,7 +354,7 @@ public final class HeatEquation
 		return result;
 	}
 
-	private static double[] minus(double[] a, double[] b)
+	private static double[] operatorSub(double[] a, double[] b)
 	{
 		double[] result = new double[a.length];
 		for (int ix0=0; ix0<a.length; ix0++)

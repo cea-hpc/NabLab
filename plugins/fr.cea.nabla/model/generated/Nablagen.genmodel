@@ -16,6 +16,7 @@
       <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//TargetType/Kokkos"/>
       <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//TargetType/KokkosTeamThread"/>
       <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//TargetType/Arcane"/>
+      <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//TargetType/Python"/>
     </genEnums>
     <genClasses ecoreClass="Nablagen.ecore#//NablagenRoot"/>
     <genClasses ecoreClass="Nablagen.ecore#//NablagenProviderList">

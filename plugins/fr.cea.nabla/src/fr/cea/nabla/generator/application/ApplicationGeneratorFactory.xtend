@@ -15,6 +15,7 @@ import fr.cea.nabla.ir.generator.ApplicationGenerator
 import fr.cea.nabla.ir.generator.arcane.ArcaneApplicationGenerator
 import fr.cea.nabla.ir.generator.cpp.CppApplicationGenerator
 import fr.cea.nabla.ir.generator.java.JavaApplicationGenerator
+import fr.cea.nabla.ir.generator.python.PythonApplicationGenerator
 import fr.cea.nabla.nablagen.NablagenApplication
 import fr.cea.nabla.nablagen.Target
 import java.util.ArrayList
@@ -28,6 +29,7 @@ class ApplicationGeneratorFactory
 		switch target.type
 		{
 			case JAVA: new JavaApplicationGenerator(application.levelDB !== null)
+			case PYTHON: new PythonApplicationGenerator
 			case ARCANE:
 			{
 				val cmakeVars = new ArrayList<Pair<String, String>>

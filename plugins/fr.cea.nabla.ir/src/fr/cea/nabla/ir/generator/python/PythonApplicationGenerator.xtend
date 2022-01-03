@@ -59,10 +59,11 @@ class PythonApplicationGenerator implements ApplicationGenerator
 	import sys
 	import json
 	import numpy as np
+	«IF providers.exists[x | x.extensionName == "Math"]»import math«ENDIF»
 	from «irRoot.mesh.className.toLowerCase» import «irRoot.mesh.className»
 	«IF irRoot.postProcessing !== null»from pvdfilewriter2d import PvdFileWriter2D«ENDIF»
 	«FOR provider : externalProviders»
-	from "«provider.className.toLowerCase» import «provider.className»"
+	from «provider.className.toLowerCase» import «provider.className»
 	«ENDFOR»
 
 	class «className»:
@@ -186,7 +187,7 @@ class PythonApplicationGenerator implements ApplicationGenerator
 				# Start simulation
 				«name».simulate()
 			else:
-				print("[ERROR] Wrong number of arguments: expected 1, actual " + len(args), file=sys.stderr)
+				print("[ERROR] Wrong number of arguments: expected 1, actual " + str(len(args)), file=sys.stderr)
 				print("        Expecting user data file name, for example «irRoot.name».json", file=sys.stderr)
 				exit(1)
 	«ENDIF»

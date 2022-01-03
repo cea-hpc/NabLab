@@ -82,11 +82,11 @@ class ExpressionContentProvider
 			// scalar type
 			value.content
 		else
-			'''np.full((«FOR s : type.baseSizes SEPARATOR ", "»«s.content»«ENDFOR»), dtype=«type.primitive.numpyType»)»'''
+			'''np.full((«FOR s : type.baseSizes SEPARATOR ", "»«s.content»«ENDFOR»), «value.content», dtype=np.«type.primitive.numpyType»)'''
 	}
 
 	static def dispatch CharSequence getContent(VectorConstant it)
-	'''np.array(«FOR v : values SEPARATOR ', '»«v.content»«ENDFOR», dtype=«type.primitive.numpyType»)'''
+	'''np.array(«FOR v : values SEPARATOR ', '»«v.content»«ENDFOR», dtype=np.«type.primitive.numpyType»)'''
 
 	static def dispatch CharSequence getContent(Cardinality it)
 	{

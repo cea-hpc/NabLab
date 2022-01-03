@@ -26,8 +26,11 @@ import fr.cea.nabla.ir.ir.SetDefinition
 import fr.cea.nabla.ir.ir.VariableDeclaration
 import fr.cea.nabla.ir.ir.While
 
+import static fr.cea.nabla.ir.generator.python.TypeContentProvider.*
+
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
+import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.python.ExpressionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.python.ItemIndexAndIdValueContentProvider.*
 
@@ -36,9 +39,11 @@ class InstructionContentProvider
 	static def dispatch CharSequence getContent(VariableDeclaration it)
 	'''
 		«IF variable.defaultValue === null»
-		# local variable «variable.name»
+			«IF !variable.type.scalar»
+				«variable.name»«getNumpyAllocation(variable.type)»
+			«ENDIF»
 		«ELSE»
-		«variable.name» = «variable.defaultValue.content»
+			«variable.name» = «variable.defaultValue.content»
 		«ENDIF»
 	'''
 
@@ -134,7 +139,7 @@ class InstructionContentProvider
 
 	private static def dispatch getNbElems(Iterator it)
 	{
-		PythonGeneratorUtils.getNbElemsVar(container.connectivityCall)
+		PythonGeneratorUtils.getNbElemsVar(container)
 	}
 
 	private static def dispatch getNbElems(Interval it)

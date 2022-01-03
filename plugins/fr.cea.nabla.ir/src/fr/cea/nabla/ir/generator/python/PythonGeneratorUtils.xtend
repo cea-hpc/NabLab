@@ -28,7 +28,14 @@ class PythonGeneratorUtils
 		switch f
 		{
 			InternFunction: 'self.__' + f.name
-			ExternFunction: 'self.' + f.provider.instanceName + '.__' + f.name
+			ExternFunction:
+				if (f.provider.extensionName == "Math")
+					if (f.name == "min" || f.name == "max")
+						f.name
+					else
+						'math.' + f.name
+				else
+					'self.' + f.provider.instanceName + '.__' + f.name
 		}
 	}
 
@@ -44,7 +51,10 @@ class PythonGeneratorUtils
 
 	static def getNbElemsVar(Container c)
 	{
-		"self.__" + ContainerExtensions.getNbElemsVar(c)
+		if (ContainerExtensions.getConnectivityCall(c).args.empty)
+			"self.__" + ContainerExtensions.getNbElemsVar(c)
+		else
+			ContainerExtensions.getNbElemsVar(c)
 	}
 
 	static def getNbElemsVar(Connectivity c)

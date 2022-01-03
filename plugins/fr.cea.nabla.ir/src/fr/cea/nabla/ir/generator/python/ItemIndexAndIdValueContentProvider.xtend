@@ -38,7 +38,7 @@ class ItemIndexAndIdValueContentProvider
 		val c = container
 		switch c
 		{
-			ConnectivityCall: '''mesh.«c.nbElemsVar»'''
+			ConnectivityCall: '''mesh.«c.accessor»'''
 			SetRef: '''«c.target.name»'''
 		}
 	}

@@ -212,9 +212,9 @@ class CartesianMesh2D:
                     cellsOfFace.append(self.__index2IdCell(i_f, 0))
                 else:
                     if (k_f % 2) == 0: # horizontal edge
-                        cellsOfFace.append(self.__index2IdCell(i_f, k_f / 2))
+                        cellsOfFace.append(self.__index2IdCell(i_f, k_f // 2))
                         if (i_f > 0): # Not bottom bound edge
-                            cellsOfFace.append(self.__index2IdCell(i_f - 1, k_f / 2))
+                            cellsOfFace.append(self.__index2IdCell(i_f - 1, k_f // 2))
                     else: # vertical edge (neither left bound nor right bound)
                         cellsOfFace.append(self.__index2IdCell(i_f, (((k_f - 1) // 2) - 1)))
                         cellsOfFace.append(self.__index2IdCell(i_f, ((k_f - 1) // 2)))

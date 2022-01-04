@@ -140,8 +140,8 @@ if __name__ == '__main__':
         # Start simulation
         simpleMeshExample.simulate()
     else:
-        println("[ERROR] Wrong number of arguments: expected 1, actual " + len(args), file=sys.stderr)
-        println("        Expecting user data file name, for example SimpleMeshExample.json", file=sys.stderr)
+        print("[ERROR] Wrong number of arguments: expected 1, actual " + str(len(args)), file=sys.stderr)
+        print("        Expecting user data file name, for example SimpleMeshExample.json", file=sys.stderr)
         exit(1)
 
     

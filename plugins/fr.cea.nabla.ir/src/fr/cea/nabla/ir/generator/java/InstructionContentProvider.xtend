@@ -163,7 +163,7 @@ class InstructionContentProvider
 			'''
 				{
 					«IF container instanceof ConnectivityCall»«getSetDefinitionContent(container.uniqueName, container as ConnectivityCall)»«ENDIF»
-					final int «getNbElems» = «container.uniqueName».length;
+					«IF !container.connectivityCall.args.empty»final int «getNbElems» = «container.uniqueName».length;«ENDIF»
 					«innerContent»
 				}
 			'''

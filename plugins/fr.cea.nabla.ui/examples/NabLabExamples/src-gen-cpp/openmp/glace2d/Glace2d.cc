@@ -760,7 +760,6 @@ void Glace2d::computeBoundaryConditions() noexcept
 	const RealArray2D<2,2> I({1.0, 0.0, 0.0, 1.0});
 	{
 		const auto topNodes(mesh.getTopNodes());
-		const size_t nbTopNodes(topNodes.size());
 		#pragma omp parallel for
 		for (size_t rTopNodes=0; rTopNodes<nbTopNodes; rTopNodes++)
 		{
@@ -775,7 +774,6 @@ void Glace2d::computeBoundaryConditions() noexcept
 	}
 	{
 		const auto bottomNodes(mesh.getBottomNodes());
-		const size_t nbBottomNodes(bottomNodes.size());
 		#pragma omp parallel for
 		for (size_t rBottomNodes=0; rBottomNodes<nbBottomNodes; rBottomNodes++)
 		{
@@ -790,7 +788,6 @@ void Glace2d::computeBoundaryConditions() noexcept
 	}
 	{
 		const auto leftNodes(mesh.getLeftNodes());
-		const size_t nbLeftNodes(leftNodes.size());
 		#pragma omp parallel for
 		for (size_t rLeftNodes=0; rLeftNodes<nbLeftNodes; rLeftNodes++)
 		{
@@ -808,7 +805,6 @@ void Glace2d::computeBoundaryConditions() noexcept
 	}
 	{
 		const auto rightNodes(mesh.getRightNodes());
-		const size_t nbRightNodes(rightNodes.size());
 		#pragma omp parallel for
 		for (size_t rRightNodes=0; rRightNodes<nbRightNodes; rRightNodes++)
 		{
@@ -835,7 +831,6 @@ void Glace2d::computeBt() noexcept
 {
 	{
 		const auto innerNodes(mesh.getInnerNodes());
-		const size_t nbInnerNodes(innerNodes.size());
 		#pragma omp parallel for
 		for (size_t rInnerNodes=0; rInnerNodes<nbInnerNodes; rInnerNodes++)
 		{
@@ -858,7 +853,6 @@ void Glace2d::computeMt() noexcept
 {
 	{
 		const auto innerNodes(mesh.getInnerNodes());
-		const size_t nbInnerNodes(innerNodes.size());
 		#pragma omp parallel for
 		for (size_t rInnerNodes=0; rInnerNodes<nbInnerNodes; rInnerNodes++)
 		{

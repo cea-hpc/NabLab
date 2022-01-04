@@ -742,7 +742,6 @@ void Glace2d::computeBoundaryConditions() noexcept
 	const RealArray2D<2,2> I({1.0, 0.0, 0.0, 1.0});
 	{
 		const auto topNodes(mesh.getTopNodes());
-		const size_t nbTopNodes(topNodes.size());
 		Kokkos::parallel_for(nbTopNodes, KOKKOS_LAMBDA(const size_t& rTopNodes)
 		{
 			const Id rId(topNodes[rTopNodes]);
@@ -756,7 +755,6 @@ void Glace2d::computeBoundaryConditions() noexcept
 	}
 	{
 		const auto bottomNodes(mesh.getBottomNodes());
-		const size_t nbBottomNodes(bottomNodes.size());
 		Kokkos::parallel_for(nbBottomNodes, KOKKOS_LAMBDA(const size_t& rBottomNodes)
 		{
 			const Id rId(bottomNodes[rBottomNodes]);
@@ -770,7 +768,6 @@ void Glace2d::computeBoundaryConditions() noexcept
 	}
 	{
 		const auto leftNodes(mesh.getLeftNodes());
-		const size_t nbLeftNodes(leftNodes.size());
 		Kokkos::parallel_for(nbLeftNodes, KOKKOS_LAMBDA(const size_t& rLeftNodes)
 		{
 			const Id rId(leftNodes[rLeftNodes]);
@@ -787,7 +784,6 @@ void Glace2d::computeBoundaryConditions() noexcept
 	}
 	{
 		const auto rightNodes(mesh.getRightNodes());
-		const size_t nbRightNodes(rightNodes.size());
 		Kokkos::parallel_for(nbRightNodes, KOKKOS_LAMBDA(const size_t& rRightNodes)
 		{
 			const Id rId(rightNodes[rRightNodes]);
@@ -813,7 +809,6 @@ void Glace2d::computeBt() noexcept
 {
 	{
 		const auto innerNodes(mesh.getInnerNodes());
-		const size_t nbInnerNodes(innerNodes.size());
 		Kokkos::parallel_for(nbInnerNodes, KOKKOS_LAMBDA(const size_t& rInnerNodes)
 		{
 			const Id rId(innerNodes[rInnerNodes]);
@@ -835,7 +830,6 @@ void Glace2d::computeMt() noexcept
 {
 	{
 		const auto innerNodes(mesh.getInnerNodes());
-		const size_t nbInnerNodes(innerNodes.size());
 		Kokkos::parallel_for(nbInnerNodes, KOKKOS_LAMBDA(const size_t& rInnerNodes)
 		{
 			const Id rId(innerNodes[rInnerNodes]);

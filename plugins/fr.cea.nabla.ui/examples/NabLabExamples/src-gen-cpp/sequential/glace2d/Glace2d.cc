@@ -742,7 +742,6 @@ void Glace2d::computeBoundaryConditions() noexcept
 	const RealArray2D<2,2> I({1.0, 0.0, 0.0, 1.0});
 	{
 		const auto topNodes(mesh.getTopNodes());
-		const size_t nbTopNodes(topNodes.size());
 		for (size_t rTopNodes=0; rTopNodes<nbTopNodes; rTopNodes++)
 		{
 			const Id rId(topNodes[rTopNodes]);
@@ -756,7 +755,6 @@ void Glace2d::computeBoundaryConditions() noexcept
 	}
 	{
 		const auto bottomNodes(mesh.getBottomNodes());
-		const size_t nbBottomNodes(bottomNodes.size());
 		for (size_t rBottomNodes=0; rBottomNodes<nbBottomNodes; rBottomNodes++)
 		{
 			const Id rId(bottomNodes[rBottomNodes]);
@@ -770,7 +768,6 @@ void Glace2d::computeBoundaryConditions() noexcept
 	}
 	{
 		const auto leftNodes(mesh.getLeftNodes());
-		const size_t nbLeftNodes(leftNodes.size());
 		for (size_t rLeftNodes=0; rLeftNodes<nbLeftNodes; rLeftNodes++)
 		{
 			const Id rId(leftNodes[rLeftNodes]);
@@ -787,7 +784,6 @@ void Glace2d::computeBoundaryConditions() noexcept
 	}
 	{
 		const auto rightNodes(mesh.getRightNodes());
-		const size_t nbRightNodes(rightNodes.size());
 		for (size_t rRightNodes=0; rRightNodes<nbRightNodes; rRightNodes++)
 		{
 			const Id rId(rightNodes[rRightNodes]);
@@ -813,7 +809,6 @@ void Glace2d::computeBt() noexcept
 {
 	{
 		const auto innerNodes(mesh.getInnerNodes());
-		const size_t nbInnerNodes(innerNodes.size());
 		for (size_t rInnerNodes=0; rInnerNodes<nbInnerNodes; rInnerNodes++)
 		{
 			const Id rId(innerNodes[rInnerNodes]);
@@ -835,7 +830,6 @@ void Glace2d::computeMt() noexcept
 {
 	{
 		const auto innerNodes(mesh.getInnerNodes());
-		const size_t nbInnerNodes(innerNodes.size());
 		for (size_t rInnerNodes=0; rInnerNodes<nbInnerNodes; rInnerNodes++)
 		{
 			const Id rId(innerNodes[rInnerNodes]);

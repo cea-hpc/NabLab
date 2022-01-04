@@ -24,7 +24,7 @@ class ItemIndexAndIdValueContentProvider
 		if (container.connectivity.indexEqualId) 
 			'''«id.name»'''
 		else 
-			'''mesh.«container.nbElemsVar».toList().index(«id.name»)'''
+			'''mesh.«container.accessor».tolist().index(«id.name»)'''
 	}
 
 	static def dispatch getContent(ItemIdValueIterator it)

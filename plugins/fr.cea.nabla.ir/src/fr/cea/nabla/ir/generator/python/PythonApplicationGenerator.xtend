@@ -18,6 +18,7 @@ import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Job
+import fr.cea.nabla.ir.transformers.PreventFunctionOverloading
 import fr.cea.nabla.ir.transformers.ReplaceReductions
 import fr.cea.nabla.ir.transformers.SetPythonOperatorNames
 import java.util.ArrayList
@@ -40,7 +41,11 @@ class PythonApplicationGenerator implements ApplicationGenerator
 
 	override getIrTransformationSteps()
 	{
-		#[new SetPythonOperatorNames(), new ReplaceReductions(true)] // parallel loops and reductions not yet implemented
+		#[
+			new SetPythonOperatorNames,
+			new PreventFunctionOverloading,
+			new ReplaceReductions(true) // parallel loops and reductions not yet implemented
+		]
 	}
 
 	override getGenerationContents(IrRoot ir)

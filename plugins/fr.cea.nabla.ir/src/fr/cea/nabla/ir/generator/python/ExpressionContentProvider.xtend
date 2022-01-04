@@ -49,7 +49,7 @@ class ExpressionContentProvider
 	static def dispatch CharSequence getContent(Parenthesis it) '''(«expression.content»)'''
 	static def dispatch CharSequence getContent(IntConstant it) '''«value»'''
 	static def dispatch CharSequence getContent(RealConstant it) '''«value»'''
-	static def dispatch CharSequence getContent(BoolConstant it) '''«value»'''
+	static def dispatch CharSequence getContent(BoolConstant it) '''«value.toString.toFirstUpper»'''
 
 	static def dispatch CharSequence getContent(MinConstant it)
 	{
@@ -86,7 +86,7 @@ class ExpressionContentProvider
 	}
 
 	static def dispatch CharSequence getContent(VectorConstant it)
-	'''np.array(«FOR v : values SEPARATOR ', '»«v.content»«ENDFOR», dtype=np.«type.primitive.numpyType»)'''
+	'''np.array([«FOR v : values SEPARATOR ', '»«v.content»«ENDFOR»], dtype=np.«type.primitive.numpyType»)'''
 
 	static def dispatch CharSequence getContent(Cardinality it)
 	{

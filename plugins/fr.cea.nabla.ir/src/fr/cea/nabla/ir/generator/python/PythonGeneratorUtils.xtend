@@ -23,6 +23,8 @@ import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 
 class PythonGeneratorUtils
 {
+	static val SysFunction = #["min", "max", "abs"]
+
 	static def getCodeName(Function f)
 	{
 		switch f
@@ -30,7 +32,7 @@ class PythonGeneratorUtils
 			InternFunction: 'self.__' + f.name
 			ExternFunction:
 				if (f.provider.extensionName == "Math")
-					if (f.name == "min" || f.name == "max")
+					if (SysFunction.contains(f.name))
 						f.name
 					else
 						'math.' + f.name

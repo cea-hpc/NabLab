@@ -74,7 +74,7 @@ class InstructionContentProvider
 			«IF !iter.container.connectivityCall.connectivity.indexEqualId»
 				«val c = iter.container»
 				«IF c instanceof ConnectivityCall»«getSetDefinitionContent(c.uniqueName, c as ConnectivityCall)»«ENDIF»
-				«iter.getNbElems» = len(«c.uniqueName»)
+				«IF !c.connectivityCall.args.empty»«iter.getNbElems» = len(«c.uniqueName»)«ENDIF»
 			«ENDIF»
 		«ENDIF»
 		for «iterationBlock.indexName» in range(«iterationBlock.nbElems»):
@@ -149,6 +149,6 @@ class InstructionContentProvider
 
 	private static def getSetDefinitionContent(String setName, ConnectivityCall call)
 	'''
-		«setName» = mesh.«call.accessor»
+		«setName» = mesh.«IF call.args.empty»«call.connectivity.name»«ELSE»«call.accessor»«ENDIF»
 	'''
 }

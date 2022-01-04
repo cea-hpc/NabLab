@@ -923,7 +923,6 @@ void Glace2d::computeBoundaryConditions(const member_type& teamMember) noexcept
 	const RealArray2D<2,2> I({1.0, 0.0, 0.0, 1.0});
 	{
 		const auto topNodes(mesh.getTopNodes());
-		const size_t nbTopNodes(topNodes.size());
 		{
 			const auto teamWork(computeTeamWorkRange(teamMember, nbTopNodes));
 			if (!teamWork.second)
@@ -944,7 +943,6 @@ void Glace2d::computeBoundaryConditions(const member_type& teamMember) noexcept
 	}
 	{
 		const auto bottomNodes(mesh.getBottomNodes());
-		const size_t nbBottomNodes(bottomNodes.size());
 		{
 			const auto teamWork(computeTeamWorkRange(teamMember, nbBottomNodes));
 			if (!teamWork.second)
@@ -965,7 +963,6 @@ void Glace2d::computeBoundaryConditions(const member_type& teamMember) noexcept
 	}
 	{
 		const auto leftNodes(mesh.getLeftNodes());
-		const size_t nbLeftNodes(leftNodes.size());
 		{
 			const auto teamWork(computeTeamWorkRange(teamMember, nbLeftNodes));
 			if (!teamWork.second)
@@ -989,7 +986,6 @@ void Glace2d::computeBoundaryConditions(const member_type& teamMember) noexcept
 	}
 	{
 		const auto rightNodes(mesh.getRightNodes());
-		const size_t nbRightNodes(rightNodes.size());
 		{
 			const auto teamWork(computeTeamWorkRange(teamMember, nbRightNodes));
 			if (!teamWork.second)
@@ -1022,7 +1018,6 @@ void Glace2d::computeBt(const member_type& teamMember) noexcept
 {
 	{
 		const auto innerNodes(mesh.getInnerNodes());
-		const size_t nbInnerNodes(innerNodes.size());
 		{
 			const auto teamWork(computeTeamWorkRange(teamMember, nbInnerNodes));
 			if (!teamWork.second)
@@ -1051,7 +1046,6 @@ void Glace2d::computeMt(const member_type& teamMember) noexcept
 {
 	{
 		const auto innerNodes(mesh.getInnerNodes());
-		const size_t nbInnerNodes(innerNodes.size());
 		{
 			const auto teamWork(computeTeamWorkRange(teamMember, nbInnerNodes));
 			if (!teamWork.second)

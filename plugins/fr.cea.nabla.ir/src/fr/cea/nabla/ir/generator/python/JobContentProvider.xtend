@@ -18,6 +18,7 @@ import static extension fr.cea.nabla.ir.JobCallerExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.python.ExpressionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.python.InstructionContentProvider.*
+import fr.cea.nabla.ir.ir.Variable
 
 class JobContentProvider 
 {
@@ -45,6 +46,8 @@ class JobContentProvider
 		«val deltat = irRoot.timeStepVariable.codeName»
 		«val ppInfo = irRoot.postProcessing»
 		self.«itVar» = 0
+		«IF irRoot.currentTimeVariable.needDefinition»self.«tn» = 0.0«ENDIF»
+		«IF irRoot.timeStepVariable.needDefinition»self.«deltat» = 0.0«ENDIF»
 		continueLoop = True
 		while continueLoop:
 			self.«itVar» += 1
@@ -72,4 +75,9 @@ class JobContentProvider
 			«IF ppInfo !== null»self.__dumpVariables(self.«itVar»+1);«ENDIF»
 		«ENDIF»
 	'''
+
+	private static def needDefinition(Variable v)
+	{
+		!v.option && v.defaultValue === null
+	}
 }

@@ -564,7 +564,6 @@ public final class Glace2d
 		final double[][] I = new double[][] {new double[] {1.0, 0.0}, new double[] {0.0, 1.0}};
 		{
 			final int[] topNodes = mesh.getTopNodes();
-			final int nbTopNodes = topNodes.length;
 			IntStream.range(0, nbTopNodes).parallel().forEach(rTopNodes -> 
 			{
 				final int rId = topNodes[rTopNodes];
@@ -578,7 +577,6 @@ public final class Glace2d
 		}
 		{
 			final int[] bottomNodes = mesh.getBottomNodes();
-			final int nbBottomNodes = bottomNodes.length;
 			IntStream.range(0, nbBottomNodes).parallel().forEach(rBottomNodes -> 
 			{
 				final int rId = bottomNodes[rBottomNodes];
@@ -592,7 +590,6 @@ public final class Glace2d
 		}
 		{
 			final int[] leftNodes = mesh.getLeftNodes();
-			final int nbLeftNodes = leftNodes.length;
 			IntStream.range(0, nbLeftNodes).parallel().forEach(rLeftNodes -> 
 			{
 				final int rId = leftNodes[rLeftNodes];
@@ -609,7 +606,6 @@ public final class Glace2d
 		}
 		{
 			final int[] rightNodes = mesh.getRightNodes();
-			final int nbRightNodes = rightNodes.length;
 			IntStream.range(0, nbRightNodes).parallel().forEach(rRightNodes -> 
 			{
 				final int rId = rightNodes[rRightNodes];
@@ -635,7 +631,6 @@ public final class Glace2d
 	{
 		{
 			final int[] innerNodes = mesh.getInnerNodes();
-			final int nbInnerNodes = innerNodes.length;
 			IntStream.range(0, nbInnerNodes).parallel().forEach(rInnerNodes -> 
 			{
 				final int rId = innerNodes[rInnerNodes];
@@ -657,7 +652,6 @@ public final class Glace2d
 	{
 		{
 			final int[] innerNodes = mesh.getInnerNodes();
-			final int nbInnerNodes = innerNodes.length;
 			IntStream.range(0, nbInnerNodes).parallel().forEach(rInnerNodes -> 
 			{
 				final int rId = innerNodes[rInnerNodes];

@@ -120,7 +120,12 @@ class IrModuleContentProvider
 	private:
 		«IF postProcessing !== null»
 		void dumpVariables(int iteration, bool useTimer=true);
-
+		«IF levelDB»
+		template <typename T>
+		leveldb::Slice toSlice(T& d) {
+			return leveldb::Slice((const char*)&d, sizeof(T));
+		}
+		«ENDIF»
 		«ENDIF»
 		«privateMethodHeaders»
 		// Mesh and mesh variables
@@ -357,7 +362,7 @@ class IrModuleContentProvider
 		// Batch to write all data at once
 		leveldb::WriteBatch batch;
 		«FOR v : irRoot.variables.filter[!option]»
-		batch.Put("«Utils.getDbKey(v)»", serialize(«Utils.getDbValue(it, v, '->')»));
+		batch.Put("«Utils.getDbKey(v)»", toSlice(«Utils.getDbValue(it, v, '->')»));
 		«ENDFOR»
 		status = db->Write(leveldb::WriteOptions(), &batch);
 		// Checking everything was ok

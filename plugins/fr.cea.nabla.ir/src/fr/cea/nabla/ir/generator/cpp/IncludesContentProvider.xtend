@@ -18,7 +18,7 @@ class IncludesContentProvider
 		«FOR include : getSystemIncludes(hasLevelDB)»
 		#include <«include»>
 		«ENDFOR»
-		«FOR include : getUserIncludes(hasLevelDB, hasPostProcessing)»
+		«FOR include : getUserIncludes(hasPostProcessing)»
 		#include "«include»"
 		«ENDFOR»
 		'''
@@ -53,13 +53,12 @@ class IncludesContentProvider
 		return systemIncludes
 	}
 
-	protected def getUserIncludes(boolean hasLevelDB, boolean hasPostProcessing)
+	protected def getUserIncludes(boolean hasPostProcessing)
 	{
 		val userIncludes = new LinkedHashSet<String>
 		userIncludes +=  "nablalib/utils/Utils.h"
 		userIncludes +=  "nablalib/utils/Timer.h"
 		userIncludes +=  "nablalib/types/Types.h"
-		if (hasLevelDB) userIncludes += "nablalib/utils/Serializer.h"
 		return userIncludes
 	}
 
@@ -73,6 +72,7 @@ class IncludesContentProvider
 		val userNs = new LinkedHashSet<String>
 		userNs +=  "nablalib::utils"
 		userNs +=  "nablalib::types"
+		// NB : a-ton besoin de cet include ?
 		if (hasLevelDB) userNs +=  "nablalib::utils"
 		return userNs
 	}
@@ -80,9 +80,9 @@ class IncludesContentProvider
 
 class StlThreadIncludesContentProvider extends IncludesContentProvider
 {
-	override getUserIncludes(boolean hasLevelDB, boolean hasPostProcessing)
+	override getUserIncludes(boolean hasPostProcessing)
 	{
-		val includes = super.getUserIncludes(hasLevelDB, hasPostProcessing)
+		val includes = super.getUserIncludes(hasPostProcessing)
 		includes += "nablalib/utils/stl/Parallel.h"
 		return includes
 	}
@@ -105,11 +105,10 @@ class KokkosIncludesContentProvider extends IncludesContentProvider
 		return includes
 	}
 
-	override getUserIncludes(boolean hasLevelDB, boolean hasPostProcessing)
+	override getUserIncludes(boolean hasPostProcessing)
 	{
-		val includes = super.getUserIncludes(hasLevelDB, hasPostProcessing)
+		val includes = super.getUserIncludes(hasPostProcessing)
 		includes += "nablalib/utils/kokkos/Parallel.h"
-		if (hasLevelDB) includes += "nablalib/utils/kokkos/Serializer.h"
 		return includes
 	}
 

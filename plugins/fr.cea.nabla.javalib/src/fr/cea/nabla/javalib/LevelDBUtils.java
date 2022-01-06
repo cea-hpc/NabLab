@@ -10,19 +10,20 @@
 package fr.cea.nabla.javalib;
 
 import static org.iq80.leveldb.impl.Iq80DBFactory.asString;
-import static org.iq80.leveldb.impl.Iq80DBFactory.bytes;
 import static org.iq80.leveldb.impl.Iq80DBFactory.factory;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
+import org.apache.commons.io.FileUtils;
 import org.iq80.leveldb.DB;
 import org.iq80.leveldb.DBIterator;
 
-import linearalgebrajava.Vector;
 import linearalgebrajava.Matrix;
-
-import org.apache.commons.io.FileUtils;
+import linearalgebrajava.Vector;
 
 public class LevelDBUtils
 {
@@ -66,14 +67,15 @@ public class LevelDBUtils
 					}
 					else
 					{
-						String ref = asString(itRef.peekNext().getValue());
-						String value = asString(byteValue);
-						System.err.println(key + ": " + (value.contentEquals(ref) ? "OK" : "ERROR"));
-						if (!value.equals(ref))
+						byte[] ref = itRef.peekNext().getValue();
+						byte[] value = byteValue;
+						System.err.println(key + ": " + (Arrays.equals(value, ref) ? "OK" : "ERROR"));
+						if (!Arrays.equals(value, ref))
 						{
 							result = false;
-							System.err.println("value = " + value);
-							System.err.println(" ref = " + ref);
+							int mismatchIndex = Arrays.mismatch(value, ref);
+							System.err.println("value[" + mismatchIndex + "] = " + value[mismatchIndex]);
+							System.err.println(" ref[" + mismatchIndex + "] = " + ref[mismatchIndex]);
 						}
 					}
 				}
@@ -118,84 +120,92 @@ public class LevelDBUtils
 		factory.destroy(new File(name), leveldbOptions);
 	}
 
-	public static byte[] serialize(final int i)
+	public static byte[] toByteArray(final int i) throws IOException 
 	{
-		return bytes(Integer.toString(i));
+		 ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		 DataOutputStream dos = new DataOutputStream(bos);
+		 dos.writeInt(i);
+		 dos.flush();
+		 return bos.toByteArray();
 	}
 
-	public static byte[] serialize(final double d)
+	public static byte[] toByteArray(final double d) throws IOException 
 	{
-		return bytes(String.valueOf(d));
+		 ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		 DataOutputStream dos = new DataOutputStream(bos);
+		 dos.writeDouble(d);
+		 dos.flush();
+		 return bos.toByteArray();
 	}
 
-	public static byte[] serialize(final boolean b)
+	public static byte[] toByteArray(final boolean b) throws IOException 
 	{
-		return bytes(Boolean.toString(b));
+		 ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		 DataOutputStream dos = new DataOutputStream(bos);
+		 dos.writeBoolean(b);
+		 dos.flush();
+		 return bos.toByteArray();
 	}
 
-	public static byte[] serialize(final double[] data1d)
+	public static byte[] toByteArray(final double[] data1d) throws IOException
 	{
-		StringBuilder sb = new StringBuilder();
-		for (double d : data1d)
-			sb.append(d).append(" ");
-		return bytes(sb.toString());
+		 if (data1d == null) return null;
+		 // ----------
+		 byte[] byts = new byte[data1d.length * Double.BYTES];
+		 for (int i = 0; i < data1d.length; i++)
+			 System.arraycopy(toByteArray(data1d[i]), 0, byts, i * Double.BYTES, Double.BYTES);
+		 return byts;
 	}
 
-	public static byte[] serialize(final Vector vector)
+	public static byte[] toByteArray(final Vector vector) throws IOException
 	{
-		return serialize(vector.getData().toArray());
+		return toByteArray(vector.getData().toArray());
 	}
 
-	public static byte[] serialize(final double[][] data2d)
+	public static byte[] toByteArray(final double[][] data2d) throws IOException
 	{
-		StringBuilder sb = new StringBuilder();
-		for (double data1d[] : data2d)
-		{
-			for (double d : data1d)
-				sb.append(d).append(" ");
-			sb.append(" ");
-		}
-		return bytes(sb.toString());
+		 if (data2d == null) return null;
+		 // ----------
+		 byte[] byts = new byte[data2d.length * data2d[0].length * Double.BYTES];
+		 for (int i = 0; i < data2d.length; i++)
+			 for (int j = 0; j < data2d[i].length; j++)
+				 System.arraycopy(toByteArray(data2d[i][j]), 0, byts, (i * data2d[0].length + j) * Double.BYTES, Double.BYTES);
+		 return byts;
 	}
 
-	public static byte[] serialize(final Matrix matrix)
+	public static byte[] toByteArray(final Matrix matrix) throws IOException
 	{
-		return bytes(matrix.getData().toString());
+		 if (matrix == null) return null;
+		 // ----------
+		 byte[] byts = new byte[matrix.getData().getRowDimension() * matrix.getData().getColumnDimension() * Double.BYTES];
+		 for (int i = 0; i < matrix.getData().getRowDimension(); i++)
+			 for (int j = 0; j < matrix.getData().getColumnDimension(); j++)
+				 System.arraycopy(toByteArray(matrix.getValue(i, j)), 0, byts, (i * matrix.getData().getRowDimension() + j) * Double.BYTES, Double.BYTES);
+		 return byts;
 	}
 
-	public static byte[] serialize(final double[][][] data3d)
+	public static byte[] toByteArray(final double[][][] data3d) throws IOException
 	{
-		StringBuilder sb = new StringBuilder();
-		for (double[][] data2d : data3d)
-		{	
-			for (double[] data1d : data2d)
-			{
-				for (double d : data1d)
-					sb.append(d).append(" ");
-				sb.append(" ");
-			}
-			sb.append(" ");
-		}
-		return bytes(sb.toString());
+		 if (data3d == null) return null;
+		 // ----------
+		 byte[] byts = new byte[data3d.length * data3d[0].length * data3d[0][0].length * Double.BYTES];
+		 for (int i = 0; i < data3d.length; i++)
+			 for (int j = 0; j < data3d[i].length; j++)
+				 for (int k = 0; k < data3d[i][j].length; k++)
+					 System.arraycopy(toByteArray(data3d[i][j][k]), 0, byts, (i * data3d[0].length * data3d[0][0].length + j * data3d[0][0].length + k) * Double.BYTES, Double.BYTES);
+		 return byts;
 	}
 
-	public static byte[] serialize(final double[][][][] data4d)
+	public static byte[] toByteArray(final double[][][][] data4d) throws IOException
 	{
-		StringBuilder sb = new StringBuilder();
-		for (double[][][] data3d : data4d)
-		{	
-			for (double[][] data2d : data3d)
-			{
-				for (double data1d[] : data2d)
-				{
-					for (double d : data1d)
-						sb.append(d).append(" ");
-					sb.append(" ");
-				}
-				sb.append(" ");
-			}
-			sb.append(" ");
-		}
-		return bytes(sb.toString());
+		 if (data4d == null) return null;
+		 // ----------
+		 byte[] byts = new byte[data4d.length * data4d[0].length * data4d[0][0].length * data4d[0][0][0].length * Double.BYTES];
+		 for (int i = 0; i < data4d.length; i++)
+			 for (int j = 0; j < data4d[i].length; j++)
+				 for (int k = 0; k < data4d[i][j].length; k++)
+					 for (int l = 0; l < data4d[i][j][k].length; l++)
+						 System.arraycopy(toByteArray(data4d[i][j][k][l]), 0, byts, (i * data4d[0].length * data4d[0][0].length * data4d[0][0][0].length + j * data4d[0][0].length * data4d[0][0][0].length + k * data4d[0][0][0].length + l) * Double.BYTES, Double.BYTES);
+		 return byts;
 	}
 }

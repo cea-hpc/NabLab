@@ -285,7 +285,7 @@ class IrModuleContentProvider
 				try
 				{
 					«FOR v : irRoot.variables.filter[!option]»
-					batch.put(bytes("«Utils.getDbKey(v)»"), LevelDBUtils.serialize(«Utils.getDbValue(it, v, '.')»));
+					batch.put(bytes("«Utils.getDbKey(v)»"), LevelDBUtils.toByteArray(«Utils.getDbValue(it, v, '.')»));
 					«ENDFOR»
 
 					db.write(batch);

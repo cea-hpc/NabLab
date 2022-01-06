@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2021, 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -15,9 +15,9 @@ export default class JobsGraphWebViewLoader {
 
   private readonly panel: vscode.WebviewPanel;
 
-  public static createOrShow(extensionPath: string) {
+  public static createOrShow(extensionPath: string, irModel: Object | undefined) {
     const column = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.viewColumn : undefined;
-    const webViewContext = { extensionPath, projectName: '', nablaModelPath: '', offset: 0 };
+    const webViewContext = { extensionPath, projectName: '', nablaModelPath: '', irModel: irModel };
     // If we already have a panel, show it.
     if (JobsGraphWebViewLoader.openedPanel) {
       JobsGraphWebViewLoader.openedPanel.panel.reveal(column);
@@ -33,14 +33,14 @@ export default class JobsGraphWebViewLoader {
     vscode.commands.executeCommand('workbench.action.moveEditorToBelowGroup');
   }
 
-  public static update(extensionPath: string, projectName: string, nablaModelPath: string) {
+  public static update(extensionPath: string, projectName: string, nablaModelPath: string, irModel: Object) {
     // If we don't have a panel, do nothing.
     if (!JobsGraphWebViewLoader.openedPanel) {
       return;
     }
     JobsGraphWebViewLoader.openedPanel.panel.webview.html = JobsGraphWebViewLoader.getWebviewContent(
       JobsGraphWebViewLoader.openedPanel.panel.webview,
-      { extensionPath, projectName, nablaModelPath }
+      { extensionPath, projectName, nablaModelPath, irModel }
     );
   }
 
@@ -72,6 +72,7 @@ export default class JobsGraphWebViewLoader {
             window.acquireVsCodeApi = acquireVsCodeApi;
             window.projectName = '${webViewContext.projectName}';
             window.nablaModelPath = '${webViewContext.nablaModelPath}';
+            window.irModel = ${webViewContext.irModel};
           </script>
       </head>
       <body>
@@ -86,4 +87,5 @@ interface JobsGraphWebViewContext {
   extensionPath: string;
   projectName: string;
   nablaModelPath: string;
+  irModel: Object | undefined;
 }

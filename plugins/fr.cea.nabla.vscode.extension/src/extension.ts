@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2021, 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -68,7 +68,7 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(disposableLatexPanel);
 
   const disposableJobsGraphPanel = commands.registerCommand('nablabweb.showJobsGraphView', () => {
-    JobsGraphWebViewLoader.createOrShow(context.extensionPath);
+    JobsGraphWebViewLoader.createOrShow(context.extensionPath, undefined);
   });
   context.subscriptions.push(disposableJobsGraphPanel);
 
@@ -94,6 +94,16 @@ export function activate(context: ExtensionContext) {
     }
   );
   context.subscriptions.push(disposableGenerateNablagen);
+
+  const disposableGenerateIr = commands.registerCommand('nablabweb.generateIr.proxy', async (selectedFileURI: Uri) => {
+    const genDir = path.dirname(selectedFileURI.fsPath);
+    const projectFolder = workspace.getWorkspaceFolder(selectedFileURI);
+    if (genDir && projectFolder) {
+      const irModel = commands.executeCommand('nablabweb.generateIr', selectedFileURI.fsPath, projectFolder.name);
+      JobsGraphWebViewLoader.createOrShow(context.extensionPath, irModel);
+    }
+  });
+  context.subscriptions.push(disposableGenerateIr);
 }
 
 export function deactivate() {}

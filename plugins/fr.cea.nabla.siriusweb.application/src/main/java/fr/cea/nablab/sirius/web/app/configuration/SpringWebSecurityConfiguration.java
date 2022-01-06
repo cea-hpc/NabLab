@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2021, 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -9,11 +9,8 @@
  *******************************************************************************/
 package fr.cea.nablab.sirius.web.app.configuration;
 
-import java.text.MessageFormat;
 import java.util.List;
-import java.util.Objects;
 
-import org.eclipse.sirius.web.persistence.repositories.IAccountRepository;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -21,7 +18,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
@@ -33,31 +29,20 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @EnableWebSecurity
 public class SpringWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private final IAccountRepository accountRepository;
-
-    public SpringWebSecurityConfiguration(IAccountRepository accountRepository) {
-        this.accountRepository = Objects.requireNonNull(accountRepository);
-    }
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().disable();
         http.csrf().disable();
-        http.authorizeRequests().antMatchers("/api/graphql").authenticated(); //$NON-NLS-1$
         http.authorizeRequests().antMatchers("/**").permitAll(); //$NON-NLS-1$
-
-        http.httpBasic();
+        // http.authorizeRequests().antMatchers("/**").anonymous(); //$NON-NLS-1$
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         UserDetailsService accountBasedUserDetailsService = username -> {
-            // @formatter:off
-            return this.accountRepository.findByUsername(username)
-                       .map(account -> new User(account.getUsername(), account.getPassword(), List.of()))
-                       .orElseThrow(() -> new UsernameNotFoundException(MessageFormat.format("User ''{0}'' not found", username))); //$NON-NLS-1$
-            // @formatter:on
+            return new User(username, username, List.of());
         };
         auth.userDetailsService(accountBasedUserDetailsService).passwordEncoder(new BCryptPasswordEncoder());
+        // auth.inMemoryAuthentication();
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2021, 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -7,8 +7,11 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
+import { useMutation } from '@apollo/client';
 import { DiagramWebSocketContainer, Selection } from '@eclipse-sirius/sirius-components';
+import gql from 'graphql-tag';
 import React, { useEffect, useState } from 'react';
+import { v4 as uuid } from 'uuid';
 import './reset.css';
 import './Sprotty.css';
 import './variables.css';
@@ -16,7 +19,6 @@ import './variables.css';
 interface JobsGraphState {
   editingContextId: string;
   representationId: string;
-  representationLabel: string;
   selection: Selection;
 }
 
@@ -26,19 +28,60 @@ interface JobsGraphProps {
   representationLabel: string;
 }
 
-export const JobsGraph = ({ editingContextId, representationId, representationLabel }: JobsGraphProps) => {
-  const [state, setState] = useState<JobsGraphState>({
-    editingContextId,
-    representationId,
-    representationLabel,
-    selection: { entries: [] },
-  });
+interface GQLUploadModelMutationData {
+  uploadModel: GQLUploadModelPayload;
+}
 
-  useEffect(() => {
-    setState((prevState) => {
-      return { ...prevState, editingContextId, representationId };
-    });
-  }, [editingContextId, representationId]);
+interface GQLUploadModelPayload {
+  __typename: string;
+}
+
+interface GQLUploadModelSuccessPayload extends GQLUploadModelPayload {
+  id: string;
+  representation: GQLRepresentation;
+}
+
+interface GQLRepresentation {
+  id: string;
+}
+
+interface GQLErrorPayload extends GQLUploadModelPayload {
+  message: string;
+}
+
+const uploadModelMutation = gql`
+  mutation uploadModel($input: UploadModelInput!) {
+    uploadModel(input: $input) {
+      __typename
+      ... on UploadModelSuccessPayload {
+        id
+        representation {
+          id
+        }
+      }
+      ... on ErrorPayload {
+        message
+      }
+    }
+  }
+`;
+
+const isUploadModelSuccessPayload = (payload: GQLUploadModelPayload): payload is GQLUploadModelSuccessPayload =>
+  payload.__typename === 'UploadModelSuccessPayload';
+
+const isErrorPayload = (payload: GQLUploadModelPayload): payload is GQLErrorPayload =>
+  payload.__typename === 'ErrorPayload';
+
+export const JobsGraph = () => {
+  const initialState = {
+    editingContextId: '',
+    representationId: '',
+    selection: { entries: [] },
+  };
+
+  const [state, setState] = useState<JobsGraphState>(initialState);
+
+  const [uploadModel, { loading, data, error }] = useMutation<GQLUploadModelMutationData>(uploadModelMutation);
 
   const setSelection = (selection: Selection) => {
     setState((prevState) => {
@@ -68,6 +111,37 @@ export const JobsGraph = ({ editingContextId, representationId, representationLa
     gridTemplateColumns: '1fr',
     gridTemplateRows: '1fr',
   };
+
+  useEffect(() => {
+    const variables = {
+      input: {
+        id: uuid(),
+      },
+    };
+    uploadModel({ variables });
+  }, []);
+
+  useEffect(() => {
+    if (!loading) {
+      if (error) {
+        console.log('Upload model error');
+      }
+      if (data) {
+        const { uploadModel } = data;
+        if (isErrorPayload(uploadModel)) {
+          const { message } = uploadModel;
+          console.log(message);
+        } else if (isUploadModelSuccessPayload(uploadModel)) {
+          const { id, representation } = uploadModel;
+          setState((prevState) => {
+            return { ...prevState, editingContextId: id, representationId: representation.id };
+          });
+        } else {
+          console.log('Upload model unknown payload');
+        }
+      }
+    }
+  }, [loading, data, error]);
 
   const component = (
     <DiagramWebSocketContainer

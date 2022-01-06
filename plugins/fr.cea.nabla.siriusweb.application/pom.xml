@@ -27,6 +27,7 @@
 	<properties>
 		<java.version>11</java.version>
 		<sirius.components.version>2021.12.6</sirius.components.version>
+		<graphql-java.version>17.1</graphql-java.version>
 	</properties>
 
 	<repositories>
@@ -55,68 +56,57 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-test</artifactId>
-			<scope>test</scope>
+			<groupId>com.graphql-java</groupId>
+			<artifactId>graphql-java</artifactId>
+			<version>${graphql-java.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.sirius.web</groupId>
-			<artifactId>sirius-web-spring-starter</artifactId>
+			<artifactId>sirius-web-spring-collaborative-diagrams</artifactId>
 			<version>${sirius.components.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.sirius.web</groupId>
-			<artifactId>sirius-web-graphql</artifactId>
-			<version>2021.12.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.sirius.web</groupId>
-			<artifactId>sirius-web-services</artifactId>
-			<version>2021.12.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.sirius.web</groupId>
-			<artifactId>sirius-web-spring</artifactId>
-			<version>2021.12.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.sirius.web</groupId>
-			<artifactId>sirius-web-frontend</artifactId>
-			<version>2021.12.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.sirius.web</groupId>
-			<artifactId>sirius-web-graphiql</artifactId>
+			<artifactId>sirius-web-spring-graphql-api</artifactId>
 			<version>${sirius.components.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.sirius.web</groupId>
-			<artifactId>sirius-web-graphql-voyager</artifactId>
+			<artifactId>sirius-web-graphql-utils</artifactId>
 			<version>${sirius.components.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.sirius.web</groupId>
-			<artifactId>sirius-web-domain-edit</artifactId>
+			<artifactId>sirius-web-spring-graphql</artifactId>
 			<version>${sirius.components.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.sirius.web</groupId>
-			<artifactId>sirius-web-domain-design</artifactId>
+			<artifactId>sirius-web-emf</artifactId>
 			<version>${sirius.components.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.sirius.web</groupId>
-			<artifactId>sirius-web-view-edit</artifactId>
+			<artifactId>sirius-web-compatibility</artifactId>
 			<version>${sirius.components.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.lsp4j</groupId>
+			<artifactId>org.eclipse.lsp4j</artifactId>
+			<version>0.10.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.lsp4j</groupId>
+			<artifactId>org.eclipse.lsp4j.jsonrpc</artifactId>
+			<version>0.10.0</version>
 		</dependency>
 		<dependency>
 			<groupId>fr.cea.nabla</groupId>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -9,26 +9,21 @@
  *******************************************************************************/
 package fr.cea.nablab.sirius.web.app.services;
 
-import java.util.Optional;
-import java.util.UUID;
+import java.util.List;
 
-import org.eclipse.sirius.web.graphql.datafetchers.IViewerProvider;
-import org.eclipse.sirius.web.services.api.viewer.IViewer;
-import org.eclipse.sirius.web.services.api.viewer.User;
+import org.eclipse.sirius.web.emf.view.CustomImage;
+import org.eclipse.sirius.web.emf.view.ICustomImageSearchService;
 import org.springframework.stereotype.Service;
 
-import graphql.schema.DataFetchingEnvironment;
-
 /**
- * Service used to retrieve the current viewer.
- *
  * @author arichard
  */
 @Service
-public class ViewerProvider implements IViewerProvider {
+public class CustomImageSearchService implements ICustomImageSearchService {
+
     @Override
-    public Optional<IViewer> getViewer(DataFetchingEnvironment environment) {
-        return Optional.of(new User(UUID.randomUUID(), "system")); //$NON-NLS-1$
+    public List<CustomImage> getAvailableImages(String editingContextId) {
+        return List.of();
     }
 
 }

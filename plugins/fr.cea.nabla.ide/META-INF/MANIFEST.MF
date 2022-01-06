@@ -7,6 +7,7 @@ Bundle-Version: 0.4.5.qualifier
 Bundle-SymbolicName: fr.cea.nabla.ide; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: fr.cea.nabla,
+ fr.cea.nabla.ir,
  org.eclipse.xtext.ide,
  org.eclipse.xtext.xbase.ide,
  org.antlr.runtime;bundle-version="[3.2.0,3.2.1)",

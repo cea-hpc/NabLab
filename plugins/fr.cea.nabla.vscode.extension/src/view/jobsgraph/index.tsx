@@ -75,11 +75,7 @@ const ApolloGraphQLClient = new ApolloClient({
 ReactDOM.render(
   <ServerContext.Provider value={value}>
     <ApolloProvider client={ApolloGraphQLClient}>
-      <JobsGraph
-        editingContextId={'f286e76a-05e6-4e43-a85a-179d5c7d7d72'}
-        representationId={'0b4045e2-0995-469f-94ce-12f43dd7d7d3'}
-        representationLabel={'ExplicitHeatEquation'}
-      />
+      <JobsGraph />
     </ApolloProvider>
   </ServerContext.Provider>,
   document.getElementById('root')

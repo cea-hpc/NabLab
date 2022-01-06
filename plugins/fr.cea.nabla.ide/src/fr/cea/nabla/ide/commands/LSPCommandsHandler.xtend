@@ -24,11 +24,15 @@ import org.eclipse.xtext.ide.server.commands.IExecutableCommandService
 import org.eclipse.xtext.util.CancelIndicator
 import org.eclipse.lsp4j.MessageType
 import com.google.gson.JsonPrimitive
+import fr.cea.nabla.generator.ir.IrRootBuilder
+import fr.cea.nabla.ir.ir.IrRoot
+import fr.cea.nabla.ir.ir.IrFactory
 
 @Singleton
 class LSPCommandsHandler implements IExecutableCommandService
 {
 	static val generateNablagenCommand = "nablabweb.generateNablagen"
+	static val generateIrCommand = "nablabweb.generateIr"
 	
 	@Inject protected NablaGeneratorMessageDispatcher dispatcher
 	@Inject protected NablagenFileGenerator generator
@@ -73,6 +77,23 @@ class LSPCommandsHandler implements IExecutableCommandService
 				languageClient = null
 				dispatcher.traceListeners -= traceFunction
 			}
+		}
+		else if (generateIrCommand.equals(params.command) && params.arguments.size === 2)
+		{
+			val nablagenFileURI = (params.arguments.get(0) as JsonPrimitive).asString
+			val projectName = (params.arguments.get(1) as JsonPrimitive).asString
+			val irRoot = IrFactory.eINSTANCE.createIrRoot()
+			val irModule = IrFactory.eINSTANCE.createIrModule()
+			irModule.name = 'explicitHeatEquation'
+			irModule.main = true
+			val job = IrFactory.eINSTANCE.createJob()
+			job.name = 'ComputeFaceLength'
+			job.at = 1.0
+			irModule.jobs.add(job)
+			val jobCaller = IrFactory.eINSTANCE.createJobCaller()
+			jobCaller.calls.add(job)
+			irRoot.main = jobCaller
+			return irRoot;
 		}
 		return "Unrecognized Command"
 	}

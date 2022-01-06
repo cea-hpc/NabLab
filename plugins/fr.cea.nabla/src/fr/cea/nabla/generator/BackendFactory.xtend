@@ -28,7 +28,7 @@ class BackendFactory
 			case OPEN_MP: new OpenMpBackend
 			case KOKKOS: new KokkosBackend
 			case KOKKOS_TEAM_THREAD: new KokkosTeamThreadBackend
-			default: throw new RuntimeException("No backend for type: " + type.literal)
+			default: throw new RuntimeException("No backend for: " + type.literal)
 		}
 	}
 }

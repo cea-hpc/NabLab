@@ -17,6 +17,7 @@ import fr.cea.nabla.LinearAlgebraUtils
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.nabla.DefaultExtension
 import fr.cea.nabla.nabla.Function
+import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.Reduction
 import org.eclipse.xtext.EcoreUtil2
 
@@ -30,6 +31,7 @@ class IrFunctionFactory
 	@Inject extension IrExpressionFactory
 	@Inject extension LinearAlgebraUtils
 	@Inject extension BaseTypeSizeEvaluator
+	@Inject extension IrExtensionProviderFactory
 	@Inject ConstExprServices constExprServices
 
 	def toIrFunction(Function f)
@@ -49,6 +51,7 @@ class IrFunctionFactory
 		returnType = t.toIrBaseType
 		body = f.body.toIrInstruction
 		constExpr = false
+		indexInName = 0
 	}
 
 	def create IrFactory::eINSTANCE.createInternFunction toIrInternFunction(Function f)
@@ -61,6 +64,7 @@ class IrFunctionFactory
 		body = f.body.toIrInstruction
 		returnType = f.toIrReturnType
 		constExpr = constExprServices.isConstExpr(f)
+		indexInName = f.indexInName
 	}
 
 	def create IrFactory::eINSTANCE.createExternFunction toIrExternFunction(Function f)
@@ -74,6 +78,7 @@ class IrFunctionFactory
 		for (i : 0..<f.typeDeclaration.inTypes.size)
 			inArgs += toIrArg(f.typeDeclaration.inTypes.get(i), "x" + i)
 		returnType = f.toIrReturnType
+		indexInName = f.indexInName
 	}
 
 	private def toIrReturnType(Function f)
@@ -95,6 +100,21 @@ class IrFunctionFactory
 				}
 				isStatic = intSizes.forall[x | x != -1]
 			]
+		}
+	}
+
+	/**
+	 * The indexInName attribute is used by generator for target not supporting function overloading.
+	 * For this kind of targets, functions with an index != 1 have their name suffixed with the indexInName.
+	 */
+	private def getIndexInName(Function f)
+	{
+		val c = f.eContainer
+		switch c
+		{
+			case null: 0
+			DefaultExtension: c.functions.filter[x | x.name == f.name].toList.indexOf(f)
+			NablaModule: c.functions.filter[x | x.name == f.name].toList.indexOf(f)
 		}
 	}
 }

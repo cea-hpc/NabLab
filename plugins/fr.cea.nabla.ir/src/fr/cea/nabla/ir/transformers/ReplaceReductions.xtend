@@ -10,6 +10,7 @@
 package fr.cea.nabla.ir.transformers
 
 import fr.cea.nabla.ir.IrUtils
+import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.IrFactory
@@ -20,24 +21,24 @@ import fr.cea.nabla.ir.ir.Variable
 import java.util.ArrayList
 import java.util.List
 import org.eclipse.emf.ecore.util.EcoreUtil
+import org.eclipse.xtend.lib.annotations.Data
 
+@Data
 class ReplaceReductions extends IrTransformationStep
 {
 	val boolean replaceAllReductions
 
-	new(boolean replaceAllReductions)
+	override getDescription()
 	{
-		super('Replace reductions by loops')
-		this.replaceAllReductions = replaceAllReductions
+		"Replace reductions by loops"
 	}
 
 	/**
 	 * Replace inner reductions by a variable definition (accumulator) and a Loop.
 	 * The loop contains an affectation with a call to the binary function of the reduction.
 	 */
-	override transform(IrRoot ir)
+	override transform(IrRoot ir, (String)=>void traceNotifier)
 	{
-		trace('    IR -> IR: ' + description)
 		var reductions = ir.eAllContents.filter(ReductionInstruction)
 		if (!replaceAllReductions) reductions = reductions.filter[x | !IrUtils.isTopLevelConnectivityIterable(x)]
 
@@ -54,7 +55,11 @@ class ReplaceReductions extends IrTransformationStep
 			val variableDefinition = IrFactory::eINSTANCE.createVariableDeclaration => [ variable = reduction.result ]
 			IrTransformationUtils.replace(reduction, #[variableDefinition, loop])
 		}
-		return true
+	}
+
+	override transform(DefaultExtensionProvider dep, (String)=>void traceNotifier)
+	{
+		// nothing to do
 	}
 
 	private def Expression createFunctionCall(ReductionInstruction reduction)

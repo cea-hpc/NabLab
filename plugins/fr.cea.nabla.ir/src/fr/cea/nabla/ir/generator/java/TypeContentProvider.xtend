@@ -32,7 +32,11 @@ class TypeContentProvider
 			case null: null
 			BaseType: primitive.javaType + sizes.map['[]'].join
 			ConnectivityType: base.javaType + connectivities.map['[]'].join
-			LinearAlgebraType: provider.packageName + '.' + IrTypeExtensions.getLinearAlgebraClass(it)
+			LinearAlgebraType:
+				if (provider.packageName.nullOrEmpty)
+					IrTypeExtensions.getLinearAlgebraClass(it)
+				else
+					provider.packageName + '.' + IrTypeExtensions.getLinearAlgebraClass(it)
 			default: throw new RuntimeException("Unexpected type: " + class.name)
 		}
 	}

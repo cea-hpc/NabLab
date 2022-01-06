@@ -23,12 +23,12 @@ class FunctionContentProvider
 {
 	static def getContent(InternFunction it)
 	'''
-		def «getHeaderContent»:
+		def __«getHeaderContent»:
 			«body.innerContent»
 	'''
 
 	static def getHeaderContent(Function it)
-	'''__«name»(self«FOR a : inArgs», «a.name»«ENDFOR»)'''
+	'''«name»(self«FOR a : inArgs», «a.name»«ENDFOR»)'''
 
 	static def getSizeOf(Function it, Variable v)
 	{

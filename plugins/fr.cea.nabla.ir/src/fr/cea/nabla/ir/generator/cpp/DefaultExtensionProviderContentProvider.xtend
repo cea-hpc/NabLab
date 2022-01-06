@@ -10,51 +10,30 @@
 package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.IrTypeExtensions
-import fr.cea.nabla.ir.generator.GenerationContent
-import fr.cea.nabla.ir.generator.ProviderGenerator
-import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.generator.CppGeneratorUtils
+import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.Function
-import java.util.ArrayList
+import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 
-class CppProviderGenerator extends CppGenerator implements ProviderGenerator
+@Data
+class DefaultExtensionProviderContentProvider
 {
-	new(Backend backend)
-	{
-		super(backend)
-	}
+	val IncludesContentProvider includesContentProvider
+	val FunctionContentProvider functionContentProvider
 
-	override getGenerationContents(DefaultExtensionProvider provider)
-	{
-		val fileContents = new ArrayList<GenerationContent>
-		fileContents += new GenerationContent(provider.interfaceName + ".h", getInterfaceHeaderFileContent(provider), false)
-		fileContents += new GenerationContent("CMakeLists.txt", backend.cmakeContentProvider.getCMakeFileContent(provider), false)
-		// Generates .h and .cc if they does not exists
-		fileContents += new GenerationContent(provider.className + ".h", getHeaderFileContent(provider), true)
-		fileContents += new GenerationContent(provider.className + ".cc", getSourceFileContent(provider), true)
-		if (provider.linearAlgebra)
-		{
-			fileContents += new GenerationContent(IrTypeExtensions.VectorClass + ".h", getVectorHeaderFileContent(provider), true)
-			fileContents += new GenerationContent(IrTypeExtensions.VectorClass + ".cc", getVectorSourceFileContent(provider), true)
-			fileContents += new GenerationContent(IrTypeExtensions.MatrixClass + ".h", getMatrixHeaderFileContent(provider), true)
-			fileContents += new GenerationContent(IrTypeExtensions.MatrixClass + ".cc", getMatrixSourceFileContent(provider), true)
-		}
-		return fileContents
-	}
-
-	private def getInterfaceHeaderFileContent(DefaultExtensionProvider provider)
+	def getInterfaceHeaderFileContent(DefaultExtensionProvider provider)
 	'''
 		/* «Utils::doNotEditWarning» */
 
 		#ifndef «CppGeneratorUtils.getHDefineName(provider.interfaceName)»
 		#define «CppGeneratorUtils.getHDefineName(provider.interfaceName)»
 
-		«backend.includesContentProvider.getIncludes(false, false)»
+		«includesContentProvider.getIncludes(false, false)»
 
-		«backend.includesContentProvider.getUsings(false)»
+		«includesContentProvider.getUsings(false)»
 
 		class «provider.interfaceName»
 		{
@@ -65,10 +44,10 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 			«FOR f : provider.functions»
 				«IF f.template»
 				/* Template method can not be virtual. Must be directly defined in implementation class.
-				«backend.functionContentProvider.getDeclarationContent(f)»;
+				«functionContentProvider.getDeclarationContent(f)»;
 				*/
 				«ELSE»
-				virtual «backend.functionContentProvider.getDeclarationContent(f)» = 0;
+				virtual «functionContentProvider.getDeclarationContent(f)» = 0;
 				«ENDIF»
 			«ENDFOR»
 		};
@@ -76,7 +55,7 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 		#endif
 	'''
 
-	private def getHeaderFileContent(DefaultExtensionProvider provider)
+	def getHeaderFileContent(DefaultExtensionProvider provider)
 	'''
 		#ifndef «CppGeneratorUtils.getHDefineName(provider.className)»
 		#define «CppGeneratorUtils.getHDefineName(provider.className)»
@@ -94,12 +73,12 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 			«FOR f : provider.functions»
 
 			«IF f.template»
-			«backend.functionContentProvider.getDeclarationContent(f)»
+			«functionContentProvider.getDeclarationContent(f)»
 			{
 				// Your code here
 			}
 			«ELSE»
-			«backend.functionContentProvider.getDeclarationContent(f)» override;
+			«functionContentProvider.getDeclarationContent(f)» override;
 			«ENDIF»
 			«ENDFOR»
 		};
@@ -107,7 +86,7 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 		#endif
 	'''
 
-	private def getSourceFileContent(DefaultExtensionProvider provider)
+	def getSourceFileContent(DefaultExtensionProvider provider)
 	'''
 		#include "«provider.className».h"
 		#include <string>
@@ -118,11 +97,11 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 		}
 		«FOR f : provider.functions.filter[!template]»
 
-		«backend.functionContentProvider.getDefinitionContent(provider.className, f)»
+		«functionContentProvider.getDefinitionContent(provider.className, f)»
 		«ENDFOR»
 	'''
 
-	private def getVectorHeaderFileContent(DefaultExtensionProvider provider)
+	def getVectorHeaderFileContent(DefaultExtensionProvider provider)
 	'''
 		#ifndef «CppGeneratorUtils.getHDefineName(IrTypeExtensions.VectorClass)»
 		#define «CppGeneratorUtils.getHDefineName(IrTypeExtensions.VectorClass)»
@@ -146,7 +125,7 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 		#endif
 	'''
 
-	private def getVectorSourceFileContent(DefaultExtensionProvider provider)
+	def getVectorSourceFileContent(DefaultExtensionProvider provider)
 	'''
 		#include "«IrTypeExtensions.VectorClass».h"
 
@@ -188,7 +167,7 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 		}
 	'''
 
-	private def getMatrixHeaderFileContent(DefaultExtensionProvider provider)
+	def getMatrixHeaderFileContent(DefaultExtensionProvider provider)
 	'''
 		#ifndef «CppGeneratorUtils.getHDefineName(IrTypeExtensions.MatrixClass)»
 		#define «CppGeneratorUtils.getHDefineName(IrTypeExtensions.MatrixClass)»
@@ -211,7 +190,7 @@ class CppProviderGenerator extends CppGenerator implements ProviderGenerator
 		#endif
 	'''
 
-	private def getMatrixSourceFileContent(DefaultExtensionProvider provider)
+	def getMatrixSourceFileContent(DefaultExtensionProvider provider)
 	'''
 		#include "«IrTypeExtensions.MatrixClass».h"
 

@@ -98,7 +98,6 @@ Variables::jsonInit(const char* jsonContent)
 	}
 }
 
-
 const std::pair<size_t, size_t> Variables::computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept
 {
 	/*

@@ -7,34 +7,97 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-package fr.cea.nabla.generator.application
+package fr.cea.nabla.generator
 
 import com.google.inject.Inject
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
-import fr.cea.nabla.generator.NablaIrWriter
-import fr.cea.nabla.generator.NablagenExtensionHelper
-import fr.cea.nabla.generator.StandaloneGeneratorBase
+import fr.cea.nabla.generator.ir.IrExtensionProviderFactory
 import fr.cea.nabla.generator.ir.IrRootBuilder
 import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.generator.json.JsonGenerator
 import fr.cea.nabla.ir.ir.IrRoot
+import fr.cea.nabla.ir.transformers.IrTransformationUtils
+import fr.cea.nabla.nabla.DefaultExtension
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nablagen.NablagenApplication
+import fr.cea.nabla.nablagen.NablagenProviderList
+import fr.cea.nabla.nablagen.NablagenRoot
 import fr.cea.nabla.nablagen.Target
 import java.util.ArrayList
 import org.eclipse.emf.ecore.util.EcoreUtil
 
 import static extension fr.cea.nabla.LatexLabelServices.*
+import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 
-class NablagenApplicationGenerator extends StandaloneGeneratorBase
+class CodeGenerator extends StandaloneGeneratorBase
 {
 	@Inject NablaIrWriter irWriter
-	@Inject ApplicationGeneratorFactory generatorFactory
+	@Inject IrCodeGeneratorFactory irCodeGeneratorFactory
 	@Inject IrRootBuilder irRootBuilder
 	@Inject NablagenExtensionHelper ngenExtHelper
+	@Inject IrExtensionProviderFactory irExtensionProviderFactory
 
-	def void generateApplication(NablagenApplication ngenApp, String wsPath, String projectName)
+	def generateCode(NablagenRoot ngen, String wsPath, String projectName)
+	{
+		switch (ngen)
+		{
+			NablagenApplication: generateApplication(ngen, wsPath, projectName)
+			NablagenProviderList: generateProviders(ngen, wsPath)
+		}
+	}
+
+	private def generateProviders(NablagenProviderList providerList, String wsPath)
+	{
+		try
+		{
+			dispatcher.post(MessageType.Exec, "Starting code generation")
+			val startTime = System.currentTimeMillis
+	
+			for (provider : providerList.elements)
+			{
+				if (provider.extension instanceof DefaultExtension)
+				{
+					val outputFolderName = wsPath + provider.outputPath
+					val fsa = getConfiguredFileSystemAccess(outputFolderName, false)
+					dispatcher.post(MessageType::Exec, "Starting " + provider.target.literal + " code generation: " + provider.outputPath)
+					val installDir = '' // unused to generate JNI functions
+					val irProvider = irExtensionProviderFactory.toIrDefaultExtensionProvider(provider, installDir)
+
+					// Create code generator
+					val g = irCodeGeneratorFactory.create(wsPath, provider.target)
+
+					// Apply IR transformations dedicated to this target (if necessary)
+					for (s : IrTransformationUtils.getCommonTransformation(true))
+						s.transformProvider(irProvider, [msg | dispatcher.post(MessageType::Exec, msg)])
+
+					for (s : g.irTransformationSteps)
+						s.transformProvider(irProvider, [msg | dispatcher.post(MessageType::Exec, msg)])
+	
+					generate(fsa, g.getGenerationContents(irProvider), irProvider.dirName)
+				}
+				else
+				{
+					dispatcher.post(MessageType::Warning, "No code generator for mesh provider: " + provider.name)
+				}
+			}
+	
+			val endTime = System.currentTimeMillis
+			dispatcher.post(MessageType.Exec, "Code generation ended in " + (endTime-startTime)/1000.0 + "s")
+		}
+		catch(Exception e)
+		{
+			dispatcher.post(MessageType::Error, '\n***' + e.class.name + ': ' + e.message)
+			if (e.stackTrace !== null && !e.stackTrace.empty)
+			{
+				val stack = e.stackTrace.head
+				dispatcher.post(MessageType::Error, 'at ' + stack.className + '.' + stack.methodName + '(' + stack.fileName + ':' + stack.lineNumber + ')')
+			}
+			throw(e)
+		}
+	}
+
+	private def void generateApplication(NablagenApplication ngenApp, String wsPath, String projectName)
 	{
 		try
 		{
@@ -74,12 +137,12 @@ class NablagenApplicationGenerator extends StandaloneGeneratorBase
 					if (!target.interpreter)
 					{
 						// Create code generator
-						val g = generatorFactory.create(target, ngenApp, wsPath)
+						val g = irCodeGeneratorFactory.create(wsPath, target.type, target.variables, ngenApp.levelDB, ngenApp.mainModule.iterationMax.name, ngenApp.mainModule.timeMax.name)
 	
 						// Apply IR transformations dedicated to this target (if necessary)
 						val IrRoot genIr = (g.irTransformationSteps.empty ? ir : EcoreUtil::copy(ir))
 						for (s : g.irTransformationSteps)
-							s.transformIr(genIr, [msg | dispatcher.post(MessageType::Exec, msg)])
+							s.transformIrRoot(genIr, [msg | dispatcher.post(MessageType::Exec, msg)])
 						if (target.writeIR)
 						{
 							val fileName = irWriter.createAndSaveResource(fsa, genIr)

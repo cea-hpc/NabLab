@@ -98,7 +98,6 @@ Variables::jsonInit(const char* jsonContent)
 	}
 }
 
-
 /**
  * Job dynamicVecInitialization called @1.0 in simulate method.
  * In variables: optDim

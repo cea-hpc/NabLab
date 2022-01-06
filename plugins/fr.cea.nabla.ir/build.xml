@@ -14,7 +14,7 @@
 		<zip destfile="resources/.nablab.zip">
 			<zipfileset dir="../fr.cea.nabla.cpplib/src" prefix=".nablab" excludes="CMakeLists.txt"/>
 			<zipfileset dir="../fr.cea.nabla.javalib/lib" prefix=".nablab/linearalgebra/linearalgebrajava/lib"/>
-			<zipfileset dir="../fr.cea.nabla.pythonlib/src" prefix=".nablab/mesh" excludes="**/__pycache__/**"/>
+			<zipfileset dir="../fr.cea.nabla.pythonlib/src" prefix=".nablab" excludes="**/__pycache__/**"/>
 		</zip>
 	</target>
 </project>

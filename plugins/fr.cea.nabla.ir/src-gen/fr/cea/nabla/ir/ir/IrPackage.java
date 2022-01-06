@@ -1234,13 +1234,22 @@ public interface IrPackage extends EPackage {
 	int FUNCTION__IN_ARGS = IR_ANNOTABLE_FEATURE_COUNT + 3;
 
 	/**
+	 * The feature id for the '<em><b>Index In Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int FUNCTION__INDEX_IN_NAME = IR_ANNOTABLE_FEATURE_COUNT + 4;
+
+	/**
 	 * The number of structural features of the '<em>Function</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int FUNCTION_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 4;
+	int FUNCTION_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 5;
 
 	/**
 	 * The number of operations of the '<em>Function</em>' class.
@@ -1305,6 +1314,15 @@ public interface IrPackage extends EPackage {
 	 * @ordered
 	 */
 	int INTERN_FUNCTION__IN_ARGS = FUNCTION__IN_ARGS;
+
+	/**
+	 * The feature id for the '<em><b>Index In Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INTERN_FUNCTION__INDEX_IN_NAME = FUNCTION__INDEX_IN_NAME;
 
 	/**
 	 * The feature id for the '<em><b>Body</b></em>' containment reference.
@@ -1396,6 +1414,15 @@ public interface IrPackage extends EPackage {
 	 * @ordered
 	 */
 	int EXTERN_FUNCTION__IN_ARGS = FUNCTION__IN_ARGS;
+
+	/**
+	 * The feature id for the '<em><b>Index In Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXTERN_FUNCTION__INDEX_IN_NAME = FUNCTION__INDEX_IN_NAME;
 
 	/**
 	 * The feature id for the '<em><b>Provider</b></em>' container reference.
@@ -5357,6 +5384,17 @@ public interface IrPackage extends EPackage {
 	EReference getFunction_InArgs();
 
 	/**
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.Function#getIndexInName <em>Index In Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Index In Name</em>'.
+	 * @see fr.cea.nabla.ir.ir.Function#getIndexInName()
+	 * @see #getFunction()
+	 * @generated
+	 */
+	EAttribute getFunction_IndexInName();
+
+	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.InternFunction <em>Intern Function</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -7639,6 +7677,14 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EReference FUNCTION__IN_ARGS = eINSTANCE.getFunction_InArgs();
+
+		/**
+		 * The meta object literal for the '<em><b>Index In Name</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute FUNCTION__INDEX_IN_NAME = eINSTANCE.getFunction_IndexInName();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.InternFunctionImpl <em>Intern Function</em>}' class.

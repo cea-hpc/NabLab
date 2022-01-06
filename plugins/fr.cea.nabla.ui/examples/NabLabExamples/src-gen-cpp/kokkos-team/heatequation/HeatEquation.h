@@ -48,7 +48,7 @@ RealArray1D<x0> operatorSub(RealArray1D<x0> a, RealArray1D<x0> b);
 class HeatEquation
 {
 	typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
-
+	
 public:
 	HeatEquation(CartesianMesh2D& aMesh);
 	~HeatEquation();
@@ -77,7 +77,7 @@ private:
 	 * Out : pair of indexes, 1st one for start of chunk, 2nd one for size of chunk
 	 */
 	const std::pair<size_t, size_t> computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept;
-
+	
 	// Mesh and mesh variables
 	CartesianMesh2D& mesh;
 	size_t nbNodes, nbCells, nbFaces, maxNbNodesOfCell, maxNbNodesOfFace, maxNbNeighbourCells;

@@ -37,7 +37,7 @@ class PythonGeneratorUtils
 					else
 						'math.' + f.name
 				else
-					'self.' + f.provider.instanceName + '.__' + f.name
+					'self.' + f.provider.instanceName + '.' + f.name
 		}
 	}
 

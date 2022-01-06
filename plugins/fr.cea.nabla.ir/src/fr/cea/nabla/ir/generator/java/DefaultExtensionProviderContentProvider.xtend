@@ -10,34 +10,14 @@
 package fr.cea.nabla.ir.generator.java
 
 import fr.cea.nabla.ir.IrTypeExtensions
-import fr.cea.nabla.ir.generator.GenerationContent
-import fr.cea.nabla.ir.generator.ProviderGenerator
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.DefaultExtensionProvider
-import java.util.ArrayList
 
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 
-class JavaProviderGenerator implements ProviderGenerator
+class DefaultExtensionProviderContentProvider
 {
-	override getName() { 'Java' }
-
-	override getGenerationContents(DefaultExtensionProvider provider)
-	{
-		val fileContents = new ArrayList<GenerationContent>
-		// interface always
-		fileContents += new GenerationContent(provider.interfaceName + ".java", getInterfaceFileContent(provider), false)
-		// class if they do not exists
-		fileContents += new GenerationContent(provider.className + ".java", getClassFileContent(provider), true)
-		if (provider.linearAlgebra)
-		{
-			fileContents += new GenerationContent(IrTypeExtensions.VectorClass + ".java", getVectorClassFileContent(provider), true)
-			fileContents += new GenerationContent(IrTypeExtensions.MatrixClass + ".java", getMatrixClassFileContent(provider), true)
-		}
-		return fileContents
-	}
-
-	private def getInterfaceFileContent(DefaultExtensionProvider provider)
+	static def getInterfaceFileContent(DefaultExtensionProvider provider)
 	'''
 	/* «Utils::doNotEditWarning» */
 
@@ -52,7 +32,7 @@ class JavaProviderGenerator implements ProviderGenerator
 	}
 	'''
 
-	private def getClassFileContent(DefaultExtensionProvider provider)
+	static def getClassFileContent(DefaultExtensionProvider provider)
 	'''
 	package «provider.packageName»;
 
@@ -74,7 +54,7 @@ class JavaProviderGenerator implements ProviderGenerator
 	}
 	'''
 
-	private def getVectorClassFileContent(DefaultExtensionProvider provider)
+	static def getVectorClassFileContent(DefaultExtensionProvider provider)
 	'''
 	package «provider.packageName»;
 
@@ -107,7 +87,7 @@ class JavaProviderGenerator implements ProviderGenerator
 	}
 	'''
 
-	private def getMatrixClassFileContent(DefaultExtensionProvider provider)
+	static def getMatrixClassFileContent(DefaultExtensionProvider provider)
 	'''
 	package «provider.packageName»;
 

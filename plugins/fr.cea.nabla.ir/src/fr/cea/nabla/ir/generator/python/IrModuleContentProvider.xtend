@@ -9,19 +9,17 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.python
 
+import fr.cea.nabla.ir.IrTypeExtensions
 import fr.cea.nabla.ir.IrUtils
-import fr.cea.nabla.ir.generator.ApplicationGenerator
-import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.Connectivity
+import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Job
-import fr.cea.nabla.ir.transformers.PreventFunctionOverloading
-import fr.cea.nabla.ir.transformers.ReplaceReductions
-import fr.cea.nabla.ir.transformers.SetPythonOperatorNames
-import java.util.ArrayList
+import fr.cea.nabla.ir.ir.LinearAlgebraType
+import fr.cea.nabla.ir.ir.Variable
 
 import static fr.cea.nabla.ir.generator.python.JsonContentProvider.*
 import static fr.cea.nabla.ir.generator.python.TypeContentProvider.*
@@ -35,28 +33,9 @@ import static extension fr.cea.nabla.ir.generator.python.ExpressionContentProvid
 import static extension fr.cea.nabla.ir.generator.python.FunctionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.python.JobContentProvider.*
 
-class PythonApplicationGenerator implements ApplicationGenerator
+class IrModuleContentProvider
 {
-	override getName() { 'Python' }
-
-	override getIrTransformationSteps()
-	{
-		#[
-			new SetPythonOperatorNames,
-			new PreventFunctionOverloading,
-			new ReplaceReductions(true) // parallel loops and reductions not yet implemented
-		]
-	}
-
-	override getGenerationContents(IrRoot ir)
-	{
-		val fileContents = new ArrayList<GenerationContent>
-		for (module : ir.modules)
-			fileContents += new GenerationContent(module.name.toLowerCase + '.py', module.fileContent, false)
-		return fileContents
-	}
-
-	private def getFileContent(IrModule it)
+	static def getFileContent(IrModule it)
 	'''
 	"""
 	«Utils.doNotEditWarning»
@@ -69,6 +48,10 @@ class PythonApplicationGenerator implements ApplicationGenerator
 	«IF irRoot.postProcessing !== null»from pvdfilewriter2d import PvdFileWriter2D«ENDIF»
 	«FOR provider : externalProviders»
 	from «provider.className.toLowerCase» import «provider.className»
+	«IF provider.linearAlgebra»
+	from «IrTypeExtensions.VectorClass.toLowerCase» import «IrTypeExtensions.VectorClass»
+	from «IrTypeExtensions.MatrixClass.toLowerCase» import «IrTypeExtensions.MatrixClass»
+	«ENDIF»
 	«ENDFOR»
 
 	class «className»:
@@ -90,7 +73,7 @@ class PythonApplicationGenerator implements ApplicationGenerator
 			«ENDIF»
 			«FOR v : variables.filter[!constExpr]»
 				«IF !v.type.scalar»
-					«PythonGeneratorUtils.getCodeName(v)»«getNumpyAllocation(v.type)»
+					«PythonGeneratorUtils.getCodeName(v)»«getPythonAllocation(v.type, v.name)»
 				«ENDIF»
 				«IF v.option»
 					«getJsonContent(v.name, v.type as BaseType)»
@@ -147,7 +130,7 @@ class PythonApplicationGenerator implements ApplicationGenerator
 						«FOR v : nodeVariables»
 							self.__writer.openNodeArray("«v.outputName»", «v.target.type.baseSizes.size»);
 							for i in range(self.__nbNodes):
-								self.__writer.write(«PythonGeneratorUtils.getCodeName(v.target)»[i])
+								self.__writer.write(«getWriteCallContent(v.target)»)
 							self.__writer.closeNodeArray()
 						«ENDFOR»
 					«ENDIF»
@@ -158,7 +141,7 @@ class PythonApplicationGenerator implements ApplicationGenerator
 						«FOR v : cellVariables»
 							self.__writer.openCellArray("«v.outputName»", «v.target.type.baseSizes.size»);
 							for i in range(self.__nbCells):
-								self.__writer.write(«PythonGeneratorUtils.getCodeName(v.target)»[i])
+								self.__writer.write(«getWriteCallContent(v.target)»)
 							self.__writer.closeCellArray()
 						«ENDFOR»
 					«ENDIF»
@@ -198,7 +181,7 @@ class PythonApplicationGenerator implements ApplicationGenerator
 	«ENDIF»
 	'''
 
-	private def getConnectivityAccessor(Connectivity c)
+	private static def getConnectivityAccessor(Connectivity c)
 	{
 		if (c.inTypes.empty) c.nbElemsVar
 		else c.nbElemsVar.toFirstUpper
@@ -215,5 +198,16 @@ class PythonApplicationGenerator implements ApplicationGenerator
 			'self._' + Utils.getCodeName(it)
 		else
 			'self.' + jobModule.name + '.self._' + Utils.getCodeName(it)
+	}
+
+	private static def getWriteCallContent(Variable v)
+	{
+		val t = v.type
+		switch t
+		{
+			ConnectivityType: '''«PythonGeneratorUtils.getCodeName(v)»[i]'''
+			LinearAlgebraType: '''«PythonGeneratorUtils.getCodeName(v)».getValue(i)'''
+			default: throw new RuntimeException("Unexpected type: " + t.class.name)
+		}
 	}
 }

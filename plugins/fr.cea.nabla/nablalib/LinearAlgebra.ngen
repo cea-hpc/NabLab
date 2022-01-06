@@ -27,3 +27,9 @@ Provider LinearAlgebraJava : LinearAlgebra
 	target = Java;
 	outputPath = "/.nablab/linearalgebra";
 }
+
+Provider LinearAlgebraNumPy : LinearAlgebra
+{
+	target = Python;
+	outputPath = "/.nablab/linearalgebra";
+}

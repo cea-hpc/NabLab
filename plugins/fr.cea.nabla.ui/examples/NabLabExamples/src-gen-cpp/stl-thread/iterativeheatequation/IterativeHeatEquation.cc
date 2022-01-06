@@ -170,7 +170,6 @@ IterativeHeatEquation::jsonInit(const char* jsonContent)
 	}
 }
 
-
 /**
  * Job computeFaceLength called @1.0 in simulate method.
  * In variables: X

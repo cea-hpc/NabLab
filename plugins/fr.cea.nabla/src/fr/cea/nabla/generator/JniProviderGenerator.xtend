@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-package fr.cea.nabla.generator.providers
+package fr.cea.nabla.generator
 
 import fr.cea.nabla.generator.StandaloneGeneratorBase
 import fr.cea.nabla.ir.UnzipHelper

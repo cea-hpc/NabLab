@@ -10,20 +10,14 @@
 package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.IrUtils
-import fr.cea.nabla.ir.UnzipHelper
-import fr.cea.nabla.ir.generator.ApplicationGenerator
-import fr.cea.nabla.ir.generator.CMakeUtils
-import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.Variable
-import java.util.ArrayList
-import java.util.LinkedHashSet
+import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
@@ -32,42 +26,31 @@ import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.CppGeneratorUtils.*
 
-class CppApplicationGenerator extends CppGenerator implements ApplicationGenerator
+@Data
+class IrModuleContentProvider
 {
-	val boolean hasLevelDB
-	val cMakeVars = new LinkedHashSet<Pair<String, String>>
+	val TraceContentProvider traceContentProvider
+	val IncludesContentProvider includesContentProvider
+	val FunctionContentProvider functionContentProvider
+	val JobContentProvider jobContentProvider
+	val TypeContentProvider typeContentProvider
+	val ExpressionContentProvider expressionContentProvider
+	val JsonContentProvider jsonContentProvider
+	val JobCallerContentProvider jobCallerContentProvider
+	val MainContentProvider mainContentProvider
 
-	new(Backend backend, String wsPath, boolean hasLevelDB, Iterable<Pair<String, String>> cmakeVars)
-	{
-		super(backend)
-		this.hasLevelDB = hasLevelDB
-		cmakeVars.forEach[x | this.cMakeVars += x]
+	protected def getTypeDefs(IrModule it) ''''''
+	protected def getPrivateMethodHeaders(IrModule it) ''''''
+	protected def getPrivateMethodBodies(IrModule it) ''''''
 
-		// Set WS_PATH variables in CMake and unzip NRepository if necessary
-		this.cMakeVars += new Pair(CMakeUtils.WS_PATH, wsPath)
-		UnzipHelper::unzipNRepository(wsPath)
-	}
-
-	override getGenerationContents(IrRoot ir)
-	{
-		val fileContents = new ArrayList<GenerationContent>
-		for (module : ir.modules)
-		{
-			fileContents += new GenerationContent(module.className + '.h', module.headerFileContent, false)
-			fileContents += new GenerationContent(module.className + '.cc', module.sourceFileContent, false)
-		}
-		fileContents += new GenerationContent('CMakeLists.txt', backend.cmakeContentProvider.getContentFor(ir, hasLevelDB, cMakeVars), false)
-		return fileContents
-	}
-
-	private def getHeaderFileContent(IrModule it)
+	def getHeaderFileContent(IrModule it, boolean hasLevelDB)
 	'''
 	/* «Utils::doNotEditWarning» */
 
 	#ifndef «name.HDefineName»
 	#define «name.HDefineName»
 
-	«backend.includesContentProvider.getIncludes(hasLevelDB, (irRoot.postProcessing !== null))»
+	«includesContentProvider.getIncludes(hasLevelDB, (irRoot.postProcessing !== null))»
 	#include "«irRoot.mesh.className».h"
 	«IF irRoot.postProcessing !== null»#include "PvdFileWriter2D.h"«ENDIF»
 	«FOR provider : externalProviders»
@@ -77,7 +60,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	#include "«irRoot.mainModule.className».h"
 	«ENDIF»
 
-	«backend.includesContentProvider.getUsings(hasLevelDB)»
+	«includesContentProvider.getUsings(hasLevelDB)»
 	«IF main && irRoot.modules.size > 1»
 
 		«FOR m : irRoot.modules.filter[x | x !== it]»
@@ -107,10 +90,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 			«ENDFOR»
 
 		«ENDIF»
-		«IF kokkosTeamThread»
-			typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
-
-		«ENDIF»
+		«typeDefs»
 	public:
 		«className»(«irRoot.mesh.className»& aMesh);
 		~«className»();
@@ -127,9 +107,9 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 
 		void simulate();
 		«FOR j : jobs»
-		«backend.jobContentProvider.getDeclarationContent(j)»
+		«jobContentProvider.getDeclarationContent(j)»
 		«ENDFOR»
-		«IF levelDB»
+		«IF main && hasLevelDB»
 			const std::string& get«IrUtils.NonRegressionNameAndValue.key.toFirstUpper»()
 			{
 				return «IrUtils.NonRegressionNameAndValue.key»;
@@ -143,15 +123,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		void dumpVariables(int iteration, bool useTimer=true);
 
 		«ENDIF»
-		«IF kokkosTeamThread»
-		/**
-		 * Utility function to get work load for each team of threads
-		 * In  : thread and number of element to use for computation
-		 * Out : pair of indexes, 1st one for start of chunk, 2nd one for size of chunk
-		 */
-		const std::pair<size_t, size_t> computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept;
-
-		«ENDIF»
+		«privateMethodHeaders»
 		// Mesh and mesh variables
 		«irRoot.mesh.className»& mesh;
 		«FOR c : irRoot.mesh.connectivities.filter[multiple] BEFORE 'size_t ' SEPARATOR ', ' AFTER ';'»«c.nbElemsVar»«ENDFOR»
@@ -176,7 +148,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		«FOR v : externalProviders»
 			«v.className» «v.instanceName»;
 		«ENDFOR»
-		«IF levelDB»
+		«IF main && hasLevelDB»
 			std::string «IrUtils.NonRegressionNameAndValue.key»;
 		«ENDIF»
 		«FOR v : variables»
@@ -198,7 +170,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 	#endif
 	'''
 
-	private def getSourceFileContent(IrModule it)
+	def getSourceFileContent(IrModule it, boolean hasLevelDB)
 	'''
 	/* «Utils::doNotEditWarning» */
 
@@ -280,7 +252,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 			«vName».jsonInit(strbuf.GetString());
 		}
 		«ENDFOR»
-		«IF levelDB»
+		«IF main && hasLevelDB»
 		// Non regression
 		«val nrName = IrUtils.NonRegressionNameAndValue.key»
 		assert(options.HasMember("«nrName»"));
@@ -292,7 +264,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 
 			// Copy node coordinates
 			const auto& gNodes = mesh.getGeometry()->getNodes();
-			«val iterator = backend.typeContentProvider.formatIterators(irRoot.initNodeCoordVariable.type as ConnectivityType, #["rNodes"])»
+			«val iterator = typeContentProvider.formatIterators(irRoot.initNodeCoordVariable.type as ConnectivityType, #["rNodes"])»
 			for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
 			{
 				«irRoot.initNodeCoordVariable.name»«iterator»[0] = gNodes[rNodes][0];
@@ -301,34 +273,9 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 		«ENDIF»
 	}
 
-	«IF kokkosTeamThread»
-
-	const std::pair<size_t, size_t> «className»::computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept
-	{
-		/*
-		if (nb_elmt % thread.team_size())
-		{
-			std::cerr << "[ERROR] nb of elmt (" << nb_elmt << ") not multiple of nb of thread per team ("
-		              << thread.team_size() << ")" << std::endl;
-			std::terminate();
-		}
-		*/
-		// Size
-		size_t team_chunk(std::floor(nb_elmt / thread.league_size()));
-		// Offset
-		const size_t team_offset(thread.league_rank() * team_chunk);
-		// Last team get remaining work
-		if (thread.league_rank() == thread.league_size() - 1)
-		{
-			size_t left_over(nb_elmt - (team_chunk * thread.league_size()));
-			team_chunk += left_over;
-		}
-		return std::pair<size_t, size_t>(team_offset, team_chunk);
-	}
-	«ENDIF»
-
+	«privateMethodBodies»
 	«FOR j : jobs SEPARATOR '\n'»
-		«backend.jobContentProvider.getDefinitionContent(j)»
+		«jobContentProvider.getDefinitionContent(j)»
 	«ENDFOR»
 	«IF main»
 	«IF postProcessing !== null»
@@ -380,13 +327,13 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 
 	void «className»::«Utils.getCodeName(irRoot.main)»()
 	{
-		«backend.traceContentProvider.getBeginOfSimuTrace(it)»
+		«traceContentProvider.getBeginOfSimuTrace(it)»
 
 		«jobCallerContentProvider.getCallsHeader(irRoot.main)»
 		«jobCallerContentProvider.getCallsContent(irRoot.main)»
-		«backend.traceContentProvider.getEndOfSimuTrace(irRoot, linearAlgebra)»
+		«traceContentProvider.getEndOfSimuTrace(irRoot, linearAlgebra)»
 	}
-	«IF levelDB»
+	«IF main && hasLevelDB»
 
 	void «className»::createDB(const std::string& db_name)
 	{
@@ -480,7 +427,7 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 
 	int main(int argc, char* argv[]) 
 	{
-		«backend.mainContentProvider.getContentFor(it, hasLevelDB)»
+		«mainContentProvider.getContentFor(it, hasLevelDB)»
 		return ret;
 	}
 	«ENDIF»
@@ -494,16 +441,6 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 			'''CartesianMesh2D::«c.nbElemsVar.toFirstUpper»'''
 	}
 
-	private def isLevelDB(IrModule it)
-	{
-		main && hasLevelDB
-	}
-
-	private def isKokkosTeamThread()
-	{
-		backend instanceof KokkosTeamThreadBackend
-	}
-
 	private def getWriteCallContent(Variable v)
 	{
 		val t = v.type
@@ -514,4 +451,52 @@ class CppApplicationGenerator extends CppGenerator implements ApplicationGenerat
 			default: throw new RuntimeException("Unexpected type: " + class.name)
 		}
 	}
+}
+
+@Data
+class KokkosTeamThreadIrModuleContentProvider extends IrModuleContentProvider
+{
+	override getTypeDefs(IrModule it)
+	'''
+		typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
+
+	'''
+
+	override getPrivateMethodHeaders(IrModule it)
+	'''
+		/**
+		 * Utility function to get work load for each team of threads
+		 * In  : thread and number of element to use for computation
+		 * Out : pair of indexes, 1st one for start of chunk, 2nd one for size of chunk
+		 */
+		const std::pair<size_t, size_t> computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept;
+
+	'''
+
+	override getPrivateMethodBodies(IrModule it)
+	'''
+		const std::pair<size_t, size_t> «className»::computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept
+		{
+			/*
+			if (nb_elmt % thread.team_size())
+			{
+				std::cerr << "[ERROR] nb of elmt (" << nb_elmt << ") not multiple of nb of thread per team ("
+			              << thread.team_size() << ")" << std::endl;
+				std::terminate();
+			}
+			*/
+			// Size
+			size_t team_chunk(std::floor(nb_elmt / thread.league_size()));
+			// Offset
+			const size_t team_offset(thread.league_rank() * team_chunk);
+			// Last team get remaining work
+			if (thread.league_rank() == thread.league_size() - 1)
+			{
+				size_t left_over(nb_elmt - (team_chunk * thread.league_size()));
+				team_chunk += left_over;
+			}
+			return std::pair<size_t, size_t>(team_offset, team_chunk);
+		}
+
+	'''
 }

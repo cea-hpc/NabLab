@@ -9,26 +9,27 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.python
 
+import fr.cea.nabla.ir.IrTypeExtensions
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.IrType
 import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.PrimitiveType
 
-import static extension fr.cea.nabla.ir.generator.python.PythonGeneratorUtils.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.python.ExpressionContentProvider.*
+import static extension fr.cea.nabla.ir.generator.python.PythonGeneratorUtils.*
 
 class TypeContentProvider
 {
-	static def CharSequence getNumpyAllocation(IrType it)
+	static def CharSequence getPythonAllocation(IrType it, String name)
 	{
 		switch it
 		{
 			BaseType case scalar: ''''''
 			BaseType: getNumpyAllocation(sizes.map[content], primitive)
 			ConnectivityType: getNumpyAllocation(connectivities.map[nbElemsVar] + base.sizes.map[content], primitive)
-			LinearAlgebraType: getNumpyAllocation(sizes.map[content], primitive)
+			LinearAlgebraType: ''' = «IrTypeExtensions.getLinearAlgebraClass(it)».empty("«name»", «FOR s : sizes SEPARATOR ', '»«s.content»«ENDFOR»)'''
 		}
 	}
 

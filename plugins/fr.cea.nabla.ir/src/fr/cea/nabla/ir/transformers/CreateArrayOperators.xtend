@@ -14,6 +14,7 @@ import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.BaseTypeConstant
 import fr.cea.nabla.ir.ir.BinaryExpression
 import fr.cea.nabla.ir.ir.ContractedIf
+import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.Instruction
@@ -61,48 +62,37 @@ class CreateArrayOperators extends IrTransformationStep
 		'%' -> 'Mod'
 	}
 
-	new()
+	override getDescription()
 	{
-		super('Replace unary/binary operators with array arguments by functions')
+		"Replace unary/binary operators with array arguments by functions"
 	}
 
-	override transform(IrRoot ir)
+	override transform(IrRoot ir, (String)=>void traceNotifier)
 	{
-		trace('    IR -> IR: ' + description)
+		for (o : ir.eAllContents.filter[x | x instanceof Instruction || x instanceof Variable].toIterable)
+			for (r : o.eClass.EAllReferences.filter[x | x.EType == IrPackage.Literals.EXPRESSION])
+			{
+				// No list of expressions in IR for the moment
+				if (r.many) throw new RuntimeException("Not yet implemented")
 
-		var boolean ret = false
-		try
-		{
-			for (o : ir.eAllContents.filter[x | x instanceof Instruction || x instanceof Variable].toIterable)
-				for (r : o.eClass.EAllReferences.filter[x | x.EType == IrPackage.Literals.EXPRESSION])
+				val refValue = o.eGet(r)
+				if (refValue !== null)
 				{
-					// No list of expressions in IR for the moment
-					if (r.many) throw new RuntimeException("Not yet implemented")
-	
-					val refValue = o.eGet(r)
-					if (refValue !== null)
-					{
-						// Do not filter on scalar expressions :
-						// a function can return a scalar type and have array arguments
-						// f(R[3] x) : R
-						val expr = refValue as Expression
-						o.eSet(r, createArrayOperations(expr))
-					}
+					// Do not filter on scalar expressions :
+					// a function can return a scalar type and have array arguments
+					// f(R[3] x) : R
+					val expr = refValue as Expression
+					o.eSet(r, createArrayOperations(expr))
 				}
-	
-			for (e : expressionsToDelete)
-				EcoreUtil.delete(e)
+			}
 
-			ret = true
-		}
-		catch (Exception e)
-		{
-			trace(e.class.name + ": " + e.message)
-			trace(IrUtils.getStackTrace(e))
-			ret = false
-		}
+		for (e : expressionsToDelete)
+			EcoreUtil.delete(e)
+	}
 
-		return ret
+	override transform(DefaultExtensionProvider dep, (String)=>void traceNotifier)
+	{
+		// nothing to do
 	}
 
 	private def Expression createArrayOperations(Expression e)

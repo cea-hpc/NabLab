@@ -9,29 +9,34 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.transformers
 
+import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.IrRoot
 import java.util.List
+import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 
+@Data
 class OptimizeConnectivities extends IrTransformationStep
 {
 	val List<String> connectivities
 
-	new(List<String> connectivities)
+	override getDescription()
 	{
-		super('Annotate connectivities when Id and Index are equals (ex: cells)')
-		this.connectivities = connectivities
+		"Annotate connectivities when Id and Index are equals (ex: cells)"
 	}
 
-	override transform(IrRoot ir)
+	override transform(IrRoot ir, (String)=>void traceNotifier)
 	{
-		trace('    IR -> IR: ' + description)
 		for (c : ir.mesh.connectivities)
 		{
 			if (!c.multiple) c.indexEqualId = true
 			else if (connectivities.contains(c.name)) c.indexEqualId = true
 		}
-		return true
+	}
+
+	override transform(DefaultExtensionProvider dep, (String)=>void traceNotifier)
+	{
+		// nothing to do
 	}
 }

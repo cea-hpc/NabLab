@@ -7,14 +7,12 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-package fr.cea.nabla.ir.generator
+package fr.cea.nabla.ir.transformers
 
-import fr.cea.nabla.ir.ir.IrRoot
-import fr.cea.nabla.ir.transformers.IrTransformationStep
-
-interface ApplicationGenerator
+class IrTransformationException extends Exception
 {
-	def String getName()
-	def IrTransformationStep[] getIrTransformationSteps()
-	def Iterable<GenerationContent> getGenerationContents(IrRoot ir)
+	new(String message)
+	{
+		super("Exception during IR transformation step: " + message)
+	}
 }

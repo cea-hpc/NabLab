@@ -9,34 +9,34 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.transformers
 
+import fr.cea.nabla.ir.ir.DefaultExtensionProvider
+import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.IrRoot
 
 class PreventFunctionOverloading extends IrTransformationStep
 {
-	new()
+	override getDescription()
 	{
-		super('Give a unique name to functions to prevent function overloading')
+		"Give a unique name to functions to prevent function overloading"
 	}
 
-	override transform(IrRoot ir)
+	override transform(IrRoot ir, (String)=>void traceNotifier)
 	{
-		trace('    IR -> IR: ' + description)
-
 		for (m : ir.modules)
-		{
-			val functionByNames = m.functions.groupBy[name]
-			for (name : functionByNames.keySet)
-			{
-				val functions = functionByNames.get(name)
-				// if more than one function with the same name, add an index to the name
-				if (functions.size > 1)
-				{
-					for (i : 0..<functions.size)
-						functions.get(i).name = name + i
-				}
-			}
-		}
+			ensureUniqueNames(m.functions)
 
-		return true
+		for (p : ir.providers.filter(DefaultExtensionProvider))
+			ensureUniqueNames(p.functions)
+	}
+
+	override transform(DefaultExtensionProvider dep, (String)=>void traceNotifier)
+	{
+		ensureUniqueNames(dep.functions)
+	}
+
+	private def ensureUniqueNames(Iterable<? extends Function> functions)
+	{
+		for (f : functions.filter[x | x.indexInName > 0])
+			f.name = f.name + f.indexInName
 	}
 }

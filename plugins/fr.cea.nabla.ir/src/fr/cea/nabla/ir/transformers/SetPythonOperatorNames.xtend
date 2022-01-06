@@ -10,6 +10,7 @@
 package fr.cea.nabla.ir.transformers
 
 import fr.cea.nabla.ir.ir.BinaryExpression
+import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.UnaryExpression
 
@@ -21,15 +22,13 @@ class SetPythonOperatorNames extends IrTransformationStep
 		'!' -> 'not '
 	}
 
-	new()
+	override getDescription()
 	{
-		super('Replace0 "&&", "||", "!" by "and", "or", "not"')
+		"Replace0 &&, ||, ! by and, or, not"
 	}
 
-	override transform(IrRoot ir)
+	override transform(IrRoot ir, (String)=>void traceNotifier)
 	{
-		trace('    IR -> IR: ' + description)
-
 		for (e : ir.eAllContents.filter(BinaryExpression).toIterable)
 			for (opName : PythonOperatorNames.entrySet)
 				if (e.operator == opName.key)
@@ -39,7 +38,10 @@ class SetPythonOperatorNames extends IrTransformationStep
 			for (opName : PythonOperatorNames.entrySet)
 				if (e.operator == opName.key)
 					e.operator = opName.value
+	}
 
-		return true
+	override transform(DefaultExtensionProvider dep, (String)=>void traceNotifier)
+	{
+		// nothing to do
 	}
 }

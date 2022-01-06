@@ -40,7 +40,7 @@ class InstructionContentProvider
 	'''
 		«IF variable.defaultValue === null»
 			«IF !variable.type.scalar»
-				«variable.name»«getNumpyAllocation(variable.type)»
+				«variable.name»«getPythonAllocation(variable.type, variable.name)»
 			«ENDIF»
 		«ELSE»
 			«variable.name» = «variable.defaultValue.content»
@@ -57,7 +57,7 @@ class InstructionContentProvider
 	static def dispatch CharSequence getContent(Affectation it)
 	{
 		if (left.target.linearAlgebra && !(left.iterators.empty && left.indices.empty))
-			'''«left.codeName».setValue(«FOR i : left.iterators.map[name] + left.indices.map[content] SEPARATOR ', '»«i»«ENDFOR»», «right.content»)'''
+			'''«left.codeName».setValue(«FOR i : left.iterators.map[name] + left.indices.map[content] SEPARATOR ', '»«i»«ENDFOR», «right.content»)'''
 		else
 			'''«left.content» = «right.content»'''
 	}

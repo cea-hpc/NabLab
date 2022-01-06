@@ -10,17 +10,13 @@
 package fr.cea.nabla.ir.generator.java
 
 import fr.cea.nabla.ir.IrUtils
-import fr.cea.nabla.ir.generator.ApplicationGenerator
-import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.Variable
-import java.util.ArrayList
 
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
@@ -33,35 +29,16 @@ import static extension fr.cea.nabla.ir.generator.java.JobContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.JsonContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.TypeContentProvider.*
 
-class JavaApplicationGenerator implements ApplicationGenerator
+class IrModuleContentProvider
 {
-	val boolean hasLevelDB
-
-	new(boolean hasLevelDB)
-	{
-		this.hasLevelDB = hasLevelDB
-	}
-
-	override getName() { 'Java' }
-
-	override getIrTransformationSteps() { #[] }
-
-	override getGenerationContents(IrRoot ir)
-	{
-		val fileContents = new ArrayList<GenerationContent>
-		for (module : ir.modules)
-			fileContents += new GenerationContent(module.className + '.java', module.fileContent, false)
-		return fileContents
-	}
-
-	private def getFileContent(IrModule it)
+	static def getFileContent(IrModule it, boolean hasLevelDB)
 	'''
 		/* «Utils.doNotEditWarning» */
 
 		«val mainModule = irRoot.mainModule»
 		package «JavaGeneratorUtils.getPackageName(it)»;
 
-		«IF levelDB»
+		«IF main && hasLevelDB»
 		import static org.iq80.leveldb.impl.Iq80DBFactory.bytes;
 		import static org.iq80.leveldb.impl.Iq80DBFactory.factory;
 
@@ -78,7 +55,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 		import com.google.gson.JsonObject;
 		import com.google.gson.JsonElement;
 
-		«IF levelDB»import fr.cea.nabla.javalib.LevelDBUtils;«ENDIF»
+		«IF main && hasLevelDB»import fr.cea.nabla.javalib.LevelDBUtils;«ENDIF»
 		import fr.cea.nabla.javalib.mesh.*;
 
 		public final class «className»
@@ -108,7 +85,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 			«FOR v : externalProviders»
 				private «v.packageName».«v.className» «v.instanceName»;
 			«ENDFOR»
-			«IF levelDB»
+			«IF main && hasLevelDB»
 				private String «IrUtils.NonRegressionNameAndValue.key»;
 			«ENDIF»
 			«FOR v : variables»
@@ -159,7 +136,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 						«vName».jsonInit(options.get("«vName»").toString());
 				«ENDFOR»
 				«val nrName = IrUtils.NonRegressionNameAndValue.key»
-				«IF levelDB»
+				«IF main && hasLevelDB»
 					// Non regression
 					if (options.has("«nrName»"))
 					{
@@ -219,7 +196,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 
 					// Start simulation
 					«name».simulate();
-					«IF levelDB»
+					«IF main && hasLevelDB»
 
 					«val dbName = irRoot.name + "DB"»
 					// Non regression testing
@@ -284,7 +261,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 				}
 			}
 			«ENDIF»
-			«IF levelDB»
+			«IF main && hasLevelDB»
 
 			private void createDB(String db_name) throws IOException
 			{
@@ -325,7 +302,7 @@ class JavaApplicationGenerator implements ApplicationGenerator
 		};
 	'''
 
-	private def getConnectivityAccessor(Connectivity c)
+	private static def getConnectivityAccessor(Connectivity c)
 	{
 		if (c.inTypes.empty)
 			'''mesh.get«c.nbElemsVar.toFirstUpper»()'''
@@ -333,19 +310,14 @@ class JavaApplicationGenerator implements ApplicationGenerator
 			'''CartesianMesh2D.«c.nbElemsVar.toFirstUpper»'''
 	}
 
-	private def isLevelDB(IrModule it)
-	{
-		main && hasLevelDB
-	}
-
-	private def getWriteCallContent(Variable v)
+	private static def getWriteCallContent(Variable v)
 	{
 		val t = v.type
 		switch t
 		{
 			ConnectivityType: '''«v.name»[i]'''
 			LinearAlgebraType: '''«v.name».getValue(i)'''
-			default: throw new RuntimeException("Unexpected type: " + class.name)
+			default: throw new RuntimeException("Unexpected type: " + t.class.name)
 		}
 	}
 }

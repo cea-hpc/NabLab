@@ -29,6 +29,7 @@ class NablaType2IrType
 {
 	@Inject extension IrBasicFactory
 	@Inject extension IrExpressionFactory
+	@Inject extension IrExtensionProviderFactory
 
 	def IrType toIrType(NablaType t)
 	{

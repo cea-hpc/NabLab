@@ -141,7 +141,6 @@ HeatEquation::jsonInit(const char* jsonContent)
 	}
 }
 
-
 /**
  * Job computeOutgoingFlux called @1.0 in executeTimeLoopN method.
  * In variables: V, center, deltat, surface, u_n

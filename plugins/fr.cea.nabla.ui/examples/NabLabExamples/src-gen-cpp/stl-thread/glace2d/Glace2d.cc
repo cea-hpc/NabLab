@@ -293,7 +293,6 @@ Glace2d::jsonInit(const char* jsonContent)
 	}
 }
 
-
 /**
  * Job computeCjr called @1.0 in executeTimeLoopN method.
  * In variables: X_n

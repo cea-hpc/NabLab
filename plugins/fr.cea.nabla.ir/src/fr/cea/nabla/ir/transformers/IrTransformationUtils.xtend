@@ -16,6 +16,18 @@ import org.eclipse.emf.ecore.util.FeatureMapUtil
 
 class IrTransformationUtils
 {
+	static def getCommonTransformation(boolean replaceAllReductions)
+	{
+		#[
+			new ReplaceUtf8Chars,
+			new OptimizeConnectivities(#['cells', 'nodes', 'faces']),
+			new ReplaceReductions(replaceAllReductions),
+			new ReplaceAffectations,
+			new CreateArrayOperators,
+			new FillJobHLTs
+		]
+	}
+
 	/**
 	 * Extension of the EcoreUtil::replace operation for a list of objects.
 	 * If the eContainmentFeature is a 1:1 multiplicity, an instance of InstructionBlock is created,

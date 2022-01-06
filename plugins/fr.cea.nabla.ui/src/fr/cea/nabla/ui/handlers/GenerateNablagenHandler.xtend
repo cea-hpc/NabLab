@@ -13,7 +13,7 @@ import com.google.inject.Inject
 import com.google.inject.Provider
 import com.google.inject.Singleton
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
-import fr.cea.nabla.generator.providers.NablagenFileGenerator
+import fr.cea.nabla.generator.NablagenFileGenerator
 import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.nabla.NablaRoot
 import org.eclipse.core.resources.IFile

@@ -69,7 +69,7 @@ RealArray2D<x0,x1> operatorMult(RealArray2D<x0,x1> a, double b);
 class Glace2d
 {
 	typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
-
+	
 public:
 	Glace2d(CartesianMesh2D& aMesh);
 	~Glace2d();
@@ -113,7 +113,7 @@ private:
 	 * Out : pair of indexes, 1st one for start of chunk, 2nd one for size of chunk
 	 */
 	const std::pair<size_t, size_t> computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept;
-
+	
 	// Mesh and mesh variables
 	CartesianMesh2D& mesh;
 	size_t nbNodes, nbCells, maxNbNodesOfCell, maxNbCellsOfNode, nbInnerNodes, nbTopNodes, nbBottomNodes, nbLeftNodes, nbRightNodes;

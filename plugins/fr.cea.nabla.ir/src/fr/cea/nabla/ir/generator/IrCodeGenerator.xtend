@@ -10,9 +10,13 @@
 package fr.cea.nabla.ir.generator
 
 import fr.cea.nabla.ir.ir.DefaultExtensionProvider
+import fr.cea.nabla.ir.ir.IrRoot
+import fr.cea.nabla.ir.transformers.IrTransformationStep
 
-interface ProviderGenerator
+interface IrCodeGenerator
 {
 	def String getName()
+	def IrTransformationStep[] getIrTransformationSteps()
+	def Iterable<GenerationContent> getGenerationContents(IrRoot ir)
 	def Iterable<GenerationContent> getGenerationContents(DefaultExtensionProvider provider)
 }

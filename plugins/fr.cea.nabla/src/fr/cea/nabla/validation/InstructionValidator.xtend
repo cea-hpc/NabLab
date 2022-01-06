@@ -47,7 +47,7 @@ class InstructionValidator extends FunctionOrReductionValidator
 	static def getDynamicGlobalVarMsg() { "Dynamic array not allowed on global variables"}
 	static def getLocalConnectivityVarMsg() { "Connectivities not allowed on local variables"}
 	static def getAffectationOnConnectivityTypeMsg() { "Assignment not allowed on connectivity variables: use loop instead" }
-	static def getGlobalVarValueMsg() { "Assignment with reduction, external function, card or dynamic variable not allowed in options and global variables" }
+	static def getGlobalVarValueMsg() { "Assignment with reduction, external function, card or dynamic variable not allowed on global variables" }
 
 	@Check(CheckType.NORMAL)
 	def checkDynamicGlobalVar(VarGroupDeclaration it)

@@ -1340,6 +1340,16 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
+	public EAttribute getFunction_IndexInName() {
+		return (EAttribute)functionEClass.getEStructuralFeatures().get(4);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EClass getInternFunction() {
 		return internFunctionEClass;
 	}
@@ -3008,6 +3018,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEReference(functionEClass, FUNCTION__RETURN_TYPE);
 		createEReference(functionEClass, FUNCTION__VARIABLES);
 		createEReference(functionEClass, FUNCTION__IN_ARGS);
+		createEAttribute(functionEClass, FUNCTION__INDEX_IN_NAME);
 
 		internFunctionEClass = createEClass(INTERN_FUNCTION);
 		createEReference(internFunctionEClass, INTERN_FUNCTION__BODY);
@@ -3400,6 +3411,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEReference(getFunction_ReturnType(), this.getIrType(), null, "returnType", null, 0, 1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getFunction_Variables(), this.getVariable(), null, "variables", null, 0, -1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getFunction_InArgs(), this.getArg(), null, "inArgs", null, 0, -1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getFunction_IndexInName(), ecorePackage.getEInt(), "indexInName", null, 1, 1, Function.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(internFunctionEClass, InternFunction.class, "InternFunction", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getInternFunction_Body(), this.getInstruction(), null, "body", null, 0, 1, InternFunction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

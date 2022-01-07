@@ -10,11 +10,13 @@
 package fr.cea.nabla.generator.ir
 
 import com.google.inject.Inject
+import com.google.inject.Singleton
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.nabla.DefaultExtension
 import fr.cea.nabla.nabla.MeshExtension
 import fr.cea.nabla.nablagen.NablagenProvider
 
+@Singleton
 class IrExtensionProviderFactory
 {
 	@Inject IrFunctionFactory irFunctionFactory
@@ -29,7 +31,7 @@ class IrExtensionProviderFactory
 		extensionName = ext.name
 	}
 
-	def toIrDefaultExtensionProvider(NablagenProvider provider, String installationDir)
+	def toIrDefaultExtensionProvider(NablagenProvider provider)
 	{
 		IrFactory::eINSTANCE.createDefaultExtensionProvider =>
 		[

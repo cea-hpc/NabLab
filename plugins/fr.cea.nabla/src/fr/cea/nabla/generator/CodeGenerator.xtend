@@ -61,8 +61,7 @@ class CodeGenerator extends StandaloneGeneratorBase
 					val outputFolderName = wsPath + provider.outputPath
 					val fsa = getConfiguredFileSystemAccess(outputFolderName, false)
 					dispatcher.post(MessageType::Exec, "Starting " + provider.target.literal + " code generation: " + provider.outputPath)
-					val installDir = '' // unused to generate JNI functions
-					val irProvider = irExtensionProviderFactory.toIrDefaultExtensionProvider(provider, installDir)
+					val irProvider = irExtensionProviderFactory.toIrDefaultExtensionProvider(provider)
 
 					// Create code generator
 					val g = irCodeGeneratorFactory.create(wsPath, provider.target)

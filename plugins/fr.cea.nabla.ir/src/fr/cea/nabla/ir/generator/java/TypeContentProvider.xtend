@@ -33,10 +33,11 @@ class TypeContentProvider
 			BaseType: primitive.javaType + sizes.map['[]'].join
 			ConnectivityType: base.javaType + connectivities.map['[]'].join
 			LinearAlgebraType:
-				if (provider.packageName.nullOrEmpty)
-					IrTypeExtensions.getLinearAlgebraClass(it)
-				else
-					provider.packageName + '.' + IrTypeExtensions.getLinearAlgebraClass(it)
+			{
+				val p = provider.packageName
+				val prefix = (p.length == 0 ? p : p + ".")
+				prefix + IrTypeExtensions.getLinearAlgebraClass(it)
+			}
 			default: throw new RuntimeException("Unexpected type: " + class.name)
 		}
 	}

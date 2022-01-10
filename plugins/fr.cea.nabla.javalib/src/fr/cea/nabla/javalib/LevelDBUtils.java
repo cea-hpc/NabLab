@@ -16,6 +16,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 import org.apache.commons.io.FileUtils;
@@ -74,11 +75,29 @@ public class LevelDBUtils
 						{
 							result = false;
 							int mismatchIndex = Arrays.mismatch(value, ref);
-							System.err.println("value[" + mismatchIndex + "] = " + value[mismatchIndex]);
-							System.err.println(" ref[" + mismatchIndex + "] = " + ref[mismatchIndex]);
+							ByteBuffer valueByteBuffer = ByteBuffer.wrap(value);
+							ByteBuffer refByteBuffer = ByteBuffer.wrap(ref);
+							int bufSize = valueByteBuffer.remaining();
+							if (bufSize == Integer.BYTES)
+								System.err.println("	" + valueByteBuffer.getInt() + " (value) != " + refByteBuffer.getInt() + " (ref)");
+							else if (bufSize == Double.BYTES)
+								System.err.println("	" + valueByteBuffer.getDouble() + " (value) != " + refByteBuffer.getDouble() + " (ref)");
+							else if (bufSize % Double.BYTES == 0)
+							{
+								int indx = (int)(mismatchIndex / Double.BYTES);
+								System.err.println("	" + valueByteBuffer.getDouble(indx * Double.BYTES) + " (value[" + indx + "]) != " + refByteBuffer.getDouble(indx * Double.BYTES) + " (ref[" + indx + "])");
+							}
+							else if (bufSize % Integer.BYTES == 0)
+							{
+								int indx = (int)(mismatchIndex / Integer.BYTES);
+								System.err.println("	" + valueByteBuffer.getInt(indx * Integer.BYTES) + " (value[" + indx + "]) != " + refByteBuffer.getInt(indx * Integer.BYTES) + " (ref[" + indx + "])");
+							}
+							else
+								System.out.println("Unable to determine the type of data.");
 						}
 					}
 				}
+
 
 				// looking for key in the db that are not in the ref (new variables)
 				for(it.seekToFirst() ; it.hasNext() ; it.next())
@@ -120,41 +139,47 @@ public class LevelDBUtils
 		factory.destroy(new File(name), leveldbOptions);
 	}
 
-	public static byte[] toByteArray(final int i) throws IOException 
+	public static <T extends Number>  byte[] toByteArray(final T number) throws IOException
 	{
-		 ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		 DataOutputStream dos = new DataOutputStream(bos);
-		 dos.writeInt(i);
-		 dos.flush();
-		 return bos.toByteArray();
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		DataOutputStream dos = new DataOutputStream(bos);
+		if (number instanceof Integer)
+			dos.writeInt((Integer)number);
+		else if (number instanceof Double)
+			dos.writeDouble((Double)number);
+		else {
+			// Neither Double nor Integer
+			throw new IllegalArgumentException("Only Double and Integer supported.");
+		}
+		dos.flush();
+		return bos.toByteArray();
 	}
 
-	public static byte[] toByteArray(final double d) throws IOException 
+	public static byte[] toByteArray(final boolean b) throws IOException
 	{
-		 ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		 DataOutputStream dos = new DataOutputStream(bos);
-		 dos.writeDouble(d);
-		 dos.flush();
-		 return bos.toByteArray();
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		DataOutputStream dos = new DataOutputStream(bos);
+		dos.writeBoolean(b);
+		dos.flush();
+		return bos.toByteArray();
 	}
 
-	public static byte[] toByteArray(final boolean b) throws IOException 
+	public static byte[] toByteArray(int[] data1d) throws IOException
 	{
-		 ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		 DataOutputStream dos = new DataOutputStream(bos);
-		 dos.writeBoolean(b);
-		 dos.flush();
-		 return bos.toByteArray();
+		if (data1d == null) return null;
+		byte[] byts = new byte[data1d.length * Integer.BYTES];
+		for (int i = 0; i < data1d.length; i++)
+			System.arraycopy(toByteArray(data1d[i]), 0, byts, i * Integer.BYTES, Integer.BYTES);
+		return byts;
 	}
 
-	public static byte[] toByteArray(final double[] data1d) throws IOException
+	public static byte[] toByteArray(double[] data1d) throws IOException
 	{
-		 if (data1d == null) return null;
-		 // ----------
-		 byte[] byts = new byte[data1d.length * Double.BYTES];
-		 for (int i = 0; i < data1d.length; i++)
-			 System.arraycopy(toByteArray(data1d[i]), 0, byts, i * Double.BYTES, Double.BYTES);
-		 return byts;
+		if (data1d == null) return null;
+		byte[] byts = new byte[data1d.length * Double.BYTES];
+		for (int i = 0; i < data1d.length; i++)
+			System.arraycopy(toByteArray(data1d[i]), 0, byts, i * Double.BYTES, Double.BYTES);
+		return byts;
 	}
 
 	public static byte[] toByteArray(final Vector vector) throws IOException
@@ -164,48 +189,48 @@ public class LevelDBUtils
 
 	public static byte[] toByteArray(final double[][] data2d) throws IOException
 	{
-		 if (data2d == null) return null;
-		 // ----------
-		 byte[] byts = new byte[data2d.length * data2d[0].length * Double.BYTES];
-		 for (int i = 0; i < data2d.length; i++)
-			 for (int j = 0; j < data2d[i].length; j++)
-				 System.arraycopy(toByteArray(data2d[i][j]), 0, byts, (i * data2d[0].length + j) * Double.BYTES, Double.BYTES);
-		 return byts;
+		if (data2d == null) return null;
+		// ----------
+		byte[] byts = new byte[data2d.length * data2d[0].length * Double.BYTES];
+		for (int i = 0; i < data2d.length; i++)
+			for (int j = 0; j < data2d[i].length; j++)
+				System.arraycopy(toByteArray(data2d[i][j]), 0, byts, (i * data2d[0].length + j) * Double.BYTES, Double.BYTES);
+		return byts;
 	}
 
 	public static byte[] toByteArray(final Matrix matrix) throws IOException
 	{
-		 if (matrix == null) return null;
-		 // ----------
-		 byte[] byts = new byte[matrix.getData().getRowDimension() * matrix.getData().getColumnDimension() * Double.BYTES];
-		 for (int i = 0; i < matrix.getData().getRowDimension(); i++)
-			 for (int j = 0; j < matrix.getData().getColumnDimension(); j++)
-				 System.arraycopy(toByteArray(matrix.getValue(i, j)), 0, byts, (i * matrix.getData().getRowDimension() + j) * Double.BYTES, Double.BYTES);
-		 return byts;
+		if (matrix == null) return null;
+		// ----------
+		byte[] byts = new byte[matrix.getData().getRowDimension() * matrix.getData().getColumnDimension() * Double.BYTES];
+		for (int i = 0; i < matrix.getData().getRowDimension(); i++)
+			for (int j = 0; j < matrix.getData().getColumnDimension(); j++)
+				System.arraycopy(toByteArray(matrix.getValue(i, j)), 0, byts, (i * matrix.getData().getRowDimension() + j) * Double.BYTES, Double.BYTES);
+		return byts;
 	}
 
 	public static byte[] toByteArray(final double[][][] data3d) throws IOException
 	{
-		 if (data3d == null) return null;
-		 // ----------
-		 byte[] byts = new byte[data3d.length * data3d[0].length * data3d[0][0].length * Double.BYTES];
-		 for (int i = 0; i < data3d.length; i++)
-			 for (int j = 0; j < data3d[i].length; j++)
-				 for (int k = 0; k < data3d[i][j].length; k++)
-					 System.arraycopy(toByteArray(data3d[i][j][k]), 0, byts, (i * data3d[0].length * data3d[0][0].length + j * data3d[0][0].length + k) * Double.BYTES, Double.BYTES);
-		 return byts;
+		if (data3d == null) return null;
+		// ----------
+		byte[] byts = new byte[data3d.length * data3d[0].length * data3d[0][0].length * Double.BYTES];
+		for (int i = 0; i < data3d.length; i++)
+			for (int j = 0; j < data3d[i].length; j++)
+				for (int k = 0; k < data3d[i][j].length; k++)
+					System.arraycopy(toByteArray(data3d[i][j][k]), 0, byts, (i * data3d[0].length * data3d[0][0].length + j * data3d[0][0].length + k) * Double.BYTES, Double.BYTES);
+		return byts;
 	}
 
 	public static byte[] toByteArray(final double[][][][] data4d) throws IOException
 	{
-		 if (data4d == null) return null;
-		 // ----------
-		 byte[] byts = new byte[data4d.length * data4d[0].length * data4d[0][0].length * data4d[0][0][0].length * Double.BYTES];
-		 for (int i = 0; i < data4d.length; i++)
-			 for (int j = 0; j < data4d[i].length; j++)
-				 for (int k = 0; k < data4d[i][j].length; k++)
-					 for (int l = 0; l < data4d[i][j][k].length; l++)
-						 System.arraycopy(toByteArray(data4d[i][j][k][l]), 0, byts, (i * data4d[0].length * data4d[0][0].length * data4d[0][0][0].length + j * data4d[0][0].length * data4d[0][0][0].length + k * data4d[0][0][0].length + l) * Double.BYTES, Double.BYTES);
-		 return byts;
+		if (data4d == null) return null;
+		// ----------
+		byte[] byts = new byte[data4d.length * data4d[0].length * data4d[0][0].length * data4d[0][0][0].length * Double.BYTES];
+		for (int i = 0; i < data4d.length; i++)
+			for (int j = 0; j < data4d[i].length; j++)
+				for (int k = 0; k < data4d[i][j].length; k++)
+					for (int l = 0; l < data4d[i][j][k].length; l++)
+						System.arraycopy(toByteArray(data4d[i][j][k][l]), 0, byts, (i * data4d[0].length * data4d[0][0].length * data4d[0][0][0].length + j * data4d[0][0].length * data4d[0][0][0].length + k * data4d[0][0][0].length + l) * Double.BYTES, Double.BYTES);
+		return byts;
 	}
 }

@@ -15,6 +15,11 @@ import fr.cea.nabla.ir.ir.IrModule
 
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
+import fr.cea.nabla.ir.ir.BaseType
+import fr.cea.nabla.ir.ir.ConnectivityType
+import fr.cea.nabla.ir.ir.LinearAlgebraType
+import fr.cea.nabla.ir.ir.IrType
+import fr.cea.nabla.ir.ir.PrimitiveType
 
 class JavaGeneratorUtils
 {
@@ -40,4 +45,19 @@ class JavaGeneratorUtils
 	{
 		irRoot.name.toLowerCase
 	}
+
+	static def dispatch CharSequence getDbBytes(BaseType it)
+	{
+		switch (primitive)
+		{
+			case PrimitiveType.INT : "Integer.BYTES"
+			case PrimitiveType.BOOL : "Boolean.BYTES"
+			case PrimitiveType.REAL : "Double.BYTES"
+			default: ""
+		}
+	}
+
+	static def dispatch CharSequence getDbBytes(ConnectivityType it) { getDbBytes(base) }
+	static def dispatch CharSequence getDbBytes(LinearAlgebraType it) { "Double.BYTES" }
+	static def dispatch CharSequence getDbBytes(IrType it) {""}
 }

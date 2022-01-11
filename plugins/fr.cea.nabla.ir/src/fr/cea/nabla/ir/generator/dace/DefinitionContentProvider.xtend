@@ -64,7 +64,7 @@ class DefinitionContentProvider extends StateContentProvider
 					'''[[«Utils.getDaceType(e.value)»] * «Utils.getDaceType(t.sizes.get(1))» for _ in range(«Utils.getDaceType(t.sizes.get(0))»)]'''
 //				'''«FOR sizeIndex:0..<t.sizes.size SEPARATOR ','»«Utils.getDaceType(t.primitive)»(«Utils.getDaceType(e.value)»)«ENDFOR»'''
 			}
-			default: throw new RuntimeException("Not yet implemented")
+			default: throw new RuntimeException("Not yet implemented: " + e.class.name)
 		}
 	}
 

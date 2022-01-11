@@ -113,6 +113,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Function/returnType"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Function/variables"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Function/inArgs"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Function/indexInName"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//InternFunction">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//InternFunction/body"/>

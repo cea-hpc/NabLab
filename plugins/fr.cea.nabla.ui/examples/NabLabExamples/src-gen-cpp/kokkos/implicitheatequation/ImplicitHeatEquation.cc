@@ -36,7 +36,7 @@ double det(RealArray1D<2> a, RealArray1D<2> b)
 template<size_t x>
 RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b)
 {
-	return implicitheatequationfreefuncs::operator+(a, b);
+	return implicitheatequationfreefuncs::operatorAdd(a, b);
 }
 
 double minR0(double a, double b)
@@ -55,7 +55,7 @@ double prodR0(double a, double b)
 }
 
 template<size_t x0>
-RealArray1D<x0> operator+(RealArray1D<x0> a, RealArray1D<x0> b)
+RealArray1D<x0> operatorAdd(RealArray1D<x0> a, RealArray1D<x0> b)
 {
 	RealArray1D<x0> result;
 	for (size_t ix0=0; ix0<x0; ix0++)
@@ -66,7 +66,7 @@ RealArray1D<x0> operator+(RealArray1D<x0> a, RealArray1D<x0> b)
 }
 
 template<size_t x0>
-RealArray1D<x0> operator*(double a, RealArray1D<x0> b)
+RealArray1D<x0> operatorMult(double a, RealArray1D<x0> b)
 {
 	RealArray1D<x0> result;
 	for (size_t ix0=0; ix0<x0; ix0++)
@@ -77,7 +77,7 @@ RealArray1D<x0> operator*(double a, RealArray1D<x0> b)
 }
 
 template<size_t x0>
-RealArray1D<x0> operator-(RealArray1D<x0> a, RealArray1D<x0> b)
+RealArray1D<x0> operatorSub(RealArray1D<x0> a, RealArray1D<x0> b)
 {
 	RealArray1D<x0> result;
 	for (size_t ix0=0; ix0<x0; ix0++)
@@ -95,10 +95,10 @@ ImplicitHeatEquation::ImplicitHeatEquation(CartesianMesh2D& aMesh)
 , nbNodes(mesh.getNbNodes())
 , nbCells(mesh.getNbCells())
 , nbFaces(mesh.getNbFaces())
-, maxNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
-, maxNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
-, maxCellsOfFace(CartesianMesh2D::MaxNbCellsOfFace)
-, maxNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
+, maxNbNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
+, maxNbNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
+, maxNbCellsOfFace(CartesianMesh2D::MaxNbCellsOfFace)
+, maxNbNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
 , X("X", nbNodes)
 , Xc("Xc", nbCells)
 , u_n("u_n", nbCells)
@@ -162,7 +162,6 @@ ImplicitHeatEquation::jsonInit(const char* jsonContent)
 	}
 }
 
-
 /**
  * Job computeFaceLength called @1.0 in simulate method.
  * In variables: X
@@ -180,10 +179,10 @@ void ImplicitHeatEquation::computeFaceLength() noexcept
 			for (size_t pNodesOfFaceF=0; pNodesOfFaceF<nbNodesOfFaceF; pNodesOfFaceF++)
 			{
 				const Id pId(nodesOfFaceF[pNodesOfFaceF]);
-				const Id pPlus1Id(nodesOfFaceF[(pNodesOfFaceF+1+maxNodesOfFace)%maxNodesOfFace]);
+				const Id pPlus1Id(nodesOfFaceF[(pNodesOfFaceF+1+maxNbNodesOfFace)%maxNbNodesOfFace]);
 				const size_t pNodes(pId);
 				const size_t pPlus1Nodes(pPlus1Id);
-				reduction0 = implicitheatequationfreefuncs::sumR0(reduction0, implicitheatequationfreefuncs::norm(implicitheatequationfreefuncs::operator-(X(pNodes), X(pPlus1Nodes))));
+				reduction0 = implicitheatequationfreefuncs::sumR0(reduction0, implicitheatequationfreefuncs::norm(implicitheatequationfreefuncs::operatorSub(X(pNodes), X(pPlus1Nodes))));
 			}
 		}
 		faceLength(fFaces) = 0.5 * reduction0;
@@ -217,7 +216,7 @@ void ImplicitHeatEquation::computeV() noexcept
 			for (size_t pNodesOfCellJ=0; pNodesOfCellJ<nbNodesOfCellJ; pNodesOfCellJ++)
 			{
 				const Id pId(nodesOfCellJ[pNodesOfCellJ]);
-				const Id pPlus1Id(nodesOfCellJ[(pNodesOfCellJ+1+maxNodesOfCell)%maxNodesOfCell]);
+				const Id pPlus1Id(nodesOfCellJ[(pNodesOfCellJ+1+maxNbNodesOfCell)%maxNbNodesOfCell]);
 				const size_t pNodes(pId);
 				const size_t pPlus1Nodes(pPlus1Id);
 				reduction0 = implicitheatequationfreefuncs::sumR0(reduction0, implicitheatequationfreefuncs::det(X(pNodes), X(pPlus1Nodes)));
@@ -271,7 +270,7 @@ void ImplicitHeatEquation::initXc() noexcept
 				reduction0 = implicitheatequationfreefuncs::sumR1(reduction0, X(pNodes));
 			}
 		}
-		Xc(cCells) = implicitheatequationfreefuncs::operator*(0.25, reduction0);
+		Xc(cCells) = implicitheatequationfreefuncs::operatorMult(0.25, reduction0);
 	});
 }
 
@@ -345,7 +344,7 @@ void ImplicitHeatEquation::initU() noexcept
 {
 	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& cCells)
 	{
-		if (implicitheatequationfreefuncs::norm(implicitheatequationfreefuncs::operator-(Xc(cCells), vectOne)) < 0.5) 
+		if (implicitheatequationfreefuncs::norm(implicitheatequationfreefuncs::operatorSub(Xc(cCells), vectOne)) < 0.5) 
 			u_n.setValue(cCells, u0);
 		else
 			u_n.setValue(cCells, 0.0);
@@ -382,7 +381,7 @@ void ImplicitHeatEquation::computeAlphaCoeff() noexcept
 				const size_t dCells(dId);
 				const Id fId(mesh.getCommonFace(cId, dId));
 				const size_t fFaces(fId);
-				const double alphaExtraDiag(-deltat / V(cCells) * (faceLength(fFaces) * faceConductivity(fFaces)) / implicitheatequationfreefuncs::norm(implicitheatequationfreefuncs::operator-(Xc(cCells), Xc(dCells))));
+				const double alphaExtraDiag(-deltat / V(cCells) * (faceLength(fFaces) * faceConductivity(fFaces)) / implicitheatequationfreefuncs::norm(implicitheatequationfreefuncs::operatorSub(Xc(cCells), Xc(dCells))));
 				alpha.setValue(cCells, dCells, alphaExtraDiag);
 				alphaDiag = alphaDiag + alphaExtraDiag;
 			}

@@ -10,19 +10,20 @@
 package fr.cea.nabla.tests.ir.transformers
 
 import com.google.inject.Inject
+import fr.cea.nabla.ir.JobExtensions
+import fr.cea.nabla.ir.ir.Affectation
+import fr.cea.nabla.ir.ir.InstructionBlock
+import fr.cea.nabla.ir.ir.Loop
+import fr.cea.nabla.ir.transformers.IrTransformationException
 import fr.cea.nabla.ir.transformers.ReplaceAffectations
 import fr.cea.nabla.tests.CompilationChainHelper
 import fr.cea.nabla.tests.NablaInjectorProvider
 import fr.cea.nabla.tests.TestUtils
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
+import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
-import fr.cea.nabla.ir.JobExtensions
-import org.junit.Assert
-import fr.cea.nabla.ir.ir.Affectation
-import fr.cea.nabla.ir.ir.InstructionBlock
-import fr.cea.nabla.ir.ir.Loop
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
@@ -78,7 +79,12 @@ class ReplaceAffectationsTest
 		Assert.assertTrue(timeLoopJobBlock.instructions.forall[x | x instanceof Affectation])
 
 		// Apply the transformation
-		Assert.assertTrue(step.transform(ir))
+		try {
+			step.transform(ir, null)
+			Assert.assertTrue(true)
+		} catch (IrTransformationException e) {
+			Assert.fail(e.message)
+		}
 
 		// After transformation
 		Assert.assertTrue(j1.instruction instanceof Affectation)

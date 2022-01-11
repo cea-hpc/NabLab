@@ -88,7 +88,7 @@ class ConstExprServices
 			switch c
 			{
 				// options are not constexpr because they are initialized by a file in the generated code
-				SimpleVarDeclaration: (c.value !== null && c.variable.const && c.value !== null && c.value.constExpr)
+				SimpleVarDeclaration: (c.variable.const && c.value !== null && c.value.constExpr)
 				FunctionOrReduction: true
 				default: false
 			}

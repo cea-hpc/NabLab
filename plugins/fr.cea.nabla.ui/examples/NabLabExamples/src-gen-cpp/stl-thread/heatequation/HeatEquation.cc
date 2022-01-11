@@ -36,7 +36,7 @@ double dot(RealArray1D<x> a, RealArray1D<x> b)
 template<size_t x>
 RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b)
 {
-	return heatequationfreefuncs::operator+(a, b);
+	return heatequationfreefuncs::operatorAdd(a, b);
 }
 
 double sumR0(double a, double b)
@@ -45,7 +45,7 @@ double sumR0(double a, double b)
 }
 
 template<size_t x0>
-RealArray1D<x0> operator+(RealArray1D<x0> a, RealArray1D<x0> b)
+RealArray1D<x0> operatorAdd(RealArray1D<x0> a, RealArray1D<x0> b)
 {
 	RealArray1D<x0> result;
 	for (size_t ix0=0; ix0<x0; ix0++)
@@ -56,7 +56,7 @@ RealArray1D<x0> operator+(RealArray1D<x0> a, RealArray1D<x0> b)
 }
 
 template<size_t x0>
-RealArray1D<x0> operator*(double a, RealArray1D<x0> b)
+RealArray1D<x0> operatorMult(double a, RealArray1D<x0> b)
 {
 	RealArray1D<x0> result;
 	for (size_t ix0=0; ix0<x0; ix0++)
@@ -67,7 +67,7 @@ RealArray1D<x0> operator*(double a, RealArray1D<x0> b)
 }
 
 template<size_t x0>
-RealArray1D<x0> operator-(RealArray1D<x0> a, RealArray1D<x0> b)
+RealArray1D<x0> operatorSub(RealArray1D<x0> a, RealArray1D<x0> b)
 {
 	RealArray1D<x0> result;
 	for (size_t ix0=0; ix0<x0; ix0++)
@@ -85,9 +85,9 @@ HeatEquation::HeatEquation(CartesianMesh2D& aMesh)
 , nbNodes(mesh.getNbNodes())
 , nbCells(mesh.getNbCells())
 , nbFaces(mesh.getNbFaces())
-, maxNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
-, maxNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
-, maxNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
+, maxNbNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
+, maxNbNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
+, maxNbNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
 , X(nbNodes)
 , center(nbCells)
 , u_n(nbCells)
@@ -141,7 +141,6 @@ HeatEquation::jsonInit(const char* jsonContent)
 	}
 }
 
-
 /**
  * Job computeOutgoingFlux called @1.0 in executeTimeLoopN method.
  * In variables: V, center, deltat, surface, u_n
@@ -162,7 +161,7 @@ void HeatEquation::computeOutgoingFlux() noexcept
 				const size_t j2Cells(j2Id);
 				const Id cfId(mesh.getCommonFace(j1Id, j2Id));
 				const size_t cfFaces(cfId);
-				double reduction1((u_n[j2Cells] - u_n[j1Cells]) / heatequationfreefuncs::norm(heatequationfreefuncs::operator-(center[j2Cells], center[j1Cells])) * surface[cfFaces]);
+				double reduction1((u_n[j2Cells] - u_n[j1Cells]) / heatequationfreefuncs::norm(heatequationfreefuncs::operatorSub(center[j2Cells], center[j1Cells])) * surface[cfFaces]);
 				reduction0 = heatequationfreefuncs::sumR0(reduction0, reduction1);
 			}
 		}
@@ -187,10 +186,10 @@ void HeatEquation::computeSurface() noexcept
 			for (size_t rNodesOfFaceF=0; rNodesOfFaceF<nbNodesOfFaceF; rNodesOfFaceF++)
 			{
 				const Id rId(nodesOfFaceF[rNodesOfFaceF]);
-				const Id rPlus1Id(nodesOfFaceF[(rNodesOfFaceF+1+maxNodesOfFace)%maxNodesOfFace]);
+				const Id rPlus1Id(nodesOfFaceF[(rNodesOfFaceF+1+maxNbNodesOfFace)%maxNbNodesOfFace]);
 				const size_t rNodes(rId);
 				const size_t rPlus1Nodes(rPlus1Id);
-				reduction0 = heatequationfreefuncs::sumR0(reduction0, heatequationfreefuncs::norm(heatequationfreefuncs::operator-(X[rNodes], X[rPlus1Nodes])));
+				reduction0 = heatequationfreefuncs::sumR0(reduction0, heatequationfreefuncs::norm(heatequationfreefuncs::operatorSub(X[rNodes], X[rPlus1Nodes])));
 			}
 		}
 		surface[fFaces] = 0.5 * reduction0;
@@ -224,7 +223,7 @@ void HeatEquation::computeV() noexcept
 			for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 			{
 				const Id rId(nodesOfCellJ[rNodesOfCellJ]);
-				const Id rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+maxNodesOfCell)%maxNodesOfCell]);
+				const Id rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+maxNbNodesOfCell)%maxNbNodesOfCell]);
 				const size_t rNodes(rId);
 				const size_t rPlus1Nodes(rPlus1Id);
 				reduction0 = heatequationfreefuncs::sumR0(reduction0, heatequationfreefuncs::det(X[rNodes], X[rPlus1Nodes]));
@@ -255,7 +254,7 @@ void HeatEquation::iniCenter() noexcept
 				reduction0 = heatequationfreefuncs::sumR1(reduction0, X[rNodes]);
 			}
 		}
-		center[jCells] = heatequationfreefuncs::operator*(0.25, reduction0);
+		center[jCells] = heatequationfreefuncs::operatorMult(0.25, reduction0);
 	});
 }
 

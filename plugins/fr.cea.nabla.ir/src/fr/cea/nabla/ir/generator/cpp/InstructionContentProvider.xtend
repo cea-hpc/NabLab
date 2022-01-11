@@ -161,7 +161,7 @@ abstract class InstructionContentProvider
 		'''
 		{
 			«IF container instanceof ConnectivityCall»«getSetDefinitionContent(container.uniqueName, container as ConnectivityCall)»«ENDIF»
-			const size_t «nbElems»(«container.uniqueName».size());
+			«IF !container.connectivityCall.args.empty»const size_t «nbElems»(«container.uniqueName».size());«ENDIF»
 			«innerContent»
 		}
 		'''

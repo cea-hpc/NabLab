@@ -22,15 +22,15 @@ import static extension fr.cea.nabla.ir.IrRootExtensions.getExecName
 
 class CMakeContentProvider
 {
-	protected def Iterable<String> getNeededVariables(IrRoot irRoot)
+	protected def Iterable<String> getNeededVariables()
 	{
 		#[]
 	}
 
-	protected def CharSequence getFindPackageContent(IrRoot irRoot)
+	protected def CharSequence getFindPackageContent(boolean isLinearAlgebra)
 	''''''
 
-	protected def Iterable<String> getTargetLinkLibraries(IrRoot irRoot)
+	protected def Iterable<String> getTargetLinkLibraries(boolean isLinearAlgebra)
 	{ 
 		#['nablalib']
 	}
@@ -52,10 +52,10 @@ class CMakeContentProvider
 		project(«name»Project CXX)
 
 		«CMakeUtils.checkCompiler»
-		«IF hasLevelDB || findPackageContent.length != 0»
+		«IF hasLevelDB || getFindPackageContent(linearAlgebra).length != 0»
 
 			# FIND PACKAGES
-			«findPackageContent»
+			«getFindPackageContent(linearAlgebra)»
 			«IF hasLevelDB»
 			find_package(leveldb REQUIRED)
 			find_package(Threads REQUIRED)
@@ -84,7 +84,7 @@ class CMakeContentProvider
 		set_property(TARGET «provider.libName» PROPERTY POSITION_INDEPENDENT_CODE ON)
 		target_compile_options(«provider.libName» PUBLIC -g -Wall -O3 --std=c++17 -mtune=native)
 		target_include_directories(«provider.libName» PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-		target_link_libraries(«provider.libName» PUBLIC«FOR l : getTargetLinkLibraries(provider.eContainer as IrRoot)» «l»«ENDFOR»)
+		target_link_libraries(«provider.libName» PUBLIC«FOR l : getTargetLinkLibraries(provider.linearAlgebra)» «l»«ENDFOR»)
 
 		«CMakeUtils.fileFooter»
 	'''
@@ -92,7 +92,7 @@ class CMakeContentProvider
 	private def getRootTargetLinkLibraries(IrRoot it, boolean hasLevelDB)
 	{
 		val libs = new LinkedHashSet<String>
-		libs.addAll(targetLinkLibraries)
+		libs.addAll(getTargetLinkLibraries(linearAlgebra))
 		if (hasLevelDB) libs += "leveldb::leveldb Threads::Threads"
 		externalProviders.forEach[p | libs += p.libName]
 		return libs
@@ -106,23 +106,23 @@ class StlThreadCMakeContentProvider extends CMakeContentProvider
 		super.compilationOptions + #['-fopenmp']
 	}
 
-	override getTargetLinkLibraries(IrRoot irRoot)
+	override getTargetLinkLibraries(boolean isLinearAlgebra)
 	{
-		super.getTargetLinkLibraries(irRoot) + #["pthread"]
+		super.getTargetLinkLibraries(isLinearAlgebra) + #["pthread"]
 	}
 }
 
 class KokkosCMakeContentProvider extends CMakeContentProvider
 {
-	override getNeededVariables(IrRoot irRoot)
+	override getNeededVariables()
 	{
 		#['Kokkos_ROOT']
 	}
 
-	override getFindPackageContent(IrRoot irRoot)
+	override getFindPackageContent(boolean isLinearAlgebra)
 	'''
 		find_package(Kokkos REQUIRED)
-		«IF irRoot.linearAlgebra»find_package(KokkosKernels REQUIRED)«ENDIF»
+		«IF isLinearAlgebra»find_package(KokkosKernels REQUIRED)«ENDIF»
 	'''
 
 	override Iterable<String> getCompilationOptions()
@@ -130,18 +130,18 @@ class KokkosCMakeContentProvider extends CMakeContentProvider
 		super.compilationOptions + #['-fopenmp']
 	}
 
-	override getTargetLinkLibraries(IrRoot irRoot)
+	override getTargetLinkLibraries(boolean isLinearAlgebra)
 	{
-		if (irRoot.linearAlgebra)
-			super.getTargetLinkLibraries(irRoot) + #['Kokkos::kokkos', 'Kokkos::kokkoskernels']
+		if (isLinearAlgebra)
+			super.getTargetLinkLibraries(isLinearAlgebra) + #['Kokkos::kokkos', 'Kokkos::kokkoskernels']
 		else
-			super.getTargetLinkLibraries(irRoot) + #['Kokkos::kokkos']
+			super.getTargetLinkLibraries(isLinearAlgebra) + #['Kokkos::kokkos']
 	}
 }
 
 class OpenMpCMakeContentProvider extends CMakeContentProvider
 {
-	override getFindPackageContent(IrRoot irRoot)
+	override getFindPackageContent(boolean isLinearAlgebra)
 	'''
 		find_package(OpenMP REQUIRED)
 	'''
@@ -151,8 +151,8 @@ class OpenMpCMakeContentProvider extends CMakeContentProvider
 		super.compilationOptions + #['-fopenmp']
 	}
 
-	override getTargetLinkLibraries(IrRoot irRoot)
+	override getTargetLinkLibraries(boolean isLinearAlgebra)
 	{
-		super.getTargetLinkLibraries(irRoot) + #["OpenMP::OpenMP_CXX"]
+		super.getTargetLinkLibraries(isLinearAlgebra) + #["OpenMP::OpenMP_CXX"]
 	}
 }

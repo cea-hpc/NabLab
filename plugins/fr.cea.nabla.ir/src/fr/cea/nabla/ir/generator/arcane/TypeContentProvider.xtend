@@ -12,9 +12,13 @@ package fr.cea.nabla.ir.generator.arcane
 import fr.cea.nabla.ir.IrTypeExtensions
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityType
+import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.IrType
+import fr.cea.nabla.ir.ir.ItemIndex
 import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.PrimitiveType
+
+import static extension fr.cea.nabla.ir.generator.arcane.ExpressionContentProvider.*
 
 class TypeContentProvider
 {
@@ -37,6 +41,17 @@ class TypeContentProvider
 			ConnectivityType: getVariableTypeName(it)
 			LinearAlgebraType: IrTypeExtensions.getLinearAlgebraClass(it)
 			default: throw new RuntimeException("Unexpected type: " + class.name)
+		}
+	}
+
+	static def CharSequence formatIteratorsAndIndices(IrType it, Iterable<ItemIndex> iterators, Iterable<Expression> indices)
+	{
+		switch it
+		{
+			case (iterators.empty && indices.empty): ''''''
+			BaseType: '''«FOR i : indices»[«i.content»]«ENDFOR»'''
+			LinearAlgebraType: '''«FOR i : iterators SEPARATOR ', '»«i.name»«ENDFOR»«FOR i : indices SEPARATOR ', '»«i.content»«ENDFOR»'''
+			ConnectivityType: '''«FOR i : iterators BEFORE '[' SEPARATOR ', ' AFTER ']'»«i.name»«ENDFOR»«FOR i : indices»[«i.content»]«ENDFOR»'''
 		}
 	}
 

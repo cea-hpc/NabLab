@@ -14,9 +14,11 @@ import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.BaseTypeConstant
 import fr.cea.nabla.ir.ir.BinaryExpression
 import fr.cea.nabla.ir.ir.ContractedIf
+import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.Instruction
+import fr.cea.nabla.ir.ir.Interval
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrPackage
@@ -28,22 +30,45 @@ import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.ir.ir.VectorConstant
 import java.util.ArrayList
 import org.eclipse.emf.ecore.util.EcoreUtil
-import fr.cea.nabla.ir.ir.Interval
 
+/**
+ * Unary/binary operators on non scalar types are replaced by functions within loops.
+ * Operators are renamed to have a valid function name in any language.
+ * Note that specializations can be done by languages supporting operator overload.
+ */
 class CreateArrayOperators extends IrTransformationStep
 {
 	val opUtils = new OperatorUtils
 	val expressionsToDelete = new ArrayList<Expression>
 
-	new()
-	{
-		super('Replace unary/binary operators with array arguments by functions')
+	static val UnaryOperatorNames = #{
+		'-' -> 'Minus',
+		'!' -> 'Not'
 	}
 
-	override transform(IrRoot ir)
-	{
-		trace('    IR -> IR: ' + description)
+	static val BinaryOperatorNames = #{
+		'||' -> 'Or',
+		'&&' -> 'And',
+		'==' -> 'Equal',
+		'!=' -> 'NotEqual',
+		'>=' -> 'Gte',
+		'<=' -> 'Lte',
+		'>' -> 'Gt',
+		'<' -> 'Lt',
+		'+' -> 'Add',
+		'-' -> 'Sub',
+		'*' -> 'Mult',
+		'/' -> 'Div',
+		'%' -> 'Mod'
+	}
 
+	override getDescription()
+	{
+		"Replace unary/binary operators with array arguments by functions"
+	}
+
+	override transform(IrRoot ir, (String)=>void traceNotifier)
+	{
 		for (o : ir.eAllContents.filter[x | x instanceof Instruction || x instanceof Variable].toIterable)
 			for (r : o.eClass.EAllReferences.filter[x | x.EType == IrPackage.Literals.EXPRESSION])
 			{
@@ -63,8 +88,11 @@ class CreateArrayOperators extends IrTransformationStep
 
 		for (e : expressionsToDelete)
 			EcoreUtil.delete(e)
+	}
 
-		return true
+	override transform(DefaultExtensionProvider dep, (String)=>void traceNotifier)
+	{
+		// nothing to do
 	}
 
 	private def Expression createArrayOperations(Expression e)
@@ -160,7 +188,9 @@ class CreateArrayOperators extends IrTransformationStep
 
 	private def create IrFactory::eINSTANCE.createInternFunction toIrUnaryOperation(PrimitiveType primitiveType, int dimension, String op)
 	{
-		name = OperatorUtils.OperatorPrefix + op
+		val suffix = UnaryOperatorNames.get(op)
+		if (suffix === null) throw new RuntimeException("Operator not supported: " + op)
+		name = OperatorUtils.OperatorPrefix + suffix
 
 		// create size variables
 		for (i : 0..<dimension)
@@ -211,7 +241,9 @@ class CreateArrayOperators extends IrTransformationStep
 
 	private def create IrFactory::eINSTANCE.createInternFunction toIrBinaryOperation(PrimitiveType aPrimitive, PrimitiveType bPrimitive, int dimension, OperatorUtils.BinOpType binOpType, String op)
 	{
-		name = OperatorUtils.OperatorPrefix + op
+		val suffix = BinaryOperatorNames.get(op)
+		if (suffix === null) throw new RuntimeException("Operator not supported: " + op)
+		name = OperatorUtils.OperatorPrefix + suffix
 
 		// create size variables
 		for (i : 0..<dimension)

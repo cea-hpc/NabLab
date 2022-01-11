@@ -34,6 +34,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getReturnType <em>Return Type</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getVariables <em>Variables</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getInArgs <em>In Args</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.FunctionImpl#getIndexInName <em>Index In Name</em>}</li>
  * </ul>
  *
  * @generated
@@ -88,6 +89,26 @@ public abstract class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * @ordered
 	 */
 	protected EList<Arg> inArgs;
+
+	/**
+	 * The default value of the '{@link #getIndexInName() <em>Index In Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getIndexInName()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final int INDEX_IN_NAME_EDEFAULT = 0;
+
+	/**
+	 * The cached value of the '{@link #getIndexInName() <em>Index In Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getIndexInName()
+	 * @generated
+	 * @ordered
+	 */
+	protected int indexInName = INDEX_IN_NAME_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -208,6 +229,29 @@ public abstract class FunctionImpl extends IrAnnotableImpl implements Function {
 	 * @generated
 	 */
 	@Override
+	public int getIndexInName() {
+		return indexInName;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setIndexInName(int newIndexInName) {
+		int oldIndexInName = indexInName;
+		indexInName = newIndexInName;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.FUNCTION__INDEX_IN_NAME, oldIndexInName, indexInName));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -260,6 +304,8 @@ public abstract class FunctionImpl extends IrAnnotableImpl implements Function {
 				return getVariables();
 			case IrPackage.FUNCTION__IN_ARGS:
 				return getInArgs();
+			case IrPackage.FUNCTION__INDEX_IN_NAME:
+				return getIndexInName();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -287,6 +333,9 @@ public abstract class FunctionImpl extends IrAnnotableImpl implements Function {
 				getInArgs().clear();
 				getInArgs().addAll((Collection<? extends Arg>)newValue);
 				return;
+			case IrPackage.FUNCTION__INDEX_IN_NAME:
+				setIndexInName((Integer)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -311,6 +360,9 @@ public abstract class FunctionImpl extends IrAnnotableImpl implements Function {
 			case IrPackage.FUNCTION__IN_ARGS:
 				getInArgs().clear();
 				return;
+			case IrPackage.FUNCTION__INDEX_IN_NAME:
+				setIndexInName(INDEX_IN_NAME_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -331,6 +383,8 @@ public abstract class FunctionImpl extends IrAnnotableImpl implements Function {
 				return variables != null && !variables.isEmpty();
 			case IrPackage.FUNCTION__IN_ARGS:
 				return inArgs != null && !inArgs.isEmpty();
+			case IrPackage.FUNCTION__INDEX_IN_NAME:
+				return indexInName != INDEX_IN_NAME_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -347,6 +401,8 @@ public abstract class FunctionImpl extends IrAnnotableImpl implements Function {
 		StringBuilder result = new StringBuilder(super.toString());
 		result.append(" (name: ");
 		result.append(name);
+		result.append(", indexInName: ");
+		result.append(indexInName);
 		result.append(')');
 		return result.toString();
 	}

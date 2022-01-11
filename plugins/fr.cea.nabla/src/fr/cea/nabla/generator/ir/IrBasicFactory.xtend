@@ -15,7 +15,6 @@ import fr.cea.nabla.BaseTypeSizeEvaluator
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.Connectivity
-import fr.cea.nabla.nabla.DefaultExtension
 import fr.cea.nabla.nabla.ItemType
 import fr.cea.nabla.nabla.MeshExtension
 import fr.cea.nabla.nabla.PrimitiveType
@@ -27,6 +26,7 @@ class IrBasicFactory
 	@Inject extension NabLabFileAnnotationFactory
 	@Inject extension IrExpressionFactory
 	@Inject extension BaseTypeSizeEvaluator
+	@Inject extension IrExtensionProviderFactory
 
 	// No create method to ensure a new instance every time (for n+1 time variables)
 	def fr.cea.nabla.ir.ir.BaseType toIrBaseType(BaseType t)
@@ -71,16 +71,6 @@ class IrBasicFactory
 			val ext = EcoreUtil2.getContainerOfType(i, MeshExtension)
 			provider = ext.toIrMeshExtensionProvider
 		]
-	}
-
-	def create IrFactory::eINSTANCE.createMeshExtensionProvider toIrMeshExtensionProvider(MeshExtension ext)
-	{
-		extensionName = ext.name
-	}
-
-	def create IrFactory::eINSTANCE.createDefaultExtensionProvider toIrDefaultExtensionProvider(DefaultExtension ext)
-	{
-		extensionName = ext.name
 	}
 
 	/** 

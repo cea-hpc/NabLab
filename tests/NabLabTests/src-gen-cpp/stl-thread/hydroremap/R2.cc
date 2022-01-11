@@ -31,7 +31,6 @@ R2::jsonInit(const char* jsonContent)
 
 }
 
-
 /**
  * Job rj1 called @3.0 in simulate method.
  * In variables: hv3

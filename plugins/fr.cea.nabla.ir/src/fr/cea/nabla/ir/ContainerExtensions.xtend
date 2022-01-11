@@ -65,7 +65,7 @@ class ContainerExtensions
 		if (inTypes.empty)
 			'nb' + name.toFirstUpper
 		else
-			'max' + name.toFirstUpper
+			'maxNb' + name.toFirstUpper
 	}
 
 	static def getAccessor(ConnectivityCall it)

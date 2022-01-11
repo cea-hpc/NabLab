@@ -68,7 +68,6 @@ Iteration::jsonInit(const char* jsonContent)
 	}
 }
 
-
 /**
  * Job computeTn called @1.0 in executeTimeLoopN method.
  * In variables: deltat, t_n

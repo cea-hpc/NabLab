@@ -17,7 +17,7 @@ public final class SimpleMeshExample
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
 	@SuppressWarnings("unused")
-	private final int nbNodes, nbCells, maxNodesOfCell;
+	private final int nbNodes, nbCells, maxNbNodesOfCell;
 
 	// Options and global variables
 	private PvdFileWriter2D writer;
@@ -41,7 +41,7 @@ public final class SimpleMeshExample
 		mesh = aMesh;
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
-		maxNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
+		maxNbNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
 	}
 
 	public void jsonInit(final String jsonContent)
@@ -57,6 +57,7 @@ public final class SimpleMeshExample
 		assert(valueof_outputPeriod.isJsonPrimitive());
 		outputPeriod = valueof_outputPeriod.getAsJsonPrimitive().getAsInt();
 		lastDump = Integer.MIN_VALUE;
+		n = 0;
 		X = new double[nbNodes][2];
 		nodes_sum = new double[nbCells];
 		cst = new double[nbNodes];

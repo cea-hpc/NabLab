@@ -66,5 +66,5 @@ class ContainerExtensions
 	}
 
 	static def getAccessor(ConnectivityCall it)
-	'''get«connectivity.name.toFirstUpper»(«args.map['*' + itemName].join(', ')»)'''
+	'''get«connectivity.name.toFirstUpper»(«args.map[name].join(', ')»)'''
 }

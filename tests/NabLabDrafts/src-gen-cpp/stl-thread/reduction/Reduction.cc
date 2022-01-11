@@ -19,11 +19,11 @@ RealArray1D<2> nodeVelocityBoundaryConditionCorner(int BC1, RealArray1D<2> BCVal
 template<size_t x>
 RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b)
 {
-	return reductionfreefuncs::operator+(a, b);
+	return reductionfreefuncs::operatorAdd(a, b);
 }
 
 template<size_t x0>
-RealArray1D<x0> operator+(RealArray1D<x0> a, RealArray1D<x0> b)
+RealArray1D<x0> operatorAdd(RealArray1D<x0> a, RealArray1D<x0> b)
 {
 	RealArray1D<x0> result;
 	for (size_t ix0=0; ix0<x0; ix0++)
@@ -39,13 +39,13 @@ RealArray1D<x0> operator+(RealArray1D<x0> a, RealArray1D<x0> b)
 Reduction::Reduction(CartesianMesh2D& aMesh)
 : mesh(aMesh)
 , nbNodes(mesh.getNbNodes())
-, maxCellsOfNode(CartesianMesh2D::MaxNbCellsOfNode)
+, maxNbCellsOfNode(CartesianMesh2D::MaxNbCellsOfNode)
 , nbCells(mesh.getNbCells())
-, maxNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
+, maxNbNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
 , X(nbNodes)
 , Vnode_n(nbNodes)
 , Vnode_nplus1(nbNodes)
-, lpc_n(nbNodes, std::vector<RealArray1D<2>>(maxCellsOfNode))
+, lpc_n(nbNodes, std::vector<RealArray1D<2>>(maxNbCellsOfNode))
 {
 }
 

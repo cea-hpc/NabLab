@@ -12,7 +12,7 @@ package fr.cea.nabla.generator
 import com.google.inject.Inject
 import com.google.inject.Provider
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
-import fr.cea.nabla.generator.providers.JniProviderGenerator
+import fr.cea.nabla.generator.JniProviderGenerator
 import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.nabla.DefaultExtension

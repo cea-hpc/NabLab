@@ -28,7 +28,7 @@ RealArray1D<2> nodeVelocityBoundaryConditionCorner(int BC1, RealArray1D<2> BCVal
 template<size_t x>
 RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b);
 template<size_t x0>
-RealArray1D<x0> operator+(RealArray1D<x0> a, RealArray1D<x0> b);
+RealArray1D<x0> operatorAdd(RealArray1D<x0> a, RealArray1D<x0> b);
 }
 
 /******************** Module declaration ********************/
@@ -50,7 +50,7 @@ public:
 private:
 	// Mesh and mesh variables
 	CartesianMesh2D& mesh;
-	size_t nbNodes, maxCellsOfNode, nbCells, maxNodesOfCell;
+	size_t nbNodes, maxNbCellsOfNode, nbCells, maxNbNodesOfCell;
 
 	// Options and global variables
 	int n;

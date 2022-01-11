@@ -17,6 +17,7 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link fr.cea.nabla.ir.ir.Function#getReturnType <em>Return Type</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Function#getVariables <em>Variables</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Function#getInArgs <em>In Args</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.Function#getIndexInName <em>Index In Name</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getFunction()
@@ -91,5 +92,27 @@ public interface Function extends IrAnnotable {
 	 * @generated
 	 */
 	EList<Arg> getInArgs();
+
+	/**
+	 * Returns the value of the '<em><b>Index In Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Index In Name</em>' attribute.
+	 * @see #setIndexInName(int)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getFunction_IndexInName()
+	 * @model required="true"
+	 * @generated
+	 */
+	int getIndexInName();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Function#getIndexInName <em>Index In Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Index In Name</em>' attribute.
+	 * @see #getIndexInName()
+	 * @generated
+	 */
+	void setIndexInName(int value);
 
 } // Function

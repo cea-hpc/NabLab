@@ -73,7 +73,6 @@ Hydro::jsonInit(const char* jsonContent)
 	}
 }
 
-
 /**
  * Job iniHv1 called @1.0 in simulate method.
  * In variables: 

@@ -31,7 +31,7 @@ bool assertEquals(RealArray1D<x> expected, RealArray1D<x> actual)
 }
 
 template<size_t x0>
-RealArray1D<x0> operator+(RealArray1D<x0> a, RealArray1D<x0> b)
+RealArray1D<x0> operatorAdd(RealArray1D<x0> a, RealArray1D<x0> b)
 {
 	RealArray1D<x0> result;
 	for (size_t ix0=0; ix0<x0; ix0++)
@@ -85,7 +85,7 @@ Variables::jsonInit(const char* jsonContent)
 		assert(valueof_optVect2[i1].IsDouble());
 		optVect2[i1] = valueof_optVect2[i1].GetDouble();
 	}
-	optVect3 = variablesfreefuncs::operator+(optVect1, optVect2);
+	optVect3 = variablesfreefuncs::operatorAdd(optVect1, optVect2);
 	varVec = {1.0, 1.0};
 	dynamicVec.initSize(optDim);
 
@@ -97,7 +97,6 @@ Variables::jsonInit(const char* jsonContent)
 		X(rNodes)[1] = gNodes[rNodes][1];
 	}
 }
-
 
 /**
  * Job dynamicVecInitialization called @1.0 in simulate method.

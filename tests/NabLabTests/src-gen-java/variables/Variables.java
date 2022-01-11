@@ -72,7 +72,7 @@ public final class Variables
 			optVect2[i1] = valueof_optVect2.getAsJsonArray().get(i1).getAsJsonPrimitive().getAsDouble();
 		}
 		optVect3 = new double[2];
-		optVect3 = plus(optVect1, optVect2);
+		optVect3 = operatorAdd(optVect1, optVect2);
 		varVec = new double[constexprDim];
 		varVec = new double[] {1.0, 1.0};
 		dynamicVec = new double[optDim];
@@ -147,7 +147,7 @@ public final class Variables
 		return true;
 	}
 
-	private static double[] plus(double[] a, double[] b)
+	private static double[] operatorAdd(double[] a, double[] b)
 	{
 		double[] result = new double[a.length];
 		for (int ix0=0; ix0<a.length; ix0++)

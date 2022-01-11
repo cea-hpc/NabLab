@@ -26,3 +26,9 @@ Provider CartesianMesh2DJava : CartesianMesh2D
 	target = Java;
 	outputPath = "/.nablab/mesh";
 }
+
+Provider CartesianMesh2DPython : CartesianMesh2D
+{
+	target = Python;
+	outputPath = "/.nablab/mesh";
+}

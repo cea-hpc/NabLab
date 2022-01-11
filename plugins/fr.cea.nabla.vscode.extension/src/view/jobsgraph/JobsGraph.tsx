@@ -23,9 +23,7 @@ interface JobsGraphState {
 }
 
 interface JobsGraphProps {
-  editingContextId: string;
-  representationId: string;
-  representationLabel: string;
+  irModel: string;
 }
 
 interface GQLUploadModelMutationData {
@@ -72,7 +70,7 @@ const isUploadModelSuccessPayload = (payload: GQLUploadModelPayload): payload is
 const isErrorPayload = (payload: GQLUploadModelPayload): payload is GQLErrorPayload =>
   payload.__typename === 'ErrorPayload';
 
-export const JobsGraph = () => {
+export const JobsGraph = ({ irModel }: JobsGraphProps) => {
   const initialState = {
     editingContextId: '',
     representationId: '',
@@ -116,6 +114,7 @@ export const JobsGraph = () => {
     const variables = {
       input: {
         id: uuid(),
+        model: irModel,
       },
     };
     uploadModel({ variables });

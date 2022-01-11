@@ -9,8 +9,7 @@
  *******************************************************************************/
 package fr.cea.nablab.sirius.web.app.services.api;
 
-import fr.cea.nabla.ir.ir.IrRoot;
-
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.sirius.web.core.api.IEditingContext;
 
 /**
@@ -23,5 +22,5 @@ public interface IEditingContextService {
 
     IEditingContext createEditingContext(String editingContextId);
 
-    void addModel(String editingContextId, IrRoot modelRoot);
+    void addModel(String editingContextId, EObject modelRoot);
 }

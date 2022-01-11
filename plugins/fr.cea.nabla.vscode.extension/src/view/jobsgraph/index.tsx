@@ -21,6 +21,7 @@ declare global {
     acquireVsCodeApi(): any;
     projectName: string;
     nablaModelPath: string;
+    irModel: string;
   }
 }
 
@@ -75,7 +76,7 @@ const ApolloGraphQLClient = new ApolloClient({
 ReactDOM.render(
   <ServerContext.Provider value={value}>
     <ApolloProvider client={ApolloGraphQLClient}>
-      <JobsGraph />
+      <JobsGraph irModel={window.irModel} />
     </ApolloProvider>
   </ServerContext.Provider>,
   document.getElementById('root')

@@ -10,6 +10,7 @@ extend type Mutation {
 
 input UploadModelInput {
   id: ID!
+  model: String!
 }
 
 union UploadModelPayload = ErrorPayload | UploadModelSuccessPayload

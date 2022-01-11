@@ -68,7 +68,7 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(disposableLatexPanel);
 
   const disposableJobsGraphPanel = commands.registerCommand('nablabweb.showJobsGraphView', () => {
-    JobsGraphWebViewLoader.createOrShow(context.extensionPath, undefined);
+    JobsGraphWebViewLoader.createOrShow(context.extensionPath, '');
   });
   context.subscriptions.push(disposableJobsGraphPanel);
 
@@ -99,8 +99,14 @@ export function activate(context: ExtensionContext) {
     const genDir = path.dirname(selectedFileURI.fsPath);
     const projectFolder = workspace.getWorkspaceFolder(selectedFileURI);
     if (genDir && projectFolder) {
-      const irModel = commands.executeCommand('nablabweb.generateIr', selectedFileURI.fsPath, projectFolder.name);
-      JobsGraphWebViewLoader.createOrShow(context.extensionPath, irModel);
+      const irModel: string | undefined = await commands.executeCommand(
+        'nablabweb.generateIr',
+        selectedFileURI.fsPath,
+        projectFolder.name
+      );
+      if (irModel) {
+        JobsGraphWebViewLoader.createOrShow(context.extensionPath, irModel);
+      }
     }
   });
   context.subscriptions.push(disposableGenerateIr);

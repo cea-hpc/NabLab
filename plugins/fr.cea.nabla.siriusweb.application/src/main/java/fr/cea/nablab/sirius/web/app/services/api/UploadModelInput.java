@@ -27,12 +27,15 @@ public class UploadModelInput implements IInput {
 
     private UUID id;
 
+    private String model;
+
     public UploadModelInput() {
         // Used by Jackson
     }
 
-    public UploadModelInput(UUID id) {
+    public UploadModelInput(UUID id, String model) {
         this.id = Objects.requireNonNull(id);
+        this.model = Objects.requireNonNull(model);
     }
 
     @Override
@@ -43,9 +46,16 @@ public class UploadModelInput implements IInput {
         return this.id;
     }
 
+    @GraphQLField
+    @GraphQLNonNull
+    public String getModel() {
+        return this.model;
+    }
+
     @Override
     public String toString() {
         String pattern = "{0} '{'id: {1}'}'"; //$NON-NLS-1$
         return MessageFormat.format(pattern, this.getClass().getSimpleName(), this.id);
     }
+
 }

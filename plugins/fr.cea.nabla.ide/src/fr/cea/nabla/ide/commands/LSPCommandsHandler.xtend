@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2021, 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -9,24 +9,30 @@
  *******************************************************************************/
 package fr.cea.nabla.ide.commands
 
+import com.google.gson.JsonPrimitive
 import com.google.inject.Inject
 import com.google.inject.Singleton
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher
+import fr.cea.nabla.generator.ir.IrRootBuilder
 import fr.cea.nabla.generator.providers.NablagenFileGenerator
+import fr.cea.nabla.ir.ir.IrFactory
+import fr.cea.nabla.ir.ir.IrRoot
+import fr.cea.nabla.ir.ir.util.IrResourceImpl
 import fr.cea.nabla.nabla.NablaRoot
+import fr.cea.nabla.nablagen.NablagenApplication
+import java.io.ByteArrayOutputStream
+import java.util.Base64
 import java.util.List
+import java.util.Map
 import java.util.concurrent.ExecutionException
+import org.eclipse.emf.common.util.URI
 import org.eclipse.lsp4j.ExecuteCommandParams
 import org.eclipse.lsp4j.MessageParams
+import org.eclipse.lsp4j.MessageType
 import org.eclipse.lsp4j.services.LanguageClient
 import org.eclipse.xtext.ide.server.ILanguageServerAccess
 import org.eclipse.xtext.ide.server.commands.IExecutableCommandService
 import org.eclipse.xtext.util.CancelIndicator
-import org.eclipse.lsp4j.MessageType
-import com.google.gson.JsonPrimitive
-import fr.cea.nabla.generator.ir.IrRootBuilder
-import fr.cea.nabla.ir.ir.IrRoot
-import fr.cea.nabla.ir.ir.IrFactory
 
 @Singleton
 class LSPCommandsHandler implements IExecutableCommandService
@@ -36,13 +42,14 @@ class LSPCommandsHandler implements IExecutableCommandService
 	
 	@Inject protected NablaGeneratorMessageDispatcher dispatcher
 	@Inject protected NablagenFileGenerator generator
+	@Inject IrRootBuilder irRootBuilder
 	
 	protected var LanguageClient languageClient
-	val traceFunction = [fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType type, String msg | languageClient.logMessage(new MessageParams(MessageType.Info, msg))]
+	val traceFunction = [NablaGeneratorMessageDispatcher.MessageType type, String msg | languageClient.logMessage(new MessageParams(MessageType.Info, msg))]
 	
 	override List<String> initialize()
 	{
-		return #[generateNablagenCommand]
+		return #[generateNablagenCommand, generateIrCommand]
 	}
 
 	override Object execute(ExecuteCommandParams params, ILanguageServerAccess access, CancelIndicator cancelIndicator)
@@ -81,20 +88,61 @@ class LSPCommandsHandler implements IExecutableCommandService
 		else if (generateIrCommand.equals(params.command) && params.arguments.size === 2)
 		{
 			val nablagenFileURI = (params.arguments.get(0) as JsonPrimitive).asString
-			val projectName = (params.arguments.get(1) as JsonPrimitive).asString
-			val irRoot = IrFactory.eINSTANCE.createIrRoot()
-			val irModule = IrFactory.eINSTANCE.createIrModule()
-			irModule.name = 'explicitHeatEquation'
-			irModule.main = true
-			val job = IrFactory.eINSTANCE.createJob()
-			job.name = 'ComputeFaceLength'
-			job.at = 1.0
-			irModule.jobs.add(job)
-			val jobCaller = IrFactory.eINSTANCE.createJobCaller()
-			jobCaller.calls.add(job)
-			irRoot.main = jobCaller
-			return irRoot;
+			val baos = new ByteArrayOutputStream()
+			
+			try
+			{
+				languageClient = access.languageClient
+				dispatcher.traceListeners += traceFunction
+				access.doRead(nablagenFileURI, [
+					ILanguageServerAccess.Context it | 
+					val nablagenRoot = it.resource.contents.filter(NablagenApplication).head
+					val irRoot = buildIrFrom(nablagenRoot)
+					val irResource = new IrResourceImpl(URI.createURI("inmemory"))
+					irResource.contents.add(irRoot)
+					irResource.save(baos, Map.of())
+					"Ir generated"
+				]).get()
+			}
+			catch (InterruptedException | ExecutionException e)
+			{
+				languageClient.logMessage(new MessageParams(MessageType.Error, e.message))
+			}
+			finally
+			{
+				languageClient = null
+				dispatcher.traceListeners -= traceFunction
+			}
+			
+			return Base64.encoder.encodeToString(baos.toByteArray)
 		}
 		return "Unrecognized Command"
+	}
+	
+	private def IrRoot buildIrFrom(NablagenApplication ngenApp)
+	{
+		val start = System.nanoTime()
+		var IrRoot ir = null
+		languageClient.logMessage(new MessageParams(MessageType.Info, "Building IR to initialize job graph editor"))
+
+		try
+		{
+			ir = irRootBuilder.buildGeneratorGenericIr(ngenApp)
+		}
+		catch (Exception e)
+		{
+			languageClient.logMessage(new MessageParams(MessageType.Error, e.message))
+			// An exception can occured during IR building if environment is not configured,
+			// for example compilation not done, or during transformation step. Whatever... 
+			// irModule stays null. Error message printed below.
+		}
+
+		val stop = System.nanoTime()
+		languageClient.logMessage(new MessageParams(MessageType.Info, "IR converted (" + ((stop - start) / 1000000) + " ms)"))
+
+		if (ir === null)
+			languageClient.logMessage(new MessageParams(MessageType.Error, "IR module can not be built. Try to clean and rebuild all projects and start again."))
+
+		return ir
 	}
 }

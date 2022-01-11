@@ -9,19 +9,23 @@
  *******************************************************************************/
 package fr.cea.nablab.sirius.web.app.services;
 
-import fr.cea.nabla.ir.ir.IrFactory;
 import fr.cea.nabla.ir.ir.IrRoot;
+import fr.cea.nabla.ir.ir.util.IrResourceImpl;
 import fr.cea.nablab.sirius.web.app.services.api.IEditingContextService;
 import fr.cea.nablab.sirius.web.app.services.api.IModelService;
 import fr.cea.nablab.sirius.web.app.services.api.UploadModelInput;
 import fr.cea.nablab.sirius.web.app.services.api.UploadModelSuccessPayload;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.sirius.web.core.api.ErrorPayload;
 import org.eclipse.sirius.web.core.api.IEditingContext;
 import org.eclipse.sirius.web.core.api.IPayload;
@@ -49,7 +53,7 @@ public class ModelService implements IModelService {
 
     private final ICollaborativeDiagramMessageService messageService;
 
-    private final Map<String, IrRoot> models = new ConcurrentHashMap<>();
+    private final Map<String, EObject> models = new ConcurrentHashMap<>();
 
     private IEditingContextService editingContextService;
 
@@ -73,24 +77,19 @@ public class ModelService implements IModelService {
         IPayload payload = new ErrorPayload(input.getId(), message);
 
         EObjectIDManager idManager = new EObjectIDManager();
-        var irRoot = IrFactory.eINSTANCE.createIrRoot();
-        irRoot.setName("ExplicitHeatEquation"); //$NON-NLS-1$
-        idManager.setId(irRoot, idManager.getOrCreateId(irRoot));
-        var irModule = IrFactory.eINSTANCE.createIrModule();
-        idManager.setId(irModule, idManager.getOrCreateId(irModule));
-        irModule.setName("explicitHeatEquation"); //$NON-NLS-1$
-        irModule.setMain(true);
-        var job = IrFactory.eINSTANCE.createJob();
-        idManager.setId(job, idManager.getOrCreateId(job));
-        job.setName("ComputeFaceLength"); //$NON-NLS-1$
-        job.setAt(1.0);
-        var jobCaller = IrFactory.eINSTANCE.createJobCaller();
-        idManager.setId(jobCaller, idManager.getOrCreateId(jobCaller));
+        var modelAsString = input.getModel();
+        byte[] decode = java.util.Base64.getDecoder().decode(modelAsString);
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(decode);
+        var irResource = new IrResourceImpl(URI.createURI("inmemory")); //$NON-NLS-1$
+        try {
+            irResource.doLoad(inputStream, Map.of());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        irModule.getJobs().add(job);
-        jobCaller.getCalls().add(job);
-        irRoot.getModules().add(irModule);
-        irRoot.setMain(jobCaller);
+        var irRoot = (IrRoot) irResource.getContents().get(0);
+        idManager.setId(irRoot, idManager.getOrCreateId(irRoot));
+        irRoot.eAllContents().forEachRemaining(eObject -> idManager.setId(eObject, idManager.getOrCreateId(eObject)));
 
         IEditingContext editingContext = this.editingContextService.createEditingContext(input.getId().toString());
         this.models.put(editingContext.getId(), irRoot);
@@ -105,7 +104,7 @@ public class ModelService implements IModelService {
         if (optionalDiagramDescription.isPresent()) {
             DiagramDescription diagramDescription = optionalDiagramDescription.get();
 
-            Diagram diagram = this.diagramCreationService.create("explicitHeatEquation", jobCaller, diagramDescription, editingContext); //$NON-NLS-1$
+            Diagram diagram = this.diagramCreationService.create("explicitHeatEquation", irRoot.getMain(), diagramDescription, editingContext); //$NON-NLS-1$
 
             this.representationPersistenceService.save(editingContext, diagram);
 

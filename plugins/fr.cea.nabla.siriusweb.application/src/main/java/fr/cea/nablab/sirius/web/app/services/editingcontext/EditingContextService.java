@@ -9,7 +9,6 @@
  *******************************************************************************/
 package fr.cea.nablab.sirius.web.app.services.editingcontext;
 
-import fr.cea.nabla.ir.ir.IrRoot;
 import fr.cea.nablab.sirius.web.app.services.api.IEditingContextService;
 
 import java.util.HashMap;
@@ -20,6 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.emf.common.command.BasicCommandStack;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.impl.EPackageRegistryImpl;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -28,6 +28,7 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.ECrossReferenceAdapter;
 import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
 import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
+import org.eclipse.sirius.emfjson.resource.JsonResource;
 import org.eclipse.sirius.emfjson.resource.JsonResourceImpl;
 import org.eclipse.sirius.web.core.api.IEditingContext;
 import org.eclipse.sirius.web.emf.services.EObjectIDManager;
@@ -83,15 +84,17 @@ public class EditingContextService implements IEditingContextService {
     }
 
     @Override
-    public void addModel(String editingContextId, IrRoot modelRoot) {
+    public void addModel(String editingContextId, EObject modelRoot) {
         IEditingContext iEditingContext = this.editingContexts.get(editingContextId);
         if (iEditingContext instanceof EditingContext) {
             EditingContext editingContext = (EditingContext) iEditingContext;
             AdapterFactoryEditingDomain domain = editingContext.getDomain();
             ResourceSet resourceSet = domain.getResourceSet();
-            Map<String, Object> options = new HashMap<>();
-            options.put("OPTION_ID_MANAGER", new EObjectIDManager()); //$NON-NLS-1$
-            Resource resource = new JsonResourceImpl(URI.createURI("inmemory"), options); //$NON-NLS-1$
+            Map<String, Object> saveOptions = new HashMap<>();
+            saveOptions.put(JsonResource.OPTION_ENCODING, JsonResource.ENCODING_UTF_8);
+            saveOptions.put(JsonResource.OPTION_SCHEMA_LOCATION, Boolean.TRUE);
+            saveOptions.put(JsonResource.OPTION_ID_MANAGER, new EObjectIDManager());
+            Resource resource = new JsonResourceImpl(URI.createURI("inmemory"), saveOptions); //$NON-NLS-1$
             resourceSet.getResources().add(resource);
             resource.getContents().add(modelRoot);
         }

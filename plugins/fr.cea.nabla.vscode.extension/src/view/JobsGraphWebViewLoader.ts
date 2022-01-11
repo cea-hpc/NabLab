@@ -15,9 +15,14 @@ export default class JobsGraphWebViewLoader {
 
   private readonly panel: vscode.WebviewPanel;
 
-  public static createOrShow(extensionPath: string, irModel: Object | undefined) {
+  public static createOrShow(extensionPath: string, irModel: string) {
     const column = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.viewColumn : undefined;
-    const webViewContext = { extensionPath, projectName: '', nablaModelPath: '', irModel: irModel };
+    const webViewContext = {
+      extensionPath,
+      projectName: 'testProject',
+      nablaModelPath: 'modelPathTest',
+      irModel: irModel,
+    };
     // If we already have a panel, show it.
     if (JobsGraphWebViewLoader.openedPanel) {
       JobsGraphWebViewLoader.openedPanel.panel.reveal(column);
@@ -33,7 +38,7 @@ export default class JobsGraphWebViewLoader {
     vscode.commands.executeCommand('workbench.action.moveEditorToBelowGroup');
   }
 
-  public static update(extensionPath: string, projectName: string, nablaModelPath: string, irModel: Object) {
+  public static update(extensionPath: string, projectName: string, nablaModelPath: string, irModel: string) {
     // If we don't have a panel, do nothing.
     if (!JobsGraphWebViewLoader.openedPanel) {
       return;
@@ -72,7 +77,7 @@ export default class JobsGraphWebViewLoader {
             window.acquireVsCodeApi = acquireVsCodeApi;
             window.projectName = '${webViewContext.projectName}';
             window.nablaModelPath = '${webViewContext.nablaModelPath}';
-            window.irModel = ${webViewContext.irModel};
+            window.irModel = '${webViewContext.irModel}';
           </script>
       </head>
       <body>
@@ -87,5 +92,5 @@ interface JobsGraphWebViewContext {
   extensionPath: string;
   projectName: string;
   nablaModelPath: string;
-  irModel: Object | undefined;
+  irModel: string;
 }

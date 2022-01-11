@@ -94,11 +94,13 @@ class InstructionContentProvider
 
 	// no index definition in Arcane => item instead
 	static def dispatch CharSequence getContent(ItemIndexDefinition it)
-	''''''
+	'''
+		const auto «index.name»(«value.content»);
+	'''
 
 	static def dispatch CharSequence getContent(ItemIdDefinition it)
 	'''
-		auto «id.name»(«value.content»);
+		const auto «id.name»(«value.content»);
 	'''
 
 	static def dispatch CharSequence getContent(SetDefinition it)
@@ -144,7 +146,7 @@ class InstructionContentProvider
 	'''
 		arcaneParallelForeach(«iterator.container.content», [&](«iterator.container.itemType.name.toFirstUpper»VectorView view)
 		{
-			ENUMERATE_«iterator.container.itemType.name.toUpperCase»(«iterator.index.itemName», view)
+			ENUMERATE_«iterator.container.itemType.name.toUpperCase»(«iterator.index.name», view)
 			{
 				«loopBody.innerContent»
 			}
@@ -155,7 +157,7 @@ class InstructionContentProvider
 	'''
 		«val c = iterator.container»
 		«IF c.connectivityCall.args.empty»
-			ENUMERATE_«iterator.container.itemType.name.toUpperCase»(«iterator.index.itemName», «c.content»)
+			ENUMERATE_«iterator.container.itemType.name.toUpperCase»(«iterator.index.name», «c.content»)
 			{
 				«loopBody.innerContent»
 			}

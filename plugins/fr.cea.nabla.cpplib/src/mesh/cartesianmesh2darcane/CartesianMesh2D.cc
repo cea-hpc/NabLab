@@ -73,37 +73,54 @@ CartesianMesh2D::getFaces() const
 }
 
 ItemLocalIdView<Node>
-CartesianMesh2D::getNodesOfCell(Cell c) const
+CartesianMesh2D::getNodesOfCell(CellLocalId cId) const
 {
-	return m_umcv.cellNode().items(c);
+	return m_umcv.cellNode().items(cId);
 }
 
 ItemLocalIdView<Node>
-CartesianMesh2D::getNodesOfFace(Face f) const
+CartesianMesh2D::getNodesOfFace(FaceLocalId fId) const
 {
-	return m_umcv.faceNode().items(f);
+	return m_umcv.faceNode().items(fId);
 }
 
 ItemLocalIdView<Cell>
-CartesianMesh2D::getCellsOfNode(Node n) const
+CartesianMesh2D::getCellsOfNode(NodeLocalId nId) const
 {
-	return m_umcv.nodeCell().items(n);
+	return m_umcv.nodeCell().items(nId);
 }
 
 ItemLocalIdView<Cell>
-CartesianMesh2D::getCellsOfFace(Face f) const
+CartesianMesh2D::getCellsOfFace(FaceLocalId fId) const
 {
-	return m_umcv.faceCell().items(f);
+	return m_umcv.faceCell().items(fId);
 }
 
 ItemLocalIdView<Cell>
-CartesianMesh2D::getNeighbourCells(Cell c) const
+CartesianMesh2D::getNeighbourCells(CellLocalId cId) const
 {
-	return m_neighbour_cells.items(c);
+	return m_neighbour_cells.items(cId);
 }
 
 ItemLocalIdView<Face>
-CartesianMesh2D::getFacesOfCell(Cell c) const
+CartesianMesh2D::getFacesOfCell(CellLocalId cId) const
 {
-	return m_umcv.cellFace().items(c);
+	return m_umcv.cellFace().items(cId);
+}
+
+FaceLocalId
+CartesianMesh2D::getCommonFace(CellLocalId c1Id, CellLocalId c2Id) const
+{
+	IItemFamily* face_family = m_mesh->faceFamily();
+	ItemInternalArrayView faces = face_family->itemsInternal();
+	const auto facesOfCellC1(m_umcv.cellFace().items(c1Id));
+	auto nbFacesOfCellC1(facesOfCellC1.size());
+	for (Int32 fFacesOfCellC1=0; fFacesOfCellC1<nbFacesOfCellC1; fFacesOfCellC1++)
+	{
+		FaceLocalId fId(facesOfCellC1[fFacesOfCellC1]);
+		Face f(faces[fId]);
+		Cell oppositeCell = (f.backCell().localId() == c1Id ? f.frontCell() : f.backCell());
+		if (oppositeCell.localId() == c2Id) return fId;
+	}
+	throw std::range_error("No common face between cells " + std::to_string(c1Id.asInteger()) + " and cells " + std::to_string(c2Id.asInteger()));
 }

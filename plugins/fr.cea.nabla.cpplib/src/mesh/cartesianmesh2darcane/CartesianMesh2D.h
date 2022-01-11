@@ -27,12 +27,13 @@ public:
 	CellGroup getCells() const;
 	NodeGroup getNodes() const;
 	FaceGroup getFaces() const;
-	ItemLocalIdView<Node> getNodesOfCell(Cell c) const;
-	ItemLocalIdView<Node> getNodesOfFace(Face f) const;
-	ItemLocalIdView<Cell> getCellsOfNode(Node n) const;
-	ItemLocalIdView<Cell> getCellsOfFace(Face f) const;
-	ItemLocalIdView<Cell> getNeighbourCells(Cell c) const;
-	ItemLocalIdView<Face> getFacesOfCell(Cell c) const;
+	ItemLocalIdView<Node> getNodesOfCell(CellLocalId cId) const;
+	ItemLocalIdView<Node> getNodesOfFace(FaceLocalId fId) const;
+	ItemLocalIdView<Cell> getCellsOfNode(NodeLocalId nId) const;
+	ItemLocalIdView<Cell> getCellsOfFace(FaceLocalId fId) const;
+	ItemLocalIdView<Cell> getNeighbourCells(CellLocalId cId) const;
+	ItemLocalIdView<Face> getFacesOfCell(CellLocalId cId) const;
+	FaceLocalId getCommonFace(CellLocalId c1Id, CellLocalId c2Id) const;
 
 private:
 	CartesianMesh2D(IMesh* mesh);

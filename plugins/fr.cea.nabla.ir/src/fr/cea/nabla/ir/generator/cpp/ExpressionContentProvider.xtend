@@ -99,6 +99,7 @@ class ExpressionContentProvider
 
 	def dispatch CharSequence getContent(VectorConstant it)
 	'''{«innerContent»}'''
+
 	def dispatch CharSequence getContent(Cardinality it)
 	{
 		val call = container.connectivityCall
@@ -112,8 +113,10 @@ class ExpressionContentProvider
 		else
 			'''1'''
 	}
+
 	def dispatch CharSequence getContent(FunctionCall it)
 	'''«function.codeName»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
+
 	def dispatch CharSequence getContent(ArgOrVarRef it)
 	{
 		if (target.linearAlgebra && !(iterators.empty && indices.empty))
@@ -121,6 +124,7 @@ class ExpressionContentProvider
 		else
 			'''«codeName»«formatIteratorsAndIndices(target.type, iterators, indices)»'''
 	}
+
 	def CharSequence getCodeName(ArgOrVarRef it)
 	{
 		if (IrUtils.getContainerOfType(it, IrModule) === IrUtils.getContainerOfType(target, IrModule))
@@ -128,6 +132,7 @@ class ExpressionContentProvider
 		else
 			'mainModule->' + target.codeName
 	}
+
 	private def dispatch CharSequence getInnerContent(Expression it) { content }
 	private def dispatch CharSequence getInnerContent(VectorConstant it)
 	'''«FOR v : values SEPARATOR ', '»«v.innerContent»«ENDFOR»'''

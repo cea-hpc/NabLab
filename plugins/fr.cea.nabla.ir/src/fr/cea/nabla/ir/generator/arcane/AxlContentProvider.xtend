@@ -90,7 +90,7 @@ class AxlContentProvider
 		switch t
 		{
 			BaseType: TypeContentProvider.getTypeNameAndDimension(t).value
-			ConnectivityType: TypeContentProvider.getTypeNameAndDimension(t.base).value
+			ConnectivityType: t.connectivities.size - 1 + TypeContentProvider.getTypeNameAndDimension(t.base).value
 		}
 	}
 

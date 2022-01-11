@@ -27,7 +27,7 @@ class ItemIndexAndIdValueContentProvider
 
 	static def dispatch getContent(ItemIdValueIterator it)
 	{
-		if (iterator.container.connectivityCall.args.empty) '''«iterator.index.itemName».itemLocalId()'''
+		if (iterator.container.connectivityCall.args.empty) '''*«iterator.index.name»'''
 		else iterator.container.uniqueName + '[' + getIndexValue + ']'
 	}
 

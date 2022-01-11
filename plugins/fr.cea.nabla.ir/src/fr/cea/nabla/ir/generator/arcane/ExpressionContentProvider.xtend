@@ -17,7 +17,6 @@ import fr.cea.nabla.ir.ir.BaseTypeConstant
 import fr.cea.nabla.ir.ir.BinaryExpression
 import fr.cea.nabla.ir.ir.BoolConstant
 import fr.cea.nabla.ir.ir.Cardinality
-import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.ContractedIf
 import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.Function
@@ -25,10 +24,7 @@ import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IntConstant
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrPackage
-import fr.cea.nabla.ir.ir.IrType
-import fr.cea.nabla.ir.ir.ItemIndex
 import fr.cea.nabla.ir.ir.Iterator
-import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.MaxConstant
 import fr.cea.nabla.ir.ir.MinConstant
 import fr.cea.nabla.ir.ir.Parenthesis
@@ -38,6 +34,8 @@ import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.ir.ir.VectorConstant
 
+import static fr.cea.nabla.ir.generator.arcane.TypeContentProvider.*
+
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.arcane.ContainerExtensions.*
@@ -45,9 +43,6 @@ import static extension fr.cea.nabla.ir.generator.arcane.VariableExtensions.*
 
 class ExpressionContentProvider
 {
-	static def formatIterators(Iterable<String> iterators)
-	'''«FOR i : iterators»[«i»]«ENDFOR»'''
-
 	static def dispatch CharSequence getContent(ContractedIf it) 
 	'''(«condition.content» ? «thenExpression.content» ':' «elseExpression.content»'''
 
@@ -130,23 +125,12 @@ class ExpressionContentProvider
 		}
 		else
 		{
-			if (target.global && target.type.dimension == 0 && eContainingFeature !== IrPackage.Literals.AFFECTATION__LEFT)
+			if (target.global && getVariableTypeName(target.type).startsWith("VariableScalar") && eContainingFeature !== IrPackage.Literals.AFFECTATION__LEFT)
 				'''«codeName»()''' // get the value of a VariableScalar...
 			else if (target.linearAlgebra && !(iterators.empty && indices.empty))
 				'''«codeName».getValue(«formatIteratorsAndIndices(target.type, iterators, indices)»)'''
 			else
 				'''«codeName»«formatIteratorsAndIndices(target.type, iterators, indices)»'''
-		}
-	}
-
-	static def formatIteratorsAndIndices(IrType type, Iterable<ItemIndex> iterators, Iterable<Expression> indices)
-	{
-		switch type
-		{
-			case (iterators.empty && indices.empty): ''''''
-			BaseType: '''«FOR i : indices»[«i.content»]«ENDFOR»'''
-			LinearAlgebraType: '''«FOR i : iterators SEPARATOR ', '»«i.name»«ENDFOR»«FOR i : indices SEPARATOR ', '»«i.content»«ENDFOR»'''
-			ConnectivityType: '''«formatIterators(iterators.map[itemName])»«FOR i : indices»[«i.content»]«ENDFOR»'''
 		}
 	}
 

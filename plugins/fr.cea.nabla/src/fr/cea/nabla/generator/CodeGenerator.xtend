@@ -139,7 +139,7 @@ class CodeGenerator extends StandaloneGeneratorBase
 						val itMax = if (ngenApp.mainModule.iterationMax === null) null else ngenApp.mainModule.iterationMax.name
 						val tMax = if (ngenApp.mainModule.timeMax === null) null else ngenApp.mainModule.timeMax.name
 						val g = irCodeGeneratorFactory.create(wsPath, target.type, target.variables, ngenApp.levelDB, itMax, tMax)
-						
+
 						// Apply IR transformations dedicated to this target (if necessary)
 						val IrRoot genIr = (g.irTransformationSteps.empty ? ir : EcoreUtil::copy(ir))
 						for (s : g.irTransformationSteps)

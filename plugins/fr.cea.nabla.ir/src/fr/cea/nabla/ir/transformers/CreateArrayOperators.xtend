@@ -86,8 +86,21 @@ class CreateArrayOperators extends IrTransformationStep
 				}
 			}
 
+		// delete unused expressions
 		for (e : expressionsToDelete)
 			EcoreUtil.delete(e)
+
+		// re calculate indexInName attribute of functions with new operators
+		for (m : ir.modules)
+		{
+			val opByNames = m.functions.filter[x | x.name.startsWith(OperatorUtils.OperatorPrefix)].groupBy[name]
+			for (k : opByNames.keySet)
+			{
+				val opValues = opByNames.get(k)
+				for (i : 0..<opValues.size)
+					opValues.get(i).indexInName = i
+			}
+		}
 	}
 
 	override transform(DefaultExtensionProvider dep, (String)=>void traceNotifier)

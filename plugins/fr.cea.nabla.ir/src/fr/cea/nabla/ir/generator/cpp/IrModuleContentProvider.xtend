@@ -10,6 +10,7 @@
 package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.IrUtils
+import fr.cea.nabla.ir.generator.CppGeneratorUtils
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityType
@@ -113,16 +114,25 @@ class IrModuleContentProvider
 			{
 				return «IrUtils.NonRegressionNameAndValue.key»;
 			}
-
 			void createDB(const std::string& db_name);
 		«ENDIF»
 
 	private:
 		«IF postProcessing !== null»
 		void dumpVariables(int iteration, bool useTimer=true);
-		«IF levelDB»
-		template <typename T>
-		leveldb::Slice toSlice(T& d) {
+		«IF hasLevelDB»
+
+		struct KeyData {
+			std::string dataName;
+			int dataBytes;
+		};
+
+		leveldb::Slice toKey(std::string dataName, int dataBytes) {
+			KeyData key = {dataName, dataBytes};
+			return leveldb::Slice((const char*)&key, sizeof(KeyData));
+		}
+
+		leveldb::Slice toValue(T& d) {
 			return leveldb::Slice((const char*)&d, sizeof(T));
 		}
 		«ENDIF»
@@ -362,7 +372,9 @@ class IrModuleContentProvider
 		// Batch to write all data at once
 		leveldb::WriteBatch batch;
 		«FOR v : irRoot.variables.filter[!option]»
-		batch.Put("«Utils.getDbKey(v)»", toSlice(«Utils.getDbValue(it, v, '->')»));
+		batch.Put(toKey("«Utils.getDbKey(v)»", sizeof(«CppGeneratorUtils.getDbBytes(v.type)»), toValue(«Utils.getDbValue(it, v, '->')»));
+		batch.Put(toKey("lastDump",sizeof(int)), toValue(lastDump));
+
 		«ENDFOR»
 		status = db->Write(leveldb::WriteOptions(), &batch);
 		// Checking everything was ok

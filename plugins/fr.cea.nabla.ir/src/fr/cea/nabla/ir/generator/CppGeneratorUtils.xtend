@@ -17,6 +17,11 @@ import fr.cea.nabla.ir.ir.IrModule
 
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.getInstanceName
 import static extension fr.cea.nabla.ir.IrModuleExtensions.getClassName
+import fr.cea.nabla.ir.ir.BaseType
+import fr.cea.nabla.ir.ir.PrimitiveType
+import fr.cea.nabla.ir.ir.ConnectivityType
+import fr.cea.nabla.ir.ir.LinearAlgebraType
+import fr.cea.nabla.ir.ir.IrType
 
 class CppGeneratorUtils
 {
@@ -46,4 +51,19 @@ class CppGeneratorUtils
 	{
 		'__' + name.toUpperCase + '_H_'
 	}
+
+	static def dispatch CharSequence getDbBytes(BaseType it)
+	{
+		switch (primitive)
+		{
+			case PrimitiveType.INT : "sizeof(int)"
+			case PrimitiveType.BOOL : "sizeof(bool)"
+			case PrimitiveType.REAL : "sizeof(double)"
+			default: ""
+		}
+	}
+
+	static def dispatch CharSequence getDbBytes(ConnectivityType it) { getDbBytes(base) }
+	static def dispatch CharSequence getDbBytes(LinearAlgebraType it) { "sizeof(double)" }
+	static def dispatch CharSequence getDbBytes(IrType it) {""}
 }

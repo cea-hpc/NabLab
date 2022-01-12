@@ -28,9 +28,9 @@ class PythonGenerator implements IrCodeGenerator
 	override getIrTransformationSteps()
 	{
 		#[
+			new ReplaceReductions(true), // parallel loops and reductions not yet implemented
 			new SetPythonOperatorNames,
-			new PreventFunctionOverloading,
-			new ReplaceReductions(true) // parallel loops and reductions not yet implemented
+			new PreventFunctionOverloading
 		]
 	}
 

@@ -11,11 +11,11 @@ package fr.cea.nabla.ide.commands
 
 import com.google.gson.JsonPrimitive
 import com.google.inject.Inject
+import com.google.inject.Provider
 import com.google.inject.Singleton
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher
 import fr.cea.nabla.generator.ir.IrRootBuilder
 import fr.cea.nabla.generator.providers.NablagenFileGenerator
-import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.util.IrResourceImpl
 import fr.cea.nabla.nabla.NablaRoot
@@ -26,6 +26,8 @@ import java.util.List
 import java.util.Map
 import java.util.concurrent.ExecutionException
 import org.eclipse.emf.common.util.URI
+import org.eclipse.emf.ecore.resource.ResourceSet
+import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.lsp4j.ExecuteCommandParams
 import org.eclipse.lsp4j.MessageParams
 import org.eclipse.lsp4j.MessageType
@@ -43,6 +45,7 @@ class LSPCommandsHandler implements IExecutableCommandService
 	@Inject protected NablaGeneratorMessageDispatcher dispatcher
 	@Inject protected NablagenFileGenerator generator
 	@Inject IrRootBuilder irRootBuilder
+	@Inject Provider<ResourceSet> resourceSetProvider
 	
 	protected var LanguageClient languageClient
 	val traceFunction = [NablaGeneratorMessageDispatcher.MessageType type, String msg | languageClient.logMessage(new MessageParams(MessageType.Info, msg))]
@@ -94,17 +97,32 @@ class LSPCommandsHandler implements IExecutableCommandService
 			{
 				languageClient = access.languageClient
 				dispatcher.traceListeners += traceFunction
-				access.doRead(nablagenFileURI, [
-					ILanguageServerAccess.Context it | 
-					val nablagenRoot = it.resource.contents.filter(NablagenApplication).head
-					val irRoot = buildIrFrom(nablagenRoot)
-					val irResource = new IrResourceImpl(URI.createURI("inmemory"))
-					irResource.contents.add(irRoot)
-					irResource.save(baos, Map.of())
-					"Ir generated"
+				
+				val resourceSet = resourceSetProvider.get
+				// Load nabla libraries
+				access.doReadIndex([ILanguageServerAccess.IndexContext ctxt | 
+					val nablaLibraries = ctxt.index.allResourceDescriptions
+					for (nablaLibrary : nablaLibraries) {
+						val uri = nablaLibrary.URI
+						if (uri.toString().startsWith("file:/") && !uri.toString().startsWith("file:///")) {
+							resourceSet.getResource(uri, true)
+						}
+					}
+					""
 				]).get()
+				val ngenResource = resourceSet.createResource(URI.createURI(nablagenFileURI))
+				resourceSet.createResource(URI.createURI(nablagenFileURI.replace(".ngen", ".n")))
+				
+				ngenResource.load(Map.of())
+				EcoreUtil::resolveAll(resourceSet)
+				val ngen = ngenResource.contents.filter(NablagenApplication).head
+				val irRoot = buildIrFrom(ngen)
+				val irResource = new IrResourceImpl(URI.createURI("inmemory"))
+				irResource.contents.add(irRoot)
+				irResource.save(baos, Map.of())
+				return Base64.encoder.encodeToString(baos.toByteArray)
 			}
-			catch (InterruptedException | ExecutionException e)
+			catch (Exception e)
 			{
 				languageClient.logMessage(new MessageParams(MessageType.Error, e.message))
 			}
@@ -114,7 +132,6 @@ class LSPCommandsHandler implements IExecutableCommandService
 				dispatcher.traceListeners -= traceFunction
 			}
 			
-			return Base64.encoder.encodeToString(baos.toByteArray)
 		}
 		return "Unrecognized Command"
 	}
@@ -131,8 +148,8 @@ class LSPCommandsHandler implements IExecutableCommandService
 		}
 		catch (Exception e)
 		{
-			languageClient.logMessage(new MessageParams(MessageType.Error, e.message))
-			// An exception can occured during IR building if environment is not configured,
+			languageClient.logMessage(new MessageParams(MessageType.Error, "An exception occurred during IR building"))
+			// An exception can occurred during IR building if environment is not configured,
 			// for example compilation not done, or during transformation step. Whatever... 
 			// irModule stays null. Error message printed below.
 		}

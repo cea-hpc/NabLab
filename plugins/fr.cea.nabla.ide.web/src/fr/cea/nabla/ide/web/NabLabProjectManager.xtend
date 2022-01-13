@@ -12,13 +12,13 @@ package fr.cea.nabla.ide.web
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
+import java.util.List
 import java.util.regex.Pattern
 import java.util.stream.Collectors
 import java.util.zip.ZipFile
 import org.eclipse.emf.common.util.URI
 import org.eclipse.xtext.ide.server.ProjectManager
 import org.eclipse.xtext.util.CancelIndicator
-import java.util.List
 import org.eclipse.xtext.workspace.ISourceFolder
 
 class NabLabProjectManager extends ProjectManager

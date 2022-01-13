@@ -67,9 +67,6 @@ abstract class OpenJobGraph extends AbstractHandler
 								emfResource.load(null)
 								val ngen = emfResource.contents.filter(NablagenApplication).head
 								val ir = buildIrFrom(ngen)
-								var resource = resourceSet.createResource(URI.createFileURI("/Users/arichard/tmp/ExplicitHeatEquation.ir"));
-								resource.getContents().add(ir);
-								resource.save(Collections.EMPTY_MAP);
 								displayIr(ir)
 							}
 						}

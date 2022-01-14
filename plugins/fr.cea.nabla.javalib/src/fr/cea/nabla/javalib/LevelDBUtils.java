@@ -67,7 +67,6 @@ public class LevelDBUtils
 
 					String key = data.dataName;
 					int bytes = data.dataBytes;
-					//String key = asString(byteKey);
 					byte[] byteValue = db.get(byteKey);
 					if (byteValue == null)
 					{

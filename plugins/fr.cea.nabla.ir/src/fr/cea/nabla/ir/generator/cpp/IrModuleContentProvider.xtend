@@ -120,22 +120,6 @@ class IrModuleContentProvider
 	private:
 		«IF postProcessing !== null»
 		void dumpVariables(int iteration, bool useTimer=true);
-		«IF hasLevelDB»
-
-		struct KeyData {
-			std::string dataName;
-			int dataBytes;
-		};
-
-		leveldb::Slice toKey(std::string dataName, int dataBytes) {
-			KeyData key = {dataName, dataBytes};
-			return leveldb::Slice((const char*)&key, sizeof(KeyData));
-		}
-
-		leveldb::Slice toValue(T& d) {
-			return leveldb::Slice((const char*)&d, sizeof(T));
-		}
-		«ENDIF»
 		«ENDIF»
 		«privateMethodHeaders»
 		// Mesh and mesh variables
@@ -372,9 +356,7 @@ class IrModuleContentProvider
 		// Batch to write all data at once
 		leveldb::WriteBatch batch;
 		«FOR v : irRoot.variables.filter[!option]»
-		batch.Put(toKey("«Utils.getDbKey(v)»", sizeof(«CppGeneratorUtils.getDbBytes(v.type)»), toValue(«Utils.getDbValue(it, v, '->')»));
-		batch.Put(toKey("lastDump",sizeof(int)), toValue(lastDump));
-
+		putDB(&batch, "«Utils.getDbKey(v)»", «CppGeneratorUtils.getDbBytes(v.type)», «Utils.getDbValue(it, v, '->')»);
 		«ENDFOR»
 		status = db->Write(leveldb::WriteOptions(), &batch);
 		// Checking everything was ok
@@ -384,69 +366,6 @@ class IrModuleContentProvider
 		delete db;
 	}
 
-	/******************** Non regression testing ********************/
-
-	bool compareDB(const std::string& current, const std::string& ref)
-	{
-		// Final result
-		bool result = true;
-
-		// Loading ref DB
-		leveldb::DB* db_ref;
-		leveldb::Options db_options_ref;
-		db_options_ref.create_if_missing = false;
-		leveldb::Status status = leveldb::DB::Open(db_options_ref, ref, &db_ref);
-		if (!status.ok())
-		{
-			std::cerr << "No ref database to compare with ! Looking for " << ref << std::endl;
-			return false;
-		}
-		leveldb::Iterator* it_ref = db_ref->NewIterator(leveldb::ReadOptions());
-
-		// Loading current DB
-		leveldb::DB* db;
-		leveldb::Options db_options;
-		db_options.create_if_missing = false;
-		status = leveldb::DB::Open(db_options, current, &db);
-		assert(status.ok());
-		leveldb::Iterator* it = db->NewIterator(leveldb::ReadOptions());
-
-		// Results comparison
-		std::cerr << "# Comparing results ..." << std::endl;
-		for (it_ref->SeekToFirst(); it_ref->Valid(); it_ref->Next()) {
-			auto key = it_ref->key();
-			std::string value;
-			auto status = db->Get(leveldb::ReadOptions(), key, &value);
-			if (status.IsNotFound()) {
-				std::cerr << "ERROR - Key : " << key.ToString() << " not found." << endl;
-				result = false;
-			}
-			else {
-				if (value == it_ref->value().ToString())
-					std::cerr << key.ToString() << ": " << "OK" << std::endl;
-				else {
-					std::cerr << key.ToString() << ": " << "ERROR" << std::endl;
-					result = false;
-				}
-			}
-		}
-
-		// looking for key in the db that are not in the ref (new variables)
-		for (it->SeekToFirst(); it->Valid(); it->Next()) {
-			auto key = it->key();
-			std::string value;
-			if (db_ref->Get(leveldb::ReadOptions(), key, &value).IsNotFound()) {
-				std::cerr << "ERROR - Key : " << key.ToString() << " can not be compared (not present in the ref)." << std::endl;
-				result = false;
-			}
-		}
-
-		// Freeing memory
-		delete db;
-		delete db_ref;
-
-		return result;
-	}
 	«ENDIF»
 
 	int main(int argc, char* argv[]) 

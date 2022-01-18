@@ -8,7 +8,6 @@
  * Contributors: see AUTHORS file
  *******************************************************************************/
 #include "Vector.h"
-#include "nablalib/utils/Serializer.h"
 
 using namespace nablalib::utils;
 
@@ -63,9 +62,4 @@ void Vector::
 setValue(const size_t i, double value)
 {
 	m_data[i] = value;
-}
-
-std::string serialize(const Vector& v)
-{
-	return serialize(v.m_data);
 }

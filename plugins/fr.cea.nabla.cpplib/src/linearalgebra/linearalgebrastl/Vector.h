@@ -38,6 +38,4 @@ class Vector
   VectorType m_data;
 };
 
-std::string serialize(const Vector& v);
-
 #endif

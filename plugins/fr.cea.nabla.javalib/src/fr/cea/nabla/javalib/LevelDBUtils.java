@@ -191,8 +191,9 @@ public class LevelDBUtils
 	public static byte[] toByteArray(int[] data1d) throws IOException
 	{
 		if (data1d == null) return null;
-		byte[] byts = new byte[data1d.length * Integer.BYTES];
-		for (int i = 0; i < data1d.length; i++)
+		int n = data1d.length;
+		byte[] byts = new byte[n * Integer.BYTES];
+		for (int i = 0; i < n; i++)
 			System.arraycopy(toByteArray(data1d[i]), 0, byts, i * Integer.BYTES, Integer.BYTES);
 		return byts;
 	}
@@ -200,8 +201,9 @@ public class LevelDBUtils
 	public static byte[] toByteArray(double[] data1d) throws IOException
 	{
 		if (data1d == null) return null;
-		byte[] byts = new byte[data1d.length * Double.BYTES];
-		for (int i = 0; i < data1d.length; i++)
+		int n = data1d.length;
+		byte[] byts = new byte[n * Double.BYTES];
+		for (int i = 0; i <n; i++)
 			System.arraycopy(toByteArray(data1d[i]), 0, byts, i * Double.BYTES, Double.BYTES);
 		return byts;
 	}
@@ -214,47 +216,54 @@ public class LevelDBUtils
 	public static byte[] toByteArray(final double[][] data2d) throws IOException
 	{
 		if (data2d == null) return null;
-		// ----------
-		byte[] byts = new byte[data2d.length * data2d[0].length * Double.BYTES];
-		for (int i = 0; i < data2d.length; i++)
-			for (int j = 0; j < data2d[i].length; j++)
-				System.arraycopy(toByteArray(data2d[i][j]), 0, byts, (i * data2d[0].length + j) * Double.BYTES, Double.BYTES);
+		int n = data2d.length;
+		int m = data2d[0].length;
+		byte[] byts = new byte[n * m * Double.BYTES];
+		for (int i = 0; i < n; i++)
+			for (int j = 0; j < m; j++)
+				System.arraycopy(toByteArray(data2d[i][j]), 0, byts, (i * m + j) * Double.BYTES, Double.BYTES);
 		return byts;
 	}
 
 	public static byte[] toByteArray(final Matrix matrix) throws IOException
 	{
 		if (matrix == null) return null;
-		// ----------
-		byte[] byts = new byte[matrix.getData().getRowDimension() * matrix.getData().getColumnDimension() * Double.BYTES];
-		for (int i = 0; i < matrix.getData().getRowDimension(); i++)
-			for (int j = 0; j < matrix.getData().getColumnDimension(); j++)
-				System.arraycopy(toByteArray(matrix.getValue(i, j)), 0, byts, (i * matrix.getData().getRowDimension() + j) * Double.BYTES, Double.BYTES);
+		int n = matrix.getData().getRowDimension();
+		int m =  matrix.getData().getColumnDimension();
+		byte[] byts = new byte[n * m * Double.BYTES];
+		for (int i = 0; i < n; i++)
+			for (int j = 0; j < m; j++)
+				System.arraycopy(toByteArray(matrix.getValue(i, j)), 0, byts, (i * m + j) * Double.BYTES, Double.BYTES);
 		return byts;
 	}
 
 	public static byte[] toByteArray(final double[][][] data3d) throws IOException
 	{
 		if (data3d == null) return null;
-		// ----------
-		byte[] byts = new byte[data3d.length * data3d[0].length * data3d[0][0].length * Double.BYTES];
-		for (int i = 0; i < data3d.length; i++)
-			for (int j = 0; j < data3d[i].length; j++)
-				for (int k = 0; k < data3d[i][j].length; k++)
-					System.arraycopy(toByteArray(data3d[i][j][k]), 0, byts, (i * data3d[0].length * data3d[0][0].length + j * data3d[0][0].length + k) * Double.BYTES, Double.BYTES);
+		int dim1 = data3d.length;
+		int dim2 = data3d[0].length;
+		int dim3 = data3d[0][0].length;
+		byte[] byts = new byte[dim1 * dim2 * dim3 * Double.BYTES];
+		for (int i = 0; i < dim1; i++)
+			for (int j = 0; j < dim2; j++)
+				for (int k = 0; k < dim3; k++)
+					System.arraycopy(toByteArray(data3d[i][j][k]), 0, byts, (i * dim2 * dim3 + j * dim3 + k) * Double.BYTES, Double.BYTES);
 		return byts;
 	}
 
 	public static byte[] toByteArray(final double[][][][] data4d) throws IOException
 	{
 		if (data4d == null) return null;
-		// ----------
-		byte[] byts = new byte[data4d.length * data4d[0].length * data4d[0][0].length * data4d[0][0][0].length * Double.BYTES];
-		for (int i = 0; i < data4d.length; i++)
-			for (int j = 0; j < data4d[i].length; j++)
-				for (int k = 0; k < data4d[i][j].length; k++)
-					for (int l = 0; l < data4d[i][j][k].length; l++)
-						System.arraycopy(toByteArray(data4d[i][j][k][l]), 0, byts, (i * data4d[0].length * data4d[0][0].length * data4d[0][0][0].length + j * data4d[0][0].length * data4d[0][0][0].length + k * data4d[0][0][0].length + l) * Double.BYTES, Double.BYTES);
+		int dim1 = data4d.length;
+		int dim2 = data4d[0].length;
+		int dim3 = data4d[0][0].length;
+		int dim4 = data4d[0][0][0].length;
+		byte[] byts = new byte[dim1 * dim2 * dim3 * dim4 * Double.BYTES];
+		for (int i = 0; i < dim1; i++)
+			for (int j = 0; j < dim2; j++)
+				for (int k = 0; k < dim3; k++)
+					for (int l = 0; l < dim4; l++)
+						System.arraycopy(toByteArray(data4d[i][j][k][l]), 0, byts, (i * dim2 * dim3 * dim4 + j * dim3 * dim4 + k * dim4 + l) * Double.BYTES, Double.BYTES);
 		return byts;
 	}
 }

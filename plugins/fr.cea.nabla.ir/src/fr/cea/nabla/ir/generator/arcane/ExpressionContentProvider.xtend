@@ -30,6 +30,7 @@ import fr.cea.nabla.ir.ir.MinConstant
 import fr.cea.nabla.ir.ir.Parenthesis
 import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.RealConstant
+import fr.cea.nabla.ir.ir.Return
 import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.ir.ir.VectorConstant
@@ -37,8 +38,8 @@ import fr.cea.nabla.ir.ir.VectorConstant
 import static fr.cea.nabla.ir.generator.arcane.TypeContentProvider.*
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
+import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
-import static extension fr.cea.nabla.ir.generator.arcane.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.generator.arcane.VariableExtensions.*
 
 class ExpressionContentProvider
@@ -111,7 +112,14 @@ class ExpressionContentProvider
 	}
 
 	static def dispatch CharSequence getContent(FunctionCall it)
-	'''«CppGeneratorUtils.getCodeName(function)»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
+	{
+		val functionCall = '''«CppGeneratorUtils.getCodeName(function)»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
+		if (eContainer !== null && !(eContainer instanceof Return) && getFunctionArgTypeName(type, false).toString == "RealVariant")
+			'''«getTypeName(type)»(«functionCall»)'''
+		else
+			functionCall
+	}
+
 
 	static def dispatch CharSequence getContent(ArgOrVarRef it)
 	{
@@ -125,7 +133,7 @@ class ExpressionContentProvider
 		}
 		else
 		{
-			if (target.global && getVariableTypeName(target.type).startsWith("VariableScalar") && eContainingFeature !== IrPackage.Literals.AFFECTATION__LEFT)
+			if (ArcaneUtils.isArcaneManaged(target) && indices.empty && iterators.empty && eContainingFeature !== IrPackage.Literals.AFFECTATION__LEFT)
 				'''«codeName»()''' // get the value of a VariableScalar...
 			else if (target.linearAlgebra && !(iterators.empty && indices.empty))
 				'''«codeName».getValue(«formatIteratorsAndIndices(target.type, iterators, indices)»)'''
@@ -139,7 +147,7 @@ class ExpressionContentProvider
 		val t = target
 		val tName = switch t
 		{
-			Variable case t.option: 'options.' + t.name
+			Variable case t.option: 'options()->' + t.name + "()"
 			case t.iteratorCounter: (t.eContainer as Iterator).index.name
 			Variable: t.codeName
 			default: t.name

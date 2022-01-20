@@ -11,7 +11,7 @@ package fr.cea.nabla.generator
 
 import com.google.inject.Inject
 import fr.cea.nabla.ir.generator.IrCodeGenerator
-import fr.cea.nabla.ir.generator.arcane.ArcaneApplicationGenerator
+import fr.cea.nabla.ir.generator.arcane.ArcaneGenerator
 import fr.cea.nabla.ir.generator.cpp.CppGenerator
 import fr.cea.nabla.ir.generator.java.JavaGenerator
 import fr.cea.nabla.ir.generator.python.PythonGenerator
@@ -40,7 +40,7 @@ class IrCodeGeneratorFactory
 			{
 				val cmakeVars = new ArrayList<Pair<String, String>>
 				targetVars.forEach[x | cmakeVars += x.key -> x.value]
-				new ArcaneApplicationGenerator(wsPath, cmakeVars)
+				new ArcaneGenerator(wsPath, cmakeVars)
 			}
 			default:
 			{

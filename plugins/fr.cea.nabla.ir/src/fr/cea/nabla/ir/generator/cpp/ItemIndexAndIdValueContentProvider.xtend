@@ -9,6 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.cpp
 
+import fr.cea.nabla.ir.ir.ItemIdValue
 import fr.cea.nabla.ir.ir.ItemIdValueContainer
 import fr.cea.nabla.ir.ir.ItemIdValueIterator
 import fr.cea.nabla.ir.ir.ItemIndexValue
@@ -17,7 +18,7 @@ import static extension fr.cea.nabla.ir.ContainerExtensions.*
 
 class ItemIndexAndIdValueContentProvider 
 {
-	static def dispatch getContent(ItemIndexValue it)
+	static def getContent(ItemIndexValue it)
 	{
 		if (container.connectivity.indexEqualId) 
 			'''«id.name»'''
@@ -25,15 +26,16 @@ class ItemIndexAndIdValueContentProvider
 			'''indexOf(mesh.«container.accessor», «id.name»)'''
 	}
 
-	static def dispatch getContent(ItemIdValueIterator it)
+	static def getContent(ItemIdValue it)
 	{
-		if (iterator.container.connectivityCall.connectivity.indexEqualId) getIndexValue
-		else iterator.container.uniqueName + '[' + getIndexValue + ']'
-	}
-
-	static def dispatch getContent(ItemIdValueContainer it)
-	{
-		container.content
+		switch it
+		{
+			ItemIdValueIterator:
+				if (iterator.container.connectivityCall.connectivity.indexEqualId) getIndexValue
+				else iterator.container.uniqueName + '[' + getIndexValue + ']'
+			ItemIdValueContainer:
+				getContent(container, "mesh.")
+		}
 	}
 
 	private static def getIndexValue(ItemIdValueIterator it)

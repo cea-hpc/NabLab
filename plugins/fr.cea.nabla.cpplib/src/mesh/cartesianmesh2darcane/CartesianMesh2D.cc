@@ -13,6 +13,8 @@
 #include <arcane/IItemFamily.h>
 #include <arcane/mesh/IncrementalItemConnectivity.h>
 
+map<IMesh*, CartesianMesh2D*> CartesianMesh2D::m_instances;
+
 CartesianMesh2D*
 CartesianMesh2D::createInstance(IMesh* mesh)
 {

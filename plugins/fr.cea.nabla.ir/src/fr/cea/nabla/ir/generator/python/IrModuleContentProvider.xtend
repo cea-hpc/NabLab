@@ -105,7 +105,7 @@ class IrModuleContentProvider
 		«ENDFOR»
 
 		«IF main»
-			def «Utils.getCodeName(irRoot.main)»(self):
+			def simulate(self):
 				print("Start execution of «name»")
 				«FOR j : irRoot.main.calls»
 					«getCallName(j)»() # @«j.at»

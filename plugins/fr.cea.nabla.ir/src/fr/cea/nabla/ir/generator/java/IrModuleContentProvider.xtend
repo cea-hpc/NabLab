@@ -165,7 +165,7 @@ class IrModuleContentProvider
 			«ENDFOR»
 
 			«IF main»
-			public void «Utils.getCodeName(irRoot.main)»()
+			public void simulate()
 			{
 				System.out.println("Start execution of «name»");
 				«FOR j : irRoot.main.calls»

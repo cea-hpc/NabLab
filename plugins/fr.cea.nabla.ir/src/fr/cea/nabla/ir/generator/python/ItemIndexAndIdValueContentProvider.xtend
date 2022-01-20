@@ -9,11 +9,9 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.python
 
-import fr.cea.nabla.ir.ir.ConnectivityCall
 import fr.cea.nabla.ir.ir.ItemIdValueContainer
 import fr.cea.nabla.ir.ir.ItemIdValueIterator
 import fr.cea.nabla.ir.ir.ItemIndexValue
-import fr.cea.nabla.ir.ir.SetRef
 
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 
@@ -35,12 +33,7 @@ class ItemIndexAndIdValueContentProvider
 
 	static def dispatch getContent(ItemIdValueContainer it)
 	{
-		val c = container
-		switch c
-		{
-			ConnectivityCall: '''mesh.«c.accessor»'''
-			SetRef: '''«c.target.name»'''
-		}
+		getContent(container, "mesh.")
 	}
 
 	private static def getIndexValue(ItemIdValueIterator it)

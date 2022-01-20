@@ -4,28 +4,29 @@
 #define __EXPLICITHEATEQUATIONMODULE_H_
 
 #include <arcane/utils/Array.h>
+#include <arcane/datatype/RealVariant.h>
 #include "ExplicitHeatEquation_axl.h"
 #include "CartesianMesh2D.h"
 
 using namespace Arcane;
 
-/******************** Free functions declarations ********************/
+/*** Free functions **********************************************************/
 
 namespace explicitheatequationfreefuncs
 {
-const Real norm(ConstArrayView<Real> a);
-const Real dot(ConstArrayView<Real> a, ConstArrayView<Real> b);
-const Real det(const Real2 a, const Real2 b);
-ConstArrayView<Real> sumR1(ConstArrayView<Real> a, ConstArrayView<Real> b);
-const Real minR0(const Real a, const Real b);
-const Real sumR0(const Real a, const Real b);
-const Real prodR0(const Real a, const Real b);
-ConstArrayView<Real> operator+(ConstArrayView<Real> a, ConstArrayView<Real> b);
-const Real2 operator-(const Real2 a, const Real2 b);
-const Real2 operator*(const Real a, const Real2 b);
+	const Real norm(RealVariant a);
+	const Real dot(RealVariant a, RealVariant b);
+	const Real det(RealVariant a, RealVariant b);
+	RealVariant sumR1(RealVariant a, RealVariant b);
+	const Real minR0(const Real a, const Real b);
+	const Real sumR0(const Real a, const Real b);
+	const Real prodR0(const Real a, const Real b);
+	RealVariant operatorAdd(RealVariant a, RealVariant b);
+	RealVariant operatorMult(const Real a, RealVariant b);
+	RealVariant operatorSub(RealVariant a, RealVariant b);
 }
 
-/******************** Module declaration ********************/
+/*** Module ******************************************************************/
 
 class ExplicitHeatEquationModule
 : public ArcaneExplicitHeatEquationObject
@@ -36,7 +37,7 @@ public:
 	~ExplicitHeatEquationModule() {}
 
 	virtual void init() override;
-	virtual void compute() override;
+	virtual void executeTimeLoopN() override;
 
 	VersionInfo versionInfo() const override { return VersionInfo(1, 0, 0); }
 
@@ -55,7 +56,25 @@ private:
 	void computeAlphaCoeff();
 
 private:
+	// mesh attributes
 	CartesianMesh2D* m_mesh;
+	Integer m_nb_nodes;
+	Integer m_nb_cells;
+	Integer m_nb_faces;
+	Integer m_max_nb_nodes_of_cell;
+	Integer m_max_nb_nodes_of_face;
+	Integer m_max_nb_cells_of_face;
+	Integer m_max_nb_neighbour_cells;
+
+	// other attributes
+	Int32 m_last_dump;
+	Int32 m_n;
+	static constexpr Real m_u0 = 1.0;
+	static constexpr Real2 m_vect_one = {1.0, 1.0};
+	Real m_deltat;
+	Real m_t_n;
+	Real m_t_nplus1;
+	Real m_t_n0;
 };
 
 #endif

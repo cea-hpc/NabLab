@@ -10,10 +10,15 @@
 package fr.cea.nabla.ir.generator.arcane
 
 import fr.cea.nabla.ir.IrUtils
+import fr.cea.nabla.ir.generator.Utils
+import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
 
+import static extension fr.cea.nabla.ir.JobCallerExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
+import static extension fr.cea.nabla.ir.generator.arcane.ExpressionContentProvider.*
+import static extension fr.cea.nabla.ir.generator.arcane.InstructionContentProvider.*
 
 class JobContentProvider
 {
@@ -25,7 +30,52 @@ class JobContentProvider
 		«comment»
 		void «ArcaneUtils.getModuleName(IrUtils.getContainerOfType(it, IrModule))»::«codeName»()
 		{
-			«InstructionContentProvider.getInnerContent(instruction)»
+			«getInnerContent(it)»
 		}
 	'''
+
+	private static def getInnerContent(Job it)
+	{
+		switch it
+		{
+			ExecuteTimeLoopJob case caller.main:
+			// main loop (n) manage by Arcane
+			'''
+				«val itVar = VariableExtensions.getCodeName(iterationCounter)»
+				«itVar»++;
+				«FOR c : calls»
+					«Utils::getCallName(c).replace('.', '->')»(); // @«c.at»
+				«ENDFOR»
+
+				// Evaluate loop condition with variables at time n
+				bool continueLoop = («whileCondition.content»);
+
+				«instruction.innerContent»
+
+				if (!continueLoop)
+					subDomain()->timeLoopMng()->stopComputeLoop(true);
+			'''
+			ExecuteTimeLoopJob case !caller.main:
+			// inner loop (k)
+			'''
+				«val itVar = VariableExtensions.getCodeName(iterationCounter)»
+				«itVar» = 0;
+				bool continueLoop = true;
+				do
+				{
+					«itVar»++;
+					«FOR c : calls»
+						«Utils::getCallName(c).replace('.', '->')»(); // @«c.at»
+					«ENDFOR»
+
+					// Evaluate loop condition with variables at time n
+					continueLoop = («whileCondition.content»);
+
+					«instruction.innerContent»
+				} while (continueLoop);
+			'''
+			default:
+				InstructionContentProvider.getInnerContent(instruction)
+		}
+	}
 }

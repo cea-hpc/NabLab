@@ -70,5 +70,5 @@ class FunctionContentProvider
 	}
 
 	private static def getDeclarationContent(Function it, String name)
-	'''«getTypeName(returnType, true)» «name»(«FOR a : inArgs SEPARATOR ', '»«getTypeName(a.type, true)» «a.name»«ENDFOR»)'''
+	'''«getFunctionArgTypeName(returnType, true)» «name»(«FOR a : inArgs SEPARATOR ', '»«getFunctionArgTypeName(a.type, true)» «a.name»«ENDFOR»)'''
 }

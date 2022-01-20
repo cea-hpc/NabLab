@@ -325,7 +325,7 @@ class IrModuleContentProvider
 	}
 	«ENDIF»
 
-	void «className»::«Utils.getCodeName(irRoot.main)»()
+	void «className»::simulate()
 	{
 		«traceContentProvider.getBeginOfSimuTrace(it)»
 

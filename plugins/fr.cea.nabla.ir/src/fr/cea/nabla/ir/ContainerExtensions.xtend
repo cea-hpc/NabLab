@@ -43,12 +43,12 @@ class ContainerExtensions
 		}
 	}
 
-	static def getContent(Container it)
+	static def getContent(Container it, String meshPrefix)
 	{
 		switch it
 		{
-			ConnectivityCall: '''mesh.«accessor»'''
-			SetRef: '''«target.name»'''
+			ConnectivityCall: meshPrefix + accessor
+			SetRef: target.name
 		}
 	}
 

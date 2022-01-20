@@ -11,17 +11,17 @@ package fr.cea.nabla.ir.generator.arcane
 
 import fr.cea.nabla.ir.ir.Variable
 
-import static extension fr.cea.nabla.ir.generator.arcane.StringExtensions.*
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
+import static extension fr.cea.nabla.ir.generator.arcane.StringExtensions.*
 
 class VariableExtensions
 {
 	static def getCodeName(Variable it)
 	{
 		if (global)
-			'm_' + name.separateWith(StringExtensions.LowerCase)
+			'm_' + name.separateWith(StringExtensions.Underscore)
 		else
-			name.separateWith(StringExtensions.LowerCase)
+			name.separateWith(StringExtensions.Underscore)
 	}
 
 	static def getOptionName(Variable it)

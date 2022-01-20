@@ -11,14 +11,14 @@ package fr.cea.nabla.ir.generator.arcane
 
 class StringExtensions
 {
-	public static val LowerCase = '_'
+	public static val Underscore = '_'
 	public static val Dash = '-'
 
 	static def separateWith(String it, String separator) 
 	{ 
-		if (contains(LowerCase))
+		if (contains(fr.cea.nabla.ir.generator.arcane.StringExtensions.Underscore))
 			// chaine de la forme mon_nom 
-			replace(LowerCase, separator).toLowerCase
+			replace(fr.cea.nabla.ir.generator.arcane.StringExtensions.Underscore, separator).toLowerCase
 		else 
 			// chaine de la forme monNom
 			Character::toLowerCase(charAt(0)) + toCharArray.tail.map[c | if (Character::isUpperCase(c)) separator + Character::toLowerCase(c) else c  ].join

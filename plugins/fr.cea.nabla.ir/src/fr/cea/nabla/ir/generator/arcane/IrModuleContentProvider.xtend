@@ -12,13 +12,17 @@ package fr.cea.nabla.ir.generator.arcane
 import fr.cea.nabla.ir.JobCallerExtensions
 import fr.cea.nabla.ir.generator.CppGeneratorUtils
 import fr.cea.nabla.ir.generator.Utils
+import fr.cea.nabla.ir.ir.Connectivity
+import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
 
+import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
+import static extension fr.cea.nabla.ir.generator.arcane.VariableExtensions.*
 
 class IrModuleContentProvider
 {
@@ -30,6 +34,7 @@ class IrModuleContentProvider
 	#define «CppGeneratorUtils.getHDefineName(className)»
 
 	#include <arcane/utils/Array.h>
+	#include <arcane/datatype/RealVariant.h>
 	#include "«name.toFirstUpper»_axl.h"
 	#include "«irRoot.mesh.className».h"
 	«FOR provider : externalProviders»
@@ -37,19 +42,19 @@ class IrModuleContentProvider
 	«ENDFOR»
 
 	using namespace Arcane;
-	«IF !functions.empty»
 
-	/******************** Free functions declarations ********************/
+	«IF !functions.empty»
+	/*** Free functions **********************************************************/
 
 	namespace «CppGeneratorUtils.getFreeFunctionNs(it)»
 	{
-	«FOR f : functions»
-		«FunctionContentProvider.getDeclarationContent(f)»;
-	«ENDFOR»
+		«FOR f : functions»
+			«FunctionContentProvider.getDeclarationContent(f)»;
+		«ENDFOR»
 	}
-	«ENDIF»
 
-	/******************** Module declaration ********************/
+	«ENDIF»
+	/*** Module ******************************************************************/
 
 	class «className»
 	: public Arcane«name.toFirstUpper»Object
@@ -60,17 +65,34 @@ class IrModuleContentProvider
 		~«className»() {}
 
 		virtual void init() override;
-		virtual void compute() override;
+		«FOR j : ArcaneUtils.getComputeLoopEntryPointJobs(it)»
+			virtual void «j.name.toFirstLower»() override;
+		«ENDFOR»
 
 		VersionInfo versionInfo() const override { return VersionInfo(1, 0, 0); }
 
 	private:
 		«FOR j : jobs.filter[!mainTimeLoop]»
-		«JobContentProvider.getDeclarationContent(j)»
+			«JobContentProvider.getDeclarationContent(j)»
 		«ENDFOR»
 
 	private:
+		// mesh attributes
 		«irRoot.mesh.className»* m_mesh;
+		«FOR c : irRoot.mesh.connectivities.filter[multiple]»
+			Integer «ArcaneUtils.toAttributeName(c.nbElemsVar)»;
+		«ENDFOR»
+
+		// other attributes
+		«FOR v : variables.filter[x | !(x.option || x.type instanceof ConnectivityType)]»
+			«IF v.constExpr»
+				static constexpr «TypeContentProvider.getTypeName(v.type)» «v.codeName» = «ExpressionContentProvider.getContent(v.defaultValue)»;
+			«ELSE»
+				««« Must not be declared const even it the const attribute is true
+				««« because it will be initialized in the init method (not in cstr)
+				«TypeContentProvider.getTypeName(v.type)» «v.codeName»;
+			«ENDIF»
+		«ENDFOR»
 	};
 
 	#endif
@@ -82,51 +104,66 @@ class IrModuleContentProvider
 
 	#include "«className».h"
 	#include <arcane/Concurrency.h>
+	#include <arcane/ITimeLoopMng.h>
 
 	using namespace Arcane;
+
 	«IF !functions.empty»
+		/*** Free functions **********************************************************/
 
-	/******************** Free functions definitions ********************/
+		namespace «CppGeneratorUtils.getFreeFunctionNs(it)»
+		{
+			«FOR f : functions SEPARATOR '\n'»
+				«FunctionContentProvider.getDefinitionContent(f)»
+			«ENDFOR»
+		}
 
-	namespace «CppGeneratorUtils.getFreeFunctionNs(it)»
-	{
-	«FOR f : functions SEPARATOR '\n'»
-		«FunctionContentProvider.getDefinitionContent(f)»
-	«ENDFOR»
-	}
 	«ENDIF»
-
-
-	/******************** Module entry points ********************/
+	/*** Module ******************************************************************/
 
 	void «className»::init()
 	{
-		// mesh initialisation
+		// initialization of mesh attributes
 		m_mesh = «irRoot.mesh.className»::createInstance(mesh());
+		«FOR c : irRoot.mesh.connectivities.filter[multiple]»
+			«ArcaneUtils.toAttributeName(c.nbElemsVar)» = «c.connectivityAccessor»;
+		«ENDFOR»
 
+		// initialization of other attributes
+		«FOR v : variables.filter[!(constExpr || option)]»
+			«val resizeDims = TypeContentProvider.getResizeDims(v.type)»
+			«IF !resizeDims.empty»
+				«v.codeName».resize(«FOR s : resizeDims SEPARATOR ', '»«s»«ENDFOR»);
+			«ELSEIF v.defaultValue !== null»
+				«v.codeName» = «ExpressionContentProvider.getContent(v.defaultValue)»;
+			«ENDIF»
+		«ENDFOR»
+
+		// calling jobs
 		«FOR c : irRoot.main.calls.filter[!mainTimeLoop]»
-		«Utils::getCallName(c).replace('.', '->')»(); // @«c.at»
+			«Utils::getCallName(c).replace('.', '->')»(); // @«c.at»
 		«ENDFOR»
 	}
 
-	void «className»::compute()
-	{
-		«FOR c : (jobs.findFirst[mainTimeLoop] as ExecuteTimeLoopJob).calls»
-		«Utils::getCallName(c).replace('.', '->')»(); // @«c.at»
-		«ENDFOR»
-	}
-
-
-	/******************** Module methods ********************/
-
-	«FOR j : jobs.filter[!mainTimeLoop] SEPARATOR '\n'»
+	«FOR j : jobs»
 		«JobContentProvider.getDefinitionContent(j)»
+
 	«ENDFOR»
+
+	ARCANE_REGISTER_MODULE_«name.toUpperCase»(«className»);
 	'''
 
 	/** The main time loop job is represented by the compute entry point */
 	private static def boolean isMainTimeLoop(Job j)
 	{
 		j instanceof ExecuteTimeLoopJob && JobCallerExtensions.isMain(j.caller)
+	}
+
+	private static def getConnectivityAccessor(Connectivity c)
+	{
+		if (c.inTypes.empty)
+			'''m_mesh->get«c.nbElemsVar.toFirstUpper»()'''
+		else
+			'''CartesianMesh2D::«c.nbElemsVar.toFirstUpper»'''
 	}
 }

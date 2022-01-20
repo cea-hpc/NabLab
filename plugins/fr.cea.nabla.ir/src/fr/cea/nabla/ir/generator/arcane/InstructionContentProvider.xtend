@@ -9,15 +9,18 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.arcane
 
+import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.Affectation
+import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityCall
+import fr.cea.nabla.ir.ir.Container
 import fr.cea.nabla.ir.ir.Exit
-import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.If
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.InstructionBlock
 import fr.cea.nabla.ir.ir.Interval
+import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.ItemIdDefinition
 import fr.cea.nabla.ir.ir.ItemIndexDefinition
 import fr.cea.nabla.ir.ir.Iterator
@@ -25,14 +28,16 @@ import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.Return
 import fr.cea.nabla.ir.ir.SetDefinition
+import fr.cea.nabla.ir.ir.SetRef
+import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.ir.ir.VariableDeclaration
 import fr.cea.nabla.ir.ir.While
 
 import static fr.cea.nabla.ir.generator.arcane.TypeContentProvider.*
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
+import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
-import static extension fr.cea.nabla.ir.generator.arcane.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.generator.arcane.ExpressionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.arcane.ItemIndexAndIdValueContentProvider.*
 import static extension fr.cea.nabla.ir.generator.arcane.VariableExtensions.*
@@ -42,7 +47,7 @@ class InstructionContentProvider
 	static def dispatch CharSequence getContent(VariableDeclaration it)
 	'''
 		«IF variable.type.baseTypeConstExpr»
-			«getTypeName(variable.type, variable.const)» «variable.codeName»«getVariableDefaultValue(variable.defaultValue)»;
+			«IF variable.const»const «ENDIF»«getTypeName(variable.type)» «variable.codeName»«getVariableDefaultValue(variable)»;
 		«ELSE»
 			throw Exception("Not Yet Implemented");
 		«ENDIF»
@@ -61,7 +66,13 @@ class InstructionContentProvider
 		if (left.target.linearAlgebra && !(left.iterators.empty && left.indices.empty))
 			'''«left.codeName».setValue(«formatIteratorsAndIndices(left.target.type, left.iterators, left.indices)», «right.content»);'''
 		else
-			'''«left.content» = «right.content»;'''
+			'''
+				«left.content» = «right.content»;
+				«val irRoot = IrUtils.getContainerOfType(it, IrRoot)»
+				«IF irRoot !== null && irRoot.timeStepVariable == left.target»
+				m_global_deltat = «left.content»;
+				«ENDIF»
+			'''
 	}
 
 	static def dispatch CharSequence getContent(ReductionInstruction it)
@@ -144,9 +155,10 @@ class InstructionContentProvider
 
 	private static def getParallelLoopContent(Iterator iterator, Instruction loopBody)
 	'''
-		arcaneParallelForeach(«iterator.container.content», [&](«iterator.container.itemType.name.toFirstUpper»VectorView view)
+		«val c = iterator.container»
+		arcaneParallelForeach(«c.accessor», [&](«c.itemType.name.toFirstUpper»VectorView view)
 		{
-			ENUMERATE_«iterator.container.itemType.name.toUpperCase»(«iterator.index.name», view)
+			ENUMERATE_«c.itemType.name.toUpperCase»(«iterator.index.name», view)
 			{
 				«loopBody.innerContent»
 			}
@@ -157,15 +169,15 @@ class InstructionContentProvider
 	'''
 		«val c = iterator.container»
 		«IF c.connectivityCall.args.empty»
-			ENUMERATE_«iterator.container.itemType.name.toUpperCase»(«iterator.index.name», «c.content»)
+			ENUMERATE_«c.itemType.name.toUpperCase»(«iterator.index.name», «c.accessor»)
 			{
 				«loopBody.innerContent»
 			}
 		«ELSE»
 			{
 				«IF iterator.container instanceof ConnectivityCall»«getSetDefinitionContent(iterator.container.uniqueName, iterator.container as ConnectivityCall)»«ENDIF»
-				const size_t «iterator.container.nbElemsVar»(«iterator.container.uniqueName».size());
-				for (size_t «iterator.index.name»=0; «iterator.index.name»<«iterator.container.nbElemsVar»; «iterator.index.name»++)
+				const Int32 «iterator.container.nbElemsVar»(«iterator.container.uniqueName».size());
+				for (Int32 «iterator.index.name»=0; «iterator.index.name»<«iterator.container.nbElemsVar»; «iterator.index.name»++)
 				{
 					«loopBody.innerContent»
 				}
@@ -175,20 +187,36 @@ class InstructionContentProvider
 
 	private static def getSequentialLoopContent(Interval iterator, Instruction loopBody)
 	'''
-		for (Integer «iterator.index.name»=0; «iterator.index.name»<«iterator.nbElems.content»; «iterator.index.name»++)
+		for (Int32 «iterator.index.name»=0; «iterator.index.name»<«iterator.nbElems.content»; «iterator.index.name»++)
 		{
 			«loopBody.innerContent»
 		}
 	'''
 
-	private static def getVariableDefaultValue(Expression e)
+	private static def getVariableDefaultValue(Variable it)
 	{
-		if (e === null) ''''''
+		if (defaultValue === null)
+		{
+			if (getTypeName(type).startsWith("UniqueArray"))
+				// UniqueArray => type is BaseType
+				'''(«FOR s : (type as BaseType).sizes SEPARATOR ", "»«s.content»«ENDFOR»)'''
+			else
+				''''''
+		}
 		else
 		{
-			val econtent = e.content
+			val econtent = defaultValue.content
 			if (econtent.charAt(0).compareTo('{') == 0) econtent
 			else '''(«econtent»)'''
+		}
+	}
+
+	private static def getAccessor(Container it)
+	{
+		switch it
+		{
+			ConnectivityCall: '''m_mesh->«accessor»'''
+			SetRef: target.name
 		}
 	}
 }

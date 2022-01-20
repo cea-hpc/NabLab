@@ -15,12 +15,11 @@ import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.generator.IrCodeGenerator
 import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.IrRoot
-import fr.cea.nabla.ir.transformers.AddOperatorsForArcaneRealNTypes
 import fr.cea.nabla.ir.transformers.ReplaceReductions
 import java.util.ArrayList
 import java.util.LinkedHashSet
 
-class ArcaneApplicationGenerator implements IrCodeGenerator
+class ArcaneGenerator implements IrCodeGenerator
 {
 	val cMakeVars = new LinkedHashSet<Pair<String, String>>
 
@@ -28,7 +27,7 @@ class ArcaneApplicationGenerator implements IrCodeGenerator
 
 	override getIrTransformationSteps()
 	{
-		#[new ReplaceReductions(true), new AddOperatorsForArcaneRealNTypes]
+		#[new ReplaceReductions(true) /*, new AddOperatorsForArcaneRealNTypes */ ]
 	}
 
 	new(String wsPath, Iterable<Pair<String, String>> cmakeVars)

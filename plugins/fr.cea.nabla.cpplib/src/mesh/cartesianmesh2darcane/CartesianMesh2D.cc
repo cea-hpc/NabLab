@@ -48,7 +48,8 @@ CartesianMesh2D::CartesianMesh2D(IMesh* mesh)
 		{
 			Face f = *iface;
 			Cell oppositeCell = (f.backCell() == c ? f.frontCell() : f.backCell());
-			cn->addConnectedItem(c, oppositeCell);
+			if (!oppositeCell.null())
+				cn->addConnectedItem(c, oppositeCell);
 		}
 	}
 
@@ -122,7 +123,8 @@ CartesianMesh2D::getCommonFace(CellLocalId c1Id, CellLocalId c2Id) const
 		FaceLocalId fId(facesOfCellC1[fFacesOfCellC1]);
 		Face f(faces[fId]);
 		Cell oppositeCell = (f.backCell().localId() == c1Id ? f.frontCell() : f.backCell());
-		if (oppositeCell.localId() == c2Id) return fId;
+		if (!oppositeCell.null() && (oppositeCell.localId() == c2Id))
+			return fId;
 	}
 	throw std::range_error("No common face between cells " + std::to_string(c1Id.asInteger()) + " and cells " + std::to_string(c2Id.asInteger()));
 }

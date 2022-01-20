@@ -15,8 +15,10 @@ import fr.cea.nabla.ir.transformers.IrTransformationStep
 
 interface IrCodeGenerator
 {
+	static val TracePrefix = "    IR -> Code: "
+
 	def String getName()
 	def IrTransformationStep[] getIrTransformationSteps()
-	def Iterable<GenerationContent> getGenerationContents(IrRoot ir)
-	def Iterable<GenerationContent> getGenerationContents(DefaultExtensionProvider provider)
+	def Iterable<GenerationContent> getGenerationContents(IrRoot ir, (String)=>void traceNotifier)
+	def Iterable<GenerationContent> getGenerationContents(DefaultExtensionProvider provider, (String)=>void traceNotifier)
 }

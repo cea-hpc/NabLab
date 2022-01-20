@@ -25,6 +25,7 @@ import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.arcane.StringExtensions.*
 import static extension fr.cea.nabla.ir.generator.arcane.VariableExtensions.*
+import fr.cea.nabla.ir.IrUtils
 
 class AxlContentProvider
 {
@@ -50,7 +51,7 @@ class AxlContentProvider
 		</variables>
 
 		<options>
-			«FOR v : variables.filter[option]»
+			«FOR v : variables.filter[option].reject[x | x.name == IrUtils.OutputPeriodOptionName]»
 				«val df = v.arcaneDefaultValue»
 				<simple name="«v.optionName»" type="«v.type.dataType»"«IF df !== null» default="«df»"«ENDIF» «v.bounds»>
 					<description/>

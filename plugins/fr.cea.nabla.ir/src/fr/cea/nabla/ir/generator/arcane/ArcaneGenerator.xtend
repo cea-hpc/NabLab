@@ -38,8 +38,11 @@ class ArcaneGenerator implements IrCodeGenerator
 		UnzipHelper::unzipNRepository(wsPath)
 	}
 
-	override getGenerationContents(IrRoot ir)
+	override getGenerationContents(IrRoot ir, (String)=>void traceNotifier)
 	{
+		if (ir.postProcessing !== null)
+			traceNotifier.apply(TracePrefix + "VtkOutput block ignored for Arcane target. Put post processing info in '.arc' data file")
+
 		val fileContents = new ArrayList<GenerationContent>
 		for (module : ir.modules)
 		{
@@ -53,8 +56,8 @@ class ArcaneGenerator implements IrCodeGenerator
 		fileContents += new GenerationContent('main.cc', MainContentProvider.getContent(ir), false)
 		return fileContents
 	}
-	
-	override getGenerationContents(DefaultExtensionProvider provider)
+
+	override getGenerationContents(DefaultExtensionProvider provider, (String)=>void traceNotifier)
 	{
 		throw new UnsupportedOperationException("Not yet implemented")
 	}

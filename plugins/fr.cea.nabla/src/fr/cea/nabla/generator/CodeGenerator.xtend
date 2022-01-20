@@ -73,7 +73,7 @@ class CodeGenerator extends StandaloneGeneratorBase
 					for (s : g.irTransformationSteps)
 						s.transformProvider(irProvider, [msg | dispatcher.post(MessageType::Exec, msg)])
 	
-					generate(fsa, g.getGenerationContents(irProvider), irProvider.dirName)
+					generate(fsa, g.getGenerationContents(irProvider, [msg | dispatcher.post(MessageType::Exec, msg)]), irProvider.dirName)
 				}
 				else
 				{
@@ -118,7 +118,7 @@ class CodeGenerator extends StandaloneGeneratorBase
 
 			dispatcher.post(MessageType::Exec, "Starting Json code generator")
 			val ir2Json = new JsonGenerator(ngenApp.levelDB!==null)
-			val jsonGenerationContent = ir2Json.getGenerationContents(ir)
+			val jsonGenerationContent = ir2Json.getGenerationContents(ir, [msg | dispatcher.post(MessageType::Exec, msg)])
 			generate(fsa, jsonGenerationContent, ir.dirName)
 
 			for (target : ngenApp.targets)
@@ -149,7 +149,7 @@ class CodeGenerator extends StandaloneGeneratorBase
 							val fileName = irWriter.createAndSaveResource(fsa, genIr)
 							dispatcher.post(MessageType::Exec, '    Resource saved: ' + fileName)
 						}
-						generate(fsa, g.getGenerationContents(genIr), ir.dirName)
+						generate(fsa, g.getGenerationContents(genIr, [msg | dispatcher.post(MessageType::Exec, msg)]), ir.dirName)
 					}
 				}
 				else

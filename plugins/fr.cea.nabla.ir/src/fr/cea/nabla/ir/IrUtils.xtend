@@ -22,6 +22,8 @@ import static extension fr.cea.nabla.ir.ContainerExtensions.*
 class IrUtils
 {
 	public static val NRepository = '.nablab'
+	public static val LastDumpOptionName = "lastDump"
+	public static val OutputPeriodOptionName = "outputPeriod"
 	public static val OutputPathNameAndValue = new Pair<String, String>("outputPath", "output")
 	public static val NonRegressionNameAndValue = new Pair<String, String>("nonRegression", "")
 	static enum NonRegressionValues { CreateReference, CompareToReference }

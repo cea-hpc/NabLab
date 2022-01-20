@@ -34,15 +34,15 @@ class PythonGenerator implements IrCodeGenerator
 		]
 	}
 
-	override getGenerationContents(IrRoot ir)
+	override getGenerationContents(IrRoot ir, (String)=>void traceNotifier)
 	{
 		val fileContents = new ArrayList<GenerationContent>
 		for (module : ir.modules)
 			fileContents += new GenerationContent(module.name.toLowerCase + '.py', IrModuleContentProvider.getFileContent(module), false)
 		return fileContents
 	}
-	
-	override getGenerationContents(DefaultExtensionProvider provider)
+
+	override getGenerationContents(DefaultExtensionProvider provider, (String)=>void traceNotifier)
 	{
 		val fileContents = new ArrayList<GenerationContent>
 		fileContents += new GenerationContent(provider.className.toLowerCase + ".py", DefaultExtensionProviderContentProvider.getClassFileContent(provider), true)

@@ -24,12 +24,12 @@ class JsonGenerator implements IrCodeGenerator
 
 	override getIrTransformationSteps() { #[] }
 
-	override getGenerationContents(IrRoot ir)
+	override getGenerationContents(IrRoot ir, (String)=>void traceNotifier)
 	{
 		#{ new GenerationContent(ir.name + 'Default.json', IrModuleContentProvider.getJsonFileContent(ir, hasLevelDB), false) }
 	}
-	
-	override getGenerationContents(DefaultExtensionProvider provider)
+
+	override getGenerationContents(DefaultExtensionProvider provider, (String)=>void traceNotifier)
 	{
 		// nothing to do
 	}

@@ -87,9 +87,6 @@
 	</variables>
 
 	<options>
-		<simple name="output-period" type="int32" minOccurs="1" maxOccurs="1">
-			<description/>
-		</simple>
 		<simple name="stop-time" type="real" minOccurs="1" maxOccurs="1">
 			<description/>
 		</simple>

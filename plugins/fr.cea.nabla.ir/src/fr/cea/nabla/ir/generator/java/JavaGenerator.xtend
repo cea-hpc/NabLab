@@ -29,15 +29,15 @@ class JavaGenerator implements IrCodeGenerator
 
 	override getIrTransformationSteps() { #[] }
 
-	override getGenerationContents(IrRoot ir)
+	override getGenerationContents(IrRoot ir, (String)=>void traceNotifier)
 	{
 		val fileContents = new ArrayList<GenerationContent>
 		for (module : ir.modules)
 			fileContents += new GenerationContent(module.className + '.java', IrModuleContentProvider.getFileContent(module, hasLevelDB), false)
 		return fileContents
 	}
-	
-	override getGenerationContents(DefaultExtensionProvider provider)
+
+	override getGenerationContents(DefaultExtensionProvider provider, (String)=>void traceNotifier)
 	{
 		val fileContents = new ArrayList<GenerationContent>
 		// interface always

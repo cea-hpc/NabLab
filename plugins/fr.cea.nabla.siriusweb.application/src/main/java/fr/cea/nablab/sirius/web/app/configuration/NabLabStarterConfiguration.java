@@ -10,14 +10,17 @@
 package fr.cea.nablab.sirius.web.app.configuration;
 
 import org.eclipse.sirius.web.spring.collaborative.api.ISubscriptionManagerFactory;
+import org.eclipse.sirius.web.spring.collaborative.editingcontext.EditingContextEventProcessorExecutorServiceProvider;
+import org.eclipse.sirius.web.spring.collaborative.editingcontext.api.IEditingContextEventProcessorExecutorServiceProvider;
 import org.eclipse.sirius.web.spring.collaborative.forms.WidgetSubscriptionManager;
 import org.eclipse.sirius.web.spring.collaborative.forms.api.IWidgetSubscriptionManagerFactory;
-import org.eclipse.sirius.web.spring.collaborative.projects.EditingContextEventProcessorExecutorServiceProvider;
-import org.eclipse.sirius.web.spring.collaborative.projects.api.IEditingContextEventProcessorExecutorServiceProvider;
 import org.eclipse.sirius.web.spring.collaborative.representations.SubscriptionManager;
-import org.eclipse.sirius.web.spring.graphql.ws.api.IOperationMessagePreProcessor;
+import org.eclipse.sirius.web.spring.graphql.ws.api.IGraphQLWebSocketHandlerListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.socket.CloseStatus;
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
 
 /**
  * @author arichard
@@ -40,8 +43,23 @@ public class NabLabStarterConfiguration {
     }
 
     @Bean
-    public IOperationMessagePreProcessor operationMessagePreProcessor() {
-        return operationMessage -> {
+    public IGraphQLWebSocketHandlerListener graphQLWebSocketHandlerListener() {
+        return new IGraphQLWebSocketHandlerListener() {
+
+            @Override
+            public void handleTextMessage(WebSocketSession session, TextMessage message) {
+                // Do nothing
+            }
+
+            @Override
+            public void afterConnectionEstablished(WebSocketSession session) {
+                // Do nothing
+            }
+
+            @Override
+            public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
+                // Do nothing
+            }
         };
     }
 }

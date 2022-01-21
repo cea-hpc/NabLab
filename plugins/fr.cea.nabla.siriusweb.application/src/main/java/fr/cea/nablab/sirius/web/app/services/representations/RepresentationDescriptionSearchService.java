@@ -30,17 +30,18 @@ public class RepresentationDescriptionSearchService implements IRepresentationDe
         this.registry = Objects.requireNonNull(registry);
     }
 
-    private Map<UUID, IRepresentationDescription> getAllRepresentationDescriptions(Optional<IEditingContext> optionalEditingContext) {
+    @Override
+    public Optional<IRepresentationDescription> findById(IEditingContext editingContext, UUID representationDescriptionId) {
+        return Optional.ofNullable(this.findAll(editingContext).get(representationDescriptionId));
+    }
+
+    @Override
+    public Map<UUID, IRepresentationDescription> findAll(IEditingContext editingContext) {
         Map<UUID, IRepresentationDescription> allRepresentationDescriptions = new LinkedHashMap<>();
         this.registry.getRepresentationDescriptions().forEach(representationDescription -> {
             allRepresentationDescriptions.put(representationDescription.getId(), representationDescription);
         });
         return allRepresentationDescriptions;
-    }
-
-    @Override
-    public Optional<IRepresentationDescription> findById(IEditingContext editingContext, UUID representationDescriptionId) {
-        return Optional.ofNullable(this.getAllRepresentationDescriptions(Optional.ofNullable(editingContext)).get(representationDescriptionId));
     }
 
 }

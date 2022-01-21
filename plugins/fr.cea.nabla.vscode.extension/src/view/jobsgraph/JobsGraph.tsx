@@ -92,7 +92,7 @@ export const JobsGraph = ({ irModel }: JobsGraphProps) => {
     gridTemplateColumns: '1fr',
     gridTemplateRows: 'min-content 1fr',
     rowGap: '1px',
-    height: '1000px',
+    height: '100vh',
     width: '100%',
     padding: '24px',
   };

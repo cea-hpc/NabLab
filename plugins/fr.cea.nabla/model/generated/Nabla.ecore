@@ -132,6 +132,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ConnectivityCall" eSuperTypes="#//Container">
     <eStructuralFeatures xsi:type="ecore:EReference" name="connectivity" eType="#//Connectivity"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="group" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="args" upperBound="-1" eType="#//SpaceIteratorRef"
         containment="true"/>
   </eClassifiers>

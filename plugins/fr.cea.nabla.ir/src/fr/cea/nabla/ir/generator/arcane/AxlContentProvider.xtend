@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -9,6 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.arcane
 
+import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.BoolConstant
@@ -23,9 +24,7 @@ import fr.cea.nabla.ir.ir.Variable
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
-import static extension fr.cea.nabla.ir.generator.arcane.StringExtensions.*
 import static extension fr.cea.nabla.ir.generator.arcane.VariableExtensions.*
-import fr.cea.nabla.ir.IrUtils
 
 class AxlContentProvider
 {
@@ -40,7 +39,7 @@ class AxlContentProvider
 			«FOR v : variables.filter[x | ArcaneUtils.isArcaneManaged(x)] SEPARATOR '\n'»
 			«val type = v.type as ConnectivityType»
 			<variable
-				field-name="«v.name.separateWith(StringExtensions.Underscore)»"
+				field-name="«v.name»"
 				name="«IF irRoot.nodeCoordVariable === v»NodeCoord«ELSE»«v.name»«ENDIF»"
 				data-type="«IF irRoot.nodeCoordVariable === v»real3«ELSE»«type.dataType»«ENDIF»"
 				item-kind="«type.itemKind»"

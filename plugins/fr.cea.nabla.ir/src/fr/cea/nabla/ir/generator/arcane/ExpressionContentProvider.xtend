@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -95,7 +95,7 @@ class ExpressionContentProvider
 	}
 
 	static def dispatch CharSequence getContent(VectorConstant it)
-	'''{«innerContent»}'''
+	'''«TypeContentProvider.getTypeName(type)»{«innerContent»}'''
 
 	static def dispatch CharSequence getContent(Cardinality it)
 	{
@@ -114,8 +114,14 @@ class ExpressionContentProvider
 	static def dispatch CharSequence getContent(FunctionCall it)
 	{
 		val functionCall = '''«CppGeneratorUtils.getCodeName(function)»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
-		if (eContainer !== null && !(eContainer instanceof Return) && getFunctionArgTypeName(type, false).toString == "RealVariant")
-			'''«getTypeName(type)»(«functionCall»)'''
+		if (eContainer !== null && !(eContainer instanceof Return))
+		{
+			val argTypeName = getFunctionArgTypeName(type, false).toString
+			if (argTypeName == "RealArrayVariant" || argTypeName == "RealArray2Variant")
+				'''«getTypeName(type)»(«functionCall»)'''
+			else
+				functionCall
+		}
 		else
 			functionCall
 	}
@@ -125,7 +131,7 @@ class ExpressionContentProvider
 	{
 		if (target.functionDimVar)
 		{
-			// In Java code the size of arrays does not appear explicitly like in NabLab.
+			// In Arcane code the size of arrays does not appear explicitly like in NabLab (no template).
 			// It is possible to create a local variable to set it, i.e. final int x = a.length.
 			// But sometimes it is not used and a warning appears.
 			// To avoid that, sizes are referenced by array.length instead of the name of the var.

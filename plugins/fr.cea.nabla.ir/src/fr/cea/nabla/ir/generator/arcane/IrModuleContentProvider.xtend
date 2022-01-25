@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -34,7 +34,8 @@ class IrModuleContentProvider
 	#define «CppGeneratorUtils.getHDefineName(className)»
 
 	#include <arcane/utils/Array.h>
-	#include <arcane/datatype/RealVariant.h>
+	#include <arcane/datatype/RealArrayVariant.h>
+	#include <arcane/datatype/RealArray2Variant.h>
 	#include "«name.toFirstUpper»_axl.h"
 	#include "«irRoot.mesh.className».h"
 	«FOR provider : externalProviders»

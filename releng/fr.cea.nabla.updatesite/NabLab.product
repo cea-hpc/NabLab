@@ -4,7 +4,7 @@
 <product name="NabLab" uid="fr.cea.nabla.product" id="fr.cea.nabla.product" application="org.eclipse.ui.ide.workbench" version="0.4.4.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
-      <text>NabLab - Copyright (c) 2021 CEA</text>
+      <text>NabLab - Copyright (c) 2022 CEA</text>
    </aboutInfo>
 
    <configIni use="default">

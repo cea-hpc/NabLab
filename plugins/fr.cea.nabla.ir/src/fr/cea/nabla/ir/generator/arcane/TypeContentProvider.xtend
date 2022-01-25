@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -49,7 +49,15 @@ class TypeContentProvider
 	static def getFunctionArgTypeName(IrType it, boolean const)
 	{
 		if (!IrTypeExtensions.isScalar(it) && it instanceof BaseType && (it as BaseType).primitive == PrimitiveType.REAL)
-			'''RealVariant'''
+		{
+			val dim = ((it as BaseType).sizes.size)
+			switch dim
+			{
+				case 1: '''RealArrayVariant'''
+				case 2: '''RealArray2Variant'''
+				default: throw new RuntimeException("Not yet implemented")
+			}
+		}
 		else
 			switch it
 			{

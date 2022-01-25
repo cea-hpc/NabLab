@@ -12,7 +12,6 @@ package fr.cea.nabla.ir.generator.java
 import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.BaseType
-import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.LinearAlgebraType
@@ -62,9 +61,9 @@ class IrModuleContentProvider
 		{
 			// Mesh and mesh variables
 			private final «irRoot.mesh.className» mesh;
-			@SuppressWarnings("unused")
-			«FOR c : irRoot.mesh.connectivities.filter[multiple] BEFORE 'private final int ' SEPARATOR ', ' AFTER ';'»«c.nbElemsVar»«ENDFOR»
-
+			«FOR c : irRoot.mesh.connectivities.filter[x | x.multiple && x.inTypes.empty]»
+				private final int «c.nbElemsVar»;
+			«ENDFOR»
 			«IF irRoot.modules.size > 1»
 				«IF main»
 					// Additional modules
@@ -102,8 +101,8 @@ class IrModuleContentProvider
 			{
 				// Mesh and mesh variables initialization
 				mesh = aMesh;
-				«FOR c : irRoot.mesh.connectivities.filter[multiple]»
-					«c.nbElemsVar» = «c.connectivityAccessor»;
+				«FOR c : irRoot.mesh.connectivities.filter[x | x.multiple && x.inTypes.empty]»
+					«c.nbElemsVar» = mesh.getNb«c.name.toFirstUpper»();
 				«ENDFOR»
 			}
 
@@ -301,14 +300,6 @@ class IrModuleContentProvider
 			«ENDIF»
 		};
 	'''
-
-	private static def getConnectivityAccessor(Connectivity c)
-	{
-		if (c.inTypes.empty)
-			'''mesh.get«c.nbElemsVar.toFirstUpper»()'''
-		else
-			'''CartesianMesh2D.«c.nbElemsVar.toFirstUpper»'''
-	}
 
 	private static def getWriteCallContent(Variable v)
 	{

@@ -12,7 +12,6 @@ package fr.cea.nabla.ir.generator.arcane
 import fr.cea.nabla.ir.JobCallerExtensions
 import fr.cea.nabla.ir.generator.CppGeneratorUtils
 import fr.cea.nabla.ir.generator.Utils
-import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
 import fr.cea.nabla.ir.ir.IrModule
@@ -80,7 +79,7 @@ class IrModuleContentProvider
 	private:
 		// mesh attributes
 		«irRoot.mesh.className»* m_mesh;
-		«FOR c : irRoot.mesh.connectivities.filter[multiple]»
+		«FOR c : irRoot.mesh.connectivities.filter[x | x.multiple && x.inTypes.empty]»
 			Integer «ArcaneUtils.toAttributeName(c.nbElemsVar)»;
 		«ENDFOR»
 
@@ -126,8 +125,8 @@ class IrModuleContentProvider
 	{
 		// initialization of mesh attributes
 		m_mesh = «irRoot.mesh.className»::createInstance(mesh());
-		«FOR c : irRoot.mesh.connectivities.filter[multiple]»
-			«ArcaneUtils.toAttributeName(c.nbElemsVar)» = «c.connectivityAccessor»;
+		«FOR c : irRoot.mesh.connectivities.filter[x | x.multiple && x.inTypes.empty]»
+			«ArcaneUtils.toAttributeName(c.nbElemsVar)» = m_mesh->getNb«c.name.toFirstUpper»()»;
 		«ENDFOR»
 
 		// initialization of other attributes
@@ -158,13 +157,5 @@ class IrModuleContentProvider
 	private static def boolean isMainTimeLoop(Job j)
 	{
 		j instanceof ExecuteTimeLoopJob && JobCallerExtensions.isMain(j.caller)
-	}
-
-	private static def getConnectivityAccessor(Connectivity c)
-	{
-		if (c.inTypes.empty)
-			'''m_mesh->get«c.nbElemsVar.toFirstUpper»()'''
-		else
-			'''CartesianMesh2D::«c.nbElemsVar.toFirstUpper»'''
 	}
 }

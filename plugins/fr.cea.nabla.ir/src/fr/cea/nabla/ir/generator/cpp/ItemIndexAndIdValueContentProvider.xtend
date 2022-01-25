@@ -41,7 +41,7 @@ class ItemIndexAndIdValueContentProvider
 	private static def getIndexValue(ItemIdValueIterator it)
 	{
 		val index = iterator.index.name
-		val nbElems = iterator.container.connectivityCall.connectivity.nbElemsVar
+		val nbElems = iterator.container.nbElemsVar
 		switch shift
 		{
 			case shift < 0: '''(«index»«shift»+«nbElems»)%«nbElems»'''

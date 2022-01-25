@@ -16,9 +16,13 @@ public final class Glace2d
 {
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
-	@SuppressWarnings("unused")
-	private final int nbNodes, nbCells, maxNbNodesOfCell, maxNbCellsOfNode, nbInnerNodes, nbTopNodes, nbBottomNodes, nbLeftNodes, nbRightNodes;
-
+	private final int nbNodes;
+	private final int nbCells;
+	private final int nbInnerNodes;
+	private final int nbTopNodes;
+	private final int nbBottomNodes;
+	private final int nbLeftNodes;
+	private final int nbRightNodes;
 	// Options and global variables
 	private PvdFileWriter2D writer;
 	private String outputPath;
@@ -69,8 +73,6 @@ public final class Glace2d
 		mesh = aMesh;
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
-		maxNbNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
-		maxNbCellsOfNode = CartesianMesh2D.MaxNbCellsOfNode;
 		nbInnerNodes = mesh.getNbInnerNodes();
 		nbTopNodes = mesh.getNbTopNodes();
 		nbBottomNodes = mesh.getNbBottomNodes();
@@ -119,11 +121,11 @@ public final class Glace2d
 		deltatj = new double[nbCells];
 		uj_n = new double[nbCells][2];
 		uj_nplus1 = new double[nbCells][2];
-		l = new double[nbCells][maxNbNodesOfCell];
-		Cjr_ic = new double[nbCells][maxNbNodesOfCell][2];
-		C = new double[nbCells][maxNbNodesOfCell][2];
-		F = new double[nbCells][maxNbNodesOfCell][2];
-		Ajr = new double[nbCells][maxNbNodesOfCell][2][2];
+		l = new double[nbCells][4];
+		Cjr_ic = new double[nbCells][4][2];
+		C = new double[nbCells][4][2];
+		F = new double[nbCells][4][2];
+		Ajr = new double[nbCells][4][2][2];
 
 		// Copy node coordinates
 		double[][] gNodes = mesh.getGeometry().getNodes();

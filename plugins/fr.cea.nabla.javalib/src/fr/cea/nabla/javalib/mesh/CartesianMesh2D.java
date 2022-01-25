@@ -24,13 +24,6 @@ import com.google.gson.JsonParser;
 
 public class CartesianMesh2D
 {
-	public static int MaxNbNodesOfCell = 4;
-	public static int MaxNbNodesOfFace = 2;
-	public static int MaxNbCellsOfNode = 4;
-	public static int MaxNbCellsOfFace = 2;
-	public static int MaxNbFacesOfCell = 4;
-	public static int MaxNbNeighbourCells = 4;
-
 	private MeshGeometry geometry;
 
 	private int nbXQuads;

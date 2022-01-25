@@ -19,7 +19,7 @@ import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.InstructionContentProvider.*
 
-class JobContentProvider 
+class JobContentProvider
 {
 	static def getContent(Job it)
 	'''

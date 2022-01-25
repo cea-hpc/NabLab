@@ -16,9 +16,8 @@ public final class Iteration
 {
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
-	@SuppressWarnings("unused")
-	private final int nbNodes, nbCells;
-
+	private final int nbNodes;
+	private final int nbCells;
 	// Options and global variables
 	int n;
 	int k;

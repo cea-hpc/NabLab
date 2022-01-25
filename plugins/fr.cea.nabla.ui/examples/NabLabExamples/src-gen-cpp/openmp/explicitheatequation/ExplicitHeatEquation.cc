@@ -95,10 +95,6 @@ ExplicitHeatEquation::ExplicitHeatEquation(CartesianMesh2D& aMesh)
 , nbNodes(mesh.getNbNodes())
 , nbCells(mesh.getNbCells())
 , nbFaces(mesh.getNbFaces())
-, maxNbNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
-, maxNbNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
-, maxNbCellsOfFace(CartesianMesh2D::MaxNbCellsOfFace)
-, maxNbNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
 , X(nbNodes)
 , Xc(nbCells)
 , u_n(nbCells)
@@ -123,7 +119,6 @@ ExplicitHeatEquation::jsonInit(const char* jsonContent)
 	assert(document.IsObject());
 	const rapidjson::Value::Object& options = document.GetObject();
 
-	// outputPath
 	assert(options.HasMember("outputPath"));
 	const rapidjson::Value& valueof_outputPath = options["outputPath"];
 	assert(valueof_outputPath.IsString());
@@ -172,7 +167,7 @@ void ExplicitHeatEquation::computeFaceLength() noexcept
 			for (size_t pNodesOfFaceF=0; pNodesOfFaceF<nbNodesOfFaceF; pNodesOfFaceF++)
 			{
 				const Id pId(nodesOfFaceF[pNodesOfFaceF]);
-				const Id pPlus1Id(nodesOfFaceF[(pNodesOfFaceF+1+maxNbNodesOfFace)%maxNbNodesOfFace]);
+				const Id pPlus1Id(nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFaceF)%nbNodesOfFaceF]);
 				const size_t pNodes(pId);
 				const size_t pPlus1Nodes(pPlus1Id);
 				reduction0 = explicitheatequationfreefuncs::sumR0(reduction0, explicitheatequationfreefuncs::norm(explicitheatequationfreefuncs::operatorSub(X[pNodes], X[pPlus1Nodes])));
@@ -210,7 +205,7 @@ void ExplicitHeatEquation::computeV() noexcept
 			for (size_t pNodesOfCellC=0; pNodesOfCellC<nbNodesOfCellC; pNodesOfCellC++)
 			{
 				const Id pId(nodesOfCellC[pNodesOfCellC]);
-				const Id pPlus1Id(nodesOfCellC[(pNodesOfCellC+1+maxNbNodesOfCell)%maxNbNodesOfCell]);
+				const Id pPlus1Id(nodesOfCellC[(pNodesOfCellC+1+nbNodesOfCellC)%nbNodesOfCellC]);
 				const size_t pNodes(pId);
 				const size_t pPlus1Nodes(pPlus1Id);
 				reduction0 = explicitheatequationfreefuncs::sumR0(reduction0, explicitheatequationfreefuncs::det(X[pNodes], X[pPlus1Nodes]));

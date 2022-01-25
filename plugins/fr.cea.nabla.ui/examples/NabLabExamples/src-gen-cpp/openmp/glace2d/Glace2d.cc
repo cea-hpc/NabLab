@@ -217,8 +217,6 @@ Glace2d::Glace2d(CartesianMesh2D& aMesh)
 : mesh(aMesh)
 , nbNodes(mesh.getNbNodes())
 , nbCells(mesh.getNbCells())
-, maxNbNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
-, maxNbCellsOfNode(CartesianMesh2D::MaxNbCellsOfNode)
 , nbInnerNodes(mesh.getNbInnerNodes())
 , nbTopNodes(mesh.getNbTopNodes())
 , nbBottomNodes(mesh.getNbBottomNodes())
@@ -243,11 +241,11 @@ Glace2d::Glace2d(CartesianMesh2D& aMesh)
 , deltatj(nbCells)
 , uj_n(nbCells)
 , uj_nplus1(nbCells)
-, l(nbCells, std::vector<double>(maxNbNodesOfCell))
-, Cjr_ic(nbCells, std::vector<RealArray1D<2>>(maxNbNodesOfCell))
-, C(nbCells, std::vector<RealArray1D<2>>(maxNbNodesOfCell))
-, F(nbCells, std::vector<RealArray1D<2>>(maxNbNodesOfCell))
-, Ajr(nbCells, std::vector<RealArray2D<2,2>>(maxNbNodesOfCell))
+, l(nbCells, std::vector<double>(4))
+, Cjr_ic(nbCells, std::vector<RealArray1D<2>>(4))
+, C(nbCells, std::vector<RealArray1D<2>>(4))
+, F(nbCells, std::vector<RealArray1D<2>>(4))
+, Ajr(nbCells, std::vector<RealArray2D<2,2>>(4))
 {
 }
 
@@ -263,7 +261,6 @@ Glace2d::jsonInit(const char* jsonContent)
 	assert(document.IsObject());
 	const rapidjson::Value::Object& options = document.GetObject();
 
-	// outputPath
 	assert(options.HasMember("outputPath"));
 	const rapidjson::Value& valueof_outputPath = options["outputPath"];
 	assert(valueof_outputPath.IsString());
@@ -309,8 +306,8 @@ void Glace2d::computeCjr() noexcept
 			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
 			for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 			{
-				const Id rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+maxNbNodesOfCell)%maxNbNodesOfCell]);
-				const Id rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+maxNbNodesOfCell)%maxNbNodesOfCell]);
+				const Id rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCellJ)%nbNodesOfCellJ]);
+				const Id rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCellJ)%nbNodesOfCellJ]);
 				const size_t rPlus1Nodes(rPlus1Id);
 				const size_t rMinus1Nodes(rMinus1Id);
 				C[jCells][rNodesOfCellJ] = glace2dfreefuncs::operatorMult(0.5, glace2dfreefuncs::perp(glace2dfreefuncs::operatorSub(X_n[rPlus1Nodes], X_n[rMinus1Nodes])));
@@ -349,8 +346,8 @@ void Glace2d::iniCjrIc() noexcept
 			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
 			for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 			{
-				const Id rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+maxNbNodesOfCell)%maxNbNodesOfCell]);
-				const Id rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+maxNbNodesOfCell)%maxNbNodesOfCell]);
+				const Id rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCellJ)%nbNodesOfCellJ]);
+				const Id rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCellJ)%nbNodesOfCellJ]);
 				const size_t rPlus1Nodes(rPlus1Id);
 				const size_t rMinus1Nodes(rMinus1Id);
 				Cjr_ic[jCells][rNodesOfCellJ] = glace2dfreefuncs::operatorMult(0.5, glace2dfreefuncs::perp(glace2dfreefuncs::operatorSub(X_n0[rPlus1Nodes], X_n0[rMinus1Nodes])));

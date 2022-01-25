@@ -54,18 +54,23 @@ class ContainerExtensions
 
 	static def getNbElemsVar(Container it)
 	{
-		if (getConnectivityCall.args.empty)
-			getConnectivityCall.connectivity.nbElemsVar
-		else
-			'nb' + getUniqueName.toFirstUpper
+		"nb" + getUniqueName.toFirstUpper
 	}
 
 	static def getNbElemsVar(Connectivity it)
 	{
+		"nb" + name.toFirstUpper
+	}
+
+	static def getNbElems(Connectivity it)
+	{
 		if (inTypes.empty)
-			'nb' + name.toFirstUpper
+			nbElemsVar
 		else
-			'maxNb' + name.toFirstUpper
+		{
+			val varName = "MaxNb" + name.toFirstUpper
+			provider.generationVariables.get(varName)
+		}
 	}
 
 	static def getAccessor(ConnectivityCall it)

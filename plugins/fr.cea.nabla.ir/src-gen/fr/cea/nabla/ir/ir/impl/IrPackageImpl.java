@@ -1140,6 +1140,16 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
+	public EReference getMeshExtensionProvider_GenerationVariables() {
+		return (EReference)meshExtensionProviderEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EClass getArgOrVar() {
 		return argOrVarEClass;
 	}
@@ -2993,6 +3003,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		meshExtensionProviderEClass = createEClass(MESH_EXTENSION_PROVIDER);
 		createEReference(meshExtensionProviderEClass, MESH_EXTENSION_PROVIDER__ITEM_TYPES);
 		createEReference(meshExtensionProviderEClass, MESH_EXTENSION_PROVIDER__CONNECTIVITIES);
+		createEReference(meshExtensionProviderEClass, MESH_EXTENSION_PROVIDER__GENERATION_VARIABLES);
 
 		argOrVarEClass = createEClass(ARG_OR_VAR);
 		createEAttribute(argOrVarEClass, ARG_OR_VAR__NAME);
@@ -3386,6 +3397,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEClass(meshExtensionProviderEClass, MeshExtensionProvider.class, "MeshExtensionProvider", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getMeshExtensionProvider_ItemTypes(), this.getItemType(), this.getItemType_Provider(), "itemTypes", null, 0, -1, MeshExtensionProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getMeshExtensionProvider_Connectivities(), this.getConnectivity(), this.getConnectivity_Provider(), "connectivities", null, 0, -1, MeshExtensionProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getMeshExtensionProvider_GenerationVariables(), ecorePackage.getEStringToStringMapEntry(), null, "generationVariables", null, 0, -1, MeshExtensionProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(argOrVarEClass, ArgOrVar.class, "ArgOrVar", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getArgOrVar_Name(), ecorePackage.getEString(), "name", null, 1, 1, ArgOrVar.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

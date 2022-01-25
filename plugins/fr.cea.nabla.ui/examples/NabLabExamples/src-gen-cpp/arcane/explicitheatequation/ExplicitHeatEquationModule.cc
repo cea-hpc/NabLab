@@ -10,12 +10,12 @@ using namespace Arcane;
 
 namespace explicitheatequationfreefuncs
 {
-	const Real norm(RealVariant a)
+	const Real norm(RealArrayVariant a)
 	{
 		return std::sqrt(explicitheatequationfreefuncs::dot(a, a));
 	}
 	
-	const Real dot(RealVariant a, RealVariant b)
+	const Real dot(RealArrayVariant a, RealArrayVariant b)
 	{
 		Real result(0.0);
 		for (Int32 i=0; i<a.size(); i++)
@@ -25,12 +25,12 @@ namespace explicitheatequationfreefuncs
 		return result;
 	}
 	
-	const Real det(RealVariant a, RealVariant b)
+	const Real det(RealArrayVariant a, RealArrayVariant b)
 	{
 		return (a[0] * b[1] - a[1] * b[0]);
 	}
 	
-	RealVariant sumR1(RealVariant a, RealVariant b)
+	RealArrayVariant sumR1(RealArrayVariant a, RealArrayVariant b)
 	{
 		return explicitheatequationfreefuncs::operatorAdd(a, b);
 	}
@@ -50,7 +50,7 @@ namespace explicitheatequationfreefuncs
 		return a * b;
 	}
 	
-	RealVariant operatorAdd(RealVariant a, RealVariant b)
+	RealArrayVariant operatorAdd(RealArrayVariant a, RealArrayVariant b)
 	{
 		UniqueArray<Real> result(a.size());
 		for (Int32 ix0=0; ix0<a.size(); ix0++)
@@ -60,7 +60,7 @@ namespace explicitheatequationfreefuncs
 		return result;
 	}
 	
-	RealVariant operatorMult(const Real a, RealVariant b)
+	RealArrayVariant operatorMult(const Real a, RealArrayVariant b)
 	{
 		UniqueArray<Real> result(b.size());
 		for (Int32 ix0=0; ix0<b.size(); ix0++)
@@ -70,7 +70,7 @@ namespace explicitheatequationfreefuncs
 		return result;
 	}
 	
-	RealVariant operatorSub(RealVariant a, RealVariant b)
+	RealArrayVariant operatorSub(RealArrayVariant a, RealArrayVariant b)
 	{
 		UniqueArray<Real> result(a.size());
 		for (Int32 ix0=0; ix0<a.size(); ix0++)
@@ -87,16 +87,12 @@ void ExplicitHeatEquationModule::init()
 {
 	// initialization of mesh attributes
 	m_mesh = CartesianMesh2D::createInstance(mesh());
-	m_nb_nodes = m_mesh->getNbNodes();
-	m_nb_cells = m_mesh->getNbCells();
-	m_nb_faces = m_mesh->getNbFaces();
-	m_max_nb_nodes_of_cell = CartesianMesh2D::MaxNbNodesOfCell;
-	m_max_nb_nodes_of_face = CartesianMesh2D::MaxNbNodesOfFace;
-	m_max_nb_cells_of_face = CartesianMesh2D::MaxNbCellsOfFace;
-	m_max_nb_neighbour_cells = CartesianMesh2D::MaxNbNeighbourCells;
+	m_nb_nodes = m_mesh->getNbNodes()»;
+	m_nb_cells = m_mesh->getNbCells()»;
+	m_nb_faces = m_mesh->getNbFaces()»;
 
 	// initialization of other attributes
-	m_last_dump = numeric_limits<int>::min();
+	m_lastDump = numeric_limits<int>::min();
 	m_n = 0;
 	m_deltat = 0.001;
 	m_alpha.resize(m_nb_cells);
@@ -136,10 +132,10 @@ void ExplicitHeatEquationModule::computeFaceLength()
 					const auto pPlus1Id(nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFaceF)%nbNodesOfFaceF]);
 					const auto pNodes(pId);
 					const auto pPlus1Nodes(pPlus1Id);
-					reduction0 = explicitheatequationfreefuncs::sumR0(reduction0, explicitheatequationfreefuncs::norm(Real2(explicitheatequationfreefuncs::operatorSub(m_x[pNodes], m_x[pPlus1Nodes]))));
+					reduction0 = explicitheatequationfreefuncs::sumR0(reduction0, explicitheatequationfreefuncs::norm(Real2(explicitheatequationfreefuncs::operatorSub(m_X[pNodes], m_X[pPlus1Nodes]))));
 				}
 			}
-			m_face_length[fFaces] = 0.5 * reduction0;
+			m_faceLength[fFaces] = 0.5 * reduction0;
 		}
 	});
 }
@@ -176,10 +172,10 @@ void ExplicitHeatEquationModule::computeV()
 					const auto pPlus1Id(nodesOfCellC[(pNodesOfCellC+1+nbNodesOfCellC)%nbNodesOfCellC]);
 					const auto pNodes(pId);
 					const auto pPlus1Nodes(pPlus1Id);
-					reduction0 = explicitheatequationfreefuncs::sumR0(reduction0, explicitheatequationfreefuncs::det(m_x[pNodes], m_x[pPlus1Nodes]));
+					reduction0 = explicitheatequationfreefuncs::sumR0(reduction0, explicitheatequationfreefuncs::det(m_X[pNodes], m_X[pPlus1Nodes]));
 				}
 			}
-			m_v[cCells] = 0.5 * reduction0;
+			m_V[cCells] = 0.5 * reduction0;
 		}
 	});
 }
@@ -195,7 +191,7 @@ void ExplicitHeatEquationModule::initD()
 	{
 		ENUMERATE_CELL(cCells, view)
 		{
-			m_d[cCells] = 1.0;
+			m_D[cCells] = 1.0;
 		}
 	});
 }
@@ -230,10 +226,10 @@ void ExplicitHeatEquationModule::initXc()
 				{
 					const auto pId(nodesOfCellC[pNodesOfCellC]);
 					const auto pNodes(pId);
-					reduction0 = Real2(explicitheatequationfreefuncs::sumR1(reduction0, m_x[pNodes]));
+					reduction0 = Real2(explicitheatequationfreefuncs::sumR1(reduction0, m_X[pNodes]));
 				}
 			}
-			m_xc[cCells] = Real2(explicitheatequationfreefuncs::operatorMult(0.25, reduction0));
+			m_Xc[cCells] = Real2(explicitheatequationfreefuncs::operatorMult(0.25, reduction0));
 		}
 	});
 }
@@ -276,7 +272,7 @@ void ExplicitHeatEquationModule::computeDeltaTn()
 	Real reduction0(numeric_limits<double>::max());
 	ENUMERATE_CELL(cCells, m_mesh->getCells())
 	{
-		reduction0 = explicitheatequationfreefuncs::minR0(reduction0, m_v[cCells] / m_d[cCells]);
+		reduction0 = explicitheatequationfreefuncs::minR0(reduction0, m_V[cCells] / m_D[cCells]);
 	}
 	m_deltat = reduction0 * 0.24;
 	m_global_deltat = m_deltat;
@@ -302,7 +298,7 @@ void ExplicitHeatEquationModule::computeFaceConductivity()
 				{
 					const auto c1Id(cellsOfFaceF[c1CellsOfFaceF]);
 					const auto c1Cells(c1Id);
-					reduction0 = explicitheatequationfreefuncs::prodR0(reduction0, m_d[c1Cells]);
+					reduction0 = explicitheatequationfreefuncs::prodR0(reduction0, m_D[c1Cells]);
 				}
 			}
 			Real reduction1(0.0);
@@ -313,10 +309,10 @@ void ExplicitHeatEquationModule::computeFaceConductivity()
 				{
 					const auto c2Id(cellsOfFaceF[c2CellsOfFaceF]);
 					const auto c2Cells(c2Id);
-					reduction1 = explicitheatequationfreefuncs::sumR0(reduction1, m_d[c2Cells]);
+					reduction1 = explicitheatequationfreefuncs::sumR0(reduction1, m_D[c2Cells]);
 				}
 			}
-			m_face_conductivity[fFaces] = 2.0 * reduction0 / reduction1;
+			m_faceConductivity[fFaces] = 2.0 * reduction0 / reduction1;
 		}
 	});
 }
@@ -332,7 +328,7 @@ void ExplicitHeatEquationModule::initU()
 	{
 		ENUMERATE_CELL(cCells, view)
 		{
-			if (explicitheatequationfreefuncs::norm(Real2(explicitheatequationfreefuncs::operatorSub(m_xc[cCells], m_vect_one))) < 0.5) 
+			if (explicitheatequationfreefuncs::norm(Real2(explicitheatequationfreefuncs::operatorSub(m_Xc[cCells], m_vectOne))) < 0.5) 
 				m_u_n[cCells] = m_u0;
 			else
 				m_u_n[cCells] = 0.0;
@@ -362,7 +358,7 @@ void ExplicitHeatEquationModule::computeAlphaCoeff()
 		ENUMERATE_CELL(cCells, view)
 		{
 			const auto cId(*cCells);
-			Real alpha_diag(0.0);
+			Real alphaDiag(0.0);
 			{
 				const auto neighbourCellsC(m_mesh->getNeighbourCells(cId));
 				const Int32 nbNeighbourCellsC(neighbourCellsC.size());
@@ -372,12 +368,12 @@ void ExplicitHeatEquationModule::computeAlphaCoeff()
 					const auto dCells(dId);
 					const auto fId(m_mesh->getCommonFace(cId, dId));
 					const auto fFaces(fId);
-					const Real alpha_extra_diag(m_deltat / m_v[cCells] * (m_face_length[fFaces] * m_face_conductivity[fFaces]) / explicitheatequationfreefuncs::norm(Real2(explicitheatequationfreefuncs::operatorSub(m_xc[cCells], m_xc[dCells]))));
-					m_alpha[cCells][dCells.localId()] = alpha_extra_diag;
-					alpha_diag = alpha_diag + alpha_extra_diag;
+					const Real alphaExtraDiag(m_deltat / m_V[cCells] * (m_faceLength[fFaces] * m_faceConductivity[fFaces]) / explicitheatequationfreefuncs::norm(Real2(explicitheatequationfreefuncs::operatorSub(m_Xc[cCells], m_Xc[dCells]))));
+					m_alpha[cCells][dCells.localId()] = alphaExtraDiag;
+					alphaDiag = alphaDiag + alphaExtraDiag;
 				}
 			}
-			m_alpha[cCells][cCells.localId()] = 1 - alpha_diag;
+			m_alpha[cCells][cCells.localId()] = 1 - alphaDiag;
 		}
 	});
 }

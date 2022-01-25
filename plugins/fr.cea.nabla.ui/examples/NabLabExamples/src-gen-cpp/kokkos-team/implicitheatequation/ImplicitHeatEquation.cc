@@ -95,10 +95,6 @@ ImplicitHeatEquation::ImplicitHeatEquation(CartesianMesh2D& aMesh)
 , nbNodes(mesh.getNbNodes())
 , nbCells(mesh.getNbCells())
 , nbFaces(mesh.getNbFaces())
-, maxNbNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
-, maxNbNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
-, maxNbCellsOfFace(CartesianMesh2D::MaxNbCellsOfFace)
-, maxNbNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
 , X("X", nbNodes)
 , Xc("Xc", nbCells)
 , u_n("u_n", nbCells)
@@ -123,7 +119,6 @@ ImplicitHeatEquation::jsonInit(const char* jsonContent)
 	assert(document.IsObject());
 	const rapidjson::Value::Object& options = document.GetObject();
 
-	// outputPath
 	assert(options.HasMember("outputPath"));
 	const rapidjson::Value& valueof_outputPath = options["outputPath"];
 	assert(valueof_outputPath.IsString());
@@ -208,7 +203,7 @@ void ImplicitHeatEquation::computeFaceLength(const member_type& teamMember) noex
 				for (size_t pNodesOfFaceF=0; pNodesOfFaceF<nbNodesOfFaceF; pNodesOfFaceF++)
 				{
 					const Id pId(nodesOfFaceF[pNodesOfFaceF]);
-					const Id pPlus1Id(nodesOfFaceF[(pNodesOfFaceF+1+maxNbNodesOfFace)%maxNbNodesOfFace]);
+					const Id pPlus1Id(nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFaceF)%nbNodesOfFaceF]);
 					const size_t pNodes(pId);
 					const size_t pPlus1Nodes(pPlus1Id);
 					reduction0 = implicitheatequationfreefuncs::sumR0(reduction0, implicitheatequationfreefuncs::norm(implicitheatequationfreefuncs::operatorSub(X(pNodes), X(pPlus1Nodes))));
@@ -252,7 +247,7 @@ void ImplicitHeatEquation::computeV(const member_type& teamMember) noexcept
 				for (size_t pNodesOfCellJ=0; pNodesOfCellJ<nbNodesOfCellJ; pNodesOfCellJ++)
 				{
 					const Id pId(nodesOfCellJ[pNodesOfCellJ]);
-					const Id pPlus1Id(nodesOfCellJ[(pNodesOfCellJ+1+maxNbNodesOfCell)%maxNbNodesOfCell]);
+					const Id pPlus1Id(nodesOfCellJ[(pNodesOfCellJ+1+nbNodesOfCellJ)%nbNodesOfCellJ]);
 					const size_t pNodes(pId);
 					const size_t pPlus1Nodes(pPlus1Id);
 					reduction0 = implicitheatequationfreefuncs::sumR0(reduction0, implicitheatequationfreefuncs::det(X(pNodes), X(pPlus1Nodes)));

@@ -151,7 +151,7 @@ class TypeContentProvider
 				if (dimension > 0)
 				{
 					val dimensions = new ArrayList<CharSequence>
-					dimensions += connectivities.tail.map[ArcaneUtils.toAttributeName(nbElemsVar)]
+					dimensions += connectivities.tail.map[ArcaneUtils.toAttributeName(nbElems)]
 					dimensions += base.sizes.map[content]
 					dimensions.subList(0, dimension)
 				}

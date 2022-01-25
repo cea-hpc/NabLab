@@ -16,9 +16,7 @@ public final class Variables
 {
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
-	@SuppressWarnings("unused")
 	private final int nbNodes;
-
 	// Options and global variables
 	static final double maxTime = 0.1;
 	static final int maxIter = 500;

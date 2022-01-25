@@ -12,13 +12,6 @@ import numpy as np
 from meshgeometry import MeshGeometry
 
 class CartesianMesh2D:
-    MaxNbNodesOfCell = 4
-    MaxNbNodesOfFace = 2
-    MaxNbCellsOfNode = 4
-    MaxNbCellsOfFace = 2
-    MaxNbFacesOfCell = 4
-    MaxNbNeighbourCells = 4
-    
     def jsonInit(self, jsonContent):
         self.create(jsonContent["nbXQuads"], jsonContent["nbYQuads"], jsonContent["xSize"], jsonContent["ySize"])
     

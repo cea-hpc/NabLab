@@ -13,7 +13,6 @@ import fr.cea.nabla.ir.IrTypeExtensions
 import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.BaseType
-import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
@@ -24,7 +23,6 @@ import fr.cea.nabla.ir.ir.Variable
 import static fr.cea.nabla.ir.generator.python.JsonContentProvider.*
 import static fr.cea.nabla.ir.generator.python.TypeContentProvider.*
 
-import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
@@ -61,8 +59,8 @@ class IrModuleContentProvider
 
 		def __init__(self, mesh):
 			self.__mesh = mesh
-			«FOR c : irRoot.mesh.connectivities.filter[multiple]»
-				«PythonGeneratorUtils.getNbElemsVar(c)» = mesh.«c.connectivityAccessor»
+			«FOR c : irRoot.mesh.connectivities.filter[x | x.multiple && x.inTypes.empty]»
+				«PythonGeneratorUtils.getNbElemsVar(c)» = mesh.nb«c.name.toFirstUpper»
 			«ENDFOR»
 
 		def jsonInit(self, jsonContent):
@@ -180,12 +178,6 @@ class IrModuleContentProvider
 				exit(1)
 	«ENDIF»
 	'''
-
-	private static def getConnectivityAccessor(Connectivity c)
-	{
-		if (c.inTypes.empty) c.nbElemsVar
-		else c.nbElemsVar.toFirstUpper
-	}
 
 	private static def getCallName(Job it)
 	{

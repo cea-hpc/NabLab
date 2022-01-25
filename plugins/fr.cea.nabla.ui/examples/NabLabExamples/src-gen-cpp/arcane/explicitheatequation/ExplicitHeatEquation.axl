@@ -5,7 +5,7 @@
 
 	<variables>
 		<variable
-			field-name="x"
+			field-name="X"
 			name="NodeCoord"
 			data-type="real3"
 			item-kind="node"
@@ -14,7 +14,7 @@
 			need-sync="true"/>
 		
 		<variable
-			field-name="xc"
+			field-name="Xc"
 			name="Xc"
 			data-type="real2"
 			item-kind="cell"
@@ -41,7 +41,7 @@
 			need-sync="true"/>
 		
 		<variable
-			field-name="v"
+			field-name="V"
 			name="V"
 			data-type="real"
 			item-kind="cell"
@@ -50,7 +50,7 @@
 			need-sync="true"/>
 		
 		<variable
-			field-name="d"
+			field-name="D"
 			name="D"
 			data-type="real"
 			item-kind="cell"
@@ -59,7 +59,7 @@
 			need-sync="true"/>
 		
 		<variable
-			field-name="face_length"
+			field-name="faceLength"
 			name="faceLength"
 			data-type="real"
 			item-kind="face"
@@ -68,7 +68,7 @@
 			need-sync="true"/>
 		
 		<variable
-			field-name="face_conductivity"
+			field-name="faceConductivity"
 			name="faceConductivity"
 			data-type="real"
 			item-kind="face"

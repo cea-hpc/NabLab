@@ -116,7 +116,13 @@ private:
 	
 	// Mesh and mesh variables
 	CartesianMesh2D& mesh;
-	size_t nbNodes, nbCells, maxNbNodesOfCell, maxNbCellsOfNode, nbInnerNodes, nbTopNodes, nbBottomNodes, nbLeftNodes, nbRightNodes;
+	size_t nbNodes;
+	size_t nbCells;
+	size_t nbInnerNodes;
+	size_t nbTopNodes;
+	size_t nbBottomNodes;
+	size_t nbLeftNodes;
+	size_t nbRightNodes;
 
 	// Options and global variables
 	PvdFileWriter2D* writer;

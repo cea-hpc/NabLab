@@ -71,7 +71,8 @@ private:
 	
 	// Mesh and mesh variables
 	CartesianMesh2D& mesh;
-	size_t nbNodes, nbCells;
+	size_t nbNodes;
+	size_t nbCells;
 
 	// Additional modules
 	R1* r1;

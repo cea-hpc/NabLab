@@ -20,13 +20,6 @@ using namespace std;
 class CartesianMesh2D
 {
 public:
-	static constexpr int MaxNbNodesOfCell = 4;
-	static constexpr int MaxNbNodesOfFace = 2;
-	static constexpr int MaxNbCellsOfNode = 4;
-	static constexpr int MaxNbCellsOfFace = 2;
-	static constexpr int MaxNbFacesOfCell = 4;
-	static constexpr int MaxNbNeighbourCells = 4;
-
 	void jsonInit(const char* jsonContent);
 
 	MeshGeometry<2>* getGeometry() noexcept { return m_geometry; }

@@ -16,9 +16,8 @@ public final class Hydro
 {
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
-	@SuppressWarnings("unused")
-	private final int nbNodes, nbCells;
-
+	private final int nbNodes;
+	private final int nbCells;
 	// Additional modules
 	protected R1 r1;
 	protected R2 r2;

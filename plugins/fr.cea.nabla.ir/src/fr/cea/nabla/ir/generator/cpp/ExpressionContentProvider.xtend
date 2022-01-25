@@ -106,7 +106,7 @@ class ExpressionContentProvider
 		if (call.connectivity.multiple)
 		{
 			if (call.args.empty)
-				call.connectivity.nbElemsVar
+				call.connectivity.nbElems
 			else
 				'''mesh.«call.accessor».size()'''
 		}

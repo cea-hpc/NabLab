@@ -16,9 +16,9 @@ public final class ImplicitHeatEquation
 {
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
-	@SuppressWarnings("unused")
-	private final int nbNodes, nbCells, nbFaces, maxNbNodesOfCell, maxNbNodesOfFace, maxNbCellsOfFace, maxNbNeighbourCells;
-
+	private final int nbNodes;
+	private final int nbCells;
+	private final int nbFaces;
 	// Options and global variables
 	private PvdFileWriter2D writer;
 	private String outputPath;
@@ -51,10 +51,6 @@ public final class ImplicitHeatEquation
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
 		nbFaces = mesh.getNbFaces();
-		maxNbNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
-		maxNbNodesOfFace = CartesianMesh2D.MaxNbNodesOfFace;
-		maxNbCellsOfFace = CartesianMesh2D.MaxNbCellsOfFace;
-		maxNbNeighbourCells = CartesianMesh2D.MaxNbNeighbourCells;
 	}
 
 	public void jsonInit(final String jsonContent)

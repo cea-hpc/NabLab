@@ -12,7 +12,6 @@ package fr.cea.nabla.ir.generator.cpp
 import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.BaseType
-import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.LinearAlgebraType
@@ -126,7 +125,9 @@ class IrModuleContentProvider
 		«privateMethodHeaders»
 		// Mesh and mesh variables
 		«irRoot.mesh.className»& mesh;
-		«FOR c : irRoot.mesh.connectivities.filter[multiple] BEFORE 'size_t ' SEPARATOR ', ' AFTER ';'»«c.nbElemsVar»«ENDFOR»
+		«FOR c : irRoot.mesh.connectivities.filter[x | x.multiple && x.inTypes.empty]»
+			size_t «c.nbElemsVar»;
+		«ENDFOR»
 
 		«IF irRoot.modules.size > 1»
 			«IF main»
@@ -201,8 +202,8 @@ class IrModuleContentProvider
 
 	«className»::«className»(«irRoot.mesh.className»& aMesh)
 	: mesh(aMesh)
-	«FOR c : irRoot.mesh.connectivities.filter[multiple]»
-	, «c.nbElemsVar»(«c.connectivityAccessor»)
+	«FOR c : irRoot.mesh.connectivities.filter[x | x.multiple && x.inTypes.empty]»
+	, «c.nbElemsVar»(mesh.getNb«c.name.toFirstUpper»())
 	«ENDFOR»
 	«FOR v : variables.filter[x | !(x.type instanceof BaseType)]»
 		, «v.name»(«typeContentProvider.getCstrInit(v.type, v.name)»)
@@ -224,7 +225,6 @@ class IrModuleContentProvider
 
 		«IF postProcessing !== null»
 		«val opName = IrUtils.OutputPathNameAndValue.key»
-		// «opName»
 		assert(options.HasMember("«opName»"));
 		const rapidjson::Value& «jsonContentProvider.getJsonName(opName)» = options["«opName»"];
 		assert(«jsonContentProvider.getJsonName(opName)».IsString());
@@ -432,14 +432,6 @@ class IrModuleContentProvider
 	}
 	«ENDIF»
 	'''
-
-	private def getConnectivityAccessor(Connectivity c)
-	{
-		if (c.inTypes.empty)
-			'''mesh.get«c.nbElemsVar.toFirstUpper»()'''
-		else
-			'''CartesianMesh2D::«c.nbElemsVar.toFirstUpper»'''
-	}
 
 	private def getWriteCallContent(Variable v)
 	{

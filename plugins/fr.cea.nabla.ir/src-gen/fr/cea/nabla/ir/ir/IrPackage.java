@@ -806,13 +806,22 @@ public interface IrPackage extends EPackage {
 	int MESH_EXTENSION_PROVIDER__CONNECTIVITIES = EXTENSION_PROVIDER_FEATURE_COUNT + 1;
 
 	/**
+	 * The feature id for the '<em><b>Generation Variables</b></em>' map.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MESH_EXTENSION_PROVIDER__GENERATION_VARIABLES = EXTENSION_PROVIDER_FEATURE_COUNT + 2;
+
+	/**
 	 * The number of structural features of the '<em>Mesh Extension Provider</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int MESH_EXTENSION_PROVIDER_FEATURE_COUNT = EXTENSION_PROVIDER_FEATURE_COUNT + 2;
+	int MESH_EXTENSION_PROVIDER_FEATURE_COUNT = EXTENSION_PROVIDER_FEATURE_COUNT + 3;
 
 	/**
 	 * The number of operations of the '<em>Mesh Extension Provider</em>' class.
@@ -5169,6 +5178,17 @@ public interface IrPackage extends EPackage {
 	EReference getMeshExtensionProvider_Connectivities();
 
 	/**
+	 * Returns the meta object for the map '{@link fr.cea.nabla.ir.ir.MeshExtensionProvider#getGenerationVariables <em>Generation Variables</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the map '<em>Generation Variables</em>'.
+	 * @see fr.cea.nabla.ir.ir.MeshExtensionProvider#getGenerationVariables()
+	 * @see #getMeshExtensionProvider()
+	 * @generated
+	 */
+	EReference getMeshExtensionProvider_GenerationVariables();
+
+	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.ArgOrVar <em>Arg Or Var</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -7507,6 +7527,14 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EReference MESH_EXTENSION_PROVIDER__CONNECTIVITIES = eINSTANCE.getMeshExtensionProvider_Connectivities();
+
+		/**
+		 * The meta object literal for the '<em><b>Generation Variables</b></em>' map feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference MESH_EXTENSION_PROVIDER__GENERATION_VARIABLES = eINSTANCE.getMeshExtensionProvider_GenerationVariables();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.ArgOrVarImpl <em>Arg Or Var</em>}' class.

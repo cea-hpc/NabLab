@@ -3,6 +3,7 @@
 package fr.cea.nabla.ir.ir;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.EMap;
 
 /**
  * <!-- begin-user-doc -->
@@ -15,6 +16,7 @@ import org.eclipse.emf.common.util.EList;
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.MeshExtensionProvider#getItemTypes <em>Item Types</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.MeshExtensionProvider#getConnectivities <em>Connectivities</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.MeshExtensionProvider#getGenerationVariables <em>Generation Variables</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getMeshExtensionProvider()
@@ -49,5 +51,18 @@ public interface MeshExtensionProvider extends ExtensionProvider {
 	 * @generated
 	 */
 	EList<Connectivity> getConnectivities();
+
+	/**
+	 * Returns the value of the '<em><b>Generation Variables</b></em>' map.
+	 * The key is of type {@link java.lang.String},
+	 * and the value is of type {@link java.lang.String},
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Generation Variables</em>' map.
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getMeshExtensionProvider_GenerationVariables()
+	 * @model mapType="org.eclipse.emf.ecore.EStringToStringMapEntry&lt;org.eclipse.emf.ecore.EString, org.eclipse.emf.ecore.EString&gt;"
+	 * @generated
+	 */
+	EMap<String, String> getGenerationVariables();
 
 } // MeshExtensionProvider

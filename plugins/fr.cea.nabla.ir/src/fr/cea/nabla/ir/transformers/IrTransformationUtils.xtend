@@ -20,7 +20,7 @@ class IrTransformationUtils
 	{
 		#[
 			new ReplaceUtf8Chars,
-			new OptimizeConnectivities(#['cells', 'nodes', 'faces']),
+			new ConfigureMesh,
 			new ReplaceReductions(replaceAllReductions),
 			new ReplaceAffectations,
 			new CreateArrayOperators,

@@ -98,10 +98,10 @@ class MeshExtensionProviderHelper implements ExtensionProviderHelper
 
 	private def int getMaxNbElems(Connectivity connectivity)
 	{
-		val fieldName = "MaxNb" + connectivity.name.toFirstUpper
-		val field = providerClass.getDeclaredField(fieldName)
-		field.setAccessible(true)
-		return field.getInt(providerInstance)
+		val varName = "MaxNb" + connectivity.name.toFirstUpper
+		val varValue = connectivity.provider.generationVariables.get(varName)
+		if (varValue === null) throw new RuntimeException("Unsupported mesh: " + connectivity.provider.extensionName)
+		return Integer.parseInt(varValue)
 	}
 
 	private def Method getMeshMethod(String methodName, int nbArgs)

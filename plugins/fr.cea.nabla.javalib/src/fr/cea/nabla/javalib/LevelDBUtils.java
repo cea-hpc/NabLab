@@ -10,6 +10,7 @@
 package fr.cea.nabla.javalib;
 
 import static org.iq80.leveldb.impl.Iq80DBFactory.asString;
+import static org.iq80.leveldb.impl.Iq80DBFactory.bytes;
 import static org.iq80.leveldb.impl.Iq80DBFactory.factory;
 
 import java.io.ByteArrayInputStream;
@@ -61,47 +62,50 @@ public class LevelDBUtils
 			{
 				for(itRef.seekToFirst() ; itRef.hasNext() ; itRef.next())
 				{
-					byte[] byteKey = itRef.peekNext().getKey();
-
-					KeyData data = toData(byteKey);
-
-					String key = data.dataName;
-					int bytes = data.dataBytes;
-					byte[] byteValue = db.get(byteKey);
-					if (byteValue == null)
+					String key = asString(itRef.peekNext().getKey());
+					if (!key.endsWith("_descriptor"))
 					{
-						System.err.println("ERROR - Key : " + key + " not found.");
-						result = false;
-					}
-					else
-					{
-						byte[] ref = itRef.peekNext().getValue();
-						byte[] value = byteValue;
-						System.err.println(key + ": " + (Arrays.equals(value, ref) ? "OK" : "ERROR"));
-						if (!Arrays.equals(value, ref))
+						String dataDescriptorKey = key + "_descriptor";
+						DataDescriptor dataDescriptor = toDataDescriptor(dbRef.get(bytes(dataDescriptorKey)));
+						int bytes = dataDescriptor.dataTypeBytes;
+						int[] dataSizes = dataDescriptor.dataSizes;
+						byte[] byteValue = db.get(bytes(key));
+						if (byteValue == null)
 						{
+							System.err.println("ERROR - Key : " + key + " not found.");
 							result = false;
-							int mismatchIndex = Arrays.mismatch(value, ref);
-							ByteBuffer valueByteBuffer = ByteBuffer.wrap(value);
-							ByteBuffer refByteBuffer = ByteBuffer.wrap(ref);
-							int bufSize = valueByteBuffer.remaining();
-							if (bufSize == bytes)
+						}
+						else
+						{
+							byte[] ref = itRef.peekNext().getValue();
+							byte[] value = byteValue;
+							System.err.println(key + ": " + (Arrays.equals(value, ref) ? "OK" : "ERROR"));
+							if (!Arrays.equals(value, ref))
 							{
-								if (bytes == Integer.BYTES)
-									System.err.println("	" + valueByteBuffer.getInt() + " (value) != " + refByteBuffer.getInt() + " (ref)");
-								else if (bytes == Double.BYTES)
-									System.err.println("	" + valueByteBuffer.getDouble() + " (value) != " + refByteBuffer.getDouble() + " (ref)");
+								result = false;
+								int mismatchIndex = Arrays.mismatch(value, ref);
+								ByteBuffer valueByteBuffer = ByteBuffer.wrap(value);
+								ByteBuffer refByteBuffer = ByteBuffer.wrap(ref);
+								int bufSize = valueByteBuffer.remaining();
+								if (bufSize == bytes)
+								{
+									if (bytes == Integer.BYTES)
+										System.err.println("	Value " + key + " = " + valueByteBuffer.getInt() + " vs Reference " + key + " = " + refByteBuffer.getInt());
+									else if (bytes == Double.BYTES)
+										System.err.println("	Value " + key + " = " + valueByteBuffer.getDouble() + " vs Reference " + key + " = " + refByteBuffer.getDouble());
+								}
+								else if (bufSize % bytes == 0)
+								{
+									int indx = mismatchIndex / bytes;
+									String indexes = getMismatchIndexes(dataSizes, indx);
+									if (bytes == Integer.BYTES)
+										System.err.println("	Value "  + key + indexes + " = " + valueByteBuffer.getInt(indx * Integer.BYTES) + " vs Reference " + key + indexes + " = " + refByteBuffer.getInt(indx * Integer.BYTES));
+									else if (bytes == Double.BYTES)
+										System.err.println("	Value "  + key + indexes + " = " + valueByteBuffer.getDouble(indx * Double.BYTES) + " vs Reference " + key + indexes + " = " + refByteBuffer.getDouble(indx * Double.BYTES));
+								}
+								else
+									System.err.println("Unable to determine the type of data.");
 							}
-							else if (bufSize % bytes == 0)
-							{
-								int indx = (int)(mismatchIndex / bytes);
-								if (bytes == Integer.BYTES)
-									System.err.println("	" + valueByteBuffer.getInt(indx * Integer.BYTES) + " (value[" + indx + "]) != " + refByteBuffer.getInt(indx * Integer.BYTES) + " (ref[" + indx + "])");
-								else if (bytes == Double.BYTES)
-									System.err.println("	" + valueByteBuffer.getDouble(indx * Double.BYTES) + " (value[" + indx + "]) != " + refByteBuffer.getDouble(indx * Double.BYTES) + " (ref[" + indx + "])");
-							}
-							else
-								System.err.println("Unable to determine the type of data.");
 						}
 					}
 				}
@@ -140,27 +144,45 @@ public class LevelDBUtils
 		}
 	}
 
+	private static String getMismatchIndexes(int[] dataSizes, int mismatchIndex)
+	{
+		if (dataSizes.length == 1)
+			return "[" + mismatchIndex + "]";
+		else if (dataSizes.length == 2)
+			return "[" + mismatchIndex / dataSizes[1] + "]" + "[" + mismatchIndex % dataSizes[1] + "]";
+		else if (dataSizes.length == 3)
+			return "[" + mismatchIndex / (dataSizes[1] * dataSizes[2]) + "]"
+					+ "[" + (mismatchIndex % (dataSizes[1] * dataSizes[2])) / dataSizes[2] + "]"
+					+ "[" + (mismatchIndex % (dataSizes[1] * dataSizes[2])) % dataSizes[2] + "]";
+		else if (dataSizes.length == 4)
+			return "[" + mismatchIndex / (dataSizes[1] * dataSizes[2] * dataSizes[3] ) + "]"
+					+ "[" + (mismatchIndex % (dataSizes[1] * dataSizes[2] * dataSizes[3] )) / ( dataSizes[2] * dataSizes[3] ) + "]"
+					+ "[" + ((mismatchIndex % (dataSizes[1] * dataSizes[2] * dataSizes[3] )) % ( dataSizes[2] * dataSizes[3] )) / dataSizes[3] + "]"
+					+ "[" + ((mismatchIndex % (dataSizes[1] * dataSizes[2] * dataSizes[3] )) % ( dataSizes[2] * dataSizes[3] )) % dataSizes[3] + "]";
+		return "";
+	}
+
 	public static void destroyDB(String name) throws IOException
 	{
 		org.iq80.leveldb.Options leveldbOptions = new org.iq80.leveldb.Options();
 		factory.destroy(new File(name), leveldbOptions);
 	}
 
-	public static byte[] toKey(String dataName, int dataBytes) throws IOException
+	public static byte[] toByteArrayDescriptor(int dataBytes, int[] dataSizes) throws IOException
 	{
-		KeyData data = new KeyData(dataName, dataBytes);
+		DataDescriptor dataDescriptor = new DataDescriptor(dataBytes, dataSizes);
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		ObjectOutputStream oos = new ObjectOutputStream(bos);
-		oos.writeObject(data);
+		oos.writeObject(dataDescriptor);
 		oos.flush();
 		return bos.toByteArray();
 	}
 
-	private static KeyData toData(byte[] bytes) throws IOException, ClassNotFoundException
+	private static DataDescriptor toDataDescriptor(byte[] bytes) throws IOException, ClassNotFoundException
 	{
 		ByteArrayInputStream in = new ByteArrayInputStream(bytes);
 	    ObjectInputStream is = new ObjectInputStream(in);
-	    return (KeyData) is.readObject();
+	    return (DataDescriptor) is.readObject();
 	}
 
 	public static <T extends Number>  byte[] toByteArray(final T number) throws IOException
@@ -186,7 +208,7 @@ public class LevelDBUtils
 		dos.writeBoolean(b);
 		dos.flush();
 		return bos.toByteArray();
-	 }
+	}
 
 	public static byte[] toByteArray(int[] data1d) throws IOException
 	{

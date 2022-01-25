@@ -40,6 +40,7 @@ class IrModuleContentProvider
 		«IF main && hasLevelDB»
 		import static org.iq80.leveldb.impl.Iq80DBFactory.bytes;
 		import static org.iq80.leveldb.impl.Iq80DBFactory.factory;
+		import static org.iq80.leveldb.impl.Iq80DBFactory.bytes;
 
 		import org.iq80.leveldb.DB;
 		import org.iq80.leveldb.WriteBatch;
@@ -285,7 +286,8 @@ class IrModuleContentProvider
 				try
 				{
 					«FOR v : irRoot.variables.filter[!option]»
-					batch.put(LevelDBUtils.toKey("«Utils.getDbKey(v)»", «JavaGeneratorUtils.getDbBytes(v.type)»), LevelDBUtils.toByteArray(«Utils.getDbValue(it, v, '.')»));
+					batch.put(bytes("«Utils.getDbDescriptor(v)»"), LevelDBUtils.toByteArrayDescriptor(«JavaGeneratorUtils.getDbBytes(v.type)», new int[]{«JavaGeneratorUtils.getDbSizes(v.type, v.name)»}));
+					batch.put(bytes("«Utils.getDbKey(v)»"), LevelDBUtils.toByteArray(«Utils.getDbKey(v)»));
 					«ENDFOR»
 
 					db.write(batch);

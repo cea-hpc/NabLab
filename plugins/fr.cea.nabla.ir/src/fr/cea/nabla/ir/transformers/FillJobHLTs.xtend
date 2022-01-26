@@ -48,7 +48,7 @@ class FillJobHLTs extends IrTransformationStep
 				// All jobs belongs to the module. No dispatch possible.
 				// Jobs are put in module inner jobs for graph display...
 				ir.main.calls.addAll(ir.jobs)
-				throw new IrTransformationException("Cycless detected in jobs graph")
+				throw new IrTransformationException("Cycles detected in jobs graph")
 			}
 
 			// No cycles => create subgraphs (i.e. JobContainer instances) corresponding to time loops

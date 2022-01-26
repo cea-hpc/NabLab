@@ -50,16 +50,17 @@ public:
 	void jsonInit(const char* jsonContent);
 
 	void simulate();
-	void computeOutgoingFlux() noexcept;
+	void computeFaceFlux() noexcept;
 	void computeSurface() noexcept;
 	void computeTn() noexcept;
 	void computeV() noexcept;
 	void iniCenter() noexcept;
 	void iniF() noexcept;
 	void iniTime() noexcept;
-	void computeUn() noexcept;
+	void computeOutgoingFlux() noexcept;
 	void iniUn() noexcept;
 	void setUpTimeLoopN() noexcept;
+	void computeUn() noexcept;
 	void executeTimeLoopN() noexcept;
 
 private:
@@ -70,6 +71,7 @@ private:
 	size_t nbNodes;
 	size_t nbCells;
 	size_t nbFaces;
+	size_t nbInnerFaces;
 
 	// Options and global variables
 	PvdFileWriter2D* writer;
@@ -93,6 +95,7 @@ private:
 	std::vector<double> f;
 	std::vector<double> outgoingFlux;
 	std::vector<double> surface;
+	std::vector<double> faceFlux;
 
 	// Timers
 	Timer globalTimer;

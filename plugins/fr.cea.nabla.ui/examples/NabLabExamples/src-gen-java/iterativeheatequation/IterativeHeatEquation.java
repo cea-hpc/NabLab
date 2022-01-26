@@ -19,6 +19,7 @@ public final class IterativeHeatEquation
 	private final int nbNodes;
 	private final int nbCells;
 	private final int nbFaces;
+	private final int nbInnerFaces;
 	// Options and global variables
 	private PvdFileWriter2D writer;
 	private String outputPath;
@@ -46,6 +47,7 @@ public final class IterativeHeatEquation
 	double[] D;
 	double[] faceLength;
 	double[] faceConductivity;
+	double[] alphaExtraDiag;
 	double[][] alpha;
 	double residual;
 
@@ -56,6 +58,7 @@ public final class IterativeHeatEquation
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
 		nbFaces = mesh.getNbFaces();
+		nbInnerFaces = mesh.getNbInnerFaces();
 	}
 
 	public void jsonInit(final String jsonContent)
@@ -92,6 +95,7 @@ public final class IterativeHeatEquation
 		D = new double[nbCells];
 		faceLength = new double[nbFaces];
 		faceConductivity = new double[nbFaces];
+		alphaExtraDiag = new double[nbFaces];
 		alpha = new double[nbCells][nbCells];
 
 		// Copy node coordinates
@@ -383,32 +387,25 @@ public final class IterativeHeatEquation
 	}
 
 	/**
-	 * Job computeAlphaCoeff called @3.0 in simulate method.
+	 * Job computeAlphaExtraDiag called @3.0 in simulate method.
 	 * In variables: V, Xc, deltat, faceConductivity, faceLength
-	 * Out variables: alpha
+	 * Out variables: alphaExtraDiag
 	 */
-	protected void computeAlphaCoeff()
+	protected void computeAlphaExtraDiag()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
-			final int cId = cCells;
-			double alphaDiag = 0.0;
+			final int[] innerFaces = mesh.getInnerFaces();
+			IntStream.range(0, nbInnerFaces).parallel().forEach(fInnerFaces -> 
 			{
-				final int[] neighbourCellsC = mesh.getNeighbourCells(cId);
-				final int nbNeighbourCellsC = neighbourCellsC.length;
-				for (int dNeighbourCellsC=0; dNeighbourCellsC<nbNeighbourCellsC; dNeighbourCellsC++)
-				{
-					final int dId = neighbourCellsC[dNeighbourCellsC];
-					final int dCells = dId;
-					final int fId = mesh.getCommonFace(cId, dId);
-					final int fFaces = fId;
-					final double alphaExtraDiag = deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / norm(operatorSub(Xc[cCells], Xc[dCells]));
-					alpha[cCells][dCells] = alphaExtraDiag;
-					alphaDiag = alphaDiag + alphaExtraDiag;
-				}
-			}
-			alpha[cCells][cCells] = -alphaDiag;
-		});
+				final int fId = innerFaces[fInnerFaces];
+				final int fFaces = fId;
+				final int cId = mesh.getBackCell(fId);
+				final int cCells = cId;
+				final int dId = mesh.getFrontCell(fId);
+				final int dCells = dId;
+				alphaExtraDiag[fFaces] = deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / norm(operatorSub(Xc[cCells], Xc[dCells]));
+			});
+		}
 	}
 
 	/**
@@ -425,7 +422,55 @@ public final class IterativeHeatEquation
 	}
 
 	/**
-	 * Job executeTimeLoopN called @4.0 in simulate method.
+	 * Job assembleAlphaDiag called @4.0 in simulate method.
+	 * In variables: alphaExtraDiag
+	 * Out variables: alpha
+	 */
+	protected void assembleAlphaDiag()
+	{
+		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
+		{
+			final int cId = cCells;
+			double reduction0 = 0.0;
+			{
+				final int[] facesOfCellC = mesh.getFacesOfCell(cId);
+				final int nbFacesOfCellC = facesOfCellC.length;
+				for (int fFacesOfCellC=0; fFacesOfCellC<nbFacesOfCellC; fFacesOfCellC++)
+				{
+					final int fId = facesOfCellC[fFacesOfCellC];
+					final int fFaces = fId;
+					reduction0 = sumR0(reduction0, alphaExtraDiag[fFaces]);
+				}
+			}
+			alpha[cCells][cCells] = -reduction0;
+		});
+	}
+
+	/**
+	 * Job assembleAlphaExtraDiag called @4.0 in simulate method.
+	 * In variables: alphaExtraDiag
+	 * Out variables: alpha
+	 */
+	protected void assembleAlphaExtraDiag()
+	{
+		{
+			final int[] innerFaces = mesh.getInnerFaces();
+			IntStream.range(0, nbInnerFaces).parallel().forEach(fInnerFaces -> 
+			{
+				final int fId = innerFaces[fInnerFaces];
+				final int fFaces = fId;
+				final int cId = mesh.getBackCell(fId);
+				final int cCells = cId;
+				final int dId = mesh.getFrontCell(fId);
+				final int dCells = dId;
+				alpha[cCells][dCells] = alphaExtraDiag[fFaces];
+				alpha[dCells][cCells] = alphaExtraDiag[fFaces];
+			});
+		}
+	}
+
+	/**
+	 * Job executeTimeLoopN called @5.0 in simulate method.
 	 * In variables: lastDump, maxIterations, n, outputPeriod, stopTime, t_n, t_nplus1, u_n
 	 * Out variables: t_nplus1, u_nplus1
 	 */
@@ -554,8 +599,10 @@ public final class IterativeHeatEquation
 		computeFaceConductivity(); // @2.0
 		initU(); // @2.0
 		setUpTimeLoopN(); // @2.0
-		computeAlphaCoeff(); // @3.0
-		executeTimeLoopN(); // @4.0
+		computeAlphaExtraDiag(); // @3.0
+		assembleAlphaDiag(); // @4.0
+		assembleAlphaExtraDiag(); // @4.0
+		executeTimeLoopN(); // @5.0
 		System.out.println("End of execution of iterativeHeatEquation");
 	}
 

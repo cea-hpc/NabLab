@@ -111,20 +111,3 @@ CartesianMesh2D::getFacesOfCell(CellLocalId cId) const
 	return m_umcv.cellFace().items(cId);
 }
 
-FaceLocalId
-CartesianMesh2D::getCommonFace(CellLocalId c1Id, CellLocalId c2Id) const
-{
-	IItemFamily* face_family = m_mesh->faceFamily();
-	ItemInternalArrayView faces = face_family->itemsInternal();
-	const auto facesOfCellC1(m_umcv.cellFace().items(c1Id));
-	auto nbFacesOfCellC1(facesOfCellC1.size());
-	for (Int32 fFacesOfCellC1=0; fFacesOfCellC1<nbFacesOfCellC1; fFacesOfCellC1++)
-	{
-		FaceLocalId fId(facesOfCellC1[fFacesOfCellC1]);
-		Face f(faces[fId]);
-		Cell oppositeCell = (f.backCell().localId() == c1Id ? f.frontCell() : f.backCell());
-		if (!oppositeCell.null() && (oppositeCell.localId() == c2Id))
-			return fId;
-	}
-	throw std::range_error("No common face between cells " + std::to_string(c1Id.asInteger()) + " and cells " + std::to_string(c2Id.asInteger()));
-}

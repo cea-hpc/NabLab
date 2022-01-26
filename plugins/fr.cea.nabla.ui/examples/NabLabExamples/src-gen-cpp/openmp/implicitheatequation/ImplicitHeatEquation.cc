@@ -95,6 +95,7 @@ ImplicitHeatEquation::ImplicitHeatEquation(CartesianMesh2D& aMesh)
 , nbNodes(mesh.getNbNodes())
 , nbCells(mesh.getNbCells())
 , nbFaces(mesh.getNbFaces())
+, nbInnerFaces(mesh.getNbInnerFaces())
 , X(nbNodes)
 , Xc(nbCells)
 , u_n("u_n", nbCells)
@@ -103,6 +104,7 @@ ImplicitHeatEquation::ImplicitHeatEquation(CartesianMesh2D& aMesh)
 , D(nbCells)
 , faceLength(nbFaces)
 , faceConductivity(nbFaces)
+, alphaExtraDiag(nbFaces)
 , alpha("alpha", nbCells, nbCells)
 {
 }
@@ -364,37 +366,80 @@ void ImplicitHeatEquation::setUpTimeLoopN() noexcept
 }
 
 /**
- * Job computeAlphaCoeff called @3.0 in simulate method.
+ * Job computeAlphaExtraDiag called @3.0 in simulate method.
  * In variables: V, Xc, deltat, faceConductivity, faceLength
+ * Out variables: alphaExtraDiag
+ */
+void ImplicitHeatEquation::computeAlphaExtraDiag() noexcept
+{
+	{
+		const auto innerFaces(mesh.getInnerFaces());
+		#pragma omp parallel for
+		for (size_t fInnerFaces=0; fInnerFaces<nbInnerFaces; fInnerFaces++)
+		{
+			const Id fId(innerFaces[fInnerFaces]);
+			const size_t fFaces(fId);
+			const Id cId(mesh.getBackCell(fId));
+			const size_t cCells(cId);
+			const Id dId(mesh.getFrontCell(fId));
+			const size_t dCells(dId);
+			alphaExtraDiag[fFaces] = -deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / implicitheatequationfreefuncs::norm(implicitheatequationfreefuncs::operatorSub(Xc[cCells], Xc[dCells]));
+		}
+	}
+}
+
+/**
+ * Job assembleAlphaDiag called @4.0 in simulate method.
+ * In variables: alphaExtraDiag
  * Out variables: alpha
  */
-void ImplicitHeatEquation::computeAlphaCoeff() noexcept
+void ImplicitHeatEquation::assembleAlphaDiag() noexcept
 {
 	#pragma omp parallel for
 	for (size_t cCells=0; cCells<nbCells; cCells++)
 	{
 		const Id cId(cCells);
-		double alphaDiag(0.0);
+		double reduction0(0.0);
 		{
-			const auto neighbourCellsC(mesh.getNeighbourCells(cId));
-			const size_t nbNeighbourCellsC(neighbourCellsC.size());
-			for (size_t dNeighbourCellsC=0; dNeighbourCellsC<nbNeighbourCellsC; dNeighbourCellsC++)
+			const auto facesOfCellC(mesh.getFacesOfCell(cId));
+			const size_t nbFacesOfCellC(facesOfCellC.size());
+			for (size_t fFacesOfCellC=0; fFacesOfCellC<nbFacesOfCellC; fFacesOfCellC++)
 			{
-				const Id dId(neighbourCellsC[dNeighbourCellsC]);
-				const size_t dCells(dId);
-				const Id fId(mesh.getCommonFace(cId, dId));
+				const Id fId(facesOfCellC[fFacesOfCellC]);
 				const size_t fFaces(fId);
-				const double alphaExtraDiag(-deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / implicitheatequationfreefuncs::norm(implicitheatequationfreefuncs::operatorSub(Xc[cCells], Xc[dCells])));
-				alpha.setValue(cCells, dCells, alphaExtraDiag);
-				alphaDiag = alphaDiag + alphaExtraDiag;
+				reduction0 = implicitheatequationfreefuncs::sumR0(reduction0, alphaExtraDiag[fFaces]);
 			}
 		}
-		alpha.setValue(cCells, cCells, 1 - alphaDiag);
+		alpha.setValue(cCells, cCells, 1 - reduction0);
 	}
 }
 
 /**
- * Job executeTimeLoopN called @4.0 in simulate method.
+ * Job assembleAlphaExtraDiag called @4.0 in simulate method.
+ * In variables: alphaExtraDiag
+ * Out variables: alpha
+ */
+void ImplicitHeatEquation::assembleAlphaExtraDiag() noexcept
+{
+	{
+		const auto innerFaces(mesh.getInnerFaces());
+		#pragma omp parallel for
+		for (size_t fInnerFaces=0; fInnerFaces<nbInnerFaces; fInnerFaces++)
+		{
+			const Id fId(innerFaces[fInnerFaces]);
+			const size_t fFaces(fId);
+			const Id cId(mesh.getBackCell(fId));
+			const size_t cCells(cId);
+			const Id dId(mesh.getFrontCell(fId));
+			const size_t dCells(dId);
+			alpha.setValue(cCells, dCells, alphaExtraDiag[fFaces]);
+			alpha.setValue(dCells, cCells, alphaExtraDiag[fFaces]);
+		}
+	}
+}
+
+/**
+ * Job executeTimeLoopN called @5.0 in simulate method.
  * In variables: lastDump, maxIterations, n, outputPeriod, stopTime, t_n, t_nplus1, u_n
  * Out variables: t_nplus1, u_nplus1
  */
@@ -495,8 +540,10 @@ void ImplicitHeatEquation::simulate()
 	computeFaceConductivity(); // @2.0
 	initU(); // @2.0
 	setUpTimeLoopN(); // @2.0
-	computeAlphaCoeff(); // @3.0
-	executeTimeLoopN(); // @4.0
+	computeAlphaExtraDiag(); // @3.0
+	assembleAlphaDiag(); // @4.0
+	assembleAlphaExtraDiag(); // @4.0
+	executeTimeLoopN(); // @5.0
 	
 	std::cout << "\nFinal time = " << t_n << endl;
 	std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << globalTimer.print() << __RESET__ << std::endl;

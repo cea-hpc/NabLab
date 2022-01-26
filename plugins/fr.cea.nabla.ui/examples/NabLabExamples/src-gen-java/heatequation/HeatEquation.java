@@ -19,6 +19,7 @@ public final class HeatEquation
 	private final int nbNodes;
 	private final int nbCells;
 	private final int nbFaces;
+	private final int nbInnerFaces;
 	// Options and global variables
 	private PvdFileWriter2D writer;
 	private String outputPath;
@@ -41,6 +42,7 @@ public final class HeatEquation
 	double[] f;
 	double[] outgoingFlux;
 	double[] surface;
+	double[] faceFlux;
 
 	public HeatEquation(CartesianMesh2D aMesh)
 	{
@@ -49,6 +51,7 @@ public final class HeatEquation
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
 		nbFaces = mesh.getNbFaces();
+		nbInnerFaces = mesh.getNbInnerFaces();
 	}
 
 	public void jsonInit(final String jsonContent)
@@ -81,6 +84,7 @@ public final class HeatEquation
 		f = new double[nbCells];
 		outgoingFlux = new double[nbCells];
 		surface = new double[nbFaces];
+		faceFlux = new double[nbFaces];
 
 		// Copy node coordinates
 		double[][] gNodes = mesh.getGeometry().getNodes();
@@ -92,31 +96,25 @@ public final class HeatEquation
 	}
 
 	/**
-	 * Job computeOutgoingFlux called @1.0 in executeTimeLoopN method.
-	 * In variables: V, center, deltat, surface, u_n
-	 * Out variables: outgoingFlux
+	 * Job computeFaceFlux called @1.0 in executeTimeLoopN method.
+	 * In variables: center, u_n
+	 * Out variables: faceFlux
 	 */
-	protected void computeOutgoingFlux()
+	protected void computeFaceFlux()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(j1Cells -> 
 		{
-			final int j1Id = j1Cells;
-			double reduction0 = 0.0;
+			final int[] innerFaces = mesh.getInnerFaces();
+			IntStream.range(0, nbInnerFaces).parallel().forEach(fInnerFaces -> 
 			{
-				final int[] neighbourCellsJ1 = mesh.getNeighbourCells(j1Id);
-				final int nbNeighbourCellsJ1 = neighbourCellsJ1.length;
-				for (int j2NeighbourCellsJ1=0; j2NeighbourCellsJ1<nbNeighbourCellsJ1; j2NeighbourCellsJ1++)
-				{
-					final int j2Id = neighbourCellsJ1[j2NeighbourCellsJ1];
-					final int j2Cells = j2Id;
-					final int cfId = mesh.getCommonFace(j1Id, j2Id);
-					final int cfFaces = cfId;
-					double reduction1 = (u_n[j2Cells] - u_n[j1Cells]) / norm(operatorSub(center[j2Cells], center[j1Cells])) * surface[cfFaces];
-					reduction0 = sumR0(reduction0, reduction1);
-				}
-			}
-			outgoingFlux[j1Cells] = deltat / V[j1Cells] * reduction0;
-		});
+				final int fId = innerFaces[fInnerFaces];
+				final int fFaces = fId;
+				final int j1Id = mesh.getBackCell(fId);
+				final int j1Cells = j1Id;
+				final int j2Id = mesh.getFrontCell(fId);
+				final int j2Cells = j2Id;
+				faceFlux[fFaces] = (u_n[j2Cells] - u_n[j1Cells]) / norm(operatorSub(center[j2Cells], center[j1Cells]));
+			});
+		}
 	}
 
 	/**
@@ -232,15 +230,27 @@ public final class HeatEquation
 	}
 
 	/**
-	 * Job computeUn called @2.0 in executeTimeLoopN method.
-	 * In variables: deltat, f, outgoingFlux, u_n
-	 * Out variables: u_nplus1
+	 * Job computeOutgoingFlux called @2.0 in executeTimeLoopN method.
+	 * In variables: V, deltat, faceFlux, surface
+	 * Out variables: outgoingFlux
 	 */
-	protected void computeUn()
+	protected void computeOutgoingFlux()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
 		{
-			u_nplus1[jCells] = f[jCells] * deltat + u_n[jCells] + outgoingFlux[jCells];
+			final int jId = jCells;
+			double reduction0 = 0.0;
+			{
+				final int[] facesOfCellJ = mesh.getFacesOfCell(jId);
+				final int nbFacesOfCellJ = facesOfCellJ.length;
+				for (int fFacesOfCellJ=0; fFacesOfCellJ<nbFacesOfCellJ; fFacesOfCellJ++)
+				{
+					final int fId = facesOfCellJ[fFacesOfCellJ];
+					final int fFaces = fId;
+					reduction0 = sumR0(reduction0, faceFlux[fFaces] * surface[fFaces]);
+				}
+			}
+			outgoingFlux[jCells] = deltat / V[jCells] * reduction0;
 		});
 	}
 
@@ -268,6 +278,19 @@ public final class HeatEquation
 	}
 
 	/**
+	 * Job computeUn called @3.0 in executeTimeLoopN method.
+	 * In variables: deltat, f, outgoingFlux, u_n
+	 * Out variables: u_nplus1
+	 */
+	protected void computeUn()
+	{
+		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		{
+			u_nplus1[jCells] = f[jCells] * deltat + u_n[jCells] + outgoingFlux[jCells];
+		});
+	}
+
+	/**
 	 * Job executeTimeLoopN called @3.0 in simulate method.
 	 * In variables: lastDump, maxIterations, n, outputPeriod, stopTime, t_n, t_nplus1, u_n
 	 * Out variables: t_nplus1, u_nplus1
@@ -283,9 +306,10 @@ public final class HeatEquation
 			if (n >= lastDump + outputPeriod)
 				dumpVariables(n);
 		
-			computeOutgoingFlux(); // @1.0
+			computeFaceFlux(); // @1.0
 			computeTn(); // @1.0
-			computeUn(); // @2.0
+			computeOutgoingFlux(); // @2.0
+			computeUn(); // @3.0
 		
 			// Evaluate loop condition with variables at time n
 			continueLoop = (t_nplus1 < stopTime && n + 1 < maxIterations);

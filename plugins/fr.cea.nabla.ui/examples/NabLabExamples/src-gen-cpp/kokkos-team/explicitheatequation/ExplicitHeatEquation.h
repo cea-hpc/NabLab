@@ -69,7 +69,9 @@ public:
 	void computeFaceConductivity(const member_type& teamMember) noexcept;
 	void initU(const member_type& teamMember) noexcept;
 	void setUpTimeLoopN() noexcept;
-	void computeAlphaCoeff(const member_type& teamMember) noexcept;
+	void computeAlphaExtraDiag(const member_type& teamMember) noexcept;
+	void assembleAlphaDiag(const member_type& teamMember) noexcept;
+	void assembleAlphaExtraDiag(const member_type& teamMember) noexcept;
 	void executeTimeLoopN() noexcept;
 
 private:
@@ -87,6 +89,7 @@ private:
 	size_t nbNodes;
 	size_t nbCells;
 	size_t nbFaces;
+	size_t nbInnerFaces;
 
 	// Options and global variables
 	PvdFileWriter2D* writer;
@@ -110,6 +113,7 @@ private:
 	Kokkos::View<double*> D;
 	Kokkos::View<double*> faceLength;
 	Kokkos::View<double*> faceConductivity;
+	Kokkos::View<double*> alphaExtraDiag;
 	Kokkos::View<double**> alpha;
 
 	// Timers

@@ -66,7 +66,9 @@ public:
 	void computeFaceConductivity() noexcept;
 	void initU() noexcept;
 	void setUpTimeLoopN() noexcept;
-	void computeAlphaCoeff() noexcept;
+	void computeAlphaExtraDiag() noexcept;
+	void assembleAlphaDiag() noexcept;
+	void assembleAlphaExtraDiag() noexcept;
 	void executeTimeLoopN() noexcept;
 
 private:
@@ -77,6 +79,7 @@ private:
 	size_t nbNodes;
 	size_t nbCells;
 	size_t nbFaces;
+	size_t nbInnerFaces;
 
 	// Options and global variables
 	PvdFileWriter2D* writer;
@@ -101,6 +104,7 @@ private:
 	std::vector<double> D;
 	std::vector<double> faceLength;
 	std::vector<double> faceConductivity;
+	std::vector<double> alphaExtraDiag;
 	Matrix alpha;
 
 	// Timers

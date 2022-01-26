@@ -108,6 +108,7 @@ IterativeHeatEquation::IterativeHeatEquation(CartesianMesh2D& aMesh)
 , nbNodes(mesh.getNbNodes())
 , nbCells(mesh.getNbCells())
 , nbFaces(mesh.getNbFaces())
+, nbInnerFaces(mesh.getNbInnerFaces())
 , X("X", nbNodes)
 , Xc("Xc", nbCells)
 , u_n("u_n", nbCells)
@@ -118,6 +119,7 @@ IterativeHeatEquation::IterativeHeatEquation(CartesianMesh2D& aMesh)
 , D("D", nbCells)
 , faceLength("faceLength", nbFaces)
 , faceConductivity("faceConductivity", nbFaces)
+, alphaExtraDiag("alphaExtraDiag", nbFaces)
 , alpha("alpha", nbCells, nbCells)
 {
 }
@@ -527,38 +529,31 @@ void IterativeHeatEquation::setUpTimeLoopN() noexcept
 }
 
 /**
- * Job computeAlphaCoeff called @3.0 in simulate method.
+ * Job computeAlphaExtraDiag called @3.0 in simulate method.
  * In variables: V, Xc, deltat, faceConductivity, faceLength
- * Out variables: alpha
+ * Out variables: alphaExtraDiag
  */
-void IterativeHeatEquation::computeAlphaCoeff(const member_type& teamMember) noexcept
+void IterativeHeatEquation::computeAlphaExtraDiag(const member_type& teamMember) noexcept
 {
 	{
-		const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
-		if (!teamWork.second)
-			return;
-	
-		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& cCellsTeam)
+		const auto innerFaces(mesh.getInnerFaces());
 		{
-			int cCells(cCellsTeam + teamWork.first);
-			const Id cId(cCells);
-			double alphaDiag(0.0);
+			const auto teamWork(computeTeamWorkRange(teamMember, nbInnerFaces));
+			if (!teamWork.second)
+				return;
+		
+			Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& fInnerFacesTeam)
 			{
-				const auto neighbourCellsC(mesh.getNeighbourCells(cId));
-				const size_t nbNeighbourCellsC(neighbourCellsC.size());
-				for (size_t dNeighbourCellsC=0; dNeighbourCellsC<nbNeighbourCellsC; dNeighbourCellsC++)
-				{
-					const Id dId(neighbourCellsC[dNeighbourCellsC]);
-					const size_t dCells(dId);
-					const Id fId(mesh.getCommonFace(cId, dId));
-					const size_t fFaces(fId);
-					const double alphaExtraDiag(deltat / V(cCells) * (faceLength(fFaces) * faceConductivity(fFaces)) / iterativeheatequationfreefuncs::norm(iterativeheatequationfreefuncs::operatorSub(Xc(cCells), Xc(dCells))));
-					alpha(cCells, dCells) = alphaExtraDiag;
-					alphaDiag = alphaDiag + alphaExtraDiag;
-				}
-			}
-			alpha(cCells, cCells) = -alphaDiag;
-		});
+				int fInnerFaces(fInnerFacesTeam + teamWork.first);
+				const Id fId(innerFaces[fInnerFaces]);
+				const size_t fFaces(fId);
+				const Id cId(mesh.getBackCell(fId));
+				const size_t cCells(cId);
+				const Id dId(mesh.getFrontCell(fId));
+				const size_t dCells(dId);
+				alphaExtraDiag(fFaces) = deltat / V(cCells) * (faceLength(fFaces) * faceConductivity(fFaces)) / iterativeheatequationfreefuncs::norm(iterativeheatequationfreefuncs::operatorSub(Xc(cCells), Xc(dCells)));
+			});
+		}
 	}
 }
 
@@ -583,7 +578,69 @@ void IterativeHeatEquation::tearDownTimeLoopK(const member_type& teamMember) noe
 }
 
 /**
- * Job executeTimeLoopN called @4.0 in simulate method.
+ * Job assembleAlphaDiag called @4.0 in simulate method.
+ * In variables: alphaExtraDiag
+ * Out variables: alpha
+ */
+void IterativeHeatEquation::assembleAlphaDiag(const member_type& teamMember) noexcept
+{
+	{
+		const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
+		if (!teamWork.second)
+			return;
+	
+		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& cCellsTeam)
+		{
+			int cCells(cCellsTeam + teamWork.first);
+			const Id cId(cCells);
+			double reduction0(0.0);
+			{
+				const auto facesOfCellC(mesh.getFacesOfCell(cId));
+				const size_t nbFacesOfCellC(facesOfCellC.size());
+				for (size_t fFacesOfCellC=0; fFacesOfCellC<nbFacesOfCellC; fFacesOfCellC++)
+				{
+					const Id fId(facesOfCellC[fFacesOfCellC]);
+					const size_t fFaces(fId);
+					reduction0 = iterativeheatequationfreefuncs::sumR0(reduction0, alphaExtraDiag(fFaces));
+				}
+			}
+			alpha(cCells, cCells) = -reduction0;
+		});
+	}
+}
+
+/**
+ * Job assembleAlphaExtraDiag called @4.0 in simulate method.
+ * In variables: alphaExtraDiag
+ * Out variables: alpha
+ */
+void IterativeHeatEquation::assembleAlphaExtraDiag(const member_type& teamMember) noexcept
+{
+	{
+		const auto innerFaces(mesh.getInnerFaces());
+		{
+			const auto teamWork(computeTeamWorkRange(teamMember, nbInnerFaces));
+			if (!teamWork.second)
+				return;
+		
+			Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& fInnerFacesTeam)
+			{
+				int fInnerFaces(fInnerFacesTeam + teamWork.first);
+				const Id fId(innerFaces[fInnerFaces]);
+				const size_t fFaces(fId);
+				const Id cId(mesh.getBackCell(fId));
+				const size_t cCells(cId);
+				const Id dId(mesh.getFrontCell(fId));
+				const size_t dCells(dId);
+				alpha(cCells, dCells) = alphaExtraDiag(fFaces);
+				alpha(dCells, cCells) = alphaExtraDiag(fFaces);
+			});
+		}
+	}
+}
+
+/**
+ * Job executeTimeLoopN called @5.0 in simulate method.
  * In variables: lastDump, maxIterations, n, outputPeriod, stopTime, t_n, t_nplus1, u_n
  * Out variables: t_nplus1, u_nplus1
  */
@@ -740,10 +797,17 @@ void IterativeHeatEquation::simulate()
 	// @3.0
 	Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
 	{
-		computeAlphaCoeff(thread);
+		computeAlphaExtraDiag(thread);
 	});
 	
 	// @4.0
+	Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
+	{
+		assembleAlphaDiag(thread);
+		assembleAlphaExtraDiag(thread);
+	});
+	
+	// @5.0
 	executeTimeLoopN();
 	
 	std::cout << "\nFinal time = " << t_n << endl;

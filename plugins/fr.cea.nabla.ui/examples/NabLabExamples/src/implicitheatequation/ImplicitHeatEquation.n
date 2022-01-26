@@ -26,6 +26,7 @@ let ℝ δt = 0.001;
 ℝ V{cells}; // Volume of cells
 ℝ D{cells}; // Cell centered conductivity
 ℝ faceLength{faces}, faceConductivity{faces};
+ℝ αExtraDiag{faces};
 ℝ α{cells, cells}; 
 
 iterate n while (t^{n+1} < stopTime && n+1 < maxIterations);
@@ -47,15 +48,14 @@ ComputeV: ∀j∈cells(), V{j} = 0.5 * ∑{p∈nodesOfCell(j)}(det(X{p}, X{p+1})
 ComputeFaceLength: ∀f∈faces(), faceLength{f} = 0.5 * ∑{p∈nodesOfFace(f)}(norm(X{p} - X{p+1}));
 ComputeFaceConductivity: ∀f∈faces(), faceConductivity{f} = 2.0 * ∏{c1∈cellsOfFace(f)}(D{c1}) / ∑{c2∈cellsOfFace(f)}(D{c2});
 
+ComputeAlphaExtraDiag: ∀f∈innerFaces(), ∀c∈backCell(f), ∀d∈frontCell(f),
+	αExtraDiag{f} = - δt / V{c} * (faceLength{f} *  faceConductivity{f}) / norm(Xc{c} - Xc{d});
+
 // Assembling of the diffusion matrix
-ComputeAlphaCoeff: ∀c∈cells(), {
-	let ℝ αDiag = 0.0;
-	∀d∈neighbourCells(c), ∀f∈commonFace(c,d), {
-		let ℝ αExtraDiag = - δt / V{c} * (faceLength{f} *  faceConductivity{f}) / norm(Xc{c} - Xc{d});
-		α{c, d} = αExtraDiag;
-		αDiag = αDiag + αExtraDiag;
-	}
-	α{c, c} = 1 - αDiag;
+AssembleAlphaDiag: ∀c∈cells(), α{c, c} = 1 - ∑{f∈facesOfCell(c)}(αExtraDiag{f});
+AssembleAlphaExtraDiag: ∀f∈innerFaces(), ∀c∈backCell(f), ∀d∈frontCell(f), {
+		α{c, d} = αExtraDiag{f};
+		α{d, c} = αExtraDiag{f};
 }
 
 UpdateU: u^{n+1} = solveLinearSystem(α, u^{n});

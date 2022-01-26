@@ -241,19 +241,6 @@ public class CartesianMesh2D
 		return new int[] {bottomFace, leftFace, rightFace, topFace};
 	}
 
-	public int getCommonFace(int cell1, int cell2)
-	{
-		int[] cell1Faces = getFacesOfCell(cell1);
-		int[] cell2Faces = getFacesOfCell(cell2);
-
-		Set<Integer> set = new HashSet<>(Arrays.stream(cell1Faces).boxed().collect(Collectors.toList()));
-		set.retainAll(Arrays.stream(cell2Faces).boxed().collect(Collectors.toList()));
-		if (set.isEmpty()) 
-			return -1;
-		else 
-			return new ArrayList<>(set).get(0);
-	}
-
 	public int getBackCell(int faceId)
 	{
 		int[] cells = getCellsOfFace(faceId);

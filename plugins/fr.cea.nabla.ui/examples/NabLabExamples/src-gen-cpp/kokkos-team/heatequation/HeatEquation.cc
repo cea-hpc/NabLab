@@ -85,6 +85,7 @@ HeatEquation::HeatEquation(CartesianMesh2D& aMesh)
 , nbNodes(mesh.getNbNodes())
 , nbCells(mesh.getNbCells())
 , nbFaces(mesh.getNbFaces())
+, nbInnerFaces(mesh.getNbInnerFaces())
 , X("X", nbNodes)
 , center("center", nbCells)
 , u_n("u_n", nbCells)
@@ -93,6 +94,7 @@ HeatEquation::HeatEquation(CartesianMesh2D& aMesh)
 , f("f", nbCells)
 , outgoingFlux("outgoingFlux", nbCells)
 , surface("surface", nbFaces)
+, faceFlux("faceFlux", nbFaces)
 {
 }
 
@@ -161,37 +163,31 @@ const std::pair<size_t, size_t> HeatEquation::computeTeamWorkRange(const member_
 }
 
 /**
- * Job computeOutgoingFlux called @1.0 in executeTimeLoopN method.
- * In variables: V, center, deltat, surface, u_n
- * Out variables: outgoingFlux
+ * Job computeFaceFlux called @1.0 in executeTimeLoopN method.
+ * In variables: center, u_n
+ * Out variables: faceFlux
  */
-void HeatEquation::computeOutgoingFlux(const member_type& teamMember) noexcept
+void HeatEquation::computeFaceFlux(const member_type& teamMember) noexcept
 {
 	{
-		const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
-		if (!teamWork.second)
-			return;
-	
-		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& j1CellsTeam)
+		const auto innerFaces(mesh.getInnerFaces());
 		{
-			int j1Cells(j1CellsTeam + teamWork.first);
-			const Id j1Id(j1Cells);
-			double reduction0(0.0);
+			const auto teamWork(computeTeamWorkRange(teamMember, nbInnerFaces));
+			if (!teamWork.second)
+				return;
+		
+			Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& fInnerFacesTeam)
 			{
-				const auto neighbourCellsJ1(mesh.getNeighbourCells(j1Id));
-				const size_t nbNeighbourCellsJ1(neighbourCellsJ1.size());
-				for (size_t j2NeighbourCellsJ1=0; j2NeighbourCellsJ1<nbNeighbourCellsJ1; j2NeighbourCellsJ1++)
-				{
-					const Id j2Id(neighbourCellsJ1[j2NeighbourCellsJ1]);
-					const size_t j2Cells(j2Id);
-					const Id cfId(mesh.getCommonFace(j1Id, j2Id));
-					const size_t cfFaces(cfId);
-					double reduction1((u_n(j2Cells) - u_n(j1Cells)) / heatequationfreefuncs::norm(heatequationfreefuncs::operatorSub(center(j2Cells), center(j1Cells))) * surface(cfFaces));
-					reduction0 = heatequationfreefuncs::sumR0(reduction0, reduction1);
-				}
-			}
-			outgoingFlux(j1Cells) = deltat / V(j1Cells) * reduction0;
-		});
+				int fInnerFaces(fInnerFacesTeam + teamWork.first);
+				const Id fId(innerFaces[fInnerFaces]);
+				const size_t fFaces(fId);
+				const Id j1Id(mesh.getBackCell(fId));
+				const size_t j1Cells(j1Id);
+				const Id j2Id(mesh.getFrontCell(fId));
+				const size_t j2Cells(j2Id);
+				faceFlux(fFaces) = (u_n(j2Cells) - u_n(j1Cells)) / heatequationfreefuncs::norm(heatequationfreefuncs::operatorSub(center(j2Cells), center(j1Cells)));
+			});
+		}
 	}
 }
 
@@ -336,11 +332,11 @@ void HeatEquation::iniTime() noexcept
 }
 
 /**
- * Job computeUn called @2.0 in executeTimeLoopN method.
- * In variables: deltat, f, outgoingFlux, u_n
- * Out variables: u_nplus1
+ * Job computeOutgoingFlux called @2.0 in executeTimeLoopN method.
+ * In variables: V, deltat, faceFlux, surface
+ * Out variables: outgoingFlux
  */
-void HeatEquation::computeUn(const member_type& teamMember) noexcept
+void HeatEquation::computeOutgoingFlux(const member_type& teamMember) noexcept
 {
 	{
 		const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
@@ -350,7 +346,19 @@ void HeatEquation::computeUn(const member_type& teamMember) noexcept
 		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& jCellsTeam)
 		{
 			int jCells(jCellsTeam + teamWork.first);
-			u_nplus1(jCells) = f(jCells) * deltat + u_n(jCells) + outgoingFlux(jCells);
+			const Id jId(jCells);
+			double reduction0(0.0);
+			{
+				const auto facesOfCellJ(mesh.getFacesOfCell(jId));
+				const size_t nbFacesOfCellJ(facesOfCellJ.size());
+				for (size_t fFacesOfCellJ=0; fFacesOfCellJ<nbFacesOfCellJ; fFacesOfCellJ++)
+				{
+					const Id fId(facesOfCellJ[fFacesOfCellJ]);
+					const size_t fFaces(fId);
+					reduction0 = heatequationfreefuncs::sumR0(reduction0, faceFlux(fFaces) * surface(fFaces));
+				}
+			}
+			outgoingFlux(jCells) = deltat / V(jCells) * reduction0;
 		});
 	}
 }
@@ -386,6 +394,26 @@ void HeatEquation::setUpTimeLoopN() noexcept
 }
 
 /**
+ * Job computeUn called @3.0 in executeTimeLoopN method.
+ * In variables: deltat, f, outgoingFlux, u_n
+ * Out variables: u_nplus1
+ */
+void HeatEquation::computeUn(const member_type& teamMember) noexcept
+{
+	{
+		const auto teamWork(computeTeamWorkRange(teamMember, nbCells));
+		if (!teamWork.second)
+			return;
+	
+		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& jCellsTeam)
+		{
+			int jCells(jCellsTeam + teamWork.first);
+			u_nplus1(jCells) = f(jCells) * deltat + u_n(jCells) + outgoingFlux(jCells);
+		});
+	}
+}
+
+/**
  * Job executeTimeLoopN called @3.0 in simulate method.
  * In variables: lastDump, maxIterations, n, outputPeriod, stopTime, t_n, t_nplus1, u_n
  * Out variables: t_nplus1, u_nplus1
@@ -412,12 +440,18 @@ void HeatEquation::executeTimeLoopN() noexcept
 		// @1.0
 		Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
 		{
-			computeOutgoingFlux(thread);
+			computeFaceFlux(thread);
 			if (thread.league_rank() == 0)
 				Kokkos::single(Kokkos::PerTeam(thread), KOKKOS_LAMBDA(){computeTn();});
 		});
 		
 		// @2.0
+		Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
+		{
+			computeOutgoingFlux(thread);
+		});
+		
+		// @3.0
 		Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
 		{
 			computeUn(thread);

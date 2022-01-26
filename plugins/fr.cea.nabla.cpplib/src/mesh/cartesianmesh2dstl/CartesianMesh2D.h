@@ -89,8 +89,6 @@ public:
 	vector<Id> getNeighbourCells(const Id& cellId) const;
 	vector<Id> getFacesOfCell(const Id& cellId) const;
 
-	Id getCommonFace(const Id& cellId1, const Id& cellId2) const;
-
 	Id getBackCell(const Id& faceId) const;
 	Id getFrontCell(const Id& faceId) const;
 	Id getTopFaceOfCell(const Id& cellId) const noexcept;

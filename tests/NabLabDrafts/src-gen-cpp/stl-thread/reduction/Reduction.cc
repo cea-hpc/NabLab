@@ -39,13 +39,11 @@ RealArray1D<x0> operatorAdd(RealArray1D<x0> a, RealArray1D<x0> b)
 Reduction::Reduction(CartesianMesh2D& aMesh)
 : mesh(aMesh)
 , nbNodes(mesh.getNbNodes())
-, maxNbCellsOfNode(CartesianMesh2D::MaxNbCellsOfNode)
 , nbCells(mesh.getNbCells())
-, maxNbNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
 , X(nbNodes)
 , Vnode_n(nbNodes)
 , Vnode_nplus1(nbNodes)
-, lpc_n(nbNodes, std::vector<RealArray1D<2>>(maxNbCellsOfNode))
+, lpc_n(nbNodes, std::vector<RealArray1D<2>>(4))
 {
 }
 
@@ -71,7 +69,6 @@ Reduction::jsonInit(const char* jsonContent)
 		X[rNodes][1] = gNodes[rNodes][1];
 	}
 }
-
 
 /**
  * Job computeGeometry called @1.0 in simulate method.

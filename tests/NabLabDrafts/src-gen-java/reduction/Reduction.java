@@ -16,9 +16,8 @@ public final class Reduction
 {
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
-	@SuppressWarnings("unused")
-	private final int nbNodes, maxNbCellsOfNode, nbCells, maxNbNodesOfCell;
-
+	private final int nbNodes;
+	private final int nbCells;
 	// Options and global variables
 	int n;
 	static final double maxTime = 0.1;
@@ -36,9 +35,7 @@ public final class Reduction
 		// Mesh and mesh variables initialization
 		mesh = aMesh;
 		nbNodes = mesh.getNbNodes();
-		maxNbCellsOfNode = CartesianMesh2D.MaxNbCellsOfNode;
 		nbCells = mesh.getNbCells();
-		maxNbNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
 	}
 
 	public void jsonInit(final String jsonContent)
@@ -49,7 +46,7 @@ public final class Reduction
 		X = new double[nbNodes][2];
 		Vnode_n = new double[nbNodes][2];
 		Vnode_nplus1 = new double[nbNodes][2];
-		lpc_n = new double[nbNodes][maxNbCellsOfNode][2];
+		lpc_n = new double[nbNodes][4][2];
 
 		// Copy node coordinates
 		double[][] gNodes = mesh.getGeometry().getNodes();

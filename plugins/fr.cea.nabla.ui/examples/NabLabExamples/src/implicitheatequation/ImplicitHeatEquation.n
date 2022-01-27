@@ -48,12 +48,12 @@ ComputeV: ∀j∈cells(), V{j} = 0.5 * ∑{p∈nodesOfCell(j)}(det(X{p}, X{p+1})
 ComputeFaceLength: ∀f∈faces(), faceLength{f} = 0.5 * ∑{p∈nodesOfFace(f)}(norm(X{p} - X{p+1}));
 ComputeFaceConductivity: ∀f∈faces(), faceConductivity{f} = 2.0 * ∏{c1∈cellsOfFace(f)}(D{c1}) / ∑{c2∈cellsOfFace(f)}(D{c2});
 
-ComputeAlphaExtraDiag: ∀f∈innerFaces(), ∀c∈backCell(f), ∀d∈frontCell(f),
+ComputeAlphaExtraDiag: ∀f∈faces("InnerFaces"), ∀c∈backCell(f), ∀d∈frontCell(f),
 	αExtraDiag{f} = - δt / V{c} * (faceLength{f} *  faceConductivity{f}) / norm(Xc{c} - Xc{d});
 
 // Assembling of the diffusion matrix
 AssembleAlphaDiag: ∀c∈cells(), α{c, c} = 1 - ∑{f∈facesOfCell(c)}(αExtraDiag{f});
-AssembleAlphaExtraDiag: ∀f∈innerFaces(), ∀c∈backCell(f), ∀d∈frontCell(f), {
+AssembleAlphaExtraDiag: ∀f∈faces("InnerFaces"), ∀c∈backCell(f), ∀d∈frontCell(f), {
 		α{c, d} = αExtraDiag{f};
 		α{d, c} = αExtraDiag{f};
 }

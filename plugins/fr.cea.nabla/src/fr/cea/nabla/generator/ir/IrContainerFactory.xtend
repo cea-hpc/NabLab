@@ -38,7 +38,9 @@ class IrContainerFactory
 	// No create method: always an instance creation, always in containment true
 	def fr.cea.nabla.ir.ir.ConnectivityCall toIrConnectivityCall(ConnectivityCall cc)
 	{
-		toIrConnectivityCall(cc.connectivity, cc.args)
+		val ircc = toIrConnectivityCall(cc.connectivity, cc.args)
+		ircc.group = cc.group
+		return ircc
 	}
 
 	def fr.cea.nabla.ir.ir.ConnectivityCall toIrConnectivityCall(Connectivity c, List<SpaceIteratorRef> largs)

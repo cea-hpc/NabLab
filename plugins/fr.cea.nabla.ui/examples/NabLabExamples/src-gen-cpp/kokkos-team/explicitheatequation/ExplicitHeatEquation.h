@@ -89,7 +89,6 @@ private:
 	size_t nbNodes;
 	size_t nbCells;
 	size_t nbFaces;
-	size_t nbInnerFaces;
 
 	// Options and global variables
 	PvdFileWriter2D* writer;

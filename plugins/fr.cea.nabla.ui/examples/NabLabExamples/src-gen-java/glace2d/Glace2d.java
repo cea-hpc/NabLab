@@ -18,11 +18,11 @@ public final class Glace2d
 	private final CartesianMesh2D mesh;
 	private final int nbNodes;
 	private final int nbCells;
-	private final int nbInnerNodes;
 	private final int nbTopNodes;
 	private final int nbBottomNodes;
 	private final int nbLeftNodes;
 	private final int nbRightNodes;
+	private final int nbInnerNodes;
 	// Options and global variables
 	private PvdFileWriter2D writer;
 	private String outputPath;
@@ -73,11 +73,11 @@ public final class Glace2d
 		mesh = aMesh;
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
-		nbInnerNodes = mesh.getNbInnerNodes();
-		nbTopNodes = mesh.getNbTopNodes();
-		nbBottomNodes = mesh.getNbBottomNodes();
-		nbLeftNodes = mesh.getNbLeftNodes();
-		nbRightNodes = mesh.getNbRightNodes();
+		nbTopNodes = mesh.getGroup("TopNodes").length;
+		nbBottomNodes = mesh.getGroup("BottomNodes").length;
+		nbLeftNodes = mesh.getGroup("LeftNodes").length;
+		nbRightNodes = mesh.getGroup("RightNodes").length;
+		nbInnerNodes = mesh.getGroup("InnerNodes").length;
 	}
 
 	public void jsonInit(final String jsonContent)
@@ -380,6 +380,11 @@ public final class Glace2d
 			// Evaluate loop condition with variables at time n
 			continueLoop = (t_nplus1 < stopTime && n + 1 < maxIterations);
 		
+			// fr.cea.nabla.ir.ir.impl.AffectationImpl
+			// fr.cea.nabla.ir.ir.impl.LoopImpl
+			// fr.cea.nabla.ir.ir.impl.LoopImpl
+			// fr.cea.nabla.ir.ir.impl.LoopImpl
+			// instruction content
 			t_n = t_nplus1;
 			IntStream.range(0, nbNodes).parallel().forEach(i1Nodes -> 
 			{
@@ -565,7 +570,7 @@ public final class Glace2d
 	{
 		final double[][] I = new double[][] {new double[] {1.0, 0.0}, new double[] {0.0, 1.0}};
 		{
-			final int[] topNodes = mesh.getTopNodes();
+			final int[] topNodes = mesh.getGroup("TopNodes");
 			IntStream.range(0, nbTopNodes).parallel().forEach(rTopNodes -> 
 			{
 				final int rId = topNodes[rTopNodes];
@@ -578,7 +583,7 @@ public final class Glace2d
 			});
 		}
 		{
-			final int[] bottomNodes = mesh.getBottomNodes();
+			final int[] bottomNodes = mesh.getGroup("BottomNodes");
 			IntStream.range(0, nbBottomNodes).parallel().forEach(rBottomNodes -> 
 			{
 				final int rId = bottomNodes[rBottomNodes];
@@ -591,7 +596,7 @@ public final class Glace2d
 			});
 		}
 		{
-			final int[] leftNodes = mesh.getLeftNodes();
+			final int[] leftNodes = mesh.getGroup("LeftNodes");
 			IntStream.range(0, nbLeftNodes).parallel().forEach(rLeftNodes -> 
 			{
 				final int rId = leftNodes[rLeftNodes];
@@ -607,7 +612,7 @@ public final class Glace2d
 			});
 		}
 		{
-			final int[] rightNodes = mesh.getRightNodes();
+			final int[] rightNodes = mesh.getGroup("RightNodes");
 			IntStream.range(0, nbRightNodes).parallel().forEach(rRightNodes -> 
 			{
 				final int rId = rightNodes[rRightNodes];
@@ -632,7 +637,7 @@ public final class Glace2d
 	protected void computeBt()
 	{
 		{
-			final int[] innerNodes = mesh.getInnerNodes();
+			final int[] innerNodes = mesh.getGroup("InnerNodes");
 			IntStream.range(0, nbInnerNodes).parallel().forEach(rInnerNodes -> 
 			{
 				final int rId = innerNodes[rInnerNodes];
@@ -653,7 +658,7 @@ public final class Glace2d
 	protected void computeMt()
 	{
 		{
-			final int[] innerNodes = mesh.getInnerNodes();
+			final int[] innerNodes = mesh.getGroup("InnerNodes");
 			IntStream.range(0, nbInnerNodes).parallel().forEach(rInnerNodes -> 
 			{
 				final int rId = innerNodes[rInnerNodes];

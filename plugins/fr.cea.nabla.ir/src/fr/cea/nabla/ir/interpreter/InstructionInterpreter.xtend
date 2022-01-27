@@ -165,7 +165,7 @@ class InstructionInterpreter
 	{
 		context.logFinest("Interprete ItemIndexDefinition")
 		val idValue = context.getIdValue(value.id)
-		if (value.container.connectivity.indexEqualId) 
+		if (value.container.indexEqualId) 
 			context.addIndexValue(index, idValue)
 		else 
 		{
@@ -229,7 +229,7 @@ class InstructionInterpreter
 
 	private static dispatch def getIdValue(ItemIdValueIterator it, Context context)
 	{
-		if (iterator.container.connectivityCall.connectivity.indexEqualId)
+		if (iterator.container.connectivityCall.indexEqualId)
 			getIndexValue(context)
 		else
 		{

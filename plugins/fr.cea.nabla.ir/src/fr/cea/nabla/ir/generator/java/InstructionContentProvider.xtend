@@ -156,7 +156,7 @@ class InstructionContentProvider
 	// ### IterationBlock Extensions ###
 	private static def dispatch defineInterval(Iterator it, CharSequence innerContent)
 	{
-		if (container.connectivityCall.connectivity.indexEqualId)
+		if (container.connectivityCall.indexEqualId)
 			innerContent
 		else
 		{

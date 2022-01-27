@@ -51,7 +51,7 @@ public final class HeatEquation
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
 		nbFaces = mesh.getNbFaces();
-		nbInnerFaces = mesh.getNbInnerFaces();
+		nbInnerFaces = mesh.getGroup("InnerFaces").length;
 	}
 
 	public void jsonInit(final String jsonContent)
@@ -103,7 +103,7 @@ public final class HeatEquation
 	protected void computeFaceFlux()
 	{
 		{
-			final int[] innerFaces = mesh.getInnerFaces();
+			final int[] innerFaces = mesh.getGroup("InnerFaces");
 			IntStream.range(0, nbInnerFaces).parallel().forEach(fInnerFaces -> 
 			{
 				final int fId = innerFaces[fInnerFaces];

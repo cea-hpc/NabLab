@@ -95,7 +95,6 @@ ExplicitHeatEquation::ExplicitHeatEquation(CartesianMesh2D& aMesh)
 , nbNodes(mesh.getNbNodes())
 , nbCells(mesh.getNbCells())
 , nbFaces(mesh.getNbFaces())
-, nbInnerFaces(mesh.getNbInnerFaces())
 , X("X", nbNodes)
 , Xc("Xc", nbCells)
 , u_n("u_n", nbCells)
@@ -445,7 +444,7 @@ void ExplicitHeatEquation::setUpTimeLoopN() noexcept
 void ExplicitHeatEquation::computeAlphaExtraDiag(const member_type& teamMember) noexcept
 {
 	{
-		const auto innerFaces(mesh.getInnerFaces());
+		const auto innerFaces(mesh.getGroup("InnerFaces"));
 		{
 			const auto teamWork(computeTeamWorkRange(teamMember, nbInnerFaces));
 			if (!teamWork.second)
@@ -506,7 +505,7 @@ void ExplicitHeatEquation::assembleAlphaDiag(const member_type& teamMember) noex
 void ExplicitHeatEquation::assembleAlphaExtraDiag(const member_type& teamMember) noexcept
 {
 	{
-		const auto innerFaces(mesh.getInnerFaces());
+		const auto innerFaces(mesh.getGroup("InnerFaces"));
 		{
 			const auto teamWork(computeTeamWorkRange(teamMember, nbInnerFaces));
 			if (!teamWork.second)

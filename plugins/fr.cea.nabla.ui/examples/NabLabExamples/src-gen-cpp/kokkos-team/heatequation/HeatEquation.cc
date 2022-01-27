@@ -85,7 +85,6 @@ HeatEquation::HeatEquation(CartesianMesh2D& aMesh)
 , nbNodes(mesh.getNbNodes())
 , nbCells(mesh.getNbCells())
 , nbFaces(mesh.getNbFaces())
-, nbInnerFaces(mesh.getNbInnerFaces())
 , X("X", nbNodes)
 , center("center", nbCells)
 , u_n("u_n", nbCells)
@@ -170,7 +169,7 @@ const std::pair<size_t, size_t> HeatEquation::computeTeamWorkRange(const member_
 void HeatEquation::computeFaceFlux(const member_type& teamMember) noexcept
 {
 	{
-		const auto innerFaces(mesh.getInnerFaces());
+		const auto innerFaces(mesh.getGroup("InnerFaces"));
 		{
 			const auto teamWork(computeTeamWorkRange(teamMember, nbInnerFaces));
 			if (!teamWork.second)

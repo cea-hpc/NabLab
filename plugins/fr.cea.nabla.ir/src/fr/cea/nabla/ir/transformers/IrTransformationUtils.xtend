@@ -20,10 +20,10 @@ class IrTransformationUtils
 	{
 		#[
 			new ReplaceUtf8Chars,
-			new ConfigureMesh,
 			new ReplaceReductions(replaceAllReductions),
 			new ReplaceAffectations,
 			new CreateArrayOperators,
+			new ConfigureMesh,
 			new FillJobHLTs
 		]
 	}

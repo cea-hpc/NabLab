@@ -85,7 +85,6 @@ HeatEquation::HeatEquation(CartesianMesh2D& aMesh)
 , nbNodes(mesh.getNbNodes())
 , nbCells(mesh.getNbCells())
 , nbFaces(mesh.getNbFaces())
-, nbInnerFaces(mesh.getNbInnerFaces())
 , X("X", nbNodes)
 , center("center", nbCells)
 , u_n("u_n", nbCells)
@@ -147,7 +146,7 @@ HeatEquation::jsonInit(const char* jsonContent)
 void HeatEquation::computeFaceFlux() noexcept
 {
 	{
-		const auto innerFaces(mesh.getInnerFaces());
+		const auto innerFaces(mesh.getGroup("InnerFaces"));
 		Kokkos::parallel_for(nbInnerFaces, KOKKOS_LAMBDA(const size_t& fInnerFaces)
 		{
 			const Id fId(innerFaces[fInnerFaces]);

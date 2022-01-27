@@ -53,7 +53,7 @@ public final class ImplicitHeatEquation
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
 		nbFaces = mesh.getNbFaces();
-		nbInnerFaces = mesh.getNbInnerFaces();
+		nbInnerFaces = mesh.getGroup("InnerFaces").length;
 	}
 
 	public void jsonInit(final String jsonContent)
@@ -315,7 +315,7 @@ public final class ImplicitHeatEquation
 	protected void computeAlphaExtraDiag()
 	{
 		{
-			final int[] innerFaces = mesh.getInnerFaces();
+			final int[] innerFaces = mesh.getGroup("InnerFaces");
 			IntStream.range(0, nbInnerFaces).parallel().forEach(fInnerFaces -> 
 			{
 				final int fId = innerFaces[fInnerFaces];
@@ -362,7 +362,7 @@ public final class ImplicitHeatEquation
 	protected void assembleAlphaExtraDiag()
 	{
 		{
-			final int[] innerFaces = mesh.getInnerFaces();
+			final int[] innerFaces = mesh.getGroup("InnerFaces");
 			IntStream.range(0, nbInnerFaces).parallel().forEach(fInnerFaces -> 
 			{
 				final int fId = innerFaces[fInnerFaces];
@@ -399,6 +399,9 @@ public final class ImplicitHeatEquation
 			// Evaluate loop condition with variables at time n
 			continueLoop = (t_nplus1 < stopTime && n + 1 < maxIterations);
 		
+			// fr.cea.nabla.ir.ir.impl.AffectationImpl
+			// fr.cea.nabla.ir.ir.impl.AffectationImpl
+			// instruction content
 			t_n = t_nplus1;
 			u_n = u_nplus1;
 		} while (continueLoop);

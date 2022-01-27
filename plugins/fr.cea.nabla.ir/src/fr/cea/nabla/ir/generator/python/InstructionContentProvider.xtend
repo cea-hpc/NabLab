@@ -71,7 +71,7 @@ class InstructionContentProvider
 	'''
 		«IF iterationBlock instanceof Iterator»
 			«val iter = iterationBlock as Iterator»
-			«IF !iter.container.connectivityCall.connectivity.indexEqualId»
+			«IF !iter.container.connectivityCall.indexEqualId»
 				«val c = iter.container»
 				«IF c instanceof ConnectivityCall»«getSetDefinitionContent(c.uniqueName, c as ConnectivityCall)»«ENDIF»
 				«IF !c.connectivityCall.args.empty»«iter.getNbElems» = len(«c.uniqueName»)«ENDIF»

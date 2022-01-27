@@ -95,7 +95,6 @@ ExplicitHeatEquation::ExplicitHeatEquation(CartesianMesh2D& aMesh)
 , nbNodes(mesh.getNbNodes())
 , nbCells(mesh.getNbCells())
 , nbFaces(mesh.getNbFaces())
-, nbInnerFaces(mesh.getNbInnerFaces())
 , X(nbNodes)
 , Xc(nbCells)
 , u_n(nbCells)
@@ -381,7 +380,7 @@ void ExplicitHeatEquation::setUpTimeLoopN() noexcept
 void ExplicitHeatEquation::computeAlphaExtraDiag() noexcept
 {
 	{
-		const auto innerFaces(mesh.getInnerFaces());
+		const auto innerFaces(mesh.getGroup("InnerFaces"));
 		#pragma omp parallel for
 		for (size_t fInnerFaces=0; fInnerFaces<nbInnerFaces; fInnerFaces++)
 		{
@@ -430,7 +429,7 @@ void ExplicitHeatEquation::assembleAlphaDiag() noexcept
 void ExplicitHeatEquation::assembleAlphaExtraDiag() noexcept
 {
 	{
-		const auto innerFaces(mesh.getInnerFaces());
+		const auto innerFaces(mesh.getGroup("InnerFaces"));
 		#pragma omp parallel for
 		for (size_t fInnerFaces=0; fInnerFaces<nbInnerFaces; fInnerFaces++)
 		{

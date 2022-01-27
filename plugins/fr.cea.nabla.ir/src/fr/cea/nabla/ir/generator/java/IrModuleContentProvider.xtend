@@ -61,7 +61,10 @@ class IrModuleContentProvider
 		{
 			// Mesh and mesh variables
 			private final «irRoot.mesh.className» mesh;
-			«FOR c : irRoot.mesh.connectivities.filter[x | x.multiple && x.inTypes.empty]»
+			«FOR c : neededConnectivityAttributes»
+				private final int «c.nbElemsVar»;
+			«ENDFOR»
+			«FOR c : neededGroupAttributes»
 				private final int «c.nbElemsVar»;
 			«ENDFOR»
 			«IF irRoot.modules.size > 1»
@@ -101,8 +104,11 @@ class IrModuleContentProvider
 			{
 				// Mesh and mesh variables initialization
 				mesh = aMesh;
-				«FOR c : irRoot.mesh.connectivities.filter[x | x.multiple && x.inTypes.empty]»
-					«c.nbElemsVar» = mesh.getNb«c.name.toFirstUpper»();
+				«FOR a : neededConnectivityAttributes»
+					«a.nbElemsVar» = mesh.getNb«a.name.toFirstUpper»();
+				«ENDFOR»
+				«FOR a : neededGroupAttributes»
+					«a.nbElemsVar» = mesh.getGroup("«a»").length;
 				«ENDFOR»
 			}
 

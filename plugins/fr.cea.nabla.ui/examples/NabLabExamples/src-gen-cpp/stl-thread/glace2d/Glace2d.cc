@@ -217,11 +217,6 @@ Glace2d::Glace2d(CartesianMesh2D& aMesh)
 : mesh(aMesh)
 , nbNodes(mesh.getNbNodes())
 , nbCells(mesh.getNbCells())
-, nbInnerNodes(mesh.getNbInnerNodes())
-, nbTopNodes(mesh.getNbTopNodes())
-, nbBottomNodes(mesh.getNbBottomNodes())
-, nbLeftNodes(mesh.getNbLeftNodes())
-, nbRightNodes(mesh.getNbRightNodes())
 , X_n(nbNodes)
 , X_nplus1(nbNodes)
 , X_n0(nbNodes)
@@ -738,7 +733,7 @@ void Glace2d::computeBoundaryConditions() noexcept
 {
 	const RealArray2D<2,2> I({1.0, 0.0, 0.0, 1.0});
 	{
-		const auto topNodes(mesh.getTopNodes());
+		const auto topNodes(mesh.getGroup("TopNodes"));
 		parallel_exec(nbTopNodes, [&](const size_t& rTopNodes)
 		{
 			const Id rId(topNodes[rTopNodes]);
@@ -751,7 +746,7 @@ void Glace2d::computeBoundaryConditions() noexcept
 		});
 	}
 	{
-		const auto bottomNodes(mesh.getBottomNodes());
+		const auto bottomNodes(mesh.getGroup("BottomNodes"));
 		parallel_exec(nbBottomNodes, [&](const size_t& rBottomNodes)
 		{
 			const Id rId(bottomNodes[rBottomNodes]);
@@ -764,7 +759,7 @@ void Glace2d::computeBoundaryConditions() noexcept
 		});
 	}
 	{
-		const auto leftNodes(mesh.getLeftNodes());
+		const auto leftNodes(mesh.getGroup("LeftNodes"));
 		parallel_exec(nbLeftNodes, [&](const size_t& rLeftNodes)
 		{
 			const Id rId(leftNodes[rLeftNodes]);
@@ -780,7 +775,7 @@ void Glace2d::computeBoundaryConditions() noexcept
 		});
 	}
 	{
-		const auto rightNodes(mesh.getRightNodes());
+		const auto rightNodes(mesh.getGroup("RightNodes"));
 		parallel_exec(nbRightNodes, [&](const size_t& rRightNodes)
 		{
 			const Id rId(rightNodes[rRightNodes]);
@@ -805,7 +800,7 @@ void Glace2d::computeBoundaryConditions() noexcept
 void Glace2d::computeBt() noexcept
 {
 	{
-		const auto innerNodes(mesh.getInnerNodes());
+		const auto innerNodes(mesh.getGroup("InnerNodes"));
 		parallel_exec(nbInnerNodes, [&](const size_t& rInnerNodes)
 		{
 			const Id rId(innerNodes[rInnerNodes]);
@@ -826,7 +821,7 @@ void Glace2d::computeBt() noexcept
 void Glace2d::computeMt() noexcept
 {
 	{
-		const auto innerNodes(mesh.getInnerNodes());
+		const auto innerNodes(mesh.getGroup("InnerNodes"));
 		parallel_exec(nbInnerNodes, [&](const size_t& rInnerNodes)
 		{
 			const Id rId(innerNodes[rInnerNodes]);

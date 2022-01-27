@@ -108,7 +108,6 @@ IterativeHeatEquation::IterativeHeatEquation(CartesianMesh2D& aMesh)
 , nbNodes(mesh.getNbNodes())
 , nbCells(mesh.getNbCells())
 , nbFaces(mesh.getNbFaces())
-, nbInnerFaces(mesh.getNbInnerFaces())
 , X(nbNodes)
 , Xc(nbCells)
 , u_n(nbCells)
@@ -454,7 +453,7 @@ void IterativeHeatEquation::setUpTimeLoopN() noexcept
 void IterativeHeatEquation::computeAlphaExtraDiag() noexcept
 {
 	{
-		const auto innerFaces(mesh.getInnerFaces());
+		const auto innerFaces(mesh.getGroup("InnerFaces"));
 		#pragma omp parallel for
 		for (size_t fInnerFaces=0; fInnerFaces<nbInnerFaces; fInnerFaces++)
 		{
@@ -517,7 +516,7 @@ void IterativeHeatEquation::assembleAlphaDiag() noexcept
 void IterativeHeatEquation::assembleAlphaExtraDiag() noexcept
 {
 	{
-		const auto innerFaces(mesh.getInnerFaces());
+		const auto innerFaces(mesh.getGroup("InnerFaces"));
 		#pragma omp parallel for
 		for (size_t fInnerFaces=0; fInnerFaces<nbInnerFaces; fInnerFaces++)
 		{

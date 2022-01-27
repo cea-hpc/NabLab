@@ -68,10 +68,8 @@ public:
 	void executeTimeLoopK() noexcept;
 	void initU() noexcept;
 	void setUpTimeLoopN() noexcept;
-	void computeAlphaExtraDiag() noexcept;
+	void computeAlphaCoeff() noexcept;
 	void tearDownTimeLoopK() noexcept;
-	void assembleAlphaDiag() noexcept;
-	void assembleAlphaExtraDiag() noexcept;
 	void executeTimeLoopN() noexcept;
 
 private:
@@ -110,7 +108,6 @@ private:
 	std::vector<double> D;
 	std::vector<double> faceLength;
 	std::vector<double> faceConductivity;
-	std::vector<double> alphaExtraDiag;
 	std::vector<std::vector<double>> alpha;
 	double residual;
 

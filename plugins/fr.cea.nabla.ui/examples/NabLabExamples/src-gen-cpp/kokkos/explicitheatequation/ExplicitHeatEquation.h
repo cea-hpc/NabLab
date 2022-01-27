@@ -67,9 +67,7 @@ public:
 	void computeFaceConductivity() noexcept;
 	void initU() noexcept;
 	void setUpTimeLoopN() noexcept;
-	void computeAlphaExtraDiag() noexcept;
-	void assembleAlphaDiag() noexcept;
-	void assembleAlphaExtraDiag() noexcept;
+	void computeAlphaCoeff() noexcept;
 	void executeTimeLoopN() noexcept;
 
 private:
@@ -103,7 +101,6 @@ private:
 	Kokkos::View<double*> D;
 	Kokkos::View<double*> faceLength;
 	Kokkos::View<double*> faceConductivity;
-	Kokkos::View<double*> alphaExtraDiag;
 	Kokkos::View<double**> alpha;
 
 	// Timers

@@ -236,6 +236,15 @@ class CartesianMesh2D:
         rightFace = bottomFace + (2 if j == self.__nbXQuads else 3)
         topFace = bottomFace + (2 *  self.__nbXQuads + 1 if i <  self.__nbYQuads - 1 else 2 *  self.__nbXQuads + 1 - j)
         return [bottomFace, leftFace, rightFace, topFace]
+
+    def getCommonFace(self, cell1, cell2):
+        cell1Faces = self.getFacesOfCell(cell1);
+        cell2Faces = self.getFacesOfCell(cell2);
+        commonFace = list(set(cell1Faces).intersection(cell2Faces))
+        if commonFace:
+            return commonFace[0]
+        else:
+            return -1;
         
     def getBackCell(self, faceId):
         cells = self.getCellsOfFace(faceId);

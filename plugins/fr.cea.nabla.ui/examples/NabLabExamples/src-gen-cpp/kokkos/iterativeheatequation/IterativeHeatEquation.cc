@@ -118,7 +118,6 @@ IterativeHeatEquation::IterativeHeatEquation(CartesianMesh2D& aMesh)
 , D("D", nbCells)
 , faceLength("faceLength", nbFaces)
 , faceConductivity("faceConductivity", nbFaces)
-, alphaExtraDiag("alphaExtraDiag", nbFaces)
 , alpha("alpha", nbCells, nbCells)
 {
 }
@@ -435,25 +434,32 @@ void IterativeHeatEquation::setUpTimeLoopN() noexcept
 }
 
 /**
- * Job computeAlphaExtraDiag called @3.0 in simulate method.
+ * Job computeAlphaCoeff called @3.0 in simulate method.
  * In variables: V, Xc, deltat, faceConductivity, faceLength
- * Out variables: alphaExtraDiag
+ * Out variables: alpha
  */
-void IterativeHeatEquation::computeAlphaExtraDiag() noexcept
+void IterativeHeatEquation::computeAlphaCoeff() noexcept
 {
+	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& cCells)
 	{
-		const auto innerFaces(mesh.getGroup("InnerFaces"));
-		Kokkos::parallel_for(nbInnerFaces, KOKKOS_LAMBDA(const size_t& fInnerFaces)
+		const Id cId(cCells);
+		double alphaDiag(0.0);
 		{
-			const Id fId(innerFaces[fInnerFaces]);
-			const size_t fFaces(fId);
-			const Id cId(mesh.getBackCell(fId));
-			const size_t cCells(cId);
-			const Id dId(mesh.getFrontCell(fId));
-			const size_t dCells(dId);
-			alphaExtraDiag(fFaces) = deltat / V(cCells) * (faceLength(fFaces) * faceConductivity(fFaces)) / iterativeheatequationfreefuncs::norm(iterativeheatequationfreefuncs::operatorSub(Xc(cCells), Xc(dCells)));
-		});
-	}
+			const auto neighbourCellsC(mesh.getNeighbourCells(cId));
+			const size_t nbNeighbourCellsC(neighbourCellsC.size());
+			for (size_t dNeighbourCellsC=0; dNeighbourCellsC<nbNeighbourCellsC; dNeighbourCellsC++)
+			{
+				const Id dId(neighbourCellsC[dNeighbourCellsC]);
+				const size_t dCells(dId);
+				const Id fId(mesh.getCommonFace(cId, dId));
+				const size_t fFaces(fId);
+				const double alphaExtraDiag(deltat / V(cCells) * (faceLength(fFaces) * faceConductivity(fFaces)) / iterativeheatequationfreefuncs::norm(iterativeheatequationfreefuncs::operatorSub(Xc(cCells), Xc(dCells))));
+				alpha(cCells, dCells) = alphaExtraDiag;
+				alphaDiag = alphaDiag + alphaExtraDiag;
+			}
+		}
+		alpha(cCells, cCells) = -alphaDiag;
+	});
 }
 
 /**
@@ -470,55 +476,7 @@ void IterativeHeatEquation::tearDownTimeLoopK() noexcept
 }
 
 /**
- * Job assembleAlphaDiag called @4.0 in simulate method.
- * In variables: alphaExtraDiag
- * Out variables: alpha
- */
-void IterativeHeatEquation::assembleAlphaDiag() noexcept
-{
-	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& cCells)
-	{
-		const Id cId(cCells);
-		double reduction0(0.0);
-		{
-			const auto facesOfCellC(mesh.getFacesOfCell(cId));
-			const size_t nbFacesOfCellC(facesOfCellC.size());
-			for (size_t fFacesOfCellC=0; fFacesOfCellC<nbFacesOfCellC; fFacesOfCellC++)
-			{
-				const Id fId(facesOfCellC[fFacesOfCellC]);
-				const size_t fFaces(fId);
-				reduction0 = iterativeheatequationfreefuncs::sumR0(reduction0, alphaExtraDiag(fFaces));
-			}
-		}
-		alpha(cCells, cCells) = -reduction0;
-	});
-}
-
-/**
- * Job assembleAlphaExtraDiag called @4.0 in simulate method.
- * In variables: alphaExtraDiag
- * Out variables: alpha
- */
-void IterativeHeatEquation::assembleAlphaExtraDiag() noexcept
-{
-	{
-		const auto innerFaces(mesh.getGroup("InnerFaces"));
-		Kokkos::parallel_for(nbInnerFaces, KOKKOS_LAMBDA(const size_t& fInnerFaces)
-		{
-			const Id fId(innerFaces[fInnerFaces]);
-			const size_t fFaces(fId);
-			const Id cId(mesh.getBackCell(fId));
-			const size_t cCells(cId);
-			const Id dId(mesh.getFrontCell(fId));
-			const size_t dCells(dId);
-			alpha(cCells, dCells) = alphaExtraDiag(fFaces);
-			alpha(dCells, cCells) = alphaExtraDiag(fFaces);
-		});
-	}
-}
-
-/**
- * Job executeTimeLoopN called @5.0 in simulate method.
+ * Job executeTimeLoopN called @4.0 in simulate method.
  * In variables: lastDump, maxIterations, n, outputPeriod, stopTime, t_n, t_nplus1, u_n
  * Out variables: t_nplus1, u_nplus1
  */
@@ -635,10 +593,8 @@ void IterativeHeatEquation::simulate()
 	computeFaceConductivity(); // @2.0
 	initU(); // @2.0
 	setUpTimeLoopN(); // @2.0
-	computeAlphaExtraDiag(); // @3.0
-	assembleAlphaDiag(); // @4.0
-	assembleAlphaExtraDiag(); // @4.0
-	executeTimeLoopN(); // @5.0
+	computeAlphaCoeff(); // @3.0
+	executeTimeLoopN(); // @4.0
 	
 	std::cout << "\nFinal time = " << t_n << endl;
 	std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << globalTimer.print() << __RESET__ << std::endl;

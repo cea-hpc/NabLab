@@ -10,10 +10,13 @@
 package fr.cea.nabla.javalib.mesh;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import com.google.gson.JsonElement;
@@ -204,6 +207,19 @@ public class CartesianMesh2D
 		return new int[] {bottomFace, leftFace, rightFace, topFace};
 	}
 
+	public int getCommonFace(int cell1, int cell2)
+	{
+		int[] cell1Faces = getFacesOfCell(cell1);
+		int[] cell2Faces = getFacesOfCell(cell2);
+
+		Set<Integer> set = new HashSet<>(Arrays.stream(cell1Faces).boxed().collect(Collectors.toList()));
+		set.retainAll(Arrays.stream(cell2Faces).boxed().collect(Collectors.toList()));
+		if (set.isEmpty()) 
+			return -1;
+		else 
+			return new ArrayList<>(set).get(0);
+	}
+
 	public int getBackCell(int faceId)
 	{
 		int[] cells = getCellsOfFace(faceId);
@@ -328,16 +344,16 @@ public class CartesianMesh2D
 		if (isVerticalEdge(edges[faceId]))
 			return ((faceId - 3) + (2 * nbXQuads + 1));
 		else  // horizontal
-		    return (faceId + 1);
+			return (faceId + 1);
 	}
 
 	public int getTopRightFaceNeighbour(int faceId)
 	{
 		Edge[] edges = geometry.getEdges();
 		if (isVerticalEdge(edges[faceId]))
-		    return ((faceId - 1) + (2 * nbXQuads + 1));
-		  else  // horizontal
-		    return (faceId + 3);
+			return ((faceId - 1) + (2 * nbXQuads + 1));
+		else  // horizontal
+			return (faceId + 3);
 	}
 
 	public int getRightFaceNeighbour(int faceId)

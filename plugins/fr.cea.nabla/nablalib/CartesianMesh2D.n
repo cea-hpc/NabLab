@@ -32,6 +32,7 @@ connectivity secondNodeOfFace: face → node;
 connectivity cellsOfNode: node → {cell};
 connectivity cellsOfFace: face → {cell};
 connectivity neighbourCells: cell → {cell};
+connectivity commonFace: cell × cell → face;
 connectivity backCell: face → cell;
 connectivity frontCell: face → cell;
 

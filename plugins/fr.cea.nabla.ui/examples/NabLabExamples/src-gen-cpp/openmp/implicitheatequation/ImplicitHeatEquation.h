@@ -65,9 +65,7 @@ public:
 	void computeFaceConductivity() noexcept;
 	void initU() noexcept;
 	void setUpTimeLoopN() noexcept;
-	void computeAlphaExtraDiag() noexcept;
-	void assembleAlphaDiag() noexcept;
-	void assembleAlphaExtraDiag() noexcept;
+	void computeAlphaCoeff() noexcept;
 	void executeTimeLoopN() noexcept;
 
 private:
@@ -102,7 +100,6 @@ private:
 	std::vector<double> D;
 	std::vector<double> faceLength;
 	std::vector<double> faceConductivity;
-	std::vector<double> alphaExtraDiag;
 	Matrix alpha;
 
 	// Timers

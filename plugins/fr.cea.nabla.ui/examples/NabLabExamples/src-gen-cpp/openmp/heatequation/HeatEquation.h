@@ -51,17 +51,16 @@ public:
 	void jsonInit(const char* jsonContent);
 
 	void simulate();
-	void computeFaceFlux() noexcept;
+	void computeOutgoingFlux() noexcept;
 	void computeSurface() noexcept;
 	void computeTn() noexcept;
 	void computeV() noexcept;
 	void iniCenter() noexcept;
 	void iniF() noexcept;
 	void iniTime() noexcept;
-	void computeOutgoingFlux() noexcept;
+	void computeUn() noexcept;
 	void iniUn() noexcept;
 	void setUpTimeLoopN() noexcept;
-	void computeUn() noexcept;
 	void executeTimeLoopN() noexcept;
 
 private:
@@ -95,7 +94,6 @@ private:
 	std::vector<double> f;
 	std::vector<double> outgoingFlux;
 	std::vector<double> surface;
-	std::vector<double> faceFlux;
 
 	// Timers
 	Timer globalTimer;

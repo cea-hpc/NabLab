@@ -36,6 +36,7 @@ public:
 	ItemLocalIdView<Cell> getCellsOfFace(FaceLocalId fId) const;
 	ItemLocalIdView<Cell> getNeighbourCells(CellLocalId cId) const;
 	ItemLocalIdView<Face> getFacesOfCell(CellLocalId cId) const;
+	FaceLocalId getCommonFace(CellLocalId c1Id, CellLocalId c2Id) const;
 
 private:
 	CartesianMesh2D(IMesh* mesh);

@@ -93,7 +93,6 @@ HeatEquation::HeatEquation(CartesianMesh2D& aMesh)
 , f(nbCells)
 , outgoingFlux(nbCells)
 , surface(nbFaces)
-, faceFlux(nbFaces)
 {
 }
 
@@ -139,25 +138,31 @@ HeatEquation::jsonInit(const char* jsonContent)
 }
 
 /**
- * Job computeFaceFlux called @1.0 in executeTimeLoopN method.
- * In variables: center, u_n
- * Out variables: faceFlux
+ * Job computeOutgoingFlux called @1.0 in executeTimeLoopN method.
+ * In variables: V, center, deltat, surface, u_n
+ * Out variables: outgoingFlux
  */
-void HeatEquation::computeFaceFlux() noexcept
+void HeatEquation::computeOutgoingFlux() noexcept
 {
+	parallel_exec(nbCells, [&](const size_t& j1Cells)
 	{
-		const auto innerFaces(mesh.getGroup("InnerFaces"));
-		parallel_exec(nbInnerFaces, [&](const size_t& fInnerFaces)
+		const Id j1Id(j1Cells);
+		double reduction0(0.0);
 		{
-			const Id fId(innerFaces[fInnerFaces]);
-			const size_t fFaces(fId);
-			const Id j1Id(mesh.getBackCell(fId));
-			const size_t j1Cells(j1Id);
-			const Id j2Id(mesh.getFrontCell(fId));
-			const size_t j2Cells(j2Id);
-			faceFlux[fFaces] = (u_n[j2Cells] - u_n[j1Cells]) / heatequationfreefuncs::norm(heatequationfreefuncs::operatorSub(center[j2Cells], center[j1Cells]));
-		});
-	}
+			const auto neighbourCellsJ1(mesh.getNeighbourCells(j1Id));
+			const size_t nbNeighbourCellsJ1(neighbourCellsJ1.size());
+			for (size_t j2NeighbourCellsJ1=0; j2NeighbourCellsJ1<nbNeighbourCellsJ1; j2NeighbourCellsJ1++)
+			{
+				const Id j2Id(neighbourCellsJ1[j2NeighbourCellsJ1]);
+				const size_t j2Cells(j2Id);
+				const Id cfId(mesh.getCommonFace(j1Id, j2Id));
+				const size_t cfFaces(cfId);
+				double reduction1((u_n[j2Cells] - u_n[j1Cells]) / heatequationfreefuncs::norm(heatequationfreefuncs::operatorSub(center[j2Cells], center[j1Cells])) * surface[cfFaces]);
+				reduction0 = heatequationfreefuncs::sumR0(reduction0, reduction1);
+			}
+		}
+		outgoingFlux[j1Cells] = deltat / V[j1Cells] * reduction0;
+	});
 }
 
 /**
@@ -273,27 +278,15 @@ void HeatEquation::iniTime() noexcept
 }
 
 /**
- * Job computeOutgoingFlux called @2.0 in executeTimeLoopN method.
- * In variables: V, deltat, faceFlux, surface
- * Out variables: outgoingFlux
+ * Job computeUn called @2.0 in executeTimeLoopN method.
+ * In variables: deltat, f, outgoingFlux, u_n
+ * Out variables: u_nplus1
  */
-void HeatEquation::computeOutgoingFlux() noexcept
+void HeatEquation::computeUn() noexcept
 {
 	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
-		const Id jId(jCells);
-		double reduction0(0.0);
-		{
-			const auto facesOfCellJ(mesh.getFacesOfCell(jId));
-			const size_t nbFacesOfCellJ(facesOfCellJ.size());
-			for (size_t fFacesOfCellJ=0; fFacesOfCellJ<nbFacesOfCellJ; fFacesOfCellJ++)
-			{
-				const Id fId(facesOfCellJ[fFacesOfCellJ]);
-				const size_t fFaces(fId);
-				reduction0 = heatequationfreefuncs::sumR0(reduction0, faceFlux[fFaces] * surface[fFaces]);
-			}
-		}
-		outgoingFlux[jCells] = deltat / V[jCells] * reduction0;
+		u_nplus1[jCells] = f[jCells] * deltat + u_n[jCells] + outgoingFlux[jCells];
 	});
 }
 
@@ -321,19 +314,6 @@ void HeatEquation::setUpTimeLoopN() noexcept
 }
 
 /**
- * Job computeUn called @3.0 in executeTimeLoopN method.
- * In variables: deltat, f, outgoingFlux, u_n
- * Out variables: u_nplus1
- */
-void HeatEquation::computeUn() noexcept
-{
-	parallel_exec(nbCells, [&](const size_t& jCells)
-	{
-		u_nplus1[jCells] = f[jCells] * deltat + u_n[jCells] + outgoingFlux[jCells];
-	});
-}
-
-/**
  * Job executeTimeLoopN called @3.0 in simulate method.
  * In variables: lastDump, maxIterations, n, outputPeriod, stopTime, t_n, t_nplus1, u_n
  * Out variables: t_nplus1, u_nplus1
@@ -353,10 +333,9 @@ void HeatEquation::executeTimeLoopN() noexcept
 			std::cout << "[" << __CYAN__ << __BOLD__ << setw(3) << n << __RESET__ "] t = " << __BOLD__
 				<< setiosflags(std::ios::scientific) << setprecision(8) << setw(16) << t_n << __RESET__;
 	
-		computeFaceFlux(); // @1.0
+		computeOutgoingFlux(); // @1.0
 		computeTn(); // @1.0
-		computeOutgoingFlux(); // @2.0
-		computeUn(); // @3.0
+		computeUn(); // @2.0
 		
 	
 		// Evaluate loop condition with variables at time n

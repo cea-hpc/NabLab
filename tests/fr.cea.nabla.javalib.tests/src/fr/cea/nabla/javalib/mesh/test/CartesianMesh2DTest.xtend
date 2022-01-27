@@ -128,6 +128,9 @@ class CartesianMesh2DTest
 
 		assertArrayEquals(#[0, 1, 3, 9], mesh.getFacesOfCell(0))
 
+		assertEquals(3, mesh.getCommonFace(0, 1))
+		assertEquals(-1, mesh.getCommonFace(0, 5))
+
 		assertEquals(0, mesh.getBackCell(3))
 		assertEquals(1, mesh.getFrontCell(3))
 		try {

@@ -56,17 +56,16 @@ public:
 	void jsonInit(const char* jsonContent);
 
 	void simulate();
-	void computeFaceFlux(const member_type& teamMember) noexcept;
+	void computeOutgoingFlux(const member_type& teamMember) noexcept;
 	void computeSurface(const member_type& teamMember) noexcept;
 	void computeTn() noexcept;
 	void computeV(const member_type& teamMember) noexcept;
 	void iniCenter(const member_type& teamMember) noexcept;
 	void iniF(const member_type& teamMember) noexcept;
 	void iniTime() noexcept;
-	void computeOutgoingFlux(const member_type& teamMember) noexcept;
+	void computeUn(const member_type& teamMember) noexcept;
 	void iniUn(const member_type& teamMember) noexcept;
 	void setUpTimeLoopN() noexcept;
-	void computeUn(const member_type& teamMember) noexcept;
 	void executeTimeLoopN() noexcept;
 
 private:
@@ -107,7 +106,6 @@ private:
 	Kokkos::View<double*> f;
 	Kokkos::View<double*> outgoingFlux;
 	Kokkos::View<double*> surface;
-	Kokkos::View<double*> faceFlux;
 
 	// Timers
 	Timer globalTimer;

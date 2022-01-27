@@ -137,6 +137,21 @@ CartesianMesh2D::getFacesOfCell(const Id& cellId) const
 }
 
 Id
+CartesianMesh2D::getCommonFace(const Id& cellId1, const Id& cellId2) const
+{
+	auto cell1Faces{getFacesOfCell(cellId1)};
+	auto cell2Faces{getFacesOfCell(cellId2)};
+	auto result = find_first_of(cell1Faces.begin(), cell1Faces.end(), cell2Faces.begin(), cell2Faces.end());
+	if (result == cell1Faces.end()) {
+    stringstream msg;
+    msg << "No common faces found between cell " << cellId1 << " and cell " << cellId2 << endl;
+	  throw runtime_error(msg.str());
+	} else {
+	  return *result;
+  }
+}
+
+Id
 CartesianMesh2D::getBackCell(const Id& faceId) const
 {
   vector<Id> cells(getCellsOfFace(faceId));

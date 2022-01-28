@@ -83,7 +83,16 @@ class LatexLabelServices
 	static def dispatch String getLatex(SpaceIterator it) { name.pu + '\\in ' + container?.latex }
 	static def dispatch String getLatex(Interval it) { index?.name + '\\in ' + nbElems.latex }
 	static def dispatch String getLatex(ItemSetRef it) { target?.name }
-	static def dispatch String getLatex(ConnectivityCall it) { connectivity?.name.pu + '(' + args.map[latex].join(',') + ')' }
+	static def dispatch String getLatex(ConnectivityCall it)
+	{
+		if (group === null)
+			if (args.empty)
+				connectivity?.name.pu
+			else
+				connectivity?.name.pu + '(' + args.map[latex].join(',') + ')'
+		else
+			group.pu
+	}
 	static def dispatch String getLatex(SpaceIteratorRef it) 
 	{ 
 		if (inc > 0) target.name.pu + '+' + inc

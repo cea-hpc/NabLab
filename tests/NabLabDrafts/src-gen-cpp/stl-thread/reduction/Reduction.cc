@@ -40,6 +40,7 @@ Reduction::Reduction(CartesianMesh2D& aMesh)
 : mesh(aMesh)
 , nbNodes(mesh.getNbNodes())
 , nbCells(mesh.getNbCells())
+, nbTopLeftNode(mesh.getGroup("TopLeftNode").size())
 , X(nbNodes)
 , Vnode_n(nbNodes)
 , Vnode_nplus1(nbNodes)
@@ -161,18 +162,24 @@ void Reduction::updateTime() noexcept
  */
 void Reduction::computeBoundaryNodeVelocities() noexcept
 {
-	const Id pId(mesh.getTopLeftNode());
-	const size_t pNodes(pId);
-	RealArray1D<2> reduction0({0.0, 0.0});
 	{
-		const auto cellsOfNodeP(mesh.getCellsOfNode(pId));
-		const size_t nbCellsOfNodeP(cellsOfNodeP.size());
-		for (size_t cCellsOfNodeP=0; cCellsOfNodeP<nbCellsOfNodeP; cCellsOfNodeP++)
+		const auto topLeftNode(mesh.getGroup("TopLeftNode"));
+		parallel_exec(nbTopLeftNode, [&](const size_t& pTopLeftNode)
 		{
-			reduction0 = reductionfreefuncs::sumR1(reduction0, lpc_n[pNodes][cCellsOfNodeP]);
-		}
+			const Id pId(topLeftNode[pTopLeftNode]);
+			const size_t pNodes(pId);
+			RealArray1D<2> reduction0({0.0, 0.0});
+			{
+				const auto cellsOfNodeP(mesh.getCellsOfNode(pId));
+				const size_t nbCellsOfNodeP(cellsOfNodeP.size());
+				for (size_t cCellsOfNodeP=0; cCellsOfNodeP<nbCellsOfNodeP; cCellsOfNodeP++)
+				{
+					reduction0 = reductionfreefuncs::sumR1(reduction0, lpc_n[pNodes][cCellsOfNodeP]);
+				}
+			}
+			Vnode_nplus1[pNodes] = reductionfreefuncs::nodeVelocityBoundaryConditionCorner(1, {0.0, 0.0}, 1, {0.0, 0.0}, {1.0, 1.0, 1.0, 1.0}, {1.0, 1.0}, reduction0);
+		});
 	}
-	Vnode_nplus1[pNodes] = reductionfreefuncs::nodeVelocityBoundaryConditionCorner(1, {0.0, 0.0}, 1, {0.0, 0.0}, {1.0, 1.0, 1.0, 1.0}, {1.0, 1.0}, reduction0);
 }
 
 void Reduction::simulate()

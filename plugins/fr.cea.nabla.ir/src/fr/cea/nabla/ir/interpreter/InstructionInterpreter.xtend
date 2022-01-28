@@ -245,7 +245,7 @@ class InstructionInterpreter
 			return iteratorRefIndex
 		else
 		{
-			val nbElems = context.mesh.getSize(iterator.container.connectivityCall.connectivity)
+			val nbElems = context.mesh.getSize(iterator.container.connectivityCall)
 			return (iteratorRefIndex + shift + nbElems)%nbElems
 		}
 	}

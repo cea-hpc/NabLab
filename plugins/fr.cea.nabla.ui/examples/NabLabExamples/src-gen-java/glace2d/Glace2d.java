@@ -380,11 +380,6 @@ public final class Glace2d
 			// Evaluate loop condition with variables at time n
 			continueLoop = (t_nplus1 < stopTime && n + 1 < maxIterations);
 		
-			// fr.cea.nabla.ir.ir.impl.AffectationImpl
-			// fr.cea.nabla.ir.ir.impl.LoopImpl
-			// fr.cea.nabla.ir.ir.impl.LoopImpl
-			// fr.cea.nabla.ir.ir.impl.LoopImpl
-			// instruction content
 			t_n = t_nplus1;
 			IntStream.range(0, nbNodes).parallel().forEach(i1Nodes -> 
 			{

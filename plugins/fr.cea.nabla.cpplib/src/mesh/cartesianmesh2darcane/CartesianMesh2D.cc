@@ -75,6 +75,13 @@ CartesianMesh2D::getFaces() const
 	return m_mesh->allFaces();
 }
 
+
+ItemGroup
+CartesianMesh2D::getGroup(const string& name) const
+{
+	return m_mesh->findGroup(name);
+}
+
 ItemLocalIdView<Node>
 CartesianMesh2D::getNodesOfCell(CellLocalId cId) const
 {

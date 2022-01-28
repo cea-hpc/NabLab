@@ -61,11 +61,11 @@ class IrModuleContentProvider
 		{
 			// Mesh and mesh variables
 			private final «irRoot.mesh.className» mesh;
-			«FOR c : neededConnectivityAttributes»
-				private final int «c.nbElemsVar»;
+			«FOR a : neededConnectivityAttributes»
+				private final int «a.nbElemsVar»;
 			«ENDFOR»
-			«FOR c : neededGroupAttributes»
-				private final int «c.nbElemsVar»;
+			«FOR a : neededGroupAttributes»
+				private final int «a.nbElemsVar»;
 			«ENDFOR»
 			«IF irRoot.modules.size > 1»
 				«IF main»

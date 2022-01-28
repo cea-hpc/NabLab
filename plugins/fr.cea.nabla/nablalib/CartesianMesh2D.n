@@ -15,15 +15,6 @@ connectivity nodes: → {node};
 connectivity cells: → {cell};
 connectivity faces: → {face};
 
-connectivity nodeGroup: → {node};
-connectivity cellGroup: → {cell};
-connectivity faceGroup: → {face};
-
-connectivity topLeftNode: → node;
-connectivity topRightNode: → node;
-connectivity bottomLeftNode: → node;
-connectivity bottomRightNode: → node;
-
 connectivity nodesOfCell: cell → {node};
 connectivity nodesOfFace: face → {node};
 connectivity firstNodeOfFace: face → node;

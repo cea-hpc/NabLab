@@ -28,6 +28,7 @@ public class CartesianMesh2D
 	// NODES
 	public static String AllNodes = "AllNodes";
 	public static String InnerNodes = "InnerNodes";
+	public static String OuterNodes = "OuterNodes";
 	public static String TopNodes = "TopNodes";
 	public static String BottomNodes = "BottomNodes";
 	public static String LeftNodes = "LeftNodes";
@@ -48,8 +49,8 @@ public class CartesianMesh2D
 
 	// FACES
 	public static String AllFaces = "AllFaces";
-	public static String OuterFaces = "OuterFaces";
 	public static String InnerFaces = "InnerFaces";
+	public static String OuterFaces = "OuterFaces";
 	public static String InnerHorizontalFaces = "InnerHorizontalFaces";
 	public static String InnerVerticalFaces = "InnerVerticalFaces";
 	public static String TopFaces = "TopFaces";
@@ -95,13 +96,12 @@ public class CartesianMesh2D
 
 	public MeshGeometry getGeometry() { return geometry; }
 
-	public int getNbNodes() { return getNodes().length; }
+	public int getNbNodes() { return geometry.getNodes().length; }
+	public int getNbCells() { return geometry.getQuads().length; }
+	public int getNbFaces() { return geometry.getEdges().length; }
+
 	public int[] getNodes() { return groups.get(AllNodes); }
-
-	public int getNbCells() { return getCells().length; }
 	public int[] getCells() { return groups.get(AllCells); }
-
-	public int getNbFaces() { return getFaces().length; }
 	public int[] getFaces() { return groups.get(AllFaces); }
 
 	public int[] getGroup(String name)
@@ -455,8 +455,8 @@ public class CartesianMesh2D
 		Quad[] quads = new Quad[nbXQuads * nbYQuads];
 		Edge[] edges = new Edge[2 * quads.length + nbXQuads + nbYQuads];
 
-		int nbOuterNodes = 2 * (nbXQuads + nbYQuads);
-		int[] innerNodes = new int[nodes.length - nbOuterNodes];
+		int[] outerNodes = new int[2 * (nbXQuads + nbYQuads)];
+		int[] innerNodes = new int[nodes.length - outerNodes.length];
 		int[] topNodes = new int[nbXQuads + 1];
 		int[] bottomNodes = new int[nbXQuads + 1];
 		int[] leftNodes = new int[nbYQuads + 1];
@@ -466,6 +466,7 @@ public class CartesianMesh2D
 		int[] outerCells = new int[2 * nbXQuads + 2 * (nbYQuads - 2)];
 
 		int nodeId = 0;
+		int outerNodeId = 0;
 		int innerNodeId = 0;
 		int topNodeId = 0;
 		int bottomNodeId = 0;
@@ -482,6 +483,7 @@ public class CartesianMesh2D
 					innerNodes[innerNodeId++] = nodeId;
 				else
 				{
+					outerNodes[outerNodeId++] = nodeId;
 					if (j==0) bottomNodes[bottomNodeId++] =nodeId;
 					if (j==nbYQuads) topNodes[topNodeId++] = nodeId;
 					if (i==0) leftNodes[leftNodeId++] = nodeId;
@@ -559,6 +561,7 @@ public class CartesianMesh2D
 		// NODES
 		groups.put(AllNodes, IntStream.range(0, nodes.length).toArray());
 		groups.put(InnerNodes, innerNodes);
+		groups.put(OuterNodes, outerNodes);
 		groups.put(TopNodes, topNodes);
 		groups.put(BottomNodes, bottomNodes);
 		groups.put(LeftNodes, leftNodes);
@@ -579,8 +582,8 @@ public class CartesianMesh2D
 
 		// FACES
 		groups.put(AllFaces, IntStream.range(0, edges.length).toArray());
-		groups.put(OuterFaces, outFaces.stream().mapToInt(x->x).toArray());
 		groups.put(InnerFaces, inFaces.stream().mapToInt(x->x).toArray());
+		groups.put(OuterFaces, outFaces.stream().mapToInt(x->x).toArray());
 		groups.put(InnerHorizontalFaces, inHFaces.stream().mapToInt(x->x).toArray());
 		groups.put(InnerVerticalFaces, inVFaces.stream().mapToInt(x->x).toArray());
 		groups.put(TopFaces, tFaces.stream().mapToInt(x->x).toArray());

@@ -30,6 +30,7 @@ public:
 	CellGroup getCells() const;
 	NodeGroup getNodes() const;
 	FaceGroup getFaces() const;
+	ItemGroup getGroup(const string& name) const;
 	ItemLocalIdView<Node> getNodesOfCell(CellLocalId cId) const;
 	ItemLocalIdView<Node> getNodesOfFace(FaceLocalId fId) const;
 	ItemLocalIdView<Cell> getCellsOfNode(NodeLocalId nId) const;

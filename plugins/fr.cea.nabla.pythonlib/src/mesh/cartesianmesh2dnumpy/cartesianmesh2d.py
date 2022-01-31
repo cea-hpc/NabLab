@@ -12,6 +12,41 @@ import numpy as np
 from meshgeometry import MeshGeometry
 
 class CartesianMesh2D:
+    # NODES
+    AllNodes = "AllNodes";
+    InnerNodes = "InnerNodes";
+    OuterNodes = "OuterNodes";
+    TopNodes = "TopNodes";
+    BottomNodes = "BottomNodes";
+    LeftNodes = "LeftNodes";
+    RightNodes = "RightNodes";
+    TopLeftNode = "TopLeftNode";
+    TopRightNode = "TopRightNode";
+    BottomLeftNode = "BottomLeftNode";
+    BottomRightNode = "BottomRightNode";
+
+    # CELLS
+    AllCells = "AllCells";
+    InnerCells = "InnerCells";
+    OuterCells = "OuterCells";
+    TopCells = "TopCells";
+    BottomCells = "BottomCells";
+    LeftCells = "LeftCells";
+    RightCells = "RightCells";
+
+    # FACES
+    AllFaces = "AllFaces";
+    InnerFaces = "InnerFaces";
+    OuterFaces = "OuterFaces";
+    InnerHorizontalFaces = "InnerHorizontalFaces";
+    InnerVerticalFaces = "InnerVerticalFaces";
+    TopFaces = "TopFaces";
+    BottomFaces = "BottomFaces";
+    LeftFaces = "LeftFaces";
+    RightFaces = "RightFaces";
+
+    __groups = {}
+
     def jsonInit(self, jsonContent):
         self.create(jsonContent["nbXQuads"], jsonContent["nbYQuads"], jsonContent["xSize"], jsonContent["ySize"])
     
@@ -23,152 +58,26 @@ class CartesianMesh2D:
     def nbNodes(self):
         return len(self.__geometry.nodes)
     @property
-    def nodes(self):
-        return range(self.nbNodes)
-    
-    @property
     def nbCells(self):
         return len(self.__geometry.quads)
     @property
-    def cells(self):
-        return range(self.nbCells)
-    
-    @property
     def nbFaces(self):
         return len(self.__geometry.edges)
+    
+    @property
+    def nodes(self):
+        return self.__groups[self.AllNodes]
+    @property
+    def cells(self):
+        return self.__groups[self.AllCells]
     @property
     def faces(self):
-        return range(self.nbFaces)
+        return self.__groups[self.AllFaces]
     
-    @property
-    def nbInnerNodes(self):
-        return len(self.__innerNodes)
-    @property
-    def innerNodes(self):
-        return self.__innerNodes
-    @property
-    def nbTopNodes(self):
-        return len(self.__topNodes)
-    @property
-    def topNodes(self):
-        return self.__topNodes
-    @property
-    def nbBottomNodes(self):
-        return len(self.__bottomNodes)
-    @property
-    def bottomNodes(self):
-        return self.__bottomNodes
-    @property
-    def nbLeftNodes(self):
-        return len(self.__leftNodes)
-    @property
-    def leftNodes(self):
-        return self.__leftNodes
-    @property
-    def nbRightNodes(self):
-        return len(self.__rightNodes)
-    @property
-    def rightNodes(self):
-        return self.__rightNodes
-    
-    @property
-    def nbInnerCells(self):
-        return len(self.__innerCells)
-    @property
-    def innerCells(self):
-        return self.__innerCells
-    @property
-    def nbOuterCells(self):
-        return len(self.__outerCells)
-    @property
-    def outerCells(self):
-        return self.__outerCells
-    @property
-    def nbTopCells(self):
-        return len(self.__topCells)
-    @property
-    def topCells(self):
-        return self.__topCells
-    @property
-    def nbBottomCells(self):
-        return len(self.__bottomCells)
-    @property
-    def bottomCells(self):
-        return self.__bottomCells
-    @property
-    def nbLeftCells(self):
-        return len(self.__leftCells)
-    @property
-    def leftCells(self):
-        return self.__leftCells
-    @property
-    def nbRightCells(self):
-        return len(self.__rightCells)
-    @property
-    def rightCells(self):
-        return self.__rightCells
-    
-    @property
-    def nbTopFaces(self):
-        return len(self.__topFaces)
-    @property
-    def topFaces(self):
-        return self.__topFaces
-    @property
-    def nbBottomFaces(self):
-        return len(self.__bottomFaces)
-    @property
-    def bottomFaces(self):
-        return self.__bottomFaces
-    @property
-    def nbLeftFaces(self):
-        return len(self.__leftFaces)
-    @property
-    def leftFaces(self):
-        return self.__leftFaces
-    @property
-    def nbRightFaces(self):
-        return len(self.__rightFaces)
-    @property
-    def rightFaces(self):
-        return self.__rightFaces
-    @property
-    def nbOuterFaces(self):
-        return len(self.__outerFaces)
-    @property
-    def outerFaces(self):
-        return self.__outerFaces
-    @property
-    def nbInnerFaces(self):
-        return len(self.__innerFaces)
-    @property
-    def innerFaces(self):
-        return self.__innerFaces
-    @property
-    def nbInnerHorizontalFaces(self):
-        return len(self.__innerHorizontalFaces)
-    @property
-    def innerHorizontalFaces(self):
-        return self.__innerHorizontalFaces
-    @property
-    def nbInnerVerticalFaces(self):
-        return len(self.__innerVerticalFaces)
-    @property
-    def innerVerticalFaces(self):
-        return self.__innerVerticalFaces
-    
-    @property
-    def topLeftNode(self):
-        return self.__topLeftNode
-    @property
-    def topRightNode(self):
-        return self.__topRightNode
-    @property
-    def bottomLeftNode(self):
-        return self.__bottomLeftNode
-    @property
-    def bottomRightNode(self):
-        return self.__bottomRightNode
+    def getGroup(self, name):
+        if name not in self.__groups:
+            raise Exception("Invalid item group: " + name)
+        return self.__groups[name]
     
     def getNodesOfCell(self, cellId):
         return self.__geometry.quads[cellId]
@@ -357,37 +266,39 @@ class CartesianMesh2D:
         quads = np.empty((nbXQuads * nbYQuads, 4), dtype=np.int32)
         edges = np.empty((2 * len(quads) + nbXQuads + nbYQuads, 2), dtype=np.int32)
 
-        outerNodesIds = np.empty(2 * (nbXQuads + nbYQuads), dtype=np.int32)
-        self.__innerNodes = np.empty(len(nodes) - len(outerNodesIds), dtype=np.int32)
-        self.__topNodes = np.empty(nbXQuads + 1, dtype=np.int32)
-        self.__bottomNodes = np.empty(nbXQuads + 1, dtype=np.int32)
-        self.__leftNodes = np.empty(nbYQuads + 1, dtype=np.int32)
-        self.__rightNodes = np.empty(nbYQuads + 1, dtype=np.int32)
+        outerNodes = np.empty(2 * (nbXQuads + nbYQuads), dtype=np.int32)
+        innerNodes = np.empty(len(nodes) - len(outerNodes), dtype=np.int32)
+        topNodes = np.empty(nbXQuads + 1, dtype=np.int32)
+        bottomNodes = np.empty(nbXQuads + 1, dtype=np.int32)
+        leftNodes = np.empty(nbYQuads + 1, dtype=np.int32)
+        rightNodes = np.empty(nbYQuads + 1, dtype=np.int32)
 
-        self.__innerCells = np.empty((nbXQuads - 2)*(nbYQuads - 2), dtype=np.int32)
-        self.__outerCells = np.empty(2 * nbXQuads + 2 * (nbYQuads - 2), dtype=np.int32)
+        innerCells = np.empty((nbXQuads - 2)*(nbYQuads - 2), dtype=np.int32)
+        outerCells = np.empty(2 * nbXQuads + 2 * (nbYQuads - 2), dtype=np.int32)
         
-        nodeId = innerNodeId = topNodeId = bottomNodeId = leftNodeId = rightNodeId = 0
+        nodeId = outerNodeId = innerNodeId = topNodeId = bottomNodeId = leftNodeId = rightNodeId = 0
         
         # node creation
         for j in range(nbYQuads + 1):
             for i in range(nbXQuads + 1):
                 nodes[nodeId] = [xSize * i, ySize * j]
                 if i!=0 and j!=0 and i!=nbXQuads and j!=nbYQuads:
-                    self.__innerNodes[innerNodeId] = nodeId
+                    innerNodes[innerNodeId] = nodeId
                     innerNodeId +=1
                 else:
+                    outerNodes[outerNodeId] = nodeId
+                    outerNodeId += 1
                     if j==0:
-                        self.__bottomNodes[bottomNodeId] = nodeId
+                        bottomNodes[bottomNodeId] = nodeId
                         bottomNodeId += 1
                     if j==nbYQuads:
-                        self.__topNodes[topNodeId] = nodeId
+                        topNodes[topNodeId] = nodeId
                         topNodeId += 1
                     if i==0:
-                        self.__leftNodes[leftNodeId] = nodeId
+                        leftNodes[leftNodeId] = nodeId
                         leftNodeId += 1
                     if i==nbXQuads:
-                        self.__rightNodes[rightNodeId] = nodeId
+                        rightNodes[rightNodeId] = nodeId
                         rightNodeId += 1
                 nodeId += 1
         
@@ -409,10 +320,10 @@ class CartesianMesh2D:
         for j in range(nbYQuads):
             for i in range(nbXQuads):
                 if i != 0 and i != nbXQuads - 1 and j != 0 and j != nbYQuads - 1:
-                    self.__innerCells[innerCellId] = quadId
+                    innerCells[innerCellId] = quadId
                     innerCellId += 1
                 else:
-                    self.__outerCells[outerCellId] = quadId
+                    outerCells[outerCellId] = quadId
                     outerCellId += 1
                 upperLeftNodeIndex = (j*nbXNodes)+i;
                 lowerLeftNodeIndex = upperLeftNodeIndex + nbXNodes;
@@ -420,10 +331,6 @@ class CartesianMesh2D:
                 quadId += 1
                 
         self.__geometry = MeshGeometry(nodes, edges, quads)
-        self.__topLeftNode = (nbXQuads + 1) * nbYQuads
-        self.__topRightNode = (nbXQuads + 1) * (nbYQuads +1) - 1
-        self.__bottomLeftNode = 0
-        self.__bottomRightNode = nbXQuads
         
         outFaces = []
         inFaces = []
@@ -460,21 +367,38 @@ class CartesianMesh2D:
                 else:
                     raise Exception("The inner edge " + str(edgeId) + " should be either vertical or horizontal")
         
-        self.__outerFaces = np.array(outFaces)
-        self.__innerFaces = np.array(inFaces)
-        self.__innerVerticalFaces = np.array(inVFaces)
-        self.__innerHorizontalFaces = np.array(inHFaces)
-        
-        self.__topFaces = np.array(tFaces)
-        self.__bottomFaces = np.array(bFaces)
-        self.__leftFaces = np.array(lFaces)
-        self.__rightFaces = np.array(rFaces)
-        
-        # Construction of boundary cell sets
-        self.__topCells = self.__cellsOfNodeCollection(self.__topNodes)
-        self.__bottomCells = self.__cellsOfNodeCollection(self.__bottomNodes)
-        self.__leftCells = self.__cellsOfNodeCollection(self.__leftNodes)
-        self.__rightCells = self.__cellsOfNodeCollection(self.__rightNodes)
+        # NODES
+        self.__groups[self.AllNodes] = range(self.nbNodes)
+        self.__groups[self.InnerNodes] = innerNodes
+        self.__groups[self.OuterNodes] = outerNodes
+        self.__groups[self.TopNodes] = topNodes
+        self.__groups[self.BottomNodes] = bottomNodes
+        self.__groups[self.LeftNodes] = leftNodes
+        self.__groups[self.RightNodes] = rightNodes
+        self.__groups[self.TopLeftNode] = np.array([(nbXQuads + 1) * nbYQuads])
+        self.__groups[self.TopRightNode] = np.array([(nbXQuads + 1) * (nbYQuads +1) - 1])
+        self.__groups[self.BottomLeftNode] = np.array([0])
+        self.__groups[self.BottomRightNode] = np.array([nbXQuads])
+
+        # CELLS
+        self.__groups[self.AllCells] = range(self.nbCells)
+        self.__groups[self.InnerCells] = innerCells
+        self.__groups[self.OuterCells] = outerCells
+        self.__groups[self.TopCells] = self.__cellsOfNodeCollection(topNodes)
+        self.__groups[self.BottomCells] = self.__cellsOfNodeCollection(bottomNodes)
+        self.__groups[self.LeftCells] = self.__cellsOfNodeCollection(leftNodes)
+        self.__groups[self.RightCells] = self.__cellsOfNodeCollection(rightNodes)
+
+        # FACES
+        self.__groups[self.AllFaces] = range(self.nbFaces)
+        self.__groups[self.InnerFaces] = np.array(inFaces)
+        self.__groups[self.OuterFaces] = np.array(outFaces)
+        self.__groups[self.InnerHorizontalFaces] = np.array(inHFaces)
+        self.__groups[self.InnerVerticalFaces] = np.array(inVFaces)
+        self.__groups[self.TopFaces] = np.array(tFaces)
+        self.__groups[self.BottomFaces] = np.array(bFaces)
+        self.__groups[self.LeftFaces] = np.array(lFaces)
+        self.__groups[self.RightFaces] = np.array(rFaces)
     
     def __isInnerEdge(self, edge):
         i1, j1 = self.__id2IndexNode(edge[0])
@@ -515,17 +439,24 @@ class CartesianMesh2D:
     def dump(self):
         self.__geometry.dump()
         print("MESH TOPOLOGY")
-        print("Inner nodes ("+ str(len(self.__innerNodes))+"):")
-        print(self.__innerNodes)
-        print("Top nodes ("+ str(len(self.__topNodes))+"):")
-        print(self.__topNodes)
-        print("Bottom nodes ("+ str(len(self.__bottomNodes))+"):")
-        print(self.__bottomNodes)
-        print("Left nodes ("+ str(len(self.__leftNodes))+"):")
-        print(self.__leftNodes)
-        print("Right nodes ("+ str(len(self.__rightNodes))+"):")
-        print(self.__rightNodes)
-        print("Outer faces ("+ str(len(self.__outerFaces))+"):")
-        print(self.__outerFaces)
-        print("Inner faces ("+ str(len(self.__innerFaces))+"):")
-        print(self.__innerFaces)
+        innerNodes = self.__groups[CartesianMesh2D.InnerNodes]
+        print("Inner nodes ("+ str(len(innerNodes))+"):")
+        print(innerNodes)
+        topNodes = self.__groups[CartesianMesh2D.TopNodes]
+        print("Top nodes ("+ str(len(topNodes))+"):")
+        print(topNodes)
+        bottomNodes = self.__groups[CartesianMesh2D.BottomNodes]
+        print("Bottom nodes ("+ str(len(bottomNodes))+"):")
+        print(bottomNodes)
+        leftNodes = self.__groups[CartesianMesh2D.LeftNodes]
+        print("Left nodes ("+ str(len(leftNodes))+"):")
+        print(leftNodes)
+        rightNodes = self.__groups[CartesianMesh2D.RightNodes]
+        print("Right nodes ("+ str(len(rightNodes))+"):")
+        print(rightNodes)
+        outerFaces = self.__groups[CartesianMesh2D.OuterFaces]
+        print("Outer faces ("+ str(len(outerFaces))+"):")
+        print(outerFaces)
+        innerFaces = self.__groups[CartesianMesh2D.InnerFaces]
+        print("Inner faces ("+ str(len(innerFaces))+"):")
+        print(innerFaces)

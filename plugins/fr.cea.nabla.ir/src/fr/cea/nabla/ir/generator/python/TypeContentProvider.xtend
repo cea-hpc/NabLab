@@ -28,7 +28,7 @@ class TypeContentProvider
 		{
 			BaseType case scalar: ''''''
 			BaseType: getNumpyAllocation(sizes.map[content], primitive)
-			ConnectivityType: getNumpyAllocation(connectivities.map[nbElemsVar] + base.sizes.map[content], primitive)
+			ConnectivityType: getNumpyAllocation(connectivities.map[nbElems] + base.sizes.map[content], primitive)
 			LinearAlgebraType: ''' = «IrTypeExtensions.getLinearAlgebraClass(it)».empty("«name»", «FOR s : sizes SEPARATOR ', '»«s.content»«ENDFOR»)'''
 		}
 	}
@@ -45,5 +45,4 @@ class TypeContentProvider
 
 	private static def getNumpyAllocation(Iterable<CharSequence> iteratorsAndIndices, PrimitiveType primitive)
 	''' = np.empty((«FOR i : iteratorsAndIndices SEPARATOR ", "»«i»«ENDFOR»), dtype=np.«primitive.numpyType»)'''
-
 }

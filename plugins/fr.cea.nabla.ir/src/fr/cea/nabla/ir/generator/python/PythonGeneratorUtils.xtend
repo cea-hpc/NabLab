@@ -58,9 +58,17 @@ class PythonGeneratorUtils
 		else
 			ContainerExtensions.getNbElemsVar(c)
 	}
+	static def getNbElemsVar(String s) { "nb" + s.toFirstUpper }
+	static def getNbElemsVar(Connectivity c) { "self.__" + ContainerExtensions.getNbElemsVar(c) }
 
-	static def getNbElemsVar(Connectivity c)
+	static def getNbElems(Connectivity it)
 	{
-		"self.__" + ContainerExtensions.getNbElemsVar(c)
+		if (inTypes.empty)
+			nbElemsVar
+		else
+		{
+			val varName = "MaxNb" + name.toFirstUpper
+			provider.generationVariables.get(varName)
+		}
 	}
 }

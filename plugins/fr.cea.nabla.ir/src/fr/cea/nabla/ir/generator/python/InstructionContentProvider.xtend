@@ -149,6 +149,6 @@ class InstructionContentProvider
 
 	private static def getSetDefinitionContent(String setName, ConnectivityCall call)
 	'''
-		«setName» = mesh.«IF call.args.empty»«call.connectivity.name»«ELSE»«call.accessor»«ENDIF»
+		«setName» = mesh.«call.accessor»
 	'''
 }

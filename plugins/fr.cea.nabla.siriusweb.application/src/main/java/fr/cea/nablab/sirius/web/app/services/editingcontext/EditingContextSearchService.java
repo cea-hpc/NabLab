@@ -15,8 +15,8 @@ import fr.cea.nablab.sirius.web.app.services.api.IModelService;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.eclipse.sirius.web.core.api.IEditingContext;
-import org.eclipse.sirius.web.core.api.IEditingContextSearchService;
+import org.eclipse.sirius.components.core.api.IEditingContext;
+import org.eclipse.sirius.components.core.api.IEditingContextSearchService;
 import org.springframework.stereotype.Service;
 
 import io.micrometer.core.instrument.MeterRegistry;

@@ -13,16 +13,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Objects;
 
-import org.eclipse.sirius.web.annotations.graphql.GraphQLSubscriptionTypes;
-import org.eclipse.sirius.web.annotations.spring.graphql.SubscriptionDataFetcher;
-import org.eclipse.sirius.web.core.api.IPayload;
-import org.eclipse.sirius.web.spring.collaborative.api.IEditingContextEventProcessorRegistry;
-import org.eclipse.sirius.web.spring.collaborative.diagrams.api.DiagramConfiguration;
-import org.eclipse.sirius.web.spring.collaborative.diagrams.api.IDiagramEventProcessor;
-import org.eclipse.sirius.web.spring.collaborative.diagrams.dto.DiagramEventInput;
-import org.eclipse.sirius.web.spring.collaborative.diagrams.dto.DiagramRefreshedEventPayload;
-import org.eclipse.sirius.web.spring.collaborative.dto.SubscribersUpdatedEventPayload;
-import org.eclipse.sirius.web.spring.graphql.api.IDataFetcherWithFieldCoordinates;
+import org.eclipse.sirius.components.annotations.graphql.GraphQLSubscriptionTypes;
+import org.eclipse.sirius.components.annotations.spring.graphql.SubscriptionDataFetcher;
+import org.eclipse.sirius.components.collaborative.api.IEditingContextEventProcessorRegistry;
+import org.eclipse.sirius.components.collaborative.diagrams.api.DiagramConfiguration;
+import org.eclipse.sirius.components.collaborative.diagrams.api.IDiagramEventProcessor;
+import org.eclipse.sirius.components.collaborative.diagrams.dto.DiagramEventInput;
+import org.eclipse.sirius.components.collaborative.diagrams.dto.DiagramRefreshedEventPayload;
+import org.eclipse.sirius.components.collaborative.dto.SubscribersUpdatedEventPayload;
+import org.eclipse.sirius.components.core.api.IPayload;
+import org.eclipse.sirius.components.graphql.api.IDataFetcherWithFieldCoordinates;
 import org.reactivestreams.Publisher;
 
 import graphql.schema.DataFetchingEnvironment;

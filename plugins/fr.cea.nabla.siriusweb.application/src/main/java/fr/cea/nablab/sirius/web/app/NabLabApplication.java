@@ -30,11 +30,11 @@ import org.springframework.context.annotation.ComponentScan;
  * @author arichard
  */
 @SpringBootApplication
-@ComponentScan({ "fr.cea.nablab.sirius.web.app", "org.eclipse.sirius.web.core", "org.eclipse.sirius.web.compat", "org.eclipse.sirius.web.diagrams", "org.eclipse.sirius.web.diagrams.layout",
-        "org.eclipse.sirius.web.diagrams.layout.api", "org.eclipse.sirius.web.emf.compatibility", "org.eclipse.sirius.web.emf.configuration", "org.eclipse.sirius.web.emf.query",
-        "org.eclipse.sirius.web.emf.services", "org.eclipse.sirius.web.graphql.utils.typeresolvers", "org.eclipse.sirius.web.spring.collaborative.diagrams",
-        "org.eclipse.sirius.web.spring.collaborative.editingcontext", "org.eclipse.sirius.web.spring.collaborative.handlers", "org.eclipse.sirius.web.spring.collaborative.representations",
-        "org.eclipse.sirius.web.spring.graphql" })
+@ComponentScan({ "fr.cea.nablab.sirius.web.app", "org.eclipse.sirius.components.core", "org.eclipse.sirius.components.compatibility", "org.eclipse.sirius.components.diagrams",
+        "org.eclipse.sirius.components.diagrams.layout", "org.eclipse.sirius.components.diagrams.layout.api", "org.eclipse.sirius.components.emf.compatibility",
+        "org.eclipse.sirius.components.emf.configuration", "org.eclipse.sirius.components.emf.query", "org.eclipse.sirius.components.emf.services",
+        "org.eclipse.sirius.components.graphql.utils.typeresolvers", "org.eclipse.sirius.components.collaborative.diagrams", "org.eclipse.sirius.components.collaborative.editingcontext",
+        "org.eclipse.sirius.components.collaborative.handlers", "org.eclipse.sirius.components.collaborative.representations", "org.eclipse.sirius.components.graphql" })
 public class NabLabApplication {
 
     /**

@@ -10,7 +10,7 @@
 package fr.cea.nablab.sirius.web.app.services.api;
 
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.sirius.web.core.api.IEditingContext;
+import org.eclipse.sirius.components.core.api.IEditingContext;
 
 /**
  * @author arichard

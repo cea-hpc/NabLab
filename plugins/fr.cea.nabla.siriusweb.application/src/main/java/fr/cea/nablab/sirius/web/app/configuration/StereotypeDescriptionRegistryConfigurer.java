@@ -14,9 +14,9 @@ import fr.cea.nabla.ir.ir.IrFactory;
 import java.util.UUID;
 
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.sirius.web.api.configuration.IStereotypeDescriptionRegistry;
-import org.eclipse.sirius.web.api.configuration.IStereotypeDescriptionRegistryConfigurer;
-import org.eclipse.sirius.web.api.configuration.StereotypeDescription;
+import org.eclipse.sirius.components.core.configuration.IStereotypeDescriptionRegistry;
+import org.eclipse.sirius.components.core.configuration.IStereotypeDescriptionRegistryConfigurer;
+import org.eclipse.sirius.components.core.configuration.StereotypeDescription;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;

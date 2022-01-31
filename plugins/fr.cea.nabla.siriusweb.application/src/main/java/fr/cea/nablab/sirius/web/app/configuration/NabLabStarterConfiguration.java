@@ -9,13 +9,13 @@
  *******************************************************************************/
 package fr.cea.nablab.sirius.web.app.configuration;
 
-import org.eclipse.sirius.web.spring.collaborative.api.ISubscriptionManagerFactory;
-import org.eclipse.sirius.web.spring.collaborative.editingcontext.EditingContextEventProcessorExecutorServiceProvider;
-import org.eclipse.sirius.web.spring.collaborative.editingcontext.api.IEditingContextEventProcessorExecutorServiceProvider;
-import org.eclipse.sirius.web.spring.collaborative.forms.WidgetSubscriptionManager;
-import org.eclipse.sirius.web.spring.collaborative.forms.api.IWidgetSubscriptionManagerFactory;
-import org.eclipse.sirius.web.spring.collaborative.representations.SubscriptionManager;
-import org.eclipse.sirius.web.spring.graphql.ws.api.IGraphQLWebSocketHandlerListener;
+import org.eclipse.sirius.components.collaborative.api.ISubscriptionManagerFactory;
+import org.eclipse.sirius.components.collaborative.editingcontext.EditingContextEventProcessorExecutorServiceProvider;
+import org.eclipse.sirius.components.collaborative.editingcontext.api.IEditingContextEventProcessorExecutorServiceProvider;
+import org.eclipse.sirius.components.collaborative.forms.WidgetSubscriptionManager;
+import org.eclipse.sirius.components.collaborative.forms.api.IWidgetSubscriptionManagerFactory;
+import org.eclipse.sirius.components.collaborative.representations.SubscriptionManager;
+import org.eclipse.sirius.components.graphql.ws.api.IGraphQLWebSocketHandlerListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.CloseStatus;

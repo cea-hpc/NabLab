@@ -11,11 +11,11 @@ package fr.cea.nablab.sirius.web.app.datafetchers.queries;
 
 import java.util.Objects;
 
-import org.eclipse.sirius.web.annotations.spring.graphql.QueryDataFetcher;
-import org.eclipse.sirius.web.core.RepresentationMetadata;
-import org.eclipse.sirius.web.core.api.IRepresentationDescriptionSearchService;
-import org.eclipse.sirius.web.representations.IRepresentationDescription;
-import org.eclipse.sirius.web.spring.graphql.api.IDataFetcherWithFieldCoordinates;
+import org.eclipse.sirius.components.annotations.spring.graphql.QueryDataFetcher;
+import org.eclipse.sirius.components.core.RepresentationMetadata;
+import org.eclipse.sirius.components.core.api.IRepresentationDescriptionSearchService;
+import org.eclipse.sirius.components.graphql.api.IDataFetcherWithFieldCoordinates;
+import org.eclipse.sirius.components.representations.IRepresentationDescription;
 
 import graphql.schema.DataFetchingEnvironment;
 

@@ -9,7 +9,7 @@
  *******************************************************************************/
 package fr.cea.nablab.sirius.web.app.services;
 
-import org.eclipse.sirius.web.graphql.utils.typeresolvers.ReflectiveTypeResolver;
+import org.eclipse.sirius.components.graphql.utils.typeresolvers.ReflectiveTypeResolver;
 import org.springframework.stereotype.Service;
 
 import graphql.schema.TypeResolver;

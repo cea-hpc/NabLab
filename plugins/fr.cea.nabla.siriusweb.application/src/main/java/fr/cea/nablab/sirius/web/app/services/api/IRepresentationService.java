@@ -9,14 +9,15 @@
  *******************************************************************************/
 package fr.cea.nablab.sirius.web.app.services.api;
 
-import org.eclipse.sirius.components.core.api.IPayload;
+import fr.cea.nablab.sirius.web.app.services.representations.RepresentationDescriptor;
+
+import java.util.Optional;
 
 /**
  * @author arichard
  */
-public interface IModelService {
+public interface IRepresentationService {
 
-    IPayload uploadModel(UploadModelInput input);
+    Optional<RepresentationDescriptor> getRepresentationDescriptorForEditingContextId(String projectId, String representationId);
 
-    boolean existsById(String modelId);
 }

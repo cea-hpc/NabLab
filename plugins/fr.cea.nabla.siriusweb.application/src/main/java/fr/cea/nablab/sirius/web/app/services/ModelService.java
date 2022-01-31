@@ -9,7 +9,9 @@
  *******************************************************************************/
 package fr.cea.nablab.sirius.web.app.services;
 
+import fr.cea.nabla.ir.ir.IrModule;
 import fr.cea.nabla.ir.ir.IrRoot;
+import fr.cea.nabla.ir.ir.JobCaller;
 import fr.cea.nabla.ir.ir.util.IrResourceImpl;
 import fr.cea.nablab.sirius.web.app.services.api.IEditingContextService;
 import fr.cea.nablab.sirius.web.app.services.api.IModelService;
@@ -26,17 +28,16 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.sirius.web.core.api.ErrorPayload;
-import org.eclipse.sirius.web.core.api.IEditingContext;
-import org.eclipse.sirius.web.core.api.IPayload;
-import org.eclipse.sirius.web.core.api.IRepresentationDescriptionSearchService;
-import org.eclipse.sirius.web.diagrams.Diagram;
-import org.eclipse.sirius.web.diagrams.description.DiagramDescription;
-import org.eclipse.sirius.web.emf.services.EObjectIDManager;
-import org.eclipse.sirius.web.spring.collaborative.api.IRepresentationPersistenceService;
-import org.eclipse.sirius.web.spring.collaborative.diagrams.api.IDiagramCreationService;
-import org.eclipse.sirius.web.spring.collaborative.diagrams.messages.ICollaborativeDiagramMessageService;
-import org.eclipse.sirius.web.spring.collaborative.dto.CreateRepresentationInput;
+import org.eclipse.sirius.components.collaborative.api.IRepresentationPersistenceService;
+import org.eclipse.sirius.components.collaborative.diagrams.api.IDiagramCreationService;
+import org.eclipse.sirius.components.collaborative.diagrams.messages.ICollaborativeDiagramMessageService;
+import org.eclipse.sirius.components.core.api.ErrorPayload;
+import org.eclipse.sirius.components.core.api.IEditingContext;
+import org.eclipse.sirius.components.core.api.IPayload;
+import org.eclipse.sirius.components.core.api.IRepresentationDescriptionSearchService;
+import org.eclipse.sirius.components.diagrams.Diagram;
+import org.eclipse.sirius.components.diagrams.description.DiagramDescription;
+import org.eclipse.sirius.components.emf.services.EObjectIDManager;
 import org.springframework.stereotype.Service;
 
 /**
@@ -55,7 +56,7 @@ public class ModelService implements IModelService {
 
     private final Map<String, EObject> models = new ConcurrentHashMap<>();
 
-    private IEditingContextService editingContextService;
+    private final IEditingContextService editingContextService;
 
     public ModelService(IRepresentationDescriptionSearchService representationDescriptionSearchService, IRepresentationPersistenceService representationPersistenceService,
             IDiagramCreationService diagramCreationService, IEditingContextService editingContextService, ICollaborativeDiagramMessageService messageService) {
@@ -73,7 +74,7 @@ public class ModelService implements IModelService {
 
     @Override
     public IPayload uploadModel(UploadModelInput input) {
-        String message = this.messageService.invalidInput(input.getClass().getSimpleName(), CreateRepresentationInput.class.getSimpleName());
+        String message = this.messageService.invalidInput(input.getClass().getSimpleName(), UploadModelInput.class.getSimpleName());
         IPayload payload = new ErrorPayload(input.getId(), message);
 
         EObjectIDManager idManager = new EObjectIDManager();
@@ -104,7 +105,13 @@ public class ModelService implements IModelService {
         if (optionalDiagramDescription.isPresent()) {
             DiagramDescription diagramDescription = optionalDiagramDescription.get();
 
-            Diagram diagram = this.diagramCreationService.create("explicitHeatEquation", irRoot.getMain(), diagramDescription, editingContext); //$NON-NLS-1$
+            JobCaller jobCaller = irRoot.getMain();
+            String diagramLabel = "Jobs Graph"; //$NON-NLS-1$
+            if (jobCaller instanceof IrModule) {
+                diagramLabel = ((IrModule) jobCaller).getName();
+            }
+
+            Diagram diagram = this.diagramCreationService.create(diagramLabel, jobCaller, diagramDescription, editingContext);
 
             this.representationPersistenceService.save(editingContext, diagram);
 

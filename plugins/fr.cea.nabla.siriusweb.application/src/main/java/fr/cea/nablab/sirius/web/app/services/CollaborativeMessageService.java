@@ -9,7 +9,7 @@
  *******************************************************************************/
 package fr.cea.nablab.sirius.web.app.services;
 
-import org.eclipse.sirius.web.spring.collaborative.messages.ICollaborativeMessageService;
+import org.eclipse.sirius.components.collaborative.messages.ICollaborativeMessageService;
 import org.springframework.stereotype.Service;
 
 /**

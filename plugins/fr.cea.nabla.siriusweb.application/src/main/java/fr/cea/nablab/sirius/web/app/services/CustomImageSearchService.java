@@ -11,8 +11,8 @@ package fr.cea.nablab.sirius.web.app.services;
 
 import java.util.List;
 
-import org.eclipse.sirius.web.emf.view.CustomImage;
-import org.eclipse.sirius.web.emf.view.ICustomImageSearchService;
+import org.eclipse.sirius.components.emf.view.CustomImage;
+import org.eclipse.sirius.components.emf.view.ICustomImageSearchService;
 import org.springframework.stereotype.Service;
 
 /**

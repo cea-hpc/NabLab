@@ -33,16 +33,16 @@ import org.eclipse.elk.graph.ElkLabel;
 import org.eclipse.elk.graph.ElkNode;
 import org.eclipse.elk.graph.ElkPort;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.sirius.web.core.api.IEditingContext;
-import org.eclipse.sirius.web.diagrams.Diagram;
-import org.eclipse.sirius.web.diagrams.Node;
-import org.eclipse.sirius.web.diagrams.NodeType;
-import org.eclipse.sirius.web.diagrams.description.DiagramDescription;
-import org.eclipse.sirius.web.diagrams.layout.ELKDiagramConverter;
-import org.eclipse.sirius.web.diagrams.layout.IDiagramLayoutConfiguratorProvider;
-import org.eclipse.sirius.web.diagrams.layout.ISiriusWebLayoutConfigurator;
-import org.eclipse.sirius.web.diagrams.layout.SiriusWebLayoutConfigurator;
-import org.eclipse.sirius.web.emf.services.ObjectService;
+import org.eclipse.sirius.components.core.api.IEditingContext;
+import org.eclipse.sirius.components.diagrams.Diagram;
+import org.eclipse.sirius.components.diagrams.Node;
+import org.eclipse.sirius.components.diagrams.NodeType;
+import org.eclipse.sirius.components.diagrams.description.DiagramDescription;
+import org.eclipse.sirius.components.diagrams.layout.ELKDiagramConverter;
+import org.eclipse.sirius.components.diagrams.layout.IDiagramLayoutConfiguratorProvider;
+import org.eclipse.sirius.components.diagrams.layout.ISiriusWebLayoutConfigurator;
+import org.eclipse.sirius.components.diagrams.layout.SiriusWebLayoutConfigurator;
+import org.eclipse.sirius.components.emf.services.ObjectService;
 import org.springframework.stereotype.Component;
 
 /**

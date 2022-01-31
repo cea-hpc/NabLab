@@ -14,7 +14,7 @@ import fr.cea.nablab.sirius.web.app.services.representations.RepresentationDescr
 
 import java.util.List;
 
-import org.eclipse.sirius.web.api.configuration.IRepresentationDescriptionRegistryConfigurer;
+import org.eclipse.sirius.components.core.configuration.IRepresentationDescriptionRegistryConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

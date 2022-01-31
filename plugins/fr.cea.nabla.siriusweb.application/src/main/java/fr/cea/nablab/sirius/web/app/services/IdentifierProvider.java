@@ -14,7 +14,7 @@ import java.util.UUID;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.sirius.web.compat.api.IIdentifierProvider;
+import org.eclipse.sirius.components.compatibility.api.IIdentifierProvider;
 import org.springframework.stereotype.Service;
 
 /**

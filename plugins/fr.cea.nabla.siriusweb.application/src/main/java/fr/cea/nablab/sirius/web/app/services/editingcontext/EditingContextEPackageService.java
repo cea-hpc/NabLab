@@ -15,7 +15,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.sirius.web.emf.services.IEditingContextEPackageService;
+import org.eclipse.sirius.components.emf.services.IEditingContextEPackageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

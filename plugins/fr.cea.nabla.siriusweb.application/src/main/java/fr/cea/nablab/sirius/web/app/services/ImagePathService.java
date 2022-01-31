@@ -11,7 +11,7 @@ package fr.cea.nablab.sirius.web.app.services;
 
 import java.util.List;
 
-import org.eclipse.sirius.web.api.services.IImagePathService;
+import org.eclipse.sirius.components.core.api.IImagePathService;
 import org.springframework.stereotype.Service;
 
 /**

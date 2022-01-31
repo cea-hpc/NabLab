@@ -122,6 +122,12 @@
               <firstModelOperations xsi:type="tool_1:ChangeContext" browseExpression="aql:views->first().backToParentDiagram()"/>
             </initialOperation>
           </ownedTools>
+          <ownedTools xsi:type="tool_1:OperationAction" name="NID.GoIntoDiagram.SiriusWeb" label="Go into diagram">
+            <view name="views"/>
+            <initialOperation>
+              <firstModelOperations xsi:type="tool:Navigation" diagramDescription="//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']"/>
+            </initialOperation>
+          </ownedTools>
         </toolSections>
       </defaultLayer>
     </ownedRepresentations>

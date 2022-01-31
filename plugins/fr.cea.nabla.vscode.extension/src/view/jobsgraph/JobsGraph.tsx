@@ -83,7 +83,12 @@ export const JobsGraph = ({ irModel }: JobsGraphProps) => {
 
   const setSelection = (selection: Selection) => {
     setState((prevState) => {
-      return { ...prevState, selection };
+      const newRepId = selection?.entries[0]?.id;
+      if (state.selection !== selection && newRepId?.startsWith('volatileRepresentation_')) {
+        return { ...prevState, representationId: newRepId, selection };
+      } else {
+        return { ...prevState, selection };
+      }
     });
   };
 
@@ -146,7 +151,7 @@ export const JobsGraph = ({ irModel }: JobsGraphProps) => {
     <DiagramWebSocketContainer
       editingContextId={state.editingContextId}
       representationId={state.representationId}
-      readOnly={true}
+      readOnly={false}
       selection={state.selection}
       setSelection={setSelection}
     />

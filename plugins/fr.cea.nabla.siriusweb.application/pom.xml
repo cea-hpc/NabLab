@@ -26,7 +26,7 @@
 
 	<properties>
 		<java.version>11</java.version>
-		<sirius.components.version>2021.12.16</sirius.components.version>
+		<sirius.components.version>2022.01.2</sirius.components.version>
 		<graphql-java.version>17.1</graphql-java.version>
 	</properties>
 
@@ -69,33 +69,33 @@
 			<version>${graphql-java.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.sirius.web</groupId>
-			<artifactId>sirius-web-spring-collaborative-diagrams</artifactId>
+			<groupId>org.eclipse.sirius</groupId>
+			<artifactId>sirius-components-collaborative-diagrams</artifactId>
 			<version>${sirius.components.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.sirius.web</groupId>
-			<artifactId>sirius-web-spring-graphql-api</artifactId>
+			<groupId>org.eclipse.sirius</groupId>
+			<artifactId>sirius-components-graphql-api</artifactId>
 			<version>${sirius.components.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.sirius.web</groupId>
-			<artifactId>sirius-web-graphql-utils</artifactId>
+			<groupId>org.eclipse.sirius</groupId>
+			<artifactId>sirius-components-graphql-utils</artifactId>
 			<version>${sirius.components.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.sirius.web</groupId>
-			<artifactId>sirius-web-spring-graphql</artifactId>
+			<groupId>org.eclipse.sirius</groupId>
+			<artifactId>sirius-components-graphql</artifactId>
 			<version>${sirius.components.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.sirius.web</groupId>
-			<artifactId>sirius-web-emf</artifactId>
+			<groupId>org.eclipse.sirius</groupId>
+			<artifactId>sirius-components-emf</artifactId>
 			<version>${sirius.components.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.sirius.web</groupId>
-			<artifactId>sirius-web-compatibility</artifactId>
+			<groupId>org.eclipse.sirius</groupId>
+			<artifactId>sirius-components-compatibility</artifactId>
 			<version>${sirius.components.version}</version>
 		</dependency>
 		<dependency>

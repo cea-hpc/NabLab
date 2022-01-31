@@ -15,9 +15,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.eclipse.sirius.web.core.api.IEditingContext;
-import org.eclipse.sirius.web.core.api.IRepresentationDescriptionSearchService;
-import org.eclipse.sirius.web.representations.IRepresentationDescription;
+import org.eclipse.sirius.components.core.api.IEditingContext;
+import org.eclipse.sirius.components.core.api.IRepresentationDescriptionSearchService;
+import org.eclipse.sirius.components.representations.IRepresentationDescription;
 
 /**
  * @author arichard

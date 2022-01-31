@@ -13,29 +13,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.cea.nablab.sirius.web.app.services.api.IModelService;
 import fr.cea.nablab.sirius.web.app.services.api.UploadModelInput;
-import fr.cea.nablab.sirius.web.app.services.api.UploadModelSuccessPayload;
 
 import java.util.Objects;
 
-import org.eclipse.sirius.web.annotations.graphql.GraphQLMutationTypes;
-import org.eclipse.sirius.web.annotations.spring.graphql.MutationDataFetcher;
-import org.eclipse.sirius.web.core.api.IPayload;
-import org.eclipse.sirius.web.spring.graphql.api.IDataFetcherWithFieldCoordinates;
+import org.eclipse.sirius.components.annotations.spring.graphql.MutationDataFetcher;
+import org.eclipse.sirius.components.core.api.IPayload;
+import org.eclipse.sirius.components.graphql.api.IDataFetcherWithFieldCoordinates;
 
 import graphql.schema.DataFetchingEnvironment;
 
 /**
  * @author arichard
  */
-//@formatter:off
-@GraphQLMutationTypes(
-        input = UploadModelInput.class,
-        payloads = {
-            UploadModelSuccessPayload.class
-        }
-    )
 @MutationDataFetcher(type = "Mutation", field = "uploadModel")
-//@formatter:on
 public class MutationUploadModelDataFetcher implements IDataFetcherWithFieldCoordinates<IPayload> {
 
     private static final String INPUT_ARGUMENT = "input"; //$NON-NLS-1$

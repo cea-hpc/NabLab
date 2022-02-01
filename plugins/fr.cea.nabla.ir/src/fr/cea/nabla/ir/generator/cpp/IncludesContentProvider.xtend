@@ -54,10 +54,19 @@ class IncludesContentProvider
 		userIncludes +=  "nablalib/utils/Utils.h"
 		userIncludes +=  "nablalib/utils/Timer.h"
 		userIncludes +=  "nablalib/types/Types.h"
-		if (hasLevelDB) userIncludes += "nablalib/utils/LevelDBUtils.h"
+		if (hasLevelDB)
+			userIncludes += getLevelDBIncludes
 		return userIncludes
 	}
 
+	protected def getLevelDBIncludes()
+	{
+		val levelDBIncludes = new LinkedHashSet<String>
+		levelDBIncludes += "nablalib/utils/Serializer.h"
+		levelDBIncludes += "nablalib/utils/LevelDBUtils.h"
+		return levelDBIncludes
+	}
+	
 	protected def getSystemNs(boolean hasLevelDB)
 	{
 		return #[]
@@ -105,6 +114,15 @@ class KokkosIncludesContentProvider extends IncludesContentProvider
 		val includes = super.getUserIncludes(hasLevelDB, hasPostProcessing)
 		includes += "nablalib/utils/kokkos/Parallel.h"
 		return includes
+	}
+
+	override getLevelDBIncludes()
+	{
+		val levelDBIncludes = new LinkedHashSet<String>
+		levelDBIncludes += "nablalib/utils/kokkos/Serializer.h"
+		levelDBIncludes += "nablalib/utils/Serializer.h"
+		levelDBIncludes += "nablalib/utils/LevelDBUtils.h"
+		return levelDBIncludes
 	}
 
 	override getUserNs(boolean hasLevelDB)

@@ -356,7 +356,8 @@ class IrModuleContentProvider
 		// Batch to write all data at once
 		leveldb::WriteBatch batch;
 		«FOR v : irRoot.variables.filter[!option]»
-		putDB(&batch, "«Utils.getDbKey(v)»", «CppGeneratorUtils.getDbBytes(v.type)», «Utils.getDbValue(it, v, '->')»);
+		putDBDescriptor(&batch, "«Utils.getDbDescriptor(v)»", «CppGeneratorUtils.getDbBytes(v.type)», std::vector<size_t>{«CppGeneratorUtils.getDbSizes(v.type, v.name)»});
+		putDBValue(&batch, "«Utils.getDbKey(v)»", «Utils.getDbValue(it, v, '->')»);
 		«ENDFOR»
 		status = db->Write(leveldb::WriteOptions(), &batch);
 		// Checking everything was ok

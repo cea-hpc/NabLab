@@ -62,9 +62,17 @@ class JavaGeneratorUtils
 	static def dispatch CharSequence getDbBytes(LinearAlgebraType it) { "Double.BYTES" }
 	static def dispatch CharSequence getDbBytes(IrType it) {""}
 
-	static def dispatch CharSequence getDbSizes(BaseType it, String variableName) { intSizes.empty?"1":intSizes.map[i | i ].join(", ") }
-	static def dispatch CharSequence getDbSizes(ConnectivityType it, String variableName) { getDbSizesIndexes(connectivities, variableName) +  ", " + getDbSizes(base, variableName) }
-	static def dispatch CharSequence getDbSizes(LinearAlgebraType it, String variableName) { sizes.map[c | variableName + ".length"].join(", ") }
+	static def dispatch CharSequence getDbSizes(BaseType it, String variableName) { intSizes.empty ? "1" : intSizes.map[i | i ].join(", ") }
+	static def dispatch CharSequence getDbSizes(ConnectivityType it, String variableName) { getDbSizesIndexes(connectivities, variableName) + (base.intSizes.empty ? "" : ", " + getDbSizes(base, variableName)) }
+	static def dispatch CharSequence getDbSizes(LinearAlgebraType it, String variableName) 
+	{
+		switch it.sizes.size
+		{
+			case 1: variableName + ".getSize()"
+			case 2: variableName + ".getData().getRowDimension(), " + variableName + ".getData().getColumnDimension()"
+			default: throw new RuntimeException("Unexpected dimension: " + it.sizes.size)
+		}
+	}
 	static def dispatch CharSequence getDbSizes(IrType it, String variableName) {""}
 
 	private static def CharSequence getDbSizesIndexes(Iterable<Connectivity> connectivities, String variableName)

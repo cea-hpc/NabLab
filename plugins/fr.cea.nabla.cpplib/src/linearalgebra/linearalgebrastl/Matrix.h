@@ -24,8 +24,9 @@
 #include <cassert>
 #include <limits>
 #include <mutex>
-
 #include "CrsMatrix.h"
+
+#define DBL_PRECISION 6
 
 typedef CrsMatrix<double> SparseMatrixType;
 
@@ -66,7 +67,7 @@ class Matrix
   std::mutex m_mutex;
 };
 
-std::string serialize(const SparseMatrixType& M);
-std::string serialize(const Matrix& M);
+const char* serialize(const SparseMatrixType& M, int& size, bool& mustDeletePtr);
+const char* serialize(const Matrix& M, int& size, bool& mustDeletePtr);
 
 #endif

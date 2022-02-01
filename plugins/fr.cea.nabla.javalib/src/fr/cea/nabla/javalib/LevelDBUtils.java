@@ -63,14 +63,11 @@ public class LevelDBUtils
 				for(itRef.seekToFirst() ; itRef.hasNext() ; itRef.next())
 				{
 					String key = asString(itRef.peekNext().getKey());
-					if (!key.endsWith("_descriptor"))
+					String descriptorSuffix = "_descriptor";
+					if (!key.endsWith(descriptorSuffix))
 					{
-						String dataDescriptorKey = key + "_descriptor";
-						DataDescriptor dataDescriptor = toDataDescriptor(dbRef.get(bytes(dataDescriptorKey)));
-						int bytes = dataDescriptor.dataTypeBytes;
-						int[] dataSizes = dataDescriptor.dataSizes;
-						byte[] byteValue = db.get(bytes(key));
-						if (byteValue == null)
+						byte[] value = db.get(bytes(key));
+						if (value == null)
 						{
 							System.err.println("ERROR - Key : " + key + " not found.");
 							result = false;
@@ -78,11 +75,16 @@ public class LevelDBUtils
 						else
 						{
 							byte[] ref = itRef.peekNext().getValue();
-							byte[] value = byteValue;
-							System.err.println(key + ": " + (Arrays.equals(value, ref) ? "OK" : "ERROR"));
-							if (!Arrays.equals(value, ref))
+							if (Arrays.equals(value, ref))
+								System.err.println(key + ": " + "OK");
+							else
 							{
+								System.err.println(key + ": " + "ERROR");
 								result = false;
+								String dataDescriptorKey = key + "_descriptor";
+								DataDescriptor dataDescriptor = toDataDescriptor(dbRef.get(bytes(dataDescriptorKey)));
+								int bytes = dataDescriptor.dataTypeBytes;
+								
 								int mismatchIndex = Arrays.mismatch(value, ref);
 								ByteBuffer valueByteBuffer = ByteBuffer.wrap(value);
 								ByteBuffer refByteBuffer = ByteBuffer.wrap(ref);
@@ -97,7 +99,7 @@ public class LevelDBUtils
 								else if (bufSize % bytes == 0)
 								{
 									int indx = mismatchIndex / bytes;
-									String indexes = getMismatchIndexes(dataSizes, indx);
+									String indexes = getMismatchIndexes(dataDescriptor.dataSizes, indx);
 									if (bytes == Integer.BYTES)
 										System.err.println("	Value "  + key + indexes + " = " + valueByteBuffer.getInt(indx * Integer.BYTES) + " vs Reference " + key + indexes + " = " + refByteBuffer.getInt(indx * Integer.BYTES));
 									else if (bytes == Double.BYTES)

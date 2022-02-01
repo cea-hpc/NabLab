@@ -9,8 +9,6 @@
  *******************************************************************************/
 #include "Vector.h"
 
-using namespace nablalib::utils;
-
 Vector::
 Vector(const std::string& name, const size_t size)
 : m_data(size) {}
@@ -25,10 +23,8 @@ Vector::
 Vector(VectorType& v)
 : m_data(v) {}
 
-
 Vector::
 ~Vector() {}
-
 
 Vector& Vector::
 operator=(const Vector& val)
@@ -36,7 +32,6 @@ operator=(const Vector& val)
 	m_data = val.m_data;
 	return *this;
 }
-
 
 const void Vector::
 resize(const size_t size)
@@ -50,16 +45,22 @@ getSize() const
   return m_data.size();
 }
 
-
 double Vector::
 getValue(const size_t i) const
 {
   return m_data[i];
 }
 
-
 void Vector::
 setValue(const size_t i, double value)
 {
 	m_data[i] = value;
+}
+
+const char* serialize (const Vector& v, int& size, bool& mustDeletePtr)
+{
+	size = v.m_data.size() * sizeof(double);
+	const double* array = v.m_data.data();
+	mustDeletePtr = false;
+	return (const char*)array;
 }

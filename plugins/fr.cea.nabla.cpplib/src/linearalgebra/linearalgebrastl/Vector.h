@@ -10,6 +10,7 @@
 #ifndef __VECTOR_H_
 #define __VECTOR_H_
 
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -37,5 +38,7 @@ class Vector
 // private:
   VectorType m_data;
 };
+
+const char* serialize(const Vector& v, int& size, bool& mustDeletePtr);
 
 #endif

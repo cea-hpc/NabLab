@@ -10,25 +10,71 @@
 #ifndef NABLALIB_UTILS_LEVELDBUTILS_H_
 #define NABLALIB_UTILS_LEVELDBUTILS_H_
 
+#include <iostream>
+#include <string>
 #include <leveldb/db.h>
 #include <leveldb/write_batch.h>
 
 namespace nablalib::utils
 {
-	struct KeyData {
-		char dataName[64];
+	struct DataDescriptor {
 		int dataTypeBytes;
+		int dataSizes[4];
 	};
 
-	template <typename T>
-	void putDB(leveldb::WriteBatch* batch, const char* dataName, int dataTypeBytes, T& dataValue)
-	{
-		KeyData key;
-		memset(&key, 0, sizeof(KeyData));
-		strncpy(key.dataName, dataName, 63);
-		key.dataTypeBytes = dataTypeBytes;
+	static std::string descriptorSuffix = "_descriptor";
 
-		batch->Put(leveldb::Slice((const char*)&key, sizeof(KeyData)), leveldb::Slice((const char*)&dataValue, sizeof(dataValue)));
+	void putDBDescriptor(leveldb::WriteBatch* batch, const std::string dataName, int dataTypeBytes, std::vector<size_t> dataSizes)
+	{
+		DataDescriptor dataDescriptor;
+		memset(&dataDescriptor.dataSizes, 0, 4 * sizeof(int));
+		for (size_t i = 0; i < dataSizes.size(); i++)
+			dataDescriptor.dataSizes[i] = dataSizes[i];
+		dataDescriptor.dataTypeBytes = dataTypeBytes;
+		batch->Put(dataName, leveldb::Slice((const char*)&dataDescriptor, sizeof(DataDescriptor)));
+	}
+
+	template <typename T>
+	void putDBValue(leveldb::WriteBatch* batch, const std::string dataName, T& dataValue)
+	{
+		int size;
+		bool mustDelete = false;
+		const char* array = serialize(dataValue, size, mustDelete);
+		batch->Put(dataName, leveldb::Slice(array, size));
+		if (mustDelete)
+			delete []array;
+	}
+
+	bool endsWith(std::string const &fullString, std::string const &ending)
+	{
+		if (fullString.size() >= ending.size()) {
+			return (0 == fullString.compare (fullString.size() - ending.size(), ending.size(), ending));
+		} else {
+			return false;
+		}
+	}
+
+	std::string getMismatchIndexes(int dataSizes[4], int mismatchIndex)
+	{
+		std::stringstream ss;
+		if (dataSizes[1] == 0)
+			ss << "[" << mismatchIndex << "]";
+		else if (dataSizes[2] == 0)
+			ss << "[" << mismatchIndex / dataSizes[1] << "]" << "[" << mismatchIndex % dataSizes[1] << "]";
+		else if (dataSizes[3] == 0)
+			ss << "[" << mismatchIndex / (dataSizes[1] * dataSizes[2]) << "]"
+			<< "[" << (mismatchIndex % (dataSizes[1] * dataSizes[2])) / dataSizes[2] << "]"
+			<< "[" << (mismatchIndex % (dataSizes[1] * dataSizes[2])) % dataSizes[2] << "]";
+		else ss << "[" << mismatchIndex / (dataSizes[1] * dataSizes[2] * dataSizes[3] ) << "]"
+				<< "[" << (mismatchIndex % (dataSizes[1] * dataSizes[2] * dataSizes[3] )) / ( dataSizes[2] * dataSizes[3] ) << "]"
+				<< "[" << ((mismatchIndex % (dataSizes[1] * dataSizes[2] * dataSizes[3] )) % ( dataSizes[2] * dataSizes[3] )) / dataSizes[3] << "]"
+				<< "[" << ((mismatchIndex % (dataSizes[1] * dataSizes[2] * dataSizes[3] )) % ( dataSizes[2] * dataSizes[3] )) % dataSizes[3] << "]";
+		return ss.str();
+	}
+
+	bool isScalar(int dataSizes[4])
+	{
+		return dataSizes[0] == 0;
 	}
 
 	bool compareDB(const std::string& current, const std::string& ref)
@@ -60,51 +106,60 @@ namespace nablalib::utils
 		// Results comparison
 		std::cerr << "# Comparing results ..." << std::endl;
 		for (it_ref->SeekToFirst(); it_ref->Valid(); it_ref->Next()) {
-			KeyData* keyData = (KeyData*)(it_ref->key().data());
-			std::string stringValue;
-			auto status = db->Get(leveldb::ReadOptions(), it_ref->key(), &stringValue);
-			if (status.IsNotFound()) {
-				std::cerr << "ERROR - Key : " << keyData->dataName << " not found." << std::endl;
-				result = false;
-			}
-			else {
-				leveldb::Slice value = leveldb::Slice(stringValue);
-				int mismatchIndex = value.compare(it_ref->value());
-				if (mismatchIndex == 0)
-					std::cerr << keyData->dataName << ": " << "OK" << std::endl;
-				else if (mismatchIndex > 0){
-					std::cerr << keyData->dataName << ": " << "ERROR" << std::endl;
-					int bufSize = value.size();
-					int bytes = keyData->dataTypeBytes;
-					if (bufSize == bytes)
-					{
-						if (bytes == sizeof(int))
-							std::cerr << "	" << *(int*)stringValue.data() << " (value) != " << *(int*)it_ref->value().data() << " (ref)" << std::endl;
-						else if (bytes == sizeof(double))
-							std::cerr << "	" << *(double*)stringValue.data() << " (value) != " << *(double*)it_ref->value().data() << " (ref)" << std::endl;
-					}
-					else if (bufSize % bytes == 0)
-					{
-						std::string stringRefValue(it_ref->value().ToString());
-						if (bytes == sizeof(int))
-							std::cerr << "	" << *(int*)stringValue.substr((mismatchIndex -1) * bytes, mismatchIndex * bytes - 1).data() << " (value[" << mismatchIndex -1 << "]) != " << *(int*)stringRefValue.substr((mismatchIndex -1) * bytes, mismatchIndex * bytes - 1).data() << " (ref[" << mismatchIndex -1 << "])" << std::endl;
-						else if (bytes == sizeof(double))
-							std::cerr << "	" << *(double*)stringValue.substr((mismatchIndex - 1)* bytes, mismatchIndex * bytes - 1).data() << " (value[" << mismatchIndex -1 << "]) != " << *(double*)stringRefValue.substr((mismatchIndex - 1)* bytes, mismatchIndex * bytes - 1).data()<< " (ref[" << mismatchIndex -1 << "])" << std::endl;
-					}
-					else
-						std::cerr << "Unable to determine the type of data.";
+			std::string key = it_ref->key().ToString();
+			if (!endsWith(key, descriptorSuffix))
+			{
+				std::string dataValueAsString;
+				auto status = db->Get(leveldb::ReadOptions(), key, &dataValueAsString);
+				leveldb::Slice value = leveldb::Slice(dataValueAsString);
 
+				if (status.IsNotFound()) {
+					std::cerr << "ERROR - Key : " << key << " not found." << std::endl;
 					result = false;
+				}
+				else {
+					if (value.compare(it_ref->value()) == 0)
+						std::cerr << key << ": " << "OK" << std::endl;
+					else
+					{
+						std::cerr << key << ": " << "ERROR" << std::endl;
+						result = false;
+						std::string dataDescriptorKey = key + descriptorSuffix;
+						std::string dataDescriptorAsString;
+						assert(db_ref->Get(leveldb::ReadOptions(), key + descriptorSuffix, &dataDescriptorAsString).ok());
+						DataDescriptor* dataDescriptor = (DataDescriptor*)(dataDescriptorAsString.data());
+						int bytes = dataDescriptor->dataTypeBytes;
+
+						int bufSize = dataValueAsString.size();
+						std::pair<const char*, const char*> myresult = std::mismatch(value.data(), value.data() + bufSize, it_ref->value().data());
+						int mismatchIndex = (myresult.first - value.data()) / bytes * bytes; // rounded down to the nearest byte
+						if (isScalar(dataDescriptor->dataSizes))
+						{
+							if (bytes == sizeof(int))
+								std::cerr << "	Value " << key << " = " << *(int*)dataValueAsString.data() << " vs Reference " << key << " = " << *(int*)it_ref->value().data() << std::endl;
+							else if (bytes == sizeof(double))
+								std::cerr << "	Value " << key << " = " << *(double*)dataValueAsString.data() << " vs Reference " << key << " = " << *(double*)it_ref->value().data() << std::endl;
+						}
+						else
+						{
+							std::string refValueAsString(it_ref->value().ToString());
+							std::string indexes = getMismatchIndexes(dataDescriptor->dataSizes, mismatchIndex / bytes);
+							if (bytes == sizeof(int))
+								std::cerr << "	Value " << key << indexes << " = " << *(int*)dataValueAsString.substr(mismatchIndex, mismatchIndex + bytes).data() << " vs Reference " << key << indexes << " = "<< *(int*)refValueAsString.substr(mismatchIndex, mismatchIndex + bytes).data() << std::endl;
+							else if (bytes == sizeof(double))
+								std::cerr << "	Value " << key << indexes << " = " << *(double*)dataValueAsString.substr(mismatchIndex, mismatchIndex + bytes).data() << " vs Reference " << key << indexes << " = "<< *(double*)refValueAsString.substr(mismatchIndex, mismatchIndex + bytes).data() << std::endl;
+						}
+					}
 				}
 			}
 		}
 
 		// looking for key in the db that are not in the ref (new variables)
 		for (it->SeekToFirst(); it->Valid(); it->Next()) {
-			KeyData* keyData = (KeyData*)(it->key().data());
+			std::string key = it->key().data();
 			std::string value;
 			if (db_ref->Get(leveldb::ReadOptions(), it->key(), &value).IsNotFound()) {
-				std::cerr << "ERROR - Key : " << keyData->dataName << " can not be compared (not present in the ref)." << std::endl;
+				std::cerr << "ERROR - Key : " << key << " can not be compared (not present in the ref)." << std::endl;
 				result = false;
 			}
 		}
@@ -112,7 +167,6 @@ namespace nablalib::utils
 		// Freeing memory
 		delete db;
 		delete db_ref;
-
 		return result;
 	}
 }

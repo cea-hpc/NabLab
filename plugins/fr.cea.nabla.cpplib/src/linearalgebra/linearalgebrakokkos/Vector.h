@@ -36,6 +36,6 @@ class Vector
   VectorType m_data;
 };
 
-std::string serialize(const Vector& v);
+const char* serialize(const Vector& v, int& size, bool& mustDeletePtr);
 
 #endif

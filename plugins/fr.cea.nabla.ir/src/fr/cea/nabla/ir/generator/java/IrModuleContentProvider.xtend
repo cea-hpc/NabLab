@@ -286,7 +286,7 @@ class IrModuleContentProvider
 				try
 				{
 					«FOR v : irRoot.variables.filter[!option]»
-					batch.put(bytes("«Utils.getDbDescriptor(v)»"), LevelDBUtils.toByteArrayDescriptor(«JavaGeneratorUtils.getDbBytes(v.type)», new int[]{«JavaGeneratorUtils.getDbSizes(v.type, v.name)»}));
+					batch.put(bytes("«Utils.getDbDescriptor(v)»"), LevelDBUtils.toByteArrayDescriptor(«JavaGeneratorUtils.getDbBytes(v.type)», new int[] {«JavaGeneratorUtils.getDbSizes(v.type, v.name)»}));
 					batch.put(bytes("«Utils.getDbKey(v)»"), LevelDBUtils.toByteArray(«Utils.getDbKey(v)»));
 					«ENDFOR»
 

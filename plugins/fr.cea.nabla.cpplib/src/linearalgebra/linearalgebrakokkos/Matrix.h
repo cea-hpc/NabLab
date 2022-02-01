@@ -31,8 +31,6 @@
 #include "KokkosSparse.hpp"
 #include "KokkosBlas.hpp"
 
-#include "nablalib/utils/Serializer.h"
-
 typedef KokkosSparse::CrsMatrix<double, int, Kokkos::OpenMP, void, int> SparseMatrixType;
 
 // TODO: templatiser la classe pour passer nb_row, nb_col, nb_nnz en tpl arg,
@@ -69,8 +67,7 @@ class Matrix
   std::mutex m_mutex;
 };
 
-
-std::string serialize(const SparseMatrixType& M);
-std::string serialize(const Matrix& M);
+const char* serialize(const SparseMatrixType& M, int& size, bool& mustDeletePtr);
+const char* serialize(const Matrix& M, int& size, bool& mustDeletePtr);
 
 #endif

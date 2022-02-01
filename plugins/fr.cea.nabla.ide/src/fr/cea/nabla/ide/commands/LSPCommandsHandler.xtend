@@ -14,8 +14,8 @@ import com.google.inject.Inject
 import com.google.inject.Provider
 import com.google.inject.Singleton
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher
+import fr.cea.nabla.generator.NablagenFileGenerator
 import fr.cea.nabla.generator.ir.IrRootBuilder
-import fr.cea.nabla.generator.providers.NablagenFileGenerator
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.util.IrResourceImpl
 import fr.cea.nabla.nabla.NablaRoot

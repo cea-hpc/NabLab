@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2021, 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -24,6 +24,8 @@ import org.eclipse.xtext.workspace.ISourceFolder
 class NabLabProjectManager extends ProjectManager
 {
 	static val NABLA_EXT = ".n";
+	static val NABLAGEN_EXT = ".ngen";
+	
 	val frCeaNablaPluginPattern = Pattern.compile(".*fr\\.cea\\.nabla-.*\\.jar")
 
 	/**
@@ -84,7 +86,7 @@ class NabLabProjectManager extends ProjectManager
 	
 	private def List<URI> collectNablaLibUris(Path path){
 		 return Files.walk(path.parent) //
-					.filter [fileName.toString.endsWith(NABLA_EXT)] //
+					.filter [fileName.toString.endsWith(NABLA_EXT) || fileName.toString.endsWith(NABLAGEN_EXT)] //
 					.map[URI.createFileURI(it.toString)] //
 					.collect(Collectors.toList)
 	}

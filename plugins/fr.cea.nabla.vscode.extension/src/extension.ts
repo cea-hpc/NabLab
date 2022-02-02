@@ -95,6 +95,23 @@ export function activate(context: ExtensionContext) {
   );
   context.subscriptions.push(disposableGenerateNablagen);
 
+  const disposableGenerateCode = commands.registerCommand(
+    'nablabweb.generateCode.proxy',
+    async (selectedFileURI: Uri) => {
+      const ngenPath = path.dirname(selectedFileURI.fsPath);
+      const projectFolder = workspace.getWorkspaceFolder(selectedFileURI);
+      const projectPath = projectFolder?.uri.fsPath;
+      if (ngenPath && projectPath && projectFolder) {
+        const wsPath = projectPath.substring(0, projectPath.lastIndexOf(projectFolder.name) - 1);
+        if (wsPath) {
+          const ngenRelativePath = path.relative(wsPath, ngenPath);
+          commands.executeCommand('nablabweb.generateCode', selectedFileURI.fsPath, wsPath, ngenRelativePath);
+        }
+      }
+    }
+  );
+  context.subscriptions.push(disposableGenerateCode);
+
   const disposableGenerateIr = commands.registerCommand('nablabweb.generateIr.proxy', async (selectedFileURI: Uri) => {
     const genDir = path.dirname(selectedFileURI.fsPath);
     const projectFolder = workspace.getWorkspaceFolder(selectedFileURI);

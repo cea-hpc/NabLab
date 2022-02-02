@@ -11,7 +11,7 @@ package fr.cea.nablab.sirius.web.app.configuration;
 
 import java.util.List;
 
-import org.eclipse.sirius.web.compat.services.api.ISiriusConfiguration;
+import org.eclipse.sirius.components.compatibility.services.api.ISiriusConfiguration;
 import org.springframework.context.annotation.Configuration;
 
 /**

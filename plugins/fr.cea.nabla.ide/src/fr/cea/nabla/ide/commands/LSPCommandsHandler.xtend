@@ -13,6 +13,7 @@ import com.google.gson.JsonPrimitive
 import com.google.inject.Inject
 import com.google.inject.Provider
 import com.google.inject.Singleton
+import fr.cea.nabla.generator.CodeGenerator
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher
 import fr.cea.nabla.generator.NablagenFileGenerator
 import fr.cea.nabla.generator.ir.IrRootBuilder
@@ -20,6 +21,7 @@ import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.util.IrResourceImpl
 import fr.cea.nabla.nabla.NablaRoot
 import fr.cea.nabla.nablagen.NablagenApplication
+import fr.cea.nabla.nablagen.NablagenRoot
 import java.io.ByteArrayOutputStream
 import java.util.Base64
 import java.util.List
@@ -35,24 +37,27 @@ import org.eclipse.lsp4j.services.LanguageClient
 import org.eclipse.xtext.ide.server.ILanguageServerAccess
 import org.eclipse.xtext.ide.server.commands.IExecutableCommandService
 import org.eclipse.xtext.util.CancelIndicator
+import org.eclipse.emf.ecore.resource.Resource
 
 @Singleton
 class LSPCommandsHandler implements IExecutableCommandService
 {
 	static val generateNablagenCommand = "nablabweb.generateNablagen"
+	static val generateCodeCommand = "nablabweb.generateCode"
 	static val generateIrCommand = "nablabweb.generateIr"
 	
 	@Inject protected NablaGeneratorMessageDispatcher dispatcher
-	@Inject protected NablagenFileGenerator generator
-	@Inject IrRootBuilder irRootBuilder
-	@Inject Provider<ResourceSet> resourceSetProvider
+	@Inject protected NablagenFileGenerator nablagenGenerator
+	@Inject Provider<CodeGenerator> codeGeneratorProvider
+	@Inject protected IrRootBuilder irRootBuilder
+	@Inject protected Provider<ResourceSet> resourceSetProvider
 	
 	protected var LanguageClient languageClient
 	val traceFunction = [NablaGeneratorMessageDispatcher.MessageType type, String msg | languageClient.logMessage(new MessageParams(MessageType.Info, msg))]
 	
 	override List<String> initialize()
 	{
-		return #[generateNablagenCommand, generateIrCommand]
+		return #[generateNablagenCommand, generateCodeCommand, generateIrCommand]
 	}
 
 	override Object execute(ExecuteCommandParams params, ILanguageServerAccess access, CancelIndicator cancelIndicator)
@@ -71,12 +76,46 @@ class LSPCommandsHandler implements IExecutableCommandService
 					val nablaRoot = it.resource.contents.filter(NablaRoot).head
 					languageClient.logMessage(new MessageParams(MessageType.Info, "Starting generation process for: " + nablaFileURI))
 					val startTime = System.currentTimeMillis
-					generator.generate(nablaRoot, genDir, projectName)
+					nablagenGenerator.generate(nablaRoot, genDir, projectName)
 					val endTime = System.currentTimeMillis
 					languageClient.logMessage(new MessageParams(MessageType.Info, "Code generation ended in " + (endTime-startTime)/1000.0 + "s"))
 					languageClient.logMessage(new MessageParams(MessageType.Info, "Generation ended successfully for: " + nablaFileURI))
 					"Nablagen generated"
 				]).get()
+			}
+			catch (InterruptedException | ExecutionException e)
+			{
+				languageClient.logMessage(new MessageParams(MessageType.Error, e.message))
+			}
+			finally
+			{
+				languageClient = null
+				dispatcher.traceListeners -= traceFunction
+			}
+		}
+		else if (generateCodeCommand.equals(params.command) && params.arguments.size === 3)
+		{
+			val nablagenFileURI = (params.arguments.get(0) as JsonPrimitive).asString
+			val genDir = (params.arguments.get(1) as JsonPrimitive).asString
+			val projectName = (params.arguments.get(2) as JsonPrimitive).asString
+			try
+			{
+				languageClient = access.languageClient
+				dispatcher.traceListeners += traceFunction
+				
+				languageClient.logMessage(new MessageParams(MessageType.Info, "Starting generation process for: " + nablagenFileURI))
+				languageClient.logMessage(new MessageParams(MessageType.Info, "Loading resources (.n and .ngen)"))
+				
+				val resourceSet = resourceSetProvider.get
+				loadNablaLibraries(access, resourceSet)
+				val ngenResource = loadNgenResource(resourceSet, nablagenFileURI)
+				val nablagenRoot = ngenResource.contents.filter(NablagenRoot).head
+				
+				codeGeneratorProvider.get.generateCode(nablagenRoot, genDir, projectName)
+				
+				languageClient.logMessage(new MessageParams(MessageType.Info, "Generation ended successfully for: " + nablagenFileURI))
+				
+				return "Code generated"
 			}
 			catch (InterruptedException | ExecutionException e)
 			{
@@ -99,28 +138,18 @@ class LSPCommandsHandler implements IExecutableCommandService
 				dispatcher.traceListeners += traceFunction
 				
 				val resourceSet = resourceSetProvider.get
-				// Load nabla libraries
-				access.doReadIndex([ILanguageServerAccess.IndexContext ctxt | 
-					val nablaLibraries = ctxt.index.allResourceDescriptions
-					for (nablaLibrary : nablaLibraries) {
-						val uri = nablaLibrary.URI
-						if (uri.toString().startsWith("file:/") && !uri.toString().startsWith("file:///")) {
-							resourceSet.getResource(uri, true)
-						}
-					}
-					""
-				]).get()
-				val ngenResource = resourceSet.createResource(URI.createURI(nablagenFileURI))
-				resourceSet.createResource(URI.createURI(nablagenFileURI.replace(".ngen", ".n")))
-				
-				ngenResource.load(Map.of())
-				EcoreUtil::resolveAll(resourceSet)
+				loadNablaLibraries(access, resourceSet)
+				val ngenResource = loadNgenResource(resourceSet, nablagenFileURI)
 				val ngen = ngenResource.contents.filter(NablagenApplication).head
+				
 				val irRoot = buildIrFrom(ngen)
-				val irResource = new IrResourceImpl(URI.createURI("inmemory"))
-				irResource.contents.add(irRoot)
-				irResource.save(baos, Map.of())
-				return Base64.encoder.encodeToString(baos.toByteArray)
+				if (irRoot !== null) {
+					val irResource = new IrResourceImpl(URI.createURI("inmemory"))
+					irResource.contents.add(irRoot)
+					irResource.save(baos, Map.of())
+					return Base64.encoder.encodeToString(baos.toByteArray)
+				}
+				return ""
 			}
 			catch (Exception e)
 			{
@@ -134,6 +163,29 @@ class LSPCommandsHandler implements IExecutableCommandService
 			
 		}
 		return "Unrecognized Command"
+	}
+	
+	private def Resource loadNgenResource(ResourceSet resourceSet, String nablagenFileURI)
+	{
+		val ngenResource = resourceSet.createResource(URI.createURI(nablagenFileURI))
+		resourceSet.createResource(URI.createURI(nablagenFileURI.replace(".ngen", ".n")))
+		ngenResource.load(Map.of())
+		EcoreUtil::resolveAll(resourceSet)
+		return ngenResource
+	}
+	private def String loadNablaLibraries(ILanguageServerAccess access, ResourceSet resourceSet)
+	{
+		access.doReadIndex([ILanguageServerAccess.IndexContext ctxt | 
+			val nablaLibraries = ctxt.index.allResourceDescriptions
+			for (nablaLibrary : nablaLibraries)
+			{
+				val uri = nablaLibrary.URI
+				if (uri.toString().startsWith("file:/") && !uri.toString().startsWith("file:///"))
+				{
+					resourceSet.getResource(uri, true)
+				}
+			}
+		]).get()
 	}
 	
 	private def IrRoot buildIrFrom(NablagenApplication ngenApp)
@@ -158,7 +210,9 @@ class LSPCommandsHandler implements IExecutableCommandService
 		languageClient.logMessage(new MessageParams(MessageType.Info, "IR converted (" + ((stop - start) / 1000000) + " ms)"))
 
 		if (ir === null)
+		{
 			languageClient.logMessage(new MessageParams(MessageType.Error, "IR module can not be built. Try to clean and rebuild all projects and start again."))
+		}
 
 		return ir
 	}

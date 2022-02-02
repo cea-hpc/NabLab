@@ -24,13 +24,15 @@ class CartesianMesh2D
 public:
 	static CartesianMesh2D* createInstance(IMesh* mesh);
 
-	Integer getNbNodes() const { return m_mesh->nbNode(); }
-	Integer getNbCells() const { return m_mesh->nbCell(); }
-	Integer getNbFaces() const { return m_mesh->nbFace(); }
-	CellGroup getCells() const;
-	NodeGroup getNodes() const;
-	FaceGroup getFaces() const;
-	ItemGroup getGroup(const string& name) const;
+	template <typename ItemType>
+	Integer indexOf(const ItemLocalIdView<ItemType> v, const ItemLocalId id)
+	{
+		for (Integer i(0) ; i < v.size(); ++i)
+			if (v[i] == id)
+				return i;
+		throw std::out_of_range("Item not in view");
+	}
+
 	ItemLocalIdView<Node> getNodesOfCell(CellLocalId cId) const;
 	ItemLocalIdView<Node> getNodesOfFace(FaceLocalId fId) const;
 	ItemLocalIdView<Cell> getCellsOfNode(NodeLocalId nId) const;

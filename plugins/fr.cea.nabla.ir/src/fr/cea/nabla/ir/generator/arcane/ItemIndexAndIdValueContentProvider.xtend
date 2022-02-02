@@ -23,7 +23,7 @@ class ItemIndexAndIdValueContentProvider
 		if (container.indexEqualId) 
 			'''«id.name»'''
 		else 
-			'''indexOf(m_mesh->«container.accessor», «id.name»)'''
+			'''m_mesh->indexOf(m_mesh->«container.accessor», «id.name»)'''
 	}
 
 	static def getContent(ItemIdValue it)

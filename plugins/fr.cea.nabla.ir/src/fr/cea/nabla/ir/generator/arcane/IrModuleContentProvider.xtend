@@ -17,7 +17,6 @@ import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
 
-import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
@@ -79,9 +78,6 @@ class IrModuleContentProvider
 	private:
 		// mesh attributes
 		«irRoot.mesh.className»* m_mesh;
-		«FOR c : irRoot.mesh.connectivities.filter[x | x.multiple && x.inTypes.empty]»
-			Integer «ArcaneUtils.toAttributeName(c.nbElemsVar)»;
-		«ENDFOR»
 
 		// other attributes
 		«FOR v : variables.filter[x | !(x.option || x.type instanceof ConnectivityType)]»
@@ -125,9 +121,6 @@ class IrModuleContentProvider
 	{
 		// initialization of mesh attributes
 		m_mesh = «irRoot.mesh.className»::createInstance(mesh());
-		«FOR c : irRoot.mesh.connectivities.filter[x | x.multiple && x.inTypes.empty]»
-			«ArcaneUtils.toAttributeName(c.nbElemsVar)» = m_mesh->getNb«c.name.toFirstUpper»()»;
-		«ENDFOR»
 
 		// initialization of other attributes
 		«FOR v : variables.filter[!(constExpr || option)]»

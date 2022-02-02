@@ -11,6 +11,7 @@ package fr.cea.nabla.ir.generator.arcane
 
 import fr.cea.nabla.ir.IrTypeExtensions
 import fr.cea.nabla.ir.ir.BaseType
+import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.IrType
@@ -19,7 +20,6 @@ import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.PrimitiveType
 import java.util.ArrayList
 
-import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.generator.arcane.ExpressionContentProvider.*
 
 class TypeContentProvider
@@ -151,7 +151,7 @@ class TypeContentProvider
 				if (dimension > 0)
 				{
 					val dimensions = new ArrayList<CharSequence>
-					dimensions += connectivities.tail.map[ArcaneUtils.toAttributeName(nbElems)]
+					dimensions += connectivities.tail.map[nbElems]
 					dimensions += base.sizes.map[content]
 					dimensions.subList(0, dimension)
 				}
@@ -173,15 +173,34 @@ class TypeContentProvider
 		}
 	}
 
+	/* Waiting for more... and management of global matrices */
 	private static def getConnectivityIndexContent(Iterable<ItemIndex> iterators)
 	{
 		val content = new StringBuffer
 		if (!iterators.empty)
 		{
-			content.append("[" + iterators.head.name + "]")
+			val firstName = iterators.head.name
+			content.append("[" + firstName + "]")
 			for (iterator : iterators.tail)
-				content.append("[" + iterator.name + ".localId()]")
+			{
+				val name = iterator.name
+				if (firstName == name)
+					content.append("[" + name + ".index()]")
+				else
+					content.append("[" + name + "]")
+			}
 		}
 		return content.toString
+	}
+
+	private static def getNbElems(Connectivity it)
+	{
+		if (inTypes.empty)
+			"nb" + returnType.name.toFirstUpper + "()"
+		else
+		{
+			val varName = "MaxNb" + name.toFirstUpper
+			provider.generationVariables.get(varName)
+		}
 	}
 }

@@ -56,32 +56,6 @@ CartesianMesh2D::CartesianMesh2D(IMesh* mesh)
 	m_neighbour_cells = cn->connectivityView();
 }
 
-
-CellGroup
-CartesianMesh2D::getCells() const
-{
-	return m_mesh->allCells();
-}
-
-NodeGroup
-CartesianMesh2D::getNodes() const
-{
-	return m_mesh->allNodes();
-}
-
-FaceGroup
-CartesianMesh2D::getFaces() const
-{
-	return m_mesh->allFaces();
-}
-
-
-ItemGroup
-CartesianMesh2D::getGroup(const string& name) const
-{
-	return m_mesh->findGroup(name);
-}
-
 ItemLocalIdView<Node>
 CartesianMesh2D::getNodesOfCell(CellLocalId cId) const
 {

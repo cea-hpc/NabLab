@@ -31,6 +31,7 @@ import fr.cea.nabla.ir.ir.SetDefinition
 import fr.cea.nabla.ir.ir.SetRef
 import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.ir.ir.VariableDeclaration
+import fr.cea.nabla.ir.ir.VectorConstant
 import fr.cea.nabla.ir.ir.While
 
 import static fr.cea.nabla.ir.generator.arcane.TypeContentProvider.*
@@ -127,9 +128,12 @@ class InstructionContentProvider
 	'''
 
 	static def dispatch CharSequence getContent(Return it)
-	'''
-		return «expression.content»;
-	'''
+	{
+		if (expression instanceof VectorConstant)
+			'''return «TypeContentProvider.getTypeName(expression.type)»«expression.content»;'''
+		else
+			'''return «expression.content»;'''
+	}
 
 	static def dispatch CharSequence getContent(Exit it)
 	'''
@@ -215,6 +219,8 @@ class InstructionContentProvider
 	{
 		switch it
 		{
+			ConnectivityCall case group !== null: '''mesh()->findGroup("«group»")'''
+			ConnectivityCall case args.empty && group === null: '''all«connectivity.name.toFirstUpper»()'''
 			ConnectivityCall: '''m_mesh->«accessor»'''
 			SetRef: target.name
 		}

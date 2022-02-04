@@ -131,7 +131,7 @@ class TypeContentProvider
 		// All the other cases
 		val typeName = switch primitive
 		{
-			case BOOL: 'Bool'
+			case BOOL: 'bool'
 			case INT: 'Int32'
 			case REAL: 'Real'
 		}

@@ -137,7 +137,7 @@ class InstructionContentProvider
 
 	static def dispatch CharSequence getContent(Exit it)
 	'''
-		fatal("«message»");
+		ARCANE_FATAL("«message»");
 	'''
 
 	static def getInnerContent(Instruction it)

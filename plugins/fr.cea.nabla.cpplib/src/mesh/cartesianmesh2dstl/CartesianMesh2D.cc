@@ -477,14 +477,10 @@ CartesianMesh2D::create(size_t nb_x_quads, size_t nb_y_quads, double x_size, dou
 	left_nodes.resize(nb_y_quads + 1);
 	right_nodes.resize(nb_y_quads + 1);
 
-	vector<Id>& inner_cells = m_groups[InnerCells];
-	vector<Id>& outer_cells = m_groups[OuterCells];
-	inner_cells.resize(nb_x_quads>1&&nb_y_quads>1?(nb_x_quads-2)*(nb_y_quads-2):0); // 0 for mesh with only 1 cell
-	outer_cells.resize(nb_x_quads * nb_y_quads - inner_cells.size());
-
 	// node creation
 	Id node_id_(0);
 	Id inner_node_id_(0);
+	Id outer_node_id_(0);
 	Id top_node_id_(0);
 	Id bottom_node_id_(0);
 	Id left_node_id_(0);
@@ -499,6 +495,7 @@ CartesianMesh2D::create(size_t nb_x_quads, size_t nb_y_quads, double x_size, dou
 				inner_nodes[inner_node_id_++] = node_id_;
 			else
 			{
+				outer_nodes[outer_node_id_++] = node_id_;
 				if (j==0) bottom_nodes[bottom_node_id_++] = node_id_;
 				if (j==nb_y_quads) top_nodes[top_node_id_++] = node_id_;
 				if (i==0) left_nodes[left_node_id_++] = node_id_;
@@ -526,20 +523,43 @@ CartesianMesh2D::create(size_t nb_x_quads, size_t nb_y_quads, double x_size, dou
 	}
 
 	// quad creation
+	vector<Id>& inner_cells = m_groups[InnerCells];
+	vector<Id>& outer_cells = m_groups[OuterCells];
+	vector<Id>& top_cells = m_groups[TopCells];
+	vector<Id>& bottom_cells = m_groups[BottomCells];
+	vector<Id>& left_cells = m_groups[LeftCells];
+	vector<Id>& right_cells = m_groups[RightCells];
+
+	inner_cells.resize(nb_x_quads>1&&nb_y_quads>1?(nb_x_quads-2)*(nb_y_quads-2):0); // 0 for mesh with only 1 cell
+	outer_cells.resize(nb_x_quads * nb_y_quads - inner_cells.size());
+	top_cells.resize(nb_x_quads);
+	bottom_cells.resize(nb_x_quads);
+	left_cells.resize(nb_y_quads);
+	right_cells.resize(nb_y_quads);
+
 	Id quad_id_(0);
-	Id inner_id_(0);
-	Id outer_id_(0);
+	Id inner_cell_id_(0);
+	Id outer_cell_id_(0);
+	Id top_cell_id_(0);
+	Id bottom_cell_id_(0);
+	Id left_cell_id_(0);
+	Id right_cell_id_(0);
+
 	for(size_t j(0); j < nb_y_quads; ++j)
 	{
 		for(size_t i(0); i < nb_x_quads; ++i)
 		{
 			if( (i != 0) && (i != nb_x_quads - 1) && (j != 0) && (j!= nb_y_quads - 1) )
 			{
-				inner_cells[inner_id_++] = quad_id_;
+				inner_cells[inner_cell_id_++] = quad_id_;
 			}
 			else
 			{
-				outer_cells[outer_id_++] = quad_id_;
+				outer_cells[outer_cell_id_++] = quad_id_;
+				if (j == m_nb_y_quads - 1) top_cells[top_cell_id_++] = quad_id_;
+				if (j == 0) bottom_cells[bottom_cell_id_++] = quad_id_;
+				if (i == 0) left_cells[left_cell_id_++] = quad_id_;
+				if (i == m_nb_x_quads - 1) right_cells[right_cell_id_++] = quad_id_;
 			}
 			const size_t upper_left_node_index_((j * static_cast<size_t>(nb_x_nodes_)) + i);
 			const size_t lower_left_node_index_(upper_left_node_index_ + static_cast<size_t>(nb_x_nodes_));
@@ -549,6 +569,8 @@ CartesianMesh2D::create(size_t nb_x_quads, size_t nb_y_quads, double x_size, dou
 	}
 
 	m_geometry = new MeshGeometry<2>(nodes_, edges_, quads_);
+
+	// faces partitionment
 	vector<Id>& inner_faces = m_groups[InnerFaces];
 	vector<Id>& outer_faces = m_groups[OuterFaces];
 	vector<Id>& inner_horizontal_faces = m_groups[InnerHorizontalFaces];
@@ -558,27 +580,42 @@ CartesianMesh2D::create(size_t nb_x_quads, size_t nb_y_quads, double x_size, dou
 	vector<Id>& left_faces = m_groups[LeftFaces];
 	vector<Id>& right_faces = m_groups[RightFaces];
 
-	// faces partitionment
+	outer_faces.resize(2 * nb_x_quads + 2 * nb_y_quads);
+	inner_faces.resize(edges_.size() - outer_faces.size());
+	inner_horizontal_faces.resize(nb_x_quads * (nb_y_quads - 1));
+	inner_vertical_faces.resize(nb_y_quads * (nb_x_quads - 1));
+	top_faces.resize(nb_x_quads);
+	bottom_faces.resize(nb_x_quads);
+	left_faces.resize(nb_y_quads);
+	right_faces.resize(nb_y_quads);
+
+	Id in_face_id_(0);
+	Id out_face_id_(0);
+	Id in_h_face_id_(0);
+	Id in_v_face_id_(0);
+	Id t_face_id_(0);
+	Id b_face_id_(0);
+	Id l_face_id_(0);
+	Id r_face_id_(0);
+
 	for (size_t edgeId(0); edgeId < edges_.size(); ++edgeId)
 	{
 		// Top boundary faces
-		if (edgeId >= 2 * m_nb_x_quads * m_nb_y_quads + m_nb_y_quads) top_faces.emplace_back(edgeId);
+		if (edgeId >= 2 * m_nb_x_quads * m_nb_y_quads + m_nb_y_quads) top_faces[t_face_id_++] = edgeId;
 		// Bottom boundary faces
-		if ((edgeId < 2 * m_nb_x_quads) && (edgeId % 2 == 0)) bottom_faces.emplace_back(edgeId);
+		if ((edgeId < 2 * m_nb_x_quads) && (edgeId % 2 == 0)) bottom_faces[b_face_id_++] = edgeId;
 		// Left boundary faces
-		if ((edgeId % (2 * m_nb_x_quads + 1) == 1) &&  (edgeId < (2 * m_nb_x_quads + 1) * m_nb_y_quads)) left_faces.emplace_back(edgeId);
+		if ((edgeId % (2 * m_nb_x_quads + 1) == 1) &&  (edgeId < (2 * m_nb_x_quads + 1) * m_nb_y_quads)) left_faces[l_face_id_++] = edgeId;
 		// Right boundary faces
-		if (edgeId % (2 * m_nb_x_quads + 1) == 2 * m_nb_x_quads) right_faces.emplace_back(edgeId);
+		if (edgeId % (2 * m_nb_x_quads + 1) == 2 * m_nb_x_quads) right_faces[r_face_id_++] = edgeId;
 		// Outer Faces
-		if (!isInnerEdge(edges_[edgeId]))
-			outer_faces.emplace_back(edgeId);
-		else
+		if (isInnerEdge(edges_[edgeId]))
 		{
-			inner_faces.emplace_back(edgeId);
+			inner_faces[in_face_id_++] = edgeId;
 			if (isVerticalEdge(edges_[edgeId]))
-				inner_vertical_faces.emplace_back(edgeId);
+				inner_vertical_faces[in_v_face_id_++] = edgeId;
 			else if (isHorizontalEdge(edges_[edgeId]))
-				inner_horizontal_faces.emplace_back(edgeId);
+				inner_horizontal_faces[in_h_face_id_++] = edgeId;
 			else
 			{
 				stringstream msg;
@@ -586,25 +623,7 @@ CartesianMesh2D::create(size_t nb_x_quads, size_t nb_y_quads, double x_size, dou
 				throw runtime_error(msg.str());
 			}
 		}
-	}
-
-	// Construction of boundary cell sets
-	const auto& cells = m_geometry->getQuads();
-	vector<Id>& top_cells = m_groups[TopCells];
-	vector<Id>& bottom_cells = m_groups[BottomCells];
-	vector<Id>& left_cells = m_groups[LeftCells];
-	vector<Id>& right_cells = m_groups[RightCells];
-	for (size_t cellId(0); cellId < cells.size(); ++cellId)
-	{
-		size_t i,j;
-		tie(i, j) = id2IndexCell(cellId);
-		// Top boundary cells
-		if (i == m_nb_y_quads - 1) top_cells.emplace_back(cellId);
-		// Bottom boundary cells
-		if (i == 0) bottom_cells.emplace_back(cellId);
-		// Left boundary cells
-		if (j == 0) left_cells.emplace_back(cellId);
-		// Right boundary cells
-		if (j == m_nb_x_quads - 1) right_cells.emplace_back(cellId);
+		else
+			outer_faces[out_face_id_++] = edgeId;
 	}
 }

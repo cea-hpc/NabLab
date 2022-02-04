@@ -172,7 +172,7 @@ class InstructionContentProvider
 	private static def getSequentialLoopContent(Iterator iterator, Instruction loopBody)
 	'''
 		«val c = iterator.container»
-		«IF c.connectivityCall.args.empty»
+		«IF c.connectivityCall.indexEqualId»
 			ENUMERATE_«c.itemType.name.toUpperCase»(«iterator.index.name», «c.accessor»)
 			{
 				«loopBody.innerContent»

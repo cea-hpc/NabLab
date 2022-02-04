@@ -56,6 +56,8 @@ public:
 
 	MeshGeometry<2>* getGeometry() noexcept { return m_geometry; }
 
+	void create(size_t nb_x_quads, size_t nb_y_quads, double x_size, double y_size);
+
 	size_t getNbNodes() const noexcept { return m_geometry->getNodes().size(); }
 	size_t getNbCells() const noexcept { return m_geometry->getQuads().size(); }
 	size_t getNbFaces() const noexcept { return m_geometry->getEdges().size(); }
@@ -122,8 +124,6 @@ public:
 	}
 
 	inline vector<Id> cellsOfNodeCollection(const vector<Id>& nodes);
-
-	void create(size_t nb_x_quads, size_t nb_y_quads, double x_size, double y_size);
 
 private:
 	MeshGeometry<2>* m_geometry;

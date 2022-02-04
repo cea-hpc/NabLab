@@ -131,6 +131,15 @@ class IrModuleContentProvider
 				«v.codeName» = «ExpressionContentProvider.getContent(v.defaultValue)»;
 			«ENDIF»
 		«ENDFOR»
+		«IF irRoot.initNodeCoordVariable !== irRoot.nodeCoordVariable»
+
+			// Copy node coordinates
+			ENUMERATE_NODE(inode, allNodes())
+			{
+				«irRoot.initNodeCoordVariable.codeName»[inode][0] = «irRoot.nodeCoordVariable.codeName»[inode][0];
+				«irRoot.initNodeCoordVariable.codeName»[inode][1] = «irRoot.nodeCoordVariable.codeName»[inode][1];
+			}
+		«ENDIF»
 
 		// calling jobs
 		«FOR c : irRoot.main.calls.filter[!mainTimeLoop]»

@@ -31,7 +31,7 @@ class ItemIndexAndIdValueContentProvider
 		switch it
 		{
 			ItemIdValueIterator:
-				if (iterator.container.connectivityCall.args.empty) '''*«iterator.index.name»'''
+				if (iterator.container.connectivityCall.args.empty) '''«iterator.index.name».asItemLocalId()'''
 				else iterator.container.uniqueName + '[' + getIndexValue + ']'
 			ItemIdValueContainer:
 				getContent(container, "m_mesh->")

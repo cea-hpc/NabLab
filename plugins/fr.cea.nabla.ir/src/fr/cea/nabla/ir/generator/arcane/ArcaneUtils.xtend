@@ -19,13 +19,12 @@ import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.JobCallerExtensions.*
 
 /**
- * @TODO What about item types? Fixed in NabLab ? Mapping Arcane ?
- * @TODO Linear Algebra with Alien
- * @TODO Comments in .n file generated in code (Doxygen) and AXL description field
- * @TODO Is there a way to enter an array in AXL (not only with min/max occurs) ?
- * @TODO Support module coupling
- * @TODO Support composed time loops: n + m
- * @TODO What happens if levelDB asked ?
+ * @TODO Arcane - What about item types? Fixed in NabLab ? Mapping Arcane ?
+ * @TODO Arcane - Linear Algebra with Alien
+ * @TODO Arcane - Support module coupling
+ * @TODO Arcane - Support composed time loops: n + m
+ * @TODO Arcane - What happens if levelDB asked ?
+ * @TODO Arcane - What to do with job updating global time ?
  */
 class ArcaneUtils
 {

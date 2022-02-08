@@ -78,6 +78,11 @@
         "category": "NabLab"
       },
       {
+        "command": "nablabweb.generateCode.proxy",
+        "title": "Generate code",
+        "category": "NabLab"
+      },
+      {
         "command": "nablabweb.generateIr.proxy",
         "title": "Generate Ir",
         "category": "NabLab"
@@ -88,6 +93,10 @@
         {
           "when": "resourceLangId == nabla",
           "command": "nablabweb.generateNablagen.proxy"
+        },
+        {
+          "when": "resourceLangId == nablagen",
+          "command": "nablabweb.generateCode.proxy"
         },
         {
           "when": "resourceLangId == nablagen",
@@ -118,7 +127,7 @@
   },
   "dependencies": {
     "@apollo/client": "3.4.7",
-    "@eclipse-sirius/sirius-components": "2022.01.2",
+    "@eclipse-sirius/sirius-components": "2022.01.7",
     "graphql": "15.5.1",
     "graphql-tag": "2.12.5",
     "graphql.macro": "1.4.2",

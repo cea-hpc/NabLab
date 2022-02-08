@@ -9,6 +9,8 @@
  *******************************************************************************/
 package fr.cea.nablab.sirius.web.app.services;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -23,6 +25,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class IdentifierProvider implements IIdentifierProvider {
 
+    Map<UUID, String> idToVSmURIMap = new HashMap<>();
+
     @Override
     public String getIdentifier(Object element) {
         // @formatter:off
@@ -32,7 +36,14 @@ public class IdentifierProvider implements IIdentifierProvider {
                 .map(Object::toString)
                 .orElse(""); //$NON-NLS-1$
 
-        return UUID.nameUUIDFromBytes(vsmElementId.getBytes()).toString();
+        UUID uuid = UUID.nameUUIDFromBytes(vsmElementId.getBytes());
+        this.idToVSmURIMap.put(uuid, vsmElementId);
+        return uuid.toString();
         // @formatter:on
+    }
+
+    @Override
+    public Optional<String> findVsmElementId(UUID id) {
+        return Optional.ofNullable(this.idToVSmURIMap.get(id));
     }
 }

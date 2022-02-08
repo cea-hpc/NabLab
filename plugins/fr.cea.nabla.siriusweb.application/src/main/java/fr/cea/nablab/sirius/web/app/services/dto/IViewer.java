@@ -11,14 +11,11 @@ package fr.cea.nablab.sirius.web.app.services.dto;
 
 import java.util.UUID;
 
-import org.eclipse.sirius.components.annotations.graphql.GraphQLInterfaceType;
-
 /**
  * Interface used to represent a viewer, the root element a the SiriusWeb GraphQL schema.
  *
  * @author arichard
  */
-@GraphQLInterfaceType(name = "Viewer")
 public interface IViewer {
     UUID getId();
 

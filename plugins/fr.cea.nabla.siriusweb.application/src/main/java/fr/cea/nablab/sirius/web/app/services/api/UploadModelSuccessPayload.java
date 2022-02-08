@@ -13,17 +13,12 @@ import java.text.MessageFormat;
 import java.util.Objects;
 import java.util.UUID;
 
-import org.eclipse.sirius.components.annotations.graphql.GraphQLField;
-import org.eclipse.sirius.components.annotations.graphql.GraphQLID;
-import org.eclipse.sirius.components.annotations.graphql.GraphQLNonNull;
-import org.eclipse.sirius.components.annotations.graphql.GraphQLObjectType;
 import org.eclipse.sirius.components.core.api.IPayload;
 import org.eclipse.sirius.components.representations.IRepresentation;
 
 /**
  * @author arichard
  */
-@GraphQLObjectType
 public class UploadModelSuccessPayload implements IPayload {
 
     private final UUID id;
@@ -36,15 +31,10 @@ public class UploadModelSuccessPayload implements IPayload {
     }
 
     @Override
-    @GraphQLID
-    @GraphQLField
-    @GraphQLNonNull
     public UUID getId() {
         return this.id;
     }
 
-    @GraphQLField
-    @GraphQLNonNull
     public IRepresentation getRepresentation() {
         return this.representation;
     }

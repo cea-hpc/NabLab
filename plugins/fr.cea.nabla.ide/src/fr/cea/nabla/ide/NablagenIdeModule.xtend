@@ -10,7 +10,9 @@
 package fr.cea.nabla.ide
 
 import com.google.inject.Binder
+import fr.cea.nabla.ide.codeactions.NablagenCodeActionService
 import fr.cea.nabla.services.NablaGrammarAccess
+import org.eclipse.xtext.ide.server.codeActions.ICodeActionService2
 
 /**
  * Use this class to register ide components.
@@ -24,4 +26,8 @@ class NablagenIdeModule extends AbstractNablagenIdeModule
 		// See https://www.eclipse.org/forums/index.php/m/1848471/
 		binder.bind(NablaGrammarAccess).toProvider([NablaIdeSetup.injector.getInstance(NablaGrammarAccess)])
 	}
+	
+	def Class<? extends ICodeActionService2> bindICodeActionService2() {
+	 	return NablagenCodeActionService
+	 }
 }

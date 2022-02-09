@@ -16,6 +16,11 @@ Matrix(const std::string name, const size_t rows, const size_t cols)
 
 
 Matrix::
+Matrix(const std::string name)
+  : m_name(name), m_nb_rows(0), m_nb_cols(0), m_nb_nnz(0), m_matrix(nullptr) {}
+
+
+Matrix::
 Matrix(const std::string name, const size_t rows, const size_t cols,
        std::initializer_list<std::tuple<int, int, double>> init_list)
   : m_name(name), m_nb_rows(rows), m_nb_cols(cols), m_nb_nnz(init_list.size()), m_matrix(nullptr)
@@ -92,6 +97,16 @@ crsMatrix()
   if (!m_matrix && !m_building_struct.empty())
     build();
   return *m_matrix;
+}
+
+
+const void Matrix::
+resize(const size_t rows, const size_t cols)
+{
+	if (m_matrix)
+	  delete m_matrix;
+	m_nb_rows = rows;
+	m_nb_cols = cols;
 }
 
 

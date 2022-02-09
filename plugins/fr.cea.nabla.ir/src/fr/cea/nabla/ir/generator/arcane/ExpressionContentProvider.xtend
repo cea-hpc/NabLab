@@ -10,7 +10,6 @@
 package fr.cea.nabla.ir.generator.arcane
 
 import fr.cea.nabla.ir.IrUtils
-import fr.cea.nabla.ir.generator.CppGeneratorUtils
 import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.BaseTypeConstant
@@ -114,8 +113,10 @@ class ExpressionContentProvider
 		val call = container.connectivityCall
 		if (call.connectivity.multiple)
 		{
-			if (call.args.empty)
-				call.connectivity.nbElems
+			if (call.group !== null)
+				'''mesh()->findGroup("«call.group»").size()'''
+			else if (call.args.empty)
+				'''nb«call.connectivity.returnType.name.toFirstUpper»()'''
 			else
 				'''m_mesh->«call.accessor».size()'''
 		}
@@ -125,7 +126,7 @@ class ExpressionContentProvider
 
 	static def dispatch CharSequence getContent(FunctionCall it)
 	{
-		val functionCall = '''«CppGeneratorUtils.getCodeName(function)»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
+		val functionCall = '''«ArcaneUtils.getCodeName(function)»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
 		if (eContainer !== null && !(eContainer instanceof Return))
 		{
 			val argTypeName = getFunctionArgTypeName(type, false).toString

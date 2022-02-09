@@ -21,6 +21,7 @@ import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.generator.arcane.VariableExtensions.*
+import fr.cea.nabla.ir.ir.LinearAlgebraType
 
 class IrModuleContentProvider
 {
@@ -39,6 +40,9 @@ class IrModuleContentProvider
 	«FOR provider : externalProviders»
 	#include "«provider.className».h"
 	«ENDFOR»
+	«IF variables.exists[v | TypeContentProvider.isArcaneStlVector(v.type)]»
+	#include "Arcane2StlVector.h"
+	«ENDIF»
 
 	using namespace Arcane;
 
@@ -59,8 +63,7 @@ class IrModuleContentProvider
 	: public Arcane«name.toFirstUpper»Object
 	{
 	public:
-		«className»(const ModuleBuildInfo& mbi)
-		: Arcane«name.toFirstUpper»Object(mbi) {}
+		«className»(const ModuleBuildInfo& mbi);
 		~«className»() {}
 
 		virtual void init() override;
@@ -80,6 +83,9 @@ class IrModuleContentProvider
 		«irRoot.mesh.className»* m_mesh;
 
 		// other attributes
+		«FOR v : externalProviders»
+			«v.className» «ArcaneUtils.toAttributeName(v.instanceName)»;
+		«ENDFOR»
 		«FOR v : variables.filter[x | !(x.option || x.type instanceof ConnectivityType)]»
 			«IF v.constExpr»
 				static constexpr «TypeContentProvider.getTypeName(v.type)» «v.codeName» = «ExpressionContentProvider.getContent(v.defaultValue)»;
@@ -116,6 +122,13 @@ class IrModuleContentProvider
 
 	«ENDIF»
 	/*** Module ******************************************************************/
+
+	«className»::«className»(const ModuleBuildInfo& mbi)
+	: Arcane«name.toFirstUpper»Object(mbi)
+	«FOR v : variables.filter[x | (x.type instanceof LinearAlgebraType)]»
+		, «v.codeName»(«IF TypeContentProvider.isArcaneStlVector(v.type)»this, «ENDIF»"«v.name»")
+	«ENDFOR»
+	{}
 
 	void «className»::init()
 	{

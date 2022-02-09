@@ -9,13 +9,19 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.arcane
 
+import fr.cea.nabla.ir.IrUtils
+import fr.cea.nabla.ir.generator.CppGeneratorUtils
 import fr.cea.nabla.ir.ir.ArgOrVar
 import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
+import fr.cea.nabla.ir.ir.ExternFunction
+import fr.cea.nabla.ir.ir.Function
+import fr.cea.nabla.ir.ir.InternFunction
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Variable
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
+import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.getInstanceName
 import static extension fr.cea.nabla.ir.JobCallerExtensions.*
 
 /**
@@ -46,5 +52,25 @@ class ArcaneUtils
 	static def isArcaneManaged(ArgOrVar it)
 	{
 		it instanceof Variable && global && !option && type instanceof ConnectivityType
+	}
+
+	// TODO uniformise attribute names in C++ code to avoid this function
+	// This function is similar to CppGeneratorutils.getCodeName except for
+	// the instance name of provider for ExternFunction
+	static def getCodeName(Function f)
+	{
+		switch f
+		{
+			InternFunction:
+			{
+				val irModule = IrUtils.getContainerOfType(f, IrModule)
+				CppGeneratorUtils.getFreeFunctionNs(irModule) + '::' + f.name
+			}
+			ExternFunction:
+			{
+				if (f.provider.extensionName == "Math") 'std::' + f.name
+				else toAttributeName(f.provider.instanceName) + '.' + f.name
+			}
+		}
 	}
 }

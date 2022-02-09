@@ -18,6 +18,11 @@ Vector(const std::string& name, const size_t size)
 
 
 Vector::
+Vector(const std::string& name)
+: m_data(0) {}
+
+
+Vector::
 Vector(VectorType& v)
 : m_data(v) {}
 
@@ -33,6 +38,12 @@ operator=(const Vector& val)
 	return *this;
 }
 
+
+const void Vector::
+resize(const size_t size)
+{
+	m_data.resize(size);
+}
 
 const size_t Vector::
 getSize() const

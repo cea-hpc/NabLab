@@ -30,6 +30,8 @@ import org.eclipse.emf.ecore.util.EObjectEList;
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ConnectivityCallImpl#getConnectivity <em>Connectivity</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ConnectivityCallImpl#getArgs <em>Args</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.ConnectivityCallImpl#getGroup <em>Group</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.ConnectivityCallImpl#isIndexEqualId <em>Index Equal Id</em>}</li>
  * </ul>
  *
  * @generated
@@ -54,6 +56,46 @@ public class ConnectivityCallImpl extends ContainerImpl implements ConnectivityC
 	 * @ordered
 	 */
 	protected EList<ItemId> args;
+
+	/**
+	 * The default value of the '{@link #getGroup() <em>Group</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getGroup()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String GROUP_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getGroup() <em>Group</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getGroup()
+	 * @generated
+	 * @ordered
+	 */
+	protected String group = GROUP_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #isIndexEqualId() <em>Index Equal Id</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isIndexEqualId()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean INDEX_EQUAL_ID_EDEFAULT = false;
+
+	/**
+	 * The cached value of the '{@link #isIndexEqualId() <em>Index Equal Id</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isIndexEqualId()
+	 * @generated
+	 * @ordered
+	 */
+	protected boolean indexEqualId = INDEX_EQUAL_ID_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -133,6 +175,52 @@ public class ConnectivityCallImpl extends ContainerImpl implements ConnectivityC
 	 * @generated
 	 */
 	@Override
+	public String getGroup() {
+		return group;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setGroup(String newGroup) {
+		String oldGroup = group;
+		group = newGroup;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.CONNECTIVITY_CALL__GROUP, oldGroup, group));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public boolean isIndexEqualId() {
+		return indexEqualId;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setIndexEqualId(boolean newIndexEqualId) {
+		boolean oldIndexEqualId = indexEqualId;
+		indexEqualId = newIndexEqualId;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.CONNECTIVITY_CALL__INDEX_EQUAL_ID, oldIndexEqualId, indexEqualId));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case IrPackage.CONNECTIVITY_CALL__CONNECTIVITY:
@@ -140,6 +228,10 @@ public class ConnectivityCallImpl extends ContainerImpl implements ConnectivityC
 				return basicGetConnectivity();
 			case IrPackage.CONNECTIVITY_CALL__ARGS:
 				return getArgs();
+			case IrPackage.CONNECTIVITY_CALL__GROUP:
+				return getGroup();
+			case IrPackage.CONNECTIVITY_CALL__INDEX_EQUAL_ID:
+				return isIndexEqualId();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -160,6 +252,12 @@ public class ConnectivityCallImpl extends ContainerImpl implements ConnectivityC
 				getArgs().clear();
 				getArgs().addAll((Collection<? extends ItemId>)newValue);
 				return;
+			case IrPackage.CONNECTIVITY_CALL__GROUP:
+				setGroup((String)newValue);
+				return;
+			case IrPackage.CONNECTIVITY_CALL__INDEX_EQUAL_ID:
+				setIndexEqualId((Boolean)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -178,6 +276,12 @@ public class ConnectivityCallImpl extends ContainerImpl implements ConnectivityC
 			case IrPackage.CONNECTIVITY_CALL__ARGS:
 				getArgs().clear();
 				return;
+			case IrPackage.CONNECTIVITY_CALL__GROUP:
+				setGroup(GROUP_EDEFAULT);
+				return;
+			case IrPackage.CONNECTIVITY_CALL__INDEX_EQUAL_ID:
+				setIndexEqualId(INDEX_EQUAL_ID_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -194,8 +298,30 @@ public class ConnectivityCallImpl extends ContainerImpl implements ConnectivityC
 				return connectivity != null;
 			case IrPackage.CONNECTIVITY_CALL__ARGS:
 				return args != null && !args.isEmpty();
+			case IrPackage.CONNECTIVITY_CALL__GROUP:
+				return GROUP_EDEFAULT == null ? group != null : !GROUP_EDEFAULT.equals(group);
+			case IrPackage.CONNECTIVITY_CALL__INDEX_EQUAL_ID:
+				return indexEqualId != INDEX_EQUAL_ID_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public String toString() {
+		if (eIsProxy()) return super.toString();
+
+		StringBuilder result = new StringBuilder(super.toString());
+		result.append(" (group: ");
+		result.append(group);
+		result.append(", indexEqualId: ");
+		result.append(indexEqualId);
+		result.append(')');
+		return result.toString();
 	}
 
 } //ConnectivityCallImpl

@@ -12,6 +12,8 @@
 #include <arcane/ItemGroup.h>
 #include <arcane/IItemFamily.h>
 #include <arcane/mesh/IncrementalItemConnectivity.h>
+#include <arcane/cartesianmesh/CellDirectionMng.h>
+#include <arcane/cartesianmesh/NodeDirectionMng.h>
 
 map<IMesh*, CartesianMesh2D*> CartesianMesh2D::m_instances;
 
@@ -30,6 +32,9 @@ CartesianMesh2D::createInstance(IMesh* mesh)
 CartesianMesh2D::CartesianMesh2D(IMesh* mesh)
 : m_mesh(mesh)
 {
+	m_cartesian_mesh = ICartesianMesh::getReference(mesh);
+	m_cartesian_mesh->computeDirections();
+
 	m_umcv.setMesh(mesh);
 
 	//
@@ -54,25 +59,72 @@ CartesianMesh2D::CartesianMesh2D(IMesh* mesh)
 	}
 
 	m_neighbour_cells = cn->connectivityView();
+
+	//
+	// compute groups
+	//
+	CellDirectionMng x_cell_dm(m_cartesian_mesh->cellDirection(MD_DirX));
+	CellDirectionMng y_cell_dm(m_cartesian_mesh->cellDirection(MD_DirY));
+	Int32 nb_x_quads = x_cell_dm.ownNbCell();
+	Int32 nb_y_quads = y_cell_dm.ownNbCell();
+
+	auto node_family = mesh->nodeFamily();
+
+	Int32 nb_outer_nodes = 2 * (nb_x_quads + nb_y_quads);
+	UniqueArray<Int32> inner_nodes(mesh->nbNode() - nb_outer_nodes);
+	UniqueArray<Int32> top_nodes(nb_x_quads + 1);
+	UniqueArray<Int32> bottom_nodes(nb_x_quads + 1);
+	UniqueArray<Int32> left_nodes(nb_y_quads + 1);
+	UniqueArray<Int32> right_nodes(nb_y_quads + 1);
+
+	Int32 inner_node_id(0);
+	Int32 top_node_id(0);
+	Int32 bottom_node_id(0);
+	Int32 left_node_id(0);
+	Int32 right_node_id(0);
+
+	NodeDirectionMng x_node_dm(m_cartesian_mesh->nodeDirection(MD_DirX));
+	ENUMERATE_NODE(inode, x_node_dm.innerNodes())
+	{
+		Node n = *inode;
+		DirNode dn = x_node_dm.node(n);
+		if (dn.nextRightCellId() != -1 && dn.nextLeftCellId() != -1) inner_nodes[inner_node_id++] = n.localId();
+	}
+
+	ENUMERATE_NODE(inode, x_node_dm.outerNodes())
+	{
+		Node n = *inode;
+		DirNode dn = x_node_dm.node(n);
+		if (dn.nextRightCellId() == -1 && dn.nextLeftCellId() == -1) right_nodes[right_node_id++] = n.localId();
+		else if (dn.previousRightCellId() == -1 && dn.previousLeftCellId() == -1) left_nodes[left_node_id++] = n.localId();
+	}
+
+	NodeDirectionMng y_node_dm(m_cartesian_mesh->nodeDirection(MD_DirY));
+	ENUMERATE_NODE(inode, y_node_dm.outerNodes())
+	{
+		Node n = *inode;
+		DirNode dn = y_node_dm.node(n);
+		if (dn.nextRightCellId() == -1 && dn.nextLeftCellId() == -1) top_nodes[top_node_id++] = n.localId();
+		else if (dn.previousRightCellId() == -1 && dn.previousLeftCellId() == -1) bottom_nodes[bottom_node_id++] = n.localId();
+	}
+
+	m_groups[CartesianMesh2D::InnerNodes] = node_family->createGroup(CartesianMesh2D::InnerNodes, inner_nodes);
+	m_groups[CartesianMesh2D::TopNodes] = node_family->createGroup(CartesianMesh2D::TopNodes, top_nodes);
+	m_groups[CartesianMesh2D::BottomNodes] = node_family->createGroup(CartesianMesh2D::BottomNodes, bottom_nodes);
+	m_groups[CartesianMesh2D::LeftNodes] = node_family->createGroup(CartesianMesh2D::LeftNodes, left_nodes);
+	m_groups[CartesianMesh2D::RightNodes] = node_family->createGroup(CartesianMesh2D::RightNodes, right_nodes);
 }
 
-
-CellGroup
-CartesianMesh2D::getCells() const
+ItemGroup
+CartesianMesh2D::getGroup(const string& name)
 {
-	return m_mesh->allCells();
-}
-
-NodeGroup
-CartesianMesh2D::getNodes() const
-{
-	return m_mesh->allNodes();
-}
-
-FaceGroup
-CartesianMesh2D::getFaces() const
-{
-	return m_mesh->allFaces();
+	if (m_groups.find(name) == m_groups.end())
+	{
+		stringstream msg;
+		msg << "Invalid item group: " << name;
+		throw runtime_error(msg.str());
+	}
+	return m_groups[name];
 }
 
 ItemLocalIdView<Node>

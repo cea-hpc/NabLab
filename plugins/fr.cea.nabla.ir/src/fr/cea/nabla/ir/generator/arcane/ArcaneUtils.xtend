@@ -9,23 +9,28 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.arcane
 
+import fr.cea.nabla.ir.IrUtils
+import fr.cea.nabla.ir.generator.CppGeneratorUtils
 import fr.cea.nabla.ir.ir.ArgOrVar
 import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
+import fr.cea.nabla.ir.ir.ExternFunction
+import fr.cea.nabla.ir.ir.Function
+import fr.cea.nabla.ir.ir.InternFunction
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Variable
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
+import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.getInstanceName
 import static extension fr.cea.nabla.ir.JobCallerExtensions.*
 
 /**
- * @TODO What about item types? Fixed in NabLab ? Mapping Arcane ?
- * @TODO Linear Algebra with Alien
- * @TODO Comments in .n file generated in code (Doxygen) and AXL description field
- * @TODO Is there a way to enter an array in AXL (not only with min/max occurs) ?
- * @TODO Support module coupling
- * @TODO Support composed time loops: n + m
- * @TODO What happens if levelDB asked ?
+ * @TODO Arcane - What about item types? Fixed in NabLab ? Mapping Arcane ?
+ * @TODO Arcane - Linear Algebra with Alien
+ * @TODO Arcane - Support module coupling
+ * @TODO Arcane - Support composed time loops: n + m
+ * @TODO Arcane - What happens if levelDB asked ?
+ * @TODO Arcane - What to do with job updating global time ?
  */
 class ArcaneUtils
 {
@@ -47,5 +52,25 @@ class ArcaneUtils
 	static def isArcaneManaged(ArgOrVar it)
 	{
 		it instanceof Variable && global && !option && type instanceof ConnectivityType
+	}
+
+	// TODO uniformise attribute names in C++ code to avoid this function
+	// This function is similar to CppGeneratorutils.getCodeName except for
+	// the instance name of provider for ExternFunction
+	static def getCodeName(Function f)
+	{
+		switch f
+		{
+			InternFunction:
+			{
+				val irModule = IrUtils.getContainerOfType(f, IrModule)
+				CppGeneratorUtils.getFreeFunctionNs(irModule) + '::' + f.name
+			}
+			ExternFunction:
+			{
+				if (f.provider.extensionName == "Math") 'std::' + f.name
+				else toAttributeName(f.provider.instanceName) + '.' + f.name
+			}
+		}
 	}
 }

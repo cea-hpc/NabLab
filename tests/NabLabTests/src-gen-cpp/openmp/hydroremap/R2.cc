@@ -11,7 +11,6 @@
 
 R2::R2(CartesianMesh2D& aMesh)
 : mesh(aMesh)
-, nbNodes(mesh.getNbNodes())
 , nbCells(mesh.getNbCells())
 , rv2(nbCells)
 {

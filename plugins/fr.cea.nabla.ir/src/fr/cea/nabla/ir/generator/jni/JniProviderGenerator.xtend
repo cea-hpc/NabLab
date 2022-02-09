@@ -20,6 +20,7 @@ import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.generator.JniNameMangler.*
 
 // TODO Change solve methods for solveInPlace methods
+
 /**
  * JniProviderGenerator does not implement ProviderGenerator
  * because it is not called from a provider definition

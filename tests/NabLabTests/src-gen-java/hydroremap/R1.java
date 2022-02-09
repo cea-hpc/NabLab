@@ -16,7 +16,6 @@ public final class R1
 {
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
-	private final int nbNodes;
 	private final int nbCells;
 	// Main module
 	private Hydro mainModule;
@@ -28,7 +27,6 @@ public final class R1
 	{
 		// Mesh and mesh variables initialization
 		mesh = aMesh;
-		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
 	}
 

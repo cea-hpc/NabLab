@@ -45,7 +45,7 @@ Import: 'with' importedNamespace=QualifiedNameWithWildcard ';';
 
 /* ITEMS & CONNECTIVITES *********************************/
 ItemType: name=ID;
-Connectivity: 'connectivity' name=ID ':' (inTypes+=[ItemType|QualifiedName] ('\u00D7' inTypes+=[ItemType|QualifiedName])*)?  '\u2192' ((multiple?='{' returnType=[ItemType|QualifiedName] '}') | returnType=[ItemType|QualifiedName]) ';';
+Connectivity: 'connectivity' name=ID ':' (inTypes+=[ItemType|QualifiedName] ('\u00D7' inTypes+=[ItemType|QualifiedName])*)? '\u2192' ((multiple?='{' returnType=[ItemType|QualifiedName] '}') | returnType=[ItemType|QualifiedName]) ';';
 
 /* JOBS & INSTRUCTIONS ***********************************/
 Job: name=ID ':' instruction=Instruction;
@@ -71,7 +71,7 @@ Container: ItemSetRef | ConnectivityCall;
 ItemSetRef: target=[ItemSet];
 SpaceIterator: name=ID (',' counter=SimpleVar)? '\u2208' container=Container;
 Interval: index=SimpleVar '\u2208' '[' from=INT ';' nbElems=Expression '[';  // from forced to 0 for the moment
-ConnectivityCall: connectivity=[Connectivity|QualifiedName]  '('(group=STRING | args+=SpaceIteratorRef (',' args+=SpaceIteratorRef)* )?')';
+ConnectivityCall: connectivity=[Connectivity|QualifiedName] '('(group=STRING | args+=SpaceIteratorRef (',' args+=SpaceIteratorRef)* )?')';
 SpaceIteratorRef: target=[SpaceIterator] (('+' inc=INT) | ('-' dec=INT))?;
 
 TimeIteratorDefinition: 'iterate' iterator=AbstractTimeIterator;

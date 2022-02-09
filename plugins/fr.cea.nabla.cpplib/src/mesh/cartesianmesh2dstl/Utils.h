@@ -52,12 +52,13 @@ std::ostream& operator<< (std::ostream& out, CartesianMesh2D* cm)
 {
 	out << cm->getGeometry();
 	out << "Mesh Topology" << endl;
-	out << "  inner nodes  : " << cm->getInnerNodes() << endl;
-	out << "  top nodes    : " << cm->getTopNodes() << endl;
-	out << "  bottom nodes : " << cm->getBottomNodes() << endl;
-	out << "  left nodes   : " << cm->getLeftNodes() << endl;
-	out << "  right nodes  : " << cm->getRightNodes() << endl;
-	out << "  outer faces  : " << cm->getOuterFaces() << endl;
+	out << "  inner nodes  : " << cm->getGroup(CartesianMesh2D::InnerNodes) << endl;
+	out << "  outer nodes  : " << cm->getGroup(CartesianMesh2D::OuterNodes) << endl;
+	out << "  top nodes    : " << cm->getGroup(CartesianMesh2D::TopNodes) << endl;
+	out << "  bottom nodes : " << cm->getGroup(CartesianMesh2D::BottomNodes) << endl;
+	out << "  left nodes   : " << cm->getGroup(CartesianMesh2D::LeftNodes) << endl;
+	out << "  right nodes  : " << cm->getGroup(CartesianMesh2D::RightNodes) << endl;
+	out << "  outer faces  : " << cm->getGroup(CartesianMesh2D::OuterFaces) << endl;
 	return out;
 }
 

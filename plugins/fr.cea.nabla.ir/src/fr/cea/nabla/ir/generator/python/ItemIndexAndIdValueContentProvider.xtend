@@ -19,7 +19,7 @@ class ItemIndexAndIdValueContentProvider
 {
 	static def dispatch getContent(ItemIndexValue it)
 	{
-		if (container.connectivity.indexEqualId) 
+		if (container.indexEqualId) 
 			'''«id.name»'''
 		else 
 			'''mesh.«container.accessor».tolist().index(«id.name»)'''
@@ -27,7 +27,7 @@ class ItemIndexAndIdValueContentProvider
 
 	static def dispatch getContent(ItemIdValueIterator it)
 	{
-		if (iterator.container.connectivityCall.connectivity.indexEqualId) getIndexValue
+		if (iterator.container.connectivityCall.indexEqualId) getIndexValue
 		else iterator.container.uniqueName + '[' + getIndexValue + ']'
 	}
 

@@ -11,6 +11,7 @@
 #define _CARTESIANMESH2D_H_
 
 #include <utility>
+#include <map>
 
 #include "MeshGeometry.h"
 #include "nablalib/types/Types.h"
@@ -20,63 +21,48 @@ using namespace std;
 class CartesianMesh2D
 {
 public:
+	// NODES
+	inline static const string InnerNodes = "InnerNodes";
+	inline static const string OuterNodes = "OuterNodes";
+	inline static const string TopNodes = "TopNodes";
+	inline static const string BottomNodes = "BottomNodes";
+	inline static const string LeftNodes = "LeftNodes";
+	inline static const string RightNodes = "RightNodes";
+	inline static const string TopLeftNode = "TopLeftNode";
+	inline static const string TopRightNode = "TopRightNode";
+	inline static const string BottomLeftNode = "BottomLeftNode";
+	inline static const string BottomRightNode = "BottomRightNode";
+
+	// CELLS
+	inline static const string InnerCells = "InnerCells";
+	inline static const string OuterCells = "OuterCells";
+	inline static const string TopCells = "TopCells";
+	inline static const string BottomCells = "BottomCells";
+	inline static const string LeftCells = "LeftCells";
+	inline static const string RightCells = "RightCells";
+
+	// FACES
+	inline static const string InnerFaces = "InnerFaces";
+	inline static const string OuterFaces = "OuterFaces";
+	inline static const string InnerHorizontalFaces = "InnerHorizontalFaces";
+	inline static const string InnerVerticalFaces = "InnerVerticalFaces";
+	inline static const string TopFaces = "TopFaces";
+	inline static const string BottomFaces = "BottomFaces";
+	inline static const string LeftFaces = "LeftFaces";
+	inline static const string RightFaces = "RightFaces";
+
+public:
 	void jsonInit(const char* jsonContent);
 
 	MeshGeometry<2>* getGeometry() noexcept { return m_geometry; }
 
+	void create(size_t nb_x_quads, size_t nb_y_quads, double x_size, double y_size);
+
 	size_t getNbNodes() const noexcept { return m_geometry->getNodes().size(); }
-
 	size_t getNbCells() const noexcept { return m_geometry->getQuads().size(); }
-
 	size_t getNbFaces() const noexcept { return m_geometry->getEdges().size(); }
-	const vector<Id>& getFaces() const noexcept { return m_faces; }
 
-	size_t getNbInnerNodes() const noexcept { return m_inner_nodes.size(); }
-	const vector<Id>& getInnerNodes() const noexcept { return m_inner_nodes; }
-	size_t getNbTopNodes() const noexcept { return m_top_nodes.size(); }
-	const vector<Id>& getTopNodes() const noexcept { return m_top_nodes; }
-	size_t getNbBottomNodes() const noexcept { return m_bottom_nodes.size(); }
-	const vector<Id>& getBottomNodes() const noexcept { return m_bottom_nodes; }
-	size_t getNbLeftNodes() const noexcept { return m_left_nodes.size(); }
-	const vector<Id>& getLeftNodes() const noexcept { return m_left_nodes; }
-	size_t getNbRightNodes() const noexcept { return m_right_nodes.size(); }
-	const vector<Id>& getRightNodes() const noexcept { return m_right_nodes; }
-
-	size_t getNbInnerCells() const noexcept { return m_inner_cells.size();}
-	const vector<Id>& getInnerCells() const noexcept {return m_inner_cells;}
-	size_t getNbOuterCells() const noexcept { return m_outer_cells.size();}
-	const vector<Id>& getOuterCells() const noexcept {return m_outer_cells;}
-	size_t getNbTopCells() const noexcept { return m_top_cells.size(); }
-	const vector<Id>& getTopCells() const noexcept { return m_top_cells; }
-	size_t getNbBottomCells() const noexcept { return m_bottom_cells.size(); }
-	const vector<Id>& getBottomCells() const noexcept { return m_bottom_cells; }
-	size_t getNbLeftCells() const noexcept { return m_left_cells.size(); }
-	const vector<Id>& getLeftCells() const noexcept { return m_left_cells; }
-	size_t getNbRightCells() const noexcept { return m_right_cells.size(); }
-	const vector<Id>& getRightCells() const noexcept { return m_right_cells; }
-
-	size_t getNbTopFaces() const noexcept { return m_top_faces.size(); }
-	const vector<Id>& getTopFaces() const noexcept { return m_top_faces; }
-	size_t getNbBottomFaces() const noexcept { return m_bottom_faces.size(); }
-	const vector<Id>& getBottomFaces() const noexcept { return m_bottom_faces; }
-	size_t getNbLeftFaces() const noexcept { return m_left_faces.size(); }
-	const vector<Id>& getLeftFaces() const noexcept { return m_left_faces; }
-	size_t getNbRightFaces() const noexcept { return m_right_faces.size(); }
-	const vector<Id>& getRightFaces() const noexcept { return m_right_faces; }
-
-	size_t getNbOuterFaces() const noexcept { return m_outer_faces.size(); }
-	vector<Id> getOuterFaces() const noexcept { return m_outer_faces; }
-	size_t getNbInnerFaces() const noexcept { return m_inner_faces.size(); }
-	vector<Id> getInnerFaces() const noexcept { return m_inner_faces; }
-	size_t getNbInnerHorizontalFaces() const noexcept { return m_inner_horizontal_faces.size(); }
-	vector<Id> getInnerHorizontalFaces() const noexcept { return m_inner_horizontal_faces; }
-	size_t getNbInnerVerticalFaces() const noexcept { return m_inner_vertical_faces.size(); }
-	vector<Id> getInnerVerticalFaces() const noexcept { return m_inner_vertical_faces; }
-
-	Id getTopLeftNode() const noexcept { return m_top_left_node; }
-	Id getTopRightNode() const noexcept { return m_top_right_node; }
-	Id getBottomLeftNode() const noexcept { return m_bottom_left_node; }
-	Id getBottomRightNode() const noexcept { return m_bottom_right_node; }
+	vector<Id> getGroup(const string& name);
 
 	const array<Id, 4>& getNodesOfCell(const Id& cellId) const noexcept;
 	const array<Id, 2>& getNodesOfFace(const Id& faceId) const noexcept;
@@ -139,42 +125,12 @@ public:
 
 	inline vector<Id> cellsOfNodeCollection(const vector<Id>& nodes);
 
-	void create(size_t nb_x_quads, size_t nb_y_quads, double x_size, double y_size);
-
 private:
 	MeshGeometry<2>* m_geometry;
-
 	size_t m_nb_x_quads;
 	size_t m_nb_y_quads;
 
-	vector<Id> m_inner_nodes;
-	vector<Id> m_top_nodes;
-	vector<Id> m_bottom_nodes;
-	vector<Id> m_left_nodes;
-	vector<Id> m_right_nodes;
-
-	Id m_top_left_node;
-	Id m_top_right_node;
-	Id m_bottom_left_node;
-	Id m_bottom_right_node;
-
-	vector<Id> m_top_cells;
-	vector<Id> m_bottom_cells;
-	vector<Id> m_left_cells;
-	vector<Id> m_right_cells;
-
-	vector<Id> m_faces;
-	vector<Id> m_outer_faces;
-	vector<Id> m_inner_faces;
-	vector<Id> m_inner_horizontal_faces;
-	vector<Id> m_inner_vertical_faces;
-	vector<Id> m_top_faces;
-	vector<Id> m_bottom_faces;
-	vector<Id> m_left_faces;
-	vector<Id> m_right_faces;
-
-	vector<Id> m_inner_cells;
-	vector<Id> m_outer_cells;
+	map<string, vector<Id>> m_groups;
 };
 
 #endif /* _CARTESIANMESH2D_H_ */

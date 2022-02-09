@@ -20,10 +20,10 @@ class ItemIndexAndIdValueContentProvider
 {
 	static def getContent(ItemIndexValue it)
 	{
-		if (container.connectivity.indexEqualId) 
+		if (container.indexEqualId) 
 			'''«id.name»'''
 		else 
-			'''indexOf(m_mesh->«container.accessor», «id.name»)'''
+			'''m_mesh->indexOf(m_mesh->«container.accessor», «id.name»)'''
 	}
 
 	static def getContent(ItemIdValue it)
@@ -31,7 +31,7 @@ class ItemIndexAndIdValueContentProvider
 		switch it
 		{
 			ItemIdValueIterator:
-				if (iterator.container.connectivityCall.args.empty) '''*«iterator.index.name»'''
+				if (iterator.container.connectivityCall.args.empty) '''«iterator.index.name».asItemLocalId()'''
 				else iterator.container.uniqueName + '[' + getIndexValue + ']'
 			ItemIdValueContainer:
 				getContent(container, "m_mesh->")

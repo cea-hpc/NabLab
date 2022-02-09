@@ -17,11 +17,11 @@ import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
 
-import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.generator.arcane.VariableExtensions.*
+import fr.cea.nabla.ir.ir.LinearAlgebraType
 
 class IrModuleContentProvider
 {
@@ -40,6 +40,9 @@ class IrModuleContentProvider
 	«FOR provider : externalProviders»
 	#include "«provider.className».h"
 	«ENDFOR»
+	«IF variables.exists[v | TypeContentProvider.isArcaneStlVector(v.type)]»
+	#include "Arcane2StlVector.h"
+	«ENDIF»
 
 	using namespace Arcane;
 
@@ -60,8 +63,7 @@ class IrModuleContentProvider
 	: public Arcane«name.toFirstUpper»Object
 	{
 	public:
-		«className»(const ModuleBuildInfo& mbi)
-		: Arcane«name.toFirstUpper»Object(mbi) {}
+		«className»(const ModuleBuildInfo& mbi);
 		~«className»() {}
 
 		virtual void init() override;
@@ -79,11 +81,11 @@ class IrModuleContentProvider
 	private:
 		// mesh attributes
 		«irRoot.mesh.className»* m_mesh;
-		«FOR c : irRoot.mesh.connectivities.filter[x | x.multiple && x.inTypes.empty]»
-			Integer «ArcaneUtils.toAttributeName(c.nbElemsVar)»;
-		«ENDFOR»
 
 		// other attributes
+		«FOR v : externalProviders»
+			«v.className» «ArcaneUtils.toAttributeName(v.instanceName)»;
+		«ENDFOR»
 		«FOR v : variables.filter[x | !(x.option || x.type instanceof ConnectivityType)]»
 			«IF v.constExpr»
 				static constexpr «TypeContentProvider.getTypeName(v.type)» «v.codeName» = «ExpressionContentProvider.getContent(v.defaultValue)»;
@@ -121,13 +123,17 @@ class IrModuleContentProvider
 	«ENDIF»
 	/*** Module ******************************************************************/
 
+	«className»::«className»(const ModuleBuildInfo& mbi)
+	: Arcane«name.toFirstUpper»Object(mbi)
+	«FOR v : variables.filter[x | (x.type instanceof LinearAlgebraType)]»
+		, «v.codeName»(«IF TypeContentProvider.isArcaneStlVector(v.type)»this, «ENDIF»"«v.name»")
+	«ENDFOR»
+	{}
+
 	void «className»::init()
 	{
 		// initialization of mesh attributes
 		m_mesh = «irRoot.mesh.className»::createInstance(mesh());
-		«FOR c : irRoot.mesh.connectivities.filter[x | x.multiple && x.inTypes.empty]»
-			«ArcaneUtils.toAttributeName(c.nbElemsVar)» = m_mesh->getNb«c.name.toFirstUpper»()»;
-		«ENDFOR»
 
 		// initialization of other attributes
 		«FOR v : variables.filter[!(constExpr || option)]»
@@ -138,6 +144,20 @@ class IrModuleContentProvider
 				«v.codeName» = «ExpressionContentProvider.getContent(v.defaultValue)»;
 			«ENDIF»
 		«ENDFOR»
+		«IF irRoot.initNodeCoordVariable !== irRoot.nodeCoordVariable»
+
+			// Copy node coordinates
+			ENUMERATE_NODE(inode, allNodes())
+			{
+				«irRoot.initNodeCoordVariable.codeName»[inode][0] = «irRoot.nodeCoordVariable.codeName»[inode][0];
+				«irRoot.initNodeCoordVariable.codeName»[inode][1] = «irRoot.nodeCoordVariable.codeName»[inode][1];
+			}
+		«ENDIF»
+		«IF irRoot.timeStepVariable.constExpr»
+
+			// constant time step
+			m_global_deltat = «irRoot.timeStepVariable.codeName»;
+		«ENDIF»
 
 		// calling jobs
 		«FOR c : irRoot.main.calls.filter[!mainTimeLoop]»

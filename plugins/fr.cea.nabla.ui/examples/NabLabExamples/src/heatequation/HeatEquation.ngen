@@ -65,3 +65,4 @@ StlThread
 	outputPath = "/NabLabExamples/src-gen-cpp/stl-thread";
 	CMAKE_CXX_COMPILER = "/usr/bin/g++";
 }
+

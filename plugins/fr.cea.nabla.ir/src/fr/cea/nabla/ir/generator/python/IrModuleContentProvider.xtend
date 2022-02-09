@@ -59,8 +59,11 @@ class IrModuleContentProvider
 
 		def __init__(self, mesh):
 			self.__mesh = mesh
-			«FOR c : irRoot.mesh.connectivities.filter[x | x.multiple && x.inTypes.empty]»
-				«PythonGeneratorUtils.getNbElemsVar(c)» = mesh.nb«c.name.toFirstUpper»
+			«FOR a: neededConnectivityAttributes»
+				«PythonGeneratorUtils.getNbElemsVar(a)» = mesh.nb«a.name.toFirstUpper»
+			«ENDFOR»
+			«FOR a : neededGroupAttributes»
+				self.__«PythonGeneratorUtils.getNbElemsVar(a)» = len(mesh.getGroup("«a»"))
 			«ENDFOR»
 
 		def jsonInit(self, jsonContent):

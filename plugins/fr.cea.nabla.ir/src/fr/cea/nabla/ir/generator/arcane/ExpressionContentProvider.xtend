@@ -10,7 +10,6 @@
 package fr.cea.nabla.ir.generator.arcane
 
 import fr.cea.nabla.ir.IrUtils
-import fr.cea.nabla.ir.generator.CppGeneratorUtils
 import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.BaseTypeConstant
@@ -18,7 +17,6 @@ import fr.cea.nabla.ir.ir.BinaryExpression
 import fr.cea.nabla.ir.ir.BoolConstant
 import fr.cea.nabla.ir.ir.Cardinality
 import fr.cea.nabla.ir.ir.ContractedIf
-import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IntConstant
@@ -87,23 +85,38 @@ class ExpressionContentProvider
 	{
 		val t = type as BaseType
 
-		if (t.sizes.exists[x | !(x instanceof IntConstant)])
-			throw new RuntimeException("BaseTypeConstants size expressions must be IntConstant")
-
-		val sizes = t.sizes.map[x | (x as IntConstant).value]
-		'''{«initArray(sizes, value.content)»}'''
+		if (t.sizes.empty)
+		{
+			// scalar type
+			value.content
+		}
+		else
+		{
+			if (t.isStatic)
+				initArray(t.intSizes, value.content)
+			else
+			{
+				// The array must be allocated and initialized by loops
+				// No expression value can be produced in dynamic mode
+				// Two instructions must be encapsulated in a function and a function call must be done
+				throw new RuntimeException("Not yet implemented")
+				//'''new «t.primitive.javaType»«formatIteratorsAndIndices(t, t.sizes.map[content])»'''
+			}
+		}
 	}
 
 	static def dispatch CharSequence getContent(VectorConstant it)
-	'''«TypeContentProvider.getTypeName(type)»{«innerContent»}'''
+	'''«FOR v : values BEFORE '{' SEPARATOR ', ' AFTER '}'»«v.content»«ENDFOR»'''
 
 	static def dispatch CharSequence getContent(Cardinality it)
 	{
 		val call = container.connectivityCall
 		if (call.connectivity.multiple)
 		{
-			if (call.args.empty)
-				call.connectivity.nbElems
+			if (call.group !== null)
+				'''mesh()->findGroup("«call.group»").size()'''
+			else if (call.args.empty)
+				'''nb«call.connectivity.returnType.name.toFirstUpper»()'''
 			else
 				'''m_mesh->«call.accessor».size()'''
 		}
@@ -113,7 +126,7 @@ class ExpressionContentProvider
 
 	static def dispatch CharSequence getContent(FunctionCall it)
 	{
-		val functionCall = '''«CppGeneratorUtils.getCodeName(function)»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
+		val functionCall = '''«ArcaneUtils.getCodeName(function)»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
 		if (eContainer !== null && !(eContainer instanceof Return))
 		{
 			val argTypeName = getFunctionArgTypeName(type, false).toString
@@ -165,10 +178,9 @@ class ExpressionContentProvider
 			'mainModule->' + tName
 	}
 
-	private static def dispatch CharSequence getInnerContent(Expression it) { content }
-	private static def dispatch CharSequence getInnerContent(VectorConstant it)
-	'''«FOR v : values SEPARATOR ', '»«v.innerContent»«ENDFOR»'''
-
 	private static def CharSequence initArray(int[] sizes, CharSequence value)
-	'''«FOR size : sizes SEPARATOR ",  "»«FOR i : 0..<size SEPARATOR ', '»«value»«ENDFOR»«ENDFOR»'''
+	{
+		if (sizes.empty) value
+		else initArray(sizes.tail, '''«FOR i : 0..<sizes.head BEFORE '{' SEPARATOR ', ' AFTER '}'»«value»«ENDFOR»''')
+	}
 }

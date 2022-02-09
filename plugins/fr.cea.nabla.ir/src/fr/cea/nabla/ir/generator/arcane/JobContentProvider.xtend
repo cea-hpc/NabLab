@@ -64,6 +64,7 @@ class JobContentProvider
 				do
 				{
 					«itVar»++;
+					info() << "Start iteration «iterationCounter.name»: " << std::setprecision(5) << «itVar»;
 					«FOR c : calls»
 						«Utils::getCallName(c).replace('.', '->')»(); // @«c.at»
 					«ENDFOR»

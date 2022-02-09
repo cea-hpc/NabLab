@@ -15,6 +15,7 @@
 #include <arcane/IMesh.h>
 #include <arcane/UnstructuredMeshConnectivity.h>
 #include <arcane/IndexedItemConnectivityView.h>
+#include <arcane/cartesianmesh/ICartesianMesh.h>
 
 using namespace std;
 using namespace Arcane;
@@ -22,14 +23,27 @@ using namespace Arcane;
 class CartesianMesh2D
 {
 public:
+	// NODES
+	inline static const string InnerNodes = "InnerNodes";
+	inline static const string TopNodes = "TopNodes";
+	inline static const string BottomNodes = "BottomNodes";
+	inline static const string LeftNodes = "LeftNodes";
+	inline static const string RightNodes = "RightNodes";
+
+public:
 	static CartesianMesh2D* createInstance(IMesh* mesh);
 
-	Integer getNbNodes() const { return m_mesh->nbNode(); }
-	Integer getNbCells() const { return m_mesh->nbCell(); }
-	Integer getNbFaces() const { return m_mesh->nbFace(); }
-	CellGroup getCells() const;
-	NodeGroup getNodes() const;
-	FaceGroup getFaces() const;
+	template <typename ItemType>
+	Int32 indexOf(const ItemLocalIdView<ItemType> v, const ItemLocalId id)
+	{
+		for (Int32 i(0) ; i < v.size(); ++i)
+			if (v[i] == id)
+				return i;
+		throw std::out_of_range("Item not in view");
+	}
+
+	ItemGroup getGroup(const string& name);
+
 	ItemLocalIdView<Node> getNodesOfCell(CellLocalId cId) const;
 	ItemLocalIdView<Node> getNodesOfFace(FaceLocalId fId) const;
 	ItemLocalIdView<Cell> getCellsOfNode(NodeLocalId nId) const;
@@ -41,8 +55,12 @@ public:
 private:
 	CartesianMesh2D(IMesh* mesh);
 	IMesh* m_mesh;
+	ICartesianMesh* m_cartesian_mesh;
 	UnstructuredMeshConnectivityView m_umcv;
 	IndexedItemConnectivityView<Cell, Cell> m_neighbour_cells;
+
+	map<string, ItemGroup> m_groups;
+
 	static map<IMesh*, CartesianMesh2D*> m_instances;
 };
 

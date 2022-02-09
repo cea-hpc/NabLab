@@ -15,33 +15,6 @@ connectivity nodes: → {node};
 connectivity cells: → {cell};
 connectivity faces: → {face};
 
-connectivity innerNodes: → {node};
-connectivity topNodes: → {node};
-connectivity bottomNodes: → {node};
-connectivity leftNodes: → {node};
-connectivity rightNodes: → {node};
-
-connectivity innerCells: → {cell};
-connectivity outerCells: → {cell};
-connectivity topCells: → {cell};
-connectivity bottomCells: → {cell};
-connectivity leftCells: → {cell};
-connectivity rightCells: → {cell};
-
-connectivity topFaces: → {face};
-connectivity bottomFaces: → {face};
-connectivity leftFaces: → {face};
-connectivity rightFaces: → {face};
-connectivity outerFaces: → {face};
-connectivity innerFaces: → {face};
-connectivity innerHorizontalFaces: → {face};
-connectivity innerVerticalFaces: → {face};
-
-connectivity topLeftNode: → node;
-connectivity topRightNode: → node;
-connectivity bottomLeftNode: → node;
-connectivity bottomRightNode: → node;
-
 connectivity nodesOfCell: cell → {node};
 connectivity nodesOfFace: face → {node};
 connectivity firstNodeOfFace: face → node;

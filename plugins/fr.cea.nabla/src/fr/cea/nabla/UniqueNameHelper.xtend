@@ -26,7 +26,10 @@ class UniqueNameHelper
 
 	static def dispatch getUniqueName(ConnectivityCall it)
 	{
-		getUniqueName(connectivity, args)
+		if (group === null)
+			getUniqueName(connectivity, args)
+		else
+			group.toFirstLower
 	}
 
 	static def getUniqueName(Connectivity c, List<SpaceIteratorRef> args)

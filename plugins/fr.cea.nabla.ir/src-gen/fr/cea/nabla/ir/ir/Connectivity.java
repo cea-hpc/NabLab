@@ -16,7 +16,6 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link fr.cea.nabla.ir.ir.Connectivity#getName <em>Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Connectivity#getInTypes <em>In Types</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Connectivity#getReturnType <em>Return Type</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.Connectivity#isIndexEqualId <em>Index Equal Id</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Connectivity#isMultiple <em>Multiple</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Connectivity#getProvider <em>Provider</em>}</li>
  * </ul>
@@ -81,29 +80,6 @@ public interface Connectivity extends IrAnnotable {
 	 * @generated
 	 */
 	void setReturnType(ItemType value);
-
-	/**
-	 * Returns the value of the '<em><b>Index Equal Id</b></em>' attribute.
-	 * The default value is <code>"false"</code>.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Index Equal Id</em>' attribute.
-	 * @see #setIndexEqualId(boolean)
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getConnectivity_IndexEqualId()
-	 * @model default="false" required="true"
-	 * @generated
-	 */
-	boolean isIndexEqualId();
-
-	/**
-	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Connectivity#isIndexEqualId <em>Index Equal Id</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Index Equal Id</em>' attribute.
-	 * @see #isIndexEqualId()
-	 * @generated
-	 */
-	void setIndexEqualId(boolean value);
 
 	/**
 	 * Returns the value of the '<em><b>Multiple</b></em>' attribute.

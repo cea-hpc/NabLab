@@ -11,6 +11,8 @@ package fr.cea.nabla.ir.generator.arcane
 
 import fr.cea.nabla.ir.IrTypeExtensions
 import fr.cea.nabla.ir.ir.BaseType
+import fr.cea.nabla.ir.ir.Cardinality
+import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.IrType
@@ -41,8 +43,36 @@ class TypeContentProvider
 				}
 			}
 			ConnectivityType: getVariableTypeName(it)
-			LinearAlgebraType: IrTypeExtensions.getLinearAlgebraClass(it)
+			LinearAlgebraType: getLinearAlgebraClass(it)
 			default: throw new RuntimeException("Unexpected type: " + class.name)
+		}
+	}
+
+	static def isArcaneStlVector(IrType t)
+	{
+		if (t instanceof LinearAlgebraType)
+			t.sizes.size == 1 && t.sizes.head instanceof Cardinality
+		else
+			false
+	}
+
+	static def getLinearAlgebraClass(LinearAlgebraType t)
+	{
+		switch t.sizes.size
+		{
+			case 1:
+			{
+				val s = t.sizes.head
+				if (s instanceof Cardinality)
+				{
+					val itemType = s.container.connectivityCall.connectivity.returnType
+					"Arcane2StlVector<" + itemType.name.toFirstUpper + ">"
+				}
+				else 
+					IrTypeExtensions.VectorClass
+			}
+			case 2: IrTypeExtensions.MatrixClass
+			default: throw new RuntimeException("Unexpected dimension: " + t.sizes.size)
 		}
 	}
 
@@ -85,8 +115,9 @@ class TypeContentProvider
 		{
 			case (iterators.empty && indices.empty): ''''''
 			BaseType: '''«FOR i : indices»[«i.content»]«ENDFOR»'''
-			LinearAlgebraType: '''«FOR i : iterators SEPARATOR ', '»«i.name»«ENDFOR»«FOR i : indices SEPARATOR ', '»«i.content»«ENDFOR»'''
-			ConnectivityType: '''«getConnectivityIndexContent(iterators)»«FOR i : indices»[«i.content»]«ENDFOR»'''
+			// for the ArcaneStlVector, the setValue method must keep the ItemEnumerator arg (not the index)
+			LinearAlgebraType: '''«FOR i : getConnectivityIndexList(iterators, !TypeContentProvider.isArcaneStlVector(it)) SEPARATOR ', '»«i»«ENDFOR»«FOR i : indices SEPARATOR ', '»«i.content»«ENDFOR»'''
+			ConnectivityType: '''«FOR i : getConnectivityIndexList(iterators, false)»[«i»]«ENDFOR»«FOR i : indices»[«i.content»]«ENDFOR»'''
 		}
 	}
 
@@ -131,7 +162,7 @@ class TypeContentProvider
 		// All the other cases
 		val typeName = switch primitive
 		{
-			case BOOL: 'Bool'
+			case BOOL: 'bool'
 			case INT: 'Int32'
 			case REAL: 'Real'
 		}
@@ -143,6 +174,7 @@ class TypeContentProvider
 		switch it
 		{
 			BaseType: sizes.map[content]
+			LinearAlgebraType: sizes.map[content]
 			ConnectivityType:
 			{
 				val t = base.typeNameAndDimension
@@ -151,7 +183,7 @@ class TypeContentProvider
 				if (dimension > 0)
 				{
 					val dimensions = new ArrayList<CharSequence>
-					dimensions += connectivities.tail.map[ArcaneUtils.toAttributeName(nbElems)]
+					dimensions += connectivities.tail.map[nbElems]
 					dimensions += base.sizes.map[content]
 					dimensions.subList(0, dimension)
 				}
@@ -173,15 +205,34 @@ class TypeContentProvider
 		}
 	}
 
-	private static def getConnectivityIndexContent(Iterable<ItemIndex> iterators)
+	/* Waiting for more... and management of global matrices */
+	private static def getConnectivityIndexList(Iterable<ItemIndex> iterators, boolean fullIndex)
 	{
-		val content = new StringBuffer
+		val indices = new ArrayList<String>
 		if (!iterators.empty)
 		{
-			content.append("[" + iterators.head.name + "]")
+			val firstName = iterators.head.name
+			indices += (fullIndex ? firstName + ".index()" : firstName)
 			for (iterator : iterators.tail)
-				content.append("[" + iterator.name + ".localId()]")
+			{
+				val name = iterator.name
+				if (firstName == name)
+					indices += name + ".index()"
+				else
+					indices += name
+			}
 		}
-		return content.toString
+		return indices
+	}
+
+	private static def getNbElems(Connectivity it)
+	{
+		if (inTypes.empty)
+			"nb" + returnType.name.toFirstUpper + "()"
+		else
+		{
+			val varName = "MaxNb" + name.toFirstUpper
+			provider.generationVariables.get(varName)
+		}
 	}
 }

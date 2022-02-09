@@ -125,8 +125,11 @@ class IrModuleContentProvider
 		«privateMethodHeaders»
 		// Mesh and mesh variables
 		«irRoot.mesh.className»& mesh;
-		«FOR c : irRoot.mesh.connectivities.filter[x | x.multiple && x.inTypes.empty]»
-			size_t «c.nbElemsVar»;
+		«FOR a : neededConnectivityAttributes»
+			size_t «a.nbElemsVar»;
+		«ENDFOR»
+		«FOR a : neededGroupAttributes»
+			size_t «a.nbElemsVar»;
 		«ENDFOR»
 
 		«IF irRoot.modules.size > 1»
@@ -202,8 +205,11 @@ class IrModuleContentProvider
 
 	«className»::«className»(«irRoot.mesh.className»& aMesh)
 	: mesh(aMesh)
-	«FOR c : irRoot.mesh.connectivities.filter[x | x.multiple && x.inTypes.empty]»
-	, «c.nbElemsVar»(mesh.getNb«c.name.toFirstUpper»())
+	«FOR a : neededConnectivityAttributes»
+	, «a.nbElemsVar»(mesh.getNb«a.name.toFirstUpper»())
+	«ENDFOR»
+	«FOR a : neededGroupAttributes»
+	, «a.nbElemsVar»(mesh.getGroup("«a»").size())
 	«ENDFOR»
 	«FOR v : variables.filter[x | !(x.type instanceof BaseType)]»
 		, «v.name»(«typeContentProvider.getCstrInit(v.type, v.name)»)

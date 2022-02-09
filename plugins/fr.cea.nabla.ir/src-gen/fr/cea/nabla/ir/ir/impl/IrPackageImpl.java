@@ -1450,7 +1450,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EAttribute getConnectivity_IndexEqualId() {
+	public EAttribute getConnectivity_Multiple() {
 		return (EAttribute)connectivityEClass.getEStructuralFeatures().get(3);
 	}
 
@@ -1460,18 +1460,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EAttribute getConnectivity_Multiple() {
-		return (EAttribute)connectivityEClass.getEStructuralFeatures().get(4);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
 	public EReference getConnectivity_Provider() {
-		return (EReference)connectivityEClass.getEStructuralFeatures().get(5);
+		return (EReference)connectivityEClass.getEStructuralFeatures().get(4);
 	}
 
 	/**
@@ -2740,6 +2730,26 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
+	public EAttribute getConnectivityCall_Group() {
+		return (EAttribute)connectivityCallEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getConnectivityCall_IndexEqualId() {
+		return (EAttribute)connectivityCallEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EClass getSetRef() {
 		return setRefEClass;
 	}
@@ -3042,7 +3052,6 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEAttribute(connectivityEClass, CONNECTIVITY__NAME);
 		createEReference(connectivityEClass, CONNECTIVITY__IN_TYPES);
 		createEReference(connectivityEClass, CONNECTIVITY__RETURN_TYPE);
-		createEAttribute(connectivityEClass, CONNECTIVITY__INDEX_EQUAL_ID);
 		createEAttribute(connectivityEClass, CONNECTIVITY__MULTIPLE);
 		createEReference(connectivityEClass, CONNECTIVITY__PROVIDER);
 
@@ -3213,6 +3222,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		connectivityCallEClass = createEClass(CONNECTIVITY_CALL);
 		createEReference(connectivityCallEClass, CONNECTIVITY_CALL__CONNECTIVITY);
 		createEReference(connectivityCallEClass, CONNECTIVITY_CALL__ARGS);
+		createEAttribute(connectivityCallEClass, CONNECTIVITY_CALL__GROUP);
+		createEAttribute(connectivityCallEClass, CONNECTIVITY_CALL__INDEX_EQUAL_ID);
 
 		setRefEClass = createEClass(SET_REF);
 		createEReference(setRefEClass, SET_REF__TARGET);
@@ -3436,7 +3447,6 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEAttribute(getConnectivity_Name(), ecorePackage.getEString(), "name", null, 0, 1, Connectivity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getConnectivity_InTypes(), this.getItemType(), null, "inTypes", null, 0, -1, Connectivity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getConnectivity_ReturnType(), this.getItemType(), null, "returnType", null, 0, 1, Connectivity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getConnectivity_IndexEqualId(), ecorePackage.getEBoolean(), "indexEqualId", "false", 1, 1, Connectivity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getConnectivity_Multiple(), ecorePackage.getEBoolean(), "multiple", null, 1, 1, Connectivity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getConnectivity_Provider(), this.getMeshExtensionProvider(), this.getMeshExtensionProvider_Connectivities(), "provider", null, 1, 1, Connectivity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
@@ -3607,6 +3617,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEClass(connectivityCallEClass, ConnectivityCall.class, "ConnectivityCall", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getConnectivityCall_Connectivity(), this.getConnectivity(), null, "connectivity", null, 1, 1, ConnectivityCall.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getConnectivityCall_Args(), this.getItemId(), null, "args", null, 0, -1, ConnectivityCall.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getConnectivityCall_Group(), ecorePackage.getEString(), "group", null, 0, 1, ConnectivityCall.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getConnectivityCall_IndexEqualId(), ecorePackage.getEBoolean(), "indexEqualId", "false", 1, 1, ConnectivityCall.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(setRefEClass, SetRef.class, "SetRef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getSetRef_Target(), this.getSetDefinition(), null, "target", null, 1, 1, SetRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

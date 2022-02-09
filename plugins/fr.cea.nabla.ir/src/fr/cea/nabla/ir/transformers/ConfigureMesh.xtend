@@ -9,6 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.transformers
 
+import fr.cea.nabla.ir.ir.ConnectivityCall
 import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.IrRoot
 
@@ -38,10 +39,16 @@ class ConfigureMesh extends IrTransformationStep
 		if (ir.mesh.extensionName == CM2D)
 		{
 			// Set "index == Id" for connectivities cells, nodes and faces
-			for (c : ir.mesh.connectivities)
+			for (m : ir.modules)
 			{
-				if (!c.multiple) c.indexEqualId = true
-				else if (CM2DIndexIdConnectivities.contains(c.name)) c.indexEqualId = true
+				for (c : m.eAllContents.filter(ConnectivityCall).toIterable)
+				{
+					if (!c.connectivity.multiple)
+						c.indexEqualId = true
+					else if (CM2DIndexIdConnectivities.contains(c.connectivity.name) && c.group === null)
+						// if group is not null, it is not the entire set but a subset => index is not the id
+						c.indexEqualId = true
+				}
 			}
 
 			// Set generation variables to allocate 2D arrays

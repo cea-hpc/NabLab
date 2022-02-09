@@ -1507,22 +1507,13 @@ public interface IrPackage extends EPackage {
 	int CONNECTIVITY__RETURN_TYPE = IR_ANNOTABLE_FEATURE_COUNT + 2;
 
 	/**
-	 * The feature id for the '<em><b>Index Equal Id</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CONNECTIVITY__INDEX_EQUAL_ID = IR_ANNOTABLE_FEATURE_COUNT + 3;
-
-	/**
 	 * The feature id for the '<em><b>Multiple</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CONNECTIVITY__MULTIPLE = IR_ANNOTABLE_FEATURE_COUNT + 4;
+	int CONNECTIVITY__MULTIPLE = IR_ANNOTABLE_FEATURE_COUNT + 3;
 
 	/**
 	 * The feature id for the '<em><b>Provider</b></em>' container reference.
@@ -1531,7 +1522,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CONNECTIVITY__PROVIDER = IR_ANNOTABLE_FEATURE_COUNT + 5;
+	int CONNECTIVITY__PROVIDER = IR_ANNOTABLE_FEATURE_COUNT + 4;
 
 	/**
 	 * The number of structural features of the '<em>Connectivity</em>' class.
@@ -1540,7 +1531,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CONNECTIVITY_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 6;
+	int CONNECTIVITY_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 5;
 
 	/**
 	 * The number of operations of the '<em>Connectivity</em>' class.
@@ -4249,13 +4240,31 @@ public interface IrPackage extends EPackage {
 	int CONNECTIVITY_CALL__ARGS = CONTAINER_FEATURE_COUNT + 1;
 
 	/**
+	 * The feature id for the '<em><b>Group</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CONNECTIVITY_CALL__GROUP = CONTAINER_FEATURE_COUNT + 2;
+
+	/**
+	 * The feature id for the '<em><b>Index Equal Id</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CONNECTIVITY_CALL__INDEX_EQUAL_ID = CONTAINER_FEATURE_COUNT + 3;
+
+	/**
 	 * The number of structural features of the '<em>Connectivity Call</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CONNECTIVITY_CALL_FEATURE_COUNT = CONTAINER_FEATURE_COUNT + 2;
+	int CONNECTIVITY_CALL_FEATURE_COUNT = CONTAINER_FEATURE_COUNT + 4;
 
 	/**
 	 * The number of operations of the '<em>Connectivity Call</em>' class.
@@ -5509,17 +5518,6 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getConnectivity_ReturnType();
-
-	/**
-	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.Connectivity#isIndexEqualId <em>Index Equal Id</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Index Equal Id</em>'.
-	 * @see fr.cea.nabla.ir.ir.Connectivity#isIndexEqualId()
-	 * @see #getConnectivity()
-	 * @generated
-	 */
-	EAttribute getConnectivity_IndexEqualId();
 
 	/**
 	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.Connectivity#isMultiple <em>Multiple</em>}'.
@@ -6888,6 +6886,28 @@ public interface IrPackage extends EPackage {
 	EReference getConnectivityCall_Args();
 
 	/**
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.ConnectivityCall#getGroup <em>Group</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Group</em>'.
+	 * @see fr.cea.nabla.ir.ir.ConnectivityCall#getGroup()
+	 * @see #getConnectivityCall()
+	 * @generated
+	 */
+	EAttribute getConnectivityCall_Group();
+
+	/**
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.ConnectivityCall#isIndexEqualId <em>Index Equal Id</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Index Equal Id</em>'.
+	 * @see fr.cea.nabla.ir.ir.ConnectivityCall#isIndexEqualId()
+	 * @see #getConnectivityCall()
+	 * @generated
+	 */
+	EAttribute getConnectivityCall_IndexEqualId();
+
+	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.SetRef <em>Set Ref</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -7791,14 +7811,6 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EReference CONNECTIVITY__RETURN_TYPE = eINSTANCE.getConnectivity_ReturnType();
-
-		/**
-		 * The meta object literal for the '<em><b>Index Equal Id</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute CONNECTIVITY__INDEX_EQUAL_ID = eINSTANCE.getConnectivity_IndexEqualId();
 
 		/**
 		 * The meta object literal for the '<em><b>Multiple</b></em>' attribute feature.
@@ -8907,6 +8919,22 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EReference CONNECTIVITY_CALL__ARGS = eINSTANCE.getConnectivityCall_Args();
+
+		/**
+		 * The meta object literal for the '<em><b>Group</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute CONNECTIVITY_CALL__GROUP = eINSTANCE.getConnectivityCall_Group();
+
+		/**
+		 * The meta object literal for the '<em><b>Index Equal Id</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute CONNECTIVITY_CALL__INDEX_EQUAL_ID = eINSTANCE.getConnectivityCall_IndexEqualId();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.SetRefImpl <em>Set Ref</em>}' class.

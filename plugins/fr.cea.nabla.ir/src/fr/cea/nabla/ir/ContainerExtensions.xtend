@@ -38,7 +38,8 @@ class ContainerExtensions
 	{
 		switch it
 		{
-			ConnectivityCall: connectivity.name + args.map[x | x.itemName.toFirstUpper].join('')
+			ConnectivityCall case group !== null: group.toFirstLower
+			ConnectivityCall case group === null: connectivity.name + args.map[x | x.itemName.toFirstUpper].join('')
 			SetRef: target.name
 		}
 	}
@@ -52,15 +53,9 @@ class ContainerExtensions
 		}
 	}
 
-	static def getNbElemsVar(Container it)
-	{
-		"nb" + getUniqueName.toFirstUpper
-	}
-
-	static def getNbElemsVar(Connectivity it)
-	{
-		"nb" + name.toFirstUpper
-	}
+	static def getNbElemsVar(Container it) { uniqueName.nbElemsVar }
+	static def getNbElemsVar(Connectivity it) { name.nbElemsVar }
+	static def getNbElemsVar(String s) { "nb" + s.toFirstUpper }
 
 	static def getNbElems(Connectivity it)
 	{
@@ -74,5 +69,10 @@ class ContainerExtensions
 	}
 
 	static def getAccessor(ConnectivityCall it)
-	'''get«connectivity.name.toFirstUpper»(«args.map[name].join(', ')»)'''
+	{
+		if (group === null)
+			'''get«connectivity.name.toFirstUpper»(«args.map[name].join(', ')»)'''
+		else
+			'''getGroup("«group»")'''
+	}
 }

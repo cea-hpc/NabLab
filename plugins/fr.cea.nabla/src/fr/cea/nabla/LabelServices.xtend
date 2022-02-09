@@ -84,7 +84,16 @@ class LabelServices
 	static def dispatch String getLabel(SpaceIterator it) { name + '\u2208 ' + container?.label }
 	static def dispatch String getLabel(Interval it) { index?.name + '\u2208' + nbElems?.label }
 	static def dispatch String getLabel(ItemSetRef it) { target?.name }
-	static def dispatch String getLabel(ConnectivityCall it) { connectivity?.name + '(' + args?.map[label].join(',') + ')' }
+	static def dispatch String getLabel(ConnectivityCall it)
+	{
+		if (group === null)
+			if (args.empty)
+				connectivity?.name
+			else
+				connectivity?.name + '(' + args?.map[label].join(',') + ')'
+		else
+			group
+	}
 	static def dispatch String getLabel(SpaceIteratorRef it) 
 	{ 
 		if (inc > 0) target?.name + '+' + inc

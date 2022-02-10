@@ -9,12 +9,14 @@
  *******************************************************************************/
 package fr.cea.nabla.ide
 
+import fr.cea.nabla.ide.codeactions.NablaCodeActionService
 import fr.cea.nabla.ide.commands.LSPCommandsHandler
+import fr.cea.nabla.ide.contentassit.NablaIdeContentProposalProvider
 import fr.cea.nabla.ide.hover.NablaIdeHoverService
+import org.eclipse.xtext.ide.editor.contentassist.IdeContentProposalProvider
+import org.eclipse.xtext.ide.server.codeActions.ICodeActionService2
 import org.eclipse.xtext.ide.server.commands.IExecutableCommandService
 import org.eclipse.xtext.ide.server.hover.HoverService
-import org.eclipse.xtext.ide.server.codeActions.ICodeActionService2
-import fr.cea.nabla.ide.codeactions.NablaCodeActionService
 
 /**
  * Use this class to register ide components.
@@ -34,4 +36,8 @@ class NablaIdeModule extends AbstractNablaIdeModule
 	 def Class<? extends ICodeActionService2> bindICodeActionService2() {
 	 	return NablaCodeActionService
 	 }
+	 
+	 def Class<? extends IdeContentProposalProvider> bindIdeContentProposalProvider() {
+		return NablaIdeContentProposalProvider
+	}
 }

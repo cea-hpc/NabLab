@@ -18,6 +18,9 @@
                 },
                 {
                     "include": "#strings"
+                },
+                {
+                    "include": "#numbers"
                 }
             ]
         },
@@ -40,6 +43,11 @@
             "name": "string.quoted.double.nabla",
             "begin": "\"",
             "end": "\""
+        },
+        "numbers": {
+            "name":  "constant.numeric.nabla",
+            "match": "\\d+\\.?\\d*"
+            
         }
     },
     "patterns": [

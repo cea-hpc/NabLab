@@ -16,7 +16,7 @@ import java.net.InetSocketAddress
 import java.nio.channels.AsynchronousServerSocketChannel
 import java.nio.channels.Channels
 import java.util.concurrent.Executors
-import org.eclipse.lsp4j.jsonrpc.Launcher
+import java.util.stream.Stream
 import org.eclipse.lsp4j.jsonrpc.json.adapters.EnumTypeAdapter
 import org.eclipse.lsp4j.launch.LSPLauncher.Builder
 import org.eclipse.lsp4j.services.LanguageClient
@@ -49,13 +49,17 @@ class NabLabSocketLauncher
 			val languageServer = injector.getInstance(NabLabLanguageServer)
 			val executorService = Executors.newCachedThreadPool
 
-			var Launcher<LanguageClient> launcher = new Builder<LanguageClient>() //
+			val  launcherBuilder = new Builder<LanguageClient>() //
 			.setLocalService(languageServer) //
 			.setRemoteInterface(LanguageClient) //
 			.setInput(in) //
-			.setOutput(out) //
-			.traceMessages(new PrintWriter(System.out)).setExecutorService(executorService) //
-			.create();
+			.setOutput(out);
+			
+			if(Stream.of(args).anyMatch["-traceLSPMessages".equals(it)]){
+				launcherBuilder.traceMessages(new PrintWriter(System.out)).setExecutorService(executorService);
+			}
+			
+			val launcher = launcherBuilder.create();
 
 			languageServer.connect(launcher.remoteProxy)
 			launcher.startListening

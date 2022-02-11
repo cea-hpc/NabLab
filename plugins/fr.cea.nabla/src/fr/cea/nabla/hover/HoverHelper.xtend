@@ -68,7 +68,7 @@ class HoverHelper
 		{
 			Expression: o.typeFor?.label
 			ArgOrVar: o.typeFor?.label
-			Function: o.typeDeclaration.returnType.typeFor?.label
+			Function: o.typeDeclaration?.returnType?.typeFor?.label
 			BaseType: o.typeFor?.label
 		}
 	}

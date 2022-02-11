@@ -19,3 +19,8 @@ Java
 {
 	outputPath = "/DaceExamples/src-gen-java";
 }
+
+Python
+{
+	outputPath = "/DaceExamples/src-gen-python3";
+}

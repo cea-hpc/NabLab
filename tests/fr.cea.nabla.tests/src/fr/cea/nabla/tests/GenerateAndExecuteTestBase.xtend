@@ -120,16 +120,25 @@ abstract class GenerateAndExecuteTestBase
 		val testProjectPath = System.getProperty("user.dir")
 		for (target : compilationHelper.getNgenApp(models, genmodel).targets.filter[!interpreter])
 		{
-			val outputPath = WsPath + "/" + target.outputPath
-			val targetName = (target.type == TargetType::JAVA ? "src-gen-java" : "src-gen-cpp/" + outputPath.split("/").last)
-			val levelDBRef = testProjectPath + "/results/compiler/" + targetName + "/" + packageName + "/" + ngenFileName + "DB.ref"
-			val jsonFile = GenerateAndExecuteTestBase.projectAbsolutePath + "/src/" + packageName + "/" + ngenFileName + ".json"
+			val outputPath = WsPath + target.outputPath
+			val targetSubPath = target.outputPath.substring(target.outputPath.substring(1).indexOf('/') + 1) // filter the project name
+			val resultsRef = testProjectPath + "/results/compiler" + targetSubPath + "/" + packageName
+			val dataFileWithoutExtension =  GenerateAndExecuteTestBase.projectAbsolutePath + "/src/" + packageName + "/" + ngenFileName
 
 			print("\tStarting " + target.type.literal)
-			if (target.type == TargetType::JAVA)
-				(!testExecuteJava(outputPath, packageName, levelDBRef, jsonFile, nFileNames.get(0)) ? nbErrors++)
+			if (target.type == TargetType::ARCANE)
+			{
+				(!testExecuteArcane(outputPath, packageName, resultsRef, dataFileWithoutExtension + ".arc", ngenFileName) ? nbErrors++)
+			}
 			else
-				(!testExecuteCpp(outputPath, packageName, levelDBRef, jsonFile, ngenFileName) ? nbErrors++)
+			{
+				val levelDBRef = resultsRef + "/" + ngenFileName + "DB.ref"
+				val jsonFile = dataFileWithoutExtension + ".json"
+				if (target.type == TargetType::JAVA)
+					(!testExecuteJava(outputPath, packageName, levelDBRef, jsonFile, nFileNames.get(0)) ? nbErrors++)
+				else
+					(!testExecuteCpp(outputPath, packageName, levelDBRef, jsonFile, ngenFileName) ? nbErrors++)
+			}
 		}
 		(nbErrors > 0 ? Assert.fail(nbErrors + " error(s) !"))
 	}
@@ -209,28 +218,14 @@ abstract class GenerateAndExecuteTestBase
 		return true
 	}
 
-	private def testExecuteJava(String outputDir, String packageName, String levelDBRef, String jsonFile, String moduleName)
+	private def testExecuteJava(String outputPath, String packageName, String levelDBRef, String jsonFile, String moduleName)
 	{
 		val gsonPath = Gson.protectionDomain.codeSource.location.toString
 		val guavaPath = PeekingIterator.protectionDomain.codeSource.location.toString
 		val apacheCommonIOPath = FileUtils.protectionDomain.codeSource.location.toString
-//		println("$1= " + outputDir)
-//		println("$2= " + packageName)
-//		println("$3= " + moduleName)
-//		println("$4= " + javaLibPath)
-//		println("$5= " + levelDBPath)
-//		println("$6= " + gsonPath)
-//		println("$7= " + levelDBRef)
-//		println("$8= " + jsonFile)
-//		println("$9= " + guavaPath)
-//		println("$10= " + commonMath3Path)
-//		println("$11= " + apacheCommonIOPath)
-//		println("javac -classpath " + javaLibPath  + ":" + commonMath3Path + ":" + levelDBPath + ":" + gsonPath + " " + moduleName + ".java")
-//		println("java -classpath " + javaLibPath + ":" + commonMath3Path + ":" + guavaPath + ":" + levelDBPath + ":" + gsonPath + ":" + apacheCommonIOPath + ":" + tmp 
-//					+ "/" + targetName + " " + packageName + "." + moduleName + " " + "test.json")
 		var pb = new ProcessBuilder("/bin/bash",
 			System.getProperty("user.dir") + "/src/fr/cea/nabla/tests/executeJava.sh",
-			outputDir, // output src-gen path
+			outputPath, // output src-gen path
 			packageName,
 			moduleName,
 			javaLibPath,
@@ -247,13 +242,49 @@ abstract class GenerateAndExecuteTestBase
 			println(" -> Ok")
 		if (exitVal.equals(10))
 		{
-			val logPath = simplifyPath(outputDir + "/" + packageName + "/javac.err")
+			val logPath = simplifyPath(outputPath + "/" + packageName + "/javac.err")
 			println(" -> Compile Error. See " + logPath)
 			return false
 		}
 		if (exitVal.equals(20))
 		{
-			val logPath = simplifyPath(outputDir + "/" + packageName + "/exec.err")
+			val logPath = simplifyPath(outputPath + "/" + packageName + "/exec.err")
+			println(" -> Execute Error. See " + logPath)
+			return false
+		}
+		return true
+	}
+
+	private def testExecuteArcane(String outputPath, String packageName, String stdEnvVerifRef, String arcFile, String moduleName)
+	{
+		var pb = new ProcessBuilder("/bin/bash",
+			System.getProperty("user.dir") + "/src/fr/cea/nabla/tests/executeArcane.sh",
+			outputPath, // output src-gen path
+			packageName,
+			stdEnvVerifRef,
+			arcFile,
+			moduleName)
+		var process = pb.start
+		val exitVal = process.waitFor
+		if (exitVal.equals(0))
+			println(" -> Ok")
+		if (exitVal.equals(10))
+		{
+			val logPath = simplifyPath(outputPath + "/" + packageName + "/CMake.log")
+			println(" -> Configure Error. See " + logPath)
+			//println("\t" + readFileAsString(logPath))
+			return false
+		}
+		if (exitVal.equals(20))
+		{
+			val logPath = simplifyPath(outputPath + "/" + packageName + "/make.log")
+			println(" -> Compile Error. See " + logPath)
+			//println("\t" + readFileAsString(logPath))
+			return false
+		}
+		if (exitVal.equals(30))
+		{
+			val logPath = simplifyPath(outputPath + "/" + packageName + "/exec.err")
 			println(" -> Execute Error. See " + logPath)
 			return false
 		}

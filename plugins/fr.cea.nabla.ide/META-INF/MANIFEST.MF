@@ -19,5 +19,6 @@ Export-Package: fr.cea.nabla.ide,
  fr.cea.nabla.ide.contentassist.antlr,
  fr.cea.nabla.ide.contentassist.antlr.internal
 Bundle-ClassPath: .
-Import-Package: org.apache.commons.lang;version="2.6.0"
+Import-Package: org.apache.commons.lang;version="2.6.0",
+ org.apache.log4j
 

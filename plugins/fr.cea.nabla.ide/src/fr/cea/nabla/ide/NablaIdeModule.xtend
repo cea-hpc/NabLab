@@ -12,8 +12,10 @@ package fr.cea.nabla.ide
 import fr.cea.nabla.ide.codeactions.NablaCodeActionService
 import fr.cea.nabla.ide.commands.LSPCommandsHandler
 import fr.cea.nabla.ide.contentassit.NablaIdeContentProposalProvider
+import fr.cea.nabla.ide.crossref.NablaIdeCrossrefProposalProvider
 import fr.cea.nabla.ide.hover.NablaIdeHoverService
 import org.eclipse.xtext.ide.editor.contentassist.IdeContentProposalProvider
+import org.eclipse.xtext.ide.editor.contentassist.IdeCrossrefProposalProvider
 import org.eclipse.xtext.ide.server.codeActions.ICodeActionService2
 import org.eclipse.xtext.ide.server.commands.IExecutableCommandService
 import org.eclipse.xtext.ide.server.hover.HoverService
@@ -32,12 +34,19 @@ class NablaIdeModule extends AbstractNablaIdeModule
 	{
 		return NablaIdeHoverService;
 	}
-	
-	 def Class<? extends ICodeActionService2> bindICodeActionService2() {
-	 	return NablaCodeActionService
-	 }
-	 
-	 def Class<? extends IdeContentProposalProvider> bindIdeContentProposalProvider() {
+
+	def Class<? extends ICodeActionService2> bindICodeActionService2()
+	{
+		return NablaCodeActionService
+	}
+
+	def Class<? extends IdeContentProposalProvider> bindIdeContentProposalProvider()
+	{
 		return NablaIdeContentProposalProvider
+	}
+
+	def Class<? extends IdeCrossrefProposalProvider> bindIdeCrossrefProposalProvider()
+	{
+		return NablaIdeCrossrefProposalProvider;
 	}
 }

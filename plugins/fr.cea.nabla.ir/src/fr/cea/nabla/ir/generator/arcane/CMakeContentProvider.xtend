@@ -32,14 +32,14 @@ class CMakeContentProvider
 
 	«CMakeUtils.addSubDirectories(true, externalProviders)»
 
-	add_executable(«name»«FOR m : modules» «ArcaneUtils.getModuleName(m)».cc «m.className»_axl.h«ENDFOR» main.cc)
+	add_executable(«execName»«FOR m : modules» «ArcaneUtils.getModuleName(m)».cc «m.className»_axl.h«ENDFOR» main.cc)
 
 	«FOR m : modules»
 	arcane_generate_axl(«m.className»)
 	«ENDFOR»
 	#arcane_add_arcane_libraries_to_target(«name»)
-	target_link_libraries(«name» PRIVATE arcane_full nablalib«FOR e : externalProviders» «e.libName»«ENDFOR»)
-	target_include_directories(«name» PUBLIC . ${CMAKE_CURRENT_BINARY_DIR})
+	target_link_libraries(«execName» PRIVATE arcane_full nablalib«FOR e : externalProviders» «e.libName»«ENDFOR»)
+	target_include_directories(«execName» PUBLIC . ${CMAKE_CURRENT_BINARY_DIR})
 
 	«CMakeUtils.fileFooter»
 	'''

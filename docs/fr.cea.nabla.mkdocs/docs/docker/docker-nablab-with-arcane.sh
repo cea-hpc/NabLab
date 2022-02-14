@@ -59,7 +59,7 @@ RUN git submodule update --init
 RUN mkdir build
 WORKDIR /leveldb/build
 RUN cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/leveldb/install && make -s && make install
-ENV LEVELDB_HOME=/leveldb/install
+ENV leveldb_ROOT=/leveldb/install
 
 ### KOKKOS
 WORKDIR /
@@ -74,7 +74,7 @@ RUN wget http://github.com/kokkos/kokkos-kernels/archive/refs/tags/3.0.00.tar.gz
 RUN rm -rf build && mkdir build
 WORKDIR /kokkos/build
 RUN cmake ../kokkos-kernels-3.0.00 -DCMAKE_CXX_COMPILER=g++ -DCMAKE_INSTALL_PREFIX=/kokkos/install -DKokkos_DIR=/kokkos/install && make && make install
-ENV KOKKOS_HOME=/kokkos/install
+ENV Kokkos_ROOT=/kokkos/install
 
 ### ARCANE
 # dependencies
@@ -89,12 +89,12 @@ WORKDIR /
 RUN mkdir arcane
 WORKDIR /arcane
 RUN git clone --recurse-submodules https://github.com/arcaneframework/framework.git
-# checkout version 3.4.5
-RUN cd framework && git checkout 30b83ba205ff08de984654f49c3eb44a96e88096
+# checkout version with STDENV_VERIF_ONLY_AT_EXIT
+RUN cd framework && git checkout ada3b94331c06297becf0d7c34af12b65a8fdad4
 RUN mkdir install; mkdir build
 WORKDIR /arcane/build
 RUN cmake -S /arcane/framework -B /arcane/build -DCMAKE_INSTALL_PREFIX=/arcane/install && make && make install
-
+ENV Arcane_ROOT=/arcane/install
 
 ### JDK AND MAVEN
 RUN apt-get install -y default-jdk

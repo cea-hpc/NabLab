@@ -50,14 +50,26 @@ Kokkos
 {
 	outputPath = "/NabLabExamples/src-gen-cpp/kokkos";
 	CMAKE_CXX_COMPILER = "/usr/bin/g++";
-	Kokkos_ROOT = "$ENV{HOME}/kokkos/kokkos-install";
+	Kokkos_ROOT = "$ENV{HOME}/kokkos/install";
+}
+```
+
+If you choose a generation target that needs Kokkos Kernels, you must set the kokkos kernels install path in your nablagen file.
+
+```
+Kokkos
+{
+	outputPath = "/NabLabExamples/src-gen-cpp/kokkos";
+	CMAKE_CXX_COMPILER = "/usr/bin/g++";
+	Kokkos_ROOT = "$ENV{HOME}/kokkos/install";
+	KokkosKernels_ROOT = "$ENV{HOME}/kokkos/install";
 }
 ```
 
 ## NabLabExamplesTest
 
-To run NabLabExamplesTest, you have to set KOKKOS_HOME
+To run NabLabExamplesTest, you have to set Kokkos_ROOT
 
 ```bash
-export KOKKOS_HOME=$HOME/kokkos/install
+export Kokkos_ROOT=$HOME/kokkos/install
 ```

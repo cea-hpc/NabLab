@@ -9,5 +9,6 @@ cp $4 ./test.arc
 #export STDENV_VERIF=WRITE
 export STDENV_VERIF=READ
 export STDENV_VERIF_PATH=$3
+export STDENV_VERIF_ONLY_AT_EXIT=true
 ./$2 test.arc >exec.out 2>exec.err # Execute
 [ $? -eq 0 ] || exit 30 # Execute error

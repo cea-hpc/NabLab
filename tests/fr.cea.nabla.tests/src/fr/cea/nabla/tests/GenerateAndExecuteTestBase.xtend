@@ -27,8 +27,9 @@ import static fr.cea.nabla.tests.TestUtils.*
 abstract class GenerateAndExecuteTestBase
 {
 	final static String WsPath = Files.createTempDirectory("nablabtest-compiler-").toString
-	final static String LevelDBEnv = "LEVELDB_HOME"
-	final static String KokkosENV = "KOKKOS_HOME"
+	final static String LeveldbENV = "leveldb_ROOT"
+	final static String KokkosENV = "Kokkos_ROOT"
+	final static String ArcaneENV = "Arcane_ROOT"
 
 	static String projectName
 	static String projectRelativePath
@@ -90,11 +91,12 @@ abstract class GenerateAndExecuteTestBase
 	{
 		println("\n" + ngenFileName)
 		// check Env Variables
-		val kokkosPath = System.getenv(KokkosENV)
-		val levelDBPath = System.getenv(LevelDBEnv)
-		if (kokkosPath.nullOrEmpty || levelDBPath.nullOrEmpty)
+		val kokkosRoot = System.getenv(KokkosENV)
+		val leveldbRoot = System.getenv(LeveldbENV)
+		val arcaneRoot = System.getenv(ArcaneENV)
+		if (kokkosRoot.nullOrEmpty || leveldbRoot.nullOrEmpty || arcaneRoot.nullOrEmpty)
 		{
-			val envErr = "To execute this test, you have to set " + KokkosENV + " and " + LevelDBEnv + " variables."
+			val envErr = "To execute this test, environment variables must be set: " + KokkosENV + ", " + LeveldbENV + ", " + ArcaneENV;
 			println(envErr)
 			Assert.fail(envErr)
 		}
@@ -106,7 +108,9 @@ abstract class GenerateAndExecuteTestBase
 		var genmodel = readFileAsString(GenerateAndExecuteTestBase.outputPath + "/src/" + packageName + "/" + ngenFileName + ".ngen")
 
 		// Adapt genModel for LevelDBPath & KokkosPath & tmpOutputDir
-		genmodel = genmodel.adaptedGenModel(kokkosPath, levelDBPath)
+		genmodel =  genmodel.replace(javaBlock.toString, levelDBPath.levelDBBlock.toString + javaBlock.toString)
+		genmodel = genmodel.replace("$ENV{HOME}/kokkos/install", kokkosRoot)
+		genmodel = genmodel.replace("$ENV{HOME}/arcane/install", arcaneRoot)
 		compilationHelper.generateCode(models, genmodel, WsPath, projectName)
 
 		// unzip nabla resources
@@ -146,17 +150,6 @@ abstract class GenerateAndExecuteTestBase
 	private def testNoGitDiff(String packageName)
 	{
 		Assert.assertTrue(git.noGitDiff(GenerateAndExecuteTestBase.projectRelativePath, packageName))
-	}
-
-	private def adaptedGenModel(String genmodel, String kokkosPath, String levelDBPath)
-	{
-		// add LevelDBBlock before JavaBlock
-		var adaptedModel =  genmodel.replace(javaBlock.toString, levelDBPath.levelDBBlock.toString + javaBlock.toString)
-		// customize KokkosPath
-		val defaultKokkosPath = "$ENV{HOME}/kokkos/install"
-		adaptedModel = adaptedModel.replace(defaultKokkosPath, kokkosPath)
-
-		return adaptedModel
 	}
 
 	private def getJavaBlock()

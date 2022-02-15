@@ -106,7 +106,15 @@ class ExpressionContentProvider
 	}
 
 	static def dispatch CharSequence getContent(VectorConstant it)
-	'''«FOR v : values BEFORE '{' SEPARATOR ', ' AFTER '}'»«v.content»«ENDFOR»'''
+	{
+		val content = '''«FOR v : values BEFORE '{' SEPARATOR ', ' AFTER '}'»«v.content»«ENDFOR»'''
+		if (eContainer !== null && eContainer instanceof Variable)
+			// the variable is declared with a type => no type to add
+			content
+		else
+			// the type must be added, for example for FunctionCall
+			'''«TypeContentProvider.getTypeName(type)»«content»'''
+	}
 
 	static def dispatch CharSequence getContent(Cardinality it)
 	{

@@ -118,7 +118,18 @@ class AxlContentProvider
 		switch d
 		{
 			case 0: (optional ? '''optional="true"''' : '''minOccurs="1" maxOccurs="1"''')
-			case 1 : '''minOccurs="«IF optional»0«ELSE»1«ENDIF»" maxOccurs="unbounded"'''
+			case 1 :
+			{
+				val maxOccursInt = (type instanceof BaseType ? (type as BaseType).intSizes.get(0) : -1)
+				val maxOccurs = switch maxOccursInt
+				{
+					case -1: "unbounded" // dynamic type
+					case 2: "1" // Real2
+					case 3: "1" // Real3
+					default: maxOccursInt.toString
+				} 
+				'''minOccurs="«IF optional»0«ELSE»1«ENDIF»" maxOccurs="«maxOccurs»"'''
+			}
 			default : throw new RuntimeException("Dimension greater than 1 not yet suported in options: " + d)
 		}
 	}

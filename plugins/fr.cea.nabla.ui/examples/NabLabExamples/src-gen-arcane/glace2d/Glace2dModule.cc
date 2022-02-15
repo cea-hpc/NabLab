@@ -76,7 +76,7 @@ namespace glace2dfreefuncs
 	RealArray2Variant inverse(RealArray2Variant a)
 	{
 		const Real alpha(1.0 / glace2dfreefuncs::det(a));
-		return Real2x2{{a[1][1] * alpha, -a[0][1] * alpha}, {-a[1][0] * alpha, a[0][0] * alpha}};
+		return Real2x2{Real2{a[1][1] * alpha, -a[0][1] * alpha}, Real2{-a[1][0] * alpha, a[0][0] * alpha}};
 	}
 	
 	RealArrayVariant sumR1(RealArrayVariant a, RealArrayVariant b)
@@ -415,7 +415,7 @@ void Glace2dModule::initialize()
 			m_p[jCells] = p_ic;
 			m_rho[jCells] = rho_ic;
 			m_E_n[jCells] = p_ic / ((m_gamma - 1.0) * rho_ic);
-			m_uj_n[jCells] = {0.0, 0.0};
+			m_uj_n[jCells] = Real2{0.0, 0.0};
 		}
 	});
 }
@@ -694,7 +694,7 @@ void Glace2dModule::computeDt()
  */
 void Glace2dModule::computeBoundaryConditions()
 {
-	const Real2x2 I{{1.0, 0.0}, {0.0, 1.0}};
+	const Real2x2 I{Real2{1.0, 0.0}, Real2{0.0, 1.0}};
 	arcaneParallelForeach(mesh()->findGroup("TopNodes"), [&](NodeVectorView view)
 	{
 		ENUMERATE_NODE(rTopNodes, view)
@@ -734,7 +734,7 @@ void Glace2dModule::computeBoundaryConditions()
 					m_Mt[rNodes][i1][i2] = I[i1][i2];
 				}
 			}
-			m_bt[rNodes] = {0.0, 0.0};
+			m_bt[rNodes] = Real2{0.0, 0.0};
 		}
 	});
 	arcaneParallelForeach(mesh()->findGroup("RightNodes"), [&](NodeVectorView view)
@@ -750,7 +750,7 @@ void Glace2dModule::computeBoundaryConditions()
 					m_Mt[rNodes][i1][i2] = I[i1][i2];
 				}
 			}
-			m_bt[rNodes] = {0.0, 0.0};
+			m_bt[rNodes] = Real2{0.0, 0.0};
 		}
 	});
 }

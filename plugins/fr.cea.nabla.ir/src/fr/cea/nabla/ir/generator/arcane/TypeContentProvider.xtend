@@ -173,8 +173,8 @@ class TypeContentProvider
 	{
 		switch it
 		{
-			BaseType: sizes.map[content]
-			LinearAlgebraType: sizes.map[content]
+			BaseType case !isStatic: sizes.map[content]
+			LinearAlgebraType case !isStatic: sizes.map[content]
 			ConnectivityType:
 			{
 				val t = base.typeNameAndDimension

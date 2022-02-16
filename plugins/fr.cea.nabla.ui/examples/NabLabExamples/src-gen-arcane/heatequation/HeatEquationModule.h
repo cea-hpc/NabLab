@@ -25,7 +25,7 @@ namespace heatequationfreefuncs
 	RealArrayVariant operatorSub(RealArrayVariant a, RealArrayVariant b);
 }
 
-/*** Module ******************************************************************/
+/*** Module/Service **********************************************************/
 
 class HeatEquationModule
 : public ArcaneHeatEquationObject
@@ -34,22 +34,24 @@ public:
 	HeatEquationModule(const ModuleBuildInfo& mbi);
 	~HeatEquationModule() {}
 
+	// entry points
 	virtual void init() override;
 	virtual void executeTimeLoopN() override;
 
 	VersionInfo versionInfo() const override { return VersionInfo(1, 0, 0); }
 
-private:
-	void computeOutgoingFlux();
-	void computeSurface();
-	void computeTn();
-	void computeV();
-	void iniCenter();
-	void iniF();
-	void iniTime();
-	void computeUn();
-	void iniUn();
-	void setUpTimeLoopN();
+public:
+	// jobs
+	virtual void computeOutgoingFlux();
+	virtual void computeSurface();
+	virtual void computeTn();
+	virtual void computeV();
+	virtual void iniCenter();
+	virtual void iniF();
+	virtual void iniTime();
+	virtual void computeUn();
+	virtual void iniUn();
+	virtual void setUpTimeLoopN();
 
 private:
 	// mesh attributes

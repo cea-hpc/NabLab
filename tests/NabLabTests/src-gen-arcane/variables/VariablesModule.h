@@ -20,7 +20,7 @@ namespace variablesfreefuncs
 	RealArrayVariant operatorAdd(RealArrayVariant a, RealArrayVariant b);
 }
 
-/*** Module ******************************************************************/
+/*** Module/Service **********************************************************/
 
 class VariablesModule
 : public ArcaneVariablesObject
@@ -29,14 +29,16 @@ public:
 	VariablesModule(const ModuleBuildInfo& mbi);
 	~VariablesModule() {}
 
+	// entry points
 	virtual void init() override;
 
 	VersionInfo versionInfo() const override { return VersionInfo(1, 0, 0); }
 
-private:
-	void dynamicVecInitialization();
-	void varVecInitialization();
-	void oracle();
+public:
+	// jobs
+	virtual void dynamicVecInitialization();
+	virtual void varVecInitialization();
+	virtual void oracle();
 
 private:
 	// mesh attributes

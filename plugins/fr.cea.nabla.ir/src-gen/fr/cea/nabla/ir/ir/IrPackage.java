@@ -323,13 +323,22 @@ public interface IrPackage extends EPackage {
 	int IR_MODULE__NAME = IR_ANNOTABLE_FEATURE_COUNT + 0;
 
 	/**
+	 * The feature id for the '<em><b>Type</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IR_MODULE__TYPE = IR_ANNOTABLE_FEATURE_COUNT + 1;
+
+	/**
 	 * The feature id for the '<em><b>Main</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int IR_MODULE__MAIN = IR_ANNOTABLE_FEATURE_COUNT + 1;
+	int IR_MODULE__MAIN = IR_ANNOTABLE_FEATURE_COUNT + 2;
 
 	/**
 	 * The feature id for the '<em><b>Functions</b></em>' containment reference list.
@@ -338,7 +347,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_MODULE__FUNCTIONS = IR_ANNOTABLE_FEATURE_COUNT + 2;
+	int IR_MODULE__FUNCTIONS = IR_ANNOTABLE_FEATURE_COUNT + 3;
 
 	/**
 	 * The feature id for the '<em><b>Variables</b></em>' containment reference list.
@@ -347,7 +356,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_MODULE__VARIABLES = IR_ANNOTABLE_FEATURE_COUNT + 3;
+	int IR_MODULE__VARIABLES = IR_ANNOTABLE_FEATURE_COUNT + 4;
 
 	/**
 	 * The feature id for the '<em><b>Jobs</b></em>' containment reference list.
@@ -356,7 +365,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_MODULE__JOBS = IR_ANNOTABLE_FEATURE_COUNT + 4;
+	int IR_MODULE__JOBS = IR_ANNOTABLE_FEATURE_COUNT + 5;
 
 	/**
 	 * The feature id for the '<em><b>Providers</b></em>' reference list.
@@ -365,7 +374,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_MODULE__PROVIDERS = IR_ANNOTABLE_FEATURE_COUNT + 5;
+	int IR_MODULE__PROVIDERS = IR_ANNOTABLE_FEATURE_COUNT + 6;
 
 	/**
 	 * The number of structural features of the '<em>Module</em>' class.
@@ -374,7 +383,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_MODULE_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 6;
+	int IR_MODULE_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 7;
 
 	/**
 	 * The number of operations of the '<em>Module</em>' class.
@@ -4863,6 +4872,17 @@ public interface IrPackage extends EPackage {
 	EAttribute getIrModule_Name();
 
 	/**
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.IrModule#getType <em>Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Type</em>'.
+	 * @see fr.cea.nabla.ir.ir.IrModule#getType()
+	 * @see #getIrModule()
+	 * @generated
+	 */
+	EAttribute getIrModule_Type();
+
+	/**
 	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.IrModule#isMain <em>Main</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -7295,6 +7315,14 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute IR_MODULE__NAME = eINSTANCE.getIrModule_Name();
+
+		/**
+		 * The meta object literal for the '<em><b>Type</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute IR_MODULE__TYPE = eINSTANCE.getIrModule_Type();
 
 		/**
 		 * The meta object literal for the '<em><b>Main</b></em>' attribute feature.

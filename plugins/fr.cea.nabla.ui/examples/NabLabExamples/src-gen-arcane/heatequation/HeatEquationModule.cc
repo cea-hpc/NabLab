@@ -71,10 +71,10 @@ namespace heatequationfreefuncs
 	}
 }
 
-/*** Module ******************************************************************/
+/*** Module/Service **********************************************************/
 
-HeatEquationModule::HeatEquationModule(const ModuleBuildInfo& mbi)
-: ArcaneHeatEquationObject(mbi)
+HeatEquationModule::HeatEquationModule(const ModuleBuildInfo& bi)
+: ArcaneHeatEquationObject(bi)
 {}
 
 void HeatEquationModule::init()

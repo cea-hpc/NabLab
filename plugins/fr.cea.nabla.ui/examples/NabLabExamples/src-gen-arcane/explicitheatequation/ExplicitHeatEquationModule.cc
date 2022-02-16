@@ -81,10 +81,10 @@ namespace explicitheatequationfreefuncs
 	}
 }
 
-/*** Module ******************************************************************/
+/*** Module/Service **********************************************************/
 
-ExplicitHeatEquationModule::ExplicitHeatEquationModule(const ModuleBuildInfo& mbi)
-: ArcaneExplicitHeatEquationObject(mbi)
+ExplicitHeatEquationModule::ExplicitHeatEquationModule(const ModuleBuildInfo& bi)
+: ArcaneExplicitHeatEquationObject(bi)
 {}
 
 void ExplicitHeatEquationModule::init()

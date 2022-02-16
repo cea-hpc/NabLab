@@ -27,7 +27,7 @@ namespace explicitheatequationfreefuncs
 	RealArrayVariant operatorSub(RealArrayVariant a, RealArrayVariant b);
 }
 
-/*** Module ******************************************************************/
+/*** Module/Service **********************************************************/
 
 class ExplicitHeatEquationModule
 : public ArcaneExplicitHeatEquationObject
@@ -36,24 +36,26 @@ public:
 	ExplicitHeatEquationModule(const ModuleBuildInfo& mbi);
 	~ExplicitHeatEquationModule() {}
 
+	// entry points
 	virtual void init() override;
 	virtual void executeTimeLoopN() override;
 
 	VersionInfo versionInfo() const override { return VersionInfo(1, 0, 0); }
 
-private:
-	void computeFaceLength();
-	void computeTn();
-	void computeV();
-	void initD();
-	void initTime();
-	void initXc();
-	void updateU();
-	void computeDeltaTn();
-	void computeFaceConductivity();
-	void initU();
-	void setUpTimeLoopN();
-	void computeAlphaCoeff();
+public:
+	// jobs
+	virtual void computeFaceLength();
+	virtual void computeTn();
+	virtual void computeV();
+	virtual void initD();
+	virtual void initTime();
+	virtual void initXc();
+	virtual void updateU();
+	virtual void computeDeltaTn();
+	virtual void computeFaceConductivity();
+	virtual void initU();
+	virtual void setUpTimeLoopN();
+	virtual void computeAlphaCoeff();
 
 private:
 	// mesh attributes

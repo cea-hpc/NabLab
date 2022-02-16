@@ -195,10 +195,10 @@ namespace glace2dfreefuncs
 	}
 }
 
-/*** Module ******************************************************************/
+/*** Module/Service **********************************************************/
 
-Glace2dModule::Glace2dModule(const ModuleBuildInfo& mbi)
-: ArcaneGlace2dObject(mbi)
+Glace2dModule::Glace2dModule(const ModuleBuildInfo& bi)
+: ArcaneGlace2dObject(bi)
 {}
 
 void Glace2dModule::init()

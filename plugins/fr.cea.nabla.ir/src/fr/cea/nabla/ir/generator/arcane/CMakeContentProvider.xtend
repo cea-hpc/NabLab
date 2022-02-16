@@ -32,7 +32,7 @@ class CMakeContentProvider
 
 	«CMakeUtils.addSubDirectories(true, externalProviders)»
 
-	add_executable(«execName»«FOR m : modules» «ArcaneUtils.getModuleName(m)».cc «m.className»_axl.h«ENDFOR» main.cc)
+	add_executable(«execName»«FOR m : modules» «ArcaneUtils.getClassName(m)».cc «m.className»_axl.h«ENDFOR» main.cc)
 
 	«FOR m : modules»
 	arcane_generate_axl(«m.className»)

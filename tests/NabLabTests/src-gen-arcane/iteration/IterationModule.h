@@ -18,7 +18,7 @@ namespace iterationfreefuncs
 	const bool assertEquals(const Real expected, const Real actual);
 }
 
-/*** Module ******************************************************************/
+/*** Module/Service **********************************************************/
 
 class IterationModule
 : public ArcaneIterationObject
@@ -27,30 +27,32 @@ public:
 	IterationModule(const ModuleBuildInfo& mbi);
 	~IterationModule() {}
 
+	// entry points
 	virtual void init() override;
 	virtual void executeTimeLoopN() override;
 
 	VersionInfo versionInfo() const override { return VersionInfo(1, 0, 0); }
 
-private:
-	void computeTn();
-	void iniTime();
-	void iniVk();
-	void iniVn();
-	void setUpTimeLoopK();
-	void updateVk();
-	void updateVl();
-	void executeTimeLoopK();
-	void setUpTimeLoopN();
-	void tearDownTimeLoopK();
-	void iniVl();
-	void oracleVk();
-	void setUpTimeLoopL();
-	void executeTimeLoopL();
-	void tearDownTimeLoopL();
-	void oracleVl();
-	void updateVn();
-	void oracleVn();
+public:
+	// jobs
+	virtual void computeTn();
+	virtual void iniTime();
+	virtual void iniVk();
+	virtual void iniVn();
+	virtual void setUpTimeLoopK();
+	virtual void updateVk();
+	virtual void updateVl();
+	virtual void executeTimeLoopK();
+	virtual void setUpTimeLoopN();
+	virtual void tearDownTimeLoopK();
+	virtual void iniVl();
+	virtual void oracleVk();
+	virtual void setUpTimeLoopL();
+	virtual void executeTimeLoopL();
+	virtual void tearDownTimeLoopL();
+	virtual void oracleVl();
+	virtual void updateVn();
+	virtual void oracleVn();
 
 private:
 	// mesh attributes

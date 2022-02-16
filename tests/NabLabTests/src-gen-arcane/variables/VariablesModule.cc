@@ -39,10 +39,10 @@ namespace variablesfreefuncs
 	}
 }
 
-/*** Module ******************************************************************/
+/*** Module/Service **********************************************************/
 
-VariablesModule::VariablesModule(const ModuleBuildInfo& mbi)
-: ArcaneVariablesObject(mbi)
+VariablesModule::VariablesModule(const ModuleBuildInfo& bi)
+: ArcaneVariablesObject(bi)
 {}
 
 void VariablesModule::init()
@@ -62,6 +62,9 @@ void VariablesModule::init()
 	dynamicVecInitialization(); // @1.0
 	varVecInitialization(); // @1.0
 	oracle(); // @2.0
+
+	// No compute loop entry point: end of computation triggered to avoid infinite loop in tests
+	subDomain()->timeLoopMng()->stopComputeLoop(true);
 }
 
 /**

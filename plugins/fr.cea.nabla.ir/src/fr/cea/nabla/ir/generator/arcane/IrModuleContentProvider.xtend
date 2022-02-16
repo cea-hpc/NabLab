@@ -16,17 +16,43 @@ import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
+import fr.cea.nabla.ir.ir.LinearAlgebraType
 
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.generator.arcane.VariableExtensions.*
-import fr.cea.nabla.ir.ir.LinearAlgebraType
 
 class IrModuleContentProvider
 {
-	static def getHeaderFileContent(IrModule it, String className)
+	static def getInterfaceFileContent(IrModule it)
 	'''
+	«val className = ArcaneUtils.getInterfaceName(it)»
+	/* «Utils::doNotEditWarning» */
+
+	#ifndef «CppGeneratorUtils.getHDefineName(className)»
+	#define «CppGeneratorUtils.getHDefineName(className)»
+
+	using namespace Arcane;
+
+	class «className»
+	{
+	public:
+		«className»() {}
+		virtual ~«className»() {}
+
+	public:
+		«FOR j : jobs.filter[!mainTimeLoop]»
+			«JobContentProvider.getDeclarationContent(j)» = 0;
+		«ENDFOR»
+	};
+
+	#endif
+	'''
+
+	static def getHeaderFileContent(IrModule it)
+	'''
+	«val className = ArcaneUtils.getClassName(it)»
 	/* «Utils::doNotEditWarning» */
 
 	#ifndef «CppGeneratorUtils.getHDefineName(className)»
@@ -35,6 +61,12 @@ class IrModuleContentProvider
 	#include <arcane/utils/Array.h>
 	#include <arcane/datatype/RealArrayVariant.h>
 	#include <arcane/datatype/RealArray2Variant.h>
+	«FOR s : ArcaneUtils.getServices(it)»
+	#include "«ArcaneUtils.getInterfaceName(s)».h"
+	«ENDFOR»
+	«IF ArcaneUtils.isArcaneService(it)»
+	#include "«ArcaneUtils.getInterfaceName(it)».h"
+	«ENDIF»
 	#include "«name.toFirstUpper»_axl.h"
 	#include "«irRoot.mesh.className».h"
 	«FOR provider : externalProviders»
@@ -57,25 +89,29 @@ class IrModuleContentProvider
 	}
 
 	«ENDIF»
-	/*** Module ******************************************************************/
+	/*** Module/Service **********************************************************/
 
 	class «className»
 	: public Arcane«name.toFirstUpper»Object
 	{
 	public:
-		«className»(const ModuleBuildInfo& mbi);
+		«className»(const «IF ArcaneUtils.isArcaneModule(it)»Module«ELSE»Service«ENDIF»BuildInfo& mbi);
 		~«className»() {}
+		«IF ArcaneUtils.isArcaneModule(it)»
 
+		// entry points
 		virtual void init() override;
 		«FOR j : ArcaneUtils.getComputeLoopEntryPointJobs(it)»
 			virtual void «j.name.toFirstLower»() override;
 		«ENDFOR»
 
 		VersionInfo versionInfo() const override { return VersionInfo(1, 0, 0); }
+		«ENDIF»
 
-	private:
+	public:
+		// jobs
 		«FOR j : jobs.filter[!mainTimeLoop]»
-			«JobContentProvider.getDeclarationContent(j)»
+			«JobContentProvider.getDeclarationContent(j)»«IF ArcaneUtils.isArcaneService(it)» override«ENDIF»;
 		«ENDFOR»
 
 	private:
@@ -100,8 +136,9 @@ class IrModuleContentProvider
 	#endif
 	'''
 
-	static def getSourceFileContent(IrModule it, String className)
+	static def getSourceFileContent(IrModule it)
 	'''
+	«val className = ArcaneUtils.getClassName(it)»
 	/* «Utils::doNotEditWarning» */
 
 	#include "«className».h"
@@ -121,14 +158,15 @@ class IrModuleContentProvider
 		}
 
 	«ENDIF»
-	/*** Module ******************************************************************/
+	/*** Module/Service **********************************************************/
 
-	«className»::«className»(const ModuleBuildInfo& mbi)
-	: Arcane«name.toFirstUpper»Object(mbi)
+	«className»::«className»(const «IF ArcaneUtils.isArcaneModule(it)»Module«ELSE»Service«ENDIF»BuildInfo& bi)
+	: Arcane«name.toFirstUpper»Object(bi)
 	«FOR v : variables.filter[x | (x.type instanceof LinearAlgebraType)]»
 		, «v.codeName»(«IF TypeContentProvider.isArcaneStlVector(v.type)»this, «ENDIF»"«v.name»")
 	«ENDFOR»
 	{}
+	«IF ArcaneUtils.isArcaneModule(it)»
 
 	void «className»::init()
 	{
@@ -161,16 +199,26 @@ class IrModuleContentProvider
 
 		// calling jobs
 		«FOR c : irRoot.main.calls.filter[!mainTimeLoop]»
-			«Utils::getCallName(c).replace('.', '->')»(); // @«c.at»
+			«ArcaneUtils.getCallName(c)»(); // @«c.at»
 		«ENDFOR»
+		«IF ArcaneUtils.getComputeLoopEntryPointJobs(it).empty»
+
+		// No compute loop entry point: end of computation triggered to avoid infinite loop in tests
+		subDomain()->timeLoopMng()->stopComputeLoop(true);
+		«ENDIF»
 	}
+	«ENDIF»
 
 	«FOR j : jobs»
 		«JobContentProvider.getDefinitionContent(j)»
 
 	«ENDFOR»
 
+	«IF ArcaneUtils.isArcaneModule(it)»
 	ARCANE_REGISTER_MODULE_«name.toUpperCase»(«className»);
+	«ELSE»
+	ARCANE_REGISTER_SERVICE_«name.toUpperCase»(«name.toFirstUpper», «className»);
+	«ENDIF»
 	'''
 
 	/** The main time loop job is represented by the compute entry point */

@@ -11,6 +11,7 @@ package fr.cea.nabla.ir.generator.arcane
 
 import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.generator.CppGeneratorUtils
+import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.ArgOrVar
 import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
@@ -18,25 +19,37 @@ import fr.cea.nabla.ir.ir.ExternFunction
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.InternFunction
 import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.IrRoot
+import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Variable
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.getInstanceName
+import static extension fr.cea.nabla.ir.IrModuleExtensions.*
+import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.JobCallerExtensions.*
 
 /**
  * @TODO Arcane - What about item types? Fixed in NabLab ? Mapping Arcane ?
- * @TODO Arcane - Linear Algebra with Alien
- * @TODO Arcane - Support module coupling
- * @TODO Arcane - Support composed time loops: n + m
  * @TODO Arcane - What happens if levelDB asked ?
  * @TODO Arcane - What to do with job updating global time ?
  */
 class ArcaneUtils
 {
-	static def getModuleName(IrModule it)
+	static def isArcaneModule(IrModule it) { main }
+	static def isArcaneService(IrModule it) { !main }
+
+	static def getInterfaceName(IrModule it)
 	{
-		name.toFirstUpper + "Module"
+		'I' + type
+	}
+
+	static def getClassName(IrModule it)
+	{
+		if (main)
+			name.toFirstUpper + "Module"
+		else
+			name.toFirstUpper + "Service"
 	}
 
 	static def toAttributeName(String name)
@@ -72,5 +85,26 @@ class ArcaneUtils
 				else toAttributeName(f.provider.instanceName) + '.' + f.name
 			}
 		}
+	}
+
+	static def getServices(IrModule it)
+	{
+		if (main && irRoot.modules.size > 1)
+			irRoot.modules.filter[x | x !== it]
+		else
+			#[]
+	}
+
+	static def getCallName(Job it)
+	{
+		val jobModule = IrUtils.getContainerOfType(it, IrModule)
+		val callerModule = if (caller.eContainer instanceof IrRoot)
+				(caller.eContainer as IrRoot).mainModule
+			else
+				IrUtils.getContainerOfType(caller, IrModule)
+		if (jobModule === callerModule)
+			Utils.getCodeName(it)
+		else
+			"options()->" + jobModule.name + '()->' + Utils.getCodeName(it)
 	}
 }

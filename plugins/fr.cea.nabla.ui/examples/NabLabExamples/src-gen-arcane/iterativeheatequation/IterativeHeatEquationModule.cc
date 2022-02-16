@@ -94,10 +94,10 @@ namespace iterativeheatequationfreefuncs
 	}
 }
 
-/*** Module ******************************************************************/
+/*** Module/Service **********************************************************/
 
-IterativeHeatEquationModule::IterativeHeatEquationModule(const ModuleBuildInfo& mbi)
-: ArcaneIterativeHeatEquationObject(mbi)
+IterativeHeatEquationModule::IterativeHeatEquationModule(const ModuleBuildInfo& bi)
+: ArcaneIterativeHeatEquationObject(bi)
 {}
 
 void IterativeHeatEquationModule::init()

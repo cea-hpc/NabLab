@@ -81,10 +81,10 @@ namespace implicitheatequationfreefuncs
 	}
 }
 
-/*** Module ******************************************************************/
+/*** Module/Service **********************************************************/
 
-ImplicitHeatEquationModule::ImplicitHeatEquationModule(const ModuleBuildInfo& mbi)
-: ArcaneImplicitHeatEquationObject(mbi)
+ImplicitHeatEquationModule::ImplicitHeatEquationModule(const ModuleBuildInfo& bi)
+: ArcaneImplicitHeatEquationObject(bi)
 , m_u_n(this, "u_n")
 , m_u_nplus1(this, "u_nplus1")
 , m_alpha("alpha")

@@ -37,7 +37,7 @@ namespace glace2dfreefuncs
 	RealArray2Variant operatorMult(RealArray2Variant a, const Real b);
 }
 
-/*** Module ******************************************************************/
+/*** Module/Service **********************************************************/
 
 class Glace2dModule
 : public ArcaneGlace2dObject
@@ -46,37 +46,39 @@ public:
 	Glace2dModule(const ModuleBuildInfo& mbi);
 	~Glace2dModule() {}
 
+	// entry points
 	virtual void init() override;
 	virtual void executeTimeLoopN() override;
 
 	VersionInfo versionInfo() const override { return VersionInfo(1, 0, 0); }
 
-private:
-	void computeCjr();
-	void computeInternalEnergy();
-	void iniCjrIc();
-	void iniTime();
-	void computeLjr();
-	void computeV();
-	void initialize();
-	void setUpTimeLoopN();
-	void computeDensity();
-	void computeEOSp();
-	void computeEOSc();
-	void computeAjr();
-	void computedeltatj();
-	void computeAr();
-	void computeBr();
-	void computeDt();
-	void computeBoundaryConditions();
-	void computeBt();
-	void computeMt();
-	void computeTn();
-	void computeU();
-	void computeFjr();
-	void computeXn();
-	void computeEn();
-	void computeUn();
+public:
+	// jobs
+	virtual void computeCjr();
+	virtual void computeInternalEnergy();
+	virtual void iniCjrIc();
+	virtual void iniTime();
+	virtual void computeLjr();
+	virtual void computeV();
+	virtual void initialize();
+	virtual void setUpTimeLoopN();
+	virtual void computeDensity();
+	virtual void computeEOSp();
+	virtual void computeEOSc();
+	virtual void computeAjr();
+	virtual void computedeltatj();
+	virtual void computeAr();
+	virtual void computeBr();
+	virtual void computeDt();
+	virtual void computeBoundaryConditions();
+	virtual void computeBt();
+	virtual void computeMt();
+	virtual void computeTn();
+	virtual void computeU();
+	virtual void computeFjr();
+	virtual void computeXn();
+	virtual void computeEn();
+	virtual void computeUn();
 
 private:
 	// mesh attributes

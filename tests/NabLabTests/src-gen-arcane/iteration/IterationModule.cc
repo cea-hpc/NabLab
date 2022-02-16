@@ -19,10 +19,10 @@ namespace iterationfreefuncs
 	}
 }
 
-/*** Module ******************************************************************/
+/*** Module/Service **********************************************************/
 
-IterationModule::IterationModule(const ModuleBuildInfo& mbi)
-: ArcaneIterationObject(mbi)
+IterationModule::IterationModule(const ModuleBuildInfo& bi)
+: ArcaneIterationObject(bi)
 {}
 
 void IterationModule::init()

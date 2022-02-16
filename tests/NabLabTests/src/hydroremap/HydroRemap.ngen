@@ -67,3 +67,11 @@ StlThread
 	outputPath = "/NabLabTests/src-gen-cpp/stl-thread";
 	CMAKE_CXX_COMPILER = "/usr/bin/g++";
 }
+
+Arcane
+{
+	outputPath = "/NabLabTests/src-gen-arcane";
+	CMAKE_CXX_COMPILER = "/usr/bin/g++";
+	Arcane_ROOT = "$ENV{HOME}/arcane/install";
+}
+

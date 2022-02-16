@@ -29,7 +29,7 @@ namespace iterativeheatequationfreefuncs
 	RealArrayVariant operatorSub(RealArrayVariant a, RealArrayVariant b);
 }
 
-/*** Module ******************************************************************/
+/*** Module/Service **********************************************************/
 
 class IterativeHeatEquationModule
 : public ArcaneIterativeHeatEquationObject
@@ -38,28 +38,30 @@ public:
 	IterativeHeatEquationModule(const ModuleBuildInfo& mbi);
 	~IterativeHeatEquationModule() {}
 
+	// entry points
 	virtual void init() override;
 	virtual void executeTimeLoopN() override;
 
 	VersionInfo versionInfo() const override { return VersionInfo(1, 0, 0); }
 
-private:
-	void computeFaceLength();
-	void computeTn();
-	void computeV();
-	void initD();
-	void initTime();
-	void initXc();
-	void setUpTimeLoopK();
-	void updateU();
-	void computeDeltaTn();
-	void computeFaceConductivity();
-	void computeResidual();
-	void executeTimeLoopK();
-	void initU();
-	void setUpTimeLoopN();
-	void computeAlphaCoeff();
-	void tearDownTimeLoopK();
+public:
+	// jobs
+	virtual void computeFaceLength();
+	virtual void computeTn();
+	virtual void computeV();
+	virtual void initD();
+	virtual void initTime();
+	virtual void initXc();
+	virtual void setUpTimeLoopK();
+	virtual void updateU();
+	virtual void computeDeltaTn();
+	virtual void computeFaceConductivity();
+	virtual void computeResidual();
+	virtual void executeTimeLoopK();
+	virtual void initU();
+	virtual void setUpTimeLoopN();
+	virtual void computeAlphaCoeff();
+	virtual void tearDownTimeLoopK();
 
 private:
 	// mesh attributes

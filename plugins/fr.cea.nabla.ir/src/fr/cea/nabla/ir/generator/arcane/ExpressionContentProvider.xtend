@@ -9,7 +9,6 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.arcane
 
-import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.BaseTypeConstant
@@ -20,7 +19,6 @@ import fr.cea.nabla.ir.ir.ContractedIf
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IntConstant
-import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrPackage
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.MaxConstant
@@ -172,18 +170,13 @@ class ExpressionContentProvider
 	static def CharSequence getCodeName(ArgOrVarRef it)
 	{
 		val t = target
-		val tName = switch t
+		switch t
 		{
 			Variable case t.option: 'options()->' + t.name + "()"
 			case t.iteratorCounter: (t.eContainer as Iterator).index.name
 			Variable: t.codeName
 			default: t.name
 		}
-
-		if (IrUtils.getContainerOfType(it, IrModule) === IrUtils.getContainerOfType(target, IrModule))
-			tName
-		else
-			'mainModule->' + tName
 	}
 
 	private static def CharSequence initArray(int[] sizes, CharSequence value)

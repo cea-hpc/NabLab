@@ -47,9 +47,10 @@ class ArcaneGenerator implements IrCodeGenerator
 		for (module : ir.modules)
 		{
 			fileContents += new GenerationContent(module.name.toFirstUpper + '.axl', AxlContentProvider.getContent(module), false)
-			val className = ArcaneUtils.getModuleName(module)
-			fileContents += new GenerationContent(className + '.h', IrModuleContentProvider.getHeaderFileContent(module, className), false)
-			fileContents += new GenerationContent(className + '.cc', IrModuleContentProvider.getSourceFileContent(module, className), false)
+			if (ArcaneUtils.isArcaneService(module))
+				fileContents += new GenerationContent(ArcaneUtils.getInterfaceName(module) + '.h', IrModuleContentProvider.getInterfaceFileContent(module), false)
+			fileContents += new GenerationContent(ArcaneUtils.getClassName(module) + '.h', IrModuleContentProvider.getHeaderFileContent(module), false)
+			fileContents += new GenerationContent(ArcaneUtils.getClassName(module) + '.cc', IrModuleContentProvider.getSourceFileContent(module), false)
 		}
 		fileContents += new GenerationContent('CMakeLists.txt', CMakeContentProvider.getContent(ir, cMakeVars), false)
 		fileContents += new GenerationContent(ir.name + '.config', TimeLoopContentProvider.getContent(ir), false)

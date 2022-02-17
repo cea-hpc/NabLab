@@ -10,19 +10,35 @@
 package fr.cea.nabla.ir.generator.python
 
 import fr.cea.nabla.ir.IrTypeExtensions
+import fr.cea.nabla.ir.UnzipHelper
 import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.generator.IrCodeGenerator
+import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.transformers.PreventFunctionOverloading
 import fr.cea.nabla.ir.transformers.ReplaceReductions
 import fr.cea.nabla.ir.transformers.SetPythonOperatorNames
 import java.util.ArrayList
+import java.util.LinkedHashSet
 
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 
 class PythonGenerator implements IrCodeGenerator
 {
+	val boolean hasLevelDB
+	val envVars = new LinkedHashSet<Pair<String, String>>
+
+	new(String wsPath, boolean hasLevelDB, Iterable<Pair<String, String>> envVars)
+	{
+		this.hasLevelDB = hasLevelDB
+		envVars.forEach[x | this.envVars += x]
+
+		// Set WS_PATH variables and unzip NRepository if necessary
+		this.envVars += new Pair("PYTHONPATH", wsPath + "/.nablab/mesh/cartesianmesh2dnumpy:" + wsPath + "/.nablab/linearalgebra/linearalgebranumpy")
+		UnzipHelper::unzipNRepository(wsPath)
+	}
+
 	override getName() { "Python" }
 
 	override getIrTransformationSteps()
@@ -38,7 +54,12 @@ class PythonGenerator implements IrCodeGenerator
 	{
 		val fileContents = new ArrayList<GenerationContent>
 		for (module : ir.modules)
-			fileContents += new GenerationContent(module.name.toLowerCase + '.py', IrModuleContentProvider.getFileContent(module), false)
+		{
+			val fileName = module.name.toLowerCase + '.py'
+			fileContents += new GenerationContent(fileName, IrModuleContentProvider.getFileContent(module, hasLevelDB), false)
+			if (module.main)
+				fileContents += new GenerationContent("launch.sh", getShellScriptContent(fileName), false)
+		}
 		return fileContents
 	}
 
@@ -53,4 +74,16 @@ class PythonGenerator implements IrCodeGenerator
 		}
 		return fileContents
 	}
+
+	private def getShellScriptContent(String pyFileName)
+	'''
+	# «Utils::doNotEditWarning»
+	#
+	#!/bin/sh
+	#
+	«FOR v : envVars»
+	«v.key»=«v.value»
+	«ENDFOR»
+	python3 «pyFileName» $*
+	'''
 }

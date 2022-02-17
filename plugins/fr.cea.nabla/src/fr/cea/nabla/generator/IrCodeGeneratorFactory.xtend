@@ -35,7 +35,12 @@ class IrCodeGeneratorFactory
 		switch targetType
 		{
 			case JAVA: new JavaGenerator(hasLevelDB)
-			case PYTHON: new PythonGenerator
+			case PYTHON:
+			{
+				val envVars = new ArrayList<Pair<String, String>>
+				targetVars.forEach[x | envVars += x.key -> x.value]
+				new PythonGenerator(wsPath, hasLevelDB, envVars)
+			}
 			case ARCANE:
 			{
 				val cmakeVars = new ArrayList<Pair<String, String>>

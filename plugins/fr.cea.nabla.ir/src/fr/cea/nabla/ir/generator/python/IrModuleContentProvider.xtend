@@ -30,10 +30,11 @@ import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.python.ExpressionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.python.FunctionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.python.JobContentProvider.*
+import fr.cea.nabla.ir.ir.PrimitiveType
 
 class IrModuleContentProvider
 {
-	static def getFileContent(IrModule it)
+	static def getFileContent(IrModule it, boolean hasLevelDB)
 	'''
 	"""
 	«Utils.doNotEditWarning»
@@ -42,6 +43,11 @@ class IrModuleContentProvider
 	import json
 	import numpy as np
 	«IF providers.exists[x | x.extensionName == "Math"]»import math«ENDIF»
+	«IF main && hasLevelDB»
+	import plyvel
+	import struct
+	from distutils.dir_util import copy_tree
+	«ENDIF»
 	from «irRoot.mesh.className.toLowerCase» import «irRoot.mesh.className»
 	«IF irRoot.postProcessing !== null»from pvdfilewriter2d import PvdFileWriter2D«ENDIF»
 	«FOR provider : externalProviders»
@@ -89,6 +95,13 @@ class IrModuleContentProvider
 				if jsonContent["«vName»"]:
 					«vName».jsonInit(jsonContent["«vName»"])
 			«ENDFOR»
+			«val nrName = IrUtils.NonRegressionNameAndValue.key»
+			«IF main && hasLevelDB»
+
+				# Non regression
+				if "«nrName»" in jsonContent:
+					self.«nrName» = jsonContent["«nrName»"]
+			«ENDIF»
 			«IF main»
 
 				# Copy node coordinates
@@ -117,6 +130,27 @@ class IrModuleContentProvider
 			def mainModule(value):
 				self._mainModule = value
 				self._mainModule._«name» = self
+		«ENDIF»
+		«IF main && hasLevelDB»
+
+		def create_db(self, dbName):
+			# Destroy if exists
+			plyvel.destroy_db(dbName)
+
+			# Create database
+			db = plyvel.DB(dbName, create_if_missing=True)	
+
+			with db.write_batch() as b:
+				«FOR v : irRoot.variables.filter[!option]»
+					«IF v.type.scalar»
+						b.put(b"«Utils.getDbKey(v)»", struct.pack('«getStructFormat(v.type.primitive)»', «getDbValue(it, v)»))
+					«ELSE»
+						b.put(b"«Utils.getDbKey(v)»", «getDbValue(it, v)».tobytes())
+					«ENDIF»
+				«ENDFOR»
+			
+			db.close()
+			print("Reference database " + dbName + " created.")
 		«ENDIF»
 		«IF postProcessing !== null»
 
@@ -150,8 +184,57 @@ class IrModuleContentProvider
 					self.__writer.closeVtpFile()
 					«PythonGeneratorUtils.getCodeName(postProcessing.lastDumpVariable)» = «PythonGeneratorUtils.getCodeName(postProcessing.periodReference)»
 		«ENDIF»
+	«IF main && hasLevelDB»
 
+		def compare_db(currentName, refName):
+			result = True
+			copyRefName = refName + "Copy"
+			
+			#  We have to copy ref not to modify it (for git repo)
+			copy_tree(refName, copyRefName)
+
+			try:
+				dbRef = plyvel.DB(copyRefName)
+				itRef = dbRef.iterator()
+
+				db = plyvel.DB(currentName)
+				it = db.iterator()
+
+				# Results comparison
+				print("# Comparing results ...");
+
+				for key, refValue in itRef:
+					currentValue = db.get(key)
+					if currentValue == None:
+						print("ERROR - Key : " + str(key) + " not found.")
+						result = False
+					else:
+						ok = (currentValue == refValue)
+						if ok:
+							print(str(key) + ": OK")
+						else:
+							print(str(key) + ": ERROR")
+							result = False
+							print("value = " + str(currentValue))
+							print("  ref = " + str(refValue))
+
+				# looking for key in the db that are not in the ref (new variables)
+				for key, currentValue in it:
+					if dbRef.get(key) == None:
+						print("ERROR - Key : " + key + " can not be compared (not present in the ref).")
+						result = False
+
+			finally:
+				it.close()
+				itRef.close()
+				db.close()
+				dbRef.close()
+				plyvel.destroy_db(copyRefName)
+
+			return result
+	«ENDIF»
 	«IF main»
+
 		if __name__ == '__main__':
 			args = sys.argv[1:]
 			
@@ -175,6 +258,19 @@ class IrModuleContentProvider
 
 				# Start simulation
 				«name».simulate()
+				«IF main && hasLevelDB»
+
+					«val dbName = irRoot.name + "DB"»
+					# Non regression testing
+					if «name».«nrName» != None and «name».«nrName» == "«IrUtils.NonRegressionValues.CreateReference.toString»":
+						«name».create_db("«dbName».ref")
+					if «name».«nrName» != None and «name».«nrName» == "«IrUtils.NonRegressionValues.CompareToReference.toString»":
+						«name».create_db("«dbName».current")
+						ok = compare_db("«dbName».current", "«dbName».ref");
+						plyvel.destroy_db("«dbName».current");
+						if not ok:
+							exit(1)
+				«ENDIF»
 			else:
 				print("[ERROR] Wrong number of arguments: expected 1, actual " + str(len(args)), file=sys.stderr)
 				print("        Expecting user data file name, for example «irRoot.name».json", file=sys.stderr)
@@ -203,6 +299,25 @@ class IrModuleContentProvider
 			ConnectivityType: '''«PythonGeneratorUtils.getCodeName(v)»[i]'''
 			LinearAlgebraType: '''«PythonGeneratorUtils.getCodeName(v)».getValue(i)'''
 			default: throw new RuntimeException("Unexpected type: " + t.class.name)
+		}
+	}
+
+	private static def getDbValue(IrModule m, Variable v)
+	{
+		val vModule = IrUtils.getContainerOfType(v, IrModule)
+		if (vModule == m)
+			"self." + v.name
+		else
+			vModule.name + "." + v.name
+	}
+
+	private static def getStructFormat(PrimitiveType t)
+	{
+		switch t
+		{
+			case BOOL: '?'
+			case INT: 'i'
+			case REAL: 'd'
 		}
 	}
 }

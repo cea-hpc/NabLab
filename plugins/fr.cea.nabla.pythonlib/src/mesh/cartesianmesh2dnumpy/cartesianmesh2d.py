@@ -144,7 +144,7 @@ class CartesianMesh2D:
         leftFace = bottomFace + 1
         rightFace = bottomFace + (2 if j == self.__nbXQuads else 3)
         topFace = bottomFace + (2 *  self.__nbXQuads + 1 if i <  self.__nbYQuads - 1 else 2 *  self.__nbXQuads + 1 - j)
-        return [bottomFace, leftFace, rightFace, topFace]
+        return np.array([bottomFace, leftFace, rightFace, topFace])
 
     def getCommonFace(self, cell1, cell2):
         cell1Faces = self.getFacesOfCell(cell1);
@@ -255,6 +255,31 @@ class CartesianMesh2D:
     def getLeftFaceNeighbour(self, faceId):
         return faceId - 2
     
+    def dump(self):
+        self.__geometry.dump()
+        print("MESH TOPOLOGY")
+        innerNodes = self.__groups[CartesianMesh2D.InnerNodes]
+        print("Inner nodes ("+ str(len(innerNodes))+"):")
+        print(innerNodes)
+        topNodes = self.__groups[CartesianMesh2D.TopNodes]
+        print("Top nodes ("+ str(len(topNodes))+"):")
+        print(topNodes)
+        bottomNodes = self.__groups[CartesianMesh2D.BottomNodes]
+        print("Bottom nodes ("+ str(len(bottomNodes))+"):")
+        print(bottomNodes)
+        leftNodes = self.__groups[CartesianMesh2D.LeftNodes]
+        print("Left nodes ("+ str(len(leftNodes))+"):")
+        print(leftNodes)
+        rightNodes = self.__groups[CartesianMesh2D.RightNodes]
+        print("Right nodes ("+ str(len(rightNodes))+"):")
+        print(rightNodes)
+        outerFaces = self.__groups[CartesianMesh2D.OuterFaces]
+        print("Outer faces ("+ str(len(outerFaces))+"):")
+        print(outerFaces)
+        innerFaces = self.__groups[CartesianMesh2D.InnerFaces]
+        print("Inner faces ("+ str(len(innerFaces))+"):")
+        print(innerFaces)
+    
     def create(self, nbXQuads, nbYQuads, xSize, ySize):
         if (nbXQuads == -1 or nbYQuads == -1 or xSize == -1 or ySize == -1):
             raise Exception("Mesh attributes uninitialized")
@@ -273,10 +298,13 @@ class CartesianMesh2D:
         leftNodes = np.empty(nbYQuads + 1, dtype=np.int32)
         rightNodes = np.empty(nbYQuads + 1, dtype=np.int32)
 
-        innerCells = np.empty((nbXQuads - 2)*(nbYQuads - 2), dtype=np.int32)
-        outerCells = np.empty(2 * nbXQuads + 2 * (nbYQuads - 2), dtype=np.int32)
-        
-        nodeId = outerNodeId = innerNodeId = topNodeId = bottomNodeId = leftNodeId = rightNodeId = 0
+        nodeId = 0
+        outerNodeId = 0
+        innerNodeId = 0
+        topNodeId = 0
+        bottomNodeId = 0
+        leftNodeId = 0
+        rightNodeId = 0
         
         # node creation
         for j in range(nbYQuads + 1):
@@ -314,9 +342,23 @@ class CartesianMesh2D:
             if belowNodeIndex<len(nodes):
                 edges[edgeId] = [i, belowNodeIndex]
                 edgeId += 1
-                
+        
         # quad creation
-        quadId = innerCellId = outerCellId = 0
+        innerCells = np.empty((nbXQuads - 2)*(nbYQuads - 2), dtype=np.int32)
+        outerCells = np.empty(2 * nbXQuads + 2 * (nbYQuads - 2), dtype=np.int32)
+        topCells = np.empty(nbXQuads, dtype=np.int32)
+        bottomCells = np.empty(nbXQuads, dtype=np.int32)
+        leftCells = np.empty(nbYQuads, dtype=np.int32)
+        rightCells = np.empty(nbYQuads, dtype=np.int32)
+        
+        quadId = 0
+        innerCellId = 0
+        outerCellId = 0
+        topCellId = 0
+        bottomCellId = 0
+        leftCellId = 0
+        rightCellId = 0
+        
         for j in range(nbYQuads):
             for i in range(nbXQuads):
                 if i != 0 and i != nbXQuads - 1 and j != 0 and j != nbYQuads - 1:
@@ -325,50 +367,81 @@ class CartesianMesh2D:
                 else:
                     outerCells[outerCellId] = quadId
                     outerCellId += 1
+                    if j == nbYQuads - 1:
+                        topCells[topCellId] = quadId
+                        topCellId += 1
+                    if j == 0:
+                        bottomCells[bottomCellId] = quadId
+                        bottomCellId += 1
+                    if i == 0:
+                        leftCells[leftCellId] = quadId
+                        leftCellId += 1
+                    if i == nbXQuads - 1:
+                        rightCells[rightCellId] = quadId
+                        rightCellId += 1
+                
                 upperLeftNodeIndex = (j*nbXNodes)+i;
                 lowerLeftNodeIndex = upperLeftNodeIndex + nbXNodes;
                 quads[quadId] = [upperLeftNodeIndex, upperLeftNodeIndex+1, lowerLeftNodeIndex+1, lowerLeftNodeIndex]
                 quadId += 1
-                
+        
         self.__geometry = MeshGeometry(nodes, edges, quads)
         
-        outFaces = []
-        inFaces = []
-        inVFaces = []
-        inHFaces = []
-        tFaces = []
-        bFaces = []
-        lFaces = []
-        rFaces = []
+        # faces partitionment
+        outFaces = np.empty(2 * nbXQuads + 2 * nbYQuads, dtype=np.int32)
+        inFaces = np.empty(len(edges) - len(outFaces), dtype=np.int32)
+        inHFaces = np.empty(nbXQuads * (nbYQuads - 1), dtype=np.int32)
+        inVFaces = np.empty(nbYQuads * (nbXQuads - 1), dtype=np.int32)
+        tFaces = np.empty(nbXQuads, dtype=np.int32)
+        bFaces = np.empty(nbXQuads, dtype=np.int32)
+        lFaces = np.empty(nbYQuads, dtype=np.int32)
+        rFaces = np.empty(nbYQuads, dtype=np.int32)
+        
+        inFaceId = 0;
+        outFaceId = 0;
+        inHFaceId = 0;
+        inVFaceId = 0;
+        tFaceId = 0;
+        bFaceId = 0;
+        lFaceId = 0;
+        rFaceId = 0;
         
         for edgeId in range(len(edges)):
             # Top boundary faces
             if edgeId >= 2 * nbXQuads * nbYQuads + nbYQuads:
-                tFaces.append(edgeId)
+                tFaces[tFaceId] = edgeId
+                tFaceId += 1
             # Bottom boundary faces
             if (edgeId < 2 * nbXQuads) and (edgeId % 2 == 0):
-                bFaces.append(edgeId)
+                bFaces[bFaceId] = edgeId
+                bFaceId += 1
             # Left boundary faces
             if (edgeId % (2 * nbXQuads + 1) == 1) and (edgeId < (2 * nbXQuads + 1) * nbYQuads):
-                lFaces.append(edgeId)
+                lFaces[lFaceId] = edgeId
+                lFaceId += 1
             # Right boundary faces
             if edgeId % (2 * nbXQuads + 1) == 2 * nbXQuads:
-                rFaces.append(edgeId)
-                
+                rFaces[rFaceId] = edgeId
+                rFaceId += 1
+            
             edge = edges[edgeId]
-            if not self.__isInnerEdge(edge):
-                outFaces.append(edgeId);
-            else:
-                inFaces.append(edgeId)
+            if self.__isInnerEdge(edge):
+                inFaces[inFaceId] = edgeId
+                inFaceId += 1
                 if self.__isVerticalEdge(edge):
-                    inVFaces.append(edgeId)
+                    inVFaces[inVFaceId]= edgeId
+                    inVFaceId += 1
                 elif self.__isHorizontalEdge(edge):
-                    inHFaces.append(edgeId)
+                    inHFaces[inHFaceId] = edgeId
+                    inHFaceId += 1
                 else:
                     raise Exception("The inner edge " + str(edgeId) + " should be either vertical or horizontal")
+            else:
+                outFaces[outFaceId] = edgeId
+                outFaceId += 1
         
         # NODES
-        self.__groups[self.AllNodes] = range(self.nbNodes)
+        self.__groups[self.AllNodes] = np.array(range(self.nbNodes))
         self.__groups[self.InnerNodes] = innerNodes
         self.__groups[self.OuterNodes] = outerNodes
         self.__groups[self.TopNodes] = topNodes
@@ -381,16 +454,16 @@ class CartesianMesh2D:
         self.__groups[self.BottomRightNode] = np.array([nbXQuads])
 
         # CELLS
-        self.__groups[self.AllCells] = range(self.nbCells)
+        self.__groups[self.AllCells] = np.array(range(self.nbCells))
         self.__groups[self.InnerCells] = innerCells
         self.__groups[self.OuterCells] = outerCells
-        self.__groups[self.TopCells] = self.__cellsOfNodeCollection(topNodes)
-        self.__groups[self.BottomCells] = self.__cellsOfNodeCollection(bottomNodes)
-        self.__groups[self.LeftCells] = self.__cellsOfNodeCollection(leftNodes)
-        self.__groups[self.RightCells] = self.__cellsOfNodeCollection(rightNodes)
+        self.__groups[self.TopCells] = topCells
+        self.__groups[self.BottomCells] = bottomCells
+        self.__groups[self.LeftCells] = leftCells
+        self.__groups[self.RightCells] = rightCells
 
         # FACES
-        self.__groups[self.AllFaces] = range(self.nbFaces)
+        self.__groups[self.AllFaces] = np.array(range(self.nbFaces))
         self.__groups[self.InnerFaces] = np.array(inFaces)
         self.__groups[self.OuterFaces] = np.array(outFaces)
         self.__groups[self.InnerHorizontalFaces] = np.array(inHFaces)
@@ -418,45 +491,13 @@ class CartesianMesh2D:
     def __index2IdCell(self, i, j):
         return (i * self.__nbXQuads) + j
     
-    def __id2IndexNode(self, nodeId):
-        i = nodeId // (self.__nbXQuads + 1)
-        j = nodeId % (self.__nbXQuads + 1)
-        return i, j
-    
     def __id2IndexCell(self, cellId):
         i = cellId // self.__nbXQuads
         j = cellId % self.__nbXQuads
         return i, j
     
-    def __cellsOfNodeCollection(self, nodeIds):
-        cellsOfNode = []
-        for nodeId in nodeIds:
-            for cellId in self.getCellsOfNode(nodeId):
-                if not cellId in cellsOfNode:
-                    cellsOfNode.append(cellId)
-        return np.array(cellsOfNode)
-    
-    def dump(self):
-        self.__geometry.dump()
-        print("MESH TOPOLOGY")
-        innerNodes = self.__groups[CartesianMesh2D.InnerNodes]
-        print("Inner nodes ("+ str(len(innerNodes))+"):")
-        print(innerNodes)
-        topNodes = self.__groups[CartesianMesh2D.TopNodes]
-        print("Top nodes ("+ str(len(topNodes))+"):")
-        print(topNodes)
-        bottomNodes = self.__groups[CartesianMesh2D.BottomNodes]
-        print("Bottom nodes ("+ str(len(bottomNodes))+"):")
-        print(bottomNodes)
-        leftNodes = self.__groups[CartesianMesh2D.LeftNodes]
-        print("Left nodes ("+ str(len(leftNodes))+"):")
-        print(leftNodes)
-        rightNodes = self.__groups[CartesianMesh2D.RightNodes]
-        print("Right nodes ("+ str(len(rightNodes))+"):")
-        print(rightNodes)
-        outerFaces = self.__groups[CartesianMesh2D.OuterFaces]
-        print("Outer faces ("+ str(len(outerFaces))+"):")
-        print(outerFaces)
-        innerFaces = self.__groups[CartesianMesh2D.InnerFaces]
-        print("Inner faces ("+ str(len(innerFaces))+"):")
-        print(innerFaces)
+    def __id2IndexNode(self, nodeId):
+        i = nodeId // (self.__nbXQuads + 1)
+        j = nodeId % (self.__nbXQuads + 1)
+        return i, j
+

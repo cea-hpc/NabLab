@@ -548,13 +548,17 @@ public class CartesianMesh2D
 		for (edgeId = 0; edgeId <edges.length; edgeId ++)
 		{
 			// Top boundary faces
-			if (edgeId >= 2 * nbXQuads * nbYQuads + nbYQuads) tFaces[tFaceId++] = edgeId;
+			if (edgeId >= 2 * nbXQuads * nbYQuads + nbYQuads)
+				tFaces[tFaceId++] = edgeId;
 			// Bottom boundary faces
-			if ((edgeId < 2 * nbXQuads) && (edgeId % 2 == 0)) bFaces[bFaceId++] = edgeId;
+			if ((edgeId < 2 * nbXQuads) && (edgeId % 2 == 0))
+				bFaces[bFaceId++] = edgeId;
 			// Left boundary faces
-			if ((edgeId % (2 * nbXQuads + 1) == 1) && (edgeId < (2 * nbXQuads + 1) * nbYQuads)) lFaces[lFaceId++] = edgeId;
+			if ((edgeId % (2 * nbXQuads + 1) == 1) && (edgeId < (2 * nbXQuads + 1) * nbYQuads))
+				lFaces[lFaceId++] = edgeId;
 			// Right boundary faces
-			if (edgeId % (2 * nbXQuads + 1) == 2 * nbXQuads) rFaces[rFaceId++] = edgeId;
+			if (edgeId % (2 * nbXQuads + 1) == 2 * nbXQuads)
+				rFaces[rFaceId++] = edgeId;
 
 			Edge edge = edges[edgeId];
 

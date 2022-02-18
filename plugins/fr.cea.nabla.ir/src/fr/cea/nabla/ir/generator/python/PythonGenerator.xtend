@@ -82,7 +82,7 @@ class PythonGenerator implements IrCodeGenerator
 	#!/bin/sh
 	#
 	«FOR v : envVars»
-	«v.key»=«v.value»
+	export «v.key»=«v.value»
 	«ENDFOR»
 	python3 «pyFileName» $*
 	'''

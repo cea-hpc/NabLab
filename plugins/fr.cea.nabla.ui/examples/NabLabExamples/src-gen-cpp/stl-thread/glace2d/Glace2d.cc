@@ -1032,7 +1032,7 @@ int main(int argc, char* argv[])
 	
 	// Module instanciation(s)
 	Glace2d* glace2d = new Glace2d(mesh);
-	if (d.HasMember("glace2d"))
+	assert(d.HasMember("glace2d"));
 	{
 		rapidjson::StringBuffer strbuf;
 		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);

@@ -140,6 +140,8 @@ abstract class GenerateAndExecuteTestBase
 				val jsonFile = dataFileWithoutExtension + ".json"
 				if (target.type == TargetType::JAVA)
 					(!testExecuteJava(outputPath, packageName, levelDBRef, jsonFile, nFileNames.get(0)) ? nbErrors++)
+				else if (target.type == TargetType::PYTHON)
+					(!testExecutePython(outputPath, packageName, levelDBRef, jsonFile) ? nbErrors++)
 				else
 					(!testExecuteCpp(outputPath, packageName, levelDBRef, jsonFile, ngenFileName) ? nbErrors++)
 			}
@@ -276,6 +278,33 @@ abstract class GenerateAndExecuteTestBase
 			return false
 		}
 		if (exitVal.equals(30))
+		{
+			val logPath = simplifyPath(outputPath + "/" + packageName + "/exec.err")
+			println(" -> Execute Error. See " + logPath)
+			return false
+		}
+		return true
+	}
+
+	private def testExecutePython(String outputPath, String packageName, String levelDBRef, String jsonFile)
+	{
+		var pb = new ProcessBuilder("/bin/bash",
+			System.getProperty("user.dir") + "/src/fr/cea/nabla/tests/executePython.sh",
+			outputPath, // output src-gen path
+			packageName,
+			levelDBRef,
+			jsonFile)
+		var process = pb.start
+		val exitVal = process.waitFor
+		if (exitVal.equals(0))
+			println(" -> Ok")
+		if (exitVal.equals(10))
+		{
+			val logPath = simplifyPath(outputPath + "/" + packageName + "/javac.err")
+			println(" -> Compile Error. See " + logPath)
+			return false
+		}
+		if (exitVal.equals(20))
 		{
 			val logPath = simplifyPath(outputPath + "/" + packageName + "/exec.err")
 			println(" -> Execute Error. See " + logPath)

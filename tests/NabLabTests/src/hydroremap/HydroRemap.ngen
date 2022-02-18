@@ -75,3 +75,7 @@ Arcane
 	Arcane_ROOT = "$ENV{HOME}/arcane/install";
 }
 
+Python
+{
+	outputPath = "/NabLabTests/src-gen-python";
+}

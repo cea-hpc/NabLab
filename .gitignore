@@ -1,4 +1,6 @@
 # DO NOT IGNORE src-gen DIRECTORIES FOR ALL PROJECTS
+# Python
+__pycache__
 # Java
 .class
 bin/

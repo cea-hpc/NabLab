@@ -390,7 +390,8 @@ public final class HeatEquation
 
 			// Module instanciation(s)
 			HeatEquation heatEquation = new HeatEquation(mesh);
-			if (o.has("heatEquation")) heatEquation.jsonInit(o.get("heatEquation").toString());
+			assert(o.has("heatEquation"));
+			heatEquation.jsonInit(o.get("heatEquation").toString());
 
 			// Start simulation
 			heatEquation.simulate();

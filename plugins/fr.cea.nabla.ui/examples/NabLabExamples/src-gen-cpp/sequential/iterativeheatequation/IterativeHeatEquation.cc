@@ -622,7 +622,7 @@ int main(int argc, char* argv[])
 	
 	// Module instanciation(s)
 	IterativeHeatEquation* iterativeHeatEquation = new IterativeHeatEquation(mesh);
-	if (d.HasMember("iterativeHeatEquation"))
+	assert(d.HasMember("iterativeHeatEquation"));
 	{
 		rapidjson::StringBuffer strbuf;
 		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);

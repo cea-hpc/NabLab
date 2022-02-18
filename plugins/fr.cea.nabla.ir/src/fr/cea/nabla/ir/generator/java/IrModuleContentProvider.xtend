@@ -196,7 +196,8 @@ class IrModuleContentProvider
 					// Module instanciation(s)
 					«FOR m : irRoot.modules»
 						«m.className» «m.name» = new «m.className»(mesh);
-						if (o.has("«m.name»")) «m.name».jsonInit(o.get("«m.name»").toString());
+						assert(o.has("«m.name»"));
+						«m.name».jsonInit(o.get("«m.name»").toString());
 						«IF !m.main»«m.name».setMainModule(«irRoot.mainModule.name»);«ENDIF»
 					«ENDFOR»
 

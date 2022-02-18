@@ -447,7 +447,7 @@ int main(int argc, char* argv[])
 	
 	// Module instanciation(s)
 	Hydro* hydro = new Hydro(mesh);
-	if (d.HasMember("hydro"))
+	assert(d.HasMember("hydro"));
 	{
 		rapidjson::StringBuffer strbuf;
 		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
@@ -455,7 +455,7 @@ int main(int argc, char* argv[])
 		hydro->jsonInit(strbuf.GetString());
 	}
 	R1* r1 = new R1(mesh);
-	if (d.HasMember("r1"))
+	assert(d.HasMember("r1"));
 	{
 		rapidjson::StringBuffer strbuf;
 		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
@@ -464,7 +464,7 @@ int main(int argc, char* argv[])
 	}
 	r1->setMainModule(hydro);
 	R2* r2 = new R2(mesh);
-	if (d.HasMember("r2"))
+	assert(d.HasMember("r2"));
 	{
 		rapidjson::StringBuffer strbuf;
 		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);

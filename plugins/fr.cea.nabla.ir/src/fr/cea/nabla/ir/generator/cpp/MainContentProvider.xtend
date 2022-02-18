@@ -84,7 +84,7 @@ class MainContentProvider
 	private def getInstanciation(IrModule it)
 	'''
 		«className»* «name» = new «className»(mesh);
-		if (d.HasMember("«name»"))
+		assert(d.HasMember("«name»"));
 		{
 			rapidjson::StringBuffer strbuf;
 			rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);

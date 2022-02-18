@@ -574,7 +574,8 @@ public final class IterativeHeatEquation
 
 			// Module instanciation(s)
 			IterativeHeatEquation iterativeHeatEquation = new IterativeHeatEquation(mesh);
-			if (o.has("iterativeHeatEquation")) iterativeHeatEquation.jsonInit(o.get("iterativeHeatEquation").toString());
+			assert(o.has("iterativeHeatEquation"));
+			iterativeHeatEquation.jsonInit(o.get("iterativeHeatEquation").toString());
 
 			// Start simulation
 			iterativeHeatEquation.simulate();

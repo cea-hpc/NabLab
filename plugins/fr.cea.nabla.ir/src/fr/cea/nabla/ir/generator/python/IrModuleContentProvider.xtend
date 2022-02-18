@@ -15,9 +15,8 @@ import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.ir.IrRoot
-import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.LinearAlgebraType
+import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.Variable
 
 import static fr.cea.nabla.ir.generator.python.JsonContentProvider.*
@@ -30,7 +29,6 @@ import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.python.ExpressionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.python.FunctionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.python.JobContentProvider.*
-import fr.cea.nabla.ir.ir.PrimitiveType
 
 class IrModuleContentProvider
 {
@@ -43,19 +41,24 @@ class IrModuleContentProvider
 	import json
 	import numpy as np
 	«IF providers.exists[x | x.extensionName == "Math"]»import math«ENDIF»
-	«IF main && hasLevelDB»
-	import plyvel
-	import struct
-	from distutils.dir_util import copy_tree
+	«IF main»
+		«IF hasLevelDB»
+			import plyvel
+			import struct
+			from distutils.dir_util import copy_tree
+		«ENDIF»
+		«FOR addM : irRoot.modules.filter[x | !x.main]»
+			from «addM.name.toLowerCase» import «addM.className»
+		«ENDFOR»
 	«ENDIF»
 	from «irRoot.mesh.className.toLowerCase» import «irRoot.mesh.className»
 	«IF irRoot.postProcessing !== null»from pvdfilewriter2d import PvdFileWriter2D«ENDIF»
 	«FOR provider : externalProviders»
-	from «provider.className.toLowerCase» import «provider.className»
-	«IF provider.linearAlgebra»
-	from «IrTypeExtensions.VectorClass.toLowerCase» import «IrTypeExtensions.VectorClass»
-	from «IrTypeExtensions.MatrixClass.toLowerCase» import «IrTypeExtensions.MatrixClass»
-	«ENDIF»
+		from «provider.className.toLowerCase» import «provider.className»
+		«IF provider.linearAlgebra»
+			from «IrTypeExtensions.VectorClass.toLowerCase» import «IrTypeExtensions.VectorClass»
+			from «IrTypeExtensions.MatrixClass.toLowerCase» import «IrTypeExtensions.MatrixClass»
+		«ENDIF»
 	«ENDFOR»
 
 	class «className»:
@@ -122,14 +125,18 @@ class IrModuleContentProvider
 			def simulate(self):
 				print("Start execution of «name»")
 				«FOR j : irRoot.main.calls»
-					«getCallName(j)»() # @«j.at»
+					«PythonGeneratorUtils.getCallName(j)»() # @«j.at»
 				«ENDFOR»
 				print("End of execution of «name»")
+			«FOR addM : irRoot.modules.filter[x | !x.main]»
+
+				def set_«addM.name.toLowerCase»(self, value):
+					self._«addM.name.toLowerCase» = value
+			«ENDFOR»
 		«ELSE /* !main */»
-			@property
-			def mainModule(value):
+			def set_mainModule(self, value):
 				self._mainModule = value
-				self._mainModule._«name» = self
+				self._mainModule.set_«name»(self)
 		«ENDIF»
 		«IF main && hasLevelDB»
 
@@ -144,6 +151,8 @@ class IrModuleContentProvider
 				«FOR v : irRoot.variables.filter[!option]»
 					«IF v.type.scalar»
 						b.put(b"«Utils.getDbKey(v)»", struct.pack('«getStructFormat(v.type.primitive)»', «getDbValue(it, v)»))
+					«ELSEIF v.type instanceof LinearAlgebraType»
+						b.put(b"«Utils.getDbKey(v)»", «getDbValue(it, v)».getData().tobytes())
 					«ELSE»
 						b.put(b"«Utils.getDbKey(v)»", «getDbValue(it, v)».tobytes())
 					«ENDIF»
@@ -188,13 +197,9 @@ class IrModuleContentProvider
 
 		def compare_db(currentName, refName):
 			result = True
-			copyRefName = refName + "Copy"
-			
-			#  We have to copy ref not to modify it (for git repo)
-			copy_tree(refName, copyRefName)
 
 			try:
-				dbRef = plyvel.DB(copyRefName)
+				dbRef = plyvel.DB(refName)
 				itRef = dbRef.iterator()
 
 				db = plyvel.DB(currentName)
@@ -229,7 +234,6 @@ class IrModuleContentProvider
 				itRef.close()
 				db.close()
 				dbRef.close()
-				plyvel.destroy_db(copyRefName)
 
 			return result
 	«ENDIF»
@@ -250,10 +254,8 @@ class IrModuleContentProvider
 				# Module instanciation
 				«FOR m : irRoot.modules»
 					«m.name» = «m.className»(mesh)
-					«m.name»Data = data["«m.name»"]
-					if («m.name»Data):
-						«m.name».jsonInit(«m.name»Data)
-						«IF !m.main»«m.name».mainModule = «irRoot.mainModule.name»«ENDIF»
+					«IF !m.main»«m.name».set_mainModule(«irRoot.mainModule.name»)«ENDIF»
+					«m.name».jsonInit(data["«m.name»"])
 				«ENDFOR»
 
 				# Start simulation
@@ -277,19 +279,6 @@ class IrModuleContentProvider
 				exit(1)
 	«ENDIF»
 	'''
-
-	private static def getCallName(Job it)
-	{
-		val jobModule = IrUtils.getContainerOfType(it, IrModule)
-		val callerModule = if (caller.eContainer instanceof IrRoot)
-				(caller.eContainer as IrRoot).mainModule
-			else
-				IrUtils.getContainerOfType(caller, IrModule)
-		if (jobModule === callerModule)
-			'self._' + Utils.getCodeName(it)
-		else
-			'self.' + jobModule.name + '.self._' + Utils.getCodeName(it)
-	}
 
 	private static def getWriteCallContent(Variable v)
 	{

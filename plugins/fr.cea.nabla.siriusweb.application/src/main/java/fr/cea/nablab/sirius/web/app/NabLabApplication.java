@@ -9,9 +9,11 @@
  *******************************************************************************/
 package fr.cea.nablab.sirius.web.app;
 
+import org.eclipse.sirius.components.compatibility.services.diagrams.ToolSectionsProvider;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 
 /**
  * Main class of the server, used as the entry point which will start the whole server properly initialized with a
@@ -30,11 +32,13 @@ import org.springframework.context.annotation.ComponentScan;
  * @author arichard
  */
 @SpringBootApplication
-@ComponentScan({ "fr.cea.nablab.sirius.web.app", "org.eclipse.sirius.components.core", "org.eclipse.sirius.components.compatibility", "org.eclipse.sirius.components.diagrams",
-        "org.eclipse.sirius.components.diagrams.layout", "org.eclipse.sirius.components.diagrams.layout.api", "org.eclipse.sirius.components.emf.compatibility",
-        "org.eclipse.sirius.components.emf.configuration", "org.eclipse.sirius.components.emf.query", "org.eclipse.sirius.components.emf.services",
-        "org.eclipse.sirius.components.graphql.utils.typeresolvers", "org.eclipse.sirius.components.collaborative.diagrams", "org.eclipse.sirius.components.collaborative.editingcontext",
-        "org.eclipse.sirius.components.collaborative.handlers", "org.eclipse.sirius.components.collaborative.representations", "org.eclipse.sirius.components.graphql" })
+@ComponentScan(
+        basePackages = { "fr.cea.nablab.sirius.web.app", "org.eclipse.sirius.components.core", "org.eclipse.sirius.components.compatibility", "org.eclipse.sirius.components.diagrams",
+                "org.eclipse.sirius.components.diagrams.layout", "org.eclipse.sirius.components.diagrams.layout.api", "org.eclipse.sirius.components.emf.compatibility",
+                "org.eclipse.sirius.components.emf.configuration", "org.eclipse.sirius.components.emf.query", "org.eclipse.sirius.components.emf.services",
+                "org.eclipse.sirius.components.graphql.utils.typeresolvers", "org.eclipse.sirius.components.collaborative.diagrams", "org.eclipse.sirius.components.collaborative.editingcontext",
+                "org.eclipse.sirius.components.collaborative.handlers", "org.eclipse.sirius.components.collaborative.representations", "org.eclipse.sirius.components.graphql" },
+        excludeFilters = { @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = ToolSectionsProvider.class) })
 public class NabLabApplication {
 
     /**

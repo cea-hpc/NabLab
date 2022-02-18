@@ -17,28 +17,36 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.eclipse.sirius.components.core.RepresentationMetadata;
+import org.eclipse.sirius.components.core.api.IEditingContext;
 import org.eclipse.sirius.components.core.api.IRepresentationMetadataSearchService;
 import org.eclipse.sirius.components.diagrams.Diagram;
 import org.eclipse.sirius.components.representations.IRepresentation;
+import org.eclipse.sirius.components.representations.ISemanticRepresentation;
 import org.springframework.stereotype.Service;
 
 /**
  * Used to find the metadata of a representation.
  *
- * @author sbegaudeau
+ * @author arichard
  */
 @Service
 public class RepresentationMetadataSearchService implements IRepresentationMetadataSearchService {
 
     @Override
     public Optional<RepresentationMetadata> findByRepresentation(IRepresentation representation) {
-        return Optional.of(new RepresentationMetadata(representation.getId(), representation.getKind(), representation.getLabel(), representation.getDescriptionId()));
+        // @formatter:off
+        String targetObjectId = Optional.of(representation)
+                .filter(ISemanticRepresentation.class::isInstance)
+                .map(ISemanticRepresentation.class::cast)
+                .map(ISemanticRepresentation::getTargetObjectId)
+                .orElse(null);
+        // @formatter:on
+        return Optional.of(new RepresentationMetadata(representation.getId(), representation.getKind(), representation.getLabel(), representation.getDescriptionId(), targetObjectId));
     }
 
     @Override
-    public List<RepresentationMetadata> findAll(String targetObjectId) {
-        String volatileRepresentation = UUID.nameUUIDFromBytes("volatileRepresentation".getBytes()).toString(); //$NON-NLS-1$
-        return List.of(new RepresentationMetadata("volatileRepresentation_" + targetObjectId, "", Diagram.KIND, UUID.fromString("7a08b478-2284-36b2-8e00-b5d3cdeaaaa5"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    public List<RepresentationMetadata> findAllByTargetObjectId(IEditingContext editingContext, String targetObjectId) {
+        return List.of(new RepresentationMetadata("volatileRepresentation_" + targetObjectId, Diagram.KIND, "", UUID.fromString("7a08b478-2284-36b2-8e00-b5d3cdeaaaa5"), targetObjectId)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
 }

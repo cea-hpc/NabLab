@@ -37,7 +37,7 @@
         </layoutOptions>
       </layout>
       <defaultLayer name="Default">
-        <edgeMappings name="NID.Job2Job" deletionDescription="//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@toolSections.0/@ownedTools[name='NID.Delete.Element']" sourceMapping="//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@containerMappings[name='NID.JobNode']" targetMapping="//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@containerMappings[name='NID.JobNode']" targetFinderExpression="feature:nextJobsWithSameCaller">
+        <edgeMappings name="NID.Job2Job" deletionDescription="//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@toolSections.0/@ownedTools[name='NID.Delete.Element.Edge']" sourceMapping="//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@containerMappings[name='NID.JobNode']" targetMapping="//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@containerMappings[name='NID.JobNode']" targetFinderExpression="feature:nextJobsWithSameCaller">
           <style>
             <strokeColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='gray']"/>
             <centerLabelStyleDescription labelSize="10" showIcon="false">
@@ -103,7 +103,13 @@
           </conditionnalStyles>
         </containerMappings>
         <toolSections name="NID_Tools" label="Tools">
-          <ownedTools xsi:type="tool:DeleteElementDescription" name="NID.Delete.Element" label="Delete element" precondition="false">
+          <ownedTools xsi:type="tool:DeleteElementDescription" name="NID.Delete.Element.Edge" label="Delete element" precondition="aql:false">
+            <element name="element"/>
+            <elementView name="elementView"/>
+            <containerView name="containerView"/>
+            <initialOperation/>
+          </ownedTools>
+          <ownedTools xsi:type="tool:DeleteElementDescription" name="NID.Delete.Element" label="Delete element" precondition="aql:false">
             <element name="element"/>
             <elementView name="elementView"/>
             <containerView name="containerView"/>
@@ -122,10 +128,27 @@
               <firstModelOperations xsi:type="tool_1:ChangeContext" browseExpression="aql:views->first().backToParentDiagram()"/>
             </initialOperation>
           </ownedTools>
-          <ownedTools xsi:type="tool_1:OperationAction" name="NID.GoIntoDiagram.SiriusWeb" label="Go into diagram">
+          <ownedTools xsi:type="tool_1:OperationAction" name="NID.GoIntoDiagram.SiriusWeb" label="Go into" precondition="aql:environment &lt;> null and selectedNode &lt;> null and self.oclIsKindOf(ir::JobCaller) and self.oclIsKindOf(ir::Job)" icon="/fr.cea.nabla.sirius/icons/goIntoSiriusWeb.svg">
             <view name="views"/>
             <initialOperation>
               <firstModelOperations xsi:type="tool:Navigation" diagramDescription="//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']"/>
+            </initialOperation>
+          </ownedTools>
+          <ownedTools xsi:type="tool_1:OperationAction" name="NID.GoBackToParentDiagram.SiriusWeb" label="Back to parent diagram" precondition="aql:environment &lt;> null and selectedNode = null and self.oclIsKindOf(ir::JobCaller) and self.oclIsKindOf(ir::Job)" icon="/fr.cea.nabla.sirius/icons/backToParentDiagramSiriusWeb.svg">
+            <view name="views"/>
+            <initialOperation>
+              <firstModelOperations xsi:type="tool_1:ChangeContext" browseExpression="aql:self">
+                <subModelOperations xsi:type="tool_1:If" conditionExpression="aql:self.oclIsKindOf(ir::Job) and self.caller.eContainer().oclIsKindOf(ir::IrRoot)">
+                  <subModelOperations xsi:type="tool_1:ChangeContext" browseExpression="aql:self.caller.eContainer()">
+                    <subModelOperations xsi:type="tool:Navigation" diagramDescription="//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']"/>
+                  </subModelOperations>
+                </subModelOperations>
+                <subModelOperations xsi:type="tool_1:If" conditionExpression="aql:self.oclIsKindOf(ir::Job)">
+                  <subModelOperations xsi:type="tool_1:ChangeContext" browseExpression="aql:self.caller">
+                    <subModelOperations xsi:type="tool:Navigation" diagramDescription="//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']"/>
+                  </subModelOperations>
+                </subModelOperations>
+              </firstModelOperations>
             </initialOperation>
           </ownedTools>
         </toolSections>

@@ -82,14 +82,16 @@ export const JobsGraph = ({ irModel }: JobsGraphProps) => {
   const [uploadModel, { loading, data, error }] = useMutation<GQLUploadModelMutationData>(uploadModelMutation);
 
   const setSelection = (selection: Selection) => {
-    setState((prevState) => {
-      const newRepId = selection?.entries[0]?.id;
-      if (state.selection !== selection && newRepId?.startsWith('volatileRepresentation_')) {
-        return { ...prevState, representationId: newRepId, selection };
-      } else {
-        return { ...prevState, selection };
-      }
-    });
+    if (state.selection !== selection) {
+      setState((prevState) => {
+        const newRepId = selection?.entries[0]?.id;
+        if (prevState.selection !== selection && newRepId?.startsWith('volatileRepresentation_')) {
+          return { ...prevState, representationId: newRepId, selection };
+        } else {
+          return { ...prevState, selection };
+        }
+      });
+    }
   };
 
   const appStyle = {

@@ -16,6 +16,8 @@ import { LanguageClient, LanguageClientOptions, ServerOptions, StreamInfo } from
 import JobsGraphWebViewLoader from './view/JobsGraphWebViewLoader';
 import LatexWebViewLoader from './view/LatexWebViewLoader';
 
+let lc: LanguageClient;
+
 export function activate(context: ExtensionContext) {
   let serverOptions: ServerOptions;
   // Dev mode. In this mode the server is expected to be launched already
@@ -53,7 +55,7 @@ export function activate(context: ExtensionContext) {
   };
 
   // Create the language client and start the client.
-  let lc = new LanguageClient('NabLab Xtext Server', serverOptions, clientOptions);
+  lc = new LanguageClient('NabLab Xtext Server', serverOptions, clientOptions);
   // enable tracing (.Off, .Messages, Verbose)
   lc.trace = Trace.Verbose;
   let disposable = lc.start();
@@ -129,7 +131,15 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(disposableGenerateIr);
 }
 
-export function deactivate() {}
+/**
+ * Close extension properly (see https://code.visualstudio.com/api/language-extensions/language-server-extension-guide)
+ */
+export function deactivate() {
+  if (!lc) {
+    return undefined;
+  }
+  return lc.stop();
+}
 
 function createDebugEnv() {
   return Object.assign(

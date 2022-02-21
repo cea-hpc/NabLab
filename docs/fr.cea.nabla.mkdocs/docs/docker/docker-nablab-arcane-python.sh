@@ -35,7 +35,7 @@ mkdir -p ${DOCKERFILE_DIR}
 DOCKERFILE="${DOCKERFILE_DIR}/Dockerfile"
 
 cat > ${DOCKERFILE} <<EOF
-FROM ubuntu:hirsute
+FROM ubuntu:impish
 
 ENV USER="${USER}" USER_ID="${USER_ID}" USER_GID="${USER_GID}" HOSTNAME="${DOCKER_HOSTNAME}"
 ENV LANG C.UTF-8

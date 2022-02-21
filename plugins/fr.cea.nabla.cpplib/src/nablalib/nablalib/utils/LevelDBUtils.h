@@ -24,7 +24,7 @@ namespace nablalib::utils
 
 	static std::string descriptorSuffix = "_descriptor";
 
-	void putDBDescriptor(leveldb::WriteBatch* batch, const std::string dataName, int dataTypeBytes, std::vector<size_t> dataSizes)
+	inline void putDBDescriptor(leveldb::WriteBatch* batch, const std::string dataName, int dataTypeBytes, std::vector<size_t> dataSizes)
 	{
 		DataDescriptor dataDescriptor;
 		memset(&dataDescriptor.dataSizes, 0, 4 * sizeof(int));
@@ -45,7 +45,7 @@ namespace nablalib::utils
 			delete []array;
 	}
 
-	bool endsWith(std::string const &fullString, std::string const &ending)
+	inline bool endsWith(std::string const &fullString, std::string const &ending)
 	{
 		if (fullString.size() >= ending.size()) {
 			return (0 == fullString.compare (fullString.size() - ending.size(), ending.size(), ending));
@@ -54,7 +54,7 @@ namespace nablalib::utils
 		}
 	}
 
-	std::string getMismatchIndexes(int dataSizes[4], int mismatchIndex)
+	inline std::string getMismatchIndexes(int dataSizes[4], int mismatchIndex)
 	{
 		std::stringstream ss;
 		if (dataSizes[1] == 0)
@@ -72,12 +72,12 @@ namespace nablalib::utils
 		return ss.str();
 	}
 
-	bool isScalar(int dataSizes[4])
+	inline bool isScalar(int dataSizes[4])
 	{
 		return dataSizes[0] == 0;
 	}
 
-	bool compareDB(const std::string& current, const std::string& ref)
+	inline bool compareDB(const std::string& current, const std::string& ref)
 	{
 		// Final result
 		bool result = true;

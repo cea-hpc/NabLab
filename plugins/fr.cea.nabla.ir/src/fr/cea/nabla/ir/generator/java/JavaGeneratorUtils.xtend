@@ -18,9 +18,9 @@ import fr.cea.nabla.ir.ir.IrType
 import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.PrimitiveType
 
+import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
-import fr.cea.nabla.ir.ir.Connectivity
 
 class JavaGeneratorUtils
 {
@@ -62,8 +62,18 @@ class JavaGeneratorUtils
 	static def dispatch CharSequence getDbBytes(LinearAlgebraType it) { "Double.BYTES" }
 	static def dispatch CharSequence getDbBytes(IrType it) {""}
 
-	static def dispatch CharSequence getDbSizes(BaseType it, String variableName) { intSizes.empty ? "1" : intSizes.map[i | i ].join(", ") }
-	static def dispatch CharSequence getDbSizes(ConnectivityType it, String variableName) { getDbSizesIndexes(connectivities, variableName) + (base.intSizes.empty ? "" : ", " + getDbSizes(base, variableName)) }
+	static def dispatch CharSequence getDbSizes(BaseType it, String variableName)
+	{
+		if (isIsStatic)
+			intSizes.empty ? "" : intSizes.map[i | i ].join(", ")
+		else
+			getDbSizesIndexes(intSizes, variableName)
+	}
+
+	static def dispatch CharSequence getDbSizes(ConnectivityType it, String variableName)
+	{
+		connectivities.map[c | c.nbElems].join(",") + ( base.intSizes.empty ? "" : ", " + getDbSizes(base, variableName))
+	}
 	static def dispatch CharSequence getDbSizes(LinearAlgebraType it, String variableName) 
 	{
 		switch it.sizes.size
@@ -75,14 +85,14 @@ class JavaGeneratorUtils
 	}
 	static def dispatch CharSequence getDbSizes(IrType it, String variableName) {""}
 
-	private static def CharSequence getDbSizesIndexes(Iterable<Connectivity> connectivities, String variableName)
+	private static def CharSequence getDbSizesIndexes(Iterable<Integer> intSizes, String variableName)
 	{
-		if (!connectivities.empty)
+		if (!intSizes.empty)
 		{
 			var indexes = ""
-			for (i : 0 ..< connectivities.length -1)
+			for (i : 0 ..< intSizes.size -1)
 				indexes += "[0]"
-			return (getDbSizesIndexes(connectivities.tail, variableName).length == 0 ? "" : getDbSizesIndexes(connectivities.tail, variableName) + ", ") + variableName + indexes + ".length"
+			return (getDbSizesIndexes(intSizes.tail, variableName).length == 0 ? "" : getDbSizesIndexes(intSizes.tail, variableName) + ", ") + variableName + indexes + ".length"
 		}
 		else return "";
 	}

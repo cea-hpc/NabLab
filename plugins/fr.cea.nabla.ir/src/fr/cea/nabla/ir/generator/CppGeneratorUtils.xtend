@@ -77,10 +77,16 @@ class CppGeneratorUtils
 	static def dispatch CharSequence getDbBytes(LinearAlgebraType it) { "sizeof(double)" }
 	static def dispatch CharSequence getDbBytes(IrType it) {""}
 
-	static def dispatch CharSequence getDbSizes(BaseType it, String variableName) { intSizes.empty ? "" : intSizes.map[i | i ].join(", ") }
+	static def dispatch CharSequence getDbSizes(BaseType it, String variableName)
+	{
+		if (isIsStatic)
+			intSizes.empty ? "" : intSizes.map[i | i ].join(", ")
+		else
+			getDbSizesIndexes(intSizes, variableName)
+	}
 	static def dispatch CharSequence getDbSizes(ConnectivityType it, String variableName)
 	{
-		connectivities.map[c | c.nbElemsVar].join(",") + ( base.intSizes.empty ? "" : ", " + getDbSizes(base, variableName))
+		connectivities.map[c | c.nbElems].join(", ") + ( base.intSizes.empty ? "" : ", " + getDbSizes(base, variableName))
 	}
 	static def dispatch CharSequence getDbSizes(LinearAlgebraType it, String variableName)
 	{
@@ -93,4 +99,15 @@ class CppGeneratorUtils
 	}
 	static def dispatch CharSequence getDbSizes(IrType it, String variableName) {""}
 
+	private static def CharSequence getDbSizesIndexes(Iterable<Integer> intSizes, String variableName)
+	{
+		if (!intSizes.empty)
+		{
+			var indexes = ""
+			for (i : 0 ..< intSizes.size -1)
+				indexes += "[0]"
+			return (getDbSizesIndexes(intSizes.tail, variableName).length == 0 ? "" : getDbSizesIndexes(intSizes.tail, variableName) + ", ") + variableName + indexes + ".size()"
+		}
+		else return "";
+	}
 }

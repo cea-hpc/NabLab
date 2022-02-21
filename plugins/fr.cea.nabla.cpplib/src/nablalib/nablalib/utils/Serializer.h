@@ -33,26 +33,27 @@ namespace nablalib::utils {
 	template <typename T, size_t N>
 	const char* serialize(const MultiArray<T, N>& dataValue, int& size, bool& mustDeletePtr)
 	{
-		size = N * sizeof(T);
+		// We can't use N because dynamic MultiArrays are MultiArray<0>
+		size = dataValue.size() * sizeof(T);
 		mustDeletePtr = false;
-		return (const char*)&dataValue;
+		return (const char*)dataValue.data();
 	}
 
 	//deals with IntArray2D & RealArray2D
 	template <typename T, size_t N, size_t M>
 	const char* serialize(const MultiArray<T, N, M>& dataValue, int& size, bool& mustDeletePtr)
 	{
-		size = N * M * sizeof(T);
+		// We can't use N &M because dynamic MultiArrays are MultiArray<0,0>
+		size = dataValue.size() * dataValue[0].size() * sizeof(T);
 		mustDeletePtr = false;
-		return (const char*)&dataValue;
+		return (const char*)dataValue.data();
 	}
 
 	inline const char* serialize(const std::vector<double>& v, int& size, bool& mustDeletePtr)
 	{
 		size = v.size() * sizeof(double);
-		const double* array = v.data();
 		mustDeletePtr = false;
-		return (const char*)array;
+		return (const char*)v.data();
 	}
 
 	template<size_t N>

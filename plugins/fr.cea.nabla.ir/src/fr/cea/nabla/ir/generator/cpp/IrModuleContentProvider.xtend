@@ -50,7 +50,7 @@ class IrModuleContentProvider
 	#ifndef «name.HDefineName»
 	#define «name.HDefineName»
 
-	«includesContentProvider.getIncludes(hasLevelDB, (irRoot.postProcessing !== null))»
+	«includesContentProvider.getIncludes(main && hasLevelDB, (irRoot.postProcessing !== null))»
 	#include "«irRoot.mesh.className».h"
 	«IF irRoot.postProcessing !== null»#include "PvdFileWriter2D.h"«ENDIF»
 	«FOR provider : externalProviders»
@@ -120,6 +120,7 @@ class IrModuleContentProvider
 	private:
 		«IF postProcessing !== null»
 		void dumpVariables(int iteration, bool useTimer=true);
+
 		«ENDIF»
 		«privateMethodHeaders»
 		// Mesh and mesh variables

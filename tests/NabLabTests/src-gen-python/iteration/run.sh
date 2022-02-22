@@ -2,5 +2,10 @@
 #
 #!/bin/sh
 #
+#
+# Excute iteration.py with the installed python3.
+# Numpy and plyvel modules must be installed.
+# To reproduce results, use runvenv.sh.
+#
 export PYTHONPATH=/home/lelandaisb/workspaces/NabLab/tests/.nablab/mesh/cartesianmesh2dnumpy:/home/lelandaisb/workspaces/NabLab/tests/.nablab/linearalgebra/linearalgebranumpy
-python3 hydro.py $*
+python3 iteration.py $*

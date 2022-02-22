@@ -22,54 +22,53 @@ namespace nablalib::utils
 	template <typename T>
 	const char* serialize(const Kokkos::View<T*>& v, int& size, bool& mustDeletePtr)
 	{
-		size = 0;
 		std::vector<char> vector;
-		for (size_t i(0); i < v.extent(0); ++i)
+		for (size_t i(0); i < v.extent(0); i++)
 		{
-			int innerSize = 0;
-			bool mustDeletePtr;
-			const char* array = serialize(v(i), innerSize, mustDeletePtr);
-			for (int i = 0; i < innerSize; i++)
-				vector.push_back(array[i]);
-			if (mustDeletePtr)
+			int innerSize;
+			bool innerMustDeletePtr;
+			const char* array = serialize(v(i), innerSize, innerMustDeletePtr);
+			for (int id = 0; id < innerSize; id++)
+				vector.push_back(array[id]);
+			if (innerMustDeletePtr)
 				delete []array;
-			size += innerSize;
 		}
+		size = vector.size();
 		char* array = new char[vector.size()];
-		for (size_t i(0) ; i<vector.size() ; ++i)
+		for (size_t i(0) ; i < vector.size() ; i++)
 			array[i] = vector[i];
+		mustDeletePtr = true;
 		return (const char*)array;
 	}
 
 	template <typename T>
 	const char* serialize(const Kokkos::View<T**>& v, int& size, bool& mustDeletePtr)
 	{
-		size = 0;
 		std::vector<char> vector;
 		for (size_t i(0); i < v.extent(0); ++i)
 		{
 			for (size_t j(0); j < v.extent(1); ++j)
 			{
-				int innerSize = 0;
-				bool mustDeletePtr;
-				const char* array = serialize(v(i, j), innerSize, mustDeletePtr);
-				for (int i = 0; i < innerSize; i++)
-					vector.push_back(array[i]);
-				if (mustDeletePtr)
+				int innerSize;
+				bool innerMustDeletePtr;
+				const char* array = serialize(v(i, j), innerSize, innerMustDeletePtr);
+				for (int id = 0; id < innerSize; id++)
+					vector.push_back(array[id]);
+				if (innerMustDeletePtr)
 					delete []array;
-				size += innerSize;
 			}
 		}
+		size = vector.size();
 		char* array = new char[vector.size()];
-		for (size_t i(0) ; i<vector.size() ; ++i)
+		for (size_t i(0) ; i < vector.size() ; i++)
 			array[i] = vector[i];
+		mustDeletePtr = true;
 		return (const char*)array;
 	}
 
 	template <typename T>
 	const char* serialize(const Kokkos::View<T***>& v, int& size, bool& mustDeletePtr)
 	{
-		size = 0;
 		std::vector<char> vector;
 		for (size_t i(0); i < v.extent(0); ++i)
 		{
@@ -77,20 +76,21 @@ namespace nablalib::utils
 			{
 				for (size_t k(0); k < v.extent(2); ++k)
 				{
-					int innerSize = 0;
-					bool mustDeletePtr;
-					const char* array = serialize(v(i, j, k), innerSize, mustDeletePtr);
-					for (int i = 0; i < innerSize; i++)
-						vector.push_back(array[i]);
-					if (mustDeletePtr)
+					int innerSize;
+					bool innerMustDeletePtr;
+					const char* array = serialize(v(i, j, k), innerSize, innerMustDeletePtr);
+					for (int id = 0; id < innerSize; id++)
+						vector.push_back(array[id]);
+					if (innerMustDeletePtr)
 						delete []array;
-					size += innerSize;
 				}
 			}
 		}
+		size = vector.size();
 		char* array = new char[vector.size()];
-		for (size_t i(0) ; i<vector.size() ; ++i)
+		for (size_t i(0) ; i < vector.size() ; ++i)
 			array[i] = vector[i];
+		mustDeletePtr = true;
 		return (const char*)array;
 	}
 

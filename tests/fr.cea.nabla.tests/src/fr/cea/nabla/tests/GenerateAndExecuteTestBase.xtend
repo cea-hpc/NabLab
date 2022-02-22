@@ -175,114 +175,114 @@ abstract class GenerateAndExecuteTestBase
 
 	private def testExecuteCpp(String outputPath, String packageName, String levelDBRef, String jsonFile, String moduleName)
 	{
-//		var pb = new ProcessBuilder("/bin/bash",
-//			System.getProperty("user.dir") + "/src/fr/cea/nabla/tests/executeCpp.sh",
-//			outputPath, // output src-gen path
-//			packageName,
-//			levelDBRef,
-//			jsonFile,
-//			moduleName)
-//		var process = pb.start
-//		val exitVal = process.waitFor
-//		if (exitVal.equals(0))
-//			println(" -> Ok")
-//		if (exitVal.equals(10))
-//		{
-//			val logPath = simplifyPath(outputPath + "/" + packageName + "/CMake.log")
-//			println(" -> Configure Error. See " + logPath)
-//			//println("\t" + readFileAsString(logPath))
-//			return false
-//		}
-//		if (exitVal.equals(20))
-//		{
-//			val logPath = simplifyPath(outputPath + "/" + packageName + "/make.log")
-//			println(" -> Compile Error. See " + logPath)
-//			//println("\t" + readFileAsString(logPath))
-//			return false
-//		}
-//		if (exitVal.equals(30))
-//		{
-//			val logPath = simplifyPath(outputPath + "/" + packageName + "/exec.err")
-//			println(" -> Execute Error. See " + logPath)
-//			//println("\t" + readFileAsString(logPath))
-//			// Glace2d + KokkosTeam implies levelDb diffs -> to avoid CI fails we ignore them
-//			if (moduleName == "Glace2d" && outputPath.contains("kokkos-team"))
-//				return true
-//			return false
-//		}
+		var pb = new ProcessBuilder("/bin/bash",
+			System.getProperty("user.dir") + "/src/fr/cea/nabla/tests/executeCpp.sh",
+			outputPath, // output src-gen path
+			packageName,
+			levelDBRef,
+			jsonFile,
+			moduleName)
+		var process = pb.start
+		val exitVal = process.waitFor
+		if (exitVal.equals(0))
+			println(" -> Ok")
+		if (exitVal.equals(10))
+		{
+			val logPath = simplifyPath(outputPath + "/" + packageName + "/CMake.log")
+			println(" -> Configure Error. See " + logPath)
+			//println("\t" + readFileAsString(logPath))
+			return false
+		}
+		if (exitVal.equals(20))
+		{
+			val logPath = simplifyPath(outputPath + "/" + packageName + "/make.log")
+			println(" -> Compile Error. See " + logPath)
+			//println("\t" + readFileAsString(logPath))
+			return false
+		}
+		if (exitVal.equals(30))
+		{
+			val logPath = simplifyPath(outputPath + "/" + packageName + "/exec.err")
+			println(" -> Execute Error. See " + logPath)
+			//println("\t" + readFileAsString(logPath))
+			// Glace2d + KokkosTeam implies levelDb diffs -> to avoid CI fails we ignore them
+			if (moduleName == "Glace2d" && outputPath.contains("kokkos-team"))
+				return true
+			return false
+		}
 		return true
 	}
 
 	private def testExecuteJava(String outputPath, String packageName, String levelDBRef, String jsonFile, String moduleName)
 	{
-//		val gsonPath = Gson.protectionDomain.codeSource.location.toString
-//		val guavaPath = PeekingIterator.protectionDomain.codeSource.location.toString
-//		val apacheCommonIOPath = FileUtils.protectionDomain.codeSource.location.toString
-//		var pb = new ProcessBuilder("/bin/bash",
-//			System.getProperty("user.dir") + "/src/fr/cea/nabla/tests/executeJava.sh",
-//			outputPath, // output src-gen path
-//			packageName,
-//			moduleName,
-//			javaLibPath,
-//			levelDBPath,
-//			gsonPath,
-//			levelDBRef,
-//			jsonFile,
-//			guavaPath,
-//			commonMath3Path,
-//			apacheCommonIOPath)
-//		var process = pb.start
-//		val exitVal = process.waitFor
-//		if (exitVal.equals(0))
-//			println(" -> Ok")
-//		if (exitVal.equals(10))
-//		{
-//			val logPath = simplifyPath(outputPath + "/" + packageName + "/javac.err")
-//			println(" -> Compile Error. See " + logPath)
-//			return false
-//		}
-//		if (exitVal.equals(20))
-//		{
-//			val logPath = simplifyPath(outputPath + "/" + packageName + "/exec.err")
-//			println(" -> Execute Error. See " + logPath)
-//			return false
-//		}
+		val gsonPath = Gson.protectionDomain.codeSource.location.toString
+		val guavaPath = PeekingIterator.protectionDomain.codeSource.location.toString
+		val apacheCommonIOPath = FileUtils.protectionDomain.codeSource.location.toString
+		var pb = new ProcessBuilder("/bin/bash",
+			System.getProperty("user.dir") + "/src/fr/cea/nabla/tests/executeJava.sh",
+			outputPath, // output src-gen path
+			packageName,
+			moduleName,
+			javaLibPath,
+			levelDBPath,
+			gsonPath,
+			levelDBRef,
+			jsonFile,
+			guavaPath,
+			commonMath3Path,
+			apacheCommonIOPath)
+		var process = pb.start
+		val exitVal = process.waitFor
+		if (exitVal.equals(0))
+			println(" -> Ok")
+		if (exitVal.equals(10))
+		{
+			val logPath = simplifyPath(outputPath + "/" + packageName + "/javac.err")
+			println(" -> Compile Error. See " + logPath)
+			return false
+		}
+		if (exitVal.equals(20))
+		{
+			val logPath = simplifyPath(outputPath + "/" + packageName + "/exec.err")
+			println(" -> Execute Error. See " + logPath)
+			return false
+		}
 		return true
 	}
 
 	private def testExecuteArcane(String outputPath, String packageName, String stdEnvVerifRef, String arcFile, String moduleName)
 	{
-//		var pb = new ProcessBuilder("/bin/bash",
-//			System.getProperty("user.dir") + "/src/fr/cea/nabla/tests/executeArcane.sh",
-//			outputPath, // output src-gen path
-//			packageName,
-//			stdEnvVerifRef,
-//			arcFile,
-//			moduleName)
-//		var process = pb.start
-//		val exitVal = process.waitFor
-//		if (exitVal.equals(0))
-//			println(" -> Ok")
-//		if (exitVal.equals(10))
-//		{
-//			val logPath = simplifyPath(outputPath + "/" + packageName + "/CMake.log")
-//			println(" -> Configure Error. See " + logPath)
-//			//println("\t" + readFileAsString(logPath))
-//			return false
-//		}
-//		if (exitVal.equals(20))
-//		{
-//			val logPath = simplifyPath(outputPath + "/" + packageName + "/make.log")
-//			println(" -> Compile Error. See " + logPath)
-//			//println("\t" + readFileAsString(logPath))
-//			return false
-//		}
-//		if (exitVal.equals(30))
-//		{
-//			val logPath = simplifyPath(outputPath + "/" + packageName + "/exec.err")
-//			println(" -> Execute Error. See " + logPath)
-//			return false
-//		}
+		var pb = new ProcessBuilder("/bin/bash",
+			System.getProperty("user.dir") + "/src/fr/cea/nabla/tests/executeArcane.sh",
+			outputPath, // output src-gen path
+			packageName,
+			stdEnvVerifRef,
+			arcFile,
+			moduleName)
+		var process = pb.start
+		val exitVal = process.waitFor
+		if (exitVal.equals(0))
+			println(" -> Ok")
+		if (exitVal.equals(10))
+		{
+			val logPath = simplifyPath(outputPath + "/" + packageName + "/CMake.log")
+			println(" -> Configure Error. See " + logPath)
+			//println("\t" + readFileAsString(logPath))
+			return false
+		}
+		if (exitVal.equals(20))
+		{
+			val logPath = simplifyPath(outputPath + "/" + packageName + "/make.log")
+			println(" -> Compile Error. See " + logPath)
+			//println("\t" + readFileAsString(logPath))
+			return false
+		}
+		if (exitVal.equals(30))
+		{
+			val logPath = simplifyPath(outputPath + "/" + packageName + "/exec.err")
+			println(" -> Execute Error. See " + logPath)
+			return false
+		}
 		return true
 	}
 

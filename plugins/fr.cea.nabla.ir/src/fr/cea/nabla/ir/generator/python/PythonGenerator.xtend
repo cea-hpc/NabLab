@@ -58,7 +58,10 @@ class PythonGenerator implements IrCodeGenerator
 			val fileName = module.name.toLowerCase + '.py'
 			fileContents += new GenerationContent(fileName, IrModuleContentProvider.getFileContent(module, hasLevelDB), false)
 			if (module.main)
-				fileContents += new GenerationContent("launch.sh", getShellScriptContent(fileName), false)
+			{
+				fileContents += new GenerationContent("run.sh", getRunContent(fileName), false)
+				fileContents += new GenerationContent("runvenv.sh", getRunVenvContent(fileName), false)
+			}
 		}
 		return fileContents
 	}
@@ -75,15 +78,42 @@ class PythonGenerator implements IrCodeGenerator
 		return fileContents
 	}
 
-	private def getShellScriptContent(String pyFileName)
+	private def getRunContent(String pyFileName)
 	'''
 	# «Utils::doNotEditWarning»
 	#
 	#!/bin/sh
 	#
+	#
+	# Excute «pyFileName» with the installed python3.
+	# Numpy and plyvel modules must be installed.
+	# To reproduce results, use runvenv.sh.
+	#
 	«FOR v : envVars»
 	export «v.key»=«v.value»
 	«ENDFOR»
 	python3 «pyFileName» $*
+	'''
+
+	private def getRunVenvContent(String pyFileName)
+	'''
+	# «Utils::doNotEditWarning»
+	#
+	#!/bin/sh
+	#
+	#
+	# Execute «pyFileName» in a virtual environment.
+	# Used by tests to reproduce results.
+	#
+	«FOR v : envVars»
+	export «v.key»=«v.value»
+	«ENDFOR»
+	echo ==== Creating Python virtual environment
+	python3 -m venv .venv
+	.venv/bin/python -m pip install --upgrade pip
+	.venv/bin/python -m pip install numpy plyvel
+	echo 
+	echo ===== Starting execution
+	.venv/bin/python «pyFileName» $*
 	'''
 }

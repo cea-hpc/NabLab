@@ -98,9 +98,8 @@ ENV Arcane_ROOT=/arcane/install
 
 ### PYTHON
 RUN apt-get install -y python3
-RUN apt install -y python3-numpy
+RUN apt install -y python3-numpy python3-pip python3-venv
 #RUN apt-get install -y libleveldb-dev
-RUN apt install -y python3-pip
 RUN pip install plyvel
 
 ### JDK AND MAVEN

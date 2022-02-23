@@ -38,6 +38,7 @@ import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.cpp.ItemIndexAndIdValueContentProvider.*
+import fr.cea.nabla.ir.ir.Job
 
 @Data
 abstract class InstructionContentProvider
@@ -295,6 +296,10 @@ class KokkosTeamThreadInstructionContentProvider extends KokkosInstructionConten
 				«body.innerContent»
 			});
 		}
+		«val j = IrUtils.getContainerOfType(it, Job)»
+		«IF (j.eAllContents.filter(Loop).filter[multithreadable].size > 1)»
+		teamMember.team_barrier();
+		«ENDIF»
 	'''
 	
 	private def getAutoTeamWork(IterationBlock it)

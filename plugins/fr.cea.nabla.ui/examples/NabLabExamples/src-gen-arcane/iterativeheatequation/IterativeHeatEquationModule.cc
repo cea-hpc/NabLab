@@ -498,5 +498,4 @@ void IterativeHeatEquationModule::executeTimeLoopN()
 		subDomain()->timeLoopMng()->stopComputeLoop(true);
 }
 
-
 ARCANE_REGISTER_MODULE_ITERATIVEHEATEQUATION(IterativeHeatEquationModule);

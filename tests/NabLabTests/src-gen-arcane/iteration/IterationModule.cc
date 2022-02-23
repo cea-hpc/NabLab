@@ -397,5 +397,4 @@ void IterationModule::oracleVn()
 	});
 }
 
-
 ARCANE_REGISTER_MODULE_ITERATION(IterationModule);

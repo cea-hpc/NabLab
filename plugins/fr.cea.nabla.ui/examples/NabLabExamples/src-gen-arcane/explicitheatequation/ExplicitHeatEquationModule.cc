@@ -406,5 +406,4 @@ void ExplicitHeatEquationModule::executeTimeLoopN()
 		subDomain()->timeLoopMng()->stopComputeLoop(true);
 }
 
-
 ARCANE_REGISTER_MODULE_EXPLICITHEATEQUATION(ExplicitHeatEquationModule);

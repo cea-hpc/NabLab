@@ -213,7 +213,6 @@ class IrModuleContentProvider
 		«JobContentProvider.getDefinitionContent(j)»
 
 	«ENDFOR»
-
 	«IF ArcaneUtils.isArcaneModule(it)»
 	ARCANE_REGISTER_MODULE_«name.toUpperCase»(«className»);
 	«ELSE»

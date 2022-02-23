@@ -110,5 +110,4 @@ void VariablesModule::oracle()
 	const bool testDynamicVecLength(variablesfreefuncs::assertEquals(2, m_checkDynamicDim));
 }
 
-
 ARCANE_REGISTER_MODULE_VARIABLES(VariablesModule);

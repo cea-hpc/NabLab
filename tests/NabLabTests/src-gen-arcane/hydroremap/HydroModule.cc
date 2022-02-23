@@ -246,5 +246,4 @@ void HydroModule::oracleHv7()
 	});
 }
 
-
 ARCANE_REGISTER_MODULE_HYDRO(HydroModule);

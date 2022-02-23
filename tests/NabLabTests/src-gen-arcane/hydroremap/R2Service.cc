@@ -44,5 +44,4 @@ void R2Service::rj2()
 	});
 }
 
-
 ARCANE_REGISTER_SERVICE_R2(R2, R2Service);

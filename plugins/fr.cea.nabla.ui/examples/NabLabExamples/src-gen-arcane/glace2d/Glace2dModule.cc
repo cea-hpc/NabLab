@@ -922,5 +922,4 @@ void Glace2dModule::computeUn()
 	});
 }
 
-
 ARCANE_REGISTER_MODULE_GLACE2D(Glace2dModule);

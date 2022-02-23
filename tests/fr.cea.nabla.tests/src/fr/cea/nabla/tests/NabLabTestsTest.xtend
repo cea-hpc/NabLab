@@ -9,6 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.tests
 
+import com.google.inject.Inject
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.junit.Assume
@@ -30,6 +31,8 @@ class NabLabTestsTest extends GenerateAndExecuteTestBase
 	static boolean iterationSourceChanged
 	static boolean variablesSourceChanged
 
+	@Inject TestUtils testUtils
+
 	@BeforeClass
 	static def void setup()
 	{
@@ -49,7 +52,7 @@ class NabLabTestsTest extends GenerateAndExecuteTestBase
 	@Test
 	def void test2ExecuteHydroRemap()
 	{
-		Assume.assumeTrue(hydroRemapSourceChanged)
+		Assume.assumeTrue(hydroRemapSourceChanged || testUtils.runningOnCI())
 		testExecuteModule("HydroRemap", #["Hydro", "Remap"])
 	}
 
@@ -63,7 +66,7 @@ class NabLabTestsTest extends GenerateAndExecuteTestBase
 	@Test
 	def void test2ExecuteIteration()
 	{
-		Assume.assumeTrue(iterationSourceChanged)
+		Assume.assumeTrue(iterationSourceChanged || testUtils.runningOnCI())
 		testExecuteModule("Iteration")
 	}
 
@@ -77,7 +80,7 @@ class NabLabTestsTest extends GenerateAndExecuteTestBase
 	@Test
 	def void test2ExecuteVariables()
 	{
-		Assume.assumeTrue(variablesSourceChanged)
+		Assume.assumeTrue(variablesSourceChanged || testUtils.runningOnCI())
 		testExecuteModule("Variables")
 	}
 }

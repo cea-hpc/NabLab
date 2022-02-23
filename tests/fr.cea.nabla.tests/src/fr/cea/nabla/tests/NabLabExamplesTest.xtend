@@ -9,6 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.tests
 
+import com.google.inject.Inject
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.junit.Assume
@@ -32,6 +33,8 @@ class NabLabExamplesTest extends GenerateAndExecuteTestBase
 	static boolean implicitHeatEquationSourceChanged
 	static boolean iterativeHeatEquationSourceChanged
 
+	@Inject TestUtils testUtils
+
 	@BeforeClass
 	static def void setup()
 	{
@@ -53,7 +56,7 @@ class NabLabExamplesTest extends GenerateAndExecuteTestBase
 	@Test
 	def void test2ExecuteExplicitHeatEquationIfSourceChanged()
 	{
-		Assume.assumeTrue(explicitHeatEquationSourceChanged)
+		Assume.assumeTrue(explicitHeatEquationSourceChanged || testUtils.runningOnCI())
 		testExecuteModule("ExplicitHeatEquation")
 	}
 
@@ -67,7 +70,7 @@ class NabLabExamplesTest extends GenerateAndExecuteTestBase
 	@Test
 	def void test2ExecuteGlace2d()
 	{
-		Assume.assumeTrue(glace2dSourceChanged)
+		Assume.assumeTrue(glace2dSourceChanged || testUtils.runningOnCI())
 		testExecuteModule("Glace2d")
 	}
 
@@ -81,7 +84,7 @@ class NabLabExamplesTest extends GenerateAndExecuteTestBase
 	@Test
 	def void test2ExecuteHeatEquation()
 	{
-		Assume.assumeTrue(heatEquationSourceChanged)
+		Assume.assumeTrue(heatEquationSourceChanged || testUtils.runningOnCI())
 		testExecuteModule("HeatEquation")
 	}
 
@@ -95,7 +98,7 @@ class NabLabExamplesTest extends GenerateAndExecuteTestBase
 	@Test
 	def void test2ExecuteImplicitHeatEquation()
 	{
-		Assume.assumeTrue(implicitHeatEquationSourceChanged)
+		Assume.assumeTrue(implicitHeatEquationSourceChanged || testUtils.runningOnCI())
 		testExecuteModule("ImplicitHeatEquation")
 	}
 
@@ -109,7 +112,7 @@ class NabLabExamplesTest extends GenerateAndExecuteTestBase
 	@Test
 	def void test2ExecuteIterativeHeatEquation()
 	{
-		Assume.assumeTrue(iterativeHeatEquationSourceChanged)
+		Assume.assumeTrue(iterativeHeatEquationSourceChanged || testUtils.runningOnCI())
 		testExecuteModule("IterativeHeatEquation")
 	}
 }

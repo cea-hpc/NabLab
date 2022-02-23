@@ -38,6 +38,14 @@ class TestUtils
 	public static val CartesianMesh2DGenPath = PluginsBasePath + "/nablalib/CartesianMesh2D.ngen"
 	public static val LinearAlgebraGenPath = PluginsBasePath + "/nablalib/LinearAlgebra.ngen"
 
+	def runningOnCI()
+	{
+		val event = System.getenv("GITHUB_EVENT_NAME") //$NON-NLS-1$
+		//System.out.println(event)
+
+		return System.getenv("CI") !== null && event.equals("push") //$NON-NLS-1$ //$NON-NLS-2$
+	}
+
 	def getAllAffectations(EObject it)
 	{
 		eAllContents.filter(Affectation)

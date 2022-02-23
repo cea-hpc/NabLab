@@ -9,16 +9,17 @@
  *******************************************************************************/
 package fr.cea.nabla.tests
 
-import org.junit.Test
+import com.google.inject.Inject
+import java.io.BufferedReader
+import java.io.IOException
+import java.io.InputStreamReader
 import java.util.ArrayList
 import java.util.List
-import java.io.BufferedReader
-import java.io.InputStreamReader
 import java.util.stream.Collectors
-import java.io.IOException
 import org.assertj.core.api.Assertions
 import org.junit.Assert
 import org.junit.Assume
+import org.junit.Test
 
 class GitCommitMessageTest
 {
@@ -33,6 +34,8 @@ class GitCommitMessageTest
 	static val SIGNED_OFF_BY_PREFIX = "Signed-off-by:" //$NON-NLS-1$
 
 	static val INVALID_GIT_MESSAGE_TITLE = "Invalid Git message title, it should either contain an issue number or one of our regular keywords (cleanup, doc, fix, releng, test, perf, dev)" //$NON-NLS-1$
+
+	@Inject TestUtils testUtils
 
 	def runCommand()
 	{
@@ -57,14 +60,6 @@ class GitCommitMessageTest
 			Assert.fail(e.getMessage())
 		}
 		return lines
-	}
-
-	def runningOnCI()
-	{
-		val event = System.getenv("GITHUB_EVENT_NAME") //$NON-NLS-1$
-		//System.out.println(event)
-
-		return System.getenv("CI") !== null && event.equals("push") //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
@@ -101,7 +96,7 @@ class GitCommitMessageTest
 	@Test
 	def void testTitle()
 	{
-		Assume.assumeTrue(this.runningOnCI())
+		Assume.assumeTrue(testUtils.runningOnCI())
 		val lines = this.runCommand()
 		Assertions.assertThat(lines.size()).isGreaterThan(5)
 
@@ -131,7 +126,7 @@ class GitCommitMessageTest
 	@Test
 	def void testSignedOffBy()
 	{
-		Assume.assumeTrue(this.runningOnCI())
+		Assume.assumeTrue(testUtils.runningOnCI())
 		val lines = this.runCommand()
 		Assertions.assertThat(lines).filteredOn(line | line.trim().startsWith(SIGNED_OFF_BY_PREFIX)).isNotEmpty()
 	}

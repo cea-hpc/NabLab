@@ -17,10 +17,15 @@ import java.util.ArrayList
 import java.util.List
 import java.util.stream.Collectors
 import org.assertj.core.api.Assertions
+import org.eclipse.xtext.testing.InjectWith
+import org.eclipse.xtext.testing.XtextRunner
 import org.junit.Assert
 import org.junit.Assume
 import org.junit.Test
+import org.junit.runner.RunWith
 
+@RunWith(XtextRunner)
+@InjectWith(NablaInjectorProvider)
 class GitCommitMessageTest
 {
 	static val START = "[" //$NON-NLS-1$

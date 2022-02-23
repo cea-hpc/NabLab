@@ -297,7 +297,7 @@ class KokkosTeamThreadInstructionContentProvider extends KokkosInstructionConten
 			});
 		}
 		«val j = IrUtils.getContainerOfType(it, Job)»
-		«IF (j.eAllContents.filter(Loop).filter[multithreadable].size > 1)»
+		«IF (j.eAllContents.filter(Loop).filter[parallel].size > 1)»
 		teamMember.team_barrier();
 		«ENDIF»
 	'''

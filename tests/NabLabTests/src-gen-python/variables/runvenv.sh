@@ -8,10 +8,12 @@
 #
 export N_WS_PATH=$HOME/workspaces/NabLab/tests
 export PYTHONPATH=$N_WS_PATH/.nablab/mesh/cartesianmesh2dnumpy:$N_WS_PATH/.nablab/linearalgebra/linearalgebranumpy
+
 echo ==== Creating Python virtual environment
 python3 -m venv .venv
 .venv/bin/python -m pip install --upgrade pip
 .venv/bin/python -m pip install numpy plyvel
+
 echo 
 echo ===== Starting execution
 .venv/bin/python variables.py $*

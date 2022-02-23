@@ -110,10 +110,12 @@ class PythonGenerator implements IrCodeGenerator
 	«FOR v : envVars»
 	export «v.key»=«v.value»
 	«ENDFOR»
+
 	echo ==== Creating Python virtual environment
 	python3 -m venv .venv
 	.venv/bin/python -m pip install --upgrade pip
 	.venv/bin/python -m pip install numpy plyvel
+
 	echo 
 	echo ===== Starting execution
 	.venv/bin/python «pyFileName» $*

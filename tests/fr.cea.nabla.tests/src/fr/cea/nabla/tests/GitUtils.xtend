@@ -91,5 +91,5 @@ class GitUtils
 		return false
 	}
 
-	static val WsPathContainers = #["CMakeLists.txt", "run.sh", "runenv.sh"]
+	static val WsPathContainers = #["CMakeLists.txt", "run.sh", "runvenv.sh"]
 }

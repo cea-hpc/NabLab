@@ -303,7 +303,7 @@ abstract class GenerateAndExecuteTestBase
 			val logPath = simplifyPath(outputPath + "/" + packageName + "/exec.err")
 			println(" -> Execute Error. See " + logPath)
 			// ImplicitHeatEquation implies levelDb diffs -> to avoid CI fails we ignore them
-			if (jsonFile == "implicitheatequation.py")
+			if (packageName == "implicitheatequation")
 				return true
 			return false
 		}

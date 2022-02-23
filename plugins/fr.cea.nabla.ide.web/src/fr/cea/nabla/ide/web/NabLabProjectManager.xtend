@@ -36,9 +36,66 @@ class NabLabProjectManager extends ProjectManager
 	static val List<URI> LIB_URIS = {
 		return libURIs
 	}
-	static val NABLA_EXT = ".n";
-	static val NABLAGEN_EXT = ".ngen";
+	static val NABLA_EXT = ".n"
+	static val NABLAGEN_EXT = ".ngen"
 
+	/**
+	 * Add all .n models containing in /fr.cea.nabla/ to the known resources.
+	 */
+	override doInitialBuild(CancelIndicator cancelIndicator)
+	{
+
+		val List<URI> allUris = new ArrayList<URI>()
+		for (ISourceFolder srcFolder : projectConfig.getSourceFolders())
+		{
+			allUris.addAll(srcFolder.getAllResources(fileSystemScanner))
+		}
+		// Add library in the RessourceSet
+		allUris.addAll(LIB_URIS)
+		return doBuild(allUris, Collections.emptyList(), Collections.emptyList(), cancelIndicator)
+
+	}
+
+	/**
+	 * Overriding existing behavior to prevents the validation markers to be added on the packaged libraries models
+	 */
+	override BuildRequest newBuildRequest(List<URI> changedFiles, List<URI> deletedFiles,
+		List<IResourceDescription.Delta> externalDeltas, CancelIndicator cancelIndicator)
+	{
+		val BuildRequest result = new BuildRequest()
+		result.setBaseDir(baseDir)
+		result.setState(
+			new IndexState(indexState.getResourceDescriptions().copy(), indexState.getFileMappings().copy()))
+		result.setResourceSet(createFreshResourceSet(result.getState().getResourceDescriptions()))
+		result.setDirtyFiles(changedFiles)
+		result.setDeletedFiles(deletedFiles)
+		result.setExternalDeltas(externalDeltas)
+		result.setAfterValidate([ URI uri, Iterable<Issue> issues |
+			// Prevents displaying error on the lib resources
+			if (!LIB_URIS.contains(uri))
+			{
+				issueAcceptor.apply(uri, issues);
+			}
+			return true
+		]);
+		result.setCancelIndicator(cancelIndicator)
+		result.setIndexOnly(projectConfig.isIndexOnly())
+		return result
+	}
+	
+	/**
+	 * Replaces "file:///" URIs by "file:/" URIs, otherwise an error is raise because Xtext tries to create and load an existing resource but with a different URI
+	 */
+	override getResource(URI uri)
+	{
+		var fixedURI = uri;
+		if (uri !== null && uri.file && uri.toString().startsWith("file:///"))
+		{
+			fixedURI = URI.createFileURI(uri.path)
+		}
+		super.getResource(fixedURI)
+	}
+	
 	private static def List<URI> getLibURIs()
 	{
 		val uris = newArrayList
@@ -70,7 +127,7 @@ class NabLabProjectManager extends ProjectManager
 						{
 							val jarEntry = jarEntries.nextElement()
 							val jarEntryName = jarEntry.name
-							if (jarEntryName !== null && jarEntryName.endsWith(NABLA_EXT))
+							if (jarEntryName !== null && (jarEntryName.endsWith(NABLA_EXT) || jarEntryName.endsWith(NABLAGEN_EXT)))
 							{
 								val resource = NabLabProjectManager.classLoader.getResource(jarEntryName)
 								uris += URI.createURI(resource.toString())
@@ -92,7 +149,7 @@ class NabLabProjectManager extends ProjectManager
 	}
 
 	/**
-	 * Removes the URIs that are pointing the same libary
+	 * Removes URIs pointing to the same library
 	 */
 	private def static List<URI> removeDuplicatedLibraries(ArrayList<URI> uris)
 	{
@@ -123,50 +180,6 @@ class NabLabProjectManager extends ProjectManager
 	private static def boolean isNablaBinFolder(Path subPath)
 	{
 		return Path.of("fr.cea.nabla/bin").equals(subPath)
-	}
-
-	/**
-	 * Add all .n models containing in /fr.cea.nabla/ to the known resources.
-	 */
-	override doInitialBuild(CancelIndicator cancelIndicator)
-	{
-
-		val List<URI> allUris = new ArrayList<URI>();
-		for (ISourceFolder srcFolder : projectConfig.getSourceFolders())
-		{
-			allUris.addAll(srcFolder.getAllResources(fileSystemScanner));
-		}
-		// Add library in the RessourceSet
-		allUris.addAll(LIB_URIS);
-		return doBuild(allUris, Collections.emptyList(), Collections.emptyList(), cancelIndicator);
-
-	}
-
-	/**
-	 * Overriding existing behavior to prevents the validation markers to be added on the packaged libraries models
-	 */
-	override BuildRequest newBuildRequest(List<URI> changedFiles, List<URI> deletedFiles,
-		List<IResourceDescription.Delta> externalDeltas, CancelIndicator cancelIndicator)
-	{
-		val BuildRequest result = new BuildRequest();
-		result.setBaseDir(baseDir);
-		result.setState(
-			new IndexState(indexState.getResourceDescriptions().copy(), indexState.getFileMappings().copy()));
-		result.setResourceSet(createFreshResourceSet(result.getState().getResourceDescriptions()));
-		result.setDirtyFiles(changedFiles);
-		result.setDeletedFiles(deletedFiles);
-		result.setExternalDeltas(externalDeltas);
-		result.setAfterValidate([ URI uri, Iterable<Issue> issues |
-			// Prevents displaying error on the lib resources
-			if (!LIB_URIS.contains(uri))
-			{
-				issueAcceptor.apply(uri, issues);
-			}
-			return true;
-		]);
-		result.setCancelIndicator(cancelIndicator);
-		result.setIndexOnly(projectConfig.isIndexOnly());
-		return result;
 	}
 
 }

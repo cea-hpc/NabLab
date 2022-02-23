@@ -138,7 +138,11 @@ namespace nablalib::utils
 							if (bytes == sizeof(int))
 								std::cerr << "	Value " << key << " = " << *(int*)dataValueAsString.data() << " vs Reference " << key << " = " << *(int*)it_ref->value().data() << std::endl;
 							else if (bytes == sizeof(double))
-								std::cerr << "	Value " << key << " = " << *(double*)dataValueAsString.data() << " vs Reference " << key << " = " << *(double*)it_ref->value().data() << std::endl;
+							{
+								double valAsDouble = *(double*)dataValueAsString.data();
+								double refAsDouble = *(double*)it_ref->value().data();
+								std::cerr << "	Value " << key << " = " << *(double*)dataValueAsString.data() << " vs Reference " << key << " = " << *(double*)it_ref->value().data() << " -> Diff = " << valAsDouble - refAsDouble << std::endl;
+							}
 						}
 						else
 						{
@@ -147,7 +151,11 @@ namespace nablalib::utils
 							if (bytes == sizeof(int))
 								std::cerr << "	Value " << key << indexes << " = " << *(int*)dataValueAsString.substr(mismatchIndex, mismatchIndex + bytes).data() << " vs Reference " << key << indexes << " = "<< *(int*)refValueAsString.substr(mismatchIndex, mismatchIndex + bytes).data() << std::endl;
 							else if (bytes == sizeof(double))
-								std::cerr << "	Value " << key << indexes << " = " << *(double*)dataValueAsString.substr(mismatchIndex, mismatchIndex + bytes).data() << " vs Reference " << key << indexes << " = "<< *(double*)refValueAsString.substr(mismatchIndex, mismatchIndex + bytes).data() << std::endl;
+							{
+								double valAsDouble = *(double*)dataValueAsString.substr(mismatchIndex, mismatchIndex + bytes).data();
+								double refAsDouble = *(double*)refValueAsString.substr(mismatchIndex, mismatchIndex + bytes).data();
+								std::cerr << "	Value " << key << indexes << " = " << valAsDouble << " vs Reference " << key << indexes << " = "<< refAsDouble << " -> Diff = " << valAsDouble - refAsDouble << std::endl;
+							}
 						}
 					}
 				}

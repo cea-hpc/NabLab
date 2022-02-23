@@ -79,7 +79,9 @@ class GitUtils
 	private def isWsPathDiff(String path, String diff)
 	{
 		// In CMakeLists.txt, "set(N_WS_PATH $ENV{HOME}/workspaces/NabLab/*)" may be replaced by current workspace path
-		if (WsPathContainers.exists[x | path.endsWith(x)] && diff.contains("+set(N_WS_PATH $ENV{HOME}/workspaces/NabLab"))
+		if ( (path.endsWith("CMakeLists.txt") && diff.contains("+set(N_WS_PATH $ENV{HOME}/workspaces/NabLab"))
+			 || (path.endsWith("run.sh") && diff.contains("+export N_WS_PATH=$HOME/workspaces/NabLab"))
+			 || (path.endsWith("runvenv.sh") && diff.contains("+export N_WS_PATH=$HOME/workspaces/NabLab")) )
 		{
 			// Check that it is the only difference
 			var nbDiffs = 0
@@ -90,6 +92,4 @@ class GitUtils
 		}
 		return false
 	}
-
-	static val WsPathContainers = #["CMakeLists.txt", "run.sh", "runvenv.sh"]
 }

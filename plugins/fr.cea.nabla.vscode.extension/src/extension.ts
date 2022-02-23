@@ -7,6 +7,7 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
+import { ChildProcess, exec } from 'child_process';
 import * as net from 'net';
 import * as os from 'os';
 import * as path from 'path';
@@ -17,37 +18,42 @@ import JobsGraphWebViewLoader from './view/JobsGraphWebViewLoader';
 import LatexWebViewLoader from './view/LatexWebViewLoader';
 
 let lc: LanguageClient;
+let siriusWebServer: ChildProcess;
 
 export function activate(context: ExtensionContext) {
   let serverOptions: ServerOptions;
-  // Dev mode. In this mode the server is expected to be launched already
+  // Dev mode: In this mode the server is expected to be launched already
   // The communication is done using socket
   if (process.env.nablaLaunchingMode == 'socket') {
-    let connectionInfo = {
+    const connectionInfo = {
       port: 5008,
     };
 
     serverOptions = () => {
       // Connect to language server via socket
-      let socket = net.connect(connectionInfo);
-      let result: StreamInfo = {
+      const socket = net.connect(connectionInfo);
+      const result: StreamInfo = {
         writer: socket,
         reader: socket,
       };
       return Promise.resolve(result);
     };
   } else {
-    // The server is a locally installed in src/mydsl
-    let launcher = os.platform() === 'win32' ? 'nabla-ls.bat' : 'nabla-ls';
-    let script = context.asAbsolutePath(path.join('src', 'nabla', 'bin', launcher));
-    // Normal mode: The server is launch from embedded jars
+    // Normal mode: The LSP server is launched from embedded jars locally installed in src/nabla
+    const launcher = os.platform() === 'win32' ? 'nabla-ls.bat' : 'nabla-ls';
+    const script = context.asAbsolutePath(path.join('src', 'nabla', 'bin', launcher));
     serverOptions = {
       run: { command: script },
       args: ['-trace'],
       debug: { command: script, args: [], options: { env: createDebugEnv() } },
     };
+    // The Sirius Server is also launched from embedded jars locally installed in src/nabla
+    const siriusWebServerLauncher = os.platform() === 'win32' ? 'nabla-sirius.bat' : 'nabla-sirius';
+    const siriusWebServerScript = context.asAbsolutePath(path.join('src', 'nabla', 'bin', siriusWebServerLauncher));
+
+    siriusWebServer = exec(siriusWebServerScript);
   }
-  let clientOptions: LanguageClientOptions = {
+  const clientOptions: LanguageClientOptions = {
     documentSelector: ['nabla', 'nablagen'],
     synchronize: {
       fileEvents: workspace.createFileSystemWatcher('**/*.*'),
@@ -58,7 +64,7 @@ export function activate(context: ExtensionContext) {
   lc = new LanguageClient('NabLab Xtext Server', serverOptions, clientOptions);
   // enable tracing (.Off, .Messages, Verbose)
   lc.trace = Trace.Verbose;
-  let disposable = lc.start();
+  const disposable = lc.start();
 
   // Push the disposable to the context's subscriptions so that the
   // client can be deactivated on extension deactivation
@@ -135,6 +141,9 @@ export function activate(context: ExtensionContext) {
  * Close extension properly (see https://code.visualstudio.com/api/language-extensions/language-server-extension-guide)
  */
 export function deactivate() {
+  if (siriusWebServer) {
+    siriusWebServer.kill();
+  }
   if (!lc) {
     return undefined;
   }

@@ -180,7 +180,7 @@ class LSPCommandsHandler implements IExecutableCommandService
 			for (nablaLibrary : nablaLibraries)
 			{
 				val uri = nablaLibrary.URI
-				if (uri.toString().startsWith("file:/") && !uri.toString().startsWith("file:///"))
+				if (!uri.toString().startsWith("file:///"))
 				{
 					resourceSet.getResource(uri, true)
 				}

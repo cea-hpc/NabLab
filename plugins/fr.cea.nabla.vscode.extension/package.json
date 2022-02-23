@@ -1,5 +1,5 @@
 {
-  "name": "fr.cea.nabla.vscode.extension",
+  "name": "cea-nablab-vscode-extension",
   "displayName": "CEA NabLab VSCode extension",
   "description": "The NabLab extension for VSCode",
   "version": "0.4.4",

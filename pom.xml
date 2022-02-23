@@ -53,9 +53,12 @@
                 <module>plugins/fr.cea.nabla.ide</module>
                 <module>plugins/fr.cea.nabla.javalib</module>
                 <module>plugins/fr.cea.nabla.sirius</module>
+                <module>plugins/fr.cea.nabla.siriusweb.application</module>
+                <module>plugins/fr.cea.nabla.ide</module>
+                <module>plugins/fr.cea.nabla.javalib</module>
                 <module>plugins/fr.cea.nabla.ui</module>
                 <module>plugins/fr.cea.nabla.rcp</module>
-                <!--<module>tests/fr.cea.nabla.tests</module>-->
+                <module>tests/fr.cea.nabla.tests</module>
                 <module>tests/fr.cea.nabla.javalib.tests</module>
                 <module>releng/fr.cea.nabla.targetplatform</module>
             </modules>
@@ -70,6 +73,16 @@
                 <module>features/fr.cea.nabla.thirdparty.libraries.feature</module>
                 <module>releng/fr.cea.nabla.targetplatform</module>
                 <module>releng/fr.cea.nabla.updatesite</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>vscode</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <modules>
+                <module>plugins/fr.cea.nabla.ide.web</module>
+                <module>releng/fr.cea.nabla.targetplatform</module>
             </modules>
         </profile>
     </profiles>

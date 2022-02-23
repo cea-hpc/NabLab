@@ -102,8 +102,6 @@
 							<assembleDirectory>${project.build.directory}/languageserver</assembleDirectory>
 							<repositoryLayout>flat</repositoryLayout>
 							<useWildcardClassPath>true</useWildcardClassPath>
-							<!-- uncomment to enable remote debugging <extraJvmArguments>-Xdebug 
-								-Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8000</extraJvmArguments> -->
 							<programs>
 								<program>
 									<id>nabla-ls</id>
@@ -111,6 +109,10 @@
 									<!-- uncomment to enable options <commandLineArguments> <commandLineArgument>-trace</commandLineArgument> 
 										<commandLineArgument>-log</commandLineArgument> <commandLineArgument>-noValidate</commandLineArgument> 
 										</commandLineArguments> -->
+								</program>
+								<program>
+									<id>nabla-sirius</id>
+									<mainClass>fr.cea.nablab.sirius.web.app.NabLabApplication</mainClass>
 								</program>
 							</programs>
 						</configuration>
@@ -123,14 +125,19 @@
 
 	<dependencies>
 		<dependency>
-		    <groupId>org.scilab.forge</groupId>
-		    <artifactId>jlatexmath</artifactId>
-		    <version>1.0.7</version>
+			<groupId>org.scilab.forge</groupId>
+			<artifactId>jlatexmath</artifactId>
+			<version>1.0.7</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.apache.commons</groupId>
-		    <artifactId>commons-math3</artifactId>
-		    <version>3.6.1</version>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-math3</artifactId>
+			<version>3.6.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jgrapht</groupId>
+			<artifactId>jgrapht-core</artifactId>
+			<version>1.3.0</version>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
@@ -145,6 +152,11 @@
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>fr.cea.nabla.ide</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>fr.cea.nabla.siriusweb.application</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
@@ -189,16 +201,6 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.7.32</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-			<version>1.7.32</version>
-		</dependency>
-		<dependency>
 			<groupId>org.eclipse.lsp4j</groupId>
 			<artifactId>org.eclipse.lsp4j</artifactId>
 			<version>0.10.0</version>
@@ -212,6 +214,11 @@
 			<groupId>org.eclipse.lsp4j</groupId>
 			<artifactId>org.eclipse.lsp4j.generator</artifactId>
 			<version>0.10.0</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.6</version>
 		</dependency>
 	</dependencies>
 </project>

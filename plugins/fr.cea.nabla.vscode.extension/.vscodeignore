@@ -26,7 +26,6 @@ yarn-debug.log*
 yarn-error.log*
 test-report.xml
 
-out
+
 .vscode-test/
 *.vsix
-webviews/

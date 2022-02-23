@@ -6,7 +6,8 @@
 # Execute iterativeheatequation.py in a virtual environment.
 # Used by tests to reproduce results.
 #
-export PYTHONPATH=/home/lelandaisb/workspaces/NabLab/plugins/fr.cea.nabla.ui/examples/.nablab/mesh/cartesianmesh2dnumpy:/home/lelandaisb/workspaces/NabLab/plugins/fr.cea.nabla.ui/examples/.nablab/linearalgebra/linearalgebranumpy
+export N_WS_PATH=$HOME/workspaces/NabLab/plugins/fr.cea.nabla.ui/examples
+export PYTHONPATH=$N_WS_PATH/.nablab/mesh/cartesianmesh2dnumpy:$N_WS_PATH/.nablab/linearalgebra/linearalgebranumpy
 echo ==== Creating Python virtual environment
 python3 -m venv .venv
 .venv/bin/python -m pip install --upgrade pip

@@ -11,6 +11,7 @@ package fr.cea.nabla.ir.generator.python
 
 import fr.cea.nabla.ir.IrTypeExtensions
 import fr.cea.nabla.ir.UnzipHelper
+import fr.cea.nabla.ir.generator.CMakeUtils
 import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.generator.IrCodeGenerator
 import fr.cea.nabla.ir.generator.Utils
@@ -35,7 +36,8 @@ class PythonGenerator implements IrCodeGenerator
 		envVars.forEach[x | this.envVars += x]
 
 		// Set WS_PATH variables and unzip NRepository if necessary
-		this.envVars += new Pair("PYTHONPATH", wsPath + "/.nablab/mesh/cartesianmesh2dnumpy:" + wsPath + "/.nablab/linearalgebra/linearalgebranumpy")
+		this.envVars += new Pair(CMakeUtils.WS_PATH, formatPath(wsPath))
+		this.envVars += new Pair("PYTHONPATH", "$" + CMakeUtils.WS_PATH + "/.nablab/mesh/cartesianmesh2dnumpy:" + "$" + CMakeUtils.WS_PATH + "/.nablab/linearalgebra/linearalgebranumpy")
 		UnzipHelper::unzipNRepository(wsPath)
 	}
 
@@ -116,4 +118,12 @@ class PythonGenerator implements IrCodeGenerator
 	echo ===== Starting execution
 	.venv/bin/python «pyFileName» $*
 	'''
+
+	private def formatPath(String path)
+	{
+		if (path.startsWith(CMakeUtils.userDir))
+			path.replace(CMakeUtils.userDir, "$HOME")
+		else
+			path
+	}
 }

@@ -7,5 +7,6 @@
 # Numpy and plyvel modules must be installed.
 # To reproduce results, use runvenv.sh.
 #
-export PYTHONPATH=/home/lelandaisb/workspaces/NabLab/tests/.nablab/mesh/cartesianmesh2dnumpy:/home/lelandaisb/workspaces/NabLab/tests/.nablab/linearalgebra/linearalgebranumpy
+export N_WS_PATH=$HOME/workspaces/NabLab/tests
+export PYTHONPATH=$N_WS_PATH/.nablab/mesh/cartesianmesh2dnumpy:$N_WS_PATH/.nablab/linearalgebra/linearalgebranumpy
 python3 hydro.py $*

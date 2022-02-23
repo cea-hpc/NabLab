@@ -7,5 +7,6 @@
 # Numpy and plyvel modules must be installed.
 # To reproduce results, use runvenv.sh.
 #
-export PYTHONPATH=/home/lelandaisb/workspaces/NabLab/plugins/fr.cea.nabla.ui/examples/.nablab/mesh/cartesianmesh2dnumpy:/home/lelandaisb/workspaces/NabLab/plugins/fr.cea.nabla.ui/examples/.nablab/linearalgebra/linearalgebranumpy
+export N_WS_PATH=$HOME/workspaces/NabLab/plugins/fr.cea.nabla.ui/examples
+export PYTHONPATH=$N_WS_PATH/.nablab/mesh/cartesianmesh2dnumpy:$N_WS_PATH/.nablab/linearalgebra/linearalgebranumpy
 python3 heatequation.py $*

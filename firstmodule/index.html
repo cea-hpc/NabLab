@@ -16,7 +16,7 @@
         <link rel="canonical" href="https://cea-hpc.github.io/NabLab/firstmodule/">
       
       <link rel="icon" href="../img/logo_512.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.3.4">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.3.3">
     
     
       
@@ -24,7 +24,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.db9e7362.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.5143246d.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.3f5d1f46.min.css">
@@ -275,13 +275,6 @@
           <li class="md-nav__item">
   <a href="#imports" class="md-nav__link">
     Imports
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#options" class="md-nav__link">
-    Options
   </a>
   
 </li>
@@ -549,13 +542,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#options" class="md-nav__link">
-    Options
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#variables" class="md-nav__link">
     Variables
   </a>
@@ -715,27 +701,25 @@ The NabLab product includes three extensions, CartesianMash2D, Math and LinearAl
 with Math.*;
 with CartesianMesh2D.*;
 </code></pre></div>
-<h3 id="options">Options</h3>
-<p>The next part of the file relates to the definition of options: variables whose value can be set in the user data file. Two kinds of options are defined, simulation and user options:</p>
-<div class="highlight"><pre><span></span><code>// Simulation options
-option ℝ stopTime = 0.1;
-option ℕ maxIterations = 500;
-
-// User options
-option ℝ PI = 3.1415926;
-option ℝ α = 1.0;
-</code></pre></div>
-<p>Simulation options represents the maximum time and number of iterations of the simulation. We will see below how they will define the conditions of the iteration loop. </p>
 <h3 id="variables">Variables</h3>
-<p>For the heat equation module, the variables are:</p>
+<p>For the heat equation module, the NabLab variables are:</p>
 <ul>
+<li><em>stopTime</em> and <em>maxIterations</em> representing the maximum time and number of iterations of the simulation,</li>
+<li><em>PI</em> and <em>α</em> representing two constants,</li>
 <li><em>δt</em> and <em>t</em> representing respectively the time step and time of the simulation. Time step is initialized with a default value. It will be constant during the simulation,</li>
 <li><em>X</em> and center representing respectively coordinates of nodes and center of cells,</li>
 <li><em>u</em>, <em>V</em> and <em>f</em> representing the cells' variables presented in the above equation,</li>
 <li><em>outgoingFlux</em> representing the <span class="arithmatex">\(\frac{\Delta t}{V_M} \sum{K_{MM'} \frac{u_{M'}^n - u_{M}^n}{MM'}}\)</span> part of the equation,</li>
 <li><em>surface</em> representing the surface of faces.</li>
 </ul>
-<div class="highlight"><pre><span></span><code>let ℝ δt = 0.001;
+<p>The <em>stopTime</em> and <em>maxIterations</em> variables have no default value and will not be set in the module.
+Consequently, during the generation process, they will be considered as user's options: their value has to be set by the final user in a <a href="https://www.json.org">Json</a> data file.</p>
+<div class="highlight"><pre><span></span><code>ℝ stopTime;
+ℕ maxIterations;
+
+let ℝ PI = 3.1415926;
+let ℝ α = 1.0;
+let ℝ δt = 0.001;
 ℝ t;
 ℝ[2] X{nodes}, center{cells};
 ℝ u{cells}, V{cells}, f{cells}, outgoingFlux{cells}, surface{faces};
@@ -845,7 +829,9 @@ cmake --build .
 </code></pre></div>
 After the compilation of the application, a <em>heatequation</em> executable is available in the <em>build</em> directory.</p>
 <h2 id="execution">Execution</h2>
-<p>To execute the application, a data file is needed. NabLab generates a template named <em>HeatEquationDefault.json</em> in the <em>src-gen</em> directory. Copy this file, paste it in the <em>src</em> directory, rename it <em>HeatEquation.json</em> (select the file in the explorer and press <code>F2</code> key) and double-click on it in the explorer to open the json editor.</p>
+<p>To execute the application, a data file is needed. NabLab generates a template named <em>HeatEquationDefault.json</em> in the <em>src-gen</em> directory.
+Copy this file, paste it in the <em>src</em> directory, rename it <em>HeatEquation.json</em> (select the file in the explorer and press <code>F2</code> key) and double-click on it in the explorer to open the json editor.</p>
+<p>You can observe that stopTime and maxIterations variables have been detected as user options and generated in the <em>json</em> template.</p>
 <p>Remove the comment line, the file is no more generated, and add a mesh block as follows:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
     <span class="nt">&quot;heatEquation&quot;</span><span class="p">:</span>
@@ -855,8 +841,8 @@ After the compilation of the application, a <em>heatequation</em> executable is 
         <span class="nt">&quot;outputPeriod&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span>
         <span class="nt">&quot;stopTime&quot;</span><span class="p">:</span><span class="mf">0.1</span><span class="p">,</span>
         <span class="nt">&quot;maxIterations&quot;</span><span class="p">:</span><span class="mi">500</span><span class="p">,</span>
-        <span class="nt">&quot;PI&quot;</span><span class="p">:</span><span class="mf">3.1415926</span><span class="p">,</span>
-        <span class="nt">&quot;alpha&quot;</span><span class="p">:</span><span class="mf">1.0</span>
+        <span class="nt">&quot;_nonRegression_comment&quot;</span><span class="p">:</span><span class="s2">&quot;empty value to disable, CreateReference or CompareToReference to take action&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;nonRegression&quot;</span><span class="p">:</span><span class="s2">&quot;&quot;</span>
     <span class="p">},</span>
     <span class="nt">&quot;mesh&quot;</span><span class="p">:</span>
     <span class="p">{</span>
@@ -967,7 +953,7 @@ After the compilation of the application, a <em>heatequation</em> executable is 
     <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.8397ff9e.min.js", "version": "0.4.0"}</script>
     
     
-      <script src="../assets/javascripts/bundle.1e84347e.min.js"></script>
+      <script src="../assets/javascripts/bundle.f89c2efe.min.js"></script>
       
         <script src="../javascripts/config.js"></script>
       

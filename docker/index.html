@@ -16,7 +16,7 @@
         <link rel="canonical" href="https://cea-hpc.github.io/NabLab/docker/">
       
       <link rel="icon" href="../img/logo_512.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.3.4">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.3.3">
     
     
       
@@ -24,7 +24,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.db9e7362.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.5143246d.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.3f5d1f46.min.css">
@@ -458,9 +458,9 @@
                 
                 
                 <h1 id="docker-integration">Docker integration</h1>
-<p>The continuous integration mechanism with GitHub triggers all the tests defined in NabLab, including the NablaExamplesTests that generate, compile and run the NabalaExamples for each backend. 
-For these tests to run without error, the environment on which they are running must be correctly configured (java, gcc, cmake, Kokkos and LevelDb). 
-This is the purpose of the docker image built by the docker-nablab.sh script. This image is then pushed on a DockerHub public repository to be used by the GitHub actions of the CI workflow. </p>
+<p>The continuous integration mechanism with GitHub triggers all the tests defined in NabLab, including the NabLabExamplesTests that generate, compile and run the NabLabExamples for each backend. 
+For these tests to run without error, the environment on which they are running must be correctly configured (java, gcc, cmake, Kokkos, LevelDb and Arcane). 
+This is the purpose of the docker image built by the <code>docker-nablab.sh</code> script. This image is then pushed on a DockerHub public repository to be used by the GitHub actions of the CI workflow. </p>
 <p>The complete documentation to install docker on your ubuntu machine, is available <a href="https://docs.docker.com/engine/install/ubuntu/">here</a>.
 The procedure below lists the main steps.</p>
 <h2 id="set-up-the-repository">Set up the repository</h2>
@@ -603,7 +603,7 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io
     <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.8397ff9e.min.js", "version": "0.4.0"}</script>
     
     
-      <script src="../assets/javascripts/bundle.1e84347e.min.js"></script>
+      <script src="../assets/javascripts/bundle.f89c2efe.min.js"></script>
       
         <script src="../javascripts/config.js"></script>
       

@@ -16,7 +16,7 @@
         <link rel="canonical" href="https://cea-hpc.github.io/NabLab/nablablanguage/">
       
       <link rel="icon" href="../img/logo_512.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.3.4">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.3.3">
     
     
       
@@ -24,7 +24,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.db9e7362.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.5143246d.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.3f5d1f46.min.css">
@@ -780,7 +780,7 @@
 <li>Imports</li>
 <li>Reductions</li>
 <li>Functions</li>
-<li>Variables and options</li>
+<li>Variables</li>
 <li>Time iterators</li>
 <li>Jobs</li>
 </ul>
@@ -904,13 +904,11 @@ def dot: x | ℝ[x] × ℝ[x] → ℝ, (a , b) → {
 ℝ c{cells}, m{cells}, p{cells};
 </code></pre></div>
 <p>A variable initialized with a default value is preceded by the <code>let</code> keyword. It is not possible to assign several variables in one definition.
-A user option is preceded by the <code>option</code> keyword. The option can be set in a <a href="https://www.json.org">Json</a> data file. If the option has a default value it becomes optional in the data file otherwise the execution will produce an error if the option has no default value and is not found in the data file.</p>
+A variable with no default value and not set in the module is considered as a user's option: its value has to be set by the final user in a <a href="https://www.json.org">Json</a> data file.</p>
 <div class="highlight"><pre><span></span><code>let ℝ γ = 3.0;                      // real scalar
 let ℝ[2] N = [0.0, 1.0];            // 1 dimension real array
 let ℝ[2, 2] N = [ [0.0, 1.0], N ];  // 2 dimensions real array
 let ℕ[2,2] I = [ [1, 0], [0, 1] ];  // 2 dimensions int array
-option ℕ maxIter = 200;             // optional integer user option
-option ℝ maxTime;                   // mandatory real user option
 </code></pre></div>
 <h2 id="time-iterators">Time iterators</h2>
 <p>The <code>iterate</code> section is used to define time iterators and the stop conditions of their time loop.</p>
@@ -952,7 +950,7 @@ ComputeDensity: ∀j∈cells(), ρ{j} = m{j} / V{j};
 <p>The main instructions of the language are: local variable and set definitions, affectations, blocks, loops, conditionals.
 An instruction ends with the <code>;</code> character except blocks surrounded by curly brackets.</p>
 <h3 id="local-variables-and-set-definitions">Local variables and set definitions</h3>
-<p>Local variables can be defined with the same syntax than global ones but local definitions include neither variables with supports nor user options.</p>
+<p>Local variables can be defined with the same syntax than global ones but local definitions include no variables with supports.</p>
 <p>Set of items can be defined locally by calling a connectivity, like this:
 <div class="highlight"><pre><span></span><code>set my_cells = cells();
 </code></pre></div></p>
@@ -1140,7 +1138,7 @@ while (residual &gt; ε) {
     <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.8397ff9e.min.js", "version": "0.4.0"}</script>
     
     
-      <script src="../assets/javascripts/bundle.1e84347e.min.js"></script>
+      <script src="../assets/javascripts/bundle.f89c2efe.min.js"></script>
       
         <script src="../javascripts/config.js"></script>
       

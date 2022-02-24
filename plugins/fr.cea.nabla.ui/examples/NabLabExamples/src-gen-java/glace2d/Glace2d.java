@@ -986,7 +986,8 @@ public final class Glace2d
 
 			// Module instanciation(s)
 			Glace2d glace2d = new Glace2d(mesh);
-			if (o.has("glace2d")) glace2d.jsonInit(o.get("glace2d").toString());
+			assert(o.has("glace2d"));
+			glace2d.jsonInit(o.get("glace2d").toString());
 
 			// Start simulation
 			glace2d.simulate();

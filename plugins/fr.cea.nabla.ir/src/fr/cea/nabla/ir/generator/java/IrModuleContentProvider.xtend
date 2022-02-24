@@ -142,6 +142,7 @@ class IrModuleContentProvider
 				«ENDFOR»
 				«val nrName = IrUtils.NonRegressionNameAndValue.key»
 				«IF main && hasLevelDB»
+
 					// Non regression
 					if (options.has("«nrName»"))
 					{
@@ -195,7 +196,8 @@ class IrModuleContentProvider
 					// Module instanciation(s)
 					«FOR m : irRoot.modules»
 						«m.className» «m.name» = new «m.className»(mesh);
-						if (o.has("«m.name»")) «m.name».jsonInit(o.get("«m.name»").toString());
+						assert(o.has("«m.name»"));
+						«m.name».jsonInit(o.get("«m.name»").toString());
 						«IF !m.main»«m.name».setMainModule(«irRoot.mainModule.name»);«ENDIF»
 					«ENDFOR»
 
@@ -203,17 +205,17 @@ class IrModuleContentProvider
 					«name».simulate();
 					«IF main && hasLevelDB»
 
-					«val dbName = irRoot.name + "DB"»
-					// Non regression testing
-					if («name».«nrName» != null && «name».«nrName».equals("«IrUtils.NonRegressionValues.CreateReference.toString»"))
-						«name».createDB("«dbName».ref");
-					if («name».«nrName» != null && «name».«nrName».equals("«IrUtils.NonRegressionValues.CompareToReference.toString»"))
-					{
-						«name».createDB("«dbName».current");
-						boolean ok = LevelDBUtils.compareDB("«dbName».current", "«dbName».ref");
-						LevelDBUtils.destroyDB("«dbName».current");
-						if (!ok) System.exit(1);
-					}
+						«val dbName = irRoot.name + "DB"»
+						// Non regression testing
+						if («name».«nrName» != null && «name».«nrName».equals("«IrUtils.NonRegressionValues.CreateReference.toString»"))
+							«name».createDB("«dbName».ref");
+						if («name».«nrName» != null && «name».«nrName».equals("«IrUtils.NonRegressionValues.CompareToReference.toString»"))
+						{
+							«name».createDB("«dbName».current");
+							boolean ok = LevelDBUtils.compareDB("«dbName».current", "«dbName».ref");
+							LevelDBUtils.destroyDB("«dbName».current");
+							if (!ok) System.exit(1);
+						}
 					«ENDIF»
 				}
 				else
@@ -268,16 +270,16 @@ class IrModuleContentProvider
 			«ENDIF»
 			«IF main && hasLevelDB»
 
-			private void createDB(String db_name) throws IOException
+			private void createDB(String dbName) throws IOException
 			{
 				org.iq80.leveldb.Options levelDBOptions = new org.iq80.leveldb.Options();
 
 				// Destroy if exists
-				factory.destroy(new File(db_name), levelDBOptions);
+				factory.destroy(new File(dbName), levelDBOptions);
 
 				// Create data base
 				levelDBOptions.createIfMissing(true);
-				DB db = factory.open(new File(db_name), levelDBOptions);
+				DB db = factory.open(new File(dbName), levelDBOptions);
 
 				WriteBatch batch = db.createWriteBatch();
 				try
@@ -294,7 +296,7 @@ class IrModuleContentProvider
 					batch.close();
 				}
 				db.close();
-				System.out.println("Reference database " + db_name + " created.");
+				System.out.println("Reference database " + dbName + " created.");
 			}
 			«ENDIF»
 			«ELSE /* !main */»

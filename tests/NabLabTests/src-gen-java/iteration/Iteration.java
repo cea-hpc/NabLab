@@ -421,7 +421,8 @@ public final class Iteration
 
 			// Module instanciation(s)
 			Iteration iteration = new Iteration(mesh);
-			if (o.has("iteration")) iteration.jsonInit(o.get("iteration").toString());
+			assert(o.has("iteration"));
+			iteration.jsonInit(o.get("iteration").toString());
 
 			// Start simulation
 			iteration.simulate();

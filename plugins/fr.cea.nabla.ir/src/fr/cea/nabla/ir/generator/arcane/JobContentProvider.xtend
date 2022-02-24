@@ -16,19 +16,18 @@ import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
 
 import static extension fr.cea.nabla.ir.JobCallerExtensions.*
-import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.arcane.ExpressionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.arcane.InstructionContentProvider.*
 
 class JobContentProvider
 {
 	static def getDeclarationContent(Job it)
-	'''void «codeName»();'''
+	'''virtual void «Utils.getCodeName(it)»()'''
 
 	static def getDefinitionContent(Job it)
 	'''
-		«comment»
-		void «ArcaneUtils.getModuleName(IrUtils.getContainerOfType(it, IrModule))»::«codeName»()
+		«Utils.getComment(it)»
+		void «ArcaneUtils.getClassName(IrUtils.getContainerOfType(it, IrModule))»::«Utils.getCodeName(it)»()
 		{
 			«getInnerContent(it)»
 		}
@@ -44,7 +43,7 @@ class JobContentProvider
 				«val itVar = VariableExtensions.getCodeName(iterationCounter)»
 				«itVar»++;
 				«FOR c : calls»
-					«Utils::getCallName(c).replace('.', '->')»(); // @«c.at»
+					«ArcaneUtils.getCallName(c)»(); // @«c.at»
 				«ENDFOR»
 
 				// Evaluate loop condition with variables at time n
@@ -66,7 +65,7 @@ class JobContentProvider
 					«itVar»++;
 					info() << "Start iteration «iterationCounter.name»: " << std::setprecision(5) << «itVar»;
 					«FOR c : calls»
-						«Utils::getCallName(c).replace('.', '->')»(); // @«c.at»
+						«ArcaneUtils.getCallName(c)»(); // @«c.at»
 					«ENDFOR»
 
 					// Evaluate loop condition with variables at time n

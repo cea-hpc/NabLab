@@ -17,7 +17,7 @@ import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 class CMakeUtils
 {
 	public static val WS_PATH = 'N_WS_PATH'
-	static val userDir = System.getProperty("user.home")
+	public static val userDir = System.getProperty("user.home")
 
 	static def getFileHeader(boolean subDirectory)
 	'''

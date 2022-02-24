@@ -477,7 +477,8 @@ public final class ExplicitHeatEquation
 
 			// Module instanciation(s)
 			ExplicitHeatEquation explicitHeatEquation = new ExplicitHeatEquation(mesh);
-			if (o.has("explicitHeatEquation")) explicitHeatEquation.jsonInit(o.get("explicitHeatEquation").toString());
+			assert(o.has("explicitHeatEquation"));
+			explicitHeatEquation.jsonInit(o.get("explicitHeatEquation").toString());
 
 			// Start simulation
 			explicitHeatEquation.simulate();

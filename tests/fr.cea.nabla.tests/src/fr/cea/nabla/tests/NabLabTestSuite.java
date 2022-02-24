@@ -43,7 +43,7 @@ import fr.cea.nabla.tests.validation.NabLabValidationTestSuite;
 	NabLabIrTransformersTestSuite.class,
 	NabLabIrInterpreterTestSuite.class,
 	NabLabTestsTest.class,
-	NabLabExamplesTest.class,
+	NabLabExamplesTest.class
 })
 
 public class NabLabTestSuite {}

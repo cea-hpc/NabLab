@@ -28,19 +28,19 @@ class TimeLoopContentProvider
 
 				<modules>
 					<module name="ArcanePostProcessing" need="required"/>
-					«FOR m : modules»
+					«FOR m : modules.filter[x | ArcaneUtils.isArcaneModule(x)]»
 						<module name="«m.className»" need="required"/>
 					«ENDFOR»
 				</modules>
 
 				<entry-points where="init">
-					«FOR m : modules»
+					«FOR m : modules.filter[x | ArcaneUtils.isArcaneModule(x)]»
 						<entry-point name="«m.className».Init"/>
 					«ENDFOR»
 				</entry-points>
 
 				<entry-points where="compute-loop">
-					«FOR m : modules»
+					«FOR m : modules.filter[x | ArcaneUtils.isArcaneModule(x)]»
 						«FOR j : ArcaneUtils.getComputeLoopEntryPointJobs(m)»
 							<entry-point name="«m.className».«j.name.toFirstUpper»"/>
 						«ENDFOR»

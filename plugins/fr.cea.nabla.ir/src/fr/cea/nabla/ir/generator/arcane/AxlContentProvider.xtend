@@ -11,6 +11,7 @@ package fr.cea.nabla.ir.generator.arcane
 
 import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.generator.Utils
+import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.BoolConstant
 import fr.cea.nabla.ir.ir.ConnectivityType
@@ -21,6 +22,7 @@ import fr.cea.nabla.ir.ir.MaxConstant
 import fr.cea.nabla.ir.ir.MinConstant
 import fr.cea.nabla.ir.ir.RealConstant
 import fr.cea.nabla.ir.ir.Variable
+import java.util.ArrayList
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
@@ -32,11 +34,16 @@ class AxlContentProvider
 	'''
 	<?xml version="1.0" ?>
 	<!-- «Utils::doNotEditWarning» -->
+	«IF ArcaneUtils.isArcaneModule(it)»
 	<module name="«className»" version="1.0">
-		<description>«className» module designed and implemented thanks to the NabLab environment.</description>
+	«ELSE»
+	<service name="«className»" version="1.0" type="caseoption">
+		<interface name="«ArcaneUtils.getInterfaceName(it)»" />
+	«ENDIF»
+		<description>«className» designed and generated thanks to the NabLab environment</description>
 
 		<variables>
-			«FOR v : variables.filter[x | ArcaneUtils.isArcaneManaged(x)] SEPARATOR '\n'»
+			«FOR v : variablesToDeclare SEPARATOR '\n'»
 			«val type = v.type as ConnectivityType»
 			<variable
 				field-name="«v.name»"
@@ -56,7 +63,13 @@ class AxlContentProvider
 					<description/>
 				</simple>
 			«ENDFOR»
+			«FOR s : ArcaneUtils.getServices(it)»
+				<service-instance name="«StringExtensions.separateWith(s.name, StringExtensions.Dash)»" type="«ArcaneUtils.getInterfaceName(s)»">
+					<description/>
+				</service-instance>
+			«ENDFOR»
 		</options>
+	«IF ArcaneUtils.isArcaneModule(it)»
 
 		<entry-points>
 			<entry-point method-name="init" name="Init" where="init" property="none" />
@@ -65,6 +78,9 @@ class AxlContentProvider
 			«ENDFOR»
 		</entry-points>
 	</module>
+	«ELSE»
+	</service>
+	«ENDIF»
 	'''
 
 	private static def getDataType(IrType it)
@@ -118,8 +134,33 @@ class AxlContentProvider
 		switch d
 		{
 			case 0: (optional ? '''optional="true"''' : '''minOccurs="1" maxOccurs="1"''')
-			case 1 : '''minOccurs="«IF optional»0«ELSE»1«ENDIF»" maxOccurs="unbounded"'''
+			case 1 :
+			{
+				val maxOccursInt = (type instanceof BaseType ? (type as BaseType).intSizes.get(0) : -1)
+				val maxOccurs = switch maxOccursInt
+				{
+					case -1: "unbounded" // dynamic type
+					case 2: "1" // Real2
+					case 3: "1" // Real3
+					default: maxOccursInt.toString
+				} 
+				'''minOccurs="«IF optional»0«ELSE»1«ENDIF»" maxOccurs="«maxOccurs»"'''
+			}
 			default : throw new RuntimeException("Dimension greater than 1 not yet suported in options: " + d)
 		}
+	}
+
+	private static def getVariablesToDeclare(IrModule it)
+	{
+		val variablesToDeclare = new ArrayList<Variable>
+		for (v : variables.filter[x | ArcaneUtils.isArcaneManaged(x)])
+			variablesToDeclare += v
+		if (!main)
+		{
+			for (refVar : eAllContents.filter(ArgOrVarRef).map[target].filter(Variable).toSet)
+				if (ArcaneUtils.isArcaneManaged(refVar) && IrUtils.getContainerOfType(refVar, IrModule) !== it)
+					variablesToDeclare += refVar
+		}
+		return variablesToDeclare
 	}
 }

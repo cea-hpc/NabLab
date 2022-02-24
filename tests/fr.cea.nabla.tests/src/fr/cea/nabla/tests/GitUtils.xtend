@@ -11,14 +11,14 @@ package fr.cea.nabla.tests
 
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.util.ArrayList
+import java.util.regex.Pattern
 import org.eclipse.jgit.api.Git
+import org.eclipse.jgit.diff.DiffEntry
 import org.eclipse.jgit.diff.DiffFormatter
 import org.eclipse.jgit.treewalk.CanonicalTreeParser
 import org.eclipse.jgit.treewalk.FileTreeIterator
 import org.eclipse.jgit.treewalk.filter.PathFilter
-import org.eclipse.jgit.diff.DiffEntry
-import java.util.ArrayList
-import java.util.regex.Pattern
 
 class GitUtils
 {
@@ -79,7 +79,9 @@ class GitUtils
 	private def isWsPathDiff(String path, String diff)
 	{
 		// In CMakeLists.txt, "set(N_WS_PATH $ENV{HOME}/workspaces/NabLab/*)" may be replaced by current workspace path
-		if (path.endsWith("CMakeLists.txt") && diff.contains("+set(N_WS_PATH $ENV{HOME}/workspaces/NabLab"))
+		if ( (path.endsWith("CMakeLists.txt") && diff.contains("+set(N_WS_PATH $ENV{HOME}/workspaces/NabLab"))
+			 || (path.endsWith("run.sh") && diff.contains("+export N_WS_PATH=$HOME/workspaces/NabLab"))
+			 || (path.endsWith("runvenv.sh") && diff.contains("+export N_WS_PATH=$HOME/workspaces/NabLab")) )
 		{
 			// Check that it is the only difference
 			var nbDiffs = 0

@@ -11,15 +11,21 @@ package fr.cea.nabla.ir.generator.python
 
 import fr.cea.nabla.ir.ArgOrVarExtensions
 import fr.cea.nabla.ir.ContainerExtensions
+import fr.cea.nabla.ir.IrUtils
+import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.ArgOrVar
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.Container
 import fr.cea.nabla.ir.ir.ExternFunction
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.InternFunction
+import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Iterator
+import fr.cea.nabla.ir.ir.Job
 
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
+import static extension fr.cea.nabla.ir.IrRootExtensions.*
 
 class PythonGeneratorUtils
 {
@@ -70,5 +76,18 @@ class PythonGeneratorUtils
 			val varName = "MaxNb" + name.toFirstUpper
 			provider.generationVariables.get(varName)
 		}
+	}
+
+	static def getCallName(Job it)
+	{
+		val jobModule = IrUtils.getContainerOfType(it, IrModule)
+		val callerModule = if (caller.eContainer instanceof IrRoot)
+				(caller.eContainer as IrRoot).mainModule
+			else
+				IrUtils.getContainerOfType(caller, IrModule)
+		if (jobModule === callerModule)
+			'self._' + Utils.getCodeName(it)
+		else
+			'self._' + jobModule.name + '._' + Utils.getCodeName(it)
 	}
 }

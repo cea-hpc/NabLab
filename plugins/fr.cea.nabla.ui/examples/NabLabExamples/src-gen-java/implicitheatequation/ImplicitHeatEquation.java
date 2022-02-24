@@ -464,7 +464,8 @@ public final class ImplicitHeatEquation
 
 			// Module instanciation(s)
 			ImplicitHeatEquation implicitHeatEquation = new ImplicitHeatEquation(mesh);
-			if (o.has("implicitHeatEquation")) implicitHeatEquation.jsonInit(o.get("implicitHeatEquation").toString());
+			assert(o.has("implicitHeatEquation"));
+			implicitHeatEquation.jsonInit(o.get("implicitHeatEquation").toString());
 
 			// Start simulation
 			implicitHeatEquation.simulate();

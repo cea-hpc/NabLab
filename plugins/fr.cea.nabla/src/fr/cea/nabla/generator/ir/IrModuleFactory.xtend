@@ -59,6 +59,7 @@ class IrModuleFactory
 
 		irModule.annotations += ngenModule.toNabLabFileAnnotation
 		irModule.name = ngenModule.name
+		irModule.type = nablaModule.name
 		irModule.main = (ngenModule instanceof MainModule)
 
 		return irModule

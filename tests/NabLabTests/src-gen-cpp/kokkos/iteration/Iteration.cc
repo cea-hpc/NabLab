@@ -451,7 +451,7 @@ int main(int argc, char* argv[])
 	
 	// Module instanciation(s)
 	Iteration* iteration = new Iteration(mesh);
-	if (d.HasMember("iteration"))
+	assert(d.HasMember("iteration"));
 	{
 		rapidjson::StringBuffer strbuf;
 		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);

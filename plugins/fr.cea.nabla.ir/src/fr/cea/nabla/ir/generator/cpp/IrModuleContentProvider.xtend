@@ -259,6 +259,7 @@ class IrModuleContentProvider
 		}
 		«ENDFOR»
 		«IF main && hasLevelDB»
+
 		// Non regression
 		«val nrName = IrUtils.NonRegressionNameAndValue.key»
 		assert(options.HasMember("«nrName»"));

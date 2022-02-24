@@ -840,7 +840,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EAttribute getIrModule_Main() {
+	public EAttribute getIrModule_Type() {
 		return (EAttribute)irModuleEClass.getEStructuralFeatures().get(1);
 	}
 
@@ -850,8 +850,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getIrModule_Functions() {
-		return (EReference)irModuleEClass.getEStructuralFeatures().get(2);
+	public EAttribute getIrModule_Main() {
+		return (EAttribute)irModuleEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -860,7 +860,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getIrModule_Variables() {
+	public EReference getIrModule_Functions() {
 		return (EReference)irModuleEClass.getEStructuralFeatures().get(3);
 	}
 
@@ -870,7 +870,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getIrModule_Jobs() {
+	public EReference getIrModule_Variables() {
 		return (EReference)irModuleEClass.getEStructuralFeatures().get(4);
 	}
 
@@ -880,8 +880,18 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getIrModule_Providers() {
+	public EReference getIrModule_Jobs() {
 		return (EReference)irModuleEClass.getEStructuralFeatures().get(5);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getIrModule_Providers() {
+		return (EReference)irModuleEClass.getEStructuralFeatures().get(6);
 	}
 
 	/**
@@ -2977,6 +2987,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 
 		irModuleEClass = createEClass(IR_MODULE);
 		createEAttribute(irModuleEClass, IR_MODULE__NAME);
+		createEAttribute(irModuleEClass, IR_MODULE__TYPE);
 		createEAttribute(irModuleEClass, IR_MODULE__MAIN);
 		createEReference(irModuleEClass, IR_MODULE__FUNCTIONS);
 		createEReference(irModuleEClass, IR_MODULE__VARIABLES);
@@ -3372,6 +3383,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 
 		initEClass(irModuleEClass, IrModule.class, "IrModule", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getIrModule_Name(), ecorePackage.getEString(), "name", null, 1, 1, IrModule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getIrModule_Type(), ecorePackage.getEString(), "type", null, 1, 1, IrModule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getIrModule_Main(), ecorePackage.getEBoolean(), "main", null, 1, 1, IrModule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIrModule_Functions(), this.getInternFunction(), null, "functions", null, 0, -1, IrModule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIrModule_Variables(), this.getVariable(), null, "variables", null, 0, -1, IrModule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

@@ -240,7 +240,7 @@ int main(int argc, char* argv[])
 	
 	// Module instanciation(s)
 	Variables* variables = new Variables(mesh);
-	if (d.HasMember("variables"))
+	assert(d.HasMember("variables"));
 	{
 		rapidjson::StringBuffer strbuf;
 		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);

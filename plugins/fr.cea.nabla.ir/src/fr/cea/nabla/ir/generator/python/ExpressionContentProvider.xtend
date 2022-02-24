@@ -130,7 +130,7 @@ class ExpressionContentProvider
 			if (argOrVarRefModule === varModule)
 				PythonGeneratorUtils.getCodeName(target)
 			else
-				'self.mainModule.' + PythonGeneratorUtils.getCodeName(target)
+				'self._mainModule.' + target.name
 		}
 	}
 }

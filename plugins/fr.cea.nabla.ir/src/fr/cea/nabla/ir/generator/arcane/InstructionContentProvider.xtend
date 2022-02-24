@@ -31,7 +31,6 @@ import fr.cea.nabla.ir.ir.SetDefinition
 import fr.cea.nabla.ir.ir.SetRef
 import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.ir.ir.VariableDeclaration
-import fr.cea.nabla.ir.ir.VectorConstant
 import fr.cea.nabla.ir.ir.While
 
 import static fr.cea.nabla.ir.generator.arcane.TypeContentProvider.*
@@ -129,10 +128,7 @@ class InstructionContentProvider
 
 	static def dispatch CharSequence getContent(Return it)
 	{
-		if (expression instanceof VectorConstant)
-			'''return «TypeContentProvider.getTypeName(expression.type)»«expression.content»;'''
-		else
-			'''return «expression.content»;'''
+		'''return «expression.content»;'''
 	}
 
 	static def dispatch CharSequence getContent(Exit it)

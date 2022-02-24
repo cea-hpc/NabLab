@@ -179,7 +179,8 @@ public final class Variables
 
 			// Module instanciation(s)
 			Variables variables = new Variables(mesh);
-			if (o.has("variables")) variables.jsonInit(o.get("variables").toString());
+			assert(o.has("variables"));
+			variables.jsonInit(o.get("variables").toString());
 
 			// Start simulation
 			variables.simulate();

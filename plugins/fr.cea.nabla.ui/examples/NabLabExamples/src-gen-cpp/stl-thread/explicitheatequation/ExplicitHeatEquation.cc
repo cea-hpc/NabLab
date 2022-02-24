@@ -538,7 +538,7 @@ int main(int argc, char* argv[])
 	
 	// Module instanciation(s)
 	ExplicitHeatEquation* explicitHeatEquation = new ExplicitHeatEquation(mesh);
-	if (d.HasMember("explicitHeatEquation"))
+	assert(d.HasMember("explicitHeatEquation"));
 	{
 		rapidjson::StringBuffer strbuf;
 		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);

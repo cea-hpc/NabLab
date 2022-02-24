@@ -151,6 +151,16 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 					cppFolder.create(false, true, monitor)
 				}
 
+				// Create src-gen-arcane folder
+				val srcArcaneFolderName = (newProjectPage.module ? "src-gen-arcane" : "src-arcane")
+				val srcArcaneFolder = project.getFolder(srcArcaneFolderName)
+				srcArcaneFolder.create(false, true, monitor)
+
+				// Create src-gen-python folder
+				val srcPythonFolderName = (newProjectPage.module ? "src-gen-python" : "src-python")
+				val srcPythonFolder = project.getFolder(srcPythonFolderName)
+				srcPythonFolder.create(false, true, monitor)
+
 				// Create nabla and nablagen models
 				val nablaFile = modulesFolder.getFile(mOeName + ".n")
 				val nablagenFile = modulesFolder.getFile(mOeName + ".ngen")

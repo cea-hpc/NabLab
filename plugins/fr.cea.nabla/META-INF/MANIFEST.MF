@@ -4,7 +4,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: fr.cea.nabla
 Bundle-Vendor: CEA
 Bundle-Localization: plugin
-Bundle-Version: 0.4.4.qualifier
+Bundle-Version: 0.4.5.qualifier
 Bundle-SymbolicName: fr.cea.nabla;singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: fr.cea.nabla.ir,

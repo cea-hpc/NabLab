@@ -31,8 +31,9 @@ import static extension fr.cea.nabla.ir.JobCallerExtensions.*
 
 /**
  * @TODO Arcane - What about item types? Fixed in NabLab ? Mapping Arcane ?
- * @TODO Arcane - What happens if levelDB asked ?
+ * @TODO Arcane - What happens if levelDB asked => ngen should be modified ?
  * @TODO Arcane - What to do with job updating global time ?
+ * @TODO Reduce CI time with a new transformation step to limit number of iterations
  */
 class ArcaneUtils
 {

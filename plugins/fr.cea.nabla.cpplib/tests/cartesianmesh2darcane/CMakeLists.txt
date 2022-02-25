@@ -15,12 +15,15 @@ set(CMAKE_VERBOSE_MAKEFILE FALSE)
 # SET VARIABLES
 set(CMAKE_CXX_COMPILER /usr/bin/g++)
 set(PROJECT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../..)
+set(Arcane_ROOT $ENV{HOME}/arcane/install)
 
-project(teststlmesh CXX)
+project(testarcanemesh CXX)
 
-include_directories(${PROJECT_DIR}/src/mesh/cartesianmesh2dstl)
+find_package(Arcane REQUIRED)
+
+include_directories(${PROJECT_DIR}/src/mesh/cartesianmesh2darcane)
 include_directories(${PROJECT_DIR}/src/nablalib)
-link_directories(${PROJECT_DIR}/lib/cartesianmesh2dstl)
+link_directories(${PROJECT_DIR}/lib/cartesianmesh2darcane)
 link_directories(${PROJECT_DIR}/lib/nablalib)
-add_executable(teststlmesh main.cc)
-target_link_libraries(teststlmesh nablalib dl stdc++fs hwloc cartesianmesh2dstl)
+add_executable(testarcanemesh main.cc)
+target_link_libraries(testarcanemesh nablalib arcane_full cartesianmesh2darcane)

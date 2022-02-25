@@ -88,15 +88,18 @@ CartesianMesh2D::CartesianMesh2D(IMesh* mesh)
 	{
 		Node n = *inode;
 		DirNode dn = x_node_dm.node(n);
-		if (dn.nextRightCellId() != -1 && dn.nextLeftCellId() != -1) inner_nodes[inner_node_id++] = n.localId();
+		if (dn.nextRightCellId() != -1 && dn.nextLeftCellId() != -1)
+			inner_nodes[inner_node_id++] = n.localId();
 	}
 
 	ENUMERATE_NODE(inode, x_node_dm.outerNodes())
 	{
 		Node n = *inode;
 		DirNode dn = x_node_dm.node(n);
-		if (dn.nextRightCellId() == -1 && dn.nextLeftCellId() == -1) right_nodes[right_node_id++] = n.localId();
-		else if (dn.previousRightCellId() == -1 && dn.previousLeftCellId() == -1) left_nodes[left_node_id++] = n.localId();
+		if (dn.nextRightCellId() == -1 && dn.nextLeftCellId() == -1)
+			right_nodes[right_node_id++] = n.localId();
+		else if (dn.previousRightCellId() == -1 && dn.previousLeftCellId() == -1)
+			left_nodes[left_node_id++] = n.localId();
 	}
 
 	NodeDirectionMng y_node_dm(m_cartesian_mesh->nodeDirection(MD_DirY));
@@ -104,8 +107,10 @@ CartesianMesh2D::CartesianMesh2D(IMesh* mesh)
 	{
 		Node n = *inode;
 		DirNode dn = y_node_dm.node(n);
-		if (dn.nextRightCellId() == -1 && dn.nextLeftCellId() == -1) top_nodes[top_node_id++] = n.localId();
-		else if (dn.previousRightCellId() == -1 && dn.previousLeftCellId() == -1) bottom_nodes[bottom_node_id++] = n.localId();
+		if (dn.nextRightCellId() == -1 && dn.nextLeftCellId() == -1)
+			top_nodes[top_node_id++] = n.localId();
+		else if (dn.previousRightCellId() == -1 && dn.previousLeftCellId() == -1)
+			bottom_nodes[bottom_node_id++] = n.localId();
 	}
 
 	m_groups[CartesianMesh2D::InnerNodes] = node_family->createGroup(CartesianMesh2D::InnerNodes, inner_nodes);

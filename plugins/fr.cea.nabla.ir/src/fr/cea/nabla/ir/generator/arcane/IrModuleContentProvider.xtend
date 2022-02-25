@@ -191,10 +191,11 @@ class IrModuleContentProvider
 				«irRoot.initNodeCoordVariable.codeName»[inode][1] = «irRoot.nodeCoordVariable.codeName»[inode][1];
 			}
 		«ENDIF»
-		«IF irRoot.timeStepVariable.constExpr»
+		«val ts = irRoot.timeStepVariable»
+		«IF ts.constExpr || ts.option»
 
 			// constant time step
-			m_global_deltat = «irRoot.timeStepVariable.codeName»;
+			m_global_deltat = «ts.codeName»;
 		«ENDIF»
 
 		// calling jobs

@@ -120,7 +120,7 @@ class ExpressionContentProvider
 		if (call.connectivity.multiple)
 		{
 			if (call.group !== null)
-				'''mesh()->findGroup("«call.group»").size()'''
+				'''m_mesh->getGroup("«call.group»").size()'''
 			else if (call.args.empty)
 				'''nb«call.connectivity.returnType.name.toFirstUpper»()'''
 			else
@@ -172,7 +172,6 @@ class ExpressionContentProvider
 		val t = target
 		switch t
 		{
-			Variable case t.option: 'options()->' + t.name + "()"
 			case t.iteratorCounter: (t.eContainer as Iterator).index.name
 			Variable: t.codeName
 			default: t.name

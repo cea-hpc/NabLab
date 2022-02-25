@@ -18,7 +18,9 @@ class VariableExtensions
 {
 	static def getCodeName(Variable it)
 	{
-		if (global)
+		if (option)
+			'options()->' + StringExtensions.separateWithUpperCase(name) + '()'
+		else if (global)
 			'm_' + name
 		else
 			name

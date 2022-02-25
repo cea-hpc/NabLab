@@ -1,0 +1,26 @@
+Application SimpleMeshExampleWithFunction;
+
+MainModule SimpleMeshExampleWithFunction simpleMeshExampleWithFunction
+{
+	nodeCoord = X;
+	time = t;
+	timeStep = δt;
+	iterationMax = maxIterations;
+	timeMax = stopTime;
+}
+
+VtkOutput
+{
+	periodReferenceVariable = simpleMeshExampleWithFunction.n;
+	outputVariables = simpleMeshExampleWithFunction.nodes_sum as "sum";
+}
+
+Java
+{
+	outputPath = "/DaceExamples/src-gen-java";
+}
+
+Python
+{
+	outputPath = "/DaceExamples/src-gen-python3";
+}

@@ -128,43 +128,43 @@ CartesianMesh2D::getGroup(const string& name)
 }
 
 ItemLocalIdView<Node>
-CartesianMesh2D::getNodesOfCell(CellLocalId cId) const
+CartesianMesh2D::getNodesOfCell(const CellLocalId cId) const
 {
 	return m_umcv.cellNode().items(cId);
 }
 
 ItemLocalIdView<Node>
-CartesianMesh2D::getNodesOfFace(FaceLocalId fId) const
+CartesianMesh2D::getNodesOfFace(const FaceLocalId fId) const
 {
 	return m_umcv.faceNode().items(fId);
 }
 
 ItemLocalIdView<Cell>
-CartesianMesh2D::getCellsOfNode(NodeLocalId nId) const
+CartesianMesh2D::getCellsOfNode(const NodeLocalId nId) const
 {
 	return m_umcv.nodeCell().items(nId);
 }
 
 ItemLocalIdView<Cell>
-CartesianMesh2D::getCellsOfFace(FaceLocalId fId) const
+CartesianMesh2D::getCellsOfFace(const FaceLocalId fId) const
 {
 	return m_umcv.faceCell().items(fId);
 }
 
 ItemLocalIdView<Cell>
-CartesianMesh2D::getNeighbourCells(CellLocalId cId) const
+CartesianMesh2D::getNeighbourCells(const CellLocalId cId) const
 {
 	return m_neighbour_cells.items(cId);
 }
 
 ItemLocalIdView<Face>
-CartesianMesh2D::getFacesOfCell(CellLocalId cId) const
+CartesianMesh2D::getFacesOfCell(const CellLocalId cId) const
 {
 	return m_umcv.cellFace().items(cId);
 }
 
 FaceLocalId
-CartesianMesh2D::getCommonFace(CellLocalId c1Id, CellLocalId c2Id) const
+CartesianMesh2D::getCommonFace(const CellLocalId c1Id, const CellLocalId c2Id) const
 {
 	IItemFamily* face_family = m_mesh->faceFamily();
 	ItemInternalArrayView faces = face_family->itemsInternal();
@@ -179,4 +179,68 @@ CartesianMesh2D::getCommonFace(CellLocalId c1Id, CellLocalId c2Id) const
 			return fId;
 	}
 	throw std::range_error("No common face between cells " + std::to_string(c1Id.asInteger()) + " and cells " + std::to_string(c2Id.asInteger()));
+}
+
+FaceLocalId
+CartesianMesh2D::getTopFaceOfCell(const CellLocalId cId) const noexcept
+{
+	CellDirectionMng cell_dm(m_cartesian_mesh->cellDirection(MD_DirY));
+	DirCellFace dn = cell_dm.cellFace(cId);
+	return dn.nextId();
+}
+
+FaceLocalId
+CartesianMesh2D::getBottomFaceOfCell(const CellLocalId cId) const noexcept
+{
+	CellDirectionMng cell_dm(m_cartesian_mesh->cellDirection(MD_DirY));
+	DirCellFace dn = cell_dm.cellFace(cId);
+	return dn.previousId();
+}
+
+FaceLocalId
+CartesianMesh2D::getLeftFaceOfCell(const CellLocalId cId) const noexcept
+{
+	CellDirectionMng cell_dm(m_cartesian_mesh->cellDirection(MD_DirX));
+	DirCellFace dn = cell_dm.cellFace(cId);
+	return dn.previousId();
+}
+
+FaceLocalId
+CartesianMesh2D::getRightFaceOfCell(const CellLocalId cId) const noexcept
+{
+	CellDirectionMng cell_dm(m_cartesian_mesh->cellDirection(MD_DirX));
+	DirCellFace dn = cell_dm.cellFace(cId);
+	return dn.nextId();
+}
+
+CellLocalId
+CartesianMesh2D::getTopCell(const CellLocalId cId) const noexcept
+{
+	CellDirectionMng cell_dm(m_cartesian_mesh->cellDirection(MD_DirY));
+	DirCell dn = cell_dm.cell(cId);
+	return dn.nextId();
+}
+
+CellLocalId
+CartesianMesh2D::getBottomCell(const CellLocalId cId) const noexcept
+{
+	CellDirectionMng cell_dm(m_cartesian_mesh->cellDirection(MD_DirY));
+	DirCell dn = cell_dm.cell(cId);
+	return dn.previousId();
+}
+
+CellLocalId
+CartesianMesh2D::getLeftCell(const CellLocalId cId) const noexcept
+{
+	CellDirectionMng cell_dm(m_cartesian_mesh->cellDirection(MD_DirX));
+	DirCell dn = cell_dm.cell(cId);
+	return dn.previousId();
+}
+
+CellLocalId
+CartesianMesh2D::getRightCell(const CellLocalId cId) const noexcept
+{
+	CellDirectionMng cell_dm(m_cartesian_mesh->cellDirection(MD_DirX));
+	DirCell dn = cell_dm.cell(cId);
+	return dn.nextId();
 }

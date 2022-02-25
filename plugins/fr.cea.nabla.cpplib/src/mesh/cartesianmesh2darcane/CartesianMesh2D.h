@@ -44,13 +44,23 @@ public:
 
 	ItemGroup getGroup(const string& name);
 
-	ItemLocalIdView<Node> getNodesOfCell(CellLocalId cId) const;
-	ItemLocalIdView<Node> getNodesOfFace(FaceLocalId fId) const;
-	ItemLocalIdView<Cell> getCellsOfNode(NodeLocalId nId) const;
-	ItemLocalIdView<Cell> getCellsOfFace(FaceLocalId fId) const;
-	ItemLocalIdView<Cell> getNeighbourCells(CellLocalId cId) const;
-	ItemLocalIdView<Face> getFacesOfCell(CellLocalId cId) const;
-	FaceLocalId getCommonFace(CellLocalId c1Id, CellLocalId c2Id) const;
+	ItemLocalIdView<Node> getNodesOfCell(const CellLocalId cId) const;
+	ItemLocalIdView<Node> getNodesOfFace(const FaceLocalId fId) const;
+	ItemLocalIdView<Cell> getCellsOfNode(const NodeLocalId nId) const;
+	ItemLocalIdView<Cell> getCellsOfFace(const FaceLocalId fId) const;
+	ItemLocalIdView<Cell> getNeighbourCells(const CellLocalId cId) const;
+	ItemLocalIdView<Face> getFacesOfCell(const CellLocalId cId) const;
+	FaceLocalId getCommonFace(const CellLocalId c1Id, const CellLocalId c2Id) const;
+
+	FaceLocalId getTopFaceOfCell(const CellLocalId cId) const noexcept;
+	FaceLocalId getBottomFaceOfCell(const CellLocalId cId) const noexcept;
+	FaceLocalId getLeftFaceOfCell(const CellLocalId cId) const noexcept;
+	FaceLocalId getRightFaceOfCell(const CellLocalId cId) const noexcept;
+
+	CellLocalId getTopCell(const CellLocalId cId) const noexcept;
+	CellLocalId getBottomCell(const CellLocalId cId) const noexcept;
+	CellLocalId getLeftCell(const CellLocalId cId) const noexcept;
+	CellLocalId getRightCell(const CellLocalId cId) const noexcept;
 
 private:
 	CartesianMesh2D(IMesh* mesh);

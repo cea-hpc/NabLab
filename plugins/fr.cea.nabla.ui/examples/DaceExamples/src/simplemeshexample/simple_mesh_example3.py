@@ -23,7 +23,11 @@ from dace.sdfg.nodes import MapEntry, Tasklet
 from dace.sdfg.graph import NodeNotFoundError, SubgraphView
 from dace.transformation.helpers import nest_state_subgraph
 from dace.transformation.dataflow import tiling
+
+from IPython.display import Code
+
 import pytest
+from dace.sdfg.scope import ScopeSubgraphView
 
 class SimpleMeshExample:
     stopTime = 1.0
@@ -126,75 +130,235 @@ class SimpleMeshExample:
         
         nbCells = dace.symbol('nbCells')
         nbNodes = dace.symbol('nbNodes')
-        nbNodesCells = dace.symbol('nbNodesCells')
+        maxNodesOfCell = dace.symbol('maxNodesOfCell')
         
         @dace.program
-        def _computeCstComputeSum(quads: dace.int64[nbCells, nbNodesCells], cst: dace.int64[nbNodes], nodes_sum: dace.int64[nbCells]):
-            for i in dace.map[0:nbNodes]:
+        def _computeCstComputeSum(nodesOfCells: dace.int64[nbCells, maxNodesOfCell], cst: dace.float64[nbNodes], nodes_sum: dace.float64[nbCells]):
+            for rNodes in dace.map[0:nbNodes]:
                 with dace.tasklet:
-                        valuesOnNodes >> cst[i]
+                        valuesOnNodes >> cst[rNodes]
                         valuesOnNodes = 1
-            for i in dace.map[0:nbCells]:
-                tmp = np.empty((nbNodesCells), dtype=np.int64)
-                nodesCellOfJ = np.empty((nbNodesCells), dtype=np.int64)
-                for j in dace.map[0:nbNodesCells]:
+            for jCells in dace.map[0:nbCells]:
+                tmp = np.empty((maxNodesOfCell), dtype=np.float64)
+                nodesOfCellJ = np.empty((maxNodesOfCell), dtype=np.int64)
+                for rNodes in dace.map[0:maxNodesOfCell]:
                     with dace.tasklet:
-                        valuesOnQuads << quads[i,j]
-                        nodesCell >> nodesCellOfJ[j]
-                        nodesCell = valuesOnQuads
-                for j in dace.map[0:nbNodesCells]:
+                        idNodes << nodesOfCells[jCells,rNodes]
+                        nodesCell >> nodesOfCellJ[rNodes]
+                        nodesCell = idNodes
+                for rNodes in dace.map[0:maxNodesOfCell]:
                     with dace.tasklet:
-                        read_values_nodes << cst[nodesCellOfJ[j]]
-                        values_on_nodes >> tmp[j]
+                        read_values_nodes << cst[nodesOfCellJ[rNodes]]
+                        values_on_nodes >> tmp[rNodes]
                         values_on_nodes = read_values_nodes
-                nodes_sum[i] = np.sum(tmp*i, axis=0)
+                nodes_sum[jCells] = np.sum(tmp*jCells, axis=0)
         
-        '''Initialize values of input data'''
-        cst_array = np.full((self.__nbNodes),0)
-        cst_array = np.array(cst_array)
-        cst_array.astype(np.int64)
-        
-        quads_array = np.empty((0, 4), np.int64)
+        '''Initialize values of input data'''        
+        nodesOfCells_array = np.empty((0, 4), np.int64)
         for jCells in range(self.__nbCells):
             jId = jCells
             nodesOfCellJ = mesh.getNodesOfCell(jId)
-            quads_array = np.append(quads_array, np.array([nodesOfCellJ]), axis=0)
+            nodesOfCells_array = np.append(nodesOfCells_array, np.array([nodesOfCellJ]), axis=0)
             
         '''Initialize values of output data'''
-        nodes_sum_array = np.full((self.__nbCells), 0)
+        nodes_sum_array = np.full((self.__nbCells), 0.0)
         nodes_sum_array = np.array(nodes_sum_array)
-        nodes_sum_array.astype(np.int64)
+        nodes_sum_array.astype(np.float64)
         
-        print("quads_array", quads_array)
+        print("nodesOfCells_array", nodesOfCells_array)
         
         
-        _computeCstComputeSum(cst=cst_array, quads=quads_array, nodes_sum=nodes_sum_array, nbCells=self.__nbCells, nbNodes=self.__nbNodes, nbNodesCells=self.__maxNodesOfCell)
+        _computeCstComputeSum(cst=self.cst, nodesOfCells=nodesOfCells_array, nodes_sum=nodes_sum_array, nbCells=self.__nbCells, nbNodes=self.__nbNodes, maxNodesOfCell=self.__maxNodesOfCell)
     
-        print("cst_array : ", cst_array)
+        print("cst : ", self.cst)
         
         print("nodes_sum_array : ", nodes_sum_array)
         
         
-        sdfg = _computeCstComputeSum.to_sdfg()
+        sdfg: dace.SDFG = _computeCstComputeSum.to_sdfg()
+        state: dace.SDFGState
         
+        '''List of the nodes :
+            node :  _computeCstComputeSum_3[i=0:nbNodes]
+            node :  _computeCstComputeSum_3[i=0:nbNodes]
+            node :  cst
+            node :  _computeCstComputeSum_7[ii=0:nbCells]
+            node :  _computeCstComputeSum_7[ii=0:nbCells]
+            node :  quads
+            node :  nodes_sum
+            node :  _computeCstComputeSum_4
+            node :  _computeCstComputeSum_7_4_10[j=0:nbNodesCells]
+            node :  _computeCstComputeSum_7_4_10[j=0:nbNodesCells]
+            node :  nodesCellOfJ
+            node :  _computeCstComputeSum_7_4_15[k=0:nbNodesCells]
+            node :  _computeCstComputeSum_7_4_15[k=0:nbNodesCells]
+            node :  tmp
+            node :  _Mult__map[__i0=0:nbNodesCells]
+            node :  _Mult_
+            node :  _Mult__map[__i0=0:nbNodesCells]
+            node :  __tmp3
+            node :  Reduce (Sum), Axes: [0]
+            node :  __tmp4
+            node :  assign_20_8
+            node :  _computeCstComputeSum_7_4_11
+            node :  _computeCstComputeSum_7_4_16
+            node :  Indirection
+        
+        '''
+        
+        '''List of the states : 
+            state : MapState
+        '''
         # Nest outer region
+        '''Creation of a state representing the computation of computeCst'''
         for node, state in sdfg.all_nodes_recursive():
             if isinstance(node, dace.nodes.MapEntry):
-                #if len(node.map.params) == 1 and node.map.params[0] == 'i':
-                if len(node.map.params) == 1:
+                #if len(node.map.params) == 1:
+                    '''_scope_subgraph(graph, entry_node, include_entry, include_exit). Detect each subgraph after :'''
+                    '''Traverse children map nodes'''
+                    '''Get child map subgraph (1 level)'''
                     subgraph = state.scope_subgraph(node)
+                    '''Create the subgraph''' 
                     nest_state_subgraph(sdfg, state, subgraph)
                     break
         # Nest inner scope
         for node, state in sdfg.all_nodes_recursive():
             if isinstance(node, dace.nodes.MapEntry):
-                #if len(node.map.params) == 1 and node.map.params[0] == 'j':
                 if len(node.map.params) == 1:
+                    subgraph = state.scope_subgraph(node, include_entry=False, include_exit=False)
+                    nest_state_subgraph(sdfg, state, subgraph)
+                    break
+                
+        """ Iterate over this and all nested SDFGs. """
+        for csdfg in sdfg.all_sdfgs_recursive():
+                pass
+                
+        sdfg.view("sdfgGraphWith3States")
+        
+        
+    def _generateGraphSDFGSolution2(self):
+        
+        nbCells = dace.symbol('nbCells')
+        nbNodes = dace.symbol('nbNodes')
+        maxNodesOfCell = dace.symbol('maxNodesOfCell')
+        
+        @dace.program
+        def _computeCstComputeSum(nodesOfCells: dace.int64[nbCells, maxNodesOfCell], cst: dace.float64[nbNodes], nodes_sum: dace.float64[nbCells]):
+            for rNodes in dace.map[0:nbNodes]:
+                with dace.tasklet:
+                        valuesOnNodes >> cst[rNodes]
+                        valuesOnNodes = 1
+            for jCells in dace.map[0:nbCells]:
+                tmp = np.empty((maxNodesOfCell), dtype=np.float64)
+                nodesOfCellJ = np.empty((maxNodesOfCell), dtype=np.int64)
+                for rNodes in dace.map[0:maxNodesOfCell]:
+                    with dace.tasklet:
+                        idNodes << nodesOfCells[jCells,rNodes]
+                        nodesCell >> nodesOfCellJ[rNodes]
+                        nodesCell = idNodes
+                for rNodes in dace.map[0:maxNodesOfCell]:
+                    with dace.tasklet:
+                        read_values_nodes << cst[nodesOfCellJ[rNodes]]
+                        values_on_nodes >> tmp[rNodes]
+                        values_on_nodes = read_values_nodes
+                nodes_sum[jCells] = np.sum(tmp*jCells, axis=0)
+        
+        '''Initialize values of input data'''        
+        nodesOfCells_array = np.empty((0, 4), np.int64)
+        for jCells in range(self.__nbCells):
+            jId = jCells
+            nodesOfCellJ = mesh.getNodesOfCell(jId)
+            nodesOfCells_array = np.append(nodesOfCells_array, np.array([nodesOfCellJ]), axis=0)
+            
+        '''Initialize values of output data'''
+        nodes_sum_array = np.full((self.__nbCells), 0.0)
+        nodes_sum_array = np.array(nodes_sum_array)
+        nodes_sum_array.astype(np.float64)
+        
+        print("nodesOfCells_array", nodesOfCells_array)
+        
+        
+        _computeCstComputeSum(cst=self.cst, nodesOfCells=nodesOfCells_array, nodes_sum=nodes_sum_array, nbCells=self.__nbCells, nbNodes=self.__nbNodes, maxNodesOfCell=self.__maxNodesOfCell)
+    
+        print("cst : ", self.cst)
+        
+        print("nodes_sum_array : ", nodes_sum_array)
+        
+        
+        sdfg = _computeCstComputeSum.to_sdfg()
+        for state in sdfg.nodes():
+            if any(isinstance(node, Tasklet) for node in state.nodes()):
+                break
+        
+        
+        tasklet_nodes = [n for n in state.nodes() if isinstance(n, Tasklet)]
+        
+        for i in range(len(tasklet_nodes)):
+            if (i!=2):
+                nest_state_subgraph(sdfg, state, SubgraphView(state, [tasklet_nodes[i]]))      
+        
+        sdfg.view("sdfgGraphWithStatesForEachTasklet")
+        
+    def _generateGraphSDFGSolution3(self):
+        
+        nbCells = dace.symbol('nbCells')
+        nbNodes = dace.symbol('nbNodes')
+        maxNodesOfCell = dace.symbol('maxNodesOfCell')
+        
+        @dace.program
+        def _computeCstComputeSum(nodesOfCells: dace.int64[nbCells, maxNodesOfCell], cst: dace.float64[nbNodes], nodes_sum: dace.float64[nbCells]):
+            for rNodes in dace.map[0:nbNodes]:
+                with dace.tasklet:
+                        valuesOnNodes >> cst[rNodes]
+                        valuesOnNodes = 1
+            for jCells in dace.map[0:nbCells]:
+                tmp = np.empty((maxNodesOfCell), dtype=np.int64)
+                nodesOfCellJ = np.empty((maxNodesOfCell), dtype=np.int64)
+                for rNodes in dace.map[0:maxNodesOfCell]:
+                    with dace.tasklet:
+                        idNodes << nodesOfCells[jCells,rNodes]
+                        nodesCell >> nodesOfCellJ[rNodes]
+                        nodesCell = idNodes
+                for rNodes in dace.map[0:maxNodesOfCell]:
+                    with dace.tasklet:
+                        read_values_nodes << cst[nodesOfCellJ[rNodes]]
+                        values_on_nodes >> tmp[rNodes]
+                        values_on_nodes = read_values_nodes
+                nodes_sum[jCells] = np.sum(tmp*jCells, axis=0)
+        
+        '''Initialize values of input data'''
+        
+        nodesOfCells_array = np.empty((0, 4), np.int64)
+        for jCells in range(self.__nbCells):
+            jId = jCells
+            nodesOfCellJ = mesh.getNodesOfCell(jId)
+            nodesOfCells_array = np.append(nodesOfCells_array, np.array([nodesOfCellJ]), axis=0)
+            
+        '''Initialize values of output data'''
+        nodes_sum_array = np.full((self.__nbCells), 0.0)
+        nodes_sum_array = np.array(nodes_sum_array)
+        nodes_sum_array.astype(np.float64)
+        
+        print("nodesOfCells_array", nodesOfCells_array)
+        
+        
+        _computeCstComputeSum(cst=self.cst, nodesOfCells=nodesOfCells_array, nodes_sum=nodes_sum_array, nbCells=self.__nbCells, nbNodes=self.__nbNodes, maxNodesOfCell=self.__maxNodesOfCell)
+        
+        print("cst : ", self.cst)
+        print("nodes_sum_array : ", nodes_sum_array)
+        
+        sdfg: dace.SDFG = _computeCstComputeSum.to_sdfg()
+        state: dace.SDFGState
+        
+        # Nest inner scope
+        for node, state in sdfg.all_nodes_recursive():
+            if isinstance(node, dace.nodes.MapEntry):
+                if len(node.map.params) == 1 and node.map.params[0] == 'jCells':
                     subgraph = state.scope_subgraph(node, include_entry=False, include_exit=False)
                     nest_state_subgraph(state.parent, state, subgraph)
                     break
-                
-        sdfg.view("Test")
+        
+        sdfg.view("sdfgGraphWith2States")
         
     
     def simulate(self):
@@ -204,8 +368,10 @@ class SimpleMeshExample:
         self._computeSum() # @2.0
         self._setUpTimeLoopN() # @2.0
         self._assertSum() # @3.0
-        self._executeTimeLoopN() # @3.0
-        self._generateGraphSDFG()
+        #self._executeTimeLoopN() # @3.0
+        #self._generateGraphSDFG()
+        #self._generateGraphSDFGSolution2()
+        self._generateGraphSDFGSolution3()
         print("End of execution of simpleMeshExample")
 
 if __name__ == '__main__':

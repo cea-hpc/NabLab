@@ -7,15 +7,13 @@
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
 """
-from cartesianmesh2d import CartesianMesh2D
-import numpy as np
-import json
 import sys
+import json
+import numpy as np
+from cartesianmesh2d import CartesianMesh2D
 from pvdfilewriter2d import PvdFileWriter2D
 
-import numpy as np
 import dace 
-
 from dace.sdfg import SDFG
 from dace.memlet import Memlet
 
@@ -120,57 +118,54 @@ class SimpleMeshExample:
         
         nbCells = dace.symbol('nbCells')
         nbNodes = dace.symbol('nbNodes')
-        nbNodesCells = dace.symbol('nbNodesCells')
+        maxNodesOfCell = dace.symbol('maxNodesOfCell')
         
         @dace.program
-        def _computeCstComputeSum(quads: dace.int64[nbCells, nbNodesCells], cst: dace.int64[nbNodes], nodes_sum: dace.int64[nbCells]):
-            for i in dace.map[0:nbNodes]:
+        def _computeCstComputeSum(nodesOfCells: dace.int64[nbCells, maxNodesOfCell], cst: dace.float64[nbNodes], nodes_sum: dace.float64[nbCells]):
+            for rNodes in dace.map[0:nbNodes]:
                 with dace.tasklet:
-                        valuesOnNodes >> cst[i]
+                        valuesOnNodes >> cst[rNodes]
                         valuesOnNodes = 1
-            for i in dace.map[0:nbCells]:
-                tmp = np.empty((nbNodesCells), dtype=np.int64)
-                nodesCellOfJ = np.empty((nbNodesCells), dtype=np.int64)
-                for j in dace.map[0:nbNodesCells]:
+            for jCells in dace.map[0:nbCells]:
+                tmp = np.empty((maxNodesOfCell), dtype=np.float64)
+                nodesOfCellJ = np.empty((maxNodesOfCell), dtype=np.int64)
+                for rNodes in dace.map[0:maxNodesOfCell]:
                     with dace.tasklet:
-                        valuesOnQuads << quads[i,j]
-                        nodesCell >> nodesCellOfJ[j]
-                        nodesCell = valuesOnQuads
-                for j in dace.map[0:nbNodesCells]:
+                        idNodes << nodesOfCells[jCells,rNodes]
+                        nodesCell >> nodesOfCellJ[rNodes]
+                        nodesCell = idNodes
+                for rNodes in dace.map[0:maxNodesOfCell]:
                     with dace.tasklet:
-                        read_values_nodes << cst[nodesCellOfJ[j]]
-                        values_on_nodes >> tmp[j]
+                        read_values_nodes << cst[nodesOfCellJ[rNodes]]
+                        values_on_nodes >> tmp[rNodes]
                         values_on_nodes = read_values_nodes
-                nodes_sum[i] = np.sum(tmp*i, axis=0)
+                nodes_sum[jCells] = np.sum(tmp*jCells, axis=0)
         
         '''Initialize values of input data'''
-        cst_array = np.full((self.__nbNodes),0)
-        cst_array = np.array(cst_array)
-        cst_array.astype(np.int64)
         
-        quads_array = np.empty((0, 4), np.int64)
+        nodesOfCells_array = np.empty((0, 4), np.int64)
         for jCells in range(self.__nbCells):
             jId = jCells
             nodesOfCellJ = mesh.getNodesOfCell(jId)
-            quads_array = np.append(quads_array, np.array([nodesOfCellJ]), axis=0)
+            nodesOfCells_array = np.append(nodesOfCells_array, np.array([nodesOfCellJ]), axis=0)
             
         '''Initialize values of output data'''
-        nodes_sum_array = np.full((self.__nbCells), 0)
+        nodes_sum_array = np.full((self.__nbCells), 0.0)
         nodes_sum_array = np.array(nodes_sum_array)
-        nodes_sum_array.astype(np.int64)
+        nodes_sum_array.astype(np.float64)
         
-        print("quads_array", quads_array)
+        print("nodesOfCells_array", nodesOfCells_array)
         
         
-        _computeCstComputeSum(cst=cst_array, quads=quads_array, nodes_sum=nodes_sum_array, nbCells=self.__nbCells, nbNodes=self.__nbNodes, nbNodesCells=self.__maxNodesOfCell)
+        _computeCstComputeSum(cst=self.cst, nodesOfCells=nodesOfCells_array, nodes_sum=nodes_sum_array, nbCells=self.__nbCells, nbNodes=self.__nbNodes, maxNodesOfCell=self.__maxNodesOfCell)
     
-        print("cst_array : ", cst_array)
+        print("cst : ", self.cst)
         
         print("nodes_sum_array : ", nodes_sum_array)
         
         
         sdfg = _computeCstComputeSum.to_sdfg()
-        sdfg.view("Test")
+        sdfg.view("sdfgGraphWithSingleState")
         
     
     def simulate(self):

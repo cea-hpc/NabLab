@@ -550,8 +550,8 @@ class SimpleMeshExample:
         self._setUpTimeLoopN() # @2.0
         self._assertSum() # @3.0
         self._executeTimeLoopN() # @3.0
-        self._generateGraphSDFG()
-        #self._generateGraphSDFGSolution2()
+        #self._generateGraphSDFG()
+        self._generateGraphSDFGSolution2()
         print("End of execution of simpleMeshExample")
 
 if __name__ == '__main__':

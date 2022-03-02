@@ -18,5 +18,10 @@
       <username>${env.USERNAME}</username>
       <password>${env.PASSWORD}</password>
     </server>
+    <server>
+      <id>github-sirius-components</id>
+      <username>${env.USERNAME}</username>
+      <password>${env.PASSWORD}</password>
+    </server>
   </servers>
 </settings>

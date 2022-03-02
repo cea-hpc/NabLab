@@ -22,8 +22,7 @@
   "activationEvents": [
     "onLanguage:nabla",
     "onLanguage:nablagen",
-    "onCommand:nablabweb.showLatexView",
-    "onCommand:nablabweb.showJobsGraphView"
+    "onCommand:nablabweb.showLatexView"
   ],
   "main": "out/extension.js",
   "contributes": {
@@ -97,13 +96,16 @@
         {
           "when": "resourceLangId == nablagen",
           "command": "nablabweb.generateCode.proxy"
-        },
-        {
-          "when": "resourceLangId == nablagen",
-          "command": "nablabweb.generateIr.proxy"
         }
       ]
-    }
+    },
+    "keybindings": [
+      {
+        "command": "nablabweb.generateIr.proxy",
+        "key": "f2",
+        "when": "resourceLangId == nablagen"
+      }
+    ]
   },
   "devDependencies": {
     "@types/node": "16.6.0",

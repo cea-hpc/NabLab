@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Nabla IDE Web
+Bundle-Name: fr.cea.nabla.ide.web
 Bundle-SymbolicName: fr.cea.nabla.ide.web;singleton:=true
-Bundle-Version: 0.4.4.qualifier
+Bundle-Version: 0.4.5.qualifier
 Bundle-Vendor: CEA
 Automatic-Module-Name: fr.cea.nabla.ide.web
 Bundle-RequiredExecutionEnvironment: JavaSE-11

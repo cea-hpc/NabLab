@@ -124,12 +124,12 @@
 		<dependency>
 			<groupId>fr.cea.nabla</groupId>
 			<artifactId>fr.cea.nabla.ir</artifactId>
-			<version>0.4.4-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>fr.cea.nabla</groupId>
 			<artifactId>fr.cea.nabla.sirius</artifactId>
-			<version>0.4.4-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 

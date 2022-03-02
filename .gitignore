@@ -39,3 +39,4 @@ out
 .vsix
 #yalc
 .yalc/
+yalc.lock

@@ -50,12 +50,10 @@
                 <module>plugins/fr.cea.nabla.edit</module>
                 <module>plugins/fr.cea.nabla.editor</module>
                 <module>plugins/fr.cea.nabla.ir</module>
-                <module>plugins/fr.cea.nabla.ide</module>
                 <module>plugins/fr.cea.nabla.javalib</module>
                 <module>plugins/fr.cea.nabla.sirius</module>
                 <module>plugins/fr.cea.nabla.siriusweb.application</module>
                 <module>plugins/fr.cea.nabla.ide</module>
-                <module>plugins/fr.cea.nabla.javalib</module>
                 <module>plugins/fr.cea.nabla.ui</module>
                 <module>plugins/fr.cea.nabla.rcp</module>
                 <module>tests/fr.cea.nabla.tests</module>

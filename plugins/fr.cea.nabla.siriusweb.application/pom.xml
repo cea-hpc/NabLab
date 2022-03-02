@@ -15,11 +15,12 @@
 	<parent>
 		<groupId>fr.cea.nabla</groupId>
 		<artifactId>parent</artifactId>
-		<version>0.4.4-SNAPSHOT</version>
+		<version>0.4.5-SNAPSHOT</version>
 		<relativePath>../../</relativePath>
 	</parent>
 	<artifactId>fr.cea.nabla.siriusweb.application</artifactId>
 	<name>fr.cea.nabla.siriusweb.application</name>
+	<version>0.4.5-SNAPSHOT</version>
 	<description>CEA NabLab Sirius Web Application</description>
 	<packaging>jar</packaging>
 	

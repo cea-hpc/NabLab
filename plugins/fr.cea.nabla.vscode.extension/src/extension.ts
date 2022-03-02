@@ -52,7 +52,7 @@ export function activate(context: ExtensionContext) {
     serverOptions = {
       run: { command: script },
       args: ["-trace"],
-      debug: { command: script, args: [], options: { env: createDebugEnv() } },
+      debug: { command: script, args: [], options: { env: javaOptions() } },
     };
     // The Sirius Server is also launched from embedded jars locally installed in src/nabla
     const siriusWebServerLauncher =
@@ -195,11 +195,13 @@ export function deactivate() {
   return lc.stop();
 }
 
-function createDebugEnv() {
+/**
+ * fix Google Guice message: "WARNING: An illegal reflective access operation has occurred"
+ */
+function javaOptions() {
   return Object.assign(
     {
-      JAVA_OPTS:
-        "-Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=8000,suspend=n,quiet=y",
+      JAVA_OPTS: "--add-opens java.base/java.lang=ALL-UNNAMED",
     },
     process.env
   );

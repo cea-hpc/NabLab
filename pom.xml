@@ -20,7 +20,7 @@
 
     <properties>
         <tycho-version>2.5.0</tycho-version>
-        <xtend-version>2.25.0</xtend-version>
+        <xtend-version>2.26.0</xtend-version>
         <maven-clean-version>3.1.0</maven-clean-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.target>11</maven.compiler.target>

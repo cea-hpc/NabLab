@@ -18,7 +18,7 @@ import {
   LanguageClientOptions,
   ServerOptions,
   StreamInfo,
-} from "vscode-languageclient";
+} from "vscode-languageclient/node";
 import JobsGraphWebViewLoader from "./view/JobsGraphWebViewLoader";
 import LatexWebViewLoader from "./view/LatexWebViewLoader";
 

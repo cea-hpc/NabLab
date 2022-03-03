@@ -42,8 +42,11 @@ jobs:
       # Runs the maven build (build + tests)
       - name: Run maven build
         if: startsWith(github.ref, 'refs/tags/v') != true
-        run: mvn clean;mvn verify -U
-      
+        run: mvn clean;mvn verify -U --settings .github/workflows/settings.xml
+        env:
+          USERNAME: ${{ github.actor }}
+          PASSWORD: ${{ github.token }}
+
       # Runs the maven build (build + tests + updatesite + products)
       - name: Run maven build and updatesite profiles
         if: startsWith(github.ref, 'refs/tags/v')

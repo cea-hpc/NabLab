@@ -106,9 +106,15 @@
 								<program>
 									<id>nabla-ls</id>
 									<mainClass>fr.cea.nabla.ide.web.NabLabLauncher</mainClass>
-									<!-- uncomment to enable options <commandLineArguments> <commandLineArgument>-trace</commandLineArgument> 
-										<commandLineArgument>-log</commandLineArgument> <commandLineArgument>-noValidate</commandLineArgument> 
-										</commandLineArguments> -->
+									<commandLineArguments>
+										<!-- Required for windows platform -->
+										<!-- <commandLineArgument>-trace</commandLineArgument> -->
+										<!-- <commandLineArgument>-log</commandLineArgument> -->
+										<!-- <commandLineArgument>-noValidate</commandLineArgument> -->
+									</commandLineArguments>
+									<jvmSettings>
+										<extraArgument>-Dfile.encoding=UTF-8</extraArgument>
+									</jvmSettings>
 								</program>
 								<program>
 									<id>nabla-sirius</id>

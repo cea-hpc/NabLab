@@ -71,9 +71,15 @@ export function activate(context: ExtensionContext) {
   };
 
   // Create the language client and start the client.
-  lc = new LanguageClient("NabLab Xtext Server", serverOptions, clientOptions);
+  lc = new LanguageClient(
+    "NabLabXtextServer",
+    "NabLab Xtext Server",
+    serverOptions,
+    clientOptions
+  );
   // enable tracing (.Off, .Messages, Verbose)
-  lc.trace = Trace.Verbose;
+  lc.trace = Trace.Messages;
+
   const disposable = lc.start();
 
   // Push the disposable to the context's subscriptions so that the

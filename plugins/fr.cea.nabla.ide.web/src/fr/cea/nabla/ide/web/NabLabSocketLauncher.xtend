@@ -53,10 +53,11 @@ class NabLabSocketLauncher
 			.setLocalService(languageServer) //
 			.setRemoteInterface(LanguageClient) //
 			.setInput(in) //
-			.setOutput(out);
+			.setOutput(out)//
+			.setExecutorService(executorService);
 			
 			if(Stream.of(args).anyMatch["-traceLSPMessages".equals(it)]){
-				launcherBuilder.traceMessages(new PrintWriter(System.out)).setExecutorService(executorService);
+				launcherBuilder.traceMessages(new PrintWriter(System.out));
 			}
 			
 			val launcher = launcherBuilder.create();

@@ -38,6 +38,8 @@ import org.eclipse.xtext.ide.server.ILanguageServerAccess
 import org.eclipse.xtext.ide.server.commands.IExecutableCommandService
 import org.eclipse.xtext.util.CancelIndicator
 import org.eclipse.emf.ecore.resource.Resource
+import java.nio.file.Path
+import java.nio.file.Paths
 
 @Singleton
 class LSPCommandsHandler implements IExecutableCommandService
@@ -64,7 +66,7 @@ class LSPCommandsHandler implements IExecutableCommandService
 	{
 		if (generateNablagenCommand.equals(params.command) && params.arguments.size === 3)
 		{
-			val nablaFileURI = (params.arguments.get(0) as JsonPrimitive).asString
+			val nablaFileURI = Paths.get((params.arguments.get(0) as JsonPrimitive).asString).toUri.toString
 			val genDir = (params.arguments.get(1) as JsonPrimitive).asString
 			val projectName = (params.arguments.get(2) as JsonPrimitive).asString
 			try
@@ -167,20 +169,25 @@ class LSPCommandsHandler implements IExecutableCommandService
 	
 	private def Resource loadNgenResource(ResourceSet resourceSet, String nablagenFileURI)
 	{
-		val ngenResource = resourceSet.createResource(URI.createURI(nablagenFileURI))
-		resourceSet.createResource(URI.createURI(nablagenFileURI.replace(".ngen", ".n")))
-		ngenResource.load(Map.of())
+		val ngenPath = Path.of(nablagenFileURI)
+		val nGenUri = URI.createURI(ngenPath.toUri.toString);
+		val nPath = Path.of(nablagenFileURI.replace(".ngen", ".n"))
+		val nUri = URI.createURI(nPath.toUri.toString);
+
+		val ngenResource = resourceSet.getResource(nGenUri, true)
+		resourceSet.getResource(nUri, true)
 		EcoreUtil::resolveAll(resourceSet)
 		return ngenResource
 	}
-	private def String loadNablaLibraries(ILanguageServerAccess access, ResourceSet resourceSet)
+
+	private def void loadNablaLibraries(ILanguageServerAccess access, ResourceSet resourceSet)
 	{
-		access.doReadIndex([ILanguageServerAccess.IndexContext ctxt | 
+		access.doReadIndex([ ILanguageServerAccess.IndexContext ctxt |
 			val nablaLibraries = ctxt.index.allResourceDescriptions
 			for (nablaLibrary : nablaLibraries)
 			{
 				val uri = nablaLibrary.URI
-				if (!uri.toString().startsWith("file:///"))
+				if (uri.toString.endsWith(".n") || uri.toString.endsWith(".ngen"))
 				{
 					resourceSet.getResource(uri, true)
 				}

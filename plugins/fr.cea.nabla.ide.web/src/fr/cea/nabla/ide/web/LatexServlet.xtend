@@ -50,7 +50,7 @@ class LatexServlet extends HttpServlet
 		val latexObject = gson.fromJson(requestBody, LatexHttpObject)
 		if (latexObject !== null)
 		{
-			val uri = URI.createURI(latexObject.nablaModelPath)
+			val uri = URI.createURI(URI.decode(latexObject.nablaModelPath))
 			val displayableObject = languageServer.workspaceManager.<EObject>doRead(uri, 
 				[document, resource | getObjectAtPosition(resource, latexObject.offset)])
 			if (displayableObject !== null)

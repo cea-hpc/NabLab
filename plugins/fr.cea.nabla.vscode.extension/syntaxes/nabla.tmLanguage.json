@@ -1,59 +1,50 @@
 {
-    "name": "nabla",
-    "scopeName": "text.n",
+  "name": "nabla",
+  "scopeName": "text.n",
     "fileTypes": [
         "n"
     ],
-    "repository": {
-        "general": {
-            "patterns": [
-                {
-                    "include": "#linecomment"
-                },
-                {
-                    "include": "#blockcomment"
-                },
-                {
-                    "include": "#keyword"
-                },
-                {
-                    "include": "#strings"
-                },
-                {
-                    "include": "#numbers"
-                }
-            ]
-        },
-        "linecomment": {
-            "name": "comment.line.double-dash.nabla",
-            "begin": "(^[ \\t]+)?(?=//)",
-            "end": "(?=$)"
-        },
-        "blockcomment": {
-            "name": "comment.block.nabla",
-            "begin": "/\\*(\\*)?(?!/)",
-            "end": "\\*/"
-        },
-        "keyword": {
-            "name": "keyword.control.nabla",
-            "match": "\\b(connectivity|def|if|else|exit|extension|iterate|let|module|option|return|set|while|with)\\b|\u2115|\u211D|\u213E|\u2200|\u2208|\u2192"
-
-        },
-        "strings": {
-            "name": "string.quoted.double.nabla",
-            "begin": "\"",
-            "end": "\""
-        },
-        "numbers": {
-            "name":  "constant.numeric.nabla",
-            "match": "\\d+\\.?\\d*"
-            
-        }
-    },
-    "patterns": [
+  "repository": {
+    "general": {
+      "patterns": [
         {
-            "include": "#general"
+          "include": "#linecomment"
+        },
+        {
+          "include": "#blockcomment"
+        },
+        {
+          "include": "#keyword"
+        },
+        {
+          "include": "#strings"
         }
-    ],
-    "uuid": "c68d2dbd-310e-4958-a4d6-b5baa80dfd0d"
+      ]
+    },
+    "linecomment": {
+      "name": "comment.line.double-dash.nabla",
+      "begin": "(^[ \\t]+)?(?=//)",
+      "end": "(?=$)"
+    },
+    "blockcomment": {
+      "name": "comment.block.nabla",
+      "begin": "/\\*(\\*)?(?!/)",
+      "end": "\\*/"
+    },
+    "keyword": {
+      "name": "keyword.control.nabla",
+      "match": "\\b(connectivity|def|if|else|exit|extension|iterate|let|module|option|return|set|while|with)\\b|\u2115|\u211D|\u213E|\u2200|\u2208|\u2192"
+    },
+    "strings": {
+      "name": "string.quoted.double.nabla",
+      "begin": "\"",
+      "end": "\""
+    }
+  },
+  "patterns": [
+    {
+      "include": "#general"
+    }
+  ],
+  "uuid": "c68d2dbd-310e-4958-a4d6-b5baa80dfd0d"
 }

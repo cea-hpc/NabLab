@@ -105,7 +105,32 @@
         "key": "f2",
         "when": "resourceLangId == nablagen"
       }
-    ]
+    ],
+    "configurationDefaults": {
+      "[nabla]": {
+        "editor.semanticHighlighting.enabled": true
+      },
+      "editor.semanticTokenColorCustomizations": {
+        "[Visual Studio Light]": {
+          "rules": {
+            "variable.declaration": {
+              "bold": true
+            },
+            "number": "#800000",
+            "timeIterator": "#098658"
+          }
+        },
+        "[Visual Studio Dark]": {
+          "rules": {
+            "variable.declaration": {
+              "bold": true
+            },
+            "number": "#d7ba7d",
+            "timeIterator": "#a8d391"
+          }
+        }
+      }
+    }
   },
   "devDependencies": {
     "@types/node": "16.6.0",

@@ -11,6 +11,7 @@ import { ChildProcess, exec } from "child_process";
 import * as net from "net";
 import * as os from "os";
 import * as path from "path";
+import psList, { ProcessDescriptor } from "ps-list";
 import { commands, ExtensionContext, Uri, window, workspace } from "vscode";
 import { Trace } from "vscode-jsonrpc";
 import {
@@ -24,6 +25,7 @@ import LatexWebViewLoader from "./view/LatexWebViewLoader";
 
 let lc: LanguageClient;
 let siriusWebServer: ChildProcess;
+let processesToKill: ProcessDescriptor[];
 
 export function activate(context: ExtensionContext) {
   let serverOptions: ServerOptions;
@@ -186,19 +188,34 @@ export function activate(context: ExtensionContext) {
     }
   );
   context.subscriptions.push(disposableGenerateIr);
+
+  psList().then((result) => {
+    // retrieve all java processes launched by this extension.
+    processesToKill = result.filter(
+      (p) => p.ppid === process.pid && p.name === "java"
+    );
+  });
 }
 
 /**
- * Close extension properly (see https://code.visualstudio.com/api/language-extensions/language-server-extension-guide)
+ * LanguageClient should be stopped via stop() method (see https://code.visualstudio.com/api/language-extensions/language-server-extension-guide).
+ * But it doesn't work when the extension is packaged.
+ * So use kill() method instead.
  */
 export function deactivate() {
   if (siriusWebServer) {
     siriusWebServer.kill();
   }
-  if (!lc) {
-    return undefined;
-  }
-  return lc.stop();
+  //if (!lc) {
+  //  return undefined;
+  //}
+  // return lc.stop();
+
+  processesToKill.forEach((ptk) => {
+    process.kill(ptk.pid);
+  });
+
+  return undefined;
 }
 
 /**

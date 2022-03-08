@@ -16,7 +16,7 @@ import java.util.concurrent.CompletableFuture;
 
 import org.eclipse.sirius.components.annotations.spring.graphql.MutationDataFetcher;
 import org.eclipse.sirius.components.collaborative.api.IEditingContextEventProcessorRegistry;
-import org.eclipse.sirius.components.collaborative.diagrams.dto.InvokeNodeToolOnDiagramInput;
+import org.eclipse.sirius.components.collaborative.diagrams.dto.InvokeSingleClickOnDiagramElementToolInput;
 import org.eclipse.sirius.components.core.api.ErrorPayload;
 import org.eclipse.sirius.components.core.api.IPayload;
 import org.eclipse.sirius.components.graphql.api.IDataFetcherWithFieldCoordinates;
@@ -31,22 +31,22 @@ import graphql.schema.DataFetchingEnvironment;
  *
  * <pre>
  * type Mutation {
- *   invokeNodeToolOnDiagram(input: InvokeNodeToolOnDiagramInput!): InvokeNodeDiagamToolPayload!
+ *   invokeSingleClickOnDiagramElementTool(input: InvokeSingleClickOnDiagramElementToolInput!): InvokeSingleClickOnDiagramElementToolPayload!
  * }
  * </pre>
  *
  * @author arichard
  */
-@MutationDataFetcher(type = "Mutation", field = MutationInvokeNodeToolOnDiagramDataFetcher.INVOKE_NODE_TOOL_ON_DIAGRAM_FIELD)
-public class MutationInvokeNodeToolOnDiagramDataFetcher implements IDataFetcherWithFieldCoordinates<CompletableFuture<IPayload>> {
+@MutationDataFetcher(type = "Mutation", field = MutationInvokeSingleClickOnDiagramElementToolDataFetcher.INVOKE_SINGLE_CLICK_ON_DIAGRAM_ELEMENT_TOOL_FIELD)
+public class MutationInvokeSingleClickOnDiagramElementToolDataFetcher implements IDataFetcherWithFieldCoordinates<CompletableFuture<IPayload>> {
 
-    public static final String INVOKE_NODE_TOOL_ON_DIAGRAM_FIELD = "invokeNodeToolOnDiagram"; //$NON-NLS-1$
+    public static final String INVOKE_SINGLE_CLICK_ON_DIAGRAM_ELEMENT_TOOL_FIELD = "invokeSingleClickOnDiagramElementTool"; //$NON-NLS-1$
 
     private final ObjectMapper objectMapper;
 
     private final IEditingContextEventProcessorRegistry editingContextEventProcessorRegistry;
 
-    public MutationInvokeNodeToolOnDiagramDataFetcher(ObjectMapper objectMapper, IEditingContextEventProcessorRegistry editingContextEventProcessorRegistry) {
+    public MutationInvokeSingleClickOnDiagramElementToolDataFetcher(ObjectMapper objectMapper, IEditingContextEventProcessorRegistry editingContextEventProcessorRegistry) {
         this.objectMapper = Objects.requireNonNull(objectMapper);
         this.editingContextEventProcessorRegistry = Objects.requireNonNull(editingContextEventProcessorRegistry);
     }
@@ -54,11 +54,11 @@ public class MutationInvokeNodeToolOnDiagramDataFetcher implements IDataFetcherW
     @Override
     public CompletableFuture<IPayload> get(DataFetchingEnvironment environment) throws Exception {
         Object argument = environment.getArgument("input"); //$NON-NLS-1$
-        var input = this.objectMapper.convertValue(argument, InvokeNodeToolOnDiagramInput.class);
+        var input = this.objectMapper.convertValue(argument, InvokeSingleClickOnDiagramElementToolInput.class);
 
         // @formatter:off
         return this.editingContextEventProcessorRegistry.dispatchEvent(input.getEditingContextId(), input)
-                .defaultIfEmpty(new ErrorPayload(input.getId(), "Error while executing MutationInvokeNodeToolOnDiagramDataFetcher")) //$NON-NLS-1$
+                .defaultIfEmpty(new ErrorPayload(input.getId(), "Error while executing MutationInvokeSingleClickOnDiagramElementToolDataFetcher")) //$NON-NLS-1$
                 .toFuture();
         // @formatter:on
     }

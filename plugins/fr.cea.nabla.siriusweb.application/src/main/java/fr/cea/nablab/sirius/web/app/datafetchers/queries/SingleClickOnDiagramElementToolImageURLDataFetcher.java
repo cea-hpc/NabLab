@@ -17,21 +17,12 @@ import org.eclipse.sirius.components.graphql.api.URLConstants;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
- * The data fetcher used to concatenate the server image URL to the create node tool image path.
- * <p>
- * It will be used to fetch the data for the following GraphQL field:
- * </p>
- *
- * <pre>
- * type CreateNodeTool {
- *   imageURL: String!
- * }
- * </pre>
+ * The data fetcher used to concatenate the server image URL to the single click on diagram element tool image path.
  *
  * @author arichard
  */
-@QueryDataFetcher(type = "CreateNodeTool", field = "imageURL")
-public class CreateNodeToolImageURLDataFetcher implements IDataFetcherWithFieldCoordinates<String> {
+@QueryDataFetcher(type = "SingleClickOnDiagramElementTool", field = "imageURL")
+public class SingleClickOnDiagramElementToolImageURLDataFetcher implements IDataFetcherWithFieldCoordinates<String> {
 
     @Override
     public String get(DataFetchingEnvironment environment) throws Exception {

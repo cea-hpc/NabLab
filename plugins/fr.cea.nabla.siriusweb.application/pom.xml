@@ -26,9 +26,9 @@
 	
 	<properties>
 		<java.version>11</java.version>
-		<sirius.components.version>2022.01.12</sirius.components.version>
+		<sirius.components.version>2022.01.17</sirius.components.version>
 		<graphql-java.version>17.1</graphql-java.version>
-		<spring-boot.version>2.6.3</spring-boot.version>
+		<spring-boot.version>2.6.4</spring-boot.version>
 	</properties>
 
 	<dependencyManagement>

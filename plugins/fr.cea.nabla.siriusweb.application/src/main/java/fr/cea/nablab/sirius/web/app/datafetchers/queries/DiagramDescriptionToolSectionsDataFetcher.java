@@ -12,6 +12,7 @@ package fr.cea.nablab.sirius.web.app.datafetchers.queries;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -31,29 +32,29 @@ import reactor.core.publisher.Mono;
  * @author arichard
  */
 @QueryDataFetcher(type = "DiagramDescription", field = "toolSections")
-public class GetToolSectionsDataFetcher implements IDataFetcherWithFieldCoordinates<CompletableFuture<List<ToolSection>>> {
+public class DiagramDescriptionToolSectionsDataFetcher implements IDataFetcherWithFieldCoordinates<CompletableFuture<List<ToolSection>>> {
 
     private static final String DIAGRAM_ELEMENT_ID = "diagramElementId"; //$NON-NLS-1$
 
-    private static final String DIAGRAM_ID = "diagramId"; //$NON-NLS-1$
+    private static final String REPRESENTATION_ID = "representationId"; //$NON-NLS-1$
 
     private static final String EDITING_CONTEXT_ID = "editingContextId"; //$NON-NLS-1$
 
     private final IEditingContextEventProcessorRegistry editingContextEventProcessorRegistry;
 
-    public GetToolSectionsDataFetcher(IEditingContextEventProcessorRegistry editingContextEventProcessorRegistry) {
+    public DiagramDescriptionToolSectionsDataFetcher(IEditingContextEventProcessorRegistry editingContextEventProcessorRegistry) {
         this.editingContextEventProcessorRegistry = Objects.requireNonNull(editingContextEventProcessorRegistry);
     }
 
     @Override
     public CompletableFuture<List<ToolSection>> get(DataFetchingEnvironment environment) throws Exception {
-        Map<String, Object> variables = environment.getVariables();
-        Object editingContextId = variables.get(EDITING_CONTEXT_ID);
-        Object diagramId = variables.get(DIAGRAM_ID);
-        Object diagramElementId = variables.get(DIAGRAM_ELEMENT_ID);
+        Map<String, Object> localContext = environment.getLocalContext();
+        String editingContextId = Optional.ofNullable(localContext.get(EDITING_CONTEXT_ID)).map(Object::toString).orElse(null);
+        String representationId = Optional.ofNullable(localContext.get(REPRESENTATION_ID)).map(Object::toString).orElse(null);
+        String diagramElementId = environment.getArgument(DIAGRAM_ELEMENT_ID);
 
-        if (editingContextId instanceof String && diagramId instanceof String && diagramElementId instanceof String) {
-            GetToolSectionsInput input = new GetToolSectionsInput(UUID.randomUUID(), (String) editingContextId, (String) diagramId, (String) diagramElementId);
+        if (editingContextId != null && representationId != null && diagramElementId != null) {
+            GetToolSectionsInput input = new GetToolSectionsInput(UUID.randomUUID(), editingContextId, representationId, diagramElementId);
 
             // @formatter:off
             return this.editingContextEventProcessorRegistry.dispatchEvent(input.getEditingContextId(), input)
@@ -63,7 +64,7 @@ public class GetToolSectionsDataFetcher implements IDataFetcherWithFieldCoordina
                     .toFuture();
             // @formatter:on
         }
-        return Mono.<List<ToolSection>> empty().toFuture();
+        return Mono.<List<ToolSection>> just(List.of()).toFuture();
     }
 
 }

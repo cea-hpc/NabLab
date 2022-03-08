@@ -30,6 +30,16 @@ public:
 	inline static const string LeftNodes = "LeftNodes";
 	inline static const string RightNodes = "RightNodes";
 
+	// CELLS
+	inline static const string InnerCells = "InnerCells";
+	inline static const string TopCells = "TopCells";
+	inline static const string BottomCells = "BottomCells";
+	inline static const string LeftCells = "LeftCells";
+	inline static const string RightCells = "RightCells";
+
+	// FACES
+	inline static const string InnerFaces = "InnerFaces";
+
 public:
 	static CartesianMesh2D* createInstance(IMesh* mesh);
 

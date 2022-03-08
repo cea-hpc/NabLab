@@ -61,7 +61,7 @@ CartesianMesh2D::CartesianMesh2D(IMesh* mesh)
 	m_neighbour_cells = cn->connectivityView();
 
 	//
-	// compute groups
+	// compute node groups
 	//
 	CellDirectionMng x_cell_dm(m_cartesian_mesh->cellDirection(MD_DirX));
 	CellDirectionMng y_cell_dm(m_cartesian_mesh->cellDirection(MD_DirY));
@@ -84,33 +84,77 @@ CartesianMesh2D::CartesianMesh2D(IMesh* mesh)
 	Int32 right_node_id(0);
 
 	NodeDirectionMng x_node_dm(m_cartesian_mesh->nodeDirection(MD_DirX));
-	ENUMERATE_NODE(inode, x_node_dm.innerNodes())
-	{
-		Node n = *inode;
-		DirNode dn = x_node_dm.node(n);
-		if (dn.nextRightCellId() != -1 && dn.nextLeftCellId() != -1)
-			inner_nodes[inner_node_id++] = n.localId();
-	}
-
-	ENUMERATE_NODE(inode, x_node_dm.outerNodes())
-	{
-		Node n = *inode;
-		DirNode dn = x_node_dm.node(n);
-		if (dn.nextRightCellId() == -1 && dn.nextLeftCellId() == -1)
-			right_nodes[right_node_id++] = n.localId();
-		else if (dn.previousRightCellId() == -1 && dn.previousLeftCellId() == -1)
-			left_nodes[left_node_id++] = n.localId();
-	}
-
 	NodeDirectionMng y_node_dm(m_cartesian_mesh->nodeDirection(MD_DirY));
-	ENUMERATE_NODE(inode, y_node_dm.outerNodes())
+	ENUMERATE_NODE(inode, mesh->allNodes())
 	{
 		Node n = *inode;
-		DirNode dn = y_node_dm.node(n);
-		if (dn.nextRightCellId() == -1 && dn.nextLeftCellId() == -1)
-			top_nodes[top_node_id++] = n.localId();
-		else if (dn.previousRightCellId() == -1 && dn.previousLeftCellId() == -1)
-			bottom_nodes[bottom_node_id++] = n.localId();
+
+		DirNode xdn = x_node_dm.node(n);
+		if (xdn.nextRightCellId() != -1 && xdn.previousRightCellId() != -1 && xdn.nextLeftCellId() != -1 && xdn.previousLeftCellId() != -1)
+			inner_nodes[inner_node_id++] = n.localId();
+		else
+		{
+			if (xdn.nextRightCellId() == -1 && xdn.nextLeftCellId() == -1)
+				right_nodes[right_node_id++] = n.localId();
+			if (xdn.previousRightCellId() == -1 && xdn.previousLeftCellId() == -1)
+				left_nodes[left_node_id++] = n.localId();
+
+			DirNode ydn = y_node_dm.node(n);
+			if (ydn.nextRightCellId() == -1 && ydn.nextLeftCellId() == -1)
+				top_nodes[top_node_id++] = n.localId();
+			if (ydn.previousRightCellId() == -1 && ydn.previousLeftCellId() == -1)
+				bottom_nodes[bottom_node_id++] = n.localId();
+		}
+	}
+
+	//
+	// compute cell groups
+	//
+	UniqueArray<Int32> inner_cells((nb_x_quads - 2)*(nb_y_quads - 2));
+	UniqueArray<Int32> top_cells(nb_x_quads);
+	UniqueArray<Int32> bottom_cells(nb_x_quads);
+	UniqueArray<Int32> left_cells(nb_y_quads);
+	UniqueArray<Int32> right_cells(nb_y_quads);
+
+	Int32 inner_cell_id(0);
+	Int32 top_cell_id(0);
+	Int32 bottom_cell_id(0);
+	Int32 left_cell_id(0);
+	Int32 right_cell_id(0);
+
+	ENUMERATE_CELL(icell, mesh->allCells())
+	{
+		Cell c = *icell;
+
+		DirCell xdc = x_cell_dm.cell(c);
+		DirCell ydc = y_cell_dm.cell(c);
+		if (xdc.nextId() != -1 && xdc.previousId() != -1 && ydc.nextId() != -1 && ydc.previousId() != -1)
+			inner_cells[inner_cell_id++] = c.localId();
+		else
+		{
+			if (xdc.nextId() == -1)
+				right_cells[right_cell_id++] = c.localId();
+			if (xdc.previousId() == -1)
+				left_cells[left_cell_id++] = c.localId();
+			if (ydc.nextId() == -1)
+				top_cells[top_cell_id++] = c.localId();
+			if (ydc.previousId() == -1)
+				bottom_cells[bottom_cell_id++] = c.localId();
+		}
+	}
+
+	//
+	// compute face groups
+	//
+	UniqueArray<Int32> inner_faces(2*nb_y_quads*nb_x_quads - nb_x_quads - nb_y_quads);
+
+	Int32 inner_face_id(0);
+
+	ENUMERATE_FACE(iface, mesh->allFaces())
+	{
+		Face f = *iface;
+		if (f.nbCell() == 2)
+			inner_faces[inner_face_id++] = f.localId();
 	}
 
 	m_groups[CartesianMesh2D::InnerNodes] = node_family->createGroup(CartesianMesh2D::InnerNodes, inner_nodes);
@@ -118,6 +162,14 @@ CartesianMesh2D::CartesianMesh2D(IMesh* mesh)
 	m_groups[CartesianMesh2D::BottomNodes] = node_family->createGroup(CartesianMesh2D::BottomNodes, bottom_nodes);
 	m_groups[CartesianMesh2D::LeftNodes] = node_family->createGroup(CartesianMesh2D::LeftNodes, left_nodes);
 	m_groups[CartesianMesh2D::RightNodes] = node_family->createGroup(CartesianMesh2D::RightNodes, right_nodes);
+
+	m_groups[CartesianMesh2D::InnerCells] = node_family->createGroup(CartesianMesh2D::InnerCells, inner_cells);
+	m_groups[CartesianMesh2D::TopCells] = node_family->createGroup(CartesianMesh2D::TopCells, top_cells);
+	m_groups[CartesianMesh2D::BottomCells] = node_family->createGroup(CartesianMesh2D::BottomCells, bottom_cells);
+	m_groups[CartesianMesh2D::LeftCells] = node_family->createGroup(CartesianMesh2D::LeftCells, left_cells);
+	m_groups[CartesianMesh2D::RightCells] = node_family->createGroup(CartesianMesh2D::RightCells, right_cells);
+
+	m_groups[CartesianMesh2D::InnerFaces] = node_family->createGroup(CartesianMesh2D::InnerFaces, inner_faces);
 }
 
 ItemGroup

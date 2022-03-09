@@ -99,12 +99,12 @@
 							<goal>assemble</goal>
 						</goals>
 						<configuration>
-							<assembleDirectory>${project.build.directory}/languageserver</assembleDirectory>
+							<assembleDirectory>${project.build.directory}/nablab</assembleDirectory>
 							<repositoryLayout>flat</repositoryLayout>
 							<useWildcardClassPath>true</useWildcardClassPath>
 							<programs>
 								<program>
-									<id>nabla-ls</id>
+									<id>nablab-ls</id>
 									<mainClass>fr.cea.nabla.ide.web.NabLabLauncher</mainClass>
 									<commandLineArguments>
 										<!-- Required for windows platform -->
@@ -117,7 +117,7 @@
 									</jvmSettings>
 								</program>
 								<program>
-									<id>nabla-sirius</id>
+									<id>nablab-sirius</id>
 									<mainClass>fr.cea.nablab.sirius.web.app.NabLabApplication</mainClass>
 								</program>
 							</programs>
@@ -125,7 +125,28 @@
 					</execution>
 				</executions>
 			</plugin>
-
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.2.0</version>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.basedir}/../fr.cea.nabla.vscode.extension/src/nablab/</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${project.basedir}/target/nablab/</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 

@@ -80,6 +80,7 @@
             </activation>
             <modules>
                 <module>plugins/fr.cea.nabla.ide.web</module>
+                <module>plugins/fr.cea.nabla.vscode.extension</module>
                 <module>releng/fr.cea.nabla.targetplatform</module>
             </modules>
         </profile>

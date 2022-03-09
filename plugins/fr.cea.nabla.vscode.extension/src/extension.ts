@@ -47,9 +47,9 @@ export function activate(context: ExtensionContext) {
     };
   } else {
     // Normal mode: The LSP server is launched from embedded jars locally installed in src/nabla
-    const launcher = os.platform() === "win32" ? "nabla-ls.bat" : "nabla-ls";
+    const launcher = os.platform() === "win32" ? "nablab-ls.bat" : "nablab-ls";
     const script = context.asAbsolutePath(
-      path.join("src", "nabla", "bin", launcher)
+      path.join("src", "nablab", "bin", launcher)
     );
     serverOptions = {
       run: { command: script },
@@ -58,9 +58,9 @@ export function activate(context: ExtensionContext) {
     };
     // The Sirius Server is also launched from embedded jars locally installed in src/nabla
     const siriusWebServerLauncher =
-      os.platform() === "win32" ? "nabla-sirius.bat" : "nabla-sirius";
+      os.platform() === "win32" ? "nablab-sirius.bat" : "nablab-sirius";
     const siriusWebServerScript = context.asAbsolutePath(
-      path.join("src", "nabla", "bin", siriusWebServerLauncher)
+      path.join("src", "nablab", "bin", siriusWebServerLauncher)
     );
 
     siriusWebServer = exec(siriusWebServerScript);

@@ -30,10 +30,9 @@ import org.eclipse.xtext.scoping.IScope
  */
 class NablaIdeCrossrefProposalProvider extends IdeCrossrefProposalProvider
 {
-	val static Logger LOG = Logger.getLogger(NablaIdeCrossrefProposalProvider);
+	val static Logger LOG = Logger.getLogger(NablaIdeCrossrefProposalProvider)
 
-	@Inject
-	IdeContentProposalPriorities proposalPriorities;
+	@Inject protected IdeContentProposalPriorities proposalPriorities
 
 	override void lookupCrossReference(IScope scope, CrossReference crossReference, ContentAssistContext context,
 		IIdeContentProposalAcceptor acceptor, Predicate<IEObjectDescription> filter)
@@ -53,14 +52,14 @@ class NablaIdeCrossrefProposalProvider extends IdeCrossrefProposalProvider
 				}
 				if (filter.apply(candidate))
 				{
-					val ContentAssistEntry entry = createProposal(candidate, crossReference, context);
-					acceptor.accept(entry, proposalPriorities.getCrossRefPriority(candidate, entry));
+					val ContentAssistEntry entry = createProposal(candidate, crossReference, context)
+					acceptor.accept(entry, proposalPriorities.getCrossRefPriority(candidate, entry))
 				}
 			}
 		}
 		catch (UnsupportedOperationException uoe)
 		{
-			LOG.error("Failed to create content assist proposals for cross-reference.", uoe);
+			LOG.error("Failed to create content assist proposals for cross-reference.", uoe)
 		}
 	}
 
@@ -103,15 +102,15 @@ class NablaIdeCrossrefProposalProvider extends IdeCrossrefProposalProvider
 	protected def List<IEObjectDescription> distinctByQualifiedName(Iterable<IEObjectDescription> queryResults)
 	{
 		val List<IEObjectDescription> filteredResult = new ArrayList()
-		val Set<QualifiedName> qualifiedNames = new HashSet();
+		val Set<QualifiedName> qualifiedNames = new HashSet()
 
 		for (IEObjectDescription e : queryResults)
 		{
-			val qn = e.qualifiedName;
+			val qn = e.qualifiedName
 			if (!qualifiedNames.contains(qn))
 			{
-				qualifiedNames.add(qn);
-				filteredResult.add(e);
+				qualifiedNames.add(qn)
+				filteredResult.add(e)
 			}
 		}
 		return filteredResult

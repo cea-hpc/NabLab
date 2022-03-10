@@ -3,7 +3,7 @@
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
@@ -32,7 +32,7 @@ class NabLabSocketLauncher
 
 	def static void main(String[] args)
 	{
-		new NabLabSocketLauncher().run(args);
+		new NabLabSocketLauncher().run(args)
 	}
 
 	def void run(String[] args)
@@ -54,13 +54,14 @@ class NabLabSocketLauncher
 			.setRemoteInterface(LanguageClient) //
 			.setInput(in) //
 			.setOutput(out)//
-			.setExecutorService(executorService);
+			.setExecutorService(executorService)
 			
-			if(Stream.of(args).anyMatch["-traceLSPMessages".equals(it)]){
-				launcherBuilder.traceMessages(new PrintWriter(System.out));
+			if(Stream.of(args).anyMatch["-traceLSPMessages".equals(it)])
+			{
+				launcherBuilder.traceMessages(new PrintWriter(System.out))
 			}
 			
-			val launcher = launcherBuilder.create();
+			val launcher = launcherBuilder.create()
 
 			languageServer.connect(launcher.remoteProxy)
 			launcher.startListening

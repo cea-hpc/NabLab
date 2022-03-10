@@ -21,6 +21,8 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import org.eclipse.emf.ecore.EObject
 
+import static extension fr.cea.nabla.ir.ContainerExtensions.*
+
 class IrUtils
 {
 	// @TODO Comments in .n file generated in code (Doxygen) and AXL description field

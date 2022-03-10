@@ -1,16 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2020, 2022 Microsoft Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License 2.0
- * which accompanies this distribution, and is available at
- * https://www.eclipse.org/legal/epl-2.0/
- * 
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
- * Contributors:
- *     Microsoft Corporation - initial API and implementation
- *     0dinD - Semantic highlighting improvements - https://github.com/eclipse/eclipse.jdt.ls/pull/1501
- *     CEA - Adaptation for Nablas
+ * Contributors: see AUTHORS file
  *******************************************************************************/
 package fr.cea.nabla.ide.web.semantictokens
 
@@ -32,6 +27,10 @@ import org.eclipse.xtext.resource.XtextResource
 
 /**
  * Greatly inspired from org.eclipse.jdt.ls.core.internal.semantictokens.SemanticTokensVisitor
+ * Contributors:
+ *     Microsoft Corporation - initial API and implementation
+ *     0dinD - Semantic highlighting improvements - https://github.com/eclipse/eclipse.jdt.ls/pull/1501
+ *     CEA - Adaptation for NabLab
  */
 class SemanticTokenComputer
 {

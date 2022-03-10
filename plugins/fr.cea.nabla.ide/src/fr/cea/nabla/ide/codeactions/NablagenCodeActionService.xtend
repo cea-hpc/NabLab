@@ -3,7 +3,7 @@
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
@@ -31,9 +31,9 @@ import org.eclipse.xtext.resource.XtextResource
 class NablagenCodeActionService implements ICodeActionService2
 {
 
-	static val TAB = "\t";
-	static val ITERATION_MAX_ATTR = "iterationMax";
-	static val TIME_MAX_ATTR = "timeMax";
+	static val TAB = "\t"
+	static val ITERATION_MAX_ATTR = "iterationMax"
+	static val TIME_MAX_ATTR = "timeMax"
 
 	@Inject
 	EObjectAtOffsetHelper eObjectAtOffsetHelper
@@ -70,38 +70,38 @@ class NablagenCodeActionService implements ICodeActionService2
 	private def CodeAction createMissingCppMandatatoryVariablesAction(XtextResource resource, Diagnostic d,
 		Document document)
 	{
-		val resourceURI = resource.URI;
-		val start = d.range.start;
-		val end = d.range.end;
-		var inserPosition = new Position(end.line, end.character - 1);
-		val content = document.getSubstring(d.range);
-		val iterationMaxIndex = content.indexOf(ITERATION_MAX_ATTR);
-		var boolean insertTimeMax;
-		var boolean insertIterationMax;
+		val resourceURI = resource.URI
+		val start = d.range.start
+		val end = d.range.end
+		var inserPosition = new Position(end.line, end.character - 1)
+		val content = document.getSubstring(d.range)
+		val iterationMaxIndex = content.indexOf(ITERATION_MAX_ATTR)
+		var boolean insertTimeMax
+		var boolean insertIterationMax
 		if(iterationMaxIndex === -1)
 		{
-			insertIterationMax = true;
+			insertIterationMax = true
 			// Missing iterationMaxIndex
 			// Search for timeMaxIdex
-			val timeMaxIndex = content.indexOf(TIME_MAX_ATTR);
+			val timeMaxIndex = content.indexOf(TIME_MAX_ATTR)
 			if(timeMaxIndex === -1)
 			{
 				// Missing timeMax
-				insertTimeMax = true;
+				insertTimeMax = true
 				// Add new content at the end
-				inserPosition = new Position(end.line, end.character - 1);
+				inserPosition = new Position(end.line, end.character - 1)
 			}
 			else
 			{
-				insertTimeMax = false;
-				inserPosition = document.getPosition(document.getOffSet(start) + timeMaxIndex);
+				insertTimeMax = false
+				inserPosition = document.getPosition(document.getOffSet(start) + timeMaxIndex)
 			}
 		}
 		else
 		{
 			// Missing timeMaxOnly
-			insertTimeMax = true;
-			inserPosition = new Position(end.line, end.character - 1);
+			insertTimeMax = true
+			inserPosition = new Position(end.line, end.character - 1)
 
 		}
 		return d.createAddMadatoryCppElementAction(resourceURI, document, inserPosition, insertIterationMax,

@@ -3,7 +3,7 @@
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
@@ -11,7 +11,7 @@ package fr.cea.nabla.ide
 
 import fr.cea.nabla.ide.codeactions.NablaCodeActionService
 import fr.cea.nabla.ide.commands.LSPCommandsHandler
-import fr.cea.nabla.ide.contentassit.NablaIdeContentProposalProvider
+import fr.cea.nabla.ide.contentassist.NablaIdeContentProposalProvider
 import fr.cea.nabla.ide.crossref.NablaIdeCrossrefProposalProvider
 import fr.cea.nabla.ide.hover.NablaIdeHoverService
 import org.eclipse.xtext.ide.editor.contentassist.IdeContentProposalProvider
@@ -32,7 +32,7 @@ class NablaIdeModule extends AbstractNablaIdeModule
 
 	def Class<? extends HoverService> bindHoverService()
 	{
-		return NablaIdeHoverService;
+		return NablaIdeHoverService
 	}
 
 	def Class<? extends ICodeActionService2> bindICodeActionService2()
@@ -47,6 +47,6 @@ class NablaIdeModule extends AbstractNablaIdeModule
 
 	def Class<? extends IdeCrossrefProposalProvider> bindIdeCrossrefProposalProvider()
 	{
-		return NablaIdeCrossrefProposalProvider;
+		return NablaIdeCrossrefProposalProvider
 	}
 }

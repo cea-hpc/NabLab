@@ -50,7 +50,7 @@ class LSPCommandsHandler implements IExecutableCommandService
 	
 	@Inject protected NablaGeneratorMessageDispatcher dispatcher
 	@Inject protected NablagenFileGenerator nablagenGenerator
-	@Inject Provider<CodeGenerator> codeGeneratorProvider
+	@Inject protected Provider<CodeGenerator> codeGeneratorProvider
 	@Inject protected IrRootBuilder irRootBuilder
 	@Inject protected Provider<ResourceSet> resourceSetProvider
 	
@@ -170,9 +170,9 @@ class LSPCommandsHandler implements IExecutableCommandService
 	private def Resource loadNgenResource(ResourceSet resourceSet, String nablagenFileURI)
 	{
 		val ngenPath = Path.of(nablagenFileURI)
-		val nGenUri = URI.createURI(ngenPath.toUri.toString);
+		val nGenUri = URI.createURI(ngenPath.toUri.toString)
 		val nPath = Path.of(nablagenFileURI.replace(".ngen", ".n"))
-		val nUri = URI.createURI(nPath.toUri.toString);
+		val nUri = URI.createURI(nPath.toUri.toString)
 
 		val ngenResource = resourceSet.getResource(nGenUri, true)
 		resourceSet.getResource(nUri, true)

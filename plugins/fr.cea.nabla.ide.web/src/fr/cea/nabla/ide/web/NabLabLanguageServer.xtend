@@ -42,7 +42,6 @@ class NabLabLanguageServer extends LanguageServerImpl
 		options.setLegend(SemanticTokenComputer.legend())
 		options.setRange(false)
 		options.setFull(true)
-
 		capabilities.setSemanticTokensProvider(options)
 
 		return capabilities
@@ -53,8 +52,7 @@ class NabLabLanguageServer extends LanguageServerImpl
 		return requestManager.runRead [ cancelIndicator |
 			workspaceManager.doRead(URI.createURI(params.textDocument.uri), [ doc, resource |
 				return new SemanticTokenComputer(doc, resource).computeTokens
-			]);
-
+			])
 		];
 	}
 

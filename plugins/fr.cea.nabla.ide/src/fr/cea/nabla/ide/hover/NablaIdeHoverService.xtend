@@ -3,7 +3,7 @@
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
@@ -26,7 +26,7 @@ import static extension org.apache.commons.lang.StringEscapeUtils.escapeHtml
 
 class NablaIdeHoverService extends HoverService
 {
-	@Inject IQualifiedNameProvider nameProvider;
+	@Inject IQualifiedNameProvider nameProvider
 	@Inject extension HoverHelper
 	@Inject extension IEObjectDocumentationProvider
 	@Inject INameLabelProvider nameLabelProvider
@@ -82,7 +82,7 @@ class NablaIdeHoverService extends HoverService
 
 	private def String getDefaultFirstLine(EObject o)
 	{
-		val label = o.label;
+		val label = o.label
 		return o.eClass().getName() + ((label !== null) ? " <b>" + label + "</b>" : "")
 	}
 

@@ -3,11 +3,11 @@
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  * Contributors: see AUTHORS file
  *******************************************************************************/
-package fr.cea.nabla.ide.contentassit
+package fr.cea.nabla.ide.contentassist
 
 import com.google.inject.Inject
 import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
@@ -20,8 +20,7 @@ import org.eclipse.xtext.ide.editor.contentassist.IdeContentProposalProvider
 
 class NablaIdeContentProposalProvider extends IdeContentProposalProvider
 {
-	@Inject
-	extension NablaGrammarAccess
+	@Inject extension NablaGrammarAccess
 
 	override dispatch createProposals(RuleCall ruleCall, ContentAssistContext context,
 		IIdeContentProposalAcceptor acceptor)
@@ -31,7 +30,6 @@ class NablaIdeContentProposalProvider extends IdeContentProposalProvider
 			case simpleVarRule,
 			case connectivityVarRule:
 			{
-
 				buildGrecLetterProposals(context, acceptor)
 			}
 			default:

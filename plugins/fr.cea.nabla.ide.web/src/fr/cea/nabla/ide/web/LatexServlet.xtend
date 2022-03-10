@@ -56,7 +56,7 @@ class LatexServlet extends HttpServlet
 			if (displayableObject !== null)
 			{
 				val latexFormula = LatexLabelServices.getLatex(displayableObject)
-				val formulaColor = Color.decode(latexObject.formulaColor);
+				val formulaColor = Color.decode(latexObject.formulaColor)
 				val bufferedImage = LatexImageServices.createPngImage(latexFormula, 30, formulaColor)
 				response.reset()
 				response.setStatus(HttpServletResponse.SC_OK)

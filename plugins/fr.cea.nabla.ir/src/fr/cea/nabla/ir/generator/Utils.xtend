@@ -89,7 +89,7 @@ class Utils
 
 	static def boolean isParallelLoop(Loop it)
 	{
-		IrUtils.isTopLevelConnectivityIterable(it) && multithreadable
+		IrUtils.isTopLevelConnectivity(iterationBlock) && multithreadable
 	}
 
 	static def getOperatorName(String op)

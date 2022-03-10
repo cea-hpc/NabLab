@@ -40,7 +40,7 @@ class ReplaceReductions extends IrTransformationStep
 	override transform(IrRoot ir, (String)=>void traceNotifier)
 	{
 		var reductions = ir.eAllContents.filter(ReductionInstruction)
-		if (!replaceAllReductions) reductions = reductions.filter[x | !IrUtils.isTopLevelConnectivityIterable(x)]
+		if (!replaceAllReductions) reductions = reductions.filter[x | !IrUtils.isTopLevelConnectivity(x.iterationBlock)]
 
 		for (reduction : reductions.toList)
 		{

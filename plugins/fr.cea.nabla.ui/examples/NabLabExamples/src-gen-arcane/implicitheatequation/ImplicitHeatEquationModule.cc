@@ -102,6 +102,8 @@ void ImplicitHeatEquationModule::init()
 	m_u_n.resize(nbCell());
 	m_u_nplus1.resize(nbCell());
 	m_alpha.resize(nbCell(), nbCell());
+	if (options()->linearAlgebra.isPresent())
+		m_linear_algebra.jsonInit(options()->linearAlgebra.value().localstr());
 
 	// calling jobs
 	computeFaceLength(); // @1.0

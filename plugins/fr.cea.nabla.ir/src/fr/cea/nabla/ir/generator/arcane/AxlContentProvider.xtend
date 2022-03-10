@@ -15,6 +15,7 @@ import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.BoolConstant
 import fr.cea.nabla.ir.ir.ConnectivityType
+import fr.cea.nabla.ir.ir.ExtensionProvider
 import fr.cea.nabla.ir.ir.IntConstant
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrType
@@ -26,7 +27,7 @@ import java.util.ArrayList
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
-import static extension fr.cea.nabla.ir.generator.arcane.VariableExtensions.*
+import static extension fr.cea.nabla.ir.generator.arcane.StringExtensions.*
 
 class AxlContentProvider
 {
@@ -63,6 +64,11 @@ class AxlContentProvider
 					<description/>
 				</simple>
 			«ENDFOR»
+			«FOR p : externalProviders»
+				<simple name="«p.optionName»" type="string" optional="true">
+					<description/>
+				</simple>
+			«ENDFOR»
 			«FOR s : ArcaneUtils.getServices(it)»
 				<service-instance name="«StringExtensions.separateWith(s.name, StringExtensions.Dash)»" type="«ArcaneUtils.getInterfaceName(s)»">
 					<description/>
@@ -82,6 +88,16 @@ class AxlContentProvider
 	</service>
 	«ENDIF»
 	'''
+
+	private static def getOptionName(Variable it)
+	{
+		name.separateWith(StringExtensions.Dash)
+	}
+
+	private static def getOptionName(ExtensionProvider it)
+	{
+		extensionName.separateWith(StringExtensions.Dash)
+	}
 
 	private static def getDataType(IrType it)
 	{

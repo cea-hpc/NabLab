@@ -12,7 +12,6 @@ package fr.cea.nabla.ir.generator.arcane
 import fr.cea.nabla.ir.ir.Variable
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
-import static extension fr.cea.nabla.ir.generator.arcane.StringExtensions.*
 
 class VariableExtensions
 {
@@ -24,10 +23,5 @@ class VariableExtensions
 			'm_' + name
 		else
 			name
-	}
-
-	static def getOptionName(Variable it)
-	{
-		name.separateWith(StringExtensions.Dash)
 	}
 }

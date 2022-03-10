@@ -119,8 +119,8 @@ class IrModuleContentProvider
 		«irRoot.mesh.className»* m_mesh;
 
 		// other attributes
-		«FOR v : externalProviders»
-			«v.className» «ArcaneUtils.toAttributeName(v.instanceName)»;
+		«FOR p : externalProviders»
+			«p.className» «ArcaneUtils.toAttributeName(p.instanceName)»;
 		«ENDFOR»
 		«FOR v : variables.filter[x | !(x.option || x.type instanceof ConnectivityType)]»
 			«IF v.constExpr»
@@ -197,6 +197,11 @@ class IrModuleContentProvider
 			// constant time step
 			m_global_deltat = «ts.codeName»;
 		«ENDIF»
+		«FOR p : externalProviders»
+			«val optionName = StringExtensions.separateWithUpperCase(p.extensionName)»
+			if (options()->«optionName».isPresent())
+				«ArcaneUtils.toAttributeName(p.instanceName)».jsonInit(options()->«optionName».value().localstr());
+		«ENDFOR»
 
 		// calling jobs
 		«FOR c : irRoot.main.calls.filter[!mainTimeLoop]»

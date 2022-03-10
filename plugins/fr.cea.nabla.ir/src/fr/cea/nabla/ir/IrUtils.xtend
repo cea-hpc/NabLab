@@ -11,7 +11,7 @@ package fr.cea.nabla.ir
 
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import fr.cea.nabla.ir.ir.IterableInstruction
+import fr.cea.nabla.ir.ir.IterationBlock
 import fr.cea.nabla.ir.ir.Iterator
 import java.io.PrintWriter
 import java.io.StringWriter
@@ -83,11 +83,10 @@ class IrUtils
 		return gson.toJson(jsonObject)
 	}
 
-	static def boolean isTopLevelConnectivityIterable(IterableInstruction l)
+	static def boolean isTopLevelConnectivity(IterationBlock b)
 	{
-		val i = l.iterationBlock
-		if (i instanceof Iterator)
-			i.container.connectivityCall.args.empty
+		if (b instanceof Iterator)
+			b.container.connectivityCall.args.empty
 		else
 			false
 	}

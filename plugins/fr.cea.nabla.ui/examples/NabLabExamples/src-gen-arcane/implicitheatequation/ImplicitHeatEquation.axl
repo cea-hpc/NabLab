@@ -66,6 +66,9 @@
 		<simple name="max-iterations" type="int32" minOccurs="1" maxOccurs="1">
 			<description/>
 		</simple>
+		<simple name="linear-algebra" type="string" optional="true">
+			<description/>
+		</simple>
 	</options>
 
 	<entry-points>

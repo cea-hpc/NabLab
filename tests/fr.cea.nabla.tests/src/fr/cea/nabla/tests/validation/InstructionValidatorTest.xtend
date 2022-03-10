@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -38,7 +38,7 @@ class InstructionValidatorTest
 	@Inject extension TestUtils
 
 	@Test
-	def void testDynamicGlobalVars() 
+	def void testDynamicGlobalVars()
 	{
 		val rs = resourceSetProvider.get
 		parseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DPath), rs)
@@ -47,6 +47,7 @@ class InstructionValidatorTest
 			«testModule»
 			ℕ dim;
 			ℝ[dim] X{nodes};
+			SetDim: dim = 2;
 			''', rs)
 		Assert.assertNotNull(moduleKo)
 		moduleKo.assertError(NablaPackage.eINSTANCE.varGroupDeclaration,
@@ -76,7 +77,7 @@ class InstructionValidatorTest
 	}
 
 	@Test
-	def void testCheckLocalConnectivityVars() 
+	def void testCheckLocalConnectivityVars()
 	{
 		val rs = resourceSetProvider.get
 		parseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DPath), rs)
@@ -117,7 +118,6 @@ class InstructionValidatorTest
 		val moduleKo = parseHelper.parse(
 			'''
 			«testModule»
-			option ℕ dim = 2;
 			ℕ U{cells};
 			ℕ V{nodes};
 			ComputeU: ∀ j∈cells(), {
@@ -125,7 +125,6 @@ class InstructionValidatorTest
 				U{j} = e * 4;
 			}
 			ComputeV: V = U;
-			SetDim: dim = 3;
 			''', rs)
 		Assert.assertNotNull(moduleKo)
 
@@ -138,14 +137,10 @@ class InstructionValidatorTest
 		moduleKo.assertError(NablaPackage.eINSTANCE.affectation,
 			InstructionValidator::AFFECTATION_ON_CONNECTIVITY_TYPE,
 			InstructionValidator.getAffectationOnConnectivityTypeMsg)
-		moduleKo.assertError(NablaPackage.eINSTANCE.affectation,
-			InstructionValidator::AFFECTATION_ON_OPTION,
-			InstructionValidator.getAffectationOnOptionMsg)
 
 		val moduleOk = parseHelper.parse(
 			'''
 			«testModule»
-			option ℕ dim = 2;
 			ℕ U{cells}; 
 			ℕ V{cells};
 			ComputeU: ∀ j∈cells(), {
@@ -159,7 +154,7 @@ class InstructionValidatorTest
 	}
 
 	@Test
-	def void testCheckIfConditionBoolType() 
+	def void testCheckIfConditionBoolType()
 	{
 		val moduleKo = parseHelper.parse(
 			'''
@@ -185,7 +180,7 @@ class InstructionValidatorTest
 	}
 
 	@Test
-	def void testCheckWhileConditionBoolType() 
+	def void testCheckWhileConditionBoolType()
 	{
 		val moduleKo = parseHelper.parse(
 			'''
@@ -243,31 +238,5 @@ class InstructionValidatorTest
 			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
-	}
-
-	@Test
-	def void testCheckVarTypeForOption()
-	{
-		val moduleKo1 = parseHelper.parse(
-			'''
-			«emptyTestModule»
-			option ℕ coef = 2.0;
-			''')
-		Assert.assertNotNull(moduleKo1)
-		moduleKo1.assertError(NablaPackage.eINSTANCE.optionDeclaration,
-			InstructionValidator::SIMPLE_VAR_TYPE,
-			getTypeMsg(PrimitiveType.REAL.literal, PrimitiveType.INT.literal))
-
-		val moduleKo2 = parseHelper.parse(
-			'''
-			«emptyTestModule»
-			def mySum, 0: ℕ, (a, b) → return a + b;
-			option ℕ[3] coef = [2, 3, 4];
-			option ℕ c = mySum{k∈[0;3[}(coef[k]);
-			''')
-		Assert.assertNotNull(moduleKo2)
-		moduleKo2.assertError(NablaPackage.eINSTANCE.optionDeclaration,
-			InstructionValidator::GLOBAL_VAR_VALUE,
-			InstructionValidator::getGlobalVarValueMsg)
 	}
 }

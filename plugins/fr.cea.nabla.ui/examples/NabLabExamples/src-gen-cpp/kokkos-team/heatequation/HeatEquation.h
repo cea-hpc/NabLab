@@ -36,11 +36,11 @@ template<size_t x>
 RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b);
 double sumR0(double a, double b);
 template<size_t x0>
-RealArray1D<x0> operator+(RealArray1D<x0> a, RealArray1D<x0> b);
+RealArray1D<x0> operatorAdd(RealArray1D<x0> a, RealArray1D<x0> b);
 template<size_t x0>
-RealArray1D<x0> operator*(double a, RealArray1D<x0> b);
+RealArray1D<x0> operatorMult(double a, RealArray1D<x0> b);
 template<size_t x0>
-RealArray1D<x0> operator-(RealArray1D<x0> a, RealArray1D<x0> b);
+RealArray1D<x0> operatorSub(RealArray1D<x0> a, RealArray1D<x0> b);
 }
 
 /******************** Module declaration ********************/
@@ -48,7 +48,7 @@ RealArray1D<x0> operator-(RealArray1D<x0> a, RealArray1D<x0> b);
 class HeatEquation
 {
 	typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
-
+	
 public:
 	HeatEquation(CartesianMesh2D& aMesh);
 	~HeatEquation();
@@ -77,10 +77,12 @@ private:
 	 * Out : pair of indexes, 1st one for start of chunk, 2nd one for size of chunk
 	 */
 	const std::pair<size_t, size_t> computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept;
-
+	
 	// Mesh and mesh variables
 	CartesianMesh2D& mesh;
-	size_t nbNodes, nbCells, nbFaces, maxNodesOfCell, maxNodesOfFace, maxNeighbourCells;
+	size_t nbNodes;
+	size_t nbCells;
+	size_t nbFaces;
 
 	// Options and global variables
 	PvdFileWriter2D* writer;
@@ -90,8 +92,8 @@ private:
 	int n;
 	double stopTime;
 	int maxIterations;
-	double PI;
-	double alpha;
+	static constexpr double PI = 3.1415926;
+	static constexpr double alpha = 1.0;
 	static constexpr double deltat = 0.001;
 	double t_n;
 	double t_nplus1;

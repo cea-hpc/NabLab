@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -33,6 +33,8 @@ abstract class AbstractExpressionInterpreterTest
 		let ℝ r2 = false ? 1.0 : 2.0; // -> 1.0
 
 		ℝ[2] X{nodes};
+
+		InitT: t=0.0;
 		'''
 		assertInterpreteContractedIf(model)
 	}
@@ -56,6 +58,8 @@ abstract class AbstractExpressionInterpreterTest
 		let ℝ[2,2] r4 = -r3; // -> [[-0., -1.],[-1., -2.]]*/
 
 		ℝ[2] X{nodes};
+
+		InitT: t=0.0;
 		'''
 		assertInterpreteUnaryExpression(model)
 	}
@@ -68,6 +72,8 @@ abstract class AbstractExpressionInterpreterTest
 		«testModule»
 		let ℾ b = (true);
 		ℝ[2] X{nodes};
+
+		InitT: t=0.0;
 		'''
 		assertInterpreteParenthesis(model)
 	}
@@ -85,6 +91,8 @@ abstract class AbstractExpressionInterpreterTest
 		let ℾ b2 = false;
 
 		ℝ[2] X{nodes};
+
+		InitT: t=0.0;
 		'''
 		assertInterpreteConstant(model)
 	}
@@ -99,6 +107,8 @@ abstract class AbstractExpressionInterpreterTest
 		let ℝ rMin = ℝ.MinValue;
 
 		ℝ[2] X{nodes};
+
+		InitT: t=0.0;
 		'''
 		assertInterpreteMinConstant(model)
 	}
@@ -113,6 +123,8 @@ abstract class AbstractExpressionInterpreterTest
 		let ℝ rMax = ℝ.MaxValue;
 
 		ℝ[2] X{nodes};
+
+		InitT: t=0.0;
 		'''
 		assertInterpreteMaxConstant(model)
 	}
@@ -136,6 +148,8 @@ abstract class AbstractExpressionInterpreterTest
 		let ℾ[2,3] b3 = ℾ[2,3](true);
 
 		ℝ[2] X{nodes};
+
+		InitT: t=0.0;
 		'''
 		assertInterpreteBaseTypeConstant(model)
 	}
@@ -148,6 +162,8 @@ abstract class AbstractExpressionInterpreterTest
 		«testModule»
 		let ℕ[2] n = [1, 2];
 		ℝ[2] X{nodes};
+
+		InitT: t=0.0;
 		'''
 		assertInterpreteIntVectorConstant(model)
 	}
@@ -160,6 +176,8 @@ abstract class AbstractExpressionInterpreterTest
 		«testModule»
 		let ℕ[2,3] n = [[0, 1, 2],[1, 2, 3]];
 		ℝ[2] X{nodes};
+
+		InitT: t=0.0;
 		'''
 		assertInterpreteIntMatrixConstant(model)
 	}
@@ -172,6 +190,8 @@ abstract class AbstractExpressionInterpreterTest
 		«testModule»
 		let ℝ[2] r = [1.0, 2.0];
 		ℝ[2] X{nodes};
+
+		InitT: t=0.0;
 		'''
 		assertInterpreteRealVectorConstant(model)
 	}
@@ -184,6 +204,8 @@ abstract class AbstractExpressionInterpreterTest
 		«testModule»
 		let ℝ[2,3] r = [[0., 1., 2.],[1., 2., 3.]];
 		ℝ[2] X{nodes};
+
+		InitT: t=0.0;
 		'''
 		assertInterpreteRealMatrixConstant(model)
 	}
@@ -196,6 +218,8 @@ abstract class AbstractExpressionInterpreterTest
 		«testModule»
 		ℕ c;
 		ℝ[2] X{nodes};
+
+		InitT: t=0.0;
 		Job1: c = card(nodes());
 		'''
 		assertInterpreteCardinality(model)
@@ -242,6 +266,8 @@ abstract class AbstractExpressionInterpreterTest
 
 		let ℝ[3] res3 = add(res1 + α, β);  //-> [6., 6., 6.]
 		ℝ[2] X{nodes};
+
+		InitT: t=0.0;
 		'''
 		assertInterpreteFunctionCall(model)
 	}
@@ -286,6 +312,8 @@ abstract class AbstractExpressionInterpreterTest
 		J4: w4 = j(u);
 		J5: w5 = j(v);
 		J6: w6 = k(u);
+
+		InitT: t=0.0;
 		'''
 		assertInterpreteFunctionCallWithBody(model)
 	}
@@ -318,6 +346,8 @@ abstract class AbstractExpressionInterpreterTest
 		let ℝ r8 = r6[1,1]; // -> 5.
 
 		ℝ[2] X{nodes};
+
+		InitT: t=0.0;
 		'''
 		assertInterpreteVarRef(model)
 	}

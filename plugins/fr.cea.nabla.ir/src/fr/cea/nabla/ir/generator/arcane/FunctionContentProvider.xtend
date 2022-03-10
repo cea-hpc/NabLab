@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -48,12 +48,20 @@ class FunctionContentProvider
 	{
 		for (a : inArgs)
 		{
-			var skippedDimensions = ""
-			for (expr : a.type.sizes)
+			val dim = a.type.sizes.size
+			for (i : 0..<dim)
 			{
+				val expr = a.type.sizes.get(i)
 				if (expr instanceof ArgOrVarRef && (expr as ArgOrVarRef).target === v)
-					return a.name + skippedDimensions + '.size()'
-				skippedDimensions += "[0]"
+				{
+					val size = switch a.type.sizes.size
+					{
+						case 1: "size"
+						case 2: (i == 0 ? "dim1Size" : "dim2Size")
+						default: throw new RuntimeException("Not yet implemented")
+					}
+					return a.name + "." + size + "()"
+				}
 			}
 		}
 		throw new RuntimeException("No arg corresponding to dimension symbol: " + v.name)
@@ -70,5 +78,5 @@ class FunctionContentProvider
 	}
 
 	private static def getDeclarationContent(Function it, String name)
-	'''«getTypeName(returnType, true)» «name»(«FOR a : inArgs SEPARATOR ', '»«getTypeName(a.type, true)» «a.name»«ENDFOR»)'''
+	'''«getFunctionArgTypeName(returnType, true)» «name»(«FOR a : inArgs SEPARATOR ', '»«getFunctionArgTypeName(a.type, true)» «a.name»«ENDFOR»)'''
 }

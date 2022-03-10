@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -12,6 +12,7 @@ package fr.cea.nabla.generator.ir
 import com.google.inject.Inject
 import com.google.inject.Provider
 import fr.cea.nabla.ir.IrModuleExtensions
+import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.JobDependencies
 import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.BaseType
@@ -123,7 +124,7 @@ class NablagenApplication2Ir
 			val periodVariableType = postProcessing.periodReference.type as BaseType
 			postProcessing.lastDumpVariable = IrFactory.eINSTANCE.createVariable =>
 			[
-				name = "lastDump"
+				name = IrUtils.LastDumpOptionName
 				type = EcoreUtil::copy(periodVariableType)
 				const = false
 				constExpr = false
@@ -137,7 +138,7 @@ class NablagenApplication2Ir
 			// Create an option to store the output period
 			postProcessing.periodValue = IrFactory.eINSTANCE.createVariable =>
 			[
-				name = "outputPeriod"
+				name = IrUtils.OutputPeriodOptionName
 				type = EcoreUtil::copy(periodVariableType)
 				const = false
 				constExpr = false

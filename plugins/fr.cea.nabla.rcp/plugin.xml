@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <!--
-    Copyright (c) 2021 CEA
+    Copyright (c) 2022 CEA
     This program and the accompanying materials are made available under the
     terms of the Eclipse Public License 2.0 which is available at
     http://www.eclipse.org/legal/epl-2.0.
@@ -18,7 +18,7 @@
             name="NabLab">
             <property name="windowImages" value="icons/logo_16.png,icons/logo_32.png,icons/logo_64.png,icons/logo_128.png,icons/logo_256.png"/>
             <property name="appName" value="NabLab"/>
-            <property name="aboutText" value="NabLab&#x0A;&#x0A;Version 0.4.4&#x0A;&#x0A;&#x0A;Copyright CEA 2021.  All rights reserved."/>
+            <property name="aboutText" value="NabLab&#x0A;&#x0A;Version 0.4.5&#x0A;&#x0A;&#x0A;Copyright CEA 2021.  All rights reserved."/>
             <property name="startupForegroundColor" value="FFFFFF"/>
             <property name="startupMessageRect" value="7,308,458,18"/>
             <property name="startupProgressRect" value="0,328,458,18"/>

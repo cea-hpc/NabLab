@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -10,6 +10,7 @@
 package fr.cea.nabla.ir.transformers
 
 import fr.cea.nabla.ir.ir.ArgOrVar
+import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.ReductionInstruction
@@ -47,14 +48,13 @@ class ReplaceUtf8Chars extends IrTransformationStep
 		'\u2126' -> 'bigomega'
 	}
 
-	new()
+	override getDescription()
 	{
-		super('Replace UTF8 characters in function, variable and job names by ASCII characters')
+		"Replace UTF8 characters in function, variable and job names by ASCII characters"
 	}
 
-	override transform(IrRoot ir)
+	override transform(IrRoot ir, (String)=>void traceNotifier)
 	{
-		trace('    IR -> IR: ' + description)
 		for (v : ir.eAllContents.filter(ArgOrVar).toIterable)
 		{
 			v.name = v.name.noUtf8
@@ -65,10 +65,14 @@ class ReplaceUtf8Chars extends IrTransformationStep
 		ir.eAllContents.filter(Function).forEach[x | x.name = x.name.noUtf8]
 		ir.jobs.forEach[x | x.name = x.name.noUtf8]
 		ir.mesh.connectivities.forEach[x | x.name = x.name.noUtf8]
-		return true
 	}
 
-	static def getNoUtf8(String name)
+	override transform(DefaultExtensionProvider dep, (String)=>void traceNotifier)
+	{
+		dep.functions.forEach[x | x.name = x.name.noUtf8]
+	}
+
+	private def getNoUtf8(String name)
 	{
 		var n = name
 		for (c : UTF8Chars.entrySet)

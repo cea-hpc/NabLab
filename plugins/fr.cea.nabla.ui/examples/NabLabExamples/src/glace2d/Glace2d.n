@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -37,18 +37,16 @@ def inverse: ℝ[2,2] → ℝ[2,2], (a) → {
 }
 
 // Simulation options
-option ℝ stopTime = 0.2;
-option ℕ maxIterations = 20000;
+ℝ stopTime;
+ℕ maxIterations;
 
-// User options
-option ℝ γ = 1.4;
-option ℝ xInterface = 0.5;
-option ℝ δtCfl = 0.4;
-option ℝ ρIniZg = 1.0;
-option ℝ ρIniZd = 0.125;
-option ℝ pIniZg = 1.0;
-option ℝ pIniZd = 0.1;
-
+let ℝ γ = 1.4;
+let ℝ xInterface = 0.5;
+let ℝ δtCfl = 0.4;
+let ℝ ρIniZg = 1.0;
+let ℝ ρIniZd = 0.125;
+let ℝ pIniZg = 1.0;
+let ℝ pIniZd = 0.1;
 ℝ t, δt;
 ℝ[2] X{nodes}, b{nodes}, bt{nodes};
 ℝ[2,2] Ar{nodes}, Mt{nodes};
@@ -109,21 +107,21 @@ ComputeAjr: ∀j∈cells(), ∀r∈nodesOfCell(j), Ajr{j,r} = ((ρ{j} * c{j}) / 
 ComputeFjr: ∀j∈cells(), ∀r∈nodesOfCell(j), F{j,r} = p{j} * C{j,r} + matVectProduct(Ajr{j,r}, (uj^{n}{j}-ur{r}));
 ComputeAr: ∀r∈nodes(), Ar{r} = ∑{j∈cellsOfNode(r)}(Ajr{j,r});
 ComputeBr: ∀r∈nodes(), b{r} = ∑{j∈cellsOfNode(r)}(p{j} * C{j,r} + matVectProduct(Ajr{j,r}, uj^{n}{j}));
-ComputeMt: ∀r∈innerNodes(), Mt{r} = Ar{r};
-ComputeBt: ∀r∈innerNodes(), bt{r} = b{r};
+ComputeMt: ∀r∈nodes("InnerNodes"), Mt{r} = Ar{r};
+ComputeBt: ∀r∈nodes("InnerNodes"), bt{r} = b{r};
 
 ComputeBoundaryConditions: {
 	let ℝ[2,2] I = [ [1.0, 0.0], [0.0, 1.0] ];
 
 	// Y boundary conditions (must be done before X)
-	∀r∈topNodes(), {
+	∀r∈nodes("TopNodes"), {
 		let ℝ[2] N = [0.0, 1.0];
 		let ℝ[2,2] NxN = tensProduct(N,N);
 		let ℝ[2,2] IcP = I - NxN;
 		bt{r} = matVectProduct(IcP, b{r});
 		Mt{r} = IcP * (Ar{r} * IcP) + NxN*trace(Ar{r});
 	}
-	∀r∈bottomNodes(), {
+	∀r∈nodes("BottomNodes"), {
 		let ℝ[2] N = [0.0, -1.0];
 		let ℝ[2,2] NxN = tensProduct(N,N);
 		let ℝ[2,2] IcP = I - NxN;
@@ -132,11 +130,11 @@ ComputeBoundaryConditions: {
 	}
 
 	// X boundary conditions
-	∀r∈leftNodes(),{
+	∀r∈nodes("LeftNodes"),{
 		Mt{r} = I;
 		bt{r} = [0.0, 0.0];
 	}
-	∀r∈rightNodes(),{
+	∀r∈nodes("RightNodes"),{
 		Mt{r} = I;
 		bt{r} = [0.0, 0.0];
 	}

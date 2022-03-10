@@ -16,9 +16,8 @@ public final class Iteration
 {
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
-	@SuppressWarnings("unused")
-	private final int nbNodes, nbCells;
-
+	private final int nbNodes;
+	private final int nbCells;
 	// Options and global variables
 	int n;
 	int k;
@@ -58,6 +57,9 @@ public final class Iteration
 	{
 		final Gson gson = new Gson();
 		final JsonObject options = gson.fromJson(jsonContent, JsonObject.class);
+		n = 0;
+		k = 0;
+		l = 0;
 		X = new double[nbNodes][2];
 		vn_n = new double[nbCells];
 		vn_nplus1 = new double[nbCells];
@@ -419,7 +421,8 @@ public final class Iteration
 
 			// Module instanciation(s)
 			Iteration iteration = new Iteration(mesh);
-			if (o.has("iteration")) iteration.jsonInit(o.get("iteration").toString());
+			assert(o.has("iteration"));
+			iteration.jsonInit(o.get("iteration").toString());
 
 			// Start simulation
 			iteration.simulate();

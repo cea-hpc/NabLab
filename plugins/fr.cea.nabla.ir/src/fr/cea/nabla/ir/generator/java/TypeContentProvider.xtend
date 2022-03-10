@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -32,7 +32,12 @@ class TypeContentProvider
 			case null: null
 			BaseType: primitive.javaType + sizes.map['[]'].join
 			ConnectivityType: base.javaType + connectivities.map['[]'].join
-			LinearAlgebraType: provider.packageName + '.' + IrTypeExtensions.getLinearAlgebraClass(it)
+			LinearAlgebraType:
+			{
+				val p = provider.packageName
+				val prefix = (p.length == 0 ? p : p + ".")
+				prefix + IrTypeExtensions.getLinearAlgebraClass(it)
+			}
 			default: throw new RuntimeException("Unexpected type: " + class.name)
 		}
 	}
@@ -43,7 +48,7 @@ class TypeContentProvider
 		{
 			BaseType case scalar: ''''''
 			BaseType: ''' = new «primitive.javaType»«formatIteratorsAndIndices(it, sizes.map[content])»'''
-			ConnectivityType: ''' = new «primitive.javaType»«formatIteratorsAndIndices(it, connectivities.map[nbElemsVar] + base.sizes.map[content])»'''
+			ConnectivityType: ''' = new «primitive.javaType»«formatIteratorsAndIndices(it, connectivities.map[nbElems] + base.sizes.map[content])»'''
 			LinearAlgebraType: ''' = new «getJavaType»("«name»", «formatIteratorsAndIndices(it, sizes.map[content])»)'''
 		}
 	}

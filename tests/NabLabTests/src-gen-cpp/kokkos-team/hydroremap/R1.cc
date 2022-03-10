@@ -11,7 +11,6 @@
 
 R1::R1(CartesianMesh2D& aMesh)
 : mesh(aMesh)
-, nbNodes(mesh.getNbNodes())
 , nbCells(mesh.getNbCells())
 , rv3("rv3", nbCells)
 {
@@ -30,7 +29,6 @@ R1::jsonInit(const char* jsonContent)
 	const rapidjson::Value::Object& options = document.GetObject();
 
 }
-
 
 const std::pair<size_t, size_t> R1::computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept
 {

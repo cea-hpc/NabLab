@@ -79,34 +79,27 @@ with Math.*;
 with CartesianMesh2D.*;
 ```
 
-### Options
-
-The next part of the file relates to the definition of options: variables whose value can be set in the user data file. Two kinds of options are defined, simulation and user options:
-
-```
-// Simulation options
-option ℝ stopTime = 0.1;
-option ℕ maxIterations = 500;
-
-// User options
-option ℝ PI = 3.1415926;
-option ℝ α = 1.0;
-```
-
-Simulation options represents the maximum time and number of iterations of the simulation. We will see below how they will define the conditions of the iteration loop. 
-
-
 ### Variables
 
-For the heat equation module, the variables are:
+For the heat equation module, the NabLab variables are:
 
+- *stopTime* and *maxIterations* representing the maximum time and number of iterations of the simulation,
+- *PI* and *α* representing two constants,
 - *δt* and *t* representing respectively the time step and time of the simulation. Time step is initialized with a default value. It will be constant during the simulation,
 - *X* and center representing respectively coordinates of nodes and center of cells,
 - *u*, *V* and *f* representing the cells' variables presented in the above equation,
 - *outgoingFlux* representing the $\frac{\Delta t}{V_M} \sum{K_{MM'} \frac{u_{M'}^n - u_{M}^n}{MM'}}$ part of the equation,
 - *surface* representing the surface of faces.
 
+The *stopTime* and *maxIterations* variables have no default value and will not be set in the module.
+Consequently, during the generation process, they will be considered as user's options: their value has to be set by the final user in a [Json](https://www.json.org) data file.
+
 ```
+ℝ stopTime;
+ℕ maxIterations;
+
+let ℝ PI = 3.1415926;
+let ℝ α = 1.0;
 let ℝ δt = 0.001;
 ℝ t;
 ℝ[2] X{nodes}, center{cells};
@@ -282,7 +275,10 @@ After the compilation of the application, a *heatequation* executable is availab
 
 ## Execution
 
-To execute the application, a data file is needed. NabLab generates a template named *HeatEquationDefault.json* in the *src-gen* directory. Copy this file, paste it in the *src* directory, rename it *HeatEquation.json* (select the file in the explorer and press `F2` key) and double-click on it in the explorer to open the json editor.
+To execute the application, a data file is needed. NabLab generates a template named *HeatEquationDefault.json* in the *src-gen* directory.
+Copy this file, paste it in the *src* directory, rename it *HeatEquation.json* (select the file in the explorer and press `F2` key) and double-click on it in the explorer to open the json editor.
+
+You can observe that stopTime and maxIterations variables have been detected as user options and generated in the *json* template.
 
 Remove the comment line, the file is no more generated, and add a mesh block as follows:
 
@@ -295,8 +291,8 @@ Remove the comment line, the file is no more generated, and add a mesh block as 
 		"outputPeriod":1,
 		"stopTime":0.1,
 		"maxIterations":500,
-		"PI":3.1415926,
-		"alpha":1.0
+		"_nonRegression_comment":"empty value to disable, CreateReference or CompareToReference to take action",
+		"nonRegression":""
 	},
 	"mesh":
 	{

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -13,7 +13,7 @@ import com.google.inject.Inject
 import com.google.inject.Provider
 import com.google.inject.Singleton
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
-import fr.cea.nabla.generator.providers.NablagenFileGenerator
+import fr.cea.nabla.generator.NablagenFileGenerator
 import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.nabla.NablaRoot
 import org.eclipse.core.resources.IFile

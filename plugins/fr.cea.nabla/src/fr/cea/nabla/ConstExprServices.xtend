@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -88,7 +88,7 @@ class ConstExprServices
 			switch c
 			{
 				// options are not constexpr because they are initialized by a file in the generated code
-				SimpleVarDeclaration: (c.value !== null && c.variable.const && c.value !== null && c.value.constExpr)
+				SimpleVarDeclaration: (c.variable.const && c.value !== null && c.value.constExpr)
 				FunctionOrReduction: true
 				default: false
 			}

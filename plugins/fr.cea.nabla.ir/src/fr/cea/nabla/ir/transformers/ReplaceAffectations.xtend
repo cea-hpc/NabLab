@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -13,6 +13,7 @@ import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityType
+import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrRoot
@@ -36,15 +37,13 @@ import static extension fr.cea.nabla.ir.IrTypeExtensions.*
  */
 class ReplaceAffectations extends IrTransformationStep
 {
-	new()
+	override getDescription()
 	{
-		super('Replace arrays affectations by scalar affectations in loops')
+		"Replace arrays affectations by scalar affectations in loops"
 	}
 
-	override transform(IrRoot ir)
+	override transform(IrRoot ir, (String)=>void traceNotifier)
 	{
-		trace('    IR -> IR: ' + description)
-
 		for (affectation : ir.eAllContents.filter(Affectation).toList.filter(a | a.left.type instanceof ConnectivityType))
 		{
 			// we know that left and right have same type
@@ -65,7 +64,11 @@ class ReplaceAffectations extends IrTransformationStep
 				IrTransformationUtils.replace(affectation, #[loop])
 			}
 		}
-		return true
+	}
+
+	override transform(DefaultExtensionProvider dep, (String)=>void traceNotifier)
+	{
+		// nothing to do
 	}
 
 	/*

@@ -16,9 +16,9 @@ public final class IterativeHeatEquation
 {
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
-	@SuppressWarnings("unused")
-	private final int nbNodes, nbCells, nbFaces, maxNodesOfCell, maxNodesOfFace, maxCellsOfFace, maxNeighbourCells;
-
+	private final int nbNodes;
+	private final int nbCells;
+	private final int nbFaces;
 	// Options and global variables
 	private PvdFileWriter2D writer;
 	private String outputPath;
@@ -26,12 +26,12 @@ public final class IterativeHeatEquation
 	int lastDump;
 	int n;
 	int k;
-	double u0;
-	static final double[] vectOne = new double[] {1.0, 1.0};
 	double stopTime;
 	int maxIterations;
-	int maxIterationsK;
-	double epsilon;
+	static final double u0 = 1.0;
+	static final double[] vectOne = new double[] {1.0, 1.0};
+	static final int maxIterationsK = 1000;
+	static final double epsilon = 1.0E-8;
 	double deltat;
 	double t_n;
 	double t_nplus1;
@@ -56,10 +56,6 @@ public final class IterativeHeatEquation
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
 		nbFaces = mesh.getNbFaces();
-		maxNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
-		maxNodesOfFace = CartesianMesh2D.MaxNbNodesOfFace;
-		maxCellsOfFace = CartesianMesh2D.MaxNbCellsOfFace;
-		maxNeighbourCells = CartesianMesh2D.MaxNbNeighbourCells;
 	}
 
 	public void jsonInit(final String jsonContent)
@@ -75,46 +71,16 @@ public final class IterativeHeatEquation
 		assert(valueof_outputPeriod.isJsonPrimitive());
 		outputPeriod = valueof_outputPeriod.getAsJsonPrimitive().getAsInt();
 		lastDump = Integer.MIN_VALUE;
-		if (options.has("u0"))
-		{
-			final JsonElement valueof_u0 = options.get("u0");
-			assert(valueof_u0.isJsonPrimitive());
-			u0 = valueof_u0.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			u0 = 1.0;
-		if (options.has("stopTime"))
-		{
-			final JsonElement valueof_stopTime = options.get("stopTime");
-			assert(valueof_stopTime.isJsonPrimitive());
-			stopTime = valueof_stopTime.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			stopTime = 0.1;
-		if (options.has("maxIterations"))
-		{
-			final JsonElement valueof_maxIterations = options.get("maxIterations");
-			assert(valueof_maxIterations.isJsonPrimitive());
-			maxIterations = valueof_maxIterations.getAsJsonPrimitive().getAsInt();
-		}
-		else
-			maxIterations = 500000000;
-		if (options.has("maxIterationsK"))
-		{
-			final JsonElement valueof_maxIterationsK = options.get("maxIterationsK");
-			assert(valueof_maxIterationsK.isJsonPrimitive());
-			maxIterationsK = valueof_maxIterationsK.getAsJsonPrimitive().getAsInt();
-		}
-		else
-			maxIterationsK = 1000;
-		if (options.has("epsilon"))
-		{
-			final JsonElement valueof_epsilon = options.get("epsilon");
-			assert(valueof_epsilon.isJsonPrimitive());
-			epsilon = valueof_epsilon.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			epsilon = 1.0E-8;
+		n = 0;
+		k = 0;
+		assert(options.has("stopTime"));
+		final JsonElement valueof_stopTime = options.get("stopTime");
+		assert(valueof_stopTime.isJsonPrimitive());
+		stopTime = valueof_stopTime.getAsJsonPrimitive().getAsDouble();
+		assert(options.has("maxIterations"));
+		final JsonElement valueof_maxIterations = options.get("maxIterations");
+		assert(valueof_maxIterations.isJsonPrimitive());
+		maxIterations = valueof_maxIterations.getAsJsonPrimitive().getAsInt();
 		deltat = 0.001;
 		X = new double[nbNodes][2];
 		Xc = new double[nbCells][2];
@@ -157,7 +123,7 @@ public final class IterativeHeatEquation
 					final int pPlus1Id = nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFaceF)%nbNodesOfFaceF];
 					final int pNodes = pId;
 					final int pPlus1Nodes = pPlus1Id;
-					reduction0 = sumR0(reduction0, norm(minus(X[pNodes], X[pPlus1Nodes])));
+					reduction0 = sumR0(reduction0, norm(operatorSub(X[pNodes], X[pPlus1Nodes])));
 				}
 			}
 			faceLength[fFaces] = 0.5 * reduction0;
@@ -245,7 +211,7 @@ public final class IterativeHeatEquation
 					reduction0 = sumR1(reduction0, X[pNodes]);
 				}
 			}
-			Xc[cCells] = multiply(0.25, reduction0);
+			Xc[cCells] = operatorMult(0.25, reduction0);
 		});
 	}
 
@@ -399,7 +365,7 @@ public final class IterativeHeatEquation
 	{
 		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
 		{
-			if (norm(minus(Xc[cCells], vectOne)) < 0.5)
+			if (norm(operatorSub(Xc[cCells], vectOne)) < 0.5)
 				u_n[cCells] = u0;
 			else
 				u_n[cCells] = 0.0;
@@ -436,7 +402,7 @@ public final class IterativeHeatEquation
 					final int dCells = dId;
 					final int fId = mesh.getCommonFace(cId, dId);
 					final int fFaces = fId;
-					final double alphaExtraDiag = deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / norm(minus(Xc[cCells], Xc[dCells]));
+					final double alphaExtraDiag = deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / norm(operatorSub(Xc[cCells], Xc[dCells]));
 					alpha[cCells][dCells] = alphaExtraDiag;
 					alphaDiag = alphaDiag + alphaExtraDiag;
 				}
@@ -523,7 +489,7 @@ public final class IterativeHeatEquation
 
 	private static double[] sumR1(double[] a, double[] b)
 	{
-		return plus(a, b);
+		return operatorAdd(a, b);
 	}
 
 	private static double minR0(double a, double b)
@@ -546,7 +512,7 @@ public final class IterativeHeatEquation
 		return Math.max(a, b);
 	}
 
-	private static double[] plus(double[] a, double[] b)
+	private static double[] operatorAdd(double[] a, double[] b)
 	{
 		double[] result = new double[a.length];
 		for (int ix0=0; ix0<a.length; ix0++)
@@ -556,7 +522,7 @@ public final class IterativeHeatEquation
 		return result;
 	}
 
-	private static double[] multiply(double a, double[] b)
+	private static double[] operatorMult(double a, double[] b)
 	{
 		double[] result = new double[b.length];
 		for (int ix0=0; ix0<b.length; ix0++)
@@ -566,7 +532,7 @@ public final class IterativeHeatEquation
 		return result;
 	}
 
-	private static double[] minus(double[] a, double[] b)
+	private static double[] operatorSub(double[] a, double[] b)
 	{
 		double[] result = new double[a.length];
 		for (int ix0=0; ix0<a.length; ix0++)
@@ -608,7 +574,8 @@ public final class IterativeHeatEquation
 
 			// Module instanciation(s)
 			IterativeHeatEquation iterativeHeatEquation = new IterativeHeatEquation(mesh);
-			if (o.has("iterativeHeatEquation")) iterativeHeatEquation.jsonInit(o.get("iterativeHeatEquation").toString());
+			assert(o.has("iterativeHeatEquation"));
+			iterativeHeatEquation.jsonInit(o.get("iterativeHeatEquation").toString());
 
 			// Start simulation
 			iterativeHeatEquation.simulate();

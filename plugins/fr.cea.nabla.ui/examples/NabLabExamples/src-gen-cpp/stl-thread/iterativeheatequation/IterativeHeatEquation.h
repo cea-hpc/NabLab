@@ -38,11 +38,11 @@ double sumR0(double a, double b);
 double prodR0(double a, double b);
 double maxR0(double a, double b);
 template<size_t x0>
-RealArray1D<x0> operator+(RealArray1D<x0> a, RealArray1D<x0> b);
+RealArray1D<x0> operatorAdd(RealArray1D<x0> a, RealArray1D<x0> b);
 template<size_t x0>
-RealArray1D<x0> operator*(double a, RealArray1D<x0> b);
+RealArray1D<x0> operatorMult(double a, RealArray1D<x0> b);
 template<size_t x0>
-RealArray1D<x0> operator-(RealArray1D<x0> a, RealArray1D<x0> b);
+RealArray1D<x0> operatorSub(RealArray1D<x0> a, RealArray1D<x0> b);
 }
 
 /******************** Module declaration ********************/
@@ -79,7 +79,9 @@ private:
 
 	// Mesh and mesh variables
 	CartesianMesh2D& mesh;
-	size_t nbNodes, nbCells, nbFaces, maxNodesOfCell, maxNodesOfFace, maxCellsOfFace, maxNeighbourCells;
+	size_t nbNodes;
+	size_t nbCells;
+	size_t nbFaces;
 
 	// Options and global variables
 	PvdFileWriter2D* writer;
@@ -88,12 +90,12 @@ private:
 	int lastDump;
 	int n;
 	int k;
-	double u0;
-	static constexpr RealArray1D<2> vectOne = {1.0, 1.0};
 	double stopTime;
 	int maxIterations;
-	int maxIterationsK;
-	double epsilon;
+	static constexpr double u0 = 1.0;
+	static constexpr RealArray1D<2> vectOne = {1.0, 1.0};
+	static constexpr int maxIterationsK = 1000;
+	static constexpr double epsilon = 1.0E-8;
 	double deltat;
 	double t_n;
 	double t_nplus1;

@@ -13,10 +13,15 @@ import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.common.util.EList;
 
+import org.eclipse.emf.common.util.EMap;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.InternalEObject;
 
+import org.eclipse.emf.ecore.impl.EStringToStringMapEntryImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
+import org.eclipse.emf.ecore.util.EcoreEMap;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
@@ -29,6 +34,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <ul>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.MeshExtensionProviderImpl#getItemTypes <em>Item Types</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.MeshExtensionProviderImpl#getConnectivities <em>Connectivities</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.MeshExtensionProviderImpl#getGenerationVariables <em>Generation Variables</em>}</li>
  * </ul>
  *
  * @generated
@@ -53,6 +59,16 @@ public class MeshExtensionProviderImpl extends ExtensionProviderImpl implements 
 	 * @ordered
 	 */
 	protected EList<Connectivity> connectivities;
+
+	/**
+	 * The cached value of the '{@link #getGenerationVariables() <em>Generation Variables</em>}' map.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getGenerationVariables()
+	 * @generated
+	 * @ordered
+	 */
+	protected EMap<String, String> generationVariables;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -104,6 +120,19 @@ public class MeshExtensionProviderImpl extends ExtensionProviderImpl implements 
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
+	public EMap<String, String> getGenerationVariables() {
+		if (generationVariables == null) {
+			generationVariables = new EcoreEMap<String,String>(EcorePackage.Literals.ESTRING_TO_STRING_MAP_ENTRY, EStringToStringMapEntryImpl.class, this, IrPackage.MESH_EXTENSION_PROVIDER__GENERATION_VARIABLES);
+		}
+		return generationVariables;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
@@ -128,6 +157,8 @@ public class MeshExtensionProviderImpl extends ExtensionProviderImpl implements 
 				return ((InternalEList<?>)getItemTypes()).basicRemove(otherEnd, msgs);
 			case IrPackage.MESH_EXTENSION_PROVIDER__CONNECTIVITIES:
 				return ((InternalEList<?>)getConnectivities()).basicRemove(otherEnd, msgs);
+			case IrPackage.MESH_EXTENSION_PROVIDER__GENERATION_VARIABLES:
+				return ((InternalEList<?>)getGenerationVariables()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -144,6 +175,9 @@ public class MeshExtensionProviderImpl extends ExtensionProviderImpl implements 
 				return getItemTypes();
 			case IrPackage.MESH_EXTENSION_PROVIDER__CONNECTIVITIES:
 				return getConnectivities();
+			case IrPackage.MESH_EXTENSION_PROVIDER__GENERATION_VARIABLES:
+				if (coreType) return getGenerationVariables();
+				else return getGenerationVariables().map();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -165,6 +199,9 @@ public class MeshExtensionProviderImpl extends ExtensionProviderImpl implements 
 				getConnectivities().clear();
 				getConnectivities().addAll((Collection<? extends Connectivity>)newValue);
 				return;
+			case IrPackage.MESH_EXTENSION_PROVIDER__GENERATION_VARIABLES:
+				((EStructuralFeature.Setting)getGenerationVariables()).set(newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -183,6 +220,9 @@ public class MeshExtensionProviderImpl extends ExtensionProviderImpl implements 
 			case IrPackage.MESH_EXTENSION_PROVIDER__CONNECTIVITIES:
 				getConnectivities().clear();
 				return;
+			case IrPackage.MESH_EXTENSION_PROVIDER__GENERATION_VARIABLES:
+				getGenerationVariables().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -199,6 +239,8 @@ public class MeshExtensionProviderImpl extends ExtensionProviderImpl implements 
 				return itemTypes != null && !itemTypes.isEmpty();
 			case IrPackage.MESH_EXTENSION_PROVIDER__CONNECTIVITIES:
 				return connectivities != null && !connectivities.isEmpty();
+			case IrPackage.MESH_EXTENSION_PROVIDER__GENERATION_VARIABLES:
+				return generationVariables != null && !generationVariables.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}

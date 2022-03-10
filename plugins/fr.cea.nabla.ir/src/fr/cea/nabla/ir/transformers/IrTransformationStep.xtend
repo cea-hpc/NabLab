@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -9,34 +9,53 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.transformers
 
+import fr.cea.nabla.ir.IrUtils
+import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.IrRoot
-import java.util.ArrayList
-import org.eclipse.xtend.lib.annotations.Accessors
-import org.eclipse.xtend.lib.annotations.Data
 
-@Data
 abstract class IrTransformationStep
 {
-	@Accessors val traceListeners = new ArrayList<(String) => void>
-	val String description
+	static val TracePrefix = "    IR -> IR: "
 
-	def void transformIr(IrRoot ir) throws Exception
+	protected def String getDescription()
+	protected def void transform(IrRoot ir, (String)=>void traceNotifier)
+	protected def void transform(DefaultExtensionProvider ir, (String)=>void traceNotifier)
+
+	def void transformIrRoot(IrRoot ir, (String)=>void traceNotifier) throws IrTransformationException
 	{
-		transformIr(ir, null)
+		try
+		{
+			traceNotifier.apply(TracePrefix + description)
+			transform(ir, traceNotifier)
+		}
+		catch (IrTransformationException e)
+		{
+			throw e
+		}
+		catch (Exception e)
+		{
+			traceNotifier.apply(e.class.name + ": " + e.message)
+			traceNotifier.apply(IrUtils.getStackTrace(e))
+			throw new IrTransformationException(e.message)
+		}
 	}
 
-	def void transformIr(IrRoot ir, (String)=>void traceNotifier) throws Exception
+	def void transformProvider(DefaultExtensionProvider dep, (String)=>void traceNotifier) throws IrTransformationException
 	{
-		if (traceNotifier !== null) traceListeners += traceNotifier
-		val ok = transform(ir)
-		if (traceNotifier !== null) traceListeners -= traceNotifier
-		if (!ok) throw new RuntimeException('Exception in IR transformation step: ' + description)
+		try
+		{
+			traceNotifier.apply(TracePrefix + description)
+			transform(dep, traceNotifier)
+		}
+		catch (IrTransformationException e)
+		{
+			throw e
+		}
+		catch (Exception e)
+		{
+			traceNotifier.apply(e.class.name + ": " + e.message)
+			traceNotifier.apply(IrUtils.getStackTrace(e))
+			throw new IrTransformationException(e.message)
+		}
 	}
-
-	protected def void trace(String msg)
-	{
-		traceListeners.forEach[apply(msg)]
-	}
-
-	protected abstract def boolean transform(IrRoot ir)
 }

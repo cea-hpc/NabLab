@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -102,7 +102,9 @@ class IrInterpreter
 
 	private def jsonInit(Context context, IrModule m, JsonElement jsonElt, String wsPath)
 	{
-		val jsonOptions = (jsonElt === null ? null : jsonElt.asJsonObject)
+		if (jsonElt === null) throw new RuntimeException("No Json element for module: " + m.name)
+		val jsonOptions = jsonElt.asJsonObject
+		if (jsonOptions === null) throw new RuntimeException("No Json element for module: " + m.name)
 
 		for (v : m.variables)
 		{
@@ -110,22 +112,18 @@ class IrInterpreter
 
 			if (v.option)
 			{
-				if (jsonOptions !== null && jsonOptions.has(v.name))
+				if (jsonOptions.has(v.name))
 				{
 					val vValue = context.getVariableValue(v)
 					val jsonOpt = jsonOptions.get(v.name)
 					NablaValueJsonSetter::setValue(vValue, jsonOpt)
 				}
 				else
-				{
-					// No default value => the option is mandatory.
-					if (v.defaultValue === null)
-						throw new IllegalStateException("Mandatory option missing in Json file: " + v.name)
-				}
+					throw new IllegalStateException("Missing option in Json file: " + v.name)
 			}
 		}
 
-		if (m.postProcessing !== null && jsonOptions !== null)
+		if (m.postProcessing !== null)
 		{
 			val outputPathName = "outputPath"
 			if (jsonOptions.has(outputPathName))
@@ -134,14 +132,14 @@ class IrInterpreter
 				context.initWriter(wsPath + File.separator + outputPath.asString)
 			}
 			else
-				throw new IllegalStateException("Mandatory option missing in Json file: outputPath")
+				throw new IllegalStateException("Missing option in Json file: outputPath")
 		}
 
 		for (provider : m.providers)
 		{
 			val providerHelper = context.providers.get(provider)
 			providerHelper.createProviderInstance(m)
-			if (jsonOptions !== null && jsonOptions.has(provider.instanceName))
+			if (jsonOptions.has(provider.instanceName))
 				providerHelper.jsonInit(m, jsonOptions.get(provider.instanceName).toString)
 		}
 	}

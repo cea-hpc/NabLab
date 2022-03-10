@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -26,7 +26,10 @@ class UniqueNameHelper
 
 	static def dispatch getUniqueName(ConnectivityCall it)
 	{
-		getUniqueName(connectivity, args)
+		if (group === null)
+			getUniqueName(connectivity, args)
+		else
+			group.toFirstLower
 	}
 
 	static def getUniqueName(Connectivity c, List<SpaceIteratorRef> args)

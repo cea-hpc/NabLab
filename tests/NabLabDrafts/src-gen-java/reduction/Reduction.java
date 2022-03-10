@@ -10,21 +10,20 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonElement;
 
-import fr.cea.nabla.javalib.*;
 import fr.cea.nabla.javalib.mesh.*;
 
 public final class Reduction
 {
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
-	@SuppressWarnings("unused")
-	private final int nbNodes, maxCellsOfNode, nbCells, maxNodesOfCell;
-
-	// Option and global variables
+	private final int nbNodes;
+	private final int nbCells;
+	private final int nbTopLeftNode;
+	// Options and global variables
 	int n;
-	final double maxTime;
-	final int maxIter;
-	final double deltat;
+	static final double maxTime = 0.1;
+	static final int maxIter = 500;
+	static final double deltat = 0.01;
 	double t_n;
 	double t_nplus1;
 	double[][] X;
@@ -37,20 +36,19 @@ public final class Reduction
 		// Mesh and mesh variables initialization
 		mesh = aMesh;
 		nbNodes = mesh.getNbNodes();
-		maxCellsOfNode = CartesianMesh2D.MaxNbCellsOfNode;
 		nbCells = mesh.getNbCells();
-		maxNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
+		nbTopLeftNode = mesh.getGroup("TopLeftNode").length;
+	}
 
-		// Initialize variables with default values
-		maxTime = 0.1;
-		maxIter = 500;
-		deltat = 0.01;
-
-		// Allocate arrays
+	public void jsonInit(final String jsonContent)
+	{
+		final Gson gson = new Gson();
+		final JsonObject options = gson.fromJson(jsonContent, JsonObject.class);
+		n = 0;
 		X = new double[nbNodes][2];
 		Vnode_n = new double[nbNodes][2];
 		Vnode_nplus1 = new double[nbNodes][2];
-		lpc_n = new double[nbNodes][maxCellsOfNode][2];
+		lpc_n = new double[nbNodes][4][2];
 
 		// Copy node coordinates
 		double[][] gNodes = mesh.getGeometry().getNodes();
@@ -59,12 +57,6 @@ public final class Reduction
 			X[rNodes][0] = gNodes[rNodes][0];
 			X[rNodes][1] = gNodes[rNodes][1];
 		});
-	}
-
-	public void jsonInit(final String jsonContent)
-	{
-		final Gson gson = new Gson();
-		final JsonObject o = gson.fromJson(jsonContent, JsonObject.class);
 	}
 
 	/**
@@ -93,7 +85,7 @@ public final class Reduction
 
 	/**
 	 * Job executeTimeLoopN called @1.0 in simulate method.
-	 * In variables: Vnode_n, t_n
+	 * In variables: Vnode_n, n, t_n
 	 * Out variables: Vnode_nplus1, t_nplus1
 	 */
 	protected void executeTimeLoopN()
@@ -139,18 +131,24 @@ public final class Reduction
 	 */
 	protected void computeBoundaryNodeVelocities()
 	{
-		final int pId = mesh.getTopLeftNode();
-		final int pNodes = pId;
-		double[] reduction0 = new double[] {0.0, 0.0};
 		{
-			final int[] cellsOfNodeP = mesh.getCellsOfNode(pId);
-			final int nbCellsOfNodeP = cellsOfNodeP.length;
-			for (int cCellsOfNodeP=0; cCellsOfNodeP<nbCellsOfNodeP; cCellsOfNodeP++)
+			final int[] topLeftNode = mesh.getGroup("TopLeftNode");
+			IntStream.range(0, nbTopLeftNode).parallel().forEach(pTopLeftNode -> 
 			{
-				reduction0 = sumR1(reduction0, lpc_n[pNodes][cCellsOfNodeP]);
-			}
+				final int pId = topLeftNode[pTopLeftNode];
+				final int pNodes = pId;
+				double[] reduction0 = new double[] {0.0, 0.0};
+				{
+					final int[] cellsOfNodeP = mesh.getCellsOfNode(pId);
+					final int nbCellsOfNodeP = cellsOfNodeP.length;
+					for (int cCellsOfNodeP=0; cCellsOfNodeP<nbCellsOfNodeP; cCellsOfNodeP++)
+					{
+						reduction0 = sumR1(reduction0, lpc_n[pNodes][cCellsOfNodeP]);
+					}
+				}
+				Vnode_nplus1[pNodes] = nodeVelocityBoundaryConditionCorner(1, new double[] {0.0, 0.0}, 1, new double[] {0.0, 0.0}, new double[][] {new double[] {1.0, 1.0}, new double[] {1.0, 1.0}}, new double[] {1.0, 1.0}, reduction0);
+			});
 		}
-		Vnode_nplus1[pNodes] = nodeVelocityBoundaryConditionCorner(1, new double[] {0.0, 0.0}, 1, new double[] {0.0, 0.0}, new double[][] {new double[] {1.0, 1.0}, new double[] {1.0, 1.0}}, new double[] {1.0, 1.0}, reduction0);
 	}
 
 	private static double[] nodeVelocityBoundaryConditionCorner(int BC1, double[] BCValue1, int BC2, double[] BCValue2, double[][] Mp, double[] Gp, double[] lp_np)
@@ -160,7 +158,17 @@ public final class Reduction
 
 	private static double[] sumR1(double[] a, double[] b)
 	{
-		return ArrayOperations.plus(a, b);
+		return operatorAdd(a, b);
+	}
+
+	private static double[] operatorAdd(double[] a, double[] b)
+	{
+		double[] result = new double[a.length];
+		for (int ix0=0; ix0<a.length; ix0++)
+		{
+			result[ix0] = a[ix0] + b[ix0];
+		}
+		return result;
 	}
 
 	public void simulate()

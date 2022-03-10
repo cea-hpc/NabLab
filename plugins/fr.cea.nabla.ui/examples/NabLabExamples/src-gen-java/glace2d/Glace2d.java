@@ -16,9 +16,13 @@ public final class Glace2d
 {
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
-	@SuppressWarnings("unused")
-	private final int nbNodes, nbCells, maxNodesOfCell, maxCellsOfNode, nbInnerNodes, nbTopNodes, nbBottomNodes, nbLeftNodes, nbRightNodes;
-
+	private final int nbNodes;
+	private final int nbCells;
+	private final int nbTopNodes;
+	private final int nbBottomNodes;
+	private final int nbLeftNodes;
+	private final int nbRightNodes;
+	private final int nbInnerNodes;
 	// Options and global variables
 	private PvdFileWriter2D writer;
 	private String outputPath;
@@ -27,13 +31,13 @@ public final class Glace2d
 	int n;
 	double stopTime;
 	int maxIterations;
-	double gamma;
-	double xInterface;
-	double deltatCfl;
-	double rhoIniZg;
-	double rhoIniZd;
-	double pIniZg;
-	double pIniZd;
+	static final double gamma = 1.4;
+	static final double xInterface = 0.5;
+	static final double deltatCfl = 0.4;
+	static final double rhoIniZg = 1.0;
+	static final double rhoIniZd = 0.125;
+	static final double pIniZg = 1.0;
+	static final double pIniZd = 0.1;
 	double t_n;
 	double t_nplus1;
 	double t_n0;
@@ -69,13 +73,11 @@ public final class Glace2d
 		mesh = aMesh;
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
-		maxNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
-		maxCellsOfNode = CartesianMesh2D.MaxNbCellsOfNode;
-		nbInnerNodes = mesh.getNbInnerNodes();
-		nbTopNodes = mesh.getNbTopNodes();
-		nbBottomNodes = mesh.getNbBottomNodes();
-		nbLeftNodes = mesh.getNbLeftNodes();
-		nbRightNodes = mesh.getNbRightNodes();
+		nbTopNodes = mesh.getGroup("TopNodes").length;
+		nbBottomNodes = mesh.getGroup("BottomNodes").length;
+		nbLeftNodes = mesh.getGroup("LeftNodes").length;
+		nbRightNodes = mesh.getGroup("RightNodes").length;
+		nbInnerNodes = mesh.getGroup("InnerNodes").length;
 	}
 
 	public void jsonInit(final String jsonContent)
@@ -91,78 +93,15 @@ public final class Glace2d
 		assert(valueof_outputPeriod.isJsonPrimitive());
 		outputPeriod = valueof_outputPeriod.getAsJsonPrimitive().getAsInt();
 		lastDump = Integer.MIN_VALUE;
-		if (options.has("stopTime"))
-		{
-			final JsonElement valueof_stopTime = options.get("stopTime");
-			assert(valueof_stopTime.isJsonPrimitive());
-			stopTime = valueof_stopTime.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			stopTime = 0.2;
-		if (options.has("maxIterations"))
-		{
-			final JsonElement valueof_maxIterations = options.get("maxIterations");
-			assert(valueof_maxIterations.isJsonPrimitive());
-			maxIterations = valueof_maxIterations.getAsJsonPrimitive().getAsInt();
-		}
-		else
-			maxIterations = 20000;
-		if (options.has("gamma"))
-		{
-			final JsonElement valueof_gamma = options.get("gamma");
-			assert(valueof_gamma.isJsonPrimitive());
-			gamma = valueof_gamma.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			gamma = 1.4;
-		if (options.has("xInterface"))
-		{
-			final JsonElement valueof_xInterface = options.get("xInterface");
-			assert(valueof_xInterface.isJsonPrimitive());
-			xInterface = valueof_xInterface.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			xInterface = 0.5;
-		if (options.has("deltatCfl"))
-		{
-			final JsonElement valueof_deltatCfl = options.get("deltatCfl");
-			assert(valueof_deltatCfl.isJsonPrimitive());
-			deltatCfl = valueof_deltatCfl.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			deltatCfl = 0.4;
-		if (options.has("rhoIniZg"))
-		{
-			final JsonElement valueof_rhoIniZg = options.get("rhoIniZg");
-			assert(valueof_rhoIniZg.isJsonPrimitive());
-			rhoIniZg = valueof_rhoIniZg.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			rhoIniZg = 1.0;
-		if (options.has("rhoIniZd"))
-		{
-			final JsonElement valueof_rhoIniZd = options.get("rhoIniZd");
-			assert(valueof_rhoIniZd.isJsonPrimitive());
-			rhoIniZd = valueof_rhoIniZd.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			rhoIniZd = 0.125;
-		if (options.has("pIniZg"))
-		{
-			final JsonElement valueof_pIniZg = options.get("pIniZg");
-			assert(valueof_pIniZg.isJsonPrimitive());
-			pIniZg = valueof_pIniZg.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			pIniZg = 1.0;
-		if (options.has("pIniZd"))
-		{
-			final JsonElement valueof_pIniZd = options.get("pIniZd");
-			assert(valueof_pIniZd.isJsonPrimitive());
-			pIniZd = valueof_pIniZd.getAsJsonPrimitive().getAsDouble();
-		}
-		else
-			pIniZd = 0.1;
+		n = 0;
+		assert(options.has("stopTime"));
+		final JsonElement valueof_stopTime = options.get("stopTime");
+		assert(valueof_stopTime.isJsonPrimitive());
+		stopTime = valueof_stopTime.getAsJsonPrimitive().getAsDouble();
+		assert(options.has("maxIterations"));
+		final JsonElement valueof_maxIterations = options.get("maxIterations");
+		assert(valueof_maxIterations.isJsonPrimitive());
+		maxIterations = valueof_maxIterations.getAsJsonPrimitive().getAsInt();
 		X_n = new double[nbNodes][2];
 		X_nplus1 = new double[nbNodes][2];
 		X_n0 = new double[nbNodes][2];
@@ -182,11 +121,11 @@ public final class Glace2d
 		deltatj = new double[nbCells];
 		uj_n = new double[nbCells][2];
 		uj_nplus1 = new double[nbCells][2];
-		l = new double[nbCells][maxNodesOfCell];
-		Cjr_ic = new double[nbCells][maxNodesOfCell][2];
-		C = new double[nbCells][maxNodesOfCell][2];
-		F = new double[nbCells][maxNodesOfCell][2];
-		Ajr = new double[nbCells][maxNodesOfCell][2][2];
+		l = new double[nbCells][4];
+		Cjr_ic = new double[nbCells][4][2];
+		C = new double[nbCells][4][2];
+		F = new double[nbCells][4][2];
+		Ajr = new double[nbCells][4][2][2];
 
 		// Copy node coordinates
 		double[][] gNodes = mesh.getGeometry().getNodes();
@@ -216,7 +155,7 @@ public final class Glace2d
 					final int rMinus1Id = nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCellJ)%nbNodesOfCellJ];
 					final int rPlus1Nodes = rPlus1Id;
 					final int rMinus1Nodes = rMinus1Id;
-					C[jCells][rNodesOfCellJ] = multiply(0.5, perp(minus(X_n[rPlus1Nodes], X_n[rMinus1Nodes])));
+					C[jCells][rNodesOfCellJ] = operatorMult(0.5, perp(operatorSub(X_n[rPlus1Nodes], X_n[rMinus1Nodes])));
 				}
 			}
 		});
@@ -254,7 +193,7 @@ public final class Glace2d
 					final int rMinus1Id = nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCellJ)%nbNodesOfCellJ];
 					final int rPlus1Nodes = rPlus1Id;
 					final int rMinus1Nodes = rMinus1Id;
-					Cjr_ic[jCells][rNodesOfCellJ] = multiply(0.5, perp(minus(X_n0[rPlus1Nodes], X_n0[rMinus1Nodes])));
+					Cjr_ic[jCells][rNodesOfCellJ] = operatorMult(0.5, perp(operatorSub(X_n0[rPlus1Nodes], X_n0[rMinus1Nodes])));
 				}
 			}
 		});
@@ -339,7 +278,7 @@ public final class Glace2d
 					reduction0 = sumR1(reduction0, X_n0[rNodes]);
 				}
 			}
-			final double[] center = multiply(0.25, reduction0);
+			final double[] center = operatorMult(0.25, reduction0);
 			if (center[0] < xInterface)
 			{
 				rho_ic = rhoIniZg;
@@ -507,7 +446,7 @@ public final class Glace2d
 				final int nbNodesOfCellJ = nodesOfCellJ.length;
 				for (int rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 				{
-					Ajr[jCells][rNodesOfCellJ] = multiply(((rho[jCells] * c[jCells]) / l[jCells][rNodesOfCellJ]), tensProduct(C[jCells][rNodesOfCellJ], C[jCells][rNodesOfCellJ]));
+					Ajr[jCells][rNodesOfCellJ] = operatorMult(((rho[jCells] * c[jCells]) / l[jCells][rNodesOfCellJ]), tensProduct(C[jCells][rNodesOfCellJ], C[jCells][rNodesOfCellJ]));
 				}
 			}
 		});
@@ -587,7 +526,7 @@ public final class Glace2d
 					final int jId = cellsOfNodeR[jCellsOfNodeR];
 					final int jCells = jId;
 					final int rNodesOfCellJ = Utils.indexOf(mesh.getNodesOfCell(jId), rId);
-					reduction0 = sumR1(reduction0, plus(multiply(p[jCells], C[jCells][rNodesOfCellJ]), matVectProduct(Ajr[jCells][rNodesOfCellJ], uj_n[jCells])));
+					reduction0 = sumR1(reduction0, operatorAdd(operatorMult(p[jCells], C[jCells][rNodesOfCellJ]), matVectProduct(Ajr[jCells][rNodesOfCellJ], uj_n[jCells])));
 				}
 			}
 			for (int i1=0; i1<2; i1++)
@@ -626,36 +565,33 @@ public final class Glace2d
 	{
 		final double[][] I = new double[][] {new double[] {1.0, 0.0}, new double[] {0.0, 1.0}};
 		{
-			final int[] topNodes = mesh.getTopNodes();
-			final int nbTopNodes = topNodes.length;
+			final int[] topNodes = mesh.getGroup("TopNodes");
 			IntStream.range(0, nbTopNodes).parallel().forEach(rTopNodes -> 
 			{
 				final int rId = topNodes[rTopNodes];
 				final int rNodes = rId;
 				final double[] N = new double[] {0.0, 1.0};
 				final double[][] NxN = tensProduct(N, N);
-				final double[][] IcP = minus(I, NxN);
+				final double[][] IcP = operatorSub(I, NxN);
 				bt[rNodes] = matVectProduct(IcP, b[rNodes]);
-				Mt[rNodes] = plus(multiply(IcP, (multiply(Ar[rNodes], IcP))), multiply(NxN, trace(Ar[rNodes])));
+				Mt[rNodes] = operatorAdd(operatorMult(IcP, (operatorMult(Ar[rNodes], IcP))), operatorMult(NxN, trace(Ar[rNodes])));
 			});
 		}
 		{
-			final int[] bottomNodes = mesh.getBottomNodes();
-			final int nbBottomNodes = bottomNodes.length;
+			final int[] bottomNodes = mesh.getGroup("BottomNodes");
 			IntStream.range(0, nbBottomNodes).parallel().forEach(rBottomNodes -> 
 			{
 				final int rId = bottomNodes[rBottomNodes];
 				final int rNodes = rId;
 				final double[] N = new double[] {0.0, -1.0};
 				final double[][] NxN = tensProduct(N, N);
-				final double[][] IcP = minus(I, NxN);
+				final double[][] IcP = operatorSub(I, NxN);
 				bt[rNodes] = matVectProduct(IcP, b[rNodes]);
-				Mt[rNodes] = plus(multiply(IcP, (multiply(Ar[rNodes], IcP))), multiply(NxN, trace(Ar[rNodes])));
+				Mt[rNodes] = operatorAdd(operatorMult(IcP, (operatorMult(Ar[rNodes], IcP))), operatorMult(NxN, trace(Ar[rNodes])));
 			});
 		}
 		{
-			final int[] leftNodes = mesh.getLeftNodes();
-			final int nbLeftNodes = leftNodes.length;
+			final int[] leftNodes = mesh.getGroup("LeftNodes");
 			IntStream.range(0, nbLeftNodes).parallel().forEach(rLeftNodes -> 
 			{
 				final int rId = leftNodes[rLeftNodes];
@@ -671,8 +607,7 @@ public final class Glace2d
 			});
 		}
 		{
-			final int[] rightNodes = mesh.getRightNodes();
-			final int nbRightNodes = rightNodes.length;
+			final int[] rightNodes = mesh.getGroup("RightNodes");
 			IntStream.range(0, nbRightNodes).parallel().forEach(rRightNodes -> 
 			{
 				final int rId = rightNodes[rRightNodes];
@@ -697,8 +632,7 @@ public final class Glace2d
 	protected void computeBt()
 	{
 		{
-			final int[] innerNodes = mesh.getInnerNodes();
-			final int nbInnerNodes = innerNodes.length;
+			final int[] innerNodes = mesh.getGroup("InnerNodes");
 			IntStream.range(0, nbInnerNodes).parallel().forEach(rInnerNodes -> 
 			{
 				final int rId = innerNodes[rInnerNodes];
@@ -719,8 +653,7 @@ public final class Glace2d
 	protected void computeMt()
 	{
 		{
-			final int[] innerNodes = mesh.getInnerNodes();
-			final int nbInnerNodes = innerNodes.length;
+			final int[] innerNodes = mesh.getGroup("InnerNodes");
 			IntStream.range(0, nbInnerNodes).parallel().forEach(rInnerNodes -> 
 			{
 				final int rId = innerNodes[rInnerNodes];
@@ -776,7 +709,7 @@ public final class Glace2d
 				{
 					final int rId = nodesOfCellJ[rNodesOfCellJ];
 					final int rNodes = rId;
-					F[jCells][rNodesOfCellJ] = plus(multiply(p[jCells], C[jCells][rNodesOfCellJ]), matVectProduct(Ajr[jCells][rNodesOfCellJ], (minus(uj_n[jCells], ur[rNodes]))));
+					F[jCells][rNodesOfCellJ] = operatorAdd(operatorMult(p[jCells], C[jCells][rNodesOfCellJ]), matVectProduct(Ajr[jCells][rNodesOfCellJ], (operatorSub(uj_n[jCells], ur[rNodes]))));
 				}
 			}
 		});
@@ -791,7 +724,7 @@ public final class Glace2d
 	{
 		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> 
 		{
-			X_nplus1[rNodes] = plus(X_n[rNodes], multiply(deltat, ur[rNodes]));
+			X_nplus1[rNodes] = operatorAdd(X_n[rNodes], operatorMult(deltat, ur[rNodes]));
 		});
 	}
 
@@ -839,7 +772,7 @@ public final class Glace2d
 					reduction0 = sumR1(reduction0, F[jCells][rNodesOfCellJ]);
 				}
 			}
-			uj_nplus1[jCells] = minus(uj_n[jCells], multiply((deltat / m[jCells]), reduction0));
+			uj_nplus1[jCells] = operatorSub(uj_n[jCells], operatorMult((deltat / m[jCells]), reduction0));
 		});
 	}
 
@@ -914,7 +847,7 @@ public final class Glace2d
 
 	private static double[] sumR1(double[] a, double[] b)
 	{
-		return plus(a, b);
+		return operatorAdd(a, b);
 	}
 
 	private static double sumR0(double a, double b)
@@ -924,7 +857,7 @@ public final class Glace2d
 
 	private static double[][] sumR2(double[][] a, double[][] b)
 	{
-		return plus(a, b);
+		return operatorAdd(a, b);
 	}
 
 	private static double minR0(double a, double b)
@@ -932,7 +865,7 @@ public final class Glace2d
 		return Math.min(a, b);
 	}
 
-	private static double[] plus(double[] a, double[] b)
+	private static double[] operatorAdd(double[] a, double[] b)
 	{
 		double[] result = new double[a.length];
 		for (int ix0=0; ix0<a.length; ix0++)
@@ -942,7 +875,7 @@ public final class Glace2d
 		return result;
 	}
 
-	private static double[][] plus(double[][] a, double[][] b)
+	private static double[][] operatorAdd(double[][] a, double[][] b)
 	{
 		double[][] result = new double[a.length][a[0].length];
 		for (int ix0=0; ix0<a.length; ix0++)
@@ -955,7 +888,7 @@ public final class Glace2d
 		return result;
 	}
 
-	private static double[] multiply(double a, double[] b)
+	private static double[] operatorMult(double a, double[] b)
 	{
 		double[] result = new double[b.length];
 		for (int ix0=0; ix0<b.length; ix0++)
@@ -965,7 +898,7 @@ public final class Glace2d
 		return result;
 	}
 
-	private static double[] minus(double[] a, double[] b)
+	private static double[] operatorSub(double[] a, double[] b)
 	{
 		double[] result = new double[a.length];
 		for (int ix0=0; ix0<a.length; ix0++)
@@ -975,7 +908,7 @@ public final class Glace2d
 		return result;
 	}
 
-	private static double[][] multiply(double a, double[][] b)
+	private static double[][] operatorMult(double a, double[][] b)
 	{
 		double[][] result = new double[b.length][b[0].length];
 		for (int ix0=0; ix0<b.length; ix0++)
@@ -988,7 +921,7 @@ public final class Glace2d
 		return result;
 	}
 
-	private static double[][] minus(double[][] a, double[][] b)
+	private static double[][] operatorSub(double[][] a, double[][] b)
 	{
 		double[][] result = new double[a.length][a[0].length];
 		for (int ix0=0; ix0<a.length; ix0++)
@@ -1001,7 +934,7 @@ public final class Glace2d
 		return result;
 	}
 
-	private static double[][] multiply(double[][] a, double[][] b)
+	private static double[][] operatorMult(double[][] a, double[][] b)
 	{
 		double[][] result = new double[a.length][a[0].length];
 		for (int ix0=0; ix0<a.length; ix0++)
@@ -1014,7 +947,7 @@ public final class Glace2d
 		return result;
 	}
 
-	private static double[][] multiply(double[][] a, double b)
+	private static double[][] operatorMult(double[][] a, double b)
 	{
 		double[][] result = new double[a.length][a[0].length];
 		for (int ix0=0; ix0<a.length; ix0++)
@@ -1053,7 +986,8 @@ public final class Glace2d
 
 			// Module instanciation(s)
 			Glace2d glace2d = new Glace2d(mesh);
-			if (o.has("glace2d")) glace2d.jsonInit(o.get("glace2d").toString());
+			assert(o.has("glace2d"));
+			glace2d.jsonInit(o.get("glace2d").toString());
 
 			// Start simulation
 			glace2d.simulate();

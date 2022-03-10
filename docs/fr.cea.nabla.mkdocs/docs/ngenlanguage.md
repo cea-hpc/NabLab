@@ -78,7 +78,7 @@ LevelDB
 !!! note
 	The `leveldb_ROOT` value supports CMake syntax like `$ENV{HOME}` in the example above.
 
-When the `LevelDB`block exists in the *ngen* file, the `nonRegression` option must appear in the Json data file. If its value is `CreateReference`, variables are dumped in a directory named *ApplicationNameDB.ref*. If its value is `CompareToReference`, variables are dumped in a directory named *Application NameDB.current* and are compared to variables stored in *ApplicationNameDB.ref*.
+When the `LevelDB`block exists in the *ngen* file, the `nonRegression` key must appear in the *Json* data file. If its value is `CreateReference`, variables are dumped in a directory named *ApplicationNameDB.ref*. If its value is `CompareToReference`, variables are dumped in a directory named *Application NameDB.current* and are compared to variables stored in *ApplicationNameDB.ref*.
 
 ```
 "_nonRegression_comment":"empty value to disable, CreateReference or CompareToReference to take action",

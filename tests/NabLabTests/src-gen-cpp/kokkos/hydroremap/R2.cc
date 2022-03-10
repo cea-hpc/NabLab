@@ -11,7 +11,6 @@
 
 R2::R2(CartesianMesh2D& aMesh)
 : mesh(aMesh)
-, nbNodes(mesh.getNbNodes())
 , nbCells(mesh.getNbCells())
 , rv2("rv2", nbCells)
 {
@@ -30,7 +29,6 @@ R2::jsonInit(const char* jsonContent)
 	const rapidjson::Value::Object& options = document.GetObject();
 
 }
-
 
 /**
  * Job rj1 called @3.0 in simulate method.

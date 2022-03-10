@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -11,6 +11,7 @@ package fr.cea.nabla.ir.transformers
 
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.BinaryExpression
+import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.InternFunction
 import fr.cea.nabla.ir.ir.Interval
@@ -19,9 +20,9 @@ import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.IrType
 import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.UnaryExpression
+import java.util.Arrays
 import java.util.HashSet
 import org.eclipse.emf.ecore.util.EcoreUtil
-import java.util.Arrays
 
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 
@@ -33,15 +34,13 @@ class AddOperatorsForArcaneRealNTypes extends IrTransformationStep
 {
 	val opUtils = new OperatorUtils
 
-	new()
+	override getDescription()
 	{
-		super('Create operators for Arcane Real2, Real2x2, Real3 and Real3x3 types')
+		"Create operators for Arcane Real2, Real2x2, Real3 and Real3x3 types"
 	}
 
-	override transform(IrRoot ir)
+	override transform(IrRoot ir, (String)=>void traceNotifier)
 	{
-		trace('    IR -> IR: ' + description)
-
 		val functionsToDelete = new HashSet<InternFunction>
 
 		for (m : ir.modules)
@@ -64,8 +63,11 @@ class AddOperatorsForArcaneRealNTypes extends IrTransformationStep
 		for (e : functionsToDelete)
 			if (e.eCrossReferences.empty)
 				EcoreUtil.delete(e, true)
+	}
 
-		return true
+	override transform(DefaultExtensionProvider dep, (String)=>void traceNotifier)
+	{
+		// nothing to do
 	}
 
 	/* Do not replace the two integers by an array because create method will work with the reference of the array and not its content */

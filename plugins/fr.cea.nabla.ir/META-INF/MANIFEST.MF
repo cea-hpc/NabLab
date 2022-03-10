@@ -3,7 +3,7 @@ Automatic-Module-Name: fr.cea.nabla.ir
 Bundle-ManifestVersion: 2
 Bundle-Name: fr.cea.nabla.ir
 Bundle-SymbolicName: fr.cea.nabla.ir;singleton:=true
-Bundle-Version: 0.4.4.qualifier
+Bundle-Version: 0.4.5.qualifier
 Bundle-ClassPath: .
 Bundle-Vendor: CEA
 Bundle-Localization: plugin
@@ -11,11 +11,12 @@ Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: fr.cea.nabla.ir,
  fr.cea.nabla.ir.annotations,
  fr.cea.nabla.ir.generator,
- fr.cea.nabla.ir.generator.cpp,
  fr.cea.nabla.ir.generator.arcane,
+ fr.cea.nabla.ir.generator.cpp,
  fr.cea.nabla.ir.generator.java,
  fr.cea.nabla.ir.generator.jni,
  fr.cea.nabla.ir.generator.json,
+ fr.cea.nabla.ir.generator.python,
  fr.cea.nabla.ir.interpreter,
  fr.cea.nabla.ir.ir,
  fr.cea.nabla.ir.ir.impl,

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -80,39 +80,39 @@ class ArgOrVarTypeProviderTest
 
 		// bool scalar
 		ℾ b;
-		option ℾ optb;
+		let ℾ optb = false;
 
 		// int scalar
 		ℕ i;
-		option ℕ opti;
+		let ℕ opti = 3;
 
 		// real scalar
 		ℝ r;
-		option ℝ optr;
+		let ℝ optr = 3.3;
 
 		// bool array 1D
 		ℾ[2] tabb;
-		option ℾ[3] opttabb;
+		let ℾ[3] opttabb = [ true, false, true ];
 
 		// int array 1D
 		ℕ[2] tabi;
-		option ℕ[3] opttabi;
+		let ℕ[3] opttabi = [ 3, 4, 5 ];
 
 		// real array 1D
 		ℝ[2] tabr;
-		option ℝ[3] opttabr;
+		let ℝ[3] opttabr = [ 1.1, 2.2, 3.3 ];
 
 		// bool array 2D
 		ℾ[2, 3] tab2b;
-		option ℾ[3, 2] opttab2b;
+		let ℾ[3, 2] opttab2b = [ [true, false], [true, false], [true, false] ];
 
 		// int array 2D
 		ℕ[2, 3] tab2i;
-		option ℕ[3, 2] opttab2i;
+		let ℕ[3, 2] opttab2i = [ [1, 2], [3, 4], [5, 6] ];
 
 		// real array 2D
 		ℝ[2, 3] tab2r;
-		option ℝ[3, 2] opttab2r;
+		let ℝ[3, 2] opttab2r = [ [1.1, 2.2], [3.3, 4.4], [5.5, 6.6] ];
 
 		// array with size from a const
 		let ℕ dim = 6;
@@ -120,7 +120,7 @@ class ArgOrVarTypeProviderTest
 
 		// dynamic array not allowed on global variables
 		// except with options
-		option ℕ dyndimopt = 5;
+		ℕ dyndimopt;
 		ℝ[dyndimopt] dyndimtabopt;
 
 		// connectivity variables

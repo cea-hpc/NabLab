@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -65,8 +65,8 @@ abstract class AbstractInstructionInterpreterTest
 		val model =
 		'''
 		«testModule»
-		option ℕ maxIter = 10;
-		option ℝ maxTime = 1.0;
+		let ℕ maxIter = 10;
+		let ℝ maxTime = 1.0;
 		ℝ U{cells};
 		ℝ[2] X{nodes}, B{nodes}, C{cells, nodesOfCell};
 		ℝ Bmin, Bmax;
@@ -116,6 +116,8 @@ abstract class AbstractInstructionInterpreterTest
 		«testModule»
 		ℝ U{cells};
 		ℝ[2] X{nodes};
+
+		InitT: t=0.0;
 		InitU : ∀r, countr ∈ cells(), {
 			if (countr % 2 == 0)
 				U{r} = 0.0;
@@ -134,6 +136,8 @@ abstract class AbstractInstructionInterpreterTest
 		«testModule»
 		ℝ U{cells};
 		ℝ[2] X{nodes}, C{cells, nodesOfCell};
+
+		InitT: t=0.0;
 		InitU : {
 			let ℕ i = 0;
 			while (i<3) {
@@ -154,6 +158,8 @@ abstract class AbstractInstructionInterpreterTest
 
 		ℝ[2] X{nodes};
 		ℝ U{cells};
+
+		InitT: t=0.0;
 		InitU : {
 			set myCells = cells();
 			∀r∈myCells, U{r} = 1.0;
@@ -172,6 +178,7 @@ abstract class AbstractInstructionInterpreterTest
 		let ℕ W=0;
 		ℝ[2] X{nodes};
 
+		InitT: t=0.0;
 		Test : if (V < 100) W = V+1; else exit "V must be less than 100";
 		'''
 		assertInterpreteExit(model)

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -13,6 +13,11 @@
 Matrix::
 Matrix(const std::string name, const size_t rows, const size_t cols)
   : m_name(name), m_nb_rows(rows), m_nb_cols(cols), m_nb_nnz(0), m_matrix(nullptr) {}
+
+
+Matrix::
+Matrix(const std::string name)
+  : m_name(name), m_nb_rows(0), m_nb_cols(0), m_nb_nnz(0), m_matrix(nullptr) {}
 
 
 Matrix::
@@ -92,6 +97,16 @@ crsMatrix()
   if (!m_matrix && !m_building_struct.empty())
     build();
   return *m_matrix;
+}
+
+
+const void Matrix::
+resize(const size_t rows, const size_t cols)
+{
+	if (m_matrix)
+	  delete m_matrix;
+	m_nb_rows = rows;
+	m_nb_cols = cols;
 }
 
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -74,32 +74,33 @@ class CartesianMesh2DTest
 		assertEquals(nbXQuads * nbYQuads, mesh.nbCells)
 		assertEquals(2 * nbXQuads * nbYQuads + nbXQuads + nbYQuads, mesh.nbFaces);
 
-		assertArrayEquals(#[6, 7, 8, 11, 12, 13], mesh.innerNodes)
-		assertArrayEquals(#[15, 16, 17, 18, 19], mesh.topNodes)
-		assertArrayEquals(#[0, 1, 2, 3, 4], mesh.bottomNodes)
-		assertArrayEquals(#[0, 5, 10, 15], mesh.leftNodes)
-		assertArrayEquals(#[4, 9, 14, 19], mesh.rightNodes)
+		assertArrayEquals(#[6, 7, 8, 11, 12, 13], mesh.getGroup(CartesianMesh2D.InnerNodes))
+		assertArrayEquals(#[0, 1, 2, 3, 4, 5, 9, 10, 14, 15, 16, 17, 18, 19], mesh.getGroup(CartesianMesh2D.OuterNodes))
+		assertArrayEquals(#[15, 16, 17, 18, 19], mesh.getGroup(CartesianMesh2D.TopNodes))
+		assertArrayEquals(#[0, 1, 2, 3, 4], mesh.getGroup(CartesianMesh2D.BottomNodes))
+		assertArrayEquals(#[0, 5, 10, 15], mesh.getGroup(CartesianMesh2D.LeftNodes))
+		assertArrayEquals(#[4, 9, 14, 19], mesh.getGroup(CartesianMesh2D.RightNodes))
 
-		assertArrayEquals(#[5, 6], mesh.innerCells)
-		assertArrayEquals(#[0, 1, 2, 3, 4, 7, 8, 9, 10, 11], mesh.outerCells)
-		assertArrayEquals(#[8, 9, 10, 11], mesh.topCells)
-		assertArrayEquals(#[0, 1, 2, 3], mesh.bottomCells)
-		assertArrayEquals(#[0, 4, 8], mesh.leftCells)
-		assertArrayEquals(#[3, 7, 11], mesh.rightCells)
+		assertArrayEquals(#[5, 6], mesh.getGroup(CartesianMesh2D.InnerCells))
+		assertArrayEquals(#[0, 1, 2, 3, 4, 7, 8, 9, 10, 11], mesh.getGroup(CartesianMesh2D.OuterCells))
+		assertArrayEquals(#[8, 9, 10, 11], mesh.getGroup(CartesianMesh2D.TopCells))
+		assertArrayEquals(#[0, 1, 2, 3], mesh.getGroup(CartesianMesh2D.BottomCells))
+		assertArrayEquals(#[0, 4, 8], mesh.getGroup(CartesianMesh2D.LeftCells))
+		assertArrayEquals(#[3, 7, 11], mesh.getGroup(CartesianMesh2D.RightCells))
 
-		assertArrayEquals(#[27, 28, 29, 30], mesh.topFaces)
-		assertArrayEquals(#[0, 2, 4, 6], mesh.bottomFaces)
-		assertArrayEquals(#[1, 10, 19], mesh.leftFaces)
-		assertArrayEquals(#[8, 17, 26], mesh.rightFaces)
-		assertArrayEquals(#[0, 1, 2, 4, 6, 8, 10, 17, 19, 26, 27, 28, 29, 30], mesh.outerFaces)
-		assertArrayEquals(#[3, 5, 7, 9, 11, 12, 13, 14, 15, 16, 18, 20, 21, 22, 23, 24, 25], mesh.innerFaces)
-		assertArrayEquals(#[9, 11, 13, 15, 18, 20, 22, 24], mesh.innerHorizontalFaces)
-		assertArrayEquals(#[3, 5, 7, 12, 14, 16, 21, 23, 25], mesh.innerVerticalFaces)
+		assertArrayEquals(#[3, 5, 7, 9, 11, 12, 13, 14, 15, 16, 18, 20, 21, 22, 23, 24, 25], mesh.getGroup(CartesianMesh2D.InnerFaces))
+		assertArrayEquals(#[0, 1, 2, 4, 6, 8, 10, 17, 19, 26, 27, 28, 29, 30], mesh.getGroup(CartesianMesh2D.OuterFaces))
+		assertArrayEquals(#[9, 11, 13, 15, 18, 20, 22, 24], mesh.getGroup(CartesianMesh2D.InnerHorizontalFaces))
+		assertArrayEquals(#[3, 5, 7, 12, 14, 16, 21, 23, 25], mesh.getGroup(CartesianMesh2D.InnerVerticalFaces))
+		assertArrayEquals(#[27, 28, 29, 30], mesh.getGroup(CartesianMesh2D.TopFaces))
+		assertArrayEquals(#[0, 2, 4, 6], mesh.getGroup(CartesianMesh2D.BottomFaces))
+		assertArrayEquals(#[1, 10, 19], mesh.getGroup(CartesianMesh2D.LeftFaces))
+		assertArrayEquals(#[8, 17, 26], mesh.getGroup(CartesianMesh2D.RightFaces))
 
-		assertEquals(0, mesh.bottomLeftNode)
-		assertEquals(4, mesh.bottomRightNode)
-		assertEquals(15, mesh.topLeftNode)
-		assertEquals(19, mesh.topRightNode)
+		assertEquals(0, mesh.getGroup(CartesianMesh2D.BottomLeftNode).get(0))
+		assertEquals(4, mesh.getGroup(CartesianMesh2D.BottomRightNode).get(0))
+		assertEquals(15, mesh.getGroup(CartesianMesh2D.TopLeftNode).get(0))
+		assertEquals(19, mesh.getGroup(CartesianMesh2D.TopRightNode).get(0))
 	}
 
 	@Test

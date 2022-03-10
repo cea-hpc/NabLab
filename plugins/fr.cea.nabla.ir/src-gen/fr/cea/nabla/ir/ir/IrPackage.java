@@ -323,13 +323,22 @@ public interface IrPackage extends EPackage {
 	int IR_MODULE__NAME = IR_ANNOTABLE_FEATURE_COUNT + 0;
 
 	/**
+	 * The feature id for the '<em><b>Type</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IR_MODULE__TYPE = IR_ANNOTABLE_FEATURE_COUNT + 1;
+
+	/**
 	 * The feature id for the '<em><b>Main</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int IR_MODULE__MAIN = IR_ANNOTABLE_FEATURE_COUNT + 1;
+	int IR_MODULE__MAIN = IR_ANNOTABLE_FEATURE_COUNT + 2;
 
 	/**
 	 * The feature id for the '<em><b>Functions</b></em>' containment reference list.
@@ -338,7 +347,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_MODULE__FUNCTIONS = IR_ANNOTABLE_FEATURE_COUNT + 2;
+	int IR_MODULE__FUNCTIONS = IR_ANNOTABLE_FEATURE_COUNT + 3;
 
 	/**
 	 * The feature id for the '<em><b>Variables</b></em>' containment reference list.
@@ -347,7 +356,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_MODULE__VARIABLES = IR_ANNOTABLE_FEATURE_COUNT + 3;
+	int IR_MODULE__VARIABLES = IR_ANNOTABLE_FEATURE_COUNT + 4;
 
 	/**
 	 * The feature id for the '<em><b>Jobs</b></em>' containment reference list.
@@ -356,7 +365,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_MODULE__JOBS = IR_ANNOTABLE_FEATURE_COUNT + 4;
+	int IR_MODULE__JOBS = IR_ANNOTABLE_FEATURE_COUNT + 5;
 
 	/**
 	 * The feature id for the '<em><b>Providers</b></em>' reference list.
@@ -365,7 +374,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_MODULE__PROVIDERS = IR_ANNOTABLE_FEATURE_COUNT + 5;
+	int IR_MODULE__PROVIDERS = IR_ANNOTABLE_FEATURE_COUNT + 6;
 
 	/**
 	 * The number of structural features of the '<em>Module</em>' class.
@@ -374,7 +383,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IR_MODULE_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 6;
+	int IR_MODULE_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 7;
 
 	/**
 	 * The number of operations of the '<em>Module</em>' class.
@@ -806,13 +815,22 @@ public interface IrPackage extends EPackage {
 	int MESH_EXTENSION_PROVIDER__CONNECTIVITIES = EXTENSION_PROVIDER_FEATURE_COUNT + 1;
 
 	/**
+	 * The feature id for the '<em><b>Generation Variables</b></em>' map.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MESH_EXTENSION_PROVIDER__GENERATION_VARIABLES = EXTENSION_PROVIDER_FEATURE_COUNT + 2;
+
+	/**
 	 * The number of structural features of the '<em>Mesh Extension Provider</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int MESH_EXTENSION_PROVIDER_FEATURE_COUNT = EXTENSION_PROVIDER_FEATURE_COUNT + 2;
+	int MESH_EXTENSION_PROVIDER_FEATURE_COUNT = EXTENSION_PROVIDER_FEATURE_COUNT + 3;
 
 	/**
 	 * The number of operations of the '<em>Mesh Extension Provider</em>' class.
@@ -1234,13 +1252,22 @@ public interface IrPackage extends EPackage {
 	int FUNCTION__IN_ARGS = IR_ANNOTABLE_FEATURE_COUNT + 3;
 
 	/**
+	 * The feature id for the '<em><b>Index In Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int FUNCTION__INDEX_IN_NAME = IR_ANNOTABLE_FEATURE_COUNT + 4;
+
+	/**
 	 * The number of structural features of the '<em>Function</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int FUNCTION_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 4;
+	int FUNCTION_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 5;
 
 	/**
 	 * The number of operations of the '<em>Function</em>' class.
@@ -1305,6 +1332,15 @@ public interface IrPackage extends EPackage {
 	 * @ordered
 	 */
 	int INTERN_FUNCTION__IN_ARGS = FUNCTION__IN_ARGS;
+
+	/**
+	 * The feature id for the '<em><b>Index In Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INTERN_FUNCTION__INDEX_IN_NAME = FUNCTION__INDEX_IN_NAME;
 
 	/**
 	 * The feature id for the '<em><b>Body</b></em>' containment reference.
@@ -1398,6 +1434,15 @@ public interface IrPackage extends EPackage {
 	int EXTERN_FUNCTION__IN_ARGS = FUNCTION__IN_ARGS;
 
 	/**
+	 * The feature id for the '<em><b>Index In Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXTERN_FUNCTION__INDEX_IN_NAME = FUNCTION__INDEX_IN_NAME;
+
+	/**
 	 * The feature id for the '<em><b>Provider</b></em>' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1471,22 +1516,13 @@ public interface IrPackage extends EPackage {
 	int CONNECTIVITY__RETURN_TYPE = IR_ANNOTABLE_FEATURE_COUNT + 2;
 
 	/**
-	 * The feature id for the '<em><b>Index Equal Id</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CONNECTIVITY__INDEX_EQUAL_ID = IR_ANNOTABLE_FEATURE_COUNT + 3;
-
-	/**
 	 * The feature id for the '<em><b>Multiple</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CONNECTIVITY__MULTIPLE = IR_ANNOTABLE_FEATURE_COUNT + 4;
+	int CONNECTIVITY__MULTIPLE = IR_ANNOTABLE_FEATURE_COUNT + 3;
 
 	/**
 	 * The feature id for the '<em><b>Provider</b></em>' container reference.
@@ -1495,7 +1531,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CONNECTIVITY__PROVIDER = IR_ANNOTABLE_FEATURE_COUNT + 5;
+	int CONNECTIVITY__PROVIDER = IR_ANNOTABLE_FEATURE_COUNT + 4;
 
 	/**
 	 * The number of structural features of the '<em>Connectivity</em>' class.
@@ -1504,7 +1540,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CONNECTIVITY_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 6;
+	int CONNECTIVITY_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 5;
 
 	/**
 	 * The number of operations of the '<em>Connectivity</em>' class.
@@ -4213,13 +4249,31 @@ public interface IrPackage extends EPackage {
 	int CONNECTIVITY_CALL__ARGS = CONTAINER_FEATURE_COUNT + 1;
 
 	/**
+	 * The feature id for the '<em><b>Group</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CONNECTIVITY_CALL__GROUP = CONTAINER_FEATURE_COUNT + 2;
+
+	/**
+	 * The feature id for the '<em><b>Index Equal Id</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CONNECTIVITY_CALL__INDEX_EQUAL_ID = CONTAINER_FEATURE_COUNT + 3;
+
+	/**
 	 * The number of structural features of the '<em>Connectivity Call</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CONNECTIVITY_CALL_FEATURE_COUNT = CONTAINER_FEATURE_COUNT + 2;
+	int CONNECTIVITY_CALL_FEATURE_COUNT = CONTAINER_FEATURE_COUNT + 4;
 
 	/**
 	 * The number of operations of the '<em>Connectivity Call</em>' class.
@@ -4818,6 +4872,17 @@ public interface IrPackage extends EPackage {
 	EAttribute getIrModule_Name();
 
 	/**
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.IrModule#getType <em>Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Type</em>'.
+	 * @see fr.cea.nabla.ir.ir.IrModule#getType()
+	 * @see #getIrModule()
+	 * @generated
+	 */
+	EAttribute getIrModule_Type();
+
+	/**
 	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.IrModule#isMain <em>Main</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -5142,6 +5207,17 @@ public interface IrPackage extends EPackage {
 	EReference getMeshExtensionProvider_Connectivities();
 
 	/**
+	 * Returns the meta object for the map '{@link fr.cea.nabla.ir.ir.MeshExtensionProvider#getGenerationVariables <em>Generation Variables</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the map '<em>Generation Variables</em>'.
+	 * @see fr.cea.nabla.ir.ir.MeshExtensionProvider#getGenerationVariables()
+	 * @see #getMeshExtensionProvider()
+	 * @generated
+	 */
+	EReference getMeshExtensionProvider_GenerationVariables();
+
+	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.ArgOrVar <em>Arg Or Var</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -5357,6 +5433,17 @@ public interface IrPackage extends EPackage {
 	EReference getFunction_InArgs();
 
 	/**
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.Function#getIndexInName <em>Index In Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Index In Name</em>'.
+	 * @see fr.cea.nabla.ir.ir.Function#getIndexInName()
+	 * @see #getFunction()
+	 * @generated
+	 */
+	EAttribute getFunction_IndexInName();
+
+	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.InternFunction <em>Intern Function</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -5451,17 +5538,6 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getConnectivity_ReturnType();
-
-	/**
-	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.Connectivity#isIndexEqualId <em>Index Equal Id</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Index Equal Id</em>'.
-	 * @see fr.cea.nabla.ir.ir.Connectivity#isIndexEqualId()
-	 * @see #getConnectivity()
-	 * @generated
-	 */
-	EAttribute getConnectivity_IndexEqualId();
 
 	/**
 	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.Connectivity#isMultiple <em>Multiple</em>}'.
@@ -6830,6 +6906,28 @@ public interface IrPackage extends EPackage {
 	EReference getConnectivityCall_Args();
 
 	/**
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.ConnectivityCall#getGroup <em>Group</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Group</em>'.
+	 * @see fr.cea.nabla.ir.ir.ConnectivityCall#getGroup()
+	 * @see #getConnectivityCall()
+	 * @generated
+	 */
+	EAttribute getConnectivityCall_Group();
+
+	/**
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.ConnectivityCall#isIndexEqualId <em>Index Equal Id</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Index Equal Id</em>'.
+	 * @see fr.cea.nabla.ir.ir.ConnectivityCall#isIndexEqualId()
+	 * @see #getConnectivityCall()
+	 * @generated
+	 */
+	EAttribute getConnectivityCall_IndexEqualId();
+
+	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.SetRef <em>Set Ref</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -7219,6 +7317,14 @@ public interface IrPackage extends EPackage {
 		EAttribute IR_MODULE__NAME = eINSTANCE.getIrModule_Name();
 
 		/**
+		 * The meta object literal for the '<em><b>Type</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute IR_MODULE__TYPE = eINSTANCE.getIrModule_Type();
+
+		/**
 		 * The meta object literal for the '<em><b>Main</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -7471,6 +7577,14 @@ public interface IrPackage extends EPackage {
 		EReference MESH_EXTENSION_PROVIDER__CONNECTIVITIES = eINSTANCE.getMeshExtensionProvider_Connectivities();
 
 		/**
+		 * The meta object literal for the '<em><b>Generation Variables</b></em>' map feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference MESH_EXTENSION_PROVIDER__GENERATION_VARIABLES = eINSTANCE.getMeshExtensionProvider_GenerationVariables();
+
+		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.ArgOrVarImpl <em>Arg Or Var</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -7641,6 +7755,14 @@ public interface IrPackage extends EPackage {
 		EReference FUNCTION__IN_ARGS = eINSTANCE.getFunction_InArgs();
 
 		/**
+		 * The meta object literal for the '<em><b>Index In Name</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute FUNCTION__INDEX_IN_NAME = eINSTANCE.getFunction_IndexInName();
+
+		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.InternFunctionImpl <em>Intern Function</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -7717,14 +7839,6 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EReference CONNECTIVITY__RETURN_TYPE = eINSTANCE.getConnectivity_ReturnType();
-
-		/**
-		 * The meta object literal for the '<em><b>Index Equal Id</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute CONNECTIVITY__INDEX_EQUAL_ID = eINSTANCE.getConnectivity_IndexEqualId();
 
 		/**
 		 * The meta object literal for the '<em><b>Multiple</b></em>' attribute feature.
@@ -8833,6 +8947,22 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EReference CONNECTIVITY_CALL__ARGS = eINSTANCE.getConnectivityCall_Args();
+
+		/**
+		 * The meta object literal for the '<em><b>Group</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute CONNECTIVITY_CALL__GROUP = eINSTANCE.getConnectivityCall_Group();
+
+		/**
+		 * The meta object literal for the '<em><b>Index Equal Id</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute CONNECTIVITY_CALL__INDEX_EQUAL_ID = eINSTANCE.getConnectivityCall_IndexEqualId();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.SetRefImpl <em>Set Ref</em>}' class.

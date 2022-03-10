@@ -55,6 +55,9 @@ Iteration::jsonInit(const char* jsonContent)
 	assert(document.IsObject());
 	const rapidjson::Value::Object& options = document.GetObject();
 
+	n = 0;
+	k = 0;
+	l = 0;
 
 	// Copy node coordinates
 	const auto& gNodes = mesh.getGeometry()->getNodes();
@@ -64,7 +67,6 @@ Iteration::jsonInit(const char* jsonContent)
 		X(rNodes)[1] = gNodes[rNodes][1];
 	}
 }
-
 
 const std::pair<size_t, size_t> Iteration::computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept
 {
@@ -649,7 +651,7 @@ int main(int argc, char* argv[])
 	
 	// Module instanciation(s)
 	Iteration* iteration = new Iteration(mesh);
-	if (d.HasMember("iteration"))
+	assert(d.HasMember("iteration"));
 	{
 		rapidjson::StringBuffer strbuf;
 		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -10,6 +10,7 @@
 package fr.cea.nabla.ir.interpreter
 
 import fr.cea.nabla.ir.ir.Connectivity
+import fr.cea.nabla.ir.ir.ConnectivityCall
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.javalib.mesh.CartesianMesh2D
@@ -24,7 +25,9 @@ class MeshExtensionProviderHelper implements ExtensionProviderHelper
 	val Class<?> providerClass = typeof(CartesianMesh2D)
 	static CartesianMesh2D providerInstance = null // singleton
 
+	Method groupMethod
 	val methods = new HashMap<Connectivity, Method>
+	val groupSizes = new HashMap<String, Integer>
 	val sizes = new HashMap<Connectivity, Integer>
 
 	def getNodes() { providerInstance.geometry.nodes }
@@ -51,10 +54,20 @@ class MeshExtensionProviderHelper implements ExtensionProviderHelper
 		throw new RuntimeException("Not yet implemented")
 	}
 
+	def int[] getElements(String groupName)
+	{
+		return groupMethod.invoke(providerInstance, groupName) as int[]
+	}
+
 	def int[] getElements(Connectivity connectivity, int[] args)
 	{
 		val method = methods.get(connectivity)
 		call(method, args) as int[]
+	}
+
+	def int getSingleton(String groupName)
+	{
+		return groupMethod.invoke(providerInstance, groupName) as Integer
 	}
 
 	def int getSingleton(Connectivity connectivity, int[] args)
@@ -65,11 +78,28 @@ class MeshExtensionProviderHelper implements ExtensionProviderHelper
 
 	def void init(Iterable<Connectivity> connectivities)
 	{
+		groupMethod = providerClass.getDeclaredMethod("getGroup", #[typeof(String)])
+		groupMethod.setAccessible(true)
+
+		// all arguments are of type int
 		for (c : connectivities)
 		{
 			val methodName = "get" + c.name.toFirstUpper
 			val nbArgs = c.inTypes.size
 			methods.put(c, getMeshMethod(methodName, nbArgs))
+		}
+	}
+
+	def int getSize(ConnectivityCall c)
+	{
+		if (c.group === null)
+			getSize(c.connectivity)
+		else
+		{
+			var size = groupSizes.get(c.group)
+			if (size === null)
+				groupSizes.put(c.group, getElements(c.group).size)
+			return size
 		}
 	}
 
@@ -93,15 +123,15 @@ class MeshExtensionProviderHelper implements ExtensionProviderHelper
 	{
 		val methodName = "getNb" + connectivity.name.toFirstUpper
 		val method = getMeshMethod(methodName, 0)
-		call(method, newIntArrayOfSize(0)) as Integer
+		method.invoke(providerInstance, null) as Integer
 	}
 
 	private def int getMaxNbElems(Connectivity connectivity)
 	{
-		val fieldName = "MaxNb" + connectivity.name.toFirstUpper
-		val field = providerClass.getDeclaredField(fieldName)
-		field.setAccessible(true)
-		return field.getInt(providerInstance)
+		val varName = "MaxNb" + connectivity.name.toFirstUpper
+		val varValue = connectivity.provider.generationVariables.get(varName)
+		if (varValue === null) throw new RuntimeException("Unsupported mesh: " + connectivity.provider.extensionName)
+		return Integer.parseInt(varValue)
 	}
 
 	private def Method getMeshMethod(String methodName, int nbArgs)

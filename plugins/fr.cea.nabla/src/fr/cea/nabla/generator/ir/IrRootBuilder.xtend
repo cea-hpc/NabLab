@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -15,13 +15,8 @@ import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
 import fr.cea.nabla.generator.NablagenExtensionHelper
 import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.IrRoot
-import fr.cea.nabla.ir.transformers.CreateArrayOperators
-import fr.cea.nabla.ir.transformers.FillJobHLTs
 import fr.cea.nabla.ir.transformers.IrTransformationStep
-import fr.cea.nabla.ir.transformers.OptimizeConnectivities
-import fr.cea.nabla.ir.transformers.ReplaceAffectations
-import fr.cea.nabla.ir.transformers.ReplaceReductions
-import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
+import fr.cea.nabla.ir.transformers.IrTransformationUtils
 import fr.cea.nabla.nabla.DefaultExtension
 import fr.cea.nabla.nablagen.NablagenApplication
 import fr.cea.nabla.nablagen.TargetType
@@ -42,7 +37,7 @@ class IrRootBuilder
 	{
 		try
 		{
-			val ir = buildIr(ngenApp, getCommonTransformation(true))
+			val ir = buildIr(ngenApp, IrTransformationUtils.getCommonTransformation(true))
 
 			val target = ngenApp.targets.findFirst[x | x.interpreter]
 			var ok = false
@@ -76,7 +71,7 @@ class IrRootBuilder
 	 */
 	def IrRoot buildGeneratorGenericIr(NablagenApplication ngenApp)
 	{
-		buildIr(ngenApp, getCommonTransformation(false))
+		buildIr(ngenApp, IrTransformationUtils.getCommonTransformation(false))
 	}
 
 	/**
@@ -92,22 +87,10 @@ class IrRootBuilder
 		dispatcher.post(MessageType.Exec, "Starting NabLab to IR model transformation")
 		val startTime = System.currentTimeMillis
 		val ir = nablagen2Ir.toIrRoot(ngenApp)
-		for (s : transformationSteps) s.transformIr(ir, [msg | dispatcher.post(MessageType::Exec, msg)])
+		for (s : transformationSteps) s.transformIrRoot(ir, [msg | dispatcher.post(MessageType::Exec, msg)])
 		val endTime = System.currentTimeMillis
 		dispatcher.post(MessageType.Exec, "NabLab to IR model transformation ended in " + (endTime-startTime)/1000.0 + "s")
 		return ir
-	}
-
-	private def getCommonTransformation(boolean replaceAllReductions)
-	{
-		#[
-			new ReplaceUtf8Chars,
-			new OptimizeConnectivities(#['cells', 'nodes', 'faces']),
-			new ReplaceReductions(replaceAllReductions),
-			new ReplaceAffectations,
-			new CreateArrayOperators,
-			new FillJobHLTs
-		]
 	}
 
 	private def boolean setDefaultInterpreterProviders(EObject ngenContext, IrRoot ir)

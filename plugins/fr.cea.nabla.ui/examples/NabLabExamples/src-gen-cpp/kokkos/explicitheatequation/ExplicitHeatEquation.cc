@@ -36,7 +36,7 @@ double det(RealArray1D<2> a, RealArray1D<2> b)
 template<size_t x>
 RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b)
 {
-	return explicitheatequationfreefuncs::operator+(a, b);
+	return explicitheatequationfreefuncs::operatorAdd(a, b);
 }
 
 double minR0(double a, double b)
@@ -55,7 +55,7 @@ double prodR0(double a, double b)
 }
 
 template<size_t x0>
-RealArray1D<x0> operator+(RealArray1D<x0> a, RealArray1D<x0> b)
+RealArray1D<x0> operatorAdd(RealArray1D<x0> a, RealArray1D<x0> b)
 {
 	RealArray1D<x0> result;
 	for (size_t ix0=0; ix0<x0; ix0++)
@@ -66,7 +66,7 @@ RealArray1D<x0> operator+(RealArray1D<x0> a, RealArray1D<x0> b)
 }
 
 template<size_t x0>
-RealArray1D<x0> operator*(double a, RealArray1D<x0> b)
+RealArray1D<x0> operatorMult(double a, RealArray1D<x0> b)
 {
 	RealArray1D<x0> result;
 	for (size_t ix0=0; ix0<x0; ix0++)
@@ -77,7 +77,7 @@ RealArray1D<x0> operator*(double a, RealArray1D<x0> b)
 }
 
 template<size_t x0>
-RealArray1D<x0> operator-(RealArray1D<x0> a, RealArray1D<x0> b)
+RealArray1D<x0> operatorSub(RealArray1D<x0> a, RealArray1D<x0> b)
 {
 	RealArray1D<x0> result;
 	for (size_t ix0=0; ix0<x0; ix0++)
@@ -95,10 +95,6 @@ ExplicitHeatEquation::ExplicitHeatEquation(CartesianMesh2D& aMesh)
 , nbNodes(mesh.getNbNodes())
 , nbCells(mesh.getNbCells())
 , nbFaces(mesh.getNbFaces())
-, maxNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
-, maxNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
-, maxCellsOfFace(CartesianMesh2D::MaxNbCellsOfFace)
-, maxNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
 , X("X", nbNodes)
 , Xc("Xc", nbCells)
 , u_n("u_n", nbCells)
@@ -123,51 +119,25 @@ ExplicitHeatEquation::jsonInit(const char* jsonContent)
 	assert(document.IsObject());
 	const rapidjson::Value::Object& options = document.GetObject();
 
-	// outputPath
 	assert(options.HasMember("outputPath"));
 	const rapidjson::Value& valueof_outputPath = options["outputPath"];
 	assert(valueof_outputPath.IsString());
 	outputPath = valueof_outputPath.GetString();
 	writer = new PvdFileWriter2D("ExplicitHeatEquation", outputPath);
-	// outputPeriod
 	assert(options.HasMember("outputPeriod"));
 	const rapidjson::Value& valueof_outputPeriod = options["outputPeriod"];
 	assert(valueof_outputPeriod.IsInt());
 	outputPeriod = valueof_outputPeriod.GetInt();
 	lastDump = numeric_limits<int>::min();
-	// u0
-	if (options.HasMember("u0"))
-	{
-		const rapidjson::Value& valueof_u0 = options["u0"];
-		assert(valueof_u0.IsDouble());
-		u0 = valueof_u0.GetDouble();
-	}
-	else
-	{
-		u0 = 1.0;
-	}
-	// stopTime
-	if (options.HasMember("stopTime"))
-	{
-		const rapidjson::Value& valueof_stopTime = options["stopTime"];
-		assert(valueof_stopTime.IsDouble());
-		stopTime = valueof_stopTime.GetDouble();
-	}
-	else
-	{
-		stopTime = 1.0;
-	}
-	// maxIterations
-	if (options.HasMember("maxIterations"))
-	{
-		const rapidjson::Value& valueof_maxIterations = options["maxIterations"];
-		assert(valueof_maxIterations.IsInt());
-		maxIterations = valueof_maxIterations.GetInt();
-	}
-	else
-	{
-		maxIterations = 500000000;
-	}
+	n = 0;
+	assert(options.HasMember("stopTime"));
+	const rapidjson::Value& valueof_stopTime = options["stopTime"];
+	assert(valueof_stopTime.IsDouble());
+	stopTime = valueof_stopTime.GetDouble();
+	assert(options.HasMember("maxIterations"));
+	const rapidjson::Value& valueof_maxIterations = options["maxIterations"];
+	assert(valueof_maxIterations.IsInt());
+	maxIterations = valueof_maxIterations.GetInt();
 	deltat = 0.001;
 
 	// Copy node coordinates
@@ -178,7 +148,6 @@ ExplicitHeatEquation::jsonInit(const char* jsonContent)
 		X(rNodes)[1] = gNodes[rNodes][1];
 	}
 }
-
 
 /**
  * Job computeFaceLength called @1.0 in simulate method.
@@ -197,10 +166,10 @@ void ExplicitHeatEquation::computeFaceLength() noexcept
 			for (size_t pNodesOfFaceF=0; pNodesOfFaceF<nbNodesOfFaceF; pNodesOfFaceF++)
 			{
 				const Id pId(nodesOfFaceF[pNodesOfFaceF]);
-				const Id pPlus1Id(nodesOfFaceF[(pNodesOfFaceF+1+maxNodesOfFace)%maxNodesOfFace]);
+				const Id pPlus1Id(nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFaceF)%nbNodesOfFaceF]);
 				const size_t pNodes(pId);
 				const size_t pPlus1Nodes(pPlus1Id);
-				reduction0 = explicitheatequationfreefuncs::sumR0(reduction0, explicitheatequationfreefuncs::norm(explicitheatequationfreefuncs::operator-(X(pNodes), X(pPlus1Nodes))));
+				reduction0 = explicitheatequationfreefuncs::sumR0(reduction0, explicitheatequationfreefuncs::norm(explicitheatequationfreefuncs::operatorSub(X(pNodes), X(pPlus1Nodes))));
 			}
 		}
 		faceLength(fFaces) = 0.5 * reduction0;
@@ -234,7 +203,7 @@ void ExplicitHeatEquation::computeV() noexcept
 			for (size_t pNodesOfCellC=0; pNodesOfCellC<nbNodesOfCellC; pNodesOfCellC++)
 			{
 				const Id pId(nodesOfCellC[pNodesOfCellC]);
-				const Id pPlus1Id(nodesOfCellC[(pNodesOfCellC+1+maxNodesOfCell)%maxNodesOfCell]);
+				const Id pPlus1Id(nodesOfCellC[(pNodesOfCellC+1+nbNodesOfCellC)%nbNodesOfCellC]);
 				const size_t pNodes(pId);
 				const size_t pPlus1Nodes(pPlus1Id);
 				reduction0 = explicitheatequationfreefuncs::sumR0(reduction0, explicitheatequationfreefuncs::det(X(pNodes), X(pPlus1Nodes)));
@@ -288,7 +257,7 @@ void ExplicitHeatEquation::initXc() noexcept
 				reduction0 = explicitheatequationfreefuncs::sumR1(reduction0, X(pNodes));
 			}
 		}
-		Xc(cCells) = explicitheatequationfreefuncs::operator*(0.25, reduction0);
+		Xc(cCells) = explicitheatequationfreefuncs::operatorMult(0.25, reduction0);
 	});
 }
 
@@ -377,7 +346,7 @@ void ExplicitHeatEquation::initU() noexcept
 {
 	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& cCells)
 	{
-		if (explicitheatequationfreefuncs::norm(explicitheatequationfreefuncs::operator-(Xc(cCells), vectOne)) < 0.5) 
+		if (explicitheatequationfreefuncs::norm(explicitheatequationfreefuncs::operatorSub(Xc(cCells), vectOne)) < 0.5) 
 			u_n(cCells) = u0;
 		else
 			u_n(cCells) = 0.0;
@@ -414,7 +383,7 @@ void ExplicitHeatEquation::computeAlphaCoeff() noexcept
 				const size_t dCells(dId);
 				const Id fId(mesh.getCommonFace(cId, dId));
 				const size_t fFaces(fId);
-				const double alphaExtraDiag(deltat / V(cCells) * (faceLength(fFaces) * faceConductivity(fFaces)) / explicitheatequationfreefuncs::norm(explicitheatequationfreefuncs::operator-(Xc(cCells), Xc(dCells))));
+				const double alphaExtraDiag(deltat / V(cCells) * (faceLength(fFaces) * faceConductivity(fFaces)) / explicitheatequationfreefuncs::norm(explicitheatequationfreefuncs::operatorSub(Xc(cCells), Xc(dCells))));
 				alpha(cCells, dCells) = alphaExtraDiag;
 				alphaDiag = alphaDiag + alphaExtraDiag;
 			}
@@ -580,7 +549,7 @@ int main(int argc, char* argv[])
 	
 	// Module instanciation(s)
 	ExplicitHeatEquation* explicitHeatEquation = new ExplicitHeatEquation(mesh);
-	if (d.HasMember("explicitHeatEquation"))
+	assert(d.HasMember("explicitHeatEquation"));
 	{
 		rapidjson::StringBuffer strbuf;
 		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);

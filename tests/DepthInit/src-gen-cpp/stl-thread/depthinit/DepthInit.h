@@ -9,14 +9,14 @@
 #include <limits>
 #include <utility>
 #include <cmath>
-#include "nablalib/mesh/CartesianMesh2D.h"
+#include <rapidjson/document.h>
 #include "nablalib/utils/Utils.h"
 #include "nablalib/utils/Timer.h"
 #include "nablalib/types/Types.h"
 #include "nablalib/utils/stl/Parallel.h"
+#include "CartesianMesh2D.h"
 #include "BathyLib.h"
 
-using namespace nablalib::mesh;
 using namespace nablalib::utils;
 using namespace nablalib::types;
 using namespace nablalib::utils::stl;
@@ -33,18 +33,10 @@ double two();
 class DepthInit
 {
 public:
-	struct Options
-	{
-		double maxTime;
-		int maxIter;
-		double deltat;
-		BathyLib bathyLib;
-
-		void jsonInit(const char* jsonContent);
-	};
-
-	DepthInit(CartesianMesh2D& aMesh, Options& aOptions);
+	DepthInit(CartesianMesh2D& aMesh);
 	~DepthInit();
+
+	void jsonInit(const char* jsonContent);
 
 	void simulate();
 	void initFromFile() noexcept;
@@ -54,19 +46,19 @@ private:
 	CartesianMesh2D& mesh;
 	size_t nbNodes, nbCells;
 
-	// User options
-	Options& options;
+	// Options and global variables
+	BathyLib bathyLib;
+	static constexpr double t = 0.0;
+	int maxIter;
+	double maxTime;
+	double deltat;
+	std::vector<RealArray1D<2>> X;
+	std::vector<double> eta;
 
 	// Timers
 	Timer globalTimer;
 	Timer cpuTimer;
 	Timer ioTimer;
-
-public:
-	// Global variables
-	static constexpr double t = 0.0;
-	std::vector<RealArray1D<2>> X;
-	std::vector<double> eta;
 };
 
 #endif

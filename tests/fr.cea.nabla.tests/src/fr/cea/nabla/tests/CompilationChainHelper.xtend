@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -13,7 +13,7 @@ import com.google.inject.Inject
 import com.google.inject.Provider
 import fr.cea.nabla.NablaStandaloneSetup
 import fr.cea.nabla.NablagenStandaloneSetup
-import fr.cea.nabla.generator.application.NablagenApplicationGenerator
+import fr.cea.nabla.generator.CodeGenerator
 import fr.cea.nabla.generator.ir.IrRootBuilder
 import fr.cea.nabla.ir.interpreter.IrInterpreter
 import fr.cea.nabla.ir.ir.IrRoot
@@ -35,7 +35,7 @@ class CompilationChainHelper
 {
 	@Inject extension ValidationTestHelper
 	@Inject extension TestUtils
-	@Inject Provider<NablagenApplicationGenerator> ngenAppGeneratorProvider
+	@Inject Provider<CodeGenerator> codeGeneratorProvider
 	@Inject Provider<IrRootBuilder> irRootBuilderProvider
 	@Inject Provider<ResourceSet> resourceSetProvider
 
@@ -106,8 +106,8 @@ class CompilationChainHelper
 
 	def void generateCode(CharSequence[] models, CharSequence genModel, String wsPath, String projectName)
 	{
-		val generator = ngenAppGeneratorProvider.get
+		val generator = codeGeneratorProvider.get
 		val ngen = getNgenApp(models, genModel)
-		generator.generateApplication(ngen, wsPath, projectName)
+		generator.generateCode(ngen, wsPath, projectName)
 	}
 }

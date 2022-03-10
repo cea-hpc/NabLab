@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -11,6 +11,7 @@ package fr.cea.nabla.ir.generator
 
 import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.ir.ExternFunction
+import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.InternFunction
 import fr.cea.nabla.ir.ir.IrModule
 
@@ -24,16 +25,21 @@ class CppGeneratorUtils
 		className.toLowerCase + "freefuncs"
 	}
 
-	static def dispatch getCodeName(InternFunction it)
+	static def getCodeName(Function f)
 	{
-		val irModule = IrUtils.getContainerOfType(it, IrModule)
-		irModule.freeFunctionNs + '::' + name
-	}
-
-	static def dispatch getCodeName(ExternFunction it)
-	{
-		if (provider.extensionName == "Math") 'std::' + name
-		else provider.instanceName + '.' + name
+		switch f
+		{
+			InternFunction:
+			{
+				val irModule = IrUtils.getContainerOfType(f, IrModule)
+				irModule.freeFunctionNs + '::' + f.name
+			}
+			ExternFunction:
+			{
+				if (f.provider.extensionName == "Math") 'std::' + f.name
+				else f.provider.instanceName + '.' + f.name
+			}
+		}
 	}
 
 	static def getHDefineName(String name)

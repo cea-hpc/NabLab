@@ -51,39 +51,18 @@ Hydro::jsonInit(const char* jsonContent)
 	assert(document.IsObject());
 	const rapidjson::Value::Object& options = document.GetObject();
 
-	// maxTime
-	if (options.HasMember("maxTime"))
-	{
-		const rapidjson::Value& valueof_maxTime = options["maxTime"];
-		assert(valueof_maxTime.IsDouble());
-		maxTime = valueof_maxTime.GetDouble();
-	}
-	else
-	{
-		maxTime = 0.1;
-	}
-	// maxIter
-	if (options.HasMember("maxIter"))
-	{
-		const rapidjson::Value& valueof_maxIter = options["maxIter"];
-		assert(valueof_maxIter.IsInt());
-		maxIter = valueof_maxIter.GetInt();
-	}
-	else
-	{
-		maxIter = 500;
-	}
-	// deltat
-	if (options.HasMember("deltat"))
-	{
-		const rapidjson::Value& valueof_deltat = options["deltat"];
-		assert(valueof_deltat.IsDouble());
-		deltat = valueof_deltat.GetDouble();
-	}
-	else
-	{
-		deltat = 1.0;
-	}
+	assert(options.HasMember("maxIter"));
+	const rapidjson::Value& valueof_maxIter = options["maxIter"];
+	assert(valueof_maxIter.IsInt());
+	maxIter = valueof_maxIter.GetInt();
+	assert(options.HasMember("maxTime"));
+	const rapidjson::Value& valueof_maxTime = options["maxTime"];
+	assert(valueof_maxTime.IsDouble());
+	maxTime = valueof_maxTime.GetDouble();
+	assert(options.HasMember("deltat"));
+	const rapidjson::Value& valueof_deltat = options["deltat"];
+	assert(valueof_deltat.IsDouble());
+	deltat = valueof_deltat.GetDouble();
 
 	// Copy node coordinates
 	const auto& gNodes = mesh.getGeometry()->getNodes();
@@ -93,7 +72,6 @@ Hydro::jsonInit(const char* jsonContent)
 		X(rNodes)[1] = gNodes[rNodes][1];
 	}
 }
-
 
 const std::pair<size_t, size_t> Hydro::computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept
 {
@@ -469,7 +447,7 @@ int main(int argc, char* argv[])
 	
 	// Module instanciation(s)
 	Hydro* hydro = new Hydro(mesh);
-	if (d.HasMember("hydro"))
+	assert(d.HasMember("hydro"));
 	{
 		rapidjson::StringBuffer strbuf;
 		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
@@ -477,7 +455,7 @@ int main(int argc, char* argv[])
 		hydro->jsonInit(strbuf.GetString());
 	}
 	R1* r1 = new R1(mesh);
-	if (d.HasMember("r1"))
+	assert(d.HasMember("r1"));
 	{
 		rapidjson::StringBuffer strbuf;
 		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);
@@ -486,7 +464,7 @@ int main(int argc, char* argv[])
 	}
 	r1->setMainModule(hydro);
 	R2* r2 = new R2(mesh);
-	if (d.HasMember("r2"))
+	assert(d.HasMember("r2"));
 	{
 		rapidjson::StringBuffer strbuf;
 		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);

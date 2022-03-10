@@ -16,9 +16,7 @@ public final class Variables
 {
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
-	@SuppressWarnings("unused")
 	private final int nbNodes;
-
 	// Options and global variables
 	static final double maxTime = 0.1;
 	static final int maxIter = 500;
@@ -29,8 +27,6 @@ public final class Variables
 	double[] optVect1;
 	double[] optVect2;
 	double[] optVect3;
-	int mandatoryOptDim;
-	int[] mandatoryOptVect;
 	static final int constexprDim = 2;
 	static final double[] constexprVec = new double[] {1.1, 1.1};
 	double[] varVec;
@@ -49,58 +45,32 @@ public final class Variables
 		final Gson gson = new Gson();
 		final JsonObject options = gson.fromJson(jsonContent, JsonObject.class);
 		X = new double[nbNodes][2];
-		if (options.has("optDim"))
-		{
-			final JsonElement valueof_optDim = options.get("optDim");
-			assert(valueof_optDim.isJsonPrimitive());
-			optDim = valueof_optDim.getAsJsonPrimitive().getAsInt();
-		}
-		else
-			optDim = 2;
+		assert(options.has("optDim"));
+		final JsonElement valueof_optDim = options.get("optDim");
+		assert(valueof_optDim.isJsonPrimitive());
+		optDim = valueof_optDim.getAsJsonPrimitive().getAsInt();
 		optVect1 = new double[2];
-		if (options.has("optVect1"))
-		{
-			final JsonElement valueof_optVect1 = options.get("optVect1");
-			assert(valueof_optVect1.isJsonArray());
-			assert(valueof_optVect1.getAsJsonArray().size() == 2);
-			for (int i1=0 ; i1<2 ; i1++)
-			{
-				assert(valueof_optVect1.getAsJsonArray().get(i1).isJsonPrimitive());
-				optVect1[i1] = valueof_optVect1.getAsJsonArray().get(i1).getAsJsonPrimitive().getAsDouble();
-			}
-		}
-		else
-			optVect1 = new double[] {1.0, 1.0};
-		optVect2 = new double[2];
-		if (options.has("optVect2"))
-		{
-			final JsonElement valueof_optVect2 = options.get("optVect2");
-			assert(valueof_optVect2.isJsonArray());
-			assert(valueof_optVect2.getAsJsonArray().size() == 2);
-			for (int i1=0 ; i1<2 ; i1++)
-			{
-				assert(valueof_optVect2.getAsJsonArray().get(i1).isJsonPrimitive());
-				optVect2[i1] = valueof_optVect2.getAsJsonArray().get(i1).getAsJsonPrimitive().getAsDouble();
-			}
-		}
-		else
-			optVect2 = new double[] {1.0, 1.0};
-		optVect3 = new double[2];
-		optVect3 = plus(optVect1, optVect2);
-		assert(options.has("mandatoryOptDim"));
-		final JsonElement valueof_mandatoryOptDim = options.get("mandatoryOptDim");
-		assert(valueof_mandatoryOptDim.isJsonPrimitive());
-		mandatoryOptDim = valueof_mandatoryOptDim.getAsJsonPrimitive().getAsInt();
-		mandatoryOptVect = new int[2];
-		assert(options.has("mandatoryOptVect"));
-		final JsonElement valueof_mandatoryOptVect = options.get("mandatoryOptVect");
-		assert(valueof_mandatoryOptVect.isJsonArray());
-		assert(valueof_mandatoryOptVect.getAsJsonArray().size() == 2);
+		assert(options.has("optVect1"));
+		final JsonElement valueof_optVect1 = options.get("optVect1");
+		assert(valueof_optVect1.isJsonArray());
+		assert(valueof_optVect1.getAsJsonArray().size() == 2);
 		for (int i1=0 ; i1<2 ; i1++)
 		{
-			assert(valueof_mandatoryOptVect.getAsJsonArray().get(i1).isJsonPrimitive());
-			mandatoryOptVect[i1] = valueof_mandatoryOptVect.getAsJsonArray().get(i1).getAsJsonPrimitive().getAsInt();
+			assert(valueof_optVect1.getAsJsonArray().get(i1).isJsonPrimitive());
+			optVect1[i1] = valueof_optVect1.getAsJsonArray().get(i1).getAsJsonPrimitive().getAsDouble();
 		}
+		optVect2 = new double[2];
+		assert(options.has("optVect2"));
+		final JsonElement valueof_optVect2 = options.get("optVect2");
+		assert(valueof_optVect2.isJsonArray());
+		assert(valueof_optVect2.getAsJsonArray().size() == 2);
+		for (int i1=0 ; i1<2 ; i1++)
+		{
+			assert(valueof_optVect2.getAsJsonArray().get(i1).isJsonPrimitive());
+			optVect2[i1] = valueof_optVect2.getAsJsonArray().get(i1).getAsJsonPrimitive().getAsDouble();
+		}
+		optVect3 = new double[2];
+		optVect3 = operatorAdd(optVect1, optVect2);
 		varVec = new double[constexprDim];
 		varVec = new double[] {1.0, 1.0};
 		dynamicVec = new double[optDim];
@@ -142,7 +112,7 @@ public final class Variables
 
 	/**
 	 * Job oracle called @2.0 in simulate method.
-	 * In variables: checkDynamicDim, constexprDim, constexprVec, mandatoryOptDim, mandatoryOptVect, optDim, optVect1, optVect2, optVect3, varVec
+	 * In variables: checkDynamicDim, constexprDim, constexprVec, optDim, optVect1, optVect2, optVect3, varVec
 	 * Out variables: 
 	 */
 	protected void oracle()
@@ -151,8 +121,6 @@ public final class Variables
 		final boolean testOptVect1 = assertEquals(new double[] {1.0, 1.0}, optVect1);
 		final boolean testOptVect2 = assertEquals(new double[] {2.0, 2.0}, optVect2);
 		final boolean testOptVect3 = assertEquals(new double[] {3.0, 3.0}, optVect3);
-		final boolean testMandatoryOptDim = assertEquals(3, mandatoryOptDim);
-		final boolean testMandatoryOptVect = assertEquals(new int[] {3, 3}, mandatoryOptVect);
 		final boolean testConstexprDim = assertEquals(2, constexprDim);
 		final boolean testConstexprVec = assertEquals(new double[] {1.1, 1.1}, constexprVec);
 		final boolean testVarVec = assertEquals(new double[] {2.2, 2.2}, varVec);
@@ -177,17 +145,7 @@ public final class Variables
 		return true;
 	}
 
-	private static boolean assertEquals(int[] expected, int[] actual)
-	{
-		for (int i=0; i<expected.length; i++)
-		{
-			if (expected[i] != actual[i])
-				throw new RuntimeException("** Assertion failed");
-		}
-		return true;
-	}
-
-	private static double[] plus(double[] a, double[] b)
+	private static double[] operatorAdd(double[] a, double[] b)
 	{
 		double[] result = new double[a.length];
 		for (int ix0=0; ix0<a.length; ix0++)
@@ -221,7 +179,8 @@ public final class Variables
 
 			// Module instanciation(s)
 			Variables variables = new Variables(mesh);
-			if (o.has("variables")) variables.jsonInit(o.get("variables").toString());
+			assert(o.has("variables"));
+			variables.jsonInit(o.get("variables").toString());
 
 			// Start simulation
 			variables.simulate();

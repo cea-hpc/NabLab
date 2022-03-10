@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -12,13 +12,10 @@ package fr.cea.nabla.ui.handlers
 import com.google.inject.Inject
 import com.google.inject.Provider
 import com.google.inject.Singleton
+import fr.cea.nabla.generator.CodeGenerator
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
-import fr.cea.nabla.generator.application.NablagenApplicationGenerator
-import fr.cea.nabla.generator.providers.NablagenProviderGenerator
 import fr.cea.nabla.generator.python.PythonModuleGenerator
 import fr.cea.nabla.ir.IrUtils
-import fr.cea.nabla.nablagen.NablagenApplication
-import fr.cea.nabla.nablagen.NablagenProviderList
 import fr.cea.nabla.nablagen.NablagenRoot
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.IResource
@@ -32,8 +29,7 @@ import org.eclipse.swt.widgets.Shell
 class GenerateCodeHandler extends AbstractGenerateHandler
 {
 	@Inject Provider<ResourceSet> resourceSetProvider
-	@Inject Provider<NablagenApplicationGenerator> applicationGeneratorProvider
-	@Inject Provider<NablagenProviderGenerator> providerGeneratorProvider
+	@Inject Provider<CodeGenerator> codeGeneratorProvider
 	@Inject Provider<PythonModuleGenerator> pythonModuleGeneratorProvider
 
 	val traceFunction = [MessageType type, String msg | consoleFactory.printConsole(type, msg)]
@@ -60,15 +56,8 @@ class GenerateCodeHandler extends AbstractGenerateHandler
 				val ngen = emfResource.contents.filter(NablagenRoot).head
 				val projectFolder = ResourcesPlugin.workspace.root.getFolder(project.location)
 				val wsPath = projectFolder.parent.fullPath.toString
-				switch (ngen)
-				{
-					NablagenApplication:
-					{
-						applicationGeneratorProvider.get.generateApplication(ngen, wsPath, project.name)
-						pythonModuleGeneratorProvider.get.generatePythonModule(ngen, wsPath, project.name)
-					}
-					NablagenProviderList: providerGeneratorProvider.get.generateProviders(ngen, wsPath)
-				}
+				codeGeneratorProvider.get.generateCode(ngen, wsPath, project.name)
+				pythonModuleGeneratorProvider.get.generatePythonModule(ngen, wsPath, project.name)
 
 				project.refreshLocal(IResource::DEPTH_INFINITE, null)
 				consoleFactory.printConsole(MessageType.End, "Generation ended successfully for: " + nablagenFile.name)

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -43,11 +43,10 @@ class NablagenValidatorTest
 
 	with CartesianMesh2D.*;
 
-	// Simulation options
-	option ℝ maxTime = 0.1;
-	option ℕ maxIter = 500;
+	let ℝ maxTime = 0.1;
+	let ℕ maxIter = 500;
+	let ℝ δt = 1.0;
 
-	option ℝ δt = 1.0;
 	ℝ t;
 	ℝ[2] X{nodes};
 	ℝ hv1{cells}, hv2{cells}, hv3{cells}, hv4{cells}, hv5{cells}, hv6{cells}, hv7{cells};
@@ -221,9 +220,9 @@ class NablagenValidatorTest
 			with CartesianMesh2D.*;
 
 			let ℝ t = 0.0;
-			option ℝ maxTime = 0.1;
-			option ℕ maxIter = 500;
-			option ℝ δt = 1.0;
+			let ℝ maxTime = 0.1;
+			let ℕ maxIter = 500;
+			let ℝ δt = 1.0;
 			ℝ[2] X{nodes};
 			ℝ η{cells};
 

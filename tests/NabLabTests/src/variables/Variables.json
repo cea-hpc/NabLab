@@ -2,9 +2,9 @@
 	"_comment": "GENERATED FILE - DO NOT OVERWRITE",
 	"variables":
 	{
-		"optVect2":[2.0,2.0],
-		"mandatoryOptDim":3,
-		"mandatoryOptVect":[3,3],
+		"optDim":2,
+		"optVect1":[1.0, 1.0],
+		"optVect2":[2.0, 2.0],
 		"_nonRegression_comment":"empty value to disable, CreateReference or CompareToReference to take action",
 		"nonRegression":""
 	},

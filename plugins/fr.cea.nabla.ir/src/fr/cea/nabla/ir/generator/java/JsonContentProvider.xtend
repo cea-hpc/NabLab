@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -22,21 +22,11 @@ class JsonContentProvider
 		'valueof_' + varName
 	}
 
-	static def getJsonContent(String name, BaseType type, Expression defaultValue)
+	static def getJsonContent(String name, BaseType type)
 	'''
-		«IF defaultValue === null»
-			assert(options.has("«name»"));
-			final JsonElement «name.jsonName» = options.get("«name»");
-			«getJsonContent(name, type, type.sizes, #[])»
-		«ELSE»
-			if (options.has("«name»"))
-			{
-				final JsonElement «name.jsonName» = options.get("«name»");
-				«getJsonContent(name, type, type.sizes, #[])»
-			}
-			else
-				«name» = «defaultValue.content»;
-		«ENDIF»
+		assert(options.has("«name»"));
+		final JsonElement «name.jsonName» = options.get("«name»");
+		«getJsonContent(name, type, type.sizes, #[])»
 	'''
 
 	private static def CharSequence getJsonContent(String name, BaseType type, Iterable<Expression> sizes, String[] indices)

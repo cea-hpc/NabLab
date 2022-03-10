@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -18,7 +18,6 @@ import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.If
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaPackage
-import fr.cea.nabla.nabla.OptionDeclaration
 import fr.cea.nabla.nabla.SimpleVarDeclaration
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.nabla.While
@@ -41,7 +40,6 @@ class InstructionValidator extends FunctionOrReductionValidator
 	public static val LOCAL_CONNECTIVITY_VAR = "Instructions::LocalConnectivityVar"
 	public static val AFFECTATION_TYPE = "Instructions::AffectationType"
 	public static val AFFECTATION_ON_CONNECTIVITY_TYPE = "Instructions::AffectationOnConnectivityType"
-	public static val AFFECTATION_ON_OPTION = "Instructions::AffectationOnOption"
 	public static val CONDITION_BOOL = "Instructions::ConditionBool"
 	public static val SIMPLE_VAR_TYPE = "Instructions::SimpleVarType"
 	public static val GLOBAL_VAR_VALUE = "Instructions::GlobalVarValue"
@@ -49,8 +47,7 @@ class InstructionValidator extends FunctionOrReductionValidator
 	static def getDynamicGlobalVarMsg() { "Dynamic array not allowed on global variables"}
 	static def getLocalConnectivityVarMsg() { "Connectivities not allowed on local variables"}
 	static def getAffectationOnConnectivityTypeMsg() { "Assignment not allowed on connectivity variables: use loop instead" }
-	static def getAffectationOnOptionMsg() { "Assignment not allowed on options"}
-	static def getGlobalVarValueMsg() { "Assignment with reduction, external function, card or dynamic variable not allowed in options and global variables" }
+	static def getGlobalVarValueMsg() { "Assignment with reduction, external function, card or dynamic variable not allowed on global variables" }
 
 	@Check(CheckType.NORMAL)
 	def checkDynamicGlobalVar(VarGroupDeclaration it)
@@ -84,9 +81,6 @@ class InstructionValidator extends FunctionOrReductionValidator
 	{
 		if (right !== null&& left !== null)
 		{
-			if (left.target.option)
-				error(getAffectationOnOptionMsg(), NablaPackage.Literals.AFFECTATION__LEFT, AFFECTATION_ON_OPTION)
-
 			val leftType = left.typeFor
 			val rightType = right.typeFor
 			if (!checkExpectedType(rightType, leftType))
@@ -132,23 +126,6 @@ class InstructionValidator extends FunctionOrReductionValidator
 				val global = (eContainer !== null && eContainer instanceof NablaModule)
 				if (global && !value.nablaEvaluable)
 					error(getGlobalVarValueMsg(), NablaPackage.Literals::SIMPLE_VAR_DECLARATION__VALUE, GLOBAL_VAR_VALUE)
-			}
-		}
-	}
-
-	@Check(CheckType.NORMAL)
-	def checkVarType(OptionDeclaration it)
-	{
-		if (value !== null)
-		{
-			val valueType = value.typeFor
-			val varType = type.typeFor
-			if (!checkExpectedType(valueType, varType))
-				error(getTypeMsg(valueType.label, varType.label), NablaPackage.Literals.OPTION_DECLARATION__VALUE, SIMPLE_VAR_TYPE)
-			else
-			{
-				if (!value.nablaEvaluable)
-					error(getGlobalVarValueMsg(), NablaPackage.Literals::OPTION_DECLARATION__VALUE, GLOBAL_VAR_VALUE)
 			}
 		}
 	}

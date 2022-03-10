@@ -30,19 +30,8 @@ bool assertEquals(RealArray1D<x> expected, RealArray1D<x> actual)
 	return true;
 }
 
-template<size_t x>
-bool assertEquals(IntArray1D<x> expected, IntArray1D<x> actual)
-{
-	for (size_t i=0; i<x; i++)
-	{
-		if (expected[i] != actual[i]) 
-			throw std::runtime_error("** Assertion failed");
-	}
-	return true;
-}
-
 template<size_t x0>
-RealArray1D<x0> operator+(RealArray1D<x0> a, RealArray1D<x0> b)
+RealArray1D<x0> operatorAdd(RealArray1D<x0> a, RealArray1D<x0> b)
 {
 	RealArray1D<x0> result;
 	for (size_t ix0=0; ix0<x0; ix0++)
@@ -74,65 +63,29 @@ Variables::jsonInit(const char* jsonContent)
 	assert(document.IsObject());
 	const rapidjson::Value::Object& options = document.GetObject();
 
-	// optDim
-	if (options.HasMember("optDim"))
-	{
-		const rapidjson::Value& valueof_optDim = options["optDim"];
-		assert(valueof_optDim.IsInt());
-		optDim = valueof_optDim.GetInt();
-	}
-	else
-	{
-		optDim = 2;
-	}
-	// optVect1
-	if (options.HasMember("optVect1"))
-	{
-		const rapidjson::Value& valueof_optVect1 = options["optVect1"];
-		assert(valueof_optVect1.IsArray());
-		assert(valueof_optVect1.Size() == 2);
-		for (size_t i1=0 ; i1<2 ; i1++)
-		{
-			assert(valueof_optVect1[i1].IsDouble());
-			optVect1[i1] = valueof_optVect1[i1].GetDouble();
-		}
-	}
-	else
-	{
-		optVect1 = {1.0, 1.0};
-	}
-	// optVect2
-	if (options.HasMember("optVect2"))
-	{
-		const rapidjson::Value& valueof_optVect2 = options["optVect2"];
-		assert(valueof_optVect2.IsArray());
-		assert(valueof_optVect2.Size() == 2);
-		for (size_t i1=0 ; i1<2 ; i1++)
-		{
-			assert(valueof_optVect2[i1].IsDouble());
-			optVect2[i1] = valueof_optVect2[i1].GetDouble();
-		}
-	}
-	else
-	{
-		optVect2 = {1.0, 1.0};
-	}
-	optVect3 = variablesfreefuncs::operator+(optVect1, optVect2);
-	// mandatoryOptDim
-	assert(options.HasMember("mandatoryOptDim"));
-	const rapidjson::Value& valueof_mandatoryOptDim = options["mandatoryOptDim"];
-	assert(valueof_mandatoryOptDim.IsInt());
-	mandatoryOptDim = valueof_mandatoryOptDim.GetInt();
-	// mandatoryOptVect
-	assert(options.HasMember("mandatoryOptVect"));
-	const rapidjson::Value& valueof_mandatoryOptVect = options["mandatoryOptVect"];
-	assert(valueof_mandatoryOptVect.IsArray());
-	assert(valueof_mandatoryOptVect.Size() == 2);
+	assert(options.HasMember("optDim"));
+	const rapidjson::Value& valueof_optDim = options["optDim"];
+	assert(valueof_optDim.IsInt());
+	optDim = valueof_optDim.GetInt();
+	assert(options.HasMember("optVect1"));
+	const rapidjson::Value& valueof_optVect1 = options["optVect1"];
+	assert(valueof_optVect1.IsArray());
+	assert(valueof_optVect1.Size() == 2);
 	for (size_t i1=0 ; i1<2 ; i1++)
 	{
-		assert(valueof_mandatoryOptVect[i1].IsInt());
-		mandatoryOptVect[i1] = valueof_mandatoryOptVect[i1].GetInt();
+		assert(valueof_optVect1[i1].IsDouble());
+		optVect1[i1] = valueof_optVect1[i1].GetDouble();
 	}
+	assert(options.HasMember("optVect2"));
+	const rapidjson::Value& valueof_optVect2 = options["optVect2"];
+	assert(valueof_optVect2.IsArray());
+	assert(valueof_optVect2.Size() == 2);
+	for (size_t i1=0 ; i1<2 ; i1++)
+	{
+		assert(valueof_optVect2[i1].IsDouble());
+		optVect2[i1] = valueof_optVect2[i1].GetDouble();
+	}
+	optVect3 = variablesfreefuncs::operatorAdd(optVect1, optVect2);
 	varVec = {1.0, 1.0};
 	dynamicVec.initSize(optDim);
 
@@ -144,7 +97,6 @@ Variables::jsonInit(const char* jsonContent)
 		X(rNodes)[1] = gNodes[rNodes][1];
 	}
 }
-
 
 const std::pair<size_t, size_t> Variables::computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept
 {
@@ -197,7 +149,7 @@ void Variables::varVecInitialization() noexcept
 
 /**
  * Job oracle called @2.0 in simulate method.
- * In variables: checkDynamicDim, constexprDim, constexprVec, mandatoryOptDim, mandatoryOptVect, optDim, optVect1, optVect2, optVect3, varVec
+ * In variables: checkDynamicDim, constexprDim, constexprVec, optDim, optVect1, optVect2, optVect3, varVec
  * Out variables: 
  */
 void Variables::oracle() noexcept
@@ -206,8 +158,6 @@ void Variables::oracle() noexcept
 	const bool testOptVect1(variablesfreefuncs::assertEquals({1.0, 1.0}, optVect1));
 	const bool testOptVect2(variablesfreefuncs::assertEquals({2.0, 2.0}, optVect2));
 	const bool testOptVect3(variablesfreefuncs::assertEquals({3.0, 3.0}, optVect3));
-	const bool testMandatoryOptDim(variablesfreefuncs::assertEquals(3, mandatoryOptDim));
-	const bool testMandatoryOptVect(variablesfreefuncs::assertEquals({3, 3}, mandatoryOptVect));
 	const bool testConstexprDim(variablesfreefuncs::assertEquals(2, constexprDim));
 	const bool testConstexprVec(variablesfreefuncs::assertEquals({1.1, 1.1}, constexprVec));
 	const bool testVarVec(variablesfreefuncs::assertEquals({2.2, 2.2}, varVec));
@@ -290,7 +240,7 @@ int main(int argc, char* argv[])
 	
 	// Module instanciation(s)
 	Variables* variables = new Variables(mesh);
-	if (d.HasMember("variables"))
+	assert(d.HasMember("variables"));
 	{
 		rapidjson::StringBuffer strbuf;
 		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);

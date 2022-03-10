@@ -34,7 +34,7 @@ bool assertEquals(double expected, double actual);
 class Iteration
 {
 	typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
-
+	
 public:
 	Iteration(CartesianMesh2D& aMesh);
 	~Iteration();
@@ -69,10 +69,11 @@ private:
 	 * Out : pair of indexes, 1st one for start of chunk, 2nd one for size of chunk
 	 */
 	const std::pair<size_t, size_t> computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept;
-
+	
 	// Mesh and mesh variables
 	CartesianMesh2D& mesh;
-	size_t nbNodes, nbCells;
+	size_t nbNodes;
+	size_t nbCells;
 
 	// Options and global variables
 	int n;

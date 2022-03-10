@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -21,7 +21,11 @@ import static extension fr.cea.nabla.ir.ContainerExtensions.*
 
 class IrUtils
 {
+	// @TODO Comments in .n file generated in code (Doxygen) and AXL description field
+
 	public static val NRepository = '.nablab'
+	public static val LastDumpOptionName = "lastDump"
+	public static val OutputPeriodOptionName = "outputPeriod"
 	public static val OutputPathNameAndValue = new Pair<String, String>("outputPath", "output")
 	public static val NonRegressionNameAndValue = new Pair<String, String>("nonRegression", "")
 	static enum NonRegressionValues { CreateReference, CompareToReference }

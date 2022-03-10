@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the 
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -45,16 +45,14 @@ Import: 'with' importedNamespace=QualifiedNameWithWildcard ';';
 
 /* ITEMS & CONNECTIVITES *********************************/
 ItemType: name=ID;
-Connectivity: 'connectivity' name=ID ':' (inTypes+=[ItemType|QualifiedName] ('\u00D7' inTypes+=[ItemType|QualifiedName])*)?  '\u2192' ((multiple?='{' returnType=[ItemType|QualifiedName] '}') | returnType=[ItemType|QualifiedName]) ';';
-
+Connectivity: 'connectivity' name=ID ':' (inTypes+=[ItemType|QualifiedName] ('\u00D7' inTypes+=[ItemType|QualifiedName])*)? '\u2192' ((multiple?='{' returnType=[ItemType|QualifiedName] '}') | returnType=[ItemType|QualifiedName]) ';';
 
 /* JOBS & INSTRUCTIONS ***********************************/
 Job: name=ID ':' instruction=Instruction;
 Iterable: Loop | ReductionCall;
-VarDeclaration: OptionDeclaration | SimpleVarDeclaration | VarGroupDeclaration;
-Instruction: SimpleVarDeclaration | VarGroupDeclaration | InstructionBlock | Loop | Affectation | If | ItemSet | While | Return | Exit;
+VarDeclaration: SimpleVarDeclaration | VarGroupDeclaration;
+Instruction: VarDeclaration | InstructionBlock | Loop | Affectation | If | ItemSet | While | Return | Exit;
 
-OptionDeclaration: 'option' type=BaseType variable=SimpleVar ('=' value=Expression)? ';';
 SimpleVarDeclaration: 'let' type=BaseType variable=SimpleVar '=' value=Expression ';';
 VarGroupDeclaration: type=BaseType variables+=Var (',' variables+=Var)* ';';
 InstructionBlock: '{' instructions+=Instruction+ '}';
@@ -73,7 +71,7 @@ Container: ItemSetRef | ConnectivityCall;
 ItemSetRef: target=[ItemSet];
 SpaceIterator: name=ID (',' counter=SimpleVar)? '\u2208' container=Container;
 Interval: index=SimpleVar '\u2208' '[' from=INT ';' nbElems=Expression '[';  // from forced to 0 for the moment
-ConnectivityCall: connectivity=[Connectivity|QualifiedName]  '('(args+=SpaceIteratorRef (',' args+=SpaceIteratorRef)*)?')';
+ConnectivityCall: connectivity=[Connectivity|QualifiedName] '('(group=STRING | args+=SpaceIteratorRef (',' args+=SpaceIteratorRef)* )?')';
 SpaceIteratorRef: target=[SpaceIterator] (('+' inc=INT) | ('-' dec=INT))?;
 
 TimeIteratorDefinition: 'iterate' iterator=AbstractTimeIterator;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -9,7 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ui.wizards
 
-import fr.cea.nabla.generator.providers.NablagenFileGenerator
+import fr.cea.nabla.generator.NablagenFileGenerator
 import fr.cea.nabla.ui.NablaUiUtils
 import fr.cea.nabla.ui.internal.NablaActivator
 import java.io.ByteArrayInputStream
@@ -151,6 +151,16 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 					cppFolder.create(false, true, monitor)
 				}
 
+				// Create src-gen-arcane folder
+				val srcArcaneFolderName = (newProjectPage.module ? "src-gen-arcane" : "src-arcane")
+				val srcArcaneFolder = project.getFolder(srcArcaneFolderName)
+				srcArcaneFolder.create(false, true, monitor)
+
+				// Create src-gen-python folder
+				val srcPythonFolderName = (newProjectPage.module ? "src-gen-python" : "src-python")
+				val srcPythonFolder = project.getFolder(srcPythonFolderName)
+				srcPythonFolder.create(false, true, monitor)
+
 				// Create nabla and nablagen models
 				val nablaFile = modulesFolder.getFile(mOeName + ".n")
 				val nablagenFile = modulesFolder.getFile(mOeName + ".ngen")
@@ -239,8 +249,8 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 
 		with CartesianMesh2D.*;
 
-		option ℕ maxIter = 200;
-		option ℝ maxTime = 1.0;
+		let ℕ maxIter = 200;
+		let ℝ maxTime = 1.0;
 
 		ℝ t, δt;
 		ℝ[2] X{nodes};

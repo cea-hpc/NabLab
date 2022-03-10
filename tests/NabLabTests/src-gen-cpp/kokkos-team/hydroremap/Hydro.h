@@ -40,7 +40,7 @@ class Hydro
 	friend class R2;
 
 	typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
-
+	
 public:
 	Hydro(CartesianMesh2D& aMesh);
 	~Hydro();
@@ -68,18 +68,19 @@ private:
 	 * Out : pair of indexes, 1st one for start of chunk, 2nd one for size of chunk
 	 */
 	const std::pair<size_t, size_t> computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept;
-
+	
 	// Mesh and mesh variables
 	CartesianMesh2D& mesh;
-	size_t nbNodes, nbCells;
+	size_t nbNodes;
+	size_t nbCells;
 
 	// Additional modules
 	R1* r1;
 	R2* r2;
 
 	// Options and global variables
-	double maxTime;
 	int maxIter;
+	double maxTime;
 	double deltat;
 	static constexpr double t = 0.0;
 	Kokkos::View<RealArray1D<2>*> X;

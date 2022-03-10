@@ -51,6 +51,7 @@ RUN apt-get update -y \
 RUN rm /usr/bin/cc
 RUN echo "${USER} ALL=(ALL:ALL) NOPASSWD:ALL" > "/etc/sudoers.d/${USER}"
 
+### LEVELDB
 WORKDIR /
 RUN git clone https://github.com/google/leveldb.git -b 1.23 /leveldb
 WORKDIR /leveldb
@@ -58,8 +59,9 @@ RUN git submodule update --init
 RUN mkdir build
 WORKDIR /leveldb/build
 RUN cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/leveldb/install && make -s && make install
-ENV LEVELDB_HOME=/leveldb/install
+ENV leveldb_ROOT=/leveldb/install
 
+### KOKKOS
 WORKDIR /
 RUN mkdir kokkos
 WORKDIR /kokkos
@@ -72,15 +74,34 @@ RUN wget http://github.com/kokkos/kokkos-kernels/archive/refs/tags/3.0.00.tar.gz
 RUN rm -rf build && mkdir build
 WORKDIR /kokkos/build
 RUN cmake ../kokkos-kernels-3.0.00 -DCMAKE_CXX_COMPILER=g++ -DCMAKE_INSTALL_PREFIX=/kokkos/install -DKokkos_DIR=/kokkos/install && make && make install
-ENV KOKKOS_HOME=/kokkos/install
+ENV Kokkos_ROOT=/kokkos/install
 
+### ARCANE
+# dependencies
+RUN apt-get install -y apt-utils build-essential iputils-ping python3 git gfortran libglib2.0-dev libxml2-dev libhdf5-openmpi-dev libparmetis-dev wget
+RUN wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+RUN dpkg -i packages-microsoft-prod.deb
+RUN apt-get update
+RUN apt-get install -y apt-transport-https dotnet-sdk-5.0
+# arcane
+WORKDIR /
+RUN mkdir arcane
+WORKDIR /arcane
+RUN git clone --recurse-submodules https://github.com/arcaneframework/framework.git
+RUN cd framework && git checkout 30b83ba205ff08de984654f49c3eb44a96e88096
+RUN mkdir install; mkdir build
+WORKDIR /arcane/build
+RUN cmake -S /arcane/framework -B /arcane/build -DCMAKE_INSTALL_PREFIX=/arcane/install && make && make install
+ENV Arcane_ROOT=/arcane/install
+
+
+### JDK AND MAVEN
 RUN apt-get install -y default-jdk
-
 WORKDIR /
 RUN apt-get install -y maven
 
+### NABLAB (no need for github workflow)
 #RUN git clone https://github.com/cea-hpc/NabLab.git /NabLab
-
 #RUN chown -R ${USER} /NabLab
 #WORKDIR /NabLab
 #RUN mvn clean -P build,updatesite; mvn verify -P build,updatesite; chown -R ${USER} /tmp

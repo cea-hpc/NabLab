@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -44,7 +44,6 @@ import fr.cea.nabla.nabla.Modulo
 import fr.cea.nabla.nabla.Mul
 import fr.cea.nabla.nabla.NextTimeIteratorRef
 import fr.cea.nabla.nabla.Not
-import fr.cea.nabla.nabla.OptionDeclaration
 import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
@@ -66,7 +65,6 @@ class LabelServices
 {
 	/* JOBS & INSTRUCTIONS ***********************************/
 	static def dispatch String getLabel(Job it) { name + ' : ' + instruction?.label }
-	static def dispatch String getLabel(OptionDeclaration it) { if (value === null) variable?.name else variable?.name + '=' + value.label }
 	static def dispatch String getLabel(SimpleVarDeclaration it) { if (value === null) variable?.name else variable?.name + '=' + value.label }
 	static def dispatch String getLabel(VarGroupDeclaration it) { type?.label + ' ' + variables?.map[x|x?.name].join(', ') }
 	static def dispatch String getLabel(InstructionBlock it) { '{ ... }' }
@@ -86,7 +84,16 @@ class LabelServices
 	static def dispatch String getLabel(SpaceIterator it) { name + '\u2208 ' + container?.label }
 	static def dispatch String getLabel(Interval it) { index?.name + '\u2208' + nbElems?.label }
 	static def dispatch String getLabel(ItemSetRef it) { target?.name }
-	static def dispatch String getLabel(ConnectivityCall it) { connectivity?.name + '(' + args?.map[label].join(',') + ')' }
+	static def dispatch String getLabel(ConnectivityCall it)
+	{
+		if (group === null)
+			if (args.empty)
+				connectivity?.name
+			else
+				connectivity?.name + '(' + args?.map[label].join(',') + ')'
+		else
+			group
+	}
 	static def dispatch String getLabel(SpaceIteratorRef it) 
 	{ 
 		if (inc > 0) target?.name + '+' + inc

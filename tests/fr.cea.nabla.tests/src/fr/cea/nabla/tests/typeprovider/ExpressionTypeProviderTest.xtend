@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -75,12 +75,12 @@ class ExpressionTypeProviderTest
 		def perp: ℝ[2] → ℝ[2], (a) → return a;
 		def norm: x | ℝ[x] → ℝ, (a) → return 1.0;
 
-		option ℝ X_EDGE_LENGTH = 1.;
-		option ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
-		option ℕ X_EDGE_ELEMS = 2;
-		option ℕ Y_EDGE_ELEMS = 2;
-		option ℝ option_stoptime = 0.1;
-		option ℕ option_max_iterations = 500;
+		let ℝ X_EDGE_LENGTH = 1.;
+		let ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
+		let ℕ X_EDGE_ELEMS = 2;
+		let ℕ Y_EDGE_ELEMS = 2;
+		let ℝ option_stoptime = 0.1;
+		let ℕ option_max_iterations = 500;
 
 		let ℕ a1 = 1;
 		let ℕ a2 = 9 % 4;

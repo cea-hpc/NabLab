@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -24,22 +24,9 @@ class JsonContentProvider
 
 	def getJsonContent(String name, BaseType type, Expression defaultValue)
 	'''
-		// «name»
-		«IF defaultValue === null»
-			assert(options.HasMember("«name»"));
-			const rapidjson::Value& «name.jsonName» = options["«name»"];
-			«getJsonContent(name, type, type.sizes, #[])»
-		«ELSE»
-			if (options.HasMember("«name»"))
-			{
-				const rapidjson::Value& «name.jsonName» = options["«name»"];
-				«getJsonContent(name, type, type.sizes, #[])»
-			}
-			else
-			{
-				«name» = «defaultValue.content»;
-			}
-		«ENDIF»
+		assert(options.HasMember("«name»"));
+		const rapidjson::Value& «name.jsonName» = options["«name»"];
+		«getJsonContent(name, type, type.sizes, #[])»
 	'''
 
 	private def CharSequence getJsonContent(String name, BaseType type, Iterable<Expression> sizes, String[] indices)

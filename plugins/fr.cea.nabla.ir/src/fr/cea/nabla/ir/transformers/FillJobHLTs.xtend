@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -10,6 +10,7 @@
 package fr.cea.nabla.ir.transformers
 
 import fr.cea.nabla.ir.JobDependencies
+import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Job
@@ -26,9 +27,9 @@ class FillJobHLTs extends IrTransformationStep
 	static val SourceNodeLabel = 'SourceNode'
 	val jobDispatcher = new JobDispatcher
 
-	new()
+	override getDescription()
 	{
-		super('Compute Hierarchical Logical Time (HLT) of each jobs')
+		"Compute Hierarchical Logical Time (HLT) of each jobs"
 	}
 
 	/**
@@ -37,38 +38,42 @@ class FillJobHLTs extends IrTransformationStep
 	 * Return false if the graph contains cycle (computing 'at' values is then impossible), true otherwise.
 	 * If the graph contains cycles, nodes on cycle have their 'onCyle' attribute set to true.
 	 */
-	override transform(IrRoot ir)
+	override transform(IrRoot ir, (String)=>void traceNotifier)
 	{
-		trace('    IR -> IR: ' + description)
-		if (ir.jobs.empty) return true
-
-		// check that IrModule has no job cycles (except timestep cycles)
-		if (ir.hasCycles) 
+		if (!ir.jobs.empty)
 		{
-			// All jobs belongs to the module. No dispatch possible.
-			// Jobs are put in module inner jobs for graph display...
-			ir.main.calls.addAll(ir.jobs)
-			return false
+			// check that IrModule has no job cycles (except timestep cycles)
+			if (hasCycles(ir, traceNotifier))
+			{
+				// All jobs belongs to the module. No dispatch possible.
+				// Jobs are put in module inner jobs for graph display...
+				ir.main.calls.addAll(ir.jobs)
+				throw new IrTransformationException("Cycles detected in jobs graph")
+			}
+
+			// No cycles => create subgraphs (i.e. JobContainer instances) corresponding to time loops
+			jobDispatcher.dispatchJobsInTimeLoops(ir)
+
+			// Fill allInVars and allOutVars of callers and nextJobs with same callers (for graph display)
+			ir.main.fillAllInAndOutVars
+			ir.jobs.forEach[x | JobDependencies.computeAndSetNextJobsWithSameCaller(x)]
+
+			// compute at for each subGraph
+			val subGraphs = ir.jobs.groupBy[x | x.caller]
+			for (subGraph : subGraphs.values)
+				subGraph.fillAt
+
+			// sort jobs by @at in IR
+			ir.jobs.sortByAtAndName
+			ir.modules.forEach[x | x.jobs.sortByAtAndName]
+			ir.main.calls.sortByAtAndName
+			ir.jobs.filter(JobCaller).forEach[x | x.calls.sortByAtAndName]
 		}
+	}
 
-		// No cycles => create subgraphs (i.e. JobContainer instances) corresponding to time loops
-		jobDispatcher.dispatchJobsInTimeLoops(ir)
-
-		// Fill allInVars and allOutVars of callers and nextJobs with same callers (for graph display)
-		ir.main.fillAllInAndOutVars
-		ir.jobs.forEach[x | JobDependencies.computeAndSetNextJobsWithSameCaller(x)]
-
-		// compute at for each subGraph
-		val subGraphs = ir.jobs.groupBy[x | x.caller]
-		for (subGraph : subGraphs.values)
-			subGraph.fillAt
-
-		// sort jobs by @at in IR
-		ir.jobs.sortByAtAndName
-		ir.modules.forEach[x | x.jobs.sortByAtAndName]
-		ir.main.calls.sortByAtAndName
-		ir.jobs.filter(JobCaller).forEach[x | x.calls.sortByAtAndName]
-		return true
+	override transform(DefaultExtensionProvider dep, (String)=>void traceNotifier)
+	{
+		// nothing to do
 	}
 
 //	private def print(DirectedWeightedPseudograph<Job, DefaultWeightedEdge> g)
@@ -80,7 +85,7 @@ class FillJobHLTs extends IrTransformationStep
 //	}
 
 	/** Build the jgrapht graph corresponding to IrModule and check if it has cycles */
-	private def hasCycles(IrRoot ir)
+	private def hasCycles(IrRoot ir, (String)=>void traceNotifier)
 	{
 		val g = createGraph(ir.jobs.reject(j | j.timeLoopJob), false)
 
@@ -88,8 +93,8 @@ class FillJobHLTs extends IrTransformationStep
 		val hasCycles = (cycles !== null)
 		if (hasCycles)
 		{
-			trace('*** HLT error: graph contains cycles.')
-			trace('*** ' + cycles.map[name].join(' -> '))
+			traceNotifier.apply('*** HLT error: graph contains cycles.')
+			traceNotifier.apply('*** ' + cycles.map[name].join(' -> '))
 		}
 
 		return hasCycles

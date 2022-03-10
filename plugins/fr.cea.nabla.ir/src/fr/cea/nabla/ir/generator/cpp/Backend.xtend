@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -32,6 +32,8 @@ abstract class Backend implements Jniable
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) JobContentProvider jobContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) MainContentProvider mainContentProvider
 	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) PythonEmbeddingContentProvider pythonEmbeddingContentProvider
+	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) IrModuleContentProvider irModuleContentProvider
+	@Accessors(PUBLIC_GETTER, PROTECTED_SETTER) DefaultExtensionProviderContentProvider defaultExtensionProviderContentProvider
 
 	override getJniDefinitionContent(ExternFunction f, ExtensionProvider provider)
 	{
@@ -57,6 +59,8 @@ class SequentialBackend extends Backend
 		jobCallerContentProvider = new JobCallerContentProvider
 		jobContentProvider = new StlThreadJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider, jsonContentProvider, typeContentProvider, pythonEmbeddingContentProvider)
 		mainContentProvider = new MainContentProvider(jsonContentProvider)
+		irModuleContentProvider = new IrModuleContentProvider(traceContentProvider, includesContentProvider, functionContentProvider, jobContentProvider, typeContentProvider, expressionContentProvider, jsonContentProvider, jobCallerContentProvider, mainContentProvider, pythonEmbeddingContentProvider)
+		defaultExtensionProviderContentProvider = new DefaultExtensionProviderContentProvider(includesContentProvider, functionContentProvider)
 	}
 }
 
@@ -77,6 +81,8 @@ class StlThreadBackend extends Backend
 		jobCallerContentProvider = new JobCallerContentProvider
 		jobContentProvider = new StlThreadJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider, jsonContentProvider, typeContentProvider, pythonEmbeddingContentProvider)
 		mainContentProvider = new MainContentProvider(jsonContentProvider)
+		irModuleContentProvider = new IrModuleContentProvider(traceContentProvider, includesContentProvider, functionContentProvider, jobContentProvider, typeContentProvider, expressionContentProvider, jsonContentProvider, jobCallerContentProvider, mainContentProvider, pythonEmbeddingContentProvider)
+		defaultExtensionProviderContentProvider = new DefaultExtensionProviderContentProvider(includesContentProvider, functionContentProvider)
 	}
 }
 
@@ -97,6 +103,8 @@ class KokkosBackend extends Backend
 		jobCallerContentProvider = new JobCallerContentProvider
 		jobContentProvider = new KokkosJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider, jsonContentProvider, typeContentProvider, pythonEmbeddingContentProvider)
 		mainContentProvider = new KokkosMainContentProvider(jsonContentProvider)
+		irModuleContentProvider = new IrModuleContentProvider(traceContentProvider, includesContentProvider, functionContentProvider, jobContentProvider, typeContentProvider, expressionContentProvider, jsonContentProvider, jobCallerContentProvider, mainContentProvider, pythonEmbeddingContentProvider)
+		defaultExtensionProviderContentProvider = new DefaultExtensionProviderContentProvider(includesContentProvider, functionContentProvider)
 	}
 }
 
@@ -117,6 +125,8 @@ class KokkosTeamThreadBackend extends Backend
 		jobCallerContentProvider = new KokkosTeamThreadJobCallerContentProvider(pythonEmbeddingContentProvider)
 		jobContentProvider = new KokkosTeamThreadJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider, jsonContentProvider, typeContentProvider, pythonEmbeddingContentProvider)
 		mainContentProvider = new KokkosMainContentProvider(jsonContentProvider)
+		irModuleContentProvider = new KokkosTeamThreadIrModuleContentProvider(traceContentProvider, includesContentProvider, functionContentProvider, jobContentProvider, typeContentProvider, expressionContentProvider, jsonContentProvider, jobCallerContentProvider, mainContentProvider, pythonEmbeddingContentProvider)
+		defaultExtensionProviderContentProvider = new DefaultExtensionProviderContentProvider(includesContentProvider, functionContentProvider)
 	}
 }
 
@@ -137,5 +147,7 @@ class OpenMpBackend extends Backend
 		jobCallerContentProvider = new JobCallerContentProvider
 		jobContentProvider = new StlThreadJobContentProvider(traceContentProvider, expressionContentProvider, instructionContentProvider, jobCallerContentProvider, jsonContentProvider, typeContentProvider, pythonEmbeddingContentProvider)
 		mainContentProvider = new MainContentProvider(jsonContentProvider)
+		irModuleContentProvider = new IrModuleContentProvider(traceContentProvider, includesContentProvider, functionContentProvider, jobContentProvider, typeContentProvider, expressionContentProvider, jsonContentProvider, jobCallerContentProvider, mainContentProvider, pythonEmbeddingContentProvider)
+		defaultExtensionProviderContentProvider = new DefaultExtensionProviderContentProvider(includesContentProvider, functionContentProvider)
 	}
 }

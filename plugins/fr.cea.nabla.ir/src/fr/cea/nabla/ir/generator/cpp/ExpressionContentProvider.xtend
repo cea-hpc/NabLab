@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -90,30 +90,46 @@ class ExpressionContentProvider
 	{
 		val t = type as BaseType
 
-		if (t.sizes.exists[x | !(x instanceof IntConstant)])
-			throw new RuntimeException("BaseTypeConstants size expressions must be IntConstant")
-
-		val sizes = t.sizes.map[x | (x as IntConstant).value]
-		'''{«initArray(sizes, value.content)»}'''
+		if (t.sizes.empty)
+		{
+			// scalar type
+			value.content
+		}
+		else
+		{
+			if (t.isStatic)
+				'''{«initArray(t.intSizes, value.content)»}'''
+			else
+			{
+				// The array must be allocated and initialized by loops
+				// No expression value can be produced in dynamic mode
+				// Two instructions must be encapsulated in a function and a function call must be done
+				throw new RuntimeException("Not yet implemented")
+				//'''new «t.primitive.javaType»«formatIteratorsAndIndices(t, t.sizes.map[content])»'''
+			}
+		}
 	}
 
 	def dispatch CharSequence getContent(VectorConstant it)
 	'''{«innerContent»}'''
+
 	def dispatch CharSequence getContent(Cardinality it)
 	{
 		val call = container.connectivityCall
 		if (call.connectivity.multiple)
 		{
 			if (call.args.empty)
-				call.connectivity.nbElemsVar
+				call.connectivity.nbElems
 			else
 				'''mesh.«call.accessor».size()'''
 		}
 		else
 			'''1'''
 	}
+
 	def dispatch CharSequence getContent(FunctionCall it)
 	'''«function.codeName»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
+
 	def dispatch CharSequence getContent(ArgOrVarRef it)
 	{
 		if (target.linearAlgebra && !(iterators.empty && indices.empty))
@@ -121,6 +137,7 @@ class ExpressionContentProvider
 		else
 			'''«codeName»«formatIteratorsAndIndices(target.type, iterators, indices)»'''
 	}
+
 	def CharSequence getCodeName(ArgOrVarRef it)
 	{
 		if (IrUtils.getContainerOfType(it, IrModule) === IrUtils.getContainerOfType(target, IrModule))
@@ -128,6 +145,7 @@ class ExpressionContentProvider
 		else
 			'mainModule->' + target.codeName
 	}
+
 	private def dispatch CharSequence getInnerContent(Expression it) { content }
 	private def dispatch CharSequence getInnerContent(VectorConstant it)
 	'''«FOR v : values SEPARATOR ', '»«v.innerContent»«ENDFOR»'''

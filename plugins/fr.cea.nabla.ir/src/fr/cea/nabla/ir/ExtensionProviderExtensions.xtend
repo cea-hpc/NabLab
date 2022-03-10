@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -54,7 +54,7 @@ class ExtensionProviderExtensions
 	/** PackageName is used by Java and Jni */
 	static def getPackageName(ExtensionProvider it)
 	{
-		if (providerName === null) "null"
+		if (providerName === null) ""
 		else providerName.toLowerCase
 	}
 

@@ -32,7 +32,6 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ConnectivityImpl#getName <em>Name</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ConnectivityImpl#getInTypes <em>In Types</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ConnectivityImpl#getReturnType <em>Return Type</em>}</li>
- *   <li>{@link fr.cea.nabla.ir.ir.impl.ConnectivityImpl#isIndexEqualId <em>Index Equal Id</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ConnectivityImpl#isMultiple <em>Multiple</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ConnectivityImpl#getProvider <em>Provider</em>}</li>
  * </ul>
@@ -79,26 +78,6 @@ public class ConnectivityImpl extends IrAnnotableImpl implements Connectivity {
 	 * @ordered
 	 */
 	protected ItemType returnType;
-
-	/**
-	 * The default value of the '{@link #isIndexEqualId() <em>Index Equal Id</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #isIndexEqualId()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final boolean INDEX_EQUAL_ID_EDEFAULT = false;
-
-	/**
-	 * The cached value of the '{@link #isIndexEqualId() <em>Index Equal Id</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #isIndexEqualId()
-	 * @generated
-	 * @ordered
-	 */
-	protected boolean indexEqualId = INDEX_EQUAL_ID_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #isMultiple() <em>Multiple</em>}' attribute.
@@ -201,29 +180,6 @@ public class ConnectivityImpl extends IrAnnotableImpl implements Connectivity {
 		returnType = newReturnType;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.CONNECTIVITY__RETURN_TYPE, oldReturnType, returnType));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public boolean isIndexEqualId() {
-		return indexEqualId;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public void setIndexEqualId(boolean newIndexEqualId) {
-		boolean oldIndexEqualId = indexEqualId;
-		indexEqualId = newIndexEqualId;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.CONNECTIVITY__INDEX_EQUAL_ID, oldIndexEqualId, indexEqualId));
 	}
 
 	/**
@@ -360,8 +316,6 @@ public class ConnectivityImpl extends IrAnnotableImpl implements Connectivity {
 				return getInTypes();
 			case IrPackage.CONNECTIVITY__RETURN_TYPE:
 				return getReturnType();
-			case IrPackage.CONNECTIVITY__INDEX_EQUAL_ID:
-				return isIndexEqualId();
 			case IrPackage.CONNECTIVITY__MULTIPLE:
 				return isMultiple();
 			case IrPackage.CONNECTIVITY__PROVIDER:
@@ -390,9 +344,6 @@ public class ConnectivityImpl extends IrAnnotableImpl implements Connectivity {
 			case IrPackage.CONNECTIVITY__RETURN_TYPE:
 				setReturnType((ItemType)newValue);
 				return;
-			case IrPackage.CONNECTIVITY__INDEX_EQUAL_ID:
-				setIndexEqualId((Boolean)newValue);
-				return;
 			case IrPackage.CONNECTIVITY__MULTIPLE:
 				setMultiple((Boolean)newValue);
 				return;
@@ -420,9 +371,6 @@ public class ConnectivityImpl extends IrAnnotableImpl implements Connectivity {
 			case IrPackage.CONNECTIVITY__RETURN_TYPE:
 				setReturnType((ItemType)null);
 				return;
-			case IrPackage.CONNECTIVITY__INDEX_EQUAL_ID:
-				setIndexEqualId(INDEX_EQUAL_ID_EDEFAULT);
-				return;
 			case IrPackage.CONNECTIVITY__MULTIPLE:
 				setMultiple(MULTIPLE_EDEFAULT);
 				return;
@@ -447,8 +395,6 @@ public class ConnectivityImpl extends IrAnnotableImpl implements Connectivity {
 				return inTypes != null && !inTypes.isEmpty();
 			case IrPackage.CONNECTIVITY__RETURN_TYPE:
 				return returnType != null;
-			case IrPackage.CONNECTIVITY__INDEX_EQUAL_ID:
-				return indexEqualId != INDEX_EQUAL_ID_EDEFAULT;
 			case IrPackage.CONNECTIVITY__MULTIPLE:
 				return multiple != MULTIPLE_EDEFAULT;
 			case IrPackage.CONNECTIVITY__PROVIDER:
@@ -469,8 +415,6 @@ public class ConnectivityImpl extends IrAnnotableImpl implements Connectivity {
 		StringBuilder result = new StringBuilder(super.toString());
 		result.append(" (name: ");
 		result.append(name);
-		result.append(", indexEqualId: ");
-		result.append(indexEqualId);
 		result.append(", multiple: ");
 		result.append(multiple);
 		result.append(')');

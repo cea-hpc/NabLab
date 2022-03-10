@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -19,6 +19,7 @@ import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.transformers.CreateArrayOperators
+import fr.cea.nabla.ir.transformers.IrTransformationException
 import fr.cea.nabla.tests.CompilationChainHelper
 import fr.cea.nabla.tests.NablaInjectorProvider
 import fr.cea.nabla.tests.TestUtils
@@ -60,7 +61,12 @@ class CreateArrayOperatorsTest
 		Assert.assertTrue(mainModule.functions.empty)
 
 		// Apply the transformation
-		Assert.assertTrue(step.transform(ir))
+		try {
+			step.transform(ir, null)
+			Assert.assertTrue(true)
+		} catch (IrTransformationException e) {
+			Assert.fail(e.message)
+		}
 
 		// After transformation
 		Assert.assertTrue(mainModule.functions.empty)
@@ -94,7 +100,12 @@ class CreateArrayOperatorsTest
 		Assert.assertTrue(mainModule.functions.empty)
 
 		// Apply the transformation
-		Assert.assertTrue(step.transform(ir))
+		try {
+			step.transform(ir, null)
+			Assert.assertTrue(true)
+		} catch (IrTransformationException e) {
+			Assert.fail(e.message)
+		}
 
 		// After transformation
 		Assert.assertEquals(3, mainModule.jobs.size) // J* + ExecuteTimeLoopJob
@@ -137,7 +148,12 @@ class CreateArrayOperatorsTest
 		Assert.assertTrue(mainModule.functions.empty)
 
 		// Apply the transformation
-		Assert.assertTrue(step.transform(ir))
+		try {
+			step.transform(ir, null)
+			Assert.assertTrue(true)
+		} catch (IrTransformationException e) {
+			Assert.fail(e.message)
+		}
 
 		// After transformation
 		Assert.assertEquals(5, mainModule.jobs.size) // J* + ExecuteTimeLoopJob

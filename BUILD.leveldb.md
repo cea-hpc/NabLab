@@ -11,7 +11,7 @@ To install levelDB 1.23 version from GitHub repository
 	git clone https://github.com/google/leveldb.git -b 1.23 leveldb
 	cd leveldb
 	git submodule update --init
-	mkdir build; cd build
+	mkdir install; mkdir build; cd build
 	cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=~/leveldb/install
 	make; make install
 	cd ..; rm -rf build
@@ -32,8 +32,8 @@ Then the json datafile waits for nonRegression field that could be CreateReferen
  
 ## NabLabExamplesTest
 
-To run NabLabExamplesTest, you have to set LEVELDB_HOME
+To run NabLabExamplesTest, you have to set leveldb_ROOT
 
 ```bash
-export LEVELDB_HOME=$HOME/leveldb/install
+export leveldb_ROOT=$HOME/leveldb/install
 ```

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -42,6 +42,7 @@ import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.cpp.ItemIndexAndIdValueContentProvider.*
+import fr.cea.nabla.ir.annotations.NabLabFileAnnotation
 
 @Data
 abstract class InstructionContentProvider
@@ -64,14 +65,14 @@ abstract class InstructionContentProvider
 	'''
 		«IF variable.type.baseTypeConstExpr»
 «««			FIXME add support for internal functions
-			«IF getContainerOfType(it, InternFunction) === null»
+			«IF getContainerOfType(it, InternFunction) === null && isUserDefined(variable)»
 			#ifdef NABLAB_DEBUG
 			«getBeforeInstrumentation(executionEvent, scopeParameter.toString)»
 			#endif
 			«ENDIF»
 			«IF variable.const»const «ENDIF»«variable.type.cppType» «variable.name»«IF variable.defaultValue !== null»(«variable.defaultValue.content»)«ENDIF»;
 «««			FIXME add support for internal functions
-			«IF getContainerOfType(it, InternFunction) === null»
+			«IF getContainerOfType(it, InternFunction) === null && isUserDefined(variable)»
 			#ifdef NABLAB_DEBUG
 			«variable.name.scopeUpdateContent»
 			«getAfterInstrumentation(executionEvent, scopeParameter.toString)»
@@ -79,14 +80,14 @@ abstract class InstructionContentProvider
 			«ENDIF»
 		«ELSE»
 «««			FIXME add support for internal functions
-			«IF getContainerOfType(it, InternFunction) === null»
+			«IF getContainerOfType(it, InternFunction) === null && isUserDefined(variable)»
 			#ifdef NABLAB_DEBUG
 			«getBeforeInstrumentation(executionEvent, scopeParameter.toString)»
 			#endif
 			«ENDIF»
 			«IF variable.const»const «ENDIF»«variable.type.cppType» «variable.name»;
 «««			FIXME add support for internal functions
-			«IF getContainerOfType(it, InternFunction) === null»
+			«IF getContainerOfType(it, InternFunction) === null && isUserDefined(variable)»
 			«initCppTypeContent(variable.name, variable.type)»
 			#ifdef NABLAB_DEBUG
 			«variable.name.scopeUpdateContent»
@@ -109,14 +110,14 @@ abstract class InstructionContentProvider
 		if (left.target.linearAlgebra && !(left.iterators.empty && left.indices.empty))
 			'''
 «««			FIXME add support for internal functions
-			«IF getContainerOfType(it, InternFunction) === null»
+			«IF getContainerOfType(it, InternFunction) === null && isUserDefined(left.target)»
 			#ifdef NABLAB_DEBUG
 			«getBeforeInstrumentation(executionEvent, scopeParameter.toString)»
 			#endif
 			«ENDIF»
 			«left.codeName».setValue(«formatIteratorsAndIndices(left.target.type, left.iterators, left.indices)», «right.content»);
 «««			FIXME add support for internal functions
-			«IF getContainerOfType(it, InternFunction) === null»
+			«IF getContainerOfType(it, InternFunction) === null && isUserDefined(left.target)»
 			#ifdef NABLAB_DEBUG
 			«IF !left.target.global»
 			«left.codeName.toString.scopeUpdateContent»
@@ -128,14 +129,14 @@ abstract class InstructionContentProvider
 		else
 			'''
 «««			FIXME add support for internal functions
-			«IF getContainerOfType(it, InternFunction) === null»
+			«IF getContainerOfType(it, InternFunction) === null && isUserDefined(left.target)»
 			#ifdef NABLAB_DEBUG
 			«getBeforeInstrumentation(executionEvent, scopeParameter.toString)»
 			#endif
 			«ENDIF»
 			«left.content» = «right.content»;
 «««			FIXME add support for internal functions
-			«IF getContainerOfType(it, InternFunction) === null»
+			«IF getContainerOfType(it, InternFunction) === null && isUserDefined(left.target)»
 			#ifdef NABLAB_DEBUG
 			«IF !left.target.global»
 			«left.codeName.toString.scopeUpdateContent»
@@ -230,13 +231,13 @@ abstract class InstructionContentProvider
 	// ### IterationBlock Extensions ###
 	protected def dispatch defineInterval(Iterator it, CharSequence innerContent)
 	{
-		if (container.connectivityCall.connectivity.indexEqualId)
+		if (container.connectivityCall.indexEqualId)
 			innerContent
 		else
 		'''
 		{
 			«IF container instanceof ConnectivityCall»«getSetDefinitionContent(container.uniqueName, container as ConnectivityCall)»«ENDIF»
-			const size_t «nbElems»(«container.uniqueName».size());
+			«IF !container.connectivityCall.args.empty»const size_t «nbElems»(«container.uniqueName».size());«ENDIF»
 			«innerContent»
 		}
 		'''

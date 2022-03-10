@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -14,7 +14,6 @@ import fr.cea.nabla.nabla.ConnectivityCall
 import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.MeshExtension
 import fr.cea.nabla.nabla.NablaModule
-import fr.cea.nabla.nabla.OptionDeclaration
 import fr.cea.nabla.nabla.SimpleVarDeclaration
 import fr.cea.nabla.nabla.TimeIterator
 import fr.cea.nabla.nabla.Var
@@ -40,7 +39,6 @@ class NablaModuleExtensions
 		for (d : declarations)
 			switch d
 			{
-				OptionDeclaration: allVars += d.variable
 				SimpleVarDeclaration: allVars += d.variable
 				VarGroupDeclaration: allVars += d.variables
 			}

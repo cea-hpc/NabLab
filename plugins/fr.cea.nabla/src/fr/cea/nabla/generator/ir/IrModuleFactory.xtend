@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -16,7 +16,6 @@ import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
 import fr.cea.nabla.nabla.FunctionOrReduction
 import fr.cea.nabla.nabla.NablaModule
-import fr.cea.nabla.nabla.OptionDeclaration
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
 import fr.cea.nabla.nabla.SimpleVarDeclaration
@@ -60,6 +59,7 @@ class IrModuleFactory
 
 		irModule.annotations += ngenModule.toNabLabFileAnnotation
 		irModule.name = ngenModule.name
+		irModule.type = nablaModule.name
 		irModule.main = (ngenModule instanceof MainModule)
 
 		return irModule
@@ -83,7 +83,6 @@ class IrModuleFactory
 		for (d : nablaModule.declarations)
 			switch d
 			{
-				OptionDeclaration: variables += d.variable.toIrOption
 				SimpleVarDeclaration: variables += createIrVariables(d.variable, tlJobs)
 				VarGroupDeclaration:
 					for (v : d.variables)

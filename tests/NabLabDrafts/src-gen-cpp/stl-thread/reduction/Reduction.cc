@@ -19,7 +19,18 @@ RealArray1D<2> nodeVelocityBoundaryConditionCorner(int BC1, RealArray1D<2> BCVal
 template<size_t x>
 RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b)
 {
-	return a + b;
+	return reductionfreefuncs::operatorAdd(a, b);
+}
+
+template<size_t x0>
+RealArray1D<x0> operatorAdd(RealArray1D<x0> a, RealArray1D<x0> b)
+{
+	RealArray1D<x0> result;
+	for (size_t ix0=0; ix0<x0; ix0++)
+	{
+		result[ix0] = a[ix0] + b[ix0];
+	}
+	return result;
 }
 }
 
@@ -28,21 +39,13 @@ RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b)
 Reduction::Reduction(CartesianMesh2D& aMesh)
 : mesh(aMesh)
 , nbNodes(mesh.getNbNodes())
-, maxCellsOfNode(CartesianMesh2D::MaxNbCellsOfNode)
 , nbCells(mesh.getNbCells())
-, maxNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
+, nbTopLeftNode(mesh.getGroup("TopLeftNode").size())
 , X(nbNodes)
 , Vnode_n(nbNodes)
 , Vnode_nplus1(nbNodes)
-, lpc_n(nbNodes, std::vector<RealArray1D<2>>(maxCellsOfNode))
+, lpc_n(nbNodes, std::vector<RealArray1D<2>>(4))
 {
-	// Copy node coordinates
-	const auto& gNodes = mesh.getGeometry()->getNodes();
-	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
-	{
-		X[rNodes][0] = gNodes[rNodes][0];
-		X[rNodes][1] = gNodes[rNodes][1];
-	}
 }
 
 Reduction::~Reduction()
@@ -55,10 +58,18 @@ Reduction::jsonInit(const char* jsonContent)
 	rapidjson::Document document;
 	assert(!document.Parse(jsonContent).HasParseError());
 	assert(document.IsObject());
-	const rapidjson::Value::Object& o = document.GetObject();
+	const rapidjson::Value::Object& options = document.GetObject();
 
+	n = 0;
+
+	// Copy node coordinates
+	const auto& gNodes = mesh.getGeometry()->getNodes();
+	for (size_t rNodes=0; rNodes<nbNodes; rNodes++)
+	{
+		X[rNodes][0] = gNodes[rNodes][0];
+		X[rNodes][1] = gNodes[rNodes][1];
+	}
 }
-
 
 /**
  * Job computeGeometry called @1.0 in simulate method.
@@ -86,7 +97,7 @@ void Reduction::computeGeometry() noexcept
 
 /**
  * Job executeTimeLoopN called @1.0 in simulate method.
- * In variables: Vnode_n, t_n
+ * In variables: Vnode_n, n, t_n
  * Out variables: Vnode_nplus1, t_nplus1
  */
 void Reduction::executeTimeLoopN() noexcept
@@ -151,18 +162,24 @@ void Reduction::updateTime() noexcept
  */
 void Reduction::computeBoundaryNodeVelocities() noexcept
 {
-	const Id pId(mesh.getTopLeftNode());
-	const size_t pNodes(pId);
-	RealArray1D<2> reduction0({0.0, 0.0});
 	{
-		const auto cellsOfNodeP(mesh.getCellsOfNode(pId));
-		const size_t nbCellsOfNodeP(cellsOfNodeP.size());
-		for (size_t cCellsOfNodeP=0; cCellsOfNodeP<nbCellsOfNodeP; cCellsOfNodeP++)
+		const auto topLeftNode(mesh.getGroup("TopLeftNode"));
+		parallel_exec(nbTopLeftNode, [&](const size_t& pTopLeftNode)
 		{
-			reduction0 = reductionfreefuncs::sumR1(reduction0, lpc_n[pNodes][cCellsOfNodeP]);
-		}
+			const Id pId(topLeftNode[pTopLeftNode]);
+			const size_t pNodes(pId);
+			RealArray1D<2> reduction0({0.0, 0.0});
+			{
+				const auto cellsOfNodeP(mesh.getCellsOfNode(pId));
+				const size_t nbCellsOfNodeP(cellsOfNodeP.size());
+				for (size_t cCellsOfNodeP=0; cCellsOfNodeP<nbCellsOfNodeP; cCellsOfNodeP++)
+				{
+					reduction0 = reductionfreefuncs::sumR1(reduction0, lpc_n[pNodes][cCellsOfNodeP]);
+				}
+			}
+			Vnode_nplus1[pNodes] = reductionfreefuncs::nodeVelocityBoundaryConditionCorner(1, {0.0, 0.0}, 1, {0.0, 0.0}, {1.0, 1.0, 1.0, 1.0}, {1.0, 1.0}, reduction0);
+		});
 	}
-	Vnode_nplus1[pNodes] = reductionfreefuncs::nodeVelocityBoundaryConditionCorner(1, {0.0, 0.0}, 1, {0.0, 0.0}, {1.0, 1.0, 1.0, 1.0}, {1.0, 1.0}, reduction0);
 }
 
 void Reduction::simulate()

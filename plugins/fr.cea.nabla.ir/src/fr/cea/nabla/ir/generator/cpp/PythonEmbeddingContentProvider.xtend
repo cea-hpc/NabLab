@@ -31,6 +31,8 @@ import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.JobExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import fr.cea.nabla.ir.ir.JobCaller
+import fr.cea.nabla.ir.annotations.NabLabFileAnnotation
+import fr.cea.nabla.ir.ir.IrAnnotable
 
 @Data
 class PythonEmbeddingContentProvider
@@ -44,12 +46,17 @@ class PythonEmbeddingContentProvider
 	val Map<String, List<Integer>> globalVariableWriteEvents = newHashMap
 	val Set<String> callExecutionEvents = newHashSet
 	
+	def isUserDefined(IrAnnotable it)
+	{
+		NabLabFileAnnotation.get(it) !== null
+	}
+	
 	def getWriteEvents(EObject it)
 	{
 		eAllContents.filter[o|
-				o instanceof VariableDeclaration || o instanceof Affectation
-			]
-			.map[o|
+				(o instanceof VariableDeclaration && isUserDefined((o as VariableDeclaration).variable)) ||
+				(o instanceof Affectation && isUserDefined((o as Affectation).left.target))
+			].map[o|
 				if (o instanceof VariableDeclaration)
 				{
 					(o as VariableDeclaration).executionEvent
@@ -91,6 +98,7 @@ class PythonEmbeddingContentProvider
 							(o as Affectation).left.target
 						}
 					]
+					.filter[v|isUserDefined(v)]
 					.forEach[v|
 						val assignEventName = '''«jobEventName».«v.name.toFirstUpper»'''
 						if (!executionEvents.containsKey(assignEventName))
@@ -258,11 +266,11 @@ class PythonEmbeddingContentProvider
 		struct «name» : «moduleName»::«moduleName»Context
 		{
 			«IF !locals.empty»
-			«FOR local : locals»
+			«FOR local : locals.filter[v|isUserDefined(v.variable)]»
 			const py::object get_«local.variable.name»() const { if («local.variable.name» != nullptr) return py::cast(*«local.variable.name»); else return py::cast<py::none>(Py_None); }
 			«ENDFOR»
 			
-			«FOR local : locals»
+			«FOR local : locals.filter[v|isUserDefined(v.variable)]»
 			«IF local.variable.const»const «ENDIF»«local.variable.type.cppType» *«local.variable.name» = nullptr;
 			«ENDFOR»
 			
@@ -333,7 +341,7 @@ class PythonEmbeddingContentProvider
 				«val vars = variables.filter[!constExpr]»
 				«FOR v : vars SEPARATOR '\n'».def_property_readonly("«v.name»", &«className»::«globalContextName»::get_«v.name»)«ENDFOR»;
 			«FOR job : jobs»
-			«val varDecs = job.eAllContents.filter(VariableDeclaration).toList»
+			«val varDecs = job.eAllContents.filter(VariableDeclaration).filter[v|isUserDefined(v.variable)].toList»
 			«val jobContextName = '''«job.codeName.toFirstUpper»Context'''»
 			py::class_<«jobContextName», «className»::«globalContextName»>(«className.toLowerCase»Module, "«jobContextName»")«IF varDecs.empty»;«ENDIF»
 				«IF !varDecs.empty»
@@ -475,6 +483,17 @@ class PythonEmbeddingContentProvider
 		«unguardedContent»
 		#endif
 	'''
+	
+	def getGetSimulateProlog()
+	'''
+		#ifdef NABLAB_DEBUG
+		if (!pythonFile.empty())
+		{
+			pythonInitialize();
+		}
+		#endif
+	'''
+	
 }
 
 @Data

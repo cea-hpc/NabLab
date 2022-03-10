@@ -9,6 +9,7 @@
 #include <limits>
 #include <utility>
 #include <cmath>
+#include <rapidjson/document.h>
 #include "nablalib/utils/Utils.h"
 #include "nablalib/utils/Timer.h"
 #include "nablalib/types/Types.h"
@@ -26,6 +27,8 @@ namespace reductionfreefuncs
 RealArray1D<2> nodeVelocityBoundaryConditionCorner(int BC1, RealArray1D<2> BCValue1, int BC2, RealArray1D<2> BCValue2, RealArray2D<2,2> Mp, RealArray1D<2> Gp, RealArray1D<2> lp_np);
 template<size_t x>
 RealArray1D<x> sumR1(RealArray1D<x> a, RealArray1D<x> b);
+template<size_t x0>
+RealArray1D<x0> operatorAdd(RealArray1D<x0> a, RealArray1D<x0> b);
 }
 
 /******************** Module declaration ********************/
@@ -47,9 +50,11 @@ public:
 private:
 	// Mesh and mesh variables
 	CartesianMesh2D& mesh;
-	size_t nbNodes, maxCellsOfNode, nbCells, maxNodesOfCell;
+	size_t nbNodes;
+	size_t nbCells;
+	size_t nbTopLeftNode;
 
-	// Option and global variables
+	// Options and global variables
 	int n;
 	static constexpr double maxTime = 0.1;
 	static constexpr int maxIter = 500;

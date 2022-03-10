@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -38,36 +38,41 @@ class ContainerExtensions
 	{
 		switch it
 		{
-			ConnectivityCall: connectivity.name + args.map[x | x.itemName.toFirstUpper].join('')
+			ConnectivityCall case group !== null: group.toFirstLower
+			ConnectivityCall case group === null: connectivity.name + args.map[x | x.itemName.toFirstUpper].join('')
 			SetRef: target.name
 		}
 	}
 
-	static def getContent(Container it)
+	static def getContent(Container it, String meshPrefix)
 	{
 		switch it
 		{
-			ConnectivityCall: '''mesh.«accessor»'''
-			SetRef: '''«target.name»'''
+			ConnectivityCall: meshPrefix + accessor
+			SetRef: target.name
 		}
 	}
 
-	static def getNbElemsVar(Container it)
-	{
-		if (getConnectivityCall.args.empty)
-			getConnectivityCall.connectivity.nbElemsVar
-		else
-			'nb' + getUniqueName.toFirstUpper
-	}
+	static def getNbElemsVar(Container it) { uniqueName.nbElemsVar }
+	static def getNbElemsVar(Connectivity it) { name.nbElemsVar }
+	static def getNbElemsVar(String s) { "nb" + s.toFirstUpper }
 
-	static def getNbElemsVar(Connectivity it)
+	static def getNbElems(Connectivity it)
 	{
 		if (inTypes.empty)
-			'nb' + name.toFirstUpper
+			nbElemsVar
 		else
-			'max' + name.toFirstUpper
+		{
+			val varName = "MaxNb" + name.toFirstUpper
+			provider.generationVariables.get(varName)
+		}
 	}
 
 	static def getAccessor(ConnectivityCall it)
-	'''get«connectivity.name.toFirstUpper»(«args.map[name].join(', ')»)'''
+	{
+		if (group === null)
+			'''get«connectivity.name.toFirstUpper»(«args.map[name].join(', ')»)'''
+		else
+			'''getGroup("«group»")'''
+	}
 }

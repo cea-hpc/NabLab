@@ -62,15 +62,16 @@ public:
 private:
 	// Mesh and mesh variables
 	CartesianMesh2D& mesh;
-	size_t nbNodes, nbCells;
+	size_t nbNodes;
+	size_t nbCells;
 
 	// Additional modules
 	R1* r1;
 	R2* r2;
 
 	// Options and global variables
-	double maxTime;
 	int maxIter;
+	double maxTime;
 	double deltat;
 	static constexpr double t = 0.0;
 	Kokkos::View<RealArray1D<2>*> X;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -43,7 +43,6 @@ import fr.cea.nabla.nabla.Modulo
 import fr.cea.nabla.nabla.Mul
 import fr.cea.nabla.nabla.NextTimeIteratorRef
 import fr.cea.nabla.nabla.Not
-import fr.cea.nabla.nabla.OptionDeclaration
 import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
@@ -65,7 +64,6 @@ class LatexLabelServices
 {
 	/* JOBS & INSTRUCTIONS ***********************************/
 	static def dispatch String getLatex(Job it) { '\\texttt{' + name.pu + '} : '+ instruction?.latex }
-	static def dispatch String getLatex(OptionDeclaration it) { if (value === null) variable?.name.pu else variable?.name.pu + '=' + value.latex }
 	static def dispatch String getLatex(SimpleVarDeclaration it) { if (value === null) variable?.name.pu else variable?.name.pu + '=' + value.latex }
 	static def dispatch String getLatex(VarGroupDeclaration it) { type.latex + '~' + variables.map[x|x.name.pu].join(', ') }
 	static def dispatch String getLatex(InstructionBlock it) { '\\{ ... \\}' }
@@ -85,7 +83,16 @@ class LatexLabelServices
 	static def dispatch String getLatex(SpaceIterator it) { name.pu + '\\in ' + container?.latex }
 	static def dispatch String getLatex(Interval it) { index?.name + '\\in ' + nbElems.latex }
 	static def dispatch String getLatex(ItemSetRef it) { target?.name }
-	static def dispatch String getLatex(ConnectivityCall it) { connectivity?.name.pu + '(' + args.map[latex].join(',') + ')' }
+	static def dispatch String getLatex(ConnectivityCall it)
+	{
+		if (group === null)
+			if (args.empty)
+				connectivity?.name.pu
+			else
+				connectivity?.name.pu + '(' + args.map[latex].join(',') + ')'
+		else
+			group.pu
+	}
 	static def dispatch String getLatex(SpaceIteratorRef it) 
 	{ 
 		if (inc > 0) target.name.pu + '+' + inc

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -179,14 +179,21 @@ class Context
 	def void addSetValue(String setName, ConnectivityCall value) 
 	{ 
 		val argIds =  value.args.map[x | getIdValue(x)]
-		val containerValue = mesh.getElements(value.connectivity, argIds)
-		setValues.put(setName, containerValue)
+		if (value.group === null)
+			setValues.put(setName, mesh.getElements(value.connectivity, argIds))
+		else
+			setValues.put(setName, mesh.getElements(value.group))
 	}
 
 	def int[] getConnectivityCallValue(ConnectivityCall it)
 	{
-		val argIds =  args.map[x | getIdValue(x)]
-		mesh.getElements(connectivity, argIds)
+		if (group === null)
+		{
+			val argIds =  args.map[x | getIdValue(x)]
+			mesh.getElements(connectivity, argIds)
+		}
+		else
+			mesh.getElements(group)
 	}
 
 	// IndexValues
@@ -236,7 +243,10 @@ class Context
 
 	def int getSingleton(ConnectivityCall it)
 	{
-		mesh.getSingleton(connectivity, args.map[x | getIdValue(x)])
+		if (group === null)
+			mesh.getSingleton(connectivity, args.map[x | getIdValue(x)])
+		else
+			mesh.getSingleton(group)
 	}
 
 	def logVariables(String message)

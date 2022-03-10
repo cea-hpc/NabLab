@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -16,6 +16,18 @@ import org.eclipse.emf.ecore.util.FeatureMapUtil
 
 class IrTransformationUtils
 {
+	static def getCommonTransformation(boolean replaceAllReductions)
+	{
+		#[
+			new ReplaceUtf8Chars,
+			new ReplaceReductions(replaceAllReductions),
+			new ReplaceAffectations,
+			new CreateArrayOperators,
+			new ConfigureMesh,
+			new FillJobHLTs
+		]
+	}
+
 	/**
 	 * Extension of the EcoreUtil::replace operation for a list of objects.
 	 * If the eContainmentFeature is a 1:1 multiplicity, an instance of InstructionBlock is created,

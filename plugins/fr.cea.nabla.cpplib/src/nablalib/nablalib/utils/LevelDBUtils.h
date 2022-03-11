@@ -85,7 +85,7 @@ namespace nablalib::utils
 		return dataSizes[0] == 0;
 	}
 
-	double getRelativeError(double val, double ref)
+	inline double getRelativeError(double val, double ref)
 	{
 		double notNullRef = ref;
 		if (notNullRef == 0)

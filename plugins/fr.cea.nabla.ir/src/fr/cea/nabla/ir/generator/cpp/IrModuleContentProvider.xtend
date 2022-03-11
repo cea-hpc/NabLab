@@ -114,6 +114,10 @@ class IrModuleContentProvider
 			{
 				return «IrUtils.NonRegressionNameAndValue.key»;
 			}
+			const double get«IrUtils.NonRegressionToleranceNameAndValue.key.toFirstUpper»()
+			{
+				return «IrUtils.NonRegressionToleranceNameAndValue.key»;
+			}
 			void createDB(const std::string& db_name);
 		«ENDIF»
 
@@ -154,6 +158,7 @@ class IrModuleContentProvider
 		«ENDFOR»
 		«IF main && hasLevelDB»
 			std::string «IrUtils.NonRegressionNameAndValue.key»;
+			double «IrUtils.NonRegressionToleranceNameAndValue.key»;
 		«ENDIF»
 		«FOR v : variables»
 			«IF v.constExpr»
@@ -266,6 +271,15 @@ class IrModuleContentProvider
 		const rapidjson::Value& «jsonContentProvider.getJsonName(nrName)» = options["«nrName»"];
 		assert(«jsonContentProvider.getJsonName(nrName)».IsString());
 		«nrName» = «jsonContentProvider.getJsonName(nrName)».GetString();
+		«val nrToleranceName = IrUtils.NonRegressionToleranceNameAndValue.key»
+		if (options.HasMember("«nrToleranceName»"))
+		{
+			const rapidjson::Value& «jsonContentProvider.getJsonName(nrToleranceName)» = options["«nrToleranceName»"];
+			assert(«jsonContentProvider.getJsonName(nrToleranceName)».IsDouble());
+			«nrToleranceName» = «jsonContentProvider.getJsonName(nrToleranceName)».GetDouble();
+		}
+		else
+			«nrToleranceName» = 0.0;
 		«ENDIF»
 		«IF main»
 

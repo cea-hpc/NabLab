@@ -32,7 +32,7 @@ import linearalgebrajava.Vector;
 
 public class LevelDBUtils
 {
-	public static Boolean compareDB(String currentName, String refName) throws IOException
+	public static Boolean compareDB(String currentName, String refName, double tolerance) throws IOException
 	{
 		// Final result
 		Boolean result = true;
@@ -79,34 +79,46 @@ public class LevelDBUtils
 								System.err.println(key + ": " + "OK");
 							else
 							{
-								System.err.println(key + ": " + "ERROR");
-								result = false;
 								String dataDescriptorKey = key + "_descriptor";
 								DataDescriptor dataDescriptor = toDataDescriptor(dbRef.get(bytes(dataDescriptorKey)));
 								int bytes = dataDescriptor.dataTypeBytes;
-								
-								int mismatchIndex = Arrays.mismatch(value, ref);
-								ByteBuffer valueByteBuffer = ByteBuffer.wrap(value);
-								ByteBuffer refByteBuffer = ByteBuffer.wrap(ref);
-								int bufSize = valueByteBuffer.remaining();
-								if (bufSize == bytes)
-								{
-									if (bytes == Integer.BYTES)
-										System.err.println("	Value " + key + " = " + valueByteBuffer.getInt() + " vs Reference " + key + " = " + refByteBuffer.getInt());
-									else if (bytes == Double.BYTES)
-										System.err.println("	Value " + key + " = " + valueByteBuffer.getDouble() + " vs Reference " + key + " = " + refByteBuffer.getDouble());
-								}
-								else if (bufSize % bytes == 0)
-								{
-									int indx = mismatchIndex / bytes;
-									String indexes = getMismatchIndexes(dataDescriptor.dataSizes, indx);
-									if (bytes == Integer.BYTES)
-										System.err.println("	Value "  + key + indexes + " = " + valueByteBuffer.getInt(indx * Integer.BYTES) + " vs Reference " + key + indexes + " = " + refByteBuffer.getInt(indx * Integer.BYTES));
-									else if (bytes == Double.BYTES)
-										System.err.println("	Value "  + key + indexes + " = " + valueByteBuffer.getDouble(indx * Double.BYTES) + " vs Reference " + key + indexes + " = " + refByteBuffer.getDouble(indx * Double.BYTES));
-								}
+
+								DataDiff dataDiff = compareData(value, ref, bytes, tolerance);
+								if (dataDiff.nbErrors == 0)
+									System.err.println(key + ": " + "OK");
 								else
-									System.err.println("Unable to determine the type of data.");
+								{
+									result = false;
+									int nbVals = value.length / bytes;
+									if (nbVals == 1)
+										System.err.println(key + ": " + "ERROR");
+									else
+										System.err.println(key + ": " + "ERRORS " + dataDiff.nbErrors + "/" + nbVals);
+
+									ByteBuffer valueByteBuffer = ByteBuffer.wrap(value);
+									ByteBuffer refByteBuffer = ByteBuffer.wrap(ref);
+									if (isScalar(dataDescriptor.dataSizes))
+									{
+										if (bytes == Integer.BYTES)
+											System.err.println("	Expected " + refByteBuffer.getInt() + " but was " + valueByteBuffer.getInt());
+										else if (bytes == Double.BYTES)
+										{
+											double relativeError = getRelativeError(valueByteBuffer.getDouble(0), refByteBuffer.getDouble(0));
+											System.err.println("	Expected " + refByteBuffer.getDouble(0) + " but was " + valueByteBuffer.getDouble(0) + " (Relative error = " + relativeError + ")");
+										}
+									}
+									else
+									{
+										String indexes = getMismatchIndexes(dataDescriptor.dataSizes, dataDiff.relativeMaxErrorIndex / bytes);
+										if (bytes == Integer.BYTES)
+											System.err.println("	Max relative error "  + key + indexes + " : expected " + refByteBuffer.getInt(dataDiff.relativeMaxErrorIndex) + " but was " + valueByteBuffer.getInt(dataDiff.relativeMaxErrorIndex));
+										else if (bytes == Double.BYTES)
+										{
+											double relativeError = getRelativeError(valueByteBuffer.getDouble(dataDiff.relativeMaxErrorIndex), refByteBuffer.getDouble(dataDiff.relativeMaxErrorIndex));
+											System.err.println("	Max relative error "  + key + indexes + " : expected " + refByteBuffer.getDouble(dataDiff.relativeMaxErrorIndex) + " but was "  + valueByteBuffer.getDouble(dataDiff.relativeMaxErrorIndex) +  " (Relative error = " + relativeError + ")");
+										}
+									}
+								}
 							}
 						}
 					}
@@ -146,6 +158,11 @@ public class LevelDBUtils
 		}
 	}
 
+	private static Boolean isScalar(int dataSizes[])
+	{
+		return dataSizes.length == 0;
+	}
+
 	private static String getMismatchIndexes(int[] dataSizes, int mismatchIndex)
 	{
 		if (dataSizes.length == 1)
@@ -154,14 +171,54 @@ public class LevelDBUtils
 			return "[" + mismatchIndex / dataSizes[1] + "]" + "[" + mismatchIndex % dataSizes[1] + "]";
 		else if (dataSizes.length == 3)
 			return "[" + mismatchIndex / (dataSizes[1] * dataSizes[2]) + "]"
-					+ "[" + (mismatchIndex % (dataSizes[1] * dataSizes[2])) / dataSizes[2] + "]"
-					+ "[" + (mismatchIndex % (dataSizes[1] * dataSizes[2])) % dataSizes[2] + "]";
+			+ "[" + (mismatchIndex % (dataSizes[1] * dataSizes[2])) / dataSizes[2] + "]"
+			+ "[" + (mismatchIndex % (dataSizes[1] * dataSizes[2])) % dataSizes[2] + "]";
 		else if (dataSizes.length == 4)
 			return "[" + mismatchIndex / (dataSizes[1] * dataSizes[2] * dataSizes[3] ) + "]"
-					+ "[" + (mismatchIndex % (dataSizes[1] * dataSizes[2] * dataSizes[3] )) / ( dataSizes[2] * dataSizes[3] ) + "]"
-					+ "[" + ((mismatchIndex % (dataSizes[1] * dataSizes[2] * dataSizes[3] )) % ( dataSizes[2] * dataSizes[3] )) / dataSizes[3] + "]"
-					+ "[" + ((mismatchIndex % (dataSizes[1] * dataSizes[2] * dataSizes[3] )) % ( dataSizes[2] * dataSizes[3] )) % dataSizes[3] + "]";
+			+ "[" + (mismatchIndex % (dataSizes[1] * dataSizes[2] * dataSizes[3] )) / ( dataSizes[2] * dataSizes[3] ) + "]"
+			+ "[" + ((mismatchIndex % (dataSizes[1] * dataSizes[2] * dataSizes[3] )) % ( dataSizes[2] * dataSizes[3] )) / dataSizes[3] + "]"
+			+ "[" + ((mismatchIndex % (dataSizes[1] * dataSizes[2] * dataSizes[3] )) % ( dataSizes[2] * dataSizes[3] )) % dataSizes[3] + "]";
 		return "";
+	}
+
+	private static double getRelativeError(double val, double ref)
+	{
+		double notNullRef = 1;
+		if (ref != 0)
+			notNullRef = ref;
+		return Math.abs((val -ref) / notNullRef);
+	}
+
+	private static double getRelativeError(ByteBuffer valueByteBuffer, ByteBuffer refByteBuffer, int bytes, int indx)
+	{
+		if (bytes == Integer.BYTES)
+			return getRelativeError(valueByteBuffer.getInt(indx), refByteBuffer.getInt(indx));
+		else if (bytes == Double.BYTES)
+			return getRelativeError(valueByteBuffer.getDouble(indx), refByteBuffer.getDouble(indx));
+		else
+			return 0.;
+	}
+
+	private static DataDiff compareData(byte[] value, byte[] ref, int bytes, double tolerance)
+	{
+		DataDiff dataDiff = new DataDiff(0, 0, 0.0, 0);
+		ByteBuffer valueByteBuffer = ByteBuffer.wrap(value);
+		ByteBuffer refByteBuffer = ByteBuffer.wrap(ref);
+		for (int i = 0; i <= value.length -bytes && i <= ref.length - bytes; i = i + bytes)
+		{
+			double relativeError = getRelativeError(valueByteBuffer, refByteBuffer, bytes, i);
+			if (relativeError > 0)
+			{
+				dataDiff.nbDiffs ++;
+				if (relativeError > tolerance && relativeError > dataDiff.relativeMaxError)
+				{
+					dataDiff.nbErrors ++;
+					dataDiff.relativeMaxErrorIndex = i;
+					dataDiff.relativeMaxError = relativeError;
+				}
+			}
+		}
+		return dataDiff;
 	}
 
 	public static void destroyDB(String name) throws IOException
@@ -183,8 +240,8 @@ public class LevelDBUtils
 	private static DataDescriptor toDataDescriptor(byte[] bytes) throws IOException, ClassNotFoundException
 	{
 		ByteArrayInputStream in = new ByteArrayInputStream(bytes);
-	    ObjectInputStream is = new ObjectInputStream(in);
-	    return (DataDescriptor) is.readObject();
+		ObjectInputStream is = new ObjectInputStream(in);
+		return (DataDescriptor) is.readObject();
 	}
 
 	public static <T extends Number>  byte[] toByteArray(final T number) throws IOException

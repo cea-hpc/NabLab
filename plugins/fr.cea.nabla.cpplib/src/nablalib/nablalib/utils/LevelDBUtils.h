@@ -25,9 +25,10 @@ namespace nablalib::utils
 
 	struct DataDiff
 	{
+		int nbDiffs;
 		int nbErrors;
-		double maxError;
-		int maxErrorIndex;
+		double relativeMaxError;
+		int relativeMaxErrorIndex;
 	};
 
 	static std::string descriptorSuffix = "_descriptor";
@@ -84,10 +85,18 @@ namespace nablalib::utils
 		return dataSizes[0] == 0;
 	}
 
-	template <typename T>
-	inline DataDiff compareDataT(leveldb::Slice value, leveldb::Slice ref, size_t bytes)
+	double getRelativeError(double val, double ref)
 	{
-		DataDiff dataDiff {0, 0.0, 0};
+		double notNullRef = ref;
+		if (notNullRef == 0)
+			notNullRef = 1;
+		return std::fabs((val -ref) / notNullRef);
+	}
+
+	template <typename T>
+	inline DataDiff compareDataT(leveldb::Slice value, leveldb::Slice ref, size_t bytes, double tolerance)
+	{
+		DataDiff dataDiff {0, 0, 0.0, 0};
 		for (size_t i = 0; i <= value.size()- bytes && i <= ref.size() - bytes; i = i + bytes)
 		{
 			char* valData = value.ToString().substr(i, bytes).data();
@@ -96,27 +105,29 @@ namespace nablalib::utils
 			T ref = *(T*)refData;
 			if (val != ref)
 			{
-				dataDiff.nbErrors ++;
-				if (abs(val -ref) > dataDiff.maxError)
+				dataDiff.nbDiffs ++;
+				double relativeError = getRelativeError(val, ref);
+				if (relativeError > tolerance && relativeError > dataDiff.relativeMaxError)
 				{
-					dataDiff.maxErrorIndex = i;
-					dataDiff.maxError = abs(val -ref);
+					dataDiff.nbErrors ++;
+					dataDiff.relativeMaxErrorIndex = i;
+					dataDiff.relativeMaxError = relativeError;
 				}
 			}
 		}
 		return dataDiff;
 	}
 
-	inline DataDiff compareData(leveldb::Slice value, leveldb::Slice ref, size_t bytes)
+	inline DataDiff compareData(leveldb::Slice value, leveldb::Slice ref, size_t bytes, double tolerance)
 	{
 		if (bytes == sizeof(double))
-			return compareDataT<double>(value, ref, bytes);
+			return compareDataT<double>(value, ref, bytes, tolerance);
 		else if (bytes == sizeof(int))
-			return compareDataT<int>(value, ref, bytes);
-		return DataDiff {0, 0.0, 0};
+			return compareDataT<int>(value, ref, bytes, tolerance);
+		return DataDiff {0, 0, 0.0, 0};
 	}
 
-	inline bool compareDB(const std::string& current, const std::string& ref)
+	inline bool compareDB(const std::string& current, const std::string& ref, double tolerance)
 	{
 		// Final result
 		bool result = true;
@@ -161,39 +172,48 @@ namespace nablalib::utils
 						std::cerr << key << ": " << "OK" << std::endl;
 					else
 					{
-						result = false;
 						std::string dataDescriptorKey = key + descriptorSuffix;
 						std::string dataDescriptorAsString;
 						assert(db_ref->Get(leveldb::ReadOptions(), key + descriptorSuffix, &dataDescriptorAsString).ok());
 						DataDescriptor* dataDescriptor = (DataDescriptor*)(dataDescriptorAsString.data());
 						int bytes = dataDescriptor->dataTypeBytes;
-
-						DataDiff dataDiff = compareData(value, it_ref->value(), bytes);
-						int nbVals = dataValueAsString.size() / bytes;
-						std::cerr << key << ": " << "ERRORS " << dataDiff.nbErrors << "/"<<  nbVals << std::endl;
-
-						if (isScalar(dataDescriptor->dataSizes))
-						{
-							if (bytes == sizeof(int))
-								std::cerr << "	Error: expected " << *(int*)it_ref->value().data() << " but was " << *(int*)dataValueAsString.data() << std::endl;
-							else if (bytes == sizeof(double))
-							{
-								double valAsDouble = *(double*)dataValueAsString.data();
-								double refAsDouble = *(double*)it_ref->value().data();
-								std::cerr << "	Error: expected " << *(double*)it_ref->value().data() << " but was " << *(double*)dataValueAsString.data() << " (Diff = " << valAsDouble - refAsDouble << ")" << std::endl;
-							}
-						}
+						DataDiff dataDiff = compareData(value, it_ref->value(), bytes, tolerance);
+						if (dataDiff.nbErrors == 0)
+							std::cerr << key << ": " << "OK" << std::endl;
 						else
 						{
-							std::string refValueAsString(it_ref->value().ToString());
-							std::string indexes = getMismatchIndexes(dataDescriptor->dataSizes, dataDiff.maxErrorIndex / bytes);
-							if (bytes == sizeof(int))
-								std::cerr << "	Error max in "<< key << indexes << ": expected " << *(int*)refValueAsString.substr(dataDiff.maxErrorIndex, bytes).data() << " but was " << *(int*)dataValueAsString.substr(dataDiff.maxErrorIndex, bytes).data() << std::endl;
-							else if (bytes == sizeof(double))
+							result = false;
+							int nbVals = dataValueAsString.size() / bytes;
+							if (nbVals == 1)
+								std::cerr << key << ": " << "ERROR" << std::endl;
+							else
+								std::cerr << key << ": " << "ERRORS " << dataDiff.nbErrors << "/"<<  nbVals << std::endl;
+
+							if (isScalar(dataDescriptor->dataSizes))
 							{
-								double valAsDouble = *(double*)dataValueAsString.substr(dataDiff.maxErrorIndex, bytes).data();
-								double refAsDouble = *(double*)refValueAsString.substr(dataDiff.maxErrorIndex, bytes).data();
-								std::cerr << "	Error max in "<< key << indexes << ": expected " << refAsDouble << " but was " << valAsDouble << " (Diff = " << valAsDouble - refAsDouble << ")" << std::endl;
+								if (bytes == sizeof(int))
+									std::cerr << "	Expected " << *(int*)it_ref->value().data() << " but was " << *(int*)dataValueAsString.data() << std::endl;
+								else if (bytes == sizeof(double))
+								{
+									double valAsDouble = *(double*)dataValueAsString.data();
+									double refAsDouble = *(double*)it_ref->value().data();
+									double relativeError = getRelativeError(valAsDouble, refAsDouble);
+									std::cerr << "	Expected " << *(double*)it_ref->value().data() << " but was " << *(double*)dataValueAsString.data() << " (Relative error = " << relativeError << ")" << std::endl;
+								}
+							}
+							else
+							{
+								std::string refValueAsString(it_ref->value().ToString());
+								std::string indexes = getMismatchIndexes(dataDescriptor->dataSizes, dataDiff.relativeMaxErrorIndex / bytes);
+								if (bytes == sizeof(int))
+									std::cerr << "	Max relative error "<< key << indexes << ": expected " << *(int*)refValueAsString.substr(dataDiff.relativeMaxErrorIndex, bytes).data() << " but was " << *(int*)dataValueAsString.substr(dataDiff.relativeMaxErrorIndex, bytes).data() << std::endl;
+								else if (bytes == sizeof(double))
+								{
+									double valAsDouble = *(double*)dataValueAsString.substr(dataDiff.relativeMaxErrorIndex, bytes).data();
+									double refAsDouble = *(double*)refValueAsString.substr(dataDiff.relativeMaxErrorIndex, bytes).data();
+									double relativeError = getRelativeError(valAsDouble, refAsDouble);
+									std::cerr << "	Max relative error "<< key << indexes << ": expected " << refAsDouble << " but was " << valAsDouble << " (Relative error = " << relativeError << ")" << std::endl;
+								}
 							}
 						}
 					}

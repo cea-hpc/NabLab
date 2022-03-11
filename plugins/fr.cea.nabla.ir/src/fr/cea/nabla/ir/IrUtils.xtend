@@ -32,6 +32,7 @@ class IrUtils
 	public static val OutputPeriodOptionName = "outputPeriod"
 	public static val OutputPathNameAndValue = new Pair<String, String>("outputPath", "output")
 	public static val NonRegressionNameAndValue = new Pair<String, String>("nonRegression", '""')
+	public static val NonRegressionToleranceNameAndValue = new Pair<String, String>("nonRegressionTolerance", '""')
 	static enum NonRegressionValues { CreateReference, CompareToReference }
 
 	/* Usefull functions from EcoreUtil2 (no dependency to org.eclipse.xtext in IR) */
@@ -75,7 +76,7 @@ class IrUtils
 		return result.toString()
 	}
 
-	static def addNonRegressionTagToJsonFile(String moduleName, String jsonContent, String value)
+	static def addNonRegressionTagsToJsonFile(String moduleName, String jsonContent, String value, double tolerance)
 	{
 		val gson = new Gson
 		val jsonObject = gson.fromJson(jsonContent, JsonObject)
@@ -84,6 +85,8 @@ class IrUtils
 		val jsonOptions = jsonObject.get(moduleName.toFirstLower).asJsonObject
 		val nrName = NonRegressionNameAndValue.key
 		jsonOptions.addProperty(nrName, value)
+		val nrToleranceName = NonRegressionToleranceNameAndValue.key
+		jsonOptions.addProperty(nrToleranceName, tolerance)
 		return gson.toJson(jsonObject)
 	}
 

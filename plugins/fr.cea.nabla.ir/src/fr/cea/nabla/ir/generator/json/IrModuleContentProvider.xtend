@@ -59,6 +59,7 @@ class IrModuleContentProvider
 			val value = '"empty value to disable, ' + IrUtils.NonRegressionValues.CreateReference.toString + ' or ' + IrUtils.NonRegressionValues.CompareToReference.toString + ' to take action"'
 			values += new Pair('_nonRegression_comment', value)
 			values += IrUtils.NonRegressionNameAndValue
+			values += IrUtils.NonRegressionToleranceNameAndValue
 		}
 		return values
 	}

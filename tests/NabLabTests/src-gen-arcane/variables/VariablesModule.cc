@@ -74,13 +74,16 @@ void VariablesModule::init()
  */
 void VariablesModule::dynamicVecInitialization()
 {
-	Int32 cpt(0);
-	for (Int32 i=0; i<options()->optDim(); i++)
+	const Int32 tmp_optDim(options()->optDim());
 	{
-		cpt = cpt + 1;
-		m_dynamicVec[i] = 3.3;
+		Int32 cpt(0);
+		for (Int32 i=0; i<tmp_optDim; i++)
+		{
+			cpt = cpt + 1;
+			m_dynamicVec[i] = 3.3;
+		}
+		m_checkDynamicDim = cpt;
 	}
-	m_checkDynamicDim = cpt;
 }
 
 /**

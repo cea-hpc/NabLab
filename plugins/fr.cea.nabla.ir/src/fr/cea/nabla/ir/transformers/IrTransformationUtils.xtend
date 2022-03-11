@@ -68,7 +68,7 @@ class IrTransformationUtils
 	 * Nearly the same method as above except that the 'existingInstruction' is not replace;
 	 * instructions are just inserted before
 	 */
-	static def insertBefore(Instruction existingInstruction, List<Instruction> instructionsToInsert)
+	static def insertBefore(Instruction existingInstruction, List<? extends Instruction> instructionsToInsert)
 	{
 		val container = existingInstruction.eContainer
 		if (container !== null && !instructionsToInsert.empty)
@@ -83,17 +83,12 @@ class IrTransformationUtils
 			}
 			else
 			{
-				if (instructionsToInsert.size == 1)
-					container.eSet(feature, instructionsToInsert.get(0))
-				else
-				{
-					val replacementBlock = IrFactory::eINSTANCE.createInstructionBlock =>
-					[
-						for (toAdd : instructionsToInsert) instructions += toAdd
-						instructions += existingInstruction
-					]
-					container.eSet(feature, replacementBlock)
-				}
+				val replacementBlock = IrFactory::eINSTANCE.createInstructionBlock =>
+				[
+					for (toAdd : instructionsToInsert) instructions += toAdd
+					instructions += existingInstruction
+				]
+				container.eSet(feature, replacementBlock)
 			}
 		}
 	}

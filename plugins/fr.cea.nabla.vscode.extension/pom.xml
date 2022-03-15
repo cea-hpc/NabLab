@@ -36,6 +36,12 @@
 								<exclude>.gitkeep</exclude>
 							</excludes>
 						</fileset>
+						<fileset>
+							<directory>${project.basedir}</directory>
+							<includes>
+								<include>*.vsix</include>
+							</includes>
+						</fileset>
 					</filesets>
 				</configuration>
 			</plugin>

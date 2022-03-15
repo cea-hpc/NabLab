@@ -32,6 +32,24 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
+      - name: Setup Node SDK
+        uses: actions/setup-node@v1.4.4
+        with:
+          node-version: 16
+          registry-url: https://npm.pkg.github.com/
+          
+      - name: Cache Node.js modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-
+            ${{ runner.OS }}-
+
+      - name: Install VSCE globally # vsce allows to package the vsce extension as a .vsix file
+        run: npm i vsce -g
+
       - name: Checkout NabLab code
         uses: actions/checkout@v2
       
@@ -47,10 +65,10 @@ jobs:
           USERNAME: ${{ github.actor }}
           PASSWORD: ${{ github.token }}
 
-      # Runs the maven build (build + tests + updatesite + products)
+      # Runs the maven build (build + tests + updatesite + products + vscode extension)
       - name: Run maven build and updatesite profiles
         if: startsWith(github.ref, 'refs/tags/v')
-        run: mvn clean -P build,updatesite;mvn -B -U verify -P build,updatesite
+        run: mvn clean -P build,updatesite,vscode;mvn -B -U verify -P build,updatesite,vscode
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
@@ -102,6 +120,18 @@ jobs:
           PASSWORD: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      # Install/update vscode extension dependencies
+      - name: Install/update vscode extension dependencies # https://docs.npmjs.com/cli/v8/commands/npm-ci
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: npm ci
+        working-directory: plugins/fr.cea.nabla.vscode.extension
+
+      # Package vscode extension
+      - name: Package the vscode extension
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: vsce package --no-yarn
+        working-directory: plugins/fr.cea.nabla.vscode.extension
+
       # Create a Github Release
       - name: Release
         uses: softprops/action-gh-release@v1
@@ -110,6 +140,7 @@ jobs:
           files: |
             ./releng/fr.cea.nabla.updatesite/target/fr.cea.nabla.updatesite-*.zip
             ./releng/fr.cea.nabla.updatesite/target/products/*.zip
+            ./plugins/fr.cea.nabla.vscode.extension/*.vsix
           draft: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

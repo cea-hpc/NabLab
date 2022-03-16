@@ -531,6 +531,32 @@ class BasicValidatorTest
 		moduleOk.assertNoErrors
 	}
 
+	@Test
+	def testCheckDimensionsArgOrder()
+	{
+		val rs = resourceSetProvider.get
+		parseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DPath), rs)
+		val moduleKo =  parseHelper.parse(
+			'''
+			«testModule»
+			ℝ[2] X{nodesOfCell};
+			ℕ toto{cells, nodesOfCell, nodes};
+			''', rs)
+		Assert.assertNotNull(moduleKo)
+		moduleKo.assertError(NablaPackage.eINSTANCE.connectivityVar,
+			BasicValidator::DIMENSIONS_ARG_ORDER,
+			BasicValidator::getDimensionsArgOrderMsg())
+
+		val moduleOk =  parseHelper.parse(
+			'''
+			«testModule»
+			ℝ[2] X{nodes};
+			ℕ toto{cells, nodes, nodesOfCell};
+			''', rs)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+
 	// ===== Items =====
 
 	@Test

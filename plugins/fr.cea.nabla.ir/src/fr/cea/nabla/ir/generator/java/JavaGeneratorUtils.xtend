@@ -52,7 +52,7 @@ class JavaGeneratorUtils
 		switch (primitive)
 		{
 			case PrimitiveType.INT : "Integer.BYTES"
-			case PrimitiveType.BOOL : "Boolean.BYTES"
+			case PrimitiveType.BOOL : "1"
 			case PrimitiveType.REAL : "Double.BYTES"
 			default: ""
 		}

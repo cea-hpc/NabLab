@@ -20,8 +20,8 @@
 using namespace nablalib::types;
 
 namespace nablalib::utils {
-	//deals with int & double
-	template <typename T, typename = std::enable_if_t<std::is_same_v<T, int> ||  std::is_same_v<T,double>> >
+	//deals with bool, int & double
+	template <typename T, typename = std::enable_if_t<std::is_same_v<T, int> ||  std::is_same_v<T,double>> ||  std::is_same_v<T,bool>> >
 	const char* serialize(const T& dataValue, int& size, bool& mustDeletePtr)
 	{
 		size = sizeof(dataValue);

@@ -99,6 +99,8 @@ public class LevelDBUtils
 									ByteBuffer refByteBuffer = ByteBuffer.wrap(ref);
 									if (isScalar(dataDescriptor.dataSizes))
 									{
+										if (bytes == 1)
+											System.err.println("	Expected " + getBoolean(refByteBuffer, 0) + " but was " +  getBoolean(valueByteBuffer, 0));
 										if (bytes == Integer.BYTES)
 											System.err.println("	Expected " + refByteBuffer.getInt() + " but was " + valueByteBuffer.getInt());
 										else if (bytes == Double.BYTES)
@@ -189,12 +191,27 @@ public class LevelDBUtils
 		return Math.abs((val -ref) / notNullRef);
 	}
 
+	private static double getRelativeError(boolean val, boolean ref)
+	{
+		if (val != ref)
+			return 1;
+		else
+			return 0;
+	}
+
+	public static boolean getBoolean(ByteBuffer bytes, int offset)
+	{
+		return bytes.get(offset) != 0;
+	}
+
 	private static double getRelativeError(ByteBuffer valueByteBuffer, ByteBuffer refByteBuffer, int bytes, int indx)
 	{
 		if (bytes == Integer.BYTES)
 			return getRelativeError(valueByteBuffer.getInt(indx), refByteBuffer.getInt(indx));
 		else if (bytes == Double.BYTES)
 			return getRelativeError(valueByteBuffer.getDouble(indx), refByteBuffer.getDouble(indx));
+		else if (bytes == 1) // booleans are same as int (0 or 1)
+			return getRelativeError(getBoolean(valueByteBuffer, indx), getBoolean(refByteBuffer, indx));
 		else
 			return 0.;
 	}

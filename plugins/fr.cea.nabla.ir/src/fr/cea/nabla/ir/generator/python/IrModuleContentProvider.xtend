@@ -99,11 +99,16 @@ class IrModuleContentProvider
 					«vName».jsonInit(jsonContent["«vName»"])
 			«ENDFOR»
 			«val nrName = IrUtils.NonRegressionNameAndValue.key»
+			«val nrToleranceName = IrUtils.NonRegressionToleranceNameAndValue.key»
 			«IF main && hasLevelDB»
 
 				# Non regression
 				if "«nrName»" in jsonContent:
 					self.«nrName» = jsonContent["«nrName»"]
+				if "«nrToleranceName»" in jsonContent:
+					self.«nrToleranceName» = jsonContent["«nrToleranceName»"]
+				else:
+					self.«nrToleranceName» = 0.0
 			«ENDIF»
 			«IF main»
 
@@ -150,10 +155,13 @@ class IrModuleContentProvider
 			with db.write_batch() as b:
 				«FOR v : irRoot.variables.filter[!option]»
 					«IF v.type.scalar»
+						b.put(b"«Utils.getDbDescriptor(v)»", bytes((struct.calcsize('«getStructFormat(v.type.primitive)»'),)))
 						b.put(b"«Utils.getDbKey(v)»", struct.pack('«getStructFormat(v.type.primitive)»', «getDbValue(it, v)»))
 					«ELSEIF v.type instanceof LinearAlgebraType»
+						b.put(b"«Utils.getDbDescriptor(v)»", bytes((struct.calcsize('«getStructFormat(v.type.primitive)»'),) + «getDbSizes(it, v)»))
 						b.put(b"«Utils.getDbKey(v)»", «getDbValue(it, v)».getData().tobytes())
 					«ELSE»
+						b.put(b"«Utils.getDbDescriptor(v)»", bytes((struct.calcsize('«getStructFormat(v.type.primitive)»'),) + «getDbSizes(it, v)»))
 						b.put(b"«Utils.getDbKey(v)»", «getDbValue(it, v)».tobytes())
 					«ENDIF»
 				«ENDFOR»
@@ -172,7 +180,7 @@ class IrModuleContentProvider
 					«val nodeVariables = outputVarsByConnectivities.get("node")»
 					«IF !nodeVariables.nullOrEmpty»
 						«FOR v : nodeVariables»
-							self.__writer.openNodeArray("«v.outputName»", «v.target.type.baseSizes.size»);
+							self.__writer.openNodeArray("«v.outputName»", «v.target.type.baseSizes.size»)
 							for i in range(self.__nbNodes):
 								self.__writer.write(«getWriteCallContent(v.target)»)
 							self.__writer.closeNodeArray()
@@ -183,7 +191,7 @@ class IrModuleContentProvider
 					«val cellVariables = outputVarsByConnectivities.get("cell")»
 					«IF !cellVariables.nullOrEmpty»
 						«FOR v : cellVariables»
-							self.__writer.openCellArray("«v.outputName»", «v.target.type.baseSizes.size»);
+							self.__writer.openCellArray("«v.outputName»", «v.target.type.baseSizes.size»)
 							for i in range(self.__nbCells):
 								self.__writer.write(«getWriteCallContent(v.target)»)
 							self.__writer.closeCellArray()
@@ -195,7 +203,45 @@ class IrModuleContentProvider
 		«ENDIF»
 	«IF main && hasLevelDB»
 
-		def compare_db(currentName, refName):
+		def getRelativeError(val, ref):
+			notNullRef = 1
+			if not ref == 0:
+				notNullRef = ref
+			return abs((val -ref) / notNullRef)
+
+		def compareData(val, ref, tolerance):
+			nbDiffs = 0
+			nbErrors = 0
+			relativeMaxError = 0
+			relativeMaxErrorIndex = 0
+			for i in range(len(val)):
+				relativeError = getRelativeError(val[i], ref[i])
+				if relativeError > 0:
+					nbDiffs += 1
+					if (relativeError > tolerance and relativeError > relativeMaxError):
+						nbErrors +=1
+						relativeMaxErrorIndex = i
+						relativeMaxError = relativeError
+			return (nbDiffs, nbErrors, relativeMaxError, relativeMaxErrorIndex)
+
+		def getMismatchIndexes(dataSizes, mismatchIndex):
+			if len(dataSizes) == 1:
+				return '[' + str(mismatchIndex) + ']'
+			elif len(dataSizes) == 2:
+				return '[' + str(int(mismatchIndex / dataSizes[1])) + '][' + str(mismatchIndex % dataSizes[1]) + ']'
+			elif len(dataSizes) == 3:
+				return '[' +  str(int(mismatchIndex / (dataSizes[1] * dataSizes[2]))) +  '][' +\
+				str(int((mismatchIndex % (dataSizes[1] * dataSizes[2])) / dataSizes[2])) +  '][' +\
+				str((mismatchIndex % (dataSizes[1] * dataSizes[2])) % dataSizes[2]) +  ']'
+			elif len(dataSizes) == 4:
+				return '[' +  str(int(mismatchIndex / (dataSizes[1] * dataSizes[2] * dataSizes[3] ))) +  '][' +\
+				str(int((mismatchIndex % (dataSizes[1] * dataSizes[2] * dataSizes[3] )) / (dataSizes[2] * dataSizes[3]))) + '][' +\
+				str(int(((mismatchIndex % (dataSizes[1] * dataSizes[2] * dataSizes[3] )) % (dataSizes[2] * dataSizes[3] )) / dataSizes[3])) + '][' +\
+				str(((mismatchIndex % (dataSizes[1] * dataSizes[2] * dataSizes[3] )) % (dataSizes[2] * dataSizes[3])) % dataSizes[3]) + ']'
+			else:
+				return ''
+
+		def compare_db(currentName, refName, tolerance):
 			result = True
 
 			try:
@@ -206,27 +252,60 @@ class IrModuleContentProvider
 				it = db.iterator()
 
 				# Results comparison
-				print("# Comparing results ...");
+				print("# Comparing results ...")
 
 				for key, refValue in itRef:
-					currentValue = db.get(key)
-					if currentValue == None:
-						print("ERROR - Key : " + str(key) + " not found.")
-						result = False
-					else:
-						ok = (currentValue == refValue)
-						if ok:
-							print(str(key) + ": OK")
-						else:
-							print(str(key) + ": ERROR")
+					utf8key = key.decode("utf-8")
+					if not utf8key.endswith('_descriptor'):
+						currentValue = db.get(key)
+						if currentValue == None:
+							print("ERROR - Key : ",utf8key," not found.")
 							result = False
-							print("value = " + str(currentValue))
-							print("  ref = " + str(refValue))
+						else:
+							if currentValue == refValue:
+								print(utf8key,": OK")
+							else:
+								dataDescriptor = list(dbRef.get((utf8key + '_descriptor').encode('utf-8')))
+								fmtSize = dataDescriptor[0]
+								dataDescriptor.pop(0)
+								if fmtSize == 1:
+									dtype = 'bool'
+									format = '?'
+								if fmtSize == 4:
+									dtype = 'int64'
+									format = 'i'
+								elif fmtSize == 8:
+									dtype = 'float64'
+									format = 'd'
+								if dataDescriptor:
+									numVals = np.frombuffer(currentValue, dtype=dtype)
+									numRefs = np.frombuffer(refValue, dtype=dtype)
+								else:
+									numVals = struct.unpack(format, currentValue)
+									numRefs = struct.unpack(format, refValue)
+								nbDiffs, nbErrors, relativeMaxError, relativeMaxErrorIndex = compareData(numVals, numRefs, tolerance)
+								if nbErrors == 0:
+									print(utf8key + ': OK')
+								else:
+									if not dataDescriptor:
+										print(utf8key + ': ERROR')
+										if fmtSize == 1 or fmtSize == 4:
+											print('	Expected ' + str(numRefs[0]) + ' but was ' + str(numVals[0]))
+										elif fmtSize == 8:
+											print('	Expected '+ str(numRefs[0]) +' but was '+ str(numVals[0]) + ' (Relative error = ' + str(getRelativeError(numVals[0], numRefs[0])) + ')')
+									else:
+										print(utf8key + ': ERRORS ' + str(nbErrors) + '/' + str(np.prod(dataDescriptor)))
+										indexes = getMismatchIndexes(dataDescriptor, relativeMaxErrorIndex)
+										if fmtSize == 4:
+											print('	Max relative error ' + utf8key + indexes + ' expected ' + str(numRefs[relativeMaxErrorIndex]) + ' but was ' + str(numVals[relativeMaxErrorIndex]))
+										elif fmtSize == 8:
+											print('	Max relative error ' + utf8key + indexes + ' expected ' + str(numRefs[relativeMaxErrorIndex]) + ' but was ' + str(numVals[relativeMaxErrorIndex]) + ' (Relative error = ' + str(getRelativeError(numVals[relativeMaxErrorIndex], numRefs[relativeMaxErrorIndex])) + ')')
+									result = False
 
 				# looking for key in the db that are not in the ref (new variables)
 				for key, currentValue in it:
 					if dbRef.get(key) == None:
-						print("ERROR - Key : " + key + " can not be compared (not present in the ref).")
+						print("ERROR - Key : " + utf8key + " can not be compared (not present in the ref).")
 						result = False
 
 			finally:
@@ -268,8 +347,8 @@ class IrModuleContentProvider
 						«name».create_db("«dbName».ref")
 					if «name».«nrName» != None and «name».«nrName» == "«IrUtils.NonRegressionValues.CompareToReference.toString»":
 						«name».create_db("«dbName».current")
-						ok = compare_db("«dbName».current", "«dbName».ref");
-						plyvel.destroy_db("«dbName».current");
+						ok = compare_db("«dbName».current", "«dbName».ref", «name».«nrToleranceName»)
+						plyvel.destroy_db("«dbName».current")
 						if not ok:
 							exit(1)
 				«ENDIF»
@@ -298,6 +377,11 @@ class IrModuleContentProvider
 			"self." + v.name
 		else
 			vModule.name + "." + v.name
+	}
+
+	static def CharSequence getDbSizes(IrModule m, Variable v)
+	{
+		"np.shape(" + getDbValue(m, v) + ")"
 	}
 
 	private static def getStructFormat(PrimitiveType t)

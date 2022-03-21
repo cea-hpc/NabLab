@@ -102,6 +102,9 @@ public class ToolSectionsProvider implements IToolSectionsProvider {
                     .collect(Collectors.toList());
             // @formatter:on
 
+            if (filteredToolSections.isEmpty() || filteredToolSections.get(0).getTools().isEmpty()) {
+                return List.of();
+            }
             return filteredToolSections;
         }
         return List.of();

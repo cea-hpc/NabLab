@@ -317,6 +317,9 @@ namespace nablalib::types
 	template <size_t DIM_1, size_t... DIM_N>
 	using IntArray = MultiArray<int, DIM_1, DIM_N...>;
 
+	// Alias for bool array of N dimensions
+	template <size_t DIM_1, size_t... DIM_N>
+	using BoolArray = MultiArray<bool, DIM_1, DIM_N...>;
 
 	/******************************************************************************/
 	// Pretty printer helper function for std::array array

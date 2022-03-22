@@ -9,17 +9,11 @@
  *******************************************************************************/
 package fr.cea.nabla.ir
 
-import fr.cea.nabla.ir.ir.Affectation
-import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
-import fr.cea.nabla.ir.ir.IrPackage
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.JobCaller
-import fr.cea.nabla.ir.ir.Variable
-import org.eclipse.emf.ecore.EObject
 
-import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.JobCallerExtensions.*
 
 class JobDependencies
@@ -45,7 +39,7 @@ class JobDependencies
 		{
 			ExecuteTimeLoopJob:
 			{
-				inVars += getInVars(whileCondition)
+				inVars += IrUtils.getInVars(whileCondition)
 				// main loop ?
 				if (caller.main)
 				{
@@ -59,8 +53,8 @@ class JobDependencies
 			}
 			case !timeLoopJob:
 			{
-				outVars += eAllContents.filter(Affectation).map[left.target].filter(Variable).filter[global].toSet
-				inVars += getInVars(it)
+				outVars += IrUtils.getOutVars(it)
+				inVars += IrUtils.getInVars(it)
 			}
 		}
 	}
@@ -90,11 +84,5 @@ class JobDependencies
 		}
 		else
 			null
-	}
-
-	private static def getInVars(EObject it)
-	{
-		val allReferencedVars = eAllContents.filter(ArgOrVarRef).filter[x|x.eContainingFeature != IrPackage::eINSTANCE.affectation_Left].map[target]
-		allReferencedVars.filter(Variable).filter[global].toSet
 	}
 }

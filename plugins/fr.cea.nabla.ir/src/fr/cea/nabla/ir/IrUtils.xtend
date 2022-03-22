@@ -11,12 +11,17 @@ package fr.cea.nabla.ir
 
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import fr.cea.nabla.ir.ir.Affectation
+import fr.cea.nabla.ir.ir.ArgOrVarRef
+import fr.cea.nabla.ir.ir.IrPackage
 import fr.cea.nabla.ir.ir.IterationBlock
 import fr.cea.nabla.ir.ir.Iterator
+import fr.cea.nabla.ir.ir.Variable
 import java.io.PrintWriter
 import java.io.StringWriter
 import org.eclipse.emf.ecore.EObject
 
+import static extension fr.cea.nabla.ir.ArgOrVarExtensions.isGlobal
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 
 class IrUtils
@@ -89,5 +94,16 @@ class IrUtils
 			b.container.connectivityCall.args.empty
 		else
 			false
+	}
+
+	static def getInVars(EObject it)
+	{
+		val allReferencedVars = eAllContents.filter(ArgOrVarRef).filter[x|x.eContainingFeature != IrPackage::eINSTANCE.affectation_Left].map[target]
+		allReferencedVars.filter(Variable).filter[global].toSet
+	}
+
+	static def getOutVars(EObject it)
+	{
+		eAllContents.filter(Affectation).map[left.target].filter(Variable).filter[global].toSet
 	}
 }

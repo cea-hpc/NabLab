@@ -21,6 +21,6 @@ class NablagenIdeSetup extends NablagenStandaloneSetup
 {
 	override createInjector() 
 	{
-		Guice.createInjector(Modules2.mixin(new NablagenRuntimeModule, new NablagenIdeModule))
+		Guice.createInjector(Modules2.mixin(new NablagenRuntimeModule, new NablagenIdeModule)) 
 	}
 }

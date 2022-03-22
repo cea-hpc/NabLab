@@ -33,6 +33,7 @@ import static extension fr.cea.nabla.ir.generator.Utils.*
 import fr.cea.nabla.ir.ir.JobCaller
 import fr.cea.nabla.ir.annotations.NabLabFileAnnotation
 import fr.cea.nabla.ir.ir.IrAnnotable
+import fr.cea.nabla.ir.ir.LinearAlgebraType
 
 @Data
 class PythonEmbeddingContentProvider
@@ -231,7 +232,7 @@ class PythonEmbeddingContentProvider
 		{
 			«FOR v : variables»
 			«IF !v.constExpr»
-				«IF v.const»const «ENDIF»«getCppType(v.type)» get_«v.name»() const {return instance->«v.name»;}
+				«IF v.const || v.type instanceof LinearAlgebraType»const «ENDIF»«getCppType(v.type)»«IF v.type instanceof LinearAlgebraType»&«ENDIF» get_«v.name»() const {return instance->«v.name»;}
 			«ENDIF»
 			«ENDFOR»
 			

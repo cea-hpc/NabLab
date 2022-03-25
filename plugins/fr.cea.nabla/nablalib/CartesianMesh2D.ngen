@@ -18,6 +18,7 @@ Provider CartesianMesh2DStl : CartesianMesh2D
 Provider CartesianMesh2DArcane : CartesianMesh2D
 {
 	target = Arcane;
+	compatibleTargets = ArcaneSequential, ArcaneAccelerator;
 	outputPath = "/.nablab/mesh";
 }
 

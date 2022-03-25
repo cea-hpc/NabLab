@@ -130,7 +130,7 @@ abstract class GenerateAndExecuteTestBase
 			val dataFileWithoutExtension =  GenerateAndExecuteTestBase.projectAbsolutePath + "/src/" + packageName + "/" + ngenFileName
 
 			print("\tStarting " + target.type.literal)
-			if (target.type == TargetType::ARCANE)
+			if (target.type == TargetType::ARCANE || target.type == TargetType::ARCANE_ACCELERATOR || target.type == TargetType::ARCANE_SEQUENTIAL)
 			{
 				(!testExecuteArcane(outputPath, packageName, resultsRef, dataFileWithoutExtension + ".arc", ngenFileName) ? nbErrors++)
 			}

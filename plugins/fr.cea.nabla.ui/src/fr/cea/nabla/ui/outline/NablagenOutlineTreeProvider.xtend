@@ -60,7 +60,9 @@ class NablagenOutlineTreeProvider extends DefaultOutlineTreeProvider
 			case OPEN_MP: 'OpenMP C++'
 			case CPP_SEQUENTIAL: 'Sequential C++'
 			case STL_THREAD: 'Multi-thread STL C++'
-			case ARCANE: 'Arcane C++ framework'
+			case ARCANE: 'Arcane Thread API'
+			case ARCANE_ACCELERATOR: 'Arcane Accelerator API'
+			case ARCANE_SEQUENTIAL: 'Arcane Sequential API'
 			default: 'Unknown target'
 		}
 	}
@@ -76,6 +78,8 @@ class NablagenOutlineTreeProvider extends DefaultOutlineTreeProvider
 			case CPP_SEQUENTIAL: NablaUiUtils.createImage('icons/CppSequential.gif')
 			case STL_THREAD: NablaUiUtils.createImage('icons/StlThread.gif')
 			case ARCANE: NablaUiUtils.createImage('icons/StlThread.gif')
+			case ARCANE_ACCELERATOR: NablaUiUtils.createImage('icons/Cuda.gif')
+			case ARCANE_SEQUENTIAL: NablaUiUtils.createImage('icons/CppSequential.gif')
 			default: null
 		}
 	}

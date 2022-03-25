@@ -21,7 +21,8 @@ import fr.cea.nabla.ir.ir.LinearAlgebraType
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
-import static extension fr.cea.nabla.ir.generator.arcane.VariableExtensions.*
+import static extension fr.cea.nabla.ir.generator.arcane.ArcaneUtils.getCodeName
+import fr.cea.nabla.ir.annotations.AcceleratorAnnotation
 
 class IrModuleContentProvider
 {
@@ -61,6 +62,12 @@ class IrModuleContentProvider
 	#include <arcane/utils/Array.h>
 	#include <arcane/datatype/RealArrayVariant.h>
 	#include <arcane/datatype/RealArray2Variant.h>
+	«IF AcceleratorAnnotation.tryToGet(it) !== null»
+		#include <arcane/accelerator/core/IAcceleratorMng.h>
+		#include <arcane/accelerator/Reduce.h>
+		#include <arcane/accelerator/Accelerator.h>
+		#include <arcane/accelerator/RunCommandEnumerate.h>
+	«ENDIF»
 	«FOR s : ArcaneUtils.getServices(it)»
 	#include "«ArcaneUtils.getInterfaceName(s)».h"
 	«ENDFOR»
@@ -76,6 +83,7 @@ class IrModuleContentProvider
 	#include "Arcane2StlVector.h"
 	«ENDIF»
 
+	«IF AcceleratorAnnotation.tryToGet(it) !== null»namespace ax = Arcane::Accelerator;«ENDIF»
 	using namespace Arcane;
 
 	«IF !functions.empty»
@@ -131,6 +139,11 @@ class IrModuleContentProvider
 				«TypeContentProvider.getTypeName(v.type)» «v.codeName»;
 			«ENDIF»
 		«ENDFOR»
+
+		«IF AcceleratorAnnotation.tryToGet(it) !== null»
+			// accelerator queue
+			ax::RunQueue* m_default_queue = nullptr;
+		«ENDIF»
 	};
 
 	#endif

@@ -92,6 +92,8 @@
     <eLiterals name="Kokkos" value="4" literal="Kokkos"/>
     <eLiterals name="KokkosTeamThread" value="5" literal="KokkosTeamThread"/>
     <eLiterals name="Arcane" value="6" literal="Arcane"/>
-    <eLiterals name="Python" value="7" literal="Python"/>
+    <eLiterals name="ArcaneSequential" value="7" literal="ArcaneSequential"/>
+    <eLiterals name="ArcaneAccelerator" value="8" literal="ArcaneAccelerator"/>
+    <eLiterals name="Python" value="9" literal="Python"/>
   </eClassifiers>
 </ecore:EPackage>

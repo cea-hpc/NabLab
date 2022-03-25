@@ -104,5 +104,5 @@ TargetVar:
 	key=ID '=' value=STRING ';';
 
 // Java must be the first enum literal to be the default value for interpreter
-enum TargetType: Java | CppSequential | StlThread | OpenMP | Kokkos | KokkosTeamThread | Arcane | Python;
+enum TargetType: Java | CppSequential | StlThread | OpenMP | Kokkos | KokkosTeamThread | Arcane | ArcaneSequential | ArcaneAccelerator | Python;
 	

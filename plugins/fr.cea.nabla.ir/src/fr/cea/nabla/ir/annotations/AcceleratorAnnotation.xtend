@@ -12,12 +12,13 @@ package fr.cea.nabla.ir.annotations
 import fr.cea.nabla.ir.ir.IrAnnotable
 import fr.cea.nabla.ir.ir.IrAnnotation
 
-class NabLabFileAnnotation
+
+class AcceleratorAnnotation
 {
-	public static val ANNOTATION_SOURCE = NabLabFileAnnotation.name
-	public static val ANNOTATION_URI_DETAIL = "uri"
-	public static val ANNOTATION_OFFSET_DETAIL = "offset"
-	public static val ANNOTATION_LENGTH_DETAIL = "length"
+	enum ViewDirection { In, Out }
+
+	public static val ANNOTATION_SOURCE = AcceleratorAnnotation.name
+	public static val ANNOTATION_VIEW_DIRECTION_DETAIL = "view_direction"
 
 	val IrAnnotation irAnnotation
 
@@ -25,22 +26,12 @@ class NabLabFileAnnotation
 	{
 		val o = object.annotations.findFirst[x | x.source == ANNOTATION_SOURCE]
 		if (o === null) null
-		else new NabLabFileAnnotation(o)
+		else new AcceleratorAnnotation(o)
 	}
 
-	def getUri()
+	def getViewDirection()
 	{
-		irAnnotation.details.get(ANNOTATION_URI_DETAIL)
-	}
-
-	def int getOffset()
-	{
-		Integer::parseInt(irAnnotation.details.get(ANNOTATION_OFFSET_DETAIL))
-	}
-
-	def int getLength()
-	{
-		Integer::parseInt(irAnnotation.details.get(ANNOTATION_LENGTH_DETAIL))
+		ViewDirection.valueOf(irAnnotation.details.get(ANNOTATION_VIEW_DIRECTION_DETAIL))
 	}
 
 	private new(IrAnnotation irAnnotation)

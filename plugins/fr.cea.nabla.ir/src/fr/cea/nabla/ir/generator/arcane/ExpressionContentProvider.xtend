@@ -36,7 +36,6 @@ import static fr.cea.nabla.ir.generator.arcane.TypeContentProvider.*
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
-import static extension fr.cea.nabla.ir.generator.arcane.VariableExtensions.*
 
 class ExpressionContentProvider
 {
@@ -173,7 +172,7 @@ class ExpressionContentProvider
 		switch t
 		{
 			case t.iteratorCounter: (t.eContainer as Iterator).index.name
-			Variable: t.codeName
+			Variable: ArcaneUtils.getCodeName(t)
 			default: t.name
 		}
 	}

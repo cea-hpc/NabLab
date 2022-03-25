@@ -88,6 +88,21 @@ class ArcaneUtils
 		}
 	}
 
+	static def getCodeName(ArgOrVar v)
+	{
+		if (v instanceof Variable)
+		{
+			if (v.option)
+				'options()->' + StringExtensions.separateWithUpperCase(v.name) + '()'
+			else if (v.global)
+				'm_' + v.name
+			else
+				v.name
+		}
+		else
+			v.name
+	}
+
 	static def getServices(IrModule it)
 	{
 		if (main && irRoot.modules.size > 1)

@@ -49,7 +49,7 @@ class ReplaceAffectations extends IrTransformationStep
 			// we know that left and right have same type
 			// For connectivityTypes, we generate loops on connectivities
 			val loop = createLoopWithIterator(affectation.left, affectation.right as ArgOrVarRef, (affectation.left.type as ConnectivityType).connectivities, 1, new ArrayList<ItemId>)
-			IrTransformationUtils.replace(affectation, #[loop])
+			EcoreUtil.replace(affectation, loop)
 		}
 
 		for (affectation : ir.eAllContents.filter(Affectation).toList)

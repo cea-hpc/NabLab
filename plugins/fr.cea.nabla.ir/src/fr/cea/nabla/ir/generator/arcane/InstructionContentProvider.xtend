@@ -10,8 +10,10 @@
 package fr.cea.nabla.ir.generator.arcane
 
 import fr.cea.nabla.ir.IrUtils
+import fr.cea.nabla.ir.annotations.AcceleratorAnnotation
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.Affectation
+import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityCall
 import fr.cea.nabla.ir.ir.Container
@@ -40,14 +42,16 @@ import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.arcane.ExpressionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.arcane.ItemIndexAndIdValueContentProvider.*
-import static extension fr.cea.nabla.ir.generator.arcane.VariableExtensions.*
 
 class InstructionContentProvider
 {
 	static def dispatch CharSequence getContent(VariableDeclaration it)
 	'''
-		«IF variable.type.baseTypeConstExpr»
-			«IF variable.const»const «ENDIF»«getTypeName(variable.type)» «variable.codeName»«getVariableDefaultValue(variable)»;
+		«val annot = AcceleratorAnnotation.tryToGet(it)»
+		«IF annot !== null»
+			auto «variable.name» = ax::view«annot.viewDirection.toString»(command, «ArcaneUtils.getCodeName((variable.defaultValue as ArgOrVarRef).target)»);
+		«ELSEIF variable.type.baseTypeConstExpr»
+			«IF variable.const»const «ENDIF»«getTypeName(variable.type)» «ArcaneUtils.getCodeName(variable)»«getVariableDefaultValue(variable)»;
 		«ELSE»
 			throw Exception("Not Yet Implemented");
 		«ENDIF»
@@ -56,9 +60,7 @@ class InstructionContentProvider
 	static def dispatch CharSequence getContent(InstructionBlock it)
 	'''
 		{
-			«FOR i : instructions»
-			«i.content»
-			«ENDFOR»
+			«innerContent»
 		}'''
 
 	static def dispatch CharSequence getContent(Affectation it)
@@ -85,7 +87,27 @@ class InstructionContentProvider
 		val b = iterationBlock
 		switch b
 		{
-			Iterator case Utils.isParallelLoop(it): getParallelLoopContent(b, body)
+			// TODO Accelerator loops for Interval (only Iterator for the moment)
+			Iterator case AcceleratorAnnotation.tryToGet(it) !== null:
+			'''
+				«val iterator = iterationBlock as Iterator»
+				«val c = iterator.container»
+				command << RUNCOMMAND_ENUMERATE(«c.itemType.name.toFirstUpper», «iterator.index.name», «c.accessor»)
+				{
+					«body.innerContent»
+				};
+			'''
+			Iterator case Utils.isParallelLoop(it):
+			'''
+				«val c = b.container»
+				arcaneParallelForeach(«c.accessor», [&](«c.itemType.name.toFirstUpper»VectorView view)
+				{
+					ENUMERATE_«c.itemType.name.toUpperCase»(«b.index.name», view)
+					{
+						«body.innerContent»
+					}
+				});
+			'''
 			Iterator case !Utils.isParallelLoop(it): getSequentialLoopContent(b, body)
 			Interval: getSequentialLoopContent(b, body)
 		}
@@ -140,6 +162,9 @@ class InstructionContentProvider
 	{
 		if (it instanceof InstructionBlock)
 			'''
+			«IF AcceleratorAnnotation.tryToGet(it) !== null»
+			auto command = makeCommand(m_default_queue);
+			«ENDIF»
 			«FOR i : instructions»
 			«i.content»
 			«ENDFOR»
@@ -151,18 +176,6 @@ class InstructionContentProvider
 	private static def getSetDefinitionContent(String setName, ConnectivityCall call)
 	'''
 		const auto «setName»(m_mesh->«call.accessor»);
-	'''
-
-	private static def getParallelLoopContent(Iterator iterator, Instruction loopBody)
-	'''
-		«val c = iterator.container»
-		arcaneParallelForeach(«c.accessor», [&](«c.itemType.name.toFirstUpper»VectorView view)
-		{
-			ENUMERATE_«c.itemType.name.toUpperCase»(«iterator.index.name», view)
-			{
-				«loopBody.innerContent»
-			}
-		});
 	'''
 
 	private static def getSequentialLoopContent(Iterator iterator, Instruction loopBody)

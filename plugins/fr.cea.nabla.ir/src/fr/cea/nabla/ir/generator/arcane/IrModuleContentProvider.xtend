@@ -139,8 +139,8 @@ class IrModuleContentProvider
 				«TypeContentProvider.getTypeName(v.type)» «v.codeName»;
 			«ENDIF»
 		«ENDFOR»
-
 		«IF AcceleratorAnnotation.tryToGet(it) !== null»
+
 			// accelerator queue
 			ax::RunQueue* m_default_queue = nullptr;
 		«ENDIF»

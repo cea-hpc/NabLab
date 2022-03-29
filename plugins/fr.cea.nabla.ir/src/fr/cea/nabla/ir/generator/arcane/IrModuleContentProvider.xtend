@@ -186,6 +186,11 @@ class IrModuleContentProvider
 		// initialization of mesh attributes
 		m_mesh = «irRoot.mesh.className»::createInstance(mesh());
 
+		«IF AcceleratorAnnotation.tryToGet(it) !== null»
+			// initialization of accelerator queue
+			m_default_queue = subDomain()->acceleratorMng()->defaultQueue();
+
+		«ENDIF»
 		// initialization of other attributes
 		«FOR v : variables.filter[!(constExpr || option)]»
 			«val resizeDims = TypeContentProvider.getResizeDims(v.type)»

@@ -695,7 +695,7 @@ void Glace2dModule::computeDt()
 void Glace2dModule::computeBoundaryConditions()
 {
 	const Real2x2 I{Real2{1.0, 0.0}, Real2{0.0, 1.0}};
-	arcaneParallelForeach(m_mesh->getGroup("TopNodes"), [&](NodeVectorView view)
+	arcaneParallelForeach(NodeGroup(m_mesh->getGroup("TopNodes")), [&](NodeVectorView view)
 	{
 		ENUMERATE_NODE(rTopNodes, view)
 		{
@@ -708,7 +708,7 @@ void Glace2dModule::computeBoundaryConditions()
 			m_Mt[rNodes] = Real2x2(glace2dfreefuncs::operatorAdd(Real2x2(glace2dfreefuncs::operatorMult(IcP, (Real2x2(glace2dfreefuncs::operatorMult(m_Ar[rNodes], IcP))))), Real2x2(glace2dfreefuncs::operatorMult(NxN, glace2dfreefuncs::trace(m_Ar[rNodes])))));
 		}
 	});
-	arcaneParallelForeach(m_mesh->getGroup("BottomNodes"), [&](NodeVectorView view)
+	arcaneParallelForeach(NodeGroup(m_mesh->getGroup("BottomNodes")), [&](NodeVectorView view)
 	{
 		ENUMERATE_NODE(rBottomNodes, view)
 		{
@@ -721,7 +721,7 @@ void Glace2dModule::computeBoundaryConditions()
 			m_Mt[rNodes] = Real2x2(glace2dfreefuncs::operatorAdd(Real2x2(glace2dfreefuncs::operatorMult(IcP, (Real2x2(glace2dfreefuncs::operatorMult(m_Ar[rNodes], IcP))))), Real2x2(glace2dfreefuncs::operatorMult(NxN, glace2dfreefuncs::trace(m_Ar[rNodes])))));
 		}
 	});
-	arcaneParallelForeach(m_mesh->getGroup("LeftNodes"), [&](NodeVectorView view)
+	arcaneParallelForeach(NodeGroup(m_mesh->getGroup("LeftNodes")), [&](NodeVectorView view)
 	{
 		ENUMERATE_NODE(rLeftNodes, view)
 		{
@@ -737,7 +737,7 @@ void Glace2dModule::computeBoundaryConditions()
 			m_bt[rNodes] = Real2{0.0, 0.0};
 		}
 	});
-	arcaneParallelForeach(m_mesh->getGroup("RightNodes"), [&](NodeVectorView view)
+	arcaneParallelForeach(NodeGroup(m_mesh->getGroup("RightNodes")), [&](NodeVectorView view)
 	{
 		ENUMERATE_NODE(rRightNodes, view)
 		{
@@ -762,7 +762,7 @@ void Glace2dModule::computeBoundaryConditions()
  */
 void Glace2dModule::computeBt()
 {
-	arcaneParallelForeach(m_mesh->getGroup("InnerNodes"), [&](NodeVectorView view)
+	arcaneParallelForeach(NodeGroup(m_mesh->getGroup("InnerNodes")), [&](NodeVectorView view)
 	{
 		ENUMERATE_NODE(rInnerNodes, view)
 		{
@@ -783,7 +783,7 @@ void Glace2dModule::computeBt()
  */
 void Glace2dModule::computeMt()
 {
-	arcaneParallelForeach(m_mesh->getGroup("InnerNodes"), [&](NodeVectorView view)
+	arcaneParallelForeach(NodeGroup(m_mesh->getGroup("InnerNodes")), [&](NodeVectorView view)
 	{
 		ENUMERATE_NODE(rInnerNodes, view)
 		{

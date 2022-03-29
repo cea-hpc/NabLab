@@ -11,6 +11,7 @@ package fr.cea.nabla.ir.generator.arcane
 
 import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.annotations.AcceleratorAnnotation
+import fr.cea.nabla.ir.annotations.AcceleratorAnnotation.ViewDirection
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.ArgOrVarRef
@@ -49,7 +50,15 @@ class InstructionContentProvider
 	'''
 		«val annot = AcceleratorAnnotation.tryToGet(it)»
 		«IF annot !== null»
-			auto «variable.name» = ax::view«annot.viewDirection.toString»(command, «ArcaneUtils.getCodeName((variable.defaultValue as ArgOrVarRef).target)»);
+			«IF variable.type.scalar»
+				«IF annot.viewDirection == ViewDirection.In»
+					auto «variable.name» = «ArcaneUtils.getCodeName((variable.defaultValue as ArgOrVarRef).target)»;
+				«ELSE»
+					fatal("Scalar out variables not yet implemented for accelerator loops");
+				«ENDIF»
+			«ELSE»
+				auto «variable.name» = ax::view«annot.viewDirection.toString»(command, «ArcaneUtils.getCodeName((variable.defaultValue as ArgOrVarRef).target)»);
+			«ENDIF»
 		«ELSEIF variable.type.baseTypeConstExpr»
 			«IF variable.const»const «ENDIF»«getTypeName(variable.type)» «ArcaneUtils.getCodeName(variable)»«getVariableDefaultValue(variable)»;
 		«ELSE»
@@ -228,7 +237,7 @@ class InstructionContentProvider
 	{
 		switch it
 		{
-			ConnectivityCall case group !== null: '''m_mesh->getGroup("«group»")'''
+			ConnectivityCall case group !== null: '''«connectivity.returnType.name.toFirstUpper»Group(m_mesh->getGroup("«group»"))'''
 			ConnectivityCall case args.empty && group === null: '''all«connectivity.name.toFirstUpper»()'''
 			ConnectivityCall: '''m_mesh->«accessor»'''
 			SetRef: target.name

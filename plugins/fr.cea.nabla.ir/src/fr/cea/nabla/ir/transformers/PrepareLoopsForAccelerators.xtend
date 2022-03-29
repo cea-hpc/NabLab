@@ -26,8 +26,6 @@ import org.eclipse.emf.ecore.util.EcoreUtil
  * For each loop candidate to Arcane accelerator API: 
  * - create a block and tag it,
  * - create local variables representing views.
- * 
- * TODO Manage reductions
  */
 class PrepareLoopsForAccelerators extends IrTransformationStep
 {
@@ -36,9 +34,11 @@ class PrepareLoopsForAccelerators extends IrTransformationStep
 		"Prepare loops for Arcane accelerator API"
 	}
 
-	// TODO Tag interval loops for accelerators (only Iterator loops for the moment)
 	override transform(IrRoot ir, (String)=>void traceNotifier)
 	{
+		// tag the IR
+		ir.annotations += createAcceleratorAnnotation()
+
 		for (m : ir.modules)
 		{
 			// tag the module

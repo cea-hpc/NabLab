@@ -26,8 +26,6 @@ import static extension fr.cea.nabla.ir.ContainerExtensions.*
 
 class IrUtils
 {
-	// @TODO Comments in .n file generated in code (Doxygen) and AXL description field
-
 	public static val NRepository = '.nablab'
 	public static val LastDumpOptionName = "lastDump"
 	public static val OutputPeriodOptionName = "outputPeriod"

@@ -12,8 +12,8 @@ import dace
 from dace.sdfg import SDFG
 
 @dace.program
-def _sumR0(a: dace.float64[1], b: dace.float64[1]):
-    return a[0] + b[0]
+def _sumR0(a: dace.scalar(dace.float64), b: dace.scalar(dace.float64)):
+    return a + b
 
 class SimpleMeshExample:
     stopTime = 1.0
@@ -78,7 +78,6 @@ class SimpleMeshExample:
     """
     @dace.program
     def _computeSum(nodesOfCells: dace.int64[nbCells, maxNodesOfCell], cst: dace.float64[nbNodes], nodes_sum: dace.float64[nbCells]):
-        reduction0 = dace.ndarray((1,), dtype=dace.float64)
         for jCells in dace.map[0:nbCells]:
             jId = jCells
             reduction0 = 0.0
@@ -154,11 +153,6 @@ class SimpleMeshExample:
             jId = jCells
             nodesOFCellJ = mesh.getNodesOfCell(jId)
             nodesOfCells = np.append(nodesOfCells, np.array([nodesOFCellJ]), axis=0)
-            
-        
-        reductions0 = [0.0]
-        reductions0 = np.array(reductions0)
-        reductions0.astype(np.float64)
                     
         self._computeCst(cst=self.cst) # @1.0
         print("cst = ", self.cst)

@@ -10,18 +10,29 @@
 package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.IrUtils
+import fr.cea.nabla.ir.annotations.NabLabFileAnnotation
+import fr.cea.nabla.ir.interpreter.Context
+import fr.cea.nabla.ir.interpreter.ExpressionInterpreter
+import fr.cea.nabla.ir.interpreter.NablaValue
 import fr.cea.nabla.ir.ir.Affectation
+import fr.cea.nabla.ir.ir.ArgOrVarRef
+import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.InternFunction
+import fr.cea.nabla.ir.ir.IrAnnotable
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.ItemIndexDefinition
 import fr.cea.nabla.ir.ir.Job
+import fr.cea.nabla.ir.ir.JobCaller
+import fr.cea.nabla.ir.ir.LinearAlgebraType
+import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.VariableDeclaration
 import java.util.Collection
 import java.util.List
 import java.util.Map
 import java.util.Set
+import java.util.logging.Logger
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Data
 
@@ -30,10 +41,6 @@ import static fr.cea.nabla.ir.IrUtils.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.JobExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
-import fr.cea.nabla.ir.ir.JobCaller
-import fr.cea.nabla.ir.annotations.NabLabFileAnnotation
-import fr.cea.nabla.ir.ir.IrAnnotable
-import fr.cea.nabla.ir.ir.LinearAlgebraType
 
 @Data
 class PythonEmbeddingContentProvider
@@ -331,116 +338,171 @@ class PythonEmbeddingContentProvider
 		}
 	'''
 	
-	def getPythonInitializeContent(IrModule it)
-	'''
-		void «className»::pythonInitialize()
+	def getAllArrayShapes(BaseType it)
+	{
+		// TODO configure context properly?
+		val context = new Context(Logger.getLogger(""), null, null)
+		val allSizes = sizes.map[s|ExpressionInterpreter.interprete(s, context)].toList
+		val result = newArrayList
+		result.add(allSizes)
+		for (var i = 1; i < allSizes.length; i++)
 		{
-			py::module_::import("sys").attr("path").attr("append")(pythonPath);
-			py::module_ «className.toLowerCase»Module = py::module_::import("«className.toLowerCase»");
-			«val globalContextName = '''«className»Context'''»
-			py::class_<«className»::«globalContextName»>(«className.toLowerCase»Module, "«globalContextName»")
-				«val vars = variables.filter[!constExpr]»
-				«FOR v : vars SEPARATOR '\n'».def_property_readonly("«v.name»", &«className»::«globalContextName»::get_«v.name»)«ENDFOR»;
-			«FOR job : jobs»
-			«val varDecs = job.eAllContents.filter(VariableDeclaration).filter[v|isUserDefined(v.variable)].toList»
-			«val jobContextName = '''«job.codeName.toFirstUpper»Context'''»
-			py::class_<«jobContextName», «className»::«globalContextName»>(«className.toLowerCase»Module, "«jobContextName»")«IF varDecs.empty»;«ENDIF»
-				«IF !varDecs.empty»
-				«FOR local : varDecs SEPARATOR '\n'».def_property_readonly("«local.variable.name»", &«jobContextName»::get_«local.variable.name»)«ENDFOR»;
-				«ENDIF»
-			«ENDFOR»
-			py::module_ monilogModule = py::module_::import("monilog");
-			monilogModule.def("_register_before", [&](py::str event, py::function monilogger)
+			val sublist = allSizes.subList(i, allSizes.length)
+			result.add(sublist)
+		}
+		return result
+	}
+	
+	def getCppTypeForShape(PrimitiveType t, List<NablaValue> sizes)
+	'''«t.getName()»Array«sizes.size»D<«sizes.join(',')»>'''
+	
+	def getPythonTypeForShape(PrimitiveType t, List<NablaValue> sizes)
+	'''«t.getName()»Array«FOR size : sizes SEPARATOR 'x'»«size»«ENDFOR»'''
+	
+	def getPythonInitializeContent(IrModule it)
+	{
+		'''
+			void «className»::pythonInitialize()
 			{
-				try
-				{
-					std::vector<int> indexes = executionEvents.at(event);
-					for (auto idx : indexes)
-					{
-						std::list<py::function> beforeMoniloggers = before[idx];
-						std::list<py::function>::iterator it = std::find(beforeMoniloggers.begin(), beforeMoniloggers.end(), monilogger);
-						if (it == beforeMoniloggers.end())
+				py::module_::import("sys").attr("path").attr("append")(pythonPath);
+				py::module_ «className.toLowerCase»Module = py::module_::import("«className.toLowerCase»");
+				«val globalContextName = '''«className»Context'''»
+				py::class_<«className»::«globalContextName»>(«className.toLowerCase»Module, "«globalContextName»")
+					«val vars = variables.filter[!constExpr]»
+					«FOR v : vars SEPARATOR '\n'».def_property_readonly("«v.name»", &«className»::«globalContextName»::get_«v.name»)«ENDFOR»;
+				«FOR job : jobs»
+				«val varDecs = job.eAllContents.filter(VariableDeclaration).filter[v|isUserDefined(v.variable)].toList»
+				«val jobContextName = '''«job.codeName.toFirstUpper»Context'''»
+				py::class_<«jobContextName», «className»::«globalContextName»>(«className.toLowerCase»Module, "«jobContextName»")«IF varDecs.empty»;«ENDIF»
+					«IF !varDecs.empty»
+					«FOR local : varDecs SEPARATOR '\n'».def_property_readonly("«local.variable.name»", &«jobContextName»::get_«local.variable.name»)«ENDFOR»;
+					«ENDIF»
+				«ENDFOR»
+				«FOR type : eAllContents
+						.filter(BaseType)
+						.filter[t|!t.sizes.empty && t.sizes
+							.forall[s|!(s instanceof ArgOrVarRef) && s.eAllContents.filter(ArgOrVarRef).empty]
+						]
+						.toMap([t|t.cppType], [t|t]).values»
+				«FOR shape : type.allArrayShapes»
+				py::class_<«getCppTypeForShape(type.primitive, shape)»>(«className.toLowerCase»Module, "«getPythonTypeForShape(type.primitive, shape)»")
+					.def("__getitem__", [](«getCppTypeForShape(type.primitive, shape)» &self, unsigned index)
 						{
-							before[idx].push_back(monilogger);
-							setFunctionPtr(idx, true);
-						}
-					}
-				}
-				catch (const std::out_of_range& e)
-				{
-					std::cout << "No event named " << event << " was found." << std::endl;
-				}
-			});
-			monilogModule.def("_register_after", [&](py::str event, py::function monilogger)
-			{
-				try
-				{
-					std::vector<int> indexes = executionEvents.at(event);
-					for (auto idx : indexes)
-					{
-						std::list<py::function> afterMoniloggers = after[idx];
-						std::list<py::function>::iterator it = std::find(afterMoniloggers.begin(), afterMoniloggers.end(), monilogger);
-						if (it == afterMoniloggers.end())
+							if (index < self.size()) {
+								return self[index];
+							} else {
+								throw std::out_of_range("list index out of range");
+							}
+						})
+					.def("__len__", [](«getCppTypeForShape(type.primitive, shape)» &self)
+						{ return self.size(); })
+					.def("__str__", [](«getCppTypeForShape(type.primitive, shape)» &self)
 						{
-							after[idx].push_back(monilogger);
-							setFunctionPtr(idx, true);
-						}
-					}
-				}
-				catch (const std::out_of_range& e)
+							std::ostringstream oss;
+							oss << self;
+							return oss.str();
+						})
+					.def("__repr__", [](«getCppTypeForShape(type.primitive, shape)» &self)
+						{
+							std::ostringstream oss;
+							oss << self;
+							return oss.str();
+						});
+				«ENDFOR»
+				«ENDFOR»
+				py::module_ monilogModule = py::module_::import("monilog");
+				monilogModule.def("_register_before", [&](py::str event, py::function monilogger)
 				{
-					std::cout << "No event named " << event << " was found." << std::endl;
-				}
-			});
-			monilogModule.def("_stop", [&](py::str event, py::function monilogger)
-			{
-				try
-				{
-					std::vector<int> indexes = executionEvents.at(event);
-					for (auto idx : indexes)
+					try
 					{
+						std::vector<int> indexes = executionEvents.at(event);
+						for (auto idx : indexes)
 						{
 							std::list<py::function> beforeMoniloggers = before[idx];
 							std::list<py::function>::iterator it = std::find(beforeMoniloggers.begin(), beforeMoniloggers.end(), monilogger);
-							if (it != beforeMoniloggers.end())
+							if (it == beforeMoniloggers.end())
 							{
-								beforeMoniloggers.erase(it);
-								before[idx] = beforeMoniloggers;
-								if (beforeMoniloggers.empty() && after[idx].empty())
-								{
-									setFunctionPtr(idx, false);
-								}
+								before[idx].push_back(monilogger);
+								setFunctionPtr(idx, true);
 							}
 						}
+					}
+					catch (const std::out_of_range& e)
+					{
+						std::cout << "No event named " << event << " was found." << std::endl;
+					}
+				});
+				monilogModule.def("_register_after", [&](py::str event, py::function monilogger)
+				{
+					try
+					{
+						std::vector<int> indexes = executionEvents.at(event);
+						for (auto idx : indexes)
 						{
 							std::list<py::function> afterMoniloggers = after[idx];
 							std::list<py::function>::iterator it = std::find(afterMoniloggers.begin(), afterMoniloggers.end(), monilogger);
-							if (it != afterMoniloggers.end())
+							if (it == afterMoniloggers.end())
 							{
-								afterMoniloggers.erase(it);
-								after[idx] = afterMoniloggers;
-								if (before[idx].empty() && afterMoniloggers.empty())
+								after[idx].push_back(monilogger);
+								setFunctionPtr(idx, true);
+							}
+						}
+					}
+					catch (const std::out_of_range& e)
+					{
+						std::cout << "No event named " << event << " was found." << std::endl;
+					}
+				});
+				monilogModule.def("_stop", [&](py::str event, py::function monilogger)
+				{
+					try
+					{
+						std::vector<int> indexes = executionEvents.at(event);
+						for (auto idx : indexes)
+						{
+							{
+								std::list<py::function> beforeMoniloggers = before[idx];
+								std::list<py::function>::iterator it = std::find(beforeMoniloggers.begin(), beforeMoniloggers.end(), monilogger);
+								if (it != beforeMoniloggers.end())
 								{
-									switch (idx)
+									beforeMoniloggers.erase(it);
+									before[idx] = beforeMoniloggers;
+									if (beforeMoniloggers.empty() && after[idx].empty())
 									{
 										setFunctionPtr(idx, false);
 									}
 								}
 							}
+							{
+								std::list<py::function> afterMoniloggers = after[idx];
+								std::list<py::function>::iterator it = std::find(afterMoniloggers.begin(), afterMoniloggers.end(), monilogger);
+								if (it != afterMoniloggers.end())
+								{
+									afterMoniloggers.erase(it);
+									after[idx] = afterMoniloggers;
+									if (before[idx].empty() && afterMoniloggers.empty())
+									{
+										switch (idx)
+										{
+											setFunctionPtr(idx, false);
+										}
+									}
+								}
+							}
 						}
 					}
-				}
-				catch (const std::out_of_range& e)
+					catch (const std::out_of_range& e)
+					{
+						std::cout << "No event named " << event << " was found." << std::endl;
+					}
+				});
+				if (pythonFile != "")
 				{
-					std::cout << "No event named " << event << " was found." << std::endl;
+					py::module_ pScript = py::module_::import(pythonFile.c_str());
 				}
-			});
-			if (pythonFile != "")
-			{
-				py::module_ pScript = py::module_::import(pythonFile.c_str());
 			}
-		}
-	'''
+		'''
+	}
 	
 	def getBeforeInstrumentation(int event, String scope)
 	'''

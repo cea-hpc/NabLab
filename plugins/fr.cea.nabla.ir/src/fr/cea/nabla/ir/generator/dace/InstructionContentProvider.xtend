@@ -26,13 +26,13 @@ import fr.cea.nabla.ir.ir.SetDefinition
 import fr.cea.nabla.ir.ir.VariableDeclaration
 import fr.cea.nabla.ir.ir.While
 
-import static fr.cea.nabla.ir.generator.python.TypeContentProvider.*
+import static fr.cea.nabla.ir.generator.dace.TypeContentProvider.*
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
-import static extension fr.cea.nabla.ir.generator.python.ExpressionContentProvider.*
-import static extension fr.cea.nabla.ir.generator.python.ItemIndexAndIdValueContentProvider.*
+import static extension fr.cea.nabla.ir.generator.dace.ExpressionContentProvider.*
+import static extension fr.cea.nabla.ir.generator.dace.ItemIndexAndIdValueContentProvider.*
 
 class InstructionContentProvider 
 {
@@ -139,7 +139,7 @@ class InstructionContentProvider
 
 	private static def dispatch getNbElems(Iterator it)
 	{
-		PythonGeneratorUtils.getNbElemsVar(container)
+		DaceGeneratorUtils.getNbElemsVar(container)
 	}
 
 	private static def dispatch getNbElems(Interval it)

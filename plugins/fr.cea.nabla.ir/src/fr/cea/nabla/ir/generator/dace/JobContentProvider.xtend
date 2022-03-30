@@ -16,9 +16,11 @@ import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Variable
 
+import static fr.cea.nabla.ir.generator.dace.TypeContentProvider.*
+
 import static extension fr.cea.nabla.ir.JobCallerExtensions.*
-import static extension fr.cea.nabla.ir.generator.python.ExpressionContentProvider.*
-import static extension fr.cea.nabla.ir.generator.python.InstructionContentProvider.*
+import static extension fr.cea.nabla.ir.generator.dace.ExpressionContentProvider.*
+import static extension fr.cea.nabla.ir.generator.dace.InstructionContentProvider.*
 
 class JobContentProvider 
 {
@@ -29,7 +31,8 @@ class JobContentProvider
 		 In variables: «FOR v : inVars.sortBy[name] SEPARATOR ', '»«v.getName»«ENDFOR»
 		 Out variables: «FOR v : outVars.sortBy[name] SEPARATOR ', '»«v.getName»«ENDFOR»
 		"""
-		def _«Utils.getCodeName(it)»(self):
+		@dace.program
+		def _«Utils.getCodeName(it)»(«FOR iv : inVars + outVars SEPARATOR ', '»«Utils.getCodeName(iv)»: «getDaceType(iv.type)»«ENDFOR»):
 			«innerContent»
 	'''
 
@@ -62,7 +65,7 @@ class JobContentProvider
 			«ENDIF»
 
 			«FOR j : calls»
-				«PythonGeneratorUtils.getCallName(j)»() # @«j.at»
+				«DaceGeneratorUtils.getCallName(j)»() # @«j.at»
 			«ENDFOR»
 
 			# Evaluate loop condition with variables at time n

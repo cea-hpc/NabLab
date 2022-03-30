@@ -17,11 +17,33 @@ import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.PrimitiveType
 
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
-import static extension fr.cea.nabla.ir.generator.python.ExpressionContentProvider.*
-import static extension fr.cea.nabla.ir.generator.python.PythonGeneratorUtils.*
+import static extension fr.cea.nabla.ir.generator.dace.ExpressionContentProvider.*
+import static extension fr.cea.nabla.ir.generator.dace.DaceGeneratorUtils.*
+import fr.cea.nabla.ir.ContainerExtensions
 
 class TypeContentProvider
 {
+	static def getDaceType(IrType it)
+	{
+		switch it
+		{
+			BaseType case scalar: '''dace.scalar(«getDaceType(primitive)»)'''
+			BaseType: '''«getDaceType(primitive)»[«FOR s : intSizes SEPARATOR ', '»«s»«ENDFOR»]'''
+			ConnectivityType: '''«getDaceType(primitive)»[«FOR s : connectivities.map[x | ContainerExtensions.getNbElemsVar(x)] + base.intSizes SEPARATOR ', '»«s»«ENDFOR»]'''
+			LinearAlgebraType: throw new RuntimeException("Not yet implemented")
+		}
+	}
+
+	static def getDaceType(PrimitiveType t)
+	{
+		switch t
+		{
+			case BOOL: "dace.bool"
+			case INT: "dace.int64"
+			case REAL: "dace.float64"
+		}
+	}
+
 	static def CharSequence getPythonAllocation(IrType it, String name)
 	{
 		switch it

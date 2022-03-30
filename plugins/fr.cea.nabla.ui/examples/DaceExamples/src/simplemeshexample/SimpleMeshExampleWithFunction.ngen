@@ -15,12 +15,13 @@ VtkOutput
 	outputVariables = simpleMeshExampleWithFunction.nodes_sum as "sum";
 }
 
-Java
-{
-	outputPath = "/DaceExamples/src-gen-java";
-}
-
 Python
 {
 	outputPath = "/DaceExamples/src-gen-python3";
+}
+
+Dace
+{
+	outputPath = "/DaceExamples/src-gen-dace";
+	extension CartesianMesh2D providedBy CartesianMesh2DPython;
 }

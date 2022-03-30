@@ -12,7 +12,7 @@ package fr.cea.nabla.ir.generator.dace
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.Expression
 
-import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
+import static extension fr.cea.nabla.ir.generator.dace.ExpressionContentProvider.*
 
 class JsonContentProvider
 {

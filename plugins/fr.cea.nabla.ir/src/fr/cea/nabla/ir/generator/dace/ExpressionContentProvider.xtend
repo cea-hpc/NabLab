@@ -33,7 +33,7 @@ import fr.cea.nabla.ir.ir.VectorConstant
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
-import static extension fr.cea.nabla.ir.generator.python.TypeContentProvider.*
+import static extension fr.cea.nabla.ir.generator.dace.TypeContentProvider.*
 
 class ExpressionContentProvider
 {
@@ -94,7 +94,7 @@ class ExpressionContentProvider
 		if (call.connectivity.multiple)
 		{
 			if (call.args.empty)
-				PythonGeneratorUtils.getNbElemsVar(call.connectivity)
+				DaceGeneratorUtils.getNbElemsVar(call.connectivity)
 			else
 				'''len(mesh.«call.accessor»)'''
 		}
@@ -103,7 +103,7 @@ class ExpressionContentProvider
 	}
 
 	static def dispatch CharSequence getContent(FunctionCall it)
-	'''«PythonGeneratorUtils.getCodeName(function)»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
+	'''«DaceGeneratorUtils.getCodeName(function)»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
 
 	static def dispatch CharSequence getContent(ArgOrVarRef it)
 	{
@@ -128,7 +128,7 @@ class ExpressionContentProvider
 			val argOrVarRefModule = IrUtils.getContainerOfType(it, IrModule)
 			val varModule = IrUtils.getContainerOfType(target, IrModule)
 			if (argOrVarRefModule === varModule)
-				PythonGeneratorUtils.getCodeName(target)
+				DaceGeneratorUtils.getCodeName(target)
 			else
 				'self._mainModule.' + target.name
 		}

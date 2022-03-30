@@ -16,7 +16,6 @@ class SimpleMeshExample:
 		self.__mesh = mesh
 		self.__nbNodes = mesh.nbNodes
 		self.__nbCells = mesh.nbCells
-		self.__maxNbNodesOfCell = mesh.MaxNbNodesOfCell
 
 	def jsonInit(self, jsonContent):
 		self.__outputPath = jsonContent["outputPath"]
@@ -165,9 +164,7 @@ if __name__ == '__main__':
 
 		# Module instanciation
 		simpleMeshExample = SimpleMeshExample(mesh)
-		simpleMeshExampleData = data["simpleMeshExample"]
-		if (simpleMeshExampleData):
-			simpleMeshExample.jsonInit(simpleMeshExampleData)
+		simpleMeshExample.jsonInit(data["simpleMeshExample"])
 
 		# Start simulation
 		simpleMeshExample.simulate()

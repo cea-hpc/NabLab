@@ -37,7 +37,7 @@ class SimpleMeshExampleWithFunction:
 	 In variables: 
 	 Out variables: cst
 	"""
-	def _computeCst(self):
+	def _computeCst(cst: dace.float64[self.__nbNodes]):
 		for rNodes in range(self.__nbNodes):
 			self.cst[rNodes] = self.__addZero(1)
 
@@ -46,7 +46,7 @@ class SimpleMeshExampleWithFunction:
 	 In variables: deltat, t_n
 	 Out variables: t_nplus1
 	"""
-	def _computeTn(self):
+	def _computeTn(t_n: dace.scalar(dace.float64), deltat: dace.scalar(dace.float64), t_nplus1: dace.scalar(dace.float64)):
 		self.t_nplus1 = self.t_n + self.deltat
 
 	"""
@@ -54,7 +54,7 @@ class SimpleMeshExampleWithFunction:
 	 In variables: 
 	 Out variables: t_n0
 	"""
-	def _initTime(self):
+	def _initTime(t_n0: dace.scalar(dace.float64)):
 		self.t_n0 = 0.0
 
 	"""
@@ -62,7 +62,7 @@ class SimpleMeshExampleWithFunction:
 	 In variables: cst
 	 Out variables: nodes_sum
 	"""
-	def _computeSum(self):
+	def _computeSum(cst: dace.float64[self.__nbNodes], nodes_sum: dace.float64[self.__nbCells]):
 		for jCells in range(self.__nbCells):
 			jId = jCells
 			reduction0 = 0.0
@@ -79,7 +79,7 @@ class SimpleMeshExampleWithFunction:
 	 In variables: t_n0
 	 Out variables: t_n
 	"""
-	def _setUpTimeLoopN(self):
+	def _setUpTimeLoopN(t_n0: dace.scalar(dace.float64), t_n: dace.scalar(dace.float64)):
 		self.t_n = self.t_n0
 
 	"""
@@ -87,7 +87,7 @@ class SimpleMeshExampleWithFunction:
 	 In variables: nodes_sum
 	 Out variables: 
 	"""
-	def _assertSum(self):
+	def _assertSum(nodes_sum: dace.float64[self.__nbCells]):
 		for jCells in range(self.__nbCells):
 			b = self.__assertEquals1(4.0 * jCells, self.nodes_sum[jCells])
 
@@ -96,7 +96,7 @@ class SimpleMeshExampleWithFunction:
 	 In variables: lastDump, maxIterations, n, outputPeriod, t_n
 	 Out variables: t_nplus1
 	"""
-	def _executeTimeLoopN(self):
+	def _executeTimeLoopN(t_n: dace.scalar(dace.float64), n: dace.scalar(dace.int64), maxIterations: dace.scalar(dace.int64), lastDump: dace.scalar(dace.int64), outputPeriod: dace.scalar(dace.int64), t_nplus1: dace.scalar(dace.float64)):
 		self.n = 0
 		self.t_n = 0.0
 		continueLoop = True

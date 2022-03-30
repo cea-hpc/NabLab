@@ -27,7 +27,7 @@ import fr.cea.nabla.ir.ir.Job
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 
-class PythonGeneratorUtils
+class DaceGeneratorUtils
 {
 	static val SysFunction = #["min", "max", "abs"]
 

@@ -9,6 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.dace
 
+import fr.cea.nabla.ir.ContainerExtensions
 import fr.cea.nabla.ir.IrTypeExtensions
 import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.generator.Utils
@@ -19,16 +20,16 @@ import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.Variable
 
-import static fr.cea.nabla.ir.generator.python.JsonContentProvider.*
-import static fr.cea.nabla.ir.generator.python.TypeContentProvider.*
+import static fr.cea.nabla.ir.generator.dace.JsonContentProvider.*
+import static fr.cea.nabla.ir.generator.dace.TypeContentProvider.*
 
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
-import static extension fr.cea.nabla.ir.generator.python.ExpressionContentProvider.*
-import static extension fr.cea.nabla.ir.generator.python.FunctionContentProvider.*
-import static extension fr.cea.nabla.ir.generator.python.JobContentProvider.*
+import static extension fr.cea.nabla.ir.generator.dace.ExpressionContentProvider.*
+import static extension fr.cea.nabla.ir.generator.dace.FunctionContentProvider.*
+import static extension fr.cea.nabla.ir.generator.dace.JobContentProvider.*
 
 class IrModuleContentProvider
 {
@@ -65,14 +66,22 @@ class IrModuleContentProvider
 		«FOR v : variables.filter[constExpr]»
 			«v.name» = «v.defaultValue.content»
 		«ENDFOR»
+		
+		# dace symbols for connectivities
+		«FOR a: neededConnectivityAttributes»
+			«ContainerExtensions.getNbElemsVar(a)» = dace.symbol("«ContainerExtensions.getNbElemsVar(a)»")
+		«ENDFOR»
+		«FOR a : neededGroupAttributes»
+			«ContainerExtensions.getNbElemsVar(a)» = dace.symbol("«ContainerExtensions.getNbElemsVar(a)»")
+		«ENDFOR»
 
 		def __init__(self, mesh):
 			self.__mesh = mesh
 			«FOR a: neededConnectivityAttributes»
-				«PythonGeneratorUtils.getNbElemsVar(a)» = mesh.nb«a.name.toFirstUpper»
+				«DaceGeneratorUtils.getNbElemsVar(a)» = mesh.nb«a.name.toFirstUpper»
 			«ENDFOR»
 			«FOR a : neededGroupAttributes»
-				self.__«PythonGeneratorUtils.getNbElemsVar(a)» = len(mesh.getGroup("«a»"))
+				self.__«DaceGeneratorUtils.getNbElemsVar(a)» = len(mesh.getGroup("«a»"))
 			«ENDFOR»
 
 		def jsonInit(self, jsonContent):
@@ -83,12 +92,12 @@ class IrModuleContentProvider
 			«ENDIF»
 			«FOR v : variables.filter[!constExpr]»
 				«IF !v.type.scalar»
-					«PythonGeneratorUtils.getCodeName(v)»«getPythonAllocation(v.type, v.name)»
+					«DaceGeneratorUtils.getCodeName(v)»«getPythonAllocation(v.type, v.name)»
 				«ENDIF»
 				«IF v.option»
 					«getJsonContent(v.name, v.type as BaseType)»
 				«ELSEIF v.defaultValue !== null»
-					«PythonGeneratorUtils.getCodeName(v)» = «getContent(v.defaultValue)»
+					«DaceGeneratorUtils.getCodeName(v)» = «getContent(v.defaultValue)»
 				«ENDIF»
 			«ENDFOR»
 			«FOR v : externalProviders»
@@ -125,7 +134,7 @@ class IrModuleContentProvider
 			def simulate(self):
 				print("Start execution of «name»")
 				«FOR j : irRoot.main.calls»
-					«PythonGeneratorUtils.getCallName(j)»() # @«j.at»
+					«DaceGeneratorUtils.getCallName(j)»() # @«j.at»
 				«ENDFOR»
 				print("End of execution of «name»")
 			«FOR addM : irRoot.modules.filter[x | !x.main]»
@@ -166,7 +175,7 @@ class IrModuleContentProvider
 			def __dumpVariables(self, iteration):
 				if not self.__writer.disabled:
 					quads = mesh.geometry.quads
-					self.__writer.startVtpFile(iteration, «PythonGeneratorUtils.getCodeName(irRoot.currentTimeVariable)», «PythonGeneratorUtils.getCodeName(irRoot.nodeCoordVariable)», quads)
+					self.__writer.startVtpFile(iteration, «DaceGeneratorUtils.getCodeName(irRoot.currentTimeVariable)», «DaceGeneratorUtils.getCodeName(irRoot.nodeCoordVariable)», quads)
 					self.__writer.openNodeData()
 					«val outputVarsByConnectivities = irRoot.postProcessing.outputVariables.groupBy(x | x.support.name)»
 					«val nodeVariables = outputVarsByConnectivities.get("node")»
@@ -191,7 +200,7 @@ class IrModuleContentProvider
 					«ENDIF»
 					self.__writer.closeCellData()
 					self.__writer.closeVtpFile()
-					«PythonGeneratorUtils.getCodeName(postProcessing.lastDumpVariable)» = «PythonGeneratorUtils.getCodeName(postProcessing.periodReference)»
+					«DaceGeneratorUtils.getCodeName(postProcessing.lastDumpVariable)» = «DaceGeneratorUtils.getCodeName(postProcessing.periodReference)»
 		«ENDIF»
 	«IF main && hasLevelDB»
 
@@ -285,8 +294,8 @@ class IrModuleContentProvider
 		val t = v.type
 		switch t
 		{
-			ConnectivityType: '''«PythonGeneratorUtils.getCodeName(v)»[i]'''
-			LinearAlgebraType: '''«PythonGeneratorUtils.getCodeName(v)».getValue(i)'''
+			ConnectivityType: '''«DaceGeneratorUtils.getCodeName(v)»[i]'''
+			LinearAlgebraType: '''«DaceGeneratorUtils.getCodeName(v)».getValue(i)'''
 			default: throw new RuntimeException("Unexpected type: " + t.class.name)
 		}
 	}

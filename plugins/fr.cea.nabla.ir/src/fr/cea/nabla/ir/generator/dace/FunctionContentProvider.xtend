@@ -17,18 +17,21 @@ import fr.cea.nabla.ir.ir.IrType
 import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.Variable
 
-import static extension fr.cea.nabla.ir.generator.python.InstructionContentProvider.*
+import static fr.cea.nabla.ir.generator.dace.TypeContentProvider.*
+
+import static extension fr.cea.nabla.ir.generator.dace.InstructionContentProvider.*
 
 class FunctionContentProvider
 {
 	static def getContent(InternFunction it)
 	'''
+		@dace.program
 		def __«getHeaderContent»:
 			«body.innerContent»
 	'''
 
 	static def getHeaderContent(Function it)
-	'''«name»(self«FOR a : inArgs», «a.name»«ENDFOR»)'''
+	'''«name»(«FOR a : inArgs SEPARATOR ', '»«a.name»: «getDaceType(a.type)»«ENDFOR»)'''
 
 	static def getSizeOf(Function it, Variable v)
 	{

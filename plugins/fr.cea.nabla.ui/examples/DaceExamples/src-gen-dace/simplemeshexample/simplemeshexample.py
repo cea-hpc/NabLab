@@ -7,10 +7,14 @@ import numpy as np
 from cartesianmesh2d import CartesianMesh2D
 from pvdfilewriter2d import PvdFileWriter2D
 
-class SimpleMeshExampleWithFunction:
+class SimpleMeshExample:
 	stopTime = 1.0
 	maxIterations = 1
 	deltat = 0.001
+	
+	# dace symbols for connectivities
+	nbNodes = dace.symbol("nbNodes")
+	nbCells = dace.symbol("nbCells")
 
 	def __init__(self, mesh):
 		self.__mesh = mesh
@@ -19,7 +23,7 @@ class SimpleMeshExampleWithFunction:
 
 	def jsonInit(self, jsonContent):
 		self.__outputPath = jsonContent["outputPath"]
-		self.__writer = PvdFileWriter2D("SimpleMeshExampleWithFunction", self.__outputPath)
+		self.__writer = PvdFileWriter2D("SimpleMeshExample", self.__outputPath)
 		self.outputPeriod = jsonContent["outputPeriod"]
 		self.lastDump = -sys.maxsize - 1
 		self.n = 0
@@ -37,16 +41,18 @@ class SimpleMeshExampleWithFunction:
 	 In variables: 
 	 Out variables: cst
 	"""
-	def _computeCst(self):
+	@dace.program
+	def _computeCst(cst: dace.float64[nbNodes]):
 		for rNodes in range(self.__nbNodes):
-			self.cst[rNodes] = self.__addZero(1)
+			self.cst[rNodes] = 1.0
 
 	"""
 	 Job computeTn called @1.0 in executeTimeLoopN method.
 	 In variables: deltat, t_n
 	 Out variables: t_nplus1
 	"""
-	def _computeTn(self):
+	@dace.program
+	def _computeTn(t_n: dace.scalar(dace.float64), deltat: dace.scalar(dace.float64), t_nplus1: dace.scalar(dace.float64)):
 		self.t_nplus1 = self.t_n + self.deltat
 
 	"""
@@ -54,7 +60,8 @@ class SimpleMeshExampleWithFunction:
 	 In variables: 
 	 Out variables: t_n0
 	"""
-	def _initTime(self):
+	@dace.program
+	def _initTime(t_n0: dace.scalar(dace.float64)):
 		self.t_n0 = 0.0
 
 	"""
@@ -62,7 +69,8 @@ class SimpleMeshExampleWithFunction:
 	 In variables: cst
 	 Out variables: nodes_sum
 	"""
-	def _computeSum(self):
+	@dace.program
+	def _computeSum(cst: dace.float64[nbNodes], nodes_sum: dace.float64[nbCells]):
 		for jCells in range(self.__nbCells):
 			jId = jCells
 			reduction0 = 0.0
@@ -72,14 +80,15 @@ class SimpleMeshExampleWithFunction:
 				rId = nodesOfCellJ[rNodesOfCellJ]
 				rNodes = rId
 				reduction0 = self.__sumR0(reduction0, self.cst[rNodes] * jCells)
-			self.nodes_sum[jCells] = reduction0 + self.__addZero(0)
+			self.nodes_sum[jCells] = reduction0
 
 	"""
 	 Job setUpTimeLoopN called @2.0 in simulate method.
 	 In variables: t_n0
 	 Out variables: t_n
 	"""
-	def _setUpTimeLoopN(self):
+	@dace.program
+	def _setUpTimeLoopN(t_n0: dace.scalar(dace.float64), t_n: dace.scalar(dace.float64)):
 		self.t_n = self.t_n0
 
 	"""
@@ -87,7 +96,8 @@ class SimpleMeshExampleWithFunction:
 	 In variables: nodes_sum
 	 Out variables: 
 	"""
-	def _assertSum(self):
+	@dace.program
+	def _assertSum(nodes_sum: dace.float64[nbCells]):
 		for jCells in range(self.__nbCells):
 			b = self.__assertEquals1(4.0 * jCells, self.nodes_sum[jCells])
 
@@ -96,7 +106,8 @@ class SimpleMeshExampleWithFunction:
 	 In variables: lastDump, maxIterations, n, outputPeriod, t_n
 	 Out variables: t_nplus1
 	"""
-	def _executeTimeLoopN(self):
+	@dace.program
+	def _executeTimeLoopN(t_n: dace.scalar(dace.float64), n: dace.scalar(dace.int64), maxIterations: dace.scalar(dace.int64), lastDump: dace.scalar(dace.int64), outputPeriod: dace.scalar(dace.int64), t_nplus1: dace.scalar(dace.float64)):
 		self.n = 0
 		self.t_n = 0.0
 		continueLoop = True
@@ -116,27 +127,26 @@ class SimpleMeshExampleWithFunction:
 		print("FINAL TIME: %5.5f - deltat: %5.5f\n" % (self.t_n, self.deltat))
 		self.__dumpVariables(self.n+1);
 
-	def __addZero(self, a):
-		return a + 0.0
-
-	def __assertEquals1(self, expected, actual):
+	@dace.program
+	def __assertEquals1(expected: dace.scalar(dace.float64), actual: dace.scalar(dace.float64)):
 		ret = (expected == actual)
 		if not ret:
 			raise Exception("** Assertion failed");
 		return ret
 
-	def __sumR0(self, a, b):
+	@dace.program
+	def __sumR0(a: dace.scalar(dace.float64), b: dace.scalar(dace.float64)):
 		return a + b
 
 	def simulate(self):
-		print("Start execution of simpleMeshExampleWithFunction")
+		print("Start execution of simpleMeshExample")
 		self._computeCst() # @1.0
 		self._initTime() # @1.0
 		self._computeSum() # @2.0
 		self._setUpTimeLoopN() # @2.0
 		self._assertSum() # @3.0
 		self._executeTimeLoopN() # @3.0
-		print("End of execution of simpleMeshExampleWithFunction")
+		print("End of execution of simpleMeshExample")
 
 	def __dumpVariables(self, iteration):
 		if not self.__writer.disabled:
@@ -166,12 +176,12 @@ if __name__ == '__main__':
 		mesh.jsonInit(data["mesh"])
 
 		# Module instanciation
-		simpleMeshExampleWithFunction = SimpleMeshExampleWithFunction(mesh)
-		simpleMeshExampleWithFunction.jsonInit(data["simpleMeshExampleWithFunction"])
+		simpleMeshExample = SimpleMeshExample(mesh)
+		simpleMeshExample.jsonInit(data["simpleMeshExample"])
 
 		# Start simulation
-		simpleMeshExampleWithFunction.simulate()
+		simpleMeshExample.simulate()
 	else:
 		print("[ERROR] Wrong number of arguments: expected 1, actual " + str(len(args)), file=sys.stderr)
-		print("        Expecting user data file name, for example SimpleMeshExampleWithFunction.json", file=sys.stderr)
+		print("        Expecting user data file name, for example SimpleMeshExample.json", file=sys.stderr)
 		exit(1)

@@ -67,11 +67,6 @@
         "category": "NabLab"
       },
       {
-        "command": "nablabweb.showJobsGraphView",
-        "title": "Display Jobs Graph View",
-        "category": "NabLab"
-      },
-      {
         "command": "nablabweb.generateNablagen.proxy",
         "title": "Generate Nablagen",
         "category": "NabLab"

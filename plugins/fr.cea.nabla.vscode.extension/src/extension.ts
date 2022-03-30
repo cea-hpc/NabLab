@@ -96,14 +96,6 @@ export function activate(context: ExtensionContext) {
   );
   context.subscriptions.push(disposableLatexPanel);
 
-  const disposableJobsGraphPanel = commands.registerCommand(
-    "nablabweb.showJobsGraphView",
-    () => {
-      JobsGraphWebViewLoader.createOrShow(context.extensionPath, "");
-    }
-  );
-  context.subscriptions.push(disposableJobsGraphPanel);
-
   window.onDidChangeTextEditorSelection((e) => {
     if (e?.textEditor?.document?.languageId === "nabla") {
       const activeEditorFileURI = e.textEditor.document.uri;

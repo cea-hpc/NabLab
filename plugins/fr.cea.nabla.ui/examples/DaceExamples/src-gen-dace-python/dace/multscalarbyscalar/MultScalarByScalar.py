@@ -13,10 +13,12 @@ import dace.config
 valOutput = np.full((1), 0)
 valOutput = np.array(valOutput)
 valOutput.astype(np.int64)
+
 valInput = 4
 valInput = [valInput]
 valInput = np.array(valInput)
 valInput.astype(np.int64)
+
 
 mysdfg = SDFG('MultScalarByScalar')
 
@@ -34,7 +36,7 @@ AddJob.add_memlet_path(AddJob_tasklet, map_exit, AddJob.add_write('AddJob_valOut
 
 
 
-mysdfg(AddJob_valInput=valInput,AddJob_valOutput=valOutput)
 
-print(valOutput)
+mysdfg(AddJob_valOutput=valOutput, AddJob_valInput=valInput)
+
 mysdfg.view('MultScalarByScalar')

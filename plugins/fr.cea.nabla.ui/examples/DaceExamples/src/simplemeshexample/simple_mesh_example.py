@@ -54,6 +54,7 @@ class SimpleMeshExample:
             jId = jCells
             reduction0 = 0.0
             nodesOfCellJ = mesh.getNodesOfCell(jId)
+            print("nodesOfCellJ = ", nodesOfCellJ)
             nbNodesOfCellJ = len(nodesOfCellJ)
             for rNodesOfCellJ in range(nbNodesOfCellJ):
                 rId = nodesOfCellJ[rNodesOfCellJ]

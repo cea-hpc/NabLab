@@ -7,8 +7,8 @@
 	},
 	"mesh":
 	{
-		"nbXQuads":4,
-		"nbYQuads":3,
+		"nbXQuads":3,
+		"nbYQuads":2,
 		"xSize":0.01,
 		"ySize":0.01
 	}

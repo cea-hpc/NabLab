@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -9,37 +9,39 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.arcane
 
+import fr.cea.nabla.ir.ir.ItemIdValue
 import fr.cea.nabla.ir.ir.ItemIdValueContainer
 import fr.cea.nabla.ir.ir.ItemIdValueIterator
 import fr.cea.nabla.ir.ir.ItemIndexValue
 
-import static extension fr.cea.nabla.ir.generator.arcane.ContainerExtensions.*
+import static extension fr.cea.nabla.ir.ContainerExtensions.*
 
 class ItemIndexAndIdValueContentProvider 
 {
-	static def dispatch getContent(ItemIndexValue it)
+	static def getContent(ItemIndexValue it)
 	{
-		if (container.connectivity.indexEqualId) 
+		if (container.indexEqualId) 
 			'''«id.name»'''
 		else 
-			'''indexOf(m_mesh->«container.accessor», «id.name»)'''
+			'''m_mesh->indexOf(m_mesh->«container.accessor», «id.name»)'''
 	}
 
-	static def dispatch getContent(ItemIdValueIterator it)
+	static def getContent(ItemIdValue it)
 	{
-		if (iterator.container.connectivityCall.args.empty) '''*«iterator.index.name»'''
-		else iterator.container.uniqueName + '[' + getIndexValue + ']'
-	}
-
-	static def dispatch getContent(ItemIdValueContainer it)
-	{
-		container.content
+		switch it
+		{
+			ItemIdValueIterator:
+				if (iterator.container.connectivityCall.args.empty) '''«iterator.index.name».asItemLocalId()'''
+				else iterator.container.uniqueName + '[' + getIndexValue + ']'
+			ItemIdValueContainer:
+				getContent(container, "m_mesh->")
+		}
 	}
 
 	private static def getIndexValue(ItemIdValueIterator it)
 	{
 		val index = iterator.index.name
-		val nbElems = iterator.container.connectivityCall.nbElemsVar
+		val nbElems = iterator.container.nbElemsVar
 		switch shift
 		{
 			case shift < 0: '''(«index»«shift»+«nbElems»)%«nbElems»'''

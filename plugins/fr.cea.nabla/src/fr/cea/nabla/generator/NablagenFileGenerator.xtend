@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -10,7 +10,6 @@
 package fr.cea.nabla.generator
 
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
-import fr.cea.nabla.generator.StandaloneGeneratorBase
 import fr.cea.nabla.nabla.NablaExtension
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.NablaRoot
@@ -131,6 +130,18 @@ class NablagenFileGenerator extends StandaloneGeneratorBase
 			outputPath = "/«projectName»/src-gen-cpp/«CppGenFoldersByTarget.get(TargetType::KOKKOS_TEAM_THREAD)»";
 			CMAKE_CXX_COMPILER = "/usr/bin/g++";
 			Kokkos_ROOT = "$ENV{HOME}/kokkos/install";
+		}
+
+		Arcane
+		{
+			outputPath = "/«projectName»/src-gen-arcane";
+			CMAKE_CXX_COMPILER = "/usr/bin/g++";
+			Arcane_ROOT = "$ENV{HOME}/arcane/install";
+		}
+
+		Python
+		{
+			outputPath = "/«projectName»/src-gen-python";
 		}
 	'''
 }

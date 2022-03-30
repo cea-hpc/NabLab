@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -131,7 +131,7 @@ abstract class TypeContentProvider
 			val indexName = "i" + connectivities.size
 			accessors += indexName
 			'''
-				for (size_t «indexName»=0; «indexName»<«connectivities.head.nbElemsVar»; «indexName»++)
+				for (size_t «indexName»=0; «indexName»<«connectivities.head.nbElems»; «indexName»++)
 					«initCppType(name, t, accessors, connectivities.tail)»
 			'''
 		}
@@ -151,8 +151,8 @@ class StlThreadTypeContentProvider extends TypeContentProvider
 		switch connectivities.size
 		{
 			case 0: throw new RuntimeException("Unexpected size: " + connectivities.size)
-			case 1: connectivities.get(0).nbElemsVar
-			default: '''«connectivities.get(0).nbElemsVar», «getCppType(baseType, connectivities.tail)»(«getCstrInit(name, baseType, connectivities.tail)»)''' 
+			case 1: connectivities.get(0).nbElems
+			default: '''«connectivities.get(0).nbElems», «getCppType(baseType, connectivities.tail)»(«getCstrInit(name, baseType, connectivities.tail)»)''' 
 		}
 	}
 
@@ -168,7 +168,7 @@ class KokkosTypeContentProvider extends TypeContentProvider
 	}
 
 	override getCstrInit(String name, BaseType baseType, Iterable<Connectivity> connectivities)
-	'''"«name»", «FOR c : connectivities SEPARATOR ', '»«c.nbElemsVar»«ENDFOR»'''
+	'''"«name»", «FOR c : connectivities SEPARATOR ', '»«c.nbElems»«ENDFOR»'''
 
 	override formatIterators(ConnectivityType type, Iterable<String> iterators)
 	'''«FOR i : iterators BEFORE '(' SEPARATOR ', ' AFTER ')'»«i»«ENDFOR»'''

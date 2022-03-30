@@ -217,13 +217,11 @@ Glace2d::Glace2d(CartesianMesh2D& aMesh)
 : mesh(aMesh)
 , nbNodes(mesh.getNbNodes())
 , nbCells(mesh.getNbCells())
-, maxNbNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
-, maxNbCellsOfNode(CartesianMesh2D::MaxNbCellsOfNode)
-, nbInnerNodes(mesh.getNbInnerNodes())
-, nbTopNodes(mesh.getNbTopNodes())
-, nbBottomNodes(mesh.getNbBottomNodes())
-, nbLeftNodes(mesh.getNbLeftNodes())
-, nbRightNodes(mesh.getNbRightNodes())
+, nbTopNodes(mesh.getGroup("TopNodes").size())
+, nbBottomNodes(mesh.getGroup("BottomNodes").size())
+, nbLeftNodes(mesh.getGroup("LeftNodes").size())
+, nbRightNodes(mesh.getGroup("RightNodes").size())
+, nbInnerNodes(mesh.getGroup("InnerNodes").size())
 , X_n(nbNodes)
 , X_nplus1(nbNodes)
 , X_n0(nbNodes)
@@ -243,11 +241,11 @@ Glace2d::Glace2d(CartesianMesh2D& aMesh)
 , deltatj(nbCells)
 , uj_n(nbCells)
 , uj_nplus1(nbCells)
-, l(nbCells, std::vector<double>(maxNbNodesOfCell))
-, Cjr_ic(nbCells, std::vector<RealArray1D<2>>(maxNbNodesOfCell))
-, C(nbCells, std::vector<RealArray1D<2>>(maxNbNodesOfCell))
-, F(nbCells, std::vector<RealArray1D<2>>(maxNbNodesOfCell))
-, Ajr(nbCells, std::vector<RealArray2D<2,2>>(maxNbNodesOfCell))
+, l(nbCells, std::vector<double>(4))
+, Cjr_ic(nbCells, std::vector<RealArray1D<2>>(4))
+, C(nbCells, std::vector<RealArray1D<2>>(4))
+, F(nbCells, std::vector<RealArray1D<2>>(4))
+, Ajr(nbCells, std::vector<RealArray2D<2,2>>(4))
 {
 }
 
@@ -263,7 +261,6 @@ Glace2d::jsonInit(const char* jsonContent)
 	assert(document.IsObject());
 	const rapidjson::Value::Object& options = document.GetObject();
 
-	// outputPath
 	assert(options.HasMember("outputPath"));
 	const rapidjson::Value& valueof_outputPath = options["outputPath"];
 	assert(valueof_outputPath.IsString());
@@ -308,8 +305,8 @@ void Glace2d::computeCjr() noexcept
 			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
 			for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 			{
-				const Id rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+maxNbNodesOfCell)%maxNbNodesOfCell]);
-				const Id rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+maxNbNodesOfCell)%maxNbNodesOfCell]);
+				const Id rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCellJ)%nbNodesOfCellJ]);
+				const Id rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCellJ)%nbNodesOfCellJ]);
 				const size_t rPlus1Nodes(rPlus1Id);
 				const size_t rMinus1Nodes(rMinus1Id);
 				C[jCells][rNodesOfCellJ] = glace2dfreefuncs::operatorMult(0.5, glace2dfreefuncs::perp(glace2dfreefuncs::operatorSub(X_n[rPlus1Nodes], X_n[rMinus1Nodes])));
@@ -346,8 +343,8 @@ void Glace2d::iniCjrIc() noexcept
 			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
 			for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 			{
-				const Id rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+maxNbNodesOfCell)%maxNbNodesOfCell]);
-				const Id rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+maxNbNodesOfCell)%maxNbNodesOfCell]);
+				const Id rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCellJ)%nbNodesOfCellJ]);
+				const Id rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCellJ)%nbNodesOfCellJ]);
 				const size_t rPlus1Nodes(rPlus1Id);
 				const size_t rMinus1Nodes(rMinus1Id);
 				Cjr_ic[jCells][rNodesOfCellJ] = glace2dfreefuncs::operatorMult(0.5, glace2dfreefuncs::perp(glace2dfreefuncs::operatorSub(X_n0[rPlus1Nodes], X_n0[rMinus1Nodes])));
@@ -741,7 +738,7 @@ void Glace2d::computeBoundaryConditions() noexcept
 {
 	const RealArray2D<2,2> I({1.0, 0.0, 0.0, 1.0});
 	{
-		const auto topNodes(mesh.getTopNodes());
+		const auto topNodes(mesh.getGroup("TopNodes"));
 		parallel_exec(nbTopNodes, [&](const size_t& rTopNodes)
 		{
 			const Id rId(topNodes[rTopNodes]);
@@ -754,7 +751,7 @@ void Glace2d::computeBoundaryConditions() noexcept
 		});
 	}
 	{
-		const auto bottomNodes(mesh.getBottomNodes());
+		const auto bottomNodes(mesh.getGroup("BottomNodes"));
 		parallel_exec(nbBottomNodes, [&](const size_t& rBottomNodes)
 		{
 			const Id rId(bottomNodes[rBottomNodes]);
@@ -767,7 +764,7 @@ void Glace2d::computeBoundaryConditions() noexcept
 		});
 	}
 	{
-		const auto leftNodes(mesh.getLeftNodes());
+		const auto leftNodes(mesh.getGroup("LeftNodes"));
 		parallel_exec(nbLeftNodes, [&](const size_t& rLeftNodes)
 		{
 			const Id rId(leftNodes[rLeftNodes]);
@@ -783,7 +780,7 @@ void Glace2d::computeBoundaryConditions() noexcept
 		});
 	}
 	{
-		const auto rightNodes(mesh.getRightNodes());
+		const auto rightNodes(mesh.getGroup("RightNodes"));
 		parallel_exec(nbRightNodes, [&](const size_t& rRightNodes)
 		{
 			const Id rId(rightNodes[rRightNodes]);
@@ -808,7 +805,7 @@ void Glace2d::computeBoundaryConditions() noexcept
 void Glace2d::computeBt() noexcept
 {
 	{
-		const auto innerNodes(mesh.getInnerNodes());
+		const auto innerNodes(mesh.getGroup("InnerNodes"));
 		parallel_exec(nbInnerNodes, [&](const size_t& rInnerNodes)
 		{
 			const Id rId(innerNodes[rInnerNodes]);
@@ -829,7 +826,7 @@ void Glace2d::computeBt() noexcept
 void Glace2d::computeMt() noexcept
 {
 	{
-		const auto innerNodes(mesh.getInnerNodes());
+		const auto innerNodes(mesh.getGroup("InnerNodes"));
 		parallel_exec(nbInnerNodes, [&](const size_t& rInnerNodes)
 		{
 			const Id rId(innerNodes[rInnerNodes]);
@@ -1035,7 +1032,7 @@ int main(int argc, char* argv[])
 	
 	// Module instanciation(s)
 	Glace2d* glace2d = new Glace2d(mesh);
-	if (d.HasMember("glace2d"))
+	assert(d.HasMember("glace2d"));
 	{
 		rapidjson::StringBuffer strbuf;
 		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);

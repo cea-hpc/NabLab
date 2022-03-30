@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -9,8 +9,6 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.arcane
 
-import fr.cea.nabla.ir.IrUtils
-import fr.cea.nabla.ir.generator.CppGeneratorUtils
 import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.BaseTypeConstant
@@ -18,11 +16,9 @@ import fr.cea.nabla.ir.ir.BinaryExpression
 import fr.cea.nabla.ir.ir.BoolConstant
 import fr.cea.nabla.ir.ir.Cardinality
 import fr.cea.nabla.ir.ir.ContractedIf
-import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.IntConstant
-import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrPackage
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.MaxConstant
@@ -30,6 +26,7 @@ import fr.cea.nabla.ir.ir.MinConstant
 import fr.cea.nabla.ir.ir.Parenthesis
 import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.RealConstant
+import fr.cea.nabla.ir.ir.Return
 import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.ir.ir.VectorConstant
@@ -37,8 +34,8 @@ import fr.cea.nabla.ir.ir.VectorConstant
 import static fr.cea.nabla.ir.generator.arcane.TypeContentProvider.*
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
+import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
-import static extension fr.cea.nabla.ir.generator.arcane.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.generator.arcane.VariableExtensions.*
 
 class ExpressionContentProvider
@@ -86,23 +83,46 @@ class ExpressionContentProvider
 	{
 		val t = type as BaseType
 
-		if (t.sizes.exists[x | !(x instanceof IntConstant)])
-			throw new RuntimeException("BaseTypeConstants size expressions must be IntConstant")
-
-		val sizes = t.sizes.map[x | (x as IntConstant).value]
-		'''{«initArray(sizes, value.content)»}'''
+		if (t.sizes.empty)
+		{
+			// scalar type
+			value.content
+		}
+		else
+		{
+			if (t.isStatic)
+				initArray(t.intSizes, value.content)
+			else
+			{
+				// The array must be allocated and initialized by loops
+				// No expression value can be produced in dynamic mode
+				// Two instructions must be encapsulated in a function and a function call must be done
+				throw new RuntimeException("Not yet implemented")
+				//'''new «t.primitive.javaType»«formatIteratorsAndIndices(t, t.sizes.map[content])»'''
+			}
+		}
 	}
 
 	static def dispatch CharSequence getContent(VectorConstant it)
-	'''{«innerContent»}'''
+	{
+		val content = '''«FOR v : values BEFORE '{' SEPARATOR ', ' AFTER '}'»«v.content»«ENDFOR»'''
+		if (eContainer !== null && eContainer instanceof Variable)
+			// the variable is declared with a type => no type to add
+			content
+		else
+			// the type must be added, for example for FunctionCall
+			'''«TypeContentProvider.getTypeName(type)»«content»'''
+	}
 
 	static def dispatch CharSequence getContent(Cardinality it)
 	{
 		val call = container.connectivityCall
 		if (call.connectivity.multiple)
 		{
-			if (call.args.empty)
-				call.connectivity.nbElemsVar
+			if (call.group !== null)
+				'''m_mesh->getGroup("«call.group»").size()'''
+			else if (call.args.empty)
+				'''nb«call.connectivity.returnType.name.toFirstUpper»()'''
 			else
 				'''m_mesh->«call.accessor».size()'''
 		}
@@ -111,13 +131,26 @@ class ExpressionContentProvider
 	}
 
 	static def dispatch CharSequence getContent(FunctionCall it)
-	'''«CppGeneratorUtils.getCodeName(function)»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
+	{
+		val functionCall = '''«ArcaneUtils.getCodeName(function)»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
+		if (eContainer !== null && !(eContainer instanceof Return))
+		{
+			val argTypeName = getFunctionArgTypeName(type, false).toString
+			if (argTypeName == "RealArrayVariant" || argTypeName == "RealArray2Variant")
+				'''«getTypeName(type)»(«functionCall»)'''
+			else
+				functionCall
+		}
+		else
+			functionCall
+	}
+
 
 	static def dispatch CharSequence getContent(ArgOrVarRef it)
 	{
 		if (target.functionDimVar)
 		{
-			// In Java code the size of arrays does not appear explicitly like in NabLab.
+			// In Arcane code the size of arrays does not appear explicitly like in NabLab (no template).
 			// It is possible to create a local variable to set it, i.e. final int x = a.length.
 			// But sometimes it is not used and a warning appears.
 			// To avoid that, sizes are referenced by array.length instead of the name of the var.
@@ -125,7 +158,7 @@ class ExpressionContentProvider
 		}
 		else
 		{
-			if (target.global && getVariableTypeName(target.type).startsWith("VariableScalar") && eContainingFeature !== IrPackage.Literals.AFFECTATION__LEFT)
+			if (ArcaneUtils.isArcaneManaged(target) && indices.empty && iterators.empty && eContainingFeature !== IrPackage.Literals.AFFECTATION__LEFT)
 				'''«codeName»()''' // get the value of a VariableScalar...
 			else if (target.linearAlgebra && !(iterators.empty && indices.empty))
 				'''«codeName».getValue(«formatIteratorsAndIndices(target.type, iterators, indices)»)'''
@@ -137,24 +170,17 @@ class ExpressionContentProvider
 	static def CharSequence getCodeName(ArgOrVarRef it)
 	{
 		val t = target
-		val tName = switch t
+		switch t
 		{
-			Variable case t.option: 'options.' + t.name
 			case t.iteratorCounter: (t.eContainer as Iterator).index.name
 			Variable: t.codeName
 			default: t.name
 		}
-
-		if (IrUtils.getContainerOfType(it, IrModule) === IrUtils.getContainerOfType(target, IrModule))
-			tName
-		else
-			'mainModule->' + tName
 	}
 
-	private static def dispatch CharSequence getInnerContent(Expression it) { content }
-	private static def dispatch CharSequence getInnerContent(VectorConstant it)
-	'''«FOR v : values SEPARATOR ', '»«v.innerContent»«ENDFOR»'''
-
 	private static def CharSequence initArray(int[] sizes, CharSequence value)
-	'''«FOR size : sizes SEPARATOR ",  "»«FOR i : 0..<size SEPARATOR ', '»«value»«ENDFOR»«ENDFOR»'''
+	{
+		if (sizes.empty) value
+		else initArray(sizes.tail, '''«FOR i : 0..<sizes.head BEFORE '{' SEPARATOR ', ' AFTER '}'»«value»«ENDFOR»''')
+	}
 }

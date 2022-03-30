@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -12,7 +12,6 @@ package fr.cea.nabla.ir.generator.java
 import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.BaseType
-import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.LinearAlgebraType
@@ -62,9 +61,12 @@ class IrModuleContentProvider
 		{
 			// Mesh and mesh variables
 			private final «irRoot.mesh.className» mesh;
-			@SuppressWarnings("unused")
-			«FOR c : irRoot.mesh.connectivities.filter[multiple] BEFORE 'private final int ' SEPARATOR ', ' AFTER ';'»«c.nbElemsVar»«ENDFOR»
-
+			«FOR a : neededConnectivityAttributes»
+				private final int «a.nbElemsVar»;
+			«ENDFOR»
+			«FOR a : neededGroupAttributes»
+				private final int «a.nbElemsVar»;
+			«ENDFOR»
 			«IF irRoot.modules.size > 1»
 				«IF main»
 					// Additional modules
@@ -102,8 +104,11 @@ class IrModuleContentProvider
 			{
 				// Mesh and mesh variables initialization
 				mesh = aMesh;
-				«FOR c : irRoot.mesh.connectivities.filter[multiple]»
-					«c.nbElemsVar» = «c.connectivityAccessor»;
+				«FOR a : neededConnectivityAttributes»
+					«a.nbElemsVar» = mesh.getNb«a.name.toFirstUpper»();
+				«ENDFOR»
+				«FOR a : neededGroupAttributes»
+					«a.nbElemsVar» = mesh.getGroup("«a»").length;
 				«ENDFOR»
 			}
 
@@ -137,6 +142,7 @@ class IrModuleContentProvider
 				«ENDFOR»
 				«val nrName = IrUtils.NonRegressionNameAndValue.key»
 				«IF main && hasLevelDB»
+
 					// Non regression
 					if (options.has("«nrName»"))
 					{
@@ -165,7 +171,7 @@ class IrModuleContentProvider
 			«ENDFOR»
 
 			«IF main»
-			public void «Utils.getCodeName(irRoot.main)»()
+			public void simulate()
 			{
 				System.out.println("Start execution of «name»");
 				«FOR j : irRoot.main.calls»
@@ -190,7 +196,8 @@ class IrModuleContentProvider
 					// Module instanciation(s)
 					«FOR m : irRoot.modules»
 						«m.className» «m.name» = new «m.className»(mesh);
-						if (o.has("«m.name»")) «m.name».jsonInit(o.get("«m.name»").toString());
+						assert(o.has("«m.name»"));
+						«m.name».jsonInit(o.get("«m.name»").toString());
 						«IF !m.main»«m.name».setMainModule(«irRoot.mainModule.name»);«ENDIF»
 					«ENDFOR»
 
@@ -198,17 +205,17 @@ class IrModuleContentProvider
 					«name».simulate();
 					«IF main && hasLevelDB»
 
-					«val dbName = irRoot.name + "DB"»
-					// Non regression testing
-					if («name».«nrName» != null && «name».«nrName».equals("«IrUtils.NonRegressionValues.CreateReference.toString»"))
-						«name».createDB("«dbName».ref");
-					if («name».«nrName» != null && «name».«nrName».equals("«IrUtils.NonRegressionValues.CompareToReference.toString»"))
-					{
-						«name».createDB("«dbName».current");
-						boolean ok = LevelDBUtils.compareDB("«dbName».current", "«dbName».ref");
-						LevelDBUtils.destroyDB("«dbName».current");
-						if (!ok) System.exit(1);
-					}
+						«val dbName = irRoot.name + "DB"»
+						// Non regression testing
+						if («name».«nrName» != null && «name».«nrName».equals("«IrUtils.NonRegressionValues.CreateReference.toString»"))
+							«name».createDB("«dbName».ref");
+						if («name».«nrName» != null && «name».«nrName».equals("«IrUtils.NonRegressionValues.CompareToReference.toString»"))
+						{
+							«name».createDB("«dbName».current");
+							boolean ok = LevelDBUtils.compareDB("«dbName».current", "«dbName».ref");
+							LevelDBUtils.destroyDB("«dbName».current");
+							if (!ok) System.exit(1);
+						}
 					«ENDIF»
 				}
 				else
@@ -263,16 +270,16 @@ class IrModuleContentProvider
 			«ENDIF»
 			«IF main && hasLevelDB»
 
-			private void createDB(String db_name) throws IOException
+			private void createDB(String dbName) throws IOException
 			{
 				org.iq80.leveldb.Options levelDBOptions = new org.iq80.leveldb.Options();
 
 				// Destroy if exists
-				factory.destroy(new File(db_name), levelDBOptions);
+				factory.destroy(new File(dbName), levelDBOptions);
 
 				// Create data base
 				levelDBOptions.createIfMissing(true);
-				DB db = factory.open(new File(db_name), levelDBOptions);
+				DB db = factory.open(new File(dbName), levelDBOptions);
 
 				WriteBatch batch = db.createWriteBatch();
 				try
@@ -289,7 +296,7 @@ class IrModuleContentProvider
 					batch.close();
 				}
 				db.close();
-				System.out.println("Reference database " + db_name + " created.");
+				System.out.println("Reference database " + dbName + " created.");
 			}
 			«ENDIF»
 			«ELSE /* !main */»
@@ -301,14 +308,6 @@ class IrModuleContentProvider
 			«ENDIF»
 		};
 	'''
-
-	private static def getConnectivityAccessor(Connectivity c)
-	{
-		if (c.inTypes.empty)
-			'''mesh.get«c.nbElemsVar.toFirstUpper»()'''
-		else
-			'''CartesianMesh2D.«c.nbElemsVar.toFirstUpper»'''
-	}
 
 	private static def getWriteCallContent(Variable v)
 	{

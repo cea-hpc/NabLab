@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -38,11 +38,11 @@ class CppGenerator implements IrCodeGenerator
 		this.cMakeVars += new Pair(CMakeUtils.WS_PATH, wsPath)
 		UnzipHelper::unzipNRepository(wsPath)
 	}
-	
+
 	override getName() { backend.name }
 	override getIrTransformationSteps() { backend.irTransformationSteps }
 
-	override getGenerationContents(IrRoot ir)
+	override getGenerationContents(IrRoot ir, (String)=>void traceNotifier)
 	{
 		val fileContents = new ArrayList<GenerationContent>
 		for (module : ir.modules)
@@ -54,7 +54,7 @@ class CppGenerator implements IrCodeGenerator
 		return fileContents
 	}
 
-	override getGenerationContents(DefaultExtensionProvider provider)
+	override getGenerationContents(DefaultExtensionProvider provider, (String)=>void traceNotifier)
 	{
 		val fileContents = new ArrayList<GenerationContent>
 		val dpe = backend.defaultExtensionProviderContentProvider

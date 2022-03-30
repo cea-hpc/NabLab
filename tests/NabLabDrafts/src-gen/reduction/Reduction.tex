@@ -12,11 +12,11 @@
 
 
 \section{ComputeGeometry}
-$\texttt{ComputeGeometry} : \forall{c\in cells()}, \ \forall{p\in nodesOfCell(c)}, \ lpc\_n_{pc} = \left[1.0,1.0\right]$
+$\texttt{ComputeGeometry} : \forall{c\in cells}, \ \forall{p\in nodesOfCell(c)}, \ lpc\_n_{pc} = \left[1.0,1.0\right]$
 
 
 \section{ComputeBoundaryNodeVelocities}
-$\texttt{ComputeBoundaryNodeVelocities} : \forall{p\in topLeftNode()}, \ Vnode^{n+1}_{p} = nodeVelocityBoundaryConditionCorner\left(1,\left[0.0,0.0\right],1,\left[0.0,0.0\right],\left[\left[1.0,1.0\right],\left[1.0,1.0\right]\right],\left[1.0,1.0\right],\sum_{c\in cellsOfNode(p)}\left(lpc\_n_{pc}\right)\right)$
+$\texttt{ComputeBoundaryNodeVelocities} : \forall{p\in TopLeftNode}, \ Vnode^{n+1}_{p} = nodeVelocityBoundaryConditionCorner\left(1,\left[0.0,0.0\right],1,\left[0.0,0.0\right],\left[\left[1.0,1.0\right],\left[1.0,1.0\right]\right],\left[1.0,1.0\right],\sum_{c\in cellsOfNode(p)}\left(lpc\_n_{pc}\right)\right)$
 
 
 \section{UpdateTime}

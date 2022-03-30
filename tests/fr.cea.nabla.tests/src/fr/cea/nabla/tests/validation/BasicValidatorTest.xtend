@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -526,6 +526,32 @@ class BasicValidatorTest
 			'''
 			«testModule»
 			ℝ[2] X{nodes};
+			''', rs)
+		Assert.assertNotNull(moduleOk)
+		moduleOk.assertNoErrors
+	}
+
+	@Test
+	def testCheckDimensionsArgOrder()
+	{
+		val rs = resourceSetProvider.get
+		parseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DPath), rs)
+		val moduleKo =  parseHelper.parse(
+			'''
+			«testModule»
+			ℝ[2] X{nodesOfCell};
+			ℕ toto{cells, nodesOfCell, nodes};
+			''', rs)
+		Assert.assertNotNull(moduleKo)
+		moduleKo.assertError(NablaPackage.eINSTANCE.connectivityVar,
+			BasicValidator::DIMENSIONS_ARG_ORDER,
+			BasicValidator::getDimensionsArgOrderMsg())
+
+		val moduleOk =  parseHelper.parse(
+			'''
+			«testModule»
+			ℝ[2] X{nodes};
+			ℕ toto{cells, nodes, nodesOfCell};
 			''', rs)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors

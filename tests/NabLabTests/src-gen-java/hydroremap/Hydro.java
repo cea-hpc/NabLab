@@ -16,9 +16,8 @@ public final class Hydro
 {
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
-	@SuppressWarnings("unused")
-	private final int nbNodes, nbCells;
-
+	private final int nbNodes;
+	private final int nbCells;
 	// Additional modules
 	protected R1 r1;
 	protected R2 r2;
@@ -280,12 +279,15 @@ public final class Hydro
 
 			// Module instanciation(s)
 			Hydro hydro = new Hydro(mesh);
-			if (o.has("hydro")) hydro.jsonInit(o.get("hydro").toString());
+			assert(o.has("hydro"));
+			hydro.jsonInit(o.get("hydro").toString());
 			R1 r1 = new R1(mesh);
-			if (o.has("r1")) r1.jsonInit(o.get("r1").toString());
+			assert(o.has("r1"));
+			r1.jsonInit(o.get("r1").toString());
 			r1.setMainModule(hydro);
 			R2 r2 = new R2(mesh);
-			if (o.has("r2")) r2.jsonInit(o.get("r2").toString());
+			assert(o.has("r2"));
+			r2.jsonInit(o.get("r2").toString());
 			r2.setMainModule(hydro);
 
 			// Start simulation

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -84,7 +84,7 @@ class MainContentProvider
 	private def getInstanciation(IrModule it)
 	'''
 		«className»* «name» = new «className»(mesh);
-		if (d.HasMember("«name»"))
+		assert(d.HasMember("«name»"));
 		{
 			rapidjson::StringBuffer strbuf;
 			rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);

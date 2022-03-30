@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -66,4 +66,17 @@ StlThread
 {
 	outputPath = "/NabLabExamples/src-gen-cpp/stl-thread";
 	CMAKE_CXX_COMPILER = "/usr/bin/g++";
+}
+
+Arcane
+{
+	outputPath = "/NabLabExamples/src-gen-arcane";
+	extension LinearAlgebra providedBy LinearAlgebraStl;
+	CMAKE_CXX_COMPILER = "/usr/bin/g++";
+	Arcane_ROOT = "$ENV{HOME}/arcane/install";
+}
+
+Python
+{
+	outputPath = "/NabLabExamples/src-gen-python";
 }

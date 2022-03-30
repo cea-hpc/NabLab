@@ -82,8 +82,8 @@ class SimpleMeshExample:
             jId = jCells
             reduction0 = 0.0
             nodesOfCellJ = nodesOfCells[jId]
-            nbNodesOfCellJ = nodesOfCellJ.size
-            for rNodesOfCellJ in dace.map[0:nbNodesOfCellJ[0]]:
+            nbNodesOfCellJ = nodesOfCellJ.size[0]
+            for rNodesOfCellJ in dace.map[0:nbNodesOfCellJ]:
                 rId = nodesOfCellJ[rNodesOfCellJ]
                 rNodes = rId
                 reduction0 = _sumR0(reduction0, cst[rNodes] * jCells)

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -15,8 +15,10 @@ import fr.cea.nabla.ir.transformers.IrTransformationStep
 
 interface IrCodeGenerator
 {
+	static val TracePrefix = "    IR -> Code: "
+
 	def String getName()
 	def IrTransformationStep[] getIrTransformationSteps()
-	def Iterable<GenerationContent> getGenerationContents(IrRoot ir)
-	def Iterable<GenerationContent> getGenerationContents(DefaultExtensionProvider provider)
+	def Iterable<GenerationContent> getGenerationContents(IrRoot ir, (String)=>void traceNotifier)
+	def Iterable<GenerationContent> getGenerationContents(DefaultExtensionProvider provider, (String)=>void traceNotifier)
 }

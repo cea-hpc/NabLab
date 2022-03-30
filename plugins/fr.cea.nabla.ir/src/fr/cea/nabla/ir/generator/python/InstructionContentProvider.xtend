@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -71,7 +71,7 @@ class InstructionContentProvider
 	'''
 		«IF iterationBlock instanceof Iterator»
 			«val iter = iterationBlock as Iterator»
-			«IF !iter.container.connectivityCall.connectivity.indexEqualId»
+			«IF !iter.container.connectivityCall.indexEqualId»
 				«val c = iter.container»
 				«IF c instanceof ConnectivityCall»«getSetDefinitionContent(c.uniqueName, c as ConnectivityCall)»«ENDIF»
 				«IF !c.connectivityCall.args.empty»«iter.getNbElems» = len(«c.uniqueName»)«ENDIF»
@@ -149,6 +149,6 @@ class InstructionContentProvider
 
 	private static def getSetDefinitionContent(String setName, ConnectivityCall call)
 	'''
-		«setName» = mesh.«IF call.args.empty»«call.connectivity.name»«ELSE»«call.accessor»«ENDIF»
+		«setName» = mesh.«call.accessor»
 	'''
 }

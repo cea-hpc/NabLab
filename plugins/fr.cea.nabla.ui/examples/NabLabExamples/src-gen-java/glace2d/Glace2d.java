@@ -16,9 +16,13 @@ public final class Glace2d
 {
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
-	@SuppressWarnings("unused")
-	private final int nbNodes, nbCells, maxNbNodesOfCell, maxNbCellsOfNode, nbInnerNodes, nbTopNodes, nbBottomNodes, nbLeftNodes, nbRightNodes;
-
+	private final int nbNodes;
+	private final int nbCells;
+	private final int nbTopNodes;
+	private final int nbBottomNodes;
+	private final int nbLeftNodes;
+	private final int nbRightNodes;
+	private final int nbInnerNodes;
 	// Options and global variables
 	private PvdFileWriter2D writer;
 	private String outputPath;
@@ -69,13 +73,11 @@ public final class Glace2d
 		mesh = aMesh;
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
-		maxNbNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
-		maxNbCellsOfNode = CartesianMesh2D.MaxNbCellsOfNode;
-		nbInnerNodes = mesh.getNbInnerNodes();
-		nbTopNodes = mesh.getNbTopNodes();
-		nbBottomNodes = mesh.getNbBottomNodes();
-		nbLeftNodes = mesh.getNbLeftNodes();
-		nbRightNodes = mesh.getNbRightNodes();
+		nbTopNodes = mesh.getGroup("TopNodes").length;
+		nbBottomNodes = mesh.getGroup("BottomNodes").length;
+		nbLeftNodes = mesh.getGroup("LeftNodes").length;
+		nbRightNodes = mesh.getGroup("RightNodes").length;
+		nbInnerNodes = mesh.getGroup("InnerNodes").length;
 	}
 
 	public void jsonInit(final String jsonContent)
@@ -119,11 +121,11 @@ public final class Glace2d
 		deltatj = new double[nbCells];
 		uj_n = new double[nbCells][2];
 		uj_nplus1 = new double[nbCells][2];
-		l = new double[nbCells][maxNbNodesOfCell];
-		Cjr_ic = new double[nbCells][maxNbNodesOfCell][2];
-		C = new double[nbCells][maxNbNodesOfCell][2];
-		F = new double[nbCells][maxNbNodesOfCell][2];
-		Ajr = new double[nbCells][maxNbNodesOfCell][2][2];
+		l = new double[nbCells][4];
+		Cjr_ic = new double[nbCells][4][2];
+		C = new double[nbCells][4][2];
+		F = new double[nbCells][4][2];
+		Ajr = new double[nbCells][4][2][2];
 
 		// Copy node coordinates
 		double[][] gNodes = mesh.getGeometry().getNodes();
@@ -563,7 +565,7 @@ public final class Glace2d
 	{
 		final double[][] I = new double[][] {new double[] {1.0, 0.0}, new double[] {0.0, 1.0}};
 		{
-			final int[] topNodes = mesh.getTopNodes();
+			final int[] topNodes = mesh.getGroup("TopNodes");
 			IntStream.range(0, nbTopNodes).parallel().forEach(rTopNodes -> 
 			{
 				final int rId = topNodes[rTopNodes];
@@ -576,7 +578,7 @@ public final class Glace2d
 			});
 		}
 		{
-			final int[] bottomNodes = mesh.getBottomNodes();
+			final int[] bottomNodes = mesh.getGroup("BottomNodes");
 			IntStream.range(0, nbBottomNodes).parallel().forEach(rBottomNodes -> 
 			{
 				final int rId = bottomNodes[rBottomNodes];
@@ -589,7 +591,7 @@ public final class Glace2d
 			});
 		}
 		{
-			final int[] leftNodes = mesh.getLeftNodes();
+			final int[] leftNodes = mesh.getGroup("LeftNodes");
 			IntStream.range(0, nbLeftNodes).parallel().forEach(rLeftNodes -> 
 			{
 				final int rId = leftNodes[rLeftNodes];
@@ -605,7 +607,7 @@ public final class Glace2d
 			});
 		}
 		{
-			final int[] rightNodes = mesh.getRightNodes();
+			final int[] rightNodes = mesh.getGroup("RightNodes");
 			IntStream.range(0, nbRightNodes).parallel().forEach(rRightNodes -> 
 			{
 				final int rId = rightNodes[rRightNodes];
@@ -630,7 +632,7 @@ public final class Glace2d
 	protected void computeBt()
 	{
 		{
-			final int[] innerNodes = mesh.getInnerNodes();
+			final int[] innerNodes = mesh.getGroup("InnerNodes");
 			IntStream.range(0, nbInnerNodes).parallel().forEach(rInnerNodes -> 
 			{
 				final int rId = innerNodes[rInnerNodes];
@@ -651,7 +653,7 @@ public final class Glace2d
 	protected void computeMt()
 	{
 		{
-			final int[] innerNodes = mesh.getInnerNodes();
+			final int[] innerNodes = mesh.getGroup("InnerNodes");
 			IntStream.range(0, nbInnerNodes).parallel().forEach(rInnerNodes -> 
 			{
 				final int rId = innerNodes[rInnerNodes];
@@ -984,7 +986,8 @@ public final class Glace2d
 
 			// Module instanciation(s)
 			Glace2d glace2d = new Glace2d(mesh);
-			if (o.has("glace2d")) glace2d.jsonInit(o.get("glace2d").toString());
+			assert(o.has("glace2d"));
+			glace2d.jsonInit(o.get("glace2d").toString());
 
 			// Start simulation
 			glace2d.simulate();

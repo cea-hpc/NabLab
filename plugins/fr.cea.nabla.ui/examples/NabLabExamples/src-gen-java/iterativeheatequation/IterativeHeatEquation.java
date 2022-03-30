@@ -16,9 +16,9 @@ public final class IterativeHeatEquation
 {
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
-	@SuppressWarnings("unused")
-	private final int nbNodes, nbCells, nbFaces, maxNbNodesOfCell, maxNbNodesOfFace, maxNbCellsOfFace, maxNbNeighbourCells;
-
+	private final int nbNodes;
+	private final int nbCells;
+	private final int nbFaces;
 	// Options and global variables
 	private PvdFileWriter2D writer;
 	private String outputPath;
@@ -56,10 +56,6 @@ public final class IterativeHeatEquation
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
 		nbFaces = mesh.getNbFaces();
-		maxNbNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
-		maxNbNodesOfFace = CartesianMesh2D.MaxNbNodesOfFace;
-		maxNbCellsOfFace = CartesianMesh2D.MaxNbCellsOfFace;
-		maxNbNeighbourCells = CartesianMesh2D.MaxNbNeighbourCells;
 	}
 
 	public void jsonInit(final String jsonContent)
@@ -578,7 +574,8 @@ public final class IterativeHeatEquation
 
 			// Module instanciation(s)
 			IterativeHeatEquation iterativeHeatEquation = new IterativeHeatEquation(mesh);
-			if (o.has("iterativeHeatEquation")) iterativeHeatEquation.jsonInit(o.get("iterativeHeatEquation").toString());
+			assert(o.has("iterativeHeatEquation"));
+			iterativeHeatEquation.jsonInit(o.get("iterativeHeatEquation").toString());
 
 			// Start simulation
 			iterativeHeatEquation.simulate();

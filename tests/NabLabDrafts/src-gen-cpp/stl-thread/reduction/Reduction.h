@@ -50,7 +50,9 @@ public:
 private:
 	// Mesh and mesh variables
 	CartesianMesh2D& mesh;
-	size_t nbNodes, maxNbCellsOfNode, nbCells, maxNbNodesOfCell;
+	size_t nbNodes;
+	size_t nbCells;
+	size_t nbTopLeftNode;
 
 	// Options and global variables
 	int n;

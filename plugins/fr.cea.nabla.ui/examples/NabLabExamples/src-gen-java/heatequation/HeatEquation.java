@@ -16,9 +16,9 @@ public final class HeatEquation
 {
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
-	@SuppressWarnings("unused")
-	private final int nbNodes, nbCells, nbFaces, maxNbNodesOfCell, maxNbNodesOfFace, maxNbNeighbourCells;
-
+	private final int nbNodes;
+	private final int nbCells;
+	private final int nbFaces;
 	// Options and global variables
 	private PvdFileWriter2D writer;
 	private String outputPath;
@@ -49,9 +49,6 @@ public final class HeatEquation
 		nbNodes = mesh.getNbNodes();
 		nbCells = mesh.getNbCells();
 		nbFaces = mesh.getNbFaces();
-		maxNbNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
-		maxNbNodesOfFace = CartesianMesh2D.MaxNbNodesOfFace;
-		maxNbNeighbourCells = CartesianMesh2D.MaxNbNeighbourCells;
 	}
 
 	public void jsonInit(final String jsonContent)
@@ -393,7 +390,8 @@ public final class HeatEquation
 
 			// Module instanciation(s)
 			HeatEquation heatEquation = new HeatEquation(mesh);
-			if (o.has("heatEquation")) heatEquation.jsonInit(o.get("heatEquation").toString());
+			assert(o.has("heatEquation"));
+			heatEquation.jsonInit(o.get("heatEquation").toString());
 
 			// Start simulation
 			heatEquation.simulate();

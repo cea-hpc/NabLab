@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -18,6 +18,11 @@ Vector(const std::string& name, const size_t size)
 
 
 Vector::
+Vector(const std::string& name)
+: m_data(0) {}
+
+
+Vector::
 Vector(VectorType& v)
 : m_data(v) {}
 
@@ -33,6 +38,12 @@ operator=(const Vector& val)
 	return *this;
 }
 
+
+const void Vector::
+resize(const size_t size)
+{
+	m_data.resize(size);
+}
 
 const size_t Vector::
 getSize() const

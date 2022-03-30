@@ -80,7 +80,9 @@ private:
 	
 	// Mesh and mesh variables
 	CartesianMesh2D& mesh;
-	size_t nbNodes, nbCells, nbFaces, maxNbNodesOfCell, maxNbNodesOfFace, maxNbNeighbourCells;
+	size_t nbNodes;
+	size_t nbCells;
+	size_t nbFaces;
 
 	// Options and global variables
 	PvdFileWriter2D* writer;

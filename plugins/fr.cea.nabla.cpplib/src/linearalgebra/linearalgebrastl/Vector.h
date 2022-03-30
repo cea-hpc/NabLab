@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -21,11 +21,13 @@ class Vector
 
  public:
   Vector(const std::string& name, const size_t size);
-  Vector(VectorType& v);
+  Vector(const std::string& name); // when size is known at runtime
+   Vector(VectorType& v);
   ~Vector();
 
   Vector& operator=(const Vector& val);
 
+  const void resize(const size_t size);
   const size_t getSize() const;
   // getter
   double getValue(const size_t i) const;

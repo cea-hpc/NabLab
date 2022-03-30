@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -12,7 +12,6 @@ package fr.cea.nabla.ir.generator.cpp
 import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.BaseType
-import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.LinearAlgebraType
@@ -126,7 +125,12 @@ class IrModuleContentProvider
 		«privateMethodHeaders»
 		// Mesh and mesh variables
 		«irRoot.mesh.className»& mesh;
-		«FOR c : irRoot.mesh.connectivities.filter[multiple] BEFORE 'size_t ' SEPARATOR ', ' AFTER ';'»«c.nbElemsVar»«ENDFOR»
+		«FOR a : neededConnectivityAttributes»
+			size_t «a.nbElemsVar»;
+		«ENDFOR»
+		«FOR a : neededGroupAttributes»
+			size_t «a.nbElemsVar»;
+		«ENDFOR»
 
 		«IF irRoot.modules.size > 1»
 			«IF main»
@@ -201,8 +205,11 @@ class IrModuleContentProvider
 
 	«className»::«className»(«irRoot.mesh.className»& aMesh)
 	: mesh(aMesh)
-	«FOR c : irRoot.mesh.connectivities.filter[multiple]»
-	, «c.nbElemsVar»(«c.connectivityAccessor»)
+	«FOR a : neededConnectivityAttributes»
+	, «a.nbElemsVar»(mesh.getNb«a.name.toFirstUpper»())
+	«ENDFOR»
+	«FOR a : neededGroupAttributes»
+	, «a.nbElemsVar»(mesh.getGroup("«a»").size())
 	«ENDFOR»
 	«FOR v : variables.filter[x | !(x.type instanceof BaseType)]»
 		, «v.name»(«typeContentProvider.getCstrInit(v.type, v.name)»)
@@ -224,7 +231,6 @@ class IrModuleContentProvider
 
 		«IF postProcessing !== null»
 		«val opName = IrUtils.OutputPathNameAndValue.key»
-		// «opName»
 		assert(options.HasMember("«opName»"));
 		const rapidjson::Value& «jsonContentProvider.getJsonName(opName)» = options["«opName»"];
 		assert(«jsonContentProvider.getJsonName(opName)».IsString());
@@ -253,6 +259,7 @@ class IrModuleContentProvider
 		}
 		«ENDFOR»
 		«IF main && hasLevelDB»
+
 		// Non regression
 		«val nrName = IrUtils.NonRegressionNameAndValue.key»
 		assert(options.HasMember("«nrName»"));
@@ -325,7 +332,7 @@ class IrModuleContentProvider
 	}
 	«ENDIF»
 
-	void «className»::«Utils.getCodeName(irRoot.main)»()
+	void «className»::simulate()
 	{
 		«traceContentProvider.getBeginOfSimuTrace(it)»
 
@@ -432,14 +439,6 @@ class IrModuleContentProvider
 	}
 	«ENDIF»
 	'''
-
-	private def getConnectivityAccessor(Connectivity c)
-	{
-		if (c.inTypes.empty)
-			'''mesh.get«c.nbElemsVar.toFirstUpper»()'''
-		else
-			'''CartesianMesh2D::«c.nbElemsVar.toFirstUpper»'''
-	}
 
 	private def getWriteCallContent(Variable v)
 	{

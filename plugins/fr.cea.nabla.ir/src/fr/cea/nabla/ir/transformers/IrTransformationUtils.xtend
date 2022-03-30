@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -20,10 +20,10 @@ class IrTransformationUtils
 	{
 		#[
 			new ReplaceUtf8Chars,
-			new OptimizeConnectivities(#['cells', 'nodes', 'faces']),
 			new ReplaceReductions(replaceAllReductions),
 			new ReplaceAffectations,
 			new CreateArrayOperators,
+			new ConfigureMesh,
 			new FillJobHLTs
 		]
 	}
@@ -68,7 +68,7 @@ class IrTransformationUtils
 	 * Nearly the same method as above except that the 'existingInstruction' is not replace;
 	 * instructions are just inserted before
 	 */
-	static def insertBefore(Instruction existingInstruction, List<Instruction> instructionsToInsert)
+	static def insertBefore(Instruction existingInstruction, List<? extends Instruction> instructionsToInsert)
 	{
 		val container = existingInstruction.eContainer
 		if (container !== null && !instructionsToInsert.empty)
@@ -83,17 +83,12 @@ class IrTransformationUtils
 			}
 			else
 			{
-				if (instructionsToInsert.size == 1)
-					container.eSet(feature, instructionsToInsert.get(0))
-				else
-				{
-					val replacementBlock = IrFactory::eINSTANCE.createInstructionBlock =>
-					[
-						for (toAdd : instructionsToInsert) instructions += toAdd
-						instructions += existingInstruction
-					]
-					container.eSet(feature, replacementBlock)
-				}
+				val replacementBlock = IrFactory::eINSTANCE.createInstructionBlock =>
+				[
+					for (toAdd : instructionsToInsert) instructions += toAdd
+					instructions += existingInstruction
+				]
+				container.eSet(feature, replacementBlock)
 			}
 		}
 	}

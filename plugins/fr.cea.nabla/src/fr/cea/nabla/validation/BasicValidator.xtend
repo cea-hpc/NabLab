@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -223,9 +223,11 @@ class BasicValidator extends UnusedValidator
 	public static val CONNECTIVITY_CALL_INDEX = "Connectivities::ConnectivityCallIndex"
 	public static val CONNECTIVITY_CALL_TYPE = "Connectivities::ConnectivityCallType"
 	public static val DIMENSION_ARG = "Connectivities::DimensionArg"
+	public static val DIMENSIONS_ARG_ORDER = "Connectivities::DimensionsArgOrder"
 
 	static def getConnectivityCallIndexMsg(int expectedSize, int actualSize) { "Wrong number of arguments. Expected " + expectedSize + ", but was " + actualSize }
 	static def getDimensionArgMsg() { "First dimension must be on connectivities taking no argument" }
+	static def getDimensionsArgOrderMsg() { "Connectivities that don't take arguments should be placed first" }
 
 	@Check(CheckType.NORMAL)
 	def checkConnectivityCallIndexAndType(ConnectivityCall it)
@@ -251,6 +253,25 @@ class BasicValidator extends UnusedValidator
 
 		if (!supports.head.inTypes.empty)
 			error(getDimensionArgMsg(), NablaPackage.Literals::CONNECTIVITY_VAR__SUPPORTS, DIMENSION_ARG)
+	}
+
+	/**
+	  * Order in connectivities, connectivities with their max size unknown at generation time should be first.
+	  * - Accepted variable: `ℕ toto{cells, nodes, nodesOfCell};`
+	  * - Rejected variable: `ℕ toto{cells, nodesOfCell, nodes};`
+	  */
+	@Check(CheckType.NORMAL)
+	def checkDimensionsArgOrder(ConnectivityVar it)
+	{
+		val supportWithoutFirstNoInConnectivities  = supports.dropWhile[inTypes.empty]
+		val supportWithoutNextConnectivitiesWithIn = supportWithoutFirstNoInConnectivities.dropWhile[!inTypes.empty]
+		val faultyConnectivityIndexInSupport       = supports.length - supportWithoutNextConnectivitiesWithIn.length
+		if (!supportWithoutNextConnectivitiesWithIn.empty)
+			error(getDimensionsArgOrderMsg(),
+				NablaPackage.Literals::CONNECTIVITY_VAR__SUPPORTS,
+				faultyConnectivityIndexInSupport,
+				DIMENSIONS_ARG_ORDER
+			)
 	}
 
 	// ===== Items =====

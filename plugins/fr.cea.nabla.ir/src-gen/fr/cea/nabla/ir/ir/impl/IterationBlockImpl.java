@@ -4,7 +4,6 @@ package fr.cea.nabla.ir.ir.impl;
 
 import fr.cea.nabla.ir.ir.IrPackage;
 import fr.cea.nabla.ir.ir.IterationBlock;
-
 import org.eclipse.emf.ecore.EClass;
 
 /**

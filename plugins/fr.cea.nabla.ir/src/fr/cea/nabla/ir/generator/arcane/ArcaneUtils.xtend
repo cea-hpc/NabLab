@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -9,22 +9,103 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.arcane
 
+import fr.cea.nabla.ir.IrUtils
+import fr.cea.nabla.ir.generator.CppGeneratorUtils
+import fr.cea.nabla.ir.generator.Utils
+import fr.cea.nabla.ir.ir.ArgOrVar
+import fr.cea.nabla.ir.ir.ConnectivityType
+import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
+import fr.cea.nabla.ir.ir.ExternFunction
+import fr.cea.nabla.ir.ir.Function
+import fr.cea.nabla.ir.ir.InternFunction
 import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.IrRoot
+import fr.cea.nabla.ir.ir.Job
+import fr.cea.nabla.ir.ir.Variable
+
+import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
+import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.getInstanceName
+import static extension fr.cea.nabla.ir.IrModuleExtensions.*
+import static extension fr.cea.nabla.ir.IrRootExtensions.*
+import static extension fr.cea.nabla.ir.JobCallerExtensions.*
 
 /**
- * @TODO IR transformation step to rename Arcane reserved variables like NodeCoord
- * @TODO What about item types? Fixed in NabLab ? Mapping Arcane ?
- * @TODO Linear Algebra with Alien
- * @TODO Comments in .n file generated in code (Doxygen) and AXL description field
- * @TODO Is there a way to enter an array in AXL (not only with min/max occurs) ?
- * @TODO Support module coupling
- * @TODO Support composed time loops: n + m
- * @TODO What happens if levelDB asked ?
+ * @TODO Arcane - What about item types? Fixed in NabLab ? Mapping Arcane ?
+ * @TODO Arcane - What happens if levelDB asked => ngen should be modified ?
+ * @TODO Arcane - What to do with job updating global time ?
+ * @TODO Reduce CI time with a new transformation step to limit number of iterations
  */
 class ArcaneUtils
 {
-	static def getModuleName(IrModule it)
+	static def isArcaneModule(IrModule it) { main }
+	static def isArcaneService(IrModule it) { !main }
+
+	static def getInterfaceName(IrModule it)
 	{
-		name.toFirstUpper + "Module"
+		'I' + type
+	}
+
+	static def getClassName(IrModule it)
+	{
+		if (main)
+			name.toFirstUpper + "Module"
+		else
+			name.toFirstUpper + "Service"
+	}
+
+	static def toAttributeName(String name)
+	{
+		"m_" + StringExtensions.separateWith(name, "_")
+	}
+
+	static def getComputeLoopEntryPointJobs(IrModule it)
+	{
+		jobs.filter(ExecuteTimeLoopJob).filter[x | x.caller.main]
+	}
+
+	static def isArcaneManaged(ArgOrVar it)
+	{
+		it instanceof Variable && global && !option && type instanceof ConnectivityType
+	}
+
+	// TODO uniformise attribute names in C++ code to avoid this function
+	// This function is similar to CppGeneratorutils.getCodeName except for
+	// the instance name of provider for ExternFunction
+	static def getCodeName(Function f)
+	{
+		switch f
+		{
+			InternFunction:
+			{
+				val irModule = IrUtils.getContainerOfType(f, IrModule)
+				CppGeneratorUtils.getFreeFunctionNs(irModule) + '::' + f.name
+			}
+			ExternFunction:
+			{
+				if (f.provider.extensionName == "Math") 'std::' + f.name
+				else toAttributeName(f.provider.instanceName) + '.' + f.name
+			}
+		}
+	}
+
+	static def getServices(IrModule it)
+	{
+		if (main && irRoot.modules.size > 1)
+			irRoot.modules.filter[x | x !== it]
+		else
+			#[]
+	}
+
+	static def getCallName(Job it)
+	{
+		val jobModule = IrUtils.getContainerOfType(it, IrModule)
+		val callerModule = if (caller.eContainer instanceof IrRoot)
+				(caller.eContainer as IrRoot).mainModule
+			else
+				IrUtils.getContainerOfType(caller, IrModule)
+		if (jobModule === callerModule)
+			Utils.getCodeName(it)
+		else
+			"options()->" + jobModule.name + '()->' + Utils.getCodeName(it)
 	}
 }

@@ -16,9 +16,9 @@ public final class Reduction
 {
 	// Mesh and mesh variables
 	private final CartesianMesh2D mesh;
-	@SuppressWarnings("unused")
-	private final int nbNodes, maxNbCellsOfNode, nbCells, maxNbNodesOfCell;
-
+	private final int nbNodes;
+	private final int nbCells;
+	private final int nbTopLeftNode;
 	// Options and global variables
 	int n;
 	static final double maxTime = 0.1;
@@ -36,9 +36,8 @@ public final class Reduction
 		// Mesh and mesh variables initialization
 		mesh = aMesh;
 		nbNodes = mesh.getNbNodes();
-		maxNbCellsOfNode = CartesianMesh2D.MaxNbCellsOfNode;
 		nbCells = mesh.getNbCells();
-		maxNbNodesOfCell = CartesianMesh2D.MaxNbNodesOfCell;
+		nbTopLeftNode = mesh.getGroup("TopLeftNode").length;
 	}
 
 	public void jsonInit(final String jsonContent)
@@ -49,7 +48,7 @@ public final class Reduction
 		X = new double[nbNodes][2];
 		Vnode_n = new double[nbNodes][2];
 		Vnode_nplus1 = new double[nbNodes][2];
-		lpc_n = new double[nbNodes][maxNbCellsOfNode][2];
+		lpc_n = new double[nbNodes][4][2];
 
 		// Copy node coordinates
 		double[][] gNodes = mesh.getGeometry().getNodes();
@@ -132,18 +131,24 @@ public final class Reduction
 	 */
 	protected void computeBoundaryNodeVelocities()
 	{
-		final int pId = mesh.getTopLeftNode();
-		final int pNodes = pId;
-		double[] reduction0 = new double[] {0.0, 0.0};
 		{
-			final int[] cellsOfNodeP = mesh.getCellsOfNode(pId);
-			final int nbCellsOfNodeP = cellsOfNodeP.length;
-			for (int cCellsOfNodeP=0; cCellsOfNodeP<nbCellsOfNodeP; cCellsOfNodeP++)
+			final int[] topLeftNode = mesh.getGroup("TopLeftNode");
+			IntStream.range(0, nbTopLeftNode).parallel().forEach(pTopLeftNode -> 
 			{
-				reduction0 = sumR1(reduction0, lpc_n[pNodes][cCellsOfNodeP]);
-			}
+				final int pId = topLeftNode[pTopLeftNode];
+				final int pNodes = pId;
+				double[] reduction0 = new double[] {0.0, 0.0};
+				{
+					final int[] cellsOfNodeP = mesh.getCellsOfNode(pId);
+					final int nbCellsOfNodeP = cellsOfNodeP.length;
+					for (int cCellsOfNodeP=0; cCellsOfNodeP<nbCellsOfNodeP; cCellsOfNodeP++)
+					{
+						reduction0 = sumR1(reduction0, lpc_n[pNodes][cCellsOfNodeP]);
+					}
+				}
+				Vnode_nplus1[pNodes] = nodeVelocityBoundaryConditionCorner(1, new double[] {0.0, 0.0}, 1, new double[] {0.0, 0.0}, new double[][] {new double[] {1.0, 1.0}, new double[] {1.0, 1.0}}, new double[] {1.0, 1.0}, reduction0);
+			});
 		}
-		Vnode_nplus1[pNodes] = nodeVelocityBoundaryConditionCorner(1, new double[] {0.0, 0.0}, 1, new double[] {0.0, 0.0}, new double[][] {new double[] {1.0, 1.0}, new double[] {1.0, 1.0}}, new double[] {1.0, 1.0}, reduction0);
 	}
 
 	private static double[] nodeVelocityBoundaryConditionCorner(int BC1, double[] BCValue1, int BC2, double[] BCValue2, double[][] Mp, double[] Gp, double[] lp_np)

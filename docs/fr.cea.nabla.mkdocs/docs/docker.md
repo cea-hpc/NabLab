@@ -1,8 +1,8 @@
 # Docker integration
 
-The continuous integration mechanism with GitHub triggers all the tests defined in NabLab, including the NablaExamplesTests that generate, compile and run the NabalaExamples for each backend. 
-For these tests to run without error, the environment on which they are running must be correctly configured (java, gcc, cmake, Kokkos and LevelDb). 
-This is the purpose of the docker image built by the docker-nablab.sh script. This image is then pushed on a DockerHub public repository to be used by the GitHub actions of the CI workflow. 
+The continuous integration mechanism with GitHub triggers all the tests defined in NabLab, including the NabLabExamplesTests that generate, compile and run the NabLabExamples for each backend. 
+For these tests to run without error, the environment on which they are running must be correctly configured (java, gcc, cmake, Kokkos, LevelDb and Arcane). 
+This is the purpose of the docker image built by the `docker-nablab.sh` script. This image is then pushed on a DockerHub public repository to be used by the GitHub actions of the CI workflow. 
 
 The complete documentation to install docker on your ubuntu machine, is available [here](https://docs.docker.com/engine/install/ubuntu/).
 The procedure below lists the main steps.
@@ -13,7 +13,7 @@ Update the apt package index and install packages to allow apt to use a reposito
 
 ```bash
 sudo apt-get update
- 
+
 sudo apt-get install \
     apt-transport-https \
     ca-certificates \

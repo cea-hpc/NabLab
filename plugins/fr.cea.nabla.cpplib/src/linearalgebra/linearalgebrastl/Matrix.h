@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -36,6 +36,7 @@ class Matrix
 
  public:
   Matrix(const std::string name, const size_t rows, const size_t cols);
+  Matrix(const std::string name); // when size is known at runtime
   explicit Matrix(const std::string name, const size_t rows, const size_t cols,
                   std::initializer_list<std::tuple<int, int, double>> init_list);
   ~Matrix();
@@ -44,6 +45,7 @@ class Matrix
   void build();
   // implicit build and accessor
   SparseMatrixType& crsMatrix();
+  const void resize(const size_t rows, const size_t cols);
   const size_t getNbRows() const;
   const size_t getNbCols() const;
   // getter
@@ -57,8 +59,8 @@ class Matrix
   // Attributes
   std::map<int, std::list<std::pair<int, double>>> m_building_struct;
   const std::string m_name;
-  const int m_nb_rows;
-  const int m_nb_cols;
+  int m_nb_rows;
+  int m_nb_cols;
   int m_nb_nnz;
   SparseMatrixType* m_matrix;
   std::mutex m_mutex;

@@ -47,7 +47,7 @@ public:
 private:
 	// Mesh and mesh variables
 	CartesianMesh2D& mesh;
-	size_t nbNodes, nbCells;
+	size_t nbCells;
 
 	// Main module
 	Hydro* mainModule;

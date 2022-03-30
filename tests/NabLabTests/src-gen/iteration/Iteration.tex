@@ -16,39 +16,39 @@ $\texttt{IniTime} : t^{n=0} = 0.0$
 
 
 \section{IniVn}
-$\texttt{IniVn} : \forall{j\in cells()}, \ vn^{n=0}_{j} = 0.0$
+$\texttt{IniVn} : \forall{j\in cells}, \ vn^{n=0}_{j} = 0.0$
 
 
 \section{UpdateVn}
-$\texttt{UpdateVn} : \forall{j\in cells()}, \ vn^{n+1}_{j} = vn^{n}_{j} + vl^{n+1}_{j} \cdot 2$
+$\texttt{UpdateVn} : \forall{j\in cells}, \ vn^{n+1}_{j} = vn^{n}_{j} + vl^{n+1}_{j} \cdot 2$
 
 
 \section{IniVk}
-$\texttt{IniVk} : \forall{j\in cells()}, \ vk^{n+1, k=0}_{j} = 0.0$
+$\texttt{IniVk} : \forall{j\in cells}, \ vk^{n+1, k=0}_{j} = 0.0$
 
 
 \section{UpdateVk}
-$\texttt{UpdateVk} : \forall{j\in cells()}, \ vk^{n+1, k+1}_{j} = vk^{n+1, k}_{j} + 2$
+$\texttt{UpdateVk} : \forall{j\in cells}, \ vk^{n+1, k+1}_{j} = vk^{n+1, k}_{j} + 2$
 
 
 \section{OracleVk}
-$\texttt{OracleVk} : \forall{j\in cells()}, \ testVk=assertEquals\left(12.0,vk^{n+1}_{j}\right)$
+$\texttt{OracleVk} : \forall{j\in cells}, \ testVk=assertEquals\left(12.0,vk^{n+1}_{j}\right)$
 
 
 \section{IniVl}
-$\texttt{IniVl} : \forall{j\in cells()}, \ vl^{n+1, l=0}_{j} = vk^{n+1}_{j} + 8$
+$\texttt{IniVl} : \forall{j\in cells}, \ vl^{n+1, l=0}_{j} = vk^{n+1}_{j} + 8$
 
 
 \section{UpdateVl}
-$\texttt{UpdateVl} : \forall{j\in cells()}, \ vl^{n+1, l+1}_{j} = vl^{n+1, l}_{j} + 1$
+$\texttt{UpdateVl} : \forall{j\in cells}, \ vl^{n+1, l+1}_{j} = vl^{n+1, l}_{j} + 1$
 
 
 \section{OracleVl}
-$\texttt{OracleVl} : \forall{j\in cells()}, \ testVl=assertEquals\left(27.0,vl^{n+1}_{j}\right)$
+$\texttt{OracleVl} : \forall{j\in cells}, \ testVl=assertEquals\left(27.0,vl^{n+1}_{j}\right)$
 
 
 \section{OracleVn}
-$\texttt{OracleVn} : \forall{j\in cells()}, \ testVn=assertEquals\left(54.0 \cdot n,vn^{n+1}_{j}\right)$
+$\texttt{OracleVn} : \forall{j\in cells}, \ testVn=assertEquals\left(54.0 \cdot n,vn^{n+1}_{j}\right)$
 
 
 \section{ComputeTn}

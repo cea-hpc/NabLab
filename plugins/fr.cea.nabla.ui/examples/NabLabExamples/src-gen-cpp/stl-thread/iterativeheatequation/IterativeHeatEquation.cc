@@ -108,10 +108,6 @@ IterativeHeatEquation::IterativeHeatEquation(CartesianMesh2D& aMesh)
 , nbNodes(mesh.getNbNodes())
 , nbCells(mesh.getNbCells())
 , nbFaces(mesh.getNbFaces())
-, maxNbNodesOfCell(CartesianMesh2D::MaxNbNodesOfCell)
-, maxNbNodesOfFace(CartesianMesh2D::MaxNbNodesOfFace)
-, maxNbCellsOfFace(CartesianMesh2D::MaxNbCellsOfFace)
-, maxNbNeighbourCells(CartesianMesh2D::MaxNbNeighbourCells)
 , X(nbNodes)
 , Xc(nbCells)
 , u_n(nbCells)
@@ -138,7 +134,6 @@ IterativeHeatEquation::jsonInit(const char* jsonContent)
 	assert(document.IsObject());
 	const rapidjson::Value::Object& options = document.GetObject();
 
-	// outputPath
 	assert(options.HasMember("outputPath"));
 	const rapidjson::Value& valueof_outputPath = options["outputPath"];
 	assert(valueof_outputPath.IsString());
@@ -187,7 +182,7 @@ void IterativeHeatEquation::computeFaceLength() noexcept
 			for (size_t pNodesOfFaceF=0; pNodesOfFaceF<nbNodesOfFaceF; pNodesOfFaceF++)
 			{
 				const Id pId(nodesOfFaceF[pNodesOfFaceF]);
-				const Id pPlus1Id(nodesOfFaceF[(pNodesOfFaceF+1+maxNbNodesOfFace)%maxNbNodesOfFace]);
+				const Id pPlus1Id(nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFaceF)%nbNodesOfFaceF]);
 				const size_t pNodes(pId);
 				const size_t pPlus1Nodes(pPlus1Id);
 				reduction0 = iterativeheatequationfreefuncs::sumR0(reduction0, iterativeheatequationfreefuncs::norm(iterativeheatequationfreefuncs::operatorSub(X[pNodes], X[pPlus1Nodes])));
@@ -224,7 +219,7 @@ void IterativeHeatEquation::computeV() noexcept
 			for (size_t pNodesOfCellJ=0; pNodesOfCellJ<nbNodesOfCellJ; pNodesOfCellJ++)
 			{
 				const Id pId(nodesOfCellJ[pNodesOfCellJ]);
-				const Id pPlus1Id(nodesOfCellJ[(pNodesOfCellJ+1+maxNbNodesOfCell)%maxNbNodesOfCell]);
+				const Id pPlus1Id(nodesOfCellJ[(pNodesOfCellJ+1+nbNodesOfCellJ)%nbNodesOfCellJ]);
 				const size_t pNodes(pId);
 				const size_t pPlus1Nodes(pPlus1Id);
 				reduction0 = iterativeheatequationfreefuncs::sumR0(reduction0, iterativeheatequationfreefuncs::det(X[pNodes], X[pPlus1Nodes]));
@@ -629,7 +624,7 @@ int main(int argc, char* argv[])
 	
 	// Module instanciation(s)
 	IterativeHeatEquation* iterativeHeatEquation = new IterativeHeatEquation(mesh);
-	if (d.HasMember("iterativeHeatEquation"))
+	assert(d.HasMember("iterativeHeatEquation"));
 	{
 		rapidjson::StringBuffer strbuf;
 		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);

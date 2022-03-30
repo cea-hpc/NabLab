@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -150,6 +150,16 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 					val cppFolder = srcCppFolder.getFolder(cppFolderName)
 					cppFolder.create(false, true, monitor)
 				}
+
+				// Create src-gen-arcane folder
+				val srcArcaneFolderName = (newProjectPage.module ? "src-gen-arcane" : "src-arcane")
+				val srcArcaneFolder = project.getFolder(srcArcaneFolderName)
+				srcArcaneFolder.create(false, true, monitor)
+
+				// Create src-gen-python folder
+				val srcPythonFolderName = (newProjectPage.module ? "src-gen-python" : "src-python")
+				val srcPythonFolder = project.getFolder(srcPythonFolderName)
+				srcPythonFolder.create(false, true, monitor)
 
 				// Create nabla and nablagen models
 				val nablaFile = modulesFolder.getFile(mOeName + ".n")

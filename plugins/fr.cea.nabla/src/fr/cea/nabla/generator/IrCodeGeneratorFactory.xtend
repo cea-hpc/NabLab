@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -11,7 +11,7 @@ package fr.cea.nabla.generator
 
 import com.google.inject.Inject
 import fr.cea.nabla.ir.generator.IrCodeGenerator
-import fr.cea.nabla.ir.generator.arcane.ArcaneApplicationGenerator
+import fr.cea.nabla.ir.generator.arcane.ArcaneGenerator
 import fr.cea.nabla.ir.generator.cpp.CppGenerator
 import fr.cea.nabla.ir.generator.dace.DaceGenerator
 import fr.cea.nabla.ir.generator.java.JavaGenerator
@@ -36,13 +36,23 @@ class IrCodeGeneratorFactory
 		switch targetType
 		{
 			case JAVA: new JavaGenerator(hasLevelDB)
-			case DACE: new DaceGenerator(wsPath)
-			case PYTHON: new PythonGenerator
+			case DACE:
+			{
+				val envVars = new ArrayList<Pair<String, String>>
+				targetVars.forEach[x | envVars += x.key -> x.value]
+				new DaceGenerator(wsPath, hasLevelDB, envVars)
+			}
+			case PYTHON:
+			{
+				val envVars = new ArrayList<Pair<String, String>>
+				targetVars.forEach[x | envVars += x.key -> x.value]
+				new PythonGenerator(wsPath, hasLevelDB, envVars)
+			}
 			case ARCANE:
 			{
 				val cmakeVars = new ArrayList<Pair<String, String>>
 				targetVars.forEach[x | cmakeVars += x.key -> x.value]
-				new ArcaneApplicationGenerator(wsPath, cmakeVars)
+				new ArcaneGenerator(wsPath, cmakeVars)
 			}
 			default:
 			{

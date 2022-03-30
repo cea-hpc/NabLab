@@ -111,6 +111,7 @@
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//ConnectivityCall">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Nabla.ecore#//ConnectivityCall/connectivity"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Nabla.ecore#//ConnectivityCall/group"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Nabla.ecore#//ConnectivityCall/args"/>
     </genClasses>
     <genClasses ecoreClass="Nabla.ecore#//SpaceIteratorRef">

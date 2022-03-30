@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2021 CEA
+    Copyright (c) 2022 CEA
     This program and the accompanying materials are made available under the
     terms of the Eclipse Public License 2.0 which is available at
     http://www.eclipse.org/legal/epl-2.0.
@@ -11,7 +11,7 @@
 <feature
       id="fr.cea.nabla.thirdparty.libraries.feature"
       label="Nabla 3rd party libraries feature"
-      version="0.4.4.qualifier"
+      version="0.4.5.qualifier"
       provider-name="CEA">
 
    <description>

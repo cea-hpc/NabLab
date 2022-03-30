@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -90,11 +90,24 @@ class ExpressionContentProvider
 	{
 		val t = type as BaseType
 
-		if (t.sizes.exists[x | !(x instanceof IntConstant)])
-			throw new RuntimeException("BaseTypeConstants size expressions must be IntConstant")
-
-		val sizes = t.sizes.map[x | (x as IntConstant).value]
-		'''{«initArray(sizes, value.content)»}'''
+		if (t.sizes.empty)
+		{
+			// scalar type
+			value.content
+		}
+		else
+		{
+			if (t.isStatic)
+				'''{«initArray(t.intSizes, value.content)»}'''
+			else
+			{
+				// The array must be allocated and initialized by loops
+				// No expression value can be produced in dynamic mode
+				// Two instructions must be encapsulated in a function and a function call must be done
+				throw new RuntimeException("Not yet implemented")
+				//'''new «t.primitive.javaType»«formatIteratorsAndIndices(t, t.sizes.map[content])»'''
+			}
+		}
 	}
 
 	def dispatch CharSequence getContent(VectorConstant it)
@@ -106,7 +119,7 @@ class ExpressionContentProvider
 		if (call.connectivity.multiple)
 		{
 			if (call.args.empty)
-				call.connectivity.nbElemsVar
+				call.connectivity.nbElems
 			else
 				'''mesh.«call.accessor».size()'''
 		}

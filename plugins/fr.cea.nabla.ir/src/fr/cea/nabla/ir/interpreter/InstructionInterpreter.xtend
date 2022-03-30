@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -165,7 +165,7 @@ class InstructionInterpreter
 	{
 		context.logFinest("Interprete ItemIndexDefinition")
 		val idValue = context.getIdValue(value.id)
-		if (value.container.connectivity.indexEqualId) 
+		if (value.container.indexEqualId) 
 			context.addIndexValue(index, idValue)
 		else 
 		{
@@ -229,7 +229,7 @@ class InstructionInterpreter
 
 	private static dispatch def getIdValue(ItemIdValueIterator it, Context context)
 	{
-		if (iterator.container.connectivityCall.connectivity.indexEqualId)
+		if (iterator.container.connectivityCall.indexEqualId)
 			getIndexValue(context)
 		else
 		{
@@ -245,7 +245,7 @@ class InstructionInterpreter
 			return iteratorRefIndex
 		else
 		{
-			val nbElems = context.mesh.getSize(iterator.container.connectivityCall.connectivity)
+			val nbElems = context.mesh.getSize(iterator.container.connectivityCall)
 			return (iteratorRefIndex + shift + nbElems)%nbElems
 		}
 	}

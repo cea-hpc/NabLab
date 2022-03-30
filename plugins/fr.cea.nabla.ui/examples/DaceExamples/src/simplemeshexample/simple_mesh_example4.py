@@ -131,11 +131,16 @@ class SimpleMeshExample:
         maxNodesOfCell = dace.symbol('maxNodesOfCell')
         
         @dace.program
-        def _computeCstComputeSum(nodesOfCells: dace.int64[nbCells, maxNodesOfCell], cst: dace.float64[nbNodes], nodes_sum: dace.float64[nbCells]):
+        def _computeCst(cst: dace.float64[nbNodes]):    
             for rNodes in dace.map[0:nbNodes]:
                 with dace.tasklet:
                         valuesOnNodes >> cst[rNodes]
-                        valuesOnNodes = 1
+                        valuesOnNodes = 1.0
+            return cst
+        
+        @dace.program
+        def _computeCstComputeSum(nodesOfCells: dace.int64[nbCells, maxNodesOfCell], cst: dace.float64[nbNodes], nodes_sum: dace.float64[nbCells]):
+            _computeCst(cst)
             for jCells in dace.map[0:nbCells]:
                 tmp = np.empty((maxNodesOfCell), dtype=np.float64)
                 for rNodes in dace.map[0:maxNodesOfCell]:
@@ -318,7 +323,8 @@ class SimpleMeshExample:
         
         
         sdfg = _computeCstComputeSum.to_sdfg()
-        for state in sdfg.nodes():
+        
+        '''for state in sdfg.nodes():
             if any(isinstance(node, Tasklet) for node in state.nodes()):
                 break
         
@@ -327,7 +333,7 @@ class SimpleMeshExample:
         
         for i in range(len(tasklet_nodes)):
             if (i!=2):
-                nest_state_subgraph(sdfg, state, SubgraphView(state, [tasklet_nodes[i]]))      
+                nest_state_subgraph(sdfg, state, SubgraphView(state, [tasklet_nodes[i]]))'''      
         
         sdfg.view("sdfgGraphWithStatesForEachTasklet")
         
@@ -395,10 +401,10 @@ class SimpleMeshExample:
         self._setUpTimeLoopN() # @2.0
         self._assertSum() # @3.0
         self._executeTimeLoopN() # @3.0
-        #self._generateGraphSDFG1()
+        self._generateGraphSDFG1()
         #self._generateGraphSDFG2()
         #self._generateGraphSDFG3()
-        self._generateGraphSDFG4()
+        #self._generateGraphSDFG4()
         print("End of execution of simpleMeshExample")
 
 if __name__ == '__main__':
@@ -425,3 +431,4 @@ if __name__ == '__main__':
         print("[ERROR] Wrong number of arguments: expected 1, actual " + str(len(args)), file=sys.stderr)
         print("        Expecting user data file name, for example SimpleMeshExample.json", file=sys.stderr)
         exit(1)
+        

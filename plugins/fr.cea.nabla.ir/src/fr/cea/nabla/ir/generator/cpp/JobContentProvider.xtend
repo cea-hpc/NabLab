@@ -44,7 +44,11 @@ abstract class JobContentProvider
 		void «IrUtils.getContainerOfType(it, IrModule).className»::«codeName»() noexcept
 		{
 			#ifdef NABLAB_DEBUG
+			«IF hasLocals»
 			«localScopeDefinition»
+			«ELSE»
+			«globalScopeDefinition»
+			«ENDIF»
 			#endif
 			«innerContent»
 		}

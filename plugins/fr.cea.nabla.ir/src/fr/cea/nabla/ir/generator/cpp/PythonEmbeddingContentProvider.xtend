@@ -243,18 +243,25 @@ class PythonEmbeddingContentProvider
 			«ENDIF»
 			«ENDFOR»
 			
+			std::string name = "«name.toFirstUpper»";
 			«name.toFirstUpper» *instance = nullptr;
 			
 			«name.toFirstUpper»Context(«name.toFirstUpper» *instance) : instance(instance) {}
+			«name.toFirstUpper»Context(«name.toFirstUpper» *instance, std::string name) : instance(instance), name(name) {}
 			«name.toFirstUpper»Context() : instance(nullptr) {}
 			
 			virtual ~«name.toFirstUpper»Context() = default;
 		};
 	'''
 	
-	def getLocalScopeStructContent(InternFunction it)
+	def getLocals(EObject it)
 	{
-		return getLocalScopeStructContent(it, name.toFirstUpper)
+		return eAllContents.filter(VariableDeclaration).filter[v|v.variable.isUserDefined].toMap[d|d.variable.name].values
+	}
+	
+	def hasLocals(EObject it)
+	{
+		return !eAllContents.filter(VariableDeclaration).filter[v|v.variable.isUserDefined].empty
 	}
 	
 	def getLocalScopeStructContent(Job it)
@@ -262,27 +269,34 @@ class PythonEmbeddingContentProvider
 		return getLocalScopeStructContent(it, name.toFirstUpper)
 	}
 	
+	def getLocalScopeStructContent(InternFunction it)
+	{
+		return getLocalScopeStructContent(it, name.toFirstUpper)
+	}
+	
 	def getLocalScopeStructContent(EObject it, String name)
 	{
-		val moduleName = getContainerOfType(it, IrModule).name.toFirstUpper
-		val locals = eAllContents.filter(VariableDeclaration).toMap[d|d.variable.name].values
-		return getLocalScopeStructContent(name + "Context", moduleName, locals)
+		if (hasLocals)
+		{
+			val moduleName = getContainerOfType(it, IrModule).name.toFirstUpper
+			return getLocalScopeStructContent(name + "Context", moduleName, locals)
+		} else {
+			return ""
+		}
 	}
 	
 	def getLocalScopeStructContent(String name, String moduleName, Collection<VariableDeclaration> locals)
 	'''
 		struct «name» : «moduleName»::«moduleName»Context
 		{
-			«IF !locals.empty»
-			«FOR local : locals.filter[v|isUserDefined(v.variable)]»
+			«FOR local : locals»
 			const py::object get_«local.variable.name»() const { if («local.variable.name» != nullptr) return py::cast(*«local.variable.name»); else return py::cast<py::none>(Py_None); }
 			«ENDFOR»
 			
-			«FOR local : locals.filter[v|isUserDefined(v.variable)]»
+			«FOR local : locals»
 			«IF local.variable.const»const «ENDIF»«local.variable.type.cppType» *«local.variable.name» = nullptr;
 			«ENDFOR»
 			
-			«ENDIF»
 			using «moduleName»::«moduleName»Context::«moduleName»Context;
 		};
 		
@@ -299,14 +313,24 @@ class PythonEmbeddingContentProvider
 		}
 	'''
 	
+	def getGlobalScopeDefinition(Job it)
+	'''
+		«getContainerOfType(it, IrModule).name.toFirstUpper»Context scope(this, "«it.name»");
+	'''
+	
+	def getGlobalScopeDefinition(InternFunction it)
+	'''
+		«getContainerOfType(it, IrModule).name.toFirstUpper»Context scope(this, "«it.name»");
+	'''
+	
 	def getLocalScopeDefinition(Job it)
 	'''
-		«name.toFirstUpper»Context scope(this);
+		«name.toFirstUpper»Context scope(this, "«it.name»");
 	'''
 	
 	def getLocalScopeDefinition(InternFunction it)
 	'''
-		«name.toFirstUpper»Context scope(this);
+		«name.toFirstUpper»Context scope(this, "«it.name»");
 	'''
 	
 	def getSetFunctionPtrContent(IrModule it)
@@ -361,6 +385,25 @@ class PythonEmbeddingContentProvider
 	
 	def getPythonInitializeContent(IrModule it)
 	{
+		
+		val allBaseTypes = eAllContents.filter(BaseType)
+				.filter[t|!t.sizes.empty && t.sizes
+					.forall[s|!(s instanceof ArgOrVarRef) && s.eAllContents.filter(ArgOrVarRef).empty]
+				]
+				.toMap([t|t.cppType], [t|t]).values
+		val allShapes = newHashSet
+		val typeShapes = newHashMap
+		allBaseTypes.forEach[t|
+			val shapes = t.allArrayShapes
+			shapes.forEach[s|
+				val pythonType = getPythonTypeForShape(t.primitive, s).toString
+				if (allShapes.add(pythonType))
+				{
+					typeShapes.computeIfAbsent(t.primitive, [newArrayList]).add(s)
+				}
+			]
+		]
+		
 		'''
 			void «className»::pythonInitialize()
 			{
@@ -369,8 +412,20 @@ class PythonEmbeddingContentProvider
 				«val globalContextName = '''«className»Context'''»
 				py::class_<«className»::«globalContextName»>(«className.toLowerCase»Module, "«globalContextName»")
 					«val vars = variables.filter[!constExpr]»
-					«FOR v : vars SEPARATOR '\n'».def_property_readonly("«v.name»", &«className»::«globalContextName»::get_«v.name»)«ENDFOR»;
-				«FOR job : jobs»
+					«FOR v : vars SEPARATOR '\n'».def_property_readonly("«v.name»", &«className»::«globalContextName»::get_«v.name»)«ENDFOR»
+					.def("__str__", [](«className»::«globalContextName» &self)
+						{
+							std::ostringstream oss;
+							oss << self.name;
+							return oss.str();
+						})
+					.def("__repr__", [](«className»::«globalContextName» &self)
+						{
+							std::ostringstream oss;
+							oss << self.name;
+							return oss.str();
+						});
+				«FOR job : jobs.filter[j|j.hasLocals]»
 				«val varDecs = job.eAllContents.filter(VariableDeclaration).filter[v|isUserDefined(v.variable)].toList»
 				«val jobContextName = '''«job.codeName.toFirstUpper»Context'''»
 				py::class_<«jobContextName», «className»::«globalContextName»>(«className.toLowerCase»Module, "«jobContextName»")«IF varDecs.empty»;«ENDIF»
@@ -378,15 +433,12 @@ class PythonEmbeddingContentProvider
 					«FOR local : varDecs SEPARATOR '\n'».def_property_readonly("«local.variable.name»", &«jobContextName»::get_«local.variable.name»)«ENDFOR»;
 					«ENDIF»
 				«ENDFOR»
-				«FOR type : eAllContents
-						.filter(BaseType)
-						.filter[t|!t.sizes.empty && t.sizes
-							.forall[s|!(s instanceof ArgOrVarRef) && s.eAllContents.filter(ArgOrVarRef).empty]
-						]
-						.toMap([t|t.cppType], [t|t]).values»
-				«FOR shape : type.allArrayShapes»
-				py::class_<«getCppTypeForShape(type.primitive, shape)»>(«className.toLowerCase»Module, "«getPythonTypeForShape(type.primitive, shape)»")
-					.def("__getitem__", [](«getCppTypeForShape(type.primitive, shape)» &self, unsigned index)
+				«FOR typeShapeEntry : typeShapes.entrySet»
+				«FOR shape : typeShapeEntry.value»
+				«val type = typeShapeEntry.key»
+				«val cppType = getCppTypeForShape(type, shape)»
+				py::class_<«cppType»>(«className.toLowerCase»Module, "«getPythonTypeForShape(type, shape)»")
+					.def("__getitem__", [](«cppType» &self, unsigned index)
 						{
 							if (index < self.size()) {
 								return self[index];
@@ -394,15 +446,15 @@ class PythonEmbeddingContentProvider
 								throw std::out_of_range("list index out of range");
 							}
 						})
-					.def("__len__", [](«getCppTypeForShape(type.primitive, shape)» &self)
+					.def("__len__", [](«cppType» &self)
 						{ return self.size(); })
-					.def("__str__", [](«getCppTypeForShape(type.primitive, shape)» &self)
+					.def("__str__", [](«cppType» &self)
 						{
 							std::ostringstream oss;
 							oss << self;
 							return oss.str();
 						})
-					.def("__repr__", [](«getCppTypeForShape(type.primitive, shape)» &self)
+					.def("__repr__", [](«cppType» &self)
 						{
 							std::ostringstream oss;
 							oss << self;

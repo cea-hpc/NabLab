@@ -91,8 +91,8 @@
     <eLiterals name="OpenMP" value="3" literal="OpenMP"/>
     <eLiterals name="Kokkos" value="4" literal="Kokkos"/>
     <eLiterals name="KokkosTeamThread" value="5" literal="KokkosTeamThread"/>
-    <eLiterals name="Arcane" value="6" literal="Arcane"/>
-    <eLiterals name="ArcaneSequential" value="7" literal="ArcaneSequential"/>
+    <eLiterals name="ArcaneSequential" value="6" literal="ArcaneSequential"/>
+    <eLiterals name="ArcaneThread" value="7" literal="ArcaneThread"/>
     <eLiterals name="ArcaneAccelerator" value="8" literal="ArcaneAccelerator"/>
     <eLiterals name="Python" value="9" literal="Python"/>
   </eClassifiers>

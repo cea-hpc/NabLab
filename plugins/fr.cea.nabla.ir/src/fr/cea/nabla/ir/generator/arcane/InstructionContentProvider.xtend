@@ -48,9 +48,9 @@ class InstructionContentProvider
 {
 	static def dispatch CharSequence getContent(VariableDeclaration it)
 	'''
-		«val annot = AcceleratorAnnotation.tryToGet(it)»
+		«val annot = AcceleratorAnnotation.tryToGet(variable)»
 		«IF annot !== null»
-			«IF variable.type.scalar»
+			«IF TypeContentProvider.isArcaneBaseType(variable.type)»
 				«IF annot.viewDirection == ViewDirection.In»
 					auto «variable.name» = «ArcaneUtils.getCodeName((variable.defaultValue as ArgOrVarRef).target)»;
 				«ELSE»
@@ -75,7 +75,7 @@ class InstructionContentProvider
 	static def dispatch CharSequence getContent(Affectation it)
 	{
 		if (left.target.linearAlgebra && !(left.iterators.empty && left.indices.empty))
-			'''«left.codeName».setValue(«formatIteratorsAndIndices(left.target.type, left.iterators, left.indices)», «right.content»);'''
+			'''«left.codeName».setValue(«formatIteratorsAndIndices(left.target, left.iterators, left.indices)», «right.content»);'''
 		else
 			'''
 				«left.content» = «right.content»;

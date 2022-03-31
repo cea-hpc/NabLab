@@ -160,9 +160,9 @@ class ExpressionContentProvider
 			if (ArcaneUtils.isArcaneManaged(target) && indices.empty && iterators.empty && eContainingFeature !== IrPackage.Literals.AFFECTATION__LEFT)
 				'''«codeName»()''' // get the value of a VariableScalar...
 			else if (target.linearAlgebra && !(iterators.empty && indices.empty))
-				'''«codeName».getValue(«formatIteratorsAndIndices(target.type, iterators, indices)»)'''
+				'''«codeName».getValue(«formatIteratorsAndIndices(target, iterators, indices)»)'''
 			else
-				'''«codeName»«formatIteratorsAndIndices(target.type, iterators, indices)»'''
+				'''«codeName»«formatIteratorsAndIndices(target, iterators, indices)»'''
 		}
 	}
 

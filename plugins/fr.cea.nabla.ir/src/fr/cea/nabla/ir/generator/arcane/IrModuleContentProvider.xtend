@@ -10,6 +10,7 @@
 package fr.cea.nabla.ir.generator.arcane
 
 import fr.cea.nabla.ir.JobCallerExtensions
+import fr.cea.nabla.ir.annotations.AcceleratorAnnotation
 import fr.cea.nabla.ir.generator.CppGeneratorUtils
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.ConnectivityType
@@ -22,7 +23,6 @@ import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.generator.arcane.ArcaneUtils.getCodeName
-import fr.cea.nabla.ir.annotations.AcceleratorAnnotation
 
 class IrModuleContentProvider
 {
@@ -178,6 +178,9 @@ class IrModuleContentProvider
 	«FOR v : variables.filter[x | (x.type instanceof LinearAlgebraType)]»
 		, «v.codeName»(«IF TypeContentProvider.isArcaneStlVector(v.type)»this, «ENDIF»"«v.name»")
 	«ENDFOR»
+	«IF AcceleratorAnnotation.tryToGet(it) !== null»
+		, m_default_queue(subDomain()->acceleratorMng()->defaultQueue())
+	«ENDIF»
 	{}
 	«IF ArcaneUtils.isArcaneModule(it)»
 
@@ -186,11 +189,6 @@ class IrModuleContentProvider
 		// initialization of mesh attributes
 		m_mesh = «irRoot.mesh.className»::createInstance(mesh());
 
-		«IF AcceleratorAnnotation.tryToGet(it) !== null»
-			// initialization of accelerator queue
-			m_default_queue = subDomain()->acceleratorMng()->defaultQueue();
-
-		«ENDIF»
 		// initialization of other attributes
 		«FOR v : variables.filter[!(constExpr || option)]»
 			«val resizeDims = TypeContentProvider.getResizeDims(v.type)»

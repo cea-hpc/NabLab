@@ -10,6 +10,8 @@
 package fr.cea.nabla.ir.generator.arcane
 
 import fr.cea.nabla.ir.IrTypeExtensions
+import fr.cea.nabla.ir.annotations.AcceleratorAnnotation
+import fr.cea.nabla.ir.ir.ArgOrVar
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.Cardinality
 import fr.cea.nabla.ir.ir.Connectivity
@@ -17,6 +19,9 @@ import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.IrType
 import fr.cea.nabla.ir.ir.ItemIndex
+import fr.cea.nabla.ir.ir.ItemIndexDefinition
+import fr.cea.nabla.ir.ir.IterableInstruction
+import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.PrimitiveType
 import java.util.ArrayList
@@ -46,6 +51,14 @@ class TypeContentProvider
 			LinearAlgebraType: getLinearAlgebraClass(it)
 			default: throw new RuntimeException("Unexpected type: " + class.name)
 		}
+	}
+
+	/**
+	 * Return true if it is scalar or Real* or Real*x*, false otherwise.
+	 */
+	static def isArcaneBaseType(IrType it)
+	{
+		it instanceof BaseType && (it as BaseType).typeNameAndDimension.value == 0
 	}
 
 	static def isArcaneStlVector(IrType t)
@@ -109,15 +122,15 @@ class TypeContentProvider
 			}
 	}
 
-	static def CharSequence formatIteratorsAndIndices(IrType it, Iterable<ItemIndex> iterators, Iterable<Expression> indices)
+	static def CharSequence formatIteratorsAndIndices(ArgOrVar v, Iterable<ItemIndex> iterators, Iterable<Expression> indices)
 	{
-		switch it
+		switch v.type
 		{
 			case (iterators.empty && indices.empty): ''''''
 			BaseType: '''«FOR i : indices»[«i.content»]«ENDFOR»'''
 			// for the ArcaneStlVector, the setValue method must keep the ItemEnumerator arg (not the index)
-			LinearAlgebraType: '''«FOR i : getConnectivityIndexList(iterators, !TypeContentProvider.isArcaneStlVector(it)) SEPARATOR ', '»«i»«ENDFOR»«FOR i : indices SEPARATOR ', '»«i.content»«ENDFOR»'''
-			ConnectivityType: '''«FOR i : getConnectivityIndexList(iterators, false)»[«i»]«ENDFOR»«FOR i : indices»[«i.content»]«ENDFOR»'''
+			LinearAlgebraType: '''«FOR i : getConnectivityIndexList(iterators, v) SEPARATOR ', '»«i»«ENDFOR»«FOR i : indices SEPARATOR ', '»«i.content»«ENDFOR»'''
+			ConnectivityType: '''«FOR i : getConnectivityIndexList(iterators, v)»[«i»]«ENDFOR»«FOR i : indices»[«i.content»]«ENDFOR»'''
 		}
 	}
 
@@ -206,23 +219,51 @@ class TypeContentProvider
 	}
 
 	/* Waiting for more... and management of global matrices */
-	private static def getConnectivityIndexList(Iterable<ItemIndex> iterators, boolean fullIndex)
+	private static def getConnectivityIndexList(Iterable<ItemIndex> iterators, ArgOrVar v)
 	{
 		val indices = new ArrayList<String>
 		if (!iterators.empty)
 		{
-			val firstName = iterators.head.name
-			indices += (fullIndex ? firstName + ".index()" : firstName)
+			val firstIterator = iterators.head
+			if (firstIterator.isAnItemType)
+				if (ArcaneUtils.isArcaneManaged(v) || isArcaneStlVector(v.type)) // ArcaneStlVector needs ItemType
+					indices += firstIterator.name
+				else
+					indices += firstIterator.name + ".index()"
+			else
+				indices += firstIterator.name
+
 			for (iterator : iterators.tail)
 			{
 				val name = iterator.name
-				if (firstName == name)
+				if (iterator.isAnItemType)
 					indices += name + ".index()"
 				else
 					indices += name
 			}
 		}
 		return indices
+	}
+
+	/**
+	 * Return true if ItemIndex represents ItemType instance false otherwise.
+	 * It is the case when ItemIndex is an iterator on a topLevelConnectivity (for example allCells)
+	 * only in an ENUMERATE_LOOP (RUN_COMMAND loops use index instead of ItemType instances).
+	 */
+	private static def isAnItemType(ItemIndex i)
+	{
+		val c = i.eContainer
+		switch c
+		{
+			case null: false
+			ItemIndexDefinition: false
+			Iterator:
+			{
+				val loop = c.eContainer as IterableInstruction
+				val cpuLoop = (AcceleratorAnnotation.tryToGet(loop) === null)
+				c.container.connectivityCall.args.empty && cpuLoop
+			}
+		}
 	}
 
 	private static def getNbElems(Connectivity it)

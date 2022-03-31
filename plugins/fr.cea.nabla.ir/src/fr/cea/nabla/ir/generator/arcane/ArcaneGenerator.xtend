@@ -25,7 +25,7 @@ import java.util.LinkedHashSet
 
 class ArcaneGenerator implements IrCodeGenerator
 {
-	enum ApiType { Sequential, Multithread, Accelerator }
+	enum ApiType { Sequential, Thread, Accelerator }
 
 	val cMakeVars = new LinkedHashSet<Pair<String, String>>
 	val IrTransformationStep[] irTransformationSteps
@@ -40,7 +40,7 @@ class ArcaneGenerator implements IrCodeGenerator
 		irTransformationSteps = switch apiType
 		{
 			case ApiType.Sequential: #[new ReplaceReductions(true), new SequentializeLoops(), new ReplaceOptionsByLocalVariables]
-			case ApiType.Multithread: #[new ReplaceReductions(true), new ReplaceOptionsByLocalVariables]
+			case ApiType.Thread: #[new ReplaceReductions(true), new ReplaceOptionsByLocalVariables]
 			case ApiType.Accelerator: #[new ReplaceReductions(true), new ReplaceOptionsByLocalVariables, new PrepareLoopsForAccelerators]
 		}
 

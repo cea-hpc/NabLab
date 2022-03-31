@@ -15,8 +15,8 @@
       <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//TargetType/OpenMP"/>
       <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//TargetType/Kokkos"/>
       <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//TargetType/KokkosTeamThread"/>
-      <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//TargetType/Arcane"/>
       <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//TargetType/ArcaneSequential"/>
+      <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//TargetType/ArcaneThread"/>
       <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//TargetType/ArcaneAccelerator"/>
       <genEnumLiterals ecoreEnumLiteral="Nablagen.ecore#//TargetType/Python"/>
     </genEnums>

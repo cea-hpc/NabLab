@@ -38,8 +38,8 @@ class IrCodeGeneratorFactory
 		{
 			case JAVA: new JavaGenerator(hasLevelDB)
 			case PYTHON: new PythonGenerator(wsPath, hasLevelDB, envVars)
-			case ARCANE: new ArcaneGenerator(ArcaneGenerator.ApiType.Multithread, wsPath, envVars)
 			case ARCANE_SEQUENTIAL: new ArcaneGenerator(ArcaneGenerator.ApiType.Sequential, wsPath, envVars)
+			case ARCANE_THREAD: new ArcaneGenerator(ArcaneGenerator.ApiType.Thread, wsPath, envVars)
 			case ARCANE_ACCELERATOR: new ArcaneGenerator(ArcaneGenerator.ApiType.Accelerator, wsPath, envVars)
 			default:
 			{

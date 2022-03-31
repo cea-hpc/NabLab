@@ -19,6 +19,7 @@ import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Iterator
+import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.Loop
 import org.eclipse.emf.ecore.util.EcoreUtil
 
@@ -50,26 +51,43 @@ class PrepareLoopsForAccelerators extends IrTransformationStep
 				val loops = j.eAllContents.filter(Loop).filter[x | x.iterationBlock instanceof Iterator && Utils.isParallelLoop(x)].toIterable
 				for (l : loops)
 				{
-					// tag the loop
-					l.annotations += createAcceleratorAnnotation()
+					val inVars = IrUtils.getInVars(l)
+					val outVars = IrUtils.getOutVars(l)
 
-					// create a block
-					val block = IrFactory.eINSTANCE.createInstructionBlock
-					block.annotations += createAcceleratorAnnotation()
+					if (inVars.exists[x | x.type instanceof LinearAlgebraType] || outVars.exists[x | x.type instanceof LinearAlgebraType])
+					{
+						// the loop is kept outside Accelerator preparation.
+						// It will keep the traditional API (not forced to sequential)
+						// nothing to do
+					}
+					else
+					{
+						/**
+						 * For the moment, loops containing linear algebra are ignored.
+						 * See what to do if a GPU solver is plugged.
+						 * TODO Manage linear algebra variables for Arcane Accelerator API
+						 */
+						// tag the loop
+						l.annotations += createAcceleratorAnnotation()
 
-					// find all loop variable references
-					val varRefs = l.eAllContents.filter(ArgOrVarRef).toList
+						// create a block
+						val block = IrFactory.eINSTANCE.createInstructionBlock
+						block.annotations += createAcceleratorAnnotation()
 
-					// declare the in views
-					for (v : IrUtils.getInVars(l))
-						block.instructions += createVariableDeclaration(l, v, true, varRefs)
+						// find all loop variable references
+						val varRefs = l.eAllContents.filter(ArgOrVarRef).toList
 
-					// declare the out views
-					for (v : IrUtils.getOutVars(l))
-						block.instructions += createVariableDeclaration(l, v, false, varRefs)
+						// declare the in views
+						for (v : inVars)
+							block.instructions += createVariableDeclaration(l, v, true, varRefs)
 
-					EcoreUtil.replace(l, block)
-					block.instructions += l
+						// declare the out views
+						for (v : outVars)
+							block.instructions += createVariableDeclaration(l, v, false, varRefs)
+
+						EcoreUtil.replace(l, block)
+						block.instructions += l
+					}
 				}
 			}
 		}
@@ -88,7 +106,7 @@ class PrepareLoopsForAccelerators extends IrTransformationStep
 		val annot = createAcceleratorAnnotation()
 		val annotValue = (isIn ? ViewDirection.In : ViewDirection.Out)
 		annot.details.put(AcceleratorAnnotation.ANNOTATION_VIEW_DIRECTION_DETAIL, annotValue.toString)
-		annotations += annot
+		variable.annotations += annot
 
 		// change reference target to loop var by the previously created local variable
 		for (vr : varRefs)

@@ -19,9 +19,10 @@
 
 using namespace nablalib::types;
 
-namespace nablalib::utils {
+namespace nablalib::utils
+{
 	//deals with bool, int & double
-	template <typename T, typename = std::enable_if_t<std::is_same_v<T, int> ||  std::is_same_v<T,double>> ||  std::is_same_v<T,bool>> >
+	template <typename T, typename = std::enable_if_t<std::is_same_v<T, int> ||  std::is_same_v<T,double> ||  std::is_same_v<T,bool>>>
 	const char* serialize(const T& dataValue, int& size, bool& mustDeletePtr)
 	{
 		size = sizeof(dataValue);
@@ -29,7 +30,7 @@ namespace nablalib::utils {
 		return (const char*)&dataValue;
 	}
 
-	//deals with IntArray1D & RealArray1D
+	//deals with BoolArray1D, IntArray1D, RealArray1D
 	template <typename T, size_t N>
 	const char* serialize(const MultiArray<T, N>& dataValue, int& size, bool& mustDeletePtr)
 	{
@@ -39,7 +40,7 @@ namespace nablalib::utils {
 		return (const char*)dataValue.data();
 	}
 
-	//deals with IntArray2D & RealArray2D
+	//deals with BoolArray2D, IntArray2D & RealArray2D
 	template <typename T, size_t N, size_t M>
 	const char* serialize(const MultiArray<T, N, M>& dataValue, int& size, bool& mustDeletePtr)
 	{
@@ -49,19 +50,20 @@ namespace nablalib::utils {
 		return (const char*)dataValue.data();
 	}
 
-	inline const char* serialize(const std::vector<double>& v, int& size, bool& mustDeletePtr)
+	template <typename T, typename = std::enable_if_t<std::is_same_v<T, int> ||  std::is_same_v<T,double> ||  std::is_same_v<T,bool>>>
+	inline const char* serialize(const std::vector<T>& v, int& size, bool& mustDeletePtr)
 	{
-		size = v.size() * sizeof(double);
+		size = v.size() * sizeof(T);
 		mustDeletePtr = false;
 		return (const char*)v.data();
 	}
 
-	template<size_t N>
-	const char* serialize(const std::vector<RealArray1D<N>>& v, int& size, bool& mustDeletePtr)
+	template<typename T, size_t N>
+	const char* serialize(const std::vector<MultiArray<T, N>>& v, int& size, bool& mustDeletePtr)
 	{
 		size_t n = v.size();
-		size = n * N * sizeof(double);
-		double* array = new double[n * N];
+		size = n * N * sizeof(T);
+		T* array = new T[n * N];
 		for (size_t i = 0; i < n; i++)
 			for (size_t j = 0 ; j < N; j++)
 				array[i * N + j] = v[i][j];
@@ -69,12 +71,12 @@ namespace nablalib::utils {
 		return (const char*)array;
 	}
 
-	template<size_t N, size_t M>
-	const char* serialize(const std::vector<RealArray2D<N, M>>& v, int& size, bool& mustDeletePtr)
+	template<typename T, size_t N, size_t M>
+	const char* serialize(const std::vector<MultiArray<T, N, M>>& v, int& size, bool& mustDeletePtr)
 	{
 		size_t n = v.size();
-		size = n * N * M * sizeof(double);
-		double* array = new double[n * N * M];
+		size = n * N * M * sizeof(T);
+		T* array = new T[n * N * M];
 		for (size_t i = 0; i < n; i++)
 			for (size_t j = 0 ; j < N; j++)
 				for (size_t k = 0 ; k < M; k++)

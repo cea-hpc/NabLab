@@ -112,6 +112,8 @@ public class LevelDBUtils
 									else
 									{
 										String indexes = getMismatchIndexes(dataDescriptor.dataSizes, dataDiff.relativeMaxErrorIndex / bytes);
+										if (bytes == 1)
+											System.err.println("	Error "  + key + indexes + " : expected " + getBoolean(refByteBuffer, dataDiff.relativeMaxErrorIndex) + " but was " + getBoolean(valueByteBuffer, dataDiff.relativeMaxErrorIndex));
 										if (bytes == Integer.BYTES)
 											System.err.println("	Max relative error "  + key + indexes + " : expected " + refByteBuffer.getInt(dataDiff.relativeMaxErrorIndex) + " but was " + valueByteBuffer.getInt(dataDiff.relativeMaxErrorIndex));
 										else if (bytes == Double.BYTES)
@@ -261,29 +263,32 @@ public class LevelDBUtils
 		return (DataDescriptor) is.readObject();
 	}
 
-	public static <T extends Number>  byte[] toByteArray(final T number) throws IOException
+	public static <T> byte[] toByteArray(final T val) throws IOException
 	{
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		DataOutputStream dos = new DataOutputStream(bos);
-		if (number instanceof Integer)
-			dos.writeInt((Integer)number);
-		else if (number instanceof Double)
-			dos.writeDouble((Double)number);
+		if (val instanceof Integer)
+			dos.writeInt((Integer)val);
+		else if (val instanceof Double)
+			dos.writeDouble((Double)val);
+		else if (val instanceof Boolean)
+			dos.writeBoolean((Boolean)val);
 		else {
-			// Neither Double nor Integer
-			throw new IllegalArgumentException("Only Double and Integer supported.");
+			// Neither Boolean, Integer or Double
+			throw new IllegalArgumentException("Only Boolean, Integer and Double supported.");
 		}
 		dos.flush();
 		return bos.toByteArray();
 	}
 
-	public static byte[] toByteArray(final boolean b) throws IOException
+	public static byte[] toByteArray(boolean[] data1d) throws IOException
 	{
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		DataOutputStream dos = new DataOutputStream(bos);
-		dos.writeBoolean(b);
-		dos.flush();
-		return bos.toByteArray();
+		if (data1d == null) return null;
+		int n = data1d.length;
+		byte[] byts = new byte[n * 1];
+		for (int i = 0; i <n; i++)
+			System.arraycopy(toByteArray(data1d[i]), 0, byts, i * 1, 1);
+		return byts;
 	}
 
 	public static byte[] toByteArray(int[] data1d) throws IOException
@@ -291,7 +296,7 @@ public class LevelDBUtils
 		if (data1d == null) return null;
 		int n = data1d.length;
 		byte[] byts = new byte[n * Integer.BYTES];
-		for (int i = 0; i < n; i++)
+		for (int i = 0; i <n; i++)
 			System.arraycopy(toByteArray(data1d[i]), 0, byts, i * Integer.BYTES, Integer.BYTES);
 		return byts;
 	}
@@ -306,9 +311,28 @@ public class LevelDBUtils
 		return byts;
 	}
 
-	public static byte[] toByteArray(final Vector vector) throws IOException
+	public static byte[] toByteArray(final boolean[][] data2d) throws IOException
 	{
-		return toByteArray(vector.getData().toArray());
+		if (data2d == null) return null;
+		int n = data2d.length;
+		int m = data2d[0].length;
+		byte[] byts = new byte[n * m * 1];
+		for (int i = 0; i < n; i++)
+			for (int j = 0; j < m; j++)
+				System.arraycopy(toByteArray(data2d[i][j]), 0, byts, (i * m + j) * 1, 1);
+		return byts;
+	}
+
+	public static byte[] toByteArray(final int[][] data2d) throws IOException
+	{
+		if (data2d == null) return null;
+		int n = data2d.length;
+		int m = data2d[0].length;
+		byte[] byts = new byte[n * m * Integer.BYTES];
+		for (int i = 0; i < n; i++)
+			for (int j = 0; j < m; j++)
+				System.arraycopy(toByteArray(data2d[i][j]), 0, byts, (i * m + j) * Integer.BYTES, Integer.BYTES);
+		return byts;
 	}
 
 	public static byte[] toByteArray(final double[][] data2d) throws IOException
@@ -323,6 +347,11 @@ public class LevelDBUtils
 		return byts;
 	}
 
+	public static byte[] toByteArray(final Vector vector) throws IOException
+	{
+		return toByteArray(vector.getData().toArray());
+	}
+
 	public static byte[] toByteArray(final Matrix matrix) throws IOException
 	{
 		if (matrix == null) return null;
@@ -335,7 +364,35 @@ public class LevelDBUtils
 		return byts;
 	}
 
-	public static byte[] toByteArray(final double[][][] data3d) throws IOException
+	public static <T> byte[] toByteArray(final boolean[][][] data3d) throws IOException
+	{
+		if (data3d == null) return null;
+		int dim1 = data3d.length;
+		int dim2 = data3d[0].length;
+		int dim3 = data3d[0][0].length;
+		byte[] byts = new byte[dim1 * dim2 * dim3 * 1];
+		for (int i = 0; i < dim1; i++)
+			for (int j = 0; j < dim2; j++)
+				for (int k = 0; k < dim3; k++)
+					System.arraycopy(toByteArray(data3d[i][j][k]), 0, byts, (i * dim2 * dim3 + j * dim3 + k) * 1, 1);
+		return byts;
+	}
+
+	public static <T> byte[] toByteArray(final int[][][] data3d) throws IOException
+	{
+		if (data3d == null) return null;
+		int dim1 = data3d.length;
+		int dim2 = data3d[0].length;
+		int dim3 = data3d[0][0].length;
+		byte[] byts = new byte[dim1 * dim2 * dim3 * Integer.BYTES];
+		for (int i = 0; i < dim1; i++)
+			for (int j = 0; j < dim2; j++)
+				for (int k = 0; k < dim3; k++)
+					System.arraycopy(toByteArray(data3d[i][j][k]), 0, byts, (i * dim2 * dim3 + j * dim3 + k) * Integer.BYTES, Integer.BYTES);
+		return byts;
+	}
+
+	public static <T> byte[] toByteArray(final double[][][] data3d) throws IOException
 	{
 		if (data3d == null) return null;
 		int dim1 = data3d.length;
@@ -349,7 +406,39 @@ public class LevelDBUtils
 		return byts;
 	}
 
-	public static byte[] toByteArray(final double[][][][] data4d) throws IOException
+	public static <T> byte[] toByteArray(final boolean[][][][] data4d) throws IOException
+	{
+		if (data4d == null) return null;
+		int dim1 = data4d.length;
+		int dim2 = data4d[0].length;
+		int dim3 = data4d[0][0].length;
+		int dim4 = data4d[0][0][0].length;
+		byte[] byts = new byte[dim1 * dim2 * dim3 * dim4 * 1];
+		for (int i = 0; i < dim1; i++)
+			for (int j = 0; j < dim2; j++)
+				for (int k = 0; k < dim3; k++)
+					for (int l = 0; l < dim4; l++)
+						System.arraycopy(toByteArray(data4d[i][j][k][l]), 0, byts, (i * dim2 * dim3 * dim4 + j * dim3 * dim4 + k * dim4 + l) * 1, 1);
+		return byts;
+	}
+
+	public static <T> byte[] toByteArray(final int[][][][] data4d) throws IOException
+	{
+		if (data4d == null) return null;
+		int dim1 = data4d.length;
+		int dim2 = data4d[0].length;
+		int dim3 = data4d[0][0].length;
+		int dim4 = data4d[0][0][0].length;
+		byte[] byts = new byte[dim1 * dim2 * dim3 * dim4 * Integer.BYTES];
+		for (int i = 0; i < dim1; i++)
+			for (int j = 0; j < dim2; j++)
+				for (int k = 0; k < dim3; k++)
+					for (int l = 0; l < dim4; l++)
+						System.arraycopy(toByteArray(data4d[i][j][k][l]), 0, byts, (i * dim2 * dim3 * dim4 + j * dim3 * dim4 + k * dim4 + l) * Integer.BYTES, Integer.BYTES);
+		return byts;
+	}
+
+	public static <T> byte[] toByteArray(final double[][][][] data4d) throws IOException
 	{
 		if (data4d == null) return null;
 		int dim1 = data4d.length;

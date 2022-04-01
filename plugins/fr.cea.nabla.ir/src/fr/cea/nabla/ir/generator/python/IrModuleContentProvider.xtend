@@ -155,13 +155,13 @@ class IrModuleContentProvider
 			with db.write_batch() as b:
 				«FOR v : irRoot.variables.filter[!option]»
 					«IF v.type.scalar»
-						b.put(b"«Utils.getDbDescriptor(v)»", bytes((struct.calcsize('«getStructFormat(v.type.primitive)»'),)))
+						b.put(b"«Utils.getDbDescriptor(v)»", np.asarray((struct.calcsize('«getStructFormat(v.type.primitive)»'),), dtype='i').tobytes())
 						b.put(b"«Utils.getDbKey(v)»", struct.pack('«getStructFormat(v.type.primitive)»', «getDbValue(it, v)»))
 					«ELSEIF v.type instanceof LinearAlgebraType»
-						b.put(b"«Utils.getDbDescriptor(v)»", bytes((struct.calcsize('«getStructFormat(v.type.primitive)»'),) + «getDbSizes(it, v)»))
+						b.put(b"«Utils.getDbDescriptor(v)»", np.asarray((struct.calcsize('«getStructFormat(v.type.primitive)»'), + «getDbSizes(it, v)», dtype='i').tobytes())
 						b.put(b"«Utils.getDbKey(v)»", «getDbValue(it, v)».getData().tobytes())
 					«ELSE»
-						b.put(b"«Utils.getDbDescriptor(v)»", bytes((struct.calcsize('«getStructFormat(v.type.primitive)»'),) + «getDbSizes(it, v)»))
+						b.put(b"«Utils.getDbDescriptor(v)»", np.asarray((struct.calcsize('«getStructFormat(v.type.primitive)»'),) + «getDbSizes(it, v)», dtype='i').tobytes())
 						b.put(b"«Utils.getDbKey(v)»", «getDbValue(it, v)».tobytes())
 					«ENDIF»
 				«ENDFOR»
@@ -207,7 +207,7 @@ class IrModuleContentProvider
 			notNullRef = 1
 			if not ref == 0:
 				notNullRef = ref
-			return abs((val -ref) / notNullRef)
+			return abs((np.subtract(val, ref, dtype=np.float32) / notNullRef))
 
 		def compareData(val, ref, tolerance):
 			nbDiffs = 0
@@ -265,9 +265,9 @@ class IrModuleContentProvider
 							if currentValue == refValue:
 								print(utf8key,": OK")
 							else:
-								dataDescriptor = list(dbRef.get((utf8key + '_descriptor').encode('utf-8')))
+								dataDescriptor = np.frombuffer(dbRef.get((utf8key + '_descriptor').encode('utf-8')), dtype='i')
 								fmtSize = dataDescriptor[0]
-								dataDescriptor.pop(0)
+								dataDescriptor = np.delete(dataDescriptor, 0)
 								if fmtSize == 1:
 									dtype = 'bool'
 									format = '?'
@@ -277,7 +277,7 @@ class IrModuleContentProvider
 								elif fmtSize == 8:
 									dtype = 'float64'
 									format = 'd'
-								if dataDescriptor:
+								if dataDescriptor.size > 0:
 									numVals = np.frombuffer(currentValue, dtype=dtype)
 									numRefs = np.frombuffer(refValue, dtype=dtype)
 								else:
@@ -287,7 +287,7 @@ class IrModuleContentProvider
 								if nbErrors == 0:
 									print(utf8key + ': OK')
 								else:
-									if not dataDescriptor:
+									if dataDescriptor.size == 0:
 										print(utf8key + ': ERROR')
 										if fmtSize == 1 or fmtSize == 4:
 											print('	Expected ' + str(numRefs[0]) + ' but was ' + str(numVals[0]))
@@ -296,7 +296,9 @@ class IrModuleContentProvider
 									else:
 										print(utf8key + ': ERRORS ' + str(nbErrors) + '/' + str(np.prod(dataDescriptor)))
 										indexes = getMismatchIndexes(dataDescriptor, relativeMaxErrorIndex)
-										if fmtSize == 4:
+										if fmtSize == 1:
+											print('	Error ' + utf8key + indexes + ' expected ' + str(numRefs[relativeMaxErrorIndex]) + ' but was ' + str(numVals[relativeMaxErrorIndex]))
+										elif fmtSize == 4:
 											print('	Max relative error ' + utf8key + indexes + ' expected ' + str(numRefs[relativeMaxErrorIndex]) + ' but was ' + str(numVals[relativeMaxErrorIndex]))
 										elif fmtSize == 8:
 											print('	Max relative error ' + utf8key + indexes + ' expected ' + str(numRefs[relativeMaxErrorIndex]) + ' but was ' + str(numVals[relativeMaxErrorIndex]) + ' (Relative error = ' + str(getRelativeError(numVals[relativeMaxErrorIndex], numRefs[relativeMaxErrorIndex])) + ')')

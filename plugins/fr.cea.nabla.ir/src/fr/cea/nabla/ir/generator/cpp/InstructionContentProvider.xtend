@@ -67,7 +67,7 @@ abstract class InstructionContentProvider
 «««			FIXME add support for internal functions
 			«IF getContainerOfType(it, InternFunction) === null && isUserDefined(variable)»
 			#ifdef NABLAB_DEBUG
-			«getBeforeInstrumentation(executionEvent, scopeParameter.toString)»
+			«getInstrumentation(getExecutionEvent(true))»
 			#endif
 			«ENDIF»
 			«IF variable.const»const «ENDIF»«variable.type.cppType» «variable.name»«IF variable.defaultValue !== null»(«variable.defaultValue.content»)«ENDIF»;
@@ -75,14 +75,14 @@ abstract class InstructionContentProvider
 			«IF getContainerOfType(it, InternFunction) === null && isUserDefined(variable)»
 			#ifdef NABLAB_DEBUG
 			«variable.name.scopeUpdateContent»
-			«getAfterInstrumentation(executionEvent, scopeParameter.toString)»
+			«getInstrumentation(getExecutionEvent(false))»
 			#endif
 			«ENDIF»
 		«ELSE»
 «««			FIXME add support for internal functions
 			«IF getContainerOfType(it, InternFunction) === null && isUserDefined(variable)»
 			#ifdef NABLAB_DEBUG
-			«getBeforeInstrumentation(executionEvent, scopeParameter.toString)»
+			«getInstrumentation(getExecutionEvent(true))»
 			#endif
 			«ENDIF»
 			«IF variable.const»const «ENDIF»«variable.type.cppType» «variable.name»;
@@ -91,7 +91,7 @@ abstract class InstructionContentProvider
 			«initCppTypeContent(variable.name, variable.type)»
 			#ifdef NABLAB_DEBUG
 			«variable.name.scopeUpdateContent»
-			«getAfterInstrumentation(executionEvent, scopeParameter.toString)»
+			«getInstrumentation(getExecutionEvent(false))»
 			#endif
 			«ENDIF»
 		«ENDIF»
@@ -112,7 +112,7 @@ abstract class InstructionContentProvider
 «««			FIXME add support for internal functions
 			«IF getContainerOfType(it, InternFunction) === null && isUserDefined(left.target)»
 			#ifdef NABLAB_DEBUG
-			«getBeforeInstrumentation(executionEvent, scopeParameter.toString)»
+			«getInstrumentation(getExecutionEvent(true))»
 			#endif
 			«ENDIF»
 			«left.codeName».setValue(«formatIteratorsAndIndices(left.target.type, left.iterators, left.indices)», «right.content»);
@@ -122,7 +122,7 @@ abstract class InstructionContentProvider
 			«IF !left.target.global»
 			«left.codeName.toString.scopeUpdateContent»
 			«ENDIF»
-			«getAfterInstrumentation(executionEvent, scopeParameter.toString)»
+			«getInstrumentation(getExecutionEvent(false))»
 			#endif
 			«ENDIF»
 			'''
@@ -131,7 +131,7 @@ abstract class InstructionContentProvider
 «««			FIXME add support for internal functions
 			«IF getContainerOfType(it, InternFunction) === null && isUserDefined(left.target)»
 			#ifdef NABLAB_DEBUG
-			«getBeforeInstrumentation(executionEvent, scopeParameter.toString)»
+			«getInstrumentation(getExecutionEvent(true))»
 			#endif
 			«ENDIF»
 			«left.content» = «right.content»;
@@ -141,7 +141,7 @@ abstract class InstructionContentProvider
 			«IF !left.target.global»
 			«left.codeName.toString.scopeUpdateContent»
 			«ENDIF»
-			«getAfterInstrumentation(executionEvent, scopeParameter.toString)»
+			«getInstrumentation(getExecutionEvent(false))»
 			#endif
 			«ENDIF»
 			'''

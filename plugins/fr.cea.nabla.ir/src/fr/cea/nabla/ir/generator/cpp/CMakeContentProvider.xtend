@@ -73,6 +73,7 @@ class CMakeContentProvider
 		if (NABLAB_DEBUG)
 			set(PYBIND11_PYTHON_VERSION 3.8)
 			find_package(pybind11 REQUIRED)
+			add_subdirectory(${N_WS_PATH}/.nablab/monilog ${CMAKE_BINARY_DIR}/monilog)
 		endif()
 
 		# EXECUTABLE «execName»
@@ -80,7 +81,7 @@ class CMakeContentProvider
 «««		FIXME Include only when in debug build mode?
 		target_include_directories(«execName» PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
 		if (NABLAB_DEBUG)
-			target_link_libraries(«execName» PUBLIC«FOR l : getRootTargetLinkLibraries(it, hasLevelDB)» «l»«ENDFOR» pybind11::embed)
+			target_link_libraries(«execName» PUBLIC«FOR l : getRootTargetLinkLibraries(it, hasLevelDB)» «l»«ENDFOR» monilog pybind11::embed)
 		else()
 			target_link_libraries(«execName» PUBLIC«FOR l : getRootTargetLinkLibraries(it, hasLevelDB)» «l»«ENDFOR»)
 		endif()

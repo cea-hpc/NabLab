@@ -24,7 +24,6 @@ import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.CppGeneratorUtils.*
-import fr.cea.nabla.ir.annotations.NabLabFileAnnotation
 
 @Data
 class IrModuleContentProvider
@@ -129,21 +128,12 @@ class IrModuleContentProvider
 		#endif
 
 	private:
-		#ifdef NABLAB_DEBUG
-		«FOR j : jobs»
-		«pythonEmbeddingContentProvider.getWrapperDeclarationContent(j)»
-		«ENDFOR»
-		«FOR j : jobs»
-		«pythonEmbeddingContentProvider.getPointerDeclarationContent(j)»
-		«ENDFOR»
-		#endif
 		«IF postProcessing !== null»
 		void dumpVariables(int iteration, bool useTimer=true);
 
 		«ENDIF»
 		#ifdef NABLAB_DEBUG
 		void pythonInitialize();
-		void setFunctionPtr(int idx, bool wrapper);
 		#endif
 		«privateMethodHeaders»
 		// Mesh and mesh variables
@@ -200,8 +190,7 @@ class IrModuleContentProvider
 
 		#ifdef NABLAB_DEBUG
 		«className»Context globalScope;
-		std::list<py::function> before[«pythonEmbeddingContentProvider.executionEvents.size»];
-		std::list<py::function> after[«pythonEmbeddingContentProvider.executionEvents.size»];
+		MoniLog monilog;
 		#endif
 
 	#ifdef NABLAB_DEBUG
@@ -272,9 +261,6 @@ class IrModuleContentProvider
 	«ENDFOR»
 	{
 		#ifdef NABLAB_DEBUG
-		«FOR j : jobs»
-			this->«Utils.getCodeName(j)»Ptr = &«className»::«Utils.getCodeName(j)»;
-		«ENDFOR»
 		«pythonEmbeddingContentProvider.getExecutionEvents(it)»
 		this->globalScope = «className»Context(this);
 		#endif
@@ -349,14 +335,6 @@ class IrModuleContentProvider
 		«jobContentProvider.getDefinitionContent(j)»
 	«ENDFOR»
 	
-	#ifdef NABLAB_DEBUG
-	«FOR j : jobs SEPARATOR '\n'»
-		«pythonEmbeddingContentProvider.getWrapperDefinitionContent(j)»
-	«ENDFOR»
-«««	TODO: add function wrappers
-«««	TODO: add variable assignment wrappers
-	#endif
-	
 	«IF main»
 	«IF postProcessing !== null»
 
@@ -406,8 +384,6 @@ class IrModuleContentProvider
 	«ENDIF»
 
 	#ifdef NABLAB_DEBUG
-	«pythonEmbeddingContentProvider.getSetFunctionPtrContent(it)»
-
 	«pythonEmbeddingContentProvider.getPythonInitializeContent(it)»
 	#endif
 

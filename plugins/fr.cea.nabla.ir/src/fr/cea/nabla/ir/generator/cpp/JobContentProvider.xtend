@@ -49,8 +49,12 @@ abstract class JobContentProvider
 			«ELSE»
 			«globalScopeDefinition»
 			«ENDIF»
+			«getInstrumentation(getExecutionEvent(true))»
 			#endif
 			«innerContent»
+			#ifdef NABLAB_DEBUG
+			«getInstrumentation(getExecutionEvent(false))»
+			#endif
 		}
 	'''
 

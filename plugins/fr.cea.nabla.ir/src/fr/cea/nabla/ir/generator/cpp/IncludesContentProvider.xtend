@@ -24,6 +24,7 @@ class IncludesContentProvider
 		#include <Python.h>
 		#include <pybind11/embed.h>
 		#include <pybind11/stl.h>
+		#include "MoniLog.h"
 		#endif
 		«FOR include : getUserIncludes(hasLevelDB, hasPostProcessing)»
 		#include "«include»"

@@ -15,6 +15,7 @@ import org.eclipse.xtend.lib.annotations.Data
 import static extension fr.cea.nabla.ir.JobCallerExtensions.*
 import static extension fr.cea.nabla.ir.JobExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
+import fr.cea.nabla.ir.ir.Job
 
 class JobCallerContentProvider
 {
@@ -23,15 +24,9 @@ class JobCallerContentProvider
 
 	def getCallsContent(JobCaller it)
 	'''
-		#ifdef NABLAB_DEBUG
-			«FOR j : calls»
-				(this->*(«j.callName.replace('.', '->')»Ptr))(); // @«j.at»
-			«ENDFOR»
-		#else
-			«FOR j : calls»
-				«j.callName.replace('.', '->')»(); // @«j.at»
-			«ENDFOR»
-		#endif
+		«FOR j : calls»
+			«j.callName.replace('.', '->')»(); // @«j.at»
+		«ENDFOR»
 
 	'''
 }
@@ -67,7 +62,7 @@ class KokkosTeamThreadJobCallerContentProvider extends JobCallerContentProvider
 			«ELSE»
 			#ifdef NABLAB_DEBUG
 			{
-				const bool shouldReleaseGIL = !(«FOR event : atJobs.map[executionEvent] SEPARATOR ' && '»before[«event»].empty() && after[«event»].empty()«ENDFOR»);
+				const bool shouldReleaseGIL = !(«FOR event : atJobs.map[allExecutionEvents] SEPARATOR ' && '»!monilog.has_registered_moniloggers(«event»)«ENDFOR»);
 				if (shouldReleaseGIL)
 				{
 					py::gil_scoped_release release;

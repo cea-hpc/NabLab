@@ -158,7 +158,7 @@ class IrModuleContentProvider
 						b.put(b"«Utils.getDbDescriptor(v)»", np.asarray((struct.calcsize('«getStructFormat(v.type.primitive)»'),), dtype='i').tobytes())
 						b.put(b"«Utils.getDbKey(v)»", struct.pack('«getStructFormat(v.type.primitive)»', «getDbValue(it, v)»))
 					«ELSEIF v.type instanceof LinearAlgebraType»
-						b.put(b"«Utils.getDbDescriptor(v)»", np.asarray((struct.calcsize('«getStructFormat(v.type.primitive)»'), + «getDbSizes(it, v)», dtype='i').tobytes())
+						b.put(b"«Utils.getDbDescriptor(v)»", np.asarray((struct.calcsize('«getStructFormat(v.type.primitive)»'),) + «getDbSizes(it, v)», dtype='i').tobytes())
 						b.put(b"«Utils.getDbKey(v)»", «getDbValue(it, v)».getData().tobytes())
 					«ELSE»
 						b.put(b"«Utils.getDbDescriptor(v)»", np.asarray((struct.calcsize('«getStructFormat(v.type.primitive)»'),) + «getDbSizes(it, v)», dtype='i').tobytes())
@@ -259,11 +259,11 @@ class IrModuleContentProvider
 					if not utf8key.endswith('_descriptor'):
 						currentValue = db.get(key)
 						if currentValue == None:
-							print("ERROR - Key : ",utf8key," not found.")
+							sys.stderr.write("ERROR - Key : ",utf8key," not found.\n")
 							result = False
 						else:
 							if currentValue == refValue:
-								print(utf8key,": OK")
+								sys.stderr.write(utf8key + ": OK\n")
 							else:
 								dataDescriptor = np.frombuffer(dbRef.get((utf8key + '_descriptor').encode('utf-8')), dtype='i')
 								fmtSize = dataDescriptor[0]
@@ -285,29 +285,30 @@ class IrModuleContentProvider
 									numRefs = struct.unpack(format, refValue)
 								nbDiffs, nbErrors, relativeMaxError, relativeMaxErrorIndex = compareData(numVals, numRefs, tolerance)
 								if nbErrors == 0:
-									print(utf8key + ': OK')
+									sys.stderr.write(utf8key + ': OK\n')
 								else:
 									if dataDescriptor.size == 0:
-										print(utf8key + ': ERROR')
+										sys.stderr.write(utf8key + ': ERROR\n')
 										if fmtSize == 1 or fmtSize == 4:
-											print('	Expected ' + str(numRefs[0]) + ' but was ' + str(numVals[0]))
+											sys.stderr.write('	Expected ' + str(numRefs[0]) + ' but was ' + str(numVals[0]) + '\n')
 										elif fmtSize == 8:
-											print('	Expected '+ str(numRefs[0]) +' but was '+ str(numVals[0]) + ' (Relative error = ' + str(getRelativeError(numVals[0], numRefs[0])) + ')')
+											sys.stderr.write('	Expected '+ str(numRefs[0]) +' but was '+ str(numVals[0]) + ' (Relative error = ' + str(getRelativeError(numVals[0], numRefs[0])) + ')\n')
 									else:
-										print(utf8key + ': ERRORS ' + str(nbErrors) + '/' + str(np.prod(dataDescriptor)))
+										sys.stderr.write(utf8key + ': ERRORS ' + str(nbErrors) + '/' + str(np.prod(dataDescriptor)) + '\n')
 										indexes = getMismatchIndexes(dataDescriptor, relativeMaxErrorIndex)
 										if fmtSize == 1:
-											print('	Error ' + utf8key + indexes + ' expected ' + str(numRefs[relativeMaxErrorIndex]) + ' but was ' + str(numVals[relativeMaxErrorIndex]))
+											sys.stderr.write('	Error ' + utf8key + indexes + ' expected ' + str(numRefs[relativeMaxErrorIndex]) + ' but was ' + str(numVals[relativeMaxErrorIndex]) + '\n')
 										elif fmtSize == 4:
-											print('	Max relative error ' + utf8key + indexes + ' expected ' + str(numRefs[relativeMaxErrorIndex]) + ' but was ' + str(numVals[relativeMaxErrorIndex]))
+											sys.stderr.write('	Max relative error ' + utf8key + indexes + ' expected ' + str(numRefs[relativeMaxErrorIndex]) + ' but was ' + str(numVals[relativeMaxErrorIndex]) + '\n')
 										elif fmtSize == 8:
-											print('	Max relative error ' + utf8key + indexes + ' expected ' + str(numRefs[relativeMaxErrorIndex]) + ' but was ' + str(numVals[relativeMaxErrorIndex]) + ' (Relative error = ' + str(getRelativeError(numVals[relativeMaxErrorIndex], numRefs[relativeMaxErrorIndex])) + ')')
+											sys.stderr.write('	Max relative error ' + utf8key + indexes + ' expected ' + str(numRefs[relativeMaxErrorIndex]) + ' but was ' + str(numVals[relativeMaxErrorIndex]) + ' (Relative error = ' + str(getRelativeError(numVals[relativeMaxErrorIndex], numRefs[relativeMaxErrorIndex])) + ')\n')
 									result = False
 
 				# looking for key in the db that are not in the ref (new variables)
 				for key, currentValue in it:
 					if dbRef.get(key) == None:
-						print("ERROR - Key : " + utf8key + " can not be compared (not present in the ref).")
+						utf8key = key.decode("utf-8")
+						sys.stderr.write("ERROR - Key : " + utf8key + " can not be compared (not present in the ref).\n")
 						result = False
 
 			finally:

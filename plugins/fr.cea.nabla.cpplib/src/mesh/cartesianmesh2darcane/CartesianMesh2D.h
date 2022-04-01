@@ -12,10 +12,13 @@
 
 #include <map>
 #include <arcane/ItemTypes.h>
+#include <arcane/ItemGroup.h>
 #include <arcane/IMesh.h>
 #include <arcane/UnstructuredMeshConnectivity.h>
 #include <arcane/IndexedItemConnectivityView.h>
 #include <arcane/cartesianmesh/ICartesianMesh.h>
+#include <arcane/cartesianmesh/CellDirectionMng.h>
+#include <arcane/cartesianmesh/NodeDirectionMng.h>
 
 using namespace std;
 using namespace Arcane;
@@ -43,6 +46,8 @@ public:
 public:
 	static CartesianMesh2D* createInstance(IMesh* mesh);
 
+	FaceLocalId getCommonFace(const CellLocalId c1Id, const CellLocalId c2Id) const;
+
 	template <typename ItemType>
 	Int32 indexOf(const ItemLocalIdView<ItemType> v, const ItemLocalId id)
 	{
@@ -52,25 +57,59 @@ public:
 		throw std::out_of_range("Item not in view");
 	}
 
-	ItemGroup getGroup(const string& name);
+	inline ItemGroup getGroup(const string& name)
+	{
+		if (m_groups.find(name) == m_groups.end())
+		{
+			stringstream msg;
+			msg << "Invalid item group: " << name;
+			throw runtime_error(msg.str());
+		}
+		return m_groups[name];
+	}
 
-	ItemLocalIdView<Node> getNodesOfCell(const CellLocalId cId) const;
-	ItemLocalIdView<Node> getNodesOfFace(const FaceLocalId fId) const;
-	ItemLocalIdView<Cell> getCellsOfNode(const NodeLocalId nId) const;
-	ItemLocalIdView<Cell> getCellsOfFace(const FaceLocalId fId) const;
-	ItemLocalIdView<Cell> getNeighbourCells(const CellLocalId cId) const;
-	ItemLocalIdView<Face> getFacesOfCell(const CellLocalId cId) const;
-	FaceLocalId getCommonFace(const CellLocalId c1Id, const CellLocalId c2Id) const;
+	inline ItemLocalIdView<Node> getNodesOfCell(const CellLocalId cId) const
+	{ return m_umcv.cellNode().items(cId); }
 
-	FaceLocalId getTopFaceOfCell(const CellLocalId cId) const noexcept;
-	FaceLocalId getBottomFaceOfCell(const CellLocalId cId) const noexcept;
-	FaceLocalId getLeftFaceOfCell(const CellLocalId cId) const noexcept;
-	FaceLocalId getRightFaceOfCell(const CellLocalId cId) const noexcept;
+	inline ItemLocalIdView<Node> getNodesOfFace(const FaceLocalId fId) const
+	{ return m_umcv.faceNode().items(fId); }
 
-	CellLocalId getTopCell(const CellLocalId cId) const noexcept;
-	CellLocalId getBottomCell(const CellLocalId cId) const noexcept;
-	CellLocalId getLeftCell(const CellLocalId cId) const noexcept;
-	CellLocalId getRightCell(const CellLocalId cId) const noexcept;
+	inline ItemLocalIdView<Cell> getCellsOfNode(const NodeLocalId nId) const
+	{ return m_umcv.nodeCell().items(nId); }
+
+	inline ItemLocalIdView<Cell> getCellsOfFace(const FaceLocalId fId) const
+	{ return m_umcv.faceCell().items(fId); }
+
+	inline ItemLocalIdView<Cell> getNeighbourCells(const CellLocalId cId) const
+	{ return m_neighbour_cells.items(cId); }
+
+	inline ItemLocalIdView<Face> getFacesOfCell(const CellLocalId cId) const
+	{ return m_umcv.cellFace().items(cId); }
+
+
+	inline FaceLocalId getTopFaceOfCell(const CellLocalId cId) const
+	{ return m_y_cell_dm.cellFace(cId).nextId(); }
+
+	inline FaceLocalId getBottomFaceOfCell(const CellLocalId cId) const
+	{ return m_y_cell_dm.cellFace(cId).previousId(); }
+
+	inline FaceLocalId getLeftFaceOfCell(const CellLocalId cId) const
+	{ return m_x_cell_dm.cellFace(cId).previousId(); }
+
+	inline FaceLocalId getRightFaceOfCell(const CellLocalId cId) const
+	{ return m_x_cell_dm.cellFace(cId).nextId(); }
+
+	inline CellLocalId getTopCell(const CellLocalId cId) const
+	{ return m_y_cell_dm.cell(cId).nextId(); }
+
+	inline CellLocalId getBottomCell(const CellLocalId cId) const
+	{ return m_y_cell_dm.cell(cId).previousId(); }
+
+	inline CellLocalId getLeftCell(const CellLocalId cId) const
+	{ return m_x_cell_dm.cell(cId).previousId(); }
+
+	inline CellLocalId getRightCell(const CellLocalId cId) const
+	{ return m_x_cell_dm.cell(cId).nextId(); }
 
 private:
 	CartesianMesh2D(IMesh* mesh);
@@ -78,6 +117,10 @@ private:
 	ICartesianMesh* m_cartesian_mesh;
 	UnstructuredMeshConnectivityView m_umcv;
 	IndexedItemConnectivityView<Cell, Cell> m_neighbour_cells;
+	CellDirectionMng m_x_cell_dm;
+	CellDirectionMng m_y_cell_dm;
+	NodeDirectionMng m_x_node_dm;
+	NodeDirectionMng m_y_node_dm;
 
 	map<string, ItemGroup> m_groups;
 

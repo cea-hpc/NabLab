@@ -46,48 +46,48 @@ class NabLabExamplesTest extends GenerateAndExecuteTestBase
 		setup(NabLabExamplesProjectName, NabLabExamplesRelativePath)
 	}
 
-	@Test
-	def void test1GenerateExplicitHeatEquation()
-	{
-		testGenerateModule("ExplicitHeatEquation")
-		explicitHeatEquationSourceChanged = false
-	}
-
-	@Test
-	def void test2ExecuteExplicitHeatEquationIfSourceChanged()
-	{
-		Assume.assumeTrue(explicitHeatEquationSourceChanged || testUtils.runningOnCI())
-		testExecuteModule("ExplicitHeatEquation")
-	}
-
-	@Test
-	def void test1GenerateGlace2d()
-	{
-		testGenerateModule("Glace2d")
-		glace2dSourceChanged = false
-	}
-
-	@Test
-	def void test2ExecuteGlace2d()
-	{
-		Assume.assumeTrue(glace2dSourceChanged || testUtils.runningOnCI())
-		testExecuteModule("Glace2d")
-	}
-
-	@Test
-	def void test1GenerateHeatEquation()
-	{
-		testGenerateModule("HeatEquation")
-		heatEquationSourceChanged = false
-	}
-
-	@Test
-	def void test2ExecuteHeatEquation()
-	{
-		Assume.assumeTrue(heatEquationSourceChanged || testUtils.runningOnCI())
-		testExecuteModule("HeatEquation")
-	}
-
+//	@Test
+//	def void test1GenerateExplicitHeatEquation()
+//	{
+//		testGenerateModule("ExplicitHeatEquation")
+//		explicitHeatEquationSourceChanged = false
+//	}
+//
+//	@Test
+//	def void test2ExecuteExplicitHeatEquationIfSourceChanged()
+//	{
+//		Assume.assumeTrue(explicitHeatEquationSourceChanged || testUtils.runningOnCI())
+//		testExecuteModule("ExplicitHeatEquation")
+//	}
+//
+//	@Test
+//	def void test1GenerateGlace2d()
+//	{
+//		testGenerateModule("Glace2d")
+//		glace2dSourceChanged = false
+//	}
+//
+//	@Test
+//	def void test2ExecuteGlace2d()
+//	{
+//		Assume.assumeTrue(glace2dSourceChanged || testUtils.runningOnCI())
+//		testExecuteModule("Glace2d")
+//	}
+//
+//	@Test
+//	def void test1GenerateHeatEquation()
+//	{
+//		testGenerateModule("HeatEquation")
+//		heatEquationSourceChanged = false
+//	}
+//
+//	@Test
+//	def void test2ExecuteHeatEquation()
+//	{
+//		Assume.assumeTrue(heatEquationSourceChanged || testUtils.runningOnCI())
+//		testExecuteModule("HeatEquation")
+//	}
+//
 	@Test
 	def void test1GenerateImplicitHeatEquation()
 	{
@@ -101,18 +101,18 @@ class NabLabExamplesTest extends GenerateAndExecuteTestBase
 		Assume.assumeTrue(implicitHeatEquationSourceChanged || testUtils.runningOnCI())
 		testExecuteModule("ImplicitHeatEquation")
 	}
-
-	@Test
-	def void test1GenerateIterativeHeatEquation()
-	{
-		testGenerateModule("IterativeHeatEquation")
-		iterativeHeatEquationSourceChanged = false
-	}
-
-	@Test
-	def void test2ExecuteIterativeHeatEquation()
-	{
-		Assume.assumeTrue(iterativeHeatEquationSourceChanged || testUtils.runningOnCI())
-		testExecuteModule("IterativeHeatEquation")
-	}
+//
+//	@Test
+//	def void test1GenerateIterativeHeatEquation()
+//	{
+//		testGenerateModule("IterativeHeatEquation")
+//		iterativeHeatEquationSourceChanged = false
+//	}
+//
+//	@Test
+//	def void test2ExecuteIterativeHeatEquation()
+//	{
+//		Assume.assumeTrue(iterativeHeatEquationSourceChanged || testUtils.runningOnCI())
+//		testExecuteModule("IterativeHeatEquation")
+//	}
 }

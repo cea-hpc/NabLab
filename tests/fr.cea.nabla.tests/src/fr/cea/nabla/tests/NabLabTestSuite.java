@@ -21,28 +21,28 @@ import fr.cea.nabla.tests.validation.NabLabValidationTestSuite;
 
 @Suite.SuiteClasses
 ({
-	// base parsing
-	NablaParsingTest.class,
-	NablagenParsingTest.class,
-	GeneralPurposeTest.class,
-	GitCommitMessageTest.class,
-
-	// scope providers
-	NablagenScopeProviderTest.class,
-	NablaScopeProviderTest.class,
-
-	IteratorExtensionsTest.class,
-
-	NabLabTypeProviderTestSuite.class,
-	NabLabValidationTestSuite.class,
-
-	ConstExprServicesTest.class,
-	DeclarationProviderTest.class,
-
-	// integrated tests
-	NabLabIrTransformersTestSuite.class,
-	NabLabIrInterpreterTestSuite.class,
-	NabLabTestsTest.class,
+//	// base parsing
+//	NablaParsingTest.class,
+//	NablagenParsingTest.class,
+//	GeneralPurposeTest.class,
+//	GitCommitMessageTest.class,
+//
+//	// scope providers
+//	NablagenScopeProviderTest.class,
+//	NablaScopeProviderTest.class,
+//
+//	IteratorExtensionsTest.class,
+//
+//	NabLabTypeProviderTestSuite.class,
+//	NabLabValidationTestSuite.class,
+//
+//	ConstExprServicesTest.class,
+//	DeclarationProviderTest.class,
+//
+//	// integrated tests
+//	NabLabIrTransformersTestSuite.class,
+//	NabLabIrInterpreterTestSuite.class,
+//	NabLabTestsTest.class,
 	NabLabExamplesTest.class
 })
 

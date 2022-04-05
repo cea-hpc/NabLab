@@ -20,7 +20,7 @@
 
     <properties>
         <tycho-version>2.5.0</tycho-version>
-        <xtend-version>2.25.0</xtend-version>
+        <xtend-version>2.26.0</xtend-version>
         <maven-clean-version>3.1.0</maven-clean-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.target>11</maven.compiler.target>
@@ -50,9 +50,10 @@
                 <module>plugins/fr.cea.nabla.edit</module>
                 <module>plugins/fr.cea.nabla.editor</module>
                 <module>plugins/fr.cea.nabla.ir</module>
-                <module>plugins/fr.cea.nabla.ide</module>
                 <module>plugins/fr.cea.nabla.javalib</module>
                 <module>plugins/fr.cea.nabla.sirius</module>
+                <module>plugins/fr.cea.nabla.siriusweb.application</module>
+                <module>plugins/fr.cea.nabla.ide</module>
                 <module>plugins/fr.cea.nabla.ui</module>
                 <module>plugins/fr.cea.nabla.rcp</module>
                 <module>tests/fr.cea.nabla.tests</module>
@@ -70,6 +71,17 @@
                 <module>features/fr.cea.nabla.thirdparty.libraries.feature</module>
                 <module>releng/fr.cea.nabla.targetplatform</module>
                 <module>releng/fr.cea.nabla.updatesite</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>vscode</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <modules>
+                <module>plugins/fr.cea.nabla.ide.web</module>
+                <module>plugins/fr.cea.nabla.vscode.extension</module>
+                <module>releng/fr.cea.nabla.targetplatform</module>
             </modules>
         </profile>
     </profiles>

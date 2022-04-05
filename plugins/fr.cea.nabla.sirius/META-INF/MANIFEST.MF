@@ -8,7 +8,6 @@ Bundle-Activator: fr.cea.nabla.sirius.Activator
 Require-Bundle: fr.cea.nabla,
  fr.cea.nabla.edit,
  fr.cea.nabla.ir,
- fr.cea.nabla.ui,
  org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,

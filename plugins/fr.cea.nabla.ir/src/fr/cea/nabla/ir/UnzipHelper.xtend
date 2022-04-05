@@ -15,7 +15,7 @@ import java.io.FileOutputStream
 import java.net.URI
 import java.util.zip.ZipInputStream
 import org.eclipse.core.runtime.FileLocator
-import org.eclipse.core.runtime.Platform
+import java.util.jar.JarInputStream
 
 class UnzipHelper
 {
@@ -28,13 +28,12 @@ class UnzipHelper
 	{
 		// check if c++ resources are available in the output folder
 		if (outputDirectory.exists && outputDirectory.isDirectory &&
-			!outputDirectory.list.contains(resourceName) && Platform.isRunning)
+			!outputDirectory.list.contains(resourceName))
 		{
 			// c++ resources not available => unzip them
 			// For JunitTests, launched from dev environment, copy is not possible
-			val bundle = Platform.getBundle("fr.cea.nabla.ir")
-			val cppResourcesUrl = bundle.getEntry("resources/" + resourceName.toLowerCase + ".zip")
-			val tmpURI = FileLocator.toFileURL(cppResourcesUrl)
+			val cppResources = UnzipHelper.classLoader.getResource("resources/" + resourceName.toLowerCase + ".zip")
+			val tmpURI = FileLocator.toFileURL(cppResources)
 			// need to use a 3-arg constructor in order to properly escape file system chars
 			val zipFileUri = new URI(tmpURI.protocol, tmpURI.path, null)
 			val outputFolderUri = outputDirectory.toURI
@@ -50,8 +49,18 @@ class UnzipHelper
 
 		// Buffer for read and write data to file
 		val buffer = newByteArrayOfSize(1024)
-		val zis = new ZipInputStream(new FileInputStream(new File(zipFilePath)))
-		var ze = zis.nextEntry
+		var is =  null as ZipInputStream
+		if (zipFilePath.toString.startsWith("jar:"))
+		{
+			val os = zipFilePath.toURL.openStream
+			is = new JarInputStream(os)
+		}
+		else
+		{
+			val fis = new FileInputStream(new File(zipFilePath))
+			is = new ZipInputStream(fis)
+		}
+		var ze = is.nextEntry
 		while (ze !== null)
 		{
 			val newFile = new File(dir, ze.name)
@@ -70,15 +79,15 @@ class UnzipHelper
 				if (!newFile.exists) newFile.createNewFile
 				val fos = new FileOutputStream(newFile)
 				var int len
-				while ((len = zis.read(buffer)) > 0)
+				while ((len = is.read(buffer)) > 0)
 					fos.write(buffer, 0, len)
 				fos.close
 			}
-			ze = zis.nextEntry
+			ze = is.nextEntry
 		}
 
 		// Close last ZipEntry
-		zis.closeEntry
-		zis.close
+		is.closeEntry
+		is.close
 	}
 }

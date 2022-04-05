@@ -19,7 +19,24 @@ build
 org.antlr.runtime
 output
 .nablab
+webviews/
+out/
 # Maven
 target/
+.polyglot.*
 # macOS
 .DS_Store
+# Gradle
+.gradle
+# Node
+node_modules/
+# Next.js build output
+.next
+out
+# Optional npm cache directory
+.npm
+# VSCODE
+.vsix
+#yalc
+.yalc/
+yalc.lock

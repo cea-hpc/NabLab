@@ -169,8 +169,8 @@ class IrModuleContentProvider
 			std::string «IrUtils.NonRegressionNameAndValue.key»;
 		«ENDIF»
 		#ifdef NABLAB_DEBUG
-		std::string pythonPath;
-		std::string pythonFile;
+		std::string python_path;
+		std::string python_script;
 		#else
 		«FOR v : variables»
 			«IF v.constExpr»

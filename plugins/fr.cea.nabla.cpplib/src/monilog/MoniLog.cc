@@ -5,7 +5,7 @@ namespace py = pybind11;
 MoniLog::MoniLog() {}
 
 MoniLog::MoniLog(std::map<std::string,
-	std::vector<int>> execution_events,
+	std::vector<size_t>> execution_events,
 	std::vector<std::string> python_path,
 	std::vector<std::string> python_scripts,
 	std::string interface_module,
@@ -20,9 +20,9 @@ MoniLog::MoniLog(std::map<std::string,
     }
 
     // Initializing the user-provided interface module exposing C++ variables to Python scripts.
-    py::module_ interface_py_module = py::module_::import(interface_module.c_str());
+	py::module_ interface_py_module = py::module_::import(interface_module.c_str());
 	py::class_<MoniLogExecutionContext>(interface_py_module, "MoniLogExecutionContext");
-    interface_module_initializer(interface_py_module);
+	interface_module_initializer(interface_py_module);
 
     // Initializing the MoniLog Python module.
     py::module_ monilogModule = py::module_::import("monilog");
@@ -30,11 +30,12 @@ MoniLog::MoniLog(std::map<std::string,
 	{
 		try
 		{
-			std::vector<int> indexes = execution_events.at(event);
+			std::vector<size_t> indexes = execution_events.at(event);
 			for (auto idx : indexes)
 			{
 				std::list<py::function> moniloggers = registered_moniloggers[idx];
 				std::list<py::function>::iterator it = std::find(moniloggers.begin(), moniloggers.end(), monilogger);
+				// Can only register a monilogger once.
 				if (it == moniloggers.end())
 				{
 					registered_moniloggers[idx].push_back(monilogger);
@@ -50,7 +51,7 @@ MoniLog::MoniLog(std::map<std::string,
 	{
 		try
 		{
-			std::vector<int> indexes = execution_events.at(event);
+			std::vector<size_t> indexes = execution_events.at(event);
 			for (auto idx : indexes)
 			{
 				{
@@ -59,7 +60,13 @@ MoniLog::MoniLog(std::map<std::string,
 					if (it != moniloggers.end())
 					{
 						moniloggers.erase(it);
-						registered_moniloggers[idx] = moniloggers;
+						if (moniloggers.empty())
+						{
+							// No empty lists stored in map.
+							registered_moniloggers.erase(idx);
+						} else {
+							registered_moniloggers[idx] = moniloggers;
+						}
 					}
 				}
 			}
@@ -78,3 +85,15 @@ MoniLog::MoniLog(std::map<std::string,
 }
 
 MoniLog::~MoniLog() {}
+
+
+bool MoniLog::has_registered_moniloggers(size_t event)
+{
+	return registered_moniloggers.count(event) > 0;
+}
+
+std::map<size_t, std::list<py::function>>::iterator MoniLog::get_registered_moniloggers(size_t event)
+{
+	// TODO: make it const.
+	return registered_moniloggers.find(event);
+}

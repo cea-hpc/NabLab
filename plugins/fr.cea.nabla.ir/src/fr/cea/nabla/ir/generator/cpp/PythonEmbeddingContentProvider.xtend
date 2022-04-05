@@ -218,15 +218,15 @@ class PythonEmbeddingContentProvider
 		#ifdef NABLAB_DEBUG
 		if (options.HasMember("pythonPath"))
 		{
-			const rapidjson::Value &valueof_pythonPath = options["pythonPath"];
-			assert(valueof_pythonPath.IsString());
-			pythonPath = valueof_pythonPath.GetString();
+			const rapidjson::Value &valueof_python_path = options["pythonPath"];
+			assert(valueof_python_path.IsString());
+			python_path = valueof_python_path.GetString();
 		}
-		if (options.HasMember("pythonFile"))
+		if (options.HasMember("pythonScript"))
 		{
-			const rapidjson::Value &valueof_pythonFile = options["pythonFile"];
-			assert(valueof_pythonFile.IsString());
-			pythonFile = valueof_pythonFile.GetString();
+			const rapidjson::Value &valueof_python_script = options["pythonScript"];
+			assert(valueof_python_script.IsString());
+			python_script = valueof_python_script.GetString();
 		}
 		#endif
 	'''
@@ -365,10 +365,17 @@ class PythonEmbeddingContentProvider
 			void «className»::pythonInitialize()
 			{
 				«val globalContextName = '''«className»Context'''»
+				std::vector<std::string> paths;
+				std::vector<std::string> scripts;
+				if (!python_script.empty())
+				{
+					paths.emplace_back(python_path);
+					scripts.emplace_back(python_script);
+				}
 				monilog = MoniLog(
 						executionEvents,
-						{pythonPath},
-						{pythonFile},
+						paths,
+						scripts,
 						"«className.toLowerCase»",
 						[](py::module_ «className.toLowerCase»_module)
 						{
@@ -458,10 +465,7 @@ class PythonEmbeddingContentProvider
 	def getGetSimulateProlog()
 	'''
 		#ifdef NABLAB_DEBUG
-		if (!pythonFile.empty())
-		{
-			pythonInitialize();
-		}
+		pythonInitialize();
 		#endif
 	'''
 	

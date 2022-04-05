@@ -28,7 +28,7 @@ class MoniLog
 public:
     MoniLog();
     MoniLog(std::map<std::string,
-        std::vector<int>> execution_events,
+        std::vector<size_t>> execution_events,
         std::vector<std::string> python_path,
         std::vector<std::string> python_scripts,
         std::string interface_module,
@@ -36,20 +36,21 @@ public:
     ~MoniLog();
 
     template <typename T>
-    void trigger(unsigned int event, T context)
+    void trigger(size_t event, T context)
     {
         std::list<py::function> moniloggers = registered_moniloggers[event];
         for (py::function monilogger : moniloggers)
         {
-            std::cout << context.name << "\n";
-            py::object ctx = py::cast(context);
-            std::cout << "2" << "\n";
-            monilogger(context);
+            monilogger(py::cast(context));
         }
     }
 
+    bool has_registered_moniloggers(size_t event);
+    std::map<size_t, std::list<py::function>>::iterator get_registered_moniloggers(size_t event);
+
+
 private:
-	std::map<int, std::list<py::function>> registered_moniloggers;
-    std::map<std::string, std::vector<int>> execution_events;
+	std::map<size_t, std::list<py::function>> registered_moniloggers;
+    std::map<std::string, std::vector<size_t>> execution_events;
 };
 #endif

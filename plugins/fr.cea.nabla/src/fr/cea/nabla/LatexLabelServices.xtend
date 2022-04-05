@@ -59,6 +59,8 @@ import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.nabla.VectorConstant
 import java.util.List
+import org.eclipse.emf.ecore.EObject
+import fr.cea.nabla.nabla.Instruction
 
 class LatexLabelServices
 {
@@ -205,11 +207,38 @@ class LatexLabelServices
 			'\\left(' + latex + '\\right)'
 	}
 
-
 	// PRESERVE UNDERSCORES
 	private static def String pu(String it)
 	{
 		val ret = if (!nullOrEmpty) replaceAll('_', '\\\\_') else ''
 		return ret.replace('\u03B4', '\\delta ')
+	}
+
+	/** Return the highest displayable object, Job, Instruction or Expression */
+	static def EObject getClosestDisplayableNablaElt(EObject elt)
+	{
+		switch elt
+		{
+			case null: null
+			Job: elt
+			Function: elt
+			Reduction: elt
+			InstructionBlock: null
+			Instruction:
+				if (elt.eContainer === null)
+					null
+				else 
+					elt.eContainer.closestDisplayableNablaElt ?: elt
+			Expression:
+				if (elt.eContainer === null)
+					null
+				else 
+					elt.eContainer.closestDisplayableNablaElt ?: elt
+			default:
+				if (elt.eContainer === null)
+					null 
+				else 
+					elt.eContainer.closestDisplayableNablaElt
+		}
 	}
 }

@@ -1,0 +1,180 @@
+{
+  "name": "cea-nablab-vscode-extension",
+  "displayName": "CEA NabLab VSCode extension",
+  "description": "The NabLab extension for VSCode",
+  "version": "0.4.5",
+  "publisher": "CEA",
+  "license": "EPL-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cea-hpc/NabLab.git"
+  },
+  "engines": {
+    "vscode": "^1.50.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "nabla",
+    "nablagen"
+  ],
+  "activationEvents": [
+    "onLanguage:nabla",
+    "onLanguage:nablagen",
+    "onCommand:nablabweb.showLatexView"
+  ],
+  "main": "out/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "nabla",
+        "aliases": [
+          "nabla"
+        ],
+        "extensions": [
+          ".n"
+        ],
+        "configuration": "./nabla.configuration.json"
+      },
+      {
+        "id": "nablagen",
+        "aliases": [
+          "nablagen"
+        ],
+        "extensions": [
+          ".ngen"
+        ],
+        "configuration": "./nablagen.configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "nabla",
+        "scopeName": "text.n",
+        "path": "./syntaxes/nabla.tmLanguage.json"
+      },
+      {
+        "language": "nablagen",
+        "scopeName": "text.ngen",
+        "path": "./syntaxes/nablagen.tmLanguage.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "nablabweb.showLatexView",
+        "title": "Display LaTex View",
+        "category": "NabLab"
+      },
+      {
+        "command": "nablabweb.generateNablagen.proxy",
+        "title": "Generate Nablagen",
+        "category": "NabLab"
+      },
+      {
+        "command": "nablabweb.generateCode.proxy",
+        "title": "Generate code",
+        "category": "NabLab"
+      },
+      {
+        "command": "nablabweb.generateIr.proxy",
+        "title": "Generate Ir",
+        "category": "NabLab"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "when": "resourceLangId == nabla",
+          "command": "nablabweb.generateNablagen.proxy"
+        },
+        {
+          "when": "resourceLangId == nablagen",
+          "command": "nablabweb.generateCode.proxy"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "nablabweb.generateIr.proxy",
+        "key": "f2",
+        "when": "resourceLangId == nablagen"
+      }
+    ],
+    "configurationDefaults": {
+      "[nabla]": {
+        "editor.semanticHighlighting.enabled": true
+      },
+      "editor.semanticTokenColorCustomizations": {
+        "[Visual Studio Light]": {
+          "rules": {
+            "variable.declaration": {
+              "bold": true
+            },
+            "number": "#800000",
+            "timeIterator": "#098658"
+          }
+        },
+        "[Visual Studio Dark]": {
+          "rules": {
+            "variable.declaration": {
+              "bold": true
+            },
+            "number": "#d7ba7d",
+            "timeIterator": "#a8d391"
+          }
+        }
+      }
+    }
+  },
+  "devDependencies": {
+    "@types/node": "16.6.0",
+    "@types/react": "17.0.37",
+    "@types/react-dom": "17.0.9",
+    "@types/react-router-dom": "5.1.8",
+    "@types/uuid": "8.3.2",
+    "@types/vscode": "1.50.0",
+    "@types/vscode-webview": "^1.57.0",
+    "@types/websocket": "1.0.4",
+    "css-loader": "6.2.0",
+    "npm-run-all": "4.1.5",
+    "prettier": "2.5.1",
+    "rimraf": "3.0.2",
+    "style-loader": "3.2.1",
+    "ts-loader": "9.2.5",
+    "typescript": "4.3.5",
+    "typescript-formatter": "7.2.2",
+    "webpack": "5.50.0",
+    "webpack-cli": "4.7.2"
+  },
+  "dependencies": {
+    "@apollo/client": "3.4.7",
+    "@eclipse-sirius/sirius-components": "2022.01.22",
+    "graphql": "15.5.1",
+    "graphql-tag": "2.12.5",
+    "graphql.macro": "1.4.2",
+    "prop-types": "15.7.2",
+    "ps-list": "^7.2.0",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "react-router-dom": "5.2.0",
+    "reflect-metadata": "0.1.13",
+    "sprotty": "0.11.1",
+    "subscriptions-transport-ws": "0.9.19",
+    "url": "0.11.0",
+    "vscode-languageclient": "^7.0.0",
+    "vscode-languageserver-protocol": "^3.16.0",
+    "websocket": "1.0.34"
+  },
+  "scripts": {
+    "format": "prettier --write \"src/**/*.{js,ts,tsx,css}\"",
+    "format-lint": "prettier --list-different \"src/**/*.{js,ts,tsx,css}\"",
+    "vscode:prepublish": "npm run compile",
+    "compile": "npm-run-all compile:*",
+    "watch": "npm-run-all -p watch:*",
+    "compile:views": "webpack  --mode development",
+    "compile:extension": "tsc -p ./",
+    "watch:views": "webpack  --watch --mode development",
+    "watch:extension": "tsc -watch -p ./"
+  }
+}

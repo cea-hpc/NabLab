@@ -13,14 +13,35 @@ with requirements
 environment JavaSE-11
 
 location eclipse "https://download.eclipse.org/releases/2021-09" {
-	org.eclipse.sdk.feature.group
-	org.eclipse.rcp.feature.group
-	org.eclipse.equinox.p2.sdk.feature.group
-	org.eclipse.equinox.executable.feature.group
-	org.eclipse.emf.feature.group
+	org.eclipse.sdk.feature.group lazy
+	org.eclipse.rcp.feature.group lazy
+	org.eclipse.equinox.p2.sdk.feature.group lazy
+	org.eclipse.equinox.executable.feature.group lazy
+	org.eclipse.emf.feature.group lazy
+	org.eclipse.cdt.feature.group lazy
+	org.eclipse.wst.xml_core.feature.feature.group lazy
+	org.eclipse.wst.xml_ui.feature.feature.group lazy
+	org.eclipse.egit.feature.group lazy
+	org.eclipse.zest.core lazy
+	org.eclipse.zest.layouts lazy
+	org.hamcrest.core lazy
+	org.apache.commons.lang3 lazy
+	com.google.guava lazy
+	com.google.gson lazy
+}
+
+location LSP4J "https://download.eclipse.org/lsp4j/updates/releases/0.12.0/" {
+	org.eclipse.lsp4j
+	org.eclipse.lsp4j.jsonrpc
+}
+
+location MWE2 "https://download.eclipse.org/modeling/emft/mwe/updates/releases/2.12.2/" {
 	org.eclipse.emf.mwe2.runtime.sdk.feature.group
 	org.eclipse.emf.mwe2.launcher.feature.group
 	org.eclipse.emf.mwe2.language.sdk.feature.group
+}
+
+location XText "https://download.eclipse.org/modeling/tmf/xtext/updates/releases/2.26.0/" {
 	org.eclipse.xtext.runtime.feature.group
 	org.eclipse.xtext.ui.feature.group
 	org.eclipse.xtext.redist.feature.group
@@ -28,30 +49,21 @@ location eclipse "https://download.eclipse.org/releases/2021-09" {
 	org.eclipse.xtext.xbase.junit
 	org.eclipse.xtext.xbase.testing
 	org.eclipse.xtext.junit4
-	org.eclipse.cdt.feature.group
-	org.eclipse.wst.xml_core.feature.feature.group
-	org.eclipse.wst.xml_ui.feature.feature.group
-	org.eclipse.egit.feature.group
-	org.eclipse.zest.core
-	org.eclipse.zest.layouts
-	org.hamcrest.core
-	org.apache.commons.lang3
-	com.google.guava
-	com.google.gson
+	org.eclipse.xtend.sdk.feature.group
 }
 
 location sirius "https://download.eclipse.org/sirius/updates/releases/6.5.1/2020-09" {
-	org.eclipse.sirius.aql.feature.group
-	org.eclipse.sirius.runtime.feature.group
-	org.eclipse.sirius.runtime.aql.feature.group
-	org.eclipse.sirius.runtime.ocl.feature.group
-	org.eclipse.sirius.runtime.ide.ui.feature.group
-	org.eclipse.sirius.runtime.ide.eef.feature.group
-	org.eclipse.sirius.runtime.ide.xtext.feature.group
-	org.eclipse.sirius.properties.feature.feature.group
-	org.eclipse.eef.sdk.feature.feature.group
-	org.eclipse.eef.ext.widgets.reference.feature.feature.group
-	org.eclipse.sirius.diagram.elk.feature.feature.group
+	org.eclipse.sirius.aql.feature.group lazy
+	org.eclipse.sirius.runtime.feature.group lazy
+	org.eclipse.sirius.runtime.aql.feature.group lazy
+	org.eclipse.sirius.runtime.ocl.feature.group lazy
+	org.eclipse.sirius.runtime.ide.ui.feature.group lazy
+	org.eclipse.sirius.runtime.ide.eef.feature.group lazy
+	org.eclipse.sirius.runtime.ide.xtext.feature.group lazy
+	org.eclipse.sirius.properties.feature.feature.group lazy
+	org.eclipse.eef.sdk.feature.feature.group lazy
+	org.eclipse.eef.ext.widgets.reference.feature.feature.group lazy
+	org.eclipse.sirius.diagram.elk.feature.feature.group lazy
 }
 
 location gmf-runtime-notation "http://download.eclipse.org/modeling/gmp/gmf-notation/updates/releases/" {
@@ -68,14 +80,14 @@ location "https://download.eclipse.org/tools/orbit/downloads/drops/R202108252228
 }
 
 location python "http://www.pydev.org/update_sites/9.1.0" {
-	org.python.pydev.feature.feature.group
+	org.python.pydev.feature.feature.group lazy
 }
 
 location jsoneditor "http://boothen.github.io/Json-Eclipse-Plugin" {
-	jsonedit-feature.feature.group
+	jsonedit-feature.feature.group lazy
 }
 
 location markdowneditor "https://nodeclipse.github.io/updates/markdown" {
-	markdown.editor.feature.feature.group
+	markdown.editor.feature.feature.group lazy
 }
 

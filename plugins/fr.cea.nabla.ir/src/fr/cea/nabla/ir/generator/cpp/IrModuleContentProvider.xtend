@@ -122,10 +122,6 @@ class IrModuleContentProvider
 
 			void createDB(const std::string& db_name);
 		«ENDIF»
-		
-		#ifdef NABLAB_DEBUG
-		«pythonEmbeddingContentProvider.getGlobalScopeStructContent(it)»
-		#endif
 
 	private:
 		«IF postProcessing !== null»
@@ -171,6 +167,7 @@ class IrModuleContentProvider
 		#ifdef NABLAB_DEBUG
 		std::string python_path;
 		std::string python_script;
+		MoniLog monilog;
 		#else
 		«FOR v : variables»
 			«IF v.constExpr»
@@ -188,11 +185,6 @@ class IrModuleContentProvider
 		Timer cpuTimer;
 		Timer ioTimer;
 
-		#ifdef NABLAB_DEBUG
-		«className»Context globalScope;
-		MoniLog monilog;
-		#endif
-
 	#ifdef NABLAB_DEBUG
 	public:
 		«FOR v : variables»
@@ -202,16 +194,17 @@ class IrModuleContentProvider
 				«IF v.const»const «ENDIF»«typeContentProvider.getCppType(v.type)» «v.name»;
 			«ENDIF»
 		«ENDFOR»
-		std::map<string, std::vector<int>> executionEvents;
+		std::map<string, std::vector<size_t>> executionEvents;
 	#endif
 	};
 	
 	#ifdef NABLAB_DEBUG
+	«pythonEmbeddingContentProvider.getGlobalScopeStructContent(it)»
+	
 	«FOR j : jobs»
 		«pythonEmbeddingContentProvider.getLocalScopeStructContent(j)»
 	«ENDFOR»
 	#endif
-
 	#endif
 	'''
 
@@ -262,7 +255,6 @@ class IrModuleContentProvider
 	{
 		#ifdef NABLAB_DEBUG
 		«pythonEmbeddingContentProvider.getExecutionEvents(it)»
-		this->globalScope = «className»Context(this);
 		#endif
 	}
 

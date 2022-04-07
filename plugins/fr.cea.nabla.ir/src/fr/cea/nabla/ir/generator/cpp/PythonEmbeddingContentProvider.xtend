@@ -233,7 +233,7 @@ class PythonEmbeddingContentProvider
 	
 	def getGlobalScopeStructContent(IrModule it)
 	'''
-		struct «name.toFirstUpper»Context
+		struct «name.toFirstUpper»Context : MoniLogExecutionContext
 		{
 			«FOR v : variables»
 			«IF !v.constExpr»
@@ -241,12 +241,9 @@ class PythonEmbeddingContentProvider
 			«ENDIF»
 			«ENDFOR»
 			
-			std::string name = "«name.toFirstUpper»";
 			«name.toFirstUpper» *instance = nullptr;
 			
-			«name.toFirstUpper»Context(«name.toFirstUpper» *instance) : instance(instance) {}
-			«name.toFirstUpper»Context(«name.toFirstUpper» *instance, std::string name) : instance(instance), name(name) {}
-			«name.toFirstUpper»Context() : instance(nullptr) {}
+			«name.toFirstUpper»Context(«name.toFirstUpper» *instance, std::string name) : MoniLogExecutionContext(name), instance(instance) {}
 			
 			virtual ~«name.toFirstUpper»Context() = default;
 		};
@@ -285,7 +282,7 @@ class PythonEmbeddingContentProvider
 	
 	def getLocalScopeStructContent(String name, String moduleName, Collection<VariableDeclaration> locals)
 	'''
-		struct «name» : «moduleName»::«moduleName»Context
+		struct «name» : «moduleName»Context
 		{
 			«FOR local : locals»
 			const py::object get_«local.variable.name»() const { if («local.variable.name» != nullptr) return py::cast(*«local.variable.name»); else return py::cast<py::none>(Py_None); }
@@ -295,29 +292,33 @@ class PythonEmbeddingContentProvider
 			«IF local.variable.const»const «ENDIF»«local.variable.type.cppType» *«local.variable.name» = nullptr;
 			«ENDFOR»
 			
-			using «moduleName»::«moduleName»Context::«moduleName»Context;
+			using «moduleName»Context::«moduleName»Context;
 		};
 		
 	'''
 	
 	def getGlobalScopeDefinition(Job it)
 	'''
-		«getContainerOfType(it, IrModule).name.toFirstUpper»Context scope(this, "«it.name»");
+		«val contextName = getContainerOfType(it, IrModule).name.toFirstUpper + "Context"»
+		std::shared_ptr<«contextName»> scope(new «contextName»(this, "«it.name»"));
 	'''
 	
 	def getGlobalScopeDefinition(InternFunction it)
 	'''
-		«getContainerOfType(it, IrModule).name.toFirstUpper»Context scope(this, "«it.name»");
+		«val contextName = getContainerOfType(it, IrModule).name.toFirstUpper + "Context"»
+		std::shared_ptr<«contextName»> scope(new «contextName»(this, "«it.name»"));
 	'''
 	
 	def getLocalScopeDefinition(Job it)
 	'''
-		«name.toFirstUpper»Context scope(this, "«it.name»");
+		«val contextName = name.toFirstUpper + "Context"»
+		std::shared_ptr<«contextName»> scope(new «contextName»(this, "«it.name»"));
 	'''
 	
 	def getLocalScopeDefinition(InternFunction it)
 	'''
-		«name.toFirstUpper»Context scope(this, "«it.name»");
+		«val contextName = name.toFirstUpper + "Context"»
+		std::shared_ptr<«contextName»> scope(new «contextName»(this, "«it.name»"));
 	'''
 	
 	def getAllArrayShapes(BaseType it)
@@ -379,16 +380,16 @@ class PythonEmbeddingContentProvider
 						"«className.toLowerCase»",
 						[](py::module_ «className.toLowerCase»_module)
 						{
-							py::class_<«className»::«globalContextName»>(«className.toLowerCase»_module, "«globalContextName»")
+							py::class_<«globalContextName», MoniLogExecutionContext, std::shared_ptr<«globalContextName»>>(«className.toLowerCase»_module, "«globalContextName»")
 								«val vars = variables.filter[!constExpr]»
-								«FOR v : vars SEPARATOR '\n'».def_property_readonly("«v.name»", &«className»::«globalContextName»::get_«v.name»)«ENDFOR»
-								.def("__str__", [](«className»::«globalContextName» &self)
+								«FOR v : vars SEPARATOR '\n'».def_property_readonly("«v.name»", &«globalContextName»::get_«v.name»)«ENDFOR»
+								.def("__str__", [](«globalContextName» &self)
 									{
 										std::ostringstream oss;
 										oss << self.name;
 										return oss.str();
 									})
-								.def("__repr__", [](«className»::«globalContextName» &self)
+								.def("__repr__", [](«globalContextName» &self)
 									{
 										std::ostringstream oss;
 										oss << self.name;
@@ -397,7 +398,7 @@ class PythonEmbeddingContentProvider
 							«FOR job : jobs.filter[j|j.hasLocals]»
 							«val varDecs = job.eAllContents.filter(VariableDeclaration).filter[v|isUserDefined(v.variable)].toList»
 							«val jobContextName = '''«job.codeName.toFirstUpper»Context'''»
-							py::class_<«jobContextName», «className»::«globalContextName»>(«className.toLowerCase»_module, "«jobContextName»")«IF varDecs.empty»;«ENDIF»
+							py::class_<«jobContextName», «globalContextName», std::shared_ptr<«jobContextName»>>(«className.toLowerCase»_module, "«jobContextName»")«IF varDecs.empty»;«ENDIF»
 								«IF !varDecs.empty»
 								«FOR local : varDecs SEPARATOR '\n'».def_property_readonly("«local.variable.name»", &«jobContextName»::get_«local.variable.name»)«ENDFOR»;
 								«ENDIF»

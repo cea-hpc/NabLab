@@ -55,7 +55,7 @@ abstract class InstructionContentProvider
 
 	protected def getScopeUpdateContent(String variableName)
 	'''
-		scope.«variableName» = &«variableName»;'''
+		scope->«variableName» = &«variableName»;'''
 	
 	protected def getScopeParameter()
 	'''

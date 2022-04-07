@@ -1,0 +1,18 @@
+target "Nablab Dev Target platform"
+
+include "nablab.tpd"
+
+with requirements,source
+environment JavaSE-11
+
+
+location eclipse "https://download.eclipse.org/releases/2021-09" {
+	org.eclipse.jdt.feature.group lazy
+	org.eclipse.pde.feature.group lazy
+	org.eclipse.dltk.core lazy
+	
+}
+
+location "https://download.eclipse.org/tools/orbit/downloads/drops/R20210825222808/repository" {
+	org.slf4j.binding.simple lazy
+}

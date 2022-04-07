@@ -10,6 +10,7 @@
 package fr.cea.nabla.ide
 
 import com.google.inject.Guice
+import com.google.inject.Injector
 import fr.cea.nabla.NablaRuntimeModule
 import fr.cea.nabla.NablaStandaloneSetup
 import org.eclipse.xtext.util.Modules2
@@ -19,8 +20,15 @@ import org.eclipse.xtext.util.Modules2
  */
 class NablaIdeSetup extends NablaStandaloneSetup
 {
+	
+	/*
+	 * Workaround for bug https://github.com/eclipse/xtext-core/issues/993 due to language dependency from NableGen to Nabla. See https://www.eclipse.org/forums/index.php/m/1848471/ for more details
+	 */
+	public static Injector injector
+
 	override createInjector()
 	{
-		Guice.createInjector(Modules2.mixin(new NablaRuntimeModule, new NablaIdeModule))
+		injector = Guice.createInjector(Modules2.mixin(new NablaRuntimeModule, new NablaIdeModule))
+		return injector
 	}
 }

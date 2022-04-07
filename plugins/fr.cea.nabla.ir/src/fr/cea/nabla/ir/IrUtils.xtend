@@ -11,8 +11,12 @@ package fr.cea.nabla.ir
 
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.IterationBlock
 import fr.cea.nabla.ir.ir.Iterator
+import fr.cea.nabla.ir.ir.Job
+import fr.cea.nabla.ir.ir.Variable
 import java.io.PrintWriter
 import java.io.StringWriter
 import org.eclipse.emf.ecore.EObject
@@ -89,5 +93,22 @@ class IrUtils
 			b.container.connectivityCall.args.empty
 		else
 			false
+	}
+	
+	static def String getTooltip(Job it)
+	{
+		val inVarNames = "[" + inVars.map[displayName].join(', ') + "]"
+		val outVarNames = "[" + outVars.map[displayName].join(', ') + "]"
+		inVarNames + "  \u21E8  " + JobExtensions.getDisplayName(it) + "  \u21E8  " + outVarNames
+	}
+	
+	private static def String getDisplayName(Variable v)
+	{
+		val module = IrUtils.getContainerOfType(v, IrModule)
+		val root = module.eContainer as IrRoot
+		if (root.modules.size > 1)
+			module.name + "::" + v.name
+		else
+			v.name
 	}
 }

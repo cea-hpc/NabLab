@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <description:Group xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:description="http://www.eclipse.org/sirius/description/1.1.0" xmlns:description_1="http://www.eclipse.org/sirius/diagram/description/1.1.0" xmlns:style="http://www.eclipse.org/sirius/diagram/description/style/1.1.0" xmlns:tool="http://www.eclipse.org/sirius/diagram/description/tool/1.1.0" xmlns:tool_1="http://www.eclipse.org/sirius/description/tool/1.1.0" name="i1" version="12.0.0.2017041100">
   <ownedViewpoints name="InstructionViewpoint" modelFileExtension="nir" icon="/fr.cea.nabla.sirius/icons/NabLab.gif">
-    <ownedRepresentations xsi:type="description_1:DiagramDescription" name="NablaIrDiagram" titleExpression="aql:self.name.toUpperFirst()" domainClass="ir::IrAnnotable">
+    <ownedRepresentations xsi:type="description_1:DiagramDescription" documentation="FORCE_AUTO_LAYOUT" name="NablaIrDiagram" titleExpression="aql:self.name.toUpperFirst()" domainClass="ir::IrAnnotable">
+      <metamodel href="http://www.cea.fr/nabla/ir#/"/>
       <layout xsi:type="description_1:CustomLayoutConfiguration" id="org.eclipse.elk.layered" label="ELK Layered" description="Layer-based algorithm provided by the Eclipse Layout Kernel. Arranges as many edges as possible into one direction by placing nodes into subsequent layers. This implementation supports different routing styles (straight, orthogonal, splines); if orthogonal routing is selected, arbitrary port constraints are respected, thus enabling the layout of block diagrams such as actor-oriented models or circuit schematics. Furthermore, full layout of compound graphs with cross-hierarchy edges is supported when the respective option is activated on the top level.">
         <layoutOptions xsi:type="description_1:DoubleLayoutOption" id="org.eclipse.elk.spacing.componentComponent" value="10.0">
           <targets>PARENT</targets>
@@ -36,7 +37,7 @@
         </layoutOptions>
       </layout>
       <defaultLayer name="Default">
-        <edgeMappings name="NID.Job2Job" deletionDescription="//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@toolSections.0/@ownedTools[name='NID.Delete.Element']" sourceMapping="//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@containerMappings[name='NID.JobNode']" targetMapping="//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@containerMappings[name='NID.JobNode']" targetFinderExpression="feature:nextJobsWithSameCaller">
+        <edgeMappings name="NID.Job2Job" deletionDescription="//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@toolSections.0/@ownedTools[name='NID.Delete.Element.Edge']" sourceMapping="//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@containerMappings[name='NID.JobNode']" targetMapping="//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@containerMappings[name='NID.JobNode']" targetFinderExpression="feature:nextJobsWithSameCaller">
           <style>
             <strokeColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='gray']"/>
             <centerLabelStyleDescription labelSize="10" showIcon="false">
@@ -51,8 +52,16 @@
               </centerLabelStyleDescription>
             </style>
           </conditionnalStyles>
+          <conditionnalStyles predicateExpression="aql:(semanticEdgeTarget.onCycle and semanticEdgeSource.onCycle)">
+            <style sizeComputationExpression="2">
+              <strokeColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='red']"/>
+              <centerLabelStyleDescription labelSize="12" showIcon="false">
+                <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
+              </centerLabelStyleDescription>
+            </style>
+          </conditionnalStyles>
         </edgeMappings>
-        <containerMappings name="NID.JobNode" deletionDescription="//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@toolSections.0/@ownedTools[name='NID.Delete.Element']" semanticCandidatesExpression="service:self.getJobs()" doubleClickDescription="//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@toolSections.0/@ownedTools[name='NID.GoIntoDiagram']" domainClass="ir::Job">
+        <containerMappings name="NID.JobNode" deletionDescription="//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@toolSections.0/@ownedTools[name='NID.Delete.Element']" semanticCandidatesExpression="aql:self.getJobs()" doubleClickDescription="//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@toolSections.0/@ownedTools[name='NID.GoIntoDiagram']" domainClass="ir::Job">
           <borderedNodeMappings name="NID.JN.At" deletionDescription="//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']/@defaultLayer/@toolSections.0/@ownedTools[name='NID.Delete.Element']" semanticCandidatesExpression="var:self" domainClass="ir::Job">
             <style xsi:type="style:DotDescription" borderSizeComputationExpression="1" showIcon="false" labelExpression="feature:at" labelColor="//@userColorsPalettes[name='IrPalette']/@entries[name='NID.JN.At.LabelColor']" labelPosition="node" backgroundColor="//@userColorsPalettes[name='IrPalette']/@entries[name='NID.JN.At.BackgroundColor']">
               <borderColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='gray']"/>
@@ -94,7 +103,13 @@
           </conditionnalStyles>
         </containerMappings>
         <toolSections name="NID_Tools" label="Tools">
-          <ownedTools xsi:type="tool:DeleteElementDescription" name="NID.Delete.Element" label="Delete element" precondition="false">
+          <ownedTools xsi:type="tool:DeleteElementDescription" name="NID.Delete.Element.Edge" label="Delete element" precondition="aql:false">
+            <element name="element"/>
+            <elementView name="elementView"/>
+            <containerView name="containerView"/>
+            <initialOperation/>
+          </ownedTools>
+          <ownedTools xsi:type="tool:DeleteElementDescription" name="NID.Delete.Element" label="Delete element" precondition="aql:false">
             <element name="element"/>
             <elementView name="elementView"/>
             <containerView name="containerView"/>
@@ -113,12 +128,36 @@
               <firstModelOperations xsi:type="tool_1:ChangeContext" browseExpression="aql:views->first().backToParentDiagram()"/>
             </initialOperation>
           </ownedTools>
+          <ownedTools xsi:type="tool_1:OperationAction" name="NID.GoIntoDiagram.SiriusWeb" label="Go into" precondition="aql:environment &lt;> null and selectedNode &lt;> null and self.oclIsKindOf(ir::JobCaller) and self.oclIsKindOf(ir::Job)" icon="/fr.cea.nabla.sirius/icons/goIntoSiriusWeb.svg">
+            <view name="views"/>
+            <initialOperation>
+              <firstModelOperations xsi:type="tool:Navigation" diagramDescription="//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']"/>
+            </initialOperation>
+          </ownedTools>
+          <ownedTools xsi:type="tool_1:OperationAction" name="NID.GoBackToParentDiagram.SiriusWeb" label="Back to parent diagram" precondition="aql:environment &lt;> null and selectedNode = null and self.oclIsKindOf(ir::JobCaller) and self.oclIsKindOf(ir::Job)" icon="/fr.cea.nabla.sirius/icons/backToParentDiagramSiriusWeb.svg">
+            <view name="views"/>
+            <initialOperation>
+              <firstModelOperations xsi:type="tool_1:ChangeContext" browseExpression="aql:self">
+                <subModelOperations xsi:type="tool_1:If" conditionExpression="aql:self.oclIsKindOf(ir::Job) and self.caller.eContainer().oclIsKindOf(ir::IrRoot)">
+                  <subModelOperations xsi:type="tool_1:ChangeContext" browseExpression="aql:self.caller.eContainer()">
+                    <subModelOperations xsi:type="tool:Navigation" diagramDescription="//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']"/>
+                  </subModelOperations>
+                </subModelOperations>
+                <subModelOperations xsi:type="tool_1:If" conditionExpression="aql:self.oclIsKindOf(ir::Job)">
+                  <subModelOperations xsi:type="tool_1:ChangeContext" browseExpression="aql:self.caller">
+                    <subModelOperations xsi:type="tool:Navigation" diagramDescription="//@ownedViewpoints[name='InstructionViewpoint']/@ownedRepresentations[name='NablaIrDiagram']"/>
+                  </subModelOperations>
+                </subModelOperations>
+              </firstModelOperations>
+            </initialOperation>
+          </ownedTools>
         </toolSections>
       </defaultLayer>
     </ownedRepresentations>
     <ownedJavaExtensions qualifiedClassName="fr.cea.nabla.ir.JobExtensions"/>
     <ownedJavaExtensions qualifiedClassName="fr.cea.nabla.sirius.NablaSiriusServices"/>
-    <ownedJavaExtensions qualifiedClassName="fr.cea.nabla.ui.NablaUiUtils"/>
+    <ownedJavaExtensions qualifiedClassName="fr.cea.nabla.sirius.NablaSiriusUIServices"/>
+    <ownedJavaExtensions qualifiedClassName="fr.cea.nabla.ir.IrUtils"/>
   </ownedViewpoints>
   <userColorsPalettes name="IrPalette">
     <entries xsi:type="description:ComputedColor" name="NID.JN.At.BackgroundColor" red="aql:self.at.getAtBackgroundColor()" green="aql:self.at.getAtBackgroundColor()" blue="aql:self.at.getAtBackgroundColor()"/>

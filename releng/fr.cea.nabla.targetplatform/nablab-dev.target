@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde?>
+<!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
+<target name="Nablab Dev Target platform" sequenceNumber="1646417540">
+  <locations>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.lsp4j" version="0.12.0.v20210402-1305"/>
+      <unit id="org.eclipse.lsp4j.jsonrpc" version="0.12.0.v20210402-1305"/>
+      <repository id="LSP4J" location="https://download.eclipse.org/lsp4j/updates/releases/0.12.0/"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.12.2.v20220118-1914"/>
+      <unit id="org.eclipse.emf.mwe2.launcher.feature.group" version="2.12.2.v20220118-1914"/>
+      <unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.12.2.v20220118-1914"/>
+      <repository id="MWE2" location="https://download.eclipse.org/modeling/emft/mwe/updates/releases/2.12.2/"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.xtext.runtime.feature.group" version="2.26.0.v20220228-0901"/>
+      <unit id="org.eclipse.xtext.ui.feature.group" version="2.26.0.v20220228-0901"/>
+      <unit id="org.eclipse.xtext.redist.feature.group" version="2.26.0.v20220228-0901"/>
+      <unit id="org.eclipse.xtext.xbase.feature.group" version="2.26.0.v20220228-0901"/>
+      <unit id="org.eclipse.xtext.xbase.junit" version="2.26.0.v20220228-0812"/>
+      <unit id="org.eclipse.xtext.xbase.testing" version="2.26.0.v20220228-0758"/>
+      <unit id="org.eclipse.xtext.junit4" version="2.26.0.v20220228-0812"/>
+      <unit id="org.eclipse.xtend.sdk.feature.group" version="2.26.0.v20220228-0901"/>
+      <repository id="XText" location="https://download.eclipse.org/modeling/tmf/xtext/updates/releases/2.26.0/"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.sirius.aql.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.sirius.runtime.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.sirius.runtime.aql.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.sirius.runtime.ocl.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.sirius.runtime.ide.ui.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.sirius.runtime.ide.eef.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.sirius.runtime.ide.xtext.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.sirius.properties.feature.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.eef.sdk.feature.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.eef.ext.widgets.reference.feature.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.sirius.diagram.elk.feature.feature.group" version="0.0.0"/>
+      <repository id="sirius" location="https://download.eclipse.org/sirius/updates/releases/6.5.1/2020-09"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.gmf.runtime.notation.feature.group" version="1.13.0.202004160913"/>
+      <repository id="gmf-runtime-notation" location="http://download.eclipse.org/modeling/gmp/gmf-notation/updates/releases/"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.gmf.runtime.sdk.feature.group" version="1.13.1.202106221344"/>
+      <repository id="gmf-runtime-diagram" location="https://download.eclipse.org/modeling/gmp/gmf-runtime/updates/releases/"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.python.pydev.feature.feature.group" version="0.0.0"/>
+      <repository id="python" location="http://www.pydev.org/update_sites/9.1.0"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="jsonedit-feature.feature.group" version="0.0.0"/>
+      <repository id="jsoneditor" location="http://boothen.github.io/Json-Eclipse-Plugin"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="markdown.editor.feature.feature.group" version="0.0.0"/>
+      <repository id="markdowneditor" location="https://nodeclipse.github.io/updates/markdown"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.jdt.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.pde.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.dltk.core" version="0.0.0"/>
+      <unit id="org.eclipse.sdk.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.rcp.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.equinox.p2.sdk.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.equinox.executable.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.emf.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.cdt.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.wst.xml_core.feature.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.wst.xml_ui.feature.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.egit.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.zest.core" version="0.0.0"/>
+      <unit id="org.eclipse.zest.layouts" version="0.0.0"/>
+      <unit id="org.hamcrest.core" version="0.0.0"/>
+      <unit id="org.apache.commons.lang3" version="0.0.0"/>
+      <unit id="com.google.guava" version="0.0.0"/>
+      <unit id="com.google.gson" version="0.0.0"/>
+      <repository id="eclipse" location="https://download.eclipse.org/releases/2021-09"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.slf4j.binding.simple" version="0.0.0"/>
+      <unit id="org.hamcrest" version="2.2.0.v20210711-0821"/>
+      <unit id="org.assertj" version="3.20.2.v20210706-1104"/>
+      <repository location="https://download.eclipse.org/tools/orbit/downloads/drops/R20210825222808/repository"/>
+    </location>
+  </locations>
+  <targetJRE path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11"/>
+</target>

@@ -1,0 +1,21 @@
+type User implements Viewer {
+  id: ID!
+  username: String!
+  editingContext(editingContextId: ID!): EditingContext
+}
+
+extend type Mutation {
+  uploadModel(input: UploadModelInput!): UploadModelPayload!
+}
+
+input UploadModelInput {
+  id: ID!
+  model: String!
+}
+
+union UploadModelPayload = ErrorPayload | UploadModelSuccessPayload
+
+type UploadModelSuccessPayload {
+  id: ID!
+  representation: Representation!
+}

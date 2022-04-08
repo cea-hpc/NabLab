@@ -25,10 +25,6 @@ class MainContentProvider
 
 	def getContentFor(IrModule it, boolean hasLevelDB)
 	'''
-		#ifdef NABLAB_DEBUG
-		py::scoped_interpreter guard{};
-		#endif
-		
 		string dataFile;
 		int ret = 0;
 

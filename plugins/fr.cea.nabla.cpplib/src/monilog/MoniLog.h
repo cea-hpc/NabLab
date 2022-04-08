@@ -35,22 +35,14 @@ public:
         std::function<void (py::module_)> interface_module_initializer);
     ~MoniLog();
 
-    template <typename T>
-    void trigger(size_t event, T context)
-    {
-        std::list<py::function> moniloggers = registered_moniloggers[event];
-        for (py::function monilogger : moniloggers)
-        {
-            monilogger(py::cast(context));
-        }
-    }
+    void trigger(size_t event, std::shared_ptr<MoniLogExecutionContext> context);
 
     bool has_registered_moniloggers(size_t event);
-    std::map<size_t, std::list<py::function>>::iterator get_registered_moniloggers(size_t event);
-
+    std::list<py::function> get_registered_moniloggers(size_t event);
 
 private:
-	std::map<size_t, std::list<py::function>> registered_moniloggers;
+	std::vector<std::list<py::function>> registered_moniloggers;
     std::map<std::string, std::vector<size_t>> execution_events;
+    std::shared_ptr<py::scoped_interpreter> guard;
 };
 #endif

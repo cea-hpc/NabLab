@@ -23,9 +23,9 @@ import static com.google.common.collect.Maps.uniqueIndex
 
 abstract class StandaloneGeneratorBase
 {
+	@Inject public NablaGeneratorMessageDispatcher dispatcher
 	@Inject protected Provider<JavaIoFileSystemAccess> fsaProvider
 	@Inject protected IOutputConfigurationProvider outputConfigurationProvider
-	@Inject protected NablaGeneratorMessageDispatcher dispatcher
 
 	protected def getConfiguredFileSystemAccess(String absoluteBasePath, boolean keepSrcGen)
 	{

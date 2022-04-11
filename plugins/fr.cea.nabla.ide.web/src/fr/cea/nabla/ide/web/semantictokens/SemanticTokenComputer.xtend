@@ -36,6 +36,7 @@ class SemanticTokenComputer
 {
 
 	public static val ID_ID = "ID"
+	public static val INT_ID = "INT"
 	public static val REAL_ID = "REAL"
 	public static val SPACE_ITERATOR = "SpaceIteratorRef"
 	public static val VAR_REF = "VarRef"
@@ -89,6 +90,7 @@ class SemanticTokenComputer
 			{
 				switch elt.name
 				{
+					case INT_ID: tokens.addTokenFromNode(n, TokenType.NUMBER, TokenModifier.DECLARATION)
 					case REAL_ID: tokens.addTokenFromNode(n, TokenType.NUMBER, TokenModifier.DECLARATION)
 					case ID_ID: tokens.addTokenFromNode(n, TokenType.VARIABLE, TokenModifier.DECLARATION)
 				}

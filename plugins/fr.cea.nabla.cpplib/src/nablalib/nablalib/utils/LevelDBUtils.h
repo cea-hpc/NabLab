@@ -97,11 +97,15 @@ namespace nablalib::utils
 	inline DataDiff compareDataT(leveldb::Slice value, leveldb::Slice ref, size_t bytes, double tolerance)
 	{
 		DataDiff dataDiff {0, 0, 0.0, 0};
-		for (size_t i = 0; i <= value.size()- bytes && i <= ref.size() - bytes; i = i + bytes)
+		int valueSize = value.size();
+		int refSize = ref.size();
+		std::string valueString = value.ToString();
+		std::string refString = ref.ToString();
+		for (size_t i = 0; i <= valueSize - bytes && i <= refSize - bytes; i+= bytes)
 		{
-			char* valData = value.ToString().substr(i, bytes).data();
+			char* valData = valueString.substr(i, bytes).data();
 			T val = *(T*)valData;
-			char* refData = ref.ToString().substr(i, bytes).data();
+			char* refData = refString.substr(i, bytes).data();
 			T ref = *(T*)refData;
 			if (val != ref)
 			{

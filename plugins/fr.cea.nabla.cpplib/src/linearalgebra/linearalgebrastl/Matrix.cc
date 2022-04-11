@@ -44,10 +44,8 @@ build()
 	if (m_matrix)
 		return;
 
-	// std::cout << "Building CRS Matrix...";
-
 	// Assuming ascending indexes for rows
-	for (auto row_i : m_building_struct)
+	for (auto& row_i : m_building_struct)
 		row_i.second.sort([&](const std::pair<int, double>& a, const std::pair<int, double>& b){
 		return (a.first < b.first);});
 
@@ -182,6 +180,38 @@ setValue(const size_t _row, const size_t _col, double value)
 	}
 }
 
+std::string Matrix::
+print() const
+{
+	if (!m_matrix) {
+		std::stringstream ss;
+		for (auto i(0); i < m_nb_rows; ++i) {
+			for (auto j(0); j < m_nb_cols; ++j) {
+				if (j == 0)
+					ss << "|";
+				auto pos_line(std::find_if(m_building_struct.begin(), m_building_struct.end(),
+								[&](const std::pair<int, std::list<std::pair<int, double>>>& line)
+								{return (line.first == i);}));
+				if (pos_line != m_building_struct.end()) {
+					auto pos_col(std::find_if(pos_line->second.begin(), pos_line->second.end(),
+								 [&](const std::pair<int, double>& col){return col.first == j;}));
+					if (pos_col != pos_line->second.end())
+						ss << std::setprecision(2) << std::setw(6) << pos_col->second;
+					else
+						ss << std::setprecision(2) << std::setw(6) << "0";
+				} else {
+					ss << std::setprecision(2) << std::setw(6) << "0";
+				}
+				if (j == m_nb_cols - 1)
+					ss << "|";
+			}
+			ss << std::endl;
+		}
+		return std::string(ss.str());
+	} else {
+		return m_matrix->print();
+	}
+}
 
 int Matrix::
 findCrsOffset(const int& i, const int& j) const
@@ -203,11 +233,13 @@ const char* serialize(const SparseMatrixType& M, int& size, bool& mustDeletePtr)
 {
 	std::vector<double> v;
 	for (auto i(0); i < M.numRows(); ++i) {
+		auto rowConstI = M.rowConst(i);
 		for (auto j(0), k(0); j < M.numCols(); ++j) {
-			if (!M.rowConst(i).length || j != M.rowConst(i).colidx(k)) {
+			if (!rowConstI.length || j != rowConstI.colidx(k))
+			{
 				v.push_back(0);
 			} else {
-				v.push_back(M.rowConst(i).value(k));
+				v.push_back(rowConstI.value(k));
 				++k;
 			}
 		}

@@ -53,7 +53,9 @@ class Matrix
   double getValue(const size_t row, const size_t col) const;
   // setter
   void setValue(const size_t row, const size_t col, double value);
-  
+  //print
+  std::string print() const;
+
  //private:
   int findCrsOffset(const int& i, const int& j) const;
 

@@ -229,11 +229,14 @@ public class LevelDBUtils
 			if (relativeError > 0)
 			{
 				dataDiff.nbDiffs ++;
-				if (relativeError > tolerance && relativeError > dataDiff.relativeMaxError)
+				if (relativeError > tolerance)
 				{
 					dataDiff.nbErrors ++;
-					dataDiff.relativeMaxErrorIndex = i;
-					dataDiff.relativeMaxError = relativeError;
+					if (relativeError > dataDiff.relativeMaxError)
+					{
+						dataDiff.relativeMaxErrorIndex = i;
+						dataDiff.relativeMaxError = relativeError;
+					}
 				}
 			}
 		}

@@ -155,13 +155,13 @@ class IrModuleContentProvider
 			with db.write_batch() as b:
 				«FOR v : irRoot.variables.filter[!option]»
 					«IF v.type.scalar»
-						b.put(b"«Utils.getDbDescriptor(v)»", np.asarray((struct.calcsize('«getStructFormat(v.type.primitive)»'),), dtype='i').tobytes())
+						b.put(b"«Utils.getDbDescriptor(v)»", np.asarray([struct.calcsize('«getStructFormat(v.type.primitive)»')], dtype='i').tobytes())
 						b.put(b"«Utils.getDbKey(v)»", struct.pack('«getStructFormat(v.type.primitive)»', «getDbValue(it, v)»))
 					«ELSEIF v.type instanceof LinearAlgebraType»
-						b.put(b"«Utils.getDbDescriptor(v)»", np.asarray((struct.calcsize('«getStructFormat(v.type.primitive)»'),) + «getDbSizes(it, v)», dtype='i').tobytes())
+						b.put(b"«Utils.getDbDescriptor(v)»", np.asarray([struct.calcsize('«getStructFormat(v.type.primitive)»'), «getDbSizes(it, v)»], dtype='i').tobytes())
 						b.put(b"«Utils.getDbKey(v)»", «getDbValue(it, v)».getData().tobytes())
 					«ELSE»
-						b.put(b"«Utils.getDbDescriptor(v)»", np.asarray((struct.calcsize('«getStructFormat(v.type.primitive)»'),) + «getDbSizes(it, v)», dtype='i').tobytes())
+						b.put(b"«Utils.getDbDescriptor(v)»", np.asarray([struct.calcsize('«getStructFormat(v.type.primitive)»')] + «getDbSizes(it, v)», dtype='i').tobytes())
 						b.put(b"«Utils.getDbKey(v)»", «getDbValue(it, v)».tobytes())
 					«ENDIF»
 				«ENDFOR»
@@ -384,7 +384,19 @@ class IrModuleContentProvider
 
 	static def CharSequence getDbSizes(IrModule m, Variable v)
 	{
-		"np.shape(" + getDbValue(m, v) + ")"
+		val t = v.type
+		switch t
+		{
+			BaseType: "list(np.shape(" + getDbValue(m, v) + "))"
+			ConnectivityType: "list(np.shape(" + getDbValue(m, v) + "))"
+			LinearAlgebraType:
+				switch t.sizes.size
+				{
+					case 1: getDbValue(m, v) + ".getSize()"
+					case 2: getDbValue(m, v) + ".getNbRows(), " + getDbValue(m, v)  + ".getNbCols()"
+					default: throw new RuntimeException("Unexpected dimension: " + t.sizes.size)
+				}
+		}
 	}
 
 	private static def getStructFormat(PrimitiveType t)

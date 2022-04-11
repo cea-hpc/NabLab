@@ -60,10 +60,15 @@ class NablagenGenerator extends AbstractGenerator
 
 		# Must be done before starting the VM (started at "import jnius")
 		import jnius_config
+		
+		# Use the following classpath in case of Eclipse runtime
 		jnius_config.add_classpath("«eclipsePath»plugins/*")
 		jnius_config.add_classpath("«getPluginPath("fr.cea.nabla")»bin")
 		jnius_config.add_classpath("«getPluginPath("fr.cea.nabla.ir")»bin")
 		jnius_config.add_classpath("«getPluginPath("jgrapht-core")»*")
+		
+		# Use the following classpath in case of NabLab product built with Maven (comment lines above)
+		#jnius_config.add_classpath("<NabLab product path>/plugins/fr.cea.nabla.vscode.extension/src/nablab/repo/*")
 		
 		import jnius
 		

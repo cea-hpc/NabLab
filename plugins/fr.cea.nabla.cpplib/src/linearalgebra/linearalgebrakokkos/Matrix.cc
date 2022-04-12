@@ -42,7 +42,7 @@ build()
 	// std::cout << "Building CRS Matrix...";
 
 	// Kokkos assumes ascending indexes for rows
-	for (auto row_i : m_building_struct)
+	for (auto& row_i : m_building_struct)
 		row_i.second.sort([&](const std::pair<int, double>& a, const std::pair<int, double>& b){
 		return (a.first < b.first);});
 
@@ -227,7 +227,6 @@ const char* serialize(const Matrix& M, int& size, bool& mustDeletePtr)
 				}
 			}
 		}
-
 		size = v.size() * sizeof(double);
 		double* array = new double[v.size()];
 		for (size_t i(0) ; i<v.size() ; ++i)

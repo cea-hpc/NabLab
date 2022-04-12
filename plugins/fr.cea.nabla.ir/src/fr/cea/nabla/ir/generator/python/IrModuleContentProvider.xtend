@@ -218,10 +218,11 @@ class IrModuleContentProvider
 				relativeError = getRelativeError(val[i], ref[i])
 				if relativeError > 0:
 					nbDiffs += 1
-					if (relativeError > tolerance and relativeError > relativeMaxError):
+					if relativeError > tolerance:
 						nbErrors +=1
-						relativeMaxErrorIndex = i
-						relativeMaxError = relativeError
+						if relativeError > relativeMaxError:
+							relativeMaxErrorIndex = i
+							relativeMaxError = relativeError
 			return (nbDiffs, nbErrors, relativeMaxError, relativeMaxErrorIndex)
 
 		def getMismatchIndexes(dataSizes, mismatchIndex):

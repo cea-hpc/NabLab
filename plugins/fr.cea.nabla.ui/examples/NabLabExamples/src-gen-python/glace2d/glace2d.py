@@ -616,7 +616,7 @@ class Glace2d:
 			self.__writer.openNodeData()
 			self.__writer.closeNodeData()
 			self.__writer.openCellData()
-			self.__writer.openCellArray("Density", 0);
+			self.__writer.openCellArray("Density", 0)
 			for i in range(self.__nbCells):
 				self.__writer.write(self.rho[i])
 			self.__writer.closeCellArray()

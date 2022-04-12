@@ -19,6 +19,12 @@ namespace nablalib::types
 using Id = size_t;
 
 template<size_t N>
+using BoolArray1D = MultiArray<bool, N>;
+
+template<size_t M, size_t N>
+using BoolArray2D = MultiArray<bool, M, N>;
+
+template<size_t N>
 using IntArray1D = MultiArray<int, N>;
 
 template<size_t M, size_t N>

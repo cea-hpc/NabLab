@@ -56,9 +56,10 @@ class IrModuleContentProvider
 			values += new Pair(extensionProvider.instanceName, '{}')
 		if (irModule.main && hasLevelDB)
 		{
-			val value = '"empty value to disable, " + Utils.NonRegressionValues.CreateReference.toString + " or " + Utils.NonRegressionValues.CompareToReference.toString + " to take action"'
+			val value = '"empty value to disable, ' + IrUtils.NonRegressionValues.CreateReference.toString + ' or ' + IrUtils.NonRegressionValues.CompareToReference.toString + ' to take action"'
 			values += new Pair('_nonRegression_comment', value)
 			values += IrUtils.NonRegressionNameAndValue
+			values += IrUtils.NonRegressionToleranceNameAndValue
 		}
 		return values
 	}

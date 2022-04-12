@@ -936,6 +936,7 @@ void Glace2d::computeBoundaryConditions(const member_type& teamMember) noexcept
 				Mt(rNodes) = glace2dfreefuncs::operatorAdd(glace2dfreefuncs::operatorMult(IcP, (glace2dfreefuncs::operatorMult(Ar(rNodes), IcP))), glace2dfreefuncs::operatorMult(NxN, glace2dfreefuncs::trace(Ar(rNodes))));
 			});
 		}
+		teamMember.team_barrier();
 	}
 	{
 		const auto bottomNodes(mesh.getGroup("BottomNodes"));
@@ -956,6 +957,7 @@ void Glace2d::computeBoundaryConditions(const member_type& teamMember) noexcept
 				Mt(rNodes) = glace2dfreefuncs::operatorAdd(glace2dfreefuncs::operatorMult(IcP, (glace2dfreefuncs::operatorMult(Ar(rNodes), IcP))), glace2dfreefuncs::operatorMult(NxN, glace2dfreefuncs::trace(Ar(rNodes))));
 			});
 		}
+		teamMember.team_barrier();
 	}
 	{
 		const auto leftNodes(mesh.getGroup("LeftNodes"));
@@ -979,6 +981,7 @@ void Glace2d::computeBoundaryConditions(const member_type& teamMember) noexcept
 				bt(rNodes) = {0.0, 0.0};
 			});
 		}
+		teamMember.team_barrier();
 	}
 	{
 		const auto rightNodes(mesh.getGroup("RightNodes"));
@@ -1002,6 +1005,7 @@ void Glace2d::computeBoundaryConditions(const member_type& teamMember) noexcept
 				bt(rNodes) = {0.0, 0.0};
 			});
 		}
+		teamMember.team_barrier();
 	}
 }
 

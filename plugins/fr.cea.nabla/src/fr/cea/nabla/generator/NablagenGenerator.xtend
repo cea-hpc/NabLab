@@ -18,6 +18,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
+import fr.cea.nabla.ir.IrUtils
 
 /**
  * Generates code from your model files on save.
@@ -61,13 +62,14 @@ class NablagenGenerator extends AbstractGenerator
 		# Must be done before starting the VM (started at "import jnius")
 		import jnius_config
 
-		# Use the following classpath in case of Eclipse runtime
+		# Use the following lines in case of Eclipse runtime
+		jnius_config.add_options("-DNZIP_FILE=«getPluginPath("fr.cea.nabla.ir")»resources/«IrUtils::NRepository».zip")
 		jnius_config.add_classpath("«eclipsePath»plugins/*")
 		jnius_config.add_classpath("«getPluginPath("fr.cea.nabla")»bin")
 		jnius_config.add_classpath("«getPluginPath("fr.cea.nabla.ir")»bin")
 		jnius_config.add_classpath("«getPluginPath("jgrapht-core")»*")
 
-		# Use the following classpath in case of NabLab product built with Maven (comment lines above)
+		# Use the following line in case of NabLab product built with Maven (comment lines above)
 		#jnius_config.add_classpath("<NabLab product path>/plugins/fr.cea.nabla.vscode.extension/src/nablab/repo/*")
 
 		import jnius

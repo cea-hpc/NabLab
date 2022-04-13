@@ -32,13 +32,13 @@ class ImplicitHeatEquation:
 		self.deltat = 0.001
 		self.X = np.empty((self.__nbNodes, 2), dtype=np.double)
 		self.Xc = np.empty((self.__nbCells, 2), dtype=np.double)
-		self.u_n = Vector.empty("u_n", self.__nbCells)
-		self.u_nplus1 = Vector.empty("u_nplus1", self.__nbCells)
+		self.u_n = Vector.zeros("u_n", self.__nbCells)
+		self.u_nplus1 = Vector.zeros("u_nplus1", self.__nbCells)
 		self.V = np.empty((self.__nbCells), dtype=np.double)
 		self.D = np.empty((self.__nbCells), dtype=np.double)
 		self.faceLength = np.empty((self.__nbFaces), dtype=np.double)
 		self.faceConductivity = np.empty((self.__nbFaces), dtype=np.double)
-		self.alpha = Matrix.empty("alpha", self.__nbCells, self.__nbCells)
+		self.alpha = Matrix.zeros("alpha", self.__nbCells, self.__nbCells)
 		# linearAlgebra
 		self.linearAlgebra = LinearAlgebra()
 		if jsonContent["linearAlgebra"]:
@@ -304,7 +304,7 @@ class ImplicitHeatEquation:
 			self.__writer.openNodeData()
 			self.__writer.closeNodeData()
 			self.__writer.openCellData()
-			self.__writer.openCellArray("Temperature", 1);
+			self.__writer.openCellArray("Temperature", 1)
 			for i in range(self.__nbCells):
 				self.__writer.write(self.u_n.getValue(i))
 			self.__writer.closeCellArray()

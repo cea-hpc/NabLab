@@ -117,7 +117,7 @@ abstract class TypeContentProvider
 	{
 		switch t
 		{
-			case null, case BOOL : throw new RuntimeException("Unexpected type: " + class.name)
+			case null : throw new RuntimeException("Unexpected type: " + t.class.name)
 			default: t.getName() + 'Array' + sizes.size + 'D' + '<' + sizes.map[e | (e.constExpr?e.content:'0')].join(',') + '>'
 		}
 	}

@@ -194,6 +194,7 @@ class IrExpressionFactory
 		IrFactory::eINSTANCE.createCardinality =>
 		[ 
 			annotations += e.toNabLabFileAnnotation
+			type = e.typeFor?.toIrType
 			container = e.container.toIrContainer
 			constExpr = constExprServices.isConstExpr(e)
 		]

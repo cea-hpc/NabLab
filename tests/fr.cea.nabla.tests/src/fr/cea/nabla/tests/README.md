@@ -1,3 +1,10 @@
+# Running the tests
+
+In "Run As > Run Configurations... > Arguments > VM Arguments", add the following options:
+-ea -DNZIP_FILE=${workspace_loc}/plugins/fr.cea.nabla.ir/resources/.nablab.zip
+
+# Reference databases creation
+
 To recreate reference databases in cases of changes on NabLabExamples models, we need to
 
 1. Modify executeJava.sh, executeCpp.sh and executePython.sh by replacing CompareToReference with CreateReference

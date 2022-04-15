@@ -124,7 +124,9 @@ class ConstExprServicesTest
 		val g = module.functions.findFirst[v | v.name == "g"]
 
 		// Assertions
-		Assert.assertTrue(constExprServices.isConstExpr(f))
+		// As functions are not inlined in c++ generation, function can't be constexpr
+		//Assert.assertTrue(constExprServices.isConstExpr(f))
+		Assert.assertFalse(constExprServices.isConstExpr(f))
 
 		Assert.assertTrue(f_a1_type instanceof NSTRealArray1D)
 		val f_a1_type_simple = f_a1_type as NSTRealArray1D
@@ -141,6 +143,8 @@ class ConstExprServicesTest
 		val f_return_type_simple = f_return_type as NSTRealArray1D
 		Assert.assertTrue(constExprServices.isConstExpr(f_return_type_simple.size))
 
-		Assert.assertTrue(constExprServices.isConstExpr(g))
+		// As functions are not inlined in c++ generation, function can't be constexpr
+		//Assert.assertTrue(constExprServices.isConstExpr(g))
+		Assert.assertFalse(constExprServices.isConstExpr(g))
 	}
 }

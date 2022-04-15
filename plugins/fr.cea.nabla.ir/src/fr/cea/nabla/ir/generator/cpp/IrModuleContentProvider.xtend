@@ -128,6 +128,8 @@ class IrModuleContentProvider
 		void dumpVariables(int iteration, bool useTimer=true);
 
 		«ENDIF»
+		inline void trigger(size_t event, std::shared_ptr<MoniLog::MoniLogExecutionContext> context);
+
 		#ifdef NABLAB_DEBUG
 		void pythonInitialize();
 		#endif
@@ -167,7 +169,6 @@ class IrModuleContentProvider
 		#ifdef NABLAB_DEBUG
 		std::string python_path;
 		std::string python_script;
-		MoniLog monilog;
 		#else
 		«FOR v : variables»
 			«IF v.constExpr»
@@ -194,7 +195,6 @@ class IrModuleContentProvider
 				«IF v.const»const «ENDIF»«typeContentProvider.getCppType(v.type)» «v.name»;
 			«ENDIF»
 		«ENDFOR»
-		std::map<string, std::vector<size_t>> executionEvents;
 	#endif
 	};
 	
@@ -253,9 +253,6 @@ class IrModuleContentProvider
 		, «v.name»(«typeContentProvider.getCstrInit(v.type, v.name)»)
 	«ENDFOR»
 	{
-		#ifdef NABLAB_DEBUG
-		«pythonEmbeddingContentProvider.getExecutionEvents(it)»
-		#endif
 	}
 
 	«className»::~«className»()
@@ -374,6 +371,13 @@ class IrModuleContentProvider
 		}
 	}
 	«ENDIF»
+
+	inline void «className»::trigger(size_t event, std::shared_ptr<MoniLog::MoniLogExecutionContext> context)
+	{
+		#ifdef NABLAB_DEBUG
+		MoniLog::trigger(event, context);
+		#endif
+	}
 
 	#ifdef NABLAB_DEBUG
 	«pythonEmbeddingContentProvider.getPythonInitializeContent(it)»

@@ -50,7 +50,7 @@ class PythonEmbeddingContentProvider
 	protected val extension TypeContentProvider
 	
 	val Map<String, Integer> executionEvents = newHashMap
-	val Map<String, List<Integer>> globalVariableWriteEvents = newHashMap
+	val Map<String, List<String>> globalVariableWriteEvents = newHashMap
 	val Set<String> callExecutionEvents = newHashSet
 	
 	def isUserDefined(IrAnnotable it)
@@ -76,18 +76,21 @@ class PythonEmbeddingContentProvider
 			.toSet
 	}
 	
-	def getExecutionEvents(IrModule it)
+	def getBaseExecutionEvents(IrModule it)
 	'''
-		this->executionEvents =
 		{
 			«FOR e : executionEvents.keySet.sortBy[k|executionEvents.get(k)]»
-			{"«e»", {«executionEvents.get(e)»}},
+			{"«e»", «executionEvents.get(e)»},
 			«ENDFOR»
-			«FOR e : globalVariableWriteEvents.keySet SEPARATOR ','»
-			{"«e»", {«globalVariableWriteEvents.get(e).join(',')»}}
-			«ENDFOR»
-		};
+		}'''
+
+	def getCompositeExecutionEvents(IrModule it)
 	'''
+		{
+			«FOR e : globalVariableWriteEvents.keySet SEPARATOR ','»
+			{"«e»", {«globalVariableWriteEvents.get(e).map[s|'''"«s»"'''].join(',')»}}
+			«ENDFOR»
+		}'''
 	
 	def computeExecutionEvents(IrModule it) {
 		jobs.forEach[j|
@@ -116,8 +119,8 @@ class PythonEmbeddingContentProvider
 							executionEvents.put(assignEventName + '.After', eventIndex+1)
 							if (v.eContainer instanceof IrModule)
 							{
-								globalVariableWriteEvents.computeIfAbsent(v.name.toFirstUpper + '.Before', [newArrayList]).add(eventIndex)
-								globalVariableWriteEvents.computeIfAbsent(v.name.toFirstUpper + '.After', [newArrayList]).add(eventIndex+1)
+								globalVariableWriteEvents.computeIfAbsent(v.name.toFirstUpper + '.Before', [newArrayList]).add(assignEventName + '.Before')
+								globalVariableWriteEvents.computeIfAbsent(v.name.toFirstUpper + '.After', [newArrayList]).add(assignEventName + '.After')
 							}
 						}
 					]
@@ -233,7 +236,7 @@ class PythonEmbeddingContentProvider
 	
 	def getGlobalScopeStructContent(IrModule it)
 	'''
-		struct «name.toFirstUpper»Context : MoniLogExecutionContext
+		struct «name.toFirstUpper»Context : MoniLog::MoniLogExecutionContext
 		{
 			«FOR v : variables»
 			«IF !v.constExpr»
@@ -368,78 +371,81 @@ class PythonEmbeddingContentProvider
 				«val globalContextName = '''«className»Context'''»
 				std::vector<std::string> paths;
 				std::vector<std::string> scripts;
+				std::string interface_module_name = "«className.toLowerCase»";
+				std::function<void (py::module_, py::object)> interface_module_initializer =
+						[](py::module_ «className.toLowerCase»_module, py::object context_class) {
+					py::class_<«globalContextName», std::shared_ptr<«globalContextName»>>(«className.toLowerCase»_module, "«globalContextName»", context_class)
+						«val vars = variables.filter[!constExpr]»
+						«FOR v : vars SEPARATOR '\n'».def_property_readonly("«v.name»", &«globalContextName»::get_«v.name»)«ENDFOR»
+						.def("__str__", [](«globalContextName» &self)
+							{
+								std::ostringstream oss;
+								oss << self.name;
+								return oss.str();
+							})
+						.def("__repr__", [](«globalContextName» &self)
+							{
+								std::ostringstream oss;
+								oss << self.name;
+								return oss.str();
+							});
+					«FOR job : jobs.filter[j|j.hasLocals]»
+					«val varDecs = job.eAllContents.filter(VariableDeclaration).filter[v|isUserDefined(v.variable)].toList»
+					«val jobContextName = '''«job.codeName.toFirstUpper»Context'''»
+					py::class_<«jobContextName», «globalContextName», std::shared_ptr<«jobContextName»>>(«className.toLowerCase»_module, "«jobContextName»")«IF varDecs.empty»;«ENDIF»
+						«IF !varDecs.empty»
+						«FOR local : varDecs SEPARATOR '\n'».def_property_readonly("«local.variable.name»", &«jobContextName»::get_«local.variable.name»)«ENDFOR»;
+						«ENDIF»
+					«ENDFOR»
+					«FOR typeShapeEntry : typeShapes.entrySet»
+					«FOR shape : typeShapeEntry.value»
+					«val type = typeShapeEntry.key»
+					«val cppType = getCppTypeForShape(type, shape)»
+					py::class_<«cppType»>(«className.toLowerCase»_module, "«getPythonTypeForShape(type, shape)»")
+						.def("__getitem__", [](«cppType» &self, unsigned index)
+							{
+								if (index < self.size()) {
+									return self[index];
+								} else {
+									throw std::out_of_range("list index out of range");
+								}
+							})
+						.def("__len__", [](«cppType» &self)
+							{ return self.size(); })
+						.def("__str__", [](«cppType» &self)
+							{
+								std::ostringstream oss;
+								oss << self;
+								return oss.str();
+							})
+						.def("__repr__", [](«cppType» &self)
+							{
+								std::ostringstream oss;
+								oss << self;
+								return oss.str();
+							});
+					«ENDFOR»
+					«ENDFOR»
+				};
+
 				if (!python_script.empty())
 				{
 					paths.emplace_back(python_path);
 					scripts.emplace_back(python_script);
 				}
-				monilog = MoniLog(
-						executionEvents,
-						paths,
-						scripts,
-						"«className.toLowerCase»",
-						[](py::module_ «className.toLowerCase»_module)
-						{
-							py::class_<«globalContextName», MoniLogExecutionContext, std::shared_ptr<«globalContextName»>>(«className.toLowerCase»_module, "«globalContextName»")
-								«val vars = variables.filter[!constExpr]»
-								«FOR v : vars SEPARATOR '\n'».def_property_readonly("«v.name»", &«globalContextName»::get_«v.name»)«ENDFOR»
-								.def("__str__", [](«globalContextName» &self)
-									{
-										std::ostringstream oss;
-										oss << self.name;
-										return oss.str();
-									})
-								.def("__repr__", [](«globalContextName» &self)
-									{
-										std::ostringstream oss;
-										oss << self.name;
-										return oss.str();
-									});
-							«FOR job : jobs.filter[j|j.hasLocals]»
-							«val varDecs = job.eAllContents.filter(VariableDeclaration).filter[v|isUserDefined(v.variable)].toList»
-							«val jobContextName = '''«job.codeName.toFirstUpper»Context'''»
-							py::class_<«jobContextName», «globalContextName», std::shared_ptr<«jobContextName»>>(«className.toLowerCase»_module, "«jobContextName»")«IF varDecs.empty»;«ENDIF»
-								«IF !varDecs.empty»
-								«FOR local : varDecs SEPARATOR '\n'».def_property_readonly("«local.variable.name»", &«jobContextName»::get_«local.variable.name»)«ENDFOR»;
-								«ENDIF»
-							«ENDFOR»
-							«FOR typeShapeEntry : typeShapes.entrySet»
-							«FOR shape : typeShapeEntry.value»
-							«val type = typeShapeEntry.key»
-							«val cppType = getCppTypeForShape(type, shape)»
-							py::class_<«cppType»>(«className.toLowerCase»_module, "«getPythonTypeForShape(type, shape)»")
-								.def("__getitem__", [](«cppType» &self, unsigned index)
-									{
-										if (index < self.size()) {
-											return self[index];
-										} else {
-											throw std::out_of_range("list index out of range");
-										}
-									})
-								.def("__len__", [](«cppType» &self)
-									{ return self.size(); })
-								.def("__str__", [](«cppType» &self)
-									{
-										std::ostringstream oss;
-										oss << self;
-										return oss.str();
-									})
-								.def("__repr__", [](«cppType» &self)
-									{
-										std::ostringstream oss;
-										oss << self;
-										return oss.str();
-									});
-							«ENDFOR»
-							«ENDFOR»
-						});
+
+				MoniLog::register_base_events(«baseExecutionEvents»);
+
+				MoniLog::register_composite_event(«compositeExecutionEvents»);
+
+				MoniLog::bootstrap_monilog(paths, scripts, interface_module_name, interface_module_initializer);
 			}
 		'''
 	}
 	
 	def getInstrumentation(int event)
 	'''
-		monilog.trigger(«event», scope);
+		trigger(«event», scope);
 	'''
 	
 	def wrapWithGILGuard(EObject it, String guardedContent, String unguardedContent)

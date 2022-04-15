@@ -84,21 +84,21 @@ public final class Glace2d
 	{
 		final Gson gson = new Gson();
 		final JsonObject options = gson.fromJson(jsonContent, JsonObject.class);
-		assert(options.has("outputPath"));
+		assert options.has("outputPath") : "No outputPath option";
 		final JsonElement valueof_outputPath = options.get("outputPath");
 		outputPath = valueof_outputPath.getAsJsonPrimitive().getAsString();
 		writer = new PvdFileWriter2D("Glace2d", outputPath);
-		assert(options.has("outputPeriod"));
+		assert options.has("outputPeriod") : "No outputPeriod option";
 		final JsonElement valueof_outputPeriod = options.get("outputPeriod");
 		assert(valueof_outputPeriod.isJsonPrimitive());
 		outputPeriod = valueof_outputPeriod.getAsJsonPrimitive().getAsInt();
 		lastDump = Integer.MIN_VALUE;
 		n = 0;
-		assert(options.has("stopTime"));
+		assert options.has("stopTime") : "No stopTime option";
 		final JsonElement valueof_stopTime = options.get("stopTime");
 		assert(valueof_stopTime.isJsonPrimitive());
 		stopTime = valueof_stopTime.getAsJsonPrimitive().getAsDouble();
-		assert(options.has("maxIterations"));
+		assert options.has("maxIterations") : "No maxIterations option";
 		final JsonElement valueof_maxIterations = options.get("maxIterations");
 		assert(valueof_maxIterations.isJsonPrimitive());
 		maxIterations = valueof_maxIterations.getAsJsonPrimitive().getAsInt();
@@ -980,13 +980,13 @@ public final class Glace2d
 			final JsonObject o = gson.fromJson(new FileReader(dataFileName), JsonObject.class);
 
 			// Mesh instanciation
-			assert(o.has("mesh"));
+			assert o.has("mesh") : "No mesh option";
 			CartesianMesh2D mesh = new CartesianMesh2D();
 			mesh.jsonInit(o.get("mesh").toString());
 
 			// Module instanciation(s)
 			Glace2d glace2d = new Glace2d(mesh);
-			assert(o.has("glace2d"));
+			assert o.has("glace2d") : "No glace2d option";
 			glace2d.jsonInit(o.get("glace2d").toString());
 
 			// Start simulation

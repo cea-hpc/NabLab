@@ -120,7 +120,7 @@ class IrModuleContentProvider
 				final JsonObject options = gson.fromJson(jsonContent, JsonObject.class);
 				«IF postProcessing !== null»
 					«val opName = IrUtils.OutputPathNameAndValue.key»
-					assert(options.has("«opName»"));
+					assert options.has("«opName»") : "No «opName» option";
 					final JsonElement «opName.jsonName» = options.get("«opName»");
 					«opName» = «opName.jsonName».getAsJsonPrimitive().getAsString();
 					writer = new PvdFileWriter2D("«irRoot.name»", «opName»);
@@ -199,14 +199,14 @@ class IrModuleContentProvider
 					final JsonObject o = gson.fromJson(new FileReader(dataFileName), JsonObject.class);
 
 					// Mesh instanciation
-					assert(o.has("mesh"));
+					assert o.has("mesh") : "No mesh option";
 					«irRoot.mesh.className» mesh = new «irRoot.mesh.className»();
 					mesh.jsonInit(o.get("mesh").toString());
 
 					// Module instanciation(s)
 					«FOR m : irRoot.modules»
 						«m.className» «m.name» = new «m.className»(mesh);
-						assert(o.has("«m.name»"));
+						assert o.has("«m.name»") : "No «m.name» option";
 						«m.name».jsonInit(o.get("«m.name»").toString());
 						«IF !m.main»«m.name».setMainModule(«irRoot.mainModule.name»);«ENDIF»
 					«ENDFOR»

@@ -17,34 +17,7 @@
  */
  std::string
  LinearAlgebra::print(const Matrix& M) {
-   if (!M.m_matrix) {
-     std::stringstream ss;
-     for (auto i(0); i < M.m_nb_rows; ++i) {
-       for (auto j(0); j < M.m_nb_cols; ++j) {
-         if (j == 0)
-           ss << "|";
-         auto pos_line(std::find_if(M.m_building_struct.begin(), M.m_building_struct.end(),
-                                    [&](const std::pair<int, std::list<std::pair<int, double>>>& line)
-                                    {return (line.first == i);}));
-         if (pos_line != M.m_building_struct.end()) {
-           auto pos_col(std::find_if(pos_line->second.begin(), pos_line->second.end(),
-                                     [&](const std::pair<int, double>& col){return col.first == j;}));
-           if (pos_col != pos_line->second.end())
-             ss << std::setprecision(2) << std::setw(6) << pos_col->second;
-           else
-             ss << std::setprecision(2) << std::setw(6) << "0";
-         } else {
-           ss << std::setprecision(2) << std::setw(6) << "0";
-         }
-         if (j == M.m_nb_cols - 1)
-           ss << "|";
-       }
-       ss << std::endl;
-     }
-     return std::string(ss.str());
-   } else {
-     return M.m_matrix->print();
-   }
+	return M.print();
  }
 
 /*

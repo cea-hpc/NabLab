@@ -10,7 +10,7 @@
 #include "Vector.h"
 #include "nablalib/utils/kokkos/Serializer.h"
 
-using namespace nablalib::utils::kokkos;
+using namespace nablalib::utils;
 
 Vector::
 Vector(const std::string& name, const size_t size)
@@ -53,7 +53,7 @@ setValue(const size_t i, double value)
 	m_data(i) = value;
 }
 
-std::string serialize(const Vector& v)
+const char* serialize (const Vector& v, int& size, bool& mustDeletePtr)
 {
-	return serialize(v.m_data);
+	return serialize(v.m_data, size, mustDeletePtr);
 }

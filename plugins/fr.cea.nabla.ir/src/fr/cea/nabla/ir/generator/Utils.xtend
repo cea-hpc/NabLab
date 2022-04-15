@@ -69,6 +69,11 @@ class Utils
 			name
 	}
 
+	static def getDbDescriptor(Variable it)
+	{
+		dbKey + "_descriptor"
+	}
+
 	static def getDbValue(IrModule m, Variable v, String separator)
 	{
 		val vModule = IrUtils.getContainerOfType(v, IrModule)

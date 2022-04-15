@@ -38,6 +38,7 @@ Export-Package: fr.cea.nabla,
  fr.cea.nabla.overloading,
  fr.cea.nabla.parser.antlr,
  fr.cea.nabla.parser.antlr.internal,
+ fr.cea.nabla.pywrapper,
  fr.cea.nabla.scoping,
  fr.cea.nabla.serializer,
  fr.cea.nabla.services,
@@ -45,5 +46,6 @@ Export-Package: fr.cea.nabla,
  fr.cea.nabla.validation,
  nablalib
 Import-Package: com.google.inject,
- org.apache.log4j
+ org.apache.log4j,
+ org.slf4j;version="1.7.30"
 Bundle-ClassPath: .

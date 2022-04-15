@@ -29,7 +29,7 @@ class TypeContentProvider
 			BaseType case scalar: ''''''
 			BaseType: getNumpyAllocation(sizes.map[content], primitive)
 			ConnectivityType: getNumpyAllocation(connectivities.map[nbElems] + base.sizes.map[content], primitive)
-			LinearAlgebraType: ''' = «IrTypeExtensions.getLinearAlgebraClass(it)».empty("«name»", «FOR s : sizes SEPARATOR ', '»«s.content»«ENDFOR»)'''
+			LinearAlgebraType: ''' = «IrTypeExtensions.getLinearAlgebraClass(it)».zeros("«name»", «FOR s : sizes SEPARATOR ', '»«s.content»«ENDFOR»)'''
 		}
 	}
 

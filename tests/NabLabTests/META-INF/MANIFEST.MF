@@ -12,7 +12,8 @@ Require-Bundle: fr.cea.nabla,
  org.eclipse.xtext.xbase.lib,
  com.google.gson,
  commons-math3,
- leveldb
+ leveldb,
+ org.apache.commons.io
 Export-Package: hydroremap,
  iteration,
  variables

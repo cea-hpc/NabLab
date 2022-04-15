@@ -44,6 +44,7 @@ class NablaExamplesInterpreterTest
 	static GitUtils git
 	LocalDateTime startTime
 	static IrUtils.NonRegressionValues nonRegressionValue = IrUtils.NonRegressionValues.CompareToReference
+	static double nonRegressionTolerance = 0.0
 
 	@Inject CompilationChainHelper compilationHelper
 	@Inject extension TestUtils
@@ -123,7 +124,7 @@ class NablaExamplesInterpreterTest
 		val jsonOptionsFile = String.format("%1$ssrc/%2$s/%3$s.json", examplesProjectPath, moduleName.toLowerCase, moduleName)
 		var jsonContent = readFileAsString(jsonOptionsFile)
 
-		jsonContent = IrUtils.addNonRegressionTagToJsonFile(moduleName, jsonContent, nonRegressionValue.toString)
+		jsonContent = IrUtils.addNonRegressionTagsToJsonFile(moduleName, jsonContent, nonRegressionValue.toString, nonRegressionTolerance)
 
 		val ir = compilationHelper.getIrForInterpretation(model, genmodel)
 		//val handler = new ConsoleHandler

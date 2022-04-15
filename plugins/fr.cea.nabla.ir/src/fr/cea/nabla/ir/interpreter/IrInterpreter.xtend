@@ -77,18 +77,21 @@ class IrInterpreter
 		{
 			val jsonMainModuleOptions = jsonObject.get(mainModuleName).asJsonObject
 			val nrName = IrUtils.NonRegressionNameAndValue.key
+			val nrToleranceName = IrUtils.NonRegressionToleranceNameAndValue.key
 			if (jsonMainModuleOptions.has(nrName))
 			{
 				val dbBaseName = "results/interpreter/" + context.ir.name.toLowerCase + "/" + context.ir.name + "DB."
 				val refDBName = dbBaseName + "ref"
 				val jsonNrName = jsonMainModuleOptions.get(nrName).asString
+
 				if (jsonNrName.equals(IrUtils.NonRegressionValues.CreateReference.toString))
 					createDB(context, refDBName)
 				if (jsonNrName.equals(IrUtils.NonRegressionValues.CompareToReference.toString))
 				{
+					val jsonNrTolerance = jsonMainModuleOptions.has(nrToleranceName) ? jsonMainModuleOptions.get(nrToleranceName).asDouble : 0.0
 					val curDBName = dbBaseName + "current"
 					createDB(context, curDBName)
-					context.levelDBCompareResult = LevelDBUtils.compareDB(curDBName, refDBName)
+					context.levelDBCompareResult = LevelDBUtils.compareDB(curDBName, refDBName, jsonNrTolerance)
 					LevelDBUtils.destroyDB(curDBName)
 				}
 			}

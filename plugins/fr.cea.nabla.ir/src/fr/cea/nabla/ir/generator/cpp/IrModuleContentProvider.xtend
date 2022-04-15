@@ -128,7 +128,6 @@ class IrModuleContentProvider
 		void dumpVariables(int iteration, bool useTimer=true);
 
 		«ENDIF»
-		inline void trigger(size_t event, std::shared_ptr<MoniLog::MoniLogExecutionContext> context);
 
 		#ifdef NABLAB_DEBUG
 		void pythonInitialize();
@@ -371,13 +370,6 @@ class IrModuleContentProvider
 		}
 	}
 	«ENDIF»
-
-	inline void «className»::trigger(size_t event, std::shared_ptr<MoniLog::MoniLogExecutionContext> context)
-	{
-		#ifdef NABLAB_DEBUG
-		MoniLog::trigger(event, context);
-		#endif
-	}
 
 	#ifdef NABLAB_DEBUG
 	«pythonEmbeddingContentProvider.getPythonInitializeContent(it)»

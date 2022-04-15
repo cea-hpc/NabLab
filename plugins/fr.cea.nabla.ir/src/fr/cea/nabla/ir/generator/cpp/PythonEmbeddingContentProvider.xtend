@@ -436,7 +436,7 @@ class PythonEmbeddingContentProvider
 
 				MoniLog::register_base_events(«baseExecutionEvents»);
 
-				MoniLog::register_composite_event(«compositeExecutionEvents»);
+				MoniLog::register_composite_events(«compositeExecutionEvents»);
 
 				MoniLog::bootstrap_monilog(paths, scripts, interface_module_name, interface_module_initializer);
 			}
@@ -445,7 +445,7 @@ class PythonEmbeddingContentProvider
 	
 	def getInstrumentation(int event)
 	'''
-		trigger(«event», scope);
+		MoniLog::trigger(«event», scope);
 	'''
 	
 	def wrapWithGILGuard(EObject it, String guardedContent, String unguardedContent)

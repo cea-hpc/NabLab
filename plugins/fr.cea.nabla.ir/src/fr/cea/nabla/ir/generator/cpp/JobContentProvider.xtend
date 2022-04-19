@@ -32,7 +32,7 @@ abstract class JobContentProvider
 	protected val extension JobCallerContentProvider
 	protected val extension JsonContentProvider
 	protected val extension TypeContentProvider
-	protected val extension PythonEmbeddingContentProvider
+	protected val AbstractPythonEmbeddingContentProvider pythonEmbeddingContentProvider
 
 	def getDeclarationContent(Job it)
 	'''
@@ -43,18 +43,9 @@ abstract class JobContentProvider
 		«comment»
 		void «IrUtils.getContainerOfType(it, IrModule).className»::«codeName»() noexcept
 		{
-			#ifdef NABLAB_DEBUG
-			«IF hasLocals»
-			«localScopeDefinition»
-			«ELSE»
-			«globalScopeDefinition»
-			«ENDIF»
-			«getInstrumentation(getExecutionEvent(true))»
-			#endif
+			«pythonEmbeddingContentProvider.getBeforeCallContent(it)»
 			«innerContent»
-			#ifdef NABLAB_DEBUG
-			«getInstrumentation(getExecutionEvent(false))»
-			#endif
+			«pythonEmbeddingContentProvider.getAfterCallContent(it)»
 		}
 	'''
 
@@ -130,9 +121,6 @@ class KokkosJobContentProvider extends JobContentProvider
 		«comment»
 		void «IrUtils.getContainerOfType(it, IrModule).className»::«codeName»(«FOR a : arguments SEPARATOR ', '»«a»«ENDFOR») noexcept
 		{
-			#ifdef NABLAB_DEBUG
-			«localScopeDefinition»
-			#endif
 			«innerContent»
 		}
 	'''

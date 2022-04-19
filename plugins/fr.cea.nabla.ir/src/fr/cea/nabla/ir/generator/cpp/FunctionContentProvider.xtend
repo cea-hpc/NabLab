@@ -31,7 +31,6 @@ class FunctionContentProvider
 	protected val extension TypeContentProvider
 	protected val extension ExpressionContentProvider
 	protected val extension InstructionContentProvider
-	protected val extension PythonEmbeddingContentProvider
 
 	def getDeclarationContent(Function it)
 	{

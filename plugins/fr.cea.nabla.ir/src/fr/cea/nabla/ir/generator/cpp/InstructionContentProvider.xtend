@@ -18,13 +18,13 @@ import fr.cea.nabla.ir.ir.Exit
 import fr.cea.nabla.ir.ir.If
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.InstructionBlock
-import fr.cea.nabla.ir.ir.InternFunction
 import fr.cea.nabla.ir.ir.Interval
 import fr.cea.nabla.ir.ir.IrType
 import fr.cea.nabla.ir.ir.ItemIdDefinition
 import fr.cea.nabla.ir.ir.ItemIndexDefinition
 import fr.cea.nabla.ir.ir.IterationBlock
 import fr.cea.nabla.ir.ir.Iterator
+import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.JobCaller
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ReductionInstruction
@@ -34,66 +34,32 @@ import fr.cea.nabla.ir.ir.VariableDeclaration
 import fr.cea.nabla.ir.ir.While
 import org.eclipse.xtend.lib.annotations.Data
 
-import static fr.cea.nabla.ir.IrUtils.*
-import static fr.cea.nabla.ir.generator.cpp.PythonEmbeddingContentProvider.*
-
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.cpp.ItemIndexAndIdValueContentProvider.*
-import fr.cea.nabla.ir.ir.Job
 
 @Data
 abstract class InstructionContentProvider
 {
 	protected val extension TypeContentProvider
 	protected val extension ExpressionContentProvider
-	protected val extension PythonEmbeddingContentProvider
+	protected val AbstractPythonEmbeddingContentProvider pythonEmbeddingContentProvider
 	protected abstract def CharSequence getReductionContent(ReductionInstruction it)
 	protected abstract def CharSequence getParallelLoopContent(Loop it)
 
-	protected def getScopeUpdateContent(String variableName)
-	'''
-		scope->«variableName» = &«variableName»;'''
-	
-	protected def getScopeParameter()
-	'''
-		«LOCAL_SCOPE»'''
 
 	def dispatch CharSequence getContent(VariableDeclaration it)
 	'''
 		«IF variable.type.baseTypeConstExpr»
-«««			FIXME add support for internal functions
-			«IF getContainerOfType(it, InternFunction) === null && isUserDefined(variable)»
-			#ifdef NABLAB_DEBUG
-			«getInstrumentation(getExecutionEvent(true))»
-			#endif
-			«ENDIF»
+			«pythonEmbeddingContentProvider.getBeforeWriteContent(it)»
 			«IF variable.const»const «ENDIF»«variable.type.cppType» «variable.name»«IF variable.defaultValue !== null»(«variable.defaultValue.content»)«ENDIF»;
-«««			FIXME add support for internal functions
-			«IF getContainerOfType(it, InternFunction) === null && isUserDefined(variable)»
-			#ifdef NABLAB_DEBUG
-			«variable.name.scopeUpdateContent»
-			«getInstrumentation(getExecutionEvent(false))»
-			#endif
-			«ENDIF»
+			«pythonEmbeddingContentProvider.getAfterWriteContent(it)»
 		«ELSE»
-«««			FIXME add support for internal functions
-			«IF getContainerOfType(it, InternFunction) === null && isUserDefined(variable)»
-			#ifdef NABLAB_DEBUG
-			«getInstrumentation(getExecutionEvent(true))»
-			#endif
-			«ENDIF»
+			«pythonEmbeddingContentProvider.getBeforeWriteContent(it)»
 			«IF variable.const»const «ENDIF»«variable.type.cppType» «variable.name»;
-«««			FIXME add support for internal functions
-			«IF getContainerOfType(it, InternFunction) === null && isUserDefined(variable)»
-			«initCppTypeContent(variable.name, variable.type)»
-			#ifdef NABLAB_DEBUG
-			«variable.name.scopeUpdateContent»
-			«getInstrumentation(getExecutionEvent(false))»
-			#endif
-			«ENDIF»
+			«pythonEmbeddingContentProvider.getAfterWriteContent(it)»
 		«ENDIF»
 	'''
 
@@ -109,41 +75,15 @@ abstract class InstructionContentProvider
 	{
 		if (left.target.linearAlgebra && !(left.iterators.empty && left.indices.empty))
 			'''
-«««			FIXME add support for internal functions
-			«IF getContainerOfType(it, InternFunction) === null && isUserDefined(left.target)»
-			#ifdef NABLAB_DEBUG
-			«getInstrumentation(getExecutionEvent(true))»
-			#endif
-			«ENDIF»
+			«pythonEmbeddingContentProvider.getBeforeWriteContent(it)»
 			«left.codeName».setValue(«formatIteratorsAndIndices(left.target.type, left.iterators, left.indices)», «right.content»);
-«««			FIXME add support for internal functions
-			«IF getContainerOfType(it, InternFunction) === null && isUserDefined(left.target)»
-			#ifdef NABLAB_DEBUG
-			«IF !left.target.global»
-			«left.codeName.toString.scopeUpdateContent»
-			«ENDIF»
-			«getInstrumentation(getExecutionEvent(false))»
-			#endif
-			«ENDIF»
+			«pythonEmbeddingContentProvider.getAfterWriteContent(it)»
 			'''
 		else
 			'''
-«««			FIXME add support for internal functions
-			«IF getContainerOfType(it, InternFunction) === null && isUserDefined(left.target)»
-			#ifdef NABLAB_DEBUG
-			«getInstrumentation(getExecutionEvent(true))»
-			#endif
-			«ENDIF»
+			«pythonEmbeddingContentProvider.getBeforeWriteContent(it)»
 			«left.content» = «right.content»;
-«««			FIXME add support for internal functions
-			«IF getContainerOfType(it, InternFunction) === null && isUserDefined(left.target)»
-			#ifdef NABLAB_DEBUG
-			«IF !left.target.global»
-			«left.codeName.toString.scopeUpdateContent»
-			«ENDIF»
-			«getInstrumentation(getExecutionEvent(false))»
-			#endif
-			«ENDIF»
+			«pythonEmbeddingContentProvider.getAfterWriteContent(it)»
 			'''
 	}
 
@@ -304,21 +244,7 @@ class StlThreadInstructionContentProvider extends InstructionContentProvider
 
 	override getParallelLoopContent(Loop it)
 	'''
-		«wrapWithGILGuard(
-		'''
-			parallel_exec(«iterationBlock.nbElems», [&](const size_t& «iterationBlock.indexName»)
-			{
-				py::gil_scoped_acquire acquire;
-				«body.innerContent»
-				py::gil_scoped_release release;
-			});
-		''',
-		'''
-			parallel_exec(«iterationBlock.nbElems», [&](const size_t& «iterationBlock.indexName»)
-			{
-				«body.innerContent»
-			});
-		''')»
+		«pythonEmbeddingContentProvider.wrapWithGILGuard(it, '''parallel_exec(«iterationBlock.nbElems», [&](const size_t& «iterationBlock.indexName»)''', '''«body.content»''')»
 	'''
 }
 
@@ -345,14 +271,6 @@ class KokkosInstructionContentProvider extends InstructionContentProvider
 			«body.innerContent»
 		});
 	'''
-
-	override getScopeUpdateContent(String variableName)
-	'''
-		scopeRef->«variableName» = &«variableName»;'''
-
-	override getScopeParameter()
-	'''
-		py::cast(*scopeRef)'''
 
 	protected def getFirstArgument(ReductionInstruction it)
 	{
@@ -384,23 +302,11 @@ class KokkosTeamThreadInstructionContentProvider extends KokkosInstructionConten
 		{
 			«iterationBlock.autoTeamWork»
 
-			«wrapWithGILGuard(
-			'''
-				Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& «iterationBlock.indexName»Team)
-				{
-					py::gil_scoped_acquire acquire;
-					int «iterationBlock.indexName»(«iterationBlock.indexName»Team + teamWork.first);
-					«body.innerContent»
-					py::gil_scoped_release release;
-				});
-			''',
-			'''
-				Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& «iterationBlock.indexName»Team)
-				{
-					int «iterationBlock.indexName»(«iterationBlock.indexName»Team + teamWork.first);
-					«body.innerContent»
-				});
-			''')»
+			Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& «iterationBlock.indexName»Team)
+			{
+				int «iterationBlock.indexName»(«iterationBlock.indexName»Team + teamWork.first);
+				«body.innerContent»
+			});
 		}
 		«val j = IrUtils.getContainerOfType(it, Job)»
 		«IF (j.eAllContents.filter(Loop).filter[parallel].size > 1)»
@@ -432,20 +338,11 @@ class OpenMpInstructionContentProvider extends InstructionContentProvider
 
 	override getParallelLoopContent(Loop it)
 	'''
-		«wrapWithGILGuard(
-		'''
-			#pragma omp parallel for
-			for (size_t «iterationBlock.indexName»=0; «iterationBlock.indexName»<«iterationBlock.nbElems»; «iterationBlock.indexName»++)
-			{
-				py::gil_scoped_acquire acquire;
-				«body.innerContent»
-				py::gil_scoped_release release;
-			}
-		''',
-		'''
-			#pragma omp parallel for
-			«sequentialLoopContent»
-		''')»
+		«pythonEmbeddingContentProvider.wrapWithGILGuard(it,
+			'''
+				#pragma omp parallel for
+				for (size_t «iterationBlock.indexName»=0; «iterationBlock.indexName»<«iterationBlock.nbElems»; «iterationBlock.indexName»++)''',
+			'''«body.content»''')»
 	'''
 
 	private def String getReductionIdentifier(ReductionInstruction it)

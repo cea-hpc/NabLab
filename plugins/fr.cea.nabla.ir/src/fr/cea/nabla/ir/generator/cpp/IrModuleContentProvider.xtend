@@ -38,7 +38,7 @@ class IrModuleContentProvider
 	val JsonContentProvider jsonContentProvider
 	val JobCallerContentProvider jobCallerContentProvider
 	val MainContentProvider mainContentProvider
-	val PythonEmbeddingContentProvider pythonEmbeddingContentProvider
+	val AbstractPythonEmbeddingContentProvider pythonEmbeddingContentProvider
 
 	protected def getTypeDefs(IrModule it) ''''''
 	protected def getPrivateMethodHeaders(IrModule it) ''''''
@@ -62,10 +62,6 @@ class IrModuleContentProvider
 	«ENDIF»
 
 	«includesContentProvider.getUsings(hasLevelDB)»
-	
-	#ifdef NABLAB_DEBUG
-	namespace py = pybind11;
-	#endif
 	
 	«IF main && irRoot.modules.size > 1»
 
@@ -97,45 +93,12 @@ class IrModuleContentProvider
 
 		«ENDIF»
 		«typeDefs»
-	public:
-		«className»(«irRoot.mesh.className»& aMesh);
-		~«className»();
-
-		void jsonInit(const char* jsonContent);
-		«IF !main»
-
-		inline void setMainModule(«irRoot.mainModule.className»* value)
-		{
-			mainModule = value,
-			mainModule->«name» = this;
-		}
-		«ENDIF»
-
-		void simulate();
-		«FOR j : jobs»
-		«jobContentProvider.getDeclarationContent(j)»
-		«ENDFOR»
-		«IF main && hasLevelDB»
-			const std::string& get«IrUtils.NonRegressionNameAndValue.key.toFirstUpper»()
-			{
-				return «IrUtils.NonRegressionNameAndValue.key»;
-			}
-			const double get«IrUtils.NonRegressionToleranceNameAndValue.key.toFirstUpper»()
-			{
-				return «IrUtils.NonRegressionToleranceNameAndValue.key»;
-			}
-			void createDB(const std::string& db_name);
-		«ENDIF»
-
+	
 	private:
 		«IF postProcessing !== null»
 		void dumpVariables(int iteration, bool useTimer=true);
 
 		«ENDIF»
-
-		#ifdef NABLAB_DEBUG
-		void pythonInitialize();
-		#endif
 		«privateMethodHeaders»
 		// Mesh and mesh variables
 		«irRoot.mesh.className»& mesh;
@@ -170,10 +133,44 @@ class IrModuleContentProvider
 			std::string «IrUtils.NonRegressionNameAndValue.key»;
 			double «IrUtils.NonRegressionToleranceNameAndValue.key»;
 		«ENDIF»
-		#ifdef NABLAB_DEBUG
-		std::string python_path;
-		std::string python_script;
-		#else
+
+		// Timers
+		Timer globalTimer;
+		Timer cpuTimer;
+		Timer ioTimer;
+		
+		«pythonEmbeddingContentProvider.getPrivateMembers(it)»
+	
+	public:
+		«className»(«irRoot.mesh.className»& aMesh);
+		~«className»();
+
+		void jsonInit(const char* jsonContent);
+		«IF !main»
+
+		inline void setMainModule(«irRoot.mainModule.className»* value)
+		{
+			mainModule = value,
+			mainModule->«name» = this;
+		}
+		«ENDIF»
+
+		void simulate();
+		«FOR j : jobs»
+		«jobContentProvider.getDeclarationContent(j)»
+		«ENDFOR»
+		«IF main && hasLevelDB»
+			const std::string& get«IrUtils.NonRegressionNameAndValue.key.toFirstUpper»()
+			{
+				return «IrUtils.NonRegressionNameAndValue.key»;
+			}
+			const double get«IrUtils.NonRegressionToleranceNameAndValue.key.toFirstUpper»()
+			{
+				return «IrUtils.NonRegressionToleranceNameAndValue.key»;
+			}
+			void createDB(const std::string& db_name);
+		«ENDIF»
+		
 		«FOR v : variables»
 			«IF v.constExpr»
 				static constexpr «typeContentProvider.getCppType(v.type)» «v.name» = «expressionContentProvider.getContent(v.defaultValue)»;
@@ -183,32 +180,9 @@ class IrModuleContentProvider
 				«typeContentProvider.getCppType(v.type)» «v.name»;
 			«ENDIF»
 		«ENDFOR»
-		#endif
-
-		// Timers
-		Timer globalTimer;
-		Timer cpuTimer;
-		Timer ioTimer;
-
-	#ifdef NABLAB_DEBUG
-	public:
-		«FOR v : variables»
-			«IF v.constExpr»
-				static constexpr «typeContentProvider.getCppType(v.type)» «v.name» = «expressionContentProvider.getContent(v.defaultValue)»;
-			«ELSE»
-				«IF v.const»const «ENDIF»«typeContentProvider.getCppType(v.type)» «v.name»;
-			«ENDIF»
-		«ENDFOR»
-	#endif
 	};
 	
-	#ifdef NABLAB_DEBUG
-	«pythonEmbeddingContentProvider.getGlobalScopeStructContent(it)»
-	
-	«FOR j : jobs»
-		«pythonEmbeddingContentProvider.getLocalScopeStructContent(j)»
-	«ENDFOR»
-	#endif
+	«pythonEmbeddingContentProvider.getAllScopeStructContent(it)»
 	#endif
 	'''
 
@@ -226,10 +200,6 @@ class IrModuleContentProvider
 			#include "«m.className».h"
 		«ENDFOR»
 	«ENDIF»
-
-	#ifdef NABLAB_DEBUG
-	namespace py = pybind11;
-	#endif
 
 	«IF !functions.empty»
 
@@ -385,13 +355,11 @@ class IrModuleContentProvider
 	}
 	«ENDIF»
 
-	#ifdef NABLAB_DEBUG
 	«pythonEmbeddingContentProvider.getPythonInitializeContent(it)»
-	#endif
 
 	void «className»::simulate()
 	{
-		«pythonEmbeddingContentProvider.getSimulateProlog»
+		«pythonEmbeddingContentProvider.simulateProlog»
 		
 		«traceContentProvider.getBeginOfSimuTrace(it)»
 

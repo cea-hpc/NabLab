@@ -21,9 +21,7 @@ import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.InternFunction
 import fr.cea.nabla.ir.ir.IrAnnotable
 import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.ir.ItemIndexDefinition
 import fr.cea.nabla.ir.ir.Job
-import fr.cea.nabla.ir.ir.JobCaller
 import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.VariableDeclaration
@@ -38,20 +36,39 @@ import org.eclipse.xtend.lib.annotations.Data
 import static fr.cea.nabla.ir.IrUtils.*
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
-import static extension fr.cea.nabla.ir.JobExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
+import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
+import fr.cea.nabla.ir.ir.Loop
 
 @Data
-class PythonEmbeddingContentProvider
+abstract class AbstractPythonEmbeddingContentProvider
 {
-	public static val String GLOBAL_SCOPE = "py::cast(globalScope)"
-	public static val String LOCAL_SCOPE = "py::cast(scope)"
-
 	protected val extension TypeContentProvider
+	protected val extension ExpressionContentProvider
 	
 	val Map<String, Integer> executionEvents = newHashMap
 	val Map<String, List<String>> globalVariableWriteEvents = newHashMap
 	val Set<String> callExecutionEvents = newHashSet
+	
+	abstract def String getIncludeContent()
+	
+	abstract def String getPrivateMembers(IrModule it)
+	
+	abstract def String getPythonJsonInitContent()
+	
+	abstract def String getAllScopeStructContent(IrModule it)
+	
+	abstract def String getSimulateProlog()
+	
+	abstract def String getPythonInitializeContent(IrModule it)
+	
+	abstract def String getBeforeWriteContent(Instruction it)
+	
+	abstract def String getAfterWriteContent(Instruction it)
+	
+	abstract def String getBeforeCallContent(Job it)
+	
+	abstract def String getAfterCallContent(Job it)
 	
 	def isUserDefined(IrAnnotable it)
 	{
@@ -198,60 +215,6 @@ class PythonEmbeddingContentProvider
 		return executionEvents.get(eventName)
 	}
 	
-	def getLocalName(EObject it)
-	{
-		switch (it)
-		{
-			case VariableDeclaration:
-				return (it as VariableDeclaration).variable.name
-			case ItemIndexDefinition:
-				return (it as ItemIndexDefinition).index.name
-		}
-	}
-	
-	def ifdefGuard(String content)
-	'''
-		#ifdef NABLAB_DEBUG
-		«content»
-		#endif
-	'''
-	
-	def getPythonJsonInitContent()
-	'''
-		#ifdef NABLAB_DEBUG
-		if (options.HasMember("pythonPath"))
-		{
-			const rapidjson::Value &valueof_python_path = options["pythonPath"];
-			assert(valueof_python_path.IsString());
-			python_path = valueof_python_path.GetString();
-		}
-		if (options.HasMember("pythonScript"))
-		{
-			const rapidjson::Value &valueof_python_script = options["pythonScript"];
-			assert(valueof_python_script.IsString());
-			python_script = valueof_python_script.GetString();
-		}
-		#endif
-	'''
-	
-	def getGlobalScopeStructContent(IrModule it)
-	'''
-		struct «name.toFirstUpper»Context : MoniLog::MoniLogExecutionContext
-		{
-			«FOR v : variables»
-			«IF !v.constExpr»
-				«IF v.const || v.type instanceof LinearAlgebraType»const «ENDIF»«getCppType(v.type)»«IF v.type instanceof LinearAlgebraType»&«ENDIF» get_«v.name»() const {return instance->«v.name»;}
-			«ENDIF»
-			«ENDFOR»
-			
-			«name.toFirstUpper» *instance = nullptr;
-			
-			«name.toFirstUpper»Context(«name.toFirstUpper» *instance, std::string name) : MoniLogExecutionContext(name), instance(instance) {}
-			
-			virtual ~«name.toFirstUpper»Context() = default;
-		};
-	'''
-	
 	def getLocals(EObject it)
 	{
 		return eAllContents.filter(VariableDeclaration).filter[v|v.variable.isUserDefined].toMap[d|d.variable.name].values
@@ -288,7 +251,7 @@ class PythonEmbeddingContentProvider
 		struct «name» : «moduleName»Context
 		{
 			«FOR local : locals»
-			const py::object get_«local.variable.name»() const { if («local.variable.name» != nullptr) return py::cast(*«local.variable.name»); else return py::cast<py::none>(Py_None); }
+			const pybind11::object get_«local.variable.name»() const { if («local.variable.name» != nullptr) return pybind11::cast(*«local.variable.name»); else return pybind11::cast<pybind11::none>(Py_None); }
 			«ENDFOR»
 			
 			«FOR local : locals»
@@ -324,9 +287,26 @@ class PythonEmbeddingContentProvider
 		std::shared_ptr<«contextName»> scope(new «contextName»(this, "«it.name»"));
 	'''
 	
+	def getGlobalScopeStructContent(IrModule it)
+	'''
+		struct «name.toFirstUpper»Context : MoniLog::MoniLogExecutionContext
+		{
+			«FOR v : variables»
+			«IF !v.constExpr»
+				«IF v.const || v.type instanceof LinearAlgebraType»const «ENDIF»«getCppType(v.type)»«IF v.type instanceof LinearAlgebraType»&«ENDIF» get_«v.name»() const {return instance->«v.name»;}
+			«ENDIF»
+			«ENDFOR»
+			
+			«name.toFirstUpper» *instance = nullptr;
+			
+			«name.toFirstUpper»Context(«name.toFirstUpper» *instance, std::string name) : MoniLogExecutionContext(name), instance(instance) {}
+			
+			virtual ~«name.toFirstUpper»Context() = default;
+		};
+	'''
+	
 	def getAllArrayShapes(BaseType it)
 	{
-		// TODO configure context properly?
 		val context = new Context(Logger.getLogger(""), null, null)
 		val allSizes = sizes.map[s|ExpressionInterpreter.interprete(s, context)].toList
 		val result = newArrayList
@@ -345,7 +325,234 @@ class PythonEmbeddingContentProvider
 	def getPythonTypeForShape(PrimitiveType t, List<NablaValue> sizes)
 	'''«t.getName()»Array«FOR size : sizes SEPARATOR 'x'»«size»«ENDFOR»'''
 	
-	def getPythonInitializeContent(IrModule it)
+	def getInstrumentation(int event)
+	'''
+		MoniLog::trigger(«event», scope);
+	'''
+	
+	def wrapWithGILGuard(Loop it, String loopHeader, String loopBody)
+	'''
+		#ifdef NABLAB_DEBUG
+		{
+			const bool shouldReleaseGIL = !(«FOR event : #[true, false].flatMap[b|getWriteEvents(b)] SEPARATOR ' && '»!monilog.has_registered_moniloggers(«event»)«ENDFOR»);
+			if (shouldReleaseGIL)
+			{
+				pybind11::gil_scoped_release release;
+				«loopHeader»
+				{
+					pybind11::gil_scoped_acquire acquire;
+					«loopBody»
+					pybind11::gil_scoped_release release;
+				}
+				pybind11::gil_scoped_acquire acquire;
+			}
+			else
+			{
+		#endif
+				«loopHeader»
+				{
+					«loopBody»
+				}
+		#ifdef NABLAB_DEBUG
+			}
+		}
+		#endif
+	'''
+	
+	protected def getScopeParameter()
+	'''
+		pybind11::cast(scope)'''
+	
+	protected def getScopeUpdateContent(String variableName)
+	'''
+		scope->«variableName» = &«variableName»;'''
+	
+}
+
+@Data
+class EmptyPythonEmbeddingContentProvider extends AbstractPythonEmbeddingContentProvider
+{
+	
+	override getIncludeContent() {
+		""
+	}
+	
+	override getPrivateMembers(IrModule it) {
+		""
+	}
+	
+	override getPythonJsonInitContent() {
+		""
+	}
+	
+	override getAllScopeStructContent(IrModule it) {
+		""
+	}
+	
+	override getSimulateProlog() {
+		""
+	}
+	
+	override getPythonInitializeContent(IrModule it) {
+		""
+	}
+	
+	override getBeforeWriteContent(Instruction it) {
+		""
+	}
+	
+	override getAfterWriteContent(Instruction it) {
+		""
+	}
+	
+	override getBeforeCallContent(Job it) {
+		""
+	}
+	
+	override getAfterCallContent(Job it) {
+		""
+	}
+	
+}
+
+@Data
+class PythonEmbeddingContentProvider extends AbstractPythonEmbeddingContentProvider
+{
+	
+	override getIncludeContent()
+	'''
+		#ifdef NABLAB_DEBUG
+		#include <Python.h>
+		#include <pybind11/embed.h>
+		#include <pybind11/stl.h>
+		#include <MoniLog.h>
+		#endif
+	'''
+	
+	override getPrivateMembers(IrModule it)
+	'''
+		#ifdef NABLAB_DEBUG
+		// Debug-specific members
+		
+		void pythonInitialize();
+		
+		std::string python_path;
+		std::string python_script;
+		#endif
+	'''
+	
+	override getAllScopeStructContent(IrModule it)
+	'''
+		#ifdef NABLAB_DEBUG
+		«getGlobalScopeStructContent(it)»
+		
+		«FOR j : jobs»
+			«getLocalScopeStructContent(j)»
+		«ENDFOR»
+		#endif
+	'''
+	
+	override getBeforeWriteContent(Instruction it)
+	{
+		return beforeWriteContentDispatch
+	}
+	
+	
+	dispatch def String getBeforeWriteContentDispatch(VariableDeclaration it)
+	'''
+«««FIXME add support for internal functions
+		«IF getContainerOfType(it, InternFunction) === null && isUserDefined(variable)»
+		#ifdef NABLAB_DEBUG
+		«getInstrumentation(getExecutionEvent(true))»
+		#endif
+		«ENDIF»
+	'''
+	
+	dispatch def String getBeforeWriteContentDispatch(Affectation it)
+	'''
+«««FIXME add support for internal functions
+		«IF getContainerOfType(it, InternFunction) === null && isUserDefined(left.target)»
+		#ifdef NABLAB_DEBUG
+		«getInstrumentation(getExecutionEvent(true))»
+		#endif
+		«ENDIF»
+	'''
+	
+	override getAfterWriteContent(Instruction it)
+	{
+		return afterWriteContentDispatch
+	}
+	
+	
+	dispatch def String getAfterWriteContentDispatch(VariableDeclaration it)
+	'''
+«««FIXME add support for internal functions
+		«IF getContainerOfType(it, InternFunction) === null && isUserDefined(variable)»
+		#ifdef NABLAB_DEBUG
+		«variable.name.scopeUpdateContent»
+		«getInstrumentation(getExecutionEvent(false))»
+		#endif
+		«ENDIF»
+	'''
+	
+	dispatch def String getAfterWriteContentDispatch(Affectation it)
+	'''
+«««FIXME add support for internal functions
+		«IF getContainerOfType(it, InternFunction) === null && isUserDefined(left.target)»
+		#ifdef NABLAB_DEBUG
+		«IF !left.target.global»
+		«left.codeName.toString.scopeUpdateContent»
+		«ENDIF»
+		«getInstrumentation(getExecutionEvent(false))»
+		#endif
+		«ENDIF»
+	'''
+	
+	override getBeforeCallContent(Job it)
+	'''
+		#ifdef NABLAB_DEBUG
+		«IF hasLocals»
+		«localScopeDefinition»
+		«ELSE»
+		«globalScopeDefinition»
+		«ENDIF»
+		«getInstrumentation(getExecutionEvent(true))»
+		#endif
+	'''
+	
+	override getAfterCallContent(Job it)
+	'''
+		#ifdef NABLAB_DEBUG
+		«getInstrumentation(getExecutionEvent(false))»
+		#endif
+	'''
+	
+	override getPythonJsonInitContent()
+	'''
+		#ifdef NABLAB_DEBUG
+		if (options.HasMember("pythonPath"))
+		{
+			const rapidjson::Value &valueof_python_path = options["pythonPath"];
+			assert(valueof_python_path.IsString());
+			python_path = valueof_python_path.GetString();
+		}
+		if (options.HasMember("pythonScript"))
+		{
+			const rapidjson::Value &valueof_python_script = options["pythonScript"];
+			assert(valueof_python_script.IsString());
+			python_script = valueof_python_script.GetString();
+		}
+		#endif
+	'''
+	
+	override getSimulateProlog()
+	'''
+		#ifdef NABLAB_DEBUG
+		pythonInitialize();
+		#endif
+	'''
+	
+	override getPythonInitializeContent(IrModule it)
 	{
 		val allBaseTypes = eAllContents.filter(BaseType)
 				.filter[t|!t.sizes.empty && t.sizes
@@ -366,15 +573,16 @@ class PythonEmbeddingContentProvider
 		]
 		
 		'''
+			#ifdef NABLAB_DEBUG
 			void «className»::pythonInitialize()
 			{
 				«val globalContextName = '''«className»Context'''»
 				std::vector<std::string> paths;
 				std::vector<std::string> scripts;
 				std::string interface_module_name = "«className.toLowerCase»";
-				std::function<void (py::module_, py::object)> interface_module_initializer =
-						[](py::module_ «className.toLowerCase»_module, py::object context_class) {
-					py::class_<«globalContextName», std::shared_ptr<«globalContextName»>>(«className.toLowerCase»_module, "«globalContextName»", context_class)
+				std::function<void (pybind11::module_, pybind11::object)> interface_module_initializer =
+						[](pybind11::module_ «className.toLowerCase»_module, pybind11::object context_class) {
+					pybind11::class_<«globalContextName», std::shared_ptr<«globalContextName»>>(«className.toLowerCase»_module, "«globalContextName»", context_class)
 						«val vars = variables.filter[!constExpr]»
 						«FOR v : vars SEPARATOR '\n'».def_property_readonly("«v.name»", &«globalContextName»::get_«v.name»)«ENDFOR»
 						.def("__str__", [](«globalContextName» &self)
@@ -392,7 +600,7 @@ class PythonEmbeddingContentProvider
 					«FOR job : jobs.filter[j|j.hasLocals]»
 					«val varDecs = job.eAllContents.filter(VariableDeclaration).filter[v|isUserDefined(v.variable)].toList»
 					«val jobContextName = '''«job.codeName.toFirstUpper»Context'''»
-					py::class_<«jobContextName», «globalContextName», std::shared_ptr<«jobContextName»>>(«className.toLowerCase»_module, "«jobContextName»")«IF varDecs.empty»;«ENDIF»
+					pybind11::class_<«jobContextName», «globalContextName», std::shared_ptr<«jobContextName»>>(«className.toLowerCase»_module, "«jobContextName»")«IF varDecs.empty»;«ENDIF»
 						«IF !varDecs.empty»
 						«FOR local : varDecs SEPARATOR '\n'».def_property_readonly("«local.variable.name»", &«jobContextName»::get_«local.variable.name»)«ENDFOR»;
 						«ENDIF»
@@ -401,7 +609,7 @@ class PythonEmbeddingContentProvider
 					«FOR shape : typeShapeEntry.value»
 					«val type = typeShapeEntry.key»
 					«val cppType = getCppTypeForShape(type, shape)»
-					py::class_<«cppType»>(«className.toLowerCase»_module, "«getPythonTypeForShape(type, shape)»")
+					pybind11::class_<«cppType»>(«className.toLowerCase»_module, "«getPythonTypeForShape(type, shape)»")
 						.def("__getitem__", [](«cppType» &self, unsigned index)
 							{
 								if (index < self.size()) {
@@ -440,64 +648,7 @@ class PythonEmbeddingContentProvider
 
 				MoniLog::bootstrap_monilog(paths, scripts, interface_module_name, interface_module_initializer);
 			}
+			#endif
 		'''
-	}
-	
-	def getInstrumentation(int event)
-	'''
-		MoniLog::trigger(«event», scope);
-	'''
-	
-	def wrapWithGILGuard(EObject it, String guardedContent, String unguardedContent)
-	'''
-		#ifdef NABLAB_DEBUG
-		{
-			const bool shouldReleaseGIL = !(«FOR event : #[true, false].flatMap[b|getWriteEvents(b)] SEPARATOR ' && '»!monilog.has_registered_moniloggers(«event»)«ENDFOR»);
-			if (shouldReleaseGIL)
-			{
-				py::gil_scoped_release release;
-				«guardedContent»
-				py::gil_scoped_acquire acquire;
-			}
-			else
-			{
-				«unguardedContent»
-			}
-		}
-		#else
-		«unguardedContent»
-		#endif
-	'''
-	
-	def getGetSimulateProlog()
-	'''
-		#ifdef NABLAB_DEBUG
-		pythonInitialize();
-		#endif
-	'''
-	
-}
-
-@Data
-class KokkosPythonEmbeddingContentProvider extends PythonEmbeddingContentProvider
-{
-	
-	override getLocalScopeDefinition(Job it)
-	'''
-		«name.toFirstUpper»Context scope(this);
-		«name.toFirstUpper»Context *scopeRef = &scope;
-	'''
-
-	protected def List<String> getArguments(Job it) { #[] }
-}
-
-@Data
-class KokkosTeamThreadPythonEmbeddingContentProvider extends KokkosPythonEmbeddingContentProvider
-{
-	override getArguments(Job it)
-	{
-		// JobCaller never in a team
-		if (!hasIterable || it instanceof JobCaller) #[]
-		else #["const member_type& teamMember"]
 	}
 }

@@ -17,8 +17,8 @@ class Vector:
 		self.__data = data
 
 	@classmethod
-	def empty(cls, name, size):
-		return cls(name, np.empty(size, dtype=np.double))
+	def zeros(cls, name, size):
+		return cls(name, np.zeros(size, dtype=np.double))
 
 	def getName(self):
 		return self.__name

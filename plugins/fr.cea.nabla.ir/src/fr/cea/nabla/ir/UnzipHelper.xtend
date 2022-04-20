@@ -13,9 +13,9 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.net.URI
+import java.util.jar.JarInputStream
 import java.util.zip.ZipInputStream
 import org.eclipse.core.runtime.FileLocator
-import java.util.jar.JarInputStream
 
 class UnzipHelper
 {
@@ -32,12 +32,21 @@ class UnzipHelper
 		{
 			// c++ resources not available => unzip them
 			// For JunitTests, launched from dev environment, copy is not possible
-			val cppResources = UnzipHelper.classLoader.getResource("resources/" + resourceName.toLowerCase + ".zip")
-			val tmpURI = FileLocator.toFileURL(cppResources)
-			// need to use a 3-arg constructor in order to properly escape file system chars
-			val zipFileUri = new URI(tmpURI.protocol, tmpURI.path, null)
+			val nzipFile = System.getProperty("NZIP_FILE")
+			val nzipFileUri = if (nzipFile.nullOrEmpty)
+			{
+				val cppResources = UnzipHelper.classLoader.getResource("resources/" + resourceName.toLowerCase + ".zip")
+				val nzipFileUrl = FileLocator.toFileURL(cppResources)
+				// need to use a 3-arg constructor in order to properly escape file system chars
+				new URI(nzipFileUrl.protocol, nzipFileUrl.path, null)
+			}
+			else
+			{
+				val f = new File(nzipFile)
+				f.toURI
+			}
 			val outputFolderUri = outputDirectory.toURI
-			unzip(zipFileUri, outputFolderUri)
+			unzip(nzipFileUri, outputFolderUri)
 		}
 	}
 

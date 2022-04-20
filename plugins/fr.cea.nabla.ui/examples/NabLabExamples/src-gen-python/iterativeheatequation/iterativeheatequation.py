@@ -374,7 +374,7 @@ class IterativeHeatEquation:
 			self.__writer.openNodeData()
 			self.__writer.closeNodeData()
 			self.__writer.openCellData()
-			self.__writer.openCellArray("Temperature", 0);
+			self.__writer.openCellArray("Temperature", 0)
 			for i in range(self.__nbCells):
 				self.__writer.write(self.u_n[i])
 			self.__writer.closeCellArray()

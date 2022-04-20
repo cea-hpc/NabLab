@@ -17,8 +17,8 @@ class Matrix:
 		self.__data = data
 
 	@classmethod
-	def empty(cls, name, nbRows, nbCols):
-		return cls(name, np.empty((nbRows, nbCols), dtype=np.double))
+	def zeros(cls, name, nbRows, nbCols):
+		return cls(name, np.zeros((nbRows, nbCols), dtype=np.double))
 
 	def getName(self):
 		return self.__name

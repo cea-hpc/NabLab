@@ -14,7 +14,7 @@ package fr.cea.nabla
  */
 class NablagenStandaloneSetup extends NablagenStandaloneSetupGenerated
 {
-	def static void doSetup()
+	def static doSetup()
 	{
 		new NablagenStandaloneSetup().createInjectorAndDoEMFRegistration()
 	}

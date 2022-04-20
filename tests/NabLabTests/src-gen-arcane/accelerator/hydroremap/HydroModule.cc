@@ -66,10 +66,10 @@ void HydroModule::init()
 void HydroModule::iniHv1()
 {
 	auto command = makeCommand(m_default_queue);
-	auto in_hv1 = ax::viewOut(command, m_hv1);
+	auto out_hv1 = ax::viewOut(command, m_hv1);
 	command << RUNCOMMAND_ENUMERATE(Cell, cCells, allCells())
 	{
-		in_hv1[cCells] = 2.0;
+		out_hv1[cCells] = 2.0;
 	};
 }
 
@@ -81,10 +81,10 @@ void HydroModule::iniHv1()
 void HydroModule::iniHv2()
 {
 	auto command = makeCommand(m_default_queue);
-	auto in_hv2 = ax::viewOut(command, m_hv2);
+	auto out_hv2 = ax::viewOut(command, m_hv2);
 	command << RUNCOMMAND_ENUMERATE(Cell, cCells, allCells())
 	{
-		in_hv2[cCells] = 0.0;
+		out_hv2[cCells] = 0.0;
 	};
 }
 
@@ -97,10 +97,10 @@ void HydroModule::hj1()
 {
 	auto command = makeCommand(m_default_queue);
 	auto in_hv2 = ax::viewIn(command, m_hv2);
-	auto in_hv3 = ax::viewOut(command, m_hv3);
+	auto out_hv3 = ax::viewOut(command, m_hv3);
 	command << RUNCOMMAND_ENUMERATE(Cell, cCells, allCells())
 	{
-		in_hv3[cCells] = in_hv2[cCells] + 1.0;
+		out_hv3[cCells] = in_hv2[cCells] + 1.0;
 	};
 }
 
@@ -143,10 +143,10 @@ void HydroModule::hj2()
 {
 	auto command = makeCommand(m_default_queue);
 	auto in_hv3 = ax::viewIn(command, m_hv3);
-	auto in_hv5 = ax::viewOut(command, m_hv5);
+	auto out_hv5 = ax::viewOut(command, m_hv5);
 	command << RUNCOMMAND_ENUMERATE(Cell, cCells, allCells())
 	{
-		in_hv5[cCells] = in_hv3[cCells] + 2.0;
+		out_hv5[cCells] = in_hv3[cCells] + 2.0;
 	};
 }
 
@@ -206,10 +206,10 @@ void HydroModule::hj3()
 	auto in_hv4 = ax::viewIn(command, m_hv4);
 	auto in_hv5 = ax::viewIn(command, m_hv5);
 	auto in_hv6 = ax::viewIn(command, m_hv6);
-	auto in_hv7 = ax::viewOut(command, m_hv7);
+	auto out_hv7 = ax::viewOut(command, m_hv7);
 	command << RUNCOMMAND_ENUMERATE(Cell, cCells, allCells())
 	{
-		in_hv7[cCells] = in_hv4[cCells] + in_hv5[cCells] + in_hv6[cCells];
+		out_hv7[cCells] = in_hv4[cCells] + in_hv5[cCells] + in_hv6[cCells];
 	};
 }
 

@@ -102,7 +102,7 @@ class PrepareLoopsForAccelerators extends IrTransformationStep
 	private def create IrFactory::eINSTANCE.createVariableDeclaration createVariableDeclaration(Loop l, ArgOrVar v, boolean isIn, Iterable<ArgOrVarRef> varRefs)
 	{
 		// create a local variable declaration for the loop var
-		variable = toLocalVariable(l, v, true)
+		variable = toLocalVariable(l, v, isIn)
 		val annot = createAcceleratorAnnotation()
 		val annotValue = (isIn ? ViewDirection.In : ViewDirection.Out)
 		annot.details.put(AcceleratorAnnotation.ANNOTATION_VIEW_DIRECTION_DETAIL, annotValue.toString)

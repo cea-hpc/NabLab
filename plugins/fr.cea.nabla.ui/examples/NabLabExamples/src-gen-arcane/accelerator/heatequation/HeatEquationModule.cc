@@ -113,7 +113,7 @@ void HeatEquationModule::computeOutgoingFlux()
 	auto in_surface = ax::viewIn(command, m_surface);
 	auto in_deltat = m_deltat;
 	auto in_V = ax::viewIn(command, m_V);
-	auto in_outgoingFlux = ax::viewOut(command, m_outgoingFlux);
+	auto out_outgoingFlux = ax::viewOut(command, m_outgoingFlux);
 	command << RUNCOMMAND_ENUMERATE(Cell, j1Cells, allCells())
 	{
 		const auto j1Id(j1Cells);
@@ -131,7 +131,7 @@ void HeatEquationModule::computeOutgoingFlux()
 				reduction0 = heatequationfreefuncs::sumR0(reduction0, reduction1);
 			}
 		}
-		in_outgoingFlux[j1Cells] = in_deltat / in_V[j1Cells] * reduction0;
+		out_outgoingFlux[j1Cells] = in_deltat / in_V[j1Cells] * reduction0;
 	};
 }
 
@@ -144,7 +144,7 @@ void HeatEquationModule::computeSurface()
 {
 	auto command = makeCommand(m_default_queue);
 	auto in_X = ax::viewIn(command, m_X);
-	auto in_surface = ax::viewOut(command, m_surface);
+	auto out_surface = ax::viewOut(command, m_surface);
 	command << RUNCOMMAND_ENUMERATE(Face, fFaces, allFaces())
 	{
 		const auto fId(fFaces);
@@ -161,7 +161,7 @@ void HeatEquationModule::computeSurface()
 				reduction0 = heatequationfreefuncs::sumR0(reduction0, heatequationfreefuncs::norm(Real2(heatequationfreefuncs::operatorSub(in_X[rNodes], in_X[rPlus1Nodes]))));
 			}
 		}
-		in_surface[fFaces] = 0.5 * reduction0;
+		out_surface[fFaces] = 0.5 * reduction0;
 	};
 }
 
@@ -184,7 +184,7 @@ void HeatEquationModule::computeV()
 {
 	auto command = makeCommand(m_default_queue);
 	auto in_X = ax::viewIn(command, m_X);
-	auto in_V = ax::viewOut(command, m_V);
+	auto out_V = ax::viewOut(command, m_V);
 	command << RUNCOMMAND_ENUMERATE(Cell, jCells, allCells())
 	{
 		const auto jId(jCells);
@@ -201,7 +201,7 @@ void HeatEquationModule::computeV()
 				reduction0 = heatequationfreefuncs::sumR0(reduction0, heatequationfreefuncs::det(in_X[rNodes], in_X[rPlus1Nodes]));
 			}
 		}
-		in_V[jCells] = 0.5 * reduction0;
+		out_V[jCells] = 0.5 * reduction0;
 	};
 }
 
@@ -214,7 +214,7 @@ void HeatEquationModule::iniCenter()
 {
 	auto command = makeCommand(m_default_queue);
 	auto in_X = ax::viewIn(command, m_X);
-	auto in_center = ax::viewOut(command, m_center);
+	auto out_center = ax::viewOut(command, m_center);
 	command << RUNCOMMAND_ENUMERATE(Cell, jCells, allCells())
 	{
 		const auto jId(jCells);
@@ -229,7 +229,7 @@ void HeatEquationModule::iniCenter()
 				reduction0 = Real2(heatequationfreefuncs::sumR1(reduction0, in_X[rNodes]));
 			}
 		}
-		in_center[jCells] = Real2(heatequationfreefuncs::operatorMult(0.25, reduction0));
+		out_center[jCells] = Real2(heatequationfreefuncs::operatorMult(0.25, reduction0));
 	};
 }
 
@@ -241,10 +241,10 @@ void HeatEquationModule::iniCenter()
 void HeatEquationModule::iniF()
 {
 	auto command = makeCommand(m_default_queue);
-	auto in_f = ax::viewOut(command, m_f);
+	auto out_f = ax::viewOut(command, m_f);
 	command << RUNCOMMAND_ENUMERATE(Cell, jCells, allCells())
 	{
-		in_f[jCells] = 0.0;
+		out_f[jCells] = 0.0;
 	};
 }
 
@@ -270,10 +270,10 @@ void HeatEquationModule::computeUn()
 	auto in_deltat = m_deltat;
 	auto in_u_n = ax::viewIn(command, m_u_n);
 	auto in_outgoingFlux = ax::viewIn(command, m_outgoingFlux);
-	auto in_u_nplus1 = ax::viewOut(command, m_u_nplus1);
+	auto out_u_nplus1 = ax::viewOut(command, m_u_nplus1);
 	command << RUNCOMMAND_ENUMERATE(Cell, jCells, allCells())
 	{
-		in_u_nplus1[jCells] = in_f[jCells] * in_deltat + in_u_n[jCells] + in_outgoingFlux[jCells];
+		out_u_nplus1[jCells] = in_f[jCells] * in_deltat + in_u_n[jCells] + in_outgoingFlux[jCells];
 	};
 }
 
@@ -288,10 +288,10 @@ void HeatEquationModule::iniUn()
 	auto in_PI = m_PI;
 	auto in_alpha = m_alpha;
 	auto in_center = ax::viewIn(command, m_center);
-	auto in_u_n = ax::viewOut(command, m_u_n);
+	auto out_u_n = ax::viewOut(command, m_u_n);
 	command << RUNCOMMAND_ENUMERATE(Cell, jCells, allCells())
 	{
-		in_u_n[jCells] = std::cos(2 * in_PI * in_alpha * in_center[jCells][0]);
+		out_u_n[jCells] = std::cos(2 * in_PI * in_alpha * in_center[jCells][0]);
 	};
 }
 
@@ -324,10 +324,10 @@ void HeatEquationModule::executeTimeLoopN()
 	{
 		auto command = makeCommand(m_default_queue);
 		auto in_u_nplus1 = ax::viewIn(command, m_u_nplus1);
-		auto in_u_n = ax::viewOut(command, m_u_n);
+		auto out_u_n = ax::viewOut(command, m_u_n);
 		command << RUNCOMMAND_ENUMERATE(Cell, i1Cells, allCells())
 		{
-			in_u_n[i1Cells] = in_u_nplus1[i1Cells];
+			out_u_n[i1Cells] = in_u_nplus1[i1Cells];
 		};
 	}
 	

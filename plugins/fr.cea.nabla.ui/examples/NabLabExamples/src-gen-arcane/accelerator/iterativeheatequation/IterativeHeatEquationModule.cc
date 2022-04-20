@@ -135,7 +135,7 @@ void IterativeHeatEquationModule::computeFaceLength()
 {
 	auto command = makeCommand(m_default_queue);
 	auto in_X = ax::viewIn(command, m_X);
-	auto in_faceLength = ax::viewOut(command, m_faceLength);
+	auto out_faceLength = ax::viewOut(command, m_faceLength);
 	command << RUNCOMMAND_ENUMERATE(Face, fFaces, allFaces())
 	{
 		const auto fId(fFaces);
@@ -152,7 +152,7 @@ void IterativeHeatEquationModule::computeFaceLength()
 				reduction0 = iterativeheatequationfreefuncs::sumR0(reduction0, iterativeheatequationfreefuncs::norm(Real2(iterativeheatequationfreefuncs::operatorSub(in_X[pNodes], in_X[pPlus1Nodes]))));
 			}
 		}
-		in_faceLength[fFaces] = 0.5 * reduction0;
+		out_faceLength[fFaces] = 0.5 * reduction0;
 	};
 }
 
@@ -175,7 +175,7 @@ void IterativeHeatEquationModule::computeV()
 {
 	auto command = makeCommand(m_default_queue);
 	auto in_X = ax::viewIn(command, m_X);
-	auto in_V = ax::viewOut(command, m_V);
+	auto out_V = ax::viewOut(command, m_V);
 	command << RUNCOMMAND_ENUMERATE(Cell, jCells, allCells())
 	{
 		const auto jId(jCells);
@@ -192,7 +192,7 @@ void IterativeHeatEquationModule::computeV()
 				reduction0 = iterativeheatequationfreefuncs::sumR0(reduction0, iterativeheatequationfreefuncs::det(in_X[pNodes], in_X[pPlus1Nodes]));
 			}
 		}
-		in_V[jCells] = 0.5 * reduction0;
+		out_V[jCells] = 0.5 * reduction0;
 	};
 }
 
@@ -204,10 +204,10 @@ void IterativeHeatEquationModule::computeV()
 void IterativeHeatEquationModule::initD()
 {
 	auto command = makeCommand(m_default_queue);
-	auto in_D = ax::viewOut(command, m_D);
+	auto out_D = ax::viewOut(command, m_D);
 	command << RUNCOMMAND_ENUMERATE(Cell, cCells, allCells())
 	{
-		in_D[cCells] = 1.0;
+		out_D[cCells] = 1.0;
 	};
 }
 
@@ -230,7 +230,7 @@ void IterativeHeatEquationModule::initXc()
 {
 	auto command = makeCommand(m_default_queue);
 	auto in_X = ax::viewIn(command, m_X);
-	auto in_Xc = ax::viewOut(command, m_Xc);
+	auto out_Xc = ax::viewOut(command, m_Xc);
 	command << RUNCOMMAND_ENUMERATE(Cell, cCells, allCells())
 	{
 		const auto cId(cCells);
@@ -245,7 +245,7 @@ void IterativeHeatEquationModule::initXc()
 				reduction0 = Real2(iterativeheatequationfreefuncs::sumR1(reduction0, in_X[pNodes]));
 			}
 		}
-		in_Xc[cCells] = Real2(iterativeheatequationfreefuncs::operatorMult(0.25, reduction0));
+		out_Xc[cCells] = Real2(iterativeheatequationfreefuncs::operatorMult(0.25, reduction0));
 	};
 }
 
@@ -258,10 +258,10 @@ void IterativeHeatEquationModule::setUpTimeLoopK()
 {
 	auto command = makeCommand(m_default_queue);
 	auto in_u_n = ax::viewIn(command, m_u_n);
-	auto in_u_nplus1_k = ax::viewOut(command, m_u_nplus1_k);
+	auto out_u_nplus1_k = ax::viewOut(command, m_u_nplus1_k);
 	command << RUNCOMMAND_ENUMERATE(Cell, i1Cells, allCells())
 	{
-		in_u_nplus1_k[i1Cells] = in_u_n[i1Cells];
+		out_u_nplus1_k[i1Cells] = in_u_n[i1Cells];
 	};
 }
 
@@ -276,7 +276,7 @@ void IterativeHeatEquationModule::updateU()
 	auto in_alpha = ax::viewIn(command, m_alpha);
 	auto in_u_nplus1_k = ax::viewIn(command, m_u_nplus1_k);
 	auto in_u_n = ax::viewIn(command, m_u_n);
-	auto in_u_nplus1_kplus1 = ax::viewOut(command, m_u_nplus1_kplus1);
+	auto out_u_nplus1_kplus1 = ax::viewOut(command, m_u_nplus1_kplus1);
 	command << RUNCOMMAND_ENUMERATE(Cell, cCells, allCells())
 	{
 		const auto cId(cCells);
@@ -291,7 +291,7 @@ void IterativeHeatEquationModule::updateU()
 				reduction0 = iterativeheatequationfreefuncs::sumR0(reduction0, in_alpha[cCells][dCells] * in_u_nplus1_k[dCells]);
 			}
 		}
-		in_u_nplus1_kplus1[cCells] = in_u_n[cCells] + in_alpha[cCells][cCells] * in_u_nplus1_k[cCells] + reduction0;
+		out_u_nplus1_kplus1[cCells] = in_u_n[cCells] + in_alpha[cCells][cCells] * in_u_nplus1_k[cCells] + reduction0;
 	};
 }
 
@@ -320,7 +320,7 @@ void IterativeHeatEquationModule::computeFaceConductivity()
 {
 	auto command = makeCommand(m_default_queue);
 	auto in_D = ax::viewIn(command, m_D);
-	auto in_faceConductivity = ax::viewOut(command, m_faceConductivity);
+	auto out_faceConductivity = ax::viewOut(command, m_faceConductivity);
 	command << RUNCOMMAND_ENUMERATE(Face, fFaces, allFaces())
 	{
 		const auto fId(fFaces);
@@ -346,7 +346,7 @@ void IterativeHeatEquationModule::computeFaceConductivity()
 				reduction1 = iterativeheatequationfreefuncs::sumR0(reduction1, in_D[c2Cells]);
 			}
 		}
-		in_faceConductivity[fFaces] = 2.0 * reduction0 / reduction1;
+		out_faceConductivity[fFaces] = 2.0 * reduction0 / reduction1;
 	};
 }
 
@@ -386,10 +386,10 @@ void IterativeHeatEquationModule::executeTimeLoopK()
 	
 		auto command = makeCommand(m_default_queue);
 		auto in_u_nplus1_kplus1 = ax::viewIn(command, m_u_nplus1_kplus1);
-		auto in_u_nplus1_k = ax::viewOut(command, m_u_nplus1_k);
+		auto out_u_nplus1_k = ax::viewOut(command, m_u_nplus1_k);
 		command << RUNCOMMAND_ENUMERATE(Cell, i1Cells, allCells())
 		{
-			in_u_nplus1_k[i1Cells] = in_u_nplus1_kplus1[i1Cells];
+			out_u_nplus1_k[i1Cells] = in_u_nplus1_kplus1[i1Cells];
 		};
 	} while (continueLoop);
 }
@@ -405,13 +405,13 @@ void IterativeHeatEquationModule::initU()
 	auto in_Xc = ax::viewIn(command, m_Xc);
 	auto in_vectOne = m_vectOne;
 	auto in_u0 = m_u0;
-	auto in_u_n = ax::viewOut(command, m_u_n);
+	auto out_u_n = ax::viewOut(command, m_u_n);
 	command << RUNCOMMAND_ENUMERATE(Cell, cCells, allCells())
 	{
 		if (iterativeheatequationfreefuncs::norm(Real2(iterativeheatequationfreefuncs::operatorSub(in_Xc[cCells], in_vectOne))) < 0.5) 
-			in_u_n[cCells] = in_u0;
+			out_u_n[cCells] = in_u0;
 		else
-			in_u_n[cCells] = 0.0;
+			out_u_n[cCells] = 0.0;
 	};
 }
 
@@ -438,7 +438,7 @@ void IterativeHeatEquationModule::computeAlphaCoeff()
 	auto in_faceLength = ax::viewIn(command, m_faceLength);
 	auto in_faceConductivity = ax::viewIn(command, m_faceConductivity);
 	auto in_Xc = ax::viewIn(command, m_Xc);
-	auto in_alpha = ax::viewOut(command, m_alpha);
+	auto out_alpha = ax::viewOut(command, m_alpha);
 	command << RUNCOMMAND_ENUMERATE(Cell, cCells, allCells())
 	{
 		const auto cId(cCells);
@@ -453,11 +453,11 @@ void IterativeHeatEquationModule::computeAlphaCoeff()
 				const auto fId(m_mesh->getCommonFace(cId, dId));
 				const auto fFaces(fId);
 				const Real alphaExtraDiag(in_deltat / in_V[cCells] * (in_faceLength[fFaces] * in_faceConductivity[fFaces]) / iterativeheatequationfreefuncs::norm(Real2(iterativeheatequationfreefuncs::operatorSub(in_Xc[cCells], in_Xc[dCells]))));
-				in_alpha[cCells][dCells] = alphaExtraDiag;
+				out_alpha[cCells][dCells] = alphaExtraDiag;
 				alphaDiag = alphaDiag + alphaExtraDiag;
 			}
 		}
-		in_alpha[cCells][cCells] = -alphaDiag;
+		out_alpha[cCells][cCells] = -alphaDiag;
 	};
 }
 
@@ -470,10 +470,10 @@ void IterativeHeatEquationModule::tearDownTimeLoopK()
 {
 	auto command = makeCommand(m_default_queue);
 	auto in_u_nplus1_kplus1 = ax::viewIn(command, m_u_nplus1_kplus1);
-	auto in_u_nplus1 = ax::viewOut(command, m_u_nplus1);
+	auto out_u_nplus1 = ax::viewOut(command, m_u_nplus1);
 	command << RUNCOMMAND_ENUMERATE(Cell, i1Cells, allCells())
 	{
-		in_u_nplus1[i1Cells] = in_u_nplus1_kplus1[i1Cells];
+		out_u_nplus1[i1Cells] = in_u_nplus1_kplus1[i1Cells];
 	};
 }
 
@@ -497,10 +497,10 @@ void IterativeHeatEquationModule::executeTimeLoopN()
 	{
 		auto command = makeCommand(m_default_queue);
 		auto in_u_nplus1 = ax::viewIn(command, m_u_nplus1);
-		auto in_u_n = ax::viewOut(command, m_u_n);
+		auto out_u_n = ax::viewOut(command, m_u_n);
 		command << RUNCOMMAND_ENUMERATE(Cell, i1Cells, allCells())
 		{
-			in_u_n[i1Cells] = in_u_nplus1[i1Cells];
+			out_u_n[i1Cells] = in_u_nplus1[i1Cells];
 		};
 	}
 	

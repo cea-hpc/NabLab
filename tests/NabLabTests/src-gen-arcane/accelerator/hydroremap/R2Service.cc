@@ -22,10 +22,10 @@ void R2Service::rj1()
 {
 	auto command = makeCommand(m_default_queue);
 	auto in_hv3 = ax::viewIn(command, m_hv3);
-	auto in_rv2 = ax::viewOut(command, m_rv2);
+	auto out_rv2 = ax::viewOut(command, m_rv2);
 	command << RUNCOMMAND_ENUMERATE(Cell, cCells, allCells())
 	{
-		in_rv2[cCells] = in_hv3[cCells] * 2.0;
+		out_rv2[cCells] = in_hv3[cCells] * 2.0;
 	};
 }
 
@@ -38,10 +38,10 @@ void R2Service::rj2()
 {
 	auto command = makeCommand(m_default_queue);
 	auto in_rv2 = ax::viewIn(command, m_rv2);
-	auto in_hv6 = ax::viewOut(command, m_hv6);
+	auto out_hv6 = ax::viewOut(command, m_hv6);
 	command << RUNCOMMAND_ENUMERATE(Cell, cCells, allCells())
 	{
-		in_hv6[cCells] = in_rv2[cCells] * 3.0;
+		out_hv6[cCells] = in_rv2[cCells] * 3.0;
 	};
 }
 

@@ -714,9 +714,15 @@ void Glace2dModule::computeBr()
 void Glace2dModule::computeDt()
 {
 	Real reduction0(numeric_limits<double>::max());
-	ENUMERATE_CELL(jCells, allCells())
 	{
-		reduction0 = glace2dfreefuncs::minR0(reduction0, m_deltatj[jCells]);
+		auto command = makeCommand(m_default_queue);
+		auto in_deltatj = ax::viewIn(command, m_deltatj);
+		ax::ReducerMin<Real> reducer(command);
+		command << RUNCOMMAND_ENUMERATE(Cell, jCells, allCells())
+		{
+			reducer.min(in_deltatj[jCells]);
+		};
+		reduction0 = reducer.reduce();
 	}
 	m_deltat = std::min((m_deltatCfl * reduction0), (options()->stopTime() - m_t_n));
 	m_global_deltat = m_deltat;

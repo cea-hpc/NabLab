@@ -19,6 +19,7 @@ import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityCall
 import fr.cea.nabla.ir.ir.Container
 import fr.cea.nabla.ir.ir.Exit
+import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.If
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.InstructionBlock
@@ -86,9 +87,32 @@ class InstructionContentProvider
 			'''
 	}
 
+	/**
+	 * ReductionInstrution are only encountered on Accelerator API.
+	 * Transformation pass is done for the other Arcane backends.
+	 */
 	static def dispatch CharSequence getContent(ReductionInstruction it)
 	{
-		throw new RuntimeException("ReductionInstruction must have been replaced before using this code generator")
+		val b = iterationBlock
+		switch b
+		{
+			Iterator:
+			'''
+				«val iterator = iterationBlock as Iterator»
+				«val c = iterator.container»
+				ax::Reducer«getReducerType(binaryFunction)»<«TypeContentProvider.getTypeName(result.type)»> reducer(command);
+				command << RUNCOMMAND_ENUMERATE(«c.itemType.name.toFirstUpper», «iterator.index.name», «c.accessor»)
+				{
+					«FOR innerInstruction : innerInstructions»
+						«innerInstruction.content»
+					«ENDFOR»
+					reducer.«getReducerType(binaryFunction).toLowerCase»(«lambda.content»);
+				};
+				«result.name» = reducer.reduce();
+			'''
+			Interval:
+				throw new RuntimeException("Not")
+		}
 	}
 
 	static def dispatch CharSequence getContent(Loop it)
@@ -242,5 +266,13 @@ class InstructionContentProvider
 			ConnectivityCall: '''m_mesh->«accessor»'''
 			SetRef: target.name
 		}
+	}
+
+	private static def getReducerType(Function f)
+	{
+		if (f.name.startsWith("min")) "Min"
+		else if (f.name.startsWith("max")) "Max"
+		else if (f.name.startsWith("sum")) "Sum"
+		else throw new RuntimeException("Reduction type not implemented in Arcane accelerator API: " + f.name)
 	}
 }

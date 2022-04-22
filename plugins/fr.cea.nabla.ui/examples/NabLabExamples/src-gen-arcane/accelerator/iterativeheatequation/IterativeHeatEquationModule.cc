@@ -303,9 +303,16 @@ void IterativeHeatEquationModule::updateU()
 void IterativeHeatEquationModule::computeDeltaTn()
 {
 	Real reduction0(numeric_limits<double>::max());
-	ENUMERATE_CELL(cCells, allCells())
 	{
-		reduction0 = iterativeheatequationfreefuncs::minR0(reduction0, m_V[cCells] / m_D[cCells]);
+		auto command = makeCommand(m_default_queue);
+		auto in_V = ax::viewIn(command, m_V);
+		auto in_D = ax::viewIn(command, m_D);
+		ax::ReducerMin<Real> reducer(command);
+		command << RUNCOMMAND_ENUMERATE(Cell, cCells, allCells())
+		{
+			reducer.min(in_V[cCells] / in_D[cCells]);
+		};
+		reduction0 = reducer.reduce();
 	}
 	m_deltat = reduction0 * 0.1;
 	m_global_deltat = m_deltat;
@@ -358,9 +365,16 @@ void IterativeHeatEquationModule::computeFaceConductivity()
 void IterativeHeatEquationModule::computeResidual()
 {
 	Real reduction0(-numeric_limits<double>::max());
-	ENUMERATE_CELL(jCells, allCells())
 	{
-		reduction0 = iterativeheatequationfreefuncs::maxR0(reduction0, std::abs(m_u_nplus1_kplus1[jCells] - m_u_nplus1_k[jCells]));
+		auto command = makeCommand(m_default_queue);
+		auto in_u_nplus1_kplus1 = ax::viewIn(command, m_u_nplus1_kplus1);
+		auto in_u_nplus1_k = ax::viewIn(command, m_u_nplus1_k);
+		ax::ReducerMax<Real> reducer(command);
+		command << RUNCOMMAND_ENUMERATE(Cell, jCells, allCells())
+		{
+			reducer.max(std::abs(in_u_nplus1_kplus1[jCells] - in_u_nplus1_k[jCells]));
+		};
+		reduction0 = reducer.reduce();
 	}
 	m_residual = reduction0;
 }

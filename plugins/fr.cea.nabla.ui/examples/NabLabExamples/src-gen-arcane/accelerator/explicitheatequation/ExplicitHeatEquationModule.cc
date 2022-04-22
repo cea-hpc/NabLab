@@ -272,9 +272,16 @@ void ExplicitHeatEquationModule::updateU()
 void ExplicitHeatEquationModule::computeDeltaTn()
 {
 	Real reduction0(numeric_limits<double>::max());
-	ENUMERATE_CELL(cCells, allCells())
 	{
-		reduction0 = explicitheatequationfreefuncs::minR0(reduction0, m_V[cCells] / m_D[cCells]);
+		auto command = makeCommand(m_default_queue);
+		auto in_V = ax::viewIn(command, m_V);
+		auto in_D = ax::viewIn(command, m_D);
+		ax::ReducerMin<Real> reducer(command);
+		command << RUNCOMMAND_ENUMERATE(Cell, cCells, allCells())
+		{
+			reducer.min(in_V[cCells] / in_D[cCells]);
+		};
+		reduction0 = reducer.reduce();
 	}
 	m_deltat = reduction0 * 0.24;
 	m_global_deltat = m_deltat;

@@ -18,9 +18,11 @@ import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrRoot
+import fr.cea.nabla.ir.ir.IterableInstruction
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.Loop
+import fr.cea.nabla.ir.ir.ReductionInstruction
 import org.eclipse.emf.ecore.util.EcoreUtil
 
 /**
@@ -47,9 +49,11 @@ class PrepareLoopsForAccelerators extends IrTransformationStep
 
 			for (j : m.jobs)
 			{
-				// candidate loops
-				val loops = j.eAllContents.filter(Loop).filter[x | x.iterationBlock instanceof Iterator && Utils.isParallelLoop(x)].toIterable
-				for (l : loops)
+				// candidate instructions are IterableInstruction on Iterator (no Interval for the moment)
+				val iterableInstrs = j.eAllContents.filter(IterableInstruction).filter[x | x.iterationBlock instanceof Iterator].toIterable
+
+				// keep only reductions and parallel loops
+				for (l : iterableInstrs.filter[x | !(x instanceof Loop) || Utils.isParallelLoop(x as Loop)])
 				{
 					val inVars = IrUtils.getInVars(l)
 					val outVars = IrUtils.getOutVars(l)
@@ -63,12 +67,21 @@ class PrepareLoopsForAccelerators extends IrTransformationStep
 					else
 					{
 						/**
-						 * For the moment, loops containing linear algebra are ignored.
+						 * For the moment, iterable instruction containing linear algebra are ignored.
 						 * See what to do if a GPU solver is plugged.
 						 * TODO Manage linear algebra variables for Arcane Accelerator API
 						 */
 						// tag the loop
 						l.annotations += createAcceleratorAnnotation()
+
+						// for ReductionInstruction instances, create a variable
+						// to store the result of reduction outside the block.
+						if (l instanceof ReductionInstruction)
+						{
+							val decl = IrFactory.eINSTANCE.createVariableDeclaration
+							decl.variable = EcoreUtil.copy(l.result)
+							IrTransformationUtils.insertBefore(l, #[decl])
+						}
 
 						// create a block
 						val block = IrFactory.eINSTANCE.createInstructionBlock
@@ -99,7 +112,7 @@ class PrepareLoopsForAccelerators extends IrTransformationStep
 		// dep only contains functions and functions doe not access global variables
 	}
 
-	private def create IrFactory::eINSTANCE.createVariableDeclaration createVariableDeclaration(Loop l, ArgOrVar v, boolean isIn, Iterable<ArgOrVarRef> varRefs)
+	private def create IrFactory::eINSTANCE.createVariableDeclaration createVariableDeclaration(IterableInstruction l, ArgOrVar v, boolean isIn, Iterable<ArgOrVarRef> varRefs)
 	{
 		// create a local variable declaration for the loop var
 		variable = toLocalVariable(l, v, isIn)
@@ -112,15 +125,13 @@ class PrepareLoopsForAccelerators extends IrTransformationStep
 		for (vr : varRefs)
 			if (vr.target == v)
 				vr.target = variable
-
-		return 
 	}
 
 	/*
 	 * The Loop in argument is not used inside the function but it is a primary key
 	 * for the Xtend create mechanism: if o is identical for 2 loops => creation needed
 	 */
-	private def create IrFactory::eINSTANCE.createVariable toLocalVariable(Loop l, ArgOrVar v, boolean isIn)
+	private def create IrFactory::eINSTANCE.createVariable toLocalVariable(IterableInstruction l, ArgOrVar v, boolean isIn)
 	{
 		val prefix = (isIn ? "in_" : "out_") 
 		name = prefix + v.name

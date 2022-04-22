@@ -41,7 +41,7 @@ class ArcaneGenerator implements IrCodeGenerator
 		{
 			case ApiType.Sequential: #[new ReplaceReductions(true), new SequentializeLoops(), new ReplaceOptionsByLocalVariables]
 			case ApiType.Thread: #[new ReplaceReductions(true), new ReplaceOptionsByLocalVariables]
-			case ApiType.Accelerator: #[new ReplaceReductions(true), new ReplaceOptionsByLocalVariables, new PrepareLoopsForAccelerators]
+			case ApiType.Accelerator: #[new ReplaceReductions(false), new ReplaceOptionsByLocalVariables, new PrepareLoopsForAccelerators]
 		}
 
 		cmakeVars.forEach[x | this.cMakeVars += x]

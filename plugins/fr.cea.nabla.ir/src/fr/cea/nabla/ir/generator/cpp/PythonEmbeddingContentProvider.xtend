@@ -23,6 +23,7 @@ import fr.cea.nabla.ir.ir.IrAnnotable
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.LinearAlgebraType
+import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.VariableDeclaration
 import java.util.Collection
@@ -35,10 +36,9 @@ import org.eclipse.xtend.lib.annotations.Data
 
 import static fr.cea.nabla.ir.IrUtils.*
 
+import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
-import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
-import fr.cea.nabla.ir.ir.Loop
 
 @Data
 abstract class AbstractPythonEmbeddingContentProvider
@@ -69,6 +69,10 @@ abstract class AbstractPythonEmbeddingContentProvider
 	abstract def String getBeforeCallContent(Job it)
 	
 	abstract def String getAfterCallContent(Job it)
+	
+	abstract def String getCMakeEmbeddingContent()
+	
+	abstract def String getCMakeExecutableContent(String includeContent, String linkContent)
 	
 	def isUserDefined(IrAnnotable it)
 	{
@@ -413,6 +417,16 @@ class EmptyPythonEmbeddingContentProvider extends AbstractPythonEmbeddingContent
 		""
 	}
 	
+	override getCMakeEmbeddingContent() {
+		""
+	}
+	
+	override getCMakeExecutableContent(String includeContent, String linkContent)
+		'''
+			target_include_directories(«includeContent»)
+			target_link_libraries(«linkContent»)
+		'''
+	
 }
 
 @Data
@@ -421,6 +435,7 @@ class PythonEmbeddingContentProvider extends AbstractPythonEmbeddingContentProvi
 	
 	override getIncludeContent()
 	'''
+		#include <nablabdefs.h>
 		#ifdef NABLAB_DEBUG
 		#include <Python.h>
 		#include <pybind11/embed.h>
@@ -651,4 +666,33 @@ class PythonEmbeddingContentProvider extends AbstractPythonEmbeddingContentProvi
 			#endif
 		'''
 	}
+	
+	override getCMakeEmbeddingContent()
+		'''
+			if (CMAKE_BUILD_TYPE STREQUAL Debug)
+				set(NABLAB_DEBUG TRUE)
+			endif()
+			configure_file(nablabdefs.h.in ${CMAKE_BINARY_DIR}/nablabdefs.h)
+
+			# Python embedding
+			if (NABLAB_DEBUG)
+				set(PYBIND11_PYTHON_VERSION 3.8)
+				find_package(pybind11 REQUIRED)
+				find_package(Python COMPONENTS Interpreter Development REQUIRED)
+			endif()
+		'''
+	
+	override getCMakeExecutableContent(String includeContent, String linkContent)
+		'''
+			if (NABLAB_DEBUG)
+				target_include_directories(«includeContent» ${Python_SITELIB}/monilog/include)
+				add_library(moniloglib SHARED IMPORTED)
+				set_property(TARGET moniloglib PROPERTY IMPORTED_LOCATION ${Python_SITELIB}/monilog/libmonilog.so)
+				target_link_libraries(«linkContent» moniloglib pybind11::embed)
+			else()
+				target_include_directories(«includeContent»)
+				target_link_libraries(«linkContent»)
+			endif()
+		'''
+	
 }

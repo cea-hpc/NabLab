@@ -14,14 +14,18 @@ import fr.cea.nabla.ir.generator.CMakeUtils
 import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.IrRoot
 import java.util.LinkedHashSet
+import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.getClassName
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.getExecName
 
+@Data
 class CMakeContentProvider
 {
+	protected val AbstractPythonEmbeddingContentProvider pythonEmbeddingContentProvider
+	
 	protected def Iterable<String> getNeededVariables()
 	{
 		#[]
@@ -64,29 +68,13 @@ class CMakeContentProvider
 
 		«CMakeUtils.addSubDirectories(true, externalProviders)»
 
-		if (CMAKE_BUILD_TYPE STREQUAL Debug)
-			set(NABLAB_DEBUG TRUE)
-		endif()
-		configure_file(nablabdefs.h.in ${CMAKE_BINARY_DIR}/nablabdefs.h)
-
-		# Python embedding
-		if (NABLAB_DEBUG)
-			set(PYBIND11_PYTHON_VERSION 3.8)
-			find_package(pybind11 REQUIRED)
-			find_package(Python COMPONENTS Interpreter Development REQUIRED)
-		endif()
+		«pythonEmbeddingContentProvider.getCMakeEmbeddingContent»
 
 		# EXECUTABLE «execName»
 		add_executable(«execName»«FOR m : modules» «m.className + '.cc'»«ENDFOR»)
-		if (NABLAB_DEBUG)
-			target_include_directories(«execName» PUBLIC ${CMAKE_CURRENT_BINARY_DIR} ${Python_SITELIB}/monilog/include)
-			add_library(moniloglib SHARED IMPORTED)
-			set_property(TARGET moniloglib PROPERTY IMPORTED_LOCATION ${Python_SITELIB}/monilog/libmonilog.so)
-			target_link_libraries(«execName» PUBLIC«FOR l : getRootTargetLinkLibraries(it, hasLevelDB)» «l»«ENDFOR» moniloglib pybind11::embed)
-		else()
-			target_include_directories(«execName» PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
-			target_link_libraries(«execName» PUBLIC«FOR l : getRootTargetLinkLibraries(it, hasLevelDB)» «l»«ENDFOR»)
-		endif()
+		«val executableIncludeContent = '''«execName» PUBLIC ${CMAKE_CURRENT_BINARY_DIR}'''»
+		«val executableLinkContent = '''«execName» PUBLIC«FOR l : getRootTargetLinkLibraries(it, hasLevelDB)» «l»«ENDFOR»'''»
+		«pythonEmbeddingContentProvider.getCMakeExecutableContent(executableIncludeContent, executableLinkContent)»
 
 		«CMakeUtils.fileFooter»
 	'''
@@ -119,6 +107,7 @@ class CMakeContentProvider
 	}
 }
 
+@Data
 class StlThreadCMakeContentProvider extends CMakeContentProvider
 {
 	override Iterable<String> getCompilationOptions()
@@ -132,6 +121,7 @@ class StlThreadCMakeContentProvider extends CMakeContentProvider
 	}
 }
 
+@Data
 class KokkosCMakeContentProvider extends CMakeContentProvider
 {
 	override getNeededVariables()
@@ -159,6 +149,7 @@ class KokkosCMakeContentProvider extends CMakeContentProvider
 	}
 }
 
+@Data
 class OpenMpCMakeContentProvider extends CMakeContentProvider
 {
 	override getFindPackageContent(boolean isLinearAlgebra)

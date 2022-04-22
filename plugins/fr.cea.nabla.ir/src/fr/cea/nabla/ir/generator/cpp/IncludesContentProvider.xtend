@@ -22,7 +22,6 @@ class IncludesContentProvider
 		«FOR include : systemIncludes»
 		#include <«include»>
 		«ENDFOR»
-		#include <nablabdefs.h>
 		«pythonEmbeddingContentProvider.includeContent»
 		«FOR include : getUserIncludes(hasLevelDB, hasPostProcessing)»
 		#include "«include»"

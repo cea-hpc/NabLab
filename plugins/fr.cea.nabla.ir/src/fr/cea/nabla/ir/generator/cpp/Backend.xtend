@@ -43,14 +43,14 @@ abstract class Backend implements Jniable
 
 class SequentialBackend extends Backend
 {
-	new()
+	new(boolean debug)
 	{
 		name = 'Sequential'
 		irTransformationSteps = #[new ReplaceReductions(true)]
-		cmakeContentProvider = new CMakeContentProvider
 		typeContentProvider = new StlThreadTypeContentProvider
 		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
-		pythonEmbeddingContentProvider = new PythonEmbeddingContentProvider(typeContentProvider, expressionContentProvider)
+		pythonEmbeddingContentProvider = if (debug) new PythonEmbeddingContentProvider(typeContentProvider, expressionContentProvider) else new EmptyPythonEmbeddingContentProvider(typeContentProvider, expressionContentProvider)
+		cmakeContentProvider = new CMakeContentProvider(pythonEmbeddingContentProvider)
 		instructionContentProvider = new SequentialInstructionContentProvider(typeContentProvider, expressionContentProvider, pythonEmbeddingContentProvider)
 		functionContentProvider = new FunctionContentProvider(typeContentProvider, expressionContentProvider, instructionContentProvider)
 		traceContentProvider = new TraceContentProvider
@@ -66,13 +66,13 @@ class SequentialBackend extends Backend
 
 class StlThreadBackend extends Backend
 {
-	new()
+	new(boolean debug)
 	{
 		name = 'StlThread'
-		cmakeContentProvider = new StlThreadCMakeContentProvider
 		typeContentProvider = new StlThreadTypeContentProvider
 		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
-		pythonEmbeddingContentProvider = new PythonEmbeddingContentProvider(typeContentProvider, expressionContentProvider)
+		pythonEmbeddingContentProvider = if (debug) new PythonEmbeddingContentProvider(typeContentProvider, expressionContentProvider) else new EmptyPythonEmbeddingContentProvider(typeContentProvider, expressionContentProvider)
+		cmakeContentProvider = new StlThreadCMakeContentProvider(pythonEmbeddingContentProvider)
 		instructionContentProvider = new StlThreadInstructionContentProvider(typeContentProvider, expressionContentProvider, pythonEmbeddingContentProvider)
 		functionContentProvider = new FunctionContentProvider(typeContentProvider, expressionContentProvider, instructionContentProvider)
 		traceContentProvider = new TraceContentProvider
@@ -91,10 +91,10 @@ class KokkosBackend extends Backend
 	new()
 	{
 		name = 'Kokkos'
-		cmakeContentProvider = new KokkosCMakeContentProvider
 		typeContentProvider = new KokkosTypeContentProvider
 		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
 		pythonEmbeddingContentProvider = new EmptyPythonEmbeddingContentProvider(typeContentProvider, expressionContentProvider)
+		cmakeContentProvider = new KokkosCMakeContentProvider(pythonEmbeddingContentProvider)
 		instructionContentProvider = new KokkosInstructionContentProvider(typeContentProvider, expressionContentProvider, pythonEmbeddingContentProvider)
 		functionContentProvider = new FunctionContentProvider(typeContentProvider, expressionContentProvider, instructionContentProvider)
 		traceContentProvider = new KokkosTraceContentProvider
@@ -113,10 +113,10 @@ class KokkosTeamThreadBackend extends Backend
 	new()
 	{
 		name = 'Kokkos Team Thread'
-		cmakeContentProvider = new KokkosCMakeContentProvider
 		typeContentProvider = new KokkosTypeContentProvider
 		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
 		pythonEmbeddingContentProvider = new EmptyPythonEmbeddingContentProvider(typeContentProvider, expressionContentProvider)
+		cmakeContentProvider = new KokkosCMakeContentProvider(pythonEmbeddingContentProvider)
 		instructionContentProvider = new KokkosTeamThreadInstructionContentProvider(typeContentProvider, expressionContentProvider, pythonEmbeddingContentProvider)
 		functionContentProvider = new FunctionContentProvider(typeContentProvider, expressionContentProvider, instructionContentProvider)
 		traceContentProvider = new KokkosTraceContentProvider
@@ -132,13 +132,13 @@ class KokkosTeamThreadBackend extends Backend
 
 class OpenMpBackend extends Backend
 {
-	new()
+	new(boolean debug)
 	{
 		name = 'OpenMP'
-		cmakeContentProvider = new OpenMpCMakeContentProvider
 		typeContentProvider = new StlThreadTypeContentProvider
 		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
-		pythonEmbeddingContentProvider = new PythonEmbeddingContentProvider(typeContentProvider, expressionContentProvider)
+		pythonEmbeddingContentProvider = if (debug) new PythonEmbeddingContentProvider(typeContentProvider, expressionContentProvider) else new EmptyPythonEmbeddingContentProvider(typeContentProvider, expressionContentProvider)
+		cmakeContentProvider = new OpenMpCMakeContentProvider(pythonEmbeddingContentProvider)
 		instructionContentProvider = new OpenMpInstructionContentProvider(typeContentProvider, expressionContentProvider, pythonEmbeddingContentProvider)
 		functionContentProvider = new FunctionContentProvider(typeContentProvider, expressionContentProvider, instructionContentProvider)
 		traceContentProvider = new TraceContentProvider

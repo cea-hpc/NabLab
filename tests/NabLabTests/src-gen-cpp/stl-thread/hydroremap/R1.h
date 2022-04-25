@@ -21,12 +21,30 @@ using namespace nablalib::utils;
 using namespace nablalib::types;
 using namespace nablalib::utils::stl;
 
+
 /******************** Module declaration ********************/
 
 class R1
 {
 	friend class Hydro;
 	friend class R2;
+
+
+private:
+	// Mesh and mesh variables
+	CartesianMesh2D& mesh;
+	size_t nbCells;
+
+	// Main module
+	Hydro* mainModule;
+
+	// Options and global variables
+
+	// Timers
+	Timer globalTimer;
+	Timer cpuTimer;
+	Timer ioTimer;
+	
 
 public:
 	R1(CartesianMesh2D& aMesh);
@@ -43,22 +61,8 @@ public:
 	void simulate();
 	void rj1() noexcept;
 	void rj2() noexcept;
-
-private:
-	// Mesh and mesh variables
-	CartesianMesh2D& mesh;
-	size_t nbCells;
-
-	// Main module
-	Hydro* mainModule;
-
-	// Options and global variables
+	
 	std::vector<double> rv3;
-
-	// Timers
-	Timer globalTimer;
-	Timer cpuTimer;
-	Timer ioTimer;
 };
 
 #endif

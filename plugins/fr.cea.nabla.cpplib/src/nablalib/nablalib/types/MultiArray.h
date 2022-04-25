@@ -326,24 +326,41 @@ namespace nablalib::types
 	template<typename T, size_t N>
 	std::ostream& operator<<(std::ostream& os, const std::array<T, N>& array) {
 		os << "[";
-		for (typename std::array<T, N>::size_type i(0); i < N; ++i)
-			os << array[i] << (i!=N-1?", ":"]\n");
+		for (typename std::array<T, N>::size_type i(0); i < N; ++i) {
+			if (i) {
+				os << ", ";
+			}
+			os << array[i];
+		}
+		os << "]";
 		return os;
 	}
 
 	// Pretty printer helper function for N dimension MultiArray
 	template <typename T, size_t DIM_1, size_t... DIM_N, typename std::enable_if_t<(sizeof...(DIM_N)>0)>* = nullptr>
-				std::ostream& operator<<(std::ostream& os, const MultiArray<T, DIM_1, DIM_N...>& array) {
-		for (auto i : array)
-			os << i << std::endl;
+	std::ostream& operator<<(std::ostream& os, const MultiArray<T, DIM_1, DIM_N...>& array) {
+		os << "[";
+		for (typename MultiArray<T, DIM_1, DIM_N...>::size_type i(0); i < array.size(); ++i) {
+			if (i) {
+				os << ", ";
+			}
+			os << array[i];
+		}
+		os << "]";
 		return os;
 	}
 
 	// Pretty printer helper function for 1 dimension MultiArray
 	template<typename T, size_t DIM>
 	std::ostream& operator<<(std::ostream& os, const MultiArray<T, DIM>& array) {
-		for (typename MultiArray<T, DIM>::size_type i(0); i < array.size(); ++i)
-			std::cout << (i==0?"| ":"") << array[i] << (i==array.size()-1?" |":" ");
+		os << "[";
+		for (typename MultiArray<T, DIM>::size_type i(0); i < array.size(); ++i) {
+			if (i) {
+				os << ", ";
+			}
+			os << array[i];
+		}
+		os << "]";
 		return os;
 	}
 

@@ -23,6 +23,7 @@ using namespace nablalib::utils;
 using namespace nablalib::types;
 using namespace nablalib::utils::kokkos;
 
+
 /******************** Free functions declarations ********************/
 
 namespace iterativeheatequationfreefuncs
@@ -51,6 +52,26 @@ RealArray1D<x0> operatorSub(RealArray1D<x0> a, RealArray1D<x0> b);
 
 class IterativeHeatEquation
 {
+
+private:
+	void dumpVariables(int iteration, bool useTimer=true);
+
+	// Mesh and mesh variables
+	CartesianMesh2D& mesh;
+	size_t nbNodes;
+	size_t nbCells;
+	size_t nbFaces;
+
+	// Options and global variables
+	PvdFileWriter2D* writer;
+	std::string outputPath;
+
+	// Timers
+	Timer globalTimer;
+	Timer cpuTimer;
+	Timer ioTimer;
+	
+
 public:
 	IterativeHeatEquation(CartesianMesh2D& aMesh);
 	~IterativeHeatEquation();
@@ -75,19 +96,7 @@ public:
 	void computeAlphaCoeff() noexcept;
 	void tearDownTimeLoopK() noexcept;
 	void executeTimeLoopN() noexcept;
-
-private:
-	void dumpVariables(int iteration, bool useTimer=true);
-
-	// Mesh and mesh variables
-	CartesianMesh2D& mesh;
-	size_t nbNodes;
-	size_t nbCells;
-	size_t nbFaces;
-
-	// Options and global variables
-	PvdFileWriter2D* writer;
-	std::string outputPath;
+	
 	int outputPeriod;
 	int lastDump;
 	int n;
@@ -114,11 +123,6 @@ private:
 	Kokkos::View<double*> faceConductivity;
 	Kokkos::View<double**> alpha;
 	double residual;
-
-	// Timers
-	Timer globalTimer;
-	Timer cpuTimer;
-	Timer ioTimer;
 };
 
 #endif

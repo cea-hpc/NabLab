@@ -23,6 +23,7 @@ using namespace nablalib::utils;
 using namespace nablalib::types;
 using namespace nablalib::utils::kokkos;
 
+
 /******************** Free functions declarations ********************/
 
 namespace heatequationfreefuncs
@@ -47,6 +48,26 @@ RealArray1D<x0> operatorSub(RealArray1D<x0> a, RealArray1D<x0> b);
 
 class HeatEquation
 {
+
+private:
+	void dumpVariables(int iteration, bool useTimer=true);
+
+	// Mesh and mesh variables
+	CartesianMesh2D& mesh;
+	size_t nbNodes;
+	size_t nbCells;
+	size_t nbFaces;
+
+	// Options and global variables
+	PvdFileWriter2D* writer;
+	std::string outputPath;
+
+	// Timers
+	Timer globalTimer;
+	Timer cpuTimer;
+	Timer ioTimer;
+	
+
 public:
 	HeatEquation(CartesianMesh2D& aMesh);
 	~HeatEquation();
@@ -65,19 +86,7 @@ public:
 	void iniUn() noexcept;
 	void setUpTimeLoopN() noexcept;
 	void executeTimeLoopN() noexcept;
-
-private:
-	void dumpVariables(int iteration, bool useTimer=true);
-
-	// Mesh and mesh variables
-	CartesianMesh2D& mesh;
-	size_t nbNodes;
-	size_t nbCells;
-	size_t nbFaces;
-
-	// Options and global variables
-	PvdFileWriter2D* writer;
-	std::string outputPath;
+	
 	int outputPeriod;
 	int lastDump;
 	int n;
@@ -97,11 +106,6 @@ private:
 	Kokkos::View<double*> f;
 	Kokkos::View<double*> outgoingFlux;
 	Kokkos::View<double*> surface;
-
-	// Timers
-	Timer globalTimer;
-	Timer cpuTimer;
-	Timer ioTimer;
 };
 
 #endif

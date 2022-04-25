@@ -22,6 +22,7 @@ using namespace nablalib::utils;
 using namespace nablalib::types;
 using namespace nablalib::utils::kokkos;
 
+
 /******************** Free functions declarations ********************/
 
 namespace variablesfreefuncs
@@ -39,16 +40,6 @@ class Variables
 {
 	typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
 	
-public:
-	Variables(CartesianMesh2D& aMesh);
-	~Variables();
-
-	void jsonInit(const char* jsonContent);
-
-	void simulate();
-	void dynamicVecInitialization(const member_type& teamMember) noexcept;
-	void varVecInitialization() noexcept;
-	void oracle() noexcept;
 
 private:
 	/**
@@ -63,6 +54,24 @@ private:
 	size_t nbNodes;
 
 	// Options and global variables
+
+	// Timers
+	Timer globalTimer;
+	Timer cpuTimer;
+	Timer ioTimer;
+	
+
+public:
+	Variables(CartesianMesh2D& aMesh);
+	~Variables();
+
+	void jsonInit(const char* jsonContent);
+
+	void simulate();
+	void dynamicVecInitialization(const member_type& teamMember) noexcept;
+	void varVecInitialization() noexcept;
+	void oracle() noexcept;
+	
 	static constexpr double maxTime = 0.1;
 	static constexpr int maxIter = 500;
 	static constexpr double deltat = 1.0;
@@ -77,11 +86,6 @@ private:
 	RealArray1D<constexprDim> varVec;
 	int checkDynamicDim;
 	RealArray1D<0> dynamicVec;
-
-	// Timers
-	Timer globalTimer;
-	Timer cpuTimer;
-	Timer ioTimer;
 };
 
 #endif

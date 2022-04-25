@@ -38,6 +38,7 @@ class IrModuleContentProvider
 	val JsonContentProvider jsonContentProvider
 	val JobCallerContentProvider jobCallerContentProvider
 	val MainContentProvider mainContentProvider
+	val AbstractPythonEmbeddingContentProvider pythonEmbeddingContentProvider
 
 	protected def getTypeDefs(IrModule it) ''''''
 	protected def getPrivateMethodHeaders(IrModule it) ''''''
@@ -61,6 +62,7 @@ class IrModuleContentProvider
 	«ENDIF»
 
 	«includesContentProvider.getUsings(hasLevelDB)»
+	
 	«IF main && irRoot.modules.size > 1»
 
 		«FOR m : irRoot.modules.filter[x | x !== it]»
@@ -91,36 +93,7 @@ class IrModuleContentProvider
 
 		«ENDIF»
 		«typeDefs»
-	public:
-		«className»(«irRoot.mesh.className»& aMesh);
-		~«className»();
-
-		void jsonInit(const char* jsonContent);
-		«IF !main»
-
-		inline void setMainModule(«irRoot.mainModule.className»* value)
-		{
-			mainModule = value,
-			mainModule->«name» = this;
-		}
-		«ENDIF»
-
-		void simulate();
-		«FOR j : jobs»
-		«jobContentProvider.getDeclarationContent(j)»
-		«ENDFOR»
-		«IF main && hasLevelDB»
-			const std::string& get«IrUtils.NonRegressionNameAndValue.key.toFirstUpper»()
-			{
-				return «IrUtils.NonRegressionNameAndValue.key»;
-			}
-			const double get«IrUtils.NonRegressionToleranceNameAndValue.key.toFirstUpper»()
-			{
-				return «IrUtils.NonRegressionToleranceNameAndValue.key»;
-			}
-			void createDB(const std::string& db_name);
-		«ENDIF»
-
+	
 	private:
 		«IF postProcessing !== null»
 		void dumpVariables(int iteration, bool useTimer=true);
@@ -160,6 +133,46 @@ class IrModuleContentProvider
 			std::string «IrUtils.NonRegressionNameAndValue.key»;
 			double «IrUtils.NonRegressionToleranceNameAndValue.key»;
 		«ENDIF»
+
+		// Timers
+		Timer globalTimer;
+		Timer cpuTimer;
+		Timer ioTimer;
+		
+		«pythonEmbeddingContentProvider.getPrivateMembers(it)»
+	
+	public:
+		«className»(«irRoot.mesh.className»& aMesh);
+		~«className»();
+
+		void jsonInit(const char* jsonContent);
+		«IF !main»
+
+		inline void setMainModule(«irRoot.mainModule.className»* value)
+		{
+			mainModule = value,
+			mainModule->«name» = this;
+		}
+		«ENDIF»
+
+		void simulate();
+		«FOR j : jobs»
+		«jobContentProvider.getDeclarationContent(j)»
+		«ENDFOR»
+		«IF main && hasLevelDB»
+			const std::string& get«IrUtils.NonRegressionNameAndValue.key.toFirstUpper»()
+			{
+				return «IrUtils.NonRegressionNameAndValue.key»;
+			}
+			const double get«IrUtils.NonRegressionToleranceNameAndValue.key.toFirstUpper»()
+			{
+				return «IrUtils.NonRegressionToleranceNameAndValue.key»;
+			}
+			void createDB(const std::string& db_name);
+		«ENDIF»
+		
+		««« Variables are now public members
+		// Variables are now public members of the class.
 		«FOR v : variables»
 			«IF v.constExpr»
 				static constexpr «typeContentProvider.getCppType(v.type)» «v.name» = «expressionContentProvider.getContent(v.defaultValue)»;
@@ -169,13 +182,9 @@ class IrModuleContentProvider
 				«typeContentProvider.getCppType(v.type)» «v.name»;
 			«ENDIF»
 		«ENDFOR»
-
-		// Timers
-		Timer globalTimer;
-		Timer cpuTimer;
-		Timer ioTimer;
 	};
-
+	
+	«pythonEmbeddingContentProvider.getAllScopeStructContent(it)»
 	#endif
 	'''
 
@@ -281,6 +290,7 @@ class IrModuleContentProvider
 		else
 			«nrToleranceName» = 0.0;
 		«ENDIF»
+		«pythonEmbeddingContentProvider.pythonJsonInitContent»
 		«IF main»
 
 			// Copy node coordinates
@@ -300,7 +310,7 @@ class IrModuleContentProvider
 	«ENDFOR»
 	«IF main»
 	«IF postProcessing !== null»
-
+	
 	void «className»::dumpVariables(int iteration, bool useTimer)
 	{
 		if (writer != NULL && !writer->isDisabled())
@@ -345,9 +355,11 @@ class IrModuleContentProvider
 		}
 	}
 	«ENDIF»
-
+	
+	«pythonEmbeddingContentProvider.getPythonInitializeContent(it)»
 	void «className»::simulate()
 	{
+		«pythonEmbeddingContentProvider.simulateProlog»
 		«traceContentProvider.getBeginOfSimuTrace(it)»
 
 		«jobCallerContentProvider.getCallsHeader(irRoot.main)»

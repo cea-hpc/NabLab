@@ -24,6 +24,7 @@ import fr.cea.nabla.ir.ir.ItemIdDefinition
 import fr.cea.nabla.ir.ir.ItemIndexDefinition
 import fr.cea.nabla.ir.ir.IterationBlock
 import fr.cea.nabla.ir.ir.Iterator
+import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.JobCaller
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ReductionInstruction
@@ -38,23 +39,27 @@ import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.cpp.ItemIndexAndIdValueContentProvider.*
-import fr.cea.nabla.ir.ir.Job
 
 @Data
 abstract class InstructionContentProvider
 {
 	protected val extension TypeContentProvider
 	protected val extension ExpressionContentProvider
+	protected val AbstractPythonEmbeddingContentProvider pythonEmbeddingContentProvider
 	protected abstract def CharSequence getReductionContent(ReductionInstruction it)
 	protected abstract def CharSequence getParallelLoopContent(Loop it)
+
 
 	def dispatch CharSequence getContent(VariableDeclaration it)
 	'''
 		«IF variable.type.baseTypeConstExpr»
+			«pythonEmbeddingContentProvider.getBeforeWriteContent(it)»
 			«IF variable.const»const «ENDIF»«variable.type.cppType» «variable.name»«IF variable.defaultValue !== null»(«variable.defaultValue.content»)«ENDIF»;
+			«pythonEmbeddingContentProvider.getAfterWriteContent(it)»
 		«ELSE»
+			«pythonEmbeddingContentProvider.getBeforeWriteContent(it)»
 			«IF variable.const»const «ENDIF»«variable.type.cppType» «variable.name»;
-			«initCppTypeContent(variable.name, variable.type)»
+			«pythonEmbeddingContentProvider.getAfterWriteContent(it)»
 		«ENDIF»
 	'''
 
@@ -69,9 +74,17 @@ abstract class InstructionContentProvider
 	def dispatch CharSequence getContent(Affectation it)
 	{
 		if (left.target.linearAlgebra && !(left.iterators.empty && left.indices.empty))
-			'''«left.codeName».setValue(«formatIteratorsAndIndices(left.target.type, left.iterators, left.indices)», «right.content»);'''
+			'''
+			«pythonEmbeddingContentProvider.getBeforeWriteContent(it)»
+			«left.codeName».setValue(«formatIteratorsAndIndices(left.target.type, left.iterators, left.indices)», «right.content»);
+			«pythonEmbeddingContentProvider.getAfterWriteContent(it)»
+			'''
 		else
-			'''«left.content» = «right.content»;'''
+			'''
+			«pythonEmbeddingContentProvider.getBeforeWriteContent(it)»
+			«left.content» = «right.content»;
+			«pythonEmbeddingContentProvider.getAfterWriteContent(it)»
+			'''
 	}
 
 	def dispatch CharSequence getContent(ReductionInstruction it)
@@ -93,9 +106,9 @@ abstract class InstructionContentProvider
 		«val thenContent = thenInstruction.content»
 		«IF !(thenContent.charAt(0) == '{'.charAt(0))»	«ENDIF»«thenContent»
 		«IF (elseInstruction !== null)»
-			«val elseContent = elseInstruction.content»
-			else
-			«IF !(elseContent.charAt(0) == '{'.charAt(0))»	«ENDIF»«elseContent»
+		«val elseContent = elseInstruction.content»
+		else
+		«IF !(elseContent.charAt(0) == '{'.charAt(0))»	«ENDIF»«elseContent»
 		«ENDIF»
 	'''
 
@@ -229,10 +242,9 @@ class StlThreadInstructionContentProvider extends InstructionContentProvider
 
 	override getParallelLoopContent(Loop it)
 	'''
-		parallel_exec(«iterationBlock.nbElems», [&](const size_t& «iterationBlock.indexName»)
-		{
-			«body.innerContent»
-		});
+		parallel_exec(«pythonEmbeddingContentProvider.wrapWithGILGuard(it,
+			'''«iterationBlock.nbElems», [&](const size_t& «iterationBlock.indexName»)''',
+			'''«body.innerContent»''')»);
 	'''
 }
 
@@ -260,7 +272,7 @@ class KokkosInstructionContentProvider extends InstructionContentProvider
 		});
 	'''
 
-	protected def getFirstArgument(ReductionInstruction it) 
+	protected def getFirstArgument(ReductionInstruction it)
 	{
 		iterationBlock.nbElems
 	}
@@ -324,10 +336,13 @@ class OpenMpInstructionContentProvider extends InstructionContentProvider
 		}''')»
 	'''
 
+
 	override getParallelLoopContent(Loop it)
 	'''
 		#pragma omp parallel for
-		«sequentialLoopContent»
+		«pythonEmbeddingContentProvider.wrapWithGILGuard(it,
+			'''for (size_t «iterationBlock.indexName»=0; «iterationBlock.indexName»<«iterationBlock.nbElems»; «iterationBlock.indexName»++)''',
+			'''«body.innerContent»''')»
 	'''
 
 	private def String getReductionIdentifier(ReductionInstruction it)

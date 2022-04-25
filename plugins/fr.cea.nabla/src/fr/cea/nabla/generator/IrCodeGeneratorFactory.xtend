@@ -19,6 +19,7 @@ import fr.cea.nabla.nablagen.LevelDB
 import fr.cea.nabla.nablagen.TargetType
 import fr.cea.nabla.nablagen.TargetVar
 import java.util.ArrayList
+import java.util.Optional
 
 class IrCodeGeneratorFactory
 {
@@ -49,13 +50,14 @@ class IrCodeGeneratorFactory
 			}
 			default:
 			{
-				val backend = backendFactory.getCppBackend(targetType)
+				val debug = Optional.ofNullable(targetVars.findFirst[x | x.key.equals("DEBUG")]).map[x | Boolean.parseBoolean(x.value)].orElse(false)
+				val backend = backendFactory.getCppBackend(targetType, debug)
 				backend.traceContentProvider.maxIterationsVarName = iterationMaxVarName
 				backend.traceContentProvider.stopTimeVarName = timeMaxVarName
 				val cmakeVars = new ArrayList<Pair<String, String>>
-				targetVars.forEach[x | cmakeVars += x.key -> x.value]
+				targetVars.filter[x | !x.key.equals("DEBUG")].forEach[x | cmakeVars += x.key -> x.value]
 				if (hasLevelDB) levelDB.variables.forEach[x | cmakeVars += x.key -> x.value]
-				new CppGenerator(backend, wsPath, hasLevelDB, cmakeVars)
+				new CppGenerator(backend, wsPath, hasLevelDB, debug, cmakeVars)
 			}
 		}
 	}

@@ -21,6 +21,7 @@ using namespace nablalib::utils;
 using namespace nablalib::types;
 using namespace nablalib::utils::stl;
 
+
 /******************** Free functions declarations ********************/
 
 namespace glace2dfreefuncs
@@ -66,6 +67,30 @@ RealArray2D<x0,x1> operatorMult(RealArray2D<x0,x1> a, double b);
 
 class Glace2d
 {
+
+private:
+	void dumpVariables(int iteration, bool useTimer=true);
+
+	// Mesh and mesh variables
+	CartesianMesh2D& mesh;
+	size_t nbNodes;
+	size_t nbCells;
+	size_t nbTopNodes;
+	size_t nbBottomNodes;
+	size_t nbLeftNodes;
+	size_t nbRightNodes;
+	size_t nbInnerNodes;
+
+	// Options and global variables
+	PvdFileWriter2D* writer;
+	std::string outputPath;
+
+	// Timers
+	Timer globalTimer;
+	Timer cpuTimer;
+	Timer ioTimer;
+	
+
 public:
 	Glace2d(CartesianMesh2D& aMesh);
 	~Glace2d();
@@ -99,23 +124,7 @@ public:
 	void computeXn() noexcept;
 	void computeEn() noexcept;
 	void computeUn() noexcept;
-
-private:
-	void dumpVariables(int iteration, bool useTimer=true);
-
-	// Mesh and mesh variables
-	CartesianMesh2D& mesh;
-	size_t nbNodes;
-	size_t nbCells;
-	size_t nbTopNodes;
-	size_t nbBottomNodes;
-	size_t nbLeftNodes;
-	size_t nbRightNodes;
-	size_t nbInnerNodes;
-
-	// Options and global variables
-	PvdFileWriter2D* writer;
-	std::string outputPath;
+	
 	int outputPeriod;
 	int lastDump;
 	int n;
@@ -156,11 +165,6 @@ private:
 	std::vector<std::vector<RealArray1D<2>>> C;
 	std::vector<std::vector<RealArray1D<2>>> F;
 	std::vector<std::vector<RealArray2D<2,2>>> Ajr;
-
-	// Timers
-	Timer globalTimer;
-	Timer cpuTimer;
-	Timer ioTimer;
 };
 
 #endif

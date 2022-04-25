@@ -22,6 +22,7 @@ using namespace nablalib::utils;
 using namespace nablalib::types;
 using namespace nablalib::utils::kokkos;
 
+
 /******************** Free functions declarations ********************/
 
 namespace iterationfreefuncs
@@ -33,6 +34,21 @@ bool assertEquals(double expected, double actual);
 
 class Iteration
 {
+
+private:
+	// Mesh and mesh variables
+	CartesianMesh2D& mesh;
+	size_t nbNodes;
+	size_t nbCells;
+
+	// Options and global variables
+
+	// Timers
+	Timer globalTimer;
+	Timer cpuTimer;
+	Timer ioTimer;
+	
+
 public:
 	Iteration(CartesianMesh2D& aMesh);
 	~Iteration();
@@ -59,14 +75,7 @@ public:
 	void oracleVl() noexcept;
 	void updateVn() noexcept;
 	void oracleVn() noexcept;
-
-private:
-	// Mesh and mesh variables
-	CartesianMesh2D& mesh;
-	size_t nbNodes;
-	size_t nbCells;
-
-	// Options and global variables
+	
 	int n;
 	int k;
 	int l;
@@ -92,11 +101,6 @@ private:
 	Kokkos::View<double*> vl_nplus1_l;
 	Kokkos::View<double*> vl_nplus1_lplus1;
 	Kokkos::View<double*> vl_nplus1_l0;
-
-	// Timers
-	Timer globalTimer;
-	Timer cpuTimer;
-	Timer ioTimer;
 };
 
 #endif

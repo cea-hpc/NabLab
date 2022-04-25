@@ -23,6 +23,7 @@ using namespace nablalib::utils;
 using namespace nablalib::types;
 using namespace nablalib::utils::kokkos;
 
+
 /******************** Module declaration ********************/
 
 class R1
@@ -32,21 +33,6 @@ class R1
 
 	typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
 	
-public:
-	R1(CartesianMesh2D& aMesh);
-	~R1();
-
-	void jsonInit(const char* jsonContent);
-
-	inline void setMainModule(Hydro* value)
-	{
-		mainModule = value,
-		mainModule->r1 = this;
-	}
-
-	void simulate();
-	void rj1(const member_type& teamMember) noexcept;
-	void rj2(const member_type& teamMember) noexcept;
 
 private:
 	/**
@@ -64,12 +50,30 @@ private:
 	Hydro* mainModule;
 
 	// Options and global variables
-	Kokkos::View<double*> rv3;
 
 	// Timers
 	Timer globalTimer;
 	Timer cpuTimer;
 	Timer ioTimer;
+	
+
+public:
+	R1(CartesianMesh2D& aMesh);
+	~R1();
+
+	void jsonInit(const char* jsonContent);
+
+	inline void setMainModule(Hydro* value)
+	{
+		mainModule = value,
+		mainModule->r1 = this;
+	}
+
+	void simulate();
+	void rj1(const member_type& teamMember) noexcept;
+	void rj2(const member_type& teamMember) noexcept;
+	
+	Kokkos::View<double*> rv3;
 };
 
 #endif

@@ -23,6 +23,7 @@ using namespace nablalib::utils;
 using namespace nablalib::types;
 using namespace nablalib::utils::kokkos;
 
+
 /******************** Free functions declarations ********************/
 
 namespace heatequationfreefuncs
@@ -49,24 +50,6 @@ class HeatEquation
 {
 	typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
 	
-public:
-	HeatEquation(CartesianMesh2D& aMesh);
-	~HeatEquation();
-
-	void jsonInit(const char* jsonContent);
-
-	void simulate();
-	void computeOutgoingFlux(const member_type& teamMember) noexcept;
-	void computeSurface(const member_type& teamMember) noexcept;
-	void computeTn() noexcept;
-	void computeV(const member_type& teamMember) noexcept;
-	void iniCenter(const member_type& teamMember) noexcept;
-	void iniF(const member_type& teamMember) noexcept;
-	void iniTime() noexcept;
-	void computeUn(const member_type& teamMember) noexcept;
-	void iniUn(const member_type& teamMember) noexcept;
-	void setUpTimeLoopN() noexcept;
-	void executeTimeLoopN() noexcept;
 
 private:
 	void dumpVariables(int iteration, bool useTimer=true);
@@ -87,6 +70,32 @@ private:
 	// Options and global variables
 	PvdFileWriter2D* writer;
 	std::string outputPath;
+
+	// Timers
+	Timer globalTimer;
+	Timer cpuTimer;
+	Timer ioTimer;
+	
+
+public:
+	HeatEquation(CartesianMesh2D& aMesh);
+	~HeatEquation();
+
+	void jsonInit(const char* jsonContent);
+
+	void simulate();
+	void computeOutgoingFlux(const member_type& teamMember) noexcept;
+	void computeSurface(const member_type& teamMember) noexcept;
+	void computeTn() noexcept;
+	void computeV(const member_type& teamMember) noexcept;
+	void iniCenter(const member_type& teamMember) noexcept;
+	void iniF(const member_type& teamMember) noexcept;
+	void iniTime() noexcept;
+	void computeUn(const member_type& teamMember) noexcept;
+	void iniUn(const member_type& teamMember) noexcept;
+	void setUpTimeLoopN() noexcept;
+	void executeTimeLoopN() noexcept;
+	
 	int outputPeriod;
 	int lastDump;
 	int n;
@@ -106,11 +115,6 @@ private:
 	Kokkos::View<double*> f;
 	Kokkos::View<double*> outgoingFlux;
 	Kokkos::View<double*> surface;
-
-	// Timers
-	Timer globalTimer;
-	Timer cpuTimer;
-	Timer ioTimer;
 };
 
 #endif

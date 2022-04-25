@@ -22,6 +22,7 @@ using namespace nablalib::utils;
 using namespace nablalib::types;
 using namespace nablalib::utils::kokkos;
 
+
 class R1;
 class R2;
 
@@ -38,6 +39,25 @@ class Hydro
 {
 	friend class R1;
 	friend class R2;
+
+
+private:
+	// Mesh and mesh variables
+	CartesianMesh2D& mesh;
+	size_t nbNodes;
+	size_t nbCells;
+
+	// Additional modules
+	R1* r1;
+	R2* r2;
+
+	// Options and global variables
+
+	// Timers
+	Timer globalTimer;
+	Timer cpuTimer;
+	Timer ioTimer;
+	
 
 public:
 	Hydro(CartesianMesh2D& aMesh);
@@ -58,18 +78,7 @@ public:
 	void hj3() noexcept;
 	void oracleHv6() noexcept;
 	void oracleHv7() noexcept;
-
-private:
-	// Mesh and mesh variables
-	CartesianMesh2D& mesh;
-	size_t nbNodes;
-	size_t nbCells;
-
-	// Additional modules
-	R1* r1;
-	R2* r2;
-
-	// Options and global variables
+	
 	int maxIter;
 	double maxTime;
 	double deltat;
@@ -82,11 +91,6 @@ private:
 	Kokkos::View<double*> hv5;
 	Kokkos::View<double*> hv6;
 	Kokkos::View<double*> hv7;
-
-	// Timers
-	Timer globalTimer;
-	Timer cpuTimer;
-	Timer ioTimer;
 };
 
 #endif

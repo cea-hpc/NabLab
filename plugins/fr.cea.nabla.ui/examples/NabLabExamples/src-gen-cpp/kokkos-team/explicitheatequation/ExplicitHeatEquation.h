@@ -23,6 +23,7 @@ using namespace nablalib::utils;
 using namespace nablalib::types;
 using namespace nablalib::utils::kokkos;
 
+
 /******************** Free functions declarations ********************/
 
 namespace explicitheatequationfreefuncs
@@ -51,26 +52,6 @@ class ExplicitHeatEquation
 {
 	typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
 	
-public:
-	ExplicitHeatEquation(CartesianMesh2D& aMesh);
-	~ExplicitHeatEquation();
-
-	void jsonInit(const char* jsonContent);
-
-	void simulate();
-	void computeFaceLength(const member_type& teamMember) noexcept;
-	void computeTn() noexcept;
-	void computeV(const member_type& teamMember) noexcept;
-	void initD(const member_type& teamMember) noexcept;
-	void initTime() noexcept;
-	void initXc(const member_type& teamMember) noexcept;
-	void updateU(const member_type& teamMember) noexcept;
-	void computeDeltaTn(const member_type& teamMember) noexcept;
-	void computeFaceConductivity(const member_type& teamMember) noexcept;
-	void initU(const member_type& teamMember) noexcept;
-	void setUpTimeLoopN() noexcept;
-	void computeAlphaCoeff(const member_type& teamMember) noexcept;
-	void executeTimeLoopN() noexcept;
 
 private:
 	void dumpVariables(int iteration, bool useTimer=true);
@@ -91,6 +72,34 @@ private:
 	// Options and global variables
 	PvdFileWriter2D* writer;
 	std::string outputPath;
+
+	// Timers
+	Timer globalTimer;
+	Timer cpuTimer;
+	Timer ioTimer;
+	
+
+public:
+	ExplicitHeatEquation(CartesianMesh2D& aMesh);
+	~ExplicitHeatEquation();
+
+	void jsonInit(const char* jsonContent);
+
+	void simulate();
+	void computeFaceLength(const member_type& teamMember) noexcept;
+	void computeTn() noexcept;
+	void computeV(const member_type& teamMember) noexcept;
+	void initD(const member_type& teamMember) noexcept;
+	void initTime() noexcept;
+	void initXc(const member_type& teamMember) noexcept;
+	void updateU(const member_type& teamMember) noexcept;
+	void computeDeltaTn(const member_type& teamMember) noexcept;
+	void computeFaceConductivity(const member_type& teamMember) noexcept;
+	void initU(const member_type& teamMember) noexcept;
+	void setUpTimeLoopN() noexcept;
+	void computeAlphaCoeff(const member_type& teamMember) noexcept;
+	void executeTimeLoopN() noexcept;
+	
 	int outputPeriod;
 	int lastDump;
 	int n;
@@ -111,11 +120,6 @@ private:
 	Kokkos::View<double*> faceLength;
 	Kokkos::View<double*> faceConductivity;
 	Kokkos::View<double**> alpha;
-
-	// Timers
-	Timer globalTimer;
-	Timer cpuTimer;
-	Timer ioTimer;
 };
 
 #endif

@@ -171,6 +171,8 @@ class IrModuleContentProvider
 			void createDB(const std::string& db_name);
 		«ENDIF»
 		
+		««« Variables are now public members
+		// Variables are now public members of the class.
 		«FOR v : variables»
 			«IF v.constExpr»
 				static constexpr «typeContentProvider.getCppType(v.type)» «v.name» = «expressionContentProvider.getContent(v.defaultValue)»;

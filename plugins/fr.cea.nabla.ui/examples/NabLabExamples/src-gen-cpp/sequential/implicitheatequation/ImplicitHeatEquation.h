@@ -20,6 +20,7 @@
 using namespace nablalib::utils;
 using namespace nablalib::types;
 
+
 /******************** Free functions declarations ********************/
 
 namespace implicitheatequationfreefuncs
@@ -46,6 +47,27 @@ RealArray1D<x0> operatorSub(RealArray1D<x0> a, RealArray1D<x0> b);
 
 class ImplicitHeatEquation
 {
+
+private:
+	void dumpVariables(int iteration, bool useTimer=true);
+
+	// Mesh and mesh variables
+	CartesianMesh2D& mesh;
+	size_t nbNodes;
+	size_t nbCells;
+	size_t nbFaces;
+
+	// Options and global variables
+	PvdFileWriter2D* writer;
+	std::string outputPath;
+	LinearAlgebra linearAlgebra;
+
+	// Timers
+	Timer globalTimer;
+	Timer cpuTimer;
+	Timer ioTimer;
+	
+
 public:
 	ImplicitHeatEquation(CartesianMesh2D& aMesh);
 	~ImplicitHeatEquation();
@@ -66,20 +88,7 @@ public:
 	void setUpTimeLoopN() noexcept;
 	void computeAlphaCoeff() noexcept;
 	void executeTimeLoopN() noexcept;
-
-private:
-	void dumpVariables(int iteration, bool useTimer=true);
-
-	// Mesh and mesh variables
-	CartesianMesh2D& mesh;
-	size_t nbNodes;
-	size_t nbCells;
-	size_t nbFaces;
-
-	// Options and global variables
-	PvdFileWriter2D* writer;
-	std::string outputPath;
-	LinearAlgebra linearAlgebra;
+	
 	int outputPeriod;
 	int lastDump;
 	int n;
@@ -100,11 +109,6 @@ private:
 	std::vector<double> faceLength;
 	std::vector<double> faceConductivity;
 	Matrix alpha;
-
-	// Timers
-	Timer globalTimer;
-	Timer cpuTimer;
-	Timer ioTimer;
 };
 
 #endif

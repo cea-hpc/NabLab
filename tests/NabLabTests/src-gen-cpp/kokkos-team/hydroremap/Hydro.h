@@ -22,6 +22,7 @@ using namespace nablalib::utils;
 using namespace nablalib::types;
 using namespace nablalib::utils::kokkos;
 
+
 class R1;
 class R2;
 
@@ -41,25 +42,6 @@ class Hydro
 
 	typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
 	
-public:
-	Hydro(CartesianMesh2D& aMesh);
-	~Hydro();
-
-	void jsonInit(const char* jsonContent);
-
-	void simulate();
-	void iniHv1(const member_type& teamMember) noexcept;
-	void iniHv2(const member_type& teamMember) noexcept;
-	void hj1(const member_type& teamMember) noexcept;
-	void oracleHv1(const member_type& teamMember) noexcept;
-	void oracleHv2(const member_type& teamMember) noexcept;
-	void hj2(const member_type& teamMember) noexcept;
-	void oracleHv3(const member_type& teamMember) noexcept;
-	void oracleHv4(const member_type& teamMember) noexcept;
-	void oracleHv5(const member_type& teamMember) noexcept;
-	void hj3(const member_type& teamMember) noexcept;
-	void oracleHv6(const member_type& teamMember) noexcept;
-	void oracleHv7(const member_type& teamMember) noexcept;
 
 private:
 	/**
@@ -79,6 +61,33 @@ private:
 	R2* r2;
 
 	// Options and global variables
+
+	// Timers
+	Timer globalTimer;
+	Timer cpuTimer;
+	Timer ioTimer;
+	
+
+public:
+	Hydro(CartesianMesh2D& aMesh);
+	~Hydro();
+
+	void jsonInit(const char* jsonContent);
+
+	void simulate();
+	void iniHv1(const member_type& teamMember) noexcept;
+	void iniHv2(const member_type& teamMember) noexcept;
+	void hj1(const member_type& teamMember) noexcept;
+	void oracleHv1(const member_type& teamMember) noexcept;
+	void oracleHv2(const member_type& teamMember) noexcept;
+	void hj2(const member_type& teamMember) noexcept;
+	void oracleHv3(const member_type& teamMember) noexcept;
+	void oracleHv4(const member_type& teamMember) noexcept;
+	void oracleHv5(const member_type& teamMember) noexcept;
+	void hj3(const member_type& teamMember) noexcept;
+	void oracleHv6(const member_type& teamMember) noexcept;
+	void oracleHv7(const member_type& teamMember) noexcept;
+	
 	int maxIter;
 	double maxTime;
 	double deltat;
@@ -91,11 +100,6 @@ private:
 	Kokkos::View<double*> hv5;
 	Kokkos::View<double*> hv6;
 	Kokkos::View<double*> hv7;
-
-	// Timers
-	Timer globalTimer;
-	Timer cpuTimer;
-	Timer ioTimer;
 };
 
 #endif

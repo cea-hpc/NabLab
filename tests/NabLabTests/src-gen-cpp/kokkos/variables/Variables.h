@@ -22,6 +22,7 @@ using namespace nablalib::utils;
 using namespace nablalib::types;
 using namespace nablalib::utils::kokkos;
 
+
 /******************** Free functions declarations ********************/
 
 namespace variablesfreefuncs
@@ -37,6 +38,20 @@ RealArray1D<x0> operatorAdd(RealArray1D<x0> a, RealArray1D<x0> b);
 
 class Variables
 {
+
+private:
+	// Mesh and mesh variables
+	CartesianMesh2D& mesh;
+	size_t nbNodes;
+
+	// Options and global variables
+
+	// Timers
+	Timer globalTimer;
+	Timer cpuTimer;
+	Timer ioTimer;
+	
+
 public:
 	Variables(CartesianMesh2D& aMesh);
 	~Variables();
@@ -47,13 +62,7 @@ public:
 	void dynamicVecInitialization() noexcept;
 	void varVecInitialization() noexcept;
 	void oracle() noexcept;
-
-private:
-	// Mesh and mesh variables
-	CartesianMesh2D& mesh;
-	size_t nbNodes;
-
-	// Options and global variables
+	
 	static constexpr double maxTime = 0.1;
 	static constexpr int maxIter = 500;
 	static constexpr double deltat = 1.0;
@@ -68,11 +77,6 @@ private:
 	RealArray1D<constexprDim> varVec;
 	int checkDynamicDim;
 	RealArray1D<0> dynamicVec;
-
-	// Timers
-	Timer globalTimer;
-	Timer cpuTimer;
-	Timer ioTimer;
 };
 
 #endif

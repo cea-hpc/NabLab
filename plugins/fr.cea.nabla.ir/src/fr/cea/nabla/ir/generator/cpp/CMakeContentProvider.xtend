@@ -67,7 +67,6 @@ class CMakeContentProvider
 		«ENDIF»
 
 		«CMakeUtils.addSubDirectories(true, externalProviders)»
-
 		«pythonEmbeddingContentProvider.getCMakeEmbeddingContent»
 
 		# EXECUTABLE «execName»

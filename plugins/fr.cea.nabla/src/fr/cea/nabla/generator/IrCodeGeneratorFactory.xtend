@@ -57,7 +57,7 @@ class IrCodeGeneratorFactory
 				val cmakeVars = new ArrayList<Pair<String, String>>
 				targetVars.filter[x | !x.key.equals("DEBUG")].forEach[x | cmakeVars += x.key -> x.value]
 				if (hasLevelDB) levelDB.variables.forEach[x | cmakeVars += x.key -> x.value]
-				new CppGenerator(backend, wsPath, hasLevelDB, cmakeVars)
+				new CppGenerator(backend, wsPath, hasLevelDB, debug, cmakeVars)
 			}
 		}
 	}

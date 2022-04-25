@@ -74,6 +74,8 @@ abstract class AbstractPythonEmbeddingContentProvider
 	
 	abstract def String getCMakeExecutableContent(String includeContent, String linkContent)
 	
+	abstract def String wrapWithGILGuard(Loop it, String loopHeader, String loopBody)
+	
 	def isUserDefined(IrAnnotable it)
 	{
 		NabLabFileAnnotation.get(it) !== null
@@ -334,35 +336,6 @@ abstract class AbstractPythonEmbeddingContentProvider
 		MoniLog::trigger(«event», scope);
 	'''
 	
-	def wrapWithGILGuard(Loop it, String loopHeader, String loopBody)
-	'''
-		#ifdef NABLAB_DEBUG
-		{
-			const bool shouldReleaseGIL = !(«FOR event : #[true, false].flatMap[b|getWriteEvents(b)] SEPARATOR ' && '»!monilog.has_registered_moniloggers(«event»)«ENDFOR»);
-			if (shouldReleaseGIL)
-			{
-				pybind11::gil_scoped_release release;
-				«loopHeader»
-				{
-					pybind11::gil_scoped_acquire acquire;
-					«loopBody»
-					pybind11::gil_scoped_release release;
-				}
-				pybind11::gil_scoped_acquire acquire;
-			}
-			else
-			{
-		#endif
-				«loopHeader»
-				{
-					«loopBody»
-				}
-		#ifdef NABLAB_DEBUG
-			}
-		}
-		#endif
-	'''
-	
 	protected def getScopeParameter()
 	'''
 		pybind11::cast(scope)'''
@@ -423,10 +396,15 @@ class EmptyPythonEmbeddingContentProvider extends AbstractPythonEmbeddingContent
 	
 	override getCMakeExecutableContent(String includeContent, String linkContent)
 		'''
-			target_include_directories(«includeContent»)
 			target_link_libraries(«linkContent»)
 		'''
 	
+	override wrapWithGILGuard(Loop it, String loopHeader, String loopBody)
+	'''
+		«loopHeader»
+		{
+			«loopBody»
+		}'''
 }
 
 @Data
@@ -664,11 +642,13 @@ class PythonEmbeddingContentProvider extends AbstractPythonEmbeddingContentProvi
 				MoniLog::bootstrap_monilog(paths, scripts, interface_module_name, interface_module_initializer);
 			}
 			#endif
+			
 		'''
 	}
 	
 	override getCMakeEmbeddingContent()
 		'''
+			
 			if (CMAKE_BUILD_TYPE STREQUAL Debug)
 				set(NABLAB_DEBUG TRUE)
 			endif()
@@ -695,4 +675,32 @@ class PythonEmbeddingContentProvider extends AbstractPythonEmbeddingContentProvi
 			endif()
 		'''
 	
+	override wrapWithGILGuard(Loop it, String loopHeader, String loopBody)
+	'''
+		#ifdef NABLAB_DEBUG
+		{
+			const bool shouldReleaseGIL = !(«FOR event : #[true, false].flatMap[b|getWriteEvents(b)] SEPARATOR ' && '»!monilog.has_registered_moniloggers(«event»)«ENDFOR»);
+			if (shouldReleaseGIL)
+			{
+				pybind11::gil_scoped_release release;
+				«loopHeader»
+				{
+					pybind11::gil_scoped_acquire acquire;
+					«loopBody»
+					pybind11::gil_scoped_release release;
+				}
+				pybind11::gil_scoped_acquire acquire;
+			}
+			else
+			{
+		#endif
+				«loopHeader»
+				{
+					«loopBody»
+				}
+		#ifdef NABLAB_DEBUG
+			}
+		}
+		#endif
+	'''
 }

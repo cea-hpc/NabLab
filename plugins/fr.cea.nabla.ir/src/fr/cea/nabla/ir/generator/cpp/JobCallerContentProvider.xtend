@@ -10,7 +10,6 @@
 package fr.cea.nabla.ir.generator.cpp
 
 import fr.cea.nabla.ir.ir.JobCaller
-import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.JobCallerExtensions.*
 import static extension fr.cea.nabla.ir.JobExtensions.*
@@ -18,19 +17,17 @@ import static extension fr.cea.nabla.ir.generator.Utils.*
 
 class JobCallerContentProvider
 {
-	
 	def getCallsHeader(JobCaller it) ''''''
 
 	def getCallsContent(JobCaller it)
 	'''
 		«FOR j : calls»
-			«j.callName.replace('.', '->')»(); // @«j.at»
+		«j.callName.replace('.', '->')»(); // @«j.at»
 		«ENDFOR»
 
 	'''
 }
 
-@Data
 class KokkosTeamThreadJobCallerContentProvider extends JobCallerContentProvider
 {
 	override getCallsHeader(JobCaller it)
@@ -74,9 +71,7 @@ class KokkosTeamThreadJobCallerContentProvider extends JobCallerContentProvider
 							«j.callName.replace('.', '->')»(thread);
 						«ELSE /* Only for jobs containing ReductionInstruction */»
 							if (thread.league_rank() == 0)
-							{
 								«j.callName.replace('.', '->')»(thread);
-							}
 						«ENDIF»
 					«ENDIF»
 				«ENDFOR»

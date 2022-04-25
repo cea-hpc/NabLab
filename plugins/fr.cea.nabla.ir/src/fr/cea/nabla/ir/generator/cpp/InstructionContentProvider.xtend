@@ -102,15 +102,13 @@ abstract class InstructionContentProvider
 
 	def dispatch CharSequence getContent(If it)
 	'''
-		if («condition.content»)
-		{
-			«thenInstruction.content»
-		}
+		if («condition.content») 
+		«val thenContent = thenInstruction.content»
+		«IF !(thenContent.charAt(0) == '{'.charAt(0))»	«ENDIF»«thenContent»
 		«IF (elseInstruction !== null)»
+		«val elseContent = elseInstruction.content»
 		else
-		{
-			«elseInstruction.content»
-		}
+		«IF !(elseContent.charAt(0) == '{'.charAt(0))»	«ENDIF»«elseContent»
 		«ENDIF»
 	'''
 
@@ -244,7 +242,9 @@ class StlThreadInstructionContentProvider extends InstructionContentProvider
 
 	override getParallelLoopContent(Loop it)
 	'''
-		«pythonEmbeddingContentProvider.wrapWithGILGuard(it, '''parallel_exec(«iterationBlock.nbElems», [&](const size_t& «iterationBlock.indexName»)''', '''«body.content»''')»
+		parallel_exec(«pythonEmbeddingContentProvider.wrapWithGILGuard(it,
+			'''«iterationBlock.nbElems», [&](const size_t& «iterationBlock.indexName»)''',
+			'''«body.innerContent»''')»);
 	'''
 }
 
@@ -336,13 +336,13 @@ class OpenMpInstructionContentProvider extends InstructionContentProvider
 		}''')»
 	'''
 
+
 	override getParallelLoopContent(Loop it)
 	'''
+		#pragma omp parallel for
 		«pythonEmbeddingContentProvider.wrapWithGILGuard(it,
-			'''
-				#pragma omp parallel for
-				for (size_t «iterationBlock.indexName»=0; «iterationBlock.indexName»<«iterationBlock.nbElems»; «iterationBlock.indexName»++)''',
-			'''«body.content»''')»
+			'''for (size_t «iterationBlock.indexName»=0; «iterationBlock.indexName»<«iterationBlock.nbElems»; «iterationBlock.indexName»++)''',
+			'''«body.innerContent»''')»
 	'''
 
 	private def String getReductionIdentifier(ReductionInstruction it)

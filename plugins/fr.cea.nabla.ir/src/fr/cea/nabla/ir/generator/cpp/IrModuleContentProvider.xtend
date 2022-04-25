@@ -306,10 +306,9 @@ class IrModuleContentProvider
 	«FOR j : jobs SEPARATOR '\n'»
 		«jobContentProvider.getDefinitionContent(j)»
 	«ENDFOR»
-	
 	«IF main»
 	«IF postProcessing !== null»
-
+	
 	void «className»::dumpVariables(int iteration, bool useTimer)
 	{
 		if (writer != NULL && !writer->isDisabled())
@@ -354,13 +353,11 @@ class IrModuleContentProvider
 		}
 	}
 	«ENDIF»
-
+	
 	«pythonEmbeddingContentProvider.getPythonInitializeContent(it)»
-
 	void «className»::simulate()
 	{
 		«pythonEmbeddingContentProvider.simulateProlog»
-		
 		«traceContentProvider.getBeginOfSimuTrace(it)»
 
 		«jobCallerContentProvider.getCallsHeader(irRoot.main)»

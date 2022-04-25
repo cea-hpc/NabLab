@@ -26,12 +26,14 @@ class CppGenerator implements IrCodeGenerator
 {
 	val Backend backend
 	val boolean hasLevelDB
+	val boolean debug
 	val cMakeVars = new LinkedHashSet<Pair<String, String>>
 
-	new(Backend backend, String wsPath, boolean hasLevelDB, Iterable<Pair<String, String>> cmakeVars)
+	new(Backend backend, String wsPath, boolean hasLevelDB, boolean debug, Iterable<Pair<String, String>> cmakeVars)
 	{
 		this.backend = backend
 		this.hasLevelDB = hasLevelDB
+		this.debug = debug
 		cmakeVars.forEach[x | this.cMakeVars += x]
 
 		// Set WS_PATH variables in CMake and unzip NRepository if necessary
@@ -47,12 +49,18 @@ class CppGenerator implements IrCodeGenerator
 		val fileContents = new ArrayList<GenerationContent>
 		for (module : ir.modules)
 		{
-			backend.irModuleContentProvider.pythonEmbeddingContentProvider.computeExecutionEvents(module)
+			if (debug)
+			{
+				backend.irModuleContentProvider.pythonEmbeddingContentProvider.computeExecutionEvents(module)
+			}
 			fileContents += new GenerationContent(module.className + '.h', backend.irModuleContentProvider.getHeaderFileContent(module, hasLevelDB), false)
 			fileContents += new GenerationContent(module.className + '.cc', backend.irModuleContentProvider.getSourceFileContent(module, hasLevelDB), false)
 		}
 		fileContents += new GenerationContent('CMakeLists.txt', backend.cmakeContentProvider.getContentFor(ir, hasLevelDB, cMakeVars), false)
-		fileContents += new GenerationContent('nablabdefs.h.in', '#cmakedefine NABLAB_DEBUG', false)
+		if (debug)
+		{
+			fileContents += new GenerationContent('nablabdefs.h.in', '#cmakedefine NABLAB_DEBUG', false)
+		}
 		return fileContents
 	}
 

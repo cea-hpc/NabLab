@@ -60,7 +60,6 @@ private:
 	R1* r1;
 	R2* r2;
 
-	// Options and global variables
 
 	// Timers
 	Timer globalTimer;
@@ -87,7 +86,9 @@ public:
 	void hj3(const member_type& teamMember) noexcept;
 	void oracleHv6(const member_type& teamMember) noexcept;
 	void oracleHv7(const member_type& teamMember) noexcept;
-	
+
+	// Options and global variables.
+	// Module variables are public members of the class to be accessible from Python.
 	int maxIter;
 	double maxTime;
 	double deltat;

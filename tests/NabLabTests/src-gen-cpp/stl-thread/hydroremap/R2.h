@@ -38,7 +38,6 @@ private:
 	// Main module
 	Hydro* mainModule;
 
-	// Options and global variables
 
 	// Timers
 	Timer globalTimer;
@@ -61,7 +60,9 @@ public:
 	void simulate();
 	void rj1() noexcept;
 	void rj2() noexcept;
-	
+
+	// Options and global variables.
+	// Module variables are public members of the class to be accessible from Python.
 	std::vector<double> rv2;
 };
 

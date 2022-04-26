@@ -37,7 +37,6 @@ private:
 	size_t nbNodes;
 	size_t nbCells;
 
-	// Options and global variables
 
 	// Timers
 	Timer globalTimer;
@@ -71,7 +70,9 @@ public:
 	void oracleVl() noexcept;
 	void updateVn() noexcept;
 	void oracleVn() noexcept;
-	
+
+	// Options and global variables.
+	// Module variables are public members of the class to be accessible from Python.
 	int n;
 	int k;
 	int l;

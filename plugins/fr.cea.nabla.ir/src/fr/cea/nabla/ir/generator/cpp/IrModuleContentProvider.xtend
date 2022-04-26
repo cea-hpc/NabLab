@@ -121,7 +121,6 @@ class IrModuleContentProvider
 			«ENDIF»
 
 		«ENDIF»
-		// Options and global variables
 		«IF postProcessing !== null»
 			PvdFileWriter2D* writer;
 			std::string «IrUtils.OutputPathNameAndValue.key»;
@@ -170,9 +169,9 @@ class IrModuleContentProvider
 			}
 			void createDB(const std::string& db_name);
 		«ENDIF»
-		
-		««« Variables are now public members
-		// Variables are now public members of the class.
+
+		// Options and global variables.
+		// Module variables are public members of the class to be accessible from Python.
 		«FOR v : variables»
 			«IF v.constExpr»
 				static constexpr «typeContentProvider.getCppType(v.type)» «v.name» = «expressionContentProvider.getContent(v.defaultValue)»;

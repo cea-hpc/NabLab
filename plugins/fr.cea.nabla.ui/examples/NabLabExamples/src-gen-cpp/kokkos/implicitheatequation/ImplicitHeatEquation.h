@@ -61,7 +61,6 @@ private:
 	size_t nbCells;
 	size_t nbFaces;
 
-	// Options and global variables
 	PvdFileWriter2D* writer;
 	std::string outputPath;
 	LinearAlgebra linearAlgebra;
@@ -92,7 +91,9 @@ public:
 	void setUpTimeLoopN() noexcept;
 	void computeAlphaCoeff() noexcept;
 	void executeTimeLoopN() noexcept;
-	
+
+	// Options and global variables.
+	// Module variables are public members of the class to be accessible from Python.
 	int outputPeriod;
 	int lastDump;
 	int n;

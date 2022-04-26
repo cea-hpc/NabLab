@@ -42,7 +42,6 @@ private:
 	CartesianMesh2D& mesh;
 	size_t nbNodes;
 
-	// Options and global variables
 
 	// Timers
 	Timer globalTimer;
@@ -60,7 +59,9 @@ public:
 	void dynamicVecInitialization() noexcept;
 	void varVecInitialization() noexcept;
 	void oracle() noexcept;
-	
+
+	// Options and global variables.
+	// Module variables are public members of the class to be accessible from Python.
 	static constexpr double maxTime = 0.1;
 	static constexpr int maxIter = 500;
 	static constexpr double deltat = 1.0;

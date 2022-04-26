@@ -71,7 +71,6 @@ private:
 	size_t nbCells;
 	size_t nbFaces;
 
-	// Options and global variables
 	PvdFileWriter2D* writer;
 	std::string outputPath;
 
@@ -105,7 +104,9 @@ public:
 	void computeAlphaCoeff(const member_type& teamMember) noexcept;
 	void tearDownTimeLoopK(const member_type& teamMember) noexcept;
 	void executeTimeLoopN() noexcept;
-	
+
+	// Options and global variables.
+	// Module variables are public members of the class to be accessible from Python.
 	int outputPeriod;
 	int lastDump;
 	int n;

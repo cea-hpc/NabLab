@@ -80,7 +80,6 @@ private:
 	size_t nbRightNodes;
 	size_t nbInnerNodes;
 
-	// Options and global variables
 	PvdFileWriter2D* writer;
 	std::string outputPath;
 
@@ -123,7 +122,9 @@ public:
 	void computeXn() noexcept;
 	void computeEn() noexcept;
 	void computeUn() noexcept;
-	
+
+	// Options and global variables.
+	// Module variables are public members of the class to be accessible from Python.
 	int outputPeriod;
 	int lastDump;
 	int n;

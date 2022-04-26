@@ -49,7 +49,6 @@ private:
 	// Main module
 	Hydro* mainModule;
 
-	// Options and global variables
 
 	// Timers
 	Timer globalTimer;
@@ -72,7 +71,9 @@ public:
 	void simulate();
 	void rj1(const member_type& teamMember) noexcept;
 	void rj2(const member_type& teamMember) noexcept;
-	
+
+	// Options and global variables.
+	// Module variables are public members of the class to be accessible from Python.
 	Kokkos::View<double*> rv3;
 };
 

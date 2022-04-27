@@ -37,10 +37,13 @@ R2::jsonInit(const char* jsonContent)
  */
 void R2::rj1() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& cCells)
 	{
-		rv2[cCells] = mainModule->hv3[cCells] * 2.0;
-	});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& cCells)
+		{
+			rv2[cCells] = mainModule->hv3[cCells] * 2.0;
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 /**
@@ -50,8 +53,11 @@ void R2::rj1() noexcept
  */
 void R2::rj2() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& cCells)
 	{
-		mainModule->hv6[cCells] = rv2[cCells] * 3.0;
-	});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& cCells)
+		{
+			mainModule->hv6[cCells] = rv2[cCells] * 3.0;
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }

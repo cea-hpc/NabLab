@@ -86,24 +86,41 @@ class PythonModuleGenerator extends StandaloneGeneratorBase {
 		
 		val fileContent =
 			'''
-				from singleton import *
-				
 				«FOR j : allJobs SEPARATOR '\n'»
-				class «j.name.toFirstUpper»(metaclass=Singleton):
+				class «j.name.toFirstUpper»():
 				    pass
+				    
+				    class Before():
+				        pass
+				    
+				    class After():
+				        pass
+				    
 				    «val jobWrites = allWrites.getOrDefault(j, emptyList).map[name.toFirstUpper].toSet»
 				    «FOR w : jobWrites»
 				    
-				    class «w»(metaclass=Singleton):
+				    class «w»():
 				        pass
+				        
+				        class Before():
+				            pass
+				        
+				        class After():
+				            pass
 				    «ENDFOR»
 				«ENDFOR»
 				
 				«val allAssignStrings = allAssigns.map[a|a.left.target].filter[target|target.eContainer instanceof IrModule]
 					.map[name.toFirstUpper].toSet»
 				«FOR a : allAssignStrings SEPARATOR '\n'»
-				class «a»(metaclass=Singleton):
+				class «a»():
 				    pass
+				        
+				    class Before():
+				        pass
+				    
+				    class After():
+				        pass
 				«ENDFOR»
 			'''
 		

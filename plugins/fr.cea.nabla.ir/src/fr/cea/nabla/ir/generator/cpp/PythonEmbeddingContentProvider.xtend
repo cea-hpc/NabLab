@@ -74,7 +74,11 @@ abstract class AbstractPythonEmbeddingContentProvider
 	
 	abstract def String getCMakeExecutableContent(String includeContent, String linkContent)
 	
-	abstract def String wrapWithGILGuard(Loop it, String loopHeader, String loopBody)
+	abstract def String wrapLambdaWithGILGuard(Loop it, String lambdaName, String lambdaType, String lambdaParameters, String lambdaBody)
+	
+	abstract def String wrapLambdaCallWithGILGuard(String call)
+	
+	abstract def String wrapLoopWithGILGuard(Loop it, String loopHeader, String loopBody)
 	
 	def isUserDefined(IrAnnotable it)
 	{
@@ -295,7 +299,7 @@ abstract class AbstractPythonEmbeddingContentProvider
 	
 	def getGlobalScopeStructContent(IrModule it)
 	'''
-		struct «name.toFirstUpper»Context : MoniLog::MoniLogExecutionContext
+		struct «name.toFirstUpper»Context : MoniLogger::MoniLoggerExecutionContext
 		{
 			«FOR v : variables»
 			«IF !v.constExpr»
@@ -305,7 +309,7 @@ abstract class AbstractPythonEmbeddingContentProvider
 			
 			«name.toFirstUpper» *instance = nullptr;
 			
-			«name.toFirstUpper»Context(«name.toFirstUpper» *instance, std::string name) : MoniLogExecutionContext(name), instance(instance) {}
+			«name.toFirstUpper»Context(«name.toFirstUpper» *instance, std::string name) : MoniLoggerExecutionContext(name), instance(instance) {}
 			
 			virtual ~«name.toFirstUpper»Context() = default;
 		};
@@ -333,7 +337,7 @@ abstract class AbstractPythonEmbeddingContentProvider
 	
 	def getInstrumentation(int event)
 	'''
-		MoniLog::trigger(«event», scope);
+		MoniLogger::trigger(«event», scope);
 	'''
 	
 	protected def getScopeParameter()
@@ -399,7 +403,20 @@ class EmptyPythonEmbeddingContentProvider extends AbstractPythonEmbeddingContent
 			target_link_libraries(«linkContent»)
 		'''
 	
-	override wrapWithGILGuard(Loop it, String loopHeader, String loopBody)
+	override wrapLambdaWithGILGuard(Loop it, String lambdaType, String lambdaName, String lambdaParameters, String lambdaBody)
+		'''
+			const std::function<«lambdaType»> «lambdaName» = [&] («lambdaParameters»)
+			{
+				«lambdaBody»
+			};
+		'''
+	
+	override wrapLambdaCallWithGILGuard(String call)
+	'''
+		«call»
+	'''
+	
+	override wrapLoopWithGILGuard(Loop it, String loopHeader, String loopBody)
 	'''
 		«loopHeader»
 		{
@@ -418,7 +435,7 @@ class PythonEmbeddingContentProvider extends AbstractPythonEmbeddingContentProvi
 		#include <Python.h>
 		#include <pybind11/embed.h>
 		#include <pybind11/stl.h>
-		#include <MoniLog.h>
+		#include <MoniLogger.h>
 		#endif
 	'''
 	
@@ -635,11 +652,11 @@ class PythonEmbeddingContentProvider extends AbstractPythonEmbeddingContentProvi
 					scripts.emplace_back(python_script);
 				}
 
-				MoniLog::register_base_events(«baseExecutionEvents»);
+				MoniLogger::register_base_events(«baseExecutionEvents»);
 
-				MoniLog::register_composite_events(«compositeExecutionEvents»);
+				MoniLogger::register_composite_events(«compositeExecutionEvents»);
 
-				MoniLog::bootstrap_monilog(paths, scripts, interface_module_name, interface_module_initializer);
+				MoniLogger::initialize_monilogger(paths, scripts, interface_module_name, interface_module_initializer);
 			}
 			#endif
 			
@@ -656,30 +673,73 @@ class PythonEmbeddingContentProvider extends AbstractPythonEmbeddingContentProvi
 
 			# Python embedding
 			if (NABLAB_DEBUG)
-				set(PYBIND11_PYTHON_VERSION 3.8)
-				find_package(pybind11 REQUIRED)
 				find_package(Python COMPONENTS Interpreter Development REQUIRED)
+				set(pybind11_DIR "${Python_SITELIB}/pybind11/share/cmake/pybind11")
+				find_package(pybind11 REQUIRED)
 			endif()
 		'''
 	
 	override getCMakeExecutableContent(String includeContent, String linkContent)
 		'''
 			if (NABLAB_DEBUG)
-				target_include_directories(«includeContent» ${Python_SITELIB}/monilog/include)
-				add_library(moniloglib SHARED IMPORTED)
-				set_property(TARGET moniloglib PROPERTY IMPORTED_LOCATION ${Python_SITELIB}/monilog/libmonilog.so)
-				target_link_libraries(«linkContent» moniloglib pybind11::embed)
+				target_include_directories(«includeContent» ${Python_SITELIB}/monilogger/include)
+				add_library(moniloggerlib SHARED IMPORTED)
+				set_property(TARGET moniloggerlib PROPERTY IMPORTED_LOCATION ${Python_SITELIB}/monilogger/libmonilogger.so)
+				target_link_libraries(«linkContent» moniloggerlib pybind11::embed)
 			else()
 				target_include_directories(«includeContent»)
 				target_link_libraries(«linkContent»)
 			endif()
 		'''
 	
-	override wrapWithGILGuard(Loop it, String loopHeader, String loopBody)
+	override wrapLambdaWithGILGuard(Loop it, String lambdaType, String lambdaName, String lambdaParameters, String lambdaBody)
+	'''
+		#ifdef NABLAB_DEBUG
+		const bool shouldReleaseGIL = «FOR event : #[true, false].flatMap[b|getWriteEvents(b)] SEPARATOR ' || '»MoniLogger::has_registered_moniloggers(«event»)«ENDFOR»;
+		const std::function<«lambdaType»> «lambdaName» = [&] («lambdaParameters»)
+		{
+			if (shouldReleaseGIL)
+			{
+				pybind11::gil_scoped_acquire acquire;
+				«lambdaBody»
+				pybind11::gil_scoped_release release;
+			}
+			else
+			{
+				«lambdaBody»
+			}
+		};
+		#else
+		std::function<«lambdaType»> «lambdaName» = [&] («lambdaParameters»)
+		{
+			«lambdaBody»
+		};
+		#endif
+	'''
+	
+	override wrapLambdaCallWithGILGuard(String call)
+	'''
+		#ifdef NABLAB_DEBUG
+		if (shouldReleaseGIL)
+		{
+			pybind11::gil_scoped_release release;
+			«call»
+			pybind11::gil_scoped_acquire acquire;
+		}
+		else
+		{
+			«call»
+		}
+		#else
+		«call»
+		#endif
+	'''
+	
+	override wrapLoopWithGILGuard(Loop it, String loopHeader, String loopBody)
 	'''
 		#ifdef NABLAB_DEBUG
 		{
-			const bool shouldReleaseGIL = !(«FOR event : #[true, false].flatMap[b|getWriteEvents(b)] SEPARATOR ' && '»!monilog.has_registered_moniloggers(«event»)«ENDFOR»);
+			const bool shouldReleaseGIL = «FOR event : #[true, false].flatMap[b|getWriteEvents(b)] SEPARATOR ' || '»MoniLogger::has_registered_moniloggers(«event»)«ENDFOR»;
 			if (shouldReleaseGIL)
 			{
 				pybind11::gil_scoped_release release;
@@ -693,13 +753,16 @@ class PythonEmbeddingContentProvider extends AbstractPythonEmbeddingContentProvi
 			}
 			else
 			{
-		#endif
 				«loopHeader»
 				{
 					«loopBody»
 				}
-		#ifdef NABLAB_DEBUG
 			}
+		}
+		#else
+		«loopHeader»
+		{
+			«loopBody»
 		}
 		#endif
 	'''

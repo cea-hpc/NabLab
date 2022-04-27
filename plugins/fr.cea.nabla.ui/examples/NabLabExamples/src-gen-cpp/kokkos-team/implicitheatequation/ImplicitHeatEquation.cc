@@ -404,9 +404,13 @@ void ImplicitHeatEquation::initU(const member_type& teamMember) noexcept
 		{
 			int cCells(cCellsTeam + teamWork.first);
 			if (implicitheatequationfreefuncs::norm(implicitheatequationfreefuncs::operatorSub(Xc(cCells), vectOne)) < 0.5) 
+			{
 				u_n.setValue(cCells, u0);
+			}
 			else
+			{
 				u_n.setValue(cCells, 0.0);
+			}
 		});
 	}
 }

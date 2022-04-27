@@ -15,7 +15,9 @@ bool assertEquals(double expected, double actual)
 {
 	const bool ret((expected == actual));
 	if (!ret) 
+	{
 		throw std::runtime_error("** Assertion failed");
+	}
 	return ret;
 }
 }
@@ -95,10 +97,13 @@ void Iteration::iniTime() noexcept
  */
 void Iteration::iniVk() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
-		vk_nplus1_k0[jCells] = 0.0;
-	});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& jCells)
+		{
+			vk_nplus1_k0[jCells] = 0.0;
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 /**
@@ -108,10 +113,13 @@ void Iteration::iniVk() noexcept
  */
 void Iteration::iniVn() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
-		vn_n0[jCells] = 0.0;
-	});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& jCells)
+		{
+			vn_n0[jCells] = 0.0;
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 /**
@@ -121,10 +129,13 @@ void Iteration::iniVn() noexcept
  */
 void Iteration::setUpTimeLoopK() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& i1Cells)
 	{
-		vk_nplus1_k[i1Cells] = vk_nplus1_k0[i1Cells];
-	});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& i1Cells)
+		{
+			vk_nplus1_k[i1Cells] = vk_nplus1_k0[i1Cells];
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 /**
@@ -134,10 +145,13 @@ void Iteration::setUpTimeLoopK() noexcept
  */
 void Iteration::updateVk() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
-		vk_nplus1_kplus1[jCells] = vk_nplus1_k[jCells] + 2;
-	});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& jCells)
+		{
+			vk_nplus1_kplus1[jCells] = vk_nplus1_k[jCells] + 2;
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 /**
@@ -147,10 +161,13 @@ void Iteration::updateVk() noexcept
  */
 void Iteration::updateVl() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
-		vl_nplus1_lplus1[jCells] = vl_nplus1_l[jCells] + 1;
-	});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& jCells)
+		{
+			vl_nplus1_lplus1[jCells] = vl_nplus1_l[jCells] + 1;
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 /**
@@ -171,10 +188,13 @@ void Iteration::executeTimeLoopK() noexcept
 		// Evaluate loop condition with variables at time n
 		continueLoop = (k < maxIterK);
 	
-		parallel_exec(nbCells, [&](const size_t& i1Cells)
 		{
-			vk_nplus1_k[i1Cells] = vk_nplus1_kplus1[i1Cells];
-		});
+			const std::function<void(const size_t&)> loopLambda = [&] (const size_t& i1Cells)
+			{
+				vk_nplus1_k[i1Cells] = vk_nplus1_kplus1[i1Cells];
+			};
+			parallel_exec(nbCells, loopLambda);
+		}
 	} while (continueLoop);
 }
 
@@ -186,10 +206,13 @@ void Iteration::executeTimeLoopK() noexcept
 void Iteration::setUpTimeLoopN() noexcept
 {
 	t_n = t_n0;
-	parallel_exec(nbCells, [&](const size_t& i1Cells)
 	{
-		vn_n[i1Cells] = vn_n0[i1Cells];
-	});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& i1Cells)
+		{
+			vn_n[i1Cells] = vn_n0[i1Cells];
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 /**
@@ -228,18 +251,27 @@ void Iteration::executeTimeLoopN() noexcept
 		continueLoop = (n < maxIterN);
 	
 		t_n = t_nplus1;
-		parallel_exec(nbCells, [&](const size_t& i1Cells)
 		{
-			vn_n[i1Cells] = vn_nplus1[i1Cells];
-		});
-		parallel_exec(nbCells, [&](const size_t& i1Cells)
+			const std::function<void(const size_t&)> loopLambda = [&] (const size_t& i1Cells)
+			{
+				vn_n[i1Cells] = vn_nplus1[i1Cells];
+			};
+			parallel_exec(nbCells, loopLambda);
+		}
 		{
-			vk_n[i1Cells] = vk_nplus1[i1Cells];
-		});
-		parallel_exec(nbCells, [&](const size_t& i1Cells)
+			const std::function<void(const size_t&)> loopLambda = [&] (const size_t& i1Cells)
+			{
+				vk_n[i1Cells] = vk_nplus1[i1Cells];
+			};
+			parallel_exec(nbCells, loopLambda);
+		}
 		{
-			vl_n[i1Cells] = vl_nplus1[i1Cells];
-		});
+			const std::function<void(const size_t&)> loopLambda = [&] (const size_t& i1Cells)
+			{
+				vl_n[i1Cells] = vl_nplus1[i1Cells];
+			};
+			parallel_exec(nbCells, loopLambda);
+		}
 	
 		cpuTimer.stop();
 		globalTimer.stop();
@@ -266,10 +298,13 @@ void Iteration::executeTimeLoopN() noexcept
  */
 void Iteration::tearDownTimeLoopK() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& i1Cells)
 	{
-		vk_nplus1[i1Cells] = vk_nplus1_kplus1[i1Cells];
-	});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& i1Cells)
+		{
+			vk_nplus1[i1Cells] = vk_nplus1_kplus1[i1Cells];
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 /**
@@ -279,10 +314,13 @@ void Iteration::tearDownTimeLoopK() noexcept
  */
 void Iteration::iniVl() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
-		vl_nplus1_l0[jCells] = vk_nplus1[jCells] + 8;
-	});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& jCells)
+		{
+			vl_nplus1_l0[jCells] = vk_nplus1[jCells] + 8;
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 /**
@@ -292,10 +330,13 @@ void Iteration::iniVl() noexcept
  */
 void Iteration::oracleVk() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
-		const bool testVk(iterationfreefuncs::assertEquals(12.0, vk_nplus1[jCells]));
-	});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& jCells)
+		{
+			const bool testVk(iterationfreefuncs::assertEquals(12.0, vk_nplus1[jCells]));
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 /**
@@ -305,10 +346,13 @@ void Iteration::oracleVk() noexcept
  */
 void Iteration::setUpTimeLoopL() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& i1Cells)
 	{
-		vl_nplus1_l[i1Cells] = vl_nplus1_l0[i1Cells];
-	});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& i1Cells)
+		{
+			vl_nplus1_l[i1Cells] = vl_nplus1_l0[i1Cells];
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 /**
@@ -329,10 +373,13 @@ void Iteration::executeTimeLoopL() noexcept
 		// Evaluate loop condition with variables at time n
 		continueLoop = (l < maxIterL);
 	
-		parallel_exec(nbCells, [&](const size_t& i1Cells)
 		{
-			vl_nplus1_l[i1Cells] = vl_nplus1_lplus1[i1Cells];
-		});
+			const std::function<void(const size_t&)> loopLambda = [&] (const size_t& i1Cells)
+			{
+				vl_nplus1_l[i1Cells] = vl_nplus1_lplus1[i1Cells];
+			};
+			parallel_exec(nbCells, loopLambda);
+		}
 	} while (continueLoop);
 }
 
@@ -343,10 +390,13 @@ void Iteration::executeTimeLoopL() noexcept
  */
 void Iteration::tearDownTimeLoopL() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& i1Cells)
 	{
-		vl_nplus1[i1Cells] = vl_nplus1_lplus1[i1Cells];
-	});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& i1Cells)
+		{
+			vl_nplus1[i1Cells] = vl_nplus1_lplus1[i1Cells];
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 /**
@@ -356,10 +406,13 @@ void Iteration::tearDownTimeLoopL() noexcept
  */
 void Iteration::oracleVl() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
-		const bool testVl(iterationfreefuncs::assertEquals(27.0, vl_nplus1[jCells]));
-	});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& jCells)
+		{
+			const bool testVl(iterationfreefuncs::assertEquals(27.0, vl_nplus1[jCells]));
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 /**
@@ -369,10 +422,13 @@ void Iteration::oracleVl() noexcept
  */
 void Iteration::updateVn() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
-		vn_nplus1[jCells] = vn_n[jCells] + vl_nplus1[jCells] * 2;
-	});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& jCells)
+		{
+			vn_nplus1[jCells] = vn_n[jCells] + vl_nplus1[jCells] * 2;
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 /**
@@ -382,10 +438,13 @@ void Iteration::updateVn() noexcept
  */
 void Iteration::oracleVn() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
-		const bool testVn(iterationfreefuncs::assertEquals(54.0 * n, vn_nplus1[jCells]));
-	});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& jCells)
+		{
+			const bool testVn(iterationfreefuncs::assertEquals(54.0 * n, vn_nplus1[jCells]));
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 void Iteration::simulate()

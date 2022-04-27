@@ -39,6 +39,7 @@ import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.cpp.ItemIndexAndIdValueContentProvider.*
+import com.google.common.collect.Streams
 
 @Data
 abstract class InstructionContentProvider
@@ -104,11 +105,23 @@ abstract class InstructionContentProvider
 	'''
 		if («condition.content») 
 		«val thenContent = thenInstruction.content»
-		«IF !(thenContent.charAt(0) == '{'.charAt(0))»	«ENDIF»«thenContent»
+		«IF !(thenContent.charAt(0) == '{'.charAt(0))»
+		{
+			«thenContent»
+		}
+		«ELSE»
+		«thenContent»
+		«ENDIF»
 		«IF (elseInstruction !== null)»
 		«val elseContent = elseInstruction.content»
 		else
-		«IF !(elseContent.charAt(0) == '{'.charAt(0))»	«ENDIF»«elseContent»
+		«IF !(elseContent.charAt(0) == '{'.charAt(0))»
+		{
+			«elseContent»
+		}
+		«ELSE»
+		«elseContent»
+		«ENDIF»
 		«ENDIF»
 	'''
 
@@ -242,9 +255,14 @@ class StlThreadInstructionContentProvider extends InstructionContentProvider
 
 	override getParallelLoopContent(Loop it)
 	'''
-		parallel_exec(«pythonEmbeddingContentProvider.wrapWithGILGuard(it,
-			'''«iterationBlock.nbElems», [&](const size_t& «iterationBlock.indexName»)''',
-			'''«body.innerContent»''')»);
+		{
+			«pythonEmbeddingContentProvider.wrapLambdaWithGILGuard(it,
+				"void(const size_t&)",
+				"loopLambda",
+				'''const size_t& «iterationBlock.indexName»''',
+				'''«body.innerContent»''')»
+			«pythonEmbeddingContentProvider.wrapLambdaCallWithGILGuard('''parallel_exec(«iterationBlock.nbElems», loopLambda);''')»
+		}
 	'''
 }
 
@@ -339,9 +357,11 @@ class OpenMpInstructionContentProvider extends InstructionContentProvider
 
 	override getParallelLoopContent(Loop it)
 	'''
-		#pragma omp parallel for
-		«pythonEmbeddingContentProvider.wrapWithGILGuard(it,
-			'''for (size_t «iterationBlock.indexName»=0; «iterationBlock.indexName»<«iterationBlock.nbElems»; «iterationBlock.indexName»++)''',
+		«pythonEmbeddingContentProvider.wrapLoopWithGILGuard(it,
+			'''
+				#pragma omp parallel for
+				for (size_t «iterationBlock.indexName»=0; «iterationBlock.indexName»<«iterationBlock.nbElems»; «iterationBlock.indexName»++)
+			''',
 			'''«body.innerContent»''')»
 	'''
 

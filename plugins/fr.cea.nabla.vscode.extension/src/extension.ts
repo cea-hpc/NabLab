@@ -8,11 +8,21 @@
  * Contributors: see AUTHORS file
  *******************************************************************************/
 import { ChildProcess, exec } from "child_process";
+import fs from "fs";
+import JSZip from "jszip";
 import * as net from "net";
 import * as os from "os";
 import * as path from "path";
 import psList, { ProcessDescriptor } from "ps-list";
-import { commands, ExtensionContext, Uri, window, workspace } from "vscode";
+import {
+  commands,
+  ExtensionContext,
+  ProviderResult,
+  TextDocumentContentProvider,
+  Uri,
+  window,
+  workspace,
+} from "vscode";
 import { Trace } from "vscode-jsonrpc";
 import {
   LanguageClient,
@@ -180,6 +190,27 @@ export function activate(context: ExtensionContext) {
     }
   );
   context.subscriptions.push(disposableGenerateIr);
+
+  // Plug a TextDocumentContent that can read inside a jar file
+  const jarContentProvider = new (class implements TextDocumentContentProvider {
+    provideTextDocumentContent(uri: Uri): ProviderResult<string> {
+      // URI format: jar:file:/<path>!<pathInJar>
+      const path = uri.path;
+      const parts = path.split("!");
+      const jarFilePath = parts[0].replace("file:/", "");
+      const insidePath = parts[1].substring(1);
+      const fileContent = new JSZip()
+        .loadAsync(fs.readFileSync(jarFilePath))
+        .then((zip) => {
+          return zip.file(insidePath)?.async("string");
+        });
+      return fileContent;
+    }
+  })();
+
+  context.subscriptions.push(
+    workspace.registerTextDocumentContentProvider("jar", jarContentProvider)
+  );
 
   psList().then((result) => {
     // retrieve all java processes launched by this extension.

@@ -50,7 +50,7 @@ class NabLabLanguageServer extends LanguageServerImpl
 	override CompletableFuture<SemanticTokens> semanticTokensFull(SemanticTokensParams params)
 	{
 		return requestManager.runRead [ cancelIndicator |
-			workspaceManager.doRead(URI.createURI(params.textDocument.uri), [ doc, resource |
+			workspaceManager.doRead(URI.createURI(URI.decode(params.textDocument.uri)), [ doc, resource |
 				return new SemanticTokenComputer(doc, resource).computeTokens
 			])
 		];

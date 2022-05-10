@@ -12,7 +12,6 @@ package fr.cea.nabla.ir.generator.arcane
 import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.annotations.AcceleratorAnnotation
 import fr.cea.nabla.ir.annotations.AcceleratorAnnotation.ViewDirection
-import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.BaseType
@@ -77,6 +76,8 @@ class InstructionContentProvider
 	{
 		if (left.target.linearAlgebra && !(left.iterators.empty && left.indices.empty))
 			'''«left.codeName».setValue(«formatIteratorsAndIndices(left.target, left.iterators, left.indices)», «right.content»);'''
+		else if (isNumArray(left.target))
+			'''«left.codeName».s«formatIteratorsAndIndices(left.target, left.iterators, left.indices)» = «right.content»;'''
 		else
 			'''
 				«left.content» = «right.content»;
@@ -120,7 +121,6 @@ class InstructionContentProvider
 		val b = iterationBlock
 		switch b
 		{
-			// TODO Accelerator loops for Interval (only Iterator for the moment)
 			Iterator case AcceleratorAnnotation.tryToGet(it) !== null:
 			'''
 				«val iterator = iterationBlock as Iterator»
@@ -130,7 +130,7 @@ class InstructionContentProvider
 					«body.innerContent»
 				};
 			'''
-			Iterator case Utils.isParallelLoop(it):
+			Iterator case multithreadable:
 			'''
 				«val c = b.container»
 				arcaneParallelForeach(«c.accessor», [&](«c.itemType.name.toFirstUpper»VectorView view)
@@ -141,8 +141,39 @@ class InstructionContentProvider
 					}
 				});
 			'''
-			Iterator case !Utils.isParallelLoop(it): getSequentialLoopContent(b, body)
-			Interval: getSequentialLoopContent(b, body)
+			Iterator:
+			'''
+				«val c = b.container»
+				«IF c.connectivityCall.args.empty»
+					ENUMERATE_«c.itemType.name.toUpperCase»(«b.index.name», «c.accessor»)
+					{
+						«body.innerContent»
+					}
+				«ELSE»
+					{
+						«IF c instanceof ConnectivityCall»«getSetDefinitionContent(c.uniqueName, c)»«ENDIF»
+						const Int32 «c.nbElemsVar»(«c.uniqueName».size());
+						for (Int32 «b.index.name»=0; «b.index.name»<«c.nbElemsVar»; «b.index.name»++)
+						{
+							«body.innerContent»
+						}
+					}
+				«ENDIF»
+			'''
+			Interval case AcceleratorAnnotation.tryToGet(it) !== null:
+			'''
+				command << RUNCOMMAND_LOOP1(«b.index.name», «b.nbElems.content»)
+				{
+					«body.innerContent»
+				};
+			'''
+			Interval:
+			'''
+				for (Int32 «b.index.name»=0; «b.index.name»<«b.nbElems.content»; «b.index.name»++)
+				{
+					«body.innerContent»
+				}
+			'''
 		}
 	}
 
@@ -211,40 +242,12 @@ class InstructionContentProvider
 		const auto «setName»(m_mesh->«call.accessor»);
 	'''
 
-	private static def getSequentialLoopContent(Iterator iterator, Instruction loopBody)
-	'''
-		«val c = iterator.container»
-		«IF c.connectivityCall.args.empty»
-			ENUMERATE_«c.itemType.name.toUpperCase»(«iterator.index.name», «c.accessor»)
-			{
-				«loopBody.innerContent»
-			}
-		«ELSE»
-			{
-				«IF iterator.container instanceof ConnectivityCall»«getSetDefinitionContent(iterator.container.uniqueName, iterator.container as ConnectivityCall)»«ENDIF»
-				const Int32 «iterator.container.nbElemsVar»(«iterator.container.uniqueName».size());
-				for (Int32 «iterator.index.name»=0; «iterator.index.name»<«iterator.container.nbElemsVar»; «iterator.index.name»++)
-				{
-					«loopBody.innerContent»
-				}
-			}
-		«ENDIF»
-	'''
-
-	private static def getSequentialLoopContent(Interval iterator, Instruction loopBody)
-	'''
-		for (Int32 «iterator.index.name»=0; «iterator.index.name»<«iterator.nbElems.content»; «iterator.index.name»++)
-		{
-			«loopBody.innerContent»
-		}
-	'''
-
 	private static def getVariableDefaultValue(Variable it)
 	{
 		if (defaultValue === null)
 		{
-			if (getTypeName(type).startsWith("UniqueArray"))
-				// UniqueArray => type is BaseType
+			if (getTypeName(type).startsWith("NumArray"))
+				// NumArray => type is BaseType
 				'''(«FOR s : (type as BaseType).sizes SEPARATOR ", "»«s.content»«ENDFOR»)'''
 			else
 				''''''

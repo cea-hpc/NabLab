@@ -39,13 +39,10 @@ class TypeContentProvider
 			{
 				val t = typeNameAndDimension
 				val dimension = t.value
-				switch dimension
-				{
-					case 0: t.key
-					case 1: "UniqueArray<" + t.key + ">"
-					case 2: "UniqueArray2<" + t.key + ">"
-					default: throw new RuntimeException("Unsupported dimension: " + t.value)
-				}
+				if (dimension == 0)
+					t.key
+				else
+					"NumArray<" + t.key + "," + dimension + ">"
 			}
 			ConnectivityType: getVariableTypeName(it)
 			LinearAlgebraType: getLinearAlgebraClass(it)
@@ -127,6 +124,7 @@ class TypeContentProvider
 		switch v.type
 		{
 			case (iterators.empty && indices.empty): ''''''
+			BaseType case isNumArray(v): '''«FOR i : indices BEFORE '(' SEPARATOR ', ' AFTER ')'»«i.content»«ENDFOR»'''
 			BaseType: '''«FOR i : indices»[«i.content»]«ENDFOR»'''
 			// for the ArcaneStlVector, the setValue method must keep the ItemEnumerator arg (not the index)
 			LinearAlgebraType: '''«FOR i : getConnectivityIndexList(iterators, v) SEPARATOR ', '»«i»«ENDFOR»«FOR i : indices SEPARATOR ', '»«i.content»«ENDFOR»'''
@@ -205,6 +203,13 @@ class TypeContentProvider
 			}
 			default: #[]
 		}
+	}
+
+	static def isNumArray(ArgOrVar v)
+	{
+		v.type instanceof BaseType						// a BaseType...
+		&& !isArcaneBaseType(v.type)					// ...but not scalar...
+		&& AcceleratorAnnotation.tryToGet(v) === null	// ...and not a view
 	}
 
 	private static def getVariableDimensionName(int dimension, boolean hasSupport)

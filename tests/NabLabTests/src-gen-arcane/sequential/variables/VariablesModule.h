@@ -3,7 +3,7 @@
 #ifndef __VARIABLESMODULE_H_
 #define __VARIABLESMODULE_H_
 
-#include <arcane/utils/Array.h>
+#include <arcane/utils/NumArray.h>
 #include <arcane/datatype/RealArrayVariant.h>
 #include <arcane/datatype/RealArray2Variant.h>
 #include "Variables_axl.h"
@@ -17,6 +17,7 @@ namespace variablesfreefuncs
 {
 	const bool assertEquals(const Int32 expected, const Int32 actual);
 	const bool assertEquals(RealArrayVariant expected, RealArrayVariant actual);
+	const bool assertEquals(const Real expected, const Real actual);
 	RealArrayVariant operatorAdd(RealArrayVariant a, RealArrayVariant b);
 }
 
@@ -54,7 +55,7 @@ private:
 	static constexpr Real2 m_constexprVec = {1.1, 1.1};
 	Real2 m_varVec;
 	Int32 m_checkDynamicDim;
-	UniqueArray<Real> m_dynamicVec;
+	NumArray<Real,1> m_dynamicVec;
 };
 
 #endif

@@ -12,8 +12,10 @@ package fr.cea.nabla.ir.generator.cpp
 import fr.cea.nabla.ir.generator.jni.Jniable
 import fr.cea.nabla.ir.ir.ExtensionProvider
 import fr.cea.nabla.ir.ir.ExternFunction
+import fr.cea.nabla.ir.transformers.CheckKokkosMultithreadLoops
 import fr.cea.nabla.ir.transformers.IrTransformationStep
 import fr.cea.nabla.ir.transformers.ReplaceReductions
+import fr.cea.nabla.ir.transformers.SetMultithreadableLoops
 import org.eclipse.xtend.lib.annotations.Accessors
 
 abstract class Backend implements Jniable
@@ -67,6 +69,7 @@ class StlThreadBackend extends Backend
 	new()
 	{
 		name = 'StlThread'
+		irTransformationSteps = #[new SetMultithreadableLoops]
 		cmakeContentProvider = new StlThreadCMakeContentProvider
 		typeContentProvider = new StlThreadTypeContentProvider
 		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
@@ -88,6 +91,7 @@ class KokkosBackend extends Backend
 	new()
 	{
 		name = 'Kokkos'
+		irTransformationSteps = #[new SetMultithreadableLoops, new CheckKokkosMultithreadLoops]
 		cmakeContentProvider = new KokkosCMakeContentProvider
 		typeContentProvider = new KokkosTypeContentProvider
 		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
@@ -109,6 +113,7 @@ class KokkosTeamThreadBackend extends Backend
 	new()
 	{
 		name = 'Kokkos Team Thread'
+		irTransformationSteps = #[new SetMultithreadableLoops, new CheckKokkosMultithreadLoops]
 		cmakeContentProvider = new KokkosCMakeContentProvider
 		typeContentProvider = new KokkosTypeContentProvider
 		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
@@ -130,6 +135,7 @@ class OpenMpBackend extends Backend
 	new()
 	{
 		name = 'OpenMP'
+		irTransformationSteps = #[new SetMultithreadableLoops]
 		cmakeContentProvider = new OpenMpCMakeContentProvider
 		typeContentProvider = new StlThreadTypeContentProvider
 		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)

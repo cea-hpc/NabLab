@@ -45,13 +45,13 @@ public interface Loop extends IterableInstruction {
 
 	/**
 	 * Returns the value of the '<em><b>Multithreadable</b></em>' attribute.
-	 * The default value is <code>"true"</code>.
+	 * The default value is <code>"false"</code>.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Multithreadable</em>' attribute.
 	 * @see #setMultithreadable(boolean)
 	 * @see fr.cea.nabla.ir.ir.IrPackage#getLoop_Multithreadable()
-	 * @model default="true"
+	 * @model default="false"
 	 * @generated
 	 */
 	boolean isMultithreadable();

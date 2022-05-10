@@ -14,15 +14,12 @@ import com.google.gson.JsonObject
 import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.IrPackage
-import fr.cea.nabla.ir.ir.IterationBlock
-import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.Variable
 import java.io.PrintWriter
 import java.io.StringWriter
 import org.eclipse.emf.ecore.EObject
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.isGlobal
-import static extension fr.cea.nabla.ir.ContainerExtensions.*
 
 class IrUtils
 {
@@ -87,14 +84,6 @@ class IrUtils
 		val nrToleranceName = NonRegressionToleranceNameAndValue.key
 		jsonOptions.addProperty(nrToleranceName, tolerance)
 		return gson.toJson(jsonObject)
-	}
-
-	static def boolean isTopLevelConnectivity(IterationBlock b)
-	{
-		if (b instanceof Iterator)
-			b.container.connectivityCall.args.empty
-		else
-			false
 	}
 
 	static def getInVars(EObject it)

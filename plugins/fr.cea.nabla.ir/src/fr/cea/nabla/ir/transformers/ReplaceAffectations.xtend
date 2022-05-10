@@ -85,7 +85,6 @@ class ReplaceAffectations extends IrTransformationStep
 			body = createLoopWithInterval(lhs, rhs, dimensions.tail.toList, depth+1)
 		else
 			body = createAffectation(lhs, rhs)
-		multithreadable = true
 	}
 
 	/*
@@ -126,7 +125,6 @@ class ReplaceAffectations extends IrTransformationStep
 		else
 			instructionBlock.instructions += createAffectation(lhs, rhs)
 		body = instructionBlock
-		multithreadable = true
 	}
 
 	private def createIterationCounter(int depth)

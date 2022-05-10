@@ -16,7 +16,6 @@ import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.JobCaller
-import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.Variable
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
@@ -91,11 +90,6 @@ class Utils
 		 * Out variables: «FOR v : outVars.sortBy[name] SEPARATOR ', '»«v.getName»«ENDFOR»
 		 */
 	'''
-
-	static def boolean isParallelLoop(Loop it)
-	{
-		IrUtils.isTopLevelConnectivity(iterationBlock) && multithreadable
-	}
 
 	static def getOperatorName(String op)
 	{

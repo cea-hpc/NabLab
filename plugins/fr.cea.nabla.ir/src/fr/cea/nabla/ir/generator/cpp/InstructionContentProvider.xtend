@@ -15,6 +15,7 @@ import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityCall
 import fr.cea.nabla.ir.ir.Exit
+import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.If
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.InstructionBlock
@@ -24,6 +25,7 @@ import fr.cea.nabla.ir.ir.ItemIdDefinition
 import fr.cea.nabla.ir.ir.ItemIndexDefinition
 import fr.cea.nabla.ir.ir.IterationBlock
 import fr.cea.nabla.ir.ir.Iterator
+import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.JobCaller
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ReductionInstruction
@@ -36,9 +38,7 @@ import org.eclipse.xtend.lib.annotations.Data
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
-import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.cpp.ItemIndexAndIdValueContentProvider.*
-import fr.cea.nabla.ir.ir.Job
 
 @Data
 abstract class InstructionContentProvider
@@ -81,7 +81,7 @@ abstract class InstructionContentProvider
 
 	def dispatch CharSequence getContent(Loop it)
 	{
-		if (parallel)
+		if (multithreadable)
 			iterationBlock.defineInterval(parallelLoopContent)
 		else
 			iterationBlock.defineInterval(sequentialLoopContent)
@@ -143,8 +143,6 @@ abstract class InstructionContentProvider
 		«ENDFOR»
 	'''
 
-	protected def boolean isParallel(Loop it) { parallelLoop }
-
 	protected def CharSequence getSequentialLoopContent(Loop it)
 	'''
 		for (size_t «iterationBlock.indexName»=0; «iterationBlock.indexName»<«iterationBlock.nbElems»; «iterationBlock.indexName»++)
@@ -197,8 +195,6 @@ abstract class InstructionContentProvider
 @Data
 class SequentialInstructionContentProvider extends InstructionContentProvider
 {
-	override isParallel(Loop it) { false }
-
 	override protected getReductionContent(ReductionInstruction it)
 	{
 		throw new RuntimeException("ReductionInstruction must have been replaced before using this code generator")
@@ -276,10 +272,12 @@ class KokkosTeamThreadInstructionContentProvider extends KokkosInstructionConten
 
 	override getParallelLoopContent(Loop it)
 	{
-		val jobCaller = IrUtils.getContainerOfType(it, JobCaller)
+		val isLoopInFunction = IrUtils.getContainerOfType(it, Function) !== null
+		// a JobCaller is a graph => simulate and eexecuteTimeLoop jobs
+		val isLoopInJobCaller = IrUtils.getContainerOfType(it, JobCaller) !== null
 
-		// A jobCaller instance is a graph, never in a team
-		if (jobCaller === null)
+		// no team of thread in a JobCaller or a Function
+		if (!isLoopInFunction && !isLoopInJobCaller)
 			parallelLoopBlock
 		else
 			super.getParallelLoopContent(it)
@@ -297,11 +295,11 @@ class KokkosTeamThreadInstructionContentProvider extends KokkosInstructionConten
 			});
 		}
 		«val j = IrUtils.getContainerOfType(it, Job)»
-		«IF (j.eAllContents.filter(Loop).filter[parallel].size > 1)»
+		«IF (j.eAllContents.filter(Loop).filter[multithreadable].size > 1)»
 		teamMember.team_barrier();
 		«ENDIF»
 	'''
-	
+
 	private def getAutoTeamWork(IterationBlock it)
 	'''
 		const auto teamWork(computeTeamWorkRange(teamMember, «nbElems»));

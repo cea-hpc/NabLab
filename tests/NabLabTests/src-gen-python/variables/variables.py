@@ -46,8 +46,9 @@ class Variables:
 	def _dynamicVecInitialization(self):
 		cpt = 0
 		for i in range(self.optDim):
-			cpt = cpt + 1
 			self.dynamicVec[i] = 3.3
+		for i in range(self.optDim):
+			cpt = cpt + 1
 		self.checkDynamicDim = cpt
 
 	"""
@@ -60,7 +61,7 @@ class Variables:
 
 	"""
 	 Job oracle called @2.0 in simulate method.
-	 In variables: checkDynamicDim, constexprDim, constexprVec, optDim, optVect1, optVect2, optVect3, varVec
+	 In variables: checkDynamicDim, constexprDim, constexprVec, dynamicVec, optDim, optVect1, optVect2, optVect3, varVec
 	 Out variables: 
 	"""
 	def _oracle(self):
@@ -72,6 +73,8 @@ class Variables:
 		testConstexprVec = self.__assertEquals3(np.array([1.1, 1.1], dtype=np.double), self.constexprVec)
 		testVarVec = self.__assertEquals3(np.array([2.2, 2.2], dtype=np.double), self.varVec)
 		testDynamicVecLength = self.__assertEquals(2, self.checkDynamicDim)
+		for i in range(self.optDim):
+			testDynamicVec = self.__assertEquals1(3.3, self.dynamicVec[i])
 
 	def __assertEquals(self, expected, actual):
 		ret = (expected == actual)
@@ -84,6 +87,12 @@ class Variables:
 			if expected[i] != actual[i]:
 				raise Exception("** Assertion failed");
 		return True
+
+	def __assertEquals1(self, expected, actual):
+		ret = (expected == actual)
+		if not ret:
+			raise Exception("** Assertion failed");
+		return ret
 
 	def __operatorAdd(self, a, b):
 		result = np.empty((len(a)), dtype=np.double)

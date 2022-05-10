@@ -25,7 +25,7 @@ namespace glace2dfreefuncs
 		Real result(0.0);
 		for (Int32 i=0; i<a.size(); i++)
 		{
-			result = result + a[i] * b[i];
+			result = result + a(i) * b(i);
 		}
 		return result;
 	}
@@ -37,12 +37,12 @@ namespace glace2dfreefuncs
 	
 	RealArray2Variant tensProduct(RealArrayVariant a, RealArrayVariant b)
 	{
-		UniqueArray2<Real> result(a.size(), a.size());
+		NumArray<Real,2> result(a.size(), a.size());
 		for (Int32 ia=0; ia<a.size(); ia++)
 		{
 			for (Int32 ib=0; ib<a.size(); ib++)
 			{
-				result[ia][ib] = a[ia] * b[ib];
+				result.s(ia, ib) = a(ia) * b(ib);
 			}
 		}
 		return result;
@@ -50,15 +50,15 @@ namespace glace2dfreefuncs
 	
 	RealArrayVariant matVectProduct(RealArray2Variant a, RealArrayVariant b)
 	{
-		UniqueArray<Real> result(a.dim1Size());
+		NumArray<Real,1> result(a.dim1Size());
 		for (Int32 ix=0; ix<a.dim1Size(); ix++)
 		{
-			UniqueArray<Real> tmp(a.dim2Size());
+			NumArray<Real,1> tmp(a.dim2Size());
 			for (Int32 iy=0; iy<a.dim2Size(); iy++)
 			{
-				tmp[iy] = a[ix][iy];
+				tmp.s(iy) = a(ix, iy);
 			}
-			result[ix] = glace2dfreefuncs::dot(tmp, b);
+			result.s(ix) = glace2dfreefuncs::dot(tmp, b);
 		}
 		return result;
 	}
@@ -68,7 +68,7 @@ namespace glace2dfreefuncs
 		Real result(0.0);
 		for (Int32 ia=0; ia<a.dim1Size(); ia++)
 		{
-			result = result + a[ia][ia];
+			result = result + a(ia, ia);
 		}
 		return result;
 	}
@@ -101,22 +101,22 @@ namespace glace2dfreefuncs
 	
 	RealArrayVariant operatorAdd(RealArrayVariant a, RealArrayVariant b)
 	{
-		UniqueArray<Real> result(a.size());
+		NumArray<Real,1> result(a.size());
 		for (Int32 ix0=0; ix0<a.size(); ix0++)
 		{
-			result[ix0] = a[ix0] + b[ix0];
+			result.s(ix0) = a(ix0) + b(ix0);
 		}
 		return result;
 	}
 	
 	RealArray2Variant operatorAdd(RealArray2Variant a, RealArray2Variant b)
 	{
-		UniqueArray2<Real> result(a.dim1Size(), a.dim2Size());
+		NumArray<Real,2> result(a.dim1Size(), a.dim2Size());
 		for (Int32 ix0=0; ix0<a.dim1Size(); ix0++)
 		{
 			for (Int32 ix1=0; ix1<a.dim2Size(); ix1++)
 			{
-				result[ix0][ix1] = a[ix0][ix1] + b[ix0][ix1];
+				result.s(ix0, ix1) = a(ix0, ix1) + b(ix0, ix1);
 			}
 		}
 		return result;
@@ -124,32 +124,32 @@ namespace glace2dfreefuncs
 	
 	RealArrayVariant operatorMult(const Real a, RealArrayVariant b)
 	{
-		UniqueArray<Real> result(b.size());
+		NumArray<Real,1> result(b.size());
 		for (Int32 ix0=0; ix0<b.size(); ix0++)
 		{
-			result[ix0] = a * b[ix0];
+			result.s(ix0) = a * b(ix0);
 		}
 		return result;
 	}
 	
 	RealArrayVariant operatorSub(RealArrayVariant a, RealArrayVariant b)
 	{
-		UniqueArray<Real> result(a.size());
+		NumArray<Real,1> result(a.size());
 		for (Int32 ix0=0; ix0<a.size(); ix0++)
 		{
-			result[ix0] = a[ix0] - b[ix0];
+			result.s(ix0) = a(ix0) - b(ix0);
 		}
 		return result;
 	}
 	
 	RealArray2Variant operatorMult(const Real a, RealArray2Variant b)
 	{
-		UniqueArray2<Real> result(b.dim1Size(), b.dim2Size());
+		NumArray<Real,2> result(b.dim1Size(), b.dim2Size());
 		for (Int32 ix0=0; ix0<b.dim1Size(); ix0++)
 		{
 			for (Int32 ix1=0; ix1<b.dim2Size(); ix1++)
 			{
-				result[ix0][ix1] = a * b[ix0][ix1];
+				result.s(ix0, ix1) = a * b(ix0, ix1);
 			}
 		}
 		return result;
@@ -157,12 +157,12 @@ namespace glace2dfreefuncs
 	
 	RealArray2Variant operatorSub(RealArray2Variant a, RealArray2Variant b)
 	{
-		UniqueArray2<Real> result(a.dim1Size(), a.dim2Size());
+		NumArray<Real,2> result(a.dim1Size(), a.dim2Size());
 		for (Int32 ix0=0; ix0<a.dim1Size(); ix0++)
 		{
 			for (Int32 ix1=0; ix1<a.dim2Size(); ix1++)
 			{
-				result[ix0][ix1] = a[ix0][ix1] - b[ix0][ix1];
+				result.s(ix0, ix1) = a(ix0, ix1) - b(ix0, ix1);
 			}
 		}
 		return result;
@@ -170,12 +170,12 @@ namespace glace2dfreefuncs
 	
 	RealArray2Variant operatorMult(RealArray2Variant a, RealArray2Variant b)
 	{
-		UniqueArray2<Real> result(a.dim1Size(), a.dim2Size());
+		NumArray<Real,2> result(a.dim1Size(), a.dim2Size());
 		for (Int32 ix0=0; ix0<a.dim1Size(); ix0++)
 		{
 			for (Int32 ix1=0; ix1<a.dim2Size(); ix1++)
 			{
-				result[ix0][ix1] = a[ix0][ix1] * b[ix0][ix1];
+				result.s(ix0, ix1) = a(ix0, ix1) * b(ix0, ix1);
 			}
 		}
 		return result;
@@ -183,12 +183,12 @@ namespace glace2dfreefuncs
 	
 	RealArray2Variant operatorMult(RealArray2Variant a, const Real b)
 	{
-		UniqueArray2<Real> result(a.dim1Size(), a.dim2Size());
+		NumArray<Real,2> result(a.dim1Size(), a.dim2Size());
 		for (Int32 ix0=0; ix0<a.dim1Size(); ix0++)
 		{
 			for (Int32 ix1=0; ix1<a.dim2Size(); ix1++)
 			{
-				result[ix0][ix1] = a[ix0][ix1] * b;
+				result.s(ix0, ix1) = a(ix0, ix1) * b;
 			}
 		}
 		return result;

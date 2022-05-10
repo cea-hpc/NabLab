@@ -3,7 +3,7 @@
 #ifndef __EXPLICITHEATEQUATIONMODULE_H_
 #define __EXPLICITHEATEQUATIONMODULE_H_
 
-#include <arcane/utils/Array.h>
+#include <arcane/utils/NumArray.h>
 #include <arcane/datatype/RealArrayVariant.h>
 #include <arcane/datatype/RealArray2Variant.h>
 #include "ExplicitHeatEquation_axl.h"

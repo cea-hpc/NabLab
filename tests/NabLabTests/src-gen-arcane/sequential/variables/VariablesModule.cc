@@ -22,18 +22,26 @@ namespace variablesfreefuncs
 	{
 		for (Int32 i=0; i<expected.size(); i++)
 		{
-			if (expected[i] != actual[i]) 
+			if (expected(i) != actual(i)) 
 				ARCANE_FATAL("** Assertion failed");
 		}
 		return true;
 	}
 	
+	const bool assertEquals(const Real expected, const Real actual)
+	{
+		const bool ret((expected == actual));
+		if (!ret) 
+			ARCANE_FATAL("** Assertion failed");
+		return ret;
+	}
+	
 	RealArrayVariant operatorAdd(RealArrayVariant a, RealArrayVariant b)
 	{
-		UniqueArray<Real> result(a.size());
+		NumArray<Real,1> result(a.size());
 		for (Int32 ix0=0; ix0<a.size(); ix0++)
 		{
-			result[ix0] = a[ix0] + b[ix0];
+			result.s(ix0) = a(ix0) + b(ix0);
 		}
 		return result;
 	}
@@ -79,8 +87,11 @@ void VariablesModule::dynamicVecInitialization()
 		Int32 cpt(0);
 		for (Int32 i=0; i<tmp_optDim; i++)
 		{
+			m_dynamicVec.s(i) = 3.3;
+		}
+		for (Int32 i=0; i<tmp_optDim; i++)
+		{
 			cpt = cpt + 1;
-			m_dynamicVec[i] = 3.3;
 		}
 		m_checkDynamicDim = cpt;
 	}
@@ -98,19 +109,26 @@ void VariablesModule::varVecInitialization()
 
 /**
  * Job oracle called @2.0 in simulate method.
- * In variables: checkDynamicDim, constexprDim, constexprVec, optDim, optVect1, optVect2, optVect3, varVec
+ * In variables: checkDynamicDim, constexprDim, constexprVec, dynamicVec, optDim, optVect1, optVect2, optVect3, varVec
  * Out variables: 
  */
 void VariablesModule::oracle()
 {
-	const bool testOptDim(variablesfreefuncs::assertEquals(2, options()->optDim()));
-	const bool testOptVect1(variablesfreefuncs::assertEquals(Real2{1.0, 1.0}, options()->optVect1()));
-	const bool testOptVect2(variablesfreefuncs::assertEquals(Real2{2.0, 2.0}, options()->optVect2()));
-	const bool testOptVect3(variablesfreefuncs::assertEquals(Real2{3.0, 3.0}, m_optVect3));
-	const bool testConstexprDim(variablesfreefuncs::assertEquals(2, m_constexprDim));
-	const bool testConstexprVec(variablesfreefuncs::assertEquals(Real2{1.1, 1.1}, m_constexprVec));
-	const bool testVarVec(variablesfreefuncs::assertEquals(Real2{2.2, 2.2}, m_varVec));
-	const bool testDynamicVecLength(variablesfreefuncs::assertEquals(2, m_checkDynamicDim));
+	const Int32 tmp_optDim(options()->optDim());
+	{
+		const bool testOptDim(variablesfreefuncs::assertEquals(2, options()->optDim()));
+		const bool testOptVect1(variablesfreefuncs::assertEquals(Real2{1.0, 1.0}, options()->optVect1()));
+		const bool testOptVect2(variablesfreefuncs::assertEquals(Real2{2.0, 2.0}, options()->optVect2()));
+		const bool testOptVect3(variablesfreefuncs::assertEquals(Real2{3.0, 3.0}, m_optVect3));
+		const bool testConstexprDim(variablesfreefuncs::assertEquals(2, m_constexprDim));
+		const bool testConstexprVec(variablesfreefuncs::assertEquals(Real2{1.1, 1.1}, m_constexprVec));
+		const bool testVarVec(variablesfreefuncs::assertEquals(Real2{2.2, 2.2}, m_varVec));
+		const bool testDynamicVecLength(variablesfreefuncs::assertEquals(2, m_checkDynamicDim));
+		for (Int32 i=0; i<tmp_optDim; i++)
+		{
+			const bool testDynamicVec(variablesfreefuncs::assertEquals(3.3, m_dynamicVec(i)));
+		}
+	}
 }
 
 ARCANE_REGISTER_MODULE_VARIABLES(VariablesModule);

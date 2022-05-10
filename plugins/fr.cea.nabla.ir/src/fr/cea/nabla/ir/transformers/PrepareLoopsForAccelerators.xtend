@@ -12,14 +12,12 @@ package fr.cea.nabla.ir.transformers
 import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.annotations.AcceleratorAnnotation
 import fr.cea.nabla.ir.annotations.AcceleratorAnnotation.ViewDirection
-import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.ArgOrVar
 import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.IterableInstruction
-import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.LinearAlgebraType
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ReductionInstruction
@@ -47,13 +45,14 @@ class PrepareLoopsForAccelerators extends IrTransformationStep
 			// tag the module
 			m.annotations += createAcceleratorAnnotation()
 
+			// No accelerator loops on functions because functions are generated outside the class
+			// (freefuncs namespace) and consequently can not see the m_command attribute.
 			for (j : m.jobs)
 			{
-				// candidate instructions are IterableInstruction on Iterator (no Interval for the moment)
-				val iterableInstrs = j.eAllContents.filter(IterableInstruction).filter[x | x.iterationBlock instanceof Iterator].toIterable
+				val iterableInstrs = j.eAllContents.filter(IterableInstruction).toIterable
 
 				// keep only reductions and parallel loops
-				for (l : iterableInstrs.filter[x | !(x instanceof Loop) || Utils.isParallelLoop(x as Loop)])
+				for (l : iterableInstrs.filter[x | !(x instanceof Loop) || (x as Loop).multithreadable])
 				{
 					val inVars = IrUtils.getInVars(l)
 					val outVars = IrUtils.getOutVars(l)
@@ -69,7 +68,6 @@ class PrepareLoopsForAccelerators extends IrTransformationStep
 						/**
 						 * For the moment, iterable instruction containing linear algebra are ignored.
 						 * See what to do if a GPU solver is plugged.
-						 * TODO Manage linear algebra variables for Arcane Accelerator API
 						 */
 						// tag the loop
 						l.annotations += createAcceleratorAnnotation()

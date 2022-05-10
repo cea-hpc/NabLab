@@ -47,7 +47,7 @@ public class LoopImpl extends IterableInstructionImpl implements Loop {
 	 * @generated
 	 * @ordered
 	 */
-	protected static final boolean MULTITHREADABLE_EDEFAULT = true;
+	protected static final boolean MULTITHREADABLE_EDEFAULT = false;
 	/**
 	 * The cached value of the '{@link #isMultithreadable() <em>Multithreadable</em>}' attribute.
 	 * <!-- begin-user-doc -->

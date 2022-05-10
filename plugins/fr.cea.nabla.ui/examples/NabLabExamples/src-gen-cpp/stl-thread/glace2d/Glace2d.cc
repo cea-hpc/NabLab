@@ -42,13 +42,13 @@ template<size_t l>
 RealArray2D<l,l> tensProduct(RealArray1D<l> a, RealArray1D<l> b)
 {
 	RealArray2D<l,l> result;
-	for (size_t ia=0; ia<l; ia++)
+	parallel_exec(l, [&](const size_t& ia)
 	{
 		for (size_t ib=0; ib<l; ib++)
 		{
 			result[ia][ib] = a[ia] * b[ib];
 		}
-	}
+	});
 	return result;
 }
 
@@ -56,7 +56,7 @@ template<size_t x, size_t y>
 RealArray1D<x> matVectProduct(RealArray2D<x,y> a, RealArray1D<y> b)
 {
 	RealArray1D<x> result;
-	for (size_t ix=0; ix<x; ix++)
+	parallel_exec(x, [&](const size_t& ix)
 	{
 		RealArray1D<y> tmp;
 		for (size_t iy=0; iy<y; iy++)
@@ -64,7 +64,7 @@ RealArray1D<x> matVectProduct(RealArray2D<x,y> a, RealArray1D<y> b)
 			tmp[iy] = a[ix][iy];
 		}
 		result[ix] = glace2dfreefuncs::dot(tmp, b);
-	}
+	});
 	return result;
 }
 
@@ -111,10 +111,10 @@ template<size_t x0>
 RealArray1D<x0> operatorAdd(RealArray1D<x0> a, RealArray1D<x0> b)
 {
 	RealArray1D<x0> result;
-	for (size_t ix0=0; ix0<x0; ix0++)
+	parallel_exec(x0, [&](const size_t& ix0)
 	{
 		result[ix0] = a[ix0] + b[ix0];
-	}
+	});
 	return result;
 }
 
@@ -122,13 +122,13 @@ template<size_t x0, size_t x1>
 RealArray2D<x0,x1> operatorAdd(RealArray2D<x0,x1> a, RealArray2D<x0,x1> b)
 {
 	RealArray2D<x0,x1> result;
-	for (size_t ix0=0; ix0<x0; ix0++)
+	parallel_exec(x0, [&](const size_t& ix0)
 	{
 		for (size_t ix1=0; ix1<x1; ix1++)
 		{
 			result[ix0][ix1] = a[ix0][ix1] + b[ix0][ix1];
 		}
-	}
+	});
 	return result;
 }
 
@@ -136,10 +136,10 @@ template<size_t x0>
 RealArray1D<x0> operatorMult(double a, RealArray1D<x0> b)
 {
 	RealArray1D<x0> result;
-	for (size_t ix0=0; ix0<x0; ix0++)
+	parallel_exec(x0, [&](const size_t& ix0)
 	{
 		result[ix0] = a * b[ix0];
-	}
+	});
 	return result;
 }
 
@@ -147,10 +147,10 @@ template<size_t x0>
 RealArray1D<x0> operatorSub(RealArray1D<x0> a, RealArray1D<x0> b)
 {
 	RealArray1D<x0> result;
-	for (size_t ix0=0; ix0<x0; ix0++)
+	parallel_exec(x0, [&](const size_t& ix0)
 	{
 		result[ix0] = a[ix0] - b[ix0];
-	}
+	});
 	return result;
 }
 
@@ -158,13 +158,13 @@ template<size_t x0, size_t x1>
 RealArray2D<x0,x1> operatorMult(double a, RealArray2D<x0,x1> b)
 {
 	RealArray2D<x0,x1> result;
-	for (size_t ix0=0; ix0<x0; ix0++)
+	parallel_exec(x0, [&](const size_t& ix0)
 	{
 		for (size_t ix1=0; ix1<x1; ix1++)
 		{
 			result[ix0][ix1] = a * b[ix0][ix1];
 		}
-	}
+	});
 	return result;
 }
 
@@ -172,13 +172,13 @@ template<size_t x0, size_t x1>
 RealArray2D<x0,x1> operatorSub(RealArray2D<x0,x1> a, RealArray2D<x0,x1> b)
 {
 	RealArray2D<x0,x1> result;
-	for (size_t ix0=0; ix0<x0; ix0++)
+	parallel_exec(x0, [&](const size_t& ix0)
 	{
 		for (size_t ix1=0; ix1<x1; ix1++)
 		{
 			result[ix0][ix1] = a[ix0][ix1] - b[ix0][ix1];
 		}
-	}
+	});
 	return result;
 }
 
@@ -186,13 +186,13 @@ template<size_t x0, size_t x1>
 RealArray2D<x0,x1> operatorMult(RealArray2D<x0,x1> a, RealArray2D<x0,x1> b)
 {
 	RealArray2D<x0,x1> result;
-	for (size_t ix0=0; ix0<x0; ix0++)
+	parallel_exec(x0, [&](const size_t& ix0)
 	{
 		for (size_t ix1=0; ix1<x1; ix1++)
 		{
 			result[ix0][ix1] = a[ix0][ix1] * b[ix0][ix1];
 		}
-	}
+	});
 	return result;
 }
 
@@ -200,13 +200,13 @@ template<size_t x0, size_t x1>
 RealArray2D<x0,x1> operatorMult(RealArray2D<x0,x1> a, double b)
 {
 	RealArray2D<x0,x1> result;
-	for (size_t ix0=0; ix0<x0; ix0++)
+	parallel_exec(x0, [&](const size_t& ix0)
 	{
 		for (size_t ix1=0; ix1<x1; ix1++)
 		{
 			result[ix0][ix1] = a[ix0][ix1] * b;
 		}
-	}
+	});
 	return result;
 }
 }

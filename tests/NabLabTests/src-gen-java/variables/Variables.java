@@ -92,10 +92,13 @@ public final class Variables
 	protected void dynamicVecInitialization()
 	{
 		int cpt = 0;
+		IntStream.range(0, optDim).parallel().forEach(i ->
+		{
+			dynamicVec[i] = 3.3;
+		});
 		for (int i=0; i<optDim; i++)
 		{
 			cpt = cpt + 1;
-			dynamicVec[i] = 3.3;
 		}
 		checkDynamicDim = cpt;
 	}
@@ -112,7 +115,7 @@ public final class Variables
 
 	/**
 	 * Job oracle called @2.0 in simulate method.
-	 * In variables: checkDynamicDim, constexprDim, constexprVec, optDim, optVect1, optVect2, optVect3, varVec
+	 * In variables: checkDynamicDim, constexprDim, constexprVec, dynamicVec, optDim, optVect1, optVect2, optVect3, varVec
 	 * Out variables: 
 	 */
 	protected void oracle()
@@ -125,6 +128,10 @@ public final class Variables
 		final boolean testConstexprVec = assertEquals(new double[] {1.1, 1.1}, constexprVec);
 		final boolean testVarVec = assertEquals(new double[] {2.2, 2.2}, varVec);
 		final boolean testDynamicVecLength = assertEquals(2, checkDynamicDim);
+		IntStream.range(0, optDim).parallel().forEach(i ->
+		{
+			final boolean testDynamicVec = assertEquals(3.3, dynamicVec[i]);
+		});
 	}
 
 	private static boolean assertEquals(int expected, int actual)
@@ -137,21 +144,29 @@ public final class Variables
 
 	private static boolean assertEquals(double[] expected, double[] actual)
 	{
-		for (int i=0; i<expected.length; i++)
+		IntStream.range(0, expected.length).parallel().forEach(i ->
 		{
 			if (expected[i] != actual[i])
 				throw new RuntimeException("** Assertion failed");
-		}
+		});
 		return true;
+	}
+
+	private static boolean assertEquals(double expected, double actual)
+	{
+		final boolean ret = (expected == actual);
+		if (!ret)
+			throw new RuntimeException("** Assertion failed");
+		return ret;
 	}
 
 	private static double[] operatorAdd(double[] a, double[] b)
 	{
 		double[] result = new double[a.length];
-		for (int ix0=0; ix0<a.length; ix0++)
+		IntStream.range(0, a.length).parallel().forEach(ix0 ->
 		{
 			result[ix0] = a[ix0] + b[ix0];
-		}
+		});
 		return result;
 	}
 

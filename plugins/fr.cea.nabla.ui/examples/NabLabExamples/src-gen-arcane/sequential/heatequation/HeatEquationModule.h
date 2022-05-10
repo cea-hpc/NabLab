@@ -3,7 +3,7 @@
 #ifndef __HEATEQUATIONMODULE_H_
 #define __HEATEQUATIONMODULE_H_
 
-#include <arcane/utils/Array.h>
+#include <arcane/utils/NumArray.h>
 #include <arcane/datatype/RealArrayVariant.h>
 #include <arcane/datatype/RealArray2Variant.h>
 #include "HeatEquation_axl.h"

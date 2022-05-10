@@ -59,7 +59,7 @@ class IrModuleContentProvider
 	#ifndef «CppGeneratorUtils.getHDefineName(className)»
 	#define «CppGeneratorUtils.getHDefineName(className)»
 
-	#include <arcane/utils/Array.h>
+	#include <arcane/utils/NumArray.h>
 	#include <arcane/datatype/RealArrayVariant.h>
 	#include <arcane/datatype/RealArray2Variant.h>
 	«IF AcceleratorAnnotation.tryToGet(it) !== null»

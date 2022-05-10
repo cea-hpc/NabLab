@@ -3,7 +3,7 @@
 #ifndef __R1SERVICE_H_
 #define __R1SERVICE_H_
 
-#include <arcane/utils/Array.h>
+#include <arcane/utils/NumArray.h>
 #include <arcane/datatype/RealArrayVariant.h>
 #include <arcane/datatype/RealArray2Variant.h>
 #include <arcane/accelerator/core/IAcceleratorMng.h>

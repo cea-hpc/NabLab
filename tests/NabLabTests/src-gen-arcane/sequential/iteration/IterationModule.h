@@ -3,7 +3,7 @@
 #ifndef __ITERATIONMODULE_H_
 #define __ITERATIONMODULE_H_
 
-#include <arcane/utils/Array.h>
+#include <arcane/utils/NumArray.h>
 #include <arcane/datatype/RealArrayVariant.h>
 #include <arcane/datatype/RealArray2Variant.h>
 #include "Iteration_axl.h"

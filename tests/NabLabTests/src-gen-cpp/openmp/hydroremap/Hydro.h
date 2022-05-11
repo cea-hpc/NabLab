@@ -19,6 +19,7 @@
 using namespace nablalib::utils;
 using namespace nablalib::types;
 
+
 class R1;
 class R2;
 
@@ -35,6 +36,24 @@ class Hydro
 {
 	friend class R1;
 	friend class R2;
+
+
+private:
+	// Mesh and mesh variables
+	CartesianMesh2D& mesh;
+	size_t nbNodes;
+	size_t nbCells;
+
+	// Additional modules
+	R1* r1;
+	R2* r2;
+
+
+	// Timers
+	Timer globalTimer;
+	Timer cpuTimer;
+	Timer ioTimer;
+	
 
 public:
 	Hydro(CartesianMesh2D& aMesh);
@@ -56,17 +75,8 @@ public:
 	void oracleHv6() noexcept;
 	void oracleHv7() noexcept;
 
-private:
-	// Mesh and mesh variables
-	CartesianMesh2D& mesh;
-	size_t nbNodes;
-	size_t nbCells;
-
-	// Additional modules
-	R1* r1;
-	R2* r2;
-
-	// Options and global variables
+	// Options and global variables.
+	// Module variables are public members of the class to be accessible from Python.
 	int maxIter;
 	double maxTime;
 	double deltat;
@@ -79,11 +89,6 @@ private:
 	std::vector<double> hv5;
 	std::vector<double> hv6;
 	std::vector<double> hv7;
-
-	// Timers
-	Timer globalTimer;
-	Timer cpuTimer;
-	Timer ioTimer;
 };
 
 #endif

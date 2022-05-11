@@ -15,7 +15,9 @@ bool assertEquals(int expected, int actual)
 {
 	const bool ret((expected == actual));
 	if (!ret) 
+	{
 		throw std::runtime_error("** Assertion failed");
+	}
 	return ret;
 }
 
@@ -25,7 +27,9 @@ bool assertEquals(RealArray1D<x> expected, RealArray1D<x> actual)
 	Kokkos::parallel_for(x, KOKKOS_LAMBDA(const size_t& i)
 	{
 		if (expected[i] != actual[i]) 
+		{
 			throw std::runtime_error("** Assertion failed");
+		}
 	});
 	return true;
 }
@@ -34,7 +38,9 @@ bool assertEquals(double expected, double actual)
 {
 	const bool ret((expected == actual));
 	if (!ret) 
+	{
 		throw std::runtime_error("** Assertion failed");
+	}
 	return ret;
 }
 

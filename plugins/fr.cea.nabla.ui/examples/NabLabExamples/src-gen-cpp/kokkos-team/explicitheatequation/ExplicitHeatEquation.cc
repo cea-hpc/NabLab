@@ -418,9 +418,13 @@ void ExplicitHeatEquation::initU(const member_type& teamMember) noexcept
 		{
 			int cCells(cCellsTeam + teamWork.first);
 			if (explicitheatequationfreefuncs::norm(explicitheatequationfreefuncs::operatorSub(Xc(cCells), vectOne)) < 0.5) 
+			{
 				u_n(cCells) = u0;
+			}
 			else
+			{
 				u_n(cCells) = 0.0;
+			}
 		});
 	}
 }

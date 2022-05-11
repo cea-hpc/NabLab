@@ -14,9 +14,13 @@ namespace iterativeheatequationfreefuncs
 bool check(bool a)
 {
 	if (a) 
+	{
 		return true;
+	}
 	else
+	{
 		throw std::runtime_error("Assertion failed");
+	}
 }
 
 template<size_t x>
@@ -417,9 +421,13 @@ void IterativeHeatEquation::initU() noexcept
 	Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const size_t& cCells)
 	{
 		if (iterativeheatequationfreefuncs::norm(iterativeheatequationfreefuncs::operatorSub(Xc(cCells), vectOne)) < 0.5) 
+		{
 			u_n(cCells) = u0;
+		}
 		else
+		{
 			u_n(cCells) = 0.0;
+		}
 	});
 }
 

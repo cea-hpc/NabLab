@@ -91,6 +91,15 @@ class Utils
 		 */
 	'''
 
+	static def getWrapperComment(Job it)
+	'''
+		/**
+		 * Debug wrapper for Job «getCodeName» called @«at» in «caller.codeName» method.
+		 * In variables: «FOR v : inVars.sortBy[name] SEPARATOR ', '»«v.getName»«ENDFOR»
+		 * Out variables: «FOR v : outVars.sortBy[name] SEPARATOR ', '»«v.getName»«ENDFOR»
+		 */
+	'''
+
 	static def getOperatorName(String op)
 	{
 		switch op

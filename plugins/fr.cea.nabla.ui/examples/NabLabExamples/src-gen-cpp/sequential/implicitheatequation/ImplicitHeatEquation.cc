@@ -340,9 +340,13 @@ void ImplicitHeatEquation::initU() noexcept
 	for (size_t cCells=0; cCells<nbCells; cCells++)
 	{
 		if (implicitheatequationfreefuncs::norm(implicitheatequationfreefuncs::operatorSub(Xc[cCells], vectOne)) < 0.5) 
+		{
 			u_n.setValue(cCells, u0);
+		}
 		else
+		{
 			u_n.setValue(cCells, 0.0);
+		}
 	}
 }
 

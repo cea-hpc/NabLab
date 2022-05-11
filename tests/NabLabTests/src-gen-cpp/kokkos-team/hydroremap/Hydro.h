@@ -22,6 +22,7 @@ using namespace nablalib::utils;
 using namespace nablalib::types;
 using namespace nablalib::utils::kokkos;
 
+
 class R1;
 class R2;
 
@@ -41,6 +42,31 @@ class Hydro
 
 	typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
 	
+
+private:
+	/**
+	 * Utility function to get work load for each team of threads
+	 * In  : thread and number of element to use for computation
+	 * Out : pair of indexes, 1st one for start of chunk, 2nd one for size of chunk
+	 */
+	const std::pair<size_t, size_t> computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept;
+	
+	// Mesh and mesh variables
+	CartesianMesh2D& mesh;
+	size_t nbNodes;
+	size_t nbCells;
+
+	// Additional modules
+	R1* r1;
+	R2* r2;
+
+
+	// Timers
+	Timer globalTimer;
+	Timer cpuTimer;
+	Timer ioTimer;
+	
+
 public:
 	Hydro(CartesianMesh2D& aMesh);
 	~Hydro();
@@ -61,24 +87,8 @@ public:
 	void oracleHv6(const member_type& teamMember) noexcept;
 	void oracleHv7(const member_type& teamMember) noexcept;
 
-private:
-	/**
-	 * Utility function to get work load for each team of threads
-	 * In  : thread and number of element to use for computation
-	 * Out : pair of indexes, 1st one for start of chunk, 2nd one for size of chunk
-	 */
-	const std::pair<size_t, size_t> computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept;
-	
-	// Mesh and mesh variables
-	CartesianMesh2D& mesh;
-	size_t nbNodes;
-	size_t nbCells;
-
-	// Additional modules
-	R1* r1;
-	R2* r2;
-
-	// Options and global variables
+	// Options and global variables.
+	// Module variables are public members of the class to be accessible from Python.
 	int maxIter;
 	double maxTime;
 	double deltat;
@@ -91,11 +101,6 @@ private:
 	Kokkos::View<double*> hv5;
 	Kokkos::View<double*> hv6;
 	Kokkos::View<double*> hv7;
-
-	// Timers
-	Timer globalTimer;
-	Timer cpuTimer;
-	Timer ioTimer;
 };
 
 #endif

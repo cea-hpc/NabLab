@@ -38,6 +38,7 @@ class IrModuleContentProvider
 	val JsonContentProvider jsonContentProvider
 	val JobCallerContentProvider jobCallerContentProvider
 	val MainContentProvider mainContentProvider
+	val AbstractPythonEmbeddingContentProvider pythonEmbeddingContentProvider
 
 	protected def getTypeDefs(IrModule it) ''''''
 	protected def getPrivateMethodHeaders(IrModule it) ''''''
@@ -61,6 +62,7 @@ class IrModuleContentProvider
 	«ENDIF»
 
 	«includesContentProvider.getUsings(hasLevelDB)»
+	
 	«IF main && irRoot.modules.size > 1»
 
 		«FOR m : irRoot.modules.filter[x | x !== it]»
@@ -91,6 +93,53 @@ class IrModuleContentProvider
 
 		«ENDIF»
 		«typeDefs»
+	
+	private:
+		«IF postProcessing !== null»
+		void dumpVariables(int iteration, bool useTimer=true);
+
+		«ENDIF»
+		«privateMethodHeaders»
+		// Mesh and mesh variables
+		«irRoot.mesh.className»& mesh;
+		«FOR a : neededConnectivityAttributes»
+			size_t «a.nbElemsVar»;
+		«ENDFOR»
+		«FOR a : neededGroupAttributes»
+			size_t «a.nbElemsVar»;
+		«ENDFOR»
+
+		«IF irRoot.modules.size > 1»
+			«IF main»
+				// Additional modules
+				«FOR m : irRoot.modules.filter[x | x !== it]»
+					«m.className»* «m.name»;
+				«ENDFOR»
+			«ELSE»
+				// Main module
+				«irRoot.mainModule.className»* mainModule;
+			«ENDIF»
+
+		«ENDIF»
+		«IF postProcessing !== null»
+			PvdFileWriter2D* writer;
+			std::string «IrUtils.OutputPathNameAndValue.key»;
+		«ENDIF»
+		«FOR v : externalProviders»
+			«v.className» «v.instanceName»;
+		«ENDFOR»
+		«IF main && hasLevelDB»
+			std::string «IrUtils.NonRegressionNameAndValue.key»;
+			double «IrUtils.NonRegressionToleranceNameAndValue.key»;
+		«ENDIF»
+
+		// Timers
+		Timer globalTimer;
+		Timer cpuTimer;
+		Timer ioTimer;
+		
+		«pythonEmbeddingContentProvider.getPrivateMembers(it)»
+	
 	public:
 		«className»(«irRoot.mesh.className»& aMesh);
 		~«className»();
@@ -121,45 +170,8 @@ class IrModuleContentProvider
 			void createDB(const std::string& db_name);
 		«ENDIF»
 
-	private:
-		«IF postProcessing !== null»
-		void dumpVariables(int iteration, bool useTimer=true);
-
-		«ENDIF»
-		«privateMethodHeaders»
-		// Mesh and mesh variables
-		«irRoot.mesh.className»& mesh;
-		«FOR a : neededConnectivityAttributes»
-			size_t «a.nbElemsVar»;
-		«ENDFOR»
-		«FOR a : neededGroupAttributes»
-			size_t «a.nbElemsVar»;
-		«ENDFOR»
-
-		«IF irRoot.modules.size > 1»
-			«IF main»
-				// Additional modules
-				«FOR m : irRoot.modules.filter[x | x !== it]»
-					«m.className»* «m.name»;
-				«ENDFOR»
-			«ELSE»
-				// Main module
-				«irRoot.mainModule.className»* mainModule;
-			«ENDIF»
-
-		«ENDIF»
-		// Options and global variables
-		«IF postProcessing !== null»
-			PvdFileWriter2D* writer;
-			std::string «IrUtils.OutputPathNameAndValue.key»;
-		«ENDIF»
-		«FOR v : externalProviders»
-			«v.className» «v.instanceName»;
-		«ENDFOR»
-		«IF main && hasLevelDB»
-			std::string «IrUtils.NonRegressionNameAndValue.key»;
-			double «IrUtils.NonRegressionToleranceNameAndValue.key»;
-		«ENDIF»
+		// Options and global variables.
+		// Module variables are public members of the class to be accessible from Python.
 		«FOR v : variables»
 			«IF v.constExpr»
 				static constexpr «typeContentProvider.getCppType(v.type)» «v.name» = «expressionContentProvider.getContent(v.defaultValue)»;
@@ -169,13 +181,9 @@ class IrModuleContentProvider
 				«typeContentProvider.getCppType(v.type)» «v.name»;
 			«ENDIF»
 		«ENDFOR»
-
-		// Timers
-		Timer globalTimer;
-		Timer cpuTimer;
-		Timer ioTimer;
 	};
-
+	
+	«pythonEmbeddingContentProvider.getAllScopeStructContent(it)»
 	#endif
 	'''
 
@@ -281,6 +289,7 @@ class IrModuleContentProvider
 		else
 			«nrToleranceName» = 0.0;
 		«ENDIF»
+		«pythonEmbeddingContentProvider.pythonJsonInitContent»
 		«IF main»
 
 			// Copy node coordinates
@@ -300,7 +309,7 @@ class IrModuleContentProvider
 	«ENDFOR»
 	«IF main»
 	«IF postProcessing !== null»
-
+	
 	void «className»::dumpVariables(int iteration, bool useTimer)
 	{
 		if (writer != NULL && !writer->isDisabled())
@@ -345,9 +354,11 @@ class IrModuleContentProvider
 		}
 	}
 	«ENDIF»
-
+	
+	«pythonEmbeddingContentProvider.getPythonInitializeContent(it)»
 	void «className»::simulate()
 	{
+		«pythonEmbeddingContentProvider.simulateProlog»
 		«traceContentProvider.getBeginOfSimuTrace(it)»
 
 		«jobCallerContentProvider.getCallsHeader(irRoot.main)»

@@ -23,6 +23,7 @@ using namespace nablalib::utils;
 using namespace nablalib::types;
 using namespace nablalib::utils::kokkos;
 
+
 /******************** Free functions declarations ********************/
 
 namespace glace2dfreefuncs
@@ -70,6 +71,36 @@ class Glace2d
 {
 	typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
 	
+
+private:
+	void dumpVariables(int iteration, bool useTimer=true);
+
+	/**
+	 * Utility function to get work load for each team of threads
+	 * In  : thread and number of element to use for computation
+	 * Out : pair of indexes, 1st one for start of chunk, 2nd one for size of chunk
+	 */
+	const std::pair<size_t, size_t> computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept;
+	
+	// Mesh and mesh variables
+	CartesianMesh2D& mesh;
+	size_t nbNodes;
+	size_t nbCells;
+	size_t nbTopNodes;
+	size_t nbBottomNodes;
+	size_t nbLeftNodes;
+	size_t nbRightNodes;
+	size_t nbInnerNodes;
+
+	PvdFileWriter2D* writer;
+	std::string outputPath;
+
+	// Timers
+	Timer globalTimer;
+	Timer cpuTimer;
+	Timer ioTimer;
+	
+
 public:
 	Glace2d(CartesianMesh2D& aMesh);
 	~Glace2d();
@@ -104,29 +135,8 @@ public:
 	void computeEn(const member_type& teamMember) noexcept;
 	void computeUn(const member_type& teamMember) noexcept;
 
-private:
-	void dumpVariables(int iteration, bool useTimer=true);
-
-	/**
-	 * Utility function to get work load for each team of threads
-	 * In  : thread and number of element to use for computation
-	 * Out : pair of indexes, 1st one for start of chunk, 2nd one for size of chunk
-	 */
-	const std::pair<size_t, size_t> computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept;
-	
-	// Mesh and mesh variables
-	CartesianMesh2D& mesh;
-	size_t nbNodes;
-	size_t nbCells;
-	size_t nbTopNodes;
-	size_t nbBottomNodes;
-	size_t nbLeftNodes;
-	size_t nbRightNodes;
-	size_t nbInnerNodes;
-
-	// Options and global variables
-	PvdFileWriter2D* writer;
-	std::string outputPath;
+	// Options and global variables.
+	// Module variables are public members of the class to be accessible from Python.
 	int outputPeriod;
 	int lastDump;
 	int n;
@@ -167,11 +177,6 @@ private:
 	Kokkos::View<RealArray1D<2>**> C;
 	Kokkos::View<RealArray1D<2>**> F;
 	Kokkos::View<RealArray2D<2,2>**> Ajr;
-
-	// Timers
-	Timer globalTimer;
-	Timer cpuTimer;
-	Timer ioTimer;
 };
 
 #endif

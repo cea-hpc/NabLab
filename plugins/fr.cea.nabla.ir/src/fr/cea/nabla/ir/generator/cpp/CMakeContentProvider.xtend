@@ -14,14 +14,18 @@ import fr.cea.nabla.ir.generator.CMakeUtils
 import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.IrRoot
 import java.util.LinkedHashSet
+import org.eclipse.xtend.lib.annotations.Data
 
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.getClassName
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.getExecName
 
+@Data
 class CMakeContentProvider
 {
+	protected val AbstractPythonEmbeddingContentProvider pythonEmbeddingContentProvider
+
 	protected def Iterable<String> getNeededVariables()
 	{
 		#[]
@@ -63,10 +67,13 @@ class CMakeContentProvider
 		«ENDIF»
 
 		«CMakeUtils.addSubDirectories(true, externalProviders)»
+		«pythonEmbeddingContentProvider.getCMakeEmbeddingContent»
 
 		# EXECUTABLE «execName»
 		add_executable(«execName»«FOR m : modules» «m.className + '.cc'»«ENDFOR»)
-		target_link_libraries(«execName» PUBLIC«FOR l : getRootTargetLinkLibraries(it, hasLevelDB)» «l»«ENDFOR»)
+		«val executableIncludeContent = '''«execName» PUBLIC ${CMAKE_CURRENT_BINARY_DIR}'''»
+		«val executableLinkContent = '''«execName» PUBLIC«FOR l : getRootTargetLinkLibraries(it, hasLevelDB)» «l»«ENDFOR»'''»
+		«pythonEmbeddingContentProvider.getCMakeExecutableContent(executableIncludeContent, executableLinkContent)»
 
 		«CMakeUtils.fileFooter»
 	'''
@@ -99,6 +106,7 @@ class CMakeContentProvider
 	}
 }
 
+@Data
 class StlThreadCMakeContentProvider extends CMakeContentProvider
 {
 	override Iterable<String> getCompilationOptions()
@@ -112,6 +120,7 @@ class StlThreadCMakeContentProvider extends CMakeContentProvider
 	}
 }
 
+@Data
 class KokkosCMakeContentProvider extends CMakeContentProvider
 {
 	override getNeededVariables()
@@ -139,6 +148,7 @@ class KokkosCMakeContentProvider extends CMakeContentProvider
 	}
 }
 
+@Data
 class OpenMpCMakeContentProvider extends CMakeContentProvider
 {
 	override getFindPackageContent(boolean isLinearAlgebra)

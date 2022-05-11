@@ -27,6 +27,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: fr.cea.nabla,
  fr.cea.nabla.generator,
  fr.cea.nabla.generator.ir,
+ fr.cea.nabla.generator.python,
  fr.cea.nabla.hover,
  fr.cea.nabla.nabla,
  fr.cea.nabla.nabla.impl,

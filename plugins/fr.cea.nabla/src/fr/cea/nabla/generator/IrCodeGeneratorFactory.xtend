@@ -19,6 +19,7 @@ import fr.cea.nabla.nablagen.LevelDB
 import fr.cea.nabla.nablagen.TargetType
 import fr.cea.nabla.nablagen.TargetVar
 import java.util.ArrayList
+import java.util.Optional
 
 class IrCodeGeneratorFactory
 {
@@ -33,7 +34,8 @@ class IrCodeGeneratorFactory
 	{
 		val hasLevelDB = (levelDB !== null)
 		val envVars = new ArrayList<Pair<String, String>>
-		targetVars.forEach[x | envVars += x.key -> x.value]
+		val debug = Optional.ofNullable(targetVars.findFirst[x | x.key.equals("DEBUG")]).map[x | Boolean.parseBoolean(x.value)].orElse(false)
+		targetVars.filter[x | !x.key.equals("DEBUG")].forEach[x | envVars += x.key -> x.value]
 		switch targetType
 		{
 			case JAVA: new JavaGenerator(hasLevelDB)
@@ -43,11 +45,11 @@ class IrCodeGeneratorFactory
 			case ARCANE_ACCELERATOR: new ArcaneGenerator(ArcaneGenerator.ApiType.Accelerator, wsPath, envVars)
 			default:
 			{
-				val backend = backendFactory.getCppBackend(targetType)
+				val backend = backendFactory.getCppBackend(targetType, debug)
 				backend.traceContentProvider.maxIterationsVarName = iterationMaxVarName
 				backend.traceContentProvider.stopTimeVarName = timeMaxVarName
 				if (hasLevelDB) levelDB.variables.forEach[x | envVars += x.key -> x.value]
-				new CppGenerator(backend, wsPath, hasLevelDB, envVars)
+				new CppGenerator(backend, wsPath, hasLevelDB, debug, envVars)
 			}
 		}
 	}

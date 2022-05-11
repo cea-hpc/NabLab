@@ -15,18 +15,25 @@ bool assertEquals(int expected, int actual)
 {
 	const bool ret((expected == actual));
 	if (!ret) 
+	{
 		throw std::runtime_error("** Assertion failed");
+	}
 	return ret;
 }
 
 template<size_t x>
 bool assertEquals(RealArray1D<x> expected, RealArray1D<x> actual)
 {
-	parallel_exec(x, [&](const size_t& i)
 	{
-		if (expected[i] != actual[i]) 
-			throw std::runtime_error("** Assertion failed");
-	});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& i)
+		{
+			if (expected[i] != actual[i]) 
+			{
+				throw std::runtime_error("** Assertion failed");
+			}
+		};
+		parallel_exec(x, loopLambda);
+	}
 	return true;
 }
 
@@ -34,7 +41,9 @@ bool assertEquals(double expected, double actual)
 {
 	const bool ret((expected == actual));
 	if (!ret) 
+	{
 		throw std::runtime_error("** Assertion failed");
+	}
 	return ret;
 }
 
@@ -42,10 +51,13 @@ template<size_t x0>
 RealArray1D<x0> operatorAdd(RealArray1D<x0> a, RealArray1D<x0> b)
 {
 	RealArray1D<x0> result;
-	parallel_exec(x0, [&](const size_t& ix0)
 	{
-		result[ix0] = a[ix0] + b[ix0];
-	});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& ix0)
+		{
+			result[ix0] = a[ix0] + b[ix0];
+		};
+		parallel_exec(x0, loopLambda);
+	}
 	return result;
 }
 }
@@ -114,10 +126,13 @@ Variables::jsonInit(const char* jsonContent)
 void Variables::dynamicVecInitialization() noexcept
 {
 	int cpt(0);
-	parallel_exec(optDim, [&](const size_t& i)
 	{
-		dynamicVec[i] = 3.3;
-	});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& i)
+		{
+			dynamicVec[i] = 3.3;
+		};
+		parallel_exec(optDim, loopLambda);
+	}
 	for (size_t i=0; i<optDim; i++)
 	{
 		cpt = cpt + 1;
@@ -150,10 +165,13 @@ void Variables::oracle() noexcept
 	const bool testConstexprVec(variablesfreefuncs::assertEquals({1.1, 1.1}, constexprVec));
 	const bool testVarVec(variablesfreefuncs::assertEquals({2.2, 2.2}, varVec));
 	const bool testDynamicVecLength(variablesfreefuncs::assertEquals(2, checkDynamicDim));
-	parallel_exec(optDim, [&](const size_t& i)
 	{
-		const bool testDynamicVec(variablesfreefuncs::assertEquals(3.3, dynamicVec[i]));
-	});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& i)
+		{
+			const bool testDynamicVec(variablesfreefuncs::assertEquals(3.3, dynamicVec[i]));
+		};
+		parallel_exec(optDim, loopLambda);
+	}
 }
 
 void Variables::simulate()

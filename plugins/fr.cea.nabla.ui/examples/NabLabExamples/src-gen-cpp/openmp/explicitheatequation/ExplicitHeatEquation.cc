@@ -358,9 +358,13 @@ void ExplicitHeatEquation::initU() noexcept
 	for (size_t cCells=0; cCells<nbCells; cCells++)
 	{
 		if (explicitheatequationfreefuncs::norm(explicitheatequationfreefuncs::operatorSub(Xc[cCells], vectOne)) < 0.5) 
+		{
 			u_n[cCells] = u0;
+		}
 		else
+		{
 			u_n[cCells] = 0.0;
+		}
 	}
 }
 

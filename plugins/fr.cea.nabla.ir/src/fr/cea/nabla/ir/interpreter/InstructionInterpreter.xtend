@@ -36,7 +36,6 @@ import static fr.cea.nabla.ir.interpreter.NablaValueSetter.*
 import static fr.cea.nabla.ir.interpreter.VariableValueFactory.*
 
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
-import static extension fr.cea.nabla.ir.generator.Utils.*
 
 class InstructionInterpreter
 {
@@ -112,7 +111,7 @@ class InstructionInterpreter
 			{
 				context.logFinest("We deal with loop " + b.container.uniqueName)
 				val container = context.getContainerValue(b.container)
-				if (parallelLoop)
+				if (multithreadable)
 				{
 					//NB Can't return in parallelForEach
 					IntStream.range(0, container.size).parallel().forEach([loopIteratorValue |

@@ -33,31 +33,23 @@ class IrCodeGeneratorFactory
 	def IrCodeGenerator create(String wsPath, TargetType targetType, Iterable<TargetVar> targetVars, LevelDB levelDB, String iterationMaxVarName, String timeMaxVarName)
 	{
 		val hasLevelDB = (levelDB !== null)
+		val envVars = new ArrayList<Pair<String, String>>
+		val debug = Optional.ofNullable(targetVars.findFirst[x | x.key.equals("DEBUG")]).map[x | Boolean.parseBoolean(x.value)].orElse(false)
+		targetVars.filter[x | !x.key.equals("DEBUG")].forEach[x | envVars += x.key -> x.value]
 		switch targetType
 		{
 			case JAVA: new JavaGenerator(hasLevelDB)
-			case PYTHON:
-			{
-				val envVars = new ArrayList<Pair<String, String>>
-				targetVars.forEach[x | envVars += x.key -> x.value]
-				new PythonGenerator(wsPath, hasLevelDB, envVars)
-			}
-			case ARCANE:
-			{
-				val cmakeVars = new ArrayList<Pair<String, String>>
-				targetVars.forEach[x | cmakeVars += x.key -> x.value]
-				new ArcaneGenerator(wsPath, cmakeVars)
-			}
+			case PYTHON: new PythonGenerator(wsPath, hasLevelDB, envVars)
+			case ARCANE_SEQUENTIAL: new ArcaneGenerator(ArcaneGenerator.ApiType.Sequential, wsPath, envVars)
+			case ARCANE_THREAD: new ArcaneGenerator(ArcaneGenerator.ApiType.Thread, wsPath, envVars)
+			case ARCANE_ACCELERATOR: new ArcaneGenerator(ArcaneGenerator.ApiType.Accelerator, wsPath, envVars)
 			default:
 			{
-				val debug = Optional.ofNullable(targetVars.findFirst[x | x.key.equals("DEBUG")]).map[x | Boolean.parseBoolean(x.value)].orElse(false)
 				val backend = backendFactory.getCppBackend(targetType, debug)
 				backend.traceContentProvider.maxIterationsVarName = iterationMaxVarName
 				backend.traceContentProvider.stopTimeVarName = timeMaxVarName
-				val cmakeVars = new ArrayList<Pair<String, String>>
-				targetVars.filter[x | !x.key.equals("DEBUG")].forEach[x | cmakeVars += x.key -> x.value]
-				if (hasLevelDB) levelDB.variables.forEach[x | cmakeVars += x.key -> x.value]
-				new CppGenerator(backend, wsPath, hasLevelDB, debug, cmakeVars)
+				if (hasLevelDB) levelDB.variables.forEach[x | envVars += x.key -> x.value]
+				new CppGenerator(backend, wsPath, hasLevelDB, debug, envVars)
 			}
 		}
 	}

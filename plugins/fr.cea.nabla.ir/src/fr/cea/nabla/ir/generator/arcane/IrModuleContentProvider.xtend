@@ -10,6 +10,7 @@
 package fr.cea.nabla.ir.generator.arcane
 
 import fr.cea.nabla.ir.JobCallerExtensions
+import fr.cea.nabla.ir.annotations.AcceleratorAnnotation
 import fr.cea.nabla.ir.generator.CppGeneratorUtils
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.ConnectivityType
@@ -21,7 +22,7 @@ import fr.cea.nabla.ir.ir.LinearAlgebraType
 import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.*
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
-import static extension fr.cea.nabla.ir.generator.arcane.VariableExtensions.*
+import static extension fr.cea.nabla.ir.generator.arcane.ArcaneUtils.getCodeName
 
 class IrModuleContentProvider
 {
@@ -58,9 +59,15 @@ class IrModuleContentProvider
 	#ifndef «CppGeneratorUtils.getHDefineName(className)»
 	#define «CppGeneratorUtils.getHDefineName(className)»
 
-	#include <arcane/utils/Array.h>
+	#include <arcane/utils/NumArray.h>
 	#include <arcane/datatype/RealArrayVariant.h>
 	#include <arcane/datatype/RealArray2Variant.h>
+	«IF AcceleratorAnnotation.tryToGet(it) !== null»
+		#include <arcane/accelerator/core/IAcceleratorMng.h>
+		#include <arcane/accelerator/Reduce.h>
+		#include <arcane/accelerator/Accelerator.h>
+		#include <arcane/accelerator/RunCommandEnumerate.h>
+	«ENDIF»
 	«FOR s : ArcaneUtils.getServices(it)»
 	#include "«ArcaneUtils.getInterfaceName(s)».h"
 	«ENDFOR»
@@ -76,6 +83,7 @@ class IrModuleContentProvider
 	#include "Arcane2StlVector.h"
 	«ENDIF»
 
+	«IF AcceleratorAnnotation.tryToGet(it) !== null»namespace ax = Arcane::Accelerator;«ENDIF»
 	using namespace Arcane;
 
 	«IF !functions.empty»
@@ -131,6 +139,11 @@ class IrModuleContentProvider
 				«TypeContentProvider.getTypeName(v.type)» «v.codeName»;
 			«ENDIF»
 		«ENDFOR»
+		«IF AcceleratorAnnotation.tryToGet(it) !== null»
+
+			// accelerator queue
+			ax::RunQueue* m_default_queue = nullptr;
+		«ENDIF»
 	};
 
 	#endif
@@ -165,6 +178,9 @@ class IrModuleContentProvider
 	«FOR v : variables.filter[x | (x.type instanceof LinearAlgebraType)]»
 		, «v.codeName»(«IF TypeContentProvider.isArcaneStlVector(v.type)»this, «ENDIF»"«v.name»")
 	«ENDFOR»
+	«IF AcceleratorAnnotation.tryToGet(it) !== null»
+		, m_default_queue(subDomain()->acceleratorMng()->defaultQueue())
+	«ENDIF»
 	{}
 	«IF ArcaneUtils.isArcaneModule(it)»
 

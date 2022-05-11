@@ -68,9 +68,25 @@ StlThread
 	CMAKE_CXX_COMPILER = "/usr/bin/g++";
 }
 
-Arcane
+ArcaneSequential
 {
-	outputPath = "/NabLabExamples/src-gen-arcane";
+	outputPath = "/NabLabExamples/src-gen-arcane/sequential";
+	extension LinearAlgebra providedBy LinearAlgebraStl;
+	CMAKE_CXX_COMPILER = "/usr/bin/g++";
+	Arcane_ROOT = "$ENV{HOME}/arcane/install";
+}
+
+ArcaneThread
+{
+	outputPath = "/NabLabExamples/src-gen-arcane/thread";
+	extension LinearAlgebra providedBy LinearAlgebraStl;
+	CMAKE_CXX_COMPILER = "/usr/bin/g++";
+	Arcane_ROOT = "$ENV{HOME}/arcane/install";
+}
+
+ArcaneAccelerator
+{
+	outputPath = "/NabLabExamples/src-gen-arcane/accelerator";
 	extension LinearAlgebra providedBy LinearAlgebraStl;
 	CMAKE_CXX_COMPILER = "/usr/bin/g++";
 	Arcane_ROOT = "$ENV{HOME}/arcane/install";

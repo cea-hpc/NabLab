@@ -2016,22 +2016,13 @@ public interface IrPackage extends EPackage {
 	int INSTRUCTION_BLOCK__ANNOTATIONS = INSTRUCTION__ANNOTATIONS;
 
 	/**
-	 * The feature id for the '<em><b>Variables</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INSTRUCTION_BLOCK__VARIABLES = INSTRUCTION_FEATURE_COUNT + 0;
-
-	/**
 	 * The feature id for the '<em><b>Instructions</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int INSTRUCTION_BLOCK__INSTRUCTIONS = INSTRUCTION_FEATURE_COUNT + 1;
+	int INSTRUCTION_BLOCK__INSTRUCTIONS = INSTRUCTION_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of structural features of the '<em>Instruction Block</em>' class.
@@ -2040,7 +2031,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int INSTRUCTION_BLOCK_FEATURE_COUNT = INSTRUCTION_FEATURE_COUNT + 2;
+	int INSTRUCTION_BLOCK_FEATURE_COUNT = INSTRUCTION_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of operations of the '<em>Instruction Block</em>' class.
@@ -5810,17 +5801,6 @@ public interface IrPackage extends EPackage {
 	EClass getInstructionBlock();
 
 	/**
-	 * Returns the meta object for the containment reference list '{@link fr.cea.nabla.ir.ir.InstructionBlock#getVariables <em>Variables</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Variables</em>'.
-	 * @see fr.cea.nabla.ir.ir.InstructionBlock#getVariables()
-	 * @see #getInstructionBlock()
-	 * @generated
-	 */
-	EReference getInstructionBlock_Variables();
-
-	/**
 	 * Returns the meta object for the containment reference list '{@link fr.cea.nabla.ir.ir.InstructionBlock#getInstructions <em>Instructions</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -8049,14 +8029,6 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EClass INSTRUCTION_BLOCK = eINSTANCE.getInstructionBlock();
-
-		/**
-		 * The meta object literal for the '<em><b>Variables</b></em>' containment reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference INSTRUCTION_BLOCK__VARIABLES = eINSTANCE.getInstructionBlock_Variables();
 
 		/**
 		 * The meta object literal for the '<em><b>Instructions</b></em>' containment reference list feature.

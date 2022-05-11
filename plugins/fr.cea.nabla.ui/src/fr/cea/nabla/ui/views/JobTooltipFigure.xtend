@@ -9,7 +9,7 @@
  *******************************************************************************/
 package fr.cea.nabla.ui.views
 
-import fr.cea.nabla.ir.IrUtils
+import fr.cea.nabla.ir.JobExtensions
 import fr.cea.nabla.ir.ir.Job
 import org.eclipse.draw2d.ColorConstants
 import org.eclipse.draw2d.Figure
@@ -37,7 +37,7 @@ class JobTooltipFigure extends Figure
 		opaque = true
 
 		// label avec nom et icone
-		val label = new Label(IrUtils.getTooltip(job) ?: '')
+		val label = new Label(JobExtensions.getTooltip(job) ?: '')
 		label.font = new Font(null, "Arial", 8, SWT::NORMAL)
 		label.border = new MarginBorder(1)
 		add(label)

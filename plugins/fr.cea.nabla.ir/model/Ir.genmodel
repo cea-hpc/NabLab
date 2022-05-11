@@ -157,7 +157,6 @@
     </genClasses>
     <genClasses image="false" ecoreClass="Ir.ecore#//Instruction"/>
     <genClasses ecoreClass="Ir.ecore#//InstructionBlock">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//InstructionBlock/variables"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//InstructionBlock/instructions"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//VariableDeclaration">

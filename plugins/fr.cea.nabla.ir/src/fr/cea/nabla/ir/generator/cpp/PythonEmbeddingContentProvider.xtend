@@ -45,46 +45,46 @@ abstract class AbstractPythonEmbeddingContentProvider
 {
 	protected val extension TypeContentProvider
 	protected val extension ExpressionContentProvider
-	
+
 	val Map<String, Integer> executionEvents = newHashMap
 	val Map<String, List<String>> globalVariableWriteEvents = newHashMap
 	val Set<String> callExecutionEvents = newHashSet
-	
+
 	abstract def String getIncludeContent()
-	
+
 	abstract def String getPrivateMembers(IrModule it)
-	
+
 	abstract def String getPythonJsonInitContent()
-	
+
 	abstract def String getAllScopeStructContent(IrModule it)
-	
+
 	abstract def String getSimulateProlog()
-	
+
 	abstract def String getPythonInitializeContent(IrModule it)
-	
+
 	abstract def String getBeforeWriteContent(Instruction it)
-	
+
 	abstract def String getAfterWriteContent(Instruction it)
-	
+
 	abstract def String getBeforeCallContent(Job it)
-	
+
 	abstract def String getAfterCallContent(Job it)
-	
+
 	abstract def String getCMakeEmbeddingContent()
-	
+
 	abstract def String getCMakeExecutableContent(String includeContent, String linkContent)
-	
+
 	abstract def String wrapLambdaWithGILGuard(Loop it, String lambdaName, String lambdaType, String lambdaParameters, String lambdaBody)
-	
+
 	abstract def String wrapLambdaCallWithGILGuard(String call)
-	
+
 	abstract def String wrapLoopWithGILGuard(Loop it, String loopHeader, String loopBody)
-	
+
 	def isUserDefined(IrAnnotable it)
 	{
-		NabLabFileAnnotation.get(it) !== null
+		NabLabFileAnnotation.tryToGet(it) !== null
 	}
-	
+
 	def getWriteEvents(EObject it, boolean before)
 	{
 		eAllContents.filter[o|
@@ -102,7 +102,7 @@ abstract class AbstractPythonEmbeddingContentProvider
 			]
 			.toSet
 	}
-	
+
 	def getBaseExecutionEvents(IrModule it)
 	'''
 		{
@@ -118,8 +118,9 @@ abstract class AbstractPythonEmbeddingContentProvider
 			{"«e»", {«globalVariableWriteEvents.get(e).map[s|'''"«s»"'''].join(',')»}}
 			«ENDFOR»
 		}'''
-	
-	def computeExecutionEvents(IrModule it) {
+
+	def computeExecutionEvents(IrModule it)
+	{
 		jobs.forEach[j|
 			val jobEventName = j.name.toFirstUpper
 			executionEvents.computeIfAbsent(jobEventName + '.Before', [executionEvents.size])
@@ -171,28 +172,28 @@ abstract class AbstractPythonEmbeddingContentProvider
 //		]
 		
 	}
-	
+
 	def getExecutionEvents()
 	{
 		return executionEvents
 	}
-	
+
 	def getCallExecutionEvents()
 	{
 		return callExecutionEvents
 	}
-	
+
 	def getAllExecutionEvents(IrAnnotable it)
 	{
 		return #[getExecutionEvent(true), getExecutionEvent(false)]
 	}
-	
+
 	def dispatch int getExecutionEvent(Job it, boolean before)
 	{
 		val eventName = '''«name.toFirstUpper»«IF before».Before«ELSE».After«ENDIF»'''
 		return executionEvents.get(eventName)
 	}
-	
+
 	def getContainerName(Instruction it)
 	{
 		val job = getContainerOfType(it, Job)
@@ -210,41 +211,41 @@ abstract class AbstractPythonEmbeddingContentProvider
 			return job.name
 		}
 	}
-	
+
 	def dispatch int getExecutionEvent(VariableDeclaration it, boolean before)
 	{
 		val container = getContainerName(it).toFirstUpper
 		val eventName = '''«container».«variable.name.toFirstUpper»«IF before».Before«ELSE».After«ENDIF»'''
 		return executionEvents.get(eventName)
 	}
-	
+
 	def dispatch int getExecutionEvent(Affectation it, boolean before)
 	{
 		val container = getContainerName(it).toFirstUpper
 		val eventName = '''«container».«left.target.name.toFirstUpper»«IF before».Before«ELSE».After«ENDIF»'''
 		return executionEvents.get(eventName)
 	}
-	
+
 	def getLocals(EObject it)
 	{
 		return eAllContents.filter(VariableDeclaration).filter[v|v.variable.isUserDefined].toMap[d|d.variable.name].values
 	}
-	
+
 	def hasLocals(EObject it)
 	{
 		return !eAllContents.filter(VariableDeclaration).filter[v|v.variable.isUserDefined].empty
 	}
-	
+
 	def getLocalScopeStructContent(Job it)
 	{
 		return getLocalScopeStructContent(it, name.toFirstUpper)
 	}
-	
+
 	def getLocalScopeStructContent(InternFunction it)
 	{
 		return getLocalScopeStructContent(it, name.toFirstUpper)
 	}
-	
+
 	def getLocalScopeStructContent(EObject it, String name)
 	{
 		if (hasLocals)
@@ -255,7 +256,7 @@ abstract class AbstractPythonEmbeddingContentProvider
 			return ""
 		}
 	}
-	
+
 	def getLocalScopeStructContent(String name, String moduleName, Collection<VariableDeclaration> locals)
 	'''
 		struct «name» : «moduleName»Context
@@ -272,31 +273,31 @@ abstract class AbstractPythonEmbeddingContentProvider
 		};
 		
 	'''
-	
+
 	def getGlobalScopeDefinition(Job it)
 	'''
 		«val contextName = getContainerOfType(it, IrModule).name.toFirstUpper + "Context"»
 		std::shared_ptr<«contextName»> scope(new «contextName»(this, "«it.name»"));
 	'''
-	
+
 	def getGlobalScopeDefinition(InternFunction it)
 	'''
 		«val contextName = getContainerOfType(it, IrModule).name.toFirstUpper + "Context"»
 		std::shared_ptr<«contextName»> scope(new «contextName»(this, "«it.name»"));
 	'''
-	
+
 	def getLocalScopeDefinition(Job it)
 	'''
 		«val contextName = name.toFirstUpper + "Context"»
 		std::shared_ptr<«contextName»> scope(new «contextName»(this, "«it.name»"));
 	'''
-	
+
 	def getLocalScopeDefinition(InternFunction it)
 	'''
 		«val contextName = name.toFirstUpper + "Context"»
 		std::shared_ptr<«contextName»> scope(new «contextName»(this, "«it.name»"));
 	'''
-	
+
 	def getGlobalScopeStructContent(IrModule it)
 	'''
 		struct «name.toFirstUpper»Context : MoniLogger::MoniLoggerExecutionContext
@@ -314,7 +315,7 @@ abstract class AbstractPythonEmbeddingContentProvider
 			virtual ~«name.toFirstUpper»Context() = default;
 		};
 	'''
-	
+
 	def getAllArrayShapes(BaseType it)
 	{
 		val context = new Context(Logger.getLogger(""), null, null)
@@ -328,94 +329,103 @@ abstract class AbstractPythonEmbeddingContentProvider
 		}
 		return result
 	}
-	
+
 	def getCppTypeForShape(PrimitiveType t, List<NablaValue> sizes)
 	'''«t.getName()»Array«sizes.size»D<«sizes.join(',')»>'''
-	
+
 	def getPythonTypeForShape(PrimitiveType t, List<NablaValue> sizes)
 	'''«t.getName()»Array«FOR size : sizes SEPARATOR 'x'»«size»«ENDFOR»'''
-	
+
 	def getInstrumentation(int event)
 	'''
 		MoniLogger::trigger(«event», scope);
 	'''
-	
+
 	protected def getScopeParameter()
 	'''
 		pybind11::cast(scope)'''
-	
+
 	protected def getScopeUpdateContent(String variableName)
 	'''
 		scope->«variableName» = &«variableName»;'''
-	
 }
 
 @Data
 class EmptyPythonEmbeddingContentProvider extends AbstractPythonEmbeddingContentProvider
 {
-	
-	override getIncludeContent() {
+	override getIncludeContent()
+	{
 		""
 	}
-	
-	override getPrivateMembers(IrModule it) {
+
+	override getPrivateMembers(IrModule it)
+	{
 		""
 	}
-	
-	override getPythonJsonInitContent() {
+
+	override getPythonJsonInitContent()
+	{
 		""
 	}
-	
-	override getAllScopeStructContent(IrModule it) {
+
+	override getAllScopeStructContent(IrModule it)
+	{
 		""
 	}
-	
-	override getSimulateProlog() {
+
+	override getSimulateProlog()
+	{
 		""
 	}
-	
-	override getPythonInitializeContent(IrModule it) {
+
+	override getPythonInitializeContent(IrModule it)
+	{
 		""
 	}
-	
-	override getBeforeWriteContent(Instruction it) {
+
+	override getBeforeWriteContent(Instruction it)
+	{
 		""
 	}
-	
-	override getAfterWriteContent(Instruction it) {
+
+	override getAfterWriteContent(Instruction it)
+	{
 		""
 	}
-	
-	override getBeforeCallContent(Job it) {
+
+	override getBeforeCallContent(Job it)
+	{
 		""
 	}
-	
-	override getAfterCallContent(Job it) {
+
+	override getAfterCallContent(Job it)
+	{
 		""
 	}
-	
-	override getCMakeEmbeddingContent() {
+
+	override getCMakeEmbeddingContent()
+	{
 		""
 	}
-	
+
 	override getCMakeExecutableContent(String includeContent, String linkContent)
-		'''
-			target_link_libraries(«linkContent»)
-		'''
-	
+	'''
+		target_link_libraries(«linkContent»)
+	'''
+
 	override wrapLambdaWithGILGuard(Loop it, String lambdaType, String lambdaName, String lambdaParameters, String lambdaBody)
-		'''
-			const std::function<«lambdaType»> «lambdaName» = [&] («lambdaParameters»)
-			{
-				«lambdaBody»
-			};
-		'''
-	
+	'''
+		const std::function<«lambdaType»> «lambdaName» = [&] («lambdaParameters»)
+		{
+			«lambdaBody»
+		};
+	'''
+
 	override wrapLambdaCallWithGILGuard(String call)
 	'''
 		«call»
 	'''
-	
+
 	override wrapLoopWithGILGuard(Loop it, String loopHeader, String loopBody)
 	'''
 		«loopHeader»
@@ -427,7 +437,6 @@ class EmptyPythonEmbeddingContentProvider extends AbstractPythonEmbeddingContent
 @Data
 class PythonEmbeddingContentProvider extends AbstractPythonEmbeddingContentProvider
 {
-	
 	override getIncludeContent()
 	'''
 		#include <nablabdefs.h>
@@ -438,7 +447,7 @@ class PythonEmbeddingContentProvider extends AbstractPythonEmbeddingContentProvi
 		#include <MoniLogger.h>
 		#endif
 	'''
-	
+
 	override getPrivateMembers(IrModule it)
 	'''
 		#ifdef NABLAB_DEBUG
@@ -450,7 +459,7 @@ class PythonEmbeddingContentProvider extends AbstractPythonEmbeddingContentProvi
 		std::string python_script;
 		#endif
 	'''
-	
+
 	override getAllScopeStructContent(IrModule it)
 	'''
 		#ifdef NABLAB_DEBUG
@@ -461,13 +470,12 @@ class PythonEmbeddingContentProvider extends AbstractPythonEmbeddingContentProvi
 		«ENDFOR»
 		#endif
 	'''
-	
+
 	override getBeforeWriteContent(Instruction it)
 	{
 		return beforeWriteContentDispatch
 	}
-	
-	
+
 	dispatch def String getBeforeWriteContentDispatch(VariableDeclaration it)
 	'''
 «««FIXME add support for internal functions
@@ -477,7 +485,7 @@ class PythonEmbeddingContentProvider extends AbstractPythonEmbeddingContentProvi
 		#endif
 		«ENDIF»
 	'''
-	
+
 	dispatch def String getBeforeWriteContentDispatch(Affectation it)
 	'''
 «««FIXME add support for internal functions
@@ -487,13 +495,12 @@ class PythonEmbeddingContentProvider extends AbstractPythonEmbeddingContentProvi
 		#endif
 		«ENDIF»
 	'''
-	
+
 	override getAfterWriteContent(Instruction it)
 	{
 		return afterWriteContentDispatch
 	}
-	
-	
+
 	dispatch def String getAfterWriteContentDispatch(VariableDeclaration it)
 	'''
 «««FIXME add support for internal functions
@@ -504,7 +511,7 @@ class PythonEmbeddingContentProvider extends AbstractPythonEmbeddingContentProvi
 		#endif
 		«ENDIF»
 	'''
-	
+
 	dispatch def String getAfterWriteContentDispatch(Affectation it)
 	'''
 «««FIXME add support for internal functions
@@ -517,7 +524,7 @@ class PythonEmbeddingContentProvider extends AbstractPythonEmbeddingContentProvi
 		#endif
 		«ENDIF»
 	'''
-	
+
 	override getBeforeCallContent(Job it)
 	'''
 		#ifdef NABLAB_DEBUG
@@ -529,14 +536,14 @@ class PythonEmbeddingContentProvider extends AbstractPythonEmbeddingContentProvi
 		«getInstrumentation(getExecutionEvent(true))»
 		#endif
 	'''
-	
+
 	override getAfterCallContent(Job it)
 	'''
 		#ifdef NABLAB_DEBUG
 		«getInstrumentation(getExecutionEvent(false))»
 		#endif
 	'''
-	
+
 	override getPythonJsonInitContent()
 	'''
 		#ifdef NABLAB_DEBUG
@@ -554,14 +561,14 @@ class PythonEmbeddingContentProvider extends AbstractPythonEmbeddingContentProvi
 		}
 		#endif
 	'''
-	
+
 	override getSimulateProlog()
 	'''
 		#ifdef NABLAB_DEBUG
 		pythonInitialize();
 		#endif
 	'''
-	
+
 	override getPythonInitializeContent(IrModule it)
 	{
 		val allBaseTypes = eAllContents.filter(BaseType)
@@ -662,36 +669,36 @@ class PythonEmbeddingContentProvider extends AbstractPythonEmbeddingContentProvi
 			
 		'''
 	}
-	
-	override getCMakeEmbeddingContent()
-		'''
-			
-			if (CMAKE_BUILD_TYPE STREQUAL Debug)
-				set(NABLAB_DEBUG TRUE)
-			endif()
-			configure_file(nablabdefs.h.in ${CMAKE_BINARY_DIR}/nablabdefs.h)
 
-			# Python embedding
-			if (NABLAB_DEBUG)
-				find_package(Python COMPONENTS Interpreter Development REQUIRED)
-				set(pybind11_DIR "${Python_SITELIB}/pybind11/share/cmake/pybind11")
-				find_package(pybind11 REQUIRED)
-			endif()
-		'''
-	
+	override getCMakeEmbeddingContent()
+	'''
+		
+		if (CMAKE_BUILD_TYPE STREQUAL Debug)
+			set(NABLAB_DEBUG TRUE)
+		endif()
+		configure_file(nablabdefs.h.in ${CMAKE_BINARY_DIR}/nablabdefs.h)
+
+		# Python embedding
+		if (NABLAB_DEBUG)
+			find_package(Python COMPONENTS Interpreter Development REQUIRED)
+			set(pybind11_DIR "${Python_SITELIB}/pybind11/share/cmake/pybind11")
+			find_package(pybind11 REQUIRED)
+		endif()
+	'''
+
 	override getCMakeExecutableContent(String includeContent, String linkContent)
-		'''
-			if (NABLAB_DEBUG)
-				target_include_directories(«includeContent» ${Python_SITELIB}/monilogger/include)
-				add_library(moniloggerlib SHARED IMPORTED)
-				set_property(TARGET moniloggerlib PROPERTY IMPORTED_LOCATION ${Python_SITELIB}/monilogger/libmonilogger.so)
-				target_link_libraries(«linkContent» moniloggerlib pybind11::embed)
-			else()
-				target_include_directories(«includeContent»)
-				target_link_libraries(«linkContent»)
-			endif()
-		'''
-	
+	'''
+		if (NABLAB_DEBUG)
+			target_include_directories(«includeContent» ${Python_SITELIB}/monilogger/include)
+			add_library(moniloggerlib SHARED IMPORTED)
+			set_property(TARGET moniloggerlib PROPERTY IMPORTED_LOCATION ${Python_SITELIB}/monilogger/libmonilogger.so)
+			target_link_libraries(«linkContent» moniloggerlib pybind11::embed)
+		else()
+			target_include_directories(«includeContent»)
+			target_link_libraries(«linkContent»)
+		endif()
+	'''
+
 	override wrapLambdaWithGILGuard(Loop it, String lambdaType, String lambdaName, String lambdaParameters, String lambdaBody)
 	'''
 		#ifdef NABLAB_DEBUG
@@ -716,7 +723,7 @@ class PythonEmbeddingContentProvider extends AbstractPythonEmbeddingContentProvi
 		};
 		#endif
 	'''
-	
+
 	override wrapLambdaCallWithGILGuard(String call)
 	'''
 		#ifdef NABLAB_DEBUG
@@ -734,7 +741,7 @@ class PythonEmbeddingContentProvider extends AbstractPythonEmbeddingContentProvi
 		«call»
 		#endif
 	'''
-	
+
 	override wrapLoopWithGILGuard(Loop it, String loopHeader, String loopBody)
 	'''
 		#ifdef NABLAB_DEBUG

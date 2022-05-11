@@ -68,9 +68,23 @@ StlThread
 	CMAKE_CXX_COMPILER = "/usr/bin/g++";
 }
 
-Arcane
+ArcaneSequential
 {
-	outputPath = "/NabLabTests/src-gen-arcane";
+	outputPath = "/NabLabTests/src-gen-arcane/sequential";
+	CMAKE_CXX_COMPILER = "/usr/bin/g++";
+	Arcane_ROOT = "$ENV{HOME}/arcane/install";
+}
+
+ArcaneThread
+{
+	outputPath = "/NabLabTests/src-gen-arcane/thread";
+	CMAKE_CXX_COMPILER = "/usr/bin/g++";
+	Arcane_ROOT = "$ENV{HOME}/arcane/install";
+}
+
+ArcaneAccelerator
+{
+	outputPath = "/NabLabTests/src-gen-arcane/accelerator";
 	CMAKE_CXX_COMPILER = "/usr/bin/g++";
 	Arcane_ROOT = "$ENV{HOME}/arcane/install";
 }

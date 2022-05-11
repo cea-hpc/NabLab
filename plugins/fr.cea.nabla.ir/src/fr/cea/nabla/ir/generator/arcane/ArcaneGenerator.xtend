@@ -15,25 +15,35 @@ import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.generator.IrCodeGenerator
 import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.IrRoot
+import fr.cea.nabla.ir.transformers.IrTransformationStep
+import fr.cea.nabla.ir.transformers.PrepareLoopsForAccelerators
 import fr.cea.nabla.ir.transformers.ReplaceOptionsByLocalVariables
 import fr.cea.nabla.ir.transformers.ReplaceReductions
+import fr.cea.nabla.ir.transformers.SetMultithreadableLoops
 import java.util.ArrayList
 import java.util.LinkedHashSet
 
 class ArcaneGenerator implements IrCodeGenerator
 {
+	enum ApiType { Sequential, Thread, Accelerator }
+
 	val cMakeVars = new LinkedHashSet<Pair<String, String>>
+	val IrTransformationStep[] irTransformationSteps
 
 	override getName() { "Arcane" }
 
-	override getIrTransformationSteps()
-	{
-		#[new ReplaceReductions(true), new ReplaceOptionsByLocalVariables]
-		/*, new AddOperatorsForArcaneRealNTypes */
-	}
+	override getIrTransformationSteps() { irTransformationSteps }
 
-	new(String wsPath, Iterable<Pair<String, String>> cmakeVars)
+	new(ApiType apiType, String wsPath, Iterable<Pair<String, String>> cmakeVars)
 	{
+		// IR transformation steps depend on API type
+		irTransformationSteps = switch apiType
+		{
+			case ApiType.Sequential: #[new ReplaceReductions(true), new ReplaceOptionsByLocalVariables]
+			case ApiType.Thread: #[new ReplaceReductions(true), new ReplaceOptionsByLocalVariables, new SetMultithreadableLoops]
+			case ApiType.Accelerator: #[new ReplaceReductions(false), new ReplaceOptionsByLocalVariables, new SetMultithreadableLoops, new PrepareLoopsForAccelerators]
+		}
+
 		cmakeVars.forEach[x | this.cMakeVars += x]
 		// Set WS_PATH variables in CMake and unzip NRepository if necessary
 		this.cMakeVars += new Pair(CMakeUtils.WS_PATH, wsPath)

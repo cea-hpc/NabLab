@@ -10,12 +10,12 @@
 package fr.cea.nabla.ir
 
 import fr.cea.nabla.ir.ir.IrModule
+import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.IterableInstruction
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.Variable
-import fr.cea.nabla.ir.ir.IrRoot
 
 class JobExtensions
 {
@@ -53,5 +53,22 @@ class JobExtensions
 			module.name + "::" + name
 		else
 			name
+	}
+
+	static def String getDisplayName(Variable v)
+	{
+		val module = IrUtils.getContainerOfType(v, IrModule)
+		val root = module.eContainer as IrRoot
+		if (root.modules.size > 1)
+			module.name + "::" + v.name
+		else
+			v.name
+	}
+
+	static def String getTooltip(Job it)
+	{
+		val inVarNames = "[" + inVars.map[displayName].join(', ') + "]"
+		val outVarNames = "[" + outVars.map[displayName].join(', ') + "]"
+		inVarNames + "  \u21E8  " + displayName + "  \u21E8  " + outVarNames
 	}
 }

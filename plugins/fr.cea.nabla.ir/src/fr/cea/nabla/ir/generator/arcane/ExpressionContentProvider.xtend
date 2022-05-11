@@ -36,7 +36,6 @@ import static fr.cea.nabla.ir.generator.arcane.TypeContentProvider.*
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
-import static extension fr.cea.nabla.ir.generator.arcane.VariableExtensions.*
 
 class ExpressionContentProvider
 {
@@ -161,9 +160,9 @@ class ExpressionContentProvider
 			if (ArcaneUtils.isArcaneManaged(target) && indices.empty && iterators.empty && eContainingFeature !== IrPackage.Literals.AFFECTATION__LEFT)
 				'''«codeName»()''' // get the value of a VariableScalar...
 			else if (target.linearAlgebra && !(iterators.empty && indices.empty))
-				'''«codeName».getValue(«formatIteratorsAndIndices(target.type, iterators, indices)»)'''
+				'''«codeName».getValue(«formatIteratorsAndIndices(target, iterators, indices)»)'''
 			else
-				'''«codeName»«formatIteratorsAndIndices(target.type, iterators, indices)»'''
+				'''«codeName»«formatIteratorsAndIndices(target, iterators, indices)»'''
 		}
 	}
 
@@ -173,7 +172,7 @@ class ExpressionContentProvider
 		switch t
 		{
 			case t.iteratorCounter: (t.eContainer as Iterator).index.name
-			Variable: t.codeName
+			Variable: ArcaneUtils.getCodeName(t)
 			default: t.name
 		}
 	}

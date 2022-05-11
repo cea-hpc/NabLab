@@ -1710,18 +1710,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getInstructionBlock_Variables() {
-		return (EReference)instructionBlockEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
 	public EReference getInstructionBlock_Instructions() {
-		return (EReference)instructionBlockEClass.getEStructuralFeatures().get(1);
+		return (EReference)instructionBlockEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -3093,7 +3083,6 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		instructionEClass = createEClass(INSTRUCTION);
 
 		instructionBlockEClass = createEClass(INSTRUCTION_BLOCK);
-		createEReference(instructionBlockEClass, INSTRUCTION_BLOCK__VARIABLES);
 		createEReference(instructionBlockEClass, INSTRUCTION_BLOCK__INSTRUCTIONS);
 
 		variableDeclarationEClass = createEClass(VARIABLE_DECLARATION);
@@ -3489,7 +3478,6 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEClass(instructionEClass, Instruction.class, "Instruction", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(instructionBlockEClass, InstructionBlock.class, "InstructionBlock", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getInstructionBlock_Variables(), this.getVariable(), null, "variables", null, 0, -1, InstructionBlock.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getInstructionBlock_Instructions(), this.getInstruction(), null, "instructions", null, 1, -1, InstructionBlock.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(variableDeclarationEClass, VariableDeclaration.class, "VariableDeclaration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -3510,7 +3498,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 
 		initEClass(loopEClass, Loop.class, "Loop", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getLoop_Body(), this.getInstruction(), null, "body", null, 1, 1, Loop.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getLoop_Multithreadable(), ecorePackage.getEBoolean(), "multithreadable", "true", 0, 1, Loop.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getLoop_Multithreadable(), ecorePackage.getEBoolean(), "multithreadable", "false", 0, 1, Loop.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(itemIndexDefinitionEClass, ItemIndexDefinition.class, "ItemIndexDefinition", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getItemIndexDefinition_Index(), this.getItemIndex(), null, "index", null, 1, 1, ItemIndexDefinition.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

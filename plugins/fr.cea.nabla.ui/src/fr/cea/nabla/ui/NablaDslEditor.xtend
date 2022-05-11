@@ -71,7 +71,7 @@ extends XtextEditor
 	def void selectIfDisplayed(IrAnnotable it)
 	{
 		val editorResourceUri = resource.fullPath.toString
-		val annotation = NabLabFileAnnotation.get(it)
+		val annotation = NabLabFileAnnotation.tryToGet(it)
 		if (annotation !== null && annotation.uri !== null && annotation.uri.endsWith(editorResourceUri))
 			selectAndReveal(annotation.offset, annotation.length)
 	}

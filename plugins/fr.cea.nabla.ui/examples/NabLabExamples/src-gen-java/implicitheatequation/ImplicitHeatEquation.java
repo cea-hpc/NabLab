@@ -106,7 +106,7 @@ public final class ImplicitHeatEquation
 	 */
 	protected void computeFaceLength()
 	{
-		IntStream.range(0, nbFaces).parallel().forEach(fFaces -> 
+		IntStream.range(0, nbFaces).parallel().forEach(fFaces ->
 		{
 			final int fId = fFaces;
 			double reduction0 = 0.0;
@@ -143,7 +143,7 @@ public final class ImplicitHeatEquation
 	 */
 	protected void computeV()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(jCells ->
 		{
 			final int jId = jCells;
 			double reduction0 = 0.0;
@@ -170,7 +170,7 @@ public final class ImplicitHeatEquation
 	 */
 	protected void initD()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(cCells ->
 		{
 			D[cCells] = 1.0;
 		});
@@ -193,7 +193,7 @@ public final class ImplicitHeatEquation
 	 */
 	protected void initXc()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(cCells ->
 		{
 			final int cId = cCells;
 			double[] reduction0 = new double[] {0.0, 0.0};
@@ -248,7 +248,7 @@ public final class ImplicitHeatEquation
 	 */
 	protected void computeFaceConductivity()
 	{
-		IntStream.range(0, nbFaces).parallel().forEach(fFaces -> 
+		IntStream.range(0, nbFaces).parallel().forEach(fFaces ->
 		{
 			final int fId = fFaces;
 			double reduction0 = 1.0;
@@ -284,7 +284,7 @@ public final class ImplicitHeatEquation
 	 */
 	protected void initU()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(cCells ->
 		{
 			if (norm(operatorSub(Xc[cCells], vectOne)) < 0.5)
 				u_n.setValue(cCells, u0);
@@ -310,7 +310,7 @@ public final class ImplicitHeatEquation
 	 */
 	protected void computeAlphaCoeff()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(cCells ->
 		{
 			final int cId = cCells;
 			double alphaDiag = 0.0;
@@ -405,30 +405,30 @@ public final class ImplicitHeatEquation
 	private static double[] operatorAdd(double[] a, double[] b)
 	{
 		double[] result = new double[a.length];
-		for (int ix0=0; ix0<a.length; ix0++)
+		IntStream.range(0, a.length).parallel().forEach(ix0 ->
 		{
 			result[ix0] = a[ix0] + b[ix0];
-		}
+		});
 		return result;
 	}
 
 	private static double[] operatorMult(double a, double[] b)
 	{
 		double[] result = new double[b.length];
-		for (int ix0=0; ix0<b.length; ix0++)
+		IntStream.range(0, b.length).parallel().forEach(ix0 ->
 		{
 			result[ix0] = a * b[ix0];
-		}
+		});
 		return result;
 	}
 
 	private static double[] operatorSub(double[] a, double[] b)
 	{
 		double[] result = new double[a.length];
-		for (int ix0=0; ix0<a.length; ix0++)
+		IntStream.range(0, a.length).parallel().forEach(ix0 ->
 		{
 			result[ix0] = a[ix0] - b[ix0];
-		}
+		});
 		return result;
 	}
 

@@ -30,6 +30,7 @@ namespace variablesfreefuncs
 bool assertEquals(int expected, int actual);
 template<size_t x>
 bool assertEquals(RealArray1D<x> expected, RealArray1D<x> actual);
+bool assertEquals(double expected, double actual);
 template<size_t x0>
 RealArray1D<x0> operatorAdd(RealArray1D<x0> a, RealArray1D<x0> b);
 }

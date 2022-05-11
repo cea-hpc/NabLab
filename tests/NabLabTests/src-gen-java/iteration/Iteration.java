@@ -111,7 +111,7 @@ public final class Iteration
 	 */
 	protected void iniVk()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(jCells ->
 		{
 			vk_nplus1_k0[jCells] = 0.0;
 		});
@@ -124,7 +124,7 @@ public final class Iteration
 	 */
 	protected void iniVn()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(jCells ->
 		{
 			vn_n0[jCells] = 0.0;
 		});
@@ -137,7 +137,7 @@ public final class Iteration
 	 */
 	protected void setUpTimeLoopK()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
+		IntStream.range(0, nbCells).parallel().forEach(i1Cells ->
 		{
 			vk_nplus1_k[i1Cells] = vk_nplus1_k0[i1Cells];
 		});
@@ -150,7 +150,7 @@ public final class Iteration
 	 */
 	protected void updateVk()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(jCells ->
 		{
 			vk_nplus1_kplus1[jCells] = vk_nplus1_k[jCells] + 2;
 		});
@@ -163,7 +163,7 @@ public final class Iteration
 	 */
 	protected void updateVl()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(jCells ->
 		{
 			vl_nplus1_lplus1[jCells] = vl_nplus1_l[jCells] + 1;
 		});
@@ -188,7 +188,7 @@ public final class Iteration
 			// Evaluate loop condition with variables at time n
 			continueLoop = (k < maxIterK);
 		
-			IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
+			IntStream.range(0, nbCells).parallel().forEach(i1Cells ->
 			{
 				vk_nplus1_k[i1Cells] = vk_nplus1_kplus1[i1Cells];
 			});
@@ -203,7 +203,7 @@ public final class Iteration
 	protected void setUpTimeLoopN()
 	{
 		t_n = t_n0;
-		IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
+		IntStream.range(0, nbCells).parallel().forEach(i1Cells ->
 		{
 			vn_n[i1Cells] = vn_n0[i1Cells];
 		});
@@ -240,15 +240,15 @@ public final class Iteration
 			continueLoop = (n < maxIterN);
 		
 			t_n = t_nplus1;
-			IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
+			IntStream.range(0, nbCells).parallel().forEach(i1Cells ->
 			{
 				vn_n[i1Cells] = vn_nplus1[i1Cells];
 			});
-			IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
+			IntStream.range(0, nbCells).parallel().forEach(i1Cells ->
 			{
 				vk_n[i1Cells] = vk_nplus1[i1Cells];
 			});
-			IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
+			IntStream.range(0, nbCells).parallel().forEach(i1Cells ->
 			{
 				vl_n[i1Cells] = vl_nplus1[i1Cells];
 			});
@@ -264,7 +264,7 @@ public final class Iteration
 	 */
 	protected void tearDownTimeLoopK()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
+		IntStream.range(0, nbCells).parallel().forEach(i1Cells ->
 		{
 			vk_nplus1[i1Cells] = vk_nplus1_kplus1[i1Cells];
 		});
@@ -277,7 +277,7 @@ public final class Iteration
 	 */
 	protected void iniVl()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(jCells ->
 		{
 			vl_nplus1_l0[jCells] = vk_nplus1[jCells] + 8;
 		});
@@ -290,7 +290,7 @@ public final class Iteration
 	 */
 	protected void oracleVk()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(jCells ->
 		{
 			final boolean testVk = assertEquals(12.0, vk_nplus1[jCells]);
 		});
@@ -303,7 +303,7 @@ public final class Iteration
 	 */
 	protected void setUpTimeLoopL()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
+		IntStream.range(0, nbCells).parallel().forEach(i1Cells ->
 		{
 			vl_nplus1_l[i1Cells] = vl_nplus1_l0[i1Cells];
 		});
@@ -328,7 +328,7 @@ public final class Iteration
 			// Evaluate loop condition with variables at time n
 			continueLoop = (l < maxIterL);
 		
-			IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
+			IntStream.range(0, nbCells).parallel().forEach(i1Cells ->
 			{
 				vl_nplus1_l[i1Cells] = vl_nplus1_lplus1[i1Cells];
 			});
@@ -342,7 +342,7 @@ public final class Iteration
 	 */
 	protected void tearDownTimeLoopL()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
+		IntStream.range(0, nbCells).parallel().forEach(i1Cells ->
 		{
 			vl_nplus1[i1Cells] = vl_nplus1_lplus1[i1Cells];
 		});
@@ -355,7 +355,7 @@ public final class Iteration
 	 */
 	protected void oracleVl()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(jCells ->
 		{
 			final boolean testVl = assertEquals(27.0, vl_nplus1[jCells]);
 		});
@@ -368,7 +368,7 @@ public final class Iteration
 	 */
 	protected void updateVn()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(jCells ->
 		{
 			vn_nplus1[jCells] = vn_n[jCells] + vl_nplus1[jCells] * 2;
 		});
@@ -381,7 +381,7 @@ public final class Iteration
 	 */
 	protected void oracleVn()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(jCells ->
 		{
 			final boolean testVn = assertEquals(54.0 * n, vn_nplus1[jCells]);
 		});

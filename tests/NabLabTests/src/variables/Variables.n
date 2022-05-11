@@ -39,11 +39,9 @@ let ℝ[constexprDim] varVec = [1.0, 1.0];
 DynamicVecInitialization: 
 {
 	let ℕ cpt = 0;
-	∀i∈[0;optDim[,
-	{
-		cpt = cpt + 1;
-		dynamicVec[i] = 3.3;
-	}
+	// two loops to check the first one is multithread
+	∀i∈[0;optDim[, dynamicVec[i] = 3.3; 
+	∀i∈[0;optDim[, cpt = cpt + 1; 
 	checkDynamicDim = cpt;
 }
 
@@ -67,8 +65,10 @@ Oracle:
 	// variables needing allocation
 	let ℾ testDynamicVecLength = assertEquals(2, checkDynamicDim);
 	
-// NOT YET IMPLEMENTED : BaseTypeConstants on a dynamic size
-//	let ℾ testDynamicVec = assertEquals(dynamicVec, ℝ[optDim](3.3));
+	// NOT YET IMPLEMENTED : BaseTypeConstants on a dynamic size
+	// let ℾ testDynamicVec = assertEquals(dynamicVec, ℝ[optDim](3.3));
+	∀i∈[0;optDim[, 
+		let ℾ testDynamicVec = assertEquals(3.3, dynamicVec[i]); 
 
 	// local variables
 //	∀ r∈nodes(), 

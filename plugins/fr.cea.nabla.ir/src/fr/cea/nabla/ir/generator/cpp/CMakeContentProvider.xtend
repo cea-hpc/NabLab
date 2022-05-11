@@ -25,7 +25,7 @@ import static extension fr.cea.nabla.ir.IrRootExtensions.getExecName
 class CMakeContentProvider
 {
 	protected val AbstractPythonEmbeddingContentProvider pythonEmbeddingContentProvider
-	
+
 	protected def Iterable<String> getNeededVariables()
 	{
 		#[]

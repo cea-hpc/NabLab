@@ -40,7 +40,7 @@ class JobContentProvider
 			ExecuteTimeLoopJob case caller.main:
 			// main loop (n) manage by Arcane
 			'''
-				«val itVar = VariableExtensions.getCodeName(iterationCounter)»
+				«val itVar = ArcaneUtils.getCodeName(iterationCounter)»
 				«itVar»++;
 				«FOR c : calls»
 					«ArcaneUtils.getCallName(c)»(); // @«c.at»
@@ -57,7 +57,7 @@ class JobContentProvider
 			ExecuteTimeLoopJob case !caller.main:
 			// inner loop (k)
 			'''
-				«val itVar = VariableExtensions.getCodeName(iterationCounter)»
+				«val itVar = ArcaneUtils.getCodeName(iterationCounter)»
 				«itVar» = 0;
 				bool continueLoop = true;
 				do

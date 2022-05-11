@@ -58,9 +58,12 @@ template<size_t x0>
 RealArray1D<x0> operatorAdd(RealArray1D<x0> a, RealArray1D<x0> b)
 {
 	RealArray1D<x0> result;
-	for (size_t ix0=0; ix0<x0; ix0++)
 	{
-		result[ix0] = a[ix0] + b[ix0];
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& ix0)
+		{
+			result[ix0] = a[ix0] + b[ix0];
+		};
+		parallel_exec(x0, loopLambda);
 	}
 	return result;
 }
@@ -69,9 +72,12 @@ template<size_t x0>
 RealArray1D<x0> operatorMult(double a, RealArray1D<x0> b)
 {
 	RealArray1D<x0> result;
-	for (size_t ix0=0; ix0<x0; ix0++)
 	{
-		result[ix0] = a * b[ix0];
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& ix0)
+		{
+			result[ix0] = a * b[ix0];
+		};
+		parallel_exec(x0, loopLambda);
 	}
 	return result;
 }
@@ -80,9 +86,12 @@ template<size_t x0>
 RealArray1D<x0> operatorSub(RealArray1D<x0> a, RealArray1D<x0> b)
 {
 	RealArray1D<x0> result;
-	for (size_t ix0=0; ix0<x0; ix0++)
 	{
-		result[ix0] = a[ix0] - b[ix0];
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& ix0)
+		{
+			result[ix0] = a[ix0] - b[ix0];
+		};
+		parallel_exec(x0, loopLambda);
 	}
 	return result;
 }

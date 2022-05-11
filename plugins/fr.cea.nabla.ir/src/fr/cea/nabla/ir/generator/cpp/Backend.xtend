@@ -12,8 +12,10 @@ package fr.cea.nabla.ir.generator.cpp
 import fr.cea.nabla.ir.generator.jni.Jniable
 import fr.cea.nabla.ir.ir.ExtensionProvider
 import fr.cea.nabla.ir.ir.ExternFunction
+import fr.cea.nabla.ir.transformers.CheckKokkosMultithreadLoops
 import fr.cea.nabla.ir.transformers.IrTransformationStep
 import fr.cea.nabla.ir.transformers.ReplaceReductions
+import fr.cea.nabla.ir.transformers.SetMultithreadableLoops
 import org.eclipse.xtend.lib.annotations.Accessors
 
 abstract class Backend implements Jniable
@@ -69,6 +71,7 @@ class StlThreadBackend extends Backend
 	new(boolean debug)
 	{
 		name = 'StlThread'
+		irTransformationSteps = #[new SetMultithreadableLoops]
 		typeContentProvider = new StlThreadTypeContentProvider
 		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
 		pythonEmbeddingContentProvider = if (debug) new PythonEmbeddingContentProvider(typeContentProvider, expressionContentProvider) else new EmptyPythonEmbeddingContentProvider(typeContentProvider, expressionContentProvider)
@@ -91,6 +94,7 @@ class KokkosBackend extends Backend
 	new()
 	{
 		name = 'Kokkos'
+		irTransformationSteps = #[new SetMultithreadableLoops, new CheckKokkosMultithreadLoops]
 		typeContentProvider = new KokkosTypeContentProvider
 		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
 		pythonEmbeddingContentProvider = new EmptyPythonEmbeddingContentProvider(typeContentProvider, expressionContentProvider)
@@ -113,6 +117,7 @@ class KokkosTeamThreadBackend extends Backend
 	new()
 	{
 		name = 'Kokkos Team Thread'
+		irTransformationSteps = #[new SetMultithreadableLoops, new CheckKokkosMultithreadLoops]
 		typeContentProvider = new KokkosTypeContentProvider
 		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
 		pythonEmbeddingContentProvider = new EmptyPythonEmbeddingContentProvider(typeContentProvider, expressionContentProvider)
@@ -135,6 +140,7 @@ class OpenMpBackend extends Backend
 	new(boolean debug)
 	{
 		name = 'OpenMP'
+		irTransformationSteps = #[new SetMultithreadableLoops]
 		typeContentProvider = new StlThreadTypeContentProvider
 		expressionContentProvider = new ExpressionContentProvider(typeContentProvider)
 		pythonEmbeddingContentProvider = if (debug) new PythonEmbeddingContentProvider(typeContentProvider, expressionContentProvider) else new EmptyPythonEmbeddingContentProvider(typeContentProvider, expressionContentProvider)

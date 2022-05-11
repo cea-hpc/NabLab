@@ -11,22 +11,18 @@ package fr.cea.nabla.ir
 
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import fr.cea.nabla.ir.ir.IrModule
-import fr.cea.nabla.ir.ir.IrRoot
-import fr.cea.nabla.ir.ir.IterationBlock
-import fr.cea.nabla.ir.ir.Iterator
-import fr.cea.nabla.ir.ir.Job
+import fr.cea.nabla.ir.ir.Affectation
+import fr.cea.nabla.ir.ir.ArgOrVarRef
+import fr.cea.nabla.ir.ir.IrPackage
 import fr.cea.nabla.ir.ir.Variable
 import java.io.PrintWriter
 import java.io.StringWriter
 import org.eclipse.emf.ecore.EObject
 
-import static extension fr.cea.nabla.ir.ContainerExtensions.*
+import static extension fr.cea.nabla.ir.ArgOrVarExtensions.isGlobal
 
 class IrUtils
 {
-	// @TODO Comments in .n file generated in code (Doxygen) and AXL description field
-
 	public static val NRepository = '.nablab'
 	public static val LastDumpOptionName = "lastDump"
 	public static val OutputPeriodOptionName = "outputPeriod"
@@ -90,28 +86,14 @@ class IrUtils
 		return gson.toJson(jsonObject)
 	}
 
-	static def boolean isTopLevelConnectivity(IterationBlock b)
+	static def getInVars(EObject it)
 	{
-		if (b instanceof Iterator)
-			b.container.connectivityCall.args.empty
-		else
-			false
+		val allReferencedVars = eAllContents.filter(ArgOrVarRef).filter[x|x.eContainingFeature != IrPackage::eINSTANCE.affectation_Left].map[target]
+		allReferencedVars.filter(Variable).filter[global].toSet
 	}
-	
-	static def String getTooltip(Job it)
+
+	static def getOutVars(EObject it)
 	{
-		val inVarNames = "[" + inVars.map[displayName].join(', ') + "]"
-		val outVarNames = "[" + outVars.map[displayName].join(', ') + "]"
-		inVarNames + "  \u21E8  " + JobExtensions.getDisplayName(it) + "  \u21E8  " + outVarNames
-	}
-	
-	private static def String getDisplayName(Variable v)
-	{
-		val module = IrUtils.getContainerOfType(v, IrModule)
-		val root = module.eContainer as IrRoot
-		if (root.modules.size > 1)
-			module.name + "::" + v.name
-		else
-			v.name
+		eAllContents.filter(Affectation).map[left.target].filter(Variable).filter[global].toSet
 	}
 }

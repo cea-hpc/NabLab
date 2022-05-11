@@ -44,7 +44,7 @@ public final class R1
 	 */
 	protected void rj1()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(cCells ->
 		{
 			mainModule.hv4[cCells] = mainModule.hv1[cCells] * 2.0;
 		});
@@ -57,7 +57,7 @@ public final class R1
 	 */
 	protected void rj2()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(cCells ->
 		{
 			rv3[cCells] = mainModule.hv4[cCells] * 3.0;
 		});

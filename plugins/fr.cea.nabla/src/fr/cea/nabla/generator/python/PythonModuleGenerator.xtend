@@ -13,6 +13,7 @@ import com.google.inject.Inject
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
 import fr.cea.nabla.generator.StandaloneGeneratorBase
 import fr.cea.nabla.generator.ir.IrRootBuilder
+import fr.cea.nabla.ir.annotations.NabLabFileAnnotation
 import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.ArgOrVar
@@ -20,15 +21,15 @@ import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Job
+import fr.cea.nabla.nablagen.NablagenApplication
 import fr.cea.nabla.nablagen.NablagenRoot
 import java.util.List
 import java.util.Map
 
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
-import fr.cea.nabla.nablagen.NablagenApplication
-import fr.cea.nabla.ir.annotations.NabLabFileAnnotation
 
-class PythonModuleGenerator extends StandaloneGeneratorBase {
+class PythonModuleGenerator extends StandaloneGeneratorBase
+{
 	@Inject IrRootBuilder irRootBuilder
 
 	def void generatePythonModule(NablagenRoot ngen, String wsPath, String projectName)
@@ -62,28 +63,32 @@ class PythonModuleGenerator extends StandaloneGeneratorBase {
 		}
 	}
 
-	def List<GenerationContent> getPythonModuleContent(IrRoot ir) {
+	def List<GenerationContent> getPythonModuleContent(IrRoot ir)
+	{
 		val allJobs = ir.eAllContents.filter[o|o instanceof Job].map[o|o as Job].toList
 		val allAssigns = ir.eAllContents.filter[o|
 			o instanceof Affectation &&
 			// If affectation targets a user-defined (as opposed to derived) variable
-			NabLabFileAnnotation.get((o as Affectation).left.target) !== null
-		].map[o|o as Affectation].toList
+			NabLabFileAnnotation.tryToGet((o as Affectation).left.target) !== null].map[o|o as Affectation].toList
 		val Map<Object, List<ArgOrVar>> allWrites = newHashMap
 		allAssigns.forEach[a|
 			val target = a.left.target
 			var c = a.eContainer
 			var continue = true
-			while (c !== null && continue) {
-				if (c instanceof Function || c instanceof Job || c instanceof IrModule) {
+			while (c !== null && continue)
+			{
+				if (c instanceof Function || c instanceof Job || c instanceof IrModule)
+				{
 					allWrites.computeIfAbsent(c, [newArrayList]).add(target)
 					continue = false
-				} else {
+				}
+				else
+				{
 					c = c.eContainer
 				}
 			}
 		]
-		
+
 		val fileContent =
 			'''
 				«FOR j : allJobs SEPARATOR '\n'»
@@ -109,7 +114,7 @@ class PythonModuleGenerator extends StandaloneGeneratorBase {
 				            pass
 				    «ENDFOR»
 				«ENDFOR»
-				
+
 				«val allAssignStrings = allAssigns.map[a|a.left.target].filter[target|target.eContainer instanceof IrModule]
 					.map[name.toFirstUpper].toSet»
 				«FOR a : allAssignStrings SEPARATOR '\n'»
@@ -123,10 +128,9 @@ class PythonModuleGenerator extends StandaloneGeneratorBase {
 				        pass
 				«ENDFOR»
 			'''
-		
+
 		val content = new GenerationContent(ir.name.toLowerCase + ".py", fileContent, false)
-		
+
 		return #[content]
 	}
-
 }

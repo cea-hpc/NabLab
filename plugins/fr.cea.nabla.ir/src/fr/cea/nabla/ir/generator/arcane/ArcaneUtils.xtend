@@ -29,12 +29,6 @@ import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.JobCallerExtensions.*
 
-/**
- * @TODO Arcane - What about item types? Fixed in NabLab ? Mapping Arcane ?
- * @TODO Arcane - What happens if levelDB asked => ngen should be modified ?
- * @TODO Arcane - What to do with job updating global time ?
- * @TODO Reduce CI time with a new transformation step to limit number of iterations
- */
 class ArcaneUtils
 {
 	static def isArcaneModule(IrModule it) { main }
@@ -68,7 +62,6 @@ class ArcaneUtils
 		it instanceof Variable && global && !option && type instanceof ConnectivityType
 	}
 
-	// TODO uniformise attribute names in C++ code to avoid this function
 	// This function is similar to CppGeneratorutils.getCodeName except for
 	// the instance name of provider for ExternFunction
 	static def getCodeName(Function f)
@@ -86,6 +79,21 @@ class ArcaneUtils
 				else toAttributeName(f.provider.instanceName) + '.' + f.name
 			}
 		}
+	}
+
+	static def getCodeName(ArgOrVar v)
+	{
+		if (v instanceof Variable)
+		{
+			if (v.option)
+				'options()->' + StringExtensions.separateWithUpperCase(v.name) + '()'
+			else if (v.global)
+				'm_' + v.name
+			else
+				v.name
+		}
+		else
+			v.name
 	}
 
 	static def getServices(IrModule it)

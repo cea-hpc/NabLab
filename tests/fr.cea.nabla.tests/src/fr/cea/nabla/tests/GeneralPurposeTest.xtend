@@ -13,15 +13,15 @@ import java.io.File
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
+import java.nio.file.Paths
 import java.util.ArrayList
 import java.util.List
 import java.util.regex.Pattern
 import java.util.stream.Collectors
-import org.junit.Assert
-import org.junit.Test
 import org.hamcrest.MatcherAssert
 import org.hamcrest.text.MatchesPattern
-import java.nio.file.Paths
+import org.junit.Assert
+import org.junit.Test
 
 class GeneralPurposeTest
 {
@@ -104,10 +104,10 @@ class GeneralPurposeTest
 
 	def void testXtendCopyrightHeader(Path filePath, List<String> lines)
 	{
-		Assert.assertTrue(lines.size() >= fr.cea.nabla.tests.GeneralPurposeTest.XTEND_COPYRIGHT_HEADER.size())
-		for (var i = 0; i < fr.cea.nabla.tests.GeneralPurposeTest.XTEND_COPYRIGHT_HEADER.size(); i++)
+		Assert.assertTrue(lines.size() >= GeneralPurposeTest.XTEND_COPYRIGHT_HEADER.size())
+		for (var i = 0; i < GeneralPurposeTest.XTEND_COPYRIGHT_HEADER.size(); i++)
 		{
-			MatcherAssert.assertThat("Invalid copyright header in " + filePath, lines.get(i), MatchesPattern.matchesPattern(fr.cea.nabla.tests.GeneralPurposeTest.XTEND_COPYRIGHT_HEADER.get(i))) //$NON-NLS-1$
+			MatcherAssert.assertThat("Invalid copyright header in " + filePath, lines.get(i), MatchesPattern.matchesPattern(GeneralPurposeTest.XTEND_COPYRIGHT_HEADER.get(i))) //$NON-NLS-1$
 		}
 	}
 
@@ -118,11 +118,11 @@ class GeneralPurposeTest
 		{
 			xmlHeaderIncrement++
 		}
-		Assert.assertTrue("Copyright missing in XML file " + filePath, lines.size() >= fr.cea.nabla.tests.GeneralPurposeTest.XML_COPYRIGHT_HEADER.size() + xmlHeaderIncrement)
+		Assert.assertTrue("Copyright missing in XML file " + filePath, lines.size() >= GeneralPurposeTest.XML_COPYRIGHT_HEADER.size() + xmlHeaderIncrement)
 
-		for (var i = 0; i < fr.cea.nabla.tests.GeneralPurposeTest.XML_COPYRIGHT_HEADER.size(); i++)
+		for (var i = 0; i < GeneralPurposeTest.XML_COPYRIGHT_HEADER.size(); i++)
 		{
-			MatcherAssert.assertThat("Invalid copyright header in " + filePath, lines.get(i + xmlHeaderIncrement), MatchesPattern.matchesPattern(fr.cea.nabla.tests.GeneralPurposeTest.XML_COPYRIGHT_HEADER.get(i))) //$NON-NLS-1$
+			MatcherAssert.assertThat("Invalid copyright header in " + filePath, lines.get(i + xmlHeaderIncrement), MatchesPattern.matchesPattern(GeneralPurposeTest.XML_COPYRIGHT_HEADER.get(i))) //$NON-NLS-1$
 		}
 	}
 

@@ -53,6 +53,10 @@ jobs:
       - name: Checkout NabLab code
         uses: actions/checkout@v2
       
+      # Added in May 2022 for security reasons (github update in Avril 2022)
+      - name: GH actions checkout post
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
       # Set environment variable for tests execution
       - name: Set environment variable
         run: echo "CI=true" >> $GITHUB_ENV

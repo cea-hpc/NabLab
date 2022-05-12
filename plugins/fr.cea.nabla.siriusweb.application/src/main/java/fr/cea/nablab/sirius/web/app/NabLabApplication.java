@@ -9,6 +9,7 @@
  *******************************************************************************/
 package fr.cea.nablab.sirius.web.app;
 
+import org.eclipse.sirius.components.collaborative.diagrams.handlers.EditLabelEventHandler;
 import org.eclipse.sirius.components.compatibility.services.diagrams.CompatibilityToolSectionsProvider;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -38,7 +39,8 @@ import org.springframework.context.annotation.FilterType;
                 "org.eclipse.sirius.components.emf.configuration", "org.eclipse.sirius.components.emf.query", "org.eclipse.sirius.components.emf.services",
                 "org.eclipse.sirius.components.graphql.utils.typeresolvers", "org.eclipse.sirius.components.collaborative.diagrams", "org.eclipse.sirius.components.collaborative.editingcontext",
                 "org.eclipse.sirius.components.collaborative.handlers", "org.eclipse.sirius.components.collaborative.representations", "org.eclipse.sirius.components.graphql" },
-        excludeFilters = { @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = CompatibilityToolSectionsProvider.class) })
+        excludeFilters = { @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = CompatibilityToolSectionsProvider.class),
+                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = EditLabelEventHandler.class) })
 public class NabLabApplication {
 
     /**

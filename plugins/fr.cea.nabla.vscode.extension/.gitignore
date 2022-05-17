@@ -2,3 +2,4 @@
 *.vsix
 .vscode
 webviews/*
+*.old

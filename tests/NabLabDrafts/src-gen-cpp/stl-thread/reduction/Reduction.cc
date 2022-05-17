@@ -232,7 +232,7 @@ int main(int argc, char* argv[])
 	
 	// Module instanciation(s)
 	Reduction* reduction = new Reduction(mesh);
-	if (d.HasMember("reduction"))
+	assert(d.HasMember("reduction"));
 	{
 		rapidjson::StringBuffer strbuf;
 		rapidjson::Writer<rapidjson::StringBuffer> writer(strbuf);

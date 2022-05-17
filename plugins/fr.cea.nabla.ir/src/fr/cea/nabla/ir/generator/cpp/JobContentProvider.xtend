@@ -31,6 +31,8 @@ abstract class JobContentProvider
 	protected val extension InstructionContentProvider
 	protected val extension JobCallerContentProvider
 	protected val extension JsonContentProvider
+	protected val extension TypeContentProvider
+	protected val AbstractPythonEmbeddingContentProvider pythonEmbeddingContentProvider
 
 	def getDeclarationContent(Job it)
 	'''
@@ -41,7 +43,9 @@ abstract class JobContentProvider
 		«comment»
 		void «IrUtils.getContainerOfType(it, IrModule).className»::«codeName»() noexcept
 		{
+			«pythonEmbeddingContentProvider.getBeforeCallContent(it)»
 			«innerContent»
+			«pythonEmbeddingContentProvider.getAfterCallContent(it)»
 		}
 	'''
 

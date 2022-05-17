@@ -14,9 +14,13 @@ namespace iterativeheatequationfreefuncs
 bool check(bool a)
 {
 	if (a) 
+	{
 		return true;
+	}
 	else
+	{
 		throw std::runtime_error("Assertion failed");
+	}
 }
 
 template<size_t x>
@@ -509,9 +513,13 @@ void IterativeHeatEquation::initU(const member_type& teamMember) noexcept
 		{
 			int cCells(cCellsTeam + teamWork.first);
 			if (iterativeheatequationfreefuncs::norm(iterativeheatequationfreefuncs::operatorSub(Xc(cCells), vectOne)) < 0.5) 
+			{
 				u_n(cCells) = u0;
+			}
 			else
+			{
 				u_n(cCells) = 0.0;
+			}
 		});
 	}
 }

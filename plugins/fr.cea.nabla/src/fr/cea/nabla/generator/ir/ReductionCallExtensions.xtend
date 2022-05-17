@@ -23,14 +23,14 @@ import org.eclipse.emf.ecore.util.EcoreUtil
 @Singleton	// Must be singleton because contains create methods
 class ReductionCallExtensions 
 {
-	@Inject extension NabLabFileAnnotationFactory
 	@Inject extension DeclarationProvider
 	@Inject extension NablaType2IrType
 	@Inject extension IrExpressionFactory
 
 	def create IrFactory::eINSTANCE.createVariable toIrLocalVariable(ReductionCall rc)
 	{
-		annotations += rc.toNabLabFileAnnotation
+//		Disabled to distinguish derived variables from user-defined variables
+//		annotations += rc.toNabLabFileAnnotation
 		name = "reduction" + rc.number
 		val d = rc.declaration
 		val vType = d.type.toIrBaseType

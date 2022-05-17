@@ -85,7 +85,7 @@ public final class Hydro
 	 */
 	protected void iniHv1()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(cCells ->
 		{
 			hv1[cCells] = 2.0;
 		});
@@ -98,7 +98,7 @@ public final class Hydro
 	 */
 	protected void iniHv2()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(cCells ->
 		{
 			hv2[cCells] = 0.0;
 		});
@@ -111,7 +111,7 @@ public final class Hydro
 	 */
 	protected void hj1()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(cCells ->
 		{
 			hv3[cCells] = hv2[cCells] + 1.0;
 		});
@@ -124,7 +124,7 @@ public final class Hydro
 	 */
 	protected void oracleHv1()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(cCells ->
 		{
 			final boolean testHv1 = assertEquals(2.0, hv1[cCells]);
 		});
@@ -137,7 +137,7 @@ public final class Hydro
 	 */
 	protected void oracleHv2()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(cCells ->
 		{
 			final boolean testHv2 = assertEquals(0.0, hv2[cCells]);
 		});
@@ -150,7 +150,7 @@ public final class Hydro
 	 */
 	protected void hj2()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(cCells ->
 		{
 			hv5[cCells] = hv3[cCells] + 2.0;
 		});
@@ -163,7 +163,7 @@ public final class Hydro
 	 */
 	protected void oracleHv3()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(cCells ->
 		{
 			final boolean testHv3 = assertEquals(1.0, hv3[cCells]);
 		});
@@ -176,7 +176,7 @@ public final class Hydro
 	 */
 	protected void oracleHv4()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(cCells ->
 		{
 			final boolean testHv4 = assertEquals(4.0, hv4[cCells]);
 		});
@@ -189,7 +189,7 @@ public final class Hydro
 	 */
 	protected void oracleHv5()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(cCells ->
 		{
 			final boolean testHv5 = assertEquals(3.0, hv5[cCells]);
 		});
@@ -202,7 +202,7 @@ public final class Hydro
 	 */
 	protected void hj3()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(cCells ->
 		{
 			hv7[cCells] = hv4[cCells] + hv5[cCells] + hv6[cCells];
 		});
@@ -215,7 +215,7 @@ public final class Hydro
 	 */
 	protected void oracleHv6()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(cCells ->
 		{
 			final boolean testHv6 = assertEquals(6.0, hv6[cCells]);
 		});
@@ -228,7 +228,7 @@ public final class Hydro
 	 */
 	protected void oracleHv7()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(cCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(cCells ->
 		{
 			final boolean testHv7 = assertEquals(13.0, hv7[cCells]);
 		});

@@ -10,12 +10,15 @@
 package fr.cea.nabla.ir.generator.arcane
 
 import fr.cea.nabla.ir.IrUtils
-import fr.cea.nabla.ir.generator.Utils
+import fr.cea.nabla.ir.annotations.AcceleratorAnnotation
+import fr.cea.nabla.ir.annotations.AcceleratorAnnotation.ViewDirection
 import fr.cea.nabla.ir.ir.Affectation
+import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityCall
 import fr.cea.nabla.ir.ir.Container
 import fr.cea.nabla.ir.ir.Exit
+import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.If
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.InstructionBlock
@@ -40,14 +43,24 @@ import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.arcane.ExpressionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.arcane.ItemIndexAndIdValueContentProvider.*
-import static extension fr.cea.nabla.ir.generator.arcane.VariableExtensions.*
 
 class InstructionContentProvider
 {
 	static def dispatch CharSequence getContent(VariableDeclaration it)
 	'''
-		«IF variable.type.baseTypeConstExpr»
-			«IF variable.const»const «ENDIF»«getTypeName(variable.type)» «variable.codeName»«getVariableDefaultValue(variable)»;
+		«val annot = AcceleratorAnnotation.tryToGet(variable)»
+		«IF annot !== null»
+			«IF TypeContentProvider.isArcaneBaseType(variable.type)»
+				«IF annot.viewDirection == ViewDirection.In»
+					auto «variable.name» = «ArcaneUtils.getCodeName((variable.defaultValue as ArgOrVarRef).target)»;
+				«ELSE»
+					fatal("Scalar out variables not yet implemented for accelerator loops");
+				«ENDIF»
+			«ELSE»
+				auto «variable.name» = ax::view«annot.viewDirection.toString»(command, «ArcaneUtils.getCodeName((variable.defaultValue as ArgOrVarRef).target)»);
+			«ENDIF»
+		«ELSEIF variable.type.baseTypeConstExpr»
+			«IF variable.const»const «ENDIF»«getTypeName(variable.type)» «ArcaneUtils.getCodeName(variable)»«getVariableDefaultValue(variable)»;
 		«ELSE»
 			throw Exception("Not Yet Implemented");
 		«ENDIF»
@@ -56,15 +69,15 @@ class InstructionContentProvider
 	static def dispatch CharSequence getContent(InstructionBlock it)
 	'''
 		{
-			«FOR i : instructions»
-			«i.content»
-			«ENDFOR»
+			«innerContent»
 		}'''
 
 	static def dispatch CharSequence getContent(Affectation it)
 	{
 		if (left.target.linearAlgebra && !(left.iterators.empty && left.indices.empty))
-			'''«left.codeName».setValue(«formatIteratorsAndIndices(left.target.type, left.iterators, left.indices)», «right.content»);'''
+			'''«left.codeName».setValue(«formatIteratorsAndIndices(left.target, left.iterators, left.indices)», «right.content»);'''
+		else if (isNumArray(left.target))
+			'''«left.codeName».s«formatIteratorsAndIndices(left.target, left.iterators, left.indices)» = «right.content»;'''
 		else
 			'''
 				«left.content» = «right.content»;
@@ -75,9 +88,32 @@ class InstructionContentProvider
 			'''
 	}
 
+	/**
+	 * ReductionInstrution are only encountered on Accelerator API.
+	 * Transformation pass is done for the other Arcane backends.
+	 */
 	static def dispatch CharSequence getContent(ReductionInstruction it)
 	{
-		throw new RuntimeException("ReductionInstruction must have been replaced before using this code generator")
+		val b = iterationBlock
+		switch b
+		{
+			Iterator:
+			'''
+				«val iterator = iterationBlock as Iterator»
+				«val c = iterator.container»
+				ax::Reducer«getReducerType(binaryFunction)»<«TypeContentProvider.getTypeName(result.type)»> reducer(command);
+				command << RUNCOMMAND_ENUMERATE(«c.itemType.name.toFirstUpper», «iterator.index.name», «c.accessor»)
+				{
+					«FOR innerInstruction : innerInstructions»
+						«innerInstruction.content»
+					«ENDFOR»
+					reducer.«getReducerType(binaryFunction).toLowerCase»(«lambda.content»);
+				};
+				«result.name» = reducer.reduce();
+			'''
+			Interval:
+				throw new RuntimeException("Not")
+		}
 	}
 
 	static def dispatch CharSequence getContent(Loop it)
@@ -85,9 +121,59 @@ class InstructionContentProvider
 		val b = iterationBlock
 		switch b
 		{
-			Iterator case Utils.isParallelLoop(it): getParallelLoopContent(b, body)
-			Iterator case !Utils.isParallelLoop(it): getSequentialLoopContent(b, body)
-			Interval: getSequentialLoopContent(b, body)
+			Iterator case AcceleratorAnnotation.tryToGet(it) !== null:
+			'''
+				«val iterator = iterationBlock as Iterator»
+				«val c = iterator.container»
+				command << RUNCOMMAND_ENUMERATE(«c.itemType.name.toFirstUpper», «iterator.index.name», «c.accessor»)
+				{
+					«body.innerContent»
+				};
+			'''
+			Iterator case multithreadable:
+			'''
+				«val c = b.container»
+				arcaneParallelForeach(«c.accessor», [&](«c.itemType.name.toFirstUpper»VectorView view)
+				{
+					ENUMERATE_«c.itemType.name.toUpperCase»(«b.index.name», view)
+					{
+						«body.innerContent»
+					}
+				});
+			'''
+			Iterator:
+			'''
+				«val c = b.container»
+				«IF c.connectivityCall.args.empty»
+					ENUMERATE_«c.itemType.name.toUpperCase»(«b.index.name», «c.accessor»)
+					{
+						«body.innerContent»
+					}
+				«ELSE»
+					{
+						«IF c instanceof ConnectivityCall»«getSetDefinitionContent(c.uniqueName, c)»«ENDIF»
+						const Int32 «c.nbElemsVar»(«c.uniqueName».size());
+						for (Int32 «b.index.name»=0; «b.index.name»<«c.nbElemsVar»; «b.index.name»++)
+						{
+							«body.innerContent»
+						}
+					}
+				«ENDIF»
+			'''
+			Interval case AcceleratorAnnotation.tryToGet(it) !== null:
+			'''
+				command << RUNCOMMAND_LOOP1(«b.index.name», «b.nbElems.content»)
+				{
+					«body.innerContent»
+				};
+			'''
+			Interval:
+			'''
+				for (Int32 «b.index.name»=0; «b.index.name»<«b.nbElems.content»; «b.index.name»++)
+				{
+					«body.innerContent»
+				}
+			'''
 		}
 	}
 
@@ -140,6 +226,9 @@ class InstructionContentProvider
 	{
 		if (it instanceof InstructionBlock)
 			'''
+			«IF AcceleratorAnnotation.tryToGet(it) !== null»
+			auto command = makeCommand(m_default_queue);
+			«ENDIF»
 			«FOR i : instructions»
 			«i.content»
 			«ENDFOR»
@@ -153,52 +242,12 @@ class InstructionContentProvider
 		const auto «setName»(m_mesh->«call.accessor»);
 	'''
 
-	private static def getParallelLoopContent(Iterator iterator, Instruction loopBody)
-	'''
-		«val c = iterator.container»
-		arcaneParallelForeach(«c.accessor», [&](«c.itemType.name.toFirstUpper»VectorView view)
-		{
-			ENUMERATE_«c.itemType.name.toUpperCase»(«iterator.index.name», view)
-			{
-				«loopBody.innerContent»
-			}
-		});
-	'''
-
-	private static def getSequentialLoopContent(Iterator iterator, Instruction loopBody)
-	'''
-		«val c = iterator.container»
-		«IF c.connectivityCall.args.empty»
-			ENUMERATE_«c.itemType.name.toUpperCase»(«iterator.index.name», «c.accessor»)
-			{
-				«loopBody.innerContent»
-			}
-		«ELSE»
-			{
-				«IF iterator.container instanceof ConnectivityCall»«getSetDefinitionContent(iterator.container.uniqueName, iterator.container as ConnectivityCall)»«ENDIF»
-				const Int32 «iterator.container.nbElemsVar»(«iterator.container.uniqueName».size());
-				for (Int32 «iterator.index.name»=0; «iterator.index.name»<«iterator.container.nbElemsVar»; «iterator.index.name»++)
-				{
-					«loopBody.innerContent»
-				}
-			}
-		«ENDIF»
-	'''
-
-	private static def getSequentialLoopContent(Interval iterator, Instruction loopBody)
-	'''
-		for (Int32 «iterator.index.name»=0; «iterator.index.name»<«iterator.nbElems.content»; «iterator.index.name»++)
-		{
-			«loopBody.innerContent»
-		}
-	'''
-
 	private static def getVariableDefaultValue(Variable it)
 	{
 		if (defaultValue === null)
 		{
-			if (getTypeName(type).startsWith("UniqueArray"))
-				// UniqueArray => type is BaseType
+			if (getTypeName(type).startsWith("NumArray"))
+				// NumArray => type is BaseType
 				'''(«FOR s : (type as BaseType).sizes SEPARATOR ", "»«s.content»«ENDFOR»)'''
 			else
 				''''''
@@ -215,10 +264,18 @@ class InstructionContentProvider
 	{
 		switch it
 		{
-			ConnectivityCall case group !== null: '''m_mesh->getGroup("«group»")'''
+			ConnectivityCall case group !== null: '''«connectivity.returnType.name.toFirstUpper»Group(m_mesh->getGroup("«group»"))'''
 			ConnectivityCall case args.empty && group === null: '''all«connectivity.name.toFirstUpper»()'''
 			ConnectivityCall: '''m_mesh->«accessor»'''
 			SetRef: target.name
 		}
+	}
+
+	private static def getReducerType(Function f)
+	{
+		if (f.name.startsWith("min")) "Min"
+		else if (f.name.startsWith("max")) "Max"
+		else if (f.name.startsWith("sum")) "Sum"
+		else throw new RuntimeException("Reduction type not implemented in Arcane accelerator API: " + f.name)
 	}
 }

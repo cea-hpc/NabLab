@@ -13,7 +13,6 @@ import org.eclipse.emf.common.util.EList;
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link fr.cea.nabla.ir.ir.InstructionBlock#getVariables <em>Variables</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.InstructionBlock#getInstructions <em>Instructions</em>}</li>
  * </ul>
  *
@@ -22,18 +21,6 @@ import org.eclipse.emf.common.util.EList;
  * @generated
  */
 public interface InstructionBlock extends Instruction {
-	/**
-	 * Returns the value of the '<em><b>Variables</b></em>' containment reference list.
-	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Variable}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Variables</em>' containment reference list.
-	 * @see fr.cea.nabla.ir.ir.IrPackage#getInstructionBlock_Variables()
-	 * @model containment="true"
-	 * @generated
-	 */
-	EList<Variable> getVariables();
-
 	/**
 	 * Returns the value of the '<em><b>Instructions</b></em>' containment reference list.
 	 * The list contents are of type {@link fr.cea.nabla.ir.ir.Instruction}.

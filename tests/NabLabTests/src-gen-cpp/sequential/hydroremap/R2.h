@@ -19,12 +19,29 @@
 using namespace nablalib::utils;
 using namespace nablalib::types;
 
+
 /******************** Module declaration ********************/
 
 class R2
 {
 	friend class Hydro;
 	friend class R1;
+
+
+private:
+	// Mesh and mesh variables
+	CartesianMesh2D& mesh;
+	size_t nbCells;
+
+	// Main module
+	Hydro* mainModule;
+
+
+	// Timers
+	Timer globalTimer;
+	Timer cpuTimer;
+	Timer ioTimer;
+	
 
 public:
 	R2(CartesianMesh2D& aMesh);
@@ -42,21 +59,9 @@ public:
 	void rj1() noexcept;
 	void rj2() noexcept;
 
-private:
-	// Mesh and mesh variables
-	CartesianMesh2D& mesh;
-	size_t nbCells;
-
-	// Main module
-	Hydro* mainModule;
-
-	// Options and global variables
+	// Options and global variables.
+	// Module variables are public members of the class to be accessible from Python.
 	std::vector<double> rv2;
-
-	// Timers
-	Timer globalTimer;
-	Timer cpuTimer;
-	Timer ioTimer;
 };
 
 #endif

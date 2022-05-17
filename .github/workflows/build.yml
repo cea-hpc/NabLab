@@ -53,6 +53,10 @@ jobs:
       - name: Checkout NabLab code
         uses: actions/checkout@v2
       
+      # Added in May 2022 for security reasons (github update in Avril 2022)
+      - name: GH actions checkout post
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
       # Set environment variable for tests execution
       - name: Set environment variable
         run: echo "CI=true" >> $GITHUB_ENV
@@ -98,7 +102,7 @@ jobs:
       # Deploy maven artifacts to github
       - name: Deploy maven artifact to github (fr.cea.nabla)
         if: startsWith(github.ref, 'refs/tags/v')
-        run: mvn -B deploy:deploy-file --settings .github/workflows/settings.xml -Dfile=plugins/fr.cea.nabla/target/fr.cea.nabla-0.4.5-SNAPSHOT.jar -Dversion=0.4.5 -Durl=https://maven.pkg.github.com/cea-hpc/NabLab -DrepositoryId=github  -DgroupId=fr.cea.nabla -DartifactId=fr.cea.nabla
+        run: mvn -B deploy:deploy-file --settings .github/workflows/settings.xml -Dfile=plugins/fr.cea.nabla/target/fr.cea.nabla-0.5.0-SNAPSHOT.jar -Dversion=0.5.0 -Durl=https://maven.pkg.github.com/cea-hpc/NabLab -DrepositoryId=github  -DgroupId=fr.cea.nabla -DartifactId=fr.cea.nabla
         env:
           USERNAME: ${{ github.actor }}
           PASSWORD: ${{ secrets.GITHUB_TOKEN }}
@@ -106,7 +110,7 @@ jobs:
 
       - name: Deploy maven artifact to github (fr.cea.nabla.ir)
         if: startsWith(github.ref, 'refs/tags/v')
-        run: mvn -B deploy:deploy-file --settings .github/workflows/settings.xml -Dfile=plugins/fr.cea.nabla.ir/target/fr.cea.nabla.ir-0.4.5-SNAPSHOT.jar -Dversion=0.4.5 -Durl=https://maven.pkg.github.com/cea-hpc/NabLab -DrepositoryId=github  -DgroupId=fr.cea.nabla -DartifactId=fr.cea.nabla.ir
+        run: mvn -B deploy:deploy-file --settings .github/workflows/settings.xml -Dfile=plugins/fr.cea.nabla.ir/target/fr.cea.nabla.ir-0.5.0-SNAPSHOT.jar -Dversion=0.5.0 -Durl=https://maven.pkg.github.com/cea-hpc/NabLab -DrepositoryId=github  -DgroupId=fr.cea.nabla -DartifactId=fr.cea.nabla.ir
         env:
           USERNAME: ${{ github.actor }}
           PASSWORD: ${{ secrets.GITHUB_TOKEN }}
@@ -114,7 +118,7 @@ jobs:
 
       - name: Deploy maven artifact to github (fr.cea.nabla.javalib)
         if: startsWith(github.ref, 'refs/tags/v')
-        run: mvn -B deploy:deploy-file --settings .github/workflows/settings.xml -Dfile=plugins/fr.cea.nabla.javalib/target/fr.cea.nabla.javalib-0.4.5-SNAPSHOT.jar -Dversion=0.4.5 -Durl=https://maven.pkg.github.com/cea-hpc/NabLab -DrepositoryId=github  -DgroupId=fr.cea.nabla -DartifactId=fr.cea.nabla.javalib
+        run: mvn -B deploy:deploy-file --settings .github/workflows/settings.xml -Dfile=plugins/fr.cea.nabla.javalib/target/fr.cea.nabla.javalib-0.5.0-SNAPSHOT.jar -Dversion=0.5.0 -Durl=https://maven.pkg.github.com/cea-hpc/NabLab -DrepositoryId=github  -DgroupId=fr.cea.nabla -DartifactId=fr.cea.nabla.javalib
         env:
           USERNAME: ${{ github.actor }}
           PASSWORD: ${{ secrets.GITHUB_TOKEN }}
@@ -123,7 +127,10 @@ jobs:
       # Install/update vscode extension dependencies
       - name: Install/update vscode extension dependencies # https://docs.npmjs.com/cli/v8/commands/npm-ci
         if: startsWith(github.ref, 'refs/tags/v')
-        run: npm ci
+        run: |
+          echo "//npm.pkg.github.com/:_authToken=${{ github.token }}" >> .npmrc
+          echo "CI=true" >> $GITHUB_ENV
+          npm ci
         working-directory: plugins/fr.cea.nabla.vscode.extension
 
       # Package vscode extension

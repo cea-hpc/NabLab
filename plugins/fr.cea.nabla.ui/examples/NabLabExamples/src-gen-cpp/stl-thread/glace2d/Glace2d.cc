@@ -42,12 +42,15 @@ template<size_t l>
 RealArray2D<l,l> tensProduct(RealArray1D<l> a, RealArray1D<l> b)
 {
 	RealArray2D<l,l> result;
-	for (size_t ia=0; ia<l; ia++)
 	{
-		for (size_t ib=0; ib<l; ib++)
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& ia)
 		{
-			result[ia][ib] = a[ia] * b[ib];
-		}
+			for (size_t ib=0; ib<l; ib++)
+			{
+				result[ia][ib] = a[ia] * b[ib];
+			}
+		};
+		parallel_exec(l, loopLambda);
 	}
 	return result;
 }
@@ -56,14 +59,17 @@ template<size_t x, size_t y>
 RealArray1D<x> matVectProduct(RealArray2D<x,y> a, RealArray1D<y> b)
 {
 	RealArray1D<x> result;
-	for (size_t ix=0; ix<x; ix++)
 	{
-		RealArray1D<y> tmp;
-		for (size_t iy=0; iy<y; iy++)
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& ix)
 		{
-			tmp[iy] = a[ix][iy];
-		}
-		result[ix] = glace2dfreefuncs::dot(tmp, b);
+			RealArray1D<y> tmp;
+			for (size_t iy=0; iy<y; iy++)
+			{
+				tmp[iy] = a[ix][iy];
+			}
+			result[ix] = glace2dfreefuncs::dot(tmp, b);
+		};
+		parallel_exec(x, loopLambda);
 	}
 	return result;
 }
@@ -111,9 +117,12 @@ template<size_t x0>
 RealArray1D<x0> operatorAdd(RealArray1D<x0> a, RealArray1D<x0> b)
 {
 	RealArray1D<x0> result;
-	for (size_t ix0=0; ix0<x0; ix0++)
 	{
-		result[ix0] = a[ix0] + b[ix0];
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& ix0)
+		{
+			result[ix0] = a[ix0] + b[ix0];
+		};
+		parallel_exec(x0, loopLambda);
 	}
 	return result;
 }
@@ -122,12 +131,15 @@ template<size_t x0, size_t x1>
 RealArray2D<x0,x1> operatorAdd(RealArray2D<x0,x1> a, RealArray2D<x0,x1> b)
 {
 	RealArray2D<x0,x1> result;
-	for (size_t ix0=0; ix0<x0; ix0++)
 	{
-		for (size_t ix1=0; ix1<x1; ix1++)
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& ix0)
 		{
-			result[ix0][ix1] = a[ix0][ix1] + b[ix0][ix1];
-		}
+			for (size_t ix1=0; ix1<x1; ix1++)
+			{
+				result[ix0][ix1] = a[ix0][ix1] + b[ix0][ix1];
+			}
+		};
+		parallel_exec(x0, loopLambda);
 	}
 	return result;
 }
@@ -136,9 +148,12 @@ template<size_t x0>
 RealArray1D<x0> operatorMult(double a, RealArray1D<x0> b)
 {
 	RealArray1D<x0> result;
-	for (size_t ix0=0; ix0<x0; ix0++)
 	{
-		result[ix0] = a * b[ix0];
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& ix0)
+		{
+			result[ix0] = a * b[ix0];
+		};
+		parallel_exec(x0, loopLambda);
 	}
 	return result;
 }
@@ -147,9 +162,12 @@ template<size_t x0>
 RealArray1D<x0> operatorSub(RealArray1D<x0> a, RealArray1D<x0> b)
 {
 	RealArray1D<x0> result;
-	for (size_t ix0=0; ix0<x0; ix0++)
 	{
-		result[ix0] = a[ix0] - b[ix0];
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& ix0)
+		{
+			result[ix0] = a[ix0] - b[ix0];
+		};
+		parallel_exec(x0, loopLambda);
 	}
 	return result;
 }
@@ -158,12 +176,15 @@ template<size_t x0, size_t x1>
 RealArray2D<x0,x1> operatorMult(double a, RealArray2D<x0,x1> b)
 {
 	RealArray2D<x0,x1> result;
-	for (size_t ix0=0; ix0<x0; ix0++)
 	{
-		for (size_t ix1=0; ix1<x1; ix1++)
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& ix0)
 		{
-			result[ix0][ix1] = a * b[ix0][ix1];
-		}
+			for (size_t ix1=0; ix1<x1; ix1++)
+			{
+				result[ix0][ix1] = a * b[ix0][ix1];
+			}
+		};
+		parallel_exec(x0, loopLambda);
 	}
 	return result;
 }
@@ -172,12 +193,15 @@ template<size_t x0, size_t x1>
 RealArray2D<x0,x1> operatorSub(RealArray2D<x0,x1> a, RealArray2D<x0,x1> b)
 {
 	RealArray2D<x0,x1> result;
-	for (size_t ix0=0; ix0<x0; ix0++)
 	{
-		for (size_t ix1=0; ix1<x1; ix1++)
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& ix0)
 		{
-			result[ix0][ix1] = a[ix0][ix1] - b[ix0][ix1];
-		}
+			for (size_t ix1=0; ix1<x1; ix1++)
+			{
+				result[ix0][ix1] = a[ix0][ix1] - b[ix0][ix1];
+			}
+		};
+		parallel_exec(x0, loopLambda);
 	}
 	return result;
 }
@@ -186,12 +210,15 @@ template<size_t x0, size_t x1>
 RealArray2D<x0,x1> operatorMult(RealArray2D<x0,x1> a, RealArray2D<x0,x1> b)
 {
 	RealArray2D<x0,x1> result;
-	for (size_t ix0=0; ix0<x0; ix0++)
 	{
-		for (size_t ix1=0; ix1<x1; ix1++)
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& ix0)
 		{
-			result[ix0][ix1] = a[ix0][ix1] * b[ix0][ix1];
-		}
+			for (size_t ix1=0; ix1<x1; ix1++)
+			{
+				result[ix0][ix1] = a[ix0][ix1] * b[ix0][ix1];
+			}
+		};
+		parallel_exec(x0, loopLambda);
 	}
 	return result;
 }
@@ -200,12 +227,15 @@ template<size_t x0, size_t x1>
 RealArray2D<x0,x1> operatorMult(RealArray2D<x0,x1> a, double b)
 {
 	RealArray2D<x0,x1> result;
-	for (size_t ix0=0; ix0<x0; ix0++)
 	{
-		for (size_t ix1=0; ix1<x1; ix1++)
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& ix0)
 		{
-			result[ix0][ix1] = a[ix0][ix1] * b;
-		}
+			for (size_t ix1=0; ix1<x1; ix1++)
+			{
+				result[ix0][ix1] = a[ix0][ix1] * b;
+			}
+		};
+		parallel_exec(x0, loopLambda);
 	}
 	return result;
 }
@@ -297,22 +327,25 @@ Glace2d::jsonInit(const char* jsonContent)
  */
 void Glace2d::computeCjr() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
-		const Id jId(jCells);
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& jCells)
 		{
-			const auto nodesOfCellJ(mesh.getNodesOfCell(jId));
-			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
-			for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
+			const Id jId(jCells);
 			{
-				const Id rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCellJ)%nbNodesOfCellJ]);
-				const Id rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCellJ)%nbNodesOfCellJ]);
-				const size_t rPlus1Nodes(rPlus1Id);
-				const size_t rMinus1Nodes(rMinus1Id);
-				C[jCells][rNodesOfCellJ] = glace2dfreefuncs::operatorMult(0.5, glace2dfreefuncs::perp(glace2dfreefuncs::operatorSub(X_n[rPlus1Nodes], X_n[rMinus1Nodes])));
+				const auto nodesOfCellJ(mesh.getNodesOfCell(jId));
+				const size_t nbNodesOfCellJ(nodesOfCellJ.size());
+				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
+				{
+					const Id rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCellJ)%nbNodesOfCellJ]);
+					const Id rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCellJ)%nbNodesOfCellJ]);
+					const size_t rPlus1Nodes(rPlus1Id);
+					const size_t rMinus1Nodes(rMinus1Id);
+					C[jCells][rNodesOfCellJ] = glace2dfreefuncs::operatorMult(0.5, glace2dfreefuncs::perp(glace2dfreefuncs::operatorSub(X_n[rPlus1Nodes], X_n[rMinus1Nodes])));
+				}
 			}
-		}
-	});
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 /**
@@ -322,10 +355,13 @@ void Glace2d::computeCjr() noexcept
  */
 void Glace2d::computeInternalEnergy() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
-		e[jCells] = E_n[jCells] - 0.5 * glace2dfreefuncs::dot(uj_n[jCells], uj_n[jCells]);
-	});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& jCells)
+		{
+			e[jCells] = E_n[jCells] - 0.5 * glace2dfreefuncs::dot(uj_n[jCells], uj_n[jCells]);
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 /**
@@ -335,22 +371,25 @@ void Glace2d::computeInternalEnergy() noexcept
  */
 void Glace2d::iniCjrIc() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
-		const Id jId(jCells);
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& jCells)
 		{
-			const auto nodesOfCellJ(mesh.getNodesOfCell(jId));
-			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
-			for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
+			const Id jId(jCells);
 			{
-				const Id rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCellJ)%nbNodesOfCellJ]);
-				const Id rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCellJ)%nbNodesOfCellJ]);
-				const size_t rPlus1Nodes(rPlus1Id);
-				const size_t rMinus1Nodes(rMinus1Id);
-				Cjr_ic[jCells][rNodesOfCellJ] = glace2dfreefuncs::operatorMult(0.5, glace2dfreefuncs::perp(glace2dfreefuncs::operatorSub(X_n0[rPlus1Nodes], X_n0[rMinus1Nodes])));
+				const auto nodesOfCellJ(mesh.getNodesOfCell(jId));
+				const size_t nbNodesOfCellJ(nodesOfCellJ.size());
+				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
+				{
+					const Id rPlus1Id(nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCellJ)%nbNodesOfCellJ]);
+					const Id rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCellJ)%nbNodesOfCellJ]);
+					const size_t rPlus1Nodes(rPlus1Id);
+					const size_t rMinus1Nodes(rMinus1Id);
+					Cjr_ic[jCells][rNodesOfCellJ] = glace2dfreefuncs::operatorMult(0.5, glace2dfreefuncs::perp(glace2dfreefuncs::operatorSub(X_n0[rPlus1Nodes], X_n0[rMinus1Nodes])));
+				}
 			}
-		}
-	});
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 /**
@@ -370,18 +409,21 @@ void Glace2d::iniTime() noexcept
  */
 void Glace2d::computeLjr() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
-		const Id jId(jCells);
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& jCells)
 		{
-			const auto nodesOfCellJ(mesh.getNodesOfCell(jId));
-			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
-			for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
+			const Id jId(jCells);
 			{
-				l[jCells][rNodesOfCellJ] = glace2dfreefuncs::norm(C[jCells][rNodesOfCellJ]);
+				const auto nodesOfCellJ(mesh.getNodesOfCell(jId));
+				const size_t nbNodesOfCellJ(nodesOfCellJ.size());
+				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
+				{
+					l[jCells][rNodesOfCellJ] = glace2dfreefuncs::norm(C[jCells][rNodesOfCellJ]);
+				}
 			}
-		}
-	});
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 /**
@@ -391,22 +433,25 @@ void Glace2d::computeLjr() noexcept
  */
 void Glace2d::computeV() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
-		const Id jId(jCells);
-		double reduction0(0.0);
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& jCells)
 		{
-			const auto nodesOfCellJ(mesh.getNodesOfCell(jId));
-			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
-			for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
+			const Id jId(jCells);
+			double reduction0(0.0);
 			{
-				const Id rId(nodesOfCellJ[rNodesOfCellJ]);
-				const size_t rNodes(rId);
-				reduction0 = glace2dfreefuncs::sumR0(reduction0, glace2dfreefuncs::dot(C[jCells][rNodesOfCellJ], X_n[rNodes]));
+				const auto nodesOfCellJ(mesh.getNodesOfCell(jId));
+				const size_t nbNodesOfCellJ(nodesOfCellJ.size());
+				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
+				{
+					const Id rId(nodesOfCellJ[rNodesOfCellJ]);
+					const size_t rNodes(rId);
+					reduction0 = glace2dfreefuncs::sumR0(reduction0, glace2dfreefuncs::dot(C[jCells][rNodesOfCellJ], X_n[rNodes]));
+				}
 			}
-		}
-		V[jCells] = 0.5 * reduction0;
-	});
+			V[jCells] = 0.5 * reduction0;
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 /**
@@ -416,51 +461,54 @@ void Glace2d::computeV() noexcept
  */
 void Glace2d::initialize() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
-		const Id jId(jCells);
-		double rho_ic;
-		double p_ic;
-		RealArray1D<2> reduction0({0.0, 0.0});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& jCells)
 		{
-			const auto nodesOfCellJ(mesh.getNodesOfCell(jId));
-			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
-			for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
+			const Id jId(jCells);
+			double rho_ic;
+			double p_ic;
+			RealArray1D<2> reduction0({0.0, 0.0});
 			{
-				const Id rId(nodesOfCellJ[rNodesOfCellJ]);
-				const size_t rNodes(rId);
-				reduction0 = glace2dfreefuncs::sumR1(reduction0, X_n0[rNodes]);
+				const auto nodesOfCellJ(mesh.getNodesOfCell(jId));
+				const size_t nbNodesOfCellJ(nodesOfCellJ.size());
+				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
+				{
+					const Id rId(nodesOfCellJ[rNodesOfCellJ]);
+					const size_t rNodes(rId);
+					reduction0 = glace2dfreefuncs::sumR1(reduction0, X_n0[rNodes]);
+				}
 			}
-		}
-		const RealArray1D<2> center(glace2dfreefuncs::operatorMult(0.25, reduction0));
-		if (center[0] < xInterface) 
-		{
-			rho_ic = rhoIniZg;
-			p_ic = pIniZg;
-		}
-		else
-		{
-			rho_ic = rhoIniZd;
-			p_ic = pIniZd;
-		}
-		double reduction1(0.0);
-		{
-			const auto nodesOfCellJ(mesh.getNodesOfCell(jId));
-			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
-			for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
+			const RealArray1D<2> center(glace2dfreefuncs::operatorMult(0.25, reduction0));
+			if (center[0] < xInterface) 
 			{
-				const Id rId(nodesOfCellJ[rNodesOfCellJ]);
-				const size_t rNodes(rId);
-				reduction1 = glace2dfreefuncs::sumR0(reduction1, glace2dfreefuncs::dot(Cjr_ic[jCells][rNodesOfCellJ], X_n0[rNodes]));
+				rho_ic = rhoIniZg;
+				p_ic = pIniZg;
 			}
-		}
-		const double V_ic(0.5 * reduction1);
-		m[jCells] = rho_ic * V_ic;
-		p[jCells] = p_ic;
-		rho[jCells] = rho_ic;
-		E_n[jCells] = p_ic / ((gamma - 1.0) * rho_ic);
-		uj_n[jCells] = {0.0, 0.0};
-	});
+			else
+			{
+				rho_ic = rhoIniZd;
+				p_ic = pIniZd;
+			}
+			double reduction1(0.0);
+			{
+				const auto nodesOfCellJ(mesh.getNodesOfCell(jId));
+				const size_t nbNodesOfCellJ(nodesOfCellJ.size());
+				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
+				{
+					const Id rId(nodesOfCellJ[rNodesOfCellJ]);
+					const size_t rNodes(rId);
+					reduction1 = glace2dfreefuncs::sumR0(reduction1, glace2dfreefuncs::dot(Cjr_ic[jCells][rNodesOfCellJ], X_n0[rNodes]));
+				}
+			}
+			const double V_ic(0.5 * reduction1);
+			m[jCells] = rho_ic * V_ic;
+			p[jCells] = p_ic;
+			rho[jCells] = rho_ic;
+			E_n[jCells] = p_ic / ((gamma - 1.0) * rho_ic);
+			uj_n[jCells] = {0.0, 0.0};
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 /**
@@ -471,13 +519,16 @@ void Glace2d::initialize() noexcept
 void Glace2d::setUpTimeLoopN() noexcept
 {
 	t_n = t_n0;
-	parallel_exec(nbNodes, [&](const size_t& i1Nodes)
 	{
-		for (size_t i1=0; i1<2; i1++)
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& i1Nodes)
 		{
-			X_n[i1Nodes][i1] = X_n0[i1Nodes][i1];
-		}
-	});
+			for (size_t i1=0; i1<2; i1++)
+			{
+				X_n[i1Nodes][i1] = X_n0[i1Nodes][i1];
+			}
+		};
+		parallel_exec(nbNodes, loopLambda);
+	}
 }
 
 /**
@@ -487,10 +538,13 @@ void Glace2d::setUpTimeLoopN() noexcept
  */
 void Glace2d::computeDensity() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
-		rho[jCells] = m[jCells] / V[jCells];
-	});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& jCells)
+		{
+			rho[jCells] = m[jCells] / V[jCells];
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 /**
@@ -540,24 +594,33 @@ void Glace2d::executeTimeLoopN() noexcept
 		continueLoop = (t_nplus1 < stopTime && n + 1 < maxIterations);
 	
 		t_n = t_nplus1;
-		parallel_exec(nbNodes, [&](const size_t& i1Nodes)
 		{
-			for (size_t i1=0; i1<2; i1++)
+			const std::function<void(const size_t&)> loopLambda = [&] (const size_t& i1Nodes)
 			{
-				X_n[i1Nodes][i1] = X_nplus1[i1Nodes][i1];
-			}
-		});
-		parallel_exec(nbCells, [&](const size_t& i1Cells)
+				for (size_t i1=0; i1<2; i1++)
+				{
+					X_n[i1Nodes][i1] = X_nplus1[i1Nodes][i1];
+				}
+			};
+			parallel_exec(nbNodes, loopLambda);
+		}
 		{
-			E_n[i1Cells] = E_nplus1[i1Cells];
-		});
-		parallel_exec(nbCells, [&](const size_t& i1Cells)
-		{
-			for (size_t i1=0; i1<2; i1++)
+			const std::function<void(const size_t&)> loopLambda = [&] (const size_t& i1Cells)
 			{
-				uj_n[i1Cells][i1] = uj_nplus1[i1Cells][i1];
-			}
-		});
+				E_n[i1Cells] = E_nplus1[i1Cells];
+			};
+			parallel_exec(nbCells, loopLambda);
+		}
+		{
+			const std::function<void(const size_t&)> loopLambda = [&] (const size_t& i1Cells)
+			{
+				for (size_t i1=0; i1<2; i1++)
+				{
+					uj_n[i1Cells][i1] = uj_nplus1[i1Cells][i1];
+				}
+			};
+			parallel_exec(nbCells, loopLambda);
+		}
 	
 		cpuTimer.stop();
 		globalTimer.stop();
@@ -589,10 +652,13 @@ void Glace2d::executeTimeLoopN() noexcept
  */
 void Glace2d::computeEOSp() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
-		p[jCells] = (gamma - 1.0) * rho[jCells] * e[jCells];
-	});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& jCells)
+		{
+			p[jCells] = (gamma - 1.0) * rho[jCells] * e[jCells];
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 /**
@@ -602,10 +668,13 @@ void Glace2d::computeEOSp() noexcept
  */
 void Glace2d::computeEOSc() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
-		c[jCells] = std::sqrt(gamma * p[jCells] / rho[jCells]);
-	});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& jCells)
+		{
+			c[jCells] = std::sqrt(gamma * p[jCells] / rho[jCells]);
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 /**
@@ -615,18 +684,21 @@ void Glace2d::computeEOSc() noexcept
  */
 void Glace2d::computeAjr() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
-		const Id jId(jCells);
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& jCells)
 		{
-			const auto nodesOfCellJ(mesh.getNodesOfCell(jId));
-			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
-			for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
+			const Id jId(jCells);
 			{
-				Ajr[jCells][rNodesOfCellJ] = glace2dfreefuncs::operatorMult(((rho[jCells] * c[jCells]) / l[jCells][rNodesOfCellJ]), glace2dfreefuncs::tensProduct(C[jCells][rNodesOfCellJ], C[jCells][rNodesOfCellJ]));
+				const auto nodesOfCellJ(mesh.getNodesOfCell(jId));
+				const size_t nbNodesOfCellJ(nodesOfCellJ.size());
+				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
+				{
+					Ajr[jCells][rNodesOfCellJ] = glace2dfreefuncs::operatorMult(((rho[jCells] * c[jCells]) / l[jCells][rNodesOfCellJ]), glace2dfreefuncs::tensProduct(C[jCells][rNodesOfCellJ], C[jCells][rNodesOfCellJ]));
+				}
 			}
-		}
-	});
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 /**
@@ -636,20 +708,23 @@ void Glace2d::computeAjr() noexcept
  */
 void Glace2d::computedeltatj() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
-		const Id jId(jCells);
-		double reduction0(0.0);
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& jCells)
 		{
-			const auto nodesOfCellJ(mesh.getNodesOfCell(jId));
-			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
-			for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
+			const Id jId(jCells);
+			double reduction0(0.0);
 			{
-				reduction0 = glace2dfreefuncs::sumR0(reduction0, l[jCells][rNodesOfCellJ]);
+				const auto nodesOfCellJ(mesh.getNodesOfCell(jId));
+				const size_t nbNodesOfCellJ(nodesOfCellJ.size());
+				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
+				{
+					reduction0 = glace2dfreefuncs::sumR0(reduction0, l[jCells][rNodesOfCellJ]);
+				}
 			}
-		}
-		deltatj[jCells] = 2.0 * V[jCells] / (c[jCells] * reduction0);
-	});
+			deltatj[jCells] = 2.0 * V[jCells] / (c[jCells] * reduction0);
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 /**
@@ -659,29 +734,32 @@ void Glace2d::computedeltatj() noexcept
  */
 void Glace2d::computeAr() noexcept
 {
-	parallel_exec(nbNodes, [&](const size_t& rNodes)
 	{
-		const Id rId(rNodes);
-		RealArray2D<2,2> reduction0({0.0, 0.0,  0.0, 0.0});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& rNodes)
 		{
-			const auto cellsOfNodeR(mesh.getCellsOfNode(rId));
-			const size_t nbCellsOfNodeR(cellsOfNodeR.size());
-			for (size_t jCellsOfNodeR=0; jCellsOfNodeR<nbCellsOfNodeR; jCellsOfNodeR++)
+			const Id rId(rNodes);
+			RealArray2D<2,2> reduction0({0.0, 0.0,  0.0, 0.0});
 			{
-				const Id jId(cellsOfNodeR[jCellsOfNodeR]);
-				const size_t jCells(jId);
-				const size_t rNodesOfCellJ(indexOf(mesh.getNodesOfCell(jId), rId));
-				reduction0 = glace2dfreefuncs::sumR2(reduction0, Ajr[jCells][rNodesOfCellJ]);
+				const auto cellsOfNodeR(mesh.getCellsOfNode(rId));
+				const size_t nbCellsOfNodeR(cellsOfNodeR.size());
+				for (size_t jCellsOfNodeR=0; jCellsOfNodeR<nbCellsOfNodeR; jCellsOfNodeR++)
+				{
+					const Id jId(cellsOfNodeR[jCellsOfNodeR]);
+					const size_t jCells(jId);
+					const size_t rNodesOfCellJ(indexOf(mesh.getNodesOfCell(jId), rId));
+					reduction0 = glace2dfreefuncs::sumR2(reduction0, Ajr[jCells][rNodesOfCellJ]);
+				}
 			}
-		}
-		for (size_t i1=0; i1<2; i1++)
-		{
-			for (size_t i2=0; i2<2; i2++)
+			for (size_t i1=0; i1<2; i1++)
 			{
-				Ar[rNodes][i1][i2] = reduction0[i1][i2];
+				for (size_t i2=0; i2<2; i2++)
+				{
+					Ar[rNodes][i1][i2] = reduction0[i1][i2];
+				}
 			}
-		}
-	});
+		};
+		parallel_exec(nbNodes, loopLambda);
+	}
 }
 
 /**
@@ -691,26 +769,29 @@ void Glace2d::computeAr() noexcept
  */
 void Glace2d::computeBr() noexcept
 {
-	parallel_exec(nbNodes, [&](const size_t& rNodes)
 	{
-		const Id rId(rNodes);
-		RealArray1D<2> reduction0({0.0, 0.0});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& rNodes)
 		{
-			const auto cellsOfNodeR(mesh.getCellsOfNode(rId));
-			const size_t nbCellsOfNodeR(cellsOfNodeR.size());
-			for (size_t jCellsOfNodeR=0; jCellsOfNodeR<nbCellsOfNodeR; jCellsOfNodeR++)
+			const Id rId(rNodes);
+			RealArray1D<2> reduction0({0.0, 0.0});
 			{
-				const Id jId(cellsOfNodeR[jCellsOfNodeR]);
-				const size_t jCells(jId);
-				const size_t rNodesOfCellJ(indexOf(mesh.getNodesOfCell(jId), rId));
-				reduction0 = glace2dfreefuncs::sumR1(reduction0, glace2dfreefuncs::operatorAdd(glace2dfreefuncs::operatorMult(p[jCells], C[jCells][rNodesOfCellJ]), glace2dfreefuncs::matVectProduct(Ajr[jCells][rNodesOfCellJ], uj_n[jCells])));
+				const auto cellsOfNodeR(mesh.getCellsOfNode(rId));
+				const size_t nbCellsOfNodeR(cellsOfNodeR.size());
+				for (size_t jCellsOfNodeR=0; jCellsOfNodeR<nbCellsOfNodeR; jCellsOfNodeR++)
+				{
+					const Id jId(cellsOfNodeR[jCellsOfNodeR]);
+					const size_t jCells(jId);
+					const size_t rNodesOfCellJ(indexOf(mesh.getNodesOfCell(jId), rId));
+					reduction0 = glace2dfreefuncs::sumR1(reduction0, glace2dfreefuncs::operatorAdd(glace2dfreefuncs::operatorMult(p[jCells], C[jCells][rNodesOfCellJ]), glace2dfreefuncs::matVectProduct(Ajr[jCells][rNodesOfCellJ], uj_n[jCells])));
+				}
 			}
-		}
-		for (size_t i1=0; i1<2; i1++)
-		{
-			b[rNodes][i1] = reduction0[i1];
-		}
-	});
+			for (size_t i1=0; i1<2; i1++)
+			{
+				b[rNodes][i1] = reduction0[i1];
+			}
+		};
+		parallel_exec(nbNodes, loopLambda);
+	}
 }
 
 /**
@@ -739,61 +820,73 @@ void Glace2d::computeBoundaryConditions() noexcept
 	const RealArray2D<2,2> I({1.0, 0.0, 0.0, 1.0});
 	{
 		const auto topNodes(mesh.getGroup("TopNodes"));
-		parallel_exec(nbTopNodes, [&](const size_t& rTopNodes)
 		{
-			const Id rId(topNodes[rTopNodes]);
-			const size_t rNodes(rId);
-			const RealArray1D<2> N({0.0, 1.0});
-			const RealArray2D<2,2> NxN(glace2dfreefuncs::tensProduct(N, N));
-			const RealArray2D<2,2> IcP(glace2dfreefuncs::operatorSub(I, NxN));
-			bt[rNodes] = glace2dfreefuncs::matVectProduct(IcP, b[rNodes]);
-			Mt[rNodes] = glace2dfreefuncs::operatorAdd(glace2dfreefuncs::operatorMult(IcP, (glace2dfreefuncs::operatorMult(Ar[rNodes], IcP))), glace2dfreefuncs::operatorMult(NxN, glace2dfreefuncs::trace(Ar[rNodes])));
-		});
+			const std::function<void(const size_t&)> loopLambda = [&] (const size_t& rTopNodes)
+			{
+				const Id rId(topNodes[rTopNodes]);
+				const size_t rNodes(rId);
+				const RealArray1D<2> N({0.0, 1.0});
+				const RealArray2D<2,2> NxN(glace2dfreefuncs::tensProduct(N, N));
+				const RealArray2D<2,2> IcP(glace2dfreefuncs::operatorSub(I, NxN));
+				bt[rNodes] = glace2dfreefuncs::matVectProduct(IcP, b[rNodes]);
+				Mt[rNodes] = glace2dfreefuncs::operatorAdd(glace2dfreefuncs::operatorMult(IcP, (glace2dfreefuncs::operatorMult(Ar[rNodes], IcP))), glace2dfreefuncs::operatorMult(NxN, glace2dfreefuncs::trace(Ar[rNodes])));
+			};
+			parallel_exec(nbTopNodes, loopLambda);
+		}
 	}
 	{
 		const auto bottomNodes(mesh.getGroup("BottomNodes"));
-		parallel_exec(nbBottomNodes, [&](const size_t& rBottomNodes)
 		{
-			const Id rId(bottomNodes[rBottomNodes]);
-			const size_t rNodes(rId);
-			const RealArray1D<2> N({0.0, -1.0});
-			const RealArray2D<2,2> NxN(glace2dfreefuncs::tensProduct(N, N));
-			const RealArray2D<2,2> IcP(glace2dfreefuncs::operatorSub(I, NxN));
-			bt[rNodes] = glace2dfreefuncs::matVectProduct(IcP, b[rNodes]);
-			Mt[rNodes] = glace2dfreefuncs::operatorAdd(glace2dfreefuncs::operatorMult(IcP, (glace2dfreefuncs::operatorMult(Ar[rNodes], IcP))), glace2dfreefuncs::operatorMult(NxN, glace2dfreefuncs::trace(Ar[rNodes])));
-		});
+			const std::function<void(const size_t&)> loopLambda = [&] (const size_t& rBottomNodes)
+			{
+				const Id rId(bottomNodes[rBottomNodes]);
+				const size_t rNodes(rId);
+				const RealArray1D<2> N({0.0, -1.0});
+				const RealArray2D<2,2> NxN(glace2dfreefuncs::tensProduct(N, N));
+				const RealArray2D<2,2> IcP(glace2dfreefuncs::operatorSub(I, NxN));
+				bt[rNodes] = glace2dfreefuncs::matVectProduct(IcP, b[rNodes]);
+				Mt[rNodes] = glace2dfreefuncs::operatorAdd(glace2dfreefuncs::operatorMult(IcP, (glace2dfreefuncs::operatorMult(Ar[rNodes], IcP))), glace2dfreefuncs::operatorMult(NxN, glace2dfreefuncs::trace(Ar[rNodes])));
+			};
+			parallel_exec(nbBottomNodes, loopLambda);
+		}
 	}
 	{
 		const auto leftNodes(mesh.getGroup("LeftNodes"));
-		parallel_exec(nbLeftNodes, [&](const size_t& rLeftNodes)
 		{
-			const Id rId(leftNodes[rLeftNodes]);
-			const size_t rNodes(rId);
-			for (size_t i1=0; i1<2; i1++)
+			const std::function<void(const size_t&)> loopLambda = [&] (const size_t& rLeftNodes)
 			{
-				for (size_t i2=0; i2<2; i2++)
+				const Id rId(leftNodes[rLeftNodes]);
+				const size_t rNodes(rId);
+				for (size_t i1=0; i1<2; i1++)
 				{
-					Mt[rNodes][i1][i2] = I[i1][i2];
+					for (size_t i2=0; i2<2; i2++)
+					{
+						Mt[rNodes][i1][i2] = I[i1][i2];
+					}
 				}
-			}
-			bt[rNodes] = {0.0, 0.0};
-		});
+				bt[rNodes] = {0.0, 0.0};
+			};
+			parallel_exec(nbLeftNodes, loopLambda);
+		}
 	}
 	{
 		const auto rightNodes(mesh.getGroup("RightNodes"));
-		parallel_exec(nbRightNodes, [&](const size_t& rRightNodes)
 		{
-			const Id rId(rightNodes[rRightNodes]);
-			const size_t rNodes(rId);
-			for (size_t i1=0; i1<2; i1++)
+			const std::function<void(const size_t&)> loopLambda = [&] (const size_t& rRightNodes)
 			{
-				for (size_t i2=0; i2<2; i2++)
+				const Id rId(rightNodes[rRightNodes]);
+				const size_t rNodes(rId);
+				for (size_t i1=0; i1<2; i1++)
 				{
-					Mt[rNodes][i1][i2] = I[i1][i2];
+					for (size_t i2=0; i2<2; i2++)
+					{
+						Mt[rNodes][i1][i2] = I[i1][i2];
+					}
 				}
-			}
-			bt[rNodes] = {0.0, 0.0};
-		});
+				bt[rNodes] = {0.0, 0.0};
+			};
+			parallel_exec(nbRightNodes, loopLambda);
+		}
 	}
 }
 
@@ -806,15 +899,18 @@ void Glace2d::computeBt() noexcept
 {
 	{
 		const auto innerNodes(mesh.getGroup("InnerNodes"));
-		parallel_exec(nbInnerNodes, [&](const size_t& rInnerNodes)
 		{
-			const Id rId(innerNodes[rInnerNodes]);
-			const size_t rNodes(rId);
-			for (size_t i1=0; i1<2; i1++)
+			const std::function<void(const size_t&)> loopLambda = [&] (const size_t& rInnerNodes)
 			{
-				bt[rNodes][i1] = b[rNodes][i1];
-			}
-		});
+				const Id rId(innerNodes[rInnerNodes]);
+				const size_t rNodes(rId);
+				for (size_t i1=0; i1<2; i1++)
+				{
+					bt[rNodes][i1] = b[rNodes][i1];
+				}
+			};
+			parallel_exec(nbInnerNodes, loopLambda);
+		}
 	}
 }
 
@@ -827,18 +923,21 @@ void Glace2d::computeMt() noexcept
 {
 	{
 		const auto innerNodes(mesh.getGroup("InnerNodes"));
-		parallel_exec(nbInnerNodes, [&](const size_t& rInnerNodes)
 		{
-			const Id rId(innerNodes[rInnerNodes]);
-			const size_t rNodes(rId);
-			for (size_t i1=0; i1<2; i1++)
+			const std::function<void(const size_t&)> loopLambda = [&] (const size_t& rInnerNodes)
 			{
-				for (size_t i2=0; i2<2; i2++)
+				const Id rId(innerNodes[rInnerNodes]);
+				const size_t rNodes(rId);
+				for (size_t i1=0; i1<2; i1++)
 				{
-					Mt[rNodes][i1][i2] = Ar[rNodes][i1][i2];
+					for (size_t i2=0; i2<2; i2++)
+					{
+						Mt[rNodes][i1][i2] = Ar[rNodes][i1][i2];
+					}
 				}
-			}
-		});
+			};
+			parallel_exec(nbInnerNodes, loopLambda);
+		}
 	}
 }
 
@@ -859,10 +958,13 @@ void Glace2d::computeTn() noexcept
  */
 void Glace2d::computeU() noexcept
 {
-	parallel_exec(nbNodes, [&](const size_t& rNodes)
 	{
-		ur[rNodes] = glace2dfreefuncs::matVectProduct(glace2dfreefuncs::inverse(Mt[rNodes]), bt[rNodes]);
-	});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& rNodes)
+		{
+			ur[rNodes] = glace2dfreefuncs::matVectProduct(glace2dfreefuncs::inverse(Mt[rNodes]), bt[rNodes]);
+		};
+		parallel_exec(nbNodes, loopLambda);
+	}
 }
 
 /**
@@ -872,20 +974,23 @@ void Glace2d::computeU() noexcept
  */
 void Glace2d::computeFjr() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
-		const Id jId(jCells);
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& jCells)
 		{
-			const auto nodesOfCellJ(mesh.getNodesOfCell(jId));
-			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
-			for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
+			const Id jId(jCells);
 			{
-				const Id rId(nodesOfCellJ[rNodesOfCellJ]);
-				const size_t rNodes(rId);
-				F[jCells][rNodesOfCellJ] = glace2dfreefuncs::operatorAdd(glace2dfreefuncs::operatorMult(p[jCells], C[jCells][rNodesOfCellJ]), glace2dfreefuncs::matVectProduct(Ajr[jCells][rNodesOfCellJ], (glace2dfreefuncs::operatorSub(uj_n[jCells], ur[rNodes]))));
+				const auto nodesOfCellJ(mesh.getNodesOfCell(jId));
+				const size_t nbNodesOfCellJ(nodesOfCellJ.size());
+				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
+				{
+					const Id rId(nodesOfCellJ[rNodesOfCellJ]);
+					const size_t rNodes(rId);
+					F[jCells][rNodesOfCellJ] = glace2dfreefuncs::operatorAdd(glace2dfreefuncs::operatorMult(p[jCells], C[jCells][rNodesOfCellJ]), glace2dfreefuncs::matVectProduct(Ajr[jCells][rNodesOfCellJ], (glace2dfreefuncs::operatorSub(uj_n[jCells], ur[rNodes]))));
+				}
 			}
-		}
-	});
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 /**
@@ -895,10 +1000,13 @@ void Glace2d::computeFjr() noexcept
  */
 void Glace2d::computeXn() noexcept
 {
-	parallel_exec(nbNodes, [&](const size_t& rNodes)
 	{
-		X_nplus1[rNodes] = glace2dfreefuncs::operatorAdd(X_n[rNodes], glace2dfreefuncs::operatorMult(deltat, ur[rNodes]));
-	});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& rNodes)
+		{
+			X_nplus1[rNodes] = glace2dfreefuncs::operatorAdd(X_n[rNodes], glace2dfreefuncs::operatorMult(deltat, ur[rNodes]));
+		};
+		parallel_exec(nbNodes, loopLambda);
+	}
 }
 
 /**
@@ -908,22 +1016,25 @@ void Glace2d::computeXn() noexcept
  */
 void Glace2d::computeEn() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
-		const Id jId(jCells);
-		double reduction0(0.0);
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& jCells)
 		{
-			const auto nodesOfCellJ(mesh.getNodesOfCell(jId));
-			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
-			for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
+			const Id jId(jCells);
+			double reduction0(0.0);
 			{
-				const Id rId(nodesOfCellJ[rNodesOfCellJ]);
-				const size_t rNodes(rId);
-				reduction0 = glace2dfreefuncs::sumR0(reduction0, glace2dfreefuncs::dot(F[jCells][rNodesOfCellJ], ur[rNodes]));
+				const auto nodesOfCellJ(mesh.getNodesOfCell(jId));
+				const size_t nbNodesOfCellJ(nodesOfCellJ.size());
+				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
+				{
+					const Id rId(nodesOfCellJ[rNodesOfCellJ]);
+					const size_t rNodes(rId);
+					reduction0 = glace2dfreefuncs::sumR0(reduction0, glace2dfreefuncs::dot(F[jCells][rNodesOfCellJ], ur[rNodes]));
+				}
 			}
-		}
-		E_nplus1[jCells] = E_n[jCells] - (deltat / m[jCells]) * reduction0;
-	});
+			E_nplus1[jCells] = E_n[jCells] - (deltat / m[jCells]) * reduction0;
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 /**
@@ -933,20 +1044,23 @@ void Glace2d::computeEn() noexcept
  */
 void Glace2d::computeUn() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& jCells)
 	{
-		const Id jId(jCells);
-		RealArray1D<2> reduction0({0.0, 0.0});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& jCells)
 		{
-			const auto nodesOfCellJ(mesh.getNodesOfCell(jId));
-			const size_t nbNodesOfCellJ(nodesOfCellJ.size());
-			for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
+			const Id jId(jCells);
+			RealArray1D<2> reduction0({0.0, 0.0});
 			{
-				reduction0 = glace2dfreefuncs::sumR1(reduction0, F[jCells][rNodesOfCellJ]);
+				const auto nodesOfCellJ(mesh.getNodesOfCell(jId));
+				const size_t nbNodesOfCellJ(nodesOfCellJ.size());
+				for (size_t rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
+				{
+					reduction0 = glace2dfreefuncs::sumR1(reduction0, F[jCells][rNodesOfCellJ]);
+				}
 			}
-		}
-		uj_nplus1[jCells] = glace2dfreefuncs::operatorSub(uj_n[jCells], glace2dfreefuncs::operatorMult((deltat / m[jCells]), reduction0));
-	});
+			uj_nplus1[jCells] = glace2dfreefuncs::operatorSub(uj_n[jCells], glace2dfreefuncs::operatorMult((deltat / m[jCells]), reduction0));
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 void Glace2d::dumpVariables(int iteration, bool useTimer)

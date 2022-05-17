@@ -98,7 +98,7 @@ public final class HeatEquation
 	 */
 	protected void computeOutgoingFlux()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(j1Cells -> 
+		IntStream.range(0, nbCells).parallel().forEach(j1Cells ->
 		{
 			final int j1Id = j1Cells;
 			double reduction0 = 0.0;
@@ -126,7 +126,7 @@ public final class HeatEquation
 	 */
 	protected void computeSurface()
 	{
-		IntStream.range(0, nbFaces).parallel().forEach(fFaces -> 
+		IntStream.range(0, nbFaces).parallel().forEach(fFaces ->
 		{
 			final int fId = fFaces;
 			double reduction0 = 0.0;
@@ -163,7 +163,7 @@ public final class HeatEquation
 	 */
 	protected void computeV()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(jCells ->
 		{
 			final int jId = jCells;
 			double reduction0 = 0.0;
@@ -190,7 +190,7 @@ public final class HeatEquation
 	 */
 	protected void iniCenter()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(jCells ->
 		{
 			final int jId = jCells;
 			double[] reduction0 = new double[] {0.0, 0.0};
@@ -215,7 +215,7 @@ public final class HeatEquation
 	 */
 	protected void iniF()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(jCells ->
 		{
 			f[jCells] = 0.0;
 		});
@@ -238,7 +238,7 @@ public final class HeatEquation
 	 */
 	protected void computeUn()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(jCells ->
 		{
 			u_nplus1[jCells] = f[jCells] * deltat + u_n[jCells] + outgoingFlux[jCells];
 		});
@@ -251,7 +251,7 @@ public final class HeatEquation
 	 */
 	protected void iniUn()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(jCells ->
 		{
 			u_n[jCells] = Math.cos(2 * PI * alpha * center[jCells][0]);
 		});
@@ -291,7 +291,7 @@ public final class HeatEquation
 			continueLoop = (t_nplus1 < stopTime && n + 1 < maxIterations);
 		
 			t_n = t_nplus1;
-			IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
+			IntStream.range(0, nbCells).parallel().forEach(i1Cells ->
 			{
 				u_n[i1Cells] = u_nplus1[i1Cells];
 			});
@@ -334,30 +334,30 @@ public final class HeatEquation
 	private static double[] operatorAdd(double[] a, double[] b)
 	{
 		double[] result = new double[a.length];
-		for (int ix0=0; ix0<a.length; ix0++)
+		IntStream.range(0, a.length).parallel().forEach(ix0 ->
 		{
 			result[ix0] = a[ix0] + b[ix0];
-		}
+		});
 		return result;
 	}
 
 	private static double[] operatorMult(double a, double[] b)
 	{
 		double[] result = new double[b.length];
-		for (int ix0=0; ix0<b.length; ix0++)
+		IntStream.range(0, b.length).parallel().forEach(ix0 ->
 		{
 			result[ix0] = a * b[ix0];
-		}
+		});
 		return result;
 	}
 
 	private static double[] operatorSub(double[] a, double[] b)
 	{
 		double[] result = new double[a.length];
-		for (int ix0=0; ix0<a.length; ix0++)
+		IntStream.range(0, a.length).parallel().forEach(ix0 ->
 		{
 			result[ix0] = a[ix0] - b[ix0];
-		}
+		});
 		return result;
 	}
 

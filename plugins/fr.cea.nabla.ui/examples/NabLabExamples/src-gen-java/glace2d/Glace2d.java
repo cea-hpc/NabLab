@@ -143,7 +143,7 @@ public final class Glace2d
 	 */
 	protected void computeCjr()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(jCells ->
 		{
 			final int jId = jCells;
 			{
@@ -168,7 +168,7 @@ public final class Glace2d
 	 */
 	protected void computeInternalEnergy()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(jCells ->
 		{
 			e[jCells] = E_n[jCells] - 0.5 * dot(uj_n[jCells], uj_n[jCells]);
 		});
@@ -181,7 +181,7 @@ public final class Glace2d
 	 */
 	protected void iniCjrIc()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(jCells ->
 		{
 			final int jId = jCells;
 			{
@@ -216,7 +216,7 @@ public final class Glace2d
 	 */
 	protected void computeLjr()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(jCells ->
 		{
 			final int jId = jCells;
 			{
@@ -237,7 +237,7 @@ public final class Glace2d
 	 */
 	protected void computeV()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(jCells ->
 		{
 			final int jId = jCells;
 			double reduction0 = 0.0;
@@ -262,7 +262,7 @@ public final class Glace2d
 	 */
 	protected void initialize()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(jCells ->
 		{
 			final int jId = jCells;
 			double rho_ic;
@@ -317,7 +317,7 @@ public final class Glace2d
 	protected void setUpTimeLoopN()
 	{
 		t_n = t_n0;
-		IntStream.range(0, nbNodes).parallel().forEach(i1Nodes -> 
+		IntStream.range(0, nbNodes).parallel().forEach(i1Nodes ->
 		{
 			for (int i1=0; i1<2; i1++)
 			{
@@ -333,7 +333,7 @@ public final class Glace2d
 	 */
 	protected void computeDensity()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(jCells ->
 		{
 			rho[jCells] = m[jCells] / V[jCells];
 		});
@@ -381,18 +381,18 @@ public final class Glace2d
 			continueLoop = (t_nplus1 < stopTime && n + 1 < maxIterations);
 		
 			t_n = t_nplus1;
-			IntStream.range(0, nbNodes).parallel().forEach(i1Nodes -> 
+			IntStream.range(0, nbNodes).parallel().forEach(i1Nodes ->
 			{
 				for (int i1=0; i1<2; i1++)
 				{
 					X_n[i1Nodes][i1] = X_nplus1[i1Nodes][i1];
 				}
 			});
-			IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
+			IntStream.range(0, nbCells).parallel().forEach(i1Cells ->
 			{
 				E_n[i1Cells] = E_nplus1[i1Cells];
 			});
-			IntStream.range(0, nbCells).parallel().forEach(i1Cells -> 
+			IntStream.range(0, nbCells).parallel().forEach(i1Cells ->
 			{
 				for (int i1=0; i1<2; i1++)
 				{
@@ -412,7 +412,7 @@ public final class Glace2d
 	 */
 	protected void computeEOSp()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(jCells ->
 		{
 			p[jCells] = (gamma - 1.0) * rho[jCells] * e[jCells];
 		});
@@ -425,7 +425,7 @@ public final class Glace2d
 	 */
 	protected void computeEOSc()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(jCells ->
 		{
 			c[jCells] = Math.sqrt(gamma * p[jCells] / rho[jCells]);
 		});
@@ -438,7 +438,7 @@ public final class Glace2d
 	 */
 	protected void computeAjr()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(jCells ->
 		{
 			final int jId = jCells;
 			{
@@ -459,7 +459,7 @@ public final class Glace2d
 	 */
 	protected void computedeltatj()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(jCells ->
 		{
 			final int jId = jCells;
 			double reduction0 = 0.0;
@@ -482,7 +482,7 @@ public final class Glace2d
 	 */
 	protected void computeAr()
 	{
-		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> 
+		IntStream.range(0, nbNodes).parallel().forEach(rNodes ->
 		{
 			final int rId = rNodes;
 			double[][] reduction0 = new double[][] {{0.0, 0.0}, {0.0, 0.0}};
@@ -514,7 +514,7 @@ public final class Glace2d
 	 */
 	protected void computeBr()
 	{
-		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> 
+		IntStream.range(0, nbNodes).parallel().forEach(rNodes ->
 		{
 			final int rId = rNodes;
 			double[] reduction0 = new double[] {0.0, 0.0};
@@ -566,7 +566,7 @@ public final class Glace2d
 		final double[][] I = new double[][] {new double[] {1.0, 0.0}, new double[] {0.0, 1.0}};
 		{
 			final int[] topNodes = mesh.getGroup("TopNodes");
-			IntStream.range(0, nbTopNodes).parallel().forEach(rTopNodes -> 
+			IntStream.range(0, nbTopNodes).parallel().forEach(rTopNodes ->
 			{
 				final int rId = topNodes[rTopNodes];
 				final int rNodes = rId;
@@ -579,7 +579,7 @@ public final class Glace2d
 		}
 		{
 			final int[] bottomNodes = mesh.getGroup("BottomNodes");
-			IntStream.range(0, nbBottomNodes).parallel().forEach(rBottomNodes -> 
+			IntStream.range(0, nbBottomNodes).parallel().forEach(rBottomNodes ->
 			{
 				final int rId = bottomNodes[rBottomNodes];
 				final int rNodes = rId;
@@ -592,7 +592,7 @@ public final class Glace2d
 		}
 		{
 			final int[] leftNodes = mesh.getGroup("LeftNodes");
-			IntStream.range(0, nbLeftNodes).parallel().forEach(rLeftNodes -> 
+			IntStream.range(0, nbLeftNodes).parallel().forEach(rLeftNodes ->
 			{
 				final int rId = leftNodes[rLeftNodes];
 				final int rNodes = rId;
@@ -608,7 +608,7 @@ public final class Glace2d
 		}
 		{
 			final int[] rightNodes = mesh.getGroup("RightNodes");
-			IntStream.range(0, nbRightNodes).parallel().forEach(rRightNodes -> 
+			IntStream.range(0, nbRightNodes).parallel().forEach(rRightNodes ->
 			{
 				final int rId = rightNodes[rRightNodes];
 				final int rNodes = rId;
@@ -633,7 +633,7 @@ public final class Glace2d
 	{
 		{
 			final int[] innerNodes = mesh.getGroup("InnerNodes");
-			IntStream.range(0, nbInnerNodes).parallel().forEach(rInnerNodes -> 
+			IntStream.range(0, nbInnerNodes).parallel().forEach(rInnerNodes ->
 			{
 				final int rId = innerNodes[rInnerNodes];
 				final int rNodes = rId;
@@ -654,7 +654,7 @@ public final class Glace2d
 	{
 		{
 			final int[] innerNodes = mesh.getGroup("InnerNodes");
-			IntStream.range(0, nbInnerNodes).parallel().forEach(rInnerNodes -> 
+			IntStream.range(0, nbInnerNodes).parallel().forEach(rInnerNodes ->
 			{
 				final int rId = innerNodes[rInnerNodes];
 				final int rNodes = rId;
@@ -686,7 +686,7 @@ public final class Glace2d
 	 */
 	protected void computeU()
 	{
-		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> 
+		IntStream.range(0, nbNodes).parallel().forEach(rNodes ->
 		{
 			ur[rNodes] = matVectProduct(inverse(Mt[rNodes]), bt[rNodes]);
 		});
@@ -699,7 +699,7 @@ public final class Glace2d
 	 */
 	protected void computeFjr()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(jCells ->
 		{
 			final int jId = jCells;
 			{
@@ -722,7 +722,7 @@ public final class Glace2d
 	 */
 	protected void computeXn()
 	{
-		IntStream.range(0, nbNodes).parallel().forEach(rNodes -> 
+		IntStream.range(0, nbNodes).parallel().forEach(rNodes ->
 		{
 			X_nplus1[rNodes] = operatorAdd(X_n[rNodes], operatorMult(deltat, ur[rNodes]));
 		});
@@ -735,7 +735,7 @@ public final class Glace2d
 	 */
 	protected void computeEn()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(jCells ->
 		{
 			final int jId = jCells;
 			double reduction0 = 0.0;
@@ -760,7 +760,7 @@ public final class Glace2d
 	 */
 	protected void computeUn()
 	{
-		IntStream.range(0, nbCells).parallel().forEach(jCells -> 
+		IntStream.range(0, nbCells).parallel().forEach(jCells ->
 		{
 			final int jId = jCells;
 			double[] reduction0 = new double[] {0.0, 0.0};
@@ -804,20 +804,20 @@ public final class Glace2d
 	private static double[][] tensProduct(double[] a, double[] b)
 	{
 		double[][] result = new double[a.length][a.length];
-		for (int ia=0; ia<a.length; ia++)
+		IntStream.range(0, a.length).parallel().forEach(ia ->
 		{
 			for (int ib=0; ib<a.length; ib++)
 			{
 				result[ia][ib] = a[ia] * b[ib];
 			}
-		}
+		});
 		return result;
 	}
 
 	private static double[] matVectProduct(double[][] a, double[] b)
 	{
 		double[] result = new double[a.length];
-		for (int ix=0; ix<a.length; ix++)
+		IntStream.range(0, a.length).parallel().forEach(ix ->
 		{
 			double[] tmp = new double[a[0].length];
 			for (int iy=0; iy<a[0].length; iy++)
@@ -825,7 +825,7 @@ public final class Glace2d
 				tmp[iy] = a[ix][iy];
 			}
 			result[ix] = dot(tmp, b);
-		}
+		});
 		return result;
 	}
 
@@ -868,95 +868,95 @@ public final class Glace2d
 	private static double[] operatorAdd(double[] a, double[] b)
 	{
 		double[] result = new double[a.length];
-		for (int ix0=0; ix0<a.length; ix0++)
+		IntStream.range(0, a.length).parallel().forEach(ix0 ->
 		{
 			result[ix0] = a[ix0] + b[ix0];
-		}
+		});
 		return result;
 	}
 
 	private static double[][] operatorAdd(double[][] a, double[][] b)
 	{
 		double[][] result = new double[a.length][a[0].length];
-		for (int ix0=0; ix0<a.length; ix0++)
+		IntStream.range(0, a.length).parallel().forEach(ix0 ->
 		{
 			for (int ix1=0; ix1<a[0].length; ix1++)
 			{
 				result[ix0][ix1] = a[ix0][ix1] + b[ix0][ix1];
 			}
-		}
+		});
 		return result;
 	}
 
 	private static double[] operatorMult(double a, double[] b)
 	{
 		double[] result = new double[b.length];
-		for (int ix0=0; ix0<b.length; ix0++)
+		IntStream.range(0, b.length).parallel().forEach(ix0 ->
 		{
 			result[ix0] = a * b[ix0];
-		}
+		});
 		return result;
 	}
 
 	private static double[] operatorSub(double[] a, double[] b)
 	{
 		double[] result = new double[a.length];
-		for (int ix0=0; ix0<a.length; ix0++)
+		IntStream.range(0, a.length).parallel().forEach(ix0 ->
 		{
 			result[ix0] = a[ix0] - b[ix0];
-		}
+		});
 		return result;
 	}
 
 	private static double[][] operatorMult(double a, double[][] b)
 	{
 		double[][] result = new double[b.length][b[0].length];
-		for (int ix0=0; ix0<b.length; ix0++)
+		IntStream.range(0, b.length).parallel().forEach(ix0 ->
 		{
 			for (int ix1=0; ix1<b[0].length; ix1++)
 			{
 				result[ix0][ix1] = a * b[ix0][ix1];
 			}
-		}
+		});
 		return result;
 	}
 
 	private static double[][] operatorSub(double[][] a, double[][] b)
 	{
 		double[][] result = new double[a.length][a[0].length];
-		for (int ix0=0; ix0<a.length; ix0++)
+		IntStream.range(0, a.length).parallel().forEach(ix0 ->
 		{
 			for (int ix1=0; ix1<a[0].length; ix1++)
 			{
 				result[ix0][ix1] = a[ix0][ix1] - b[ix0][ix1];
 			}
-		}
+		});
 		return result;
 	}
 
 	private static double[][] operatorMult(double[][] a, double[][] b)
 	{
 		double[][] result = new double[a.length][a[0].length];
-		for (int ix0=0; ix0<a.length; ix0++)
+		IntStream.range(0, a.length).parallel().forEach(ix0 ->
 		{
 			for (int ix1=0; ix1<a[0].length; ix1++)
 			{
 				result[ix0][ix1] = a[ix0][ix1] * b[ix0][ix1];
 			}
-		}
+		});
 		return result;
 	}
 
 	private static double[][] operatorMult(double[][] a, double b)
 	{
 		double[][] result = new double[a.length][a[0].length];
-		for (int ix0=0; ix0<a.length; ix0++)
+		IntStream.range(0, a.length).parallel().forEach(ix0 ->
 		{
 			for (int ix1=0; ix1<a[0].length; ix1++)
 			{
 				result[ix0][ix1] = a[ix0][ix1] * b;
 			}
-		}
+		});
 		return result;
 	}
 

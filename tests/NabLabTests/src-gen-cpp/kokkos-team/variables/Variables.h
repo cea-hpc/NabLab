@@ -22,6 +22,7 @@ using namespace nablalib::utils;
 using namespace nablalib::types;
 using namespace nablalib::utils::kokkos;
 
+
 /******************** Free functions declarations ********************/
 
 namespace variablesfreefuncs
@@ -29,6 +30,7 @@ namespace variablesfreefuncs
 bool assertEquals(int expected, int actual);
 template<size_t x>
 bool assertEquals(RealArray1D<x> expected, RealArray1D<x> actual);
+bool assertEquals(double expected, double actual);
 template<size_t x0>
 RealArray1D<x0> operatorAdd(RealArray1D<x0> a, RealArray1D<x0> b);
 }
@@ -39,16 +41,6 @@ class Variables
 {
 	typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
 	
-public:
-	Variables(CartesianMesh2D& aMesh);
-	~Variables();
-
-	void jsonInit(const char* jsonContent);
-
-	void simulate();
-	void dynamicVecInitialization(const member_type& teamMember) noexcept;
-	void varVecInitialization() noexcept;
-	void oracle() noexcept;
 
 private:
 	/**
@@ -62,7 +54,26 @@ private:
 	CartesianMesh2D& mesh;
 	size_t nbNodes;
 
-	// Options and global variables
+
+	// Timers
+	Timer globalTimer;
+	Timer cpuTimer;
+	Timer ioTimer;
+	
+
+public:
+	Variables(CartesianMesh2D& aMesh);
+	~Variables();
+
+	void jsonInit(const char* jsonContent);
+
+	void simulate();
+	void dynamicVecInitialization(const member_type& teamMember) noexcept;
+	void varVecInitialization() noexcept;
+	void oracle(const member_type& teamMember) noexcept;
+
+	// Options and global variables.
+	// Module variables are public members of the class to be accessible from Python.
 	static constexpr double maxTime = 0.1;
 	static constexpr int maxIter = 500;
 	static constexpr double deltat = 1.0;
@@ -77,11 +88,6 @@ private:
 	RealArray1D<constexprDim> varVec;
 	int checkDynamicDim;
 	RealArray1D<0> dynamicVec;
-
-	// Timers
-	Timer globalTimer;
-	Timer cpuTimer;
-	Timer ioTimer;
 };
 
 #endif

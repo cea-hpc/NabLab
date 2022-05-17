@@ -17,7 +17,9 @@ bool assertEquals(double expected, double actual)
 {
 	const bool ret((expected == actual));
 	if (!ret) 
+	{
 		throw std::runtime_error("** Assertion failed");
+	}
 	return ret;
 }
 }
@@ -80,10 +82,13 @@ Hydro::jsonInit(const char* jsonContent)
  */
 void Hydro::iniHv1() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& cCells)
 	{
-		hv1[cCells] = 2.0;
-	});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& cCells)
+		{
+			hv1[cCells] = 2.0;
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 /**
@@ -93,10 +98,13 @@ void Hydro::iniHv1() noexcept
  */
 void Hydro::iniHv2() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& cCells)
 	{
-		hv2[cCells] = 0.0;
-	});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& cCells)
+		{
+			hv2[cCells] = 0.0;
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 /**
@@ -106,10 +114,13 @@ void Hydro::iniHv2() noexcept
  */
 void Hydro::hj1() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& cCells)
 	{
-		hv3[cCells] = hv2[cCells] + 1.0;
-	});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& cCells)
+		{
+			hv3[cCells] = hv2[cCells] + 1.0;
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 /**
@@ -119,10 +130,13 @@ void Hydro::hj1() noexcept
  */
 void Hydro::oracleHv1() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& cCells)
 	{
-		const bool testHv1(hydrofreefuncs::assertEquals(2.0, hv1[cCells]));
-	});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& cCells)
+		{
+			const bool testHv1(hydrofreefuncs::assertEquals(2.0, hv1[cCells]));
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 /**
@@ -132,10 +146,13 @@ void Hydro::oracleHv1() noexcept
  */
 void Hydro::oracleHv2() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& cCells)
 	{
-		const bool testHv2(hydrofreefuncs::assertEquals(0.0, hv2[cCells]));
-	});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& cCells)
+		{
+			const bool testHv2(hydrofreefuncs::assertEquals(0.0, hv2[cCells]));
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 /**
@@ -145,10 +162,13 @@ void Hydro::oracleHv2() noexcept
  */
 void Hydro::hj2() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& cCells)
 	{
-		hv5[cCells] = hv3[cCells] + 2.0;
-	});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& cCells)
+		{
+			hv5[cCells] = hv3[cCells] + 2.0;
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 /**
@@ -158,10 +178,13 @@ void Hydro::hj2() noexcept
  */
 void Hydro::oracleHv3() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& cCells)
 	{
-		const bool testHv3(hydrofreefuncs::assertEquals(1.0, hv3[cCells]));
-	});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& cCells)
+		{
+			const bool testHv3(hydrofreefuncs::assertEquals(1.0, hv3[cCells]));
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 /**
@@ -171,10 +194,13 @@ void Hydro::oracleHv3() noexcept
  */
 void Hydro::oracleHv4() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& cCells)
 	{
-		const bool testHv4(hydrofreefuncs::assertEquals(4.0, hv4[cCells]));
-	});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& cCells)
+		{
+			const bool testHv4(hydrofreefuncs::assertEquals(4.0, hv4[cCells]));
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 /**
@@ -184,10 +210,13 @@ void Hydro::oracleHv4() noexcept
  */
 void Hydro::oracleHv5() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& cCells)
 	{
-		const bool testHv5(hydrofreefuncs::assertEquals(3.0, hv5[cCells]));
-	});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& cCells)
+		{
+			const bool testHv5(hydrofreefuncs::assertEquals(3.0, hv5[cCells]));
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 /**
@@ -197,10 +226,13 @@ void Hydro::oracleHv5() noexcept
  */
 void Hydro::hj3() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& cCells)
 	{
-		hv7[cCells] = hv4[cCells] + hv5[cCells] + hv6[cCells];
-	});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& cCells)
+		{
+			hv7[cCells] = hv4[cCells] + hv5[cCells] + hv6[cCells];
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 /**
@@ -210,10 +242,13 @@ void Hydro::hj3() noexcept
  */
 void Hydro::oracleHv6() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& cCells)
 	{
-		const bool testHv6(hydrofreefuncs::assertEquals(6.0, hv6[cCells]));
-	});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& cCells)
+		{
+			const bool testHv6(hydrofreefuncs::assertEquals(6.0, hv6[cCells]));
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 /**
@@ -223,10 +258,13 @@ void Hydro::oracleHv6() noexcept
  */
 void Hydro::oracleHv7() noexcept
 {
-	parallel_exec(nbCells, [&](const size_t& cCells)
 	{
-		const bool testHv7(hydrofreefuncs::assertEquals(13.0, hv7[cCells]));
-	});
+		const std::function<void(const size_t&)> loopLambda = [&] (const size_t& cCells)
+		{
+			const bool testHv7(hydrofreefuncs::assertEquals(13.0, hv7[cCells]));
+		};
+		parallel_exec(nbCells, loopLambda);
+	}
 }
 
 void Hydro::simulate()

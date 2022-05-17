@@ -15,19 +15,33 @@ bool assertEquals(int expected, int actual)
 {
 	const bool ret((expected == actual));
 	if (!ret) 
+	{
 		throw std::runtime_error("** Assertion failed");
+	}
 	return ret;
 }
 
 template<size_t x>
 bool assertEquals(RealArray1D<x> expected, RealArray1D<x> actual)
 {
-	for (size_t i=0; i<x; i++)
+	Kokkos::parallel_for(x, KOKKOS_LAMBDA(const size_t& i)
 	{
 		if (expected[i] != actual[i]) 
+		{
 			throw std::runtime_error("** Assertion failed");
-	}
+		}
+	});
 	return true;
+}
+
+bool assertEquals(double expected, double actual)
+{
+	const bool ret((expected == actual));
+	if (!ret) 
+	{
+		throw std::runtime_error("** Assertion failed");
+	}
+	return ret;
 }
 
 template<size_t x0>
@@ -108,8 +122,11 @@ void Variables::dynamicVecInitialization() noexcept
 	int cpt(0);
 	for (size_t i=0; i<optDim; i++)
 	{
-		cpt = cpt + 1;
 		dynamicVec[i] = 3.3;
+	}
+	for (size_t i=0; i<optDim; i++)
+	{
+		cpt = cpt + 1;
 	}
 	checkDynamicDim = cpt;
 }
@@ -126,7 +143,7 @@ void Variables::varVecInitialization() noexcept
 
 /**
  * Job oracle called @2.0 in simulate method.
- * In variables: checkDynamicDim, constexprDim, constexprVec, optDim, optVect1, optVect2, optVect3, varVec
+ * In variables: checkDynamicDim, constexprDim, constexprVec, dynamicVec, optDim, optVect1, optVect2, optVect3, varVec
  * Out variables: 
  */
 void Variables::oracle() noexcept
@@ -139,6 +156,10 @@ void Variables::oracle() noexcept
 	const bool testConstexprVec(variablesfreefuncs::assertEquals({1.1, 1.1}, constexprVec));
 	const bool testVarVec(variablesfreefuncs::assertEquals({2.2, 2.2}, varVec));
 	const bool testDynamicVecLength(variablesfreefuncs::assertEquals(2, checkDynamicDim));
+	Kokkos::parallel_for(optDim, KOKKOS_LAMBDA(const size_t& i)
+	{
+		const bool testDynamicVec(variablesfreefuncs::assertEquals(3.3, dynamicVec[i]));
+	});
 }
 
 void Variables::simulate()

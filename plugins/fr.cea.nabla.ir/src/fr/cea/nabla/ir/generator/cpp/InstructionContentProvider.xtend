@@ -15,6 +15,7 @@ import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityCall
 import fr.cea.nabla.ir.ir.Exit
+import fr.cea.nabla.ir.ir.Function
 import fr.cea.nabla.ir.ir.If
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.InstructionBlock
@@ -24,6 +25,7 @@ import fr.cea.nabla.ir.ir.ItemIdDefinition
 import fr.cea.nabla.ir.ir.ItemIndexDefinition
 import fr.cea.nabla.ir.ir.IterationBlock
 import fr.cea.nabla.ir.ir.Iterator
+import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.JobCaller
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ReductionInstruction
@@ -36,25 +38,28 @@ import org.eclipse.xtend.lib.annotations.Data
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.IrTypeExtensions.*
-import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.cpp.ItemIndexAndIdValueContentProvider.*
-import fr.cea.nabla.ir.ir.Job
 
 @Data
 abstract class InstructionContentProvider
 {
 	protected val extension TypeContentProvider
 	protected val extension ExpressionContentProvider
+	protected val AbstractPythonEmbeddingContentProvider pythonEmbeddingContentProvider
 	protected abstract def CharSequence getReductionContent(ReductionInstruction it)
 	protected abstract def CharSequence getParallelLoopContent(Loop it)
+
 
 	def dispatch CharSequence getContent(VariableDeclaration it)
 	'''
 		«IF variable.type.baseTypeConstExpr»
+			«pythonEmbeddingContentProvider.getBeforeWriteContent(it)»
 			«IF variable.const»const «ENDIF»«variable.type.cppType» «variable.name»«IF variable.defaultValue !== null»(«variable.defaultValue.content»)«ENDIF»;
+			«pythonEmbeddingContentProvider.getAfterWriteContent(it)»
 		«ELSE»
+			«pythonEmbeddingContentProvider.getBeforeWriteContent(it)»
 			«IF variable.const»const «ENDIF»«variable.type.cppType» «variable.name»;
-			«initCppTypeContent(variable.name, variable.type)»
+			«pythonEmbeddingContentProvider.getAfterWriteContent(it)»
 		«ENDIF»
 	'''
 
@@ -69,9 +74,17 @@ abstract class InstructionContentProvider
 	def dispatch CharSequence getContent(Affectation it)
 	{
 		if (left.target.linearAlgebra && !(left.iterators.empty && left.indices.empty))
-			'''«left.codeName».setValue(«formatIteratorsAndIndices(left.target.type, left.iterators, left.indices)», «right.content»);'''
+			'''
+			«pythonEmbeddingContentProvider.getBeforeWriteContent(it)»
+			«left.codeName».setValue(«formatIteratorsAndIndices(left.target.type, left.iterators, left.indices)», «right.content»);
+			«pythonEmbeddingContentProvider.getAfterWriteContent(it)»
+			'''
 		else
-			'''«left.content» = «right.content»;'''
+			'''
+			«pythonEmbeddingContentProvider.getBeforeWriteContent(it)»
+			«left.content» = «right.content»;
+			«pythonEmbeddingContentProvider.getAfterWriteContent(it)»
+			'''
 	}
 
 	def dispatch CharSequence getContent(ReductionInstruction it)
@@ -81,7 +94,7 @@ abstract class InstructionContentProvider
 
 	def dispatch CharSequence getContent(Loop it)
 	{
-		if (parallel)
+		if (multithreadable)
 			iterationBlock.defineInterval(parallelLoopContent)
 		else
 			iterationBlock.defineInterval(sequentialLoopContent)
@@ -91,11 +104,23 @@ abstract class InstructionContentProvider
 	'''
 		if («condition.content») 
 		«val thenContent = thenInstruction.content»
-		«IF !(thenContent.charAt(0) == '{'.charAt(0))»	«ENDIF»«thenContent»
+		«IF !(thenContent.charAt(0) == '{'.charAt(0))»
+		{
+			«thenContent»
+		}
+		«ELSE»
+		«thenContent»
+		«ENDIF»
 		«IF (elseInstruction !== null)»
-			«val elseContent = elseInstruction.content»
-			else
-			«IF !(elseContent.charAt(0) == '{'.charAt(0))»	«ENDIF»«elseContent»
+		«val elseContent = elseInstruction.content»
+		else
+		«IF !(elseContent.charAt(0) == '{'.charAt(0))»
+		{
+			«elseContent»
+		}
+		«ELSE»
+		«elseContent»
+		«ENDIF»
 		«ENDIF»
 	'''
 
@@ -142,8 +167,6 @@ abstract class InstructionContentProvider
 		«i.content»
 		«ENDFOR»
 	'''
-
-	protected def boolean isParallel(Loop it) { parallelLoop }
 
 	protected def CharSequence getSequentialLoopContent(Loop it)
 	'''
@@ -197,8 +220,6 @@ abstract class InstructionContentProvider
 @Data
 class SequentialInstructionContentProvider extends InstructionContentProvider
 {
-	override isParallel(Loop it) { false }
-
 	override protected getReductionContent(ReductionInstruction it)
 	{
 		throw new RuntimeException("ReductionInstruction must have been replaced before using this code generator")
@@ -229,10 +250,14 @@ class StlThreadInstructionContentProvider extends InstructionContentProvider
 
 	override getParallelLoopContent(Loop it)
 	'''
-		parallel_exec(«iterationBlock.nbElems», [&](const size_t& «iterationBlock.indexName»)
 		{
-			«body.innerContent»
-		});
+			«pythonEmbeddingContentProvider.wrapLambdaWithGILGuard(it,
+				"void(const size_t&)",
+				"loopLambda",
+				'''const size_t& «iterationBlock.indexName»''',
+				'''«body.innerContent»''')»
+			«pythonEmbeddingContentProvider.wrapLambdaCallWithGILGuard('''parallel_exec(«iterationBlock.nbElems», loopLambda);''')»
+		}
 	'''
 }
 
@@ -260,7 +285,7 @@ class KokkosInstructionContentProvider extends InstructionContentProvider
 		});
 	'''
 
-	protected def getFirstArgument(ReductionInstruction it) 
+	protected def getFirstArgument(ReductionInstruction it)
 	{
 		iterationBlock.nbElems
 	}
@@ -276,10 +301,12 @@ class KokkosTeamThreadInstructionContentProvider extends KokkosInstructionConten
 
 	override getParallelLoopContent(Loop it)
 	{
-		val jobCaller = IrUtils.getContainerOfType(it, JobCaller)
+		val isLoopInFunction = IrUtils.getContainerOfType(it, Function) !== null
+		// a JobCaller is a graph => simulate and eexecuteTimeLoop jobs
+		val isLoopInJobCaller = IrUtils.getContainerOfType(it, JobCaller) !== null
 
-		// A jobCaller instance is a graph, never in a team
-		if (jobCaller === null)
+		// no team of thread in a JobCaller or a Function
+		if (!isLoopInFunction && !isLoopInJobCaller)
 			parallelLoopBlock
 		else
 			super.getParallelLoopContent(it)
@@ -297,11 +324,11 @@ class KokkosTeamThreadInstructionContentProvider extends KokkosInstructionConten
 			});
 		}
 		«val j = IrUtils.getContainerOfType(it, Job)»
-		«IF (j.eAllContents.filter(Loop).filter[parallel].size > 1)»
+		«IF (j.eAllContents.filter(Loop).filter[multithreadable].size > 1)»
 		teamMember.team_barrier();
 		«ENDIF»
 	'''
-	
+
 	private def getAutoTeamWork(IterationBlock it)
 	'''
 		const auto teamWork(computeTeamWorkRange(teamMember, «nbElems»));
@@ -324,10 +351,15 @@ class OpenMpInstructionContentProvider extends InstructionContentProvider
 		}''')»
 	'''
 
+
 	override getParallelLoopContent(Loop it)
 	'''
-		#pragma omp parallel for
-		«sequentialLoopContent»
+		«pythonEmbeddingContentProvider.wrapLoopWithGILGuard(it,
+			'''
+				#pragma omp parallel for
+				for (size_t «iterationBlock.indexName»=0; «iterationBlock.indexName»<«iterationBlock.nbElems»; «iterationBlock.indexName»++)
+			''',
+			'''«body.innerContent»''')»
 	'''
 
 	private def String getReductionIdentifier(ReductionInstruction it)

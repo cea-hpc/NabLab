@@ -23,6 +23,7 @@ using namespace nablalib::utils;
 using namespace nablalib::types;
 using namespace nablalib::utils::kokkos;
 
+
 /******************** Free functions declarations ********************/
 
 namespace explicitheatequationfreefuncs
@@ -51,6 +52,32 @@ class ExplicitHeatEquation
 {
 	typedef Kokkos::TeamPolicy<Kokkos::DefaultExecutionSpace::scratch_memory_space>::member_type member_type;
 	
+
+private:
+	void dumpVariables(int iteration, bool useTimer=true);
+
+	/**
+	 * Utility function to get work load for each team of threads
+	 * In  : thread and number of element to use for computation
+	 * Out : pair of indexes, 1st one for start of chunk, 2nd one for size of chunk
+	 */
+	const std::pair<size_t, size_t> computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept;
+	
+	// Mesh and mesh variables
+	CartesianMesh2D& mesh;
+	size_t nbNodes;
+	size_t nbCells;
+	size_t nbFaces;
+
+	PvdFileWriter2D* writer;
+	std::string outputPath;
+
+	// Timers
+	Timer globalTimer;
+	Timer cpuTimer;
+	Timer ioTimer;
+	
+
 public:
 	ExplicitHeatEquation(CartesianMesh2D& aMesh);
 	~ExplicitHeatEquation();
@@ -72,25 +99,8 @@ public:
 	void computeAlphaCoeff(const member_type& teamMember) noexcept;
 	void executeTimeLoopN() noexcept;
 
-private:
-	void dumpVariables(int iteration, bool useTimer=true);
-
-	/**
-	 * Utility function to get work load for each team of threads
-	 * In  : thread and number of element to use for computation
-	 * Out : pair of indexes, 1st one for start of chunk, 2nd one for size of chunk
-	 */
-	const std::pair<size_t, size_t> computeTeamWorkRange(const member_type& thread, const size_t& nb_elmt) noexcept;
-	
-	// Mesh and mesh variables
-	CartesianMesh2D& mesh;
-	size_t nbNodes;
-	size_t nbCells;
-	size_t nbFaces;
-
-	// Options and global variables
-	PvdFileWriter2D* writer;
-	std::string outputPath;
+	// Options and global variables.
+	// Module variables are public members of the class to be accessible from Python.
 	int outputPeriod;
 	int lastDump;
 	int n;
@@ -111,11 +121,6 @@ private:
 	Kokkos::View<double*> faceLength;
 	Kokkos::View<double*> faceConductivity;
 	Kokkos::View<double**> alpha;
-
-	// Timers
-	Timer globalTimer;
-	Timer cpuTimer;
-	Timer ioTimer;
 };
 
 #endif

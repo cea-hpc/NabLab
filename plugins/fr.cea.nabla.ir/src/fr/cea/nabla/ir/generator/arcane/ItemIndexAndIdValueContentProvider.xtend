@@ -15,6 +15,9 @@ import fr.cea.nabla.ir.ir.ItemIdValueIterator
 import fr.cea.nabla.ir.ir.ItemIndexValue
 
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
+import fr.cea.nabla.ir.IrUtils
+import fr.cea.nabla.ir.ir.Loop
+import fr.cea.nabla.ir.annotations.AcceleratorAnnotation
 
 class ItemIndexAndIdValueContentProvider 
 {
@@ -31,7 +34,16 @@ class ItemIndexAndIdValueContentProvider
 		switch it
 		{
 			ItemIdValueIterator:
-				if (iterator.container.connectivityCall.args.empty) '''«iterator.index.name».asItemLocalId()'''
+				if (iterator.container.connectivityCall.args.empty)
+				{
+					val l = IrUtils.getContainerOfType(it, Loop)
+					// if l is an accelerator loop iterator.index is an index
+					// else it is an item
+					if (l !== null && AcceleratorAnnotation.tryToGet(l) !== null)
+						'''«iterator.index.name»'''
+					else
+						'''«iterator.index.name».asItemLocalId()'''
+				}
 				else iterator.container.uniqueName + '[' + getIndexValue + ']'
 			ItemIdValueContainer:
 				getContent(container, "m_mesh->")

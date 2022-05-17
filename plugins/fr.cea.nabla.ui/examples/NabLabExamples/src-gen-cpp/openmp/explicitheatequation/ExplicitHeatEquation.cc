@@ -58,6 +58,7 @@ template<size_t x0>
 RealArray1D<x0> operatorAdd(RealArray1D<x0> a, RealArray1D<x0> b)
 {
 	RealArray1D<x0> result;
+	#pragma omp parallel for
 	for (size_t ix0=0; ix0<x0; ix0++)
 	{
 		result[ix0] = a[ix0] + b[ix0];
@@ -69,6 +70,7 @@ template<size_t x0>
 RealArray1D<x0> operatorMult(double a, RealArray1D<x0> b)
 {
 	RealArray1D<x0> result;
+	#pragma omp parallel for
 	for (size_t ix0=0; ix0<x0; ix0++)
 	{
 		result[ix0] = a * b[ix0];
@@ -80,6 +82,7 @@ template<size_t x0>
 RealArray1D<x0> operatorSub(RealArray1D<x0> a, RealArray1D<x0> b)
 {
 	RealArray1D<x0> result;
+	#pragma omp parallel for
 	for (size_t ix0=0; ix0<x0; ix0++)
 	{
 		result[ix0] = a[ix0] - b[ix0];
@@ -355,9 +358,13 @@ void ExplicitHeatEquation::initU() noexcept
 	for (size_t cCells=0; cCells<nbCells; cCells++)
 	{
 		if (explicitheatequationfreefuncs::norm(explicitheatequationfreefuncs::operatorSub(Xc[cCells], vectOne)) < 0.5) 
+		{
 			u_n[cCells] = u0;
+		}
 		else
+		{
 			u_n[cCells] = 0.0;
+		}
 	}
 }
 

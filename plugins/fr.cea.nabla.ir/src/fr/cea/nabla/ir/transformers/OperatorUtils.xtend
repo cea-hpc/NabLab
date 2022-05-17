@@ -45,8 +45,6 @@ class OperatorUtils
 					operator = op
 				]
 			]
-
-		multithreadable = true
 	}
 
 	def create IrFactory::eINSTANCE.createLoop createLoopForBinaryOp(ArgOrVarRef result, ArgOrVarRef a, ArgOrVarRef b, Iterable<Interval> intervals, BinOpType binOpType, String op)
@@ -73,8 +71,6 @@ class OperatorUtils
 					operator = op
 				]
 			]
-
-		multithreadable = true
 	}
 
 	def createArgOrVarRef(ArgOrVar v)

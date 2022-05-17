@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: fr.cea.nabla.rcp;singleton:=true
-Bundle-Version: 0.4.5.qualifier
+Bundle-Version: 0.5.0.qualifier
 Bundle-Vendor: CEA
 Automatic-Module-Name: fr.cea.nabla.product
 Bundle-RequiredExecutionEnvironment: JavaSE-11

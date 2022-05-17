@@ -196,7 +196,8 @@ public final class Reduction
 
 			// Module instanciation(s)
 			Reduction reduction = new Reduction(mesh);
-			if (o.has("reduction")) reduction.jsonInit(o.get("reduction").toString());
+			assert(o.has("reduction"));
+			reduction.jsonInit(o.get("reduction").toString());
 
 			// Start simulation
 			reduction.simulate();

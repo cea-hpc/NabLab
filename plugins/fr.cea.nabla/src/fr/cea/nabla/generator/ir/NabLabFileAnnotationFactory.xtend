@@ -13,6 +13,7 @@ import com.google.inject.Inject
 import fr.cea.nabla.ir.annotations.NabLabFileAnnotation
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.resource.ILocationInFileProvider
+import fr.cea.nabla.ir.ir.IrFactory
 
 class NabLabFileAnnotationFactory
 {
@@ -23,6 +24,12 @@ class NabLabFileAnnotationFactory
 		val region = locationProvider.getFullTextRegion(o)
 		if (region === null) throw new RuntimeException('Annotation creation error for: ' + o)
 		val uri = ((o.eResource === null || o.eResource.URI === null) ? null : o.eResource.URI.toString)
-		NabLabFileAnnotation.create(uri, region.offset, region.length).irAnnotation
+		IrFactory::eINSTANCE.createIrAnnotation => 
+		[
+			source = NabLabFileAnnotation.ANNOTATION_SOURCE
+			details.put(NabLabFileAnnotation.ANNOTATION_URI_DETAIL, uri)
+			details.put(NabLabFileAnnotation.ANNOTATION_OFFSET_DETAIL, region.offset.toString)
+			details.put(NabLabFileAnnotation.ANNOTATION_LENGTH_DETAIL, region.length.toString)
+		]
 	}
 }

@@ -14,6 +14,7 @@ import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.generator.IrCodeGenerator
 import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.IrRoot
+import fr.cea.nabla.ir.transformers.SetMultithreadableLoops
 import java.util.ArrayList
 import org.eclipse.xtend.lib.annotations.Data
 
@@ -27,7 +28,7 @@ class JavaGenerator implements IrCodeGenerator
 
 	override getName() { "Java" }
 
-	override getIrTransformationSteps() { #[] }
+	override getIrTransformationSteps() { #[new SetMultithreadableLoops] }
 
 	override getGenerationContents(IrRoot ir, (String)=>void traceNotifier)
 	{

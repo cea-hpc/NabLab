@@ -17,7 +17,9 @@ bool assertEquals(double expected, double actual)
 {
 	const bool ret((expected == actual));
 	if (!ret) 
+	{
 		throw std::runtime_error("** Assertion failed");
+	}
 	return ret;
 }
 }

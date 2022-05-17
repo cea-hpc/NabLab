@@ -18,9 +18,11 @@ import org.eclipse.xtext.util.Modules2
 /**
  * Initialization support for running Xtext languages as language servers.
  */
-class NablagenIdeSetup extends NablagenStandaloneSetup {
-	override createInjector() {
-		Guice.createInjector(Modules2.mixin(new NablagenRuntimeModule, new NablagenIdeModule))
+class NablagenIdeSetup extends NablagenStandaloneSetup
+{
+	override createInjector() 
+	{
+		Guice.createInjector(Modules2.mixin(new NablagenRuntimeModule, new NablagenIdeModule)) 
 	}
 
 	override Injector createInjectorAndDoEMFRegistration() {

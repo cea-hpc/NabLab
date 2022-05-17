@@ -29,7 +29,6 @@ import fr.cea.nabla.ir.ir.While
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
-import static extension fr.cea.nabla.ir.generator.Utils.*
 import static extension fr.cea.nabla.ir.generator.java.ExpressionContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.ItemIndexAndIdValueContentProvider.*
 import static extension fr.cea.nabla.ir.generator.java.JavaGeneratorUtils.*
@@ -80,14 +79,14 @@ class InstructionContentProvider
 	{
 		iterationBlock.defineInterval(
 		'''
-			«IF parallelLoop»
-				IntStream.range(0, «iterationBlock.nbElems»).parallel().forEach(«iterationBlock.indexName» -> 
+			«IF multithreadable»
+				IntStream.range(0, «iterationBlock.nbElems»).parallel().forEach(«iterationBlock.indexName» ->
 			«ELSE»
 				for (int «iterationBlock.indexName»=0; «iterationBlock.indexName»<«iterationBlock.nbElems»; «iterationBlock.indexName»++)
 			«ENDIF»
 			{
 				«body.innerContent»
-			}«IF parallelLoop»);«ENDIF»
+			}«IF multithreadable»);«ENDIF»
 		''')
 	}
 

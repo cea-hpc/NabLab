@@ -15,19 +15,33 @@ bool assertEquals(int expected, int actual)
 {
 	const bool ret((expected == actual));
 	if (!ret) 
+	{
 		throw std::runtime_error("** Assertion failed");
+	}
 	return ret;
 }
 
 template<size_t x>
 bool assertEquals(RealArray1D<x> expected, RealArray1D<x> actual)
 {
-	for (size_t i=0; i<x; i++)
+	Kokkos::parallel_for(x, KOKKOS_LAMBDA(const size_t& i)
 	{
 		if (expected[i] != actual[i]) 
+		{
 			throw std::runtime_error("** Assertion failed");
-	}
+		}
+	});
 	return true;
+}
+
+bool assertEquals(double expected, double actual)
+{
+	const bool ret((expected == actual));
+	if (!ret) 
+	{
+		throw std::runtime_error("** Assertion failed");
+	}
+	return ret;
 }
 
 template<size_t x0>
@@ -131,8 +145,11 @@ void Variables::dynamicVecInitialization(const member_type& teamMember) noexcept
 	int cpt(0);
 	for (size_t i=0; i<optDim; i++)
 	{
-		cpt = cpt + 1;
 		dynamicVec[i] = 3.3;
+	}
+	for (size_t i=0; i<optDim; i++)
+	{
+		cpt = cpt + 1;
 	}
 	checkDynamicDim = cpt;
 }
@@ -149,10 +166,10 @@ void Variables::varVecInitialization() noexcept
 
 /**
  * Job oracle called @2.0 in simulate method.
- * In variables: checkDynamicDim, constexprDim, constexprVec, optDim, optVect1, optVect2, optVect3, varVec
+ * In variables: checkDynamicDim, constexprDim, constexprVec, dynamicVec, optDim, optVect1, optVect2, optVect3, varVec
  * Out variables: 
  */
-void Variables::oracle() noexcept
+void Variables::oracle(const member_type& teamMember) noexcept
 {
 	const bool testOptDim(variablesfreefuncs::assertEquals(2, optDim));
 	const bool testOptVect1(variablesfreefuncs::assertEquals({1.0, 1.0}, optVect1));
@@ -162,6 +179,17 @@ void Variables::oracle() noexcept
 	const bool testConstexprVec(variablesfreefuncs::assertEquals({1.1, 1.1}, constexprVec));
 	const bool testVarVec(variablesfreefuncs::assertEquals({2.2, 2.2}, varVec));
 	const bool testDynamicVecLength(variablesfreefuncs::assertEquals(2, checkDynamicDim));
+	{
+		const auto teamWork(computeTeamWorkRange(teamMember, optDim));
+		if (!teamWork.second)
+			return;
+	
+		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& iTeam)
+		{
+			int i(iTeam + teamWork.first);
+			const bool testDynamicVec(variablesfreefuncs::assertEquals(3.3, dynamicVec[i]));
+		});
+	}
 }
 
 void Variables::simulate()
@@ -200,7 +228,10 @@ void Variables::simulate()
 	});
 	
 	// @2.0
-	oracle();
+	Kokkos::parallel_for(team_policy, KOKKOS_LAMBDA(member_type thread)
+	{
+		oracle(thread);
+	});
 	
 	std::cout << "\nFinal time = " << t << endl;
 	std::cout << __YELLOW__ << "\n\tDone ! Took " << __MAGENTA__ << __BOLD__ << globalTimer.print() << __RESET__ << std::endl;

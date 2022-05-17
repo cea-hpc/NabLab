@@ -15,6 +15,7 @@ import fr.cea.nabla.ir.ir.Expression
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrRoot
+import fr.cea.nabla.ir.ir.IterableInstruction
 import fr.cea.nabla.ir.ir.IterationBlock
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.Variable
@@ -40,7 +41,7 @@ class ReplaceReductions extends IrTransformationStep
 	override transform(IrRoot ir, (String)=>void traceNotifier)
 	{
 		var reductions = ir.eAllContents.filter(ReductionInstruction)
-		if (!replaceAllReductions) reductions = reductions.filter[x | !IrUtils.isTopLevelConnectivity(x.iterationBlock)]
+		if (!replaceAllReductions) reductions = reductions.filter[x | !isTopLevelConnectivity(x)]
 
 		for (reduction : reductions.toList)
 		{
@@ -99,7 +100,10 @@ class ReplaceReductions extends IrTransformationStep
 				instructions += _instructions
 			]
 		}
-		// A reduction cannot be executed in // (because of +=)
-		multithreadable = false
+	}
+
+	private def isTopLevelConnectivity(ReductionInstruction r)
+	{
+		IrUtils::getContainerOfType(r.eContainer, IterableInstruction) === null
 	}
 }

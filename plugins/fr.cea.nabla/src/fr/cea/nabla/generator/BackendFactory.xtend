@@ -21,11 +21,16 @@ class BackendFactory
 {
 	def Backend getCppBackend(TargetType type)
 	{
+		getCppBackend(type, false)
+	}
+	
+	def Backend getCppBackend(TargetType type, boolean debug)
+	{
 		switch type
 		{
-			case CPP_SEQUENTIAL: new SequentialBackend
-			case STL_THREAD: new StlThreadBackend
-			case OPEN_MP: new OpenMpBackend
+			case CPP_SEQUENTIAL: new SequentialBackend(debug)
+			case STL_THREAD: new StlThreadBackend(debug)
+			case OPEN_MP: new OpenMpBackend(debug)
 			case KOKKOS: new KokkosBackend
 			case KOKKOS_TEAM_THREAD: new KokkosTeamThreadBackend
 			default: throw new RuntimeException("No backend for: " + type.literal)

@@ -10,14 +10,19 @@
 package fr.cea.nabla.ir.generator.cpp
 
 import java.util.LinkedHashSet
+import org.eclipse.xtend.lib.annotations.Data
 
+@Data
 class IncludesContentProvider
 {
+	val AbstractPythonEmbeddingContentProvider pythonEmbeddingContentProvider
+
 	def getIncludes(boolean hasLevelDB, boolean hasPostProcessing)
 	'''
 		«FOR include : systemIncludes»
 		#include <«include»>
 		«ENDFOR»
+		«pythonEmbeddingContentProvider.includeContent»
 		«FOR include : getUserIncludes(hasLevelDB, hasPostProcessing)»
 		#include "«include»"
 		«ENDFOR»
@@ -82,6 +87,7 @@ class IncludesContentProvider
 	}
 }
 
+@Data
 class StlThreadIncludesContentProvider extends IncludesContentProvider
 {
 	override getUserIncludes(boolean hasLevelDB, boolean hasPostProcessing)
@@ -99,6 +105,7 @@ class StlThreadIncludesContentProvider extends IncludesContentProvider
 	}
 }
 
+@Data
 class KokkosIncludesContentProvider extends IncludesContentProvider
 {
 	override getSystemIncludes()
@@ -133,6 +140,7 @@ class KokkosIncludesContentProvider extends IncludesContentProvider
 	}
 }
 
+@Data
 class OpenMpIncludesContentProvider extends IncludesContentProvider
 {
 	override getSystemIncludes()

@@ -45,12 +45,12 @@ public final class Variables
 		final Gson gson = new Gson();
 		final JsonObject options = gson.fromJson(jsonContent, JsonObject.class);
 		X = new double[nbNodes][2];
-		assert(options.has("optDim"));
+		assert options.has("optDim") : "No optDim option";
 		final JsonElement valueof_optDim = options.get("optDim");
 		assert(valueof_optDim.isJsonPrimitive());
 		optDim = valueof_optDim.getAsJsonPrimitive().getAsInt();
 		optVect1 = new double[2];
-		assert(options.has("optVect1"));
+		assert options.has("optVect1") : "No optVect1 option";
 		final JsonElement valueof_optVect1 = options.get("optVect1");
 		assert(valueof_optVect1.isJsonArray());
 		assert(valueof_optVect1.getAsJsonArray().size() == 2);
@@ -60,7 +60,7 @@ public final class Variables
 			optVect1[i1] = valueof_optVect1.getAsJsonArray().get(i1).getAsJsonPrimitive().getAsDouble();
 		}
 		optVect2 = new double[2];
-		assert(options.has("optVect2"));
+		assert options.has("optVect2") : "No optVect2 option";
 		final JsonElement valueof_optVect2 = options.get("optVect2");
 		assert(valueof_optVect2.isJsonArray());
 		assert(valueof_optVect2.getAsJsonArray().size() == 2);
@@ -188,13 +188,13 @@ public final class Variables
 			final JsonObject o = gson.fromJson(new FileReader(dataFileName), JsonObject.class);
 
 			// Mesh instanciation
-			assert(o.has("mesh"));
+			assert o.has("mesh") : "No mesh option";
 			CartesianMesh2D mesh = new CartesianMesh2D();
 			mesh.jsonInit(o.get("mesh").toString());
 
 			// Module instanciation(s)
 			Variables variables = new Variables(mesh);
-			assert(o.has("variables"));
+			assert o.has("variables") : "No variables option";
 			variables.jsonInit(o.get("variables").toString());
 
 			// Start simulation

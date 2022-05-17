@@ -26,7 +26,6 @@ import fr.cea.nabla.nabla.FunctionOrReduction
 import fr.cea.nabla.nabla.Minus
 import fr.cea.nabla.nabla.Modulo
 import fr.cea.nabla.nabla.Mul
-import fr.cea.nabla.nabla.NablaRoot
 import fr.cea.nabla.nabla.Not
 import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
@@ -36,7 +35,6 @@ import fr.cea.nabla.nabla.SimpleVarDeclaration
 import fr.cea.nabla.nabla.UnaryMinus
 import fr.cea.nabla.nabla.VectorConstant
 import fr.cea.nabla.overloading.DeclarationProvider
-import org.eclipse.xtext.EcoreUtil2
 
 /**
  * Note that FunctionCall is not constexpr for NabLab.
@@ -99,10 +97,13 @@ class ConstExprServices
 
 	def boolean isConstExpr(Function f)
 	{
-		val nablaRoot = EcoreUtil2.getContainerOfType(f, NablaRoot)
-		if (nablaRoot === null)
-			false
-		else
-			!f.external || nablaRoot.name == "Math"
+		// As functions are not inlined in c++ generation, function can't be constexpr
+		false
+//		val nablaRoot = EcoreUtil2.getContainerOfType(f, NablaRoot)
+//		if (nablaRoot === null)
+//			false
+//		else
+//			// If external provider (different of Math) -> non const expr
+//			!f.external || nablaRoot.name == "Math"
 	}
 }

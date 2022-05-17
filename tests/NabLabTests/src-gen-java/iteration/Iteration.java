@@ -415,13 +415,13 @@ public final class Iteration
 			final JsonObject o = gson.fromJson(new FileReader(dataFileName), JsonObject.class);
 
 			// Mesh instanciation
-			assert(o.has("mesh"));
+			assert o.has("mesh") : "No mesh option";
 			CartesianMesh2D mesh = new CartesianMesh2D();
 			mesh.jsonInit(o.get("mesh").toString());
 
 			// Module instanciation(s)
 			Iteration iteration = new Iteration(mesh);
-			assert(o.has("iteration"));
+			assert o.has("iteration") : "No iteration option";
 			iteration.jsonInit(o.get("iteration").toString());
 
 			// Start simulation

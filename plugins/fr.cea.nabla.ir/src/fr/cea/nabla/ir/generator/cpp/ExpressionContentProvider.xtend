@@ -121,7 +121,7 @@ class ExpressionContentProvider
 			if (call.args.empty)
 				call.connectivity.nbElems
 			else
-				'''mesh.«call.accessor».size()'''
+				'''(int)mesh.«call.accessor».size()'''
 		}
 		else
 			'''1'''

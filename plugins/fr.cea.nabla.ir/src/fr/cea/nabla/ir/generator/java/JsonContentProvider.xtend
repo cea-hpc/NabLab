@@ -24,7 +24,7 @@ class JsonContentProvider
 
 	static def getJsonContent(String name, BaseType type)
 	'''
-		assert(options.has("«name»"));
+		assert options.has("«name»") : "No «name» option";
 		final JsonElement «name.jsonName» = options.get("«name»");
 		«getJsonContent(name, type, type.sizes, #[])»
 	'''

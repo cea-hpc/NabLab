@@ -48,15 +48,15 @@ public final class Hydro
 	{
 		final Gson gson = new Gson();
 		final JsonObject options = gson.fromJson(jsonContent, JsonObject.class);
-		assert(options.has("maxIter"));
+		assert options.has("maxIter") : "No maxIter option";
 		final JsonElement valueof_maxIter = options.get("maxIter");
 		assert(valueof_maxIter.isJsonPrimitive());
 		maxIter = valueof_maxIter.getAsJsonPrimitive().getAsInt();
-		assert(options.has("maxTime"));
+		assert options.has("maxTime") : "No maxTime option";
 		final JsonElement valueof_maxTime = options.get("maxTime");
 		assert(valueof_maxTime.isJsonPrimitive());
 		maxTime = valueof_maxTime.getAsJsonPrimitive().getAsDouble();
-		assert(options.has("deltat"));
+		assert options.has("deltat") : "No deltat option";
 		final JsonElement valueof_deltat = options.get("deltat");
 		assert(valueof_deltat.isJsonPrimitive());
 		deltat = valueof_deltat.getAsJsonPrimitive().getAsDouble();
@@ -273,20 +273,20 @@ public final class Hydro
 			final JsonObject o = gson.fromJson(new FileReader(dataFileName), JsonObject.class);
 
 			// Mesh instanciation
-			assert(o.has("mesh"));
+			assert o.has("mesh") : "No mesh option";
 			CartesianMesh2D mesh = new CartesianMesh2D();
 			mesh.jsonInit(o.get("mesh").toString());
 
 			// Module instanciation(s)
 			Hydro hydro = new Hydro(mesh);
-			assert(o.has("hydro"));
+			assert o.has("hydro") : "No hydro option";
 			hydro.jsonInit(o.get("hydro").toString());
 			R1 r1 = new R1(mesh);
-			assert(o.has("r1"));
+			assert o.has("r1") : "No r1 option";
 			r1.jsonInit(o.get("r1").toString());
 			r1.setMainModule(hydro);
 			R2 r2 = new R2(mesh);
-			assert(o.has("r2"));
+			assert o.has("r2") : "No r2 option";
 			r2.jsonInit(o.get("r2").toString());
 			r2.setMainModule(hydro);
 

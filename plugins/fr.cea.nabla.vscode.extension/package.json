@@ -5,6 +5,7 @@
   "version": "0.5.0",
   "publisher": "CEA",
   "license": "EPL-2.0",
+  "icon": "images/nablab.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/cea-hpc/NabLab.git"

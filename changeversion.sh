@@ -65,6 +65,13 @@ if grep -q "$OLD_VERSION-SNAPSHOT.jar -Dversion=$OLD_VERSION" $f; then
    sed "s/$OLD_VERSION-SNAPSHOT.jar -Dversion=$OLD_VERSION/$NEW_VERSION-SNAPSHOT.jar -Dversion=$NEW_VERSION/g" $f.old > $f
 fi
 
+f=./plugins/fr.cea.nabla.vscode.extension/package.json
+if grep -q "\"version\": \"$OLD_VERSION\"" $f; then
+   echo "   Changing version of:" $f
+   cp $f $f.old
+   sed "s/\"version\": \"$OLD_VERSION\"/\"version\": \"$NEW_VERSION\"/g" $f.old > $f
+fi
+
 MD_FILES="./README.md ./docs/fr.cea.nabla.mkdocs/docs/gettingstarted.md"
 for f in $MD_FILES
 do

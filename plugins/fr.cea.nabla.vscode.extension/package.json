@@ -2,7 +2,7 @@
   "name": "cea-nablab-vscode-extension",
   "displayName": "CEA NabLab VSCode extension",
   "description": "The NabLab extension for VSCode",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "publisher": "CEA",
   "license": "EPL-2.0",
   "icon": "images/nablab.png",

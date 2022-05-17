@@ -11,7 +11,7 @@
 <feature
       id="fr.cea.nabla.thirdparty.libraries.feature"
       label="Nabla 3rd party libraries feature"
-      version="0.5.0.qualifier"
+      version="0.5.1.qualifier"
       provider-name="CEA">
 
    <description>

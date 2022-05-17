@@ -7,7 +7,7 @@ NabLab is a full-fledged industrial environment for scientific computing and Hig
 
 The NabLab documentation is available [here](https://cea-hpc.github.io/NabLab/).
 
-The latest NabLab environment can be downloaded [here](https://github.com/cea-hpc/NabLab/releases/tag/v0.5.0).
+The latest NabLab environment can be downloaded [here](https://github.com/cea-hpc/NabLab/releases/tag/v0.5.1).
 
 # Dependencies
 

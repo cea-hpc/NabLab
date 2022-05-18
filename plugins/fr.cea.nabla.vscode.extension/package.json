@@ -36,7 +36,11 @@
         "extensions": [
           ".n"
         ],
-        "configuration": "./nabla.configuration.json"
+        "configuration": "./nabla.configuration.json",
+        "icon": {
+          "light": "images/nabla_16.png",
+          "dark": "images/nabla_16.png"
+        }
       },
       {
         "id": "nablagen",
@@ -46,7 +50,11 @@
         "extensions": [
           ".ngen"
         ],
-        "configuration": "./nablagen.configuration.json"
+        "configuration": "./nablagen.configuration.json",
+        "icon": {
+          "light": "images/nablagen_16.png",
+          "dark": "images/nablagen_16.png"
+        }
       }
     ],
     "grammars": [

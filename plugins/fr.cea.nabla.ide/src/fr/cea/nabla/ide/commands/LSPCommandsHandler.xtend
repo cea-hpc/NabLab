@@ -171,11 +171,8 @@ class LSPCommandsHandler implements IExecutableCommandService
 	{
 		val ngenPath = Path.of(nablagenFileURI)
 		val nGenUri = URI.createURI(ngenPath.toUri.toString)
-		val nPath = Path.of(nablagenFileURI.replace(".ngen", ".n"))
-		val nUri = URI.createURI(nPath.toUri.toString)
 
 		val ngenResource = resourceSet.getResource(nGenUri, true)
-		resourceSet.getResource(nUri, true)
 		EcoreUtil::resolveAll(resourceSet)
 		return ngenResource
 	}

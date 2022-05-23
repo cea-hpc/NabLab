@@ -159,7 +159,7 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 				// Create all src-gen-arcane subfolders
 				for (cppFolderName : NablagenFileGenerator.ArcaneGenFoldersByTarget.values)
 				{
-					val cppFolder = srcCppFolder.getFolder(cppFolderName)
+					val cppFolder = srcArcaneFolder.getFolder(cppFolderName)
 					cppFolder.create(false, true, monitor)
 				}
 

@@ -156,6 +156,13 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 				val srcArcaneFolder = project.getFolder(srcArcaneFolderName)
 				srcArcaneFolder.create(false, true, monitor)
 
+				// Create all src-gen-arcane subfolders
+				for (cppFolderName : NablagenFileGenerator.ArcaneGenFoldersByTarget.values)
+				{
+					val cppFolder = srcCppFolder.getFolder(cppFolderName)
+					cppFolder.create(false, true, monitor)
+				}
+
 				// Create src-gen-python folder
 				val srcPythonFolderName = (newProjectPage.module ? "src-gen-python" : "src-python")
 				val srcPythonFolder = project.getFolder(srcPythonFolderName)

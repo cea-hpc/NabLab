@@ -25,6 +25,12 @@ class NablagenFileGenerator extends StandaloneGeneratorBase
 		TargetType::KOKKOS_TEAM_THREAD -> "kokkos-team"
 	}
 
+	public static val ArcaneGenFoldersByTarget = #{
+		TargetType::ARCANE_ACCELERATOR -> "accelerator",
+		TargetType::ARCANE_SEQUENTIAL -> "sequential",
+		TargetType::ARCANE_THREAD -> "thread"
+	}
+
 	def generate(NablaRoot moduleOrExtension, String genDir, String projectName)
 	{
 		val fsa = getConfiguredFileSystemAccess(genDir, false)
@@ -132,9 +138,23 @@ class NablagenFileGenerator extends StandaloneGeneratorBase
 			Kokkos_ROOT = "$ENV{HOME}/kokkos/install";
 		}
 
-		Arcane
+		ArcaneSequential
 		{
-			outputPath = "/«projectName»/src-gen-arcane";
+			outputPath = "/«projectName»/src-gen-arcane/«ArcaneGenFoldersByTarget.get(TargetType::ARCANE_SEQUENTIAL)»";
+			CMAKE_CXX_COMPILER = "/usr/bin/g++";
+			Arcane_ROOT = "$ENV{HOME}/arcane/install";
+		}
+
+		ArcaneThread
+		{
+			outputPath = "/«projectName»/src-gen-arcane/«ArcaneGenFoldersByTarget.get(TargetType::ARCANE_THREAD)»";
+			CMAKE_CXX_COMPILER = "/usr/bin/g++";
+			Arcane_ROOT = "$ENV{HOME}/arcane/install";
+		}
+
+		ArcaneAccelerator
+		{
+			outputPath = "/«projectName»/src-gen-arcane/«ArcaneGenFoldersByTarget.get(TargetType::ARCANE_ACCELERATOR)»";
 			CMAKE_CXX_COMPILER = "/usr/bin/g++";
 			Arcane_ROOT = "$ENV{HOME}/arcane/install";
 		}

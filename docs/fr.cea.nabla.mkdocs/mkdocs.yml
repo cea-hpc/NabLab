@@ -12,7 +12,7 @@ site_name: NabLab documentation
 site_url: https://cea-hpc.github.io/NabLab
 site_description: This is the documentation website of NabLab project
 site_author: Benoit Lelandais
-copyright: Copyright &copy; 2021 CEA
+copyright: Copyright &copy; 2022 CEA
 
 nav:
   - What is NabLab: index.md

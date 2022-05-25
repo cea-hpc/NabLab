@@ -29,6 +29,7 @@ endif()
 add_executable(glace2d Glace2dModule.cc Glace2d_axl.h main.cc)
 
 arcane_generate_axl(Glace2d)
+configure_file(Glace2d.config ${CMAKE_CURRENT_BINARY_DIR} @ONLY)
 #arcane_add_arcane_libraries_to_target(glace2d)
 arcane_accelerator_enable()
 arcane_accelerator_add_source_files(Glace2dModule.cc)

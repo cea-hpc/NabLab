@@ -29,6 +29,7 @@ endif()
 add_executable(iteration IterationModule.cc Iteration_axl.h main.cc)
 
 arcane_generate_axl(Iteration)
+configure_file(Iteration.config ${CMAKE_CURRENT_BINARY_DIR} @ONLY)
 #arcane_add_arcane_libraries_to_target(iteration)
 arcane_accelerator_enable()
 arcane_accelerator_add_source_files(IterationModule.cc)

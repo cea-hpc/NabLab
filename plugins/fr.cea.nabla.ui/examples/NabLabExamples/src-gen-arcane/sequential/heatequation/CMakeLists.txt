@@ -29,6 +29,7 @@ endif()
 add_executable(heatequation HeatEquationModule.cc HeatEquation_axl.h main.cc)
 
 arcane_generate_axl(HeatEquation)
+configure_file(HeatEquation.config ${CMAKE_CURRENT_BINARY_DIR} @ONLY)
 #arcane_add_arcane_libraries_to_target(heatequation)
 target_link_libraries(heatequation PRIVATE arcane_full nablalib cartesianmesh2darcane)
 target_include_directories(heatequation PUBLIC . ${CMAKE_CURRENT_BINARY_DIR})

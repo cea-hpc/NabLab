@@ -33,6 +33,7 @@ endif()
 add_executable(implicitheatequation ImplicitHeatEquationModule.cc ImplicitHeatEquation_axl.h main.cc)
 
 arcane_generate_axl(ImplicitHeatEquation)
+configure_file(ImplicitHeatEquation.config ${CMAKE_CURRENT_BINARY_DIR} @ONLY)
 #arcane_add_arcane_libraries_to_target(implicitheatequation)
 target_link_libraries(implicitheatequation PRIVATE arcane_full nablalib linearalgebrastl cartesianmesh2darcane)
 target_include_directories(implicitheatequation PUBLIC . ${CMAKE_CURRENT_BINARY_DIR})

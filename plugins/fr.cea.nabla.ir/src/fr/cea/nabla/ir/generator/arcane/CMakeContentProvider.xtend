@@ -38,6 +38,7 @@ class CMakeContentProvider
 	«FOR m : modules»
 		arcane_generate_axl(«m.className»)
 	«ENDFOR»
+	configure_file(«name».config ${CMAKE_CURRENT_BINARY_DIR} @ONLY)
 	#arcane_add_arcane_libraries_to_target(«execName»)
 	«IF AcceleratorAnnotation.tryToGet(it) !== null»
 		arcane_accelerator_enable()

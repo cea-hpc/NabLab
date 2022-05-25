@@ -29,6 +29,7 @@ endif()
 add_executable(heatequation HeatEquationModule.cc HeatEquation_axl.h main.cc)
 
 arcane_generate_axl(HeatEquation)
+configure_file(HeatEquation.config ${CMAKE_CURRENT_BINARY_DIR} @ONLY)
 #arcane_add_arcane_libraries_to_target(heatequation)
 arcane_accelerator_enable()
 arcane_accelerator_add_source_files(HeatEquationModule.cc)

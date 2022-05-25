@@ -29,6 +29,7 @@ endif()
 add_executable(iteration IterationModule.cc Iteration_axl.h main.cc)
 
 arcane_generate_axl(Iteration)
+configure_file(Iteration.config ${CMAKE_CURRENT_BINARY_DIR} @ONLY)
 #arcane_add_arcane_libraries_to_target(iteration)
 target_link_libraries(iteration PRIVATE arcane_full nablalib cartesianmesh2darcane)
 target_include_directories(iteration PUBLIC . ${CMAKE_CURRENT_BINARY_DIR})

@@ -31,6 +31,7 @@ add_executable(hydroremap HydroModule.cc Hydro_axl.h R1Service.cc R1_axl.h R2Ser
 arcane_generate_axl(Hydro)
 arcane_generate_axl(R1)
 arcane_generate_axl(R2)
+configure_file(HydroRemap.config ${CMAKE_CURRENT_BINARY_DIR} @ONLY)
 #arcane_add_arcane_libraries_to_target(hydroremap)
 target_link_libraries(hydroremap PRIVATE arcane_full nablalib cartesianmesh2darcane)
 target_include_directories(hydroremap PUBLIC . ${CMAKE_CURRENT_BINARY_DIR})

@@ -54,7 +54,7 @@ class NabLabExamplesTest extends GenerateAndExecuteTestBase
 	}
 
 	@Test
-	def void test2ExecuteExplicitHeatEquationIfSourceChanged()
+	def void test2ExecuteExplicitHeatEquation()
 	{
 		Assume.assumeTrue(explicitHeatEquationSourceChanged || testUtils.runningOnCI())
 		testExecuteModule("ExplicitHeatEquation")

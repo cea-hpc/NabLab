@@ -29,6 +29,7 @@ endif()
 add_executable(variables VariablesModule.cc Variables_axl.h main.cc)
 
 arcane_generate_axl(Variables)
+configure_file(Variables.config ${CMAKE_CURRENT_BINARY_DIR} @ONLY)
 #arcane_add_arcane_libraries_to_target(variables)
 arcane_accelerator_enable()
 arcane_accelerator_add_source_files(VariablesModule.cc)

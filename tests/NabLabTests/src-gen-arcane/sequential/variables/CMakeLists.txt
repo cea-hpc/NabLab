@@ -29,6 +29,7 @@ endif()
 add_executable(variables VariablesModule.cc Variables_axl.h main.cc)
 
 arcane_generate_axl(Variables)
+configure_file(Variables.config ${CMAKE_CURRENT_BINARY_DIR} @ONLY)
 #arcane_add_arcane_libraries_to_target(variables)
 target_link_libraries(variables PRIVATE arcane_full nablalib cartesianmesh2darcane)
 target_include_directories(variables PUBLIC . ${CMAKE_CURRENT_BINARY_DIR})

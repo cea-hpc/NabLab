@@ -176,6 +176,8 @@ class NablagenApplication2Ir
 		// No IR variable named "nablaVar.name".
 		// Look for an IR variable named "nablaVar.name_n" or "nablaVar.name_n0" if initTimeIterator=true
 		val nablaModule = EcoreUtil2.getContainerOfType(nablaVar, NablaModule)
+		if (nablaModule.iteration === null) return null
+
 		return getIrVariable(nablaModule.iteration.iterator, irModule, nablaVar, timeIteratorIndex)
 	}
 

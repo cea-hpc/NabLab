@@ -41,11 +41,6 @@ class IrModuleExtensions
 		jobs.findFirst[j | j.name == jobName]
 	}
 
-	static def getOptions(IrModule it)
-	{
-		variables.filter[option]
-	}
-
 	static def isLinearAlgebra(IrModule it)
 	{
 		variables.exists[v | v.linearAlgebra]

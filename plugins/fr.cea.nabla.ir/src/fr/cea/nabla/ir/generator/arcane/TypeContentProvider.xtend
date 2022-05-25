@@ -53,7 +53,7 @@ class TypeContentProvider
 	/**
 	 * Return true if it is scalar or Real* or Real*x*, false otherwise.
 	 */
-	static def isArcaneBaseType(IrType it)
+	static def isArcaneScalarType(IrType it)
 	{
 		it instanceof BaseType && (it as BaseType).typeNameAndDimension.value == 0
 	}
@@ -153,20 +153,23 @@ class TypeContentProvider
 
 	static def Pair<String, Integer> getTypeNameAndDimension(BaseType it)
 	{
+		val d = intSizes.size
+
 		if (primitive == PrimitiveType.REAL)
 		{
-			if (intSizes.size == 1)
-			{
-				val s = intSizes.get(0)
-				if (s == 2) return 'Real2' -> 0
-				if (s == 3) return 'Real3' -> 0
-			}
-			else if (intSizes.size == 2)
+			if (d > 1)
 			{
 				val x = intSizes.get(0)
 				val y = intSizes.get(1)
-				if (x == 2 && y == 2) return 'Real2x2' -> 0
-				if (x == 3 && y == 3) return 'Real3x3' -> 0
+				if (x == 2 && y == 2) return 'Real2x2' -> d - 2
+				if (x == 3 && y == 3) return 'Real3x3' -> d - 2
+			}
+
+			if (d > 0)
+			{
+				val s = intSizes.get(0)
+				if (s == 2) return 'Real2' -> d - 1
+				if (s == 3) return 'Real3' -> d - 1
 			}
 		}
 
@@ -177,7 +180,7 @@ class TypeContentProvider
 			case INT: 'Int32'
 			case REAL: 'Real'
 		}
-		return typeName -> sizes.size
+		return typeName -> d
 	}
 
 	static def getResizeDims(IrType it)
@@ -208,7 +211,7 @@ class TypeContentProvider
 	static def isNumArray(ArgOrVar v)
 	{
 		v.type instanceof BaseType						// a BaseType...
-		&& !isArcaneBaseType(v.type)					// ...but not scalar...
+		&& !isArcaneScalarType(v.type)					// ...but not scalar...
 		&& AcceleratorAnnotation.tryToGet(v) === null	// ...and not a view
 	}
 

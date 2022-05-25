@@ -50,7 +50,7 @@ class InstructionContentProvider
 	'''
 		«val annot = AcceleratorAnnotation.tryToGet(variable)»
 		«IF annot !== null»
-			«IF TypeContentProvider.isArcaneBaseType(variable.type)»
+			«IF TypeContentProvider.isArcaneScalarType(variable.type)»
 				«IF annot.viewDirection == ViewDirection.In»
 					auto «variable.name» = «ArcaneUtils.getCodeName((variable.defaultValue as ArgOrVarRef).target)»;
 				«ELSE»

@@ -188,8 +188,8 @@ class NablagenScopeProvider extends AbstractNablagenScopeProvider
 		}
 		if (nablaModule.iteration !== null && primitiveTypes.exists[x | x == PrimitiveType::INT])
 		{
-				val iterators = nablaModule.iteration.eAllContents.filter(TimeIterator)
-				candidates += iterators.toList
+			val iterators = nablaModule.iteration.eAllContents.filter(TimeIterator)
+			candidates += iterators.toList
 		}
 		Scopes::scopeFor(candidates)
 	}

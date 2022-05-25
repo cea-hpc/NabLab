@@ -14,6 +14,7 @@ import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
 import fr.cea.nabla.generator.ir.IrExtensionProviderFactory
 import fr.cea.nabla.generator.ir.IrRootBuilder
 import fr.cea.nabla.ir.generator.GenerationContent
+import fr.cea.nabla.ir.generator.arcane.DefaultDotArcGenerator
 import fr.cea.nabla.ir.generator.json.JsonGenerator
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.transformers.IrTransformationUtils
@@ -112,22 +113,15 @@ class CodeGenerator extends StandaloneGeneratorBase
 			for (adModule : ngenApp.additionalModules)
 				if (adModule.type !== null)
 					texContents += new GenerationContent(adModule.type.name + ".tex", adModule.type.latexContent, false)
-			val projectPath = wsPath + '/' + projectName
-			var fsa = getConfiguredFileSystemAccess(projectPath, true)
-			generate(fsa, texContents, ir.dirName)
-
-			dispatcher.post(MessageType::Exec, "Starting Json code generator")
-			val ir2Json = new JsonGenerator(ngenApp.levelDB!==null)
-			val jsonGenerationContent = ir2Json.getGenerationContents(ir, [msg | dispatcher.post(MessageType::Exec, msg)])
-			generate(fsa, jsonGenerationContent, ir.dirName)
+			var srcGenFsa = getConfiguredFileSystemAccess(wsPath + '/' + projectName, true)
 
 			for (target : ngenApp.targets)
 			{
 				dispatcher.post(MessageType::Exec, "Starting " + target.name + " code generator: " + target.outputPath)
 
-				// Configure fsa with target output folder
+				// Language generator: configure fsa with target output folder
 				val outputFolderName = wsPath + target.outputPath
-				fsa = getConfiguredFileSystemAccess(outputFolderName, false)
+				val fsa = getConfiguredFileSystemAccess(outputFolderName, false)
 
 				// Set provider extension for the target
 				// No need to duplicate IR. All providers are set for each target.
@@ -151,6 +145,11 @@ class CodeGenerator extends StandaloneGeneratorBase
 						}
 						generate(fsa, g.getGenerationContents(genIr, [msg | dispatcher.post(MessageType::Exec, msg)]), ir.dirName)
 					}
+
+					// Defaut user data file
+					val dataFileGenerator = (target.name.startsWith("Arcane") ? new DefaultDotArcGenerator : new JsonGenerator(ngenApp.levelDB!==null))
+					val dataFileContent = dataFileGenerator.getGenerationContents(ir, [msg | dispatcher.post(MessageType::Exec, msg)])
+					generate(srcGenFsa, dataFileContent, ir.dirName)
 				}
 				else
 				{

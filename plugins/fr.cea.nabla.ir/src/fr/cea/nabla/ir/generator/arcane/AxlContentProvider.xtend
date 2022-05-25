@@ -13,20 +13,14 @@ import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.generator.Utils
 import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.BaseType
-import fr.cea.nabla.ir.ir.BoolConstant
 import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.ExtensionProvider
-import fr.cea.nabla.ir.ir.IntConstant
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrType
-import fr.cea.nabla.ir.ir.MaxConstant
-import fr.cea.nabla.ir.ir.MinConstant
-import fr.cea.nabla.ir.ir.RealConstant
 import fr.cea.nabla.ir.ir.Variable
 import java.util.ArrayList
 
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
-import static extension fr.cea.nabla.ir.IrTypeExtensions.*
 import static extension fr.cea.nabla.ir.generator.arcane.StringExtensions.*
 
 class AxlContentProvider
@@ -59,8 +53,7 @@ class AxlContentProvider
 
 		<options>
 			«FOR v : variables.filter[option].reject[x | x.name == IrUtils.OutputPeriodOptionName]»
-				«val df = v.arcaneDefaultValue»
-				<simple name="«v.optionName»" type="«v.type.dataType»"«IF df !== null» default="«df»"«ENDIF» «v.bounds»>
+				<simple name="«v.optionName»" type="«v.type.dataType»«IF !TypeContentProvider.isArcaneScalarType(v.type as BaseType)»[]«ENDIF»" minOccurs="1" maxOccurs="1">
 					<description/>
 				</simple>
 			«ENDFOR»
@@ -89,12 +82,12 @@ class AxlContentProvider
 	«ENDIF»
 	'''
 
-	private static def getOptionName(Variable it)
+	static def getOptionName(Variable it)
 	{
 		name.separateWith(StringExtensions.Dash)
 	}
 
-	private static def getOptionName(ExtensionProvider it)
+	static def getOptionName(ExtensionProvider it)
 	{
 		extensionName.separateWith(StringExtensions.Dash)
 	}
@@ -117,53 +110,6 @@ class AxlContentProvider
 	private static def getDimension(ConnectivityType it)
 	{
 		connectivities.size - 1 + TypeContentProvider.getTypeNameAndDimension(base).value
-	}
-
-	private static def String getArcaneDefaultValue(Variable it)
-	{
-		val d = defaultValue
-		switch d
-		{
-			case null: null
-			IntConstant: d.value.toString
-			RealConstant: d.value.toString
-			BoolConstant: d.value.toString.toLowerCase
-			MinConstant: switch type.primitive
-			{
-				case BOOL: null
-				case INT: Integer.MIN_VALUE.toString
-				case REAL: Double.MIN_VALUE.toString
-			}
-			MaxConstant: switch type.primitive
-			{
-				case BOOL: null
-				case INT: Integer.MAX_VALUE.toString
-				case REAL: Double.MAX_VALUE.toString
-			}
-		}
-	}
-
-	private static def getBounds(Variable it)
-	{
-		val d = type.dimension
-		val optional = (arcaneDefaultValue !== null)
-		switch d
-		{
-			case 0: (optional ? '''optional="true"''' : '''minOccurs="1" maxOccurs="1"''')
-			case 1 :
-			{
-				val maxOccursInt = (type instanceof BaseType ? (type as BaseType).intSizes.get(0) : -1)
-				val maxOccurs = switch maxOccursInt
-				{
-					case -1: "unbounded" // dynamic type
-					case 2: "1" // Real2
-					case 3: "1" // Real3
-					default: maxOccursInt.toString
-				} 
-				'''minOccurs="«IF optional»0«ELSE»1«ENDIF»" maxOccurs="«maxOccurs»"'''
-			}
-			default : throw new RuntimeException("Dimension greater than 1 not yet suported in options: " + d)
-		}
 	}
 
 	private static def getVariablesToDeclare(IrModule it)

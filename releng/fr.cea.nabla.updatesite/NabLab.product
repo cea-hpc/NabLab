@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="NabLab" uid="fr.cea.nabla.product" id="fr.cea.nabla.product" application="org.eclipse.ui.ide.workbench" version="0.5.2.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="NabLab" uid="fr.cea.nabla.product" id="fr.cea.nabla.product" application="org.eclipse.ui.ide.workbench" version="0.5.3.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <text>NabLab - Copyright (c) 2022 CEA</text>

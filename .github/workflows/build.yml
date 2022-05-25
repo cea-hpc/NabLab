@@ -102,7 +102,7 @@ jobs:
       # Deploy maven artifacts to github
       - name: Deploy maven artifact to github (fr.cea.nabla)
         if: startsWith(github.ref, 'refs/tags/v')
-        run: mvn -B deploy:deploy-file --settings .github/workflows/settings.xml -Dfile=plugins/fr.cea.nabla/target/fr.cea.nabla-0.5.2-SNAPSHOT.jar -Dversion=0.5.2 -Durl=https://maven.pkg.github.com/cea-hpc/NabLab -DrepositoryId=github  -DgroupId=fr.cea.nabla -DartifactId=fr.cea.nabla
+        run: mvn -B deploy:deploy-file --settings .github/workflows/settings.xml -Dfile=plugins/fr.cea.nabla/target/fr.cea.nabla-0.5.3-SNAPSHOT.jar -Dversion=0.5.3 -Durl=https://maven.pkg.github.com/cea-hpc/NabLab -DrepositoryId=github  -DgroupId=fr.cea.nabla -DartifactId=fr.cea.nabla
         env:
           USERNAME: ${{ github.actor }}
           PASSWORD: ${{ secrets.GITHUB_TOKEN }}
@@ -110,7 +110,7 @@ jobs:
 
       - name: Deploy maven artifact to github (fr.cea.nabla.ir)
         if: startsWith(github.ref, 'refs/tags/v')
-        run: mvn -B deploy:deploy-file --settings .github/workflows/settings.xml -Dfile=plugins/fr.cea.nabla.ir/target/fr.cea.nabla.ir-0.5.2-SNAPSHOT.jar -Dversion=0.5.2 -Durl=https://maven.pkg.github.com/cea-hpc/NabLab -DrepositoryId=github  -DgroupId=fr.cea.nabla -DartifactId=fr.cea.nabla.ir
+        run: mvn -B deploy:deploy-file --settings .github/workflows/settings.xml -Dfile=plugins/fr.cea.nabla.ir/target/fr.cea.nabla.ir-0.5.3-SNAPSHOT.jar -Dversion=0.5.3 -Durl=https://maven.pkg.github.com/cea-hpc/NabLab -DrepositoryId=github  -DgroupId=fr.cea.nabla -DartifactId=fr.cea.nabla.ir
         env:
           USERNAME: ${{ github.actor }}
           PASSWORD: ${{ secrets.GITHUB_TOKEN }}
@@ -118,7 +118,7 @@ jobs:
 
       - name: Deploy maven artifact to github (fr.cea.nabla.javalib)
         if: startsWith(github.ref, 'refs/tags/v')
-        run: mvn -B deploy:deploy-file --settings .github/workflows/settings.xml -Dfile=plugins/fr.cea.nabla.javalib/target/fr.cea.nabla.javalib-0.5.2-SNAPSHOT.jar -Dversion=0.5.2 -Durl=https://maven.pkg.github.com/cea-hpc/NabLab -DrepositoryId=github  -DgroupId=fr.cea.nabla -DartifactId=fr.cea.nabla.javalib
+        run: mvn -B deploy:deploy-file --settings .github/workflows/settings.xml -Dfile=plugins/fr.cea.nabla.javalib/target/fr.cea.nabla.javalib-0.5.3-SNAPSHOT.jar -Dversion=0.5.3 -Durl=https://maven.pkg.github.com/cea-hpc/NabLab -DrepositoryId=github  -DgroupId=fr.cea.nabla -DartifactId=fr.cea.nabla.javalib
         env:
           USERNAME: ${{ github.actor }}
           PASSWORD: ${{ secrets.GITHUB_TOKEN }}

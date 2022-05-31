@@ -153,12 +153,11 @@ export function activate(context: ExtensionContext) {
           projectPath.lastIndexOf(projectFolder.name) - 1
         );
         if (wsPath) {
-          const ngenRelativePath = path.relative(wsPath, ngenPath);
           commands.executeCommand(
             "nablabweb.generateCode",
             selectedFileURI.fsPath,
             wsPath,
-            ngenRelativePath
+            projectFolder.name
           );
         }
       }

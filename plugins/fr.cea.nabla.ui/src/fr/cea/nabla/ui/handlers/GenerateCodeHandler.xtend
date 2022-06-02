@@ -14,7 +14,6 @@ import com.google.inject.Provider
 import com.google.inject.Singleton
 import fr.cea.nabla.generator.CodeGenerator
 import fr.cea.nabla.generator.NablaGeneratorMessageDispatcher.MessageType
-import fr.cea.nabla.generator.python.PythonModuleGenerator
 import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.nablagen.NablagenRoot
 import org.eclipse.core.resources.IFile
@@ -30,7 +29,6 @@ class GenerateCodeHandler extends AbstractGenerateHandler
 {
 	@Inject Provider<ResourceSet> resourceSetProvider
 	@Inject Provider<CodeGenerator> codeGeneratorProvider
-	@Inject Provider<PythonModuleGenerator> pythonModuleGeneratorProvider
 
 	val traceFunction = [MessageType type, String msg | consoleFactory.printConsole(type, msg)]
 	
@@ -57,7 +55,6 @@ class GenerateCodeHandler extends AbstractGenerateHandler
 				val projectFolder = ResourcesPlugin.workspace.root.getFolder(project.location)
 				val wsPath = projectFolder.parent.fullPath.toString
 				codeGeneratorProvider.get.generateCode(ngen, wsPath, project.name)
-				pythonModuleGeneratorProvider.get.generatePythonModule(ngen, wsPath, project.name)
 
 				project.refreshLocal(IResource::DEPTH_INFINITE, null)
 				consoleFactory.printConsole(MessageType.End, "Generation ended successfully for: " + nablagenFile.name)

@@ -60,6 +60,7 @@ class CppGenerator implements IrCodeGenerator
 		if (debug)
 		{
 			fileContents += new GenerationContent('nablabdefs.h.in', '#cmakedefine NABLAB_DEBUG', false)
+			fileContents += new GenerationContent(ir.name.toLowerCase + ".py", PythonModuleGenerator::getPythonModuleContent(ir), false)
 		}
 		return fileContents
 	}

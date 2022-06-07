@@ -288,7 +288,7 @@ void IterativeHeatEquationModule::updateU()
 					reduction0 = iterativeheatequationfreefuncs::sumR0(reduction0, m_alpha[cCells][dCells] * m_u_nplus1_k[dCells]);
 				}
 			}
-			m_u_nplus1_kplus1[cCells] = m_u_n[cCells] + m_alpha[cCells][cCells.index()] * m_u_nplus1_k[cCells] + reduction0;
+			m_u_nplus1_kplus1[cCells] = m_u_n[cCells] + m_alpha[cCells][cCells.localId()] * m_u_nplus1_k[cCells] + reduction0;
 		}
 	});
 }
@@ -448,7 +448,7 @@ void IterativeHeatEquationModule::computeAlphaCoeff()
 					alphaDiag = alphaDiag + alphaExtraDiag;
 				}
 			}
-			m_alpha[cCells][cCells.index()] = -alphaDiag;
+			m_alpha[cCells][cCells.localId()] = -alphaDiag;
 		}
 	});
 }

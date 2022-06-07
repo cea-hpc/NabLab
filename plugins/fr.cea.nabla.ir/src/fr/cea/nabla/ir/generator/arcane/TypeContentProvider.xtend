@@ -237,7 +237,7 @@ class TypeContentProvider
 				if (ArcaneUtils.isArcaneManaged(v) || isArcaneStlVector(v.type)) // ArcaneStlVector needs ItemType
 					indices += firstIterator.name
 				else
-					indices += firstIterator.name + ".index()"
+					indices += firstIterator.name + ".localId()"
 			else
 				indices += firstIterator.name
 
@@ -245,7 +245,7 @@ class TypeContentProvider
 			{
 				val name = iterator.name
 				if (iterator.isAnItemType)
-					indices += name + ".index()"
+					indices += name + ".localId()"
 				else
 					indices += name
 			}

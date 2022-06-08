@@ -46,11 +46,10 @@ CartesianMesh2D::CartesianMesh2D(IMesh* mesh)
 	//
 	// compute neightbour cells
 	//
-	CellGroup cells = cell_family->allItems();
 
 	// NOTE: l'objet est automatiquement détruit par le maillage
 	auto* cn = new mesh::IncrementalItemConnectivity(cell_family, cell_family, "getNeighbourCells");
-	ENUMERATE_CELL(icell, cells)
+	ENUMERATE_CELL(icell, mesh->allCells())
 	{
 		Cell c = *icell;
 		cn->notifySourceItemAdded(c);
@@ -65,18 +64,55 @@ CartesianMesh2D::CartesianMesh2D(IMesh* mesh)
 
 	m_neighbour_cells = cn->connectivityView();
 
+	// infomation du mesh global
+	auto* info_mesh = ICartesianMeshGenerationInfo::getReference(mesh, true);
+
+	const auto nb_total_cell = info_mesh->globalNbCells();
+	const auto cell_offset = info_mesh->ownCellOffsets();
+
+	const Int32 nb_x_total = nb_total_cell[0];
+	const Int32 nb_y_total = nb_total_cell[1];
+	const Int32 nb_x_quads = m_x_cell_dm.ownNbCell();
+	const Int32 nb_y_quads = m_y_cell_dm.ownNbCell();
+
+
+	const bool has_neighbour_top = (cell_offset[1] + nb_y_quads) == nb_y_total ? false : true;
+	const bool has_neighbour_bottom = (cell_offset[1] == 0) ? false : true;
+	const bool has_neighbour_left = (cell_offset[0] == 0) ? false : true;
+	const bool has_neighbour_right = (cell_offset[0] + nb_x_quads) == nb_x_total ? false : true;
+
 	//
 	// compute node groups
 	//
-	Int32 nb_x_quads = m_x_cell_dm.ownNbCell();
-	Int32 nb_y_quads = m_y_cell_dm.ownNbCell();
+	Int32 nb_inner_nodes = (nb_x_quads - 1) * (nb_y_quads - 1);
+	Int32 nb_top_nodes = has_neighbour_top ? 0 : nb_x_quads;
+	Int32 nb_bottom_nodes = has_neighbour_bottom ? 0 : nb_x_quads;
+	Int32 nb_left_nodes = has_neighbour_left ? 0 : nb_y_quads;
+	Int32 nb_right_nodes = has_neighbour_right ? 0 : nb_y_quads;
 
-	Int32 nb_outer_nodes = 2 * (nb_x_quads + nb_y_quads);
-	UniqueArray<Int32> inner_nodes(mesh->nbNode() - nb_outer_nodes);
-	UniqueArray<Int32> top_nodes(nb_x_quads + 1);
-	UniqueArray<Int32> bottom_nodes(nb_x_quads + 1);
-	UniqueArray<Int32> left_nodes(nb_y_quads + 1);
-	UniqueArray<Int32> right_nodes(nb_y_quads + 1);
+	if(has_neighbour_top)
+		nb_inner_nodes += nb_x_quads - 1;
+	if(has_neighbour_right)
+		nb_inner_nodes += nb_y_quads - 1;
+	if(has_neighbour_top && has_neighbour_right)
+		nb_inner_nodes++;
+
+	if(!has_neighbour_left)
+	{
+		if(!has_neighbour_top) nb_top_nodes++;
+		if(!has_neighbour_bottom) nb_bottom_nodes++;
+	}
+	if(!has_neighbour_bottom)
+	{
+		if(!has_neighbour_left) nb_left_nodes++;
+		if(!has_neighbour_right) nb_right_nodes++;
+	}
+
+	UniqueArray<Int32> inner_nodes(nb_inner_nodes);
+	UniqueArray<Int32> top_nodes(nb_top_nodes);
+	UniqueArray<Int32> bottom_nodes(nb_bottom_nodes);
+	UniqueArray<Int32> left_nodes(nb_left_nodes);
+	UniqueArray<Int32> right_nodes(nb_right_nodes);
 
 	Int32 inner_node_id(0);
 	Int32 top_node_id(0);
@@ -84,36 +120,57 @@ CartesianMesh2D::CartesianMesh2D(IMesh* mesh)
 	Int32 left_node_id(0);
 	Int32 right_node_id(0);
 
-	ENUMERATE_NODE(inode, mesh->allNodes())
+	ENUMERATE_NODE(inode, mesh->ownNodes())
 	{
 		Node n = *inode;
+		const Int64 unique_id(n.uniqueId());
 
-		DirNode xdn = m_x_node_dm.node(n);
-		if (xdn.nextRightCellId() != -1 && xdn.previousRightCellId() != -1 && xdn.nextLeftCellId() != -1 && xdn.previousLeftCellId() != -1)
+		if(unique_id % (nb_x_total + 1) != 0 &&
+			 unique_id % (nb_x_total + 1) != nb_x_total &&
+			 unique_id / (nb_x_total + 1) != 0 &&
+			 unique_id / (nb_x_total + 1) != nb_y_total)
 			inner_nodes[inner_node_id++] = n.localId();
-		else
-		{
-			if (xdn.nextRightCellId() == -1 && xdn.nextLeftCellId() == -1)
-				right_nodes[right_node_id++] = n.localId();
-			if (xdn.previousRightCellId() == -1 && xdn.previousLeftCellId() == -1)
-				left_nodes[left_node_id++] = n.localId();
-
-			DirNode ydn = m_y_node_dm.node(n);
-			if (ydn.nextRightCellId() == -1 && ydn.nextLeftCellId() == -1)
-				top_nodes[top_node_id++] = n.localId();
-			if (ydn.previousRightCellId() == -1 && ydn.previousLeftCellId() == -1)
-				bottom_nodes[bottom_node_id++] = n.localId();
-		}
+		if(unique_id / (nb_x_total + 1) == 0)
+			bottom_nodes[bottom_node_id++] = n.localId();
+		else if(unique_id / (nb_x_total + 1) == nb_y_total)
+			top_nodes[top_node_id++] = n.localId();
+		if(unique_id % (nb_x_total + 1) == 0)
+			left_nodes[left_node_id++] = n.localId();
+		else if(unique_id % (nb_x_total + 1) == nb_x_total)
+			right_nodes[right_node_id++] = n.localId();
 	}
 
 	//
 	// compute cell groups
 	//
-	UniqueArray<Int32> inner_cells((nb_x_quads - 2)*(nb_y_quads - 2));
-	UniqueArray<Int32> top_cells(nb_x_quads);
-	UniqueArray<Int32> bottom_cells(nb_x_quads);
-	UniqueArray<Int32> left_cells(nb_y_quads);
-	UniqueArray<Int32> right_cells(nb_y_quads);
+	Int32 nb_inner_cells = (nb_x_quads - 2) * (nb_y_quads - 2);
+	const Int32 nb_top_cells = has_neighbour_top ? 0 : nb_x_quads;
+	const Int32 nb_bottom_cells = has_neighbour_bottom ? 0 : nb_x_quads;
+	const Int32 nb_left_cells = has_neighbour_left ? 0 : nb_y_quads;
+	const Int32 nb_right_cells = has_neighbour_right ? 0 : nb_y_quads;
+
+	if(has_neighbour_top)
+		nb_inner_cells += nb_x_quads - 2;
+	if(has_neighbour_bottom)
+		nb_inner_cells += nb_x_quads - 2;
+	if(has_neighbour_left)
+		nb_inner_cells += nb_y_quads - 2;
+	if(has_neighbour_right)
+		nb_inner_cells += nb_y_quads - 2;
+	if(has_neighbour_top && has_neighbour_left)
+		nb_inner_cells++;
+	if(has_neighbour_top && has_neighbour_right)
+		nb_inner_cells++;
+	if(has_neighbour_bottom && has_neighbour_left)
+		nb_inner_cells++;
+	if(has_neighbour_bottom && has_neighbour_right)
+		nb_inner_cells++;
+
+	UniqueArray<Int32> inner_cells(nb_inner_cells);
+	UniqueArray<Int32> top_cells(nb_top_cells);
+	UniqueArray<Int32> bottom_cells(nb_bottom_cells);
+	UniqueArray<Int32> left_cells(nb_left_cells);
+	UniqueArray<Int32> right_cells(nb_right_cells);
 
 	Int32 inner_cell_id(0);
 	Int32 top_cell_id(0);
@@ -121,35 +178,41 @@ CartesianMesh2D::CartesianMesh2D(IMesh* mesh)
 	Int32 left_cell_id(0);
 	Int32 right_cell_id(0);
 
-	ENUMERATE_CELL(icell, mesh->allCells())
+	ENUMERATE_CELL(icell, mesh->ownCells())
 	{
 		Cell c = *icell;
+		const Int64 unique_id(c.uniqueId());
 
-		DirCell xdc = m_x_cell_dm.cell(c);
-		DirCell ydc = m_y_cell_dm.cell(c);
-		if (xdc.nextId() != -1 && xdc.previousId() != -1 && ydc.nextId() != -1 && ydc.previousId() != -1)
-			inner_cells[inner_cell_id++] = c.localId();
-		else
-		{
-			if (xdc.nextId() == -1)
-				right_cells[right_cell_id++] = c.localId();
-			if (xdc.previousId() == -1)
-				left_cells[left_cell_id++] = c.localId();
-			if (ydc.nextId() == -1)
-				top_cells[top_cell_id++] = c.localId();
-			if (ydc.previousId() == -1)
-				bottom_cells[bottom_cell_id++] = c.localId();
-		}
+		if((unique_id % nb_x_total != 0) &&
+			 (unique_id % nb_x_total != nb_x_total - 1) &&
+			 (unique_id / nb_x_total != 0) &&
+			 (unique_id / nb_x_total != nb_y_total - 1))
+				 inner_cells[inner_cell_id++] = c.localId();
+		if(unique_id % nb_x_total == 0)
+			left_cells[left_cell_id++] = c.localId();
+		else if(unique_id % nb_x_total == nb_x_total - 1)
+			right_cells[right_cell_id++] = c.localId();
+		if(unique_id / nb_x_total == 0)
+			bottom_cells[bottom_cell_id++] = c.localId();
+		else if(unique_id / nb_x_total == nb_y_total - 1)
+			top_cells[top_cell_id++] = c.localId();
 	}
 
 	//
 	// compute face groups
 	//
-	UniqueArray<Int32> inner_faces(2*nb_y_quads*nb_x_quads - nb_x_quads - nb_y_quads);
+	Int32 nb_inner_faces = 2 * nb_x_quads * nb_y_quads - nb_x_quads - nb_y_quads;
+
+	if(has_neighbour_top)
+		nb_inner_faces += nb_x_quads;
+	if(has_neighbour_right)
+		nb_inner_faces += nb_y_quads;
+
+	UniqueArray<Int32> inner_faces(nb_inner_faces);
 
 	Int32 inner_face_id(0);
 
-	ENUMERATE_FACE(iface, mesh->allFaces())
+	ENUMERATE_FACE(iface, mesh->ownFaces())
 	{
 		Face f = *iface;
 		if (f.nbCell() == 2)

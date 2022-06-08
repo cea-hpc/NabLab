@@ -366,11 +366,11 @@ void ImplicitHeatEquationModule::computeAlphaCoeff()
 					const auto fId(m_mesh->getCommonFace(cId, dId));
 					const auto fFaces(fId);
 					const Real alphaExtraDiag(-m_deltat / m_V[cCells] * (m_faceLength[fFaces] * m_faceConductivity[fFaces]) / implicitheatequationfreefuncs::norm(Real2(implicitheatequationfreefuncs::operatorSub(m_Xc[cCells], m_Xc[dCells]))));
-					m_alpha.setValue(cCells.index(), dCells, alphaExtraDiag);
+					m_alpha.setValue(cCells.localId(), dCells, alphaExtraDiag);
 					alphaDiag = alphaDiag + alphaExtraDiag;
 				}
 			}
-			m_alpha.setValue(cCells.index(), cCells.index(), 1 - alphaDiag);
+			m_alpha.setValue(cCells.localId(), cCells.localId(), 1 - alphaDiag);
 		}
 	});
 }

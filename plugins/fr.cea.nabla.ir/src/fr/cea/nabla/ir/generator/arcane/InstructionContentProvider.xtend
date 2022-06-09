@@ -76,8 +76,6 @@ class InstructionContentProvider
 	{
 		if (left.target.linearAlgebra && !(left.iterators.empty && left.indices.empty))
 			'''«left.codeName».setValue(«formatIteratorsAndIndices(left.target, left.iterators, left.indices)», «right.content»);'''
-		else if (isNumArray(left.target))
-			'''«left.codeName».s«formatIteratorsAndIndices(left.target, left.iterators, left.indices)» = «right.content»;'''
 		else
 			'''
 				«left.content» = «right.content»;

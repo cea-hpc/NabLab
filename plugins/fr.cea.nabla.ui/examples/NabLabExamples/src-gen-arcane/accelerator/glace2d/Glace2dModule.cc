@@ -42,7 +42,7 @@ namespace glace2dfreefuncs
 		{
 			for (Int32 ib=0; ib<a.size(); ib++)
 			{
-				result.s(ia, ib) = a(ia) * b(ib);
+				result(ia, ib) = a(ia) * b(ib);
 			}
 		}
 		return result;
@@ -56,9 +56,9 @@ namespace glace2dfreefuncs
 			NumArray<Real,1> tmp(a.dim2Size());
 			for (Int32 iy=0; iy<a.dim2Size(); iy++)
 			{
-				tmp.s(iy) = a(ix, iy);
+				tmp(iy) = a(ix, iy);
 			}
-			result.s(ix) = glace2dfreefuncs::dot(tmp, b);
+			result(ix) = glace2dfreefuncs::dot(tmp, b);
 		}
 		return result;
 	}
@@ -104,7 +104,7 @@ namespace glace2dfreefuncs
 		NumArray<Real,1> result(a.size());
 		for (Int32 ix0=0; ix0<a.size(); ix0++)
 		{
-			result.s(ix0) = a(ix0) + b(ix0);
+			result(ix0) = a(ix0) + b(ix0);
 		}
 		return result;
 	}
@@ -116,7 +116,7 @@ namespace glace2dfreefuncs
 		{
 			for (Int32 ix1=0; ix1<a.dim2Size(); ix1++)
 			{
-				result.s(ix0, ix1) = a(ix0, ix1) + b(ix0, ix1);
+				result(ix0, ix1) = a(ix0, ix1) + b(ix0, ix1);
 			}
 		}
 		return result;
@@ -127,7 +127,7 @@ namespace glace2dfreefuncs
 		NumArray<Real,1> result(b.size());
 		for (Int32 ix0=0; ix0<b.size(); ix0++)
 		{
-			result.s(ix0) = a * b(ix0);
+			result(ix0) = a * b(ix0);
 		}
 		return result;
 	}
@@ -137,7 +137,7 @@ namespace glace2dfreefuncs
 		NumArray<Real,1> result(a.size());
 		for (Int32 ix0=0; ix0<a.size(); ix0++)
 		{
-			result.s(ix0) = a(ix0) - b(ix0);
+			result(ix0) = a(ix0) - b(ix0);
 		}
 		return result;
 	}
@@ -149,7 +149,7 @@ namespace glace2dfreefuncs
 		{
 			for (Int32 ix1=0; ix1<b.dim2Size(); ix1++)
 			{
-				result.s(ix0, ix1) = a * b(ix0, ix1);
+				result(ix0, ix1) = a * b(ix0, ix1);
 			}
 		}
 		return result;
@@ -162,7 +162,7 @@ namespace glace2dfreefuncs
 		{
 			for (Int32 ix1=0; ix1<a.dim2Size(); ix1++)
 			{
-				result.s(ix0, ix1) = a(ix0, ix1) - b(ix0, ix1);
+				result(ix0, ix1) = a(ix0, ix1) - b(ix0, ix1);
 			}
 		}
 		return result;
@@ -175,7 +175,7 @@ namespace glace2dfreefuncs
 		{
 			for (Int32 ix1=0; ix1<a.dim2Size(); ix1++)
 			{
-				result.s(ix0, ix1) = a(ix0, ix1) * b(ix0, ix1);
+				result(ix0, ix1) = a(ix0, ix1) * b(ix0, ix1);
 			}
 		}
 		return result;
@@ -188,7 +188,7 @@ namespace glace2dfreefuncs
 		{
 			for (Int32 ix1=0; ix1<a.dim2Size(); ix1++)
 			{
-				result.s(ix0, ix1) = a(ix0, ix1) * b;
+				result(ix0, ix1) = a(ix0, ix1) * b;
 			}
 		}
 		return result;

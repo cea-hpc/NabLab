@@ -55,7 +55,7 @@ namespace explicitheatequationfreefuncs
 		NumArray<Real,1> result(a.size());
 		for (Int32 ix0=0; ix0<a.size(); ix0++)
 		{
-			result.s(ix0) = a(ix0) + b(ix0);
+			result(ix0) = a(ix0) + b(ix0);
 		}
 		return result;
 	}
@@ -65,7 +65,7 @@ namespace explicitheatequationfreefuncs
 		NumArray<Real,1> result(b.size());
 		for (Int32 ix0=0; ix0<b.size(); ix0++)
 		{
-			result.s(ix0) = a * b(ix0);
+			result(ix0) = a * b(ix0);
 		}
 		return result;
 	}
@@ -75,7 +75,7 @@ namespace explicitheatequationfreefuncs
 		NumArray<Real,1> result(a.size());
 		for (Int32 ix0=0; ix0<a.size(); ix0++)
 		{
-			result.s(ix0) = a(ix0) - b(ix0);
+			result(ix0) = a(ix0) - b(ix0);
 		}
 		return result;
 	}

@@ -104,13 +104,25 @@ class ExpressionContentProvider
 
 	static def dispatch CharSequence getContent(VectorConstant it)
 	{
-		val content = '''«FOR v : values BEFORE '{' SEPARATOR ', ' AFTER '}'»«v.content»«ENDFOR»'''
-		if (eContainer !== null && eContainer instanceof Variable)
-			// the variable is declared with a type => no type to add
-			content
-		else
-			// the type must be added, for example for FunctionCall
-			'''«TypeContentProvider.getTypeName(type)»«content»'''
+		if (TypeContentProvider.isNumArray(type))
+		{
+			if (eContainer !== null && eContainer instanceof VectorConstant)
+			{
+				// the variable is declared with a type => no type to add
+				'''«FOR v : values SEPARATOR ', '»«v.content»«ENDFOR»'''
+			}
+			else
+			{
+				val t = type as BaseType
+				val dimensions = t.sizes.map[x | x.content].join(', ')
+				// the type must be added, for example for FunctionCall
+				'''«TypeContentProvider.getTypeName(type)»(«dimensions», {«FOR v : values SEPARATOR ', '»«v.content»«ENDFOR»})'''
+			}
+		}
+		else // RealX or Real XxX
+		{
+			'''«TypeContentProvider.getTypeName(type)»{«FOR v : values SEPARATOR ', '»«v.content»«ENDFOR»}'''
+		}
 	}
 
 	static def dispatch CharSequence getContent(Cardinality it)

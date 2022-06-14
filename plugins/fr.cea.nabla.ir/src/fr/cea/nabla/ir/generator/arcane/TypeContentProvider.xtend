@@ -88,35 +88,34 @@ class TypeContentProvider
 
 	static def getFunctionArgTypeName(IrType it, boolean const)
 	{
-		if (!IrTypeExtensions.isScalar(it) && it instanceof BaseType && (it as BaseType).primitive == PrimitiveType.REAL)
+		switch it
 		{
-			val dim = ((it as BaseType).sizes.size)
-			switch dim
+			case null: null
+			BaseType:
 			{
-				case 1: '''RealArrayVariant'''
-				case 2: '''RealArray2Variant'''
-				default: throw new RuntimeException("Not yet implemented")
-			}
-		}
-		else
-			switch it
-			{
-				case null: null
-				BaseType:
+				val t = typeNameAndDimension
+				val type = t.key
+				val dimension = t.value
+				// Real2, Real3, NumArray<Real, 1> -> RealArrayVariant
+				if ((type == 'Real2' && dimension == 0)
+					|| (type == 'Real3' && dimension == 0)
+					|| (type == 'Real' && dimension == 1))
+					'''RealArrayVariant'''
+				// Real2x2, Real3x3, NumArray<Real, 2> -> RealArray2Variant
+				else if ((type == 'Real2x2' && dimension == 0)
+					|| (type == 'Real3x3' && dimension == 0)
+					|| (type == 'Real' && dimension == 2))
+					'''RealArray2Variant'''
+				else switch dimension
 				{
-					val t = typeNameAndDimension
-					val dimension = t.value
-					switch dimension
-					{
-						case 0: '''«IF const»const «ENDIF»«t.key»'''
-						case 1: '''«IF const»Const«ENDIF»ArrayView<«t.key»>'''
-						default: '''«IF const»Const«ENDIF»Array«dimension»View<«t.key»>'''
-					}
+					case 0: '''«type»'''
+					default: '''NumArray<«type»,«dimension»>'''
 				}
-				LinearAlgebraType: IrTypeExtensions.getLinearAlgebraClass(it)
-				// no ConnectivityType in functions
-				default: throw new RuntimeException("Unexpected type: " + class.name)
 			}
+			LinearAlgebraType: IrTypeExtensions.getLinearAlgebraClass(it)
+			// no ConnectivityType in functions
+			default: throw new RuntimeException("Unexpected type: " + class.name)
+		}
 	}
 
 	static def CharSequence formatIteratorsAndIndices(ArgOrVar v, Iterable<ItemIndex> iterators, Iterable<Expression> indices)
@@ -124,7 +123,7 @@ class TypeContentProvider
 		switch v.type
 		{
 			case (iterators.empty && indices.empty): ''''''
-			BaseType case isNumArray(v): '''«FOR i : indices BEFORE '(' SEPARATOR ', ' AFTER ')'»«i.content»«ENDFOR»'''
+			case isNumArray(v.type): '''«FOR i : indices BEFORE '(' SEPARATOR ', ' AFTER ')'»«i.content»«ENDFOR»'''
 			BaseType: '''«FOR i : indices»[«i.content»]«ENDFOR»'''
 			// for the ArcaneStlVector, the setValue method must keep the ItemEnumerator arg (not the index)
 			LinearAlgebraType: '''«FOR i : getConnectivityIndexList(iterators, v) SEPARATOR ', '»«i»«ENDFOR»«FOR i : indices SEPARATOR ', '»«i.content»«ENDFOR»'''
@@ -159,17 +158,17 @@ class TypeContentProvider
 		{
 			if (d > 1)
 			{
-				val x = intSizes.get(0)
-				val y = intSizes.get(1)
-				if (x == 2 && y == 2) return 'Real2x2' -> d - 2
-				if (x == 3 && y == 3) return 'Real3x3' -> d - 2
+				val last = intSizes.get(d-1)
+				val lastMinus1 = intSizes.get(d-2)
+				if (last == 2 && lastMinus1 == 2) return 'Real2x2' -> d - 2
+				else if (last == 3 && lastMinus1 == 3) return 'Real3x3' -> d - 2
 			}
 
 			if (d > 0)
 			{
-				val s = intSizes.get(0)
-				if (s == 2) return 'Real2' -> d - 1
-				if (s == 3) return 'Real3' -> d - 1
+				val last = intSizes.get(d-1)
+				if (last == 2) return 'Real2' -> d - 1
+				if (last == 3) return 'Real3' -> d - 1
 			}
 		}
 
@@ -208,11 +207,10 @@ class TypeContentProvider
 		}
 	}
 
-	static def isNumArray(ArgOrVar v)
+	static def isNumArray(IrType it)
 	{
-		v.type instanceof BaseType						// a BaseType...
-		&& !isArcaneScalarType(v.type)					// ...but not scalar...
-		&& AcceleratorAnnotation.tryToGet(v) === null	// ...and not a view
+		it instanceof BaseType						// a BaseType...
+		&& !isArcaneScalarType(it)					// ...but not scalar
 	}
 
 	private static def getVariableDimensionName(int dimension, boolean hasSupport)

@@ -35,7 +35,7 @@ mkdir -p ${DOCKERFILE_DIR}
 DOCKERFILE="${DOCKERFILE_DIR}/Dockerfile"
 
 cat > ${DOCKERFILE} <<EOF
-FROM ubuntu:focal
+FROM ubuntu:impish
 
 ENV USER="${USER}" USER_ID="${USER_ID}" USER_GID="${USER_GID}" HOSTNAME="${DOCKER_HOSTNAME}"
 ENV LANG C.UTF-8
@@ -78,6 +78,7 @@ ENV Kokkos_ROOT=/kokkos/install
 
 ### ARCANE
 # dependencies
+RUN apt-get update
 RUN apt-get install -y apt-utils build-essential iputils-ping python3 git gfortran libglib2.0-dev libxml2-dev libhdf5-openmpi-dev libparmetis-dev wget
 RUN wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
 RUN dpkg -i packages-microsoft-prod.deb
@@ -88,12 +89,17 @@ WORKDIR /
 RUN mkdir arcane
 WORKDIR /arcane
 RUN git clone --recurse-submodules https://github.com/arcaneframework/framework.git
-RUN cd framework && git checkout 30b83ba205ff08de984654f49c3eb44a96e88096
+RUN cd framework
 RUN mkdir install; mkdir build
 WORKDIR /arcane/build
 RUN cmake -S /arcane/framework -B /arcane/build -DCMAKE_INSTALL_PREFIX=/arcane/install && make && make install
 ENV Arcane_ROOT=/arcane/install
 
+### PYTHON
+RUN apt-get install -y python3
+RUN apt install -y python3-numpy python3-pip python3-venv
+#RUN apt-get install -y libleveldb-dev
+RUN pip install plyvel
 
 ### JDK AND MAVEN
 RUN apt-get install -y default-jdk
@@ -119,7 +125,7 @@ else
     exit 1
 fi
 
-IMAGE_NAME="nablab/execution-env"
+IMAGE_NAME="nablab/execution-env-arcane-python"
 ${DOCKER} build --network=host -t "${IMAGE_NAME}:latest" ${DOCKERFILE_DIR}
 
 ${DOCKER} run --network=host -w $(pwd) --user ${USER_ID}:${USER_GID} -ti --entrypoint /bin/bash --hostname="${DOCKER_HOSTNAME}" "${IMAGE_NAME}" 

@@ -264,6 +264,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#build-vscode-extension" class="md-nav__link">
+    Build VSCode extension
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -343,6 +350,47 @@
         
       </ul>
     </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#first-step-in-the-vscode-extension" class="md-nav__link">
+    First step in the VSCode extension
+  </a>
+  
+    <nav class="md-nav" aria-label="First step in the VSCode extension">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#extension-overview" class="md-nav__link">
+    Extension Overview
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#code-generation-in-the-extension" class="md-nav__link">
+    Code generation in the extension
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#latex-view-in-the-extension" class="md-nav__link">
+    LaTeX view in the extension
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#job-graph-in-the-extension" class="md-nav__link">
+    Job graph in the extension
+  </a>
   
 </li>
         
@@ -533,6 +581,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#build-vscode-extension" class="md-nav__link">
+    Build VSCode extension
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -620,6 +675,47 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#first-step-in-the-vscode-extension" class="md-nav__link">
+    First step in the VSCode extension
+  </a>
+  
+    <nav class="md-nav" aria-label="First step in the VSCode extension">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#extension-overview" class="md-nav__link">
+    Extension Overview
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#code-generation-in-the-extension" class="md-nav__link">
+    Code generation in the extension
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#latex-view-in-the-extension" class="md-nav__link">
+    LaTeX view in the extension
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#job-graph-in-the-extension" class="md-nav__link">
+    Job graph in the extension
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -636,22 +732,29 @@
                 <h1 id="getting-started">Getting started</h1>
 <h2 id="download-and-install">Download and install</h2>
 <h3 id="prerequisite">Prerequisite</h3>
-<p>NabLab requires <a href="https://openjdk.java.net/projects/jdk/11/">Java 11</a> or later to build &amp; run. </p>
+<p>NabLab requires <a href="https://openjdk.java.net/projects/jdk/11/">Java 11</a> or later to build &amp; run.</p>
 <p>Do not forget to set the <code>JAVA_HOME</code> variable to the java installation directory and to update your path.</p>
 <h3 id="installing-nablab">Installing NabLab</h3>
-<p>The latest NabLab environment can be downloaded <a href="https://github.com/cea-hpc/NabLab/releases/tag/v0.4.5">here</a> for Linux, Mac OS and Windows platforms.</p>
+<p>The latest NabLab environment can be downloaded <a href="https://github.com/cea-hpc/NabLab/releases/tag/v0.5.3">here</a> for Linux, Mac OS and Windows platforms.</p>
 <p>Download the file corresponding to your platform, unzip it and launch the NabLab executable in the root directory.</p>
 <p>For Mac users, depending on your security configuration, you have to enter the following command to execute NabLab: <code>xattr -d com.apple.quarantine NabLab.app</code>.</p>
 <h3 id="build-via-maven-3x">Build via Maven 3.x</h3>
 <p>If you need to build NabLab products (Windows/Linux/MacOS and Eclipse update-site) from the source code (instead of downloading it), run the following command from the root of the repository:</p>
 <p><code>mvn clean -P build,updatesite; mvn verify -P build,updatesite</code>.</p>
-<p>Note the <code>';'</code> after <code>mvn clean -P build,updatesite</code>. </p>
+<p>Note the <code>';'</code> after <code>mvn clean -P build,updatesite</code>.</p>
 <p>The products resulting from the build will be accessible in <em>/releng/fr.cea.nabla.updatesite/target/products/NabLab-X.Y.Z.yyyymmddHHMM-YOUR_PLATFORM.zip</em>.</p>
 <p>The Eclipse update-site resulting from the build will be accessible in <em>/releng/fr.cea.nabla.updatesite/target/fr.cea.nabla.updatesite-X.Y.Z.yyyymmddHHMM.zip</em>.</p>
 <p>If you only need to compile NabLab code and execute tests, run the following command from the root of the repository:
 <code>mvn clean; mvn verify</code></p>
 <p>If you want to skip tests execution, you can run the following command:
 <code>mvn clean; mvn verify -Dmaven.test.skip=true</code></p>
+<h3 id="build-vscode-extension">Build VSCode extension</h3>
+<p>If you need to build NabLab VSCode extension from the source code (instead of downloading it), run the following command from the root of the repository:</p>
+<p><code>mvn clean -P build,vscode; mvn verify -P build,vscode</code>.</p>
+<p>Note the <code>';'</code> after <code>mvn clean -P build,vscode</code>.</p>
+<p>Then, in <em>/plugins/fr.cea.nabla.vscode.extension/</em>, run the <a href="https://github.com/microsoft/vscode-vsce">vsce</a> tool:
+<code>vsce package --no-yarn</code></p>
+<p>A resulting VSIX extension will be available in <em>/plugins/fr.cea.nabla.vscode.extension/cea-nablab-vscode-extension-X.Y.Z.vsix</em></p>
 <h2 id="first-step-in-the-environment">First step in the environment</h2>
 <h3 id="overview">Overview</h3>
 <p>The NabLab environment is based on the <a href="https://www.eclipse.org/modeling/emf/">Eclipse Modeling Framework</a> (EMF). The central part of the NabLab environment displays a textual editor, based on <a href="https://www.eclipse.org/Xtext/">Xtext</a> which provides contextual code completion, code folding, syntax highlighting, error detection, quick fixes, variable scoping, and type checking. The left part of the environment proposes a model explorer and a dedicated interactive outline view to navigate easily through the textual editor. The bottom part is composed of several views including a rich LaTeX visualization of the selection in the editor. A graphical editor based on <a href="https://www.eclipse.org/sirius/">Sirius</a> allows to visualize the data flow graph between jobs.</p>
@@ -671,12 +774,12 @@
 <p>To launch code generation corresponding to the NabLab module, just right-click on the ngen file of the project of your choice, for example <em>NabLabExamples/src/explicitheatequation/ExplicitHeatEquation.ngen</em> and select <em>Generate Code</em></p>
 <p><img src="img/NabLab_generate_code.png" alt="NabLab Generate Code" title="NabLab Generate Code" width="40%" height="40%" /></p>
 <p>Java and C++ source code files are generated in <em>src-gen-java</em> and <em>src-gen-cpp</em> folders respectively. For each C++ folder a <em>CMakeLists.txt</em> file is generated.
-A LaTeX file containing the content of the jobs and an example of json data file are also generated in the <em>src-gen</em> folder.  </p>
+A LaTeX file containing the content of the jobs and an example of json data file are also generated in the <em>src-gen</em> folder.</p>
 <p><img src="img/NabLab_generated_files.png" alt="NabLab Generated Files" title="NabLab Generated Files" width="30%" height="30%" /></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>A good practice is to name <em>src-gen</em> a directory containing only generated code.</p>
 </div>
+<p>A good practice is to name <em>src-gen</em> a directory containing only generated code.</p>
 <h3 id="interpretation">Interpretation</h3>
 <p>To launch code interpretation corresponding to the NabLab module, just right-click on the <em>ngen</em> file of the project of your choice, for example <em>NabLabExamples/src/explicitheatequation/ExplicitHeatEquation.ngen</em> and select <em>Run As &gt; Start Interpretation</em>.</p>
 <p><img src="img/NabLab_start_interpretation.png" alt="NabLab Start Interpretation" title="NabLab Start Interpretation" width="50%" height="50%" /></p>
@@ -684,8 +787,8 @@ A LaTeX file containing the content of the jobs and an example of json data file
 <p><img src="img/NabLab_interpretation_configuration.png" alt="NabLab Interpretation Configuration" title="NabLab Interpretation Configuration" width="80%" height="80%" /></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>If you have installed and configured GraalVM for NabLab, you can interpret your module using GraalVM: just select <em>Run As &gt; Start Truffle-Based Interpretation</em> instead of <em>Run As &gt; Start Interpretation</em>. You can set configuration like previously and set the monilog file and python executable path.</p>
 </div>
+<p>If you have installed and configured GraalVM for NabLab, you can interpret your module using GraalVM: just select <em>Run As &gt; Start Truffle-Based Interpretation</em> instead of <em>Run As &gt; Start Interpretation</em>. You can set configuration like previously and set the monilog file and python executable path.</p>
 <h3 id="latex-view">LaTeX view</h3>
 <p>The <em>LaTeX View</em> is located on the bottom of the NabLab environment. It allows to visualize in an elegant way the formulas contained in a .n file.</p>
 <p>If you do not use the NabLab perspective the <em>The LaTeX View</em> is not visible. You can access it through the <em>Window &gt; Show View &gt; Other... &gt; NabLab &gt; LaTeX View</em> main menu.</p>
@@ -693,17 +796,17 @@ A LaTeX file containing the content of the jobs and an example of json data file
 <p><img src="img/NabLab_latex_view.png" alt="NabLab Latex View" title="NabLab Latex View" width="100%" height="100%" /></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
+</div>
 <p>If you can not see formulas in the LaTeX view, Java probably encounters a ClassNotFoundException on java.awt.Font (see log file) due to font installation issue on your computer.
 To fix the problem, add <code>-Djava.awt.headless=true</code> at the end of the <em>NabLab.ini</em> file located in NabLab root directory.
 For contributors using NabLab as an Eclipse runtime application, add the same option into the Run As &gt; Run Configurations... &gt; Arguments &gt; VM arguments text box.</p>
-</div>
 <h3 id="job-graph">Job graph</h3>
 <p>NabLab offers 2 visualization modes for job graph: a fast rendering view and an editor with a more efficient layout.
 In case of job cycles, both of the modes will display the cycle graphically to highlight the error.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>In both visualization modes, let the mouse over a job node to display its input and output variables.</p>
 </div>
+<p>In both visualization modes, let the mouse over a job node to display its input and output variables.</p>
 <h4 id="view">View</h4>
 <p>The <em>Job Graph View</em> can be opened from a <em>ngen</em> file containing an <em>Application</em>, by clicking on F1.</p>
 <p>It allows to quickly visualize the data flow graph of the application described in the ngen file.</p>
@@ -713,6 +816,31 @@ In case of job cycles, both of the modes will display the cycle graphically to h
 <p>The <em>Job Graph Editor</em> can be opened from a <em>ngen</em> file containing an <em>Application</em>, by clicking on F2.</p>
 <p>It allows to visualize bigger graphs than the <em>Job Graph View</em> thanks to an efficient layout.</p>
 <p><img src="img/NabLab_job_graph_editor.png" alt="NabLab Job Graph Editor" title="NabLab Job Graph Editor" width="100%" height="100%"/></p>
+<h2 id="first-step-in-the-vscode-extension">First step in the VSCode extension</h2>
+<h3 id="extension-overview">Extension Overview</h3>
+<p>The NabLab VSCode extension is based on the <a href="https://code.visualstudio.com/">VSCode</a>. The central part of the NabLab VSCode extension displays a textual editor, based on <a href="https://www.eclipse.org/Xtext/">Xtext</a> and <a href="https://code.visualstudio.com/api/language-extensions/language-server-extension-guide">LSP</a> which provides contextual code completion, code folding, syntax highlighting, error detection, quick fixes, variable scoping, and type checking. The left part of the environment proposes a model explorer. The bottom part is composed of several views including a rich LaTeX visualization of the selection in the editor. A graphical editor based on <a href="https://www.eclipse.org/sirius/sirius-web.html">SiriusWeb</a> allows to visualize the data flow graph between jobs.</p>
+<p><img src="img/NabLab_VSCode_main_window.png" alt="NabLab VSCode Main Window" title="NabLab VSCode Main Window" width="100%" height="100%" /></p>
+<h3 id="code-generation-in-the-extension">Code generation in the extension</h3>
+<p>To launch code generation corresponding to the NabLab module, just right-click on the ngen file of the project of your choice, for example <em>NabLabExamples/src/explicitheatequation/ExplicitHeatEquation.ngen</em> and select <em>Generate Code</em></p>
+<p><img src="img/NabLab_VSCode_generate_code.png" alt="NabLab VSCode Generate Code" title="NabLab VSCode Generate Code" width="40%" height="40%" /></p>
+<p>Java and C++ source code files are generated in <em>src-gen-java</em> and <em>src-gen-cpp</em> folders respectively. For each C++ folder a <em>CMakeLists.txt</em> file is generated.
+A LaTeX file containing the content of the jobs and an example of json data file are also generated in the <em>src-gen</em> folder.</p>
+<p><img src="img/NabLab_VSCode_generated_files.png" alt="NabLab VSCode Generated Files" title="NabLab VSCode Generated Files" width="30%" height="30%" /></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+</div>
+<p>A good practice is to name <em>src-gen</em> a directory containing only generated code.</p>
+<h3 id="latex-view-in-the-extension">LaTeX view in the extension</h3>
+<p>The <em>LaTeX View</em> is located on the bottom of the NabLab environment. It allows to visualize in an elegant way the formulas contained in a .n file.</p>
+<p>You can access it through the <em>View &gt; Command Palette</em> main menu, and then select <em>NabLab: Display Latex View</em> in the search box.</p>
+<p>This view is automatically updated and synchronized with the selection in the current NabLab editor.</p>
+<p><img src="img/NabLab_VSCode_latex_view.png" alt="NabLab VSCode Latex View" title="NabLab VSCode Latex View" width="100%" height="100%" /></p>
+<h3 id="job-graph-in-the-extension">Job graph in the extension</h3>
+<p>NabLab offers a visualization mode for job graph with an efficient layout.
+In case of job cycles, it will display the cycle graphically to highlight the error.</p>
+<p>The <em>Job Graph View</em> can be opened from a <em>ngen</em> file containing an <em>Application</em>, by clicking on F2.</p>
+<p>It allows to quickly visualize the data flow graph of the application described in the ngen file.</p>
+<p><img src="img/NabLab_VSCode_job_graph_view.png" alt="NabLab VSCode Job Graph View" title="NabLab VSCode Job Graph View" width="100%" height="100%" /></p>
                 
               
               
@@ -769,7 +897,7 @@ In case of job cycles, both of the modes will display the cycle graphically to h
       <div class="md-footer-copyright">
         
           <div class="md-footer-copyright__highlight">
-            Copyright &copy; 2021 CEA
+            Copyright &copy; 2022 CEA
           </div>
         
         

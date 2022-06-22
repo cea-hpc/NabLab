@@ -1,0 +1,31 @@
+/*******************************************************************************
+ * Copyright (c) 2022 CEA
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * Contributors: see AUTHORS file
+ *******************************************************************************/
+Application HeatEquation;
+
+MainModule HeatEquation heatEquation
+{
+	nodeCoord = X;
+	time = t;
+	timeStep = δt;
+	iterationMax = maxIterations;
+	timeMax = stopTime;
+}
+
+VtkOutput
+{
+	periodReferenceVariable = heatEquation.n;
+	outputVariables = heatEquation.u as "Temperature";
+}
+
+Dace
+{
+	outputPath = "/DaceExamples/src-gen-dace";
+	extension CartesianMesh2D providedBy CartesianMesh2DPython;
+}

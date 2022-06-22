@@ -11,12 +11,11 @@ package fr.cea.nabla.ir.generator.dace
 
 import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.generator.Utils
+import fr.cea.nabla.ir.ir.ConnectivityType
 import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Variable
-
-import static fr.cea.nabla.ir.generator.dace.TypeContentProvider.*
 
 import static extension fr.cea.nabla.ir.JobCallerExtensions.*
 import static extension fr.cea.nabla.ir.generator.dace.ExpressionContentProvider.*
@@ -31,8 +30,10 @@ class JobContentProvider
 		 In variables: «FOR v : inVars.sortBy[name] SEPARATOR ', '»«v.getName»«ENDFOR»
 		 Out variables: «FOR v : outVars.sortBy[name] SEPARATOR ', '»«v.getName»«ENDFOR»
 		"""
-		@dace.program
-		def _«Utils.getCodeName(it)»(«FOR iv : inVars + outVars SEPARATOR ', '»«Utils.getCodeName(iv)»: «getDaceType(iv.type)»«ENDFOR»):
+		«IF !(it instanceof ExecuteTimeLoopJob) && (inVars.exists[x | x.type instanceof ConnectivityType] || outVars.exists[x | x.type instanceof ConnectivityType])»
+			@dace.method
+		«ENDIF»
+		def _«Utils.getCodeName(it)»(self):
 			«innerContent»
 	'''
 
@@ -58,7 +59,7 @@ class JobContentProvider
 				print("START ITERATION «iterationCounter.name»: %5d - t: %5.5f - deltat: %5.5f\n" % (self.«itVar», self.«tn», self.«deltat»))
 				«IF ppInfo !== null»
 					if (self.«Utils.getCodeName(ppInfo.periodReference)» >= self.«Utils.getCodeName(ppInfo.lastDumpVariable)» + self.«Utils.getCodeName(ppInfo.periodValue)»):
-						self.__dumpVariables(self.«itVar»)
+						self._dumpVariables(self.«itVar»)
 				«ENDIF»
 			«ELSE»
 				print("Start iteration «iterationCounter.name»: %5d\n" % (self.«itVar»))
@@ -75,7 +76,7 @@ class JobContentProvider
 		«IF caller.main»
 
 			print("FINAL TIME: %5.5f - deltat: %5.5f\n" % (self.«tn», self.«deltat»))
-			«IF ppInfo !== null»self.__dumpVariables(self.«itVar»+1);«ENDIF»
+			«IF ppInfo !== null»self._dumpVariables(self.«itVar»+1);«ENDIF»
 		«ENDIF»
 	'''
 

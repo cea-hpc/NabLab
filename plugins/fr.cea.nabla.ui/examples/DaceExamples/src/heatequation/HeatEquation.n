@@ -1,0 +1,36 @@
+/*******************************************************************************
+ * Copyright (c) 2022 CEA
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * Contributors: see AUTHORS file
+ *******************************************************************************/
+module HeatEquation;
+
+with Math.*;
+with CartesianMesh2D.*;
+
+// Simulation options
+ℝ stopTime;
+ℕ maxIterations;
+
+let ℝ PI = 3.1415926;
+let ℝ α = 1.0;
+let ℝ δt = 0.001;
+ℝ t;
+ℝ[2] X{nodes}, center{cells};
+ℝ u{cells}, V{cells}, f{cells}, outgoingFlux{cells}, surface{faces};
+
+iterate n while (t^{n+1} < stopTime && n+1 < maxIterations);
+
+IniTime: t^{n=0} = 0.0;
+IniF: ∀j∈cells(), f{j} = 0.0;
+IniCenter: ∀j∈cells(), center{j} = 0.25 * ∑{r∈nodesOfCell(j)}(X{r});  // only on parallelograms
+IniUn: ∀j∈cells(), u^{n}{j} = cos(2 * PI * α * center{j}[0]);
+ComputeV: ∀j∈cells(), V{j} = 0.5 * ∑{r∈nodesOfCell(j)}(det(X{r}, X{r+1}));
+ComputeSurface: ∀f∈faces(), surface{f} = 0.5 * ∑{r∈nodesOfFace(f)}(norm(X{r}-X{r+1}));
+ComputeOutgoingFlux: ∀j1∈cells(), outgoingFlux{j1} = δt/V{j1} * ∑{j2∈neighbourCells(j1)}(∑{cf∈commonFace(j1,j2)}( (u^{n}{j2}-u^{n}{j1}) / norm(center{j2}-center{j1}) * surface{cf}));
+ComputeUn: ∀j∈cells(), u^{n+1}{j} = f{j} * δt + u^{n}{j} + outgoingFlux{j};
+ComputeTn: t^{n+1} = t^{n} + δt;

@@ -35,7 +35,7 @@ class DaceGeneratorUtils
 	{
 		switch f
 		{
-			InternFunction: 'self.__' + f.name
+			InternFunction: 'self._' + f.name
 			ExternFunction:
 				if (f.provider.extensionName == "Math")
 					if (SysFunction.contains(f.name))
@@ -52,7 +52,7 @@ class DaceGeneratorUtils
 		if (ArgOrVarExtensions.isIteratorCounter(v))
 			(v.eContainer as Iterator).index.name
 		else if (ArgOrVarExtensions.isGlobal(v))
-			"self." + v.name
+			"self."+ v.name
 		else
 			v.name
 	}
@@ -60,12 +60,12 @@ class DaceGeneratorUtils
 	static def getNbElemsVar(Container c)
 	{
 		if (ContainerExtensions.getConnectivityCall(c).args.empty)
-			"self.__" + ContainerExtensions.getNbElemsVar(c)
+			"self._" + ContainerExtensions.getNbElemsVar(c)
 		else
 			ContainerExtensions.getNbElemsVar(c)
 	}
 	static def getNbElemsVar(String s) { "nb" + s.toFirstUpper }
-	static def getNbElemsVar(Connectivity c) { "self.__" + ContainerExtensions.getNbElemsVar(c) }
+	static def getNbElemsVar(Connectivity c) { "self._" + ContainerExtensions.getNbElemsVar(c) }
 
 	static def getNbElems(Connectivity it)
 	{

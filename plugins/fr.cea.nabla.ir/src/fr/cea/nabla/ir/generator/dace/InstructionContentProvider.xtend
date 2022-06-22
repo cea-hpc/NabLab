@@ -71,13 +71,20 @@ class InstructionContentProvider
 	'''
 		«IF iterationBlock instanceof Iterator»
 			«val iter = iterationBlock as Iterator»
+			«val c = iter.container»
 			«IF !iter.container.connectivityCall.indexEqualId»
-				«val c = iter.container»
 				«IF c instanceof ConnectivityCall»«getSetDefinitionContent(c.uniqueName, c as ConnectivityCall)»«ENDIF»
-				«IF !c.connectivityCall.args.empty»«iter.getNbElems» = len(«c.uniqueName»)«ENDIF»
+				«IF !c.connectivityCall.args.empty»«iter.getNbElems» = «c.uniqueName».size«ENDIF»
 			«ENDIF»
+			«IF c.connectivityCall.connectivity.name == "neighbourCells"»
+				startIndex = np.count_nonzero(«c.uniqueName» == -1)
+			«ELSE»
+				startIndex = 0
+			«ENDIF»
+		«ELSE»
+			startIndex = 0
 		«ENDIF»
-		for «iterationBlock.indexName» in range(«iterationBlock.nbElems»):
+		for «iterationBlock.indexName» in range(startIndex, «iterationBlock.nbElems»):
 			«body.innerContent»
 	'''
 

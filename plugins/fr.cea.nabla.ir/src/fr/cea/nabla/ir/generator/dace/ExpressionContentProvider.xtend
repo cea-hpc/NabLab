@@ -96,7 +96,7 @@ class ExpressionContentProvider
 			if (call.args.empty)
 				DaceGeneratorUtils.getNbElemsVar(call.connectivity)
 			else
-				'''len(mesh.«call.accessor»)'''
+				'''mesh.«call.accessor».size'''
 		}
 		else
 			'''1'''
@@ -118,7 +118,7 @@ class ExpressionContentProvider
 		if (target.functionDimVar)
 		{
 			// In Python code the size of arrays does not appear explicitly like in NabLab.
-			// It is possible to create a local variable to set it, i.e. final int x = len(a).
+			// It is possible to create a local variable to set it, i.e. final int x = a.size.
 			// But sometimes it is not used and a warning appears.
 			// To avoid that, sizes are referenced by array.length instead of the name of the var.
 			FunctionContentProvider.getSizeOf(target.eContainer as Function, target as Variable)

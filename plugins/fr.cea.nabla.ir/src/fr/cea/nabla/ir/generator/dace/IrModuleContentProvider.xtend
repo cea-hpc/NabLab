@@ -9,7 +9,6 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.generator.dace
 
-import fr.cea.nabla.ir.ContainerExtensions
 import fr.cea.nabla.ir.IrTypeExtensions
 import fr.cea.nabla.ir.IrUtils
 import fr.cea.nabla.ir.generator.Utils
@@ -40,8 +39,11 @@ class IrModuleContentProvider
 	"""
 	import sys
 	import json
-	import numpy as np
 	«IF providers.exists[x | x.extensionName == "Math"]»import math«ENDIF»
+	import numpy as np
+	import dace
+	from dataclasses import dataclass
+	from dace.sdfg import SDFG
 	«IF main»
 		«IF hasLevelDB»
 			import plyvel
@@ -62,33 +64,27 @@ class IrModuleContentProvider
 		«ENDIF»
 	«ENDFOR»
 
+	@dataclass()
 	class «className»:
 		«FOR v : variables.filter[constExpr]»
 			«v.name» = «v.defaultValue.content»
 		«ENDFOR»
-		
-		# dace symbols for connectivities
-		«FOR a: neededConnectivityAttributes»
-			«ContainerExtensions.getNbElemsVar(a)» = dace.symbol("«ContainerExtensions.getNbElemsVar(a)»")
-		«ENDFOR»
-		«FOR a : neededGroupAttributes»
-			«ContainerExtensions.getNbElemsVar(a)» = dace.symbol("«ContainerExtensions.getNbElemsVar(a)»")
-		«ENDFOR»
 
 		def __init__(self, mesh):
-			self.__mesh = mesh
+			self._mesh = mesh
 			«FOR a: neededConnectivityAttributes»
 				«DaceGeneratorUtils.getNbElemsVar(a)» = mesh.nb«a.name.toFirstUpper»
 			«ENDFOR»
 			«FOR a : neededGroupAttributes»
-				self.__«DaceGeneratorUtils.getNbElemsVar(a)» = len(mesh.getGroup("«a»"))
+				self.«DaceGeneratorUtils.getNbElemsVar(a)» = len(mesh.getGroup("«a»"))
 			«ENDFOR»
+			self._nbNodesOfCellJ = 4
 
 		def jsonInit(self, jsonContent):
 			«IF postProcessing !== null»
 				«val opName = IrUtils.OutputPathNameAndValue.key»
-				self.__«opName» = jsonContent["«opName»"]
-				self.__writer = PvdFileWriter2D("«irRoot.name»", self.__«opName»)
+				self._«opName» = jsonContent["«opName»"]
+				self._writer = PvdFileWriter2D("«irRoot.name»", self._«opName»)
 			«ENDIF»
 			«FOR v : variables.filter[!constExpr]»
 				«IF !v.type.scalar»
@@ -118,8 +114,8 @@ class IrModuleContentProvider
 
 				# Copy node coordinates
 				gNodes = mesh.geometry.nodes
-				for rNodes in range(self.__nbNodes):
-					self.«irRoot.initNodeCoordVariable.name»[rNodes] = gNodes[rNodes]
+				for rNodes in dace.map[0:self._nbNodes]:
+					«DaceGeneratorUtils.getCodeName(irRoot.initNodeCoordVariable)»[rNodes] = gNodes[rNodes]
 			«ENDIF»
 		«FOR j : jobs»
 
@@ -172,34 +168,34 @@ class IrModuleContentProvider
 		«ENDIF»
 		«IF postProcessing !== null»
 
-			def __dumpVariables(self, iteration):
-				if not self.__writer.disabled:
+			def _dumpVariables(self, iteration):
+				if not self._writer.disabled:
 					quads = mesh.geometry.quads
-					self.__writer.startVtpFile(iteration, «DaceGeneratorUtils.getCodeName(irRoot.currentTimeVariable)», «DaceGeneratorUtils.getCodeName(irRoot.nodeCoordVariable)», quads)
-					self.__writer.openNodeData()
+					self._writer.startVtpFile(iteration, «DaceGeneratorUtils.getCodeName(irRoot.currentTimeVariable)», «DaceGeneratorUtils.getCodeName(irRoot.nodeCoordVariable)», quads)
+					self._writer.openNodeData()
 					«val outputVarsByConnectivities = irRoot.postProcessing.outputVariables.groupBy(x | x.support.name)»
 					«val nodeVariables = outputVarsByConnectivities.get("node")»
 					«IF !nodeVariables.nullOrEmpty»
 						«FOR v : nodeVariables»
-							self.__writer.openNodeArray("«v.outputName»", «v.target.type.baseSizes.size»);
-							for i in range(self.__nbNodes):
-								self.__writer.write(«getWriteCallContent(v.target)»)
-							self.__writer.closeNodeArray()
+							self._writer.openNodeArray("«v.outputName»", «v.target.type.baseSizes.size»);
+							for i in range(self._nbNodes):
+								self._writer.write(«getWriteCallContent(v.target)»)
+							self._writer.closeNodeArray()
 						«ENDFOR»
 					«ENDIF»
-					self.__writer.closeNodeData()
-					self.__writer.openCellData()
+					self._writer.closeNodeData()
+					self._writer.openCellData()
 					«val cellVariables = outputVarsByConnectivities.get("cell")»
 					«IF !cellVariables.nullOrEmpty»
 						«FOR v : cellVariables»
-							self.__writer.openCellArray("«v.outputName»", «v.target.type.baseSizes.size»);
-							for i in range(self.__nbCells):
-								self.__writer.write(«getWriteCallContent(v.target)»)
-							self.__writer.closeCellArray()
+							self._writer.openCellArray("«v.outputName»", «v.target.type.baseSizes.size»);
+							for i in range(self._nbCells):
+								self._writer.write(«getWriteCallContent(v.target)»)
+							self._writer.closeCellArray()
 						«ENDFOR»
 					«ENDIF»
-					self.__writer.closeCellData()
-					self.__writer.closeVtpFile()
+					self._writer.closeCellData()
+					self._writer.closeVtpFile()
 					«DaceGeneratorUtils.getCodeName(postProcessing.lastDumpVariable)» = «DaceGeneratorUtils.getCodeName(postProcessing.periodReference)»
 		«ENDIF»
 	«IF main && hasLevelDB»

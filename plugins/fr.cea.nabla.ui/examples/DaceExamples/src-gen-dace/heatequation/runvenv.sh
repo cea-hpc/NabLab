@@ -3,7 +3,7 @@
 #!/bin/sh
 #
 #
-# Execute simplemeshexamplewithfunction.py in a virtual environment.
+# Execute heatequation.py in a virtual environment.
 # Used by tests to reproduce results.
 #
 export N_WS_PATH=$HOME/workspaces/NabLab/plugins/fr.cea.nabla.ui/examples
@@ -16,4 +16,4 @@ python3 -m venv .venv
 
 echo 
 echo ===== Starting execution
-.venv/bin/python simplemeshexamplewithfunction.py $*
+.venv/bin/python heatequation.py $*

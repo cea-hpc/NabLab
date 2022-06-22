@@ -7,9 +7,8 @@ MainModule MultMatrixByScalar multMatrixByScalar
 	timeStep = δt;
 }
 
-[WriteIr]
 Dace
 {
-	outputPath = "/DaceExamples/src-gen-python/dace";
-	extension CartesianMesh2D providedBy CartesianMesh2DJava;
+	outputPath = "/DaceExamples/src-gen-dace";
+	extension CartesianMesh2D providedBy CartesianMesh2DPython;
 }

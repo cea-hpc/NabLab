@@ -15,13 +15,13 @@ using namespace Arcane;
 
 namespace heatequationfreefuncs
 {
-	const Real det(RealArrayVariant a, RealArrayVariant b);
-	const Real norm(RealArrayVariant a);
-	const Real dot(RealArrayVariant a, RealArrayVariant b);
+	Real det(RealArrayVariant a, RealArrayVariant b);
+	Real norm(RealArrayVariant a);
+	Real dot(RealArrayVariant a, RealArrayVariant b);
 	RealArrayVariant sumR1(RealArrayVariant a, RealArrayVariant b);
-	const Real sumR0(const Real a, const Real b);
+	Real sumR0(Real a, Real b);
 	RealArrayVariant operatorAdd(RealArrayVariant a, RealArrayVariant b);
-	RealArrayVariant operatorMult(const Real a, RealArrayVariant b);
+	RealArrayVariant operatorMult(Real a, RealArrayVariant b);
 	RealArrayVariant operatorSub(RealArrayVariant a, RealArrayVariant b);
 }
 

@@ -10,7 +10,7 @@ using namespace Arcane;
 
 namespace hydrofreefuncs
 {
-	const bool assertEquals(const Real expected, const Real actual)
+	bool assertEquals(Real expected, Real actual)
 	{
 		const bool ret((expected == actual));
 		if (!ret) 

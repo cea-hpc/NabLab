@@ -20,7 +20,7 @@ using namespace Arcane;
 
 namespace iterationfreefuncs
 {
-	const bool assertEquals(const Real expected, const Real actual);
+	bool assertEquals(Real expected, Real actual);
 }
 
 /*** Module/Service **********************************************************/

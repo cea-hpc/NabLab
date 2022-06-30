@@ -59,10 +59,9 @@ class InstructionContentProvider
 			«ELSE»
 				auto «variable.name» = ax::view«annot.viewDirection.toString»(command, «ArcaneUtils.getCodeName((variable.defaultValue as ArgOrVarRef).target)»);
 			«ENDIF»
-		«ELSEIF variable.type.baseTypeConstExpr»
-			«IF variable.const»const «ENDIF»«getTypeName(variable.type)» «ArcaneUtils.getCodeName(variable)»«getVariableDefaultValue(variable)»;
 		«ELSE»
-			throw Exception("Not Yet Implemented");
+			«IF !variable.type.baseTypeConstExpr»// Dynamic allocation not allowed with accelerators ?«ENDIF»
+			«IF variable.const»const «ENDIF»«getTypeName(variable.type)» «ArcaneUtils.getCodeName(variable)»«getVariableDefaultValue(variable)»;
 		«ENDIF»
 	'''
 

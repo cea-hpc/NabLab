@@ -15,9 +15,9 @@ using namespace Arcane;
 
 namespace variablesfreefuncs
 {
-	const bool assertEquals(const Int32 expected, const Int32 actual);
-	const bool assertEquals(RealArrayVariant expected, RealArrayVariant actual);
-	const bool assertEquals(const Real expected, const Real actual);
+	bool assertEquals(Int32 expected, Int32 actual);
+	bool assertEquals(RealArrayVariant expected, RealArrayVariant actual);
+	bool assertEquals(Real expected, Real actual);
 	RealArrayVariant operatorAdd(RealArrayVariant a, RealArrayVariant b);
 }
 
@@ -52,7 +52,7 @@ private:
 	static constexpr Real m_t = 0.0;
 	Real2 m_optVect3;
 	static constexpr Int32 m_constexprDim = 2;
-	static constexpr Real2 m_constexprVec = {1.1, 1.1};
+	static constexpr Real2 m_constexprVec = Real2{1.1, 1.1};
 	Real2 m_varVec;
 	Int32 m_checkDynamicDim;
 	NumArray<Real,1> m_dynamicVec;

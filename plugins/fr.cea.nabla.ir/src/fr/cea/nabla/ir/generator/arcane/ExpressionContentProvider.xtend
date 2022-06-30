@@ -26,7 +26,6 @@ import fr.cea.nabla.ir.ir.MinConstant
 import fr.cea.nabla.ir.ir.Parenthesis
 import fr.cea.nabla.ir.ir.PrimitiveType
 import fr.cea.nabla.ir.ir.RealConstant
-import fr.cea.nabla.ir.ir.Return
 import fr.cea.nabla.ir.ir.UnaryExpression
 import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.ir.ir.VectorConstant
@@ -90,7 +89,18 @@ class ExpressionContentProvider
 		else
 		{
 			if (t.isStatic)
-				initArray(t.intSizes, value.content)
+			{
+				val totalSize = t.intSizes.reduce[p1, p2| p1 * p2]
+				if (TypeContentProvider.isNumArray(type))
+				{
+					val dimensions = t.intSizes.join(', ')
+					'''«TypeContentProvider.getTypeName(type)»(«dimensions», {«FOR x : 0..<totalSize SEPARATOR ', '»«value.content»«ENDFOR»})'''		
+				}
+				else // RealX or Real XxX
+				{
+					'''{«FOR x : 0..<totalSize SEPARATOR ', '»«value.content»«ENDFOR»}'''
+				}
+			}
 			else
 			{
 				// The array must be allocated and initialized by loops
@@ -143,19 +153,8 @@ class ExpressionContentProvider
 
 	static def dispatch CharSequence getContent(FunctionCall it)
 	{
-		val functionCall = '''«ArcaneUtils.getCodeName(function)»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
-		if (eContainer !== null && !(eContainer instanceof Return))
-		{
-			val argTypeName = getFunctionArgTypeName(type, false).toString
-			if (argTypeName == "RealArrayVariant" || argTypeName == "RealArray2Variant")
-				'''«getTypeName(type)»(«functionCall»)'''
-			else
-				functionCall
-		}
-		else
-			functionCall
+		'''«ArcaneUtils.getCodeName(function)»(«FOR a:args SEPARATOR ', '»«a.content»«ENDFOR»)'''
 	}
-
 
 	static def dispatch CharSequence getContent(ArgOrVarRef it)
 	{
@@ -187,11 +186,5 @@ class ExpressionContentProvider
 			Variable: ArcaneUtils.getCodeName(t)
 			default: t.name
 		}
-	}
-
-	private static def CharSequence initArray(int[] sizes, CharSequence value)
-	{
-		if (sizes.empty) value
-		else initArray(sizes.tail, '''«FOR i : 0..<sizes.head BEFORE '{' SEPARATOR ', ' AFTER '}'»«value»«ENDFOR»''')
 	}
 }

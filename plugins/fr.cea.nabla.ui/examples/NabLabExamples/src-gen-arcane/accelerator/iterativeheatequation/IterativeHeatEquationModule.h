@@ -20,17 +20,17 @@ using namespace Arcane;
 
 namespace iterativeheatequationfreefuncs
 {
-	const bool check(const bool a);
-	const Real norm(RealArrayVariant a);
-	const Real dot(RealArrayVariant a, RealArrayVariant b);
-	const Real det(RealArrayVariant a, RealArrayVariant b);
+	bool check(bool a);
+	Real norm(RealArrayVariant a);
+	Real dot(RealArrayVariant a, RealArrayVariant b);
+	Real det(RealArrayVariant a, RealArrayVariant b);
 	RealArrayVariant sumR1(RealArrayVariant a, RealArrayVariant b);
-	const Real minR0(const Real a, const Real b);
-	const Real sumR0(const Real a, const Real b);
-	const Real prodR0(const Real a, const Real b);
-	const Real maxR0(const Real a, const Real b);
+	Real minR0(Real a, Real b);
+	Real sumR0(Real a, Real b);
+	Real prodR0(Real a, Real b);
+	Real maxR0(Real a, Real b);
 	RealArrayVariant operatorAdd(RealArrayVariant a, RealArrayVariant b);
-	RealArrayVariant operatorMult(const Real a, RealArrayVariant b);
+	RealArrayVariant operatorMult(Real a, RealArrayVariant b);
 	RealArrayVariant operatorSub(RealArrayVariant a, RealArrayVariant b);
 }
 

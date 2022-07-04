@@ -15,6 +15,7 @@ import fr.cea.nabla.ir.generator.GenerationContent
 import fr.cea.nabla.ir.generator.IrCodeGenerator
 import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.IrRoot
+import fr.cea.nabla.ir.transformers.ComputeSynchronize
 import fr.cea.nabla.ir.transformers.IrTransformationStep
 import fr.cea.nabla.ir.transformers.PrepareLoopsForAccelerators
 import fr.cea.nabla.ir.transformers.ReplaceOptionsByLocalVariables
@@ -39,9 +40,9 @@ class ArcaneGenerator implements IrCodeGenerator
 		// IR transformation steps depend on API type
 		irTransformationSteps = switch apiType
 		{
-			case ApiType.Sequential: #[new ReplaceReductions(true), new ReplaceOptionsByLocalVariables]
+			case ApiType.Sequential: #[new ReplaceOptionsByLocalVariables, new ComputeSynchronize]
 			case ApiType.Thread: #[new ReplaceReductions(true), new ReplaceOptionsByLocalVariables, new SetMultithreadableLoops]
-			case ApiType.Accelerator: #[new ReplaceReductions(false), new ReplaceOptionsByLocalVariables, new SetMultithreadableLoops, new PrepareLoopsForAccelerators]
+			case ApiType.Accelerator: #[new ReplaceOptionsByLocalVariables, new SetMultithreadableLoops, new PrepareLoopsForAccelerators]
 		}
 
 		cmakeVars.forEach[x | this.cMakeVars += x]

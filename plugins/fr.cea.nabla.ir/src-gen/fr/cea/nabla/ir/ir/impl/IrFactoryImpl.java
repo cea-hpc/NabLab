@@ -86,6 +86,8 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.WHILE: return createWhile();
 			case IrPackage.RETURN: return createReturn();
 			case IrPackage.EXIT: return createExit();
+			case IrPackage.SYNCHRONIZE: return createSynchronize();
+			case IrPackage.REDUCTION_UB: return createReduction_ub();
 			case IrPackage.ITERATOR: return createIterator();
 			case IrPackage.INTERVAL: return createInterval();
 			case IrPackage.CONTRACTED_IF: return createContractedIf();
@@ -466,6 +468,28 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	public Exit createExit() {
 		ExitImpl exit = new ExitImpl();
 		return exit;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Synchronize createSynchronize() {
+		SynchronizeImpl synchronize = new SynchronizeImpl();
+		return synchronize;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Reduction_ub createReduction_ub() {
+		Reduction_ubImpl reduction_ub = new Reduction_ubImpl();
+		return reduction_ub;
 	}
 
 	/**

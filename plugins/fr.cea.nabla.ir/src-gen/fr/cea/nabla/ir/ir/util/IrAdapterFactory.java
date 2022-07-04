@@ -208,6 +208,14 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createExitAdapter();
 			}
 			@Override
+			public Adapter caseSynchronize(Synchronize object) {
+				return createSynchronizeAdapter();
+			}
+			@Override
+			public Adapter caseReduction_ub(Reduction_ub object) {
+				return createReduction_ubAdapter();
+			}
+			@Override
 			public Adapter caseIterationBlock(IterationBlock object) {
 				return createIterationBlockAdapter();
 			}
@@ -440,6 +448,20 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.PostProcessedVariable <em>Post Processed Variable</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.PostProcessedVariable
+	 * @generated
+	 */
+	public Adapter createPostProcessedVariableAdapter() {
+		return null;
+	}
+
+	/**
 	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.ExtensionProvider <em>Extension Provider</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -534,20 +556,6 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createTimeVariableAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.PostProcessedVariable <em>Post Processed Variable</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.PostProcessedVariable
-	 * @generated
-	 */
-	public Adapter createPostProcessedVariableAdapter() {
 		return null;
 	}
 
@@ -842,6 +850,34 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createExitAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.Synchronize <em>Synchronize</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.Synchronize
+	 * @generated
+	 */
+	public Adapter createSynchronizeAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.Reduction_ub <em>Reduction ub</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.Reduction_ub
+	 * @generated
+	 */
+	public Adapter createReduction_ubAdapter() {
 		return null;
 	}
 
@@ -1154,6 +1190,20 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.LinearAlgebraType <em>Linear Algebra Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.cea.nabla.ir.ir.LinearAlgebraType
+	 * @generated
+	 */
+	public Adapter createLinearAlgebraTypeAdapter() {
+		return null;
+	}
+
+	/**
 	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.Container <em>Container</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -1276,20 +1326,6 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createItemIndexValueAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.LinearAlgebraType <em>Linear Algebra Type</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.LinearAlgebraType
-	 * @generated
-	 */
-	public Adapter createLinearAlgebraTypeAdapter() {
 		return null;
 	}
 

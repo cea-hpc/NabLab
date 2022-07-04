@@ -206,6 +206,12 @@
     <genClasses ecoreClass="Ir.ecore#//Exit">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//Exit/message"/>
     </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//Synchronize">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//Synchronize/variable"/>
+    </genClasses>
+    <genClasses ecoreClass="Ir.ecore#//Reduction_ub">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//Reduction_ub/variable"/>
+    </genClasses>
     <genClasses image="false" ecoreClass="Ir.ecore#//IterationBlock"/>
     <genClasses ecoreClass="Ir.ecore#//Iterator">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Ir.ecore#//Iterator/index"/>

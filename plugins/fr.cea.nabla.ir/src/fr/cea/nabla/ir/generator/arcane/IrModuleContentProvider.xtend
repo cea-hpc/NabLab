@@ -62,6 +62,7 @@ class IrModuleContentProvider
 	#include <arcane/utils/NumArray.h>
 	#include <arcane/datatype/RealArrayVariant.h>
 	#include <arcane/datatype/RealArray2Variant.h>
+	#include <arcane/IParallelMng.h>
 	«IF AcceleratorAnnotation.tryToGet(it) !== null»
 		#include <arcane/accelerator/core/IAcceleratorMng.h>
 		#include <arcane/accelerator/Reduce.h>
@@ -159,10 +160,9 @@ class IrModuleContentProvider
 	#include <arcane/ITimeLoopMng.h>
 
 	using namespace Arcane;
-
+	
 	«IF !functions.empty»
 		/*** Free functions **********************************************************/
-
 		namespace «CppGeneratorUtils.getFreeFunctionNs(it)»
 		{
 			«FOR f : functions SEPARATOR '\n'»

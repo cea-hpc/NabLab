@@ -61,9 +61,11 @@ import fr.cea.nabla.ir.ir.PostProcessing;
 import fr.cea.nabla.ir.ir.PrimitiveType;
 import fr.cea.nabla.ir.ir.RealConstant;
 import fr.cea.nabla.ir.ir.ReductionInstruction;
+import fr.cea.nabla.ir.ir.Reduction_ub;
 import fr.cea.nabla.ir.ir.Return;
 import fr.cea.nabla.ir.ir.SetDefinition;
 import fr.cea.nabla.ir.ir.SetRef;
+import fr.cea.nabla.ir.ir.Synchronize;
 import fr.cea.nabla.ir.ir.TimeIterator;
 import fr.cea.nabla.ir.ir.TimeVariable;
 import fr.cea.nabla.ir.ir.UnaryExpression;
@@ -331,6 +333,20 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	private EClass exitEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass synchronizeEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass reduction_ubEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -2070,6 +2086,46 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
+	public EClass getSynchronize() {
+		return synchronizeEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getSynchronize_Variable() {
+		return (EReference)synchronizeEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EClass getReduction_ub() {
+		return reduction_ubEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getReduction_ub_Variable() {
+		return (EReference)reduction_ubEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EClass getIterationBlock() {
 		return iterationBlockEClass;
 	}
@@ -3132,6 +3188,12 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		exitEClass = createEClass(EXIT);
 		createEAttribute(exitEClass, EXIT__MESSAGE);
 
+		synchronizeEClass = createEClass(SYNCHRONIZE);
+		createEReference(synchronizeEClass, SYNCHRONIZE__VARIABLE);
+
+		reduction_ubEClass = createEClass(REDUCTION_UB);
+		createEReference(reduction_ubEClass, REDUCTION_UB__VARIABLE);
+
 		iterationBlockEClass = createEClass(ITERATION_BLOCK);
 
 		iteratorEClass = createEClass(ITERATOR);
@@ -3314,6 +3376,8 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		whileEClass.getESuperTypes().add(this.getInstruction());
 		returnEClass.getESuperTypes().add(this.getInstruction());
 		exitEClass.getESuperTypes().add(this.getInstruction());
+		synchronizeEClass.getESuperTypes().add(this.getInstruction());
+		reduction_ubEClass.getESuperTypes().add(this.getInstruction());
 		iterationBlockEClass.getESuperTypes().add(this.getIrAnnotable());
 		iteratorEClass.getESuperTypes().add(this.getIterationBlock());
 		intervalEClass.getESuperTypes().add(this.getIterationBlock());
@@ -3526,6 +3590,12 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 
 		initEClass(exitEClass, Exit.class, "Exit", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getExit_Message(), ecorePackage.getEString(), "message", null, 1, 1, Exit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(synchronizeEClass, Synchronize.class, "Synchronize", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getSynchronize_Variable(), this.getVariable(), null, "variable", null, 1, 1, Synchronize.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(reduction_ubEClass, Reduction_ub.class, "Reduction_ub", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getReduction_ub_Variable(), this.getVariable(), null, "variable", null, 1, 1, Reduction_ub.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(iterationBlockEClass, IterationBlock.class, "IterationBlock", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 

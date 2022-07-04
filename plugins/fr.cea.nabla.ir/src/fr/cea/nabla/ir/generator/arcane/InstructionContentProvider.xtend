@@ -29,9 +29,11 @@ import fr.cea.nabla.ir.ir.ItemIndexDefinition
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.ReductionInstruction
+import fr.cea.nabla.ir.ir.Reduction_ub
 import fr.cea.nabla.ir.ir.Return
 import fr.cea.nabla.ir.ir.SetDefinition
 import fr.cea.nabla.ir.ir.SetRef
+import fr.cea.nabla.ir.ir.Synchronize
 import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.ir.ir.VariableDeclaration
 import fr.cea.nabla.ir.ir.While
@@ -70,7 +72,8 @@ class InstructionContentProvider
 	'''
 		{
 			«innerContent»
-		}'''
+		}
+	'''
 
 	static def dispatch CharSequence getContent(Affectation it)
 	{
@@ -97,7 +100,7 @@ class InstructionContentProvider
 		val b = iterationBlock
 		switch b
 		{
-			Iterator:
+			Iterator case AcceleratorAnnotation.tryToGet(it) !== null:
 			'''
 				«val iterator = iterationBlock as Iterator»
 				«val c = iterator.container»
@@ -111,6 +114,17 @@ class InstructionContentProvider
 				};
 				«result.name» = reducer.reduce();
 			'''
+			Iterator:
+			'''
+				«getTypeName(result.type)» «ArcaneUtils.getCodeName(result)»«getVariableDefaultValue(result)»;
+				«val c = b.container»
+				ENUMERATE_«c.itemType.name.toUpperCase»(«b.index.name», «c.accessor»)
+				{
+					«ArcaneUtils.getCodeName(result)» = «ArcaneUtils.getCodeName(binaryFunction)»(«ArcaneUtils.getCodeName(result)», «lambda.content»);
+				}
+				«ArcaneUtils.getCodeName(result)» = parallelMng()->reduce(Parallel::Reduce«getReducerType(binaryFunction)», «ArcaneUtils.getCodeName(result)»);
+			'''
+
 			Interval:
 				throw new RuntimeException("Not")
 		}
@@ -221,6 +235,17 @@ class InstructionContentProvider
 	'''
 		ARCANE_FATAL("«message»");
 	'''
+	
+	static def dispatch CharSequence getContent(Synchronize it)
+	'''
+		«ArcaneUtils.getCodeName(variable)».synchronize();
+	'''
+	
+	static def dispatch CharSequence getContent(Reduction_ub it)
+	'''
+		la on fait la réduction
+	'''
+	
 
 	static def getInnerContent(Instruction it)
 	{
@@ -265,7 +290,7 @@ class InstructionContentProvider
 		switch it
 		{
 			ConnectivityCall case group !== null: '''«connectivity.returnType.name.toFirstUpper»Group(m_mesh->getGroup("«group»"))'''
-			ConnectivityCall case args.empty && group === null: '''all«connectivity.name.toFirstUpper»()'''
+			ConnectivityCall case args.empty && group === null: '''own«connectivity.name.toFirstUpper»()'''
 			ConnectivityCall: '''m_mesh->«accessor»'''
 			SetRef: target.name
 		}

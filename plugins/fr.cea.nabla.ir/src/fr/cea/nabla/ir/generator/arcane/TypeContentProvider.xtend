@@ -76,7 +76,7 @@ class TypeContentProvider
 				if (s instanceof Cardinality)
 				{
 					val itemType = s.container.connectivityCall.connectivity.returnType
-					"Arcane2StlVector<" + itemType.name.toFirstUpper + ">"
+					"Arcane2AlienVector<" + itemType.name.toFirstUpper + ">"
 				}
 				else 
 					IrTypeExtensions.VectorClass

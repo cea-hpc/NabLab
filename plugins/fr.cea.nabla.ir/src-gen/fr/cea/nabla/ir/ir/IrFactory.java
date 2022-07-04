@@ -283,6 +283,24 @@ public interface IrFactory extends EFactory {
 	Exit createExit();
 
 	/**
+	 * Returns a new object of class '<em>Synchronize</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Synchronize</em>'.
+	 * @generated
+	 */
+	Synchronize createSynchronize();
+
+	/**
+	 * Returns a new object of class '<em>Reduction ub</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Reduction ub</em>'.
+	 * @generated
+	 */
+	Reduction_ub createReduction_ub();
+
+	/**
 	 * Returns a new object of class '<em>Iterator</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

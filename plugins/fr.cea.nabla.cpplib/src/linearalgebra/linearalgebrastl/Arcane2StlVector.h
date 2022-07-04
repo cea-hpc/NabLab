@@ -46,7 +46,8 @@ class Arcane2StlVector
 	  return *this;
   }
 
-  operator Vector() const { return m_stl_vector; }
+  operator Vector&() { return m_stl_vector; }
+  operator const Vector&() const { return m_stl_vector; }
   const void resize(const size_t size) { m_stl_vector.resize(size); }
   const size_t getSize() const { return m_stl_vector.getSize(); }
 
@@ -55,6 +56,13 @@ class Arcane2StlVector
   {
 	  m_arcane_vector[i] = value;
 	  m_stl_vector.setValue(i.index(), value);
+  }
+
+  double getValue(const ItemLocalIdT<ItemType> i) const { return m_arcane_vector[i]; }
+  void setValue(const ItemLocalIdT<ItemType> i, double value)
+  {
+	  m_arcane_vector[i] = value;
+	  m_stl_vector.setValue(i.localId(), value);
   }
 
 //  double getValue(const size_t i) const { return m_stl_vector.getValue(i); }

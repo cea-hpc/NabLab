@@ -10,7 +10,7 @@ using namespace Arcane;
 
 namespace variablesfreefuncs
 {
-	const bool assertEquals(const Int32 expected, const Int32 actual)
+	bool assertEquals(Int32 expected, Int32 actual)
 	{
 		const bool ret((expected == actual));
 		if (!ret) 
@@ -18,7 +18,7 @@ namespace variablesfreefuncs
 		return ret;
 	}
 	
-	const bool assertEquals(RealArrayVariant expected, RealArrayVariant actual)
+	bool assertEquals(RealArrayVariant expected, RealArrayVariant actual)
 	{
 		for (Int32 i=0; i<expected.size(); i++)
 		{
@@ -28,7 +28,7 @@ namespace variablesfreefuncs
 		return true;
 	}
 	
-	const bool assertEquals(const Real expected, const Real actual)
+	bool assertEquals(Real expected, Real actual)
 	{
 		const bool ret((expected == actual));
 		if (!ret) 
@@ -41,7 +41,7 @@ namespace variablesfreefuncs
 		NumArray<Real,1> result(a.size());
 		for (Int32 ix0=0; ix0<a.size(); ix0++)
 		{
-			result.s(ix0) = a(ix0) + b(ix0);
+			result(ix0) = a(ix0) + b(ix0);
 		}
 		return result;
 	}
@@ -59,8 +59,8 @@ void VariablesModule::init()
 	m_mesh = CartesianMesh2D::createInstance(mesh());
 
 	// initialization of other attributes
-	m_optVect3 = Real2(variablesfreefuncs::operatorAdd(options()->optVect1(), options()->optVect2()));
-	m_varVec = {1.0, 1.0};
+	m_optVect3 = variablesfreefuncs::operatorAdd(options()->optVect1(), options()->optVect2());
+	m_varVec = Real2{1.0, 1.0};
 	m_dynamicVec.resize(options()->optDim());
 
 	// constant time step
@@ -87,7 +87,7 @@ void VariablesModule::dynamicVecInitialization()
 		Int32 cpt(0);
 		for (Int32 i=0; i<tmp_optDim; i++)
 		{
-			m_dynamicVec.s(i) = 3.3;
+			m_dynamicVec(i) = 3.3;
 		}
 		for (Int32 i=0; i<tmp_optDim; i++)
 		{

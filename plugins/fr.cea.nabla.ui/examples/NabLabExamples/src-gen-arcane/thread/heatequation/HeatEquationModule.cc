@@ -10,17 +10,17 @@ using namespace Arcane;
 
 namespace heatequationfreefuncs
 {
-	const Real det(RealArrayVariant a, RealArrayVariant b)
+	Real det(RealArrayVariant a, RealArrayVariant b)
 	{
 		return (a[0] * b[1] - a[1] * b[0]);
 	}
 	
-	const Real norm(RealArrayVariant a)
+	Real norm(RealArrayVariant a)
 	{
 		return std::sqrt(heatequationfreefuncs::dot(a, a));
 	}
 	
-	const Real dot(RealArrayVariant a, RealArrayVariant b)
+	Real dot(RealArrayVariant a, RealArrayVariant b)
 	{
 		Real result(0.0);
 		for (Int32 i=0; i<a.size(); i++)
@@ -35,7 +35,7 @@ namespace heatequationfreefuncs
 		return heatequationfreefuncs::operatorAdd(a, b);
 	}
 	
-	const Real sumR0(const Real a, const Real b)
+	Real sumR0(Real a, Real b)
 	{
 		return a + b;
 	}
@@ -45,17 +45,17 @@ namespace heatequationfreefuncs
 		NumArray<Real,1> result(a.size());
 		for (Int32 ix0=0; ix0<a.size(); ix0++)
 		{
-			result.s(ix0) = a(ix0) + b(ix0);
+			result(ix0) = a(ix0) + b(ix0);
 		}
 		return result;
 	}
 	
-	RealArrayVariant operatorMult(const Real a, RealArrayVariant b)
+	RealArrayVariant operatorMult(Real a, RealArrayVariant b)
 	{
 		NumArray<Real,1> result(b.size());
 		for (Int32 ix0=0; ix0<b.size(); ix0++)
 		{
-			result.s(ix0) = a * b(ix0);
+			result(ix0) = a * b(ix0);
 		}
 		return result;
 	}
@@ -65,7 +65,7 @@ namespace heatequationfreefuncs
 		NumArray<Real,1> result(a.size());
 		for (Int32 ix0=0; ix0<a.size(); ix0++)
 		{
-			result.s(ix0) = a(ix0) - b(ix0);
+			result(ix0) = a(ix0) - b(ix0);
 		}
 		return result;
 	}
@@ -121,7 +121,7 @@ void HeatEquationModule::computeOutgoingFlux()
 					const auto j2Cells(j2Id);
 					const auto cfId(m_mesh->getCommonFace(j1Id, j2Id));
 					const auto cfFaces(cfId);
-					Real reduction1((m_u_n[j2Cells] - m_u_n[j1Cells]) / heatequationfreefuncs::norm(Real2(heatequationfreefuncs::operatorSub(m_center[j2Cells], m_center[j1Cells]))) * m_surface[cfFaces]);
+					Real reduction1((m_u_n[j2Cells] - m_u_n[j1Cells]) / heatequationfreefuncs::norm(heatequationfreefuncs::operatorSub(m_center[j2Cells], m_center[j1Cells])) * m_surface[cfFaces]);
 					reduction0 = heatequationfreefuncs::sumR0(reduction0, reduction1);
 				}
 			}
@@ -152,7 +152,7 @@ void HeatEquationModule::computeSurface()
 					const auto rPlus1Id(nodesOfFaceF[(rNodesOfFaceF+1+nbNodesOfFaceF)%nbNodesOfFaceF]);
 					const auto rNodes(rId);
 					const auto rPlus1Nodes(rPlus1Id);
-					reduction0 = heatequationfreefuncs::sumR0(reduction0, heatequationfreefuncs::norm(Real2(heatequationfreefuncs::operatorSub(m_X[rNodes], m_X[rPlus1Nodes]))));
+					reduction0 = heatequationfreefuncs::sumR0(reduction0, heatequationfreefuncs::norm(heatequationfreefuncs::operatorSub(m_X[rNodes], m_X[rPlus1Nodes])));
 				}
 			}
 			m_surface[fFaces] = 0.5 * reduction0;
@@ -220,10 +220,10 @@ void HeatEquationModule::iniCenter()
 				{
 					const auto rId(nodesOfCellJ[rNodesOfCellJ]);
 					const auto rNodes(rId);
-					reduction0 = Real2(heatequationfreefuncs::sumR1(reduction0, m_X[rNodes]));
+					reduction0 = heatequationfreefuncs::sumR1(reduction0, m_X[rNodes]);
 				}
 			}
-			m_center[jCells] = Real2(heatequationfreefuncs::operatorMult(0.25, reduction0));
+			m_center[jCells] = heatequationfreefuncs::operatorMult(0.25, reduction0);
 		}
 	});
 }

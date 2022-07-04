@@ -59,10 +59,9 @@ class InstructionContentProvider
 			«ELSE»
 				auto «variable.name» = ax::view«annot.viewDirection.toString»(command, «ArcaneUtils.getCodeName((variable.defaultValue as ArgOrVarRef).target)»);
 			«ENDIF»
-		«ELSEIF variable.type.baseTypeConstExpr»
-			«IF variable.const»const «ENDIF»«getTypeName(variable.type)» «ArcaneUtils.getCodeName(variable)»«getVariableDefaultValue(variable)»;
 		«ELSE»
-			throw Exception("Not Yet Implemented");
+			«IF !variable.type.baseTypeConstExpr»// Dynamic allocation not allowed with accelerators ?«ENDIF»
+			«IF variable.const»const «ENDIF»«getTypeName(variable.type)» «ArcaneUtils.getCodeName(variable)»«getVariableDefaultValue(variable)»;
 		«ENDIF»
 	'''
 
@@ -76,8 +75,6 @@ class InstructionContentProvider
 	{
 		if (left.target.linearAlgebra && !(left.iterators.empty && left.indices.empty))
 			'''«left.codeName».setValue(«formatIteratorsAndIndices(left.target, left.iterators, left.indices)», «right.content»);'''
-		else if (isNumArray(left.target))
-			'''«left.codeName».s«formatIteratorsAndIndices(left.target, left.iterators, left.indices)» = «right.content»;'''
 		else
 			'''
 				«left.content» = «right.content»;

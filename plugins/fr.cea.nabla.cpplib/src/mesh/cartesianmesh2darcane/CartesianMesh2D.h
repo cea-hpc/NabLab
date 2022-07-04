@@ -76,6 +76,12 @@ public:
 	inline ItemLocalIdViewT<Node> getNodesOfFace(const FaceLocalId fId) const
 	{ return m_umcv.faceNode().items(fId); }
 
+	inline NodeLocalId getFirstNodeOfFace(const FaceLocalId fId) const
+	{ return getNodesOfFace(fId)[0]; }
+
+	inline NodeLocalId getSecondNodeOfFace(const FaceLocalId fId) const
+	{ return getNodesOfFace(fId)[1]; }
+
 	inline ItemLocalIdViewT<Cell> getCellsOfNode(const NodeLocalId nId) const
 	{ return m_umcv.nodeCell().items(nId); }
 
@@ -88,6 +94,11 @@ public:
 	inline ItemLocalIdViewT<Face> getFacesOfCell(const CellLocalId cId) const
 	{ return m_umcv.cellFace().items(cId); }
 
+	inline CellLocalId getFrontCell(const FaceLocalId fId) const
+	{ return getCellsOfFace(fId)[0]; }
+
+	inline CellLocalId getBackCell(const FaceLocalId fId) const
+	{ return getCellsOfFace(fId)[1]; }
 
 	inline FaceLocalId getTopFaceOfCell(const CellLocalId cId) const
 	{ return m_y_cell_dm.cellFace(cId).nextId(); }

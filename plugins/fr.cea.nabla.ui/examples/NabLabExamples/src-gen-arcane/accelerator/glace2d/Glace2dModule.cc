@@ -10,7 +10,7 @@ using namespace Arcane;
 
 namespace glace2dfreefuncs
 {
-	const Real det(RealArray2Variant a)
+	Real det(RealArray2Variant a)
 	{
 		return a[0][0] * a[1][1] - a[0][1] * a[1][0];
 	}
@@ -20,7 +20,7 @@ namespace glace2dfreefuncs
 		return Real2{a[1], -a[0]};
 	}
 	
-	const Real dot(RealArrayVariant a, RealArrayVariant b)
+	Real dot(RealArrayVariant a, RealArrayVariant b)
 	{
 		Real result(0.0);
 		for (Int32 i=0; i<a.size(); i++)
@@ -30,7 +30,7 @@ namespace glace2dfreefuncs
 		return result;
 	}
 	
-	const Real norm(RealArrayVariant a)
+	Real norm(RealArrayVariant a)
 	{
 		return std::sqrt(glace2dfreefuncs::dot(a, a));
 	}
@@ -42,7 +42,7 @@ namespace glace2dfreefuncs
 		{
 			for (Int32 ib=0; ib<a.size(); ib++)
 			{
-				result.s(ia, ib) = a(ia) * b(ib);
+				result(ia, ib) = a(ia) * b(ib);
 			}
 		}
 		return result;
@@ -56,14 +56,14 @@ namespace glace2dfreefuncs
 			NumArray<Real,1> tmp(a.dim2Size());
 			for (Int32 iy=0; iy<a.dim2Size(); iy++)
 			{
-				tmp.s(iy) = a(ix, iy);
+				tmp(iy) = a(ix, iy);
 			}
-			result.s(ix) = glace2dfreefuncs::dot(tmp, b);
+			result(ix) = glace2dfreefuncs::dot(tmp, b);
 		}
 		return result;
 	}
 	
-	const Real trace(RealArray2Variant a)
+	Real trace(RealArray2Variant a)
 	{
 		Real result(0.0);
 		for (Int32 ia=0; ia<a.dim1Size(); ia++)
@@ -84,7 +84,7 @@ namespace glace2dfreefuncs
 		return glace2dfreefuncs::operatorAdd(a, b);
 	}
 	
-	const Real sumR0(const Real a, const Real b)
+	Real sumR0(Real a, Real b)
 	{
 		return a + b;
 	}
@@ -94,7 +94,7 @@ namespace glace2dfreefuncs
 		return glace2dfreefuncs::operatorAdd(a, b);
 	}
 	
-	const Real minR0(const Real a, const Real b)
+	Real minR0(Real a, Real b)
 	{
 		return std::min(a, b);
 	}
@@ -104,7 +104,7 @@ namespace glace2dfreefuncs
 		NumArray<Real,1> result(a.size());
 		for (Int32 ix0=0; ix0<a.size(); ix0++)
 		{
-			result.s(ix0) = a(ix0) + b(ix0);
+			result(ix0) = a(ix0) + b(ix0);
 		}
 		return result;
 	}
@@ -116,18 +116,18 @@ namespace glace2dfreefuncs
 		{
 			for (Int32 ix1=0; ix1<a.dim2Size(); ix1++)
 			{
-				result.s(ix0, ix1) = a(ix0, ix1) + b(ix0, ix1);
+				result(ix0, ix1) = a(ix0, ix1) + b(ix0, ix1);
 			}
 		}
 		return result;
 	}
 	
-	RealArrayVariant operatorMult(const Real a, RealArrayVariant b)
+	RealArrayVariant operatorMult(Real a, RealArrayVariant b)
 	{
 		NumArray<Real,1> result(b.size());
 		for (Int32 ix0=0; ix0<b.size(); ix0++)
 		{
-			result.s(ix0) = a * b(ix0);
+			result(ix0) = a * b(ix0);
 		}
 		return result;
 	}
@@ -137,19 +137,19 @@ namespace glace2dfreefuncs
 		NumArray<Real,1> result(a.size());
 		for (Int32 ix0=0; ix0<a.size(); ix0++)
 		{
-			result.s(ix0) = a(ix0) - b(ix0);
+			result(ix0) = a(ix0) - b(ix0);
 		}
 		return result;
 	}
 	
-	RealArray2Variant operatorMult(const Real a, RealArray2Variant b)
+	RealArray2Variant operatorMult(Real a, RealArray2Variant b)
 	{
 		NumArray<Real,2> result(b.dim1Size(), b.dim2Size());
 		for (Int32 ix0=0; ix0<b.dim1Size(); ix0++)
 		{
 			for (Int32 ix1=0; ix1<b.dim2Size(); ix1++)
 			{
-				result.s(ix0, ix1) = a * b(ix0, ix1);
+				result(ix0, ix1) = a * b(ix0, ix1);
 			}
 		}
 		return result;
@@ -162,7 +162,7 @@ namespace glace2dfreefuncs
 		{
 			for (Int32 ix1=0; ix1<a.dim2Size(); ix1++)
 			{
-				result.s(ix0, ix1) = a(ix0, ix1) - b(ix0, ix1);
+				result(ix0, ix1) = a(ix0, ix1) - b(ix0, ix1);
 			}
 		}
 		return result;
@@ -175,20 +175,20 @@ namespace glace2dfreefuncs
 		{
 			for (Int32 ix1=0; ix1<a.dim2Size(); ix1++)
 			{
-				result.s(ix0, ix1) = a(ix0, ix1) * b(ix0, ix1);
+				result(ix0, ix1) = a(ix0, ix1) * b(ix0, ix1);
 			}
 		}
 		return result;
 	}
 	
-	RealArray2Variant operatorMult(RealArray2Variant a, const Real b)
+	RealArray2Variant operatorMult(RealArray2Variant a, Real b)
 	{
 		NumArray<Real,2> result(a.dim1Size(), a.dim2Size());
 		for (Int32 ix0=0; ix0<a.dim1Size(); ix0++)
 		{
 			for (Int32 ix1=0; ix1<a.dim2Size(); ix1++)
 			{
-				result.s(ix0, ix1) = a(ix0, ix1) * b;
+				result(ix0, ix1) = a(ix0, ix1) * b;
 			}
 		}
 		return result;
@@ -252,7 +252,7 @@ void Glace2dModule::computeCjr()
 				const auto rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCellJ)%nbNodesOfCellJ]);
 				const auto rPlus1Nodes(rPlus1Id);
 				const auto rMinus1Nodes(rMinus1Id);
-				out_C[jCells][rNodesOfCellJ] = Real2(glace2dfreefuncs::operatorMult(0.5, Real2(glace2dfreefuncs::perp(Real2(glace2dfreefuncs::operatorSub(in_X_n[rPlus1Nodes], in_X_n[rMinus1Nodes]))))));
+				out_C[jCells][rNodesOfCellJ] = glace2dfreefuncs::operatorMult(0.5, glace2dfreefuncs::perp(glace2dfreefuncs::operatorSub(in_X_n[rPlus1Nodes], in_X_n[rMinus1Nodes])));
 			}
 		}
 	};
@@ -297,7 +297,7 @@ void Glace2dModule::iniCjrIc()
 				const auto rMinus1Id(nodesOfCellJ[(rNodesOfCellJ-1+nbNodesOfCellJ)%nbNodesOfCellJ]);
 				const auto rPlus1Nodes(rPlus1Id);
 				const auto rMinus1Nodes(rMinus1Id);
-				out_Cjr_ic[jCells][rNodesOfCellJ] = Real2(glace2dfreefuncs::operatorMult(0.5, Real2(glace2dfreefuncs::perp(Real2(glace2dfreefuncs::operatorSub(in_X_n0[rPlus1Nodes], in_X_n0[rMinus1Nodes]))))));
+				out_Cjr_ic[jCells][rNodesOfCellJ] = glace2dfreefuncs::operatorMult(0.5, glace2dfreefuncs::perp(glace2dfreefuncs::operatorSub(in_X_n0[rPlus1Nodes], in_X_n0[rMinus1Nodes])));
 			}
 		}
 	};
@@ -400,10 +400,10 @@ void Glace2dModule::initialize()
 			{
 				const auto rId(nodesOfCellJ[rNodesOfCellJ]);
 				const auto rNodes(rId);
-				reduction0 = Real2(glace2dfreefuncs::sumR1(reduction0, in_X_n0[rNodes]));
+				reduction0 = glace2dfreefuncs::sumR1(reduction0, in_X_n0[rNodes]);
 			}
 		}
-		const Real2 center(Real2(glace2dfreefuncs::operatorMult(0.25, reduction0)));
+		const Real2 center(glace2dfreefuncs::operatorMult(0.25, reduction0));
 		if (center[0] < in_xInterface) 
 		{
 			rho_ic = in_rhoIniZg;
@@ -602,7 +602,7 @@ void Glace2dModule::computeAjr()
 			const Int32 nbNodesOfCellJ(nodesOfCellJ.size());
 			for (Int32 rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 			{
-				out_Ajr[jCells][rNodesOfCellJ] = Real2x2(glace2dfreefuncs::operatorMult(((in_rho[jCells] * in_c[jCells]) / in_l[jCells][rNodesOfCellJ]), Real2x2(glace2dfreefuncs::tensProduct(in_C[jCells][rNodesOfCellJ], in_C[jCells][rNodesOfCellJ]))));
+				out_Ajr[jCells][rNodesOfCellJ] = glace2dfreefuncs::operatorMult(((in_rho[jCells] * in_c[jCells]) / in_l[jCells][rNodesOfCellJ]), glace2dfreefuncs::tensProduct(in_C[jCells][rNodesOfCellJ], in_C[jCells][rNodesOfCellJ]));
 			}
 		}
 	};
@@ -649,7 +649,7 @@ void Glace2dModule::computeAr()
 	command << RUNCOMMAND_ENUMERATE(Node, rNodes, allNodes())
 	{
 		const auto rId(rNodes);
-		Real2x2 reduction0{{0.0, 0.0}, {0.0, 0.0}};
+		Real2x2 reduction0{0.0, 0.0, 0.0, 0.0};
 		{
 			const auto cellsOfNodeR(m_mesh->getCellsOfNode(rId));
 			const Int32 nbCellsOfNodeR(cellsOfNodeR.size());
@@ -658,7 +658,7 @@ void Glace2dModule::computeAr()
 				const auto jId(cellsOfNodeR[jCellsOfNodeR]);
 				const auto jCells(jId);
 				const auto rNodesOfCellJ(m_mesh->indexOf(m_mesh->getNodesOfCell(jId), rId));
-				reduction0 = Real2x2(glace2dfreefuncs::sumR2(reduction0, in_Ajr[jCells][rNodesOfCellJ]));
+				reduction0 = glace2dfreefuncs::sumR2(reduction0, in_Ajr[jCells][rNodesOfCellJ]);
 			}
 		}
 		for (Int32 i1=0; i1<2; i1++)
@@ -696,7 +696,7 @@ void Glace2dModule::computeBr()
 				const auto jId(cellsOfNodeR[jCellsOfNodeR]);
 				const auto jCells(jId);
 				const auto rNodesOfCellJ(m_mesh->indexOf(m_mesh->getNodesOfCell(jId), rId));
-				reduction0 = Real2(glace2dfreefuncs::sumR1(reduction0, Real2(glace2dfreefuncs::operatorAdd(Real2(glace2dfreefuncs::operatorMult(in_p[jCells], in_C[jCells][rNodesOfCellJ])), Real2(glace2dfreefuncs::matVectProduct(in_Ajr[jCells][rNodesOfCellJ], in_uj_n[jCells]))))));
+				reduction0 = glace2dfreefuncs::sumR1(reduction0, glace2dfreefuncs::operatorAdd(glace2dfreefuncs::operatorMult(in_p[jCells], in_C[jCells][rNodesOfCellJ]), glace2dfreefuncs::matVectProduct(in_Ajr[jCells][rNodesOfCellJ], in_uj_n[jCells])));
 			}
 		}
 		for (Int32 i1=0; i1<2; i1++)
@@ -735,7 +735,7 @@ void Glace2dModule::computeDt()
  */
 void Glace2dModule::computeBoundaryConditions()
 {
-	const Real2x2 I{Real2{1.0, 0.0}, Real2{0.0, 1.0}};
+	const Real2x2 I(Real2x2{Real2{1.0, 0.0}, Real2{0.0, 1.0}});
 	{
 		auto command = makeCommand(m_default_queue);
 		auto in_b = ax::viewIn(command, m_b);
@@ -746,11 +746,11 @@ void Glace2dModule::computeBoundaryConditions()
 		{
 			const auto rId(rTopNodes);
 			const auto rNodes(rId);
-			const Real2 N{0.0, 1.0};
-			const Real2x2 NxN(Real2x2(glace2dfreefuncs::tensProduct(N, N)));
-			const Real2x2 IcP(Real2x2(glace2dfreefuncs::operatorSub(I, NxN)));
-			out_bt[rNodes] = Real2(glace2dfreefuncs::matVectProduct(IcP, in_b[rNodes]));
-			out_Mt[rNodes] = Real2x2(glace2dfreefuncs::operatorAdd(Real2x2(glace2dfreefuncs::operatorMult(IcP, (Real2x2(glace2dfreefuncs::operatorMult(in_Ar[rNodes], IcP))))), Real2x2(glace2dfreefuncs::operatorMult(NxN, glace2dfreefuncs::trace(in_Ar[rNodes])))));
+			const Real2 N(Real2{0.0, 1.0});
+			const Real2x2 NxN(glace2dfreefuncs::tensProduct(N, N));
+			const Real2x2 IcP(glace2dfreefuncs::operatorSub(I, NxN));
+			out_bt[rNodes] = glace2dfreefuncs::matVectProduct(IcP, in_b[rNodes]);
+			out_Mt[rNodes] = glace2dfreefuncs::operatorAdd(glace2dfreefuncs::operatorMult(IcP, (glace2dfreefuncs::operatorMult(in_Ar[rNodes], IcP))), glace2dfreefuncs::operatorMult(NxN, glace2dfreefuncs::trace(in_Ar[rNodes])));
 		};
 	}
 	{
@@ -763,11 +763,11 @@ void Glace2dModule::computeBoundaryConditions()
 		{
 			const auto rId(rBottomNodes);
 			const auto rNodes(rId);
-			const Real2 N{0.0, -1.0};
-			const Real2x2 NxN(Real2x2(glace2dfreefuncs::tensProduct(N, N)));
-			const Real2x2 IcP(Real2x2(glace2dfreefuncs::operatorSub(I, NxN)));
-			out_bt[rNodes] = Real2(glace2dfreefuncs::matVectProduct(IcP, in_b[rNodes]));
-			out_Mt[rNodes] = Real2x2(glace2dfreefuncs::operatorAdd(Real2x2(glace2dfreefuncs::operatorMult(IcP, (Real2x2(glace2dfreefuncs::operatorMult(in_Ar[rNodes], IcP))))), Real2x2(glace2dfreefuncs::operatorMult(NxN, glace2dfreefuncs::trace(in_Ar[rNodes])))));
+			const Real2 N(Real2{0.0, -1.0});
+			const Real2x2 NxN(glace2dfreefuncs::tensProduct(N, N));
+			const Real2x2 IcP(glace2dfreefuncs::operatorSub(I, NxN));
+			out_bt[rNodes] = glace2dfreefuncs::matVectProduct(IcP, in_b[rNodes]);
+			out_Mt[rNodes] = glace2dfreefuncs::operatorAdd(glace2dfreefuncs::operatorMult(IcP, (glace2dfreefuncs::operatorMult(in_Ar[rNodes], IcP))), glace2dfreefuncs::operatorMult(NxN, glace2dfreefuncs::trace(in_Ar[rNodes])));
 		};
 	}
 	{
@@ -876,7 +876,7 @@ void Glace2dModule::computeU()
 	auto out_ur = ax::viewOut(command, m_ur);
 	command << RUNCOMMAND_ENUMERATE(Node, rNodes, allNodes())
 	{
-		out_ur[rNodes] = Real2(glace2dfreefuncs::matVectProduct(Real2x2(glace2dfreefuncs::inverse(in_Mt[rNodes])), in_bt[rNodes]));
+		out_ur[rNodes] = glace2dfreefuncs::matVectProduct(glace2dfreefuncs::inverse(in_Mt[rNodes]), in_bt[rNodes]);
 	};
 }
 
@@ -904,7 +904,7 @@ void Glace2dModule::computeFjr()
 			{
 				const auto rId(nodesOfCellJ[rNodesOfCellJ]);
 				const auto rNodes(rId);
-				out_F[jCells][rNodesOfCellJ] = Real2(glace2dfreefuncs::operatorAdd(Real2(glace2dfreefuncs::operatorMult(in_p[jCells], in_C[jCells][rNodesOfCellJ])), Real2(glace2dfreefuncs::matVectProduct(in_Ajr[jCells][rNodesOfCellJ], (Real2(glace2dfreefuncs::operatorSub(in_uj_n[jCells], in_ur[rNodes])))))));
+				out_F[jCells][rNodesOfCellJ] = glace2dfreefuncs::operatorAdd(glace2dfreefuncs::operatorMult(in_p[jCells], in_C[jCells][rNodesOfCellJ]), glace2dfreefuncs::matVectProduct(in_Ajr[jCells][rNodesOfCellJ], (glace2dfreefuncs::operatorSub(in_uj_n[jCells], in_ur[rNodes]))));
 			}
 		}
 	};
@@ -924,7 +924,7 @@ void Glace2dModule::computeXn()
 	auto out_X_nplus1 = ax::viewOut(command, m_X_nplus1);
 	command << RUNCOMMAND_ENUMERATE(Node, rNodes, allNodes())
 	{
-		out_X_nplus1[rNodes] = Real2(glace2dfreefuncs::operatorAdd(in_X_n[rNodes], Real2(glace2dfreefuncs::operatorMult(in_deltat, in_ur[rNodes]))));
+		out_X_nplus1[rNodes] = glace2dfreefuncs::operatorAdd(in_X_n[rNodes], glace2dfreefuncs::operatorMult(in_deltat, in_ur[rNodes]));
 	};
 }
 
@@ -982,10 +982,10 @@ void Glace2dModule::computeUn()
 			const Int32 nbNodesOfCellJ(nodesOfCellJ.size());
 			for (Int32 rNodesOfCellJ=0; rNodesOfCellJ<nbNodesOfCellJ; rNodesOfCellJ++)
 			{
-				reduction0 = Real2(glace2dfreefuncs::sumR1(reduction0, in_F[jCells][rNodesOfCellJ]));
+				reduction0 = glace2dfreefuncs::sumR1(reduction0, in_F[jCells][rNodesOfCellJ]);
 			}
 		}
-		out_uj_nplus1[jCells] = Real2(glace2dfreefuncs::operatorSub(in_uj_n[jCells], Real2(glace2dfreefuncs::operatorMult((in_deltat / in_m[jCells]), reduction0))));
+		out_uj_nplus1[jCells] = glace2dfreefuncs::operatorSub(in_uj_n[jCells], glace2dfreefuncs::operatorMult((in_deltat / in_m[jCells]), reduction0));
 	};
 }
 

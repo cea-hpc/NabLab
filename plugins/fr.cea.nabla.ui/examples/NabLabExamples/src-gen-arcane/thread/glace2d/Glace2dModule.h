@@ -15,26 +15,26 @@ using namespace Arcane;
 
 namespace glace2dfreefuncs
 {
-	const Real det(RealArray2Variant a);
+	Real det(RealArray2Variant a);
 	RealArrayVariant perp(RealArrayVariant a);
-	const Real dot(RealArrayVariant a, RealArrayVariant b);
-	const Real norm(RealArrayVariant a);
+	Real dot(RealArrayVariant a, RealArrayVariant b);
+	Real norm(RealArrayVariant a);
 	RealArray2Variant tensProduct(RealArrayVariant a, RealArrayVariant b);
 	RealArrayVariant matVectProduct(RealArray2Variant a, RealArrayVariant b);
-	const Real trace(RealArray2Variant a);
+	Real trace(RealArray2Variant a);
 	RealArray2Variant inverse(RealArray2Variant a);
 	RealArrayVariant sumR1(RealArrayVariant a, RealArrayVariant b);
-	const Real sumR0(const Real a, const Real b);
+	Real sumR0(Real a, Real b);
 	RealArray2Variant sumR2(RealArray2Variant a, RealArray2Variant b);
-	const Real minR0(const Real a, const Real b);
+	Real minR0(Real a, Real b);
 	RealArrayVariant operatorAdd(RealArrayVariant a, RealArrayVariant b);
 	RealArray2Variant operatorAdd(RealArray2Variant a, RealArray2Variant b);
-	RealArrayVariant operatorMult(const Real a, RealArrayVariant b);
+	RealArrayVariant operatorMult(Real a, RealArrayVariant b);
 	RealArrayVariant operatorSub(RealArrayVariant a, RealArrayVariant b);
-	RealArray2Variant operatorMult(const Real a, RealArray2Variant b);
+	RealArray2Variant operatorMult(Real a, RealArray2Variant b);
 	RealArray2Variant operatorSub(RealArray2Variant a, RealArray2Variant b);
 	RealArray2Variant operatorMult(RealArray2Variant a, RealArray2Variant b);
-	RealArray2Variant operatorMult(RealArray2Variant a, const Real b);
+	RealArray2Variant operatorMult(RealArray2Variant a, Real b);
 }
 
 /*** Module/Service **********************************************************/

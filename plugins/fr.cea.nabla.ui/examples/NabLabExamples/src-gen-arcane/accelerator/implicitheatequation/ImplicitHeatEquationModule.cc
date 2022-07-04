@@ -10,12 +10,12 @@ using namespace Arcane;
 
 namespace implicitheatequationfreefuncs
 {
-	const Real norm(RealArrayVariant a)
+	Real norm(RealArrayVariant a)
 	{
 		return std::sqrt(implicitheatequationfreefuncs::dot(a, a));
 	}
 	
-	const Real dot(RealArrayVariant a, RealArrayVariant b)
+	Real dot(RealArrayVariant a, RealArrayVariant b)
 	{
 		Real result(0.0);
 		for (Int32 i=0; i<a.size(); i++)
@@ -25,7 +25,7 @@ namespace implicitheatequationfreefuncs
 		return result;
 	}
 	
-	const Real det(RealArrayVariant a, RealArrayVariant b)
+	Real det(RealArrayVariant a, RealArrayVariant b)
 	{
 		return (a[0] * b[1] - a[1] * b[0]);
 	}
@@ -35,17 +35,17 @@ namespace implicitheatequationfreefuncs
 		return implicitheatequationfreefuncs::operatorAdd(a, b);
 	}
 	
-	const Real minR0(const Real a, const Real b)
+	Real minR0(Real a, Real b)
 	{
 		return std::min(a, b);
 	}
 	
-	const Real sumR0(const Real a, const Real b)
+	Real sumR0(Real a, Real b)
 	{
 		return a + b;
 	}
 	
-	const Real prodR0(const Real a, const Real b)
+	Real prodR0(Real a, Real b)
 	{
 		return a * b;
 	}
@@ -55,17 +55,17 @@ namespace implicitheatequationfreefuncs
 		NumArray<Real,1> result(a.size());
 		for (Int32 ix0=0; ix0<a.size(); ix0++)
 		{
-			result.s(ix0) = a(ix0) + b(ix0);
+			result(ix0) = a(ix0) + b(ix0);
 		}
 		return result;
 	}
 	
-	RealArrayVariant operatorMult(const Real a, RealArrayVariant b)
+	RealArrayVariant operatorMult(Real a, RealArrayVariant b)
 	{
 		NumArray<Real,1> result(b.size());
 		for (Int32 ix0=0; ix0<b.size(); ix0++)
 		{
-			result.s(ix0) = a * b(ix0);
+			result(ix0) = a * b(ix0);
 		}
 		return result;
 	}
@@ -75,7 +75,7 @@ namespace implicitheatequationfreefuncs
 		NumArray<Real,1> result(a.size());
 		for (Int32 ix0=0; ix0<a.size(); ix0++)
 		{
-			result.s(ix0) = a(ix0) - b(ix0);
+			result(ix0) = a(ix0) - b(ix0);
 		}
 		return result;
 	}
@@ -142,7 +142,7 @@ void ImplicitHeatEquationModule::computeFaceLength()
 				const auto pPlus1Id(nodesOfFaceF[(pNodesOfFaceF+1+nbNodesOfFaceF)%nbNodesOfFaceF]);
 				const auto pNodes(pId);
 				const auto pPlus1Nodes(pPlus1Id);
-				reduction0 = implicitheatequationfreefuncs::sumR0(reduction0, implicitheatequationfreefuncs::norm(Real2(implicitheatequationfreefuncs::operatorSub(in_X[pNodes], in_X[pPlus1Nodes]))));
+				reduction0 = implicitheatequationfreefuncs::sumR0(reduction0, implicitheatequationfreefuncs::norm(implicitheatequationfreefuncs::operatorSub(in_X[pNodes], in_X[pPlus1Nodes])));
 			}
 		}
 		out_faceLength[fFaces] = 0.5 * reduction0;
@@ -235,10 +235,10 @@ void ImplicitHeatEquationModule::initXc()
 			{
 				const auto pId(nodesOfCellC[pNodesOfCellC]);
 				const auto pNodes(pId);
-				reduction0 = Real2(implicitheatequationfreefuncs::sumR1(reduction0, in_X[pNodes]));
+				reduction0 = implicitheatequationfreefuncs::sumR1(reduction0, in_X[pNodes]);
 			}
 		}
-		out_Xc[cCells] = Real2(implicitheatequationfreefuncs::operatorMult(0.25, reduction0));
+		out_Xc[cCells] = implicitheatequationfreefuncs::operatorMult(0.25, reduction0);
 	};
 }
 
@@ -325,7 +325,7 @@ void ImplicitHeatEquationModule::initU()
 	{
 		ENUMERATE_CELL(cCells, view)
 		{
-			if (implicitheatequationfreefuncs::norm(Real2(implicitheatequationfreefuncs::operatorSub(m_Xc[cCells], m_vectOne))) < 0.5) 
+			if (implicitheatequationfreefuncs::norm(implicitheatequationfreefuncs::operatorSub(m_Xc[cCells], m_vectOne)) < 0.5) 
 				m_u_n.setValue(cCells, m_u0);
 			else
 				m_u_n.setValue(cCells, 0.0);
@@ -365,7 +365,7 @@ void ImplicitHeatEquationModule::computeAlphaCoeff()
 					const auto dCells(dId);
 					const auto fId(m_mesh->getCommonFace(cId, dId));
 					const auto fFaces(fId);
-					const Real alphaExtraDiag(-m_deltat / m_V[cCells] * (m_faceLength[fFaces] * m_faceConductivity[fFaces]) / implicitheatequationfreefuncs::norm(Real2(implicitheatequationfreefuncs::operatorSub(m_Xc[cCells], m_Xc[dCells]))));
+					const Real alphaExtraDiag(-m_deltat / m_V[cCells] * (m_faceLength[fFaces] * m_faceConductivity[fFaces]) / implicitheatequationfreefuncs::norm(implicitheatequationfreefuncs::operatorSub(m_Xc[cCells], m_Xc[dCells])));
 					m_alpha.setValue(cCells.localId(), dCells, alphaExtraDiag);
 					alphaDiag = alphaDiag + alphaExtraDiag;
 				}

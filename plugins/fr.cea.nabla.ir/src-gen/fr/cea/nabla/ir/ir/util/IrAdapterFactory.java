@@ -212,8 +212,8 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 				return createSynchronizeAdapter();
 			}
 			@Override
-			public Adapter caseReduction_ub(Reduction_ub object) {
-				return createReduction_ubAdapter();
+			public Adapter caseMESSAGE(MESSAGE object) {
+				return createMESSAGEAdapter();
 			}
 			@Override
 			public Adapter caseIterationBlock(IterationBlock object) {
@@ -868,16 +868,16 @@ public class IrAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.Reduction_ub <em>Reduction ub</em>}'.
+	 * Creates a new adapter for an object of class '{@link fr.cea.nabla.ir.ir.MESSAGE <em>MESSAGE</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see fr.cea.nabla.ir.ir.Reduction_ub
+	 * @see fr.cea.nabla.ir.ir.MESSAGE
 	 * @generated
 	 */
-	public Adapter createReduction_ubAdapter() {
+	public Adapter createMESSAGEAdapter() {
 		return null;
 	}
 

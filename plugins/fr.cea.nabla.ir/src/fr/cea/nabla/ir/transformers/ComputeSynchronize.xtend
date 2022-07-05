@@ -40,6 +40,7 @@ class ComputeSynchronize extends IrTransformationStep
 			for(j : m.jobs.filter[x | !(x instanceof ExecuteTimeLoopJob)])
 			{
 				val inVars = new LinkedHashSet<Variable>
+				
 				for(l : j.eAllContents.filter(Loop).toIterable)
 				{
 					if(l.iterationBlock instanceof Iterator)

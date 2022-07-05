@@ -2758,14 +2758,14 @@ public interface IrPackage extends EPackage {
 	int SYNCHRONIZE_OPERATION_COUNT = INSTRUCTION_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.Reduction_ubImpl <em>Reduction ub</em>}' class.
+	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.MESSAGEImpl <em>MESSAGE</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see fr.cea.nabla.ir.ir.impl.Reduction_ubImpl
-	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getReduction_ub()
+	 * @see fr.cea.nabla.ir.ir.impl.MESSAGEImpl
+	 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getMESSAGE()
 	 * @generated
 	 */
-	int REDUCTION_UB = 36;
+	int MESSAGE = 36;
 
 	/**
 	 * The feature id for the '<em><b>Annotations</b></em>' containment reference list.
@@ -2774,7 +2774,7 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int REDUCTION_UB__ANNOTATIONS = INSTRUCTION__ANNOTATIONS;
+	int MESSAGE__ANNOTATIONS = INSTRUCTION__ANNOTATIONS;
 
 	/**
 	 * The feature id for the '<em><b>Variable</b></em>' reference.
@@ -2783,25 +2783,34 @@ public interface IrPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int REDUCTION_UB__VARIABLE = INSTRUCTION_FEATURE_COUNT + 0;
+	int MESSAGE__VARIABLE = INSTRUCTION_FEATURE_COUNT + 0;
 
 	/**
-	 * The number of structural features of the '<em>Reduction ub</em>' class.
+	 * The feature id for the '<em><b>String</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int REDUCTION_UB_FEATURE_COUNT = INSTRUCTION_FEATURE_COUNT + 1;
+	int MESSAGE__STRING = INSTRUCTION_FEATURE_COUNT + 1;
 
 	/**
-	 * The number of operations of the '<em>Reduction ub</em>' class.
+	 * The number of structural features of the '<em>MESSAGE</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int REDUCTION_UB_OPERATION_COUNT = INSTRUCTION_OPERATION_COUNT + 0;
+	int MESSAGE_FEATURE_COUNT = INSTRUCTION_FEATURE_COUNT + 2;
+
+	/**
+	 * The number of operations of the '<em>MESSAGE</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MESSAGE_OPERATION_COUNT = INSTRUCTION_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link fr.cea.nabla.ir.ir.impl.IterationBlockImpl <em>Iteration Block</em>}' class.
@@ -6298,25 +6307,36 @@ public interface IrPackage extends EPackage {
 	EReference getSynchronize_Variable();
 
 	/**
-	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.Reduction_ub <em>Reduction ub</em>}'.
+	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.MESSAGE <em>MESSAGE</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Reduction ub</em>'.
-	 * @see fr.cea.nabla.ir.ir.Reduction_ub
+	 * @return the meta object for class '<em>MESSAGE</em>'.
+	 * @see fr.cea.nabla.ir.ir.MESSAGE
 	 * @generated
 	 */
-	EClass getReduction_ub();
+	EClass getMESSAGE();
 
 	/**
-	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.Reduction_ub#getVariable <em>Variable</em>}'.
+	 * Returns the meta object for the reference '{@link fr.cea.nabla.ir.ir.MESSAGE#getVariable <em>Variable</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the reference '<em>Variable</em>'.
-	 * @see fr.cea.nabla.ir.ir.Reduction_ub#getVariable()
-	 * @see #getReduction_ub()
+	 * @see fr.cea.nabla.ir.ir.MESSAGE#getVariable()
+	 * @see #getMESSAGE()
 	 * @generated
 	 */
-	EReference getReduction_ub_Variable();
+	EReference getMESSAGE_Variable();
+
+	/**
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.MESSAGE#getString <em>String</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>String</em>'.
+	 * @see fr.cea.nabla.ir.ir.MESSAGE#getString()
+	 * @see #getMESSAGE()
+	 * @generated
+	 */
+	EAttribute getMESSAGE_String();
 
 	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.IterationBlock <em>Iteration Block</em>}'.
@@ -8495,14 +8515,14 @@ public interface IrPackage extends EPackage {
 		EReference SYNCHRONIZE__VARIABLE = eINSTANCE.getSynchronize_Variable();
 
 		/**
-		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.Reduction_ubImpl <em>Reduction ub</em>}' class.
+		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.MESSAGEImpl <em>MESSAGE</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see fr.cea.nabla.ir.ir.impl.Reduction_ubImpl
-		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getReduction_ub()
+		 * @see fr.cea.nabla.ir.ir.impl.MESSAGEImpl
+		 * @see fr.cea.nabla.ir.ir.impl.IrPackageImpl#getMESSAGE()
 		 * @generated
 		 */
-		EClass REDUCTION_UB = eINSTANCE.getReduction_ub();
+		EClass MESSAGE = eINSTANCE.getMESSAGE();
 
 		/**
 		 * The meta object literal for the '<em><b>Variable</b></em>' reference feature.
@@ -8510,7 +8530,15 @@ public interface IrPackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference REDUCTION_UB__VARIABLE = eINSTANCE.getReduction_ub_Variable();
+		EReference MESSAGE__VARIABLE = eINSTANCE.getMESSAGE_Variable();
+
+		/**
+		 * The meta object literal for the '<em><b>String</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute MESSAGE__STRING = eINSTANCE.getMESSAGE_String();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.IterationBlockImpl <em>Iteration Block</em>}' class.

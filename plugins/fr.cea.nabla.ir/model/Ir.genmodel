@@ -209,8 +209,9 @@
     <genClasses ecoreClass="Ir.ecore#//Synchronize">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//Synchronize/variable"/>
     </genClasses>
-    <genClasses ecoreClass="Ir.ecore#//Reduction_ub">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//Reduction_ub/variable"/>
+    <genClasses ecoreClass="Ir.ecore#//MESSAGE">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//MESSAGE/variable"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//MESSAGE/string"/>
     </genClasses>
     <genClasses image="false" ecoreClass="Ir.ecore#//IterationBlock"/>
     <genClasses ecoreClass="Ir.ecore#//Iterator">

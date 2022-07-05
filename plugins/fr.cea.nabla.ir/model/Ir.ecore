@@ -292,9 +292,11 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="variable" lowerBound="1"
         eType="#//Variable"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Reduction_ub" eSuperTypes="#//Instruction">
+  <eClassifiers xsi:type="ecore:EClass" name="MESSAGE" eSuperTypes="#//Instruction">
     <eStructuralFeatures xsi:type="ecore:EReference" name="variable" lowerBound="1"
         eType="#//Variable"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="string" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="IterationBlock" abstract="true" eSuperTypes="#//IrAnnotable"/>
   <eClassifiers xsi:type="ecore:EClass" name="Iterator" eSuperTypes="#//IterationBlock">

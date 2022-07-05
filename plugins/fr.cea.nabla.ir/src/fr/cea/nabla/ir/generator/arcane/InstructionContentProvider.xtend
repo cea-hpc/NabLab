@@ -28,8 +28,8 @@ import fr.cea.nabla.ir.ir.ItemIdDefinition
 import fr.cea.nabla.ir.ir.ItemIndexDefinition
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.Loop
+import fr.cea.nabla.ir.ir.MESSAGE
 import fr.cea.nabla.ir.ir.ReductionInstruction
-import fr.cea.nabla.ir.ir.Reduction_ub
 import fr.cea.nabla.ir.ir.Return
 import fr.cea.nabla.ir.ir.SetDefinition
 import fr.cea.nabla.ir.ir.SetRef
@@ -241,9 +241,9 @@ class InstructionContentProvider
 		«ArcaneUtils.getCodeName(variable)».synchronize();
 	'''
 	
-	static def dispatch CharSequence getContent(Reduction_ub it)
+	static def dispatch CharSequence getContent(MESSAGE it)
 	'''
-		la on fait la réduction
+		// !!! MESSAGE <«string»> !!!
 	'''
 	
 

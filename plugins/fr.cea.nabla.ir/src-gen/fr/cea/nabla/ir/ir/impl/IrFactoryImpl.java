@@ -87,7 +87,7 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.RETURN: return createReturn();
 			case IrPackage.EXIT: return createExit();
 			case IrPackage.SYNCHRONIZE: return createSynchronize();
-			case IrPackage.REDUCTION_UB: return createReduction_ub();
+			case IrPackage.MESSAGE: return createMESSAGE();
 			case IrPackage.ITERATOR: return createIterator();
 			case IrPackage.INTERVAL: return createInterval();
 			case IrPackage.CONTRACTED_IF: return createContractedIf();
@@ -487,9 +487,9 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	 * @generated
 	 */
 	@Override
-	public Reduction_ub createReduction_ub() {
-		Reduction_ubImpl reduction_ub = new Reduction_ubImpl();
-		return reduction_ub;
+	public MESSAGE createMESSAGE() {
+		MESSAGEImpl message = new MESSAGEImpl();
+		return message;
 	}
 
 	/**

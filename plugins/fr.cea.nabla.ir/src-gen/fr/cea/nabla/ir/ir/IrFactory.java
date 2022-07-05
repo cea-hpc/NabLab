@@ -292,13 +292,13 @@ public interface IrFactory extends EFactory {
 	Synchronize createSynchronize();
 
 	/**
-	 * Returns a new object of class '<em>Reduction ub</em>'.
+	 * Returns a new object of class '<em>MESSAGE</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Reduction ub</em>'.
+	 * @return a new object of class '<em>MESSAGE</em>'.
 	 * @generated
 	 */
-	Reduction_ub createReduction_ub();
+	MESSAGE createMESSAGE();
 
 	/**
 	 * Returns a new object of class '<em>Iterator</em>'.

@@ -68,6 +68,8 @@ You can then test it (and check if maven clean verify works)
 
 NB : with VPN you may use --network=host option in docker build and docker run
 
+You may leave the virtual env with Ctrl+D
+
 List available images on your system (optional)
 
 ```bash
@@ -89,5 +91,5 @@ NB : An application account has been created with nablalang@gmail.com
 Push to docker hub
 
 ```bash
-docker push nablab/execution-env
+docker push nablab/execution-env-arcane-python
 ```

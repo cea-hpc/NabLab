@@ -54,7 +54,7 @@ class DefaultDotArcGenerator implements IrCodeGenerator
 
 				<arcane-post-processing>
 					«IF postProcessing.periodReference == currentTimeVariable»
-						<output-frequency>«postProcessing.periodValue»</output-frequency>
+						<output-frequency>«getDefaultValues(postProcessing.periodValue.type as BaseType).join(" ")»</output-frequency>
 					«ELSEIF !timeIterators.empty && postProcessing.periodReference.name == timeIterators.get(0).name»
 						<output-period>«getDefaultValues(postProcessing.periodValue.type as BaseType).join(" ")»</output-period>
 					«ENDIF»

@@ -15,6 +15,12 @@ Provider LinearAlgebraStl : LinearAlgebra
 	outputPath = "/.nablab/linearalgebra";
 }
 
+Provider LinearAlgebraAlien : LinearAlgebra
+{
+	target = Arcane;
+	outputPath = "/.nablab/linearalgebra";
+}
+
 Provider LinearAlgebraKokkos : LinearAlgebra
 {
 	target = Kokkos;

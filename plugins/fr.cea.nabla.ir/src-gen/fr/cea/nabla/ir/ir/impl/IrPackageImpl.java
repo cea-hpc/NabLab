@@ -2815,6 +2815,16 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
+	public EAttribute getConnectivityCall_AllItems() {
+		return (EAttribute)connectivityCallEClass.getEStructuralFeatures().get(4);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EClass getSetRef() {
 		return setRefEClass;
 	}
@@ -3296,6 +3306,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEReference(connectivityCallEClass, CONNECTIVITY_CALL__ARGS);
 		createEAttribute(connectivityCallEClass, CONNECTIVITY_CALL__GROUP);
 		createEAttribute(connectivityCallEClass, CONNECTIVITY_CALL__INDEX_EQUAL_ID);
+		createEAttribute(connectivityCallEClass, CONNECTIVITY_CALL__ALL_ITEMS);
 
 		setRefEClass = createEClass(SET_REF);
 		createEReference(setRefEClass, SET_REF__TARGET);
@@ -3700,6 +3711,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEReference(getConnectivityCall_Args(), this.getItemId(), null, "args", null, 0, -1, ConnectivityCall.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getConnectivityCall_Group(), ecorePackage.getEString(), "group", null, 0, 1, ConnectivityCall.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getConnectivityCall_IndexEqualId(), ecorePackage.getEBoolean(), "indexEqualId", "false", 1, 1, ConnectivityCall.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getConnectivityCall_AllItems(), ecorePackage.getEBoolean(), "allItems", "false", 1, 1, ConnectivityCall.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(setRefEClass, SetRef.class, "SetRef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getSetRef_Target(), this.getSetDefinition(), null, "target", null, 1, 1, SetRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

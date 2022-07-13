@@ -58,7 +58,7 @@ class TypeContentProvider
 		it instanceof BaseType && (it as BaseType).typeNameAndDimension.value == 0
 	}
 
-	static def isArcaneStlVector(IrType t)
+	static def isArcaneAlienVector(IrType t)
 	{
 		if (t instanceof LinearAlgebraType)
 			t.sizes.size == 1 && t.sizes.head instanceof Cardinality
@@ -234,10 +234,10 @@ class TypeContentProvider
 		{
 			val firstIterator = iterators.head
 			if (firstIterator.isAnItemType)
-				if (ArcaneUtils.isArcaneManaged(v) || isArcaneStlVector(v.type)) // ArcaneStlVector needs ItemType
+				if (ArcaneUtils.isArcaneManaged(v) || isArcaneAlienVector(v.type)) // ArcaneStlVector needs ItemType
 					indices += firstIterator.name
 				else
-					indices += firstIterator.name + ".localId()"
+					indices += firstIterator.name + "->localId()"
 			else
 				indices += firstIterator.name
 
@@ -245,7 +245,7 @@ class TypeContentProvider
 			{
 				val name = iterator.name
 				if (iterator.isAnItemType)
-					indices += name + ".localId()"
+					indices += name + "->localId()"
 				else
 					indices += name
 			}

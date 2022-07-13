@@ -4359,13 +4359,22 @@ public interface IrPackage extends EPackage {
 	int CONNECTIVITY_CALL__INDEX_EQUAL_ID = CONTAINER_FEATURE_COUNT + 3;
 
 	/**
+	 * The feature id for the '<em><b>All Items</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CONNECTIVITY_CALL__ALL_ITEMS = CONTAINER_FEATURE_COUNT + 4;
+
+	/**
 	 * The number of structural features of the '<em>Connectivity Call</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CONNECTIVITY_CALL_FEATURE_COUNT = CONTAINER_FEATURE_COUNT + 4;
+	int CONNECTIVITY_CALL_FEATURE_COUNT = CONTAINER_FEATURE_COUNT + 5;
 
 	/**
 	 * The number of operations of the '<em>Connectivity Call</em>' class.
@@ -7062,6 +7071,17 @@ public interface IrPackage extends EPackage {
 	EAttribute getConnectivityCall_IndexEqualId();
 
 	/**
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.ConnectivityCall#isAllItems <em>All Items</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>All Items</em>'.
+	 * @see fr.cea.nabla.ir.ir.ConnectivityCall#isAllItems()
+	 * @see #getConnectivityCall()
+	 * @generated
+	 */
+	EAttribute getConnectivityCall_AllItems();
+
+	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.SetRef <em>Set Ref</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -9133,6 +9153,14 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute CONNECTIVITY_CALL__INDEX_EQUAL_ID = eINSTANCE.getConnectivityCall_IndexEqualId();
+
+		/**
+		 * The meta object literal for the '<em><b>All Items</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute CONNECTIVITY_CALL__ALL_ITEMS = eINSTANCE.getConnectivityCall_AllItems();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.SetRefImpl <em>Set Ref</em>}' class.

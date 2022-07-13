@@ -24,6 +24,7 @@ import fr.cea.nabla.ir.transformers.SetMultithreadableLoops
 import java.util.ArrayList
 import java.util.LinkedHashSet
 import fr.cea.nabla.ir.transformers.ComputeOverSynchronize
+import fr.cea.nabla.ir.transformers.ReplaceSynchronizeByGhostComputing
 
 class ArcaneGenerator implements IrCodeGenerator
 {
@@ -41,7 +42,7 @@ class ArcaneGenerator implements IrCodeGenerator
 		// IR transformation steps depend on API type
 		irTransformationSteps = switch apiType
 		{
-			case ApiType.Sequential: #[new ReplaceOptionsByLocalVariables, new ComputeSynchronize, new ComputeOverSynchronize]
+			case ApiType.Sequential: #[new ReplaceOptionsByLocalVariables, new ComputeSynchronize, new ComputeOverSynchronize, new ReplaceSynchronizeByGhostComputing]
 			case ApiType.Thread: #[new ReplaceReductions(true), new ReplaceOptionsByLocalVariables, new SetMultithreadableLoops]
 			case ApiType.Accelerator: #[new ReplaceOptionsByLocalVariables, new SetMultithreadableLoops, new PrepareLoopsForAccelerators]
 		}

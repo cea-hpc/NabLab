@@ -80,7 +80,7 @@ class IrModuleContentProvider
 	«FOR provider : externalProviders»
 	#include "«provider.className».h"
 	«ENDFOR»
-	«IF variables.exists[v | TypeContentProvider.isArcaneStlVector(v.type)]»
+	«IF variables.exists[v | TypeContentProvider.isArcaneAlienVector(v.type)]»
 	#include "Arcane2StlVector.h"
 	«ENDIF»
 
@@ -140,6 +140,10 @@ class IrModuleContentProvider
 				«TypeContentProvider.getTypeName(v.type)» «v.codeName»;
 			«ENDIF»
 		«ENDFOR»
+		«IF variables.exists[v | TypeContentProvider.isArcaneAlienVector(v.type)]»
+			Alien::IMessagePassingMng* m_parallel_mng;
+			UniqueArray<Alien::Integer> m_allUIndex;
+		«ENDIF»
 		«IF AcceleratorAnnotation.tryToGet(it) !== null»
 
 			// accelerator queue
@@ -176,7 +180,7 @@ class IrModuleContentProvider
 	«className»::«className»(const «IF ArcaneUtils.isArcaneModule(it)»Module«ELSE»Service«ENDIF»BuildInfo& bi)
 	: Arcane«name.toFirstUpper»Object(bi)
 	«FOR v : variables.filter[x | (x.type instanceof LinearAlgebraType)]»
-		, «v.codeName»(«IF TypeContentProvider.isArcaneStlVector(v.type)»this, «ENDIF»"«v.name»")
+		, «v.codeName»(«IF TypeContentProvider.isArcaneAlienVector(v.type)»this, «ENDIF»"«v.name»")
 	«ENDFOR»
 	«IF AcceleratorAnnotation.tryToGet(it) !== null»
 		, m_default_queue(subDomain()->acceleratorMng()->defaultQueue())
@@ -217,6 +221,26 @@ class IrModuleContentProvider
 			«val optionName = StringExtensions.separateWithUpperCase(p.extensionName)»
 			if (options()->«optionName».isPresent())
 				«ArcaneUtils.toAttributeName(p.instanceName)».jsonInit(options()->«optionName».value().localstr());
+		«ENDFOR»
+		
+		«IF variables.exists[v | TypeContentProvider.isArcaneAlienVector(v.type)]»
+		// initialisation Alien distribution
+		m_parallel_mng = Arccore::MessagePassing::Mpi::StandaloneMpiMessagePassingMng::create(MPI_COMM_WORLD);
+		
+		Alien::UniqueArray<Arccore::Int64> uid;
+		Alien::UniqueArray<Arccore::Integer> owners;
+		
+		ENUMERATE_CELL(cCells, allCells())
+		{
+			uid.add(cCells->uniqueId());
+			owners.add(cCells->owner());
+		}
+		
+		m_allUIndex = distribution.prepare(m_parallel_mng, uid, owners);
+		Distribution distribution;
+		«ENDIF»
+		«FOR v : variables.filter[v | TypeContentProvider.isArcaneAlienVector(v.type)]»
+		distribution.create(«v.name», m_parallel_mng);
 		«ENDFOR»
 
 		// calling jobs

@@ -17,6 +17,7 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link fr.cea.nabla.ir.ir.ConnectivityCall#getArgs <em>Args</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.ConnectivityCall#getGroup <em>Group</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.ConnectivityCall#isIndexEqualId <em>Index Equal Id</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.ConnectivityCall#isAllItems <em>All Items</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getConnectivityCall()
@@ -102,5 +103,28 @@ public interface ConnectivityCall extends Container {
 	 * @generated
 	 */
 	void setIndexEqualId(boolean value);
+
+	/**
+	 * Returns the value of the '<em><b>All Items</b></em>' attribute.
+	 * The default value is <code>"false"</code>.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>All Items</em>' attribute.
+	 * @see #setAllItems(boolean)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getConnectivityCall_AllItems()
+	 * @model default="false" required="true"
+	 * @generated
+	 */
+	boolean isAllItems();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.ConnectivityCall#isAllItems <em>All Items</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>All Items</em>' attribute.
+	 * @see #isAllItems()
+	 * @generated
+	 */
+	void setAllItems(boolean value);
 
 } // ConnectivityCall

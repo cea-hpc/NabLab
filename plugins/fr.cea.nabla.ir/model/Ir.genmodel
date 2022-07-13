@@ -300,6 +300,7 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//ConnectivityCall/args"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ConnectivityCall/group"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ConnectivityCall/indexEqualId"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Ir.ecore#//ConnectivityCall/allItems"/>
     </genClasses>
     <genClasses ecoreClass="Ir.ecore#//SetRef">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Ir.ecore#//SetRef/target"/>

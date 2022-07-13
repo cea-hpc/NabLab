@@ -15,7 +15,6 @@ import fr.cea.nabla.ir.ir.InstructionBlock
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.Job
-import fr.cea.nabla.ir.ir.JobCaller
 import fr.cea.nabla.ir.ir.Synchronize
 import fr.cea.nabla.ir.ir.TimeVariable
 import fr.cea.nabla.ir.ir.Variable
@@ -51,24 +50,25 @@ class ComputeOverSynchronize extends IrTransformationStep
 		val varReadOnlyWithSyncho = getReadOnlyVarWithSynchronization(executeTimeLoopJob)
 		if(!varReadOnlyWithSyncho.empty)
 		{
-			// ???
-			// val index = ir.main.calls.indexOf(executeTimeLoopJob)
 			val at = executeTimeLoopJob.at - 1
 			
-			val newSynchronizejob = createSynchronizeJob(ir.main, varReadOnlyWithSyncho, at)
+			val newSynchronizejob = createSynchronizeJob(varReadOnlyWithSyncho, at)
 			
 			for(v : varReadOnlyWithSyncho)
 				mapUpdate.replace(v, true)
 			
 			ir.modules.head.jobs.add(newSynchronizejob)
 			
-			// ???
-			// ir.main.calls.add(index, newSynchronizejob)
+			val index = ir.main.calls.indexOf(executeTimeLoopJob)
+			ir.main.calls.add(index, newSynchronizejob)
 		}
 		
 		for(j : executeTimeLoopJob.calls)
 		{
 			for(v : j.outVars)
+				mapUpdate.replace(v, false)
+			
+			for(v : j.inVars.filter(TimeVariable))
 				mapUpdate.replace(v, false)
 		}
 		
@@ -120,8 +120,7 @@ class ComputeOverSynchronize extends IrTransformationStep
 		
 		for(o : jobCaller.allOutVars)
 		{
-			// instanceof TimeVariable ???
-			if(res.contains(o) || o instanceof TimeVariable)
+			if(res.contains(o))
 			{
 				res.removeAll(o)
 			}
@@ -130,22 +129,20 @@ class ComputeOverSynchronize extends IrTransformationStep
 		return res
 	}
 	
-	private def create IrFactory::eINSTANCE.createJob createSynchronizeJob(JobCaller jobCaller, ArrayList<Variable> variables, double _at)
+	private def create IrFactory::eINSTANCE.createJob createSynchronizeJob(ArrayList<Variable> variables, double _at)
 	{
 		name = "SynchronizeBeforeTimeLoop"
 		at = _at
 		onCycle = false
-		caller = jobCaller
 		inVars
 		outVars
-		previousJobs  
-		nextJobs
-		previousJobsWithSameCaller
-		nextJobsWithSameCaller
 		
 		val synchronizesinstructionBlock = IrFactory.eINSTANCE.createInstructionBlock
 		for(v : variables)
+		{
 			synchronizesinstructionBlock.instructions += IrFactory.eINSTANCE.createSynchronize => [variable = v]
+			inVars += v	
+		}
 		instruction = synchronizesinstructionBlock
 		
 		timeLoopJob = false

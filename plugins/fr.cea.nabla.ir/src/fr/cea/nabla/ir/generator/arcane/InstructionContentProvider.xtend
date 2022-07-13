@@ -290,7 +290,7 @@ class InstructionContentProvider
 		switch it
 		{
 			ConnectivityCall case group !== null: '''«connectivity.returnType.name.toFirstUpper»Group(m_mesh->getGroup("«group»"))'''
-			ConnectivityCall case args.empty && group === null: '''own«connectivity.name.toFirstUpper»()'''
+			ConnectivityCall case args.empty && group === null: '''«connectivityCall.allItems ? '''all''' : '''own'''»«connectivity.name.toFirstUpper»()'''
 			ConnectivityCall: '''m_mesh->«accessor»'''
 			SetRef: target.name
 		}

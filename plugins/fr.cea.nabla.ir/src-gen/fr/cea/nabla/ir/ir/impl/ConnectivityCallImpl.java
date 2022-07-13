@@ -32,6 +32,7 @@ import org.eclipse.emf.ecore.util.EObjectEList;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ConnectivityCallImpl#getArgs <em>Args</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ConnectivityCallImpl#getGroup <em>Group</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ConnectivityCallImpl#isIndexEqualId <em>Index Equal Id</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.ConnectivityCallImpl#isAllItems <em>All Items</em>}</li>
  * </ul>
  *
  * @generated
@@ -96,6 +97,26 @@ public class ConnectivityCallImpl extends ContainerImpl implements ConnectivityC
 	 * @ordered
 	 */
 	protected boolean indexEqualId = INDEX_EQUAL_ID_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #isAllItems() <em>All Items</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isAllItems()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean ALL_ITEMS_EDEFAULT = false;
+
+	/**
+	 * The cached value of the '{@link #isAllItems() <em>All Items</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isAllItems()
+	 * @generated
+	 * @ordered
+	 */
+	protected boolean allItems = ALL_ITEMS_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -221,6 +242,29 @@ public class ConnectivityCallImpl extends ContainerImpl implements ConnectivityC
 	 * @generated
 	 */
 	@Override
+	public boolean isAllItems() {
+		return allItems;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setAllItems(boolean newAllItems) {
+		boolean oldAllItems = allItems;
+		allItems = newAllItems;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.CONNECTIVITY_CALL__ALL_ITEMS, oldAllItems, allItems));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case IrPackage.CONNECTIVITY_CALL__CONNECTIVITY:
@@ -232,6 +276,8 @@ public class ConnectivityCallImpl extends ContainerImpl implements ConnectivityC
 				return getGroup();
 			case IrPackage.CONNECTIVITY_CALL__INDEX_EQUAL_ID:
 				return isIndexEqualId();
+			case IrPackage.CONNECTIVITY_CALL__ALL_ITEMS:
+				return isAllItems();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -258,6 +304,9 @@ public class ConnectivityCallImpl extends ContainerImpl implements ConnectivityC
 			case IrPackage.CONNECTIVITY_CALL__INDEX_EQUAL_ID:
 				setIndexEqualId((Boolean)newValue);
 				return;
+			case IrPackage.CONNECTIVITY_CALL__ALL_ITEMS:
+				setAllItems((Boolean)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -282,6 +331,9 @@ public class ConnectivityCallImpl extends ContainerImpl implements ConnectivityC
 			case IrPackage.CONNECTIVITY_CALL__INDEX_EQUAL_ID:
 				setIndexEqualId(INDEX_EQUAL_ID_EDEFAULT);
 				return;
+			case IrPackage.CONNECTIVITY_CALL__ALL_ITEMS:
+				setAllItems(ALL_ITEMS_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -302,6 +354,8 @@ public class ConnectivityCallImpl extends ContainerImpl implements ConnectivityC
 				return GROUP_EDEFAULT == null ? group != null : !GROUP_EDEFAULT.equals(group);
 			case IrPackage.CONNECTIVITY_CALL__INDEX_EQUAL_ID:
 				return indexEqualId != INDEX_EQUAL_ID_EDEFAULT;
+			case IrPackage.CONNECTIVITY_CALL__ALL_ITEMS:
+				return allItems != ALL_ITEMS_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -320,6 +374,8 @@ public class ConnectivityCallImpl extends ContainerImpl implements ConnectivityC
 		result.append(group);
 		result.append(", indexEqualId: ");
 		result.append(indexEqualId);
+		result.append(", allItems: ");
+		result.append(allItems);
 		result.append(')');
 		return result.toString();
 	}

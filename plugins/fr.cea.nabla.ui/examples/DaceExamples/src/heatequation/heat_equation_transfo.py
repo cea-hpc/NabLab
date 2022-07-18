@@ -14,6 +14,9 @@ from cartesianmesh2d import CartesianMesh2D
 from pvdfilewriter2d import PvdFileWriter2D
 from dace.transformation.auto.auto_optimize import auto_optimize
 from dace.transformation.dataflow import Vectorization
+from dace.transformation.interstate.loop_unroll import LoopUnroll
+from dace.transformation.interstate.loop_peeling import LoopPeeling
+from dace.transformation.dataflow.mapreduce import MapReduceFusion
 
 @dataclass()
 class HeatEquation:
@@ -35,27 +38,22 @@ class HeatEquation:
         self.n = 0
         self.stopTime = jsonContent["stopTime"]
         self.maxIterations = jsonContent["maxIterations"]
-        self.X = np.empty((self._nbNodes, 2), dtype=np.double)
-        self.center = np.empty((self._nbCells, 2), dtype=np.double)
-        self.u_n = np.empty((self._nbCells), dtype=np.double)
-        self.u_nplus1 = np.empty((self._nbCells), dtype=np.double)
-        self.V = np.empty((self._nbCells), dtype=np.double)
-        self.f = np.empty((self._nbCells), dtype=np.double)
-        self.outgoingFlux = np.empty((self._nbCells), dtype=np.double)
-        self.surface = np.empty((self._nbFaces), dtype=np.double)
+        self.X = dace.ndarray(shape=[self._nbNodes,2], dtype=np.double)
+        self.center = dace.ndarray(shape=[self._nbCells, 2], dtype=dace.float64)
+        self.u_n = dace.ndarray(shape=[self._nbCells], dtype=dace.float64)
+        self.u_nplus1 = dace.ndarray(shape=[self._nbCells], dtype=dace.float64)
+        self.V = dace.ndarray(shape=[self._nbCells], dtype=dace.float64)
+        self.f = dace.ndarray(shape=[self._nbCells], dtype=dace.float64)
+        self.outgoingFlux = dace.ndarray(shape=[self._nbCells], dtype=dace.float64)
+        self.surface = dace.ndarray(shape=[self._nbFaces], dtype=dace.float64)
+        
 
         # Copy node coordinates
         gNodes = mesh.geometry.nodes
         for rNodes in dace.map[0:self._nbNodes]:
             self.X[rNodes] = gNodes[rNodes]
-        
-    '''@dace.method(auto_optimize=True)
-    def _computeCoord(self):
-        gNodes = mesh.geometry.nodes
-        for rNodes in dace.map[0:self._nbNodes]:
-            self.X[rNodes] = gNodes[rNodes]
-        return self.X'''
             
+        
     """
      Job computeOutgoingFlux called @1.0 in executeTimeLoopN method.
      In variables: V, center, deltat, surface, u_n
@@ -63,43 +61,21 @@ class HeatEquation:
     """
     @dace.method
     def _computeOutgoingFlux(self):
-        for j1Cells in range(self._nbCells):
+        startIndex = 0
+        for j1Cells in range(startIndex, self._nbCells):
             j1Id = j1Cells
             reduction0 = 0.0
             neighbourCellsJ1 = mesh.getNeighbourCells(j1Id)
-            tmpArray = neighbourCellsJ1
             nbNeighbourCellsJ1 = neighbourCellsJ1.size
-            if(neighbourCellsJ1[0]==-1):
-                if(neighbourCellsJ1[1]==-1):
-                    for j2NeighbourCellsJ1 in range(2,nbNeighbourCellsJ1):
-                        j2Id = neighbourCellsJ1[j2NeighbourCellsJ1]
-                        j2Cells = j2Id
-                        cfId = mesh.getCommonFace(j1Id, j2Id)
-                        cfFaces = cfId
-                        reduction1 = (self.u_n[j2Cells] - self.u_n[j1Cells]) / self._norm(self._operatorSub(self.center[j2Cells], self.center[j1Cells])) * self.surface[cfFaces[0]]
-                        reduction0 = self._sumR0(reduction0, reduction1)
-                    self.outgoingFlux[j1Cells] = self.deltat / self.V[j1Cells] * reduction0
-                else:
-                    for j2NeighbourCellsJ1 in range(1,nbNeighbourCellsJ1):
-                        j2Id = neighbourCellsJ1[j2NeighbourCellsJ1]
-                        j2Cells = j2Id
-                        cfId = mesh.getCommonFace(j1Id, j2Id)
-                        cfFaces = cfId
-                        reduction1 = (self.u_n[j2Cells] - self.u_n[j1Cells]) / self._norm(self._operatorSub(self.center[j2Cells], self.center[j1Cells])) * self.surface[cfFaces[0]]
-                        reduction0 = self._sumR0(reduction0, reduction1)
-                    self.outgoingFlux[j1Cells] = self.deltat / self.V[j1Cells] * reduction0
-                    
-            else:
-                for j2NeighbourCellsJ1 in range(nbNeighbourCellsJ1):
-                    j2Id = neighbourCellsJ1[j2NeighbourCellsJ1]
-                    j2Cells = j2Id
-                    cfId = mesh.getCommonFace(j1Id, j2Id)
-                    cfFaces = cfId
-                    reduction1 = (self.u_n[j2Cells] - self.u_n[j1Cells]) / self._norm(self._operatorSub(self.center[j2Cells], self.center[j1Cells])) * self.surface[cfFaces[0]]
-                    reduction0 = self._sumR0(reduction0, reduction1)
-                self.outgoingFlux[j1Cells] = self.deltat / self.V[j1Cells] * reduction0
-        return self.outgoingFlux
-            
+            startIndex = np.count_nonzero(neighbourCellsJ1 == -1)
+            for j2NeighbourCellsJ1 in range(startIndex, nbNeighbourCellsJ1):
+                j2Id = neighbourCellsJ1[j2NeighbourCellsJ1]
+                j2Cells = j2Id
+                cfId = mesh.getCommonFace(j1Id, j2Id)
+                cfFaces = cfId
+                reduction1 = (self.u_n[j2Cells] - self.u_n[j1Cells]) / self._norm(self.center[j2Cells] - self.center[j1Cells]) * self.surface[cfFaces[0]]
+                reduction0 = self._sumR0(reduction0, reduction1)
+            self.outgoingFlux[j1Cells] = self.deltat / self.V[j1Cells] * reduction0          
     
     """
      Job computeSurface called @1.0 in simulate method.
@@ -108,20 +84,20 @@ class HeatEquation:
     """
     @dace.method
     def _computeSurface(self):
-        for fFaces in range(self._nbFaces):
+        startIndex = 0
+        for fFaces in range(startIndex, self._nbFaces):
             fId = fFaces
             reduction0 = 0.0
             nodesOfFaceF = mesh.getNodesOfFace(fId)
             nbNodesOfFaceF = nodesOfFaceF.size
-            for rNodesOfFaceF in range(nbNodesOfFaceF):
+            startIndex = 0
+            for rNodesOfFaceF in range(startIndex, nbNodesOfFaceF):
                 rId = nodesOfFaceF[rNodesOfFaceF]
                 rPlus1Id = nodesOfFaceF[(rNodesOfFaceF+1+nbNodesOfFaceF)%nbNodesOfFaceF]
                 rNodes = rId
                 rPlus1Nodes = rPlus1Id
-                resultatOperatorSub = self._operatorSub(self.X[rNodes], self.X[rPlus1Nodes])
-                reduction0 = self._sumR0(reduction0, self._norm(self._operatorSub(self.X[rNodes], self.X[rPlus1Nodes])))
-            self.surface[fFaces] = 0.5 * reduction0 
-        return self.surface
+                reduction0 = self._sumR0(reduction0, self._norm(self.X[rNodes] - self.X[rPlus1Nodes]))
+            self.surface[fFaces] = 0.5 * reduction0
             
     """
      Job computeTn called @1.0 in executeTimeLoopN method.
@@ -135,53 +111,55 @@ class HeatEquation:
      Job computeV called @1.0 in simulate method.
      In variables: X
      Out variables: V
-    """       
+    """
     @dace.method
     def _computeV(self):
-        for jCells in range(self._nbCells):
+        startIndex = 0
+        for jCells in range(startIndex, self._nbCells):
             jId = jCells
             reduction0 = 0.0
             nodesOfCellJ = mesh.getNodesOfCell(jId)
             nbNodesOfCellJ = nodesOfCellJ.size
-            for rNodesOfCellJ in range(nbNodesOfCellJ):
+            startIndex = 0
+            for rNodesOfCellJ in range(startIndex, nbNodesOfCellJ):
                 rId = nodesOfCellJ[rNodesOfCellJ]
                 rPlus1Id = nodesOfCellJ[(rNodesOfCellJ+1+nbNodesOfCellJ)%nbNodesOfCellJ]
                 rNodes = rId
                 rPlus1Nodes = rPlus1Id
                 reduction0 = self._sumR0(reduction0, self._det(self.X[rNodes], self.X[rPlus1Nodes]))
-            self.V[jCells] = 0.5 * reduction0   
-        print("self.V , ", self.V)
+            self.V[jCells] = 0.5 * reduction0
     
     """
      Job iniCenter called @1.0 in simulate method.
      In variables: X
      Out variables: center
-    """   
+    """
     @dace.method
     def _iniCenter(self):
+        startIndex = 0
         reduction0 = dace.ndarray([2], dtype=dace.float64)
-        for jCells in range(self._nbCells):
+        for jCells in range(startIndex, self._nbCells):
             jId = jCells
-            for i in range(2):
-                reduction0[i] = 0.0
+            reduction0.fill(0)
             nodesOfCellJ = mesh.getNodesOfCell(jId)
             nbNodesOfCellJ = nodesOfCellJ.size
-            for rNodesOfCellJ in range(nbNodesOfCellJ):
+            startIndex = 0
+            for rNodesOfCellJ in range(startIndex, nbNodesOfCellJ):
                 rId = nodesOfCellJ[rNodesOfCellJ]
                 rNodes = rId
                 reduction0 = self._operatorAdd(reduction0, self.X, rNodes)
-            self.center[jCells] = self._operatorMult(0.25, reduction0)
-        return self.center
+            self.center[jCells] = 0.25 * reduction0
     
     
     """
      Job iniF called @1.0 in simulate method.
      In variables: 
      Out variables: f
-    """           
+    """
     @dace.method
     def _iniF(self):
-        for jCells in range(self._nbCells):
+        startIndex = 0
+        for jCells in range(startIndex, self._nbCells):
             self.f[jCells] = 0.0
             
     """
@@ -199,9 +177,9 @@ class HeatEquation:
     """
     @dace.method
     def _computeUn(self):
-        for jCells in range(self._nbCells):
+        startIndex = 0
+        for jCells in range(startIndex, self._nbCells):
             self.u_nplus1[jCells] = self.f[jCells] * self.deltat + self.u_n[jCells] + self.outgoingFlux[jCells]
-        print("self.u_nplus1 : ",self.u_nplus1)
     
     """
      Job iniUn called @2.0 in simulate method.
@@ -210,9 +188,9 @@ class HeatEquation:
     """
     @dace.method
     def _iniUn(self):
-        for jCells in range(self._nbCells):
-            self.u_n[jCells] = math.cos(2* self.PI * self.alpha * self.center[jCells, 0])
-        return self.u_n
+        startIndex = 0
+        for jCells in range(startIndex, self._nbCells):
+            self.u_n[jCells] = math.cos(2 * self.PI * self.alpha * self.center[jCells, 0])
     
     """
      Job setUpTimeLoopN called @2.0 in simulate method.
@@ -226,11 +204,13 @@ class HeatEquation:
      Job executeTimeLoopN called @3.0 in simulate method.
      In variables: lastDump, maxIterations, n, outputPeriod, stopTime, t_n, t_nplus1, u_n
      Out variables: t_nplus1, u_nplus1
-    """           
+    """      
+    
     def _executeTimeLoopN(self):
         self.n = 0
         self.t_n = 0.0
         continueLoop = True
+        
         while continueLoop:
             self.n += 1 
             print("START ITERATION n: %5d - t: %5.5f - deltat: %5.5f\n" % (self.n, self.t_n, self.deltat))
@@ -238,7 +218,37 @@ class HeatEquation:
                 self._dumpVariables(self.n)
             self._computeOutgoingFlux() # @1.0
             self._computeTn() # @1.0
-            self._computeUn() # @2.0
+            #self._computeUn() # @2.0
+            
+        
+            # Evaluate loop condition with variables at time n
+            continueLoop = (self.t_nplus1 < self.stopTime  and  self.n + 1 < self.maxIterations)
+        
+            self.t_n = self.t_nplus1
+            for i1Cells in range(self._nbCells):
+                self.u_n[i1Cells] = self.u_nplus1[i1Cells]
+        
+        print("FINAL TIME: %5.5f - deltat: %5.5f\n" % (self.t_n, self.deltat))
+        self._dumpVariables(self.n+1);
+             
+    def _executeTimeLoopNWithVectorization(self):
+        self.n = 0
+        self.t_n = 0.0
+        continueLoop = True
+        sdfgComputeUn = self._computeUn.to_sdfg()
+        sdfgComputeUn.apply_transformations(Vectorization, options={'vector_len':2})
+        #sdfgComputeUn.compile()
+        
+        while continueLoop:
+            self.n += 1 
+            print("START ITERATION n: %5d - t: %5.5f - deltat: %5.5f\n" % (self.n, self.t_n, self.deltat))
+            if (self.n >= self.lastDump + self.outputPeriod):
+                self._dumpVariables(self.n)
+            self._computeOutgoingFlux() # @1.0
+            self._computeTn() # @1.0
+          
+            sdfgComputeUn(__g_self_f=self.f, __g_self_outgoingFlux=self.outgoingFlux, __g_self_u_n=self.u_n, __g_self_u_nplus1=self.u_nplus1) # @2.0
+            
         
             # Evaluate loop condition with variables at time n
             continueLoop = (self.t_nplus1 < self.stopTime  and  self.n + 1 < self.maxIterations)
@@ -250,49 +260,153 @@ class HeatEquation:
         print("FINAL TIME: %5.5f - deltat: %5.5f\n" % (self.t_n, self.deltat))
         self._dumpVariables(self.n+1);
         
-    @dace.method(auto_optimize=True)
+    def _executeTimeLoopNWithLoopUnroll(self):
+        self.n = 0
+        self.t_n = 0.0
+        continueLoop = True
+        sdfgComputeUn = self._computeUn.to_sdfg()
+        sdfgComputeUn.apply_transformations(LoopUnroll)
+        #sdfgComputeUn.compile()
+        
+        while continueLoop:
+            self.n += 1 
+            print("START ITERATION n: %5d - t: %5.5f - deltat: %5.5f\n" % (self.n, self.t_n, self.deltat))
+            if (self.n >= self.lastDump + self.outputPeriod):
+                self._dumpVariables(self.n)
+            self._computeOutgoingFlux() # @1.0
+            self._computeTn() # @1.0
+          
+            sdfgComputeUn(__g_self_f=self.f, __g_self_outgoingFlux=self.outgoingFlux, __g_self_u_n=self.u_n, __g_self_u_nplus1=self.u_nplus1) # @2.0
+            
+        
+            # Evaluate loop condition with variables at time n
+            continueLoop = (self.t_nplus1 < self.stopTime  and  self.n + 1 < self.maxIterations)
+        
+            self.t_n = self.t_nplus1
+            for i1Cells in range(self._nbCells):
+                self.u_n[i1Cells] = self.u_nplus1[i1Cells]
+        
+        print("FINAL TIME: %5.5f - deltat: %5.5f\n" % (self.t_n, self.deltat))
+        self._dumpVariables(self.n+1);
+        
+    def _executeTimeLoopNWithLoopPeeling(self):
+        self.n = 0
+        self.t_n = 0.0
+        continueLoop = True
+        sdfgComputeUn = self._computeUn.to_sdfg()
+        sdfgComputeUn.apply_transformations(LoopPeeling, dict(count=2))
+        sdfgComputeUn.simplify()
+        #sdfgComputeUn.compile()
+        
+        while continueLoop:
+            self.n += 1 
+            print("START ITERATION n: %5d - t: %5.5f - deltat: %5.5f\n" % (self.n, self.t_n, self.deltat))
+            if (self.n >= self.lastDump + self.outputPeriod):
+                self._dumpVariables(self.n)
+            self._computeOutgoingFlux() # @1.0
+            self._computeTn() # @1.0
+          
+            sdfgComputeUn(__g_self_f=self.f, __g_self_outgoingFlux=self.outgoingFlux, __g_self_u_n=self.u_n, __g_self_u_nplus1=self.u_nplus1) # @2.0
+            
+        
+            # Evaluate loop condition with variables at time n
+            continueLoop = (self.t_nplus1 < self.stopTime  and  self.n + 1 < self.maxIterations)
+        
+            self.t_n = self.t_nplus1
+            for i1Cells in range(self._nbCells):
+                self.u_n[i1Cells] = self.u_nplus1[i1Cells]
+        
+        print("FINAL TIME: %5.5f - deltat: %5.5f\n" % (self.t_n, self.deltat))
+        self._dumpVariables(self.n+1);
+        
+    def _executeTimeLoopNWithMapRduceFusion(self):
+        self.n = 0
+        self.t_n = 0.0
+        continueLoop = True
+        sdfgComputeUn = self._computeUn.to_sdfg()
+        sdfgComputeUn.apply_transformations(MapReduceFusion)
+        #sdfgComputeUn.compile()
+        
+        while continueLoop:
+            self.n += 1 
+            print("START ITERATION n: %5d - t: %5.5f - deltat: %5.5f\n" % (self.n, self.t_n, self.deltat))
+            if (self.n >= self.lastDump + self.outputPeriod):
+                self._dumpVariables(self.n)
+            self._computeOutgoingFlux() # @1.0
+            self._computeTn() # @1.0
+          
+            sdfgComputeUn(__g_self_f=self.f, __g_self_outgoingFlux=self.outgoingFlux, __g_self_u_n=self.u_n, __g_self_u_nplus1=self.u_nplus1) # @2.0
+            
+        
+            # Evaluate loop condition with variables at time n
+            continueLoop = (self.t_nplus1 < self.stopTime  and  self.n + 1 < self.maxIterations)
+        
+            self.t_n = self.t_nplus1
+            for i1Cells in range(self._nbCells):
+                self.u_n[i1Cells] = self.u_nplus1[i1Cells]
+        
+        print("FINAL TIME: %5.5f - deltat: %5.5f\n" % (self.t_n, self.deltat))
+        self._dumpVariables(self.n+1);
+        
+    '''def _executeTimeLoopNWithAutoOptimize(self):
+        self.n = 0
+        self.t_n = 0.0
+        continueLoop = True
+        sdfgComputeUn = self._computeUn.to_sdfg()
+        sdfgComputeUn = auto_optimize(sdfgComputeUn, device = dace.dtypes.DeviceType.CPU)
+       # sdfgComputeUn.compile()
+        
+        while continueLoop:
+            self.n += 1 
+            print("START ITERATION n: %5d - t: %5.5f - deltat: %5.5f\n" % (self.n, self.t_n, self.deltat))
+            if (self.n >= self.lastDump + self.outputPeriod):
+                self._dumpVariables(self.n)
+            self._computeOutgoingFlux() # @1.0
+            self._computeTn() # @1.0
+          
+            sdfgComputeUn(__g_self_f=self.f, __g_self_outgoingFlux=self.outgoingFlux, __g_self_u_n=self.u_n, __g_self_u_nplus1=self.u_nplus1) # @2.0
+            
+        
+            # Evaluate loop condition with variables at time n
+            continueLoop = (self.t_nplus1 < self.stopTime  and  self.n + 1 < self.maxIterations)
+        
+            self.t_n = self.t_nplus1
+            for i1Cells in range(self._nbCells):
+                self.u_n[i1Cells] = self.u_nplus1[i1Cells]
+        
+        print("FINAL TIME: %5.5f - deltat: %5.5f\n" % (self.t_n, self.deltat))
+        self._dumpVariables(self.n+1);'''
+        
+        
+    @dace.method
     def _det(self, a, b):
         return (a[0] * b[1] - a[1] * b[0])
     
-    @dace.method(auto_optimize=True)
+    @dace.method
     def _norm(self, a):
         result = math.sqrt(self._dot(a, a))
         return result
     
-    @dace.method(auto_optimize=True)
+    @dace.method
     def _dot(self, a, b):
         result = 0.0
         for i in range(a.size):
             result = result + (a[i] * b[i])
         return result
 
-    @dace.method(auto_optimize=True)
+    @dace.method
     def _sumR1(self, a, b, row):
-        return self._operatorAdd(a, b, row)
+        return a + b
     
-    @dace.method(auto_optimize=True)
+    @dace.method
     def _sumR0(self, a, b): 
         return a + b
     
-    @dace.method(auto_optimize=True)
+    @dace.method
     def _operatorAdd(self, a, b, row):
         for ix0 in range(a.size):
             a[ix0] = a[ix0] + b[row][ix0]
         return a
-    
-    @dace.method(auto_optimize=True)
-    def _operatorMult(self, a, b):
-        result = dace.ndarray([b.size], dtype=dace.float64)
-        for ix0 in dace.map[0:b.size]:
-            result[ix0] = a*b[ix0]
-        return result
-    
-    @dace.method(auto_optimize=True)
-    def _operatorSub(self, a, b):
-        result = dace.ndarray([2], dtype=dace.float64)
-        for ix0 in range(a.size):
-            result[ix0] = a[ix0] - b[ix0]
-        return result
     
     def simulate(self):
         print("Start execution of heatEquation")
@@ -303,27 +417,25 @@ class HeatEquation:
         self._iniTime() # @1.0
         self._iniUn() # @2.0
         self._setUpTimeLoopN() # @2.0
-        self._executeTimeLoopN() # @3.0
+        #self._executeTimeLoopN() # @3.0
+        #self._executeTimeLoopNWithVectorization() # @3.0
+        #self._executeTimeLoopNWithAutoOptimize() # @3.0
+        #self._executeTimeLoopNWithLoopUnroll() # @3.0
+        #self._executeTimeLoopNWithLoopPeeling() # @3.0
+        self._executeTimeLoopNWithMapRduceFusion()
         print("End of execution of heatEquation")
         
-    def test_vectorization(self):
-        '''sdfgComputeCoord: dace.SDFG = self._computeCoord.to_sdfg()
-        sdfgComputeCoord.apply_transformations(Vectorization)
-        sdfgComputeCoord.validate()
-        csdfgComputeCoord = sdfgComputeCoord.compile()
-        csdfgComputeCoord()'''
+    def simulateWithoutExecuteTimeLoopN(self):
+        print("Start execution of heatEquation")
+        self._computeSurface() # @1.0
+        self._computeV() # @1.0
+        self._iniCenter() # @1.0
+        self._iniF() # @1.0
+        self._iniTime() # @1.0
+        self._iniUn() # @2.0
+        self._setUpTimeLoopN() # @2.0
+        print("End of execution of heatEquation")
         
-        sdfgComputeSurface = self._computeSurface.to_sdfg()
-        sdfgComputeSurface.apply_transformations(Vectorization)
-        #csdfgComputeSurface = sdfgComputeSurface.compile()
-        sdfgComputeSurface.compile()
-        #csdfgComputeSurface()
-        #print(self.surface)
-        
-        '''sdfgComputeV: dace.SDFG = self._computeV.to_sdfg()
-        sdfgComputeV.apply_transformations(Vectorization)
-        csdfgComputeV = sdfgComputeV.compile()
-        csdfgComputeV()'''
 
     def _dumpVariables(self, iteration):
         if not self._writer.disabled:
@@ -357,15 +469,13 @@ if __name__ == '__main__':
         heatEquation.jsonInit(data["heatEquation"])
 
         # Start simulation
+        #heatEquation.simulateWithoutExecuteTimeLoopN()
+        #execution_time = timeit.timeit("heatEquation.simulateWithoutExecuteTimeLoopN()", setup="from __main__ import heatEquation", number=100)
+        #print("execution_time : ", execution_time/100, "seconds")
+        
         heatEquation.simulate()
-        #execution_time = timeit.timeit("heatEquation.simulate()", setup="from __main__ import heatEquation", number=100)
-        #print("execution_time : ", execution_time, "seconds")
-        
-        raw_time_list = timeit.repeat(stmt="heatEquation.simulate()", setup="from __main__ import heatEquation", repeat=100)
-        raw_time = np.median(raw_time_list)
-        print("execution_time : ", raw_time, "seconds")
-        
-        heatEquation.test_vectorization()
+        #execution_time = timeit.timeit("heatEquation.simulate()", setup="from __main__ import heatEquation", number=10)
+        #print("execution_time : ", execution_time/10, "seconds")
 
     else:
         print("[ERROR] Wrong number of arguments: expected 1, actual " + str(len(args)), file=sys.stderr)

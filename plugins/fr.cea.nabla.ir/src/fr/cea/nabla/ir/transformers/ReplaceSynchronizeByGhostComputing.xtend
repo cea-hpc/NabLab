@@ -28,6 +28,8 @@ import java.util.ArrayList
 import java.util.HashMap
 import java.util.LinkedHashSet
 import org.eclipse.emf.ecore.util.EcoreUtil
+import fr.cea.nabla.ir.JobExtensions
+import java.util.Map
 
 class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 {
@@ -39,9 +41,10 @@ class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 	override transform(IrRoot ir, (String)=>void traceNotifier)
 	{	
 		val varStatueMap = getVariableStatusByJob(ir)
-		val jobWithSynchronisationAndSynchronization = getJobWithSynchronization(ir)
+		val jobWithSynchronisationAndSynchronization = getJobsWithSynchronization(ir)
 		val lastWriteMap = getLastWrite(ir)
 		
+		println
 		printVarStatus(varStatueMap)
 		println
 		printJobAndVarWithSynchronization(jobWithSynchronisationAndSynchronization)
@@ -98,7 +101,7 @@ class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 		throw new RuntimeException("Not yet implemented")
 	}
 	
-	private static def Boolean analyzeJob(Job job, ArrayList<Job> path, ArrayList<Job> bufferPath, HashMap<Job, HashMap<Variable, Boolean>> varStatusMap, HashMap<Job, HashMap<Variable, ArrayList<Job>>> lastWriteMap)
+	private static def Boolean analyzeJob(Job job, ArrayList<Job> path, ArrayList<Job> bufferPath, Map<Job, Map<Variable, Boolean>> varStatusMap, HashMap<Job, HashMap<Variable, ArrayList<Job>>> lastWriteMap)
 	{
 		println("on annalyse " + job.name)
 		if(canIteredAllItem(job) === true)
@@ -131,22 +134,23 @@ class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 		return false
 	}
 	
-	private static def HashMap<Job, HashMap<Variable, Boolean>> getVariableStatusByJob(IrRoot ir)
+	private static def Map<Job, Map<Variable, Boolean>> getVariableStatusByJob(IrRoot ir)
 	{
-		val res = new HashMap<Job, HashMap<Variable, Boolean>>
+		val res = new HashMap<Job, Map<Variable, Boolean>>
 
-		val mapUpdate = new HashMap<Variable, Boolean>
-		for(v : ir.variables)
+		val allVariablesStatus = new HashMap<Variable, Boolean>
+		for(v : ir.variables.filter[x | !TypeContentProvider.isArcaneScalarType(x.type)])
 		{
 			val isUpdate = (v === ir.nodeCoordVariable) || (v === ir.initNodeCoordVariable) ? true : false
-			mapUpdate.put(v, isUpdate)	
+			allVariablesStatus.put(v, isUpdate)	
 		}
 		
 		// Init Job
 		val initJob = ir.main.calls.filter[x | !(x instanceof ExecuteTimeLoopJob)]
 		for(j : initJob)
 		{
-			if(j.instruction instanceof InstructionBlock)
+			JobExtensions.updateVariablesStatus(j, allVariablesStatus)
+			/*if(j.instruction instanceof InstructionBlock)
 			{
 				val instructionBlock = j.instruction as InstructionBlock
 				for(synchronize : instructionBlock.instructions.filter(Synchronize))
@@ -158,21 +162,21 @@ class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 			{
 				if(!TypeContentProvider.isArcaneScalarType(in.type))
 					map.put(in, mapUpdate.get(in))
-			}
-			res.put(j, map)
+			}*/
+			res.put(j, new HashMap(allVariablesStatus.filter[k, v | j.inVars.contains(k)]))
 		}
 		
 		val executeTimeLoopJob = ir.main.calls.filter(ExecuteTimeLoopJob).head
 		
 		// Prepare for ExecuteTimeLoop job
 		for(v : executeTimeLoopJob.outVars)
-			mapUpdate.replace(v, false)
+			allVariablesStatus.replace(v, false)
 		
-		getVariableStatusByJobETLJ(executeTimeLoopJob, res, mapUpdate)
+		getVariableStatusByJobETLJ(executeTimeLoopJob, res, allVariablesStatus)
 		return res
 	}
 	
-	private static def void getVariableStatusByJobETLJ(ExecuteTimeLoopJob executeTimeLoopJob, HashMap<Job, HashMap<Variable, Boolean>> statuts, HashMap<Variable, Boolean> mapUpdate)
+	private static def void getVariableStatusByJobETLJ(ExecuteTimeLoopJob executeTimeLoopJob, Map<Job, Map<Variable, Boolean>> statuts, HashMap<Variable, Boolean> mapUpdate)
 	{
 		for(job : executeTimeLoopJob.calls)
 		{
@@ -200,7 +204,7 @@ class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 		}
 	}
 	
-	private static def ArrayList<Pair<Job, ArrayList<Synchronize>>> getJobWithSynchronization(IrRoot ir)
+	private static def ArrayList<Pair<Job, ArrayList<Synchronize>>> getJobsWithSynchronization(IrRoot ir)
 	{
 		val res = new ArrayList<Pair<Job, ArrayList<Synchronize>>>
 		for(j : ir.jobs)
@@ -312,7 +316,7 @@ class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 		return res
 	}
 	
-	private static def void convertOwnToAll(IrRoot ir, ArrayList<Job> jobs, HashMap<Job, HashMap<Variable, Boolean>> map)
+	private static def void convertOwnToAll(IrRoot ir, ArrayList<Job> jobs, Map<Job, Map<Variable, Boolean>> map)
 	{
 		val timeVarsList = new LinkedHashSet<TimeVariable>
 		
@@ -405,7 +409,7 @@ class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 		return true
 	}
 	
-	private static def ArrayList<Variable> getNotUpdateVars(Job job, HashMap<Variable, Boolean> mapStatus)
+	private static def ArrayList<Variable> getNotUpdateVars(Job job, Map<Variable, Boolean> mapStatus)
 	{
 		val res = new ArrayList<Variable>
 		for(v : job.inVars)
@@ -438,10 +442,10 @@ class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 	
 	/////////////////////////////////////////////////////////////////////////
 	
-	private def void printVarStatus(HashMap<Job, HashMap<Variable, Boolean>> varStatue)
+	private def void printVarStatus(Map<Job, Map<Variable, Boolean>> varStatus)
 	{
 		println("varStatus : ")
-		for(job : varStatue.entrySet)
+		for(job : varStatus.entrySet)
 		{
 			print(job.key.name + " [")
 			for(status : job.value.entrySet)

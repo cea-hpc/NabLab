@@ -16,6 +16,10 @@ import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Loop
 import fr.cea.nabla.ir.ir.Variable
+import java.util.Map
+import fr.cea.nabla.ir.ir.InstructionBlock
+import fr.cea.nabla.ir.ir.Synchronize
+import fr.cea.nabla.ir.generator.arcane.TypeContentProvider
 
 class JobExtensions
 {
@@ -70,5 +74,29 @@ class JobExtensions
 		val inVarNames = "[" + inVars.map[displayName].join(', ') + "]"
 		val outVarNames = "[" + outVars.map[displayName].join(', ') + "]"
 		inVarNames + "  \u21E8  " + displayName + "  \u21E8  " + outVarNames
+	}
+	
+	static def updateVariablesStatus(Job it, Map<Variable, Boolean> allVariablesStatus)
+	{
+		if(instruction instanceof InstructionBlock)
+		{
+			val instructionBlock = instruction as InstructionBlock
+			for(synchronize : instructionBlock.instructions.filter(Synchronize))
+				allVariablesStatus.replace(synchronize.variable, true)
+		}
+		
+		/*val map = new HashMap<Variable, Boolean>
+		for(in : inVars)
+		{
+			if(!TypeContentProvider.isArcaneScalarType(in.type))
+				map.put(in, allVariablesStatus.get(in))
+		}*/
+		print(name + " [")
+		for(status : allVariablesStatus.entrySet.filter[x | inVars.contains(x.key)])
+		{
+			print(status.key.name + " -> " + status.value + "   ")
+		}
+		print("]")
+		println
 	}
 }

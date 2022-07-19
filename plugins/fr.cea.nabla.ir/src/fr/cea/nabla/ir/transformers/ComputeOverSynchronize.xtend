@@ -21,6 +21,8 @@ import fr.cea.nabla.ir.ir.Variable
 import java.util.ArrayList
 import java.util.HashMap
 import org.eclipse.emf.ecore.util.EcoreUtil
+import java.util.List
+import fr.cea.nabla.ir.JobDependencies
 
 class ComputeOverSynchronize extends IrTransformationStep
 {
@@ -33,6 +35,7 @@ class ComputeOverSynchronize extends IrTransformationStep
 	{	
 		// Map initialisation for Init entry
 		val mapUpdate = new HashMap<Variable, Boolean>
+		// TODO filtre les variables de connectivités
 		for(v : ir.variables)
 		{
 			val isUpdate = (v === ir.nodeCoordVariable) || (v === ir.initNodeCoordVariable) ? true : false
@@ -46,6 +49,7 @@ class ComputeOverSynchronize extends IrTransformationStep
 			
 		// Process for executeTimeLoop
 		val executeTimeLoopJob = ir.main.calls.filter(ExecuteTimeLoopJob).head
+		// TODO check si "ir.main.calls.filter(ExecuteTimeLoopJob)" a une size == 1
 		
 		val varReadOnlyWithSyncho = getReadOnlyVarWithSynchronization(executeTimeLoopJob)
 		if(!varReadOnlyWithSyncho.empty)
@@ -53,14 +57,17 @@ class ComputeOverSynchronize extends IrTransformationStep
 			val at = executeTimeLoopJob.at - 1
 			
 			val newSynchronizejob = createSynchronizeJob(varReadOnlyWithSyncho, at)
-			
-			for(v : varReadOnlyWithSyncho)
-				mapUpdate.replace(v, true)
-			
-			ir.modules.head.jobs.add(newSynchronizejob)
+			ir.modules.findFirst[x | x.main].jobs.add(newSynchronizejob)
 			
 			val index = ir.main.calls.indexOf(executeTimeLoopJob)
 			ir.main.calls.add(index, newSynchronizejob)
+			
+			ir.jobs.add(newSynchronizejob)
+			
+			ir.jobs.forEach[x | JobDependencies.computeAndSetNextJobs(x)]
+			
+			for(v : varReadOnlyWithSyncho)
+				mapUpdate.replace(v, true)
 		}
 		
 		for(j : executeTimeLoopJob.calls)
@@ -129,13 +136,12 @@ class ComputeOverSynchronize extends IrTransformationStep
 		return res
 	}
 	
-	private def create IrFactory::eINSTANCE.createJob createSynchronizeJob(ArrayList<Variable> variables, double _at)
+	private def create IrFactory::eINSTANCE.createJob createSynchronizeJob(List<Variable> variables, double _at)
 	{
 		name = "SynchronizeBeforeTimeLoop"
 		at = _at
 		onCycle = false
-		inVars
-		outVars
+		inVars.addAll(variables)
 		
 		val synchronizesinstructionBlock = IrFactory.eINSTANCE.createInstructionBlock
 		for(v : variables)

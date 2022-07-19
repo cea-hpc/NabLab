@@ -10,10 +10,10 @@
 package fr.cea.nabla.ir.transformers
 
 import fr.cea.nabla.ir.ContainerExtensions
+import fr.cea.nabla.ir.JobExtensions
 import fr.cea.nabla.ir.generator.arcane.ArcaneUtils
 import fr.cea.nabla.ir.generator.arcane.TypeContentProvider
 import fr.cea.nabla.ir.ir.Affectation
-import fr.cea.nabla.ir.ir.Connectivity
 import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
 import fr.cea.nabla.ir.ir.InstructionBlock
@@ -27,9 +27,8 @@ import fr.cea.nabla.ir.ir.Variable
 import java.util.ArrayList
 import java.util.HashMap
 import java.util.LinkedHashSet
-import org.eclipse.emf.ecore.util.EcoreUtil
-import fr.cea.nabla.ir.JobExtensions
 import java.util.Map
+import org.eclipse.emf.ecore.util.EcoreUtil
 
 class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 {
@@ -209,6 +208,7 @@ class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 		val res = new ArrayList<Pair<Job, ArrayList<Synchronize>>>
 		for(j : ir.jobs)
 		{
+			println("ICI C4EST CARR2 " + j.name + " " + j.eAllContents.filter(Synchronize).size)
 			if(j.instruction instanceof InstructionBlock)
 			{
 				val instructionsSynchronize = new ArrayList<Synchronize>
@@ -420,6 +420,8 @@ class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 		return res
 	}
 	
+	/////////////////////////////////////////////////////////////////////////
+	
 	/*private static def Boolean validConnectivity(Connectivity connectivity)
 	{
 		if(connectivity.name == "cells" ||
@@ -439,8 +441,6 @@ class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 		}
 		return false
 	}*/
-	
-	/////////////////////////////////////////////////////////////////////////
 	
 	private def void printVarStatus(Map<Job, Map<Variable, Boolean>> varStatus)
 	{

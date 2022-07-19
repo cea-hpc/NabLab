@@ -18,7 +18,8 @@ import org.junit.runners.Suite;
 ({
 	CreateArrayOperatorsTest.class,
 	ReplaceAffectationsTest.class,
-	ReplaceOptionsByLocalVariablesTest.class
+	ReplaceOptionsByLocalVariablesTest.class,
+	ComputeSynchronizeTest.class
 })
 
 public class NabLabIrTransformersTestSuite {}

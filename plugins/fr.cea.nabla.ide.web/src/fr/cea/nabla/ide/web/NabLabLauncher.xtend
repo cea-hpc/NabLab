@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 CEA
+ * Copyright (c) 2021, 2022 CEA
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -18,12 +18,10 @@ import org.eclipse.lsp4j.jsonrpc.Launcher
 import org.eclipse.lsp4j.services.LanguageClient
 import org.eclipse.xtext.ide.server.LaunchArgs
 import org.eclipse.xtext.ide.server.ServerLauncher
-import org.eclipse.xtext.resource.EObjectAtOffsetHelper
 
 class NabLabLauncher extends ServerLauncher
 {
 	@Inject NabLabLanguageServer nabLabLanguageServer
-	@Inject EObjectAtOffsetHelper eObjectAtOffsetHelper
 
 	def static void main(String[] args)
 	{
@@ -49,16 +47,6 @@ class NabLabLauncher extends ServerLauncher
 			var future = launcher.startListening()
 			launcher.remoteProxy.logMessage(new MessageParams(MessageType.Info, "NabLab Language Server has been started."))
 			
-			var nabLabJettyServer = new NabLabJettyServer()
-			try
-			{
-				nabLabJettyServer.start(nabLabLanguageServer, eObjectAtOffsetHelper)
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace()
-			}
-
 			while (!future.isDone())
 			{
 				Thread.sleep(10_000L)

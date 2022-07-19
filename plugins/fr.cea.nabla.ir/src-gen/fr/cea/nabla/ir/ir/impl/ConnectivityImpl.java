@@ -34,6 +34,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ConnectivityImpl#getReturnType <em>Return Type</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ConnectivityImpl#isMultiple <em>Multiple</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.impl.ConnectivityImpl#getProvider <em>Provider</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.impl.ConnectivityImpl#isLocal <em>Local</em>}</li>
  * </ul>
  *
  * @generated
@@ -98,6 +99,26 @@ public class ConnectivityImpl extends IrAnnotableImpl implements Connectivity {
 	 * @ordered
 	 */
 	protected boolean multiple = MULTIPLE_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #isLocal() <em>Local</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isLocal()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean LOCAL_EDEFAULT = true;
+
+	/**
+	 * The cached value of the '{@link #isLocal() <em>Local</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isLocal()
+	 * @generated
+	 * @ordered
+	 */
+	protected boolean local = LOCAL_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -264,6 +285,29 @@ public class ConnectivityImpl extends IrAnnotableImpl implements Connectivity {
 	 * @generated
 	 */
 	@Override
+	public boolean isLocal() {
+		return local;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setLocal(boolean newLocal) {
+		boolean oldLocal = local;
+		local = newLocal;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, IrPackage.CONNECTIVITY__LOCAL, oldLocal, local));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case IrPackage.CONNECTIVITY__PROVIDER:
@@ -321,6 +365,8 @@ public class ConnectivityImpl extends IrAnnotableImpl implements Connectivity {
 			case IrPackage.CONNECTIVITY__PROVIDER:
 				if (resolve) return getProvider();
 				return basicGetProvider();
+			case IrPackage.CONNECTIVITY__LOCAL:
+				return isLocal();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -350,6 +396,9 @@ public class ConnectivityImpl extends IrAnnotableImpl implements Connectivity {
 			case IrPackage.CONNECTIVITY__PROVIDER:
 				setProvider((MeshExtensionProvider)newValue);
 				return;
+			case IrPackage.CONNECTIVITY__LOCAL:
+				setLocal((Boolean)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -377,6 +426,9 @@ public class ConnectivityImpl extends IrAnnotableImpl implements Connectivity {
 			case IrPackage.CONNECTIVITY__PROVIDER:
 				setProvider((MeshExtensionProvider)null);
 				return;
+			case IrPackage.CONNECTIVITY__LOCAL:
+				setLocal(LOCAL_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -399,6 +451,8 @@ public class ConnectivityImpl extends IrAnnotableImpl implements Connectivity {
 				return multiple != MULTIPLE_EDEFAULT;
 			case IrPackage.CONNECTIVITY__PROVIDER:
 				return basicGetProvider() != null;
+			case IrPackage.CONNECTIVITY__LOCAL:
+				return local != LOCAL_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -417,6 +471,8 @@ public class ConnectivityImpl extends IrAnnotableImpl implements Connectivity {
 		result.append(name);
 		result.append(", multiple: ");
 		result.append(multiple);
+		result.append(", local: ");
+		result.append(local);
 		result.append(')');
 		return result.toString();
 	}

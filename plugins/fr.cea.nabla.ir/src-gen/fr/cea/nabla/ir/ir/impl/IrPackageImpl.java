@@ -1495,6 +1495,16 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
+	public EAttribute getConnectivity_Local() {
+		return (EAttribute)connectivityEClass.getEStructuralFeatures().get(5);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EClass getJobCaller() {
 		return jobCallerEClass;
 	}
@@ -3130,6 +3140,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		createEReference(connectivityEClass, CONNECTIVITY__RETURN_TYPE);
 		createEAttribute(connectivityEClass, CONNECTIVITY__MULTIPLE);
 		createEReference(connectivityEClass, CONNECTIVITY__PROVIDER);
+		createEAttribute(connectivityEClass, CONNECTIVITY__LOCAL);
 
 		jobCallerEClass = createEClass(JOB_CALLER);
 		createEReference(jobCallerEClass, JOB_CALLER__CALLS);
@@ -3535,6 +3546,7 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		initEReference(getConnectivity_ReturnType(), this.getItemType(), null, "returnType", null, 0, 1, Connectivity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getConnectivity_Multiple(), ecorePackage.getEBoolean(), "multiple", null, 1, 1, Connectivity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getConnectivity_Provider(), this.getMeshExtensionProvider(), this.getMeshExtensionProvider_Connectivities(), "provider", null, 1, 1, Connectivity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getConnectivity_Local(), ecorePackage.getEBoolean(), "local", "true", 1, 1, Connectivity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(jobCallerEClass, JobCaller.class, "JobCaller", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getJobCaller_Calls(), this.getJob(), this.getJob_Caller(), "calls", null, 0, -1, JobCaller.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

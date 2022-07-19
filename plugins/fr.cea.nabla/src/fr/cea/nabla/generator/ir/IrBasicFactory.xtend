@@ -60,6 +60,9 @@ class IrBasicFactory
 			multiple = c.multiple
 			val ext = EcoreUtil2.getContainerOfType(c, MeshExtension)
 			provider = ext.toIrMeshExtensionProvider
+			println(c.name + " local " + c.local)
+			local = c.local
+			println("\t" + name + " local " + local)
 		]
 	}
 

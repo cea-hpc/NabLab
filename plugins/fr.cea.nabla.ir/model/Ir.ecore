@@ -171,6 +171,8 @@
         lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="provider" lowerBound="1"
         eType="#//MeshExtensionProvider" eOpposite="#//MeshExtensionProvider/connectivities"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="local" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+        defaultValueLiteral="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="JobCaller" eSuperTypes="#//IrAnnotable">
     <eStructuralFeatures xsi:type="ecore:EReference" name="calls" upperBound="-1"

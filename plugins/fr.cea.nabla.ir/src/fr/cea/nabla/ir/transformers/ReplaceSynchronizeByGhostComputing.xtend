@@ -401,8 +401,8 @@ class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 				val iteratorBlock = iterationblock as Iterator
 				val connectivityCall = ContainerExtensions.getConnectivityCall(iteratorBlock.container)
 
-				println("connectivity " + connectivityCall.connectivity.name)
-				if(!validConnectivity(connectivityCall.connectivity) || connectivityCall.group !== null)
+				println("connectivity " + connectivityCall.connectivity.name + " local : " + connectivityCall.connectivity.local)
+				if(!connectivityCall.connectivity.local || connectivityCall.group !== null)
 					return false
 			}		
 		}
@@ -420,7 +420,7 @@ class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 		return res
 	}
 	
-	private static def Boolean validConnectivity(Connectivity connectivity)
+	/*private static def Boolean validConnectivity(Connectivity connectivity)
 	{
 		if(connectivity.name == "cells" ||
 		   connectivity.name == "faces" ||
@@ -438,7 +438,7 @@ class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 			return true	
 		}
 		return false
-	}
+	}*/
 	
 	/////////////////////////////////////////////////////////////////////////
 	

@@ -18,6 +18,7 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link fr.cea.nabla.ir.ir.Connectivity#getReturnType <em>Return Type</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Connectivity#isMultiple <em>Multiple</em>}</li>
  *   <li>{@link fr.cea.nabla.ir.ir.Connectivity#getProvider <em>Provider</em>}</li>
+ *   <li>{@link fr.cea.nabla.ir.ir.Connectivity#isLocal <em>Local</em>}</li>
  * </ul>
  *
  * @see fr.cea.nabla.ir.ir.IrPackage#getConnectivity()
@@ -126,5 +127,28 @@ public interface Connectivity extends IrAnnotable {
 	 * @generated
 	 */
 	void setProvider(MeshExtensionProvider value);
+
+	/**
+	 * Returns the value of the '<em><b>Local</b></em>' attribute.
+	 * The default value is <code>"true"</code>.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Local</em>' attribute.
+	 * @see #setLocal(boolean)
+	 * @see fr.cea.nabla.ir.ir.IrPackage#getConnectivity_Local()
+	 * @model default="true" required="true"
+	 * @generated
+	 */
+	boolean isLocal();
+
+	/**
+	 * Sets the value of the '{@link fr.cea.nabla.ir.ir.Connectivity#isLocal <em>Local</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Local</em>' attribute.
+	 * @see #isLocal()
+	 * @generated
+	 */
+	void setLocal(boolean value);
 
 } // Connectivity

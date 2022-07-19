@@ -45,7 +45,7 @@ Import: 'with' importedNamespace=QualifiedNameWithWildcard ';';
 
 /* ITEMS & CONNECTIVITES *********************************/
 ItemType: name=ID;
-Connectivity: 'connectivity' name=ID ':' (inTypes+=[ItemType|QualifiedName] ('\u00D7' inTypes+=[ItemType|QualifiedName])*)? '\u2192' ((multiple?='{' returnType=[ItemType|QualifiedName] '}') | returnType=[ItemType|QualifiedName]) ';';
+Connectivity: 'connectivity' name=ID ':' (inTypes+=[ItemType|QualifiedName] ('\u00D7' inTypes+=[ItemType|QualifiedName])*)? '\u2192' ((multiple?='{' returnType=[ItemType|QualifiedName] '}') | returnType=[ItemType|QualifiedName]) (local ?= 'local')?';';
 
 /* JOBS & INSTRUCTIONS ***********************************/
 Job: name=ID ':' instruction=Instruction;

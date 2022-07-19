@@ -17,7 +17,8 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses
 ({
 	CreateArrayOperatorsTest.class,
-	ReplaceAffectationsTest.class
+	ReplaceAffectationsTest.class,
+	ReplaceOptionsByLocalVariablesTest.class
 })
 
 public class NabLabIrTransformersTestSuite {}

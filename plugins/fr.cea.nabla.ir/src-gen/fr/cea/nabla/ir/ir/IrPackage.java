@@ -1534,13 +1534,22 @@ public interface IrPackage extends EPackage {
 	int CONNECTIVITY__PROVIDER = IR_ANNOTABLE_FEATURE_COUNT + 4;
 
 	/**
+	 * The feature id for the '<em><b>Local</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CONNECTIVITY__LOCAL = IR_ANNOTABLE_FEATURE_COUNT + 5;
+
+	/**
 	 * The number of structural features of the '<em>Connectivity</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CONNECTIVITY_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 5;
+	int CONNECTIVITY_FEATURE_COUNT = IR_ANNOTABLE_FEATURE_COUNT + 6;
 
 	/**
 	 * The number of operations of the '<em>Connectivity</em>' class.
@@ -5663,6 +5672,17 @@ public interface IrPackage extends EPackage {
 	EReference getConnectivity_Provider();
 
 	/**
+	 * Returns the meta object for the attribute '{@link fr.cea.nabla.ir.ir.Connectivity#isLocal <em>Local</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Local</em>'.
+	 * @see fr.cea.nabla.ir.ir.Connectivity#isLocal()
+	 * @see #getConnectivity()
+	 * @generated
+	 */
+	EAttribute getConnectivity_Local();
+
+	/**
 	 * Returns the meta object for class '{@link fr.cea.nabla.ir.ir.JobCaller <em>Job Caller</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -8009,6 +8029,14 @@ public interface IrPackage extends EPackage {
 		 * @generated
 		 */
 		EReference CONNECTIVITY__PROVIDER = eINSTANCE.getConnectivity_Provider();
+
+		/**
+		 * The meta object literal for the '<em><b>Local</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute CONNECTIVITY__LOCAL = eINSTANCE.getConnectivity_Local();
 
 		/**
 		 * The meta object literal for the '{@link fr.cea.nabla.ir.ir.impl.JobCallerImpl <em>Job Caller</em>}' class.

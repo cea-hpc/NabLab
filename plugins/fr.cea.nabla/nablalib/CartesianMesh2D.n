@@ -11,14 +11,14 @@ mesh extension CartesianMesh2D;
 
 itemtypes { node, cell, face }
 
-connectivity nodes: → {node};
-connectivity cells: → {cell};
-connectivity faces: → {face};
+connectivity nodes: → {node} local;
+connectivity cells: → {cell} local;
+connectivity faces: → {face} local;
 
-connectivity nodesOfCell: cell → {node};
-connectivity nodesOfFace: face → {node};
-connectivity firstNodeOfFace: face → node;
-connectivity secondNodeOfFace: face → node;
+connectivity nodesOfCell: cell → {node} local;
+connectivity nodesOfFace: face → {node} local;
+connectivity firstNodeOfFace: face → node local;
+connectivity secondNodeOfFace: face → node local;
 
 connectivity cellsOfNode: node → {cell};
 connectivity cellsOfFace: face → {cell};
@@ -32,9 +32,9 @@ connectivity bottomCell: cell → cell;
 connectivity leftCell: cell → cell;
 connectivity rightCell: cell → cell;
 
-connectivity facesOfCell: cell → {face};
-connectivity topFaceOfCell: cell → face;
-connectivity bottomFaceOfCell: cell → face;
-connectivity leftFaceOfCell: cell → face;
-connectivity rightFaceOfCell: cell → face;
+connectivity facesOfCell: cell → {face} local;
+connectivity topFaceOfCell: cell → face local;
+connectivity bottomFaceOfCell: cell → face local;
+connectivity leftFaceOfCell: cell → face local;
+connectivity rightFaceOfCell: cell → face local;
 

@@ -63,7 +63,7 @@ class ComputeOverSynchronizeTest
 		J5: ∀j∈cells(), v^{n+1}{j} = ∑{r∈neighbourCells(j)}(v^{n}{r} + s{r});
 		'''
 		
-		val ir = compilationHelper.getRawIr(model, testGenModel)
+		val ir = compilationHelper.getIrForGeneration(model, testGenModel)
 
 		// Apply the transformation ComputeSynchronize to prepare ir to parallel execution
 		try {

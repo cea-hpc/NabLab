@@ -65,6 +65,14 @@ class TypeContentProvider
 		else
 			false
 	}
+	
+	static def isArcaneAlienMatrix(IrType t)
+	{
+		if (t instanceof LinearAlgebraType)
+			t.sizes.size >= 1 && t.sizes.head instanceof Cardinality
+		else
+			false
+	}
 
 	static def getLinearAlgebraClass(LinearAlgebraType t)
 	{

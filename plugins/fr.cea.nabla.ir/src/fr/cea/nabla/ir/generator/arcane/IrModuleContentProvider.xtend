@@ -142,7 +142,6 @@ class IrModuleContentProvider
 		«ENDFOR»
 		«IF variables.exists[v | TypeContentProvider.isArcaneAlienVector(v.type)]»
 			Alien::IMessagePassingMng* m_parallel_mng;
-			UniqueArray<Alien::Integer> m_allUIndex;
 		«ENDIF»
 		«IF AcceleratorAnnotation.tryToGet(it) !== null»
 
@@ -236,11 +235,11 @@ class IrModuleContentProvider
 			owners.add(cCells->owner());
 		}
 		
-		m_allUIndex = distribution.prepare(m_parallel_mng, uid, owners);
 		Distribution distribution;
+		distribution.prepare(m_parallel_mng, uid, owners);
 		«ENDIF»
-		«FOR v : variables.filter[v | TypeContentProvider.isArcaneAlienVector(v.type)]»
-		distribution.create(«v.name», m_parallel_mng);
+		«FOR v : variables.filter[v | TypeContentProvider.isArcaneAlienVector(v.type) || TypeContentProvider.isArcaneAlienMatrix(v.type) ]»
+		distribution.create(«v.codeName», m_parallel_mng);
 		«ENDFOR»
 
 		// calling jobs

@@ -70,6 +70,13 @@ class CompilationChainHelper
 		return irRootBuilder.buildRawIr(ngen)
 	}
 
+	def getIrForGeneration(CharSequence model, CharSequence genModel)
+	{
+		val irRootBuilder = irRootBuilderProvider.get
+		val ngen = getNgenApp(#[model], genModel)
+		return irRootBuilder.buildGeneratorGenericIr(ngen)
+	}
+
 	def getNgenApp(CharSequence[] models, CharSequence genModel)
 	{
 		val rs = resourceSetProvider.get

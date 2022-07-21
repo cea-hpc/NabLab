@@ -94,10 +94,10 @@ class ComputeSynchronizeTest
 		Assert.assertTrue(j3.eAllContents.filter(Synchronize).empty)
 		Assert.assertTrue(j4.eAllContents.filter(Synchronize).size === 1)
 		
-		val j2Synchronize = j2.eAllContents.filter(Synchronize).head
-		val j4Synchronize = j4.eAllContents.filter(Synchronize).head
+		val j2Synchronizes = j2.eAllContents.filter(Synchronize)
+		val j4Synchronizes = j4.eAllContents.filter(Synchronize)
 		
-		Assert.assertTrue(j2Synchronize.variable.name == "l")
-		Assert.assertTrue(j4Synchronize.variable.name == "v_n")
+		Assert.assertTrue(j2Synchronizes.head.variable.name == "l")
+		Assert.assertTrue(j4Synchronizes.head.variable.name == "v_n")
 	}
 }

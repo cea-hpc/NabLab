@@ -23,6 +23,7 @@ import java.util.HashMap
 import org.eclipse.emf.ecore.util.EcoreUtil
 import java.util.List
 import fr.cea.nabla.ir.JobDependencies
+import java.util.Map
 
 class ComputeOverSynchronize extends IrTransformationStep
 {
@@ -51,6 +52,7 @@ class ComputeOverSynchronize extends IrTransformationStep
 		val executeTimeLoopJob = ir.main.calls.filter(ExecuteTimeLoopJob).head
 		// TODO check si "ir.main.calls.filter(ExecuteTimeLoopJob)" a une size == 1
 		
+		// TODO faire une récursion sur les executeTimeLoopJob pour géner les cas ou il y en a plusieurs
 		val varReadOnlyWithSyncho = getReadOnlyVarWithSynchronization(executeTimeLoopJob)
 		if(!varReadOnlyWithSyncho.empty)
 		{
@@ -89,7 +91,7 @@ class ComputeOverSynchronize extends IrTransformationStep
 		throw new RuntimeException("Not yet implemented")
 	}
 	
-	private static def void analyzeJob(Job job, HashMap<Variable, Boolean> map)
+	private static def void analyzeJob(Job job, Map<Variable, Boolean> map)
 	{
 		if(job.instruction instanceof InstructionBlock)
 		{

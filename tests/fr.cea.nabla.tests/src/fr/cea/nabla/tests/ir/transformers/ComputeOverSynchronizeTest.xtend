@@ -126,10 +126,10 @@ class ComputeOverSynchronizeTest
 		Assert.assertTrue(j5SynchronizesAfter.head.variable.name == "v_n")
 		
 		// Check if the new job to synchronize update read only variables is create and synchronize the right value
-		val synchronizeBeforeTimeLoop = ir.jobs.findFirst[x | x.name == "synchronizeBeforeTimeLoop"]
+		val synchronizeBeforeTimeLoop = ir.jobs.findFirst[x | x.name == "SynchronizeBeforeTimeLoop"]
 		Assert.assertNotNull(synchronizeBeforeTimeLoop)
 		Assert.assertTrue(synchronizeBeforeTimeLoop.eAllContents.filter(Synchronize).size === 1)
-		val synchronizeBeforeTimeLoopSynchronizes = j5.eAllContents.filter(Synchronize)
+		val synchronizeBeforeTimeLoopSynchronizes = synchronizeBeforeTimeLoop.eAllContents.filter(Synchronize)
 		Assert.assertTrue(synchronizeBeforeTimeLoopSynchronizes.head.variable.name == "s")
 	}
 }

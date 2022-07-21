@@ -60,7 +60,7 @@ class ComputeSynchronizeTest
 		J4: ∀j∈cells(), v^{n+1}{j} = ∑{r∈neighbourCells(j)}(v^{n}{r});
 		'''
 
-		val ir = compilationHelper.getRawIr(model, testGenModel)
+		val ir = compilationHelper.getIrForGeneration(model, testGenModel)
 
 		val j1 = ir.jobs.findFirst[x | x.name == "J1"]
 		val j2 = ir.jobs.findFirst[x | x.name == "J2"]

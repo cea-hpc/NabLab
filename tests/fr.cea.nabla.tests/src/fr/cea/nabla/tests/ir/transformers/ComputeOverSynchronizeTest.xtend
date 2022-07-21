@@ -48,18 +48,15 @@ class ComputeOverSynchronizeTest
 		iterate n while (t^{n+1} < stopTime && n+1 < maxIterations);
 		
 		IniTime: t^{n=0} = 0.0;
-		// scalar affectation => no change ------- no synchro
+
 		J1: ∀j∈nodes(), l{j} = norm(X{j});
-		
-		// Array variable affectation => replace by loop ------- synchro
+
 		J2: ∀j∈cells(), s{j} = ∑{r∈nodesOfCell(j)}(l{r});
 		
 		J3: ∀j∈cells(), h{j} = ∑{r∈nodesOfCell(j)}(l{r});
 		
-		// Connectivity variable. Un = Un+1 at the end of time loop => replace by loop ------- no synchro
 		J4: ∀j∈cells(), u^{n+1}{j} = δt + u^{n}{j} + 1.0;
 		
-		// Connectivity array variable. Vn = Vn+1 at the end of time loop => replace by loop ------- synchro
 		J5: ∀j∈cells(), v^{n+1}{j} = ∑{r∈neighbourCells(j)}(v^{n}{r} + s{r});
 		'''
 		
@@ -128,6 +125,8 @@ class ComputeOverSynchronizeTest
 		// Check if the new job to synchronize update read only variables is create and synchronize the right value
 		val synchronizeBeforeTimeLoop = ir.jobs.findFirst[x | x.name == "SynchronizeBeforeTimeLoop"]
 		Assert.assertNotNull(synchronizeBeforeTimeLoop)
+
+		
 		Assert.assertTrue(synchronizeBeforeTimeLoop.eAllContents.filter(Synchronize).size === 1)
 		val synchronizeBeforeTimeLoopSynchronizes = synchronizeBeforeTimeLoop.eAllContents.filter(Synchronize)
 		Assert.assertTrue(synchronizeBeforeTimeLoopSynchronizes.head.variable.name == "s")

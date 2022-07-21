@@ -9,6 +9,8 @@
  *******************************************************************************/
 package fr.cea.nabla.ir.transformers
 
+import fr.cea.nabla.ir.JobDependencies
+import fr.cea.nabla.ir.generator.arcane.TypeContentProvider
 import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
 import fr.cea.nabla.ir.ir.InstructionBlock
@@ -20,10 +22,9 @@ import fr.cea.nabla.ir.ir.TimeVariable
 import fr.cea.nabla.ir.ir.Variable
 import java.util.ArrayList
 import java.util.HashMap
-import org.eclipse.emf.ecore.util.EcoreUtil
 import java.util.List
-import fr.cea.nabla.ir.JobDependencies
 import java.util.Map
+import org.eclipse.emf.ecore.util.EcoreUtil
 
 class ComputeOverSynchronize extends IrTransformationStep
 {
@@ -34,56 +35,55 @@ class ComputeOverSynchronize extends IrTransformationStep
 
 	override transform(IrRoot ir, (String)=>void traceNotifier)
 	{	
-		// Map initialisation for Init entry
-		val mapUpdate = new HashMap<Variable, Boolean>
-		// TODO filtre les variables de connectivités
-		for(v : ir.variables)
+		val variablesStatus = new HashMap<Variable, Boolean>
+
+		// variablesStatus map initialization for Init entry
+		for(v : ir.variables.filter[x | !TypeContentProvider.isArcaneScalarType(x.type)])
 		{
 			val isUpdate = (v === ir.nodeCoordVariable) || (v === ir.initNodeCoordVariable) ? true : false
-			mapUpdate.put(v, isUpdate)	
+			variablesStatus.put(v, isUpdate)
 		}
 		
 		// Analyze Init job
 		val initJob = ir.main.calls.filter[x | !(x instanceof ExecuteTimeLoopJob)]
 		for(j : initJob)
-			analyzeJob(j, mapUpdate)
+			analyzeJob(j, variablesStatus)
 			
-		// Process for executeTimeLoop
-		val executeTimeLoopJob = ir.main.calls.filter(ExecuteTimeLoopJob).head
-		// TODO check si "ir.main.calls.filter(ExecuteTimeLoopJob)" a une size == 1
+		// Process for ExecuteTimeLoop
+		val executeTimeLoopJobs = ir.main.calls.filter(ExecuteTimeLoopJob)
 		
-		// TODO faire une récursion sur les executeTimeLoopJob pour géner les cas ou il y en a plusieurs
-		val varReadOnlyWithSyncho = getReadOnlyVarWithSynchronization(executeTimeLoopJob)
-		if(!varReadOnlyWithSyncho.empty)
+		val variablesReadOnlyWithSyncho = new ArrayList<Variable>
+		for(executeTimeLoopJob : executeTimeLoopJobs)
+			variablesReadOnlyWithSyncho += getReadOnlyVarWithSynchronization(executeTimeLoopJob)
+		
+		// New job creation for synchronize updated read only variables
+		if(!variablesReadOnlyWithSyncho.empty)
 		{
-			val at = executeTimeLoopJob.at - 1
+			val at = executeTimeLoopJobs.head.at - 1
 			
-			val newSynchronizejob = createSynchronizeJob(varReadOnlyWithSyncho, at)
+			val newSynchronizejob = createSynchronizeJob(variablesReadOnlyWithSyncho, at)
 			ir.modules.findFirst[x | x.main].jobs.add(newSynchronizejob)
 			
-			val index = ir.main.calls.indexOf(executeTimeLoopJob)
+			val index = ir.main.calls.indexOf(executeTimeLoopJobs.head)
 			ir.main.calls.add(index, newSynchronizejob)
-			
 			ir.jobs.add(newSynchronizejob)
 			
 			ir.jobs.forEach[x | JobDependencies.computeAndSetNextJobs(x)]
 			
-			for(v : varReadOnlyWithSyncho)
-				mapUpdate.replace(v, true)
+			for(v : variablesReadOnlyWithSyncho)
+				variablesStatus.replace(v, true)
 		}
 		
-		for(j : executeTimeLoopJob.calls)
-		{
-			for(v : j.outVars)
-				mapUpdate.replace(v, false)
-			
-			for(v : j.inVars.filter(TimeVariable))
-				mapUpdate.replace(v, false)
-		}
+		// variablesStatus map initialization for executeTimeLoopJobs
+		for(v : executeTimeLoopJobs.head.allOutVars)
+			variablesStatus.replace(v, false)
+		for(v : executeTimeLoopJobs.head.allInVars.filter(TimeVariable))
+			variablesStatus.replace(v, false)
 		
-		// Analyze ExecuteTimeLoop job
-		for(j : executeTimeLoopJob.calls)
-			analyzeJob(j , mapUpdate)
+		// Analyze the top ExecuteTimeLoopJob
+		for(executeTimeLoopJob : executeTimeLoopJobs)
+			for(j : executeTimeLoopJobs.head.calls)
+				analyzeJob(j , variablesStatus)
 	}
 
 	override transform(DefaultExtensionProvider dep, (String)=>void traceNotifier)
@@ -91,48 +91,56 @@ class ComputeOverSynchronize extends IrTransformationStep
 		throw new RuntimeException("Not yet implemented")
 	}
 	
-	private static def void analyzeJob(Job job, Map<Variable, Boolean> map)
+	private static def void analyzeJob(Job job, Map<Variable, Boolean> variablesStatus)
 	{
-		if(job.instruction instanceof InstructionBlock)
+		if(job instanceof ExecuteTimeLoopJob)
+		{
+			for(j : job.calls)
+				analyzeJob(j, variablesStatus)
+		}
+		else if(job.instruction instanceof InstructionBlock)
 		{
 			val synchronizesToDelete = new ArrayList<Synchronize>
 			
 			val instructionBlock = job.instruction as InstructionBlock
 			for(synchronize : instructionBlock.instructions.filter(Synchronize))
 			{	
-				if(map.get(synchronize.variable) === true)
+				if(variablesStatus.get(synchronize.variable) === true)
 					synchronizesToDelete += synchronize
-				map.replace(synchronize.variable, true)
+				variablesStatus.replace(synchronize.variable, true)
 			}
 			
 			for(synchronize : synchronizesToDelete)
 				EcoreUtil.delete(synchronize)
 		}
-	}
+	}	
 	
-	private static def ArrayList<Variable> getReadOnlyVarWithSynchronization(ExecuteTimeLoopJob jobCaller)
+	private static def List<Variable> getReadOnlyVarWithSynchronization(ExecuteTimeLoopJob job)
 	{		
 		val res = new ArrayList<Variable>
 		
-		for(j : jobCaller.calls)
+		for(j : job.calls)
 		{
-			if(j.instruction instanceof InstructionBlock)
+			if(j instanceof ExecuteTimeLoopJob)
 			{
-				val instructionBlock = j.instruction as InstructionBlock
-				for(s : instructionBlock.instructions.filter(Synchronize))
+				val executeTimeLoopJob = j as ExecuteTimeLoopJob
+				res += getReadOnlyVarWithSynchronization(executeTimeLoopJob)
+			}
+			else
+			{
+				val synchronizes = j.eAllContents.filter(Synchronize)
+				for(synchronize : synchronizes.toIterable)
 				{
-					if(!(s.variable instanceof TimeVariable))
-						res += s.variable
+					if(!(synchronize.variable instanceof TimeVariable))
+						res += synchronize.variable
 				}
-			}	
+			}
 		}
 		
-		for(o : jobCaller.allOutVars)
+		for(o : job.allOutVars)
 		{
 			if(res.contains(o))
-			{
 				res.removeAll(o)
-			}
 		}
 		
 		return res

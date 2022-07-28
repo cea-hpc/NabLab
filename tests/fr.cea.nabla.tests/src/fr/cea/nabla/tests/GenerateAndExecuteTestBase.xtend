@@ -23,9 +23,11 @@ import org.apache.commons.io.FileUtils
 import org.junit.Assert
 
 import static fr.cea.nabla.tests.TestUtils.*
+import java.util.regex.Pattern
 
 abstract class GenerateAndExecuteTestBase
 {
+	final static String separatorPattern = Pattern.quote(File.separator);
 	final static String WsPath = Files.createTempDirectory("nablabtest-compiler-").toString
 	final static String LeveldbENV = "leveldb_ROOT"
 	final static String KokkosENV = "Kokkos_ROOT"
@@ -50,14 +52,14 @@ abstract class GenerateAndExecuteTestBase
 		GenerateAndExecuteTestBase.projectRelativePath = projectRelativePathValue
 
 		val testProjectPath = System.getProperty("user.dir")
-		val basePath = testProjectPath.replace("tests/fr.cea.nabla.tests", "")
+		val basePath = testProjectPath.replace("tests" + File.separator + "fr.cea.nabla.tests", "")
 		projectAbsolutePath = basePath + projectRelativePath
-		nRepositoryPath = basePath + "plugins/fr.cea.nabla.ir/resources/.nablab.zip"
-		javaLibPath = basePath + "plugins/fr.cea.nabla.javalib/bin/:" + basePath + "plugins/fr.cea.nabla.javalib/target/*"
-		commonMath3Path = basePath + "plugins/commons-math3/*"
-		levelDBPath = basePath + "plugins/leveldb/*"
+		nRepositoryPath = basePath + Paths.get("plugins", "fr.cea.nabla.ir", "resources", ".nablab.zip").toString
+		javaLibPath = basePath + Paths.get("plugins", "fr.cea.nabla.javalib", "bin").toString + File.separator + File.pathSeparator + basePath + Paths.get("plugins", "fr.cea.nabla.javalib", "target").toString + File.separator + "*"
+		commonMath3Path = basePath + Paths.get("plugins", "commons-math3").toString + File.separator + "*"
+		levelDBPath = basePath + Paths.get("plugins", "leveldb").toString + File.separator + "*"
 		git = new GitUtils(basePath)
-		GenerateAndExecuteTestBase.outputPath = WsPath + '/' + projectName
+		GenerateAndExecuteTestBase.outputPath = Paths.get(WsPath, projectName).toString
 		println("test working directory: " + GenerateAndExecuteTestBase.outputPath)
 
 		// Simpliest is to copy all NablaExamples tree in tmpDir
@@ -75,10 +77,10 @@ abstract class GenerateAndExecuteTestBase
 		val packageName = ngenFileName.toLowerCase
 		val models = new ArrayList<CharSequence>
 		for (nFileName : nFileNames)
-			models += readFileAsString(GenerateAndExecuteTestBase.projectAbsolutePath + "/src/" + packageName + "/" + nFileName + ".n")
-		var genmodel = readFileAsString(GenerateAndExecuteTestBase.projectAbsolutePath + "/src/" + packageName + "/" + ngenFileName + ".ngen")
-		compilationHelper.generateCode(models, genmodel, GenerateAndExecuteTestBase.projectAbsolutePath.replace('/' + projectName, ''), projectName)
-		testNoGitDiff("/" + packageName) // Add "/" to avoid a false positiv on explicitheatequation fail or implicitheatequation
+			models += readFileAsString(Paths.get(GenerateAndExecuteTestBase.projectAbsolutePath, "src", packageName, nFileName + ".n").toString)
+		var genmodel = readFileAsString(Paths.get(GenerateAndExecuteTestBase.projectAbsolutePath, "src", packageName, ngenFileName + ".ngen").toString)
+		compilationHelper.generateCode(models, genmodel, GenerateAndExecuteTestBase.projectAbsolutePath.replace(File.separator + projectName, ''), projectName)
+		testNoGitDiff(separatorPattern + packageName) // Add a separator to avoid a false positiv on explicitheatequation fail or implicitheatequation
 	}
 
 	protected def testExecuteModule(String moduleName)

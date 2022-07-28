@@ -32,6 +32,8 @@ import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.util.regex.Pattern
+import java.nio.file.Paths
 
 @RunWith(XtextRunner)
 @InjectWith(NablaInjectorProvider)
@@ -52,16 +54,17 @@ class NablaExamplesInterpreterTest
 	@BeforeClass
 	def static void setup()
 	{
+		val separatorPattern = Pattern.quote(File.separator);
 		val testProjectPath = System.getProperty("user.dir")
-		testsProjectSubPath = testProjectPath.split('/').reverse.get(1) + '/' + testProjectPath.split('/').reverse.get(0)
-		val nablabPath = testProjectPath.replace("tests/fr.cea.nabla.tests", "")
-		pluginsPath = nablabPath + "/plugins"
+		testsProjectSubPath = Paths.get(testProjectPath.split(separatorPattern).reverse.get(1), testProjectPath.split(separatorPattern).reverse.get(0)).toString
+		val nablabPath = testProjectPath.replace("tests" + File.separator + "fr.cea.nabla.tests", "")
+		pluginsPath = Paths.get(nablabPath, "plugins").toString
 
 		// simulate a wsPath with nablab repository
-		val nRepositoryPath = pluginsPath + "/fr.cea.nabla.ir/resources/.nablab.zip"
+		val nRepositoryPath = Paths.get(pluginsPath, "fr.cea.nabla.ir", "resources", ".nablab.zip").toString
 		UnzipHelper.unzip(new File(nRepositoryPath).toURI, new File(wsPath).toURI)
 
-		examplesProjectPath = pluginsPath + "/fr.cea.nabla.ui/examples/NabLabExamples/"
+		examplesProjectPath = Paths.get(pluginsPath, "fr.cea.nabla.ui", "examples", "NabLabExamples").toString
 		git = new GitUtils(nablabPath)
 
 		System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %5$s %n")
@@ -116,12 +119,12 @@ class NablaExamplesInterpreterTest
 	private def void testInterpreteModule(String moduleName)
 	{
 		println("\ntest" + moduleName)
-		val modelFile = String.format("%1$ssrc/%2$s/%3$s.n", examplesProjectPath, moduleName.toLowerCase, moduleName)
+		val modelFile = String.format("%1$ssrc/%2$s/%3$s.n", examplesProjectPath + File.separator, moduleName.toLowerCase, moduleName)
 		val model = readFileAsString(modelFile)
-		val genmodelFile = String.format("%1$ssrc/%2$s/%3$s.ngen", examplesProjectPath, moduleName.toLowerCase, moduleName)
+		val genmodelFile = String.format("%1$ssrc/%2$s/%3$s.ngen", examplesProjectPath + File.separator, moduleName.toLowerCase, moduleName)
 		val genmodel = readFileAsString(genmodelFile)
 		// We use the example json datafile provided by example source code
-		val jsonOptionsFile = String.format("%1$ssrc/%2$s/%3$s.json", examplesProjectPath, moduleName.toLowerCase, moduleName)
+		val jsonOptionsFile = String.format("%1$ssrc/%2$s/%3$s.json", examplesProjectPath + File.separator, moduleName.toLowerCase, moduleName)
 		var jsonContent = readFileAsString(jsonOptionsFile)
 
 		jsonContent = IrUtils.addNonRegressionTagsToJsonFile(moduleName, jsonContent, nonRegressionValue.toString, nonRegressionTolerance)

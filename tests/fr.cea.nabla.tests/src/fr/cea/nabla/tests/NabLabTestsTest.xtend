@@ -10,6 +10,7 @@
 package fr.cea.nabla.tests
 
 import com.google.inject.Inject
+import java.nio.file.Paths
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.junit.Assume
@@ -25,7 +26,7 @@ import org.junit.runners.MethodSorters
 class NabLabTestsTest extends GenerateAndExecuteTestBase
 {
 	final static String NabLabTestsProjectName = 'NabLabTests'
-	final static String NabLabTestsRelativePath = "tests/NabLabTests"
+	final static String NabLabTestsRelativePath = Paths.get("tests", "NabLabTests").toString
 
 	static boolean hydroRemapSourceChanged
 	static boolean iterationSourceChanged

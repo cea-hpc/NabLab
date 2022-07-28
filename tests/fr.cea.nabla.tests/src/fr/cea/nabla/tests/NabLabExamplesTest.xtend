@@ -10,6 +10,7 @@
 package fr.cea.nabla.tests
 
 import com.google.inject.Inject
+import java.nio.file.Paths
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.junit.Assume
@@ -25,7 +26,7 @@ import org.junit.runners.MethodSorters
 class NabLabExamplesTest extends GenerateAndExecuteTestBase
 {
 	final static String NabLabExamplesProjectName = 'NabLabExamples'
-	final static String NabLabExamplesRelativePath = "plugins/fr.cea.nabla.ui/examples/NabLabExamples"
+	final static String NabLabExamplesRelativePath = Paths.get("plugins", "fr.cea.nabla.ui", "examples", "NabLabExamples").toString
 
 	static boolean explicitHeatEquationSourceChanged
 	static boolean glace2dSourceChanged

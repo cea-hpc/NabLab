@@ -269,17 +269,29 @@ class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 			val variablesToCompute = new ArrayList<Variable>
 			if(job instanceof ExecuteTimeLoopJob)
 				variablesToCompute += getInVariables(job as ExecuteTimeLoopJob)
-				//variablesToCompute += job.outVars.filter[x | !TypeContentProvider.isArcaneScalarType(x.type)]
 			else
 				variablesToCompute += job.inVars.filter[x | !TypeContentProvider.isArcaneScalarType(x.type)]
 			
 			for(v : variablesToCompute)
 			{
 				val listJob = new ArrayList<Job>
-				for(previous : job.previousJobs.filter[x | !(x instanceof ExecuteTimeLoopJob)])
+				var needFindInit = true
+				for(previous : job.previousJobsWithSameCaller.filter[x | !(x instanceof ExecuteTimeLoopJob)])
 				{
 					if(previous.outVars.contains(v))
+					{
 						listJob += previous
+						needFindInit = false		
+					}
+				}
+				
+				if(needFindInit)
+				{
+					for(previous : job.previousJobs.filter[x | !(x instanceof ExecuteTimeLoopJob)])
+					{
+						if(previous.outVars.contains(v) && !listJob.contains(previous))
+							listJob += previous
+					}
 				}
 				
 				if(v instanceof TimeVariable)
@@ -468,13 +480,13 @@ class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 		println("getLastWrite :")
 		for(i : lastWriteMap.entrySet)
 		{
-			println(i.key.name + "{")
+			println(i.key.name + " " + i.key.at + "{")
 			for(j : i.value.entrySet)
 			{
 				println("\t" + j.key.name + "[")
 				for(k : j.value)
 				{
-					println("\t\t" + k.name)
+					println("\t\t" + k.name + " " + k.at)
 				}
 				println("\t]")
 			}
@@ -482,162 +494,3 @@ class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 		}
 	}
 }
-
-
-
-
-
-/*private def HashMap<Job, HashMap<Variable, ArrayList<Job>>> getLastWrite(IrRoot ir)
-	{
-		// TODO opti : la dernière écriture d'une var job peut dépendre de init et de ETL, si le job dans ETL est avant le job traité -> ignoré le job dans l'init
-		val res = new HashMap<Job, HashMap<Variable, ArrayList<Job>>>
-		
-		val initJob = ir.main.calls.filter[x | !(x instanceof ExecuteTimeLoopJob)]
-		for(j : initJob)
-		{
-			val mapVar = new HashMap<Variable, ArrayList<Job>>
-			for(v : j.inVars)
-			{
-				if(!TypeContentProvider.isArcaneScalarType(v.type))
-				{
-					val listJob = new ArrayList<Job>
-					for(previous : j.previousJobs)
-					{
-						if(previous.outVars.contains(v))
-						{
-							listJob += previous
-						}
-					}
-					mapVar.put(v, listJob)
-				}
-			}
-			res.put(j, mapVar) 
-		}
-		
-		if(ir.main.calls.filter(ExecuteTimeLoopJob).size !== 1)
-			throw new Exception("Not yet implemented")
-		
-		val executeTimeLoopJob = ir.main.calls.filter(ExecuteTimeLoopJob).head
-		val allETLJob = getAllJobsETLJ(executeTimeLoopJob)
-		
-		for(all : allETLJob)
-			println(all.name)
-		
-		for(job : allETLJob)
-		{
-			val mapVar = new HashMap<Variable, ArrayList<Job>>
-			for(v : job.inVars)
-			{
-				if(!TypeContentProvider.isArcaneScalarType(v.type))
-				{
-					val listJob = new ArrayList<Job>
-					for(previous : job.previousJobs.filter[x | !(x instanceof ExecuteTimeLoopJob)])
-					{
-						if(previous.outVars.contains(v))
-						{
-							listJob += previous
-						}
-					}
-					
-					if(v instanceof TimeVariable)
-					{
-						var timeVar = v as TimeVariable
-						for(j : allETLJob)
-						{
-							val outTimeVar = j.outVars.filter(TimeVariable)
-							for(otv : outTimeVar)
-							{
-								if(otv.originName === timeVar.originName &&
-								   otv.timeIterator === timeVar.timeIterator &&
-								   (otv.timeIteratorIndex === timeVar.timeIteratorIndex || otv.timeIteratorIndex >= timeVar.timeIteratorIndex) &&
-								   !(listJob.contains(j))
-								   )
-								{
-									listJob += j
-								}
-							}
-						}
-					}
-					mapVar.put(v, listJob)
-				}
-			}
-			res.put(job, mapVar)
-		}
-		return res
-	} 
-	
-	private static def void convertOwnToAll(IrRoot ir, ArrayList<Job> jobs, Set<Variable> timeVariablesActualization)
-	{
-		val timeVarsList = new LinkedHashSet<TimeVariable>
-		
-		print("On convertie ")
-		for(j : jobs)
-		{
-			for(l : j.eAllContents.filter(Loop).toIterable)
-			{
-				val iterationblock = l.iterationBlock
-				if(iterationblock instanceof Iterator)
-				{
-					val iteratorBlock = iterationblock as Iterator
-					val connectivityCall = ContainerExtensions.getConnectivityCall(iteratorBlock.container)
-					connectivityCall.allItems = true
-				}		
-			}
-			print(j.name + " ")
-			
-			for(v : j.outVars.filter(TimeVariable))
-				timeVarsList += v
-		}
-		
-		
-		val executeTimeLoopJobs = new LinkedHashSet<Job>
-		for(timeVar : timeVarsList)
-			executeTimeLoopJobs += timeVar.timeIterator.timeLoopJob
-
-		val loopsList = new ArrayList<Loop>
-		for(executeTimeLoopJob : executeTimeLoopJobs)
-		{
-			if(executeTimeLoopJob.instruction instanceof InstructionBlock)
-			{
-				val instructionBlock = executeTimeLoopJob.instruction as InstructionBlock
-				for(loop : instructionBlock.instructions.filter(Loop))
-					loopsList += loop
-			}
-			else if(executeTimeLoopJob.instruction instanceof Loop)
-			{
-				val loop = executeTimeLoopJob.instruction as Loop
-				loopsList += loop
-			}
-		}
-		
-		for(loop : loopsList)
-		{
-			var changeToAll = false
-			for(affectation : loop.eAllContents.filter(Affectation).toIterable)
-			{
-				if(affectation.left.target instanceof TimeVariable)
-				{
-					val timeVar = affectation.left.target as TimeVariable
-					if(timeVarsList.contains(timeVar))
-					{
-						changeToAll = true
-						//break
-					}
-				}
-			}
-			
-			if(changeToAll === true)
-			{
-				val iterationblock = loop.iterationBlock
-				if(iterationblock instanceof Iterator)
-				{
-					val iteratorBlock = iterationblock as Iterator
-					val connectivityCall = ContainerExtensions.getConnectivityCall(iteratorBlock.container)
-					connectivityCall.allItems = true
-				}
-			}
-		}
-		
-		println("en allItem")
-	}
-	* */

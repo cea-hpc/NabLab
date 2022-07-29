@@ -74,7 +74,7 @@ CartesianMesh2D::CartesianMesh2D(IMesh* mesh)
 	const Int32 nb_y_total = nb_total_cell[1];
 	const Int32 nb_x_quads = m_x_cell_dm.ownNbCell();
 	const Int32 nb_y_quads = m_y_cell_dm.ownNbCell();
-
+	Int64 nb_face_x = nb_x_quads + 1;
 
 	const bool has_neighbour_top = (cell_offset[1] + nb_y_quads) == nb_y_total ? false : true;
 	const bool has_neighbour_bottom = (cell_offset[1] == 0) ? false : true;
@@ -208,15 +208,45 @@ CartesianMesh2D::CartesianMesh2D(IMesh* mesh)
 	if(has_neighbour_right)
 		nb_inner_faces += nb_y_quads;
 
+	const Int32 nb_left_faces = nb_y_quads;
+	const Int32 nb_right_faces = nb_y_quads;
+	const Int32 nb_top_faces = nb_x_quads;
+	const Int32 nb_bottom_faces = nb_x_quads;
+
 	UniqueArray<Int32> inner_faces(nb_inner_faces);
+	UniqueArray<Int32> left_faces(nb_left_faces);
+	UniqueArray<Int32> right_faces(nb_right_faces);
+	UniqueArray<Int32> top_faces(nb_top_faces);
+	UniqueArray<Int32> bottom_faces(nb_bottom_faces);
 
 	Int32 inner_face_id(0);
+	Int32 left_face_id(0);
+	Int32 right_face_id(0);
+	Int32 top_face_id(0);
+	Int32 bottom_face_id(0);
 
 	ENUMERATE_FACE(iface, mesh->ownFaces())
 	{
 		Face f = *iface;
+		const Int64 unique_id(f.uniqueId());
+
 		if (f.nbCell() == 2)
 			inner_faces[inner_face_id++] = f.localId();
+		else
+		{
+			// outer_faces
+			if ((unique_id % nb_face_x == 0) && (unique_id / nb_face_x < nb_y_quads) )
+				left_faces[left_face_id++] = f.localId();
+
+			if ((unique_id % nb_face_x == nb_x_quads) && (unique_id / nb_face_x < nb_y_quads) )
+				right_faces[right_face_id++] = f.localId();
+
+			if ((unique_id >= nb_face_x * nb_y_quads) && (unique_id < nb_face_x * nb_y_quads + nb_x_quads))
+				bottom_faces[bottom_face_id++] = f.localId();
+
+			if (unique_id >= nb_face_x * nb_y_quads + nb_x_quads * nb_y_quads)
+				top_faces[top_face_id++] = f.localId();
+		}
 	}
 
 	m_groups[CartesianMesh2D::InnerNodes] = node_family->createGroup(CartesianMesh2D::InnerNodes, inner_nodes);
@@ -232,6 +262,10 @@ CartesianMesh2D::CartesianMesh2D(IMesh* mesh)
 	m_groups[CartesianMesh2D::RightCells] = cell_family->createGroup(CartesianMesh2D::RightCells, right_cells);
 
 	m_groups[CartesianMesh2D::InnerFaces] = face_family->createGroup(CartesianMesh2D::InnerFaces, inner_faces);
+	m_groups[CartesianMesh2D::LeftFaces] = face_family->createGroup(CartesianMesh2D::LeftFaces, left_faces);
+	m_groups[CartesianMesh2D::RightFaces] = face_family->createGroup(CartesianMesh2D::RightFaces, right_faces);
+	m_groups[CartesianMesh2D::TopFaces] = face_family->createGroup(CartesianMesh2D::TopFaces, top_faces);
+	m_groups[CartesianMesh2D::BottomFaces] = face_family->createGroup(CartesianMesh2D::BottomFaces, bottom_faces);
 }
 
 FaceLocalId

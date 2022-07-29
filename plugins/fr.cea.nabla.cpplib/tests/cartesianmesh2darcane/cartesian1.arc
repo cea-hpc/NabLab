@@ -13,6 +13,7 @@
        <origin>0.0 0.0</origin>
        <x><n>4</n><length>20.0</length><progression>1.0</progression></x>
        <y><n>3</n><length>30.0</length><progression>1.0</progression></y>
+       <face-numbering-version>4</face-numbering-version>
      </generator>
    </mesh>
  </meshes>

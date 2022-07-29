@@ -44,6 +44,10 @@ public:
 
 	// FACES
 	inline static const string InnerFaces = "InnerFaces";
+	inline static const string LeftFaces = "LeftFaces";
+	inline static const string RightFaces = "RightFaces";
+	inline static const string TopFaces = "TopFaces";
+	inline static const string BottomFaces = "BottomFaces";
 
 public:
 	static CartesianMesh2D* createInstance(IMesh* mesh);

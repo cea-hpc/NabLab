@@ -57,6 +57,7 @@ class ComputeOverSynchronize extends IrTransformationStep
 			variablesReadOnlyWithSyncho += getReadOnlyVarWithSynchronization(executeTimeLoopJob)
 		
 		// New job creation for synchronize updated read only variables
+		// TODO il peut y avoir des cas ou on peut supprimer des synchronisations en faisant des synchro entre les ExecuteTimeLoop des variables en read only
 		if(!variablesReadOnlyWithSyncho.empty)
 		{
 			val at = executeTimeLoopJobs.head.at - 1

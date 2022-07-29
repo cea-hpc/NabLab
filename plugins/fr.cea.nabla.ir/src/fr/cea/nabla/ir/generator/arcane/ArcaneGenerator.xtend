@@ -42,7 +42,7 @@ class ArcaneGenerator implements IrCodeGenerator
 		// IR transformation steps depend on API type
 		irTransformationSteps = switch apiType
 		{
-			case ApiType.Sequential: #[new ReplaceOptionsByLocalVariables, new ComputeSynchronize, new ComputeOverSynchronize/*, new ReplaceSynchronizeByGhostComputing*/]
+			case ApiType.Sequential: #[new ReplaceOptionsByLocalVariables, new ComputeSynchronize, new ComputeOverSynchronize, new ReplaceSynchronizeByGhostComputing]
 			case ApiType.Thread: #[new ReplaceReductions(true), new ReplaceOptionsByLocalVariables, new SetMultithreadableLoops]
 			case ApiType.Accelerator: #[new ReplaceOptionsByLocalVariables, new SetMultithreadableLoops, new PrepareLoopsForAccelerators]
 		}

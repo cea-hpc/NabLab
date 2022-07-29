@@ -46,10 +46,8 @@ class ComputeSynchronize extends IrTransformationStep
 					if(l.iterationBlock instanceof Iterator)
 					{
 						val iterator = l.iterationBlock as Iterator
-						if(iterator.container.connectivityCall.args.empty && iterator.container.connectivityCall.group === null)
-						{
+						if(iterator.container.connectivityCall.args.empty)
 							fillInVarRefs(l, inVars, iterator.index)
-						}
 					}
 				}
 				val synchronizes = new ArrayList
@@ -72,7 +70,7 @@ class ComputeSynchronize extends IrTransformationStep
 			if(x.target instanceof Variable && !x.iterators.empty)
 			{
 				val v = x.target as Variable
-				if(v.global && v.type instanceof ConnectivityType && x.iterators.head !== index)
+				if(v.global && v.type instanceof ConnectivityType && x.iterators.head.itemName !== index.itemName)
 					varSet += v
 			}	
 		}

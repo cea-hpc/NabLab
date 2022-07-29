@@ -14,6 +14,7 @@ import fr.cea.nabla.ir.JobExtensions
 import fr.cea.nabla.ir.generator.arcane.ArcaneUtils
 import fr.cea.nabla.ir.generator.arcane.TypeContentProvider
 import fr.cea.nabla.ir.ir.Affectation
+import fr.cea.nabla.ir.ir.ArgOrVarRef
 import fr.cea.nabla.ir.ir.DefaultExtensionProvider
 import fr.cea.nabla.ir.ir.ExecuteTimeLoopJob
 import fr.cea.nabla.ir.ir.InstructionBlock
@@ -26,9 +27,14 @@ import fr.cea.nabla.ir.ir.TimeVariable
 import fr.cea.nabla.ir.ir.Variable
 import java.util.ArrayList
 import java.util.HashMap
-import java.util.LinkedHashSet
+import java.util.HashSet
 import java.util.Map
+import java.util.Set
 import org.eclipse.emf.ecore.util.EcoreUtil
+
+/* TODO
+ * - Implémenter getLastWrite lorsque l'on a plusieur ExecuteTimeLoopJob dans JobCaller main
+ */
 
 class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 {
@@ -38,35 +44,38 @@ class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 	}
 
 	override transform(IrRoot ir, (String)=>void traceNotifier)
-	{	
-		val varStatueMap = getVariableStatusByJob(ir)
-		val jobWithSynchronisationAndSynchronization = getJobsWithSynchronization(ir)
-		val lastWriteMap = getLastWrite(ir)
+	{
+		val variablesStatue = getVariableStatusByJob(ir)
+		val synchronizesInJobs = getJobsWithSynchronization(ir)
+		val variablesLastWrite = getLastWrite(ir)
 		
 		println
-		printVarStatus(varStatueMap)
+		printVarStatus(variablesStatue)
 		println
-		printJobAndVarWithSynchronization(jobWithSynchronisationAndSynchronization)
+		printJobAndVarWithSynchronization(synchronizesInJobs)
 		println
-		printGetLastWrite(lastWriteMap)
+		printGetLastWrite(variablesLastWrite)
 		println
 
-		val jobsAllItem = new ArrayList<Job>
-		while(!jobWithSynchronisationAndSynchronization.empty)
+		val jobsToConvertToAllItem = new ArrayList<Job>
+		val timeVariablesActualizationToAllItem = new HashSet<Variable>
+		
+		while(!synchronizesInJobs.empty)
 		{
-			while(!jobWithSynchronisationAndSynchronization.head.value.empty)
+			while(!synchronizesInJobs.head.value.empty)
 			{
-				val lastWrite = lastWriteMap.get(jobWithSynchronisationAndSynchronization.head.key).get(jobWithSynchronisationAndSynchronization.head.value.head.variable)
+				val lastWrite = variablesLastWrite.get(synchronizesInJobs.head.key).get(synchronizesInJobs.head.value.head.variable)
 				
-				print("\non traite " + jobWithSynchronisationAndSynchronization.head.key.name)
-				print(" -> " + ArcaneUtils.getCodeName(jobWithSynchronisationAndSynchronization.head.value.head.variable))
+				print("\non traite " + synchronizesInJobs.head.key.name)
+				print(" -> " + ArcaneUtils.getCodeName(synchronizesInJobs.head.value.head.variable))
 				
 				val bufferJobsAllItem = new ArrayList<Job>
+				val bufferTimeVariableActualizationToAllItem = new HashSet<Variable>
 				var done = true
 				for(lw : lastWrite)
 				{
-					println(" | last write : " + lw.name + " pour " + jobWithSynchronisationAndSynchronization.head.value.head.variable.name + " (" + lastWrite.size + ")")
-					if(!analyzeJob(lw, jobsAllItem, bufferJobsAllItem, varStatueMap, lastWriteMap))
+					println(" | last write : " + lw.name + " pour " + synchronizesInJobs.head.value.head.variable.name + " (" + lastWrite.size + ")")
+					if(!analyzeJob(lw, jobsToConvertToAllItem, bufferJobsAllItem, bufferTimeVariableActualizationToAllItem, variablesStatue, variablesLastWrite, synchronizesInJobs.head.value.head.variable))
 					{
 						done = false
 						//break
@@ -74,25 +83,24 @@ class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 				}
 				if(done === true)
 				{
-					EcoreUtil.delete(jobWithSynchronisationAndSynchronization.head.value.head)
-					println("suppression synchro de " + jobWithSynchronisationAndSynchronization.head.value.head.variable.name + " dans " + jobWithSynchronisationAndSynchronization.head.key.name)
+					EcoreUtil.delete(synchronizesInJobs.head.value.head)
+					// TODO check si job vide
+					println("suppression synchro de " + synchronizesInJobs.head.value.head.variable.name + " dans " + synchronizesInJobs.head.key.name)
 					print("bufferpath : ") for(jxx : bufferJobsAllItem) print(jxx.name + " ") println
-					jobsAllItem += bufferJobsAllItem
+					jobsToConvertToAllItem += bufferJobsAllItem
+					timeVariablesActualizationToAllItem += bufferTimeVariableActualizationToAllItem
 				}
-				
-				jobWithSynchronisationAndSynchronization.head.value.remove(0)
+				synchronizesInJobs.head.value.remove(0)
 			}
-			jobWithSynchronisationAndSynchronization.remove(0)
+			synchronizesInJobs.remove(0)
 		}
-		convertOwnToAll(ir, jobsAllItem, varStatueMap)
+		convertJobsOwnToAll(ir, jobsToConvertToAllItem)
+		convertTimeVariablesActializationOwnToAll(ir, timeVariablesActualizationToAllItem)
 		
 		println
 		println
 		println
-		printVarStatus(varStatueMap)
-		println
-		printJobAndVarWithSynchronization(jobWithSynchronisationAndSynchronization)
-		println
+		printVarStatus(variablesStatue)
 	}
 
 	override transform(DefaultExtensionProvider dep, (String)=>void traceNotifier)
@@ -100,15 +108,27 @@ class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 		throw new RuntimeException("Not yet implemented")
 	}
 	
-	private static def Boolean analyzeJob(Job job, ArrayList<Job> path, ArrayList<Job> bufferPath, Map<Job, Map<Variable, Boolean>> varStatusMap, HashMap<Job, HashMap<Variable, ArrayList<Job>>> lastWriteMap)
+	private static def Boolean analyzeJob(Job job, ArrayList<Job> path, ArrayList<Job> bufferPath, Set<Variable> timeVariablesActualization, Map<Job, Map<Variable, Boolean>> varStatusMap, HashMap<Job, HashMap<Variable, ArrayList<Job>>> lastWriteMap, Variable variable)
 	{
 		println("on annalyse " + job.name)
-		if(canIteredAllItem(job) === true)
+		
+		if(JobExtensions.canIterateAllItem(job))
 		{
-			if(!path.contains(job))
+			if(!path.contains(job) && !(job instanceof ExecuteTimeLoopJob))
 				bufferPath += job
 					
-			val notUpdatedInVars = getNotUpdateVars(job, varStatusMap.get(job))
+			val notUpdatedInVars = new ArrayList<Variable>
+			if(job instanceof ExecuteTimeLoopJob)
+			{	
+				val tvariable = variable as TimeVariable
+				// Only one actualization of TimeVariable in ExecuteTimeLoop is possible
+				var keys = lastWriteMap.get(job).keySet.filter(TimeVariable).filter[x | x.originName === tvariable.originName]
+				notUpdatedInVars += keys
+				timeVariablesActualization += variable
+			}
+			else
+				notUpdatedInVars += JobExtensions.getNoUpdatedVariables(job, varStatusMap.get(job))
+				
 			if(!notUpdatedInVars.empty)
 			{
 				print("pas tout les var sont update {") for(xx : notUpdatedInVars) print(xx.name + " ") println("}")
@@ -118,11 +138,10 @@ class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 					val lastWriteJob = lastWriteMap.get(job).get(v)
 					for(lwj : lastWriteJob)
 					{
-						if(!path.contains(lwj) && !bufferPath.contains(lwj) && !analyzeJob(lwj, path, bufferPath, varStatusMap, lastWriteMap))
+						if(!path.contains(lwj) && !bufferPath.contains(lwj) && !analyzeJob(lwj, path, bufferPath, timeVariablesActualization, varStatusMap, lastWriteMap, v))
 							return false
 					}
 				}
-				
 			}
 			println("le job " + job.name + " a toutes ses vars update")
 			
@@ -149,29 +168,21 @@ class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 		for(j : initJob)
 		{
 			JobExtensions.updateVariablesStatus(j, allVariablesStatus)
-			/*if(j.instruction instanceof InstructionBlock)
-			{
-				val instructionBlock = j.instruction as InstructionBlock
-				for(synchronize : instructionBlock.instructions.filter(Synchronize))
-					mapUpdate.replace(synchronize.variable, true)
-			}
-			
-			val map = new HashMap<Variable, Boolean>
-			for(in : j.inVars)
-			{
-				if(!TypeContentProvider.isArcaneScalarType(in.type))
-					map.put(in, mapUpdate.get(in))
-			}*/
 			res.put(j, new HashMap(allVariablesStatus.filter[k, v | j.inVars.contains(k)]))
 		}
 		
-		val executeTimeLoopJob = ir.main.calls.filter(ExecuteTimeLoopJob).head
+		val executeTimeLoopJobs = ir.main.calls.filter(ExecuteTimeLoopJob)
 		
 		// Prepare for ExecuteTimeLoop job
-		for(v : executeTimeLoopJob.outVars)
-			allVariablesStatus.replace(v, false)
+		for(executeTimeLoopJob : executeTimeLoopJobs)
+		{
+			for(v : executeTimeLoopJob.allOutVars)
+				allVariablesStatus.replace(v, false)
+			for(v : executeTimeLoopJob.allInVars.filter(TimeVariable))
+				allVariablesStatus.replace(v, false)
 		
-		getVariableStatusByJobETLJ(executeTimeLoopJob, res, allVariablesStatus)
+			getVariableStatusByJobETLJ(executeTimeLoopJob, res, allVariablesStatus)
+		}
 		return res
 	}
 	
@@ -186,19 +197,8 @@ class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 			}
 			else
 			{
-				if(job.instruction instanceof InstructionBlock)
-				{
-					val instructionBlock = job.instruction as InstructionBlock
-					for(synchronize : instructionBlock.instructions.filter(Synchronize))
-						mapUpdate.replace(synchronize.variable, true)
-				}
-				val map = new HashMap<Variable, Boolean>
-				for(in : job.inVars)
-				{
-					if(!TypeContentProvider.isArcaneScalarType(in.type))
-						map.put(in, mapUpdate.get(in))
-				}
-				statuts.put(job, map)
+				JobExtensions.updateVariablesStatus(job, mapUpdate)
+				statuts.put(job, new HashMap(mapUpdate.filter[k, v | job.inVars.contains(k)]))
 			}
 		}
 	}
@@ -208,7 +208,6 @@ class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 		val res = new ArrayList<Pair<Job, ArrayList<Synchronize>>>
 		for(j : ir.jobs)
 		{
-			println("ICI C4EST CARR2 " + j.name + " " + j.eAllContents.filter(Synchronize).size)
 			if(j.instruction instanceof InstructionBlock)
 			{
 				val instructionsSynchronize = new ArrayList<Synchronize>
@@ -218,6 +217,8 @@ class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 				{
 					instructionsSynchronize += synchronize
 				}
+				// ??? val instructionsSynchronize = j.eAllContents.filter(Synchronize).toIterable
+
 				if(!instructionsSynchronize.empty)
 				{
 					val pair = new Pair<Job, ArrayList<Synchronize>>(j,instructionsSynchronize)
@@ -230,6 +231,7 @@ class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 	
 	private def HashMap<Job, HashMap<Variable, ArrayList<Job>>> getLastWrite(IrRoot ir)
 	{
+		// TODO opti : la dernière écriture d'une var job peut dépendre de init et de ETL, si le job dans ETL est avant le job traité -> ignoré le job dans l'init
 		val res = new HashMap<Job, HashMap<Variable, ArrayList<Job>>>
 		
 		val initJob = ir.main.calls.filter[x | !(x instanceof ExecuteTimeLoopJob)]
@@ -254,9 +256,273 @@ class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 			res.put(j, mapVar) 
 		}
 		
+		if(ir.main.calls.filter(ExecuteTimeLoopJob).size !== 1)
+			throw new Exception("Not yet implemented")
+		
+		val executeTimeLoopJob = ir.main.calls.filter(ExecuteTimeLoopJob).head
+		val allJobs = getAllJobs(executeTimeLoopJob)
+		
+		for(job : allJobs)
+		{
+			val mapVar = new HashMap<Variable, ArrayList<Job>>
+			
+			val variablesToCompute = new ArrayList<Variable>
+			if(job instanceof ExecuteTimeLoopJob)
+				variablesToCompute += getInVariables(job as ExecuteTimeLoopJob)
+				//variablesToCompute += job.outVars.filter[x | !TypeContentProvider.isArcaneScalarType(x.type)]
+			else
+				variablesToCompute += job.inVars.filter[x | !TypeContentProvider.isArcaneScalarType(x.type)]
+			
+			for(v : variablesToCompute)
+			{
+				val listJob = new ArrayList<Job>
+				for(previous : job.previousJobs.filter[x | !(x instanceof ExecuteTimeLoopJob)])
+				{
+					if(previous.outVars.contains(v))
+						listJob += previous
+				}
+				
+				if(v instanceof TimeVariable)
+				{
+					var timeVar = v as TimeVariable
+					for(j : allJobs)
+					{
+						val outTimeVar = new ArrayList<Variable>
+						if(j instanceof ExecuteTimeLoopJob)
+							outTimeVar += getOutVariables(j as ExecuteTimeLoopJob)
+						else
+							outTimeVar += j.outVars.filter(TimeVariable)
+						
+						for(otv : outTimeVar)
+						{
+							if(otv.name === timeVar.name && !listJob.contains(j))
+								listJob += j
+						}
+					}
+				}
+				mapVar.put(v, listJob)
+			}
+			res.put(job, mapVar)
+		}
+		return res
+	}
+	
+	private static def ArrayList<Variable> getOutVariables(ExecuteTimeLoopJob executeTimeLoopJob)
+	{
+		val res = new ArrayList<Variable>
+		
+		val instruction = executeTimeLoopJob.instruction
+		for(affectation : instruction.eAllContents.filter(Affectation).toIterable)
+		{
+			if(affectation.left.target instanceof Variable)
+			{
+				val variable = affectation.left.target as Variable
+				
+				if((variable instanceof TimeVariable) && !TypeContentProvider.isArcaneScalarType(variable.type))
+					res += variable
+			}
+		}
+		return res
+	}
+	
+	private static def ArrayList<Variable> getInVariables(ExecuteTimeLoopJob executeTimeLoopJob)
+	{
+		val res = new ArrayList<Variable>
+		
+		val instruction = executeTimeLoopJob.instruction
+		for(affectation : instruction.eAllContents.filter(Affectation).toIterable)
+		{
+			if(affectation.right instanceof ArgOrVarRef)
+			{
+				val argOrVarRef = affectation.right as ArgOrVarRef
+				val argOrVar = argOrVarRef.target
+				val variable = argOrVar as Variable
+				
+				if((variable instanceof TimeVariable) && !TypeContentProvider.isArcaneScalarType(variable.type))
+					res += variable
+			}
+		}
+		return res
+	}
+	
+	private static def ArrayList<Job> getAllJobs(ExecuteTimeLoopJob executeTimeLoopJob)
+	{
+		val res = new ArrayList<Job>
+		res += executeTimeLoopJob
+		for(j : executeTimeLoopJob.calls)
+		{
+			if(j instanceof ExecuteTimeLoopJob)
+			{
+				val jETLJ = j as ExecuteTimeLoopJob
+				res += getAllJobs(jETLJ)
+			}
+			else
+				res += j
+		}
+		return res
+	}
+	
+	
+	private static def void convertJobsOwnToAll(IrRoot ir, ArrayList<Job> jobs)
+	{
+		print("On convertie ")
+		for(j : jobs)
+		{
+			for(l : j.eAllContents.filter(Loop).toIterable)
+			{
+				val iterationblock = l.iterationBlock
+				if(iterationblock instanceof Iterator)
+				{
+					val iteratorBlock = iterationblock as Iterator
+					val connectivityCall = ContainerExtensions.getConnectivityCall(iteratorBlock.container)
+					connectivityCall.allItems = true
+				}		
+			}
+			print(j.name + " ")
+		}
+		println("en allItem")
+	}
+	
+	private static def void convertTimeVariablesActializationOwnToAll(IrRoot ir, Set<Variable> timeVariablesActualization)
+	{
+		val executeTimeLoopJobs = ir.jobs.filter(ExecuteTimeLoopJob)
+
+		val loopsList = new ArrayList<Loop>
+		for(executeTimeLoopJob : executeTimeLoopJobs)
+		{
+			if(executeTimeLoopJob.instruction instanceof InstructionBlock)
+			{
+				val instructionBlock = executeTimeLoopJob.instruction as InstructionBlock
+				for(loop : instructionBlock.instructions.filter(Loop))
+					loopsList += loop
+			}
+			else if(executeTimeLoopJob.instruction instanceof Loop)
+			{
+				val loop = executeTimeLoopJob.instruction as Loop
+				loopsList += loop
+			}
+		}
+		
+		for(loop : loopsList)
+		{
+			var changeToAll = false
+			for(affectation : loop.eAllContents.filter(Affectation).toIterable)
+			{
+				if(affectation.left.target instanceof Variable)
+				{
+					val variable = affectation.left.target as Variable
+					if(timeVariablesActualization.contains(variable))
+					{
+						changeToAll = true
+						// break
+					}
+				}	
+			}
+			
+			if(changeToAll)
+			{
+				val iterationblock = loop.iterationBlock
+				if(iterationblock instanceof Iterator)
+				{
+					val iteratorBlock = iterationblock as Iterator
+					val connectivityCall = ContainerExtensions.getConnectivityCall(iteratorBlock.container)
+					connectivityCall.allItems = true
+				}
+			}
+		}
+	}
+	
+	/////////////////////////////////////////////////////////////////////////
+	
+	private def void printVarStatus(Map<Job, Map<Variable, Boolean>> varStatus)
+	{
+		println("varStatus : ")
+		for(job : varStatus.entrySet)
+		{
+			print(job.key.name + " [")
+			for(status : job.value.entrySet)
+			{
+				print(status.key.name + " -> " + status.value + "   ")
+			}
+			print("]")
+			println
+		}
+	}
+	
+	private def printJobAndVarWithSynchronization(ArrayList<Pair<Job, ArrayList<Synchronize>>> jobAndVarWithSynchronization)
+	{
+		println("jobAndVarWithSynchronization : ")
+		for(i : jobAndVarWithSynchronization)
+		{
+			print(i.key.name + " [")
+			for(j : i.value)
+			{
+				print(j.variable.name + " ")
+			}
+			println("]")
+		}
+	}
+	
+	private def printGetLastWrite(HashMap<Job, HashMap<Variable, ArrayList<Job>>> lastWriteMap)
+	{
+		println("getLastWrite :")
+		for(i : lastWriteMap.entrySet)
+		{
+			println(i.key.name + "{")
+			for(j : i.value.entrySet)
+			{
+				println("\t" + j.key.name + "[")
+				for(k : j.value)
+				{
+					println("\t\t" + k.name)
+				}
+				println("\t]")
+			}
+			println("\n}")	
+		}
+	}
+}
+
+
+
+
+
+/*private def HashMap<Job, HashMap<Variable, ArrayList<Job>>> getLastWrite(IrRoot ir)
+	{
+		// TODO opti : la dernière écriture d'une var job peut dépendre de init et de ETL, si le job dans ETL est avant le job traité -> ignoré le job dans l'init
+		val res = new HashMap<Job, HashMap<Variable, ArrayList<Job>>>
+		
+		val initJob = ir.main.calls.filter[x | !(x instanceof ExecuteTimeLoopJob)]
+		for(j : initJob)
+		{
+			val mapVar = new HashMap<Variable, ArrayList<Job>>
+			for(v : j.inVars)
+			{
+				if(!TypeContentProvider.isArcaneScalarType(v.type))
+				{
+					val listJob = new ArrayList<Job>
+					for(previous : j.previousJobs)
+					{
+						if(previous.outVars.contains(v))
+						{
+							listJob += previous
+						}
+					}
+					mapVar.put(v, listJob)
+				}
+			}
+			res.put(j, mapVar) 
+		}
+		
+		if(ir.main.calls.filter(ExecuteTimeLoopJob).size !== 1)
+			throw new Exception("Not yet implemented")
 		
 		val executeTimeLoopJob = ir.main.calls.filter(ExecuteTimeLoopJob).head
 		val allETLJob = getAllJobsETLJ(executeTimeLoopJob)
+		
+		for(all : allETLJob)
+			println(all.name)
+		
 		for(job : allETLJob)
 		{
 			val mapVar = new HashMap<Variable, ArrayList<Job>>
@@ -293,30 +559,14 @@ class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 						}
 					}
 					mapVar.put(v, listJob)
-				}	
+				}
 			}
 			res.put(job, mapVar)
-		}		
-		return res
-	}
-	
-	private static def ArrayList<Job> getAllJobsETLJ(ExecuteTimeLoopJob executeTimeLoopJob)
-	{
-		val res = new ArrayList<Job>
-		for(j : executeTimeLoopJob.calls)
-		{
-			if(j instanceof ExecuteTimeLoopJob)
-			{
-				val jETLJ = j as ExecuteTimeLoopJob
-				res += getAllJobsETLJ(jETLJ)
-			}
-			else
-				res += j
 		}
 		return res
-	}
+	} 
 	
-	private static def void convertOwnToAll(IrRoot ir, ArrayList<Job> jobs, Map<Job, Map<Variable, Boolean>> map)
+	private static def void convertOwnToAll(IrRoot ir, ArrayList<Job> jobs, Set<Variable> timeVariablesActualization)
 	{
 		val timeVarsList = new LinkedHashSet<TimeVariable>
 		
@@ -390,114 +640,4 @@ class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 		
 		println("en allItem")
 	}
-	
-	private static def Boolean canIteredAllItem(Job job)
-	{
-		for(l : job.eAllContents.filter(Loop).toIterable)
-		{
-			val iterationblock = l.iterationBlock
-			if(iterationblock instanceof Iterator)
-			{
-				val iteratorBlock = iterationblock as Iterator
-				val connectivityCall = ContainerExtensions.getConnectivityCall(iteratorBlock.container)
-
-				println("connectivity " + connectivityCall.connectivity.name + " local : " + connectivityCall.connectivity.local)
-				if(!connectivityCall.connectivity.local || connectivityCall.group !== null)
-					return false
-			}		
-		}
-		return true
-	}
-	
-	private static def ArrayList<Variable> getNotUpdateVars(Job job, Map<Variable, Boolean> mapStatus)
-	{
-		val res = new ArrayList<Variable>
-		for(v : job.inVars)
-		{
-			if(mapStatus.get(v) === false)
-				res += v
-		}
-		return res
-	}
-	
-	/////////////////////////////////////////////////////////////////////////
-	
-	/*private static def Boolean validConnectivity(Connectivity connectivity)
-	{
-		if(connectivity.name == "cells" ||
-		   connectivity.name == "faces" ||
-		   connectivity.name == "nodes" ||
-		   connectivity.name == "nodesOfCell" ||
-		   connectivity.name == "nodesOfFace" ||
-		   connectivity.name == "firstNodeOfFace" ||
-		   connectivity.name == "secondNodeOfFace" ||
-		   connectivity.name == "facesOfCell" ||
-		   connectivity.name == "topFaceOfCell" ||
-		   connectivity.name == "bottomFaceOfCell" ||
-		   connectivity.name == "leftFaceOfCell" ||
-		   connectivity.name == "rightFaceOfCell")
-		{
-			return true	
-		}
-		return false
-	}*/
-	
-	private def void printVarStatus(Map<Job, Map<Variable, Boolean>> varStatus)
-	{
-		println("varStatus : ")
-		for(job : varStatus.entrySet)
-		{
-			print(job.key.name + " [")
-			for(status : job.value.entrySet)
-			{
-				print(status.key.name + " -> " + status.value + "   ")
-			}
-			print("]")
-			println
-		}
-	}
-	
-	private def printJobAndVarWithSynchronization(ArrayList<Pair<Job, ArrayList<Synchronize>>> jobAndVarWithSynchronization)
-	{
-		println("jobAndVarWithSynchronization : ")
-		for(i : jobAndVarWithSynchronization)
-		{
-			print(i.key.name + " [")
-			for(j : i.value)
-			{
-				print(j.variable.name + " ")
-			}
-			println("]")
-		}
-	}
-	
-	private def printGetLastWrite(HashMap<Job, HashMap<Variable, ArrayList<Job>>> lastWriteMap)
-	{
-		println("getLastWrite :")
-		for(i : lastWriteMap.entrySet)
-		{
-			println(i.key.name + "{")
-			for(j : i.value.entrySet)
-			{
-				println("\t" + j.key.name + "[")
-				for(k : j.value)
-				{
-					println("\t\t" + k.name)
-				}
-				println("\t]")
-			}
-			println("\n}")	
-		}
-	}
-}
-
-
-
-
-
-
-
-
-
-
-
+	* */

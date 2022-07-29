@@ -9,17 +9,18 @@
  *******************************************************************************/
 package fr.cea.nabla.ir
 
+import fr.cea.nabla.ir.ir.InstructionBlock
 import fr.cea.nabla.ir.ir.IrModule
 import fr.cea.nabla.ir.ir.IrRoot
 import fr.cea.nabla.ir.ir.IterableInstruction
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.Job
 import fr.cea.nabla.ir.ir.Loop
+import fr.cea.nabla.ir.ir.Synchronize
 import fr.cea.nabla.ir.ir.Variable
 import java.util.Map
-import fr.cea.nabla.ir.ir.InstructionBlock
-import fr.cea.nabla.ir.ir.Synchronize
-import fr.cea.nabla.ir.generator.arcane.TypeContentProvider
+import java.util.List
+import java.util.ArrayList
 
 class JobExtensions
 {
@@ -84,19 +85,33 @@ class JobExtensions
 			for(synchronize : instructionBlock.instructions.filter(Synchronize))
 				allVariablesStatus.replace(synchronize.variable, true)
 		}
-		
-		/*val map = new HashMap<Variable, Boolean>
-		for(in : inVars)
+	}
+	
+	static def List<Variable> getNoUpdatedVariables(Job it, Map<Variable, Boolean> variablesStatus)
+	{
+		val res = new ArrayList<Variable>
+		for(v : inVars)
 		{
-			if(!TypeContentProvider.isArcaneScalarType(in.type))
-				map.put(in, allVariablesStatus.get(in))
-		}*/
-		print(name + " [")
-		for(status : allVariablesStatus.entrySet.filter[x | inVars.contains(x.key)])
-		{
-			print(status.key.name + " -> " + status.value + "   ")
+			if(variablesStatus.get(v) === false)
+				res += v
 		}
-		print("]")
-		println
+		return res
+	}
+	
+	static def canIterateAllItem(Job it)
+	{
+		for(loop : eAllContents.filter(Loop).toIterable)
+		{
+			val iterationblock = loop.iterationBlock
+			if(iterationblock instanceof Iterator)
+			{
+				val iteratorBlock = iterationblock as Iterator
+				val connectivityCall = ContainerExtensions.getConnectivityCall(iteratorBlock.container)
+
+				if(!connectivityCall.connectivity.local || connectivityCall.group !== null)
+					return false
+			}
+		}
+		return true
 	}
 }

@@ -43,13 +43,13 @@ class NablagenValidatorTest
 
 	with CartesianMesh2D.*;
 
-	let ℝ maxTime = 0.1;
-	let ℕ maxIter = 500;
-	let ℝ δt = 1.0;
+	let real maxTime = 0.1;
+	let int maxIter = 500;
+	let real δt = 1.0;
 
-	ℝ t;
-	ℝ[2] X{nodes};
-	ℝ hv1{cells}, hv2{cells}, hv3{cells}, hv4{cells}, hv5{cells}, hv6{cells}, hv7{cells};
+	real t;
+	real[2] X{nodes};
+	real hv1{cells}, hv2{cells}, hv3{cells}, hv4{cells}, hv5{cells}, hv6{cells}, hv7{cells};
 
 	iterate n while (n+1 < maxIter && t^{n+1} < maxTime);
 
@@ -64,8 +64,8 @@ class NablagenValidatorTest
 
 	with CartesianMesh2D.*;
 
-	ℝ[2] X{nodes};
-	ℝ rv1{cells}, rv2{cells}, rv3{cells};
+	real[2] X{nodes};
+	real rv1{cells}, rv2{cells}, rv3{cells};
 
 	Rj1: ∀c∈cells(), rv2{c} = rv1{c};
 	Rj2: ∀c∈cells(), rv3{c} = rv2{c};
@@ -198,7 +198,7 @@ class NablagenValidatorTest
 		assertNgen(koNgenModel,
 			NablagenPackage.eINSTANCE.varLink,
 			NablagenValidator::VAR_LINK_MAIN_VAR_TYPE,
-			NablagenValidator::getVarLinkMainVarTypeMsg("ℝ²{nodes}", "ℝ"),
+			NablagenValidator::getVarLinkMainVarTypeMsg("real²{nodes}", "real"),
 			ngenModel)
 		val okNgen = readModelsAndGetNgen(nablaHydroModel, nablaRemapModel, ngenModel)
 		vth.assertNoErrors(okNgen)
@@ -210,7 +210,7 @@ class NablagenValidatorTest
 		val batiLibModel =
 		'''
 			extension BatiLib;
-			def nextWaveHeight: → ℝ;
+			def nextWaveHeight: → real;
 		'''
 		val depthInitModel =
 		'''
@@ -219,12 +219,12 @@ class NablagenValidatorTest
 			with BatiLib.*;
 			with CartesianMesh2D.*;
 
-			let ℝ t = 0.0;
-			let ℝ maxTime = 0.1;
-			let ℕ maxIter = 500;
-			let ℝ δt = 1.0;
-			ℝ[2] X{nodes};
-			ℝ η{cells};
+			let real t = 0.0;
+			let real maxTime = 0.1;
+			let int maxIter = 500;
+			let real δt = 1.0;
+			real[2] X{nodes};
+			real η{cells};
 
 			InitFromFile: ∀j∈cells(), η{j} = nextWaveHeight();
 		'''

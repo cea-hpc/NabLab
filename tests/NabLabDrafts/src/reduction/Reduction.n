@@ -13,19 +13,19 @@ with Math.*;
 
 with CartesianMesh2D.*;
 
-def nodeVelocityBoundaryConditionCorner: ℕ × ℝ[2] × ℕ × ℝ[2] × ℝ[2,2] × ℝ[2] × ℝ[2] → ℝ[2], (BC1, BCValue1, BC2, BCValue2, Mp, Gp, lp_np)→ {
+def nodeVelocityBoundaryConditionCorner: int × real[2] × int × real[2] × real[2,2] × real[2] × real[2] → real[2], (BC1, BCValue1, BC2, BCValue2, Mp, Gp, lp_np)→ {
 	return [0., 0.];
 }
 
 // Simulation options
-let ℝ maxTime = 0.1;
-let ℕ maxIter = 500;
-let ℝ δt = 0.01;
+let real maxTime = 0.1;
+let int maxIter = 500;
+let real δt = 0.01;
 
-ℝ t;
-ℝ[2] X{nodes};
-ℝ[2] Vnode{nodes};
-ℝ[2] lpc_n{nodes, cellsOfNode}; // Corner normal --> "lpc npc" 
+real t;
+real[2] X{nodes};
+real[2] Vnode{nodes};
+real[2] lpc_n{nodes, cellsOfNode}; // Corner normal --> "lpc npc" 
 
 iterate n while (n <= 2);
 

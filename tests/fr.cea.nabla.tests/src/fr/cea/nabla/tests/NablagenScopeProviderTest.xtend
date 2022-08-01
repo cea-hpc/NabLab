@@ -45,13 +45,13 @@ class NablagenScopeProviderTest
 	with CartesianMesh2D.*;
 
 	// Simulation options
-	ℝ maxTime;
-	ℕ maxIter;
+	real maxTime;
+	int maxIter;
 
-	let ℝ t = 0.0;
-	let ℝ δt = 1.0;
-	ℝ[2] X{nodes};
-	ℝ hv1{cells}, hv2{cells}, hv3{cells}, hv4{cells}, hv5{cells}, hv6{cells}, hv7{cells};
+	let real t = 0.0;
+	let real δt = 1.0;
+	real[2] X{nodes};
+	real hv1{cells}, hv2{cells}, hv3{cells}, hv4{cells}, hv5{cells}, hv6{cells}, hv7{cells};
 
 	iterate n while (n+1 < maxIter && t^{n+1} < maxTime);
 
@@ -66,8 +66,8 @@ class NablagenScopeProviderTest
 
 	with CartesianMesh2D.*;
 
-	ℝ[2] X{nodes};
-	ℝ rv1{cells}, rv2{cells}, rv3{cells};
+	real[2] X{nodes};
+	real rv1{cells}, rv2{cells}, rv3{cells};
 
 	rj1: ∀c∈cells(), rv2{c} = rv1{c};
 	rj2: ∀c∈cells(), rv3{c} = rv2{c};

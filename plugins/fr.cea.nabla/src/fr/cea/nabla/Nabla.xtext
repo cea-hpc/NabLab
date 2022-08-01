@@ -154,7 +154,7 @@ ArgOrVarRef: target=[ArgOrVar]
 
 
 /* TYPES *************************************************/
-enum PrimitiveType: Int='\u2115' | Real='\u211D' | Bool='\u213E';
+enum PrimitiveType: Int='int' | Real='real' | Bool='bool';
 BaseType: primitive=PrimitiveType ('[' sizes+=Expression (',' sizes+=Expression)* ']')?;
 
 

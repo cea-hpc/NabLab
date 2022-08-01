@@ -61,6 +61,7 @@ import fr.cea.nabla.nabla.VectorConstant
 import java.util.List
 import org.eclipse.emf.ecore.EObject
 import fr.cea.nabla.nabla.Instruction
+import fr.cea.nabla.nabla.PrimitiveType
 
 class LatexLabelServices
 {
@@ -191,12 +192,23 @@ class LatexLabelServices
 	}
 
 	/* TYPES *************************************************/
+		static def dispatch String getLatex(PrimitiveType it) 
+	{
+		switch it
+		{ 
+			case REAL : '\u211D'
+			case INT : '\u2115'
+			case BOOL : '\u213E'
+		} 
+	}
+	
 	static def dispatch String getLatex(BaseType it) 
 	{ 
+		var primUnicode = getLatex(primitive)
 		if (sizes.empty)
-			primitive.literal
+			primUnicode
 		else
-			primitive.literal + '^{' + sizes.map[x | x.latex].join(' \\times ') + '}'
+			primUnicode + '^{' + sizes.map[x | x.latex].join(' \\times ') + '}'
 	}
 
 	private static def getLatexArg(Expression it)

@@ -43,9 +43,9 @@ class CreateArrayOperatorsTest
 		val model =
 		'''
 		«testModule»
-		ℝ[2] X{nodes};
+		real[2] X{nodes};
 
-		ℝ x, y;
+		real x, y;
 
 		iterate n while (n < 2);
 
@@ -78,10 +78,10 @@ class CreateArrayOperatorsTest
 		val model =
 		'''
 		«testModule»
-		ℝ[2] X{nodes};
+		real[2] X{nodes};
 
-		ℝ[2] x, y;
-		ℝ[3] z;
+		real[2] x, y;
+		real[3] z;
 
 		iterate n while (n < 2);
 
@@ -122,10 +122,10 @@ class CreateArrayOperatorsTest
 		val model =
 		'''
 		«testModule»
-		ℝ[2] X{nodes};
+		real[2] X{nodes};
 
-		ℝ[2] x, y;
-		ℝ[3] z;
+		real[2] x, y;
+		real[3] z;
 
 		iterate n while (n < 2);
 

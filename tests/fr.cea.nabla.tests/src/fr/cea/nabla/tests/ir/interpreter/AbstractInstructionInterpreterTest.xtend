@@ -29,8 +29,8 @@ abstract class AbstractInstructionInterpreterTest
 		val model =
 		'''
 		«testModule»
-		ℝ[2] X{nodes};
-		Job1: { let ℝ r = 1.0; t = r; }
+		real[2] X{nodes};
+		Job1: { let real r = 1.0; t = r; }
 		'''
 		assertInterpreteVarDefinition(model)
 	}
@@ -41,8 +41,8 @@ abstract class AbstractInstructionInterpreterTest
 		val model =
 		'''
 		«testModule»
-		ℝ[2] X{nodes};
-		Job1: { let ℝ r = 1.0; t = r; }
+		real[2] X{nodes};
+		Job1: { let real r = 1.0; t = r; }
 		'''
 		assertInterpreteInstructionBlock(model)
 	}
@@ -53,8 +53,8 @@ abstract class AbstractInstructionInterpreterTest
 		val model =
 		'''
 		«testModule»
-		ℝ[2] X{nodes};
-		Job1: { let ℝ r = 1.0; t = r; }
+		real[2] X{nodes};
+		Job1: { let real r = 1.0; t = r; }
 		'''
 		assertInterpreteAffectation(model)
 	}
@@ -65,13 +65,13 @@ abstract class AbstractInstructionInterpreterTest
 		val model =
 		'''
 		«testModule»
-		let ℕ maxIter = 10;
-		let ℝ maxTime = 1.0;
-		ℝ U{cells};
-		ℝ[2] X{nodes}, B{nodes}, C{cells, nodesOfCell};
-		ℝ Bmin, Bmax;
-		let ℕ size = 4;
-		ℝ[size] tab;
+		let int maxIter = 10;
+		let real maxTime = 1.0;
+		real U{cells};
+		real[2] X{nodes}, B{nodes}, C{cells, nodesOfCell};
+		real Bmin, Bmax;
+		let int size = 4;
+		real[size] tab;
 
 		iterate n while (n+1 < maxIter && t^{n+1} < maxTime);
 
@@ -79,8 +79,8 @@ abstract class AbstractInstructionInterpreterTest
 		InitU : ∀r∈cells(), U{r} = 1.0;
 		ComputeCjr: ∀j∈ cells(), {
 			set rCellsJ = nodesOfCell(j);
-			let ℕ cardRCellsJ = card(rCellsJ);
-			ℝ[cardRCellsJ] tmp;
+			let int cardRCellsJ = card(rCellsJ);
+			real[cardRCellsJ] tmp;
 			∀r, countr ∈ rCellsJ, {
 				tmp[countr] = 0.5; // stupid but test countr
 				C{j,r} = tmp[countr] * (X{r+1} - X{r-1});
@@ -114,8 +114,8 @@ abstract class AbstractInstructionInterpreterTest
 		val model =
 		'''
 		«testModule»
-		ℝ U{cells};
-		ℝ[2] X{nodes};
+		real U{cells};
+		real[2] X{nodes};
 
 		InitT: t=0.0;
 		InitU : ∀r, countr ∈ cells(), {
@@ -134,12 +134,12 @@ abstract class AbstractInstructionInterpreterTest
 		val model =
 		'''
 		«testModule»
-		ℝ U{cells};
-		ℝ[2] X{nodes}, C{cells, nodesOfCell};
+		real U{cells};
+		real[2] X{nodes}, C{cells, nodesOfCell};
 
 		InitT: t=0.0;
 		InitU : {
-			let ℕ i = 0;
+			let int i = 0;
 			while (i<3) {
 				∀r ∈ cells(), U{r} = 1.0 * i;
 				i = i +1;
@@ -156,8 +156,8 @@ abstract class AbstractInstructionInterpreterTest
 		'''
 		«testModule»
 
-		ℝ[2] X{nodes};
-		ℝ U{cells};
+		real[2] X{nodes};
+		real U{cells};
 
 		InitT: t=0.0;
 		InitU : {
@@ -174,9 +174,9 @@ abstract class AbstractInstructionInterpreterTest
 		val model =
 		'''
 		«testModule»
-		let ℕ V=100;
-		let ℕ W=0;
-		ℝ[2] X{nodes};
+		let int V=100;
+		let int W=0;
+		real[2] X{nodes};
 
 		InitT: t=0.0;
 		Test : if (V < 100) W = V+1; else exit "V must be less than 100";

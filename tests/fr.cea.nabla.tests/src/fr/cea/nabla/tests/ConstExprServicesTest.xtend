@@ -45,11 +45,11 @@ class ConstExprServicesTest
 		val model =
 		'''
 		«testModule»
-		let ℕ dim = 2;
-		ℕ unknownDim;
-		ℝ[2] X{nodes};
-		ℝ[1 + 1, unknownDim] Y;
-		// let ℝ[dim] orig = [0.0, 1.1];
+		let int dim = 2;
+		int unknownDim;
+		real[2] X{nodes};
+		real[1 + 1, unknownDim] Y;
+		// let real[dim] orig = [0.0, 1.1];
 		'''
 
 		val rs = resourceSetProvider.get
@@ -89,16 +89,16 @@ class ConstExprServicesTest
 		val model =
 		'''
 		«emptyTestModule»
-		def f: x,y | ℝ[x] × ℝ[y] → ℝ[x+y], (a, b) →
+		def f: x,y | real[x] × real[y] → real[x+y], (a, b) →
 		{
-			let ℝ[x+y] c = 2.0;
+			let real[x+y] c = 2.0;
 			c = a * 2.0;
 			return c + 4.0;
 		}
-		def g: → ℝ, () →
+		def g: → real, () →
 		{
-			ℝ[4] n;
-			ℝ[4, 2] m;
+			real[4] n;
+			real[4, 2] m;
 			∀ i∈[0;4[, 
 			{
 				n[i] = 4.0;

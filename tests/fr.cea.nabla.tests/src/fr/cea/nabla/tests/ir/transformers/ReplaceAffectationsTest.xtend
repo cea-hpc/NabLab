@@ -39,11 +39,11 @@ class ReplaceAffectationsTest
 		val model =
 		'''
 		«testModule»
-		ℝ[2] X{nodes};
-		ℝ x, y;
-		ℝ[5] a, b;
-		ℝ u{cells};
-		ℝ[4] v{cells};
+		real[2] X{nodes};
+		real x, y;
+		real[5] a, b;
+		real u{cells};
+		real[4] v{cells};
 
 		iterate n while (n < 2);
 

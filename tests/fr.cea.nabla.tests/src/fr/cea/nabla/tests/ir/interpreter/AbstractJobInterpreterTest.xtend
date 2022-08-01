@@ -29,7 +29,7 @@ abstract class AbstractJobInterpreterTest
 		val model =
 		'''
 		«testModule»
-		ℝ[2] X{nodes};
+		real[2] X{nodes};
 		InitT : t = 5.;
 		'''
 		assertInterpreteInstructionJob(model)
@@ -42,9 +42,9 @@ abstract class AbstractJobInterpreterTest
 		'''
 		«testModule»
 		// Simulation options
-		let ℝ option_stoptime = 0.2;
-		let ℕ option_max_iterations = 10;
-		ℝ[2] X{nodes};
+		let real option_stoptime = 0.2;
+		let int option_max_iterations = 10;
+		real[2] X{nodes};
 
 		iterate n while (t^{n+1} < option_stoptime && n < option_max_iterations);
 
@@ -61,10 +61,10 @@ abstract class AbstractJobInterpreterTest
 		'''
 		«testModule»
 		// Simulation options
-		let ℝ option_stoptime = 0.2;
-		let ℕ option_max_iterations = 10;
-		ℝ u;
-		ℝ[2] X{nodes}, center{cells};
+		let real option_stoptime = 0.2;
+		let int option_max_iterations = 10;
+		real u;
+		real[2] X{nodes}, center{cells};
 
 		iterate n while (t^{n+1} < option_stoptime && n < option_max_iterations);
 

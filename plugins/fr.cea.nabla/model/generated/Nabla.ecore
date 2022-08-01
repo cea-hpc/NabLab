@@ -225,9 +225,9 @@
         eType="#//Expression" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="PrimitiveType">
-    <eLiterals name="Int" literal="ℕ"/>
-    <eLiterals name="Real" value="1" literal="ℝ"/>
-    <eLiterals name="Bool" value="2" literal="ℾ"/>
+    <eLiterals name="Int" literal="int"/>
+    <eLiterals name="Real" value="1" literal="real"/>
+    <eLiterals name="Bool" value="2" literal="bool"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="BaseType">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="primitive" eType="#//PrimitiveType"/>

@@ -30,9 +30,9 @@ abstract class AbstractModuleInterpreterTest
 		'''
 		«testModule»
 		// Simulation options
-		let ℝ option_stoptime = 0.2;
-		let ℕ option_max_iterations = 20000;
-		ℝ[2] X{nodes};
+		let real option_stoptime = 0.2;
+		let int option_max_iterations = 20000;
+		real[2] X{nodes};
 
 		iterate n while (t^{n+1} < option_stoptime && n < option_max_iterations);
 

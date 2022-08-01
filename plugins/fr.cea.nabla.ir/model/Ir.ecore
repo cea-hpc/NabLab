@@ -382,9 +382,9 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="IrType" eSuperTypes="#//IrAnnotable"/>
   <eClassifiers xsi:type="ecore:EEnum" name="PrimitiveType">
-    <eLiterals name="Int" value="1" literal="ℕ"/>
-    <eLiterals name="Real" value="2" literal="ℝ"/>
-    <eLiterals name="Bool" value="3" literal="ℾ"/>
+    <eLiterals name="Int" value="1" literal="int"/>
+    <eLiterals name="Real" value="2" literal="real"/>
+    <eLiterals name="Bool" value="3" literal="bool"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="BaseType" eSuperTypes="#//IrType">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="primitive" lowerBound="1"

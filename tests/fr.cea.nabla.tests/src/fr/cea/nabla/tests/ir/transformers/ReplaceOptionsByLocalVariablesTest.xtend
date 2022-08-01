@@ -41,9 +41,9 @@ class ReplaceOptionsByLocalVariablesTest
 		val model =
 		'''
 		«testModule»
-		ℝ[2] X{nodes};
-		ℝ my_opt;
-		ℝ u{cells};
+		real[2] X{nodes};
+		real my_opt;
+		real u{cells};
 
 		iterate n while (n < 2);
 

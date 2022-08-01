@@ -13,15 +13,15 @@ with Math.*;
 with CartesianMesh2D.*;
 
 // Simulation options
-ℝ stopTime;
-ℕ maxIterations;
+real stopTime;
+int maxIterations;
 
-let ℝ PI = 3.1415926;
-let ℝ α = 1.0;
-let ℝ δt = 0.001;
-ℝ t;
-ℝ[2] X{nodes}, center{cells};
-ℝ u{cells}, V{cells}, f{cells}, outgoingFlux{cells}, surface{faces};
+let real PI = 3.1415926;
+let real α = 1.0;
+let real δt = 0.001;
+real t;
+real[2] X{nodes}, center{cells};
+real u{cells}, V{cells}, f{cells}, outgoingFlux{cells}, surface{faces};
 
 iterate n while (t^{n+1} < stopTime && n+1 < maxIterations);
 

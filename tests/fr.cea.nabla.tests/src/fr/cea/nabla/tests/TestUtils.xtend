@@ -84,8 +84,8 @@ class TestUtils
 
 	def getSimulationVariables()
 	'''
-		let ℝ δt = 0.001;
-		ℝ t;
+		let real δt = 0.001;
+		real t;
 	'''
 
 	def getEmptyTestModule()

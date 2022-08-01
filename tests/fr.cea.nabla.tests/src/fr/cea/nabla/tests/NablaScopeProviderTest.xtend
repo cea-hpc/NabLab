@@ -49,14 +49,14 @@ class NablaScopeProviderTest
 		'''
 		«testModule»
 
-		ℝ a{cells}, b{cells, nodesOfCell}, c{cells};
-		ℝ d{nodes};
+		real a{cells}, b{cells, nodesOfCell}, c{cells};
+		real d{nodes};
 
 		j1 : ∀j ∈ cells(), a{j} = 0.0;
 		j2 : ∀j ∈ cells(), c{j} = 0.25 * ∑{r ∈ nodes()}(d{r});
 		j3 : ∀j ∈ cells(), ∀r ∈ nodesOfCell(j), b{j,r} = 0.;
 		j4 : ∀j ∈ cells(), a{j} = ∑{r∈nodesOfCell(j)}(b{j, r});
-		j5 : let ℝ z = ∑{j∈cells()}(∑{r∈nodesOfCell(j)}(X{r}));
+		j5 : let real z = ∑{j∈cells()}(∑{r∈nodesOfCell(j)}(X{r}));
 		j6 : ∀j ∈ cells(), ∀ rj ∈ rightCell(j), ∀ lj ∈ leftCell(j), c{j} = a{rj};
 		j7 : ∀j ∈ cells(), {
 				set rjset = rightCell(j);
@@ -110,8 +110,8 @@ class NablaScopeProviderTest
 		val model = 
 		'''
 		«testModule»
-		ℝ a{cells}, b{cells, nodesOfCell}, c{cells};
-		ℝ d{nodes};
+		real a{cells}, b{cells, nodesOfCell}, c{cells};
+		real d{nodes};
 
 		j1 : ∀j ∈ cells(), a{j} = 0.0;
 		j2 : ∀j ∈ cells(), c{j} = 0.25 * ∑{r ∈ nodes()}(d{r});
@@ -198,7 +198,7 @@ class NablaScopeProviderTest
 		val model =
 		'''
 		«testModule»
-		ℝ a{cells}, b{cells, nodesOfCell};
+		real a{cells}, b{cells, nodesOfCell};
 
 		j1 : ∀j ∈ cells(), a{j} = 0.0;
 		j2 : {
@@ -235,28 +235,28 @@ class NablaScopeProviderTest
 		val model =
 		'''
 		«testModule»
-		let ℝ a = 4.0;
-		let ℝ b1 = 0.0;
-		let ℝ b2 = b1;
-		ℝ[2] X{nodes};
-		ℝ c1 {cells}, c2 {cells};
+		let real a = 4.0;
+		let real b1 = 0.0;
+		let real b2 = b1;
+		real[2] X{nodes};
+		real c1 {cells}, c2 {cells};
 
 		iterate n while (n > 4), k while (n > 4 && k < 2);
 
 		j1: ∀ j∈cells(), {
 			c1{j} = a * 2;
-			let ℝ d = 6.0;
+			let real d = 6.0;
 			c2{j} = 2 * d;
 			∀ r, countr ∈ nodesOfCell(j), {
-				let ℝ e = 3.3;
-				ℝ f;
+				let real e = 3.3;
+				real f;
 				f = e + 1.0;
 			}
 		}
 
 		j2: {
-			ℝ[4] o;
-			ℝ[4, 2] p;
+			real[4] o;
+			real[4, 2] p;
 			∀ i∈[0;4[, 
 			{
 				o[i] = 4.0;
@@ -265,7 +265,7 @@ class NablaScopeProviderTest
 		}
 
 		j3: {
-			let ℝ z = ∑{j∈cells()}(∑{r∈nodesOfCell(j)}(∑{i∈[0;2[}(X{r}[i])));
+			let real z = ∑{j∈cells()}(∑{r∈nodesOfCell(j)}(∑{i∈[0;2[}(X{r}[i])));
 			z = z + 1;
 		}
 		'''
@@ -321,7 +321,7 @@ class NablaScopeProviderTest
 		val model =
 		'''
 		«emptyTestModule»
-		def reduceMin, ℝ.MaxValue: ℝ, (a, b) → return min(a, b);
+		def reduceMin, real.MaxValue: real, (a, b) → return min(a, b);
 		'''
 		val module = parseHelper.parse(model)
 		Assert.assertNotNull(module)
@@ -339,16 +339,16 @@ class NablaScopeProviderTest
 		val model =
 		'''
 		«emptyTestModule»
-		def f: x,y | ℝ[x] × ℝ[y] → ℝ[x+y], (a, b) →
+		def f: x,y | real[x] × real[y] → real[x+y], (a, b) →
 		{
-			let ℝ c = 2.0;
+			let real c = 2.0;
 			c = a * 2.0;
 			return c + 4.0;
 		}
-		def g: → ℝ, () →
+		def g: → real, () →
 		{
-			ℝ[4] n;
-			ℝ[4, 2] m;
+			real[4] n;
+			real[4, 2] m;
 			∀ i∈[0;4[, 
 			{
 				n[i] = 4.0;
@@ -389,16 +389,16 @@ class NablaScopeProviderTest
 		val model =
 		'''
 		«testModule»
-		ℝ[2] X{nodes};
-		ℝ c1 {cells};
+		real[2] X{nodes};
+		real c1 {cells};
 
 		j1: ∀ j∈cells(), {
 			c1{j} = 2.0;
 		}
 
 		j2: {
-			ℝ[4] n;
-			ℝ[4, 2] m;
+			real[4] n;
+			real[4, 2] m;
 			∀ i∈[0;4[, 
 			{
 				n[i] = 4.0;
@@ -407,7 +407,7 @@ class NablaScopeProviderTest
 		}
 
 		j3: {
-			let ℝ z = ∑{j∈cells()}(∑{r∈nodesOfCell(j)}(∑{k∈[0;1[}(X{r}[k+1])));
+			let real z = ∑{j∈cells()}(∑{r∈nodesOfCell(j)}(∑{k∈[0;1[}(X{r}[k+1])));
 			z = z + 1;
 		}
 		'''
@@ -448,15 +448,15 @@ class NablaScopeProviderTest
 		val model =
 		'''
 		«emptyTestModule»
-		def f: x,y | ℝ[x] × ℝ[y] → ℝ[x+y], (a, b) →
+		def f: x,y | real[x] × real[y] → real[x+y], (a, b) →
 		{
-			ℝ[x,y] c;
+			real[x,y] c;
 			return c;
 		}
-		def g: → ℝ, () →
+		def g: → real, () →
 		{
-			ℝ[4] n;
-			ℝ[4, 2] m;
+			real[4] n;
+			real[4, 2] m;
 			∀ i∈[0;4[, 
 			{
 				n[i] = 4.0;

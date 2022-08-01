@@ -10,44 +10,44 @@
 extension Math;
 
 // ***** REDUCTIONS *****
-def ∑, 0.0: ℝ, (a, b) → return a + b;
-def ∑, 0.0: x | ℝ[x], (a, b) → return a + b;
-def ∑, 0.0: x | ℝ[x, x], (a, b) → return a + b;
+def ∑, 0.0: real, (a, b) → return a + b;
+def ∑, 0.0: x | real[x], (a, b) → return a + b;
+def ∑, 0.0: x | real[x, x], (a, b) → return a + b;
 
-def ∏, 1.0: ℝ, (a, b) → return a * b;
-def ∏, 1.0: x | ℝ[x], (a, b) → return a * b;
-def ∏, 1.0: x | ℝ[x, x], (a, b) → return a * b;
+def ∏, 1.0: real, (a, b) → return a * b;
+def ∏, 1.0: x | real[x], (a, b) → return a * b;
+def ∏, 1.0: x | real[x, x], (a, b) → return a * b;
 
-def Min, ℝ.MaxValue: ℝ, (a, b) → return min(a, b);
-def Max, ℝ.MinValue: ℝ, (a, b) → return max(a, b);
+def Min, real.MaxValue: real, (a, b) → return min(a, b);
+def Max, real.MinValue: real, (a, b) → return max(a, b);
 
 // ***** FUNCTIONS *****
-def abs: ℝ → ℝ;
-def min: ℝ × ℝ → ℝ;
-def max: ℝ × ℝ → ℝ;
+def abs: real → real;
+def min: real × real → real;
+def max: real × real → real;
 
-def cos: ℝ → ℝ;
-def sin: ℝ → ℝ;
-def tan: ℝ → ℝ;
-def acos: ℝ → ℝ;
-def asin: ℝ → ℝ;
-def atan: ℝ → ℝ;
-def atan2: ℝ × ℝ → ℝ;
+def cos: real → real;
+def sin: real → real;
+def tan: real → real;
+def acos: real → real;
+def asin: real → real;
+def atan: real → real;
+def atan2: real × real → real;
 
-def exp: ℝ → ℝ;
-def log: ℝ → ℝ;
-def log10: ℝ → ℝ;
-def erf: ℝ → ℝ;
+def exp: real → real;
+def log: real → real;
+def log10: real → real;
+def erf: real → real;
 
-def pow: ℝ × ℝ → ℝ;
-def √: ℝ → ℝ;
+def pow: real × real → real;
+def √: real → real;
 
-def matVectProduct: x, y  | ℝ[x,y] × ℝ[y] → ℝ[x], (a, b) →
+def matVectProduct: x, y  | real[x,y] × real[y] → real[x], (a, b) →
 {
-	ℝ[x] result;
+	real[x] result;
 	∀ ix ∈ [0;x[,
 	{
-		ℝ[y] tmp;
+		real[y] tmp;
 		∀ iy ∈ [0;y[, tmp[iy] = a[ix, iy];
 		result[ix] = dot(tmp, b);
 	}
@@ -55,16 +55,16 @@ def matVectProduct: x, y  | ℝ[x,y] × ℝ[y] → ℝ[x], (a, b) →
 }
 
 // scalar product
-def dot: x | ℝ[x] × ℝ[x] → ℝ, (a, b) →
+def dot: x | real[x] × real[x] → real, (a, b) →
 {
-	let ℝ result = 0.0;
+	let real result = 0.0;
 	∀ i ∈ [0;x[,
 		result = result + a[i]*b[i];
 	return result;
 }
 
 // 2D cross products
-def det: ℝ[2] × ℝ[2] → ℝ, (a, b) → return (a[0]*b[1] - a[1]*b[0]);
-def det: ℝ[2,2] → ℝ, (a) → return a[0,0] * a[1,1] - a[0,1] * a[1,0];
+def det: real[2] × real[2] → real, (a, b) → return (a[0]*b[1] - a[1]*b[0]);
+def det: real[2,2] → real, (a) → return a[0,0] * a[1,1] - a[0,1] * a[1,0];
 
-def norm: x | ℝ[x] → ℝ, (a) → return √(dot(a,a));
+def norm: x | real[x] → real, (a) → return √(dot(a,a));

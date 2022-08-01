@@ -197,7 +197,7 @@ class FunctionOrReductionValidator extends BasicValidator
 		val seedType = seed?.typeFor
 		// Seed must be scalar and Seed rootType must be the same as Return rootType
 		// If type is Array, the reduction Seed will be used as many times as Array size
-		// Ex (ℕ.MaxValue, ℝ])→ℕ[2]; -> we will use (ℕ.MaxValue, ℕ.MaxValue) as reduction seed
+		// Ex (int.MaxValue, real])→int[2]; -> we will use (int.MaxValue, int.MaxValue) as reduction seed
 		if (seedType !== null)
 		{
 			val rType = typeDeclaration.type.primitive

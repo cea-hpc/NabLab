@@ -66,7 +66,7 @@ class ArgOrVarTypeProviderTest
 		'''
 		linearalgebra extension LinearAlgebra;
 
-		def solveLinearSystem: x | ℝ[x, x] × ℝ[x] → ℝ[x], (a, b) → return b;
+		def solveLinearSystem: x | real[x, x] × real[x] → real[x], (a, b) → return b;
 		'''
 
 		val nablaModel =
@@ -76,62 +76,62 @@ class ArgOrVarTypeProviderTest
 		with LinearAlgebra.*;
 		with CartesianMesh2D.*;
 
-		def norm: x | ℝ[x] → ℝ, (a) → return 1.0;
+		def norm: x | real[x] → real, (a) → return 1.0;
 
 		// bool scalar
-		ℾ b;
-		let ℾ optb = false;
+		bool b;
+		let bool optb = false;
 
 		// int scalar
-		ℕ i;
-		let ℕ opti = 3;
+		int i;
+		let int opti = 3;
 
 		// real scalar
-		ℝ r;
-		let ℝ optr = 3.3;
+		real r;
+		let real optr = 3.3;
 
 		// bool array 1D
-		ℾ[2] tabb;
-		let ℾ[3] opttabb = [ true, false, true ];
+		bool[2] tabb;
+		let bool[3] opttabb = [ true, false, true ];
 
 		// int array 1D
-		ℕ[2] tabi;
-		let ℕ[3] opttabi = [ 3, 4, 5 ];
+		int[2] tabi;
+		let int[3] opttabi = [ 3, 4, 5 ];
 
 		// real array 1D
-		ℝ[2] tabr;
-		let ℝ[3] opttabr = [ 1.1, 2.2, 3.3 ];
+		real[2] tabr;
+		let real[3] opttabr = [ 1.1, 2.2, 3.3 ];
 
 		// bool array 2D
-		ℾ[2, 3] tab2b;
-		let ℾ[3, 2] opttab2b = [ [true, false], [true, false], [true, false] ];
+		bool[2, 3] tab2b;
+		let bool[3, 2] opttab2b = [ [true, false], [true, false], [true, false] ];
 
 		// int array 2D
-		ℕ[2, 3] tab2i;
-		let ℕ[3, 2] opttab2i = [ [1, 2], [3, 4], [5, 6] ];
+		int[2, 3] tab2i;
+		let int[3, 2] opttab2i = [ [1, 2], [3, 4], [5, 6] ];
 
 		// real array 2D
-		ℝ[2, 3] tab2r;
-		let ℝ[3, 2] opttab2r = [ [1.1, 2.2], [3.3, 4.4], [5.5, 6.6] ];
+		real[2, 3] tab2r;
+		let real[3, 2] opttab2r = [ [1.1, 2.2], [3.3, 4.4], [5.5, 6.6] ];
 
 		// array with size from a const
-		let ℕ dim = 6;
-		ℝ[dim] dimtab;
+		let int dim = 6;
+		real[dim] dimtab;
 
 		// dynamic array not allowed on global variables
 		// except with options
-		ℕ dyndimopt;
-		ℝ[dyndimopt] dyndimtabopt;
+		int dyndimopt;
+		real[dyndimopt] dyndimtabopt;
 
 		// connectivity variables
-		ℝ[2] X{nodes};
-		ℝ pressure{cells};
-		ℝ Cjr{cells, nodesOfCell};
-		ℝ[2] w{cells, nodesOfCell};
+		real[2] X{nodes};
+		real pressure{cells};
+		real Cjr{cells, nodesOfCell};
+		real[2] w{cells, nodesOfCell};
 
 		// linear algebra
-		ℝ u{cells};
-		ℝ α{cells, cells};
+		real u{cells};
+		real α{cells, cells};
 
 		iterate n while (true);
 
@@ -139,7 +139,7 @@ class ArgOrVarTypeProviderTest
 
 		// local variable
 		ComputeX: ∀ j∈cells(), {
-			let ℝ ee = 1.0;
+			let real ee = 1.0;
 			u^{n}{j} = ee * 4;
 			∀r∈nodesOfCell(j), Cjr{j,r} = norm(w{j,r});
 		}

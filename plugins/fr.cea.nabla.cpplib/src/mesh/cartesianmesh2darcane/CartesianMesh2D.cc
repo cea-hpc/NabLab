@@ -114,6 +114,11 @@ CartesianMesh2D::CartesianMesh2D(IMesh* mesh)
 	UniqueArray<Int32> left_nodes(nb_left_nodes);
 	UniqueArray<Int32> right_nodes(nb_right_nodes);
 
+	UniqueArray<Int32> top_left_node(1);
+	UniqueArray<Int32> top_right_node(1);
+	UniqueArray<Int32> bottom_left_node(1);
+	UniqueArray<Int32> bottom_right_node(1);
+
 	Int32 inner_node_id(0);
 	Int32 top_node_id(0);
 	Int32 bottom_node_id(0);
@@ -130,6 +135,14 @@ CartesianMesh2D::CartesianMesh2D(IMesh* mesh)
 			 unique_id / (nb_x_total + 1) != 0 &&
 			 unique_id / (nb_x_total + 1) != nb_y_total)
 			inner_nodes[inner_node_id++] = n.localId();
+		if (unique_id == nb_x_quads)
+			bottom_right_node[0] = n.localId();
+		if (unique_id == 0)
+			bottom_left_node[0] = n.localId();
+		if (unique_id == (nb_x_quads +1) * (nb_y_quads +1) - 1)
+			top_right_node[0] = n.localId();
+		if (unique_id == (nb_x_quads +1) * nb_y_quads)
+			top_left_node[0] = n.localId();
 		if(unique_id / (nb_x_total + 1) == 0)
 			bottom_nodes[bottom_node_id++] = n.localId();
 		else if(unique_id / (nb_x_total + 1) == nb_y_total)
@@ -254,6 +267,10 @@ CartesianMesh2D::CartesianMesh2D(IMesh* mesh)
 	m_groups[CartesianMesh2D::BottomNodes] = node_family->createGroup(CartesianMesh2D::BottomNodes, bottom_nodes);
 	m_groups[CartesianMesh2D::LeftNodes] = node_family->createGroup(CartesianMesh2D::LeftNodes, left_nodes);
 	m_groups[CartesianMesh2D::RightNodes] = node_family->createGroup(CartesianMesh2D::RightNodes, right_nodes);
+	m_groups[CartesianMesh2D::TopLeftNode] = node_family->createGroup(CartesianMesh2D::TopLeftNode, top_left_node);
+	m_groups[CartesianMesh2D::TopRightNode] = node_family->createGroup(CartesianMesh2D::TopRightNode, top_right_node);
+	m_groups[CartesianMesh2D::BottomLeftNode] = node_family->createGroup(CartesianMesh2D::BottomLeftNode, bottom_left_node);
+	m_groups[CartesianMesh2D::BottomRightNode] = node_family->createGroup(CartesianMesh2D::BottomRightNode, bottom_right_node);
 
 	m_groups[CartesianMesh2D::InnerCells] = cell_family->createGroup(CartesianMesh2D::InnerCells, inner_cells);
 	m_groups[CartesianMesh2D::TopCells] = cell_family->createGroup(CartesianMesh2D::TopCells, top_cells);

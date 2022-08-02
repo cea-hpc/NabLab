@@ -47,16 +47,13 @@ class ComputeSynchronizeTest
 		iterate n while (t^{n+1} < stopTime && n+1 < maxIterations);
 		
 		IniTime: t^{n=0} = 0.0;
-		// scalar affectation => no change ------- no synchro
+
 		J1: ∀j∈nodes(), l{j} = norm(X{j});
 		
-		// Array variable affectation => replace by loop ------- synchro
 		J2: ∀j∈cells(), s{j} = ∑{r∈nodesOfCell(j)}(l{r});
 		
-		// Connectivity variable. Un = Un+1 at the end of time loop => replace by loop ------- no synchro
 		J3: ∀j∈cells(), u^{n+1}{j} = δt + u^{n}{j} + 1.0;
 		
-		// Connectivity array variable. Vn = Vn+1 at the end of time loop => replace by loop ------- synchro
 		J4: ∀j∈cells(), v^{n+1}{j} = ∑{r∈neighbourCells(j)}(v^{n}{r});
 		'''
 

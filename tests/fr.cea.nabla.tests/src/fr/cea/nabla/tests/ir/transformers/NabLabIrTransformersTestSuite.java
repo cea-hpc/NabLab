@@ -20,8 +20,8 @@ import org.junit.runners.Suite;
 	ReplaceAffectationsTest.class,
 	ReplaceOptionsByLocalVariablesTest.class,
 	ComputeSynchronizeTest.class,
-	ComputeOverSynchronizeTest.class//,
-	//ReplaceSynchronizeByGhostComputingTest.class
+	ComputeOverSynchronizeTest.class,
+	ReplaceSynchronizeByGhostComputingTest.class
 })
 
 public class NabLabIrTransformersTestSuite {}

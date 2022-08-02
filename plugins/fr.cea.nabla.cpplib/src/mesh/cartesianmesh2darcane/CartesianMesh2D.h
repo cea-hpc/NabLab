@@ -34,6 +34,10 @@ public:
 	inline static const string BottomNodes = "BottomNodes";
 	inline static const string LeftNodes = "LeftNodes";
 	inline static const string RightNodes = "RightNodes";
+	inline static const string TopLeftNode = "TopLeftNode";
+	inline static const string TopRightNode = "TopRightNode";
+	inline static const string BottomLeftNode = "BottomLeftNode";
+	inline static const string BottomRightNode = "BottomRightNode";
 
 	// CELLS
 	inline static const string InnerCells = "InnerCells";

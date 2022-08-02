@@ -88,6 +88,10 @@ executeCode(ISubDomain* sd)
 	vector<int> expected_top_faces{27, 28, 29, 30};
 	vector<int> expected_left_faces{0, 5, 10};
 	vector<int> expected_right_faces{4, 9, 14};
+	vector<int> expected_bottom_left_node{0};
+	vector<int> expected_bottom_right_node{4};
+	vector<int> expected_top_left_node{15};
+	vector<int> expected_top_right_node{19};
 
 	assertSame(mesh->getGroup(CartesianMesh2D::InnerFaces), expected_inner_faces);
 	assertSame(mesh->getGroup(CartesianMesh2D::BottomFaces), expected_bottom_faces);
@@ -95,10 +99,10 @@ executeCode(ISubDomain* sd)
 	assertSame(mesh->getGroup(CartesianMesh2D::LeftFaces), expected_left_faces);
 	assertSame(mesh->getGroup(CartesianMesh2D::RightFaces), expected_right_faces);
 
-//	assertSame(mesh->getGroup(CartesianMesh2D::BottomLeftNode)[0], 0);
-//	assertSame(mesh->getGroup(CartesianMesh2D::BottomRightNode)[0], 4);
-//	assertSame(mesh->getGroup(CartesianMesh2D::TopLeftNode)[0], 15);
-//	assertSame(mesh->getGroup(CartesianMesh2D::TopRightNode)[0], 19);
+	assertSame(mesh->getGroup(CartesianMesh2D::BottomLeftNode), expected_bottom_left_node);
+	assertSame(mesh->getGroup(CartesianMesh2D::BottomRightNode), expected_bottom_right_node);
+	assertSame(mesh->getGroup(CartesianMesh2D::TopLeftNode), expected_top_left_node);
+	assertSame(mesh->getGroup(CartesianMesh2D::TopRightNode), expected_top_right_node);
 
 	tr->info() << "End of executeCode";
 }

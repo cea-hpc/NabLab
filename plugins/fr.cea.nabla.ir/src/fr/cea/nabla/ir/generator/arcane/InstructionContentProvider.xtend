@@ -18,7 +18,9 @@ import fr.cea.nabla.ir.ir.BaseType
 import fr.cea.nabla.ir.ir.ConnectivityCall
 import fr.cea.nabla.ir.ir.Container
 import fr.cea.nabla.ir.ir.Exit
+import fr.cea.nabla.ir.ir.ExternFunction
 import fr.cea.nabla.ir.ir.Function
+import fr.cea.nabla.ir.ir.FunctionCall
 import fr.cea.nabla.ir.ir.If
 import fr.cea.nabla.ir.ir.Instruction
 import fr.cea.nabla.ir.ir.InstructionBlock
@@ -28,7 +30,6 @@ import fr.cea.nabla.ir.ir.ItemIdDefinition
 import fr.cea.nabla.ir.ir.ItemIndexDefinition
 import fr.cea.nabla.ir.ir.Iterator
 import fr.cea.nabla.ir.ir.Loop
-import fr.cea.nabla.ir.ir.MESSAGE
 import fr.cea.nabla.ir.ir.ReductionInstruction
 import fr.cea.nabla.ir.ir.Return
 import fr.cea.nabla.ir.ir.SetDefinition
@@ -38,6 +39,7 @@ import fr.cea.nabla.ir.ir.Variable
 import fr.cea.nabla.ir.ir.VariableDeclaration
 import fr.cea.nabla.ir.ir.While
 
+import static fr.cea.nabla.ir.generator.arcane.ArcaneUtils.*
 import static fr.cea.nabla.ir.generator.arcane.TypeContentProvider.*
 
 import static extension fr.cea.nabla.ir.ArgOrVarExtensions.*
@@ -81,6 +83,14 @@ class InstructionContentProvider
 			'''«left.codeName».setValue(«formatIteratorsAndIndices(left.target, left.iterators, left.indices)», «right.content»);'''
 		else if (isNumArray(left.target))
 			'''«left.codeName».s«formatIteratorsAndIndices(left.target, left.iterators, left.indices)» = «right.content»;'''
+		else if (left.target.linearAlgebra && right instanceof FunctionCall)
+		{
+			val functionCall = right as FunctionCall
+			val function = functionCall.function
+			if(function instanceof ExternFunction)
+				if(function.name == "solveLinearSystem" && isAlienLinearAlgebraProvider(function.provider))
+					'''«right.content.toString.replace(")", ", " +left.content + ")")»;'''
+		}
 		else
 			'''
 				«left.content» = «right.content»;
@@ -240,12 +250,6 @@ class InstructionContentProvider
 	'''
 		«ArcaneUtils.getCodeName(variable)».synchronize();
 	'''
-	
-	static def dispatch CharSequence getContent(MESSAGE it)
-	'''
-		// !!! MESSAGE <«string»> !!!
-	'''
-	
 
 	static def getInnerContent(Instruction it)
 	{

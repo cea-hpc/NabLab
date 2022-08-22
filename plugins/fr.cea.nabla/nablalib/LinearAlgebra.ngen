@@ -17,7 +17,7 @@ Provider LinearAlgebraStl : LinearAlgebra
 
 Provider LinearAlgebraAlien : LinearAlgebra
 {
-	target = Arcane;
+	target = ArcaneSequential;
 	outputPath = "/.nablab/linearalgebra";
 }
 

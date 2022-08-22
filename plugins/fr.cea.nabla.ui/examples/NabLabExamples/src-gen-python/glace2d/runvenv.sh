@@ -6,7 +6,7 @@
 # Execute glace2d.py in a virtual environment.
 # Used by tests to reproduce results.
 #
-export N_WS_PATH=$HOME/workspaces/NabLab/plugins/fr.cea.nabla.ui/examples
+export N_WS_PATH=$HOME/WorkspaceDev/NabLab/plugins/fr.cea.nabla.ui/examples
 export PYTHONPATH=$N_WS_PATH/.nablab/mesh/cartesianmesh2dnumpy:$N_WS_PATH/.nablab/linearalgebra/linearalgebranumpy
 
 echo ==== Creating Python virtual environment

@@ -8,7 +8,7 @@ set(CMAKE_VERBOSE_MAKEFILE FALSE)
 set(CMAKE_CXX_COMPILER /usr/bin/g++)
 set(Kokkos_ROOT $ENV{HOME}/kokkos/install)
 set(KokkosKernels_ROOT $ENV{HOME}/kokkos/install)
-set(N_WS_PATH $ENV{HOME}/workspaces/NabLab/plugins/fr.cea.nabla.ui/examples)
+set(N_WS_PATH $ENV{HOME}/WorkspaceDev/NabLab/plugins/fr.cea.nabla.ui/examples)
 set(LINEARALGEBRAKOKKOS_PATH ${N_WS_PATH}/.nablab/linearalgebra/linearalgebrakokkos)
 set(CARTESIANMESH2DSTL_PATH ${N_WS_PATH}/.nablab/mesh/cartesianmesh2dstl)
 

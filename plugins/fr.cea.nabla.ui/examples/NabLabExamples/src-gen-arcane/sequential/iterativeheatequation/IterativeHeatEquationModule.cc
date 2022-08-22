@@ -7,7 +7,6 @@
 using namespace Arcane;
 
 /*** Free functions **********************************************************/
-
 namespace iterativeheatequationfreefuncs
 {
 	const bool check(const bool a)
@@ -111,6 +110,7 @@ void IterativeHeatEquationModule::init()
 	m_k = 0;
 	m_deltat = 0.001;
 	m_alpha.resize(nbCell());
+	
 
 	// calling jobs
 	computeFaceLength(); // @1.0
@@ -169,7 +169,7 @@ void IterativeHeatEquationModule::computeTn()
  */
 void IterativeHeatEquationModule::computeV()
 {
-	ENUMERATE_CELL(jCells, allCells())
+	ENUMERATE_CELL(jCells, ownCells())
 	{
 		const auto jId(jCells.asItemLocalId());
 		Real reduction0(0.0);
@@ -244,7 +244,7 @@ void IterativeHeatEquationModule::initXc()
  */
 void IterativeHeatEquationModule::setUpTimeLoopK()
 {
-	ENUMERATE_CELL(i1Cells, allCells())
+	ENUMERATE_CELL(i1Cells, ownCells())
 	{
 		m_u_nplus1_k[i1Cells] = m_u_n[i1Cells];
 	}
@@ -257,7 +257,8 @@ void IterativeHeatEquationModule::setUpTimeLoopK()
  */
 void IterativeHeatEquationModule::updateU()
 {
-	ENUMERATE_CELL(cCells, allCells())
+	m_u_nplus1_k.synchronize();
+	ENUMERATE_CELL(cCells, ownCells())
 	{
 		const auto cId(cCells.asItemLocalId());
 		Real reduction0(0.0);
@@ -271,7 +272,7 @@ void IterativeHeatEquationModule::updateU()
 				reduction0 = iterativeheatequationfreefuncs::sumR0(reduction0, m_alpha[cCells][dCells] * m_u_nplus1_k[dCells]);
 			}
 		}
-		m_u_nplus1_kplus1[cCells] = m_u_n[cCells] + m_alpha[cCells][cCells.localId()] * m_u_nplus1_k[cCells] + reduction0;
+		m_u_nplus1_kplus1[cCells] = m_u_n[cCells] + m_alpha[cCells][cCells->localId()] * m_u_nplus1_k[cCells] + reduction0;
 	}
 }
 
@@ -283,10 +284,11 @@ void IterativeHeatEquationModule::updateU()
 void IterativeHeatEquationModule::computeDeltaTn()
 {
 	Real reduction0(numeric_limits<double>::max());
-	ENUMERATE_CELL(cCells, allCells())
+	ENUMERATE_CELL(cCells, ownCells())
 	{
 		reduction0 = iterativeheatequationfreefuncs::minR0(reduction0, m_V[cCells] / m_D[cCells]);
 	}
+	reduction0 = parallelMng()->reduce(Parallel::ReduceMin, reduction0);
 	m_deltat = reduction0 * 0.1;
 	m_global_deltat = m_deltat;
 }
@@ -298,7 +300,7 @@ void IterativeHeatEquationModule::computeDeltaTn()
  */
 void IterativeHeatEquationModule::computeFaceConductivity()
 {
-	ENUMERATE_FACE(fFaces, allFaces())
+	ENUMERATE_FACE(fFaces, ownFaces())
 	{
 		const auto fId(fFaces.asItemLocalId());
 		Real reduction0(1.0);
@@ -335,10 +337,11 @@ void IterativeHeatEquationModule::computeFaceConductivity()
 void IterativeHeatEquationModule::computeResidual()
 {
 	Real reduction0(-numeric_limits<double>::max());
-	ENUMERATE_CELL(jCells, allCells())
+	ENUMERATE_CELL(jCells, ownCells())
 	{
 		reduction0 = iterativeheatequationfreefuncs::maxR0(reduction0, std::abs(m_u_nplus1_kplus1[jCells] - m_u_nplus1_k[jCells]));
 	}
+	reduction0 = parallelMng()->reduce(Parallel::ReduceMax, reduction0);
 	m_residual = reduction0;
 }
 
@@ -361,7 +364,7 @@ void IterativeHeatEquationModule::executeTimeLoopK()
 		// Evaluate loop condition with variables at time n
 		continueLoop = (m_residual > m_epsilon && iterativeheatequationfreefuncs::check(m_k + 1 < m_maxIterationsK));
 	
-		ENUMERATE_CELL(i1Cells, allCells())
+		ENUMERATE_CELL(i1Cells, ownCells())
 		{
 			m_u_nplus1_k[i1Cells] = m_u_nplus1_kplus1[i1Cells];
 		}
@@ -375,7 +378,7 @@ void IterativeHeatEquationModule::executeTimeLoopK()
  */
 void IterativeHeatEquationModule::initU()
 {
-	ENUMERATE_CELL(cCells, allCells())
+	ENUMERATE_CELL(cCells, ownCells())
 	{
 		if (iterativeheatequationfreefuncs::norm(Real2(iterativeheatequationfreefuncs::operatorSub(m_Xc[cCells], m_vectOne))) < 0.5) 
 			m_u_n[cCells] = m_u0;
@@ -401,7 +404,8 @@ void IterativeHeatEquationModule::setUpTimeLoopN()
  */
 void IterativeHeatEquationModule::computeAlphaCoeff()
 {
-	ENUMERATE_CELL(cCells, allCells())
+	m_faceConductivity.synchronize();
+	ENUMERATE_CELL(cCells, ownCells())
 	{
 		const auto cId(cCells.asItemLocalId());
 		Real alphaDiag(0.0);
@@ -419,7 +423,7 @@ void IterativeHeatEquationModule::computeAlphaCoeff()
 				alphaDiag = alphaDiag + alphaExtraDiag;
 			}
 		}
-		m_alpha[cCells][cCells.localId()] = -alphaDiag;
+		m_alpha[cCells][cCells->localId()] = -alphaDiag;
 	}
 }
 
@@ -430,7 +434,7 @@ void IterativeHeatEquationModule::computeAlphaCoeff()
  */
 void IterativeHeatEquationModule::tearDownTimeLoopK()
 {
-	ENUMERATE_CELL(i1Cells, allCells())
+	ENUMERATE_CELL(i1Cells, ownCells())
 	{
 		m_u_nplus1[i1Cells] = m_u_nplus1_kplus1[i1Cells];
 	}
@@ -453,7 +457,7 @@ void IterativeHeatEquationModule::executeTimeLoopN()
 	bool continueLoop = (m_t_nplus1 < options()->stopTime() && m_n + 1 < options()->maxIterations());
 	
 	m_t_n = m_t_nplus1;
-	ENUMERATE_CELL(i1Cells, allCells())
+	ENUMERATE_CELL(i1Cells, ownCells())
 	{
 		m_u_n[i1Cells] = m_u_nplus1[i1Cells];
 	}

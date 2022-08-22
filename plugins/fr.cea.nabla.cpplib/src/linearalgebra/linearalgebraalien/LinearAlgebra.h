@@ -41,7 +41,6 @@ public:
 
   void jsonInit(const char* jsonContent) {}
 
-
   /**
    * @brief Solve the linear equation A*x=b
    * 
@@ -49,13 +48,12 @@ public:
    * @param A Matrix
    * @param b Vector
    * @param x Vector
-   * @param allUIndex Array of index
    */
   template<typename ItemType>
-  void solveLinearSystem(Matrix& A, Arcane2AlienVector<ItemType>& b, Arcane2AlienVector<ItemType>& x, const UniqueArray<Alien::Integer>& allUIndex)
+  void solveLinearSystem(Matrix& A, Arcane2AlienVector<ItemType>& b, Arcane2AlienVector<ItemType>& x)
   {
     m_linear_algebra.solve(A.get(), b.get(), x.get());
-    x.updateValue(allUIndex);
+    x.updateValue();
   }
 
 

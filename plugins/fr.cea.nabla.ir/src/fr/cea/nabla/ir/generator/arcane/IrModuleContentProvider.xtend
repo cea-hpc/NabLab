@@ -80,7 +80,7 @@ class IrModuleContentProvider
 	«FOR provider : externalProviders»
 	#include "«provider.className».h"
 	«ENDFOR»
-	«IF variables.exists[v | TypeContentProvider.isArcaneAlienVector(v.type)]»
+	«IF variables.exists[v | TypeContentProvider.isArcaneStlVector(v.type)]»
 	#include "Arcane2StlVector.h"
 	«ENDIF»
 
@@ -179,7 +179,7 @@ class IrModuleContentProvider
 	«className»::«className»(const «IF ArcaneUtils.isArcaneModule(it)»Module«ELSE»Service«ENDIF»BuildInfo& bi)
 	: Arcane«name.toFirstUpper»Object(bi)
 	«FOR v : variables.filter[x | (x.type instanceof LinearAlgebraType)]»
-		, «v.codeName»(«IF TypeContentProvider.isArcaneAlienVector(v.type)»this, «ENDIF»"«v.name»")
+		, «v.codeName»(«IF TypeContentProvider.isArcaneAlienVector(v.type) || TypeContentProvider.isArcaneStlVector(v.type)»this, «ENDIF»"«v.name»")
 	«ENDFOR»
 	«IF AcceleratorAnnotation.tryToGet(it) !== null»
 		, m_default_queue(subDomain()->acceleratorMng()->defaultQueue())
@@ -238,7 +238,7 @@ class IrModuleContentProvider
 		Distribution distribution;
 		distribution.prepare(m_parallel_mng, uid, owners);
 		«ENDIF»
-		«FOR v : variables.filter[v | TypeContentProvider.isArcaneAlienVector(v.type) || TypeContentProvider.isArcaneAlienMatrix(v.type) ]»
+		«FOR v : variables.filter[v | TypeContentProvider.isArcaneAlienVector(v.type) || TypeContentProvider.isArcaneAlienMatrix(v.type)]»
 		distribution.create(«v.codeName», m_parallel_mng);
 		«ENDFOR»
 

@@ -7,7 +7,6 @@
 using namespace Arcane;
 
 /*** Free functions **********************************************************/
-
 namespace heatequationfreefuncs
 {
 	const Real det(RealArrayVariant a, RealArrayVariant b)
@@ -89,6 +88,7 @@ void HeatEquationModule::init()
 
 	// constant time step
 	m_global_deltat = m_deltat;
+	
 
 	// calling jobs
 	computeSurface(); // @1.0
@@ -114,7 +114,7 @@ void HeatEquationModule::computeOutgoingFlux()
 	auto in_deltat = m_deltat;
 	auto in_V = ax::viewIn(command, m_V);
 	auto out_outgoingFlux = ax::viewOut(command, m_outgoingFlux);
-	command << RUNCOMMAND_ENUMERATE(Cell, j1Cells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, j1Cells, ownCells())
 	{
 		const auto j1Id(j1Cells);
 		Real reduction0(0.0);
@@ -145,7 +145,7 @@ void HeatEquationModule::computeSurface()
 	auto command = makeCommand(m_default_queue);
 	auto in_X = ax::viewIn(command, m_X);
 	auto out_surface = ax::viewOut(command, m_surface);
-	command << RUNCOMMAND_ENUMERATE(Face, fFaces, allFaces())
+	command << RUNCOMMAND_ENUMERATE(Face, fFaces, ownFaces())
 	{
 		const auto fId(fFaces);
 		Real reduction0(0.0);
@@ -185,7 +185,7 @@ void HeatEquationModule::computeV()
 	auto command = makeCommand(m_default_queue);
 	auto in_X = ax::viewIn(command, m_X);
 	auto out_V = ax::viewOut(command, m_V);
-	command << RUNCOMMAND_ENUMERATE(Cell, jCells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, jCells, ownCells())
 	{
 		const auto jId(jCells);
 		Real reduction0(0.0);
@@ -215,7 +215,7 @@ void HeatEquationModule::iniCenter()
 	auto command = makeCommand(m_default_queue);
 	auto in_X = ax::viewIn(command, m_X);
 	auto out_center = ax::viewOut(command, m_center);
-	command << RUNCOMMAND_ENUMERATE(Cell, jCells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, jCells, ownCells())
 	{
 		const auto jId(jCells);
 		Real2 reduction0{0.0, 0.0};
@@ -242,7 +242,7 @@ void HeatEquationModule::iniF()
 {
 	auto command = makeCommand(m_default_queue);
 	auto out_f = ax::viewOut(command, m_f);
-	command << RUNCOMMAND_ENUMERATE(Cell, jCells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, jCells, ownCells())
 	{
 		out_f[jCells] = 0.0;
 	};
@@ -271,7 +271,7 @@ void HeatEquationModule::computeUn()
 	auto in_u_n = ax::viewIn(command, m_u_n);
 	auto in_outgoingFlux = ax::viewIn(command, m_outgoingFlux);
 	auto out_u_nplus1 = ax::viewOut(command, m_u_nplus1);
-	command << RUNCOMMAND_ENUMERATE(Cell, jCells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, jCells, ownCells())
 	{
 		out_u_nplus1[jCells] = in_f[jCells] * in_deltat + in_u_n[jCells] + in_outgoingFlux[jCells];
 	};
@@ -289,7 +289,7 @@ void HeatEquationModule::iniUn()
 	auto in_alpha = m_alpha;
 	auto in_center = ax::viewIn(command, m_center);
 	auto out_u_n = ax::viewOut(command, m_u_n);
-	command << RUNCOMMAND_ENUMERATE(Cell, jCells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, jCells, ownCells())
 	{
 		out_u_n[jCells] = std::cos(2 * in_PI * in_alpha * in_center[jCells][0]);
 	};
@@ -325,7 +325,7 @@ void HeatEquationModule::executeTimeLoopN()
 		auto command = makeCommand(m_default_queue);
 		auto in_u_nplus1 = ax::viewIn(command, m_u_nplus1);
 		auto out_u_n = ax::viewOut(command, m_u_n);
-		command << RUNCOMMAND_ENUMERATE(Cell, i1Cells, allCells())
+		command << RUNCOMMAND_ENUMERATE(Cell, i1Cells, ownCells())
 		{
 			out_u_n[i1Cells] = in_u_nplus1[i1Cells];
 		};

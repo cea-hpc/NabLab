@@ -7,7 +7,6 @@
 using namespace Arcane;
 
 /*** Free functions **********************************************************/
-
 namespace explicitheatequationfreefuncs
 {
 	const Real norm(RealArrayVariant a)
@@ -98,6 +97,7 @@ void ExplicitHeatEquationModule::init()
 	m_n = 0;
 	m_deltat = 0.001;
 	m_alpha.resize(nbCell());
+	
 
 	// calling jobs
 	computeFaceLength(); // @1.0
@@ -122,7 +122,7 @@ void ExplicitHeatEquationModule::computeFaceLength()
 	auto command = makeCommand(m_default_queue);
 	auto in_X = ax::viewIn(command, m_X);
 	auto out_faceLength = ax::viewOut(command, m_faceLength);
-	command << RUNCOMMAND_ENUMERATE(Face, fFaces, allFaces())
+	command << RUNCOMMAND_ENUMERATE(Face, fFaces, ownFaces())
 	{
 		const auto fId(fFaces);
 		Real reduction0(0.0);
@@ -162,7 +162,7 @@ void ExplicitHeatEquationModule::computeV()
 	auto command = makeCommand(m_default_queue);
 	auto in_X = ax::viewIn(command, m_X);
 	auto out_V = ax::viewOut(command, m_V);
-	command << RUNCOMMAND_ENUMERATE(Cell, cCells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, cCells, ownCells())
 	{
 		const auto cId(cCells);
 		Real reduction0(0.0);
@@ -191,7 +191,7 @@ void ExplicitHeatEquationModule::initD()
 {
 	auto command = makeCommand(m_default_queue);
 	auto out_D = ax::viewOut(command, m_D);
-	command << RUNCOMMAND_ENUMERATE(Cell, cCells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, cCells, ownCells())
 	{
 		out_D[cCells] = 1.0;
 	};
@@ -217,7 +217,7 @@ void ExplicitHeatEquationModule::initXc()
 	auto command = makeCommand(m_default_queue);
 	auto in_X = ax::viewIn(command, m_X);
 	auto out_Xc = ax::viewOut(command, m_Xc);
-	command << RUNCOMMAND_ENUMERATE(Cell, cCells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, cCells, ownCells())
 	{
 		const auto cId(cCells);
 		Real2 reduction0{0.0, 0.0};
@@ -246,7 +246,7 @@ void ExplicitHeatEquationModule::updateU()
 	auto in_alpha = ax::viewIn(command, m_alpha);
 	auto in_u_n = ax::viewIn(command, m_u_n);
 	auto out_u_nplus1 = ax::viewOut(command, m_u_nplus1);
-	command << RUNCOMMAND_ENUMERATE(Cell, cCells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, cCells, ownCells())
 	{
 		const auto cId(cCells);
 		Real reduction0(0.0);
@@ -277,7 +277,7 @@ void ExplicitHeatEquationModule::computeDeltaTn()
 		auto in_V = ax::viewIn(command, m_V);
 		auto in_D = ax::viewIn(command, m_D);
 		ax::ReducerMin<Real> reducer(command);
-		command << RUNCOMMAND_ENUMERATE(Cell, cCells, allCells())
+		command << RUNCOMMAND_ENUMERATE(Cell, cCells, ownCells())
 		{
 			reducer.min(in_V[cCells] / in_D[cCells]);
 		};
@@ -297,7 +297,7 @@ void ExplicitHeatEquationModule::computeFaceConductivity()
 	auto command = makeCommand(m_default_queue);
 	auto in_D = ax::viewIn(command, m_D);
 	auto out_faceConductivity = ax::viewOut(command, m_faceConductivity);
-	command << RUNCOMMAND_ENUMERATE(Face, fFaces, allFaces())
+	command << RUNCOMMAND_ENUMERATE(Face, fFaces, ownFaces())
 	{
 		const auto fId(fFaces);
 		Real reduction0(1.0);
@@ -338,7 +338,7 @@ void ExplicitHeatEquationModule::initU()
 	auto in_vectOne = m_vectOne;
 	auto in_u0 = m_u0;
 	auto out_u_n = ax::viewOut(command, m_u_n);
-	command << RUNCOMMAND_ENUMERATE(Cell, cCells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, cCells, ownCells())
 	{
 		if (explicitheatequationfreefuncs::norm(Real2(explicitheatequationfreefuncs::operatorSub(in_Xc[cCells], in_vectOne))) < 0.5) 
 			out_u_n[cCells] = in_u0;
@@ -371,7 +371,7 @@ void ExplicitHeatEquationModule::computeAlphaCoeff()
 	auto in_faceConductivity = ax::viewIn(command, m_faceConductivity);
 	auto in_Xc = ax::viewIn(command, m_Xc);
 	auto out_alpha = ax::viewOut(command, m_alpha);
-	command << RUNCOMMAND_ENUMERATE(Cell, cCells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, cCells, ownCells())
 	{
 		const auto cId(cCells);
 		Real alphaDiag(0.0);
@@ -412,7 +412,7 @@ void ExplicitHeatEquationModule::executeTimeLoopN()
 		auto command = makeCommand(m_default_queue);
 		auto in_u_nplus1 = ax::viewIn(command, m_u_nplus1);
 		auto out_u_n = ax::viewOut(command, m_u_n);
-		command << RUNCOMMAND_ENUMERATE(Cell, i1Cells, allCells())
+		command << RUNCOMMAND_ENUMERATE(Cell, i1Cells, ownCells())
 		{
 			out_u_n[i1Cells] = in_u_nplus1[i1Cells];
 		};

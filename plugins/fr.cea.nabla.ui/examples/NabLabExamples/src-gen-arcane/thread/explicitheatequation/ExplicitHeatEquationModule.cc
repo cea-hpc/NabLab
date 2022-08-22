@@ -7,7 +7,6 @@
 using namespace Arcane;
 
 /*** Free functions **********************************************************/
-
 namespace explicitheatequationfreefuncs
 {
 	const Real norm(RealArrayVariant a)
@@ -97,6 +96,7 @@ void ExplicitHeatEquationModule::init()
 	m_n = 0;
 	m_deltat = 0.001;
 	m_alpha.resize(nbCell());
+	
 
 	// calling jobs
 	computeFaceLength(); // @1.0
@@ -118,7 +118,7 @@ void ExplicitHeatEquationModule::init()
  */
 void ExplicitHeatEquationModule::computeFaceLength()
 {
-	arcaneParallelForeach(allFaces(), [&](FaceVectorView view)
+	arcaneParallelForeach(ownFaces(), [&](FaceVectorView view)
 	{
 		ENUMERATE_FACE(fFaces, view)
 		{
@@ -158,7 +158,7 @@ void ExplicitHeatEquationModule::computeTn()
  */
 void ExplicitHeatEquationModule::computeV()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(cCells, view)
 		{
@@ -188,7 +188,7 @@ void ExplicitHeatEquationModule::computeV()
  */
 void ExplicitHeatEquationModule::initD()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(cCells, view)
 		{
@@ -214,7 +214,7 @@ void ExplicitHeatEquationModule::initTime()
  */
 void ExplicitHeatEquationModule::initXc()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(cCells, view)
 		{
@@ -242,7 +242,7 @@ void ExplicitHeatEquationModule::initXc()
  */
 void ExplicitHeatEquationModule::updateU()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(cCells, view)
 		{
@@ -258,7 +258,7 @@ void ExplicitHeatEquationModule::updateU()
 					reduction0 = explicitheatequationfreefuncs::sumR0(reduction0, m_alpha[cCells][dCells] * m_u_n[dCells]);
 				}
 			}
-			m_u_nplus1[cCells] = m_alpha[cCells][cCells.localId()] * m_u_n[cCells] + reduction0;
+			m_u_nplus1[cCells] = m_alpha[cCells][cCells->localId()] * m_u_n[cCells] + reduction0;
 		}
 	});
 }
@@ -271,7 +271,7 @@ void ExplicitHeatEquationModule::updateU()
 void ExplicitHeatEquationModule::computeDeltaTn()
 {
 	Real reduction0(numeric_limits<double>::max());
-	ENUMERATE_CELL(cCells, allCells())
+	ENUMERATE_CELL(cCells, ownCells())
 	{
 		reduction0 = explicitheatequationfreefuncs::minR0(reduction0, m_V[cCells] / m_D[cCells]);
 	}
@@ -286,7 +286,7 @@ void ExplicitHeatEquationModule::computeDeltaTn()
  */
 void ExplicitHeatEquationModule::computeFaceConductivity()
 {
-	arcaneParallelForeach(allFaces(), [&](FaceVectorView view)
+	arcaneParallelForeach(ownFaces(), [&](FaceVectorView view)
 	{
 		ENUMERATE_FACE(fFaces, view)
 		{
@@ -325,7 +325,7 @@ void ExplicitHeatEquationModule::computeFaceConductivity()
  */
 void ExplicitHeatEquationModule::initU()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(cCells, view)
 		{
@@ -354,7 +354,7 @@ void ExplicitHeatEquationModule::setUpTimeLoopN()
  */
 void ExplicitHeatEquationModule::computeAlphaCoeff()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(cCells, view)
 		{
@@ -374,7 +374,7 @@ void ExplicitHeatEquationModule::computeAlphaCoeff()
 					alphaDiag = alphaDiag + alphaExtraDiag;
 				}
 			}
-			m_alpha[cCells][cCells.localId()] = 1 - alphaDiag;
+			m_alpha[cCells][cCells->localId()] = 1 - alphaDiag;
 		}
 	});
 }
@@ -394,7 +394,7 @@ void ExplicitHeatEquationModule::executeTimeLoopN()
 	bool continueLoop = (m_t_nplus1 < options()->stopTime() && m_n + 1 < options()->maxIterations());
 	
 	m_t_n = m_t_nplus1;
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(i1Cells, view)
 		{

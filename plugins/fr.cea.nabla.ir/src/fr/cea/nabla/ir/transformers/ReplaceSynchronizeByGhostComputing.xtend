@@ -49,14 +49,6 @@ class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 		val synchronizesInJobs = getJobsWithSynchronization(ir)
 		val variablesLastWrite = getLastWrite(ir)
 		
-		println
-		printVarStatus(variablesStatue)
-		println
-		printJobAndVarWithSynchronization(synchronizesInJobs)
-		println
-		printGetLastWrite(variablesLastWrite)
-		println
-
 		val jobsToConvertToAllItem = new ArrayList<Job>
 		val timeVariablesActualizationToAllItem = new HashSet<Variable>
 		
@@ -66,15 +58,11 @@ class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 			{
 				val lastWrite = variablesLastWrite.get(synchronizesInJobs.head.key).get(synchronizesInJobs.head.value.head.variable)
 				
-				print("\non traite " + synchronizesInJobs.head.key.name)
-				print(" -> " + ArcaneUtils.getCodeName(synchronizesInJobs.head.value.head.variable))
-				
 				val bufferJobsAllItem = new ArrayList<Job>
 				val bufferTimeVariableActualizationToAllItem = new HashSet<Variable>
 				var done = true
 				for(lw : lastWrite)
 				{
-					println(" | last write : " + lw.name + " pour " + synchronizesInJobs.head.value.head.variable.name + " (" + lastWrite.size + ")")
 					if(!analyzeJob(lw, jobsToConvertToAllItem, bufferJobsAllItem, bufferTimeVariableActualizationToAllItem, variablesStatue, variablesLastWrite, synchronizesInJobs.head.value.head.variable))
 					{
 						done = false
@@ -84,9 +72,7 @@ class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 				if(done === true)
 				{
 					EcoreUtil.delete(synchronizesInJobs.head.value.head)
-					// TODO check si job vide
-					println("suppression synchro de " + synchronizesInJobs.head.value.head.variable.name + " dans " + synchronizesInJobs.head.key.name)
-					print("bufferpath : ") for(jxx : bufferJobsAllItem) print(jxx.name + " ") println
+					// TODO check si job vide et le supprimer
 					jobsToConvertToAllItem += bufferJobsAllItem
 					timeVariablesActualizationToAllItem += bufferTimeVariableActualizationToAllItem
 				}
@@ -96,11 +82,6 @@ class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 		}
 		convertJobsOwnToAll(ir, jobsToConvertToAllItem)
 		convertTimeVariablesActializationOwnToAll(ir, timeVariablesActualizationToAllItem)
-		
-		println
-		println
-		println
-		printVarStatus(variablesStatue)
 	}
 
 	override transform(DefaultExtensionProvider dep, (String)=>void traceNotifier)
@@ -110,8 +91,6 @@ class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 	
 	private static def Boolean analyzeJob(Job job, ArrayList<Job> path, ArrayList<Job> bufferPath, Set<Variable> timeVariablesActualization, Map<Job, Map<Variable, Boolean>> varStatusMap, HashMap<Job, HashMap<Variable, ArrayList<Job>>> lastWriteMap, Variable variable)
 	{
-		println("on annalyse " + job.name)
-		
 		if(JobExtensions.canIterateAllItem(job))
 		{
 			if(!path.contains(job) && !(job instanceof ExecuteTimeLoopJob))
@@ -131,8 +110,6 @@ class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 				
 			if(!notUpdatedInVars.empty)
 			{
-				print("pas tout les var sont update {") for(xx : notUpdatedInVars) print(xx.name + " ") println("}")
-				
 				for(v : notUpdatedInVars)
 				{
 					val lastWriteJob = lastWriteMap.get(job).get(v)
@@ -143,12 +120,8 @@ class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 					}
 				}
 			}
-			println("le job " + job.name + " a toutes ses vars update")
-			
 			return true
 		}
-		else
-			println("bad Connectivity")
 		return false
 	}
 	
@@ -217,7 +190,6 @@ class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 				{
 					instructionsSynchronize += synchronize
 				}
-				// ??? val instructionsSynchronize = j.eAllContents.filter(Synchronize).toIterable
 
 				if(!instructionsSynchronize.empty)
 				{
@@ -231,7 +203,6 @@ class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 	
 	private def HashMap<Job, HashMap<Variable, ArrayList<Job>>> getLastWrite(IrRoot ir)
 	{
-		// TODO opti : la dernière écriture d'une var job peut dépendre de init et de ETL, si le job dans ETL est avant le job traité -> ignoré le job dans l'init
 		val res = new HashMap<Job, HashMap<Variable, ArrayList<Job>>>
 		
 		val initJob = ir.main.calls.filter[x | !(x instanceof ExecuteTimeLoopJob)]
@@ -377,7 +348,6 @@ class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 	
 	private static def void convertJobsOwnToAll(IrRoot ir, ArrayList<Job> jobs)
 	{
-		print("On convertie ")
 		for(j : jobs)
 		{
 			for(l : j.eAllContents.filter(Loop).toIterable)
@@ -390,9 +360,7 @@ class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 					connectivityCall.allItems = true
 				}		
 			}
-			print(j.name + " ")
 		}
-		println("en allItem")
 	}
 	
 	private static def void convertTimeVariablesActializationOwnToAll(IrRoot ir, Set<Variable> timeVariablesActualization)

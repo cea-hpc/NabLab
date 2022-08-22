@@ -7,7 +7,6 @@
 using namespace Arcane;
 
 /*** Free functions **********************************************************/
-
 namespace heatequationfreefuncs
 {
 	const Real det(RealArrayVariant a, RealArrayVariant b)
@@ -88,6 +87,7 @@ void HeatEquationModule::init()
 
 	// constant time step
 	m_global_deltat = m_deltat;
+	
 
 	// calling jobs
 	computeSurface(); // @1.0
@@ -97,6 +97,7 @@ void HeatEquationModule::init()
 	iniTime(); // @1.0
 	iniUn(); // @2.0
 	setUpTimeLoopN(); // @2.0
+	synchronizeBeforeTimeLoop(); // @2.0
 }
 
 /**
@@ -106,7 +107,8 @@ void HeatEquationModule::init()
  */
 void HeatEquationModule::computeOutgoingFlux()
 {
-	ENUMERATE_CELL(j1Cells, allCells())
+	m_u_n.synchronize();
+	ENUMERATE_CELL(j1Cells, ownCells())
 	{
 		const auto j1Id(j1Cells.asItemLocalId());
 		Real reduction0(0.0);
@@ -171,7 +173,7 @@ void HeatEquationModule::computeTn()
  */
 void HeatEquationModule::computeV()
 {
-	ENUMERATE_CELL(jCells, allCells())
+	ENUMERATE_CELL(jCells, ownCells())
 	{
 		const auto jId(jCells.asItemLocalId());
 		Real reduction0(0.0);
@@ -223,7 +225,7 @@ void HeatEquationModule::iniCenter()
  */
 void HeatEquationModule::iniF()
 {
-	ENUMERATE_CELL(jCells, allCells())
+	ENUMERATE_CELL(jCells, ownCells())
 	{
 		m_f[jCells] = 0.0;
 	}
@@ -246,7 +248,7 @@ void HeatEquationModule::iniTime()
  */
 void HeatEquationModule::computeUn()
 {
-	ENUMERATE_CELL(jCells, allCells())
+	ENUMERATE_CELL(jCells, ownCells())
 	{
 		m_u_nplus1[jCells] = m_f[jCells] * m_deltat + m_u_n[jCells] + m_outgoingFlux[jCells];
 	}
@@ -259,7 +261,7 @@ void HeatEquationModule::computeUn()
  */
 void HeatEquationModule::iniUn()
 {
-	ENUMERATE_CELL(jCells, allCells())
+	ENUMERATE_CELL(jCells, ownCells())
 	{
 		m_u_n[jCells] = std::cos(2 * m_PI * m_alpha * m_center[jCells][0]);
 	}
@@ -291,13 +293,22 @@ void HeatEquationModule::executeTimeLoopN()
 	bool continueLoop = (m_t_nplus1 < options()->stopTime() && m_n + 1 < options()->maxIterations());
 	
 	m_t_n = m_t_nplus1;
-	ENUMERATE_CELL(i1Cells, allCells())
+	ENUMERATE_CELL(i1Cells, ownCells())
 	{
 		m_u_n[i1Cells] = m_u_nplus1[i1Cells];
 	}
 	
 	if (!continueLoop)
 		subDomain()->timeLoopMng()->stopComputeLoop(true);
+}
+
+/**
+ * Job synchronizeBeforeTimeLoop called @2.0 in simulate method.
+ * In variables: center, surface
+ * Out variables: 
+ */
+void HeatEquationModule::synchronizeBeforeTimeLoop()
+{
 }
 
 ARCANE_REGISTER_MODULE_HEATEQUATION(HeatEquationModule);

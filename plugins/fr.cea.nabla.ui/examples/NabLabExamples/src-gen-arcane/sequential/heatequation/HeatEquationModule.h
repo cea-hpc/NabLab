@@ -6,6 +6,7 @@
 #include <arcane/utils/NumArray.h>
 #include <arcane/datatype/RealArrayVariant.h>
 #include <arcane/datatype/RealArray2Variant.h>
+#include <arcane/IParallelMng.h>
 #include "HeatEquation_axl.h"
 #include "CartesianMesh2D.h"
 
@@ -52,6 +53,7 @@ public:
 	virtual void computeUn();
 	virtual void iniUn();
 	virtual void setUpTimeLoopN();
+	virtual void synchronizeBeforeTimeLoop();
 
 private:
 	// mesh attributes

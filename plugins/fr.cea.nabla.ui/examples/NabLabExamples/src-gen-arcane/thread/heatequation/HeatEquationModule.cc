@@ -7,7 +7,6 @@
 using namespace Arcane;
 
 /*** Free functions **********************************************************/
-
 namespace heatequationfreefuncs
 {
 	const Real det(RealArrayVariant a, RealArrayVariant b)
@@ -88,6 +87,7 @@ void HeatEquationModule::init()
 
 	// constant time step
 	m_global_deltat = m_deltat;
+	
 
 	// calling jobs
 	computeSurface(); // @1.0
@@ -106,7 +106,7 @@ void HeatEquationModule::init()
  */
 void HeatEquationModule::computeOutgoingFlux()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(j1Cells, view)
 		{
@@ -137,7 +137,7 @@ void HeatEquationModule::computeOutgoingFlux()
  */
 void HeatEquationModule::computeSurface()
 {
-	arcaneParallelForeach(allFaces(), [&](FaceVectorView view)
+	arcaneParallelForeach(ownFaces(), [&](FaceVectorView view)
 	{
 		ENUMERATE_FACE(fFaces, view)
 		{
@@ -177,7 +177,7 @@ void HeatEquationModule::computeTn()
  */
 void HeatEquationModule::computeV()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(jCells, view)
 		{
@@ -207,7 +207,7 @@ void HeatEquationModule::computeV()
  */
 void HeatEquationModule::iniCenter()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(jCells, view)
 		{
@@ -235,7 +235,7 @@ void HeatEquationModule::iniCenter()
  */
 void HeatEquationModule::iniF()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(jCells, view)
 		{
@@ -261,7 +261,7 @@ void HeatEquationModule::iniTime()
  */
 void HeatEquationModule::computeUn()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(jCells, view)
 		{
@@ -277,7 +277,7 @@ void HeatEquationModule::computeUn()
  */
 void HeatEquationModule::iniUn()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(jCells, view)
 		{
@@ -312,7 +312,7 @@ void HeatEquationModule::executeTimeLoopN()
 	bool continueLoop = (m_t_nplus1 < options()->stopTime() && m_n + 1 < options()->maxIterations());
 	
 	m_t_n = m_t_nplus1;
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(i1Cells, view)
 		{

@@ -28,6 +28,7 @@ import java.util.ArrayList
 
 import static extension fr.cea.nabla.ir.ContainerExtensions.*
 import static extension fr.cea.nabla.ir.generator.arcane.ExpressionContentProvider.*
+import static extension fr.cea.nabla.ir.generator.arcane.ArcaneUtils.*
 
 class TypeContentProvider
 {
@@ -57,21 +58,33 @@ class TypeContentProvider
 	{
 		it instanceof BaseType && (it as BaseType).typeNameAndDimension.value == 0
 	}
+	
+	static def isArcaneStlVector(IrType t)
+	{
+		if (t instanceof LinearAlgebraType)
+			if (isStlLinearAlgebraProvider(t.provider))
+				return t.sizes.size == 1 && t.sizes.head instanceof Cardinality		
+		return false
+	}
 
 	static def isArcaneAlienVector(IrType t)
 	{
 		if (t instanceof LinearAlgebraType)
-			t.sizes.size == 1 && t.sizes.head instanceof Cardinality
-		else
-			false
+		{
+			if (isAlienLinearAlgebraProvider(t.provider))
+			{
+				return t.sizes.size == 1 && t.sizes.head instanceof Cardinality		
+			}			
+		}
+		return false
 	}
 	
 	static def isArcaneAlienMatrix(IrType t)
 	{
 		if (t instanceof LinearAlgebraType)
-			t.sizes.size >= 1 && t.sizes.head instanceof Cardinality
-		else
-			false
+			if (isAlienLinearAlgebraProvider(t.provider))
+				return t.sizes.size > 1 && t.sizes.head instanceof Cardinality
+		return false
 	}
 
 	static def getLinearAlgebraClass(LinearAlgebraType t)
@@ -196,7 +209,18 @@ class TypeContentProvider
 		switch it
 		{
 			BaseType case !isStatic: sizes.map[content]
-			LinearAlgebraType case !isStatic: sizes.map[content]
+			LinearAlgebraType: 
+			{
+				if(TypeContentProvider.isArcaneAlienVector(it))
+					return #[]
+				if(TypeContentProvider.isArcaneAlienMatrix(it))
+					return #[sizes.get(1).content]
+				
+				if(!isStatic)
+					return sizes.map[content]
+				else
+					return #[]
+			}
 			ConnectivityType:
 			{
 				val t = base.typeNameAndDimension
@@ -242,7 +266,7 @@ class TypeContentProvider
 		{
 			val firstIterator = iterators.head
 			if (firstIterator.isAnItemType)
-				if (ArcaneUtils.isArcaneManaged(v) || isArcaneAlienVector(v.type)) // ArcaneStlVector needs ItemType
+				if (ArcaneUtils.isArcaneManaged(v) || isArcaneStlVector(v.type) || isArcaneAlienVector(v.type)) // ArcaneStlVector needs ItemType
 					indices += firstIterator.name
 				else
 					indices += firstIterator.name + "->localId()"

@@ -17,88 +17,88 @@
 
 #include <alien/ref/AlienRefSemantic.h>
 
-
 using namespace Arcane;
 
-
-template<typename ItemType>
+template <typename ItemType>
 class Arcane2AlienVector
 {
 public:
-	Arcane2AlienVector(IModule *m, const std::string &name) 
-			: m_arcane_vector(VariableBuildInfo(m, name))
-//			,	m_writer(m_vector)
-//			, m_reader(m_vector)
-	{}
+	Arcane2AlienVector(IModule *m, const std::string &name)
+			: m_arcane_vector(VariableBuildInfo(m, name)), m_allUIndex(nullptr) {}
 
-	~Arcane2AlienVector(){};
+	~Arcane2AlienVector() = default;
 
 	/**
 	 * @brief Update values arcane variable from alien vector
 	 * 
-	 * @param allUIndex Array of index to convert index to alien index
 	 */
-	void updateValue(const UniqueArray<Alien::Integer>& allUIndex)
+	void updateValue()
 	{
 		ENUMERATE_(ItemType, iter, m_arcane_vector.itemGroup().own())
 		{
-			const auto index = allUIndex[iter->localId()];
-			const double val = getValue(iter, index);
-			//Alien::VectorReader reader(m_vector);
-			//const double val = reader[index];
+			const double val = getValue(iter);
 			m_arcane_vector[iter] = val;
 		}
 	}
 
 	/**
 	 * @brief Initilise a vector from distrubution
-	 * 
+	 *
 	 * @param dist vector distribution
 	 */
-	void build(const Alien::VectorDistribution& dist)
+	void build(const Alien::VectorDistribution &dist)
 	{
 		m_vector = Alien::Vector(dist);
-		//m_writer = Alien::VectorWriter(m_vector);
-		//m_reader = Alien::VectorReader(m_vector);
 	}
 
-	Alien::Vector& get() { return m_vector; }
+	Alien::Vector &get() { return m_vector; }
+
+	void setAllUIndex(const std::shared_ptr<const Alien::UniqueArray<Alien::Integer>>& allUIndex)
+	{
+		m_allUIndex = allUIndex;
+	}
 
 	/**
 	 * @brief Get the Value object
-	 * 
+	 *
 	 * @param i arcane variable index
-	 * @param i_alien alien variable index
 	 * @return double
 	 */
-	double getValue(const ItemEnumeratorT<ItemType> i, const Alien::Integer i_alien) const
+	double getValue(const ItemEnumeratorT<ItemType> i) const
 	{
 		Alien::VectorReader reader(m_vector);
-		return reader[i_alien];
-		//return m_reader[i_alien];
+		return reader[m_allUIndex->operator[](i->localId())];
 	}
 
 	/**
 	 * @brief Set the Value object
-	 * 
+	 *
 	 * @param i arcane variable index
-	 * @param i_alien alien variable index
 	 * @param value value to set
 	 */
-	void setValue(const ItemEnumeratorT<ItemType> i, const Alien::Integer i_alien, const double value)
+	void setValue(const ItemEnumeratorT<ItemType> i, const double value)
 	{
 		m_arcane_vector[i] = value;
 		Alien::VectorWriter writer(m_vector);
-		writer[i_alien] = value;
-		//m_writer[i_alien] = value;
+		writer[m_allUIndex->operator[](i->localId())] = value;
 	}
+
+	Arcane2AlienVector& operator=(const Arcane2AlienVector& vec)
+	{
+		ENUMERATE_(ItemType, iter, m_arcane_vector.itemGroup().own())
+		{
+			const double val = vec.getValue(iter);
+			setValue(iter, val);
+		}
+		return *this;
+	}
+	
 
 private:
 	MeshVariableScalarRefT<ItemType, Real> m_arcane_vector;
-	
+
 	Alien::Vector m_vector;
-	//Alien::VectorWriter m_writer;
-	//Alien::VectorReader m_reader;
+	std::shared_ptr<const Alien::UniqueArray<Alien::Integer>> m_allUIndex;
 };
 
 #endif

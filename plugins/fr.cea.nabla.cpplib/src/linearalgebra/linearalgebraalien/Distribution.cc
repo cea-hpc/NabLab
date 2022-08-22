@@ -1,8 +1,8 @@
 #include "Distribution.h"
 
-const Alien::UniqueArray<Alien::Integer> Distribution::prepare(Alien::IMessagePassingMng *parallelMng,
-                                                               const Alien::UniqueArray<Arccore::Int64> uniqueId,
-                                                               const Alien::UniqueArray<Arccore::Integer> owners)
+const void Distribution::prepare(Alien::IMessagePassingMng *parallelMng,
+                                 const Alien::UniqueArray<Arccore::Int64> uniqueId,
+                                 const Alien::UniqueArray<Arccore::Integer> owners)
 {
   Alien::AbstractItemFamily family(uniqueId, owners, parallelMng);
   m_index_mng = std::make_unique<Alien::IndexManager>(parallelMng);
@@ -10,13 +10,13 @@ const Alien::UniqueArray<Alien::Integer> Distribution::prepare(Alien::IMessagePa
   auto indexSetU = m_index_mng->buildScalarIndexSet("U", family, 0);
   m_index_mng->prepare();
 
-  return m_index_mng->getIndexes(indexSetU);
+  m_allUIndex = std::make_unique<const Alien::UniqueArray<Alien::Integer>>(m_index_mng->getIndexes(indexSetU));
 }
 
 Alien::VectorDistribution Distribution::getVectorDistribution(Alien::IMessagePassingMng *parallelMng)
 {
-  if(m_index_mng == nullptr)
-    throw FatalErrorException(A_FUNCINFO,"Distribution not prepared");
+  if (m_index_mng == nullptr || m_allUIndex == nullptr)
+    throw FatalErrorException(A_FUNCINFO, "Distribution not prepared");
 
   auto global_size = m_index_mng->globalSize();
   auto local_size = m_index_mng->localSize();
@@ -25,8 +25,8 @@ Alien::VectorDistribution Distribution::getVectorDistribution(Alien::IMessagePas
 
 Alien::MatrixDistribution Distribution::getMatrixDistribution(Alien::IMessagePassingMng *parallelMng)
 {
-  if(m_index_mng == nullptr)
-    throw FatalErrorException(A_FUNCINFO,"Distribution not prepared");
+  if (m_index_mng == nullptr || m_allUIndex == nullptr)
+    throw FatalErrorException(A_FUNCINFO, "Distribution not prepared");
 
   auto global_size = m_index_mng->globalSize();
   auto local_size = m_index_mng->localSize();
@@ -35,8 +35,9 @@ Alien::MatrixDistribution Distribution::getMatrixDistribution(Alien::IMessagePas
 
 void Distribution::create(Matrix &matrix, Alien::IMessagePassingMng *parallelMng)
 {
-  if(m_index_mng == nullptr)
-    throw FatalErrorException(A_FUNCINFO,"Distribution not prepared");
+  if (m_index_mng == nullptr || m_allUIndex == nullptr)
+    throw FatalErrorException(A_FUNCINFO, "Distribution not prepared");
 
   matrix.get() = Alien::Matrix(getMatrixDistribution(parallelMng));
+  matrix.setAllUIndex(m_allUIndex);
 }

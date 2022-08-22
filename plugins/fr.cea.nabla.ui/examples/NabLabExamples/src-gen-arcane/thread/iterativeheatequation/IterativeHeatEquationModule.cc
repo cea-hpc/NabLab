@@ -7,7 +7,6 @@
 using namespace Arcane;
 
 /*** Free functions **********************************************************/
-
 namespace iterativeheatequationfreefuncs
 {
 	const bool check(const bool a)
@@ -111,6 +110,7 @@ void IterativeHeatEquationModule::init()
 	m_k = 0;
 	m_deltat = 0.001;
 	m_alpha.resize(nbCell());
+	
 
 	// calling jobs
 	computeFaceLength(); // @1.0
@@ -132,7 +132,7 @@ void IterativeHeatEquationModule::init()
  */
 void IterativeHeatEquationModule::computeFaceLength()
 {
-	arcaneParallelForeach(allFaces(), [&](FaceVectorView view)
+	arcaneParallelForeach(ownFaces(), [&](FaceVectorView view)
 	{
 		ENUMERATE_FACE(fFaces, view)
 		{
@@ -172,7 +172,7 @@ void IterativeHeatEquationModule::computeTn()
  */
 void IterativeHeatEquationModule::computeV()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(jCells, view)
 		{
@@ -202,7 +202,7 @@ void IterativeHeatEquationModule::computeV()
  */
 void IterativeHeatEquationModule::initD()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(cCells, view)
 		{
@@ -228,7 +228,7 @@ void IterativeHeatEquationModule::initTime()
  */
 void IterativeHeatEquationModule::initXc()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(cCells, view)
 		{
@@ -256,7 +256,7 @@ void IterativeHeatEquationModule::initXc()
  */
 void IterativeHeatEquationModule::setUpTimeLoopK()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(i1Cells, view)
 		{
@@ -272,7 +272,7 @@ void IterativeHeatEquationModule::setUpTimeLoopK()
  */
 void IterativeHeatEquationModule::updateU()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(cCells, view)
 		{
@@ -288,7 +288,7 @@ void IterativeHeatEquationModule::updateU()
 					reduction0 = iterativeheatequationfreefuncs::sumR0(reduction0, m_alpha[cCells][dCells] * m_u_nplus1_k[dCells]);
 				}
 			}
-			m_u_nplus1_kplus1[cCells] = m_u_n[cCells] + m_alpha[cCells][cCells.localId()] * m_u_nplus1_k[cCells] + reduction0;
+			m_u_nplus1_kplus1[cCells] = m_u_n[cCells] + m_alpha[cCells][cCells->localId()] * m_u_nplus1_k[cCells] + reduction0;
 		}
 	});
 }
@@ -301,7 +301,7 @@ void IterativeHeatEquationModule::updateU()
 void IterativeHeatEquationModule::computeDeltaTn()
 {
 	Real reduction0(numeric_limits<double>::max());
-	ENUMERATE_CELL(cCells, allCells())
+	ENUMERATE_CELL(cCells, ownCells())
 	{
 		reduction0 = iterativeheatequationfreefuncs::minR0(reduction0, m_V[cCells] / m_D[cCells]);
 	}
@@ -316,7 +316,7 @@ void IterativeHeatEquationModule::computeDeltaTn()
  */
 void IterativeHeatEquationModule::computeFaceConductivity()
 {
-	arcaneParallelForeach(allFaces(), [&](FaceVectorView view)
+	arcaneParallelForeach(ownFaces(), [&](FaceVectorView view)
 	{
 		ENUMERATE_FACE(fFaces, view)
 		{
@@ -356,7 +356,7 @@ void IterativeHeatEquationModule::computeFaceConductivity()
 void IterativeHeatEquationModule::computeResidual()
 {
 	Real reduction0(-numeric_limits<double>::max());
-	ENUMERATE_CELL(jCells, allCells())
+	ENUMERATE_CELL(jCells, ownCells())
 	{
 		reduction0 = iterativeheatequationfreefuncs::maxR0(reduction0, std::abs(m_u_nplus1_kplus1[jCells] - m_u_nplus1_k[jCells]));
 	}
@@ -382,7 +382,7 @@ void IterativeHeatEquationModule::executeTimeLoopK()
 		// Evaluate loop condition with variables at time n
 		continueLoop = (m_residual > m_epsilon && iterativeheatequationfreefuncs::check(m_k + 1 < m_maxIterationsK));
 	
-		arcaneParallelForeach(allCells(), [&](CellVectorView view)
+		arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 		{
 			ENUMERATE_CELL(i1Cells, view)
 			{
@@ -399,7 +399,7 @@ void IterativeHeatEquationModule::executeTimeLoopK()
  */
 void IterativeHeatEquationModule::initU()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(cCells, view)
 		{
@@ -428,7 +428,7 @@ void IterativeHeatEquationModule::setUpTimeLoopN()
  */
 void IterativeHeatEquationModule::computeAlphaCoeff()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(cCells, view)
 		{
@@ -448,7 +448,7 @@ void IterativeHeatEquationModule::computeAlphaCoeff()
 					alphaDiag = alphaDiag + alphaExtraDiag;
 				}
 			}
-			m_alpha[cCells][cCells.localId()] = -alphaDiag;
+			m_alpha[cCells][cCells->localId()] = -alphaDiag;
 		}
 	});
 }
@@ -460,7 +460,7 @@ void IterativeHeatEquationModule::computeAlphaCoeff()
  */
 void IterativeHeatEquationModule::tearDownTimeLoopK()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(i1Cells, view)
 		{
@@ -486,7 +486,7 @@ void IterativeHeatEquationModule::executeTimeLoopN()
 	bool continueLoop = (m_t_nplus1 < options()->stopTime() && m_n + 1 < options()->maxIterations());
 	
 	m_t_n = m_t_nplus1;
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(i1Cells, view)
 		{

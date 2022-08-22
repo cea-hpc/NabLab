@@ -7,7 +7,6 @@
 using namespace Arcane;
 
 /*** Free functions **********************************************************/
-
 namespace explicitheatequationfreefuncs
 {
 	const Real norm(RealArrayVariant a)
@@ -97,6 +96,7 @@ void ExplicitHeatEquationModule::init()
 	m_n = 0;
 	m_deltat = 0.001;
 	m_alpha.resize(nbCell());
+	
 
 	// calling jobs
 	computeFaceLength(); // @1.0
@@ -155,7 +155,7 @@ void ExplicitHeatEquationModule::computeTn()
  */
 void ExplicitHeatEquationModule::computeV()
 {
-	ENUMERATE_CELL(cCells, allCells())
+	ENUMERATE_CELL(cCells, ownCells())
 	{
 		const auto cId(cCells.asItemLocalId());
 		Real reduction0(0.0);
@@ -230,7 +230,8 @@ void ExplicitHeatEquationModule::initXc()
  */
 void ExplicitHeatEquationModule::updateU()
 {
-	ENUMERATE_CELL(cCells, allCells())
+	m_u_n.synchronize();
+	ENUMERATE_CELL(cCells, ownCells())
 	{
 		const auto cId(cCells.asItemLocalId());
 		Real reduction0(0.0);
@@ -244,7 +245,7 @@ void ExplicitHeatEquationModule::updateU()
 				reduction0 = explicitheatequationfreefuncs::sumR0(reduction0, m_alpha[cCells][dCells] * m_u_n[dCells]);
 			}
 		}
-		m_u_nplus1[cCells] = m_alpha[cCells][cCells.localId()] * m_u_n[cCells] + reduction0;
+		m_u_nplus1[cCells] = m_alpha[cCells][cCells->localId()] * m_u_n[cCells] + reduction0;
 	}
 }
 
@@ -256,10 +257,11 @@ void ExplicitHeatEquationModule::updateU()
 void ExplicitHeatEquationModule::computeDeltaTn()
 {
 	Real reduction0(numeric_limits<double>::max());
-	ENUMERATE_CELL(cCells, allCells())
+	ENUMERATE_CELL(cCells, ownCells())
 	{
 		reduction0 = explicitheatequationfreefuncs::minR0(reduction0, m_V[cCells] / m_D[cCells]);
 	}
+	reduction0 = parallelMng()->reduce(Parallel::ReduceMin, reduction0);
 	m_deltat = reduction0 * 0.24;
 	m_global_deltat = m_deltat;
 }
@@ -271,7 +273,7 @@ void ExplicitHeatEquationModule::computeDeltaTn()
  */
 void ExplicitHeatEquationModule::computeFaceConductivity()
 {
-	ENUMERATE_FACE(fFaces, allFaces())
+	ENUMERATE_FACE(fFaces, ownFaces())
 	{
 		const auto fId(fFaces.asItemLocalId());
 		Real reduction0(1.0);
@@ -307,7 +309,7 @@ void ExplicitHeatEquationModule::computeFaceConductivity()
  */
 void ExplicitHeatEquationModule::initU()
 {
-	ENUMERATE_CELL(cCells, allCells())
+	ENUMERATE_CELL(cCells, ownCells())
 	{
 		if (explicitheatequationfreefuncs::norm(Real2(explicitheatequationfreefuncs::operatorSub(m_Xc[cCells], m_vectOne))) < 0.5) 
 			m_u_n[cCells] = m_u0;
@@ -333,7 +335,8 @@ void ExplicitHeatEquationModule::setUpTimeLoopN()
  */
 void ExplicitHeatEquationModule::computeAlphaCoeff()
 {
-	ENUMERATE_CELL(cCells, allCells())
+	m_faceConductivity.synchronize();
+	ENUMERATE_CELL(cCells, ownCells())
 	{
 		const auto cId(cCells.asItemLocalId());
 		Real alphaDiag(0.0);
@@ -351,7 +354,7 @@ void ExplicitHeatEquationModule::computeAlphaCoeff()
 				alphaDiag = alphaDiag + alphaExtraDiag;
 			}
 		}
-		m_alpha[cCells][cCells.localId()] = 1 - alphaDiag;
+		m_alpha[cCells][cCells->localId()] = 1 - alphaDiag;
 	}
 }
 
@@ -370,7 +373,7 @@ void ExplicitHeatEquationModule::executeTimeLoopN()
 	bool continueLoop = (m_t_nplus1 < options()->stopTime() && m_n + 1 < options()->maxIterations());
 	
 	m_t_n = m_t_nplus1;
-	ENUMERATE_CELL(i1Cells, allCells())
+	ENUMERATE_CELL(i1Cells, ownCells())
 	{
 		m_u_n[i1Cells] = m_u_nplus1[i1Cells];
 	}

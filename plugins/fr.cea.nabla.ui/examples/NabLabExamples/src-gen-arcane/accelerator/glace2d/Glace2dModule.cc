@@ -7,7 +7,6 @@
 using namespace Arcane;
 
 /*** Free functions **********************************************************/
-
 namespace glace2dfreefuncs
 {
 	const Real det(RealArray2Variant a)
@@ -222,6 +221,7 @@ void Glace2dModule::init()
 		m_X_n0[inode][0] = m_X_n[inode][0];
 		m_X_n0[inode][1] = m_X_n[inode][1];
 	}
+	
 
 	// calling jobs
 	iniCjrIc(); // @1.0
@@ -240,7 +240,7 @@ void Glace2dModule::computeCjr()
 	auto command = makeCommand(m_default_queue);
 	auto in_X_n = ax::viewIn(command, m_X_n);
 	auto out_C = ax::viewOut(command, m_C);
-	command << RUNCOMMAND_ENUMERATE(Cell, jCells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, jCells, ownCells())
 	{
 		const auto jId(jCells);
 		{
@@ -269,7 +269,7 @@ void Glace2dModule::computeInternalEnergy()
 	auto in_E_n = ax::viewIn(command, m_E_n);
 	auto in_uj_n = ax::viewIn(command, m_uj_n);
 	auto out_e = ax::viewOut(command, m_e);
-	command << RUNCOMMAND_ENUMERATE(Cell, jCells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, jCells, ownCells())
 	{
 		out_e[jCells] = in_E_n[jCells] - 0.5 * glace2dfreefuncs::dot(in_uj_n[jCells], in_uj_n[jCells]);
 	};
@@ -285,7 +285,7 @@ void Glace2dModule::iniCjrIc()
 	auto command = makeCommand(m_default_queue);
 	auto in_X_n0 = ax::viewIn(command, m_X_n0);
 	auto out_Cjr_ic = ax::viewOut(command, m_Cjr_ic);
-	command << RUNCOMMAND_ENUMERATE(Cell, jCells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, jCells, ownCells())
 	{
 		const auto jId(jCells);
 		{
@@ -323,7 +323,7 @@ void Glace2dModule::computeLjr()
 	auto command = makeCommand(m_default_queue);
 	auto in_C = ax::viewIn(command, m_C);
 	auto out_l = ax::viewOut(command, m_l);
-	command << RUNCOMMAND_ENUMERATE(Cell, jCells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, jCells, ownCells())
 	{
 		const auto jId(jCells);
 		{
@@ -348,7 +348,7 @@ void Glace2dModule::computeV()
 	auto in_C = ax::viewIn(command, m_C);
 	auto in_X_n = ax::viewIn(command, m_X_n);
 	auto out_V = ax::viewOut(command, m_V);
-	command << RUNCOMMAND_ENUMERATE(Cell, jCells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, jCells, ownCells())
 	{
 		const auto jId(jCells);
 		Real reduction0(0.0);
@@ -387,7 +387,7 @@ void Glace2dModule::initialize()
 	auto out_rho = ax::viewOut(command, m_rho);
 	auto out_E_n = ax::viewOut(command, m_E_n);
 	auto out_uj_n = ax::viewOut(command, m_uj_n);
-	command << RUNCOMMAND_ENUMERATE(Cell, jCells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, jCells, ownCells())
 	{
 		const auto jId(jCells);
 		Real rho_ic;
@@ -446,7 +446,7 @@ void Glace2dModule::setUpTimeLoopN()
 		auto command = makeCommand(m_default_queue);
 		auto in_X_n0 = ax::viewIn(command, m_X_n0);
 		auto out_X_n = ax::viewOut(command, m_X_n);
-		command << RUNCOMMAND_ENUMERATE(Node, i1Nodes, allNodes())
+		command << RUNCOMMAND_ENUMERATE(Node, i1Nodes, ownNodes())
 		{
 			for (Int32 i1=0; i1<2; i1++)
 			{
@@ -467,7 +467,7 @@ void Glace2dModule::computeDensity()
 	auto in_m = ax::viewIn(command, m_m);
 	auto in_V = ax::viewIn(command, m_V);
 	auto out_rho = ax::viewOut(command, m_rho);
-	command << RUNCOMMAND_ENUMERATE(Cell, jCells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, jCells, ownCells())
 	{
 		out_rho[jCells] = in_m[jCells] / in_V[jCells];
 	};
@@ -511,7 +511,7 @@ void Glace2dModule::executeTimeLoopN()
 		auto command = makeCommand(m_default_queue);
 		auto in_X_nplus1 = ax::viewIn(command, m_X_nplus1);
 		auto out_X_n = ax::viewOut(command, m_X_n);
-		command << RUNCOMMAND_ENUMERATE(Node, i1Nodes, allNodes())
+		command << RUNCOMMAND_ENUMERATE(Node, i1Nodes, ownNodes())
 		{
 			for (Int32 i1=0; i1<2; i1++)
 			{
@@ -523,7 +523,7 @@ void Glace2dModule::executeTimeLoopN()
 		auto command = makeCommand(m_default_queue);
 		auto in_E_nplus1 = ax::viewIn(command, m_E_nplus1);
 		auto out_E_n = ax::viewOut(command, m_E_n);
-		command << RUNCOMMAND_ENUMERATE(Cell, i1Cells, allCells())
+		command << RUNCOMMAND_ENUMERATE(Cell, i1Cells, ownCells())
 		{
 			out_E_n[i1Cells] = in_E_nplus1[i1Cells];
 		};
@@ -532,7 +532,7 @@ void Glace2dModule::executeTimeLoopN()
 		auto command = makeCommand(m_default_queue);
 		auto in_uj_nplus1 = ax::viewIn(command, m_uj_nplus1);
 		auto out_uj_n = ax::viewOut(command, m_uj_n);
-		command << RUNCOMMAND_ENUMERATE(Cell, i1Cells, allCells())
+		command << RUNCOMMAND_ENUMERATE(Cell, i1Cells, ownCells())
 		{
 			for (Int32 i1=0; i1<2; i1++)
 			{
@@ -557,7 +557,7 @@ void Glace2dModule::computeEOSp()
 	auto in_rho = ax::viewIn(command, m_rho);
 	auto in_e = ax::viewIn(command, m_e);
 	auto out_p = ax::viewOut(command, m_p);
-	command << RUNCOMMAND_ENUMERATE(Cell, jCells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, jCells, ownCells())
 	{
 		out_p[jCells] = (in_gamma - 1.0) * in_rho[jCells] * in_e[jCells];
 	};
@@ -575,7 +575,7 @@ void Glace2dModule::computeEOSc()
 	auto in_p = ax::viewIn(command, m_p);
 	auto in_rho = ax::viewIn(command, m_rho);
 	auto out_c = ax::viewOut(command, m_c);
-	command << RUNCOMMAND_ENUMERATE(Cell, jCells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, jCells, ownCells())
 	{
 		out_c[jCells] = std::sqrt(in_gamma * in_p[jCells] / in_rho[jCells]);
 	};
@@ -594,7 +594,7 @@ void Glace2dModule::computeAjr()
 	auto in_l = ax::viewIn(command, m_l);
 	auto in_C = ax::viewIn(command, m_C);
 	auto out_Ajr = ax::viewOut(command, m_Ajr);
-	command << RUNCOMMAND_ENUMERATE(Cell, jCells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, jCells, ownCells())
 	{
 		const auto jId(jCells);
 		{
@@ -620,7 +620,7 @@ void Glace2dModule::computedeltatj()
 	auto in_V = ax::viewIn(command, m_V);
 	auto in_c = ax::viewIn(command, m_c);
 	auto out_deltatj = ax::viewOut(command, m_deltatj);
-	command << RUNCOMMAND_ENUMERATE(Cell, jCells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, jCells, ownCells())
 	{
 		const auto jId(jCells);
 		Real reduction0(0.0);
@@ -646,7 +646,7 @@ void Glace2dModule::computeAr()
 	auto command = makeCommand(m_default_queue);
 	auto in_Ajr = ax::viewIn(command, m_Ajr);
 	auto out_Ar = ax::viewOut(command, m_Ar);
-	command << RUNCOMMAND_ENUMERATE(Node, rNodes, allNodes())
+	command << RUNCOMMAND_ENUMERATE(Node, rNodes, ownNodes())
 	{
 		const auto rId(rNodes);
 		Real2x2 reduction0{{0.0, 0.0}, {0.0, 0.0}};
@@ -684,7 +684,7 @@ void Glace2dModule::computeBr()
 	auto in_Ajr = ax::viewIn(command, m_Ajr);
 	auto in_uj_n = ax::viewIn(command, m_uj_n);
 	auto out_b = ax::viewOut(command, m_b);
-	command << RUNCOMMAND_ENUMERATE(Node, rNodes, allNodes())
+	command << RUNCOMMAND_ENUMERATE(Node, rNodes, ownNodes())
 	{
 		const auto rId(rNodes);
 		Real2 reduction0{0.0, 0.0};
@@ -718,7 +718,7 @@ void Glace2dModule::computeDt()
 		auto command = makeCommand(m_default_queue);
 		auto in_deltatj = ax::viewIn(command, m_deltatj);
 		ax::ReducerMin<Real> reducer(command);
-		command << RUNCOMMAND_ENUMERATE(Cell, jCells, allCells())
+		command << RUNCOMMAND_ENUMERATE(Cell, jCells, ownCells())
 		{
 			reducer.min(in_deltatj[jCells]);
 		};
@@ -874,7 +874,7 @@ void Glace2dModule::computeU()
 	auto in_Mt = ax::viewIn(command, m_Mt);
 	auto in_bt = ax::viewIn(command, m_bt);
 	auto out_ur = ax::viewOut(command, m_ur);
-	command << RUNCOMMAND_ENUMERATE(Node, rNodes, allNodes())
+	command << RUNCOMMAND_ENUMERATE(Node, rNodes, ownNodes())
 	{
 		out_ur[rNodes] = Real2(glace2dfreefuncs::matVectProduct(Real2x2(glace2dfreefuncs::inverse(in_Mt[rNodes])), in_bt[rNodes]));
 	};
@@ -894,7 +894,7 @@ void Glace2dModule::computeFjr()
 	auto in_uj_n = ax::viewIn(command, m_uj_n);
 	auto in_ur = ax::viewIn(command, m_ur);
 	auto out_F = ax::viewOut(command, m_F);
-	command << RUNCOMMAND_ENUMERATE(Cell, jCells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, jCells, ownCells())
 	{
 		const auto jId(jCells);
 		{
@@ -922,7 +922,7 @@ void Glace2dModule::computeXn()
 	auto in_deltat = m_deltat;
 	auto in_ur = ax::viewIn(command, m_ur);
 	auto out_X_nplus1 = ax::viewOut(command, m_X_nplus1);
-	command << RUNCOMMAND_ENUMERATE(Node, rNodes, allNodes())
+	command << RUNCOMMAND_ENUMERATE(Node, rNodes, ownNodes())
 	{
 		out_X_nplus1[rNodes] = Real2(glace2dfreefuncs::operatorAdd(in_X_n[rNodes], Real2(glace2dfreefuncs::operatorMult(in_deltat, in_ur[rNodes]))));
 	};
@@ -942,7 +942,7 @@ void Glace2dModule::computeEn()
 	auto in_deltat = m_deltat;
 	auto in_m = ax::viewIn(command, m_m);
 	auto out_E_nplus1 = ax::viewOut(command, m_E_nplus1);
-	command << RUNCOMMAND_ENUMERATE(Cell, jCells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, jCells, ownCells())
 	{
 		const auto jId(jCells);
 		Real reduction0(0.0);
@@ -973,7 +973,7 @@ void Glace2dModule::computeUn()
 	auto in_deltat = m_deltat;
 	auto in_m = ax::viewIn(command, m_m);
 	auto out_uj_nplus1 = ax::viewOut(command, m_uj_nplus1);
-	command << RUNCOMMAND_ENUMERATE(Cell, jCells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, jCells, ownCells())
 	{
 		const auto jId(jCells);
 		Real2 reduction0{0.0, 0.0};

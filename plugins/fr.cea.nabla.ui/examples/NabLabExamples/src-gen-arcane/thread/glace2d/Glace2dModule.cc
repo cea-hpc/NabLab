@@ -7,7 +7,6 @@
 using namespace Arcane;
 
 /*** Free functions **********************************************************/
-
 namespace glace2dfreefuncs
 {
 	const Real det(RealArray2Variant a)
@@ -221,6 +220,7 @@ void Glace2dModule::init()
 		m_X_n0[inode][0] = m_X_n[inode][0];
 		m_X_n0[inode][1] = m_X_n[inode][1];
 	}
+	
 
 	// calling jobs
 	iniCjrIc(); // @1.0
@@ -236,7 +236,7 @@ void Glace2dModule::init()
  */
 void Glace2dModule::computeCjr()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(jCells, view)
 		{
@@ -264,7 +264,7 @@ void Glace2dModule::computeCjr()
  */
 void Glace2dModule::computeInternalEnergy()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(jCells, view)
 		{
@@ -280,7 +280,7 @@ void Glace2dModule::computeInternalEnergy()
  */
 void Glace2dModule::iniCjrIc()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(jCells, view)
 		{
@@ -318,7 +318,7 @@ void Glace2dModule::iniTime()
  */
 void Glace2dModule::computeLjr()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(jCells, view)
 		{
@@ -342,7 +342,7 @@ void Glace2dModule::computeLjr()
  */
 void Glace2dModule::computeV()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(jCells, view)
 		{
@@ -370,7 +370,7 @@ void Glace2dModule::computeV()
  */
 void Glace2dModule::initialize()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(jCells, view)
 		{
@@ -428,7 +428,7 @@ void Glace2dModule::initialize()
 void Glace2dModule::setUpTimeLoopN()
 {
 	m_t_n = m_t_n0;
-	arcaneParallelForeach(allNodes(), [&](NodeVectorView view)
+	arcaneParallelForeach(ownNodes(), [&](NodeVectorView view)
 	{
 		ENUMERATE_NODE(i1Nodes, view)
 		{
@@ -447,7 +447,7 @@ void Glace2dModule::setUpTimeLoopN()
  */
 void Glace2dModule::computeDensity()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(jCells, view)
 		{
@@ -490,7 +490,7 @@ void Glace2dModule::executeTimeLoopN()
 	bool continueLoop = (m_t_nplus1 < options()->stopTime() && m_n + 1 < options()->maxIterations());
 	
 	m_t_n = m_t_nplus1;
-	arcaneParallelForeach(allNodes(), [&](NodeVectorView view)
+	arcaneParallelForeach(ownNodes(), [&](NodeVectorView view)
 	{
 		ENUMERATE_NODE(i1Nodes, view)
 		{
@@ -500,14 +500,14 @@ void Glace2dModule::executeTimeLoopN()
 			}
 		}
 	});
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(i1Cells, view)
 		{
 			m_E_n[i1Cells] = m_E_nplus1[i1Cells];
 		}
 	});
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(i1Cells, view)
 		{
@@ -529,7 +529,7 @@ void Glace2dModule::executeTimeLoopN()
  */
 void Glace2dModule::computeEOSp()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(jCells, view)
 		{
@@ -545,7 +545,7 @@ void Glace2dModule::computeEOSp()
  */
 void Glace2dModule::computeEOSc()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(jCells, view)
 		{
@@ -561,7 +561,7 @@ void Glace2dModule::computeEOSc()
  */
 void Glace2dModule::computeAjr()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(jCells, view)
 		{
@@ -585,7 +585,7 @@ void Glace2dModule::computeAjr()
  */
 void Glace2dModule::computedeltatj()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(jCells, view)
 		{
@@ -611,7 +611,7 @@ void Glace2dModule::computedeltatj()
  */
 void Glace2dModule::computeAr()
 {
-	arcaneParallelForeach(allNodes(), [&](NodeVectorView view)
+	arcaneParallelForeach(ownNodes(), [&](NodeVectorView view)
 	{
 		ENUMERATE_NODE(rNodes, view)
 		{
@@ -646,7 +646,7 @@ void Glace2dModule::computeAr()
  */
 void Glace2dModule::computeBr()
 {
-	arcaneParallelForeach(allNodes(), [&](NodeVectorView view)
+	arcaneParallelForeach(ownNodes(), [&](NodeVectorView view)
 	{
 		ENUMERATE_NODE(rNodes, view)
 		{
@@ -679,7 +679,7 @@ void Glace2dModule::computeBr()
 void Glace2dModule::computeDt()
 {
 	Real reduction0(numeric_limits<double>::max());
-	ENUMERATE_CELL(jCells, allCells())
+	ENUMERATE_CELL(jCells, ownCells())
 	{
 		reduction0 = glace2dfreefuncs::minR0(reduction0, m_deltatj[jCells]);
 	}
@@ -817,7 +817,7 @@ void Glace2dModule::computeTn()
  */
 void Glace2dModule::computeU()
 {
-	arcaneParallelForeach(allNodes(), [&](NodeVectorView view)
+	arcaneParallelForeach(ownNodes(), [&](NodeVectorView view)
 	{
 		ENUMERATE_NODE(rNodes, view)
 		{
@@ -833,7 +833,7 @@ void Glace2dModule::computeU()
  */
 void Glace2dModule::computeFjr()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(jCells, view)
 		{
@@ -859,7 +859,7 @@ void Glace2dModule::computeFjr()
  */
 void Glace2dModule::computeXn()
 {
-	arcaneParallelForeach(allNodes(), [&](NodeVectorView view)
+	arcaneParallelForeach(ownNodes(), [&](NodeVectorView view)
 	{
 		ENUMERATE_NODE(rNodes, view)
 		{
@@ -875,7 +875,7 @@ void Glace2dModule::computeXn()
  */
 void Glace2dModule::computeEn()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(jCells, view)
 		{
@@ -903,7 +903,7 @@ void Glace2dModule::computeEn()
  */
 void Glace2dModule::computeUn()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(jCells, view)
 		{

@@ -7,7 +7,6 @@
 using namespace Arcane;
 
 /*** Free functions **********************************************************/
-
 namespace glace2dfreefuncs
 {
 	const Real det(RealArray2Variant a)
@@ -221,6 +220,7 @@ void Glace2dModule::init()
 		m_X_n0[inode][0] = m_X_n[inode][0];
 		m_X_n0[inode][1] = m_X_n[inode][1];
 	}
+	
 
 	// calling jobs
 	iniCjrIc(); // @1.0
@@ -543,7 +543,7 @@ void Glace2dModule::computeAjr()
  */
 void Glace2dModule::computedeltatj()
 {
-	ENUMERATE_CELL(jCells, allCells())
+	ENUMERATE_CELL(jCells, ownCells())
 	{
 		const auto jId(jCells.asItemLocalId());
 		Real reduction0(0.0);
@@ -566,7 +566,7 @@ void Glace2dModule::computedeltatj()
  */
 void Glace2dModule::computeAr()
 {
-	ENUMERATE_NODE(rNodes, allNodes())
+	ENUMERATE_NODE(rNodes, ownNodes())
 	{
 		const auto rId(rNodes.asItemLocalId());
 		Real2x2 reduction0{{0.0, 0.0}, {0.0, 0.0}};
@@ -598,7 +598,7 @@ void Glace2dModule::computeAr()
  */
 void Glace2dModule::computeBr()
 {
-	ENUMERATE_NODE(rNodes, allNodes())
+	ENUMERATE_NODE(rNodes, ownNodes())
 	{
 		const auto rId(rNodes.asItemLocalId());
 		Real2 reduction0{0.0, 0.0};
@@ -628,10 +628,11 @@ void Glace2dModule::computeBr()
 void Glace2dModule::computeDt()
 {
 	Real reduction0(numeric_limits<double>::max());
-	ENUMERATE_CELL(jCells, allCells())
+	ENUMERATE_CELL(jCells, ownCells())
 	{
 		reduction0 = glace2dfreefuncs::minR0(reduction0, m_deltatj[jCells]);
 	}
+	reduction0 = parallelMng()->reduce(Parallel::ReduceMin, reduction0);
 	m_deltat = std::min((m_deltatCfl * reduction0), (options()->stopTime() - m_t_n));
 	m_global_deltat = m_deltat;
 }
@@ -748,7 +749,7 @@ void Glace2dModule::computeTn()
  */
 void Glace2dModule::computeU()
 {
-	ENUMERATE_NODE(rNodes, allNodes())
+	ENUMERATE_NODE(rNodes, ownNodes())
 	{
 		m_ur[rNodes] = Real2(glace2dfreefuncs::matVectProduct(Real2x2(glace2dfreefuncs::inverse(m_Mt[rNodes])), m_bt[rNodes]));
 	}
@@ -761,6 +762,7 @@ void Glace2dModule::computeU()
  */
 void Glace2dModule::computeFjr()
 {
+	m_ur.synchronize();
 	ENUMERATE_CELL(jCells, allCells())
 	{
 		const auto jId(jCells.asItemLocalId());

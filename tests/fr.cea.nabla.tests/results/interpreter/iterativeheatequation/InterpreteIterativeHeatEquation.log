@@ -1,6 +1,6 @@
 INFO:   Start interpreting IterativeHeatEquation module 
 FINE: START ITERATION n:     1 - t: 0.00000 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.1.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.1.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -62,7 +62,7 @@ FINE: Start iteration k:    58
 FINE: Start iteration k:    59 
 INFO: Nb iteration k = 59 
 FINE: START ITERATION n:     2 - t: 0.00025 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.2.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.2.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -121,7 +121,7 @@ FINE: Start iteration k:    55
 FINE: Start iteration k:    56 
 INFO: Nb iteration k = 56 
 FINE: START ITERATION n:     3 - t: 0.00050 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.3.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.3.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -178,7 +178,7 @@ FINE: Start iteration k:    53
 FINE: Start iteration k:    54 
 INFO: Nb iteration k = 54 
 FINE: START ITERATION n:     4 - t: 0.00075 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.4.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.4.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -232,7 +232,7 @@ FINE: Start iteration k:    50
 FINE: Start iteration k:    51 
 INFO: Nb iteration k = 51 
 FINE: START ITERATION n:     5 - t: 0.00100 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.5.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.5.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -284,7 +284,7 @@ FINE: Start iteration k:    48
 FINE: Start iteration k:    49 
 INFO: Nb iteration k = 49 
 FINE: START ITERATION n:     6 - t: 0.00125 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.6.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.6.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -333,7 +333,7 @@ FINE: Start iteration k:    45
 FINE: Start iteration k:    46 
 INFO: Nb iteration k = 46 
 FINE: START ITERATION n:     7 - t: 0.00150 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.7.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.7.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -380,7 +380,7 @@ FINE: Start iteration k:    43
 FINE: Start iteration k:    44 
 INFO: Nb iteration k = 44 
 FINE: START ITERATION n:     8 - t: 0.00175 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.8.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.8.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -424,7 +424,7 @@ FINE: Start iteration k:    40
 FINE: Start iteration k:    41 
 INFO: Nb iteration k = 41 
 FINE: START ITERATION n:     9 - t: 0.00200 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.9.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.9.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -466,7 +466,7 @@ FINE: Start iteration k:    38
 FINE: Start iteration k:    39 
 INFO: Nb iteration k = 39 
 FINE: START ITERATION n:    10 - t: 0.00225 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.10.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.10.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -506,7 +506,7 @@ FINE: Start iteration k:    36
 FINE: Start iteration k:    37 
 INFO: Nb iteration k = 37 
 FINE: START ITERATION n:    11 - t: 0.00250 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.11.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.11.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -543,7 +543,7 @@ FINE: Start iteration k:    33
 FINE: Start iteration k:    34 
 INFO: Nb iteration k = 34 
 FINE: START ITERATION n:    12 - t: 0.00275 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.12.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.12.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -578,7 +578,7 @@ FINE: Start iteration k:    31
 FINE: Start iteration k:    32 
 INFO: Nb iteration k = 32 
 FINE: START ITERATION n:    13 - t: 0.00300 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.13.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.13.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -611,7 +611,7 @@ FINE: Start iteration k:    29
 FINE: Start iteration k:    30 
 INFO: Nb iteration k = 30 
 FINE: START ITERATION n:    14 - t: 0.00325 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.14.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.14.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -642,7 +642,7 @@ FINE: Start iteration k:    27
 FINE: Start iteration k:    28 
 INFO: Nb iteration k = 28 
 FINE: START ITERATION n:    15 - t: 0.00350 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.15.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.15.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -671,7 +671,7 @@ FINE: Start iteration k:    25
 FINE: Start iteration k:    26 
 INFO: Nb iteration k = 26 
 FINE: START ITERATION n:    16 - t: 0.00375 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.16.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.16.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -698,7 +698,7 @@ FINE: Start iteration k:    23
 FINE: Start iteration k:    24 
 INFO: Nb iteration k = 24 
 FINE: START ITERATION n:    17 - t: 0.00400 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.17.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.17.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -724,7 +724,7 @@ FINE: Start iteration k:    22
 FINE: Start iteration k:    23 
 INFO: Nb iteration k = 23 
 FINE: START ITERATION n:    18 - t: 0.00425 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.18.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.18.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -748,7 +748,7 @@ FINE: Start iteration k:    20
 FINE: Start iteration k:    21 
 INFO: Nb iteration k = 21 
 FINE: START ITERATION n:    19 - t: 0.00450 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.19.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.19.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -771,7 +771,7 @@ FINE: Start iteration k:    19
 FINE: Start iteration k:    20 
 INFO: Nb iteration k = 20 
 FINE: START ITERATION n:    20 - t: 0.00475 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.20.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.20.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -792,7 +792,7 @@ FINE: Start iteration k:    17
 FINE: Start iteration k:    18 
 INFO: Nb iteration k = 18 
 FINE: START ITERATION n:    21 - t: 0.00500 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.21.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.21.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -812,7 +812,7 @@ FINE: Start iteration k:    16
 FINE: Start iteration k:    17 
 INFO: Nb iteration k = 17 
 FINE: START ITERATION n:    22 - t: 0.00525 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.22.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.22.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -831,7 +831,7 @@ FINE: Start iteration k:    15
 FINE: Start iteration k:    16 
 INFO: Nb iteration k = 16 
 FINE: START ITERATION n:    23 - t: 0.00550 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.23.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.23.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -848,7 +848,7 @@ FINE: Start iteration k:    13
 FINE: Start iteration k:    14 
 INFO: Nb iteration k = 14 
 FINE: START ITERATION n:    24 - t: 0.00575 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.24.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.24.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -864,7 +864,7 @@ FINE: Start iteration k:    12
 FINE: Start iteration k:    13 
 INFO: Nb iteration k = 13 
 FINE: START ITERATION n:    25 - t: 0.00600 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.25.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.25.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -879,7 +879,7 @@ FINE: Start iteration k:    11
 FINE: Start iteration k:    12 
 INFO: Nb iteration k = 12 
 FINE: START ITERATION n:    26 - t: 0.00625 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.26.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.26.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -893,7 +893,7 @@ FINE: Start iteration k:    10
 FINE: Start iteration k:    11 
 INFO: Nb iteration k = 11 
 FINE: START ITERATION n:    27 - t: 0.00650 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.27.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.27.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -906,7 +906,7 @@ FINE: Start iteration k:     9
 FINE: Start iteration k:    10 
 INFO: Nb iteration k = 10 
 FINE: START ITERATION n:    28 - t: 0.00675 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.28.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.28.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -919,7 +919,7 @@ FINE: Start iteration k:     9
 FINE: Start iteration k:    10 
 INFO: Nb iteration k = 10 
 FINE: START ITERATION n:    29 - t: 0.00700 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.29.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.29.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -931,7 +931,7 @@ FINE: Start iteration k:     8
 FINE: Start iteration k:     9 
 INFO: Nb iteration k = 9 
 FINE: START ITERATION n:    30 - t: 0.00725 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.30.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.30.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -943,7 +943,7 @@ FINE: Start iteration k:     8
 FINE: Start iteration k:     9 
 INFO: Nb iteration k = 9 
 FINE: START ITERATION n:    31 - t: 0.00750 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.31.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.31.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -954,7 +954,7 @@ FINE: Start iteration k:     7
 FINE: Start iteration k:     8 
 INFO: Nb iteration k = 8 
 FINE: START ITERATION n:    32 - t: 0.00775 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.32.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.32.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -965,7 +965,7 @@ FINE: Start iteration k:     7
 FINE: Start iteration k:     8 
 INFO: Nb iteration k = 8 
 FINE: START ITERATION n:    33 - t: 0.00800 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.33.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.33.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -976,7 +976,7 @@ FINE: Start iteration k:     7
 FINE: Start iteration k:     8 
 INFO: Nb iteration k = 8 
 FINE: START ITERATION n:    34 - t: 0.00825 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.34.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.34.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -987,7 +987,7 @@ FINE: Start iteration k:     7
 FINE: Start iteration k:     8 
 INFO: Nb iteration k = 8 
 FINE: START ITERATION n:    35 - t: 0.00850 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.35.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.35.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -997,7 +997,7 @@ FINE: Start iteration k:     6
 FINE: Start iteration k:     7 
 INFO: Nb iteration k = 7 
 FINE: START ITERATION n:    36 - t: 0.00875 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.36.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.36.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1007,7 +1007,7 @@ FINE: Start iteration k:     6
 FINE: Start iteration k:     7 
 INFO: Nb iteration k = 7 
 FINE: START ITERATION n:    37 - t: 0.00900 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.37.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.37.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1017,7 +1017,7 @@ FINE: Start iteration k:     6
 FINE: Start iteration k:     7 
 INFO: Nb iteration k = 7 
 FINE: START ITERATION n:    38 - t: 0.00925 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.38.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.38.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1027,7 +1027,7 @@ FINE: Start iteration k:     6
 FINE: Start iteration k:     7 
 INFO: Nb iteration k = 7 
 FINE: START ITERATION n:    39 - t: 0.00950 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.39.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.39.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1037,7 +1037,7 @@ FINE: Start iteration k:     6
 FINE: Start iteration k:     7 
 INFO: Nb iteration k = 7 
 FINE: START ITERATION n:    40 - t: 0.00975 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.40.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.40.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1047,7 +1047,7 @@ FINE: Start iteration k:     6
 FINE: Start iteration k:     7 
 INFO: Nb iteration k = 7 
 FINE: START ITERATION n:    41 - t: 0.01000 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.41.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.41.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1057,7 +1057,7 @@ FINE: Start iteration k:     6
 FINE: Start iteration k:     7 
 INFO: Nb iteration k = 7 
 FINE: START ITERATION n:    42 - t: 0.01025 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.42.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.42.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1067,7 +1067,7 @@ FINE: Start iteration k:     6
 FINE: Start iteration k:     7 
 INFO: Nb iteration k = 7 
 FINE: START ITERATION n:    43 - t: 0.01050 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.43.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.43.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1076,7 +1076,7 @@ FINE: Start iteration k:     5
 FINE: Start iteration k:     6 
 INFO: Nb iteration k = 6 
 FINE: START ITERATION n:    44 - t: 0.01075 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.44.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.44.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1085,7 +1085,7 @@ FINE: Start iteration k:     5
 FINE: Start iteration k:     6 
 INFO: Nb iteration k = 6 
 FINE: START ITERATION n:    45 - t: 0.01100 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.45.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.45.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1094,7 +1094,7 @@ FINE: Start iteration k:     5
 FINE: Start iteration k:     6 
 INFO: Nb iteration k = 6 
 FINE: START ITERATION n:    46 - t: 0.01125 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.46.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.46.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1103,7 +1103,7 @@ FINE: Start iteration k:     5
 FINE: Start iteration k:     6 
 INFO: Nb iteration k = 6 
 FINE: START ITERATION n:    47 - t: 0.01150 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.47.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.47.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1112,7 +1112,7 @@ FINE: Start iteration k:     5
 FINE: Start iteration k:     6 
 INFO: Nb iteration k = 6 
 FINE: START ITERATION n:    48 - t: 0.01175 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.48.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.48.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1121,7 +1121,7 @@ FINE: Start iteration k:     5
 FINE: Start iteration k:     6 
 INFO: Nb iteration k = 6 
 FINE: START ITERATION n:    49 - t: 0.01200 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.49.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.49.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1130,7 +1130,7 @@ FINE: Start iteration k:     5
 FINE: Start iteration k:     6 
 INFO: Nb iteration k = 6 
 FINE: START ITERATION n:    50 - t: 0.01225 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.50.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.50.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1139,7 +1139,7 @@ FINE: Start iteration k:     5
 FINE: Start iteration k:     6 
 INFO: Nb iteration k = 6 
 FINE: START ITERATION n:    51 - t: 0.01250 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.51.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.51.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1148,7 +1148,7 @@ FINE: Start iteration k:     5
 FINE: Start iteration k:     6 
 INFO: Nb iteration k = 6 
 FINE: START ITERATION n:    52 - t: 0.01275 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.52.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.52.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1157,7 +1157,7 @@ FINE: Start iteration k:     5
 FINE: Start iteration k:     6 
 INFO: Nb iteration k = 6 
 FINE: START ITERATION n:    53 - t: 0.01300 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.53.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.53.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1166,7 +1166,7 @@ FINE: Start iteration k:     5
 FINE: Start iteration k:     6 
 INFO: Nb iteration k = 6 
 FINE: START ITERATION n:    54 - t: 0.01325 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.54.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.54.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1175,7 +1175,7 @@ FINE: Start iteration k:     5
 FINE: Start iteration k:     6 
 INFO: Nb iteration k = 6 
 FINE: START ITERATION n:    55 - t: 0.01350 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.55.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.55.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1184,7 +1184,7 @@ FINE: Start iteration k:     5
 FINE: Start iteration k:     6 
 INFO: Nb iteration k = 6 
 FINE: START ITERATION n:    56 - t: 0.01375 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.56.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.56.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1193,7 +1193,7 @@ FINE: Start iteration k:     5
 FINE: Start iteration k:     6 
 INFO: Nb iteration k = 6 
 FINE: START ITERATION n:    57 - t: 0.01400 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.57.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.57.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1202,7 +1202,7 @@ FINE: Start iteration k:     5
 FINE: Start iteration k:     6 
 INFO: Nb iteration k = 6 
 FINE: START ITERATION n:    58 - t: 0.01425 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.58.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.58.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1211,7 +1211,7 @@ FINE: Start iteration k:     5
 FINE: Start iteration k:     6 
 INFO: Nb iteration k = 6 
 FINE: START ITERATION n:    59 - t: 0.01450 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.59.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.59.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1219,7 +1219,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:    60 - t: 0.01475 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.60.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.60.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1227,7 +1227,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:    61 - t: 0.01500 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.61.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.61.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1235,7 +1235,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:    62 - t: 0.01525 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.62.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.62.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1243,7 +1243,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:    63 - t: 0.01550 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.63.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.63.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1251,7 +1251,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:    64 - t: 0.01575 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.64.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.64.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1259,7 +1259,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:    65 - t: 0.01600 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.65.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.65.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1267,7 +1267,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:    66 - t: 0.01625 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.66.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.66.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1275,7 +1275,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:    67 - t: 0.01650 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.67.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.67.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1283,7 +1283,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:    68 - t: 0.01675 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.68.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.68.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1291,7 +1291,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:    69 - t: 0.01700 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.69.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.69.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1299,7 +1299,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:    70 - t: 0.01725 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.70.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.70.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1307,7 +1307,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:    71 - t: 0.01750 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.71.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.71.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1315,7 +1315,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:    72 - t: 0.01775 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.72.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.72.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1323,7 +1323,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:    73 - t: 0.01800 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.73.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.73.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1331,7 +1331,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:    74 - t: 0.01825 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.74.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.74.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1339,7 +1339,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:    75 - t: 0.01850 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.75.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.75.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1347,7 +1347,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:    76 - t: 0.01875 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.76.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.76.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1355,7 +1355,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:    77 - t: 0.01900 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.77.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.77.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1363,7 +1363,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:    78 - t: 0.01925 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.78.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.78.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1371,7 +1371,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:    79 - t: 0.01950 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.79.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.79.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1379,7 +1379,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:    80 - t: 0.01975 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.80.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.80.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1387,7 +1387,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:    81 - t: 0.02000 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.81.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.81.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1395,7 +1395,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:    82 - t: 0.02025 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.82.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.82.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1403,7 +1403,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:    83 - t: 0.02050 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.83.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.83.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1411,7 +1411,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:    84 - t: 0.02075 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.84.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.84.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1419,7 +1419,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:    85 - t: 0.02100 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.85.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.85.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1427,7 +1427,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:    86 - t: 0.02125 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.86.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.86.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1435,7 +1435,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:    87 - t: 0.02150 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.87.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.87.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1443,7 +1443,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:    88 - t: 0.02175 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.88.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.88.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1451,7 +1451,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:    89 - t: 0.02200 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.89.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.89.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1459,7 +1459,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:    90 - t: 0.02225 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.90.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.90.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1467,7 +1467,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:    91 - t: 0.02250 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.91.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.91.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1475,7 +1475,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:    92 - t: 0.02275 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.92.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.92.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1483,7 +1483,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:    93 - t: 0.02300 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.93.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.93.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1491,7 +1491,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:    94 - t: 0.02325 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.94.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.94.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1499,7 +1499,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:    95 - t: 0.02350 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.95.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.95.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1507,7 +1507,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:    96 - t: 0.02375 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.96.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.96.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1515,7 +1515,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:    97 - t: 0.02400 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.97.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.97.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1523,7 +1523,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:    98 - t: 0.02425 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.98.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.98.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1531,7 +1531,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:    99 - t: 0.02450 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.99.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.99.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1539,7 +1539,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:   100 - t: 0.02475 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.100.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.100.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1547,7 +1547,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:   101 - t: 0.02500 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.101.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.101.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1555,7 +1555,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:   102 - t: 0.02525 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.102.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.102.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1563,7 +1563,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:   103 - t: 0.02550 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.103.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.103.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1571,7 +1571,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:   104 - t: 0.02575 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.104.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.104.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1579,7 +1579,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:   105 - t: 0.02600 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.105.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.105.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1587,7 +1587,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:   106 - t: 0.02625 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.106.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.106.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1595,7 +1595,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:   107 - t: 0.02650 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.107.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.107.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1603,7 +1603,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:   108 - t: 0.02675 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.108.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.108.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1611,7 +1611,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:   109 - t: 0.02700 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.109.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.109.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1619,7 +1619,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:   110 - t: 0.02725 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.110.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.110.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1627,7 +1627,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:   111 - t: 0.02750 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.111.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.111.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1635,7 +1635,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:   112 - t: 0.02775 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.112.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.112.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1643,7 +1643,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:   113 - t: 0.02800 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.113.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.113.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1651,7 +1651,7 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:   114 - t: 0.02825 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.114.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.114.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
@@ -1659,2016 +1659,2016 @@ FINE: Start iteration k:     4
 FINE: Start iteration k:     5 
 INFO: Nb iteration k = 5 
 FINE: START ITERATION n:   115 - t: 0.02850 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.115.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.115.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   116 - t: 0.02875 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.116.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.116.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   117 - t: 0.02900 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.117.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.117.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   118 - t: 0.02925 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.118.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.118.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   119 - t: 0.02950 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.119.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.119.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   120 - t: 0.02975 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.120.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.120.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   121 - t: 0.03000 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.121.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.121.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   122 - t: 0.03025 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.122.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.122.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   123 - t: 0.03050 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.123.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.123.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   124 - t: 0.03075 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.124.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.124.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   125 - t: 0.03100 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.125.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.125.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   126 - t: 0.03125 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.126.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.126.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   127 - t: 0.03150 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.127.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.127.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   128 - t: 0.03175 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.128.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.128.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   129 - t: 0.03200 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.129.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.129.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   130 - t: 0.03225 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.130.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.130.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   131 - t: 0.03250 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.131.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.131.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   132 - t: 0.03275 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.132.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.132.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   133 - t: 0.03300 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.133.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.133.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   134 - t: 0.03325 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.134.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.134.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   135 - t: 0.03350 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.135.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.135.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   136 - t: 0.03375 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.136.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.136.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   137 - t: 0.03400 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.137.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.137.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   138 - t: 0.03425 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.138.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.138.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   139 - t: 0.03450 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.139.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.139.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   140 - t: 0.03475 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.140.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.140.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   141 - t: 0.03500 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.141.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.141.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   142 - t: 0.03525 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.142.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.142.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   143 - t: 0.03550 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.143.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.143.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   144 - t: 0.03575 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.144.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.144.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   145 - t: 0.03600 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.145.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.145.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   146 - t: 0.03625 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.146.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.146.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   147 - t: 0.03650 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.147.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.147.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   148 - t: 0.03675 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.148.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.148.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   149 - t: 0.03700 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.149.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.149.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   150 - t: 0.03725 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.150.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.150.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   151 - t: 0.03750 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.151.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.151.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   152 - t: 0.03775 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.152.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.152.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   153 - t: 0.03800 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.153.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.153.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   154 - t: 0.03825 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.154.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.154.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   155 - t: 0.03850 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.155.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.155.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   156 - t: 0.03875 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.156.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.156.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   157 - t: 0.03900 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.157.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.157.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   158 - t: 0.03925 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.158.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.158.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   159 - t: 0.03950 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.159.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.159.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   160 - t: 0.03975 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.160.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.160.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   161 - t: 0.04000 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.161.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.161.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   162 - t: 0.04025 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.162.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.162.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   163 - t: 0.04050 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.163.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.163.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   164 - t: 0.04075 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.164.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.164.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   165 - t: 0.04100 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.165.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.165.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   166 - t: 0.04125 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.166.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.166.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   167 - t: 0.04150 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.167.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.167.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   168 - t: 0.04175 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.168.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.168.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   169 - t: 0.04200 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.169.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.169.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   170 - t: 0.04225 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.170.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.170.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   171 - t: 0.04250 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.171.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.171.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   172 - t: 0.04275 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.172.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.172.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   173 - t: 0.04300 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.173.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.173.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   174 - t: 0.04325 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.174.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.174.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   175 - t: 0.04350 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.175.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.175.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   176 - t: 0.04375 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.176.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.176.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   177 - t: 0.04400 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.177.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.177.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   178 - t: 0.04425 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.178.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.178.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   179 - t: 0.04450 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.179.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.179.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   180 - t: 0.04475 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.180.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.180.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   181 - t: 0.04500 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.181.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.181.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   182 - t: 0.04525 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.182.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.182.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   183 - t: 0.04550 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.183.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.183.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   184 - t: 0.04575 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.184.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.184.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   185 - t: 0.04600 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.185.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.185.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   186 - t: 0.04625 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.186.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.186.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   187 - t: 0.04650 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.187.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.187.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   188 - t: 0.04675 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.188.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.188.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   189 - t: 0.04700 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.189.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.189.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   190 - t: 0.04725 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.190.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.190.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   191 - t: 0.04750 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.191.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.191.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   192 - t: 0.04775 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.192.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.192.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   193 - t: 0.04800 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.193.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.193.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   194 - t: 0.04825 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.194.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.194.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   195 - t: 0.04850 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.195.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.195.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   196 - t: 0.04875 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.196.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.196.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   197 - t: 0.04900 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.197.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.197.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   198 - t: 0.04925 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.198.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.198.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   199 - t: 0.04950 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.199.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.199.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   200 - t: 0.04975 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.200.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.200.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   201 - t: 0.05000 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.201.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.201.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   202 - t: 0.05025 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.202.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.202.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   203 - t: 0.05050 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.203.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.203.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   204 - t: 0.05075 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.204.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.204.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   205 - t: 0.05100 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.205.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.205.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   206 - t: 0.05125 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.206.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.206.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   207 - t: 0.05150 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.207.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.207.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   208 - t: 0.05175 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.208.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.208.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   209 - t: 0.05200 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.209.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.209.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   210 - t: 0.05225 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.210.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.210.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   211 - t: 0.05250 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.211.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.211.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   212 - t: 0.05275 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.212.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.212.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   213 - t: 0.05300 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.213.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.213.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   214 - t: 0.05325 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.214.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.214.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   215 - t: 0.05350 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.215.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.215.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   216 - t: 0.05375 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.216.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.216.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   217 - t: 0.05400 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.217.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.217.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   218 - t: 0.05425 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.218.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.218.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   219 - t: 0.05450 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.219.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.219.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   220 - t: 0.05475 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.220.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.220.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   221 - t: 0.05500 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.221.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.221.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   222 - t: 0.05525 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.222.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.222.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   223 - t: 0.05550 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.223.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.223.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   224 - t: 0.05575 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.224.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.224.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   225 - t: 0.05600 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.225.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.225.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   226 - t: 0.05625 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.226.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.226.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   227 - t: 0.05650 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.227.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.227.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   228 - t: 0.05675 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.228.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.228.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   229 - t: 0.05700 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.229.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.229.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   230 - t: 0.05725 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.230.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.230.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   231 - t: 0.05750 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.231.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.231.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   232 - t: 0.05775 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.232.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.232.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   233 - t: 0.05800 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.233.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.233.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   234 - t: 0.05825 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.234.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.234.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   235 - t: 0.05850 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.235.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.235.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   236 - t: 0.05875 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.236.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.236.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   237 - t: 0.05900 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.237.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.237.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   238 - t: 0.05925 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.238.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.238.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   239 - t: 0.05950 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.239.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.239.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   240 - t: 0.05975 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.240.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.240.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   241 - t: 0.06000 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.241.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.241.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   242 - t: 0.06025 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.242.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.242.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   243 - t: 0.06050 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.243.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.243.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   244 - t: 0.06075 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.244.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.244.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   245 - t: 0.06100 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.245.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.245.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   246 - t: 0.06125 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.246.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.246.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   247 - t: 0.06150 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.247.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.247.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   248 - t: 0.06175 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.248.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.248.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   249 - t: 0.06200 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.249.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.249.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   250 - t: 0.06225 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.250.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.250.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   251 - t: 0.06250 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.251.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.251.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   252 - t: 0.06275 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.252.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.252.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   253 - t: 0.06300 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.253.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.253.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   254 - t: 0.06325 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.254.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.254.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   255 - t: 0.06350 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.255.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.255.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   256 - t: 0.06375 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.256.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.256.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   257 - t: 0.06400 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.257.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.257.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   258 - t: 0.06425 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.258.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.258.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   259 - t: 0.06450 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.259.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.259.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   260 - t: 0.06475 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.260.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.260.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   261 - t: 0.06500 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.261.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.261.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   262 - t: 0.06525 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.262.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.262.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   263 - t: 0.06550 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.263.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.263.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   264 - t: 0.06575 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.264.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.264.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   265 - t: 0.06600 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.265.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.265.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   266 - t: 0.06625 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.266.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.266.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   267 - t: 0.06650 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.267.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.267.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   268 - t: 0.06675 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.268.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.268.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   269 - t: 0.06700 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.269.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.269.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   270 - t: 0.06725 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.270.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.270.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   271 - t: 0.06750 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.271.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.271.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   272 - t: 0.06775 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.272.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.272.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   273 - t: 0.06800 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.273.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.273.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   274 - t: 0.06825 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.274.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.274.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   275 - t: 0.06850 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.275.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.275.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   276 - t: 0.06875 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.276.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.276.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   277 - t: 0.06900 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.277.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.277.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   278 - t: 0.06925 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.278.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.278.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   279 - t: 0.06950 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.279.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.279.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   280 - t: 0.06975 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.280.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.280.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   281 - t: 0.07000 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.281.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.281.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   282 - t: 0.07025 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.282.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.282.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   283 - t: 0.07050 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.283.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.283.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   284 - t: 0.07075 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.284.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.284.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   285 - t: 0.07100 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.285.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.285.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   286 - t: 0.07125 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.286.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.286.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   287 - t: 0.07150 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.287.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.287.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   288 - t: 0.07175 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.288.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.288.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   289 - t: 0.07200 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.289.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.289.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   290 - t: 0.07225 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.290.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.290.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   291 - t: 0.07250 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.291.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.291.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   292 - t: 0.07275 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.292.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.292.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   293 - t: 0.07300 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.293.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.293.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   294 - t: 0.07325 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.294.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.294.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   295 - t: 0.07350 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.295.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.295.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   296 - t: 0.07375 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.296.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.296.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   297 - t: 0.07400 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.297.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.297.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   298 - t: 0.07425 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.298.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.298.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   299 - t: 0.07450 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.299.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.299.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   300 - t: 0.07475 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.300.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.300.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   301 - t: 0.07500 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.301.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.301.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   302 - t: 0.07525 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.302.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.302.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   303 - t: 0.07550 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.303.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.303.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   304 - t: 0.07575 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.304.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.304.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   305 - t: 0.07600 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.305.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.305.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   306 - t: 0.07625 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.306.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.306.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   307 - t: 0.07650 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.307.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.307.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   308 - t: 0.07675 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.308.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.308.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   309 - t: 0.07700 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.309.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.309.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   310 - t: 0.07725 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.310.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.310.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   311 - t: 0.07750 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.311.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.311.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   312 - t: 0.07775 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.312.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.312.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   313 - t: 0.07800 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.313.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.313.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   314 - t: 0.07825 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.314.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.314.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   315 - t: 0.07850 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.315.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.315.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   316 - t: 0.07875 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.316.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.316.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   317 - t: 0.07900 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.317.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.317.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   318 - t: 0.07925 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.318.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.318.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   319 - t: 0.07950 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.319.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.319.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   320 - t: 0.07975 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.320.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.320.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   321 - t: 0.08000 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.321.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.321.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   322 - t: 0.08025 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.322.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.322.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   323 - t: 0.08050 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.323.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.323.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   324 - t: 0.08075 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.324.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.324.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   325 - t: 0.08100 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.325.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.325.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   326 - t: 0.08125 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.326.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.326.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   327 - t: 0.08150 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.327.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.327.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   328 - t: 0.08175 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.328.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.328.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   329 - t: 0.08200 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.329.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.329.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   330 - t: 0.08225 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.330.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.330.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   331 - t: 0.08250 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.331.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.331.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   332 - t: 0.08275 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.332.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.332.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   333 - t: 0.08300 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.333.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.333.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   334 - t: 0.08325 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.334.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.334.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   335 - t: 0.08350 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.335.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.335.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   336 - t: 0.08375 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.336.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.336.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   337 - t: 0.08400 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.337.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.337.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   338 - t: 0.08425 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.338.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.338.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   339 - t: 0.08450 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.339.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.339.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   340 - t: 0.08475 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.340.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.340.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   341 - t: 0.08500 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.341.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.341.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   342 - t: 0.08525 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.342.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.342.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   343 - t: 0.08550 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.343.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.343.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   344 - t: 0.08575 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.344.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.344.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   345 - t: 0.08600 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.345.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.345.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   346 - t: 0.08625 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.346.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.346.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   347 - t: 0.08650 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.347.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.347.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   348 - t: 0.08675 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.348.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.348.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   349 - t: 0.08700 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.349.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.349.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   350 - t: 0.08725 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.350.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.350.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   351 - t: 0.08750 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.351.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.351.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   352 - t: 0.08775 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.352.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.352.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   353 - t: 0.08800 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.353.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.353.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   354 - t: 0.08825 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.354.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.354.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   355 - t: 0.08850 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.355.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.355.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   356 - t: 0.08875 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.356.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.356.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   357 - t: 0.08900 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.357.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.357.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   358 - t: 0.08925 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.358.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.358.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   359 - t: 0.08950 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.359.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.359.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   360 - t: 0.08975 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.360.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.360.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   361 - t: 0.09000 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.361.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.361.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   362 - t: 0.09025 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.362.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.362.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   363 - t: 0.09050 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.363.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.363.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   364 - t: 0.09075 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.364.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.364.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   365 - t: 0.09100 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.365.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.365.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   366 - t: 0.09125 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.366.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.366.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   367 - t: 0.09150 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.367.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.367.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   368 - t: 0.09175 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.368.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.368.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   369 - t: 0.09200 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.369.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.369.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   370 - t: 0.09225 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.370.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.370.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   371 - t: 0.09250 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.371.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.371.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   372 - t: 0.09275 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.372.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.372.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   373 - t: 0.09300 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.373.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.373.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   374 - t: 0.09325 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.374.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.374.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   375 - t: 0.09350 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.375.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.375.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   376 - t: 0.09375 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.376.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.376.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   377 - t: 0.09400 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.377.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.377.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   378 - t: 0.09425 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.378.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.378.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   379 - t: 0.09450 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.379.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.379.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   380 - t: 0.09475 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.380.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.380.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   381 - t: 0.09500 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.381.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.381.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   382 - t: 0.09525 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.382.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.382.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   383 - t: 0.09550 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.383.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.383.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   384 - t: 0.09575 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.384.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.384.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   385 - t: 0.09600 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.385.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.385.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   386 - t: 0.09625 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.386.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.386.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   387 - t: 0.09650 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.387.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.387.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   388 - t: 0.09675 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.388.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.388.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   389 - t: 0.09700 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.389.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.389.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   390 - t: 0.09725 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.390.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.390.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   391 - t: 0.09750 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.391.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.391.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   392 - t: 0.09775 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.392.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.392.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   393 - t: 0.09800 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.393.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.393.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   394 - t: 0.09825 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.394.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.394.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   395 - t: 0.09850 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.395.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.395.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   396 - t: 0.09875 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.396.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.396.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   397 - t: 0.09900 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.397.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.397.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   398 - t: 0.09925 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.398.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.398.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   399 - t: 0.09950 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.399.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.399.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   400 - t: 0.09975 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.400.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.400.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: START ITERATION n:   401 - t: 0.10000 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.401.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.401.vtp 
 FINE: Start iteration k:     1 
 FINE: Start iteration k:     2 
 FINE: Start iteration k:     3 
 FINE: Start iteration k:     4 
 INFO: Nb iteration k = 4 
 FINE: FINAL TIME: 0.10025 - deltat: 0.00025 
-INFO: Writing vtp file: IterativeHeatEquation.402.vtp 
+INFOS: Writing vtp file: IterativeHeatEquation.402.vtp 
 INFO: Nb iteration n = 401 
 INFO: Database results/interpreter/iterativeheatequation/IterativeHeatEquationDB.current created. 
 INFO:   End interpreting 

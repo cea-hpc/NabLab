@@ -6,6 +6,7 @@
 #include <arcane/utils/NumArray.h>
 #include <arcane/datatype/RealArrayVariant.h>
 #include <arcane/datatype/RealArray2Variant.h>
+#include <arcane/IParallelMng.h>
 #include <arcane/accelerator/core/IAcceleratorMng.h>
 #include <arcane/accelerator/Reduce.h>
 #include <arcane/accelerator/Accelerator.h>

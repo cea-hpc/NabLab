@@ -6,6 +6,7 @@
 #include <arcane/utils/NumArray.h>
 #include <arcane/datatype/RealArrayVariant.h>
 #include <arcane/datatype/RealArray2Variant.h>
+#include <arcane/IParallelMng.h>
 #include "Glace2d_axl.h"
 #include "CartesianMesh2D.h"
 

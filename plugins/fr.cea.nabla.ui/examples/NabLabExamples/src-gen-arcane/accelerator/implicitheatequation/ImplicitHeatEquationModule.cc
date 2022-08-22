@@ -7,7 +7,6 @@
 using namespace Arcane;
 
 /*** Free functions **********************************************************/
-
 namespace implicitheatequationfreefuncs
 {
 	const Real norm(RealArrayVariant a)
@@ -105,6 +104,7 @@ void ImplicitHeatEquationModule::init()
 	m_alpha.resize(nbCell(), nbCell());
 	if (options()->linearAlgebra.isPresent())
 		m_linear_algebra.jsonInit(options()->linearAlgebra.value().localstr());
+	
 
 	// calling jobs
 	computeFaceLength(); // @1.0
@@ -129,7 +129,7 @@ void ImplicitHeatEquationModule::computeFaceLength()
 	auto command = makeCommand(m_default_queue);
 	auto in_X = ax::viewIn(command, m_X);
 	auto out_faceLength = ax::viewOut(command, m_faceLength);
-	command << RUNCOMMAND_ENUMERATE(Face, fFaces, allFaces())
+	command << RUNCOMMAND_ENUMERATE(Face, fFaces, ownFaces())
 	{
 		const auto fId(fFaces);
 		Real reduction0(0.0);
@@ -169,7 +169,7 @@ void ImplicitHeatEquationModule::computeV()
 	auto command = makeCommand(m_default_queue);
 	auto in_X = ax::viewIn(command, m_X);
 	auto out_V = ax::viewOut(command, m_V);
-	command << RUNCOMMAND_ENUMERATE(Cell, jCells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, jCells, ownCells())
 	{
 		const auto jId(jCells);
 		Real reduction0(0.0);
@@ -198,7 +198,7 @@ void ImplicitHeatEquationModule::initD()
 {
 	auto command = makeCommand(m_default_queue);
 	auto out_D = ax::viewOut(command, m_D);
-	command << RUNCOMMAND_ENUMERATE(Cell, cCells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, cCells, ownCells())
 	{
 		out_D[cCells] = 1.0;
 	};
@@ -224,7 +224,7 @@ void ImplicitHeatEquationModule::initXc()
 	auto command = makeCommand(m_default_queue);
 	auto in_X = ax::viewIn(command, m_X);
 	auto out_Xc = ax::viewOut(command, m_Xc);
-	command << RUNCOMMAND_ENUMERATE(Cell, cCells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, cCells, ownCells())
 	{
 		const auto cId(cCells);
 		Real2 reduction0{0.0, 0.0};
@@ -249,7 +249,6 @@ void ImplicitHeatEquationModule::initXc()
  */
 void ImplicitHeatEquationModule::updateU()
 {
-	m_u_nplus1 = m_linear_algebra.solveLinearSystem(m_alpha, m_u_n);
 }
 
 /**
@@ -265,7 +264,7 @@ void ImplicitHeatEquationModule::computeDeltaTn()
 		auto in_V = ax::viewIn(command, m_V);
 		auto in_D = ax::viewIn(command, m_D);
 		ax::ReducerMin<Real> reducer(command);
-		command << RUNCOMMAND_ENUMERATE(Cell, cCells, allCells())
+		command << RUNCOMMAND_ENUMERATE(Cell, cCells, ownCells())
 		{
 			reducer.min(in_V[cCells] / in_D[cCells]);
 		};
@@ -285,7 +284,7 @@ void ImplicitHeatEquationModule::computeFaceConductivity()
 	auto command = makeCommand(m_default_queue);
 	auto in_D = ax::viewIn(command, m_D);
 	auto out_faceConductivity = ax::viewOut(command, m_faceConductivity);
-	command << RUNCOMMAND_ENUMERATE(Face, fFaces, allFaces())
+	command << RUNCOMMAND_ENUMERATE(Face, fFaces, ownFaces())
 	{
 		const auto fId(fFaces);
 		Real reduction0(1.0);
@@ -321,7 +320,7 @@ void ImplicitHeatEquationModule::computeFaceConductivity()
  */
 void ImplicitHeatEquationModule::initU()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(cCells, view)
 		{
@@ -350,7 +349,7 @@ void ImplicitHeatEquationModule::setUpTimeLoopN()
  */
 void ImplicitHeatEquationModule::computeAlphaCoeff()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(cCells, view)
 		{
@@ -366,11 +365,11 @@ void ImplicitHeatEquationModule::computeAlphaCoeff()
 					const auto fId(m_mesh->getCommonFace(cId, dId));
 					const auto fFaces(fId);
 					const Real alphaExtraDiag(-m_deltat / m_V[cCells] * (m_faceLength[fFaces] * m_faceConductivity[fFaces]) / implicitheatequationfreefuncs::norm(Real2(implicitheatequationfreefuncs::operatorSub(m_Xc[cCells], m_Xc[dCells]))));
-					m_alpha.setValue(cCells.localId(), dCells, alphaExtraDiag);
+					m_alpha.setValue(cCells->localId(), dCells, alphaExtraDiag);
 					alphaDiag = alphaDiag + alphaExtraDiag;
 				}
 			}
-			m_alpha.setValue(cCells.localId(), cCells.localId(), 1 - alphaDiag);
+			m_alpha.setValue(cCells->localId(), cCells->localId(), 1 - alphaDiag);
 		}
 	});
 }

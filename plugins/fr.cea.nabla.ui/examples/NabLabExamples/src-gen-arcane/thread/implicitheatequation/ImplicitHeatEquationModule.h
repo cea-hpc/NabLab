@@ -6,6 +6,7 @@
 #include <arcane/utils/NumArray.h>
 #include <arcane/datatype/RealArrayVariant.h>
 #include <arcane/datatype/RealArray2Variant.h>
+#include <arcane/IParallelMng.h>
 #include "ImplicitHeatEquation_axl.h"
 #include "CartesianMesh2D.h"
 #include "LinearAlgebra.h"
@@ -73,8 +74,8 @@ private:
 	Real m_t_n;
 	Real m_t_nplus1;
 	Real m_t_n0;
-	Arcane2StlVector<Cell> m_u_n;
-	Arcane2StlVector<Cell> m_u_nplus1;
+	Arcane2AlienVector<Cell> m_u_n;
+	Arcane2AlienVector<Cell> m_u_nplus1;
 	Matrix m_alpha;
 };
 

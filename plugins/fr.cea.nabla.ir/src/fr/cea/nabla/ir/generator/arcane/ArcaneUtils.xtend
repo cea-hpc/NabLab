@@ -28,6 +28,7 @@ import static extension fr.cea.nabla.ir.ExtensionProviderExtensions.getInstanceN
 import static extension fr.cea.nabla.ir.IrModuleExtensions.*
 import static extension fr.cea.nabla.ir.IrRootExtensions.*
 import static extension fr.cea.nabla.ir.JobCallerExtensions.*
+import fr.cea.nabla.ir.ir.ExtensionProvider
 
 class ArcaneUtils
 {
@@ -115,5 +116,15 @@ class ArcaneUtils
 			Utils.getCodeName(it)
 		else
 			"options()->" + jobModule.name + '()->' + Utils.getCodeName(it)
+	}
+	
+	static def isStlLinearAlgebraProvider(ExtensionProvider it)
+	{
+		return providerName == "LinearAlgebraStl"
+	}
+	
+	static def isAlienLinearAlgebraProvider(ExtensionProvider it)
+	{
+		return providerName == "LinearAlgebraAlien"
 	}
 }

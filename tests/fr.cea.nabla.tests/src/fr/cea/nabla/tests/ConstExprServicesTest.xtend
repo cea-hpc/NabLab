@@ -89,20 +89,20 @@ class ConstExprServicesTest
 		val model =
 		'''
 		«emptyTestModule»
-		def f: x,y | real[x] × real[y] → real[x+y], (a, b) →
+		def <x,y> real[x+y] f(real[x] a, real[y] b) 
 		{
 			let real[x+y] c = 2.0;
 			c = a * 2.0;
 			return c + 4.0;
 		}
-		def g: → real, () →
+		def real g() 
 		{
 			real[4] n;
 			real[4, 2] m;
-			∀ i∈[0;4[, 
+			forall  i in [0;4[, 
 			{
 				n[i] = 4.0;
-				∀ j∈[0;2[, m[i,j] = 3.0;
+				forall  j in [0;2[, m[i,j] = 3.0;
 			}
 			return 4.0;
 		}
@@ -138,7 +138,7 @@ class ConstExprServicesTest
 		Assert.assertTrue(constExprServices.isConstExpr(f_a2_type_simple.size))
 		Assert.assertTrue(constExprServices.isConstExpr(f_y))
 
-		val f_return_type = f.typeDeclaration.returnType.typeFor
+		val f_return_type = f.returnTypeDeclaration.returnType.typeFor
 		Assert.assertTrue(f_return_type instanceof NSTRealArray1D)
 		val f_return_type_simple = f_return_type as NSTRealArray1D
 		Assert.assertTrue(constExprServices.isConstExpr(f_return_type_simple.size))

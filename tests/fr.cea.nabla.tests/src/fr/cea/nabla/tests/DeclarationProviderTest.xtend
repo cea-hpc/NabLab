@@ -54,16 +54,16 @@ class DeclarationProviderTest
 		'''
 		extension MyLibOfFunctions;
 
-		def f: → int;
-		def f: int → int;
-		def f: real → real;
-		def f: real[2] → real[2];
+		def int f();
+		def int f(int a);
+		def real f(real a);
+		def real[2] f(real[2] a);
 
-		def g: a | real[a] → real[a];
-		def g: a, b | real[a, b] → real[a*b];
-		def g: a, b | real[a] × real[b] → real[a+b];
+		def <a> real[a] g(real[a] x);
+		def <a, b> real[a*b] g(real[a, b] x);
+		def <a, b> real[a+b] g(real[a] x, real[b] y);
 
-		def h: a | real[a] × real[a] → real[a];
+		def <a> real[a] h(real[a] x, real[a] y);
 		'''
 
 		val nablaModel =
@@ -177,21 +177,21 @@ class DeclarationProviderTest
 		'''
 		extension Test;
 
-		def f: real → real, (a) → return a;
-		def f: real[2] → real[2], (a) → return a;
-		def g: x | real[x] → real[x], (a) → return a;
+		def real f(real a) return a;
+		def real[2] f(real[2] a) return a;
+		def <x> real[x] g(real[x] a) return a;
 
-		def h: real[2] → real[2], (a) → {
+		def real[2] h(real[2] a) {
 			return f(a) + g(a);
 		}
 
-		def i: a | real[a] → real[a], (x) → {
+		def <a> real[a] i(real[a] x) {
 			return f(x); // Wrong f only on real[2]
 		}
 
-		def j: a | real[a] → real[a], (x) → {
+		def <a> real[a] j(real[a] x) {
 			let real[a] y = g(x);
-			∀i∈[0;a[, y[i] = f(x[i]);
+			forall i in [0;a[, y[i] = f(x[i]);
 			return y;
 		}
 		'''
@@ -224,17 +224,17 @@ class DeclarationProviderTest
 
 		with CartesianMesh2D.*;
 
-		def f, 0.0: real, (a , b) → return a;
-		def f, 0.0: x | real[x], (a , b) → return a;
+		red real f(0.0) (a , b) : return a;
+		red <x> real[x] f(0.0) (a , b) : return a;
 
 		real u{cells};
 		real[2] u2{cells};
 		int bidon{cells};
 
 		// --- TEST DE F ---
-		J0: { let real x = f{j ∈ cells()}(u{j}); }
-		J1: { let real[2] x = f{j ∈ cells()}(u2{j}); }
-		J2: { let real x = f{j ∈ cells()}(bidon{j}); } // Wrong arguments : int
+		J0: { let real x = f{j in cells()}(u{j}); }
+		J1: { let real[2] x = f{j in cells()}(u2{j}); }
+		J2: { let real x = f{j in cells()}(bidon{j}); } // Wrong arguments : int
 		'''
 
 		val rs = resourceSetProvider.get

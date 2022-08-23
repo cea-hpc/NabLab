@@ -54,10 +54,10 @@ class ReplaceAffectationsTest
 		J2: a = b;
 
 		// Connectivity variable. Un = Un+1 at the end of time loop => replace by loop
-		J3: ∀j∈cells(), u^{n+1}{j} = u^{n}{j} + 1.0;
+		J3: forall j in cells(), u^{n+1}{j} = u^{n}{j} + 1.0;
 
 		// Connectivity array variable. Vn = Vn+1 at the end of time loop => replace by loop
-		J4: ∀j∈cells(), v^{n+1}{j} = v^{n}{j} + 1.0;
+		J4: forall j in cells(), v^{n+1}{j} = v^{n}{j} + 1.0;
 		'''
 
 		val ir = compilationHelper.getRawIr(model, testGenModel)

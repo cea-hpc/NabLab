@@ -18,7 +18,8 @@ import fr.cea.nabla.nabla.ConnectivityVar
 import fr.cea.nabla.nabla.DefaultExtension
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
-import fr.cea.nabla.nabla.FunctionTypeDeclaration
+import fr.cea.nabla.nabla.FunctionInTypeDeclaration
+import fr.cea.nabla.nabla.FunctionReturnTypeDeclaration
 import fr.cea.nabla.nabla.NablaRoot
 import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.nabla.SimpleVar
@@ -56,7 +57,8 @@ class LinearAlgebraUtils
 			}
 			Arg case o.linearAlgebraEligible: return o.eContainer.linearAlgebraExtension
 			BaseType case o.linearAlgebraEligible: return o.eContainer.linearAlgebraExtension
-			FunctionTypeDeclaration: return o.eContainer.linearAlgebraExtension
+			FunctionInTypeDeclaration: return o.eContainer.linearAlgebraExtension
+			FunctionReturnTypeDeclaration: return o.eContainer.linearAlgebraExtension
 			default: return null
 		}
 	}

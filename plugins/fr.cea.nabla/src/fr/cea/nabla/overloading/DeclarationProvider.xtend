@@ -87,8 +87,8 @@ class DeclarationProvider
 		switch root
 		{
 			case null: #[]
-			NablaModule: root.functions.filter[x | x.name == f.name && x.typeDeclaration.inTypes.size == callerInTypes.size]
-			DefaultExtension: root.functions.filter[x | x.name == f.name && x.typeDeclaration.inTypes.size == callerInTypes.size]
+			NablaModule: root.functions.filter[x | x.name == f.name && x.intypesDeclaration.size == callerInTypes.size]
+			DefaultExtension: root.functions.filter[x | x.name == f.name && x.intypesDeclaration.size == callerInTypes.size]
 			default: #[]
 		}
 	}

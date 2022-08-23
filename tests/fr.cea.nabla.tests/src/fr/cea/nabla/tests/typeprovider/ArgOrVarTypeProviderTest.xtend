@@ -42,6 +42,7 @@ import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.eclipse.xtext.validation.Issue
 
 /**
  * Test ArgOrVarTypeProvider class.
@@ -66,7 +67,7 @@ class ArgOrVarTypeProviderTest
 		'''
 		linearalgebra extension LinearAlgebra;
 
-		def solveLinearSystem: x | real[x, x] × real[x] → real[x], (a, b) → return b;
+		def <x> real[x] solveLinearSystem(real[x, x] a, real[x] b) return b;
 		'''
 
 		val nablaModel =
@@ -76,7 +77,7 @@ class ArgOrVarTypeProviderTest
 		with LinearAlgebra.*;
 		with CartesianMesh2D.*;
 
-		def norm: x | real[x] → real, (a) → return 1.0;
+		def <x> real norm(real[x] a) return 1.0;
 
 		// bool scalar
 		bool b;
@@ -138,14 +139,14 @@ class ArgOrVarTypeProviderTest
 		UpdateU: u^{n+1} = solveLinearSystem(alpha, u^{n});
 
 		// local variable
-		ComputeX: ∀ j∈cells(), {
+		ComputeX: forall  j in cells(), {
 			let real ee = 1.0;
 			u^{n}{j} = ee * 4;
-			∀r∈nodesOfCell(j), Cjr{j,r} = norm(w{j,r});
+			forall r in nodesOfCell(j), Cjr{j,r} = norm(w{j,r});
 		}
 
-		TestSpaceIteratorIndex: ∀r, spaceIteratorIndex ∈ nodes(), X{r}[spaceIteratorIndex] = 0.0;
-		TestIntervalIndex: ∀r∈nodes(), ∀intervalIndex∈[0;2[, X{r}[intervalIndex] = 0.0;
+		TestSpaceIteratorIndex: forall r, spaceIteratorIndex in nodes(), X{r}[spaceIteratorIndex] = 0.0;
+		TestIntervalIndex: forall r in nodes(), forall intervalIndex in [0;2[, X{r}[intervalIndex] = 0.0;
 		'''
 
 		val rs = resourceSetProvider.get
@@ -153,6 +154,12 @@ class ArgOrVarTypeProviderTest
 		val linearAlgebraExt = parseHelper.parse(lightLinearAlgebraModel, rs) as DefaultExtension
 		val module = parseHelper.parse(nablaModel, rs) as NablaModule
 		Assert.assertNotNull(module)
+		for(Issue iss : module.validate){
+			if(iss.severity == Severity.ERROR)
+				println(
+					iss.toString
+				)
+		}
 		Assert.assertEquals(0, module.validate.filter(i | i.severity == Severity.ERROR).size)
 
 		// bool scalar

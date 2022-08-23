@@ -9,31 +9,31 @@
  *******************************************************************************/
 extension Assert;
 
-def assertEquals: int × int → bool, (expected, actual) →
+def bool assertEquals(int expected, int actual) 
 {
 	let bool ret = (expected == actual);
 	if (!ret) exit "** Assertion failed";
 	return ret;
 }
 
-def assertEquals: real × real → bool, (expected, actual) →
+def bool assertEquals(real expected, real actual) 
 {
 	let bool ret = (expected == actual);
 	if (!ret) exit "** Assertion failed";
 	return ret;
 }
 
-def assertEquals: x | int[x] × int[x] → bool, (expected, actual) →
+def <x> bool assertEquals(int[x] expected, int[x] actual) 
 {
-	∀i∈[0;x[,
+	forall i in [0;x[,
 		if (expected[i] != actual[i])
 			exit "** Assertion failed";
 	return true;
 }
 
-def assertEquals: x | real[x] × real[x] → bool, (expected, actual) →
+def <x> bool assertEquals(real[x] expected, real[x] actual)
 {
-	∀i∈[0;x[,
+	forall i in [0;x[,
 		if (expected[i] != actual[i])
 			exit "** Assertion failed";
 	return true;

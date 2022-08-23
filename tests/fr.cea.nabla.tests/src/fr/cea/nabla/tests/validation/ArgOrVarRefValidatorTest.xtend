@@ -77,9 +77,9 @@ class ArgOrVarRefValidatorTest
 			'''
 			«testModule»
 			real u{cells}, v{cells, nodesOfCell}, w{nodes};
-			ComputeU: ∀ j∈cells(), ∀r∈nodesOfCell(j), u{j,r} = 1.;
-			ComputeV: ∀ j∈cells(), ∀r∈nodesOfCell(j), v{j} = 1.;
-			ComputeW: ∀ j∈cells(), w{j} = 1.;
+			ComputeU: forall  j in cells(), forall r in nodesOfCell(j), u{j,r} = 1.;
+			ComputeV: forall  j in cells(), forall r in nodesOfCell(j), v{j} = 1.;
+			ComputeW: forall  j in cells(), w{j} = 1.;
 			''', rs)
 		Assert.assertNotNull(moduleKo)
 
@@ -99,9 +99,9 @@ class ArgOrVarRefValidatorTest
 			'''
 			«testModule»
 			real u{cells}, v{cells, nodesOfCell}, w{nodes};
-			ComputeU: ∀ j∈cells(), ∀r∈nodesOfCell(j), u{j} = 1.;
-			ComputeV: ∀ j∈cells(), ∀r∈nodesOfCell(j), v{j,r} = 1.;
-			ComputeW: ∀ j∈nodes(), w{j} = 1.;
+			ComputeU: forall  j in cells(), forall r in nodesOfCell(j), u{j} = 1.;
+			ComputeV: forall  j in cells(), forall r in nodesOfCell(j), v{j,r} = 1.;
+			ComputeW: forall  j in nodes(), w{j} = 1.;
 			''', rs)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -261,7 +261,7 @@ class ArgOrVarRefValidatorTest
 			«testModule»
 			real[2] X{nodes};
 			real y{nodes};
-			InitY : ∀r ∈nodes(), y{r} = X{r}[1];
+			InitY : forall r in nodes(), y{r} = X{r}[1];
 			''', rs)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors

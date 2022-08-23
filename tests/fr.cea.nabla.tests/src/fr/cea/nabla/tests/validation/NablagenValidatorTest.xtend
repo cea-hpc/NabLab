@@ -53,9 +53,9 @@ class NablagenValidatorTest
 
 	iterate n while (n+1 < maxIter && t^{n+1} < maxTime);
 
-	Hj1: ∀c∈cells(), hv3{c} = hv2{c};
-	Hj2: ∀c∈cells(), hv5{c} = hv3{c};
-	Hj3: ∀c∈cells(), hv7{c} = hv4{c} + hv5{c} + hv6{c};
+	Hj1: forall c in cells(), hv3{c} = hv2{c};
+	Hj2: forall c in cells(), hv5{c} = hv3{c};
+	Hj3: forall c in cells(), hv7{c} = hv4{c} + hv5{c} + hv6{c};
 	'''
 
 	val nablaRemapModel =
@@ -67,8 +67,8 @@ class NablagenValidatorTest
 	real[2] X{nodes};
 	real rv1{cells}, rv2{cells}, rv3{cells};
 
-	Rj1: ∀c∈cells(), rv2{c} = rv1{c};
-	Rj2: ∀c∈cells(), rv3{c} = rv2{c};
+	Rj1: forall c in cells(), rv2{c} = rv1{c};
+	Rj2: forall c in cells(), rv3{c} = rv2{c};
 	'''
 
 	val ngenModel = 
@@ -210,7 +210,7 @@ class NablagenValidatorTest
 		val batiLibModel =
 		'''
 			extension BatiLib;
-			def nextWaveHeight: → real;
+			def real nextWaveHeight();
 		'''
 		val depthInitModel =
 		'''
@@ -226,7 +226,7 @@ class NablagenValidatorTest
 			real[2] X{nodes};
 			real nu{cells};
 
-			InitFromFile: ∀j∈cells(), nu{j} = nextWaveHeight();
+			InitFromFile: forall j in cells(), nu{j} = nextWaveHeight();
 		'''
 		val appNgenModel =
 		'''
@@ -283,8 +283,8 @@ class NablagenValidatorTest
 
 			itemtypes { node, cell }
 
-			connectivity nodes: → {node};
-			connectivity cells: → {cell};
+			connectivity {node} nodes();
+			connectivity {cell} cells();
 		'''
 
 		val rs = resourceSetProvider.get

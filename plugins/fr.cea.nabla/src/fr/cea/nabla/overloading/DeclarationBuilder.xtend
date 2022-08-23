@@ -56,16 +56,16 @@ class DeclarationBuilder
 
 	def FunctionDeclaration tryToBuildDeclaration(Function f, Iterable<NablaType> callerInTypes)
 	{
-		for (i : 0..<f.typeDeclaration.inTypes.size)
+		for (i : 0..<f.intypesDeclaration.size)
 		{
-			val calleeIemeType = f.typeDeclaration.inTypes.get(i).typeFor
+			val calleeIemeType = f.intypesDeclaration.get(i).inTypes.typeFor
 			val callerIemeType = callerInTypes.get(i)
 			if (!typesMatch(f, calleeIemeType, callerIemeType))
 				return null
 		}
 
-		val inTypes = f.typeDeclaration.inTypes.map[computeExpressionType]
-		val returnType = f.typeDeclaration.returnType.computeExpressionType
+		val inTypes = f.intypesDeclaration.map[inTypes.computeExpressionType]
+		val returnType = f.returnTypeDeclaration.returnType.computeExpressionType
 		val fd = new FunctionDeclaration(f, inTypes, returnType)
 		return fd
 	}

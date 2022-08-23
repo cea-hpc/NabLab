@@ -50,7 +50,7 @@ class BasicValidatorTest
 
 			itemtypes { node }
 
-			connectivity nodes: → {node};
+			connectivity {node} nodes();
 			''', rs)
 
 		val moduleKo = parseHelper.parse(
@@ -85,10 +85,10 @@ class BasicValidatorTest
 		val moduleKo = parseHelper.parse(
 			'''
 			extension Test;
-			def g: → real, () →
+			def real g() 
 			{
 				real[4] n;
-				∀ i∈[1;3[, n[i] = 0.0;
+				forall  i in [1;3[, n[i] = 0.0;
 				return 4.0;
 			}
 			''')
@@ -99,10 +99,10 @@ class BasicValidatorTest
 		val moduleOk = parseHelper.parse(
 			'''
 			extension Test;
-			def g: → real, () →
+			def real g() 
 			{
 				real[4] n;
-				∀ i∈[0;3[, n[i] = 0.0;
+				forall  i in [0;3[, n[i] = 0.0;
 				return 4.0;
 			}
 			''')
@@ -116,10 +116,10 @@ class BasicValidatorTest
 		val moduleKo1 = parseHelper.parse(
 			'''
 			extension Test;
-			def g: → real, () →
+			def real g() 
 			{
 				real[4] n;
-				∀ i∈[0;3.2[, n[i] = 0.0;
+				forall  i in [0;3.2[, n[i] = 0.0;
 				return 4.0;
 			}
 			''')
@@ -130,11 +130,11 @@ class BasicValidatorTest
 		val moduleKo2 = parseHelper.parse(
 			'''
 			extension Test;
-			def g: → real, () →
+			def real g() 
 			{
 				let real x = 6.7;
 				real[4] n;
-				∀ i∈[0;x[, n[i] = 0.0;
+				forall  i in [0;x[, n[i] = 0.0;
 				return 4.0;
 			}
 			''')
@@ -146,10 +146,10 @@ class BasicValidatorTest
 		val moduleOk = parseHelper.parse(
 			'''
 			extension Test;
-			def g: → real, () →
+			def real g() 
 			{
 				real[4] n;
-				∀ i∈[0;4[, n[i] = 0.0;
+				forall  i in [0;4[, n[i] = 0.0;
 				return 4.0;
 			}
 			''')
@@ -225,11 +225,11 @@ class BasicValidatorTest
 		val moduleKo = parseHelper.parse(
 			'''
 			extension Test;
-			def sum, 0.0: real, (a, b) → return a + b;
-			def G: → real, () →
+			red real sum(0.0) (a, b) : return a + b;
+			def real G() 
 			{
 				real[4] n;
-				∀ i∈[0;3[, n[i] = 0.0;
+				forall  i in [0;3[, n[i] = 0.0;
 				return 4.0;
 			}
 			''')
@@ -241,11 +241,11 @@ class BasicValidatorTest
 		val moduleOk = parseHelper.parse(
 			'''
 			extension Test;
-			def sum, 0.0: real, (a, b) → return a + b;
-			def g: → real, () →
+			red real sum(0.0) (a, b) : return a + b;
+			def real g() 
 			{
 				real[4] n;
-				∀ i∈[0;3[, n[i] = 0.0;
+				forall  i in [0;3[, n[i] = 0.0;
 				return 4.0;
 			}
 			''')
@@ -319,7 +319,7 @@ class BasicValidatorTest
 			'''
 			«emptyTestModule»
 			real[3] x;
-			iterate n while(sum{x∈[0;3[}(x[i]]));
+			iterate n while(sum{x in [0;3[}(x[i]]));
 			''')
 		Assert.assertNotNull(moduleKo1)
 		moduleKo1.assertError(NablaPackage.eINSTANCE.timeIterator,
@@ -482,8 +482,8 @@ class BasicValidatorTest
 			«testModule»
 			let orig = [0.0 , 0.0] ;
 			real[2] X{nodes};
-			IniX1: ∀j∈cells(), ∀r∈nodes(j), X{r} = orig;
-			IniX2: ∀r∈nodes(), ∀j∈nodesOfCell(r), X{r} = orig;
+			IniX1: forall j in cells(), forall r in nodes(j), X{r} = orig;
+			IniX2: forall r in nodes(), forall j in nodesOfCell(r), X{r} = orig;
 			''', rs) as NablaModule
 		Assert.assertNotNull(moduleKo)
 
@@ -500,8 +500,8 @@ class BasicValidatorTest
 			«testModule»
 			let real[2] orig = [0.0 , 0.0];
 			real[2] X{nodes};
-			IniX1: ∀j∈cells(), ∀r∈nodes(), X{r} = orig; 
-			IniX2: ∀j∈cells(), ∀r∈nodesOfCell(j), X{r} = orig; 
+			IniX1: forall j in cells(), forall r in nodes(), X{r} = orig; 
+			IniX2: forall j in cells(), forall r in nodesOfCell(j), X{r} = orig; 
 			''', rs)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -568,7 +568,7 @@ class BasicValidatorTest
 			'''
 			«testModule»
 			real[2] X{cells};
-			UpdateX: ∀j1∈cells(), ∀j2∈leftCell(j1), X{j2} = X{j2-1} - 1;
+			UpdateX: forall j1 in cells(), forall j2 in leftCell(j1), X{j2} = X{j2-1} - 1;
 			''', rs)
 		Assert.assertNotNull(moduleKo)
 
@@ -580,7 +580,7 @@ class BasicValidatorTest
 			'''
 			«testModule»
 			real[2] X{cells};
-			UpdateX: ∀j1∈cells(), ∀j2∈leftCell(j1), X{j2} = X{j1-1} - 1;
+			UpdateX: forall j1 in cells(), forall j2 in leftCell(j1), X{j2} = X{j1-1} - 1;
 			''', rs)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors

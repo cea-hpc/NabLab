@@ -48,7 +48,7 @@ class ReplaceOptionsByLocalVariablesTest
 		iterate n while (n < 2);
 
 		// A job with a loop and an option
-		J1: ∀j∈cells(), u^{n+1}{j} = u^{n}{j} + my_opt;
+		J1: forall j in cells(), u^{n+1}{j} = u^{n}{j} + my_opt;
 		'''
 
 		val ir = compilationHelper.getRawIr(model, testGenModel)

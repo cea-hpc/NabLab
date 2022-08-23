@@ -17,6 +17,7 @@ import fr.cea.nabla.LinearAlgebraUtils
 import fr.cea.nabla.ir.ir.IrFactory
 import fr.cea.nabla.nabla.DefaultExtension
 import fr.cea.nabla.nabla.Function
+import fr.cea.nabla.nabla.FunctionReturnTypeDeclaration
 import fr.cea.nabla.nabla.NablaModule
 import fr.cea.nabla.nabla.Reduction
 import org.eclipse.xtext.EcoreUtil2
@@ -62,7 +63,7 @@ class IrFunctionFactory
 		// f is internal, it has a inArgs and a body
 		f.inArgs.forEach[x | inArgs += toIrArg(x)]
 		body = f.body.toIrInstruction
-		returnType = f.toIrReturnType
+		returnType = f.returnTypeDeclaration.toIrReturnType
 		constExpr = constExprServices.isConstExpr(f)
 		indexInName = f.indexInName
 	}
@@ -75,25 +76,25 @@ class IrFunctionFactory
 		provider = ext.toIrDefaultExtensionProvider
 		f.variables.forEach[x | variables += x.toIrVariable]
 		// f is external. No inArgs only inArgTypes
-		for (i : 0..<f.typeDeclaration.inTypes.size)
-			inArgs += toIrArg(f.typeDeclaration.inTypes.get(i), "x" + i)
-		returnType = f.toIrReturnType
+		for (i : 0..<f.intypesDeclaration.size)
+			inArgs += toIrArg(f.intypesDeclaration.get(i).inTypes, "x" + i)
+		returnType = f.returnTypeDeclaration.toIrReturnType
 		indexInName = f.indexInName
 	}
 
-	private def toIrReturnType(Function f)
+	private def toIrReturnType(FunctionReturnTypeDeclaration rtd)
 	{
-		val la = f.linearAlgebraExtension
+		val la = rtd.linearAlgebraExtension
 		if (la === null)
 		{
-			f.typeDeclaration.returnType.toIrBaseType
+			rtd.returnType.toIrBaseType
 		}
 		else
 		{
 			IrFactory.eINSTANCE.createLinearAlgebraType =>
 			[
 				provider = la.toIrDefaultExtensionProvider
-				for (s : f.typeDeclaration.returnType.sizes)
+				for (s : rtd.returnType.sizes)
 				{
 					sizes += s.toIrExpression
 					intSizes += getIntSizeFor(s)

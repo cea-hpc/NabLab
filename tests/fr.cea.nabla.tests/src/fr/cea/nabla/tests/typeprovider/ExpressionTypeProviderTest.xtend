@@ -60,7 +60,7 @@ class ExpressionTypeProviderTest
 		'''
 		linearalgebra extension LinearAlgebra;
 
-		def solveLinearSystem: x | real[x, x] × real[x] → real[x], (a, b) → return b;
+		def <x> real[x] solveLinearSystem(real[x, x] a, real[x] b) return b;
 		'''
 
 		val nablaModel =
@@ -70,10 +70,10 @@ class ExpressionTypeProviderTest
 		with LinearAlgebra.*;
 		with CartesianMesh2D.*;
 
-		def reduceMin, real.MaxValue: real, (a, b) → return a;
+		red real reduceMin(real.MaxValue) (a, b) : return a;
 
-		def perp: real[2] → real[2], (a) → return a;
-		def norm: x | real[x] → real, (a) → return 1.0;
+		def real[2] perp(real[2] a) return a;
+		def <x> real norm(real[x] a) return 1.0;
 
 		let real X_EDGE_LENGTH = 1.;
 		let real Y_EDGE_LENGTH = X_EDGE_LENGTH;
@@ -131,12 +131,12 @@ class ExpressionTypeProviderTest
 
 		UpdateU: u^{n+1} = solveLinearSystem(alpha, u^{n});
 
-		ComputeV: ∀j∈cells(), v{j} = reduceMin{r∈nodesOfCell(j)}(x{j,r} + s{j});
+		ComputeV: forall j in cells(), v{j} = reduceMin{r in nodesOfCell(j)}(x{j,r} + s{j});
 
-		ComputeX: ∀ j∈cells(), {
+		ComputeX: forall  j in cells(), {
 			let real ee = 1.0;
 			u^{n}{j} = ee * 4;
-			∀r∈nodesOfCell(j), x{j,r} = norm(w{j,r});
+			forall r in nodesOfCell(j), x{j,r} = norm(w{j,r});
 		}
 		'''
 

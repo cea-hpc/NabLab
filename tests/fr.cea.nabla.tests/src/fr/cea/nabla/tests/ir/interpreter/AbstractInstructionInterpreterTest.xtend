@@ -76,30 +76,30 @@ abstract class AbstractInstructionInterpreterTest
 		iterate n while (n+1 < maxIter && t^{n+1} < maxTime);
 
 		InitTime: t^{n=0} = 0.0;
-		InitU : ∀r∈cells(), U{r} = 1.0;
-		ComputeCjr: ∀j∈ cells(), {
+		InitU : forall r in cells(), U{r} = 1.0;
+		ComputeCjr: forall j in cells(), {
 			set rCellsJ = nodesOfCell(j);
 			let int cardRCellsJ = card(rCellsJ);
 			real[cardRCellsJ] tmp;
-			∀r, countr ∈ rCellsJ, {
+			forall r, countr in rCellsJ, {
 				tmp[countr] = 0.5; // stupid but test countr
 				C{j,r} = tmp[countr] * (X{r+1} - X{r-1});
 			}
 		}
 
-		InitB: ∀r∈nodes(),
+		InitB: forall r in nodes(),
 		{
 			B^{n=0}{r}[0] = -X{r}[0];
 			B^{n=0}{r}[1] = -X{r}[1];
 		}
-		ComputeB: ∀r∈nodes(), B^{n+1}{r} = B^{n}{r} / 2;
+		ComputeB: forall r in nodes(), B^{n+1}{r} = B^{n}{r} / 2;
 
 		// reductions
-		ComputeBmin: Bmin = Min{r∈nodes()}(B^{n}{r}[0]);
-		ComputeBmax: Bmax = Max{r∈nodes()}(B^{n}{r}[0]);
+		ComputeBmin: Bmin = Min{r in nodes()}(B^{n}{r}[0]);
+		ComputeBmax: Bmax = Max{r in nodes()}(B^{n}{r}[0]);
 
 		// loop on interval
-		InitTab: ∀i∈[0;size[, tab[i] = 2.3;
+		InitTab: forall i in [0;size[, tab[i] = 2.3;
 
 		InitT: t^{n=0} = 0.0;
 		ComputeTn: t^{n+1} = t^{n} + delta_t;
@@ -118,7 +118,7 @@ abstract class AbstractInstructionInterpreterTest
 		real[2] X{nodes};
 
 		InitT: t=0.0;
-		InitU : ∀r, countr ∈ cells(), {
+		InitU : forall r, countr in cells(), {
 			if (countr % 2 == 0)
 				U{r} = 0.0;
 			else
@@ -141,7 +141,7 @@ abstract class AbstractInstructionInterpreterTest
 		InitU : {
 			let int i = 0;
 			while (i<3) {
-				∀r ∈ cells(), U{r} = 1.0 * i;
+				forall r in cells(), U{r} = 1.0 * i;
 				i = i +1;
 			}
 		}
@@ -162,7 +162,7 @@ abstract class AbstractInstructionInterpreterTest
 		InitT: t=0.0;
 		InitU : {
 			set myCells = cells();
-			∀r∈myCells, U{r} = 1.0;
+			forall r in myCells, U{r} = 1.0;
 		}
 		'''
 		assertInterpreteSetDefinition(model, 100, 100)

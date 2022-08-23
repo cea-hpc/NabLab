@@ -9,9 +9,9 @@
  *******************************************************************************/
 extension BathyLib;
 
-def nextWaveHeight: → real;
-def nextDepth1: x | real × real[x] → real;
-def nextDepth2: x, y | real × real[x, y] → real;
-def nextDepth3: x | real[x] → real[x];
-def nextDepth4: x, y | real[x, y] → real[x, y];
+def real nextWaveHeight();
+def <x> real nextDepth1(real a, real[x] b);
+def <x, y> real nextDepth2(real a, real[x, y] b);
+def <x> real[x] nextDepth3(real[x] a);
+def <x, y> real[x, y] nextDepth4(real[x, y] a);
 

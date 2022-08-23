@@ -59,7 +59,7 @@ class HoverHelper
 		{
 			Expression: LabelServices.getLabel(o)
 			ArgOrVar: o.name
-			Function: o.name + '(' + o.typeDeclaration.inTypes.map[typeText].join(', ') + ')'
+			Function: o.name + '(' + o.intypesDeclaration.map[inTypes.typeText].join(', ') + ')'
 		}
 	}
 
@@ -69,7 +69,7 @@ class HoverHelper
 		{
 			Expression: o.typeFor?.label
 			ArgOrVar: o.typeFor?.label
-			Function: o.typeDeclaration?.returnType?.typeFor?.label
+			Function: o.returnTypeDeclaration.returnType?.typeFor?.label
 			BaseType: o.typeFor?.label
 		}
 	}

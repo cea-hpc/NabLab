@@ -55,9 +55,9 @@ class NablagenScopeProviderTest
 
 	iterate n while (n+1 < maxIter && t^{n+1} < maxTime);
 
-	hj1: ∀c∈cells(), hv3{c} = hv2{c};
-	hj2: ∀c∈cells(), hv5{c} = hv3{c};
-	hj3: ∀c∈cells(), hv7{c} = hv4{c} + hv5{c} + hv6{c};		
+	hj1: forall c in cells(), hv3{c} = hv2{c};
+	hj2: forall c in cells(), hv5{c} = hv3{c};
+	hj3: forall c in cells(), hv7{c} = hv4{c} + hv5{c} + hv6{c};		
 	'''
 
 	val nablaRemapModel =
@@ -69,8 +69,8 @@ class NablagenScopeProviderTest
 	real[2] X{nodes};
 	real rv1{cells}, rv2{cells}, rv3{cells};
 
-	rj1: ∀c∈cells(), rv2{c} = rv1{c};
-	rj2: ∀c∈cells(), rv3{c} = rv2{c};
+	rj1: forall c in cells(), rv2{c} = rv1{c};
+	rj2: forall c in cells(), rv3{c} = rv2{c};
 	'''
 
 	val ngenModel = 

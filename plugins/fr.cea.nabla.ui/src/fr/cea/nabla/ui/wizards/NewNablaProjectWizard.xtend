@@ -270,7 +270,7 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 	'''
 		extension «extensionName»;
 
-		def myMatVectProduct: x, y  | real[x,y] × real[y] → real[x];
+		def myMatVectProduct: x, y  | real[x,y] , real[y] : real[x];
 	'''
 
 	private def getManifestContent()

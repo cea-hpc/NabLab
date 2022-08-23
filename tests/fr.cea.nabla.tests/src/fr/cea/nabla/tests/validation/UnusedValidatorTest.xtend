@@ -93,7 +93,7 @@ class UnusedValidatorTest
 			'''
 			«emptyTestModule»
 			with CartesianMesh2D.*;
-			UpdateX: ∀r1∈nodes(), ∀r2∈nodes(), X{r1} = X{r1} + 1;
+			UpdateX: forall r1 in nodes(), forall r2 in nodes(), X{r1} = X{r1} + 1;
 			''', rs)
 		Assert.assertNotNull(moduleKo1)
 		moduleKo1.assertWarning(NablaPackage.eINSTANCE.spaceIterator,
@@ -105,7 +105,7 @@ class UnusedValidatorTest
 			«emptyTestModule»
 			with CartesianMesh2D.*;
 			real[2] X{nodes};
-			UpdateX: ∀r1∈nodes(), ∀r2∈topLeftNode(), X{r1} = X{r1} + 1;
+			UpdateX: forall r1 in nodes(), forall r2 in topLeftNode(), X{r1} = X{r1} + 1;
 			''', rs)
 		Assert.assertNotNull(moduleKo1)
 		moduleKo2.assertWarning(NablaPackage.eINSTANCE.spaceIterator,
@@ -117,7 +117,7 @@ class UnusedValidatorTest
 			«emptyTestModule»
 			with CartesianMesh2D.*;
 			real[2] X{nodes};
-			UpdateX: ∀r1∈nodes(), X{r1} = X{r1} + 1;
+			UpdateX: forall r1 in nodes(), X{r1} = X{r1} + 1;
 			''', rs)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoIssues
@@ -139,7 +139,7 @@ class UnusedValidatorTest
 			«model»
 			UpdateX: {
 				set myNodes = nodes();
-				∀r1∈nodes(), X{r1} = X{r1} + 1;
+				forall r1 in nodes(), X{r1} = X{r1} + 1;
 			}
 			''', rs)
 		Assert.assertNotNull(moduleKo)
@@ -152,7 +152,7 @@ class UnusedValidatorTest
 			«model»
 			UpdateX: {
 				set myNodes = nodes();
-				∀r1∈myNodes, X{r1} = X{r1} + 1;
+				forall r1 in myNodes, X{r1} = X{r1} + 1;
 			}
 			''', rs)
 		Assert.assertNotNull(moduleOk)
@@ -165,7 +165,7 @@ class UnusedValidatorTest
 		val modelKo = 
 			'''
 			«emptyTestModule»
-			def f: x | real[x] → real, (a) → return 1.0;
+			def <x> real f(real[x] a) return 1.0;
 			let real[2] orig = [0.0 , 0.0];
 		'''
 		val moduleKo = parseHelper.parse(modelKo)
@@ -196,7 +196,7 @@ class UnusedValidatorTest
 			'''
 			«emptyTestModule»
 			with CartesianMesh2D.*;
-			def sum, 0.0: real[2], (a, b) → return a+b;
+			red real[2] sum(0.0) (a, b) : return a+b;
 			let real[2] orig = [0.0 , 0.0];
 			real[2] X{nodes};
 			'''
@@ -212,7 +212,7 @@ class UnusedValidatorTest
 		val moduleOk = parseHelper.parse(
 			'''
 			«modelKo»
-			ComputeU: orig = sum{r∈nodes()}(X{r});
+			ComputeU: orig = sum{r in nodes()}(X{r});
 			''', rs)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoIssues

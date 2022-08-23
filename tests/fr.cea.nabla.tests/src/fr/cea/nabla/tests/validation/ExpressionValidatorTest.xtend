@@ -98,7 +98,7 @@ class ExpressionValidatorTest
 			'''
 			«emptyTestModule»
 			with CartesianMesh2D.*;
-			def test: bool × real × real[2] → real, (a, b, c) → return b;
+			def real test(bool a, real b, real[2] c) return b;
 			let real[2] opt = [0., 1.];
 			let int count = 1;
 			real alpha{cells};
@@ -137,11 +137,11 @@ class ExpressionValidatorTest
 			'''
 			«emptyTestModule»
 			with CartesianMesh2D.*;
-			def sum, 0.0: real, (a, b) → return a + b;
+			red real sum(0.0) (a, b) : return a + b;
 			real D{cells}; 
 			real[2] E{cells}; 
-			ComputeU: let real u = sum{c∈cells()}(D);
-			ComputeV: let real[2] v = sum{c∈cells()}(E{c});
+			ComputeU: let real u = sum{c in cells()}(D);
+			ComputeV: let real[2] v = sum{c in cells()}(E{c});
 			''', rs)
 		Assert.assertNotNull(moduleKo)
 		Assert.assertEquals(2, moduleKo.validate.filter(i | i.severity == Severity.ERROR).size)
@@ -158,12 +158,12 @@ class ExpressionValidatorTest
 			'''
 			«emptyTestModule»
 			with CartesianMesh2D.*;
-			def sum, 0.0: real, (a,b) → return a + b;
-			def sum, 0.0: x | real[x], (a,b) → return a + b;
+			red real sum(0.0) (a,b) : return a + b;
+			red <x> real[x] sum(0.0) (a,b) : return a + b;
 			real D{cells};
 			real[2] E{cells};
-			ComputeU: let real u = sum{c∈cells()}(D{c});
-			ComputeV: let real[2] v = sum{c∈cells()}(E{c});
+			ComputeU: let real u = sum{c in cells()}(D{c});
+			ComputeV: let real[2] v = sum{c in cells()}(E{c});
 			''', rs)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -570,11 +570,11 @@ class ExpressionValidatorTest
 		val extensionKo = parseHelper.parse(
 			'''
 			extension Test;
-			def f: → real;
-			def g: → real, () →
+			def real f();
+			def real g() 
 			{
 				real[4] n;
-				∀ i∈[0;4[, n[i] = 0.0;
+				forall  i in [0;4[, n[i] = 0.0;
 				return f();
 			}
 			''')
@@ -588,11 +588,11 @@ class ExpressionValidatorTest
 		val extensionOk = parseHelper.parse(
 			'''
 			extension Test;
-			def f: → real;
-			def g: → real, () →
+			def real f();
+			def real g() 
 			{
 				real[4] n;
-				∀ i∈[0;4[, n[i] = 0.0;
+				forall  i in [0;4[, n[i] = 0.0;
 				return 4.0;
 			}
 			''')

@@ -13,24 +13,24 @@ with Math.*;
 with CartesianMesh2D.*;
 
 // Only for 2D vectors
-def perp: real[2] → real[2], (a) → return [ a[1], -a[0] ];
+def real[2] perp(real[2] a) return [ a[1], -a[0] ];
 
-def trace: l | real[l,l] → real, (a) → {
+def <l> real trace(real[l,l] a)  {
 	let real result = 0.0;
-	∀ ia ∈ [0;l[, result = result + a[ia, ia];
+	forall  ia in [0;l[, result = result + a[ia, ia];
 	return result;
 }
 
-def tensProduct: l | real[l] × real[l] → real[l,l], (a, b) → {
+def <l> real[l,l] tensProduct(real[l] a, real[l] b)  {
 	real[l,l] result;
-	∀ ia ∈ [0;l[,
-		∀ ib ∈ [0;l[,
+	forall  ia in [0;l[,
+		forall  ib in [0;l[,
 			result[ia,ib] = a[ia]*b[ib];
 	return result;
 }
 
 // Only for 2x2 matrices
-def inverse: real[2,2] → real[2,2], (a) → {
+def real[2,2] inverse(real[2,2] a)  {
 	let real alpha = 1.0 / det(a);
 	return [[ a[1,1] * alpha, -a[0,1] * alpha ],
 			[-a[1,0] * alpha,  a[0,0] * alpha ]];
@@ -64,12 +64,12 @@ iterate n while (t^{n+1} < stopTime && n+1 < maxIterations);
 // * Initialization
 // *************************************************************
 IniTime: t^{n=0} = 0.0;
-IniCjrIc: ∀j∈cells(), ∀r∈nodesOfCell(j),
+IniCjrIc: forall j in cells(), forall r in nodesOfCell(j),
 	Cjr_ic{j,r} = 0.5 * perp(X^{n=0}{r+1} - X^{n=0}{r-1});
 
-Initialize: ∀j∈cells(), {
+Initialize: forall j in cells(), {
 	real rho_ic, p_ic;
-	let real[2] center = 0.25 * sum{r∈nodesOfCell(j)}(X^{n=0}{r});
+	let real[2] center = 0.25 * sum{r in nodesOfCell(j)}(X^{n=0}{r});
 	if (center[0] < xInterface) {
 		rho_ic = rho_IniZg;
 		p_ic = pIniZg;
@@ -77,7 +77,7 @@ Initialize: ∀j∈cells(), {
 		rho_ic = rho_IniZd;
 		p_ic = pIniZd;
 	}
-	let real V_ic = 0.5 * sum{r∈nodesOfCell(j)}(dot(Cjr_ic{j,r}, X^{n=0}{r}));
+	let real V_ic = 0.5 * sum{r in nodesOfCell(j)}(dot(Cjr_ic{j,r}, X^{n=0}{r}));
 	m{j} = rho_ic * V_ic; // m is a constant
 	p{j} = p_ic;
 	rho{j} = rho_ic;
@@ -88,40 +88,40 @@ Initialize: ∀j∈cells(), {
 // *************************************************************
 // * C{j,r} and dependent variables computation 
 // *************************************************************
-ComputeCjr: ∀j∈cells(), ∀r∈nodesOfCell(j), C{j,r} = 0.5 * perp(X^{n}{r+1} - X^{n}{r-1});
-ComputeLjr: ∀j∈cells(), ∀r∈nodesOfCell(j), l{j,r} = norm(C{j,r});
-Computedeltatj: ∀j∈cells(), delta_tj{j} = 2.0 * V{j} / (c{j} * sum{r∈nodesOfCell(j)}(l{j,r}));
+ComputeCjr: forall j in cells(), forall r in nodesOfCell(j), C{j,r} = 0.5 * perp(X^{n}{r+1} - X^{n}{r-1});
+ComputeLjr: forall j in cells(), forall r in nodesOfCell(j), l{j,r} = norm(C{j,r});
+Computedeltatj: forall j in cells(), delta_tj{j} = 2.0 * V{j} / (c{j} * sum{r in nodesOfCell(j)}(l{j,r}));
 
 // *************************************************************
 // * Standard EOS rules: m, rho, c, p, e
 // *************************************************************
-ComputeDensity: ∀j∈cells(), rho{j} = m{j} / V{j};
-ComputeEOSp: ∀j∈cells(), p{j} = (gamma-1.0) * rho{j} * e{j};
-ComputeInternalEnergy: ∀j∈cells(), e{j} = E^{n}{j} - 0.5 * dot(uj^{n}{j}, uj^{n}{j});
-ComputeEOSc: ∀j∈cells(), c{j} = sqrt(gamma * p{j} / rho{j}); 
+ComputeDensity: forall j in cells(), rho{j} = m{j} / V{j};
+ComputeEOSp: forall j in cells(), p{j} = (gamma-1.0) * rho{j} * e{j};
+ComputeInternalEnergy: forall j in cells(), e{j} = E^{n}{j} - 0.5 * dot(uj^{n}{j}, uj^{n}{j});
+ComputeEOSc: forall j in cells(), c{j} = sqrt(gamma * p{j} / rho{j}); 
 
 // *************************************************************
 // * Cell-centered Godunov Scheme for Lagragian gas dynamics
 // *************************************************************
-ComputeAjr: ∀j∈cells(), ∀r∈nodesOfCell(j), Ajr{j,r} = ((rho{j} * c{j}) / l{j,r}) * tensProduct(C{j,r}, C{j,r});
-ComputeFjr: ∀j∈cells(), ∀r∈nodesOfCell(j), F{j,r} = p{j} * C{j,r} + matVectProduct(Ajr{j,r}, (uj^{n}{j}-ur{r}));
-ComputeAr: ∀r∈nodes(), Ar{r} = sum{j∈cellsOfNode(r)}(Ajr{j,r});
-ComputeBr: ∀r∈nodes(), b{r} = sum{j∈cellsOfNode(r)}(p{j} * C{j,r} + matVectProduct(Ajr{j,r}, uj^{n}{j}));
-ComputeMt: ∀r∈nodes("InnerNodes"), Mt{r} = Ar{r};
-ComputeBt: ∀r∈nodes("InnerNodes"), bt{r} = b{r};
+ComputeAjr: forall j in cells(), forall r in nodesOfCell(j), Ajr{j,r} = ((rho{j} * c{j}) / l{j,r}) * tensProduct(C{j,r}, C{j,r});
+ComputeFjr: forall j in cells(), forall r in nodesOfCell(j), F{j,r} = p{j} * C{j,r} + matVectProduct(Ajr{j,r}, (uj^{n}{j}-ur{r}));
+ComputeAr: forall r in nodes(), Ar{r} = sum{j in cellsOfNode(r)}(Ajr{j,r});
+ComputeBr: forall r in nodes(), b{r} = sum{j in cellsOfNode(r)}(p{j} * C{j,r} + matVectProduct(Ajr{j,r}, uj^{n}{j}));
+ComputeMt: forall r in nodes("InnerNodes"), Mt{r} = Ar{r};
+ComputeBt: forall r in nodes("InnerNodes"), bt{r} = b{r};
 
 ComputeBoundaryConditions: {
 	let real[2,2] I = [ [1.0, 0.0], [0.0, 1.0] ];
 
 	// Y boundary conditions (must be done before X)
-	∀r∈nodes("TopNodes"), {
+	forall r in nodes("TopNodes"), {
 		let real[2] N = [0.0, 1.0];
 		let real[2,2] NxN = tensProduct(N,N);
 		let real[2,2] IcP = I - NxN;
 		bt{r} = matVectProduct(IcP, b{r});
 		Mt{r} = IcP * (Ar{r} * IcP) + NxN*trace(Ar{r});
 	}
-	∀r∈nodes("BottomNodes"), {
+	forall r in nodes("BottomNodes"), {
 		let real[2] N = [0.0, -1.0];
 		let real[2,2] NxN = tensProduct(N,N);
 		let real[2,2] IcP = I - NxN;
@@ -130,24 +130,24 @@ ComputeBoundaryConditions: {
 	}
 
 	// X boundary conditions
-	∀r∈nodes("LeftNodes"),{
+	forall r in nodes("LeftNodes"),{
 		Mt{r} = I;
 		bt{r} = [0.0, 0.0];
 	}
-	∀r∈nodes("RightNodes"),{
+	forall r in nodes("RightNodes"),{
 		Mt{r} = I;
 		bt{r} = [0.0, 0.0];
 	}
 }
 
-ComputeU: ∀r∈nodes(), ur{r} = matVectProduct(inverse(Mt{r}), bt{r});
-ComputeV: ∀j∈cells(), V{j} = 0.5 * sum{r∈nodesOfCell(j)}(dot(C{j,r}, X^{n}{r}));
+ComputeU: forall r in nodes(), ur{r} = matVectProduct(inverse(Mt{r}), bt{r});
+ComputeV: forall j in cells(), V{j} = 0.5 * sum{r in nodesOfCell(j)}(dot(C{j,r}, X^{n}{r}));
 
 // *************************************************************
 // * Loop iteration (n)
 // *************************************************************
-ComputeXn: ∀r∈nodes(), X^{n+1}{r} = X^{n}{r} + delta_t * ur{r};
-ComputeUn: ∀j∈cells(), uj^{n+1}{j} = uj^{n}{j} - (delta_t/m{j}) * sum{r∈nodesOfCell(j)}(F{j,r});
-ComputeEn: ∀j∈cells(), E^{n+1}{j} = E^{n}{j} - (delta_t / m{j}) * sum{r∈nodesOfCell(j)}(dot(F{j,r}, ur{r}));
-ComputeDt: delta_t = min((delta_tCfl * Min{j∈cells()}(delta_tj{j})), (stopTime-t^{n}));
+ComputeXn: forall r in nodes(), X^{n+1}{r} = X^{n}{r} + delta_t * ur{r};
+ComputeUn: forall j in cells(), uj^{n+1}{j} = uj^{n}{j} - (delta_t/m{j}) * sum{r in nodesOfCell(j)}(F{j,r});
+ComputeEn: forall j in cells(), E^{n+1}{j} = E^{n}{j} - (delta_t / m{j}) * sum{r in nodesOfCell(j)}(dot(F{j,r}, ur{r}));
+ComputeDt: delta_t = min((delta_tCfl * Min{j in cells()}(delta_tj{j})), (stopTime-t^{n}));
 ComputeTn: t^{n+1} = t^{n} + delta_t;

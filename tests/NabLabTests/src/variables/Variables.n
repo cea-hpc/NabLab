@@ -40,8 +40,8 @@ DynamicVecInitialization:
 {
 	let int cpt = 0;
 	// two loops to check the first one is multithread
-	∀i∈[0;optDim[, dynamicVec[i] = 3.3; 
-	∀i∈[0;optDim[, cpt = cpt + 1; 
+	forall i in [0;optDim[, dynamicVec[i] = 3.3; 
+	forall i in [0;optDim[, cpt = cpt + 1; 
 	checkDynamicDim = cpt;
 }
 
@@ -67,11 +67,11 @@ Oracle:
 	
 	// NOT YET IMPLEMENTED : BaseTypeConstants on a dynamic size
 	// let bool testDynamicVec = assertEquals(dynamicVec, real[optDim](3.3));
-	∀i∈[0;optDim[, 
+	forall i in [0;optDim[, 
 		let bool testDynamicVec = assertEquals(3.3, dynamicVec[i]); 
 
 	// local variables
-//	∀ r∈nodes(), 
+//	forall  r in nodes(), 
 //	{
 //		let int localNbCells = card(cellsOfNode(r));
 //		let real[localNbCells] tmp = real[localNbCells](0.0);

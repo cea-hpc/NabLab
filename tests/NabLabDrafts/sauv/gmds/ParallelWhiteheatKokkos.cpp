@@ -91,7 +91,7 @@ private:
 		});
 	}
 	
-	// delta_t = 1/4 * ∑{j∈cells()}(V{j})
+	// delta_t = 1/4 * ∑{j in cells()}(V{j})
 	void bidonVolume()
 	{
 		double sum = 0.0;
@@ -102,7 +102,7 @@ private:
 		double bidon = 1/4 * sum;
 	}
 
-	// ∀j∈cells(),∀r∈nodesOfCell(j), C_ic{j,r} = 0.5 * norm(X{r});
+	// forall j in cells(),forall r in nodesOfCell(j), C_ic{j,r} = 0.5 * norm(X{r});
 	void bidonDoubleBoucle()
 	{
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int jCells)

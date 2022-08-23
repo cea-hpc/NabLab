@@ -144,7 +144,7 @@ private:
 		});
 	}
 	
-	// delta_t = 1/4 * ∑{j∈cells()}(V{j})
+	// delta_t = 1/4 * ∑{j in cells()}(V{j})
 	void bidonVolume()
 	{
 	    // kmds::GrowingView<kmds::TCellID> cells("CELLS", mesh.getNbFaces());
@@ -157,7 +157,7 @@ private:
 		double bidon = 1/4 * sum;
 	}
 
-	// ∀j∈cells(),∀r∈nodesOfCell(j), C_ic{j,r} = 0.5 * norm(X{r});
+	// forall j in cells(),forall r in nodesOfCell(j), C_ic{j,r} = 0.5 * norm(X{r});
 	void bidonDoubleBoucle()
 	{
 	    // kmds::GrowingView<kmds::TCellID> cells("CELLS", mesh.getNbFaces());

@@ -233,14 +233,14 @@ abstract class AbstractExpressionInterpreterTest
 		«emptyTestModule»
 		with CartesianMesh2D.*;
 
-		def getOne:  → int, () → return 1;
-		def addOne: int → int, (a) → return a + 1;
-		def addOne: real → real, (a) → return a + 1.0;
-		def add: int × int → int, (a, b) → return a + b;
-		def add: real × int → real, (a, b) → return a + b;
-		def add: real × real → real, (a, b) → return a + b;
-		def add: x | real[x] × real[x] → real[x], (a, b) → return a + b;
-		def add: x,y | real[x,y] × real[x,y] → real[x,y], (a, b) → return a + b;
+		def int getOne() return 1;
+		def int addOne(int a) return a + 1;
+		def real addOne(real a) return a + 1.0;
+		def int add(int a, int b) return a + b;
+		def real add(real a, int b) return a + b;
+		def real add(real a, real b) return a + b;
+		def <x> real[x] add(real[x] a, real[x] b) return a + b;
+		def <x,y> real[x,y] add(real[x,y] a, real[x,y] b) return a + b;
 
 		«simulationVariables»
 		let int n0 = 0;
@@ -281,19 +281,19 @@ abstract class AbstractExpressionInterpreterTest
 
 		with CartesianMesh2D.*;
 
-		def h: real[2] → real[2], (a) → return 2 * a;
+		def real[2] h(real[2] a) return 2 * a;
 
-		def i: a | real[a] → real[a], (x) → {
+		def <a> real[a] i(real[a] x) {
 			return 2 * x;
 		}
 
-		def j: a | real[a] → real[a], (x) → {
+		def <a> real[a] j(real[a] x) {
 			real[a] y;
-			∀i∈[0;a[, y[i] = 2 * x[i];
+			forall i in [0;a[, y[i] = 2 * x[i];
 			return y;
 		}
 
-		def k: b | real[b] → real[b], (x) → return j(x);
+		def <b> real[b] k(real[b] x) return j(x);
 
 		«simulationVariables»
 		let real[2] u = [0.0, 0.1];

@@ -88,7 +88,7 @@ class InstructionValidatorTest
 			UpdateX: 
 			{
 				real[2] a{nodes};
-				∀r∈nodes(), X{r} = a{r};
+				forall r in nodes(), X{r} = a{r};
 			}
 			''', rs)
 		Assert.assertNotNull(moduleKo)
@@ -103,7 +103,7 @@ class InstructionValidatorTest
 			UpdateX: 
 			{
 				real[2] a;
-				∀r∈nodes(), X{r} = a;
+				forall r in nodes(), X{r} = a;
 			}
 			''', rs)
 		Assert.assertNotNull(moduleOk)
@@ -120,7 +120,7 @@ class InstructionValidatorTest
 			«testModule»
 			int U{cells};
 			int V{nodes};
-			ComputeU: ∀ j∈cells(), {
+			ComputeU: forall  j in cells(), {
 				let real e = 1.0;
 				U{j} = e * 4;
 			}
@@ -143,11 +143,11 @@ class InstructionValidatorTest
 			«testModule»
 			int U{cells}; 
 			int V{cells};
-			ComputeU: ∀ j∈cells(), {
+			ComputeU: forall  j in cells(), {
 					let int e = 1;
 					U{j} = e * 4;
 			}
-			ComputeV: ∀ j∈cells(), V{j} = U{j};
+			ComputeV: forall  j in cells(), V{j} = U{j};
 			''', rs)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -221,9 +221,9 @@ class InstructionValidatorTest
 		val moduleKo2 = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			def mySum, 0: int, (a, b) → return a + b;
+			red <int> mySum(0) (a, b) : return a + b;
 			let int[3] coef = [2, 3, 4];
-			let int c = mySum{k∈[0;3[}(coef[k]);
+			let int c = mySum{k in [0;3[}(coef[k]);
 			''')
 		Assert.assertNotNull(moduleKo2)
 		moduleKo2.assertError(NablaPackage.eINSTANCE.simpleVarDeclaration,

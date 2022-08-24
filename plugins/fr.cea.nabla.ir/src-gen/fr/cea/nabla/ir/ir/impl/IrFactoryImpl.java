@@ -87,7 +87,6 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 			case IrPackage.RETURN: return createReturn();
 			case IrPackage.EXIT: return createExit();
 			case IrPackage.SYNCHRONIZE: return createSynchronize();
-			case IrPackage.MESSAGE: return createMESSAGE();
 			case IrPackage.ITERATOR: return createIterator();
 			case IrPackage.INTERVAL: return createInterval();
 			case IrPackage.CONTRACTED_IF: return createContractedIf();
@@ -479,17 +478,6 @@ public class IrFactoryImpl extends EFactoryImpl implements IrFactory {
 	public Synchronize createSynchronize() {
 		SynchronizeImpl synchronize = new SynchronizeImpl();
 		return synchronize;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public MESSAGE createMESSAGE() {
-		MESSAGEImpl message = new MESSAGEImpl();
-		return message;
 	}
 
 	/**

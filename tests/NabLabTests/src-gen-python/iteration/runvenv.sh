@@ -6,7 +6,7 @@
 # Execute iteration.py in a virtual environment.
 # Used by tests to reproduce results.
 #
-export N_WS_PATH=$HOME/workspaces/NabLab/tests
+export N_WS_PATH=$HOME/WorkspaceDev/NabLab/tests
 export PYTHONPATH=$N_WS_PATH/.nablab/mesh/cartesianmesh2dnumpy:$N_WS_PATH/.nablab/linearalgebra/linearalgebranumpy
 
 echo ==== Creating Python virtual environment

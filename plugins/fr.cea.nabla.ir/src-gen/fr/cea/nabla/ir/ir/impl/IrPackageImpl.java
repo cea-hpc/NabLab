@@ -345,13 +345,6 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass messageEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	private EClass iterationBlockEClass = null;
 
 	/**
@@ -2115,36 +2108,6 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 	 * @generated
 	 */
 	@Override
-	public EClass getMESSAGE() {
-		return messageEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EReference getMESSAGE_Variable() {
-		return (EReference)messageEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EAttribute getMESSAGE_String() {
-		return (EAttribute)messageEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
 	public EClass getIterationBlock() {
 		return iterationBlockEClass;
 	}
@@ -3221,10 +3184,6 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		synchronizeEClass = createEClass(SYNCHRONIZE);
 		createEReference(synchronizeEClass, SYNCHRONIZE__VARIABLE);
 
-		messageEClass = createEClass(MESSAGE);
-		createEReference(messageEClass, MESSAGE__VARIABLE);
-		createEAttribute(messageEClass, MESSAGE__STRING);
-
 		iterationBlockEClass = createEClass(ITERATION_BLOCK);
 
 		iteratorEClass = createEClass(ITERATOR);
@@ -3409,7 +3368,6 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 		returnEClass.getESuperTypes().add(this.getInstruction());
 		exitEClass.getESuperTypes().add(this.getInstruction());
 		synchronizeEClass.getESuperTypes().add(this.getInstruction());
-		messageEClass.getESuperTypes().add(this.getInstruction());
 		iterationBlockEClass.getESuperTypes().add(this.getIrAnnotable());
 		iteratorEClass.getESuperTypes().add(this.getIterationBlock());
 		intervalEClass.getESuperTypes().add(this.getIterationBlock());
@@ -3626,10 +3584,6 @@ public class IrPackageImpl extends EPackageImpl implements IrPackage {
 
 		initEClass(synchronizeEClass, Synchronize.class, "Synchronize", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getSynchronize_Variable(), this.getVariable(), null, "variable", null, 1, 1, Synchronize.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEClass(messageEClass, fr.cea.nabla.ir.ir.MESSAGE.class, "MESSAGE", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getMESSAGE_Variable(), this.getVariable(), null, "variable", null, 1, 1, fr.cea.nabla.ir.ir.MESSAGE.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getMESSAGE_String(), ecorePackage.getEString(), "string", null, 1, 1, fr.cea.nabla.ir.ir.MESSAGE.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(iterationBlockEClass, IterationBlock.class, "IterationBlock", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 

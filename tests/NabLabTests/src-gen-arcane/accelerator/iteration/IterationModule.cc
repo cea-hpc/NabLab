@@ -7,7 +7,6 @@
 using namespace Arcane;
 
 /*** Free functions **********************************************************/
-
 namespace iterationfreefuncs
 {
 	const bool assertEquals(const Real expected, const Real actual)
@@ -38,6 +37,7 @@ void IterationModule::init()
 
 	// constant time step
 	m_global_deltat = m_deltat;
+	
 
 	// calling jobs
 	iniTime(); // @1.0
@@ -75,7 +75,7 @@ void IterationModule::iniVk()
 {
 	auto command = makeCommand(m_default_queue);
 	auto out_vk_nplus1_k0 = ax::viewOut(command, m_vk_nplus1_k0);
-	command << RUNCOMMAND_ENUMERATE(Cell, jCells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, jCells, ownCells())
 	{
 		out_vk_nplus1_k0[jCells] = 0.0;
 	};
@@ -90,7 +90,7 @@ void IterationModule::iniVn()
 {
 	auto command = makeCommand(m_default_queue);
 	auto out_vn_n0 = ax::viewOut(command, m_vn_n0);
-	command << RUNCOMMAND_ENUMERATE(Cell, jCells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, jCells, ownCells())
 	{
 		out_vn_n0[jCells] = 0.0;
 	};
@@ -106,7 +106,7 @@ void IterationModule::setUpTimeLoopK()
 	auto command = makeCommand(m_default_queue);
 	auto in_vk_nplus1_k0 = ax::viewIn(command, m_vk_nplus1_k0);
 	auto out_vk_nplus1_k = ax::viewOut(command, m_vk_nplus1_k);
-	command << RUNCOMMAND_ENUMERATE(Cell, i1Cells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, i1Cells, ownCells())
 	{
 		out_vk_nplus1_k[i1Cells] = in_vk_nplus1_k0[i1Cells];
 	};
@@ -122,7 +122,7 @@ void IterationModule::updateVk()
 	auto command = makeCommand(m_default_queue);
 	auto in_vk_nplus1_k = ax::viewIn(command, m_vk_nplus1_k);
 	auto out_vk_nplus1_kplus1 = ax::viewOut(command, m_vk_nplus1_kplus1);
-	command << RUNCOMMAND_ENUMERATE(Cell, jCells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, jCells, ownCells())
 	{
 		out_vk_nplus1_kplus1[jCells] = in_vk_nplus1_k[jCells] + 2;
 	};
@@ -138,7 +138,7 @@ void IterationModule::updateVl()
 	auto command = makeCommand(m_default_queue);
 	auto in_vl_nplus1_l = ax::viewIn(command, m_vl_nplus1_l);
 	auto out_vl_nplus1_lplus1 = ax::viewOut(command, m_vl_nplus1_lplus1);
-	command << RUNCOMMAND_ENUMERATE(Cell, jCells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, jCells, ownCells())
 	{
 		out_vl_nplus1_lplus1[jCells] = in_vl_nplus1_l[jCells] + 1;
 	};
@@ -165,7 +165,7 @@ void IterationModule::executeTimeLoopK()
 		auto command = makeCommand(m_default_queue);
 		auto in_vk_nplus1_kplus1 = ax::viewIn(command, m_vk_nplus1_kplus1);
 		auto out_vk_nplus1_k = ax::viewOut(command, m_vk_nplus1_k);
-		command << RUNCOMMAND_ENUMERATE(Cell, i1Cells, allCells())
+		command << RUNCOMMAND_ENUMERATE(Cell, i1Cells, ownCells())
 		{
 			out_vk_nplus1_k[i1Cells] = in_vk_nplus1_kplus1[i1Cells];
 		};
@@ -184,7 +184,7 @@ void IterationModule::setUpTimeLoopN()
 		auto command = makeCommand(m_default_queue);
 		auto in_vn_n0 = ax::viewIn(command, m_vn_n0);
 		auto out_vn_n = ax::viewOut(command, m_vn_n);
-		command << RUNCOMMAND_ENUMERATE(Cell, i1Cells, allCells())
+		command << RUNCOMMAND_ENUMERATE(Cell, i1Cells, ownCells())
 		{
 			out_vn_n[i1Cells] = in_vn_n0[i1Cells];
 		};
@@ -220,7 +220,7 @@ void IterationModule::executeTimeLoopN()
 		auto command = makeCommand(m_default_queue);
 		auto in_vn_nplus1 = ax::viewIn(command, m_vn_nplus1);
 		auto out_vn_n = ax::viewOut(command, m_vn_n);
-		command << RUNCOMMAND_ENUMERATE(Cell, i1Cells, allCells())
+		command << RUNCOMMAND_ENUMERATE(Cell, i1Cells, ownCells())
 		{
 			out_vn_n[i1Cells] = in_vn_nplus1[i1Cells];
 		};
@@ -229,7 +229,7 @@ void IterationModule::executeTimeLoopN()
 		auto command = makeCommand(m_default_queue);
 		auto in_vk_nplus1 = ax::viewIn(command, m_vk_nplus1);
 		auto out_vk_n = ax::viewOut(command, m_vk_n);
-		command << RUNCOMMAND_ENUMERATE(Cell, i1Cells, allCells())
+		command << RUNCOMMAND_ENUMERATE(Cell, i1Cells, ownCells())
 		{
 			out_vk_n[i1Cells] = in_vk_nplus1[i1Cells];
 		};
@@ -238,7 +238,7 @@ void IterationModule::executeTimeLoopN()
 		auto command = makeCommand(m_default_queue);
 		auto in_vl_nplus1 = ax::viewIn(command, m_vl_nplus1);
 		auto out_vl_n = ax::viewOut(command, m_vl_n);
-		command << RUNCOMMAND_ENUMERATE(Cell, i1Cells, allCells())
+		command << RUNCOMMAND_ENUMERATE(Cell, i1Cells, ownCells())
 		{
 			out_vl_n[i1Cells] = in_vl_nplus1[i1Cells];
 		};
@@ -258,7 +258,7 @@ void IterationModule::tearDownTimeLoopK()
 	auto command = makeCommand(m_default_queue);
 	auto in_vk_nplus1_kplus1 = ax::viewIn(command, m_vk_nplus1_kplus1);
 	auto out_vk_nplus1 = ax::viewOut(command, m_vk_nplus1);
-	command << RUNCOMMAND_ENUMERATE(Cell, i1Cells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, i1Cells, ownCells())
 	{
 		out_vk_nplus1[i1Cells] = in_vk_nplus1_kplus1[i1Cells];
 	};
@@ -274,7 +274,7 @@ void IterationModule::iniVl()
 	auto command = makeCommand(m_default_queue);
 	auto in_vk_nplus1 = ax::viewIn(command, m_vk_nplus1);
 	auto out_vl_nplus1_l0 = ax::viewOut(command, m_vl_nplus1_l0);
-	command << RUNCOMMAND_ENUMERATE(Cell, jCells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, jCells, ownCells())
 	{
 		out_vl_nplus1_l0[jCells] = in_vk_nplus1[jCells] + 8;
 	};
@@ -289,7 +289,7 @@ void IterationModule::oracleVk()
 {
 	auto command = makeCommand(m_default_queue);
 	auto in_vk_nplus1 = ax::viewIn(command, m_vk_nplus1);
-	command << RUNCOMMAND_ENUMERATE(Cell, jCells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, jCells, ownCells())
 	{
 		const bool testVk(iterationfreefuncs::assertEquals(12.0, in_vk_nplus1[jCells]));
 	};
@@ -305,7 +305,7 @@ void IterationModule::setUpTimeLoopL()
 	auto command = makeCommand(m_default_queue);
 	auto in_vl_nplus1_l0 = ax::viewIn(command, m_vl_nplus1_l0);
 	auto out_vl_nplus1_l = ax::viewOut(command, m_vl_nplus1_l);
-	command << RUNCOMMAND_ENUMERATE(Cell, i1Cells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, i1Cells, ownCells())
 	{
 		out_vl_nplus1_l[i1Cells] = in_vl_nplus1_l0[i1Cells];
 	};
@@ -332,7 +332,7 @@ void IterationModule::executeTimeLoopL()
 		auto command = makeCommand(m_default_queue);
 		auto in_vl_nplus1_lplus1 = ax::viewIn(command, m_vl_nplus1_lplus1);
 		auto out_vl_nplus1_l = ax::viewOut(command, m_vl_nplus1_l);
-		command << RUNCOMMAND_ENUMERATE(Cell, i1Cells, allCells())
+		command << RUNCOMMAND_ENUMERATE(Cell, i1Cells, ownCells())
 		{
 			out_vl_nplus1_l[i1Cells] = in_vl_nplus1_lplus1[i1Cells];
 		};
@@ -349,7 +349,7 @@ void IterationModule::tearDownTimeLoopL()
 	auto command = makeCommand(m_default_queue);
 	auto in_vl_nplus1_lplus1 = ax::viewIn(command, m_vl_nplus1_lplus1);
 	auto out_vl_nplus1 = ax::viewOut(command, m_vl_nplus1);
-	command << RUNCOMMAND_ENUMERATE(Cell, i1Cells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, i1Cells, ownCells())
 	{
 		out_vl_nplus1[i1Cells] = in_vl_nplus1_lplus1[i1Cells];
 	};
@@ -364,7 +364,7 @@ void IterationModule::oracleVl()
 {
 	auto command = makeCommand(m_default_queue);
 	auto in_vl_nplus1 = ax::viewIn(command, m_vl_nplus1);
-	command << RUNCOMMAND_ENUMERATE(Cell, jCells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, jCells, ownCells())
 	{
 		const bool testVl(iterationfreefuncs::assertEquals(27.0, in_vl_nplus1[jCells]));
 	};
@@ -381,7 +381,7 @@ void IterationModule::updateVn()
 	auto in_vn_n = ax::viewIn(command, m_vn_n);
 	auto in_vl_nplus1 = ax::viewIn(command, m_vl_nplus1);
 	auto out_vn_nplus1 = ax::viewOut(command, m_vn_nplus1);
-	command << RUNCOMMAND_ENUMERATE(Cell, jCells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, jCells, ownCells())
 	{
 		out_vn_nplus1[jCells] = in_vn_n[jCells] + in_vl_nplus1[jCells] * 2;
 	};
@@ -397,7 +397,7 @@ void IterationModule::oracleVn()
 	auto command = makeCommand(m_default_queue);
 	auto in_n = m_n;
 	auto in_vn_nplus1 = ax::viewIn(command, m_vn_nplus1);
-	command << RUNCOMMAND_ENUMERATE(Cell, jCells, allCells())
+	command << RUNCOMMAND_ENUMERATE(Cell, jCells, ownCells())
 	{
 		const bool testVn(iterationfreefuncs::assertEquals(54.0 * in_n, in_vn_nplus1[jCells]));
 	};

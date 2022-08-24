@@ -292,15 +292,6 @@ public interface IrFactory extends EFactory {
 	Synchronize createSynchronize();
 
 	/**
-	 * Returns a new object of class '<em>MESSAGE</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>MESSAGE</em>'.
-	 * @generated
-	 */
-	MESSAGE createMESSAGE();
-
-	/**
 	 * Returns a new object of class '<em>Iterator</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

@@ -7,7 +7,7 @@ set(CMAKE_VERBOSE_MAKEFILE FALSE)
 # SET VARIABLES
 set(CMAKE_CXX_COMPILER /usr/bin/g++)
 set(Arcane_ROOT $ENV{HOME}/arcane/install)
-set(N_WS_PATH $ENV{HOME}/workspaces/NabLab/tests)
+set(N_WS_PATH $ENV{HOME}/WorkspaceDev/NabLab/tests)
 set(CARTESIANMESH2DARCANE_PATH ${N_WS_PATH}/.nablab/mesh/cartesianmesh2darcane)
 
 if (NOT DEFINED Arcane_ROOT)

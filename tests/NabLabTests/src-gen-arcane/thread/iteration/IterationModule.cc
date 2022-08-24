@@ -7,7 +7,6 @@
 using namespace Arcane;
 
 /*** Free functions **********************************************************/
-
 namespace iterationfreefuncs
 {
 	const bool assertEquals(const Real expected, const Real actual)
@@ -37,6 +36,7 @@ void IterationModule::init()
 
 	// constant time step
 	m_global_deltat = m_deltat;
+	
 
 	// calling jobs
 	iniTime(); // @1.0
@@ -72,7 +72,7 @@ void IterationModule::iniTime()
  */
 void IterationModule::iniVk()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(jCells, view)
 		{
@@ -88,7 +88,7 @@ void IterationModule::iniVk()
  */
 void IterationModule::iniVn()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(jCells, view)
 		{
@@ -104,7 +104,7 @@ void IterationModule::iniVn()
  */
 void IterationModule::setUpTimeLoopK()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(i1Cells, view)
 		{
@@ -120,7 +120,7 @@ void IterationModule::setUpTimeLoopK()
  */
 void IterationModule::updateVk()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(jCells, view)
 		{
@@ -136,7 +136,7 @@ void IterationModule::updateVk()
  */
 void IterationModule::updateVl()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(jCells, view)
 		{
@@ -163,7 +163,7 @@ void IterationModule::executeTimeLoopK()
 		// Evaluate loop condition with variables at time n
 		continueLoop = (m_k < m_maxIterK);
 	
-		arcaneParallelForeach(allCells(), [&](CellVectorView view)
+		arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 		{
 			ENUMERATE_CELL(i1Cells, view)
 			{
@@ -181,7 +181,7 @@ void IterationModule::executeTimeLoopK()
 void IterationModule::setUpTimeLoopN()
 {
 	m_t_n = m_t_n0;
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(i1Cells, view)
 		{
@@ -215,21 +215,21 @@ void IterationModule::executeTimeLoopN()
 	bool continueLoop = (m_n < m_maxIterN);
 	
 	m_t_n = m_t_nplus1;
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(i1Cells, view)
 		{
 			m_vn_n[i1Cells] = m_vn_nplus1[i1Cells];
 		}
 	});
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(i1Cells, view)
 		{
 			m_vk_n[i1Cells] = m_vk_nplus1[i1Cells];
 		}
 	});
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(i1Cells, view)
 		{
@@ -248,7 +248,7 @@ void IterationModule::executeTimeLoopN()
  */
 void IterationModule::tearDownTimeLoopK()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(i1Cells, view)
 		{
@@ -264,7 +264,7 @@ void IterationModule::tearDownTimeLoopK()
  */
 void IterationModule::iniVl()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(jCells, view)
 		{
@@ -280,7 +280,7 @@ void IterationModule::iniVl()
  */
 void IterationModule::oracleVk()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(jCells, view)
 		{
@@ -296,7 +296,7 @@ void IterationModule::oracleVk()
  */
 void IterationModule::setUpTimeLoopL()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(i1Cells, view)
 		{
@@ -323,7 +323,7 @@ void IterationModule::executeTimeLoopL()
 		// Evaluate loop condition with variables at time n
 		continueLoop = (m_l < m_maxIterL);
 	
-		arcaneParallelForeach(allCells(), [&](CellVectorView view)
+		arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 		{
 			ENUMERATE_CELL(i1Cells, view)
 			{
@@ -340,7 +340,7 @@ void IterationModule::executeTimeLoopL()
  */
 void IterationModule::tearDownTimeLoopL()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(i1Cells, view)
 		{
@@ -356,7 +356,7 @@ void IterationModule::tearDownTimeLoopL()
  */
 void IterationModule::oracleVl()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(jCells, view)
 		{
@@ -372,7 +372,7 @@ void IterationModule::oracleVl()
  */
 void IterationModule::updateVn()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(jCells, view)
 		{
@@ -388,7 +388,7 @@ void IterationModule::updateVn()
  */
 void IterationModule::oracleVn()
 {
-	arcaneParallelForeach(allCells(), [&](CellVectorView view)
+	arcaneParallelForeach(ownCells(), [&](CellVectorView view)
 	{
 		ENUMERATE_CELL(jCells, view)
 		{

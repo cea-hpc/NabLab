@@ -11,7 +11,6 @@ package fr.cea.nabla.ir.transformers
 
 import fr.cea.nabla.ir.ContainerExtensions
 import fr.cea.nabla.ir.JobExtensions
-import fr.cea.nabla.ir.generator.arcane.ArcaneUtils
 import fr.cea.nabla.ir.generator.arcane.TypeContentProvider
 import fr.cea.nabla.ir.ir.Affectation
 import fr.cea.nabla.ir.ir.ArgOrVarRef
@@ -31,10 +30,6 @@ import java.util.HashSet
 import java.util.Map
 import java.util.Set
 import org.eclipse.emf.ecore.util.EcoreUtil
-
-/* TODO
- * - Implémenter getLastWrite lorsque l'on a plusieur ExecuteTimeLoopJob dans JobCaller main
- */
 
 class ReplaceSynchronizeByGhostComputing extends IrTransformationStep
 {

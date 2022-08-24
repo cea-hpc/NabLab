@@ -7,7 +7,6 @@
 using namespace Arcane;
 
 /*** Free functions **********************************************************/
-
 namespace iterationfreefuncs
 {
 	const bool assertEquals(const Real expected, const Real actual)
@@ -37,6 +36,7 @@ void IterationModule::init()
 
 	// constant time step
 	m_global_deltat = m_deltat;
+	
 
 	// calling jobs
 	iniTime(); // @1.0
@@ -72,7 +72,7 @@ void IterationModule::iniTime()
  */
 void IterationModule::iniVk()
 {
-	ENUMERATE_CELL(jCells, allCells())
+	ENUMERATE_CELL(jCells, ownCells())
 	{
 		m_vk_nplus1_k0[jCells] = 0.0;
 	}
@@ -85,7 +85,7 @@ void IterationModule::iniVk()
  */
 void IterationModule::iniVn()
 {
-	ENUMERATE_CELL(jCells, allCells())
+	ENUMERATE_CELL(jCells, ownCells())
 	{
 		m_vn_n0[jCells] = 0.0;
 	}
@@ -98,7 +98,7 @@ void IterationModule::iniVn()
  */
 void IterationModule::setUpTimeLoopK()
 {
-	ENUMERATE_CELL(i1Cells, allCells())
+	ENUMERATE_CELL(i1Cells, ownCells())
 	{
 		m_vk_nplus1_k[i1Cells] = m_vk_nplus1_k0[i1Cells];
 	}
@@ -111,7 +111,7 @@ void IterationModule::setUpTimeLoopK()
  */
 void IterationModule::updateVk()
 {
-	ENUMERATE_CELL(jCells, allCells())
+	ENUMERATE_CELL(jCells, ownCells())
 	{
 		m_vk_nplus1_kplus1[jCells] = m_vk_nplus1_k[jCells] + 2;
 	}
@@ -124,7 +124,7 @@ void IterationModule::updateVk()
  */
 void IterationModule::updateVl()
 {
-	ENUMERATE_CELL(jCells, allCells())
+	ENUMERATE_CELL(jCells, ownCells())
 	{
 		m_vl_nplus1_lplus1[jCells] = m_vl_nplus1_l[jCells] + 1;
 	}
@@ -148,7 +148,7 @@ void IterationModule::executeTimeLoopK()
 		// Evaluate loop condition with variables at time n
 		continueLoop = (m_k < m_maxIterK);
 	
-		ENUMERATE_CELL(i1Cells, allCells())
+		ENUMERATE_CELL(i1Cells, ownCells())
 		{
 			m_vk_nplus1_k[i1Cells] = m_vk_nplus1_kplus1[i1Cells];
 		}
@@ -163,7 +163,7 @@ void IterationModule::executeTimeLoopK()
 void IterationModule::setUpTimeLoopN()
 {
 	m_t_n = m_t_n0;
-	ENUMERATE_CELL(i1Cells, allCells())
+	ENUMERATE_CELL(i1Cells, ownCells())
 	{
 		m_vn_n[i1Cells] = m_vn_n0[i1Cells];
 	}
@@ -194,15 +194,15 @@ void IterationModule::executeTimeLoopN()
 	bool continueLoop = (m_n < m_maxIterN);
 	
 	m_t_n = m_t_nplus1;
-	ENUMERATE_CELL(i1Cells, allCells())
+	ENUMERATE_CELL(i1Cells, ownCells())
 	{
 		m_vn_n[i1Cells] = m_vn_nplus1[i1Cells];
 	}
-	ENUMERATE_CELL(i1Cells, allCells())
+	ENUMERATE_CELL(i1Cells, ownCells())
 	{
 		m_vk_n[i1Cells] = m_vk_nplus1[i1Cells];
 	}
-	ENUMERATE_CELL(i1Cells, allCells())
+	ENUMERATE_CELL(i1Cells, ownCells())
 	{
 		m_vl_n[i1Cells] = m_vl_nplus1[i1Cells];
 	}
@@ -218,7 +218,7 @@ void IterationModule::executeTimeLoopN()
  */
 void IterationModule::tearDownTimeLoopK()
 {
-	ENUMERATE_CELL(i1Cells, allCells())
+	ENUMERATE_CELL(i1Cells, ownCells())
 	{
 		m_vk_nplus1[i1Cells] = m_vk_nplus1_kplus1[i1Cells];
 	}
@@ -231,7 +231,7 @@ void IterationModule::tearDownTimeLoopK()
  */
 void IterationModule::iniVl()
 {
-	ENUMERATE_CELL(jCells, allCells())
+	ENUMERATE_CELL(jCells, ownCells())
 	{
 		m_vl_nplus1_l0[jCells] = m_vk_nplus1[jCells] + 8;
 	}
@@ -244,7 +244,7 @@ void IterationModule::iniVl()
  */
 void IterationModule::oracleVk()
 {
-	ENUMERATE_CELL(jCells, allCells())
+	ENUMERATE_CELL(jCells, ownCells())
 	{
 		const bool testVk(iterationfreefuncs::assertEquals(12.0, m_vk_nplus1[jCells]));
 	}
@@ -257,7 +257,7 @@ void IterationModule::oracleVk()
  */
 void IterationModule::setUpTimeLoopL()
 {
-	ENUMERATE_CELL(i1Cells, allCells())
+	ENUMERATE_CELL(i1Cells, ownCells())
 	{
 		m_vl_nplus1_l[i1Cells] = m_vl_nplus1_l0[i1Cells];
 	}
@@ -281,7 +281,7 @@ void IterationModule::executeTimeLoopL()
 		// Evaluate loop condition with variables at time n
 		continueLoop = (m_l < m_maxIterL);
 	
-		ENUMERATE_CELL(i1Cells, allCells())
+		ENUMERATE_CELL(i1Cells, ownCells())
 		{
 			m_vl_nplus1_l[i1Cells] = m_vl_nplus1_lplus1[i1Cells];
 		}
@@ -295,7 +295,7 @@ void IterationModule::executeTimeLoopL()
  */
 void IterationModule::tearDownTimeLoopL()
 {
-	ENUMERATE_CELL(i1Cells, allCells())
+	ENUMERATE_CELL(i1Cells, ownCells())
 	{
 		m_vl_nplus1[i1Cells] = m_vl_nplus1_lplus1[i1Cells];
 	}
@@ -308,7 +308,7 @@ void IterationModule::tearDownTimeLoopL()
  */
 void IterationModule::oracleVl()
 {
-	ENUMERATE_CELL(jCells, allCells())
+	ENUMERATE_CELL(jCells, ownCells())
 	{
 		const bool testVl(iterationfreefuncs::assertEquals(27.0, m_vl_nplus1[jCells]));
 	}
@@ -321,7 +321,7 @@ void IterationModule::oracleVl()
  */
 void IterationModule::updateVn()
 {
-	ENUMERATE_CELL(jCells, allCells())
+	ENUMERATE_CELL(jCells, ownCells())
 	{
 		m_vn_nplus1[jCells] = m_vn_n[jCells] + m_vl_nplus1[jCells] * 2;
 	}
@@ -334,7 +334,7 @@ void IterationModule::updateVn()
  */
 void IterationModule::oracleVn()
 {
-	ENUMERATE_CELL(jCells, allCells())
+	ENUMERATE_CELL(jCells, ownCells())
 	{
 		const bool testVn(iterationfreefuncs::assertEquals(54.0 * m_n, m_vn_nplus1[jCells]));
 	}

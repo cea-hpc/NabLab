@@ -6,7 +6,7 @@ set(CMAKE_VERBOSE_MAKEFILE FALSE)
 
 # SET VARIABLES
 set(CMAKE_CXX_COMPILER /usr/bin/g++)
-set(N_WS_PATH $ENV{HOME}/workspaces/NabLab/tests)
+set(N_WS_PATH $ENV{HOME}/WorkspaceDev/NabLab/tests)
 set(CARTESIANMESH2DSTL_PATH ${N_WS_PATH}/.nablab/mesh/cartesianmesh2dstl)
 
 

@@ -48,6 +48,7 @@ import fr.cea.nabla.nabla.Not
 import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
+import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.nabla.RealConstant
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
@@ -160,7 +161,7 @@ class LabelServices
 	static def dispatch String getLabel(RealConstant it) { value.toString }
 	static def dispatch String getLabel(BoolConstant it) { value.toString }
 	static def dispatch String getLabel(MinConstant it) { '-\u221E' }
-	static def dispatch String getLabel(MaxConstant it) { '-\u221E' }
+	static def dispatch String getLabel(MaxConstant it) { '\u221E' }
 	static def dispatch String getLabel(FunctionCall it) { function.name + '(' + args.map[label].join(',') + ')' }
 	static def dispatch String getLabel(ReductionCall it) { reduction.name + '{' + iterationBlock?.label + '}(' + arg?.label + ')' }
 	static def dispatch String getLabel(BaseTypeConstant it) { type?.label + '(' + value?.label + ')' }
@@ -181,13 +182,24 @@ class LabelServices
 	}
 
 	/* TYPES *************************************************/
+	
+	static def dispatch String getLabel(PrimitiveType it)
+	{
+		switch it
+		{ 
+			case REAL : '\u211D'
+			case INT : '\u2115'
+			case BOOL : '\u213E'
+		} 
+	}
+	
 	static def dispatch String getLabel(BaseType it) 
 	{ 
 		if (sizes.empty) 
-			primitive.literal
+			primitive.label
 		else if (sizes.forall[x | x instanceof IntConstant])
-			primitive.literal + sizes.map[x | IrUtils.getUtfExponent((x as IntConstant).value)].join('\u02E3')
+			primitive.label + sizes.map[x | IrUtils.getUtfExponent((x as IntConstant).value)].join('\u02E3')
 		else
-			primitive.literal + '[' + sizes.map[label].join(',') + ']'
+			primitive.label + '[' + sizes.map[label].join(',') + ']'
 	}
 }

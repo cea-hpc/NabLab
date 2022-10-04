@@ -27,7 +27,7 @@ class CMakeContentProvider
 
 	«CMakeUtils.checkVariables(false, #["Arcane_ROOT"])»
 
-	project(«name» LANGUAGES CXX)
+	project(«name» LANGUAGES C CXX)
 
 	find_package(Arcane REQUIRED)
 

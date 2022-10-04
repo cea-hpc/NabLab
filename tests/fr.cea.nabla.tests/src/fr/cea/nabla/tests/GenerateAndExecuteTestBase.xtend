@@ -23,11 +23,9 @@ import org.apache.commons.io.FileUtils
 import org.junit.Assert
 
 import static fr.cea.nabla.tests.TestUtils.*
-import java.util.regex.Pattern
 
 abstract class GenerateAndExecuteTestBase
 {
-	final static String separatorPattern = Pattern.quote(File.separator);
 	final static String WsPath = Files.createTempDirectory("nablabtest-compiler-").toString
 	final static String LeveldbENV = "leveldb_ROOT"
 	final static String KokkosENV = "Kokkos_ROOT"
@@ -80,7 +78,7 @@ abstract class GenerateAndExecuteTestBase
 			models += readFileAsString(Paths.get(GenerateAndExecuteTestBase.projectAbsolutePath, "src", packageName, nFileName + ".n").toString)
 		var genmodel = readFileAsString(Paths.get(GenerateAndExecuteTestBase.projectAbsolutePath, "src", packageName, ngenFileName + ".ngen").toString)
 		compilationHelper.generateCode(models, genmodel, GenerateAndExecuteTestBase.projectAbsolutePath.replace(File.separator + projectName, ''), projectName)
-		testNoGitDiff(separatorPattern + packageName) // Add a separator to avoid a false positiv on explicitheatequation fail or implicitheatequation
+		testNoGitDiff(File.separator + packageName) // Add a separator to avoid a false positiv on explicitheatequation fail or implicitheatequation
 	}
 
 	protected def testExecuteModule(String moduleName)

@@ -14,7 +14,7 @@ if (NOT DEFINED Arcane_ROOT)
 	message(FATAL_ERROR "Arcane_ROOT variable must be set")
 endif()
 
-project(HeatEquation LANGUAGES CXX)
+project(HeatEquation LANGUAGES C CXX)
 
 find_package(Arcane REQUIRED)
 

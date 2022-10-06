@@ -10,11 +10,9 @@
 package fr.cea.nabla.ide.contentassist
 
 import com.google.inject.Inject
-import fr.cea.nabla.ir.transformers.ReplaceUtf8Chars
 import fr.cea.nabla.services.NablaGrammarAccess
 import org.eclipse.xtext.RuleCall
 import org.eclipse.xtext.ide.editor.contentassist.ContentAssistContext
-import org.eclipse.xtext.ide.editor.contentassist.ContentAssistEntry
 import org.eclipse.xtext.ide.editor.contentassist.IIdeContentProposalAcceptor
 import org.eclipse.xtext.ide.editor.contentassist.IdeContentProposalProvider
 
@@ -30,22 +28,9 @@ class NablaIdeContentProposalProvider extends IdeContentProposalProvider
 			case simpleVarRule,
 			case connectivityVarRule:
 			{
-				buildGrecLetterProposals(context, acceptor)
 			}
 			default:
 				super._createProposals(ruleCall, context, acceptor)
-		}
-	}
-
-	private def void buildGrecLetterProposals(ContentAssistContext context, IIdeContentProposalAcceptor acceptor)
-	{
-		for (p : ReplaceUtf8Chars.UTF8Chars.keySet)
-		{
-			val trueEntry = new ContentAssistEntry => [
-				prefix = context.prefix
-				proposal = p
-			]
-			acceptor.accept(trueEntry, proposalPriorities.getDefaultPriority(trueEntry))
 		}
 	}
 

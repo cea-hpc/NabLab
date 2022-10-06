@@ -40,7 +40,7 @@ class JobContentProvider
 		«val itVar = iterationCounter.codeName»
 		«val irRoot = IrUtils.getContainerOfType(it, IrRoot)»
 		«val tn = irRoot.currentTimeVariable.codeName»
-		«val deltat = irRoot.timeStepVariable.codeName»
+		«val delta_t = irRoot.timeStepVariable.codeName»
 		«val ppInfo = irRoot.postProcessing»
 		«itVar» = 0;
 		boolean continueLoop = true;
@@ -48,7 +48,7 @@ class JobContentProvider
 		{
 			«itVar»++;
 			«IF caller.main»
-				System.out.printf("START ITERATION «iterationCounter.name»: %5d - t: %5.5f - deltat: %5.5f\n", «itVar», «tn», «deltat»);
+				System.out.printf("START ITERATION «iterationCounter.name»: %5d - t: %5.5f - delta_t: %5.5f\n", «itVar», «tn», «delta_t»);
 				«IF ppInfo !== null»
 					if («ppInfo.periodReference.codeName» >= «ppInfo.lastDumpVariable.codeName» + «ppInfo.periodValue.codeName»)
 						dumpVariables(«itVar»);
@@ -68,7 +68,7 @@ class JobContentProvider
 		} while (continueLoop);
 		«IF caller.main»
 
-			System.out.printf("FINAL TIME: %5.5f - deltat: %5.5f\n", «tn», «deltat»);
+			System.out.printf("FINAL TIME: %5.5f - delta_t: %5.5f\n", «tn», «delta_t»);
 			«IF ppInfo !== null»dumpVariables(«itVar»+1);«ENDIF»
 		«ENDIF»
 	'''

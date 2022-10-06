@@ -47,8 +47,8 @@ class IrItemIndexFactory
 	 * The 3 arguments of this method compose the primary key of the index.
 	 * Dependant items are needed. In the following example:
 	 * computeGradients: ∀c∈cells(), {
-	 *    gradpi{c} = ∑{p∈nodesOfCell(c)}(Fi{p,c});
-	 *    gradpe{c} = ∑{p∈nodesOfCell(c)}(Fe{p,c});
+	 *    gradpi{c} = sum{p∈nodesOfCell(c)}(Fi{p,c});
+	 *    gradpe{c} = sum{p∈nodesOfCell(c)}(Fe{p,c});
 	 * }
 	 * If Fi and Fe are defined {nodes, cellsOfNode}, the two reductions
 	 * need an index cCellsOfNodeP on the same item c. But it is not the

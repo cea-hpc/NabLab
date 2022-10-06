@@ -102,7 +102,7 @@ abstract class AbstractInstructionInterpreterTest
 		InitTab: ∀i∈[0;size[, tab[i] = 2.3;
 
 		InitT: t^{n=0} = 0.0;
-		ComputeTn: t^{n+1} = t^{n} + δt;
+		ComputeTn: t^{n+1} = t^{n} + delta_t;
 		'''
 
 		assertInterpreteLoop(model, 100, 100)

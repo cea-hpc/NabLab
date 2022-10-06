@@ -13,7 +13,7 @@ with CartesianMesh2D.*;
 with Assert.*;
 
 int maxIter;
-real maxTime, δt;
+real maxTime, delta_t;
 let real t = 0.0;
 real[2] X{nodes};
 real hv1{cells}, hv2{cells}, hv3{cells}, hv4{cells}, hv5{cells}, hv6{cells}, hv7{cells};

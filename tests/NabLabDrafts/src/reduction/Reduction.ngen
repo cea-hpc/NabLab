@@ -13,7 +13,7 @@ MainModule Reduction reduction
 {
 	nodeCoord = X;
 	time = t;
-	timeStep = δt;
+	timeStep = delta_t;
 	iterationMax = maxIter;
 	timeMax = maxTime;
 }

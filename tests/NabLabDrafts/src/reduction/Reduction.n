@@ -20,7 +20,7 @@ def nodeVelocityBoundaryConditionCorner: int × real[2] × int × real[2] × rea
 // Simulation options
 let real maxTime = 0.1;
 let int maxIter = 500;
-let real δt = 0.01;
+let real delta_t = 0.01;
 
 real t;
 real[2] X{nodes};
@@ -31,6 +31,6 @@ iterate n while (n <= 2);
 
 ComputeGeometry: ∀c∈cells(), ∀p∈nodesOfCell(c), lpc_n{p,c}  = [1.0, 1.0];
 
-ComputeBoundaryNodeVelocities: ∀p∈nodes("TopLeftNode"), Vnode^{n+1}{p} = nodeVelocityBoundaryConditionCorner(1, [0., 0.], 1, [0., 0.], [[1., 1.],[1., 1.]], [1., 1.], ∑{c∈cellsOfNode(p)}(lpc_n{p,c}));
+ComputeBoundaryNodeVelocities: ∀p∈nodes("TopLeftNode"), Vnode^{n+1}{p} = nodeVelocityBoundaryConditionCorner(1, [0., 0.], 1, [0., 0.], [[1., 1.],[1., 1.]], [1., 1.], sum{c ∈ cellsOfNode(p)}(lpc_n{p,c}));
 
-UpdateTime: t^{n+1} = t^{n}+δt;
+UpdateTime: t^{n+1} = t^{n}+delta_t;

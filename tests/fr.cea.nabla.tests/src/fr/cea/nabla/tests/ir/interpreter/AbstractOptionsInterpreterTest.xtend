@@ -35,7 +35,7 @@ abstract class AbstractOptionsInterpreterTest
 	real final_time;
 
 	let real t = 0.0;
-	let real δt = 0.001;
+	let real delta_t = 0.001;
 
 	real[2] X{nodes};
 	J: let real s = 3.33;

@@ -125,11 +125,11 @@ class ExpressionTypeProviderTest
 		real u{cells}, v{cells};
 		real[2] w{cells, nodesOfCell};
 		real x{cells, nodesOfCell};
-		real α{cells, cells}; 
+		real alpha{cells, cells}; 
 
 		iterate n while (n < option_max_iterations);
 
-		UpdateU: u^{n+1} = solveLinearSystem(α, u^{n});
+		UpdateU: u^{n+1} = solveLinearSystem(alpha, u^{n});
 
 		ComputeV: ∀j∈cells(), v{j} = reduceMin{r∈nodesOfCell(j)}(x{j,r} + s{j});
 

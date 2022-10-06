@@ -225,7 +225,7 @@ class BasicValidatorTest
 		val moduleKo = parseHelper.parse(
 			'''
 			extension Test;
-			def ∑, 0.0: real, (a, b) → return a + b;
+			def sum, 0.0: real, (a, b) → return a + b;
 			def G: → real, () →
 			{
 				real[4] n;
@@ -241,7 +241,7 @@ class BasicValidatorTest
 		val moduleOk = parseHelper.parse(
 			'''
 			extension Test;
-			def ∑, 0.0: real, (a, b) → return a + b;
+			def sum, 0.0: real, (a, b) → return a + b;
 			def g: → real, () →
 			{
 				real[4] n;
@@ -319,7 +319,7 @@ class BasicValidatorTest
 			'''
 			«emptyTestModule»
 			real[3] x;
-			iterate n while(∑{x∈[0;3[}(x[i]]));
+			iterate n while(sum{x∈[0;3[}(x[i]]));
 			''')
 		Assert.assertNotNull(moduleKo1)
 		moduleKo1.assertError(NablaPackage.eINSTANCE.timeIterator,

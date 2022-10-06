@@ -90,7 +90,7 @@ class NablagenFileGenerator extends StandaloneGeneratorBase
 		{
 			nodeCoord = X;
 			time = t;
-			timeStep = δt;
+			timeStep = delta_t;
 			iterationMax = maxIter;
 			timeMax = maxTime;
 		}

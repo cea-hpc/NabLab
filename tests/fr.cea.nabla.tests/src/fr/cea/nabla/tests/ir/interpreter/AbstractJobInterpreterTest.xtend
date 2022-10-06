@@ -70,7 +70,7 @@ abstract class AbstractJobInterpreterTest
 
 		InitTime: t^{n=0} = 0.0;
 		IniU : u^{n=0} = 4.0;
-		IniCenter: ∀j∈cells(), center{j} = 0.25 * ∑{r∈nodesOfCell(j)}(X^{n=0}{r});
+		IniCenter: ∀j∈cells(), center{j} = 0.25 * sum{r∈nodesOfCell(j)}(X^{n=0}{r});
 		UpdateU: u^{n+1} = u^{n} + 1;
 		'''
 		assertInterpreteTimeLoopCopyJob(model)

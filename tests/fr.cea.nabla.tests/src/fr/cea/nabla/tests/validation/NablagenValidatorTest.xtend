@@ -45,7 +45,7 @@ class NablagenValidatorTest
 
 	let real maxTime = 0.1;
 	let int maxIter = 500;
-	let real δt = 1.0;
+	let real delta_t = 1.0;
 
 	real t;
 	real[2] X{nodes};
@@ -79,7 +79,7 @@ class NablagenValidatorTest
 	{
 		nodeCoord = X;
 		time = t;
-		timeStep = δt;
+		timeStep = delta_t;
 	}
 
 	AdditionalModule Remap r1
@@ -167,7 +167,7 @@ class NablagenValidatorTest
 				CMAKE_CXX_COMPILER = "/usr/bin/g++";
 			}')
 
-		val okNgenModel = koNgenModel.replace("timeStep = δt;", "timeStep = δt;
+		val okNgenModel = koNgenModel.replace("timeStep = delta_t;", "timeStep = delta_t;
 			iterationMax = maxIter;
 			timeMax = maxTime;")
 
@@ -222,11 +222,11 @@ class NablagenValidatorTest
 			let real t = 0.0;
 			let real maxTime = 0.1;
 			let int maxIter = 500;
-			let real δt = 1.0;
+			let real delta_t = 1.0;
 			real[2] X{nodes};
-			real η{cells};
+			real nu{cells};
 
-			InitFromFile: ∀j∈cells(), η{j} = nextWaveHeight();
+			InitFromFile: ∀j∈cells(), nu{j} = nextWaveHeight();
 		'''
 		val appNgenModel =
 		'''
@@ -236,7 +236,7 @@ class NablagenValidatorTest
 			{
 				nodeCoord = X;
 				time = t;
-				timeStep = δt;
+				timeStep = delta_t;
 				iterationMax = maxIter;
 				timeMax = maxTime;
 			}

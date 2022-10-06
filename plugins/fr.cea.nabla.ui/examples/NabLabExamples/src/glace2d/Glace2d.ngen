@@ -13,7 +13,7 @@ MainModule Glace2d glace2d
 {
 	nodeCoord = X;
 	time = t;
-	timeStep = δt;
+	timeStep = delta_t;
 	iterationMax = maxIterations;
 	timeMax = stopTime;
 }
@@ -21,7 +21,7 @@ MainModule Glace2d glace2d
 VtkOutput
 {
 	periodReferenceVariable = glace2d.n;
-	outputVariables = glace2d.ρ as "Density";
+	outputVariables = glace2d.rho as "Density";
 }
 
 //LevelDB

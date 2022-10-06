@@ -21,7 +21,7 @@
 	<hydro>
 		<max-time>0.1</max-time>
 		<max-iter>500</max-iter>
-		<deltat>1.0</deltat>
+		<delta-t>1.0</delta-t>
 		<r1 name="R1"/>
 		<r2 name="R2"/>
 	</hydro>

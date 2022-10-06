@@ -15,7 +15,7 @@ with Assert.*;
 // Simulation options
 let real maxTime = 0.1;
 let int maxIter = 500;
-let real δt = 1.0;
+let real delta_t = 1.0;
 let real t = 0.0;
 real[2] X{nodes};
 

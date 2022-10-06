@@ -21,23 +21,23 @@ int maxIterations;
 let real u0 = 1.0;
 let real[2] vectOne = real[2](1.0);
 let int maxIterationsK = 1000;
-let real ε =  1.0e-8;
-let real δt = 0.001;
+let real epsilon =  1.0e-8;
+let real delta_t = 0.001;
 real t;
 real[2] X{nodes}, Xc{cells}; // Position of nodes and cells center of gravity 
 real u{cells}; // Temperature
 real V{cells}; // Volume of cells
 real D{cells}; // Cell centered conductivity
 real faceLength{faces}, faceConductivity{faces};
-real α{cells, cells};
+real alpha{cells, cells};
 real residual;
 
 iterate	n while (t^{n+1} < stopTime && n+1 < maxIterations),
-		k while (residual > ε && check(k+1 < maxIterationsK));
+		k while (residual > epsilon && check(k+1 < maxIterationsK));
 
 InitTime: t^{n=0} = 0.0;
 
-InitXc: ∀c∈cells(), Xc{c} = 0.25 * ∑{p∈nodesOfCell(c)}(X{p});  // Only valid on parallelograms
+InitXc: ∀c∈cells(), Xc{c} = 0.25 * sum{p∈nodesOfCell(c)}(X{p});  // Only valid on parallelograms
 
 InitU: ∀c∈cells(),
 	if (norm(Xc{c} - vectOne) < 0.5)
@@ -47,22 +47,22 @@ InitU: ∀c∈cells(),
 
 InitD: ∀c∈cells(), D{c} = 1.0;
 
-ComputeDeltaTn: δt = Min{c∈cells()}(V{c}/D{c}) * 0.1;
-ComputeV: ∀j∈cells(), V{j} = 0.5 * ∑{p∈nodesOfCell(j)}(det(X{p}, X{p+1}));
-ComputeFaceLength: ∀f∈faces(), faceLength{f} = 0.5 * ∑{p∈nodesOfFace(f)}(norm(X{p} - X{p+1}));
-ComputeFaceConductivity: ∀f∈faces(), faceConductivity{f} = 2.0 * ∏{c1∈cellsOfFace(f)}(D{c1}) / ∑{c2∈cellsOfFace(f)}(D{c2});
+ComputeDeltaTn: delta_t = Min{c∈cells()}(V{c}/D{c}) * 0.1;
+ComputeV: ∀j∈cells(), V{j} = 0.5 * sum{p∈nodesOfCell(j)}(det(X{p}, X{p+1}));
+ComputeFaceLength: ∀f∈faces(), faceLength{f} = 0.5 * sum{p∈nodesOfFace(f)}(norm(X{p} - X{p+1}));
+ComputeFaceConductivity: ∀f∈faces(), faceConductivity{f} = 2.0 * prod{c1∈cellsOfFace(f)}(D{c1}) / sum{c2∈cellsOfFace(f)}(D{c2});
 
 // Assembling of the diffusion matrix
 ComputeAlphaCoeff: ∀c∈cells(), {
-	let real αDiag = 0.0;
+	let real alpha_Diag = 0.0;
 	∀d∈neighbourCells(c), ∀f∈commonFace(c,d), {
-		let real αExtraDiag = δt / V{c} * (faceLength{f} *  faceConductivity{f}) / norm(Xc{c} - Xc{d});
-		α{c, d} = αExtraDiag;
-		αDiag = αDiag + αExtraDiag;
+		let real alpha_ExtraDiag = delta_t / V{c} * (faceLength{f} *  faceConductivity{f}) / norm(Xc{c} - Xc{d});
+		alpha{c, d} = alpha_ExtraDiag;
+		alpha_Diag = alpha_Diag + alpha_ExtraDiag;
 	}
-	α{c, c} = -αDiag;
+	alpha{c, c} = -alpha_Diag;
 }
 
-UpdateU: ∀c∈cells(), u^{n+1, k+1}{c} = u^{n}{c} + α{c, c} * u^{n+1, k}{c} + ∑{d∈neighbourCells(c)} (α{c, d} * u^{n+1, k}{d});
+UpdateU: ∀c∈cells(), u^{n+1, k+1}{c} = u^{n}{c} + alpha{c, c} * u^{n+1, k}{c} + sum{d∈neighbourCells(c)} (alpha{c, d} * u^{n+1, k}{d});
 ComputeResidual: residual = Max{j ∈ cells()}(abs(u^{n+1,k+1}{j} - u^{n+1,k}{j}));
-ComputeTn: t^{n+1} = t^{n} + δt;
+ComputeTn: t^{n+1} = t^{n} + delta_t;

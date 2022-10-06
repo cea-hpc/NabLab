@@ -13,7 +13,7 @@ MainModule Iteration iteration
 {
 	nodeCoord = X;
 	time = t;
-	timeStep = δt;
+	timeStep = delta_t;
 	iterationMax = maxIterN;
 	timeMax = maxTime;
 }

@@ -43,16 +43,16 @@ class JobContentProvider
 		«val itVar = Utils.getCodeName(iterationCounter)»
 		«val irRoot = IrUtils.getContainerOfType(it, IrRoot)»
 		«val tn = Utils.getCodeName(irRoot.currentTimeVariable)»
-		«val deltat = Utils.getCodeName(irRoot.timeStepVariable)»
+		«val delta_t = Utils.getCodeName(irRoot.timeStepVariable)»
 		«val ppInfo = irRoot.postProcessing»
 		self.«itVar» = 0
 		«IF irRoot.currentTimeVariable.needDefinition»self.«tn» = 0.0«ENDIF»
-		«IF irRoot.timeStepVariable.needDefinition»self.«deltat» = 0.0«ENDIF»
+		«IF irRoot.timeStepVariable.needDefinition»self.«delta_t» = 0.0«ENDIF»
 		continueLoop = True
 		while continueLoop:
 			self.«itVar» += 1
 			«IF caller.main»
-				print("START ITERATION «iterationCounter.name»: %5d - t: %5.5f - deltat: %5.5f\n" % (self.«itVar», self.«tn», self.«deltat»))
+				print("START ITERATION «iterationCounter.name»: %5d - t: %5.5f - delta_t: %5.5f\n" % (self.«itVar», self.«tn», self.«delta_t»))
 				«IF ppInfo !== null»
 					if (self.«Utils.getCodeName(ppInfo.periodReference)» >= self.«Utils.getCodeName(ppInfo.lastDumpVariable)» + self.«Utils.getCodeName(ppInfo.periodValue)»):
 						self.__dumpVariables(self.«itVar»)
@@ -71,7 +71,7 @@ class JobContentProvider
 			«instruction.innerContent»
 		«IF caller.main»
 
-			print("FINAL TIME: %5.5f - deltat: %5.5f\n" % (self.«tn», self.«deltat»))
+			print("FINAL TIME: %5.5f - delta_t: %5.5f\n" % (self.«tn», self.«delta_t»))
 			«IF ppInfo !== null»self.__dumpVariables(self.«itVar»+1);«ENDIF»
 		«ENDIF»
 	'''

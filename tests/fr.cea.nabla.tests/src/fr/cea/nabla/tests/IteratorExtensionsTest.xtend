@@ -55,9 +55,9 @@ class IteratorExtensionsTest
 
 		with CartesianMesh2D.*;
 
-		def ∑, 0.0: real, (a, b) → return a + b;
-		def ∑, 0.0: x | real[x], (a, b) → return a + b;
-		def ∑, 0.0: x | real[x, x], (a, b) → return a + b;
+		def sum, 0.0: real, (a, b) → return a + b;
+		def sum, 0.0: x | real[x], (a, b) → return a + b;
+		def sum, 0.0: x | real[x, x], (a, b) → return a + b;
 
 		«simulationVariables»
 
@@ -69,8 +69,8 @@ class IteratorExtensionsTest
 		J1: ∀j∈cells(), x{j} = 2.0;
 		J2: ∀j∈cells(), ∀r∈nodesOfCell(j), Cjr{j,r} = 3.0;
 		J3: ∀r∈nodes(), ∀j∈cellsOfNode(r), Cjr{j,r} = 1.0;
-		J4: ∀j∈cells(), u{j} = 0.5 * ∑{r∈nodesOfCell(j)}(X{r} - X{r+1});
-		J5: ∀j1∈cells(), f{j1} = a * ∑{j2∈neighbourCells(j1)}(∑{cf∈commonFace(j1,j2)}((x{j2}-x{j1}) / surface{cf}));
+		J4: ∀j∈cells(), u{j} = 0.5 * sum{r∈nodesOfCell(j)}(X{r} - X{r+1});
+		J5: ∀j1∈cells(), f{j1} = a * sum{j2∈neighbourCells(j1)}(sum{cf∈commonFace(j1,j2)}((x{j2}-x{j1}) / surface{cf}));
 		J6: ∀j1∈cells(), ∀j2∈neighbourCells(j1), ∀cf∈commonFace(j1,j2), let real bidon = (x{j2}-x{j1}) / surface{cf});
 		'''
 

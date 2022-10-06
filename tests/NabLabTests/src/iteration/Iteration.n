@@ -13,7 +13,7 @@ with CartesianMesh2D.*;
 with Assert.*;
 
 let real maxTime = 0.1;
-let real δt = 1.0;
+let real delta_t = 1.0;
 
 real t;
 real[2] X{nodes};
@@ -44,4 +44,4 @@ OracleVl: ∀j∈cells(), let bool testVl = assertEquals(27.0, vl^{n+1}{j});
 
 OracleVn: ∀j∈cells(), let bool testVn = assertEquals(54.0*n, vn^{n+1}{j});
 
-ComputeTn: t^{n+1} = t^{n} + δt;
+ComputeTn: t^{n+1} = t^{n} + delta_t;

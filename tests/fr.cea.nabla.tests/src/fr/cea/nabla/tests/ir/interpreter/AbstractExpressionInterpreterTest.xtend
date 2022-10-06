@@ -256,15 +256,15 @@ abstract class AbstractExpressionInterpreterTest
 		let real[2] v = real[2](2.);
 		let real[2] w = add(u,v); //-> [3., 3.]
 
-		let real[3] α = real[3](1.);
-		let real[3] β = real[3](2.);
-		let real[3] res1 = add(α,β); //-> [3., 3., 3.]
+		let real[3] alpha = real[3](1.);
+		let real[3] beta = real[3](2.);
+		let real[3] res1 = add(alpha,beta); //-> [3., 3., 3.]
 
-		let real[2,2] δ = real[2,2](1.);
-		let real[2,2] ρ = real[2,2](2.);
-		let real[2,2] res2 = add(δ,ρ); //-> [3., 3][3., 3.]
+		let real[2,2] delta = real[2,2](1.);
+		let real[2,2] rho = real[2,2](2.);
+		let real[2,2] res2 = add(delta,rho); //-> [3., 3][3., 3.]
 
-		let real[3] res3 = add(res1 + α, β);  //-> [6., 6., 6.]
+		let real[3] res3 = add(res1 + alpha, beta);  //-> [6., 6., 6.]
 		real[2] X{nodes};
 
 		InitT: t=0.0;

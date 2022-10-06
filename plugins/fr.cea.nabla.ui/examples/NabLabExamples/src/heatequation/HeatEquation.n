@@ -17,8 +17,8 @@ real stopTime;
 int maxIterations;
 
 let real PI = 3.1415926;
-let real α = 1.0;
-let real δt = 0.001;
+let real alpha = 1.0;
+let real delta_t = 0.001;
 real t;
 real[2] X{nodes}, center{cells};
 real u{cells}, V{cells}, f{cells}, outgoingFlux{cells}, surface{faces};
@@ -27,10 +27,10 @@ iterate n while (t^{n+1} < stopTime && n+1 < maxIterations);
 
 IniTime: t^{n=0} = 0.0;
 IniF: ∀j∈cells(), f{j} = 0.0;
-IniCenter: ∀j∈cells(), center{j} = 0.25 * ∑{r∈nodesOfCell(j)}(X{r});  // only on parallelograms
-IniUn: ∀j∈cells(), u^{n}{j} = cos(2 * PI * α * center{j}[0]);
-ComputeV: ∀j∈cells(), V{j} = 0.5 * ∑{r∈nodesOfCell(j)}(det(X{r}, X{r+1}));
-ComputeSurface: ∀f∈faces(), surface{f} = 0.5 * ∑{r∈nodesOfFace(f)}(norm(X{r}-X{r+1}));
-ComputeOutgoingFlux: ∀j1∈cells(), outgoingFlux{j1} = δt/V{j1} * ∑{j2∈neighbourCells(j1)}(∑{cf∈commonFace(j1,j2)}( (u^{n}{j2}-u^{n}{j1}) / norm(center{j2}-center{j1}) * surface{cf}));
-ComputeUn: ∀j∈cells(), u^{n+1}{j} = f{j} * δt + u^{n}{j} + outgoingFlux{j};
-ComputeTn: t^{n+1} = t^{n} + δt;
+IniCenter: ∀j∈cells(), center{j} = 0.25 * sum{r∈nodesOfCell(j)}(X{r});  // only on parallelograms
+IniUn: ∀j∈cells(), u^{n}{j} = cos(2 * PI * alpha * center{j}[0]);
+ComputeV: ∀j∈cells(), V{j} = 0.5 * sum{r∈nodesOfCell(j)}(det(X{r}, X{r+1}));
+ComputeSurface: ∀f∈faces(), surface{f} = 0.5 * sum{r∈nodesOfFace(f)}(norm(X{r}-X{r+1}));
+ComputeOutgoingFlux: ∀j1∈cells(), outgoingFlux{j1} = delta_t/V{j1} * sum{j2∈neighbourCells(j1)}(sum{cf∈commonFace(j1,j2)}( (u^{n}{j2}-u^{n}{j1}) / norm(center{j2}-center{j1}) * surface{cf}));
+ComputeUn: ∀j∈cells(), u^{n+1}{j} = f{j} * delta_t + u^{n}{j} + outgoingFlux{j};
+ComputeTn: t^{n+1} = t^{n} + delta_t;

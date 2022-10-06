@@ -259,7 +259,7 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 		let int maxIter = 200;
 		let real maxTime = 1.0;
 
-		real t, δt;
+		real t, delta_t;
 		real[2] X{nodes};
 		real e{nodes};
 

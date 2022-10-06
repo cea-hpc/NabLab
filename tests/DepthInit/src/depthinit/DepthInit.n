@@ -16,9 +16,9 @@ def two: → real, () → return 2.0;
 
 let real t = 0.0;
 int maxIter;
-real maxTime, δt;
+real maxTime, delta_t;
 
 real[2] X{nodes};
-real η{cells};
+real nu{cells};
 
-InitFromFile: ∀j∈cells(), η{j} = two() * nextWaveHeight();
+InitFromFile: ∀j∈cells(), nu{j} = two() * nextWaveHeight();

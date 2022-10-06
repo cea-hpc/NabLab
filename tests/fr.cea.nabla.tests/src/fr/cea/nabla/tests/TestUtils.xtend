@@ -84,7 +84,7 @@ class TestUtils
 
 	def getSimulationVariables()
 	'''
-		let real δt = 0.001;
+		let real delta_t = 0.001;
 		real t;
 	'''
 
@@ -109,7 +109,7 @@ class TestUtils
 		{
 			nodeCoord = X;
 			time = t;
-			timeStep = δt;
+			timeStep = delta_t;
 		}
 	'''
 

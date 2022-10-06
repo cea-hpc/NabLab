@@ -164,6 +164,4 @@ QualifiedNameWithWildcard: QualifiedName '.*'?;
 
 //terminal REAL returns ecore::EDouble: ('0'..'9')+ '.' ('0'..'9')+ ('e'('+'|'-')('0'..'9')+)?;
 terminal REAL returns ecore::EDouble: INT '.' (INT (('e'|'E')('+'|'-')INT)?)?;
-@Override 
-terminal ID: '^'? ('a'..'z'|'A'..'Z'|'\u0391'..'\u03C9'|'\u220F'..'\u221A'|'_') ('a'..'z'|'A'..'Z'|'\u0391'..'\u03C9'|'0'..'9'|'_')*;
 

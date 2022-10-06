@@ -3,7 +3,7 @@
 	{
 		"maxTime":0.1,
 		"maxIter":500,
-		"deltat":1.0,
+		"delta_t":1.0,
 		"bathyLib":
 		{
 			"depth":3.3,

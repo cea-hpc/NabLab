@@ -10,13 +10,13 @@
 extension Math;
 
 // ***** REDUCTIONS *****
-def ∑, 0.0: real, (a, b) → return a + b;
-def ∑, 0.0: x | real[x], (a, b) → return a + b;
-def ∑, 0.0: x | real[x, x], (a, b) → return a + b;
+def sum, 0.0: real, (a, b) → return a + b;
+def sum, 0.0: x | real[x], (a, b) → return a + b;
+def sum, 0.0: x | real[x, x], (a, b) → return a + b;
 
-def ∏, 1.0: real, (a, b) → return a * b;
-def ∏, 1.0: x | real[x], (a, b) → return a * b;
-def ∏, 1.0: x | real[x, x], (a, b) → return a * b;
+def prod, 1.0: real, (a, b) → return a * b;
+def prod, 1.0: x | real[x], (a, b) → return a * b;
+def prod, 1.0: x | real[x, x], (a, b) → return a * b;
 
 def Min, real.MaxValue: real, (a, b) → return min(a, b);
 def Max, real.MinValue: real, (a, b) → return max(a, b);
@@ -40,7 +40,7 @@ def log10: real → real;
 def erf: real → real;
 
 def pow: real × real → real;
-def √: real → real;
+def sqrt: real → real;
 
 def matVectProduct: x, y  | real[x,y] × real[y] → real[x], (a, b) →
 {
@@ -67,4 +67,4 @@ def dot: x | real[x] × real[x] → real, (a, b) →
 def det: real[2] × real[2] → real, (a, b) → return (a[0]*b[1] - a[1]*b[0]);
 def det: real[2,2] → real, (a) → return a[0,0] * a[1,1] - a[0,1] * a[1,0];
 
-def norm: x | real[x] → real, (a) → return √(dot(a,a));
+def norm: x | real[x] → real, (a) → return sqrt(dot(a,a));

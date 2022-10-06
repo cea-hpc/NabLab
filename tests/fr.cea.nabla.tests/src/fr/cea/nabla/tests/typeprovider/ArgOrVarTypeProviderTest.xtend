@@ -131,11 +131,11 @@ class ArgOrVarTypeProviderTest
 
 		// linear algebra
 		real u{cells};
-		real α{cells, cells};
+		real alpha{cells, cells};
 
 		iterate n while (true);
 
-		UpdateU: u^{n+1} = solveLinearSystem(α, u^{n});
+		UpdateU: u^{n+1} = solveLinearSystem(alpha, u^{n});
 
 		// local variable
 		ComputeX: ∀ j∈cells(), {
@@ -215,7 +215,7 @@ class ArgOrVarTypeProviderTest
 		Assert.assertEquals(new NablaConnectivityType(#[cells, nodesOfCell], new NSTRealArray1D(createIntConstant(2), 2)), module.getVarByName("w").typeFor)
 
 		// linear algebra
-		Assert.assertEquals(new NLATMatrix(linearAlgebraExt, createCardExpression(cells), createCardExpression(cells), -1, -1), module.getVarByName("α").typeFor)
+		Assert.assertEquals(new NLATMatrix(linearAlgebraExt, createCardExpression(cells), createCardExpression(cells), -1, -1), module.getVarByName("alpha").typeFor)
 		Assert.assertEquals(new NLATVector(linearAlgebraExt, createCardExpression(cells), -1), module.getVarByName("u").typeFor)
 
 		// local variable

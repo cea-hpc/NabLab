@@ -53,10 +53,10 @@ class NablaScopeProviderTest
 		real d{nodes};
 
 		j1 : ∀j ∈ cells(), a{j} = 0.0;
-		j2 : ∀j ∈ cells(), c{j} = 0.25 * ∑{r ∈ nodes()}(d{r});
+		j2 : ∀j ∈ cells(), c{j} = 0.25 * sum{r ∈ nodes()}(d{r});
 		j3 : ∀j ∈ cells(), ∀r ∈ nodesOfCell(j), b{j,r} = 0.;
-		j4 : ∀j ∈ cells(), a{j} = ∑{r∈nodesOfCell(j)}(b{j, r});
-		j5 : let real z = ∑{j∈cells()}(∑{r∈nodesOfCell(j)}(X{r}));
+		j4 : ∀j ∈ cells(), a{j} = sum{r∈nodesOfCell(j)}(b{j, r});
+		j5 : let real z = sum{j∈cells()}(sum{r∈nodesOfCell(j)}(X{r}));
 		j6 : ∀j ∈ cells(), ∀ rj ∈ rightCell(j), ∀ lj ∈ leftCell(j), c{j} = a{rj};
 		j7 : ∀j ∈ cells(), {
 				set rjset = rightCell(j);
@@ -114,9 +114,9 @@ class NablaScopeProviderTest
 		real d{nodes};
 
 		j1 : ∀j ∈ cells(), a{j} = 0.0;
-		j2 : ∀j ∈ cells(), c{j} = 0.25 * ∑{r ∈ nodes()}(d{r});
+		j2 : ∀j ∈ cells(), c{j} = 0.25 * sum{r ∈ nodes()}(d{r});
 		j3 : ∀j ∈ cells(), ∀r ∈ nodesOfCell(j), b{j,r} = 0.;
-		j4 : ∀j ∈ cells(), a{j} = ∑{r∈nodesOfCell(j)}(b{j, r});
+		j4 : ∀j ∈ cells(), a{j} = sum{r∈nodesOfCell(j)}(b{j, r});
 		j5 : ∀j ∈ cells(), ∀ rj ∈ rightCell(j), ∀ lj ∈ leftCell(j), c{j} = a{rj} + a{lj};
 		j6 : ∀j ∈ cells(), {
 				set rjset = rightCell(j);
@@ -207,7 +207,7 @@ class NablaScopeProviderTest
 		}
 		j3 : ∀j ∈ cells(), {
 			set nOfCells = nodesOfCell(j);
-			a{j} = ∑{r∈nOfCells}(b{j, r});
+			a{j} = sum{r∈nOfCells}(b{j, r});
 		}
 		'''
 		val rs = resourceSetProvider.get
@@ -265,7 +265,7 @@ class NablaScopeProviderTest
 		}
 
 		j3: {
-			let real z = ∑{j∈cells()}(∑{r∈nodesOfCell(j)}(∑{i∈[0;2[}(X{r}[i])));
+			let real z = sum{j∈cells()}(sum{r∈nodesOfCell(j)}(sum{i∈[0;2[}(X{r}[i])));
 			z = z + 1;
 		}
 		'''
@@ -279,40 +279,40 @@ class NablaScopeProviderTest
 		val iterators = module.iteration.eAllContents.filter(TimeIterator)
 		val nRefInCondOfN = iterators.head.condition.eAllContents.filter(ArgOrVarRef).head
 		Assert.assertNotNull(nRefInCondOfN)
-		nRefInCondOfN.assertScope(eref, "δt, t, a, b1, b2, X, c1, c2, n")
+		nRefInCondOfN.assertScope(eref, "delta_t, t, a, b1, b2, X, c1, c2, n")
 		val nRefInCondOfK = iterators.last.condition.eAllContents.filter(ArgOrVarRef).head
 		Assert.assertNotNull(nRefInCondOfK)
-		nRefInCondOfK.assertScope(eref, "δt, t, a, b1, b2, X, c1, c2, n, k")
+		nRefInCondOfK.assertScope(eref, "delta_t, t, a, b1, b2, X, c1, c2, n, k")
 
 		val aDeclaration = module.getVarByName("a").eContainer as SimpleVarDeclaration
-		aDeclaration.assertScope(eref, "δt, t")
+		aDeclaration.assertScope(eref, "delta_t, t")
 
 		val b1Declaration = module.getVarByName("b1").eContainer as SimpleVarDeclaration
-		b1Declaration.assertScope(eref, "δt, t, a")
+		b1Declaration.assertScope(eref, "delta_t, t, a")
 
 		val b2Declaration = module.getVarByName("b2").eContainer as SimpleVarDeclaration
-		b2Declaration.assertScope(eref, "δt, t, a, b1")
+		b2Declaration.assertScope(eref, "delta_t, t, a, b1")
 		
 		val j1 = module.getJobByName("j1")
 		val affectationc1 = j1.getVarAffectationByName("c1")
-		affectationc1.assertScope(eref, "δt, t, a, b1, b2, X, c1, c2, n, k")
+		affectationc1.assertScope(eref, "delta_t, t, a, b1, b2, X, c1, c2, n, k")
 
 		val affectationc2 = j1.getVarAffectationByName("c2")
-		affectationc2.assertScope(eref, "d, " + "δt, t, a, b1, b2, X, c1, c2, n, k")
+		affectationc2.assertScope(eref, "d, " + "delta_t, t, a, b1, b2, X, c1, c2, n, k")
 
 		val affectationf = j1.getVarAffectationByName("f")
-		affectationf.assertScope(eref, "e, f, countr, d, " + "δt, t, a, b1, b2, X, c1, c2, n, k")
+		affectationf.assertScope(eref, "e, f, countr, d, " + "delta_t, t, a, b1, b2, X, c1, c2, n, k")
 
 		val j2 = module.getJobByName("j2")
 		val affectationn = j2.getVarAffectationByName("o")
-		affectationn.assertScope(eref, "i, o, p, " + "δt, t, a, b1, b2, X, c1, c2, n, k")
+		affectationn.assertScope(eref, "i, o, p, " + "delta_t, t, a, b1, b2, X, c1, c2, n, k")
 
 		val affectationm = j2.getVarAffectationByName("p")
-		affectationm.assertScope(eref, "j, i, o, p, " + "δt, t, a, b1, b2, X, c1, c2, n, k")
+		affectationm.assertScope(eref, "j, i, o, p, " + "delta_t, t, a, b1, b2, X, c1, c2, n, k")
 
 		val j3 = module.getJobByName("j3")
 		val j3_xvarref = j3.instruction.eAllContents.filter(ArgOrVarRef).findFirst[x | x.target.name == 'X']
-		j3_xvarref.assertScope(eref, "i, " + "δt, t, a, b1, b2, X, c1, c2, n, k")
+		j3_xvarref.assertScope(eref, "i, " + "delta_t, t, a, b1, b2, X, c1, c2, n, k")
 	}
 
 	@Test
@@ -407,7 +407,7 @@ class NablaScopeProviderTest
 		}
 
 		j3: {
-			let real z = ∑{j∈cells()}(∑{r∈nodesOfCell(j)}(∑{k∈[0;1[}(X{r}[k+1])));
+			let real z = sum{j∈cells()}(sum{r∈nodesOfCell(j)}(sum{k∈[0;1[}(X{r}[k+1])));
 			z = z + 1;
 		}
 		'''
@@ -418,28 +418,28 @@ class NablaScopeProviderTest
 		val eref = NablaPackage::eINSTANCE.argOrVarRef_Target
 
 		val d1Decl = module.declarations.get(1)
-		d1Decl.assertScope(eref, "δt")
+		d1Decl.assertScope(eref, "delta_t")
 
 		val d2Decl = module.declarations.get(2)
-		d2Decl.assertScope(eref, "δt, t")
+		d2Decl.assertScope(eref, "delta_t, t")
 
 		val d3Decl = module.declarations.get(3)
-		d3Decl.assertScope(eref, "δt, t, X")
+		d3Decl.assertScope(eref, "delta_t, t, X")
 
 		val j1 = module.getJobByName("j1")
 		val affectationc1 = j1.getVarAffectationByName("c1")
-		affectationc1.assertScope(eref, "δt, t, X, c1")
+		affectationc1.assertScope(eref, "delta_t, t, X, c1")
 
 		val j2 = module.getJobByName("j2")
 		val affectationn = j2.getVarAffectationByName("n")
-		affectationn.left.assertScope(eref, "i, n, m, " + "δt, t, X, c1")
+		affectationn.left.assertScope(eref, "i, n, m, " + "delta_t, t, X, c1")
 
 		val affectationm = j2.getVarAffectationByName("m")
-		affectationm.left.assertScope(eref, "j, i, n, m, " + "δt, t, X, c1")
+		affectationm.left.assertScope(eref, "j, i, n, m, " + "delta_t, t, X, c1")
 
 		val j3 = module.getJobByName("j3")
 		val j3_xvarref = j3.instruction.eAllContents.filter(ArgOrVarRef).findFirst[x | x.target.name == 'X']
-		j3_xvarref.assertScope(eref, "k, " + "δt, t, X, c1")
+		j3_xvarref.assertScope(eref, "k, " + "delta_t, t, X, c1")
 	}
 
 	@Test

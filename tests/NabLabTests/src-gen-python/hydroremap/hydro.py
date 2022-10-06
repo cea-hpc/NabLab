@@ -19,7 +19,7 @@ class Hydro:
 	def jsonInit(self, jsonContent):
 		self.maxIter = jsonContent["maxIter"]
 		self.maxTime = jsonContent["maxTime"]
-		self.deltat = jsonContent["deltat"]
+		self.delta_t = jsonContent["delta_t"]
 		self.X = np.empty((self.__nbNodes, 2), dtype=np.double)
 		self.hv1 = np.empty((self.__nbCells), dtype=np.double)
 		self.hv2 = np.empty((self.__nbCells), dtype=np.double)

@@ -88,7 +88,7 @@ void HeatEquationModule::init()
 	m_n = 0;
 
 	// constant time step
-	m_global_deltat = m_deltat;
+	m_global_deltat = m_delta_t;
 
 	// calling jobs
 	computeSurface(); // @1.0
@@ -102,7 +102,7 @@ void HeatEquationModule::init()
 
 /**
  * Job computeOutgoingFlux called @1.0 in executeTimeLoopN method.
- * In variables: V, center, deltat, surface, u_n
+ * In variables: V, center, delta_t, surface, u_n
  * Out variables: outgoingFlux
  */
 void HeatEquationModule::computeOutgoingFlux()
@@ -111,7 +111,7 @@ void HeatEquationModule::computeOutgoingFlux()
 	auto in_u_n = ax::viewIn(command, m_u_n);
 	auto in_center = ax::viewIn(command, m_center);
 	auto in_surface = ax::viewIn(command, m_surface);
-	auto in_deltat = m_deltat;
+	auto in_delta_t = m_delta_t;
 	auto in_V = ax::viewIn(command, m_V);
 	auto out_outgoingFlux = ax::viewOut(command, m_outgoingFlux);
 	command << RUNCOMMAND_ENUMERATE(Cell, j1Cells, allCells())
@@ -131,7 +131,7 @@ void HeatEquationModule::computeOutgoingFlux()
 				reduction0 = heatequationfreefuncs::sumR0(reduction0, reduction1);
 			}
 		}
-		out_outgoingFlux[j1Cells] = in_deltat / in_V[j1Cells] * reduction0;
+		out_outgoingFlux[j1Cells] = in_delta_t / in_V[j1Cells] * reduction0;
 	};
 }
 
@@ -167,12 +167,12 @@ void HeatEquationModule::computeSurface()
 
 /**
  * Job computeTn called @1.0 in executeTimeLoopN method.
- * In variables: deltat, t_n
+ * In variables: delta_t, t_n
  * Out variables: t_nplus1
  */
 void HeatEquationModule::computeTn()
 {
-	m_t_nplus1 = m_t_n + m_deltat;
+	m_t_nplus1 = m_t_n + m_delta_t;
 }
 
 /**
@@ -260,20 +260,20 @@ void HeatEquationModule::iniTime()
 
 /**
  * Job computeUn called @2.0 in executeTimeLoopN method.
- * In variables: deltat, f, outgoingFlux, u_n
+ * In variables: delta_t, f, outgoingFlux, u_n
  * Out variables: u_nplus1
  */
 void HeatEquationModule::computeUn()
 {
 	auto command = makeCommand(m_default_queue);
 	auto in_f = ax::viewIn(command, m_f);
-	auto in_deltat = m_deltat;
+	auto in_delta_t = m_delta_t;
 	auto in_u_n = ax::viewIn(command, m_u_n);
 	auto in_outgoingFlux = ax::viewIn(command, m_outgoingFlux);
 	auto out_u_nplus1 = ax::viewOut(command, m_u_nplus1);
 	command << RUNCOMMAND_ENUMERATE(Cell, jCells, allCells())
 	{
-		out_u_nplus1[jCells] = in_f[jCells] * in_deltat + in_u_n[jCells] + in_outgoingFlux[jCells];
+		out_u_nplus1[jCells] = in_f[jCells] * in_delta_t + in_u_n[jCells] + in_outgoingFlux[jCells];
 	};
 }
 

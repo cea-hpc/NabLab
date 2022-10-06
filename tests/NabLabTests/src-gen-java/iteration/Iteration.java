@@ -23,7 +23,7 @@ public final class Iteration
 	int k;
 	int l;
 	static final double maxTime = 0.1;
-	static final double deltat = 1.0;
+	static final double delta_t = 1.0;
 	double t_n;
 	double t_nplus1;
 	double t_n0;
@@ -86,12 +86,12 @@ public final class Iteration
 
 	/**
 	 * Job computeTn called @1.0 in executeTimeLoopN method.
-	 * In variables: deltat, t_n
+	 * In variables: delta_t, t_n
 	 * Out variables: t_nplus1
 	 */
 	protected void computeTn()
 	{
-		t_nplus1 = t_n + deltat;
+		t_nplus1 = t_n + delta_t;
 	}
 
 	/**
@@ -221,7 +221,7 @@ public final class Iteration
 		do
 		{
 			n++;
-			System.out.printf("START ITERATION n: %5d - t: %5.5f - deltat: %5.5f\n", n, t_n, deltat);
+			System.out.printf("START ITERATION n: %5d - t: %5.5f - delta_t: %5.5f\n", n, t_n, delta_t);
 		
 			computeTn(); // @1.0
 			setUpTimeLoopK(); // @1.0
@@ -254,7 +254,7 @@ public final class Iteration
 			});
 		} while (continueLoop);
 		
-		System.out.printf("FINAL TIME: %5.5f - deltat: %5.5f\n", t_n, deltat);
+		System.out.printf("FINAL TIME: %5.5f - delta_t: %5.5f\n", t_n, delta_t);
 	}
 
 	/**

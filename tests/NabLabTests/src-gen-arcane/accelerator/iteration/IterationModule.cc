@@ -37,7 +37,7 @@ void IterationModule::init()
 	m_l = 0;
 
 	// constant time step
-	m_global_deltat = m_deltat;
+	m_global_deltat = m_delta_t;
 
 	// calling jobs
 	iniTime(); // @1.0
@@ -48,12 +48,12 @@ void IterationModule::init()
 
 /**
  * Job computeTn called @1.0 in executeTimeLoopN method.
- * In variables: deltat, t_n
+ * In variables: delta_t, t_n
  * Out variables: t_nplus1
  */
 void IterationModule::computeTn()
 {
-	m_t_nplus1 = m_t_n + m_deltat;
+	m_t_nplus1 = m_t_n + m_delta_t;
 }
 
 /**

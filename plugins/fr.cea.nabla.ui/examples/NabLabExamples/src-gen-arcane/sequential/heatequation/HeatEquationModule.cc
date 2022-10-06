@@ -87,7 +87,7 @@ void HeatEquationModule::init()
 	m_n = 0;
 
 	// constant time step
-	m_global_deltat = m_deltat;
+	m_global_deltat = m_delta_t;
 
 	// calling jobs
 	computeSurface(); // @1.0
@@ -101,7 +101,7 @@ void HeatEquationModule::init()
 
 /**
  * Job computeOutgoingFlux called @1.0 in executeTimeLoopN method.
- * In variables: V, center, deltat, surface, u_n
+ * In variables: V, center, delta_t, surface, u_n
  * Out variables: outgoingFlux
  */
 void HeatEquationModule::computeOutgoingFlux()
@@ -123,7 +123,7 @@ void HeatEquationModule::computeOutgoingFlux()
 				reduction0 = heatequationfreefuncs::sumR0(reduction0, reduction1);
 			}
 		}
-		m_outgoingFlux[j1Cells] = m_deltat / m_V[j1Cells] * reduction0;
+		m_outgoingFlux[j1Cells] = m_delta_t / m_V[j1Cells] * reduction0;
 	}
 }
 
@@ -156,12 +156,12 @@ void HeatEquationModule::computeSurface()
 
 /**
  * Job computeTn called @1.0 in executeTimeLoopN method.
- * In variables: deltat, t_n
+ * In variables: delta_t, t_n
  * Out variables: t_nplus1
  */
 void HeatEquationModule::computeTn()
 {
-	m_t_nplus1 = m_t_n + m_deltat;
+	m_t_nplus1 = m_t_n + m_delta_t;
 }
 
 /**
@@ -241,14 +241,14 @@ void HeatEquationModule::iniTime()
 
 /**
  * Job computeUn called @2.0 in executeTimeLoopN method.
- * In variables: deltat, f, outgoingFlux, u_n
+ * In variables: delta_t, f, outgoingFlux, u_n
  * Out variables: u_nplus1
  */
 void HeatEquationModule::computeUn()
 {
 	ENUMERATE_CELL(jCells, allCells())
 	{
-		m_u_nplus1[jCells] = m_f[jCells] * m_deltat + m_u_n[jCells] + m_outgoingFlux[jCells];
+		m_u_nplus1[jCells] = m_f[jCells] * m_delta_t + m_u_n[jCells] + m_outgoingFlux[jCells];
 	}
 }
 

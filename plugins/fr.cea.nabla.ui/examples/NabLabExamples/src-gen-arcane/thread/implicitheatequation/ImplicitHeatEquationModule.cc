@@ -98,7 +98,7 @@ void ImplicitHeatEquationModule::init()
 	// initialization of other attributes
 	m_lastDump = numeric_limits<int>::min();
 	m_n = 0;
-	m_deltat = 0.001;
+	m_delta_t = 0.001;
 	m_u_n.resize(nbCell());
 	m_u_nplus1.resize(nbCell());
 	m_alpha.resize(nbCell(), nbCell());
@@ -150,12 +150,12 @@ void ImplicitHeatEquationModule::computeFaceLength()
 
 /**
  * Job computeTn called @1.0 in executeTimeLoopN method.
- * In variables: deltat, t_n
+ * In variables: delta_t, t_n
  * Out variables: t_nplus1
  */
 void ImplicitHeatEquationModule::computeTn()
 {
-	m_t_nplus1 = m_t_n + m_deltat;
+	m_t_nplus1 = m_t_n + m_delta_t;
 }
 
 /**
@@ -255,7 +255,7 @@ void ImplicitHeatEquationModule::updateU()
 /**
  * Job computeDeltaTn called @2.0 in simulate method.
  * In variables: D, V
- * Out variables: deltat
+ * Out variables: delta_t
  */
 void ImplicitHeatEquationModule::computeDeltaTn()
 {
@@ -264,8 +264,8 @@ void ImplicitHeatEquationModule::computeDeltaTn()
 	{
 		reduction0 = implicitheatequationfreefuncs::minR0(reduction0, m_V[cCells] / m_D[cCells]);
 	}
-	m_deltat = reduction0 * 0.24;
-	m_global_deltat = m_deltat;
+	m_delta_t = reduction0 * 0.24;
+	m_global_deltat = m_delta_t;
 }
 
 /**
@@ -338,7 +338,7 @@ void ImplicitHeatEquationModule::setUpTimeLoopN()
 
 /**
  * Job computeAlphaCoeff called @3.0 in simulate method.
- * In variables: V, Xc, deltat, faceConductivity, faceLength
+ * In variables: V, Xc, delta_t, faceConductivity, faceLength
  * Out variables: alpha
  */
 void ImplicitHeatEquationModule::computeAlphaCoeff()
@@ -348,7 +348,7 @@ void ImplicitHeatEquationModule::computeAlphaCoeff()
 		ENUMERATE_CELL(cCells, view)
 		{
 			const auto cId(cCells.asItemLocalId());
-			Real alphaDiag(0.0);
+			Real alpha_Diag(0.0);
 			{
 				const auto neighbourCellsC(m_mesh->getNeighbourCells(cId));
 				const Int32 nbNeighbourCellsC(neighbourCellsC.size());
@@ -358,12 +358,12 @@ void ImplicitHeatEquationModule::computeAlphaCoeff()
 					const auto dCells(dId);
 					const auto fId(m_mesh->getCommonFace(cId, dId));
 					const auto fFaces(fId);
-					const Real alphaExtraDiag(-m_deltat / m_V[cCells] * (m_faceLength[fFaces] * m_faceConductivity[fFaces]) / implicitheatequationfreefuncs::norm(implicitheatequationfreefuncs::operatorSub(m_Xc[cCells], m_Xc[dCells])));
-					m_alpha.setValue(cCells.localId(), dCells, alphaExtraDiag);
-					alphaDiag = alphaDiag + alphaExtraDiag;
+					const Real alpha_ExtraDiag(-m_delta_t / m_V[cCells] * (m_faceLength[fFaces] * m_faceConductivity[fFaces]) / implicitheatequationfreefuncs::norm(implicitheatequationfreefuncs::operatorSub(m_Xc[cCells], m_Xc[dCells])));
+					m_alpha.setValue(cCells.localId(), dCells, alpha_ExtraDiag);
+					alpha_Diag = alpha_Diag + alpha_ExtraDiag;
 				}
 			}
-			m_alpha.setValue(cCells.localId(), cCells.localId(), 1 - alphaDiag);
+			m_alpha.setValue(cCells.localId(), cCells.localId(), 1 - alpha_Diag);
 		}
 	});
 }

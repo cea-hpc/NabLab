@@ -68,7 +68,7 @@ private:
 	Int32 m_k;
 	Int32 m_l;
 	static constexpr Real m_maxTime = 0.1;
-	static constexpr Real m_deltat = 1.0;
+	static constexpr Real m_delta_t = 1.0;
 	Real m_t_n;
 	Real m_t_nplus1;
 	Real m_t_n0;

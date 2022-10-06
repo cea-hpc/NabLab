@@ -89,15 +89,15 @@ private:
 	Int32 m_n;
 	static constexpr Real m_gamma = 1.4;
 	static constexpr Real m_xInterface = 0.5;
-	static constexpr Real m_deltatCfl = 0.4;
-	static constexpr Real m_rhoIniZg = 1.0;
-	static constexpr Real m_rhoIniZd = 0.125;
+	static constexpr Real m_delta_tCfl = 0.4;
+	static constexpr Real m_rho_IniZg = 1.0;
+	static constexpr Real m_rho_IniZd = 0.125;
 	static constexpr Real m_pIniZg = 1.0;
 	static constexpr Real m_pIniZd = 0.1;
 	Real m_t_n;
 	Real m_t_nplus1;
 	Real m_t_n0;
-	Real m_deltat;
+	Real m_delta_t;
 };
 
 #endif

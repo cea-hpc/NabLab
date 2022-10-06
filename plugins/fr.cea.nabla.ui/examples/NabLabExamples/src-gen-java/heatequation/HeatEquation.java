@@ -29,7 +29,7 @@ public final class HeatEquation
 	int maxIterations;
 	static final double PI = 3.1415926;
 	static final double alpha = 1.0;
-	static final double deltat = 0.001;
+	static final double delta_t = 0.001;
 	double t_n;
 	double t_nplus1;
 	double t_n0;
@@ -93,7 +93,7 @@ public final class HeatEquation
 
 	/**
 	 * Job computeOutgoingFlux called @1.0 in executeTimeLoopN method.
-	 * In variables: V, center, deltat, surface, u_n
+	 * In variables: V, center, delta_t, surface, u_n
 	 * Out variables: outgoingFlux
 	 */
 	protected void computeOutgoingFlux()
@@ -115,7 +115,7 @@ public final class HeatEquation
 					reduction0 = sumR0(reduction0, reduction1);
 				}
 			}
-			outgoingFlux[j1Cells] = deltat / V[j1Cells] * reduction0;
+			outgoingFlux[j1Cells] = delta_t / V[j1Cells] * reduction0;
 		});
 	}
 
@@ -148,12 +148,12 @@ public final class HeatEquation
 
 	/**
 	 * Job computeTn called @1.0 in executeTimeLoopN method.
-	 * In variables: deltat, t_n
+	 * In variables: delta_t, t_n
 	 * Out variables: t_nplus1
 	 */
 	protected void computeTn()
 	{
-		t_nplus1 = t_n + deltat;
+		t_nplus1 = t_n + delta_t;
 	}
 
 	/**
@@ -233,14 +233,14 @@ public final class HeatEquation
 
 	/**
 	 * Job computeUn called @2.0 in executeTimeLoopN method.
-	 * In variables: deltat, f, outgoingFlux, u_n
+	 * In variables: delta_t, f, outgoingFlux, u_n
 	 * Out variables: u_nplus1
 	 */
 	protected void computeUn()
 	{
 		IntStream.range(0, nbCells).parallel().forEach(jCells ->
 		{
-			u_nplus1[jCells] = f[jCells] * deltat + u_n[jCells] + outgoingFlux[jCells];
+			u_nplus1[jCells] = f[jCells] * delta_t + u_n[jCells] + outgoingFlux[jCells];
 		});
 	}
 
@@ -279,7 +279,7 @@ public final class HeatEquation
 		do
 		{
 			n++;
-			System.out.printf("START ITERATION n: %5d - t: %5.5f - deltat: %5.5f\n", n, t_n, deltat);
+			System.out.printf("START ITERATION n: %5d - t: %5.5f - delta_t: %5.5f\n", n, t_n, delta_t);
 			if (n >= lastDump + outputPeriod)
 				dumpVariables(n);
 		
@@ -297,7 +297,7 @@ public final class HeatEquation
 			});
 		} while (continueLoop);
 		
-		System.out.printf("FINAL TIME: %5.5f - deltat: %5.5f\n", t_n, deltat);
+		System.out.printf("FINAL TIME: %5.5f - delta_t: %5.5f\n", t_n, delta_t);
 		dumpVariables(n+1);
 	}
 

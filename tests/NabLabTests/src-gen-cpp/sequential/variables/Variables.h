@@ -63,7 +63,7 @@ public:
 	// Module variables are public members of the class to be accessible from Python.
 	static constexpr double maxTime = 0.1;
 	static constexpr int maxIter = 500;
-	static constexpr double deltat = 1.0;
+	static constexpr double delta_t = 1.0;
 	static constexpr double t = 0.0;
 	std::vector<RealArray1D<2>> X;
 	int optDim;

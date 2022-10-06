@@ -80,7 +80,7 @@ private:
 	static constexpr Real2 m_vectOne = {1.0, 1.0};
 	static constexpr Int32 m_maxIterationsK = 1000;
 	static constexpr Real m_epsilon = 1.0E-8;
-	Real m_deltat;
+	Real m_delta_t;
 	Real m_t_n;
 	Real m_t_nplus1;
 	Real m_t_n0;

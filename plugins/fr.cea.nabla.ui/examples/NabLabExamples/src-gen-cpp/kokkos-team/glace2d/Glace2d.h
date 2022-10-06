@@ -144,15 +144,15 @@ public:
 	int maxIterations;
 	static constexpr double gamma = 1.4;
 	static constexpr double xInterface = 0.5;
-	static constexpr double deltatCfl = 0.4;
-	static constexpr double rhoIniZg = 1.0;
-	static constexpr double rhoIniZd = 0.125;
+	static constexpr double delta_tCfl = 0.4;
+	static constexpr double rho_IniZg = 1.0;
+	static constexpr double rho_IniZd = 0.125;
 	static constexpr double pIniZg = 1.0;
 	static constexpr double pIniZd = 0.1;
 	double t_n;
 	double t_nplus1;
 	double t_n0;
-	double deltat;
+	double delta_t;
 	Kokkos::View<RealArray1D<2>*> X_n;
 	Kokkos::View<RealArray1D<2>*> X_nplus1;
 	Kokkos::View<RealArray1D<2>*> X_n0;
@@ -169,7 +169,7 @@ public:
 	Kokkos::View<double*> E_n;
 	Kokkos::View<double*> E_nplus1;
 	Kokkos::View<double*> V;
-	Kokkos::View<double*> deltatj;
+	Kokkos::View<double*> delta_tj;
 	Kokkos::View<RealArray1D<2>*> uj_n;
 	Kokkos::View<RealArray1D<2>*> uj_nplus1;
 	Kokkos::View<double**> l;

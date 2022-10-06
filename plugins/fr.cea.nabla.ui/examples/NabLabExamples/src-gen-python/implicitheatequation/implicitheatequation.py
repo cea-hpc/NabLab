@@ -29,7 +29,7 @@ class ImplicitHeatEquation:
 		self.n = 0
 		self.stopTime = jsonContent["stopTime"]
 		self.maxIterations = jsonContent["maxIterations"]
-		self.deltat = 0.001
+		self.delta_t = 0.001
 		self.X = np.empty((self.__nbNodes, 2), dtype=np.double)
 		self.Xc = np.empty((self.__nbCells, 2), dtype=np.double)
 		self.u_n = Vector.zeros("u_n", self.__nbCells)
@@ -70,11 +70,11 @@ class ImplicitHeatEquation:
 
 	"""
 	 Job computeTn called @1.0 in executeTimeLoopN method.
-	 In variables: deltat, t_n
+	 In variables: delta_t, t_n
 	 Out variables: t_nplus1
 	"""
 	def _computeTn(self):
-		self.t_nplus1 = self.t_n + self.deltat
+		self.t_nplus1 = self.t_n + self.delta_t
 
 	"""
 	 Job computeV called @1.0 in simulate method.
@@ -140,13 +140,13 @@ class ImplicitHeatEquation:
 	"""
 	 Job computeDeltaTn called @2.0 in simulate method.
 	 In variables: D, V
-	 Out variables: deltat
+	 Out variables: delta_t
 	"""
 	def _computeDeltaTn(self):
 		reduction0 = sys.float_info.max
 		for cCells in range(self.__nbCells):
 			reduction0 = self.__minR0(reduction0, self.V[cCells] / self.D[cCells])
-		self.deltat = reduction0 * 0.24
+		self.delta_t = reduction0 * 0.24
 
 	"""
 	 Job computeFaceConductivity called @2.0 in simulate method.
@@ -194,13 +194,13 @@ class ImplicitHeatEquation:
 
 	"""
 	 Job computeAlphaCoeff called @3.0 in simulate method.
-	 In variables: V, Xc, deltat, faceConductivity, faceLength
+	 In variables: V, Xc, delta_t, faceConductivity, faceLength
 	 Out variables: alpha
 	"""
 	def _computeAlphaCoeff(self):
 		for cCells in range(self.__nbCells):
 			cId = cCells
-			alphaDiag = 0.0
+			alpha_Diag = 0.0
 			neighbourCellsC = mesh.getNeighbourCells(cId)
 			nbNeighbourCellsC = len(neighbourCellsC)
 			for dNeighbourCellsC in range(nbNeighbourCellsC):
@@ -208,10 +208,10 @@ class ImplicitHeatEquation:
 				dCells = dId
 				fId = mesh.getCommonFace(cId, dId)
 				fFaces = fId
-				alphaExtraDiag = -self.deltat / self.V[cCells] * (self.faceLength[fFaces] * self.faceConductivity[fFaces]) / self.__norm(self.__operatorSub(self.Xc[cCells], self.Xc[dCells]))
-				self.alpha.setValue(cCells, dCells, alphaExtraDiag)
-				alphaDiag = alphaDiag + alphaExtraDiag
-			self.alpha.setValue(cCells, cCells, 1 - alphaDiag)
+				alpha_ExtraDiag = -self.delta_t / self.V[cCells] * (self.faceLength[fFaces] * self.faceConductivity[fFaces]) / self.__norm(self.__operatorSub(self.Xc[cCells], self.Xc[dCells]))
+				self.alpha.setValue(cCells, dCells, alpha_ExtraDiag)
+				alpha_Diag = alpha_Diag + alpha_ExtraDiag
+			self.alpha.setValue(cCells, cCells, 1 - alpha_Diag)
 
 	"""
 	 Job executeTimeLoopN called @4.0 in simulate method.
@@ -224,7 +224,7 @@ class ImplicitHeatEquation:
 		continueLoop = True
 		while continueLoop:
 			self.n += 1
-			print("START ITERATION n: %5d - t: %5.5f - deltat: %5.5f\n" % (self.n, self.t_n, self.deltat))
+			print("START ITERATION n: %5d - t: %5.5f - delta_t: %5.5f\n" % (self.n, self.t_n, self.delta_t))
 			if (self.n >= self.lastDump + self.outputPeriod):
 				self.__dumpVariables(self.n)
 		
@@ -237,7 +237,7 @@ class ImplicitHeatEquation:
 			self.t_n = self.t_nplus1
 			self.u_n = self.u_nplus1
 		
-		print("FINAL TIME: %5.5f - deltat: %5.5f\n" % (self.t_n, self.deltat))
+		print("FINAL TIME: %5.5f - delta_t: %5.5f\n" % (self.t_n, self.delta_t))
 		self.__dumpVariables(self.n+1);
 
 	def __norm(self, a):

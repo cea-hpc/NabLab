@@ -69,7 +69,7 @@ private:
 	Int32 m_n;
 	static constexpr Real m_u0 = 1.0;
 	static constexpr Real2 m_vectOne = {1.0, 1.0};
-	Real m_deltat;
+	Real m_delta_t;
 	Real m_t_n;
 	Real m_t_nplus1;
 	Real m_t_n0;

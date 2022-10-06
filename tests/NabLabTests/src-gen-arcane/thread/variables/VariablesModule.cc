@@ -64,7 +64,7 @@ void VariablesModule::init()
 	m_dynamicVec.resize(options()->optDim());
 
 	// constant time step
-	m_global_deltat = m_deltat;
+	m_global_deltat = m_delta_t;
 
 	// calling jobs
 	dynamicVecInitialization(); // @1.0

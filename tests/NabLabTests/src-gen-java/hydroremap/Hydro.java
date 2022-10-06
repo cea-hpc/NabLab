@@ -25,7 +25,7 @@ public final class Hydro
 	// Options and global variables
 	int maxIter;
 	double maxTime;
-	double deltat;
+	double delta_t;
 	static final double t = 0.0;
 	double[][] X;
 	double[] hv1;
@@ -56,10 +56,10 @@ public final class Hydro
 		final JsonElement valueof_maxTime = options.get("maxTime");
 		assert(valueof_maxTime.isJsonPrimitive());
 		maxTime = valueof_maxTime.getAsJsonPrimitive().getAsDouble();
-		assert options.has("deltat") : "No deltat option";
-		final JsonElement valueof_deltat = options.get("deltat");
-		assert(valueof_deltat.isJsonPrimitive());
-		deltat = valueof_deltat.getAsJsonPrimitive().getAsDouble();
+		assert options.has("delta_t") : "No delta_t option";
+		final JsonElement valueof_delta_t = options.get("delta_t");
+		assert(valueof_delta_t.isJsonPrimitive());
+		delta_t = valueof_delta_t.getAsJsonPrimitive().getAsDouble();
 		X = new double[nbNodes][2];
 		hv1 = new double[nbCells];
 		hv2 = new double[nbCells];

@@ -52,6 +52,9 @@ class GitUtils
 		val formatter = new DiffFormatter(outputStream)
 		formatter.setRepository(git.repository)
 		formatter.setPathFilter(PathFilter.create(subPath))
+		//context = number of lines of context to see before the first modification and after the last modification within a hunk of the modified file.
+		//in case of multiple errors, whe get several @@
+		formatter.setContext(0)
 
 		var diffs = formatter.scan(workingTreeIterator, headTreeParser)
 		diffs = diffs.filter[d | d.newPath.contains(moduleName)].toList

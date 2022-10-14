@@ -40,10 +40,19 @@ class TestUtils
 
 	def runningOnCI()
 	{
-		val event = System.getenv("GITHUB_EVENT_NAME") //$NON-NLS-1$
-		//System.out.println(event)
+		return isPush() || isPullRequest()
+	}
 
-		return System.getenv("CI") !== null && event.equals("push") //$NON-NLS-1$ //$NON-NLS-2$
+	def isPush()
+	{
+		val event = System.getenv("GITHUB_EVENT_NAME") // $NON-NLS-1$
+		return System.getenv("CI") !== null && event.equals("push") // $NON-NLS-1$ //$NON-NLS-2$
+	}
+
+	def isPullRequest()
+	{
+		val event = System.getenv("GITHUB_EVENT_NAME") // $NON-NLS-1$
+		return System.getenv("CI") !== null && event.equals("pull_request") // $NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	def getAllAffectations(EObject it)

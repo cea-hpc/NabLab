@@ -15,7 +15,7 @@ import fr.cea.nabla.nabla.BaseType
 import fr.cea.nabla.nabla.Exit
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionOrReduction
-import fr.cea.nabla.nabla.FunctionTypeDeclaration
+import fr.cea.nabla.nabla.FunctionReturnTypeDeclaration
 import fr.cea.nabla.nabla.If
 import fr.cea.nabla.nabla.Instruction
 import fr.cea.nabla.nabla.InstructionBlock
@@ -32,6 +32,8 @@ import java.util.HashSet
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.validation.Check
 import org.eclipse.xtext.validation.CheckType
+import fr.cea.nabla.nabla.FunctionInTypeDeclaration
+import java.util.List
 
 class FunctionOrReductionValidator extends BasicValidator
 {
@@ -47,8 +49,8 @@ class FunctionOrReductionValidator extends BasicValidator
 	public static val ONLY_INT_AND_VAR_IN_REDUCTION_TYPE = "Functions::OnlyIntAndVarInReductionType"
 	public static val FUNCTION_INVALID_ARG_NUMBER = "Functions::InvalidArgNumber"
 	public static val FUNCTION_INCOMPATIBLE_IN_TYPES = "Functions::FunctionIncompatibleInTypes"
-	public static val FUNCTION_RETURN_TYPE = "Functions::FunctionReturnType"
-	public static val FUNCTION_RETURN_TYPE_VAR = "Functions::FunctionReturnTypeVar"
+	public static val FUNCTION_RETURN_TYPE = "Functions::FunctionReturnTypeDeclaration"
+	public static val FUNCTION_RETURN_TYPE_VAR = "Functions::FunctionReturnTypeDeclarationVar"
 	public static val REDUCTION_INCOMPATIBLE_TYPES = "Functions::ReductionIncompatibleTypes"
 	public static val REDUCTION_SEED_TYPE = "Functions::ReductionSeedType"
 	public static val REDUCTION_TYPES_COMPATIBILITY = "Functions::ReductionTypesCompatibility"
@@ -61,7 +63,7 @@ class FunctionOrReductionValidator extends BasicValidator
 	static def getOnlyIntAndVarInReductionTypeMsg(String[] allowedVarNames) { buildMsg("Type", allowedVarNames) }
 	static def getFunctionInvalidArgNumberMsg() { "Number of arguments must be equal to number of input types" }
 	static def getFunctionIncompatibleInTypesMsg() { "Declaration conflicts" }
-	static def getFunctionReturnTypeVarMsg(String variableName) { "Only input type variables can be used for return types. Invalid variable: " + variableName }
+	static def getFunctionReturnTypeDeclarationVarMsg(String variableName) { "Only input type variables can be used for return types. Invalid variable: " + variableName }
 	static def getReductionIncompatibleTypesMsg() { "Declaration conflicts" }
 	static def getReductionSeedTypeMsg() { "Seed type must be scalar" }
 	static def getReductionTypesCompatibilityMsg(String seedType, String type) { "Seed type and reduction type are incompatible: " + seedType + " and " + type }
@@ -118,9 +120,9 @@ class FunctionOrReductionValidator extends BasicValidator
 	@Check(CheckType.NORMAL)
 	def checkOnlyIntAndVarInFunctionInTypes(Function it)
 	{
-		for (inType : typeDeclaration.inTypes)
+		for (inType : intypesDeclaration.map[inTypes])
 			if (!inType.sizes.forall[x | x instanceof IntConstant || (x instanceof ArgOrVarRef && (x as ArgOrVarRef).target.eContainer === it)])
-				error(getOnlyIntAndVarInFunctionInTypesMsg(variables.map[name]), NablaPackage.Literals::FUNCTION__TYPE_DECLARATION, ONLY_INT_AND_VAR_IN_FUNCTION_IN_TYPES)
+				error(getOnlyIntAndVarInFunctionInTypesMsg(variables.map[name]), NablaPackage.Literals::FUNCTION__INTYPES_DECLARATION, ONLY_INT_AND_VAR_IN_FUNCTION_IN_TYPES)
 	}
 
 	@Check(CheckType.NORMAL)
@@ -133,20 +135,20 @@ class FunctionOrReductionValidator extends BasicValidator
 	@Check(CheckType.NORMAL)
 	def checkFunctionIncompatibleInTypes(Function it)
 	{
-		if (!external && typeDeclaration.inTypes.size !== inArgs.size)
+		if (!external && intypesDeclaration.size !== inArgs.size)
 		{
 			error(getFunctionInvalidArgNumberMsg(), NablaPackage.Literals::FUNCTION_OR_REDUCTION__IN_ARGS, FUNCTION_INVALID_ARG_NUMBER)
 			return
 		}
 
 		val otherFunctionArgs = eContainer.eAllContents.filter(Function).filter[x | x.name == name && x !== it]
-		val conflictingFunctionArg = otherFunctionArgs.findFirst[x | !areCompatible(x.typeDeclaration, typeDeclaration)]
+		val conflictingFunctionArg = otherFunctionArgs.findFirst[x | !areCompatible(x.intypesDeclaration, intypesDeclaration)]
 		if (conflictingFunctionArg !== null)
 			error(getFunctionIncompatibleInTypesMsg(), NablaPackage.Literals::FUNCTION_OR_REDUCTION__NAME, FUNCTION_INCOMPATIBLE_IN_TYPES)
 	}
 
 	@Check(CheckType.NORMAL)
-	def checkFunctionReturnType(FunctionTypeDeclaration it)
+	def checkFunctionReturnTypeDeclaration(FunctionReturnTypeDeclaration it)
 	{
 		val f = eContainer as Function
 		if (!f.external && f.body !== null)
@@ -158,28 +160,29 @@ class FunctionOrReductionValidator extends BasicValidator
 				val expressionType = ri.expression?.typeFor
 				val fType = returnType.typeFor
 				if (expressionType !== null && !checkExpectedType(expressionType, fType))
-					error(getTypeMsg(expressionType.label, fType.label), NablaPackage.Literals.FUNCTION_TYPE_DECLARATION__RETURN_TYPE, FUNCTION_RETURN_TYPE)
+					error(getTypeMsg(expressionType.label, fType.label), NablaPackage.Literals.FUNCTION_RETURN_TYPE_DECLARATION__RETURN_TYPE, FUNCTION_RETURN_TYPE)
 			}
 		}
 	}
 
 	@Check(CheckType.NORMAL)
-	def checkFunctionReturnTypeVar(FunctionTypeDeclaration it)
+	def checkFunctionReturnTypeDeclarationVar(FunctionReturnTypeDeclaration rtd)
 	{
+		val it = rtd.eContainer as Function
 		val inTypeVars = new HashSet<SimpleVar>
-		for (inType : inTypes)
+		for (inType : it.intypesDeclaration.map[inTypes])
 			for (dim : EcoreUtil2.getAllContentsOfType(inType, ArgOrVarRef))
 				if (dim.target !== null && !dim.target.eIsProxy && dim.target instanceof SimpleVar)
 					inTypeVars += dim.target as SimpleVar
 
 		val returnTypeVars = new HashSet<SimpleVar>
-		for (dim : EcoreUtil2.getAllContentsOfType(returnType, ArgOrVarRef))
+		for (dim : EcoreUtil2.getAllContentsOfType(rtd.returnType, ArgOrVarRef))
 			if (dim.target !== null && !dim.target.eIsProxy && dim.target instanceof SimpleVar)
 				returnTypeVars += dim.target as SimpleVar
 
 		val x = returnTypeVars.findFirst[x | !inTypeVars.contains(x)]
 		if (x !== null)
-			error(getFunctionReturnTypeVarMsg(x.name), NablaPackage.Literals::FUNCTION_TYPE_DECLARATION__RETURN_TYPE, FUNCTION_RETURN_TYPE_VAR)
+			error(getFunctionReturnTypeDeclarationVarMsg(x.name), NablaPackage.Literals::FUNCTION_RETURN_TYPE_DECLARATION__RETURN_TYPE, FUNCTION_RETURN_TYPE_VAR)
 	}
 
 	@Check(CheckType.NORMAL)
@@ -197,7 +200,7 @@ class FunctionOrReductionValidator extends BasicValidator
 		val seedType = seed?.typeFor
 		// Seed must be scalar and Seed rootType must be the same as Return rootType
 		// If type is Array, the reduction Seed will be used as many times as Array size
-		// Ex (ℕ.MaxValue, ℝ])→ℕ[2]; -> we will use (ℕ.MaxValue, ℕ.MaxValue) as reduction seed
+		// Ex (int.MaxValue, real]) int[2]; -> we will use (int.MaxValue, int.MaxValue) as reduction seed
 		if (seedType !== null)
 		{
 			val rType = typeDeclaration.type.primitive
@@ -212,13 +215,13 @@ class FunctionOrReductionValidator extends BasicValidator
 	 * Returns true if a and b can be declared together, false otherwise. 
 	 * For example, false for R[2]->R and R[n]->R
 	 */
-	private def areCompatible(FunctionTypeDeclaration a, FunctionTypeDeclaration b)
+	private def areCompatible(List<FunctionInTypeDeclaration> a, List<FunctionInTypeDeclaration> b)
 	{
-		if (a.inTypes.size != b.inTypes.size)
+		if (a.size != b.size)
 			return true
 
-		for (i : 0..<a.inTypes.size)
-			if (areCompatible(a.inTypes.get(i), b.inTypes.get(i)))
+		for (i : 0..<a.size)
+			if (areCompatible(a.get(i).inTypes, b.get(i).inTypes))
 				return true
 
 		return false

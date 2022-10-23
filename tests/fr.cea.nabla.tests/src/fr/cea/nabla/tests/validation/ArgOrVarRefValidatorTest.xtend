@@ -43,10 +43,10 @@ class ArgOrVarRefValidatorTest
 		val moduleKo = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			let ℕ[2,2] a = ℕ[2,2](0);
-			let ℕ[2] b = a[0]; // Wrong number of args
-			let ℕ[2] c = ℕ[2](0);
-			let ℕ d = c[0,1]; // Wrong number of args
+			let int[2,2] a = int[2,2](0);
+			let int[2] b = a[0]; // Wrong number of args
+			let int[2] c = int[2](0);
+			let int d = c[0,1]; // Wrong number of args
 			''')
 		Assert.assertNotNull(moduleKo)
 
@@ -61,8 +61,8 @@ class ArgOrVarRefValidatorTest
 		val moduleOk =  parseHelper.parse(
 			'''
 			«emptyTestModule»
-			let ℕ[2,2] a = ℕ[2,2](0);
-			let ℕ b = a[0,0];
+			let int[2,2] a = int[2,2](0);
+			let int b = a[0,0];
 			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -76,10 +76,10 @@ class ArgOrVarRefValidatorTest
 		val moduleKo = parseHelper.parse(
 			'''
 			«testModule»
-			ℝ u{cells}, v{cells, nodesOfCell}, w{nodes};
-			ComputeU: ∀ j∈cells(), ∀r∈nodesOfCell(j), u{j,r} = 1.;
-			ComputeV: ∀ j∈cells(), ∀r∈nodesOfCell(j), v{j} = 1.;
-			ComputeW: ∀ j∈cells(), w{j} = 1.;
+			real u{cells}, v{cells, nodesOfCell}, w{nodes};
+			ComputeU: forall  j in cells(), forall r in nodesOfCell(j), u{j,r} = 1.;
+			ComputeV: forall  j in cells(), forall r in nodesOfCell(j), v{j} = 1.;
+			ComputeW: forall  j in cells(), w{j} = 1.;
 			''', rs)
 		Assert.assertNotNull(moduleKo)
 
@@ -98,10 +98,10 @@ class ArgOrVarRefValidatorTest
 		val moduleOk =  parseHelper.parse(
 			'''
 			«testModule»
-			ℝ u{cells}, v{cells, nodesOfCell}, w{nodes};
-			ComputeU: ∀ j∈cells(), ∀r∈nodesOfCell(j), u{j} = 1.;
-			ComputeV: ∀ j∈cells(), ∀r∈nodesOfCell(j), v{j,r} = 1.;
-			ComputeW: ∀ j∈nodes(), w{j} = 1.;
+			real u{cells}, v{cells, nodesOfCell}, w{nodes};
+			ComputeU: forall  j in cells(), forall r in nodesOfCell(j), u{j} = 1.;
+			ComputeV: forall  j in cells(), forall r in nodesOfCell(j), v{j,r} = 1.;
+			ComputeW: forall  j in nodes(), w{j} = 1.;
 			''', rs)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -115,7 +115,7 @@ class ArgOrVarRefValidatorTest
 		val moduleKo = parseHelper.parse(
 			'''
 			«testModule»
-			ℝ u, v;
+			real u, v;
 			iterate n while(true);
 			ComputeU: u^{n+1} = u^{n} + 6.0;
 			ComputeV: v = u + 4.0; // Wrong: must be u^{n}
@@ -129,7 +129,7 @@ class ArgOrVarRefValidatorTest
 		val moduleOk =  parseHelper.parse(
 			'''
 			«testModule»
-			ℝ u, v;
+			real u, v;
 			iterate n while(true);
 			ComputeU: u^{n+1} = u^{n} + 6.0;
 			ComputeV: v = u^{n} + 4.0; // Wrong: must be u^{n}
@@ -146,8 +146,8 @@ class ArgOrVarRefValidatorTest
 		val moduleKo1 = parseHelper.parse(
 			'''
 			«testModule»
-			let ℝ u=0;
-			ℝ v;
+			let real u=0;
+			real v;
 			iterate n while(true);
 			ComputeU: u^{n+1} = u^{n} + 6.0;
 			ComputeV: v = u + 4.0; // Wrong: must be u^{n}
@@ -160,8 +160,8 @@ class ArgOrVarRefValidatorTest
 		val moduleKo2 = parseHelper.parse(
 			'''
 			«testModule»
-			let ℝ u = 3.4;
-			ℝ v;
+			let real u = 3.4;
+			real v;
 			iterate n while(true);
 			ComputeU: u^{n+1} = u^{n} + 6.0;
 			ComputeV: v = u + 4.0; // Wrong: must be u^{n}
@@ -174,7 +174,7 @@ class ArgOrVarRefValidatorTest
 		val moduleKo3 = parseHelper.parse(
 			'''
 			«testModule»
-			ℝ u, v;
+			real u, v;
 			iterate n while(true);
 			ComputeU: u^{n+1} = u^{n} + n^{n} + 6.0;
 			ComputeV: v = u + 4.0; // Wrong: must be u^{n}
@@ -187,7 +187,7 @@ class ArgOrVarRefValidatorTest
 		val moduleOk =  parseHelper.parse(
 			'''
 			«testModule»
-			ℝ u, v;
+			real u, v;
 			iterate n while(true);
 			ComputeU: u^{n+1} = u^{n} + 6.0;
 			ComputeV: v = u^{n} + 4.0; // Wrong: must be u^{n}
@@ -204,35 +204,35 @@ class ArgOrVarRefValidatorTest
 		val moduleKo1 = parseHelper.parse(
 			'''
 			«testModule»
-			let ℕ[2] a = ℕ[2](0);
-			let ℕ m = a[2.3];
+			let int[2] a = int[2](0);
+			let int m = a[2.3];
 			''', rs)
 		Assert.assertNotNull(moduleKo1)
 		moduleKo1.assertError(NablaPackage.eINSTANCE.argOrVarRef,
 			BasicValidator::TYPE_EXPRESSION_TYPE,
-			getTypeMsg("ℝ", "ℕ"))
+			getTypeMsg("real", "int"))
 
 		val moduleKo2 = parseHelper.parse(
 			'''
 			«testModule»
-			let ℕ[2] a = ℕ[2](0);
-			let ℝ b = 1.2;
-			let ℕ o = a[b];
+			let int[2] a = int[2](0);
+			let real b = 1.2;
+			let int o = a[b];
 			''', rs)
 		Assert.assertNotNull(moduleKo2)
 		moduleKo2.assertError(NablaPackage.eINSTANCE.argOrVarRef,
 			BasicValidator::TYPE_EXPRESSION_TYPE,
-			getTypeMsg("ℝ", "ℕ"))
+			getTypeMsg("real", "int"))
 
 		val moduleOk =  parseHelper.parse(
 			'''
 			«testModule»
-			let ℕ[2] a = ℕ[2](0);
-			let ℕ b = 1;
+			let int[2] a = int[2](0);
+			let int b = 1;
 
-			let ℕ m = a[2];
-			let ℕ o = a[b];
-			let ℕ p = a[b + 4];
+			let int m = a[2];
+			let int o = a[b];
+			let int p = a[b + 4];
 			''', rs)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -246,8 +246,8 @@ class ArgOrVarRefValidatorTest
 		val moduleKo = parseHelper.parse(
 			'''
 			«testModule»
-			ℝ[2] X{nodes};
-			ℝ x{nodes};
+			real[2] X{nodes};
+			real x{nodes};
 			InitY : y = X[1]; // wrong syntax. Precise space iterator before indice
 			''', rs)
 		Assert.assertNotNull(moduleKo)
@@ -259,9 +259,9 @@ class ArgOrVarRefValidatorTest
 		val moduleOk =  parseHelper.parse(
 			'''
 			«testModule»
-			ℝ[2] X{nodes};
-			ℝ y{nodes};
-			InitY : ∀r ∈nodes(), y{r} = X{r}[1];
+			real[2] X{nodes};
+			real y{nodes};
+			InitY : forall r in nodes(), y{r} = X{r}[1];
 			''', rs)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors

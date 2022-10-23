@@ -8,7 +8,7 @@ from cartesianmesh2d import CartesianMesh2D
 
 class Iteration:
 	maxTime = 0.1
-	deltat = 1.0
+	delta_t = 1.0
 	maxIterN = 10
 	maxIterK = 6
 	maxIterL = 7
@@ -44,11 +44,11 @@ class Iteration:
 
 	"""
 	 Job computeTn called @1.0 in executeTimeLoopN method.
-	 In variables: deltat, t_n
+	 In variables: delta_t, t_n
 	 Out variables: t_nplus1
 	"""
 	def _computeTn(self):
-		self.t_nplus1 = self.t_n + self.deltat
+		self.t_nplus1 = self.t_n + self.delta_t
 
 	"""
 	 Job iniTime called @1.0 in simulate method.
@@ -145,7 +145,7 @@ class Iteration:
 		continueLoop = True
 		while continueLoop:
 			self.n += 1
-			print("START ITERATION n: %5d - t: %5.5f - deltat: %5.5f\n" % (self.n, self.t_n, self.deltat))
+			print("START ITERATION n: %5d - t: %5.5f - delta_t: %5.5f\n" % (self.n, self.t_n, self.delta_t))
 		
 			self._computeTn() # @1.0
 			self._setUpTimeLoopK() # @1.0
@@ -171,7 +171,7 @@ class Iteration:
 			for i1Cells in range(self.__nbCells):
 				self.vl_n[i1Cells] = self.vl_nplus1[i1Cells]
 		
-		print("FINAL TIME: %5.5f - deltat: %5.5f\n" % (self.t_n, self.deltat))
+		print("FINAL TIME: %5.5f - delta_t: %5.5f\n" % (self.t_n, self.delta_t))
 
 	"""
 	 Job tearDownTimeLoopK called @3.0 in executeTimeLoopN method.

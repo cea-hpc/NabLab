@@ -45,19 +45,19 @@ class NablagenScopeProviderTest
 	with CartesianMesh2D.*;
 
 	// Simulation options
-	ℝ maxTime;
-	ℕ maxIter;
+	real maxTime;
+	int maxIter;
 
-	let ℝ t = 0.0;
-	let ℝ δt = 1.0;
-	ℝ[2] X{nodes};
-	ℝ hv1{cells}, hv2{cells}, hv3{cells}, hv4{cells}, hv5{cells}, hv6{cells}, hv7{cells};
+	let real t = 0.0;
+	let real delta_t = 1.0;
+	real[2] X{nodes};
+	real hv1{cells}, hv2{cells}, hv3{cells}, hv4{cells}, hv5{cells}, hv6{cells}, hv7{cells};
 
 	iterate n while (n+1 < maxIter && t^{n+1} < maxTime);
 
-	hj1: ∀c∈cells(), hv3{c} = hv2{c};
-	hj2: ∀c∈cells(), hv5{c} = hv3{c};
-	hj3: ∀c∈cells(), hv7{c} = hv4{c} + hv5{c} + hv6{c};		
+	hj1: forall c in cells(), hv3{c} = hv2{c};
+	hj2: forall c in cells(), hv5{c} = hv3{c};
+	hj3: forall c in cells(), hv7{c} = hv4{c} + hv5{c} + hv6{c};		
 	'''
 
 	val nablaRemapModel =
@@ -66,11 +66,11 @@ class NablagenScopeProviderTest
 
 	with CartesianMesh2D.*;
 
-	ℝ[2] X{nodes};
-	ℝ rv1{cells}, rv2{cells}, rv3{cells};
+	real[2] X{nodes};
+	real rv1{cells}, rv2{cells}, rv3{cells};
 
-	rj1: ∀c∈cells(), rv2{c} = rv1{c};
-	rj2: ∀c∈cells(), rv3{c} = rv2{c};
+	rj1: forall c in cells(), rv2{c} = rv1{c};
+	rj2: forall c in cells(), rv3{c} = rv2{c};
 	'''
 
 	val ngenModel = 
@@ -82,7 +82,7 @@ class NablagenScopeProviderTest
 		meshClassName = "CartesianMesh2D";
 		nodeCoord = X;
 		time = t;
-		timeStep = δt;
+		timeStep = delta_t;
 		iterationMax = maxIter;
 		timeMax = maxTime;
 	}
@@ -146,7 +146,7 @@ class NablagenScopeProviderTest
 	{
 		val eref = NablagenPackage::eINSTANCE.mainModule_Time
 		val o = ngenApp.mainModule
-		o.assertScope(eref, "maxTime, t, δt")
+		o.assertScope(eref, "maxTime, t, delta_t")
 	}
 
 	@Test
@@ -154,7 +154,7 @@ class NablagenScopeProviderTest
 	{
 		val eref = NablagenPackage::eINSTANCE.mainModule_TimeStep
 		val o = ngenApp.mainModule
-		o.assertScope(eref, "maxTime, t, δt")
+		o.assertScope(eref, "maxTime, t, delta_t")
 	}
 
 	@Test
@@ -170,7 +170,7 @@ class NablagenScopeProviderTest
 	{
 		val eref = NablagenPackage::eINSTANCE.mainModule_TimeMax
 		val o = ngenApp.mainModule
-		o.assertScope(eref, "maxTime, t, δt")
+		o.assertScope(eref, "maxTime, t, delta_t")
 	}
 
 	@Test
@@ -178,7 +178,7 @@ class NablagenScopeProviderTest
 	{
 		val eref = NablagenPackage::eINSTANCE.vtkOutput_PeriodReferenceVar
 		val o = ngenApp.vtkOutput
-		o.assertScope(eref, "maxTime, maxIter, t, δt, n")
+		o.assertScope(eref, "maxTime, maxIter, t, delta_t, n")
 	}
 
 	@Test
@@ -236,7 +236,7 @@ class NablagenScopeProviderTest
 		val eref = NablagenPackage::eINSTANCE.varLink_MainVariable
 		for (r : ngenApp.additionalModules)
 			for (v : r.varLinks)
-				v.assertScope(eref, "maxTime, maxIter, t, δt, X, hv1, hv2, hv3, hv4, hv5, hv6, hv7")
+				v.assertScope(eref, "maxTime, maxIter, t, delta_t, X, hv1, hv2, hv3, hv4, hv5, hv6, hv7")
 	}
 
 	def private assertScope(EObject context, EReference reference, CharSequence expected)

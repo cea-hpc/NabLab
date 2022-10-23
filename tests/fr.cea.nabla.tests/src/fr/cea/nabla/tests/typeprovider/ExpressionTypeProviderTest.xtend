@@ -60,7 +60,7 @@ class ExpressionTypeProviderTest
 		'''
 		linearalgebra extension LinearAlgebra;
 
-		def solveLinearSystem: x | ℝ[x, x] × ℝ[x] → ℝ[x], (a, b) → return b;
+		def <x> real[x] solveLinearSystem(real[x, x] a, real[x] b) return b;
 		'''
 
 		val nablaModel =
@@ -70,73 +70,73 @@ class ExpressionTypeProviderTest
 		with LinearAlgebra.*;
 		with CartesianMesh2D.*;
 
-		def reduceMin, ℝ.MaxValue: ℝ, (a, b) → return a;
+		red real reduceMin(real.MaxValue) (a, b) : return a;
 
-		def perp: ℝ[2] → ℝ[2], (a) → return a;
-		def norm: x | ℝ[x] → ℝ, (a) → return 1.0;
+		def real[2] perp(real[2] a) return a;
+		def <x> real norm(real[x] a) return 1.0;
 
-		let ℝ X_EDGE_LENGTH = 1.;
-		let ℝ Y_EDGE_LENGTH = X_EDGE_LENGTH;
-		let ℕ X_EDGE_ELEMS = 2;
-		let ℕ Y_EDGE_ELEMS = 2;
-		let ℝ option_stoptime = 0.1;
-		let ℕ option_max_iterations = 500;
+		let real X_EDGE_LENGTH = 1.;
+		let real Y_EDGE_LENGTH = X_EDGE_LENGTH;
+		let int X_EDGE_ELEMS = 2;
+		let int Y_EDGE_ELEMS = 2;
+		let real option_stoptime = 0.1;
+		let int option_max_iterations = 500;
 
-		let ℕ a1 = 1;
-		let ℕ a2 = 9 % 4;
-		let ℕ a3 = ℕ.MinValue;
-		let ℕ[2] a4 = [1,1];
-		let ℕ[2] a5 = ℕ[2](1);
-		let ℕ[2,2] a6 = ℕ[2,2](1);
-		let ℕ a7 = a6[0,2];
+		let int a1 = 1;
+		let int a2 = 9 % 4;
+		let int a3 = int.MinValue;
+		let int[2] a4 = [1,1];
+		let int[2] a5 = int[2](1);
+		let int[2,2] a6 = int[2,2](1);
+		let int a7 = a6[0,2];
 
-		let ℾ b1 = true;
-		let ℾ b2 = false || true;
-		let ℾ b3 = false && true;
-		let ℾ b4 = (a1 == 2);
-		let ℾ b5 = (a1 != 2);
-		let ℾ b6 = (a1 > 2);
-		let ℾ b7 = (a1 >= 2);
-		let ℾ b8 = (a1 <= 2);
-		let ℾ b9 = (a1 < 2);
-		let ℾ b10 = !(a1 < 2);
+		let bool b1 = true;
+		let bool b2 = false || true;
+		let bool b3 = false && true;
+		let bool b4 = (a1 == 2);
+		let bool b5 = (a1 != 2);
+		let bool b6 = (a1 > 2);
+		let bool b7 = (a1 >= 2);
+		let bool b8 = (a1 <= 2);
+		let bool b9 = (a1 < 2);
+		let bool b10 = !(a1 < 2);
 
-		let ℝ c1 = 2.0 + 1.0;
-		let ℝ c2 = 2.0 - 1.0;
-		let ℝ c3 = 2.0 * 1.0;
-		let ℝ c4 = 2.0 / 1.0;
-		let ℝ c5 = -c1;
-		let ℝ c6 = ℝ.MaxValue;
-		let ℝ c7 = 1.0e-10;
+		let real c1 = 2.0 + 1.0;
+		let real c2 = 2.0 - 1.0;
+		let real c3 = 2.0 * 1.0;
+		let real c4 = 2.0 / 1.0;
+		let real c5 = -c1;
+		let real c6 = real.MaxValue;
+		let real c7 = 1.0e-10;
 
-		let ℝ[2] d1 = [1.0, 2.0];
-		let ℝ[2] d2 = perp(d1);
-		let ℝ[2] d3 = ℝ[2](0.);
+		let real[2] d1 = [1.0, 2.0];
+		let real[2] d2 = perp(d1);
+		let real[2] d3 = real[2](0.);
 
-		let ℝ[3] e = [1.0, 2.0, 3.0];
+		let real[3] e = [1.0, 2.0, 3.0];
 
-		let ℝ[2,2] g = [ [1.0, 0.0], [0.0, 1.0] ];
-		let ℝ h = (a1 == 1 ? 0.0 : 1.0);
+		let real[2,2] g = [ [1.0, 0.0], [0.0, 1.0] ];
+		let real h = (a1 == 1 ? 0.0 : 1.0);
 
-		ℝ t;
-		ℝ[2] X{nodes};
+		real t;
+		real[2] X{nodes};
 
-		ℕ s{cells};
-		ℝ u{cells}, v{cells};
-		ℝ[2] w{cells, nodesOfCell};
-		ℝ x{cells, nodesOfCell};
-		ℝ α{cells, cells}; 
+		int s{cells};
+		real u{cells}, v{cells};
+		real[2] w{cells, nodesOfCell};
+		real x{cells, nodesOfCell};
+		real alpha{cells, cells}; 
 
 		iterate n while (n < option_max_iterations);
 
-		UpdateU: u^{n+1} = solveLinearSystem(α, u^{n});
+		UpdateU: u^{n+1} = solveLinearSystem(alpha, u^{n});
 
-		ComputeV: ∀j∈cells(), v{j} = reduceMin{r∈nodesOfCell(j)}(x{j,r} + s{j});
+		ComputeV: forall j in cells(), v{j} = reduceMin{r in nodesOfCell(j)}(x{j,r} + s{j});
 
-		ComputeX: ∀ j∈cells(), {
-			let ℝ ee = 1.0;
+		ComputeX: forall  j in cells(), {
+			let real ee = 1.0;
 			u^{n}{j} = ee * 4;
-			∀r∈nodesOfCell(j), x{j,r} = norm(w{j,r});
+			forall r in nodesOfCell(j), x{j,r} = norm(w{j,r});
 		}
 		'''
 

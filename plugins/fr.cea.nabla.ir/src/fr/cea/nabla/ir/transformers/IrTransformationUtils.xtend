@@ -19,7 +19,6 @@ class IrTransformationUtils
 	static def getCommonTransformation(boolean replaceAllReductions)
 	{
 		#[
-			new ReplaceUtf8Chars,
 			new ReplaceReductions(replaceAllReductions),
 			new ReplaceAffectations,
 			new CreateArrayOperators,

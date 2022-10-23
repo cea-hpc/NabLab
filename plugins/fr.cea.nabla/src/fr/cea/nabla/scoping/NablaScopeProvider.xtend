@@ -13,8 +13,9 @@ import com.google.inject.Inject
 import fr.cea.nabla.NablaModuleExtensions
 import fr.cea.nabla.nabla.ArgOrVar
 import fr.cea.nabla.nabla.Function
+import fr.cea.nabla.nabla.FunctionInTypeDeclaration
 import fr.cea.nabla.nabla.FunctionOrReduction
-import fr.cea.nabla.nabla.FunctionTypeDeclaration
+import fr.cea.nabla.nabla.FunctionReturnTypeDeclaration
 import fr.cea.nabla.nabla.Instruction
 import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.Interval
@@ -151,7 +152,7 @@ class NablaScopeProvider extends AbstractDeclarativeScopeProvider
 		{
 			FunctionOrReduction, NablaModule:
 				IScope::NULLSCOPE
-			FunctionTypeDeclaration:
+			FunctionInTypeDeclaration, FunctionReturnTypeDeclaration:
 				Scopes::scopeFor((context.eContainer as Function).variables)
 			ReductionTypeDeclaration:
 				Scopes::scopeFor((context.eContainer as Reduction).variables)

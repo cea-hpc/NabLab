@@ -13,35 +13,35 @@ with CartesianMesh2D.*;
 with Assert.*;
 
 // Simulation options
-let ℝ maxTime = 0.1;
-let ℕ maxIter = 500;
-let ℝ δt = 1.0;
-let ℝ t = 0.0;
-ℝ[2] X{nodes};
+let real maxTime = 0.1;
+let int maxIter = 500;
+let real delta_t = 1.0;
+let real t = 0.0;
+real[2] X{nodes};
 
 // options
-ℕ optDim;
-ℝ[2] optVect1;
-ℝ[2] optVect2;
-let ℝ[2] optVect3 = optVect1 + optVect2;
+int optDim;
+real[2] optVect1;
+real[2] optVect2;
+let real[2] optVect3 = optVect1 + optVect2;
 
 // const expr var
-let ℕ constexprDim = 2;
-let ℝ[constexprDim] constexprVec = [1.1, 1.1];
+let int constexprDim = 2;
+let real[constexprDim] constexprVec = [1.1, 1.1];
 
 // variables with default value but overwritten in TestJob
-let ℝ[constexprDim] varVec = [1.0, 1.0];
+let real[constexprDim] varVec = [1.0, 1.0];
  
 // variables needing allocation
-ℕ checkDynamicDim;
-ℝ[optDim] dynamicVec;
+int checkDynamicDim;
+real[optDim] dynamicVec;
 
 DynamicVecInitialization: 
 {
-	let ℕ cpt = 0;
+	let int cpt = 0;
 	// two loops to check the first one is multithread
-	∀i∈[0;optDim[, dynamicVec[i] = 3.3; 
-	∀i∈[0;optDim[, cpt = cpt + 1; 
+	forall i in [0;optDim[, dynamicVec[i] = 3.3; 
+	forall i in [0;optDim[, cpt = cpt + 1; 
 	checkDynamicDim = cpt;
 }
 
@@ -50,31 +50,31 @@ VarVecInitialization: varVec = [2.2, 2.2];
 Oracle:
 {
 	// options with default values
-	let ℾ testOptDim = assertEquals(2, optDim);
-	let ℾ testOptVect1 = assertEquals([1.0, 1.0], optVect1);
-	let ℾ testOptVect2 = assertEquals([2.0, 2.0], optVect2);
-	let ℾ testOptVect3 = assertEquals([3.0, 3.0], optVect3);
+	let bool testOptDim = assertEquals(2, optDim);
+	let bool testOptVect1 = assertEquals([1.0, 1.0], optVect1);
+	let bool testOptVect2 = assertEquals([2.0, 2.0], optVect2);
+	let bool testOptVect3 = assertEquals([3.0, 3.0], optVect3);
 
 	// const expr var
-	let ℾ testConstexprDim = assertEquals(2, constexprDim);
-	let ℾ testConstexprVec = assertEquals([1.1, 1.1], constexprVec);
+	let bool testConstexprDim = assertEquals(2, constexprDim);
+	let bool testConstexprVec = assertEquals([1.1, 1.1], constexprVec);
 
 	// variables with default value but overwritten in InitJob
-	let ℾ testVarVec = assertEquals([2.2, 2.2], varVec);
+	let bool testVarVec = assertEquals([2.2, 2.2], varVec);
 
 	// variables needing allocation
-	let ℾ testDynamicVecLength = assertEquals(2, checkDynamicDim);
+	let bool testDynamicVecLength = assertEquals(2, checkDynamicDim);
 	
 	// NOT YET IMPLEMENTED : BaseTypeConstants on a dynamic size
-	// let ℾ testDynamicVec = assertEquals(dynamicVec, ℝ[optDim](3.3));
-	∀i∈[0;optDim[, 
-		let ℾ testDynamicVec = assertEquals(3.3, dynamicVec[i]); 
+	// let bool testDynamicVec = assertEquals(dynamicVec, real[optDim](3.3));
+	forall i in [0;optDim[, 
+		let bool testDynamicVec = assertEquals(3.3, dynamicVec[i]); 
 
 	// local variables
-//	∀ r∈nodes(), 
+//	forall  r in nodes(), 
 //	{
-//		let ℕ localNbCells = card(cellsOfNode(r));
-//		let ℝ[localNbCells] tmp = ℝ[localNbCells](0.0);
-//		let ℾ testTmp = assertEquals(tmp, ℝ[localNbCells](0.0));
+//		let int localNbCells = card(cellsOfNode(r));
+//		let real[localNbCells] tmp = real[localNbCells](0.0);
+//		let bool testTmp = assertEquals(tmp, real[localNbCells](0.0));
 //	}
 }

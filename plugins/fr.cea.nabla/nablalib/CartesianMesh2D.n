@@ -11,30 +11,30 @@ mesh extension CartesianMesh2D;
 
 itemtypes { node, cell, face }
 
-connectivity nodes: → {node};
-connectivity cells: → {cell};
-connectivity faces: → {face};
+connectivity {node} nodes();
+connectivity {cell} cells();
+connectivity {face} faces();
 
-connectivity nodesOfCell: cell → {node};
-connectivity nodesOfFace: face → {node};
-connectivity firstNodeOfFace: face → node;
-connectivity secondNodeOfFace: face → node;
+connectivity {node} nodesOfCell(cell);
+connectivity {node} nodesOfFace(face);
+connectivity node firstNodeOfFace(face);
+connectivity node secondNodeOfFace(face);
 
-connectivity cellsOfNode: node → {cell};
-connectivity cellsOfFace: face → {cell};
-connectivity neighbourCells: cell → {cell};
-connectivity commonFace: cell × cell → face;
-connectivity backCell: face → cell;
-connectivity frontCell: face → cell;
+connectivity {cell} cellsOfNode(node);
+connectivity {cell} cellsOfFace(face);
+connectivity {cell} neighbourCells(cell);
+connectivity face commonFace(cell , cell);
+connectivity cell backCell(face);
+connectivity cell frontCell(face);
 
-connectivity topCell: cell → cell;
-connectivity bottomCell: cell → cell;
-connectivity leftCell: cell → cell;
-connectivity rightCell: cell → cell;
+connectivity cell topCell(cell);
+connectivity cell bottomCell(cell);
+connectivity cell leftCell(cell);
+connectivity cell rightCell(cell);
 
-connectivity facesOfCell: cell → {face};
-connectivity topFaceOfCell: cell → face;
-connectivity bottomFaceOfCell: cell → face;
-connectivity leftFaceOfCell: cell → face;
-connectivity rightFaceOfCell: cell → face;
+connectivity {face} facesOfCell(cell);
+connectivity face topFaceOfCell(cell);
+connectivity face bottomFaceOfCell(cell);
+connectivity face leftFaceOfCell(cell);
+connectivity face rightFaceOfCell(cell);
 

@@ -256,12 +256,12 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 
 		with CartesianMesh2D.*;
 
-		let ℕ maxIter = 200;
-		let ℝ maxTime = 1.0;
+		let int maxIter = 200;
+		let real maxTime = 1.0;
 
-		ℝ t, δt;
-		ℝ[2] X{nodes};
-		ℝ e{nodes};
+		real t, delta_t;
+		real[2] X{nodes};
+		real e{nodes};
 
 		iterate n while (n+1 < maxIter && t^{n+1} < maxTime);
 	'''
@@ -270,7 +270,7 @@ class NewNablaProjectWizard extends Wizard implements INewWizard
 	'''
 		extension «extensionName»;
 
-		def myMatVectProduct: x, y  | ℝ[x,y] × ℝ[y] → ℝ[x];
+		def myMatVectProduct: x, y  | real[x,y] , real[y] : real[x];
 	'''
 
 	private def getManifestContent()

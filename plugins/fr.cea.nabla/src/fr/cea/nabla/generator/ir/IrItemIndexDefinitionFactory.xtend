@@ -42,15 +42,15 @@ class IrItemIndexDefinitionFactory
 	 * Return the list of needed ItemIndexDefinition instructions for 'item'.
 	 *
 	 * An index must be declare when an ItemRef instance references 'item',
-	 * - directly, for instance rNodes in ∀r∈nodes(), X{nodes}.
-	 * - by its arguments, for instance : ∀r∈nodes(), ∀j∈cellsOfNode(r), Cjr{j,r}
+	 * - directly, for instance rNodes in forall r in nodes(), X{nodes}.
+	 * - by its arguments, for instance : forall r in nodes(), forall j in cellsOfNode(r), Cjr{j,r}
 	 *   rNodesOfCellJ can not be created after r iterator declaration because
 	 *   its value depends of j which is not yet defined. Consequently, rNodesOfCellJ
 	 *   has to be defined when j is declared because the arguments needed to get
 	 *   its value depends on j, i.e. rNodesOfCellJ = mesh.getNodesOfCell(jId).
 	 *
 	 * The indexExists lambda is used when createIndexDefinitions is called from iterator.
-	 * For instance, in ∀r∈nodes(), X{nodes}, rNodes index is needed because
+	 * For instance, in forall r in nodes(), X{nodes}, rNodes index is needed because
 	 * it is referenced by X but rNodes is automatically created by r iterator.
 	 * indexExists will then return true to prevent from creating the index two times.
 	 */

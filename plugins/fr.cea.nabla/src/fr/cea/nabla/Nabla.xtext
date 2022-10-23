@@ -45,7 +45,7 @@ Import: 'with' importedNamespace=QualifiedNameWithWildcard ';';
 
 /* ITEMS & CONNECTIVITES *********************************/
 ItemType: name=ID;
-Connectivity: 'connectivity' name=ID ':' (inTypes+=[ItemType|QualifiedName] ('\u00D7' inTypes+=[ItemType|QualifiedName])*)? '\u2192' ((multiple?='{' returnType=[ItemType|QualifiedName] '}') | returnType=[ItemType|QualifiedName]) ';';
+Connectivity: 'connectivity' ((multiple?='{' returnType=[ItemType|QualifiedName] '}') | returnType=[ItemType|QualifiedName]) name=ID '(' (inTypes+=[ItemType|QualifiedName] (',' inTypes+=[ItemType|QualifiedName])*)? ')' ';';
 
 /* JOBS & INSTRUCTIONS ***********************************/
 Job: name=ID ':' instruction=Instruction;
@@ -56,7 +56,7 @@ Instruction: VarDeclaration | InstructionBlock | Loop | Affectation | If | ItemS
 SimpleVarDeclaration: 'let' type=BaseType variable=SimpleVar '=' value=Expression ';';
 VarGroupDeclaration: type=BaseType variables+=Var (',' variables+=Var)* ';';
 InstructionBlock: '{' instructions+=Instruction+ '}';
-Loop: '\u2200' iterationBlock=IterationBlock ',' body=Instruction;
+Loop: 'forall' iterationBlock=IterationBlock ',' body=Instruction;
 Affectation: left=ArgOrVarRef '=' right=Expression ';';
 If: 'if' '(' condition=Expression ')' then=Instruction (=>'else' else=Instruction)?;
 ItemSet: 'set' name=ID '=' value=ConnectivityCall ';';
@@ -69,8 +69,8 @@ Exit: 'exit' message=STRING ';';
 IterationBlock: SpaceIterator | Interval;
 Container: ItemSetRef | ConnectivityCall;
 ItemSetRef: target=[ItemSet];
-SpaceIterator: name=ID (',' counter=SimpleVar)? '\u2208' container=Container;
-Interval: index=SimpleVar '\u2208' '[' from=INT ';' nbElems=Expression '[';  // from forced to 0 for the moment
+SpaceIterator: name=ID (',' counter=SimpleVar)? 'in' container=Container;
+Interval: index=SimpleVar 'in' '[' from=INT ';' nbElems=Expression '[';  // from forced to 0 for the moment
 ConnectivityCall: connectivity=[Connectivity|QualifiedName] '('(group=STRING | args+=SpaceIteratorRef (',' args+=SpaceIteratorRef)* )?')';
 SpaceIteratorRef: target=[SpaceIterator] (('+' inc=INT) | ('-' dec=INT))?;
 
@@ -93,9 +93,10 @@ ConnectivityVar: name=ID '{' supports+=[Connectivity|QualifiedName] (',' support
 
 /* FONCTIONS / REDUCTIONS ********************************/
 FunctionOrReduction: Function | Reduction;
-Function: 'def' name=ID ':' (variables+=SimpleVar (',' variables+=SimpleVar)* '|')? typeDeclaration=FunctionTypeDeclaration ((',' '(' (inArgs+=Arg (',' inArgs+=Arg)*)? ')' '\u2192' body=Instruction) | external?=';');
-Reduction: 'def' name=ID ',' seed=Expression ':' (variables+=SimpleVar (',' variables+=SimpleVar)* '|')? typeDeclaration=ReductionTypeDeclaration ',' '(' inArgs+=Arg ',' inArgs+=Arg ')' '\u2192' body=Instruction;
-FunctionTypeDeclaration: (inTypes+=BaseType ('\u00D7' inTypes+=BaseType)*)? '\u2192' returnType=BaseType;
+Function: 'def' ('<'variables+=SimpleVar (',' variables+=SimpleVar)* '>')? returnTypeDeclaration=FunctionReturnTypeDeclaration name=ID '('(intypesDeclaration+=FunctionInTypeDeclaration inArgs+=Arg (',' intypesDeclaration+=FunctionInTypeDeclaration inArgs+=Arg)*)?')' (body=Instruction | external?=';');
+Reduction: 'red' ('<'variables+=SimpleVar (',' variables+=SimpleVar)* '>')? typeDeclaration=ReductionTypeDeclaration name=ID '(' seed=Expression ')' ('(' inArgs+=Arg (',' inArgs+=Arg)* ')')? ':' body=Instruction;
+FunctionReturnTypeDeclaration: returnType=BaseType;
+FunctionInTypeDeclaration: inTypes=BaseType;
 ReductionTypeDeclaration: type=BaseType;
 Arg: name=ID;
 
@@ -154,7 +155,7 @@ ArgOrVarRef: target=[ArgOrVar]
 
 
 /* TYPES *************************************************/
-enum PrimitiveType: Int='\u2115' | Real='\u211D' | Bool='\u213E';
+enum PrimitiveType: Int='int' | Real='real' | Bool='bool';
 BaseType: primitive=PrimitiveType ('[' sizes+=Expression (',' sizes+=Expression)* ']')?;
 
 
@@ -164,6 +165,4 @@ QualifiedNameWithWildcard: QualifiedName '.*'?;
 
 //terminal REAL returns ecore::EDouble: ('0'..'9')+ '.' ('0'..'9')+ ('e'('+'|'-')('0'..'9')+)?;
 terminal REAL returns ecore::EDouble: INT '.' (INT (('e'|'E')('+'|'-')INT)?)?;
-@Override 
-terminal ID: '^'? ('a'..'z'|'A'..'Z'|'\u0391'..'\u03C9'|'\u220F'..'\u221A'|'_') ('a'..'z'|'A'..'Z'|'\u0391'..'\u03C9'|'0'..'9'|'_')*;
 

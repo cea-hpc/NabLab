@@ -56,7 +56,7 @@ class JobInterpreter
 
 			if (caller.main)
 			{
-				val log = String.format(Locale::ENGLISH, "START ITERATION %1$s: %2$5d - t: %3$.5f - deltat: %4$.5f",
+				val log = String.format(Locale::ENGLISH, "START ITERATION %1$s: %2$5d - t: %3$.5f - delta_t: %4$.5f",
 						iterationCounter.name,
 						iteration,
 						context.getReal(context.ir.currentTimeVariable),
@@ -96,7 +96,7 @@ class JobInterpreter
 		if (caller.main)
 		{
 			// force a last trace and output at the end
-			val log = String.format(Locale::ENGLISH, "FINAL TIME: %1$.5f - deltat: %2$.5f",
+			val log = String.format(Locale::ENGLISH, "FINAL TIME: %1$.5f - delta_t: %2$.5f",
 					context.getReal(context.ir.currentTimeVariable),
 					context.getReal(context.ir.timeStepVariable))
 			context.logFine(log)

@@ -53,7 +53,7 @@ private:
 	// other attributes
 	static constexpr Real m_maxTime = 0.1;
 	static constexpr Int32 m_maxIter = 500;
-	static constexpr Real m_deltat = 1.0;
+	static constexpr Real m_delta_t = 1.0;
 	static constexpr Real m_t = 0.0;
 	Real2 m_optVect3;
 	static constexpr Int32 m_constexprDim = 2;

@@ -55,23 +55,23 @@ class IteratorExtensionsTest
 
 		with CartesianMesh2D.*;
 
-		def ∑, 0.0: ℝ, (a, b) → return a + b;
-		def ∑, 0.0: x | ℝ[x], (a, b) → return a + b;
-		def ∑, 0.0: x | ℝ[x, x], (a, b) → return a + b;
+		red real sum(0.0) (a, b) return a + b;
+		red <x> real[x] sum(0.0) (a, b)  return a + b;
+		red <x> real[x, x] sum(0.0) (a, b)  return a + b;
 
 		«simulationVariables»
 
-		ℝ x{cells}, f{cells}, Cjr{cells,nodesOfCell};
-		ℝ[2] X{nodes}, u{cells};
-		ℝ surface{faces};
-		ℝ a;
+		real x{cells}, f{cells}, Cjr{cells,nodesOfCell};
+		real[2] X{nodes}, u{cells};
+		real surface{faces};
+		real a;
 
-		J1: ∀j∈cells(), x{j} = 2.0;
-		J2: ∀j∈cells(), ∀r∈nodesOfCell(j), Cjr{j,r} = 3.0;
-		J3: ∀r∈nodes(), ∀j∈cellsOfNode(r), Cjr{j,r} = 1.0;
-		J4: ∀j∈cells(), u{j} = 0.5 * ∑{r∈nodesOfCell(j)}(X{r} - X{r+1});
-		J5: ∀j1∈cells(), f{j1} = a * ∑{j2∈neighbourCells(j1)}(∑{cf∈commonFace(j1,j2)}((x{j2}-x{j1}) / surface{cf}));
-		J6: ∀j1∈cells(), ∀j2∈neighbourCells(j1), ∀cf∈commonFace(j1,j2), let ℝ bidon = (x{j2}-x{j1}) / surface{cf});
+		J1: forall j in cells(), x{j} = 2.0;
+		J2: forall j in cells(), forall r in nodesOfCell(j), Cjr{j,r} = 3.0;
+		J3: forall r in nodes(), forall j in cellsOfNode(r), Cjr{j,r} = 1.0;
+		J4: forall j in cells(), u{j} = 0.5 * sum{r in nodesOfCell(j)}(X{r} - X{r+1});
+		J5: forall j1 in cells(), f{j1} = a * sum{j2 in neighbourCells(j1)}(sum{cf in commonFace(j1,j2)}((x{j2}-x{j1}) / surface{cf}));
+		J6: forall j1 in cells(), forall j2 in neighbourCells(j1), forall cf in commonFace(j1,j2), let real bidon = (x{j2}-x{j1}) / surface{cf});
 		'''
 
 		val rs = resourceSetProvider.get

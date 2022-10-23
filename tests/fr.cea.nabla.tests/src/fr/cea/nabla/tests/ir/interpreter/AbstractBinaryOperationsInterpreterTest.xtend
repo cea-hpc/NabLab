@@ -29,22 +29,22 @@ abstract class AbstractBinaryOperationsInterpreterTest
 		val model =
 		'''
 		«testModule»
-		let ℾ b1 = true || false; // -> true
-		let ℾ b2 = true || true; // -> true
-		let ℾ b3 = false || false; // -> false
+		let bool b1 = true || false; // -> true
+		let bool b2 = true || true; // -> true
+		let bool b3 = false || false; // -> false
 
-		let ℾ b4 = true && false; // -> false
-		let ℾ b5 = true && true; // -> true
-		let ℾ b6 = false && false; // -> false
+		let bool b4 = true && false; // -> false
+		let bool b5 = true && true; // -> true
+		let bool b6 = false && false; // -> false
 
-		let ℾ b7 = true == false; // -> false
-		let ℾ b8 = true != false; // -> true
-		let ℾ b9 = true >= false; // -> true
-		let ℾ b10 = true <= false; // -> false
-		let ℾ b11 = true > false; // -> true
-		let ℾ b12 = true < false; // -> false
+		let bool b7 = true == false; // -> false
+		let bool b8 = true != false; // -> true
+		let bool b9 = true >= false; // -> true
+		let bool b10 = true <= false; // -> false
+		let bool b11 = true > false; // -> true
+		let bool b12 = true < false; // -> false
 
-		ℝ[2] X{nodes};
+		real[2] X{nodes};
 		'''
 		assertGetValueOfNV0Bool_NV0Bool(model)
 	}
@@ -55,32 +55,32 @@ abstract class AbstractBinaryOperationsInterpreterTest
 		val model =
 		'''
 		«testModule»
-		let ℾ b1 = 1 == 2; // -> false
-		let ℾ b2 = 1 == 1; // -> true
+		let bool b1 = 1 == 2; // -> false
+		let bool b2 = 1 == 1; // -> true
 
-		let ℾ b3 = 1 != 2; // -> true
-		let ℾ b4 = 2 != 2; // -> false
+		let bool b3 = 1 != 2; // -> true
+		let bool b4 = 2 != 2; // -> false
 
-		let ℾ b5 = 1 >= 2; // -> false
-		let ℾ b6 = 2 >= 2; // -> true
+		let bool b5 = 1 >= 2; // -> false
+		let bool b6 = 2 >= 2; // -> true
 
-		let ℾ b7 = 1 <= 2; // -> true
-		let ℾ b8 = 2 <= 2; // -> true
+		let bool b7 = 1 <= 2; // -> true
+		let bool b8 = 2 <= 2; // -> true
 
-		let ℾ b9 = 1 > 2; // -> false
-		let ℾ b10 = 2 > 1; // -> true
+		let bool b9 = 1 > 2; // -> false
+		let bool b10 = 2 > 1; // -> true
 
-		let ℾ b11 = 1 < 2; // -> true
-		let ℾ b12 = 2 < 1; // -> false
+		let bool b11 = 1 < 2; // -> true
+		let bool b12 = 2 < 1; // -> false
 
-		let ℕ n1 = 1 + 2; // -> 3
-		let ℕ n2 = 2 - 1; // -> 1
-		let ℕ n3 = 2 * 3; // -> 6
-		let ℕ n4 = 6 / 3; // -> 2
-		let ℕ n5 = 7 / 3; // -> 2
-		let ℕ n6 = 7 % 3; // -> 1
+		let int n1 = 1 + 2; // -> 3
+		let int n2 = 2 - 1; // -> 1
+		let int n3 = 2 * 3; // -> 6
+		let int n4 = 6 / 3; // -> 2
+		let int n5 = 7 / 3; // -> 2
+		let int n6 = 7 % 3; // -> 1
 
-		ℝ[2] X{nodes};
+		real[2] X{nodes};
 		'''
 		assertGetValueOfNV0Int_NV0Int(model)
 	}
@@ -91,31 +91,31 @@ abstract class AbstractBinaryOperationsInterpreterTest
 		val model =
 		'''
 		«testModule»
-		let ℾ b1 = 1 == 2.; // -> false
-		let ℾ b2 = 1 == 1; // -> true
+		let bool b1 = 1 == 2.; // -> false
+		let bool b2 = 1 == 1; // -> true
 
-		let ℾ b3 = 1 != 2.; // -> true
-		let ℾ b4 = 2 != 2.; // -> false
+		let bool b3 = 1 != 2.; // -> true
+		let bool b4 = 2 != 2.; // -> false
 
-		let ℾ b5 = 1 >= 2.; // -> false
-		let ℾ b6 = 2 >= 2.; // -> true
+		let bool b5 = 1 >= 2.; // -> false
+		let bool b6 = 2 >= 2.; // -> true
 
-		let ℾ b7 = 1 <= 2.; // -> true
-		let ℾ b8 = 2 <= 2.; // -> true
+		let bool b7 = 1 <= 2.; // -> true
+		let bool b8 = 2 <= 2.; // -> true
 
-		let ℾ b9 = 1 > 2.; // -> false
-		let ℾ b10 = 2 > 1.; // -> true
+		let bool b9 = 1 > 2.; // -> false
+		let bool b10 = 2 > 1.; // -> true
 
-		let ℾ b11 = 1 < 2.; // -> true
-		let ℾ b12 = 2 < 1.; // -> false
+		let bool b11 = 1 < 2.; // -> true
+		let bool b12 = 2 < 1.; // -> false
 
-		let ℝ n1 = 1 + 2.; // -> 3.
-		let ℝ n2 = 2 - 1.; // -> 1.
-		let ℝ n3 = 2 * 3.; // -> 6.
-		let ℝ n4 = 6 / 3.; // -> 2.
-		let ℝ n5 = 7 / 2.; // -> 3.5.
+		let real n1 = 1 + 2.; // -> 3.
+		let real n2 = 2 - 1.; // -> 1.
+		let real n3 = 2 * 3.; // -> 6.
+		let real n4 = 6 / 3.; // -> 2.
+		let real n5 = 7 / 2.; // -> 3.5.
 
-		ℝ[2] X{nodes};
+		real[2] X{nodes};
 		'''
 		assertGetValueOfNV0Int_NV0Real(model)
 	}
@@ -126,11 +126,11 @@ abstract class AbstractBinaryOperationsInterpreterTest
 		val model =
 		'''
 		«testModule»
-		let ℕ[2] n1 = [1,2];
-		let ℕ[2] n2 = 3 + n1;
-		let ℕ[2] n3 = 3 * n1;
+		let int[2] n1 = [1,2];
+		let int[2] n2 = 3 + n1;
+		let int[2] n3 = 3 * n1;
 
-		ℝ[2] X{nodes};
+		real[2] X{nodes};
 
 		InitT: t=0.0;
 		'''

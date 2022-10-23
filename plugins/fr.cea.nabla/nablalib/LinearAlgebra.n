@@ -13,25 +13,25 @@ linearalgebra extension LinearAlgebra;
  *  Initial guess API is not provided for JAVA backend
  */
 // Solves Ax=b
-def solveLinearSystem: x | ℝ[x, x] × ℝ[x] → ℝ[x];
+def <x> real[x] solveLinearSystem(real[x, x] A, real[x] b);
 
 // Solves Ax=b, given x0
-def solveLinearSystem: x | ℝ[x, x] × ℝ[x] × ℝ[x] → ℝ[x];
+def <x> real[x] solveLinearSystem(real[x, x] A, real[x] b, real[x] x0);
 
 // Solves C^-1(Ax)=C^-1 b
-def solveLinearSystem: x | ℝ[x, x] × ℝ[x] × ℝ[x, x] → ℝ[x];
+def <x> real[x] solveLinearSystem(real[x, x] A, real[x] b, real[x, x] C);
 
 // Solves Ax=b, given x0 with iterations threshold
-def solveLinearSystem: x | ℝ[x, x] × ℝ[x] × ℝ[x] × ℕ → ℝ[x];
+def <x> real[x] solveLinearSystem(real[x, x] A, real[x] b, real[x] x0, int maxIterations);
 
 // Solves C^-1(Ax)=C^-1 b, given x0
-def solveLinearSystem: x | ℝ[x, x] × ℝ[x] × ℝ[x, x] × ℝ[x] → ℝ[x];
+def <x> real[x] solveLinearSystem(real[x, x] A, real[x] b, real[x, x] C, real[x] x0);
 
 // Solves Ax=b, given x0 with iterations and tolerance thresholds 
-def solveLinearSystem: x | ℝ[x, x] × ℝ[x] × ℝ[x] × ℕ × ℝ → ℝ[x];
+def <x> real[x] solveLinearSystem(real[x, x] A, real[x] b, real[x] x0, int maxIterations , real tolerance);
 
 // Solves C^-1(Ax)=C^-1 b, given x0 with iterations threshold
-def solveLinearSystem: x | ℝ[x, x] × ℝ[x] × ℝ[x, x] × ℝ[x] × ℕ → ℝ[x];
+def <x> real[x] solveLinearSystem(real[x, x] A, real[x] b, real[x, x] C, real[x] x0, int maxIterations );
 
 // Solves C^-1(Ax)=C^-1 b, given x0 with iterations and tolerance thresholds
-def solveLinearSystem: x | ℝ[x, x] × ℝ[x] × ℝ[x, x] × ℝ[x] × ℕ × ℝ → ℝ[x];
+def <x> real[x] solveLinearSystem(real[x, x] A, real[x] b, real[x, x] C, real[x] x0, int maxIterations , real tolerance);

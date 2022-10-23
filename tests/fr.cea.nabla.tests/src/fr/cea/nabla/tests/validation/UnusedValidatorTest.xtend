@@ -51,7 +51,7 @@ class UnusedValidatorTest
 		val moduleOk = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			ℝ u, v;
+			real u, v;
 			iterate n while(true);
 			ComputeU: u^{n+1} = u^{n} + 6.0;
 			''')
@@ -65,7 +65,7 @@ class UnusedValidatorTest
 		val moduleKo = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			ℝ a;
+			real a;
 			''')
 		Assert.assertNotNull(moduleKo)
 
@@ -76,7 +76,7 @@ class UnusedValidatorTest
 		val moduleOk = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			ℝ a;
+			real a;
 			ComputeA: a = 1.;
 			''')
 
@@ -93,7 +93,7 @@ class UnusedValidatorTest
 			'''
 			«emptyTestModule»
 			with CartesianMesh2D.*;
-			UpdateX: ∀r1∈nodes(), ∀r2∈nodes(), X{r1} = X{r1} + 1;
+			UpdateX: forall r1 in nodes(), forall r2 in nodes(), X{r1} = X{r1} + 1;
 			''', rs)
 		Assert.assertNotNull(moduleKo1)
 		moduleKo1.assertWarning(NablaPackage.eINSTANCE.spaceIterator,
@@ -104,8 +104,8 @@ class UnusedValidatorTest
 			'''
 			«emptyTestModule»
 			with CartesianMesh2D.*;
-			ℝ[2] X{nodes};
-			UpdateX: ∀r1∈nodes(), ∀r2∈topLeftNode(), X{r1} = X{r1} + 1;
+			real[2] X{nodes};
+			UpdateX: forall r1 in nodes(), forall r2 in topLeftNode(), X{r1} = X{r1} + 1;
 			''', rs)
 		Assert.assertNotNull(moduleKo1)
 		moduleKo2.assertWarning(NablaPackage.eINSTANCE.spaceIterator,
@@ -116,8 +116,8 @@ class UnusedValidatorTest
 			'''
 			«emptyTestModule»
 			with CartesianMesh2D.*;
-			ℝ[2] X{nodes};
-			UpdateX: ∀r1∈nodes(), X{r1} = X{r1} + 1;
+			real[2] X{nodes};
+			UpdateX: forall r1 in nodes(), X{r1} = X{r1} + 1;
 			''', rs)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoIssues
@@ -130,7 +130,7 @@ class UnusedValidatorTest
 			'''
 			«emptyTestModule»
 			with CartesianMesh2D.*;
-			ℝ[2] X{nodes};
+			real[2] X{nodes};
 			'''
 		val rs = resourceSetProvider.get
 		parseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DPath), rs)
@@ -139,7 +139,7 @@ class UnusedValidatorTest
 			«model»
 			UpdateX: {
 				set myNodes = nodes();
-				∀r1∈nodes(), X{r1} = X{r1} + 1;
+				forall r1 in nodes(), X{r1} = X{r1} + 1;
 			}
 			''', rs)
 		Assert.assertNotNull(moduleKo)
@@ -152,7 +152,7 @@ class UnusedValidatorTest
 			«model»
 			UpdateX: {
 				set myNodes = nodes();
-				∀r1∈myNodes, X{r1} = X{r1} + 1;
+				forall r1 in myNodes, X{r1} = X{r1} + 1;
 			}
 			''', rs)
 		Assert.assertNotNull(moduleOk)
@@ -165,8 +165,8 @@ class UnusedValidatorTest
 		val modelKo = 
 			'''
 			«emptyTestModule»
-			def f: x | ℝ[x] → ℝ, (a) → return 1.0;
-			let ℝ[2] orig = [0.0 , 0.0];
+			def <x> real f(real[x] a) return 1.0;
+			let real[2] orig = [0.0 , 0.0];
 		'''
 		val moduleKo = parseHelper.parse(modelKo)
 		Assert.assertNotNull(moduleKo)
@@ -180,7 +180,7 @@ class UnusedValidatorTest
 			«modelKo»
 			ComputeV:
 			{ 
-				let ℝ v = f(orig);
+				let real v = f(orig);
 				v = v + 1;
 			}
 			'''
@@ -196,9 +196,9 @@ class UnusedValidatorTest
 			'''
 			«emptyTestModule»
 			with CartesianMesh2D.*;
-			def sum, 0.0: ℝ[2], (a, b) → return a+b;
-			let ℝ[2] orig = [0.0 , 0.0];
-			ℝ[2] X{nodes};
+			red real[2] sum(0.0) (a, b) : return a+b;
+			let real[2] orig = [0.0 , 0.0];
+			real[2] X{nodes};
 			'''
 		val rs = resourceSetProvider.get
 		parseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DPath), rs)
@@ -212,7 +212,7 @@ class UnusedValidatorTest
 		val moduleOk = parseHelper.parse(
 			'''
 			«modelKo»
-			ComputeU: orig = sum{r∈nodes()}(X{r});
+			ComputeU: orig = sum{r in nodes()}(X{r});
 			''', rs)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoIssues

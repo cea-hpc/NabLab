@@ -49,18 +49,18 @@ class NablaScopeProviderTest
 		'''
 		«testModule»
 
-		ℝ a{cells}, b{cells, nodesOfCell}, c{cells};
-		ℝ d{nodes};
+		real a{cells}, b{cells, nodesOfCell}, c{cells};
+		real d{nodes};
 
-		j1 : ∀j ∈ cells(), a{j} = 0.0;
-		j2 : ∀j ∈ cells(), c{j} = 0.25 * ∑{r ∈ nodes()}(d{r});
-		j3 : ∀j ∈ cells(), ∀r ∈ nodesOfCell(j), b{j,r} = 0.;
-		j4 : ∀j ∈ cells(), a{j} = ∑{r∈nodesOfCell(j)}(b{j, r});
-		j5 : let ℝ z = ∑{j∈cells()}(∑{r∈nodesOfCell(j)}(X{r}));
-		j6 : ∀j ∈ cells(), ∀ rj ∈ rightCell(j), ∀ lj ∈ leftCell(j), c{j} = a{rj};
-		j7 : ∀j ∈ cells(), {
+		j1 : forall j in cells(), a{j} = 0.0;
+		j2 : forall j in cells(), c{j} = 0.25 * sum{r in nodes()}(d{r});
+		j3 : forall j in cells(), forall r in nodesOfCell(j), b{j,r} = 0.;
+		j4 : forall j in cells(), a{j} = sum{r in nodesOfCell(j)}(b{j, r});
+		j5 : let real z = sum{j in cells()}(sum{r in nodesOfCell(j)}(X{r}));
+		j6 : forall j in cells(), forall  rj in rightCell(j), forall  lj in leftCell(j), c{j} = a{rj};
+		j7 : forall j in cells(), {
 				set rjset = rightCell(j);
-				∀ rj ∈ rjset, c{j} = a{rj};
+				forall  rj in rjset, c{j} = a{rj};
 			}
 		'''
 		val rs = resourceSetProvider.get
@@ -110,17 +110,17 @@ class NablaScopeProviderTest
 		val model = 
 		'''
 		«testModule»
-		ℝ a{cells}, b{cells, nodesOfCell}, c{cells};
-		ℝ d{nodes};
+		real a{cells}, b{cells, nodesOfCell}, c{cells};
+		real d{nodes};
 
-		j1 : ∀j ∈ cells(), a{j} = 0.0;
-		j2 : ∀j ∈ cells(), c{j} = 0.25 * ∑{r ∈ nodes()}(d{r});
-		j3 : ∀j ∈ cells(), ∀r ∈ nodesOfCell(j), b{j,r} = 0.;
-		j4 : ∀j ∈ cells(), a{j} = ∑{r∈nodesOfCell(j)}(b{j, r});
-		j5 : ∀j ∈ cells(), ∀ rj ∈ rightCell(j), ∀ lj ∈ leftCell(j), c{j} = a{rj} + a{lj};
-		j6 : ∀j ∈ cells(), {
+		j1 : forall j in cells(), a{j} = 0.0;
+		j2 : forall j in cells(), c{j} = 0.25 * sum{r in nodes()}(d{r});
+		j3 : forall j in cells(), forall r in nodesOfCell(j), b{j,r} = 0.;
+		j4 : forall j in cells(), a{j} = sum{r in nodesOfCell(j)}(b{j, r});
+		j5 : forall j in cells(), forall  rj in rightCell(j), forall  lj in leftCell(j), c{j} = a{rj} + a{lj};
+		j6 : forall j in cells(), {
 				set rjset = rightCell(j);
-				∀ rj ∈ rjset, c{j} = a{rj};
+				forall  rj in rjset, c{j} = a{rj};
 			}
 		'''
 
@@ -198,16 +198,16 @@ class NablaScopeProviderTest
 		val model =
 		'''
 		«testModule»
-		ℝ a{cells}, b{cells, nodesOfCell};
+		real a{cells}, b{cells, nodesOfCell};
 
-		j1 : ∀j ∈ cells(), a{j} = 0.0;
+		j1 : forall j in cells(), a{j} = 0.0;
 		j2 : {
 			set myCells = cells();
-			∀j ∈ myCells, a{j} = 0.0;
+			forall j in myCells, a{j} = 0.0;
 		}
-		j3 : ∀j ∈ cells(), {
+		j3 : forall j in cells(), {
 			set nOfCells = nodesOfCell(j);
-			a{j} = ∑{r∈nOfCells}(b{j, r});
+			a{j} = sum{r in nOfCells}(b{j, r});
 		}
 		'''
 		val rs = resourceSetProvider.get
@@ -235,37 +235,37 @@ class NablaScopeProviderTest
 		val model =
 		'''
 		«testModule»
-		let ℝ a = 4.0;
-		let ℝ b1 = 0.0;
-		let ℝ b2 = b1;
-		ℝ[2] X{nodes};
-		ℝ c1 {cells}, c2 {cells};
+		let real a = 4.0;
+		let real b1 = 0.0;
+		let real b2 = b1;
+		real[2] X{nodes};
+		real c1 {cells}, c2 {cells};
 
 		iterate n while (n > 4), k while (n > 4 && k < 2);
 
-		j1: ∀ j∈cells(), {
+		j1: forall  j in cells(), {
 			c1{j} = a * 2;
-			let ℝ d = 6.0;
+			let real d = 6.0;
 			c2{j} = 2 * d;
-			∀ r, countr ∈ nodesOfCell(j), {
-				let ℝ e = 3.3;
-				ℝ f;
+			forall  r, countr in nodesOfCell(j), {
+				let real e = 3.3;
+				real f;
 				f = e + 1.0;
 			}
 		}
 
 		j2: {
-			ℝ[4] o;
-			ℝ[4, 2] p;
-			∀ i∈[0;4[, 
+			real[4] o;
+			real[4, 2] p;
+			forall  i in [0;4[, 
 			{
 				o[i] = 4.0;
-				∀ j∈[0;2[, p[i,j] = 3.0;
+				forall  j in [0;2[, p[i,j] = 3.0;
 			}
 		}
 
 		j3: {
-			let ℝ z = ∑{j∈cells()}(∑{r∈nodesOfCell(j)}(∑{i∈[0;2[}(X{r}[i])));
+			let real z = sum{j in cells()}(sum{r in nodesOfCell(j)}(sum{i in [0;2[}(X{r}[i])));
 			z = z + 1;
 		}
 		'''
@@ -279,40 +279,40 @@ class NablaScopeProviderTest
 		val iterators = module.iteration.eAllContents.filter(TimeIterator)
 		val nRefInCondOfN = iterators.head.condition.eAllContents.filter(ArgOrVarRef).head
 		Assert.assertNotNull(nRefInCondOfN)
-		nRefInCondOfN.assertScope(eref, "δt, t, a, b1, b2, X, c1, c2, n")
+		nRefInCondOfN.assertScope(eref, "delta_t, t, a, b1, b2, X, c1, c2, n")
 		val nRefInCondOfK = iterators.last.condition.eAllContents.filter(ArgOrVarRef).head
 		Assert.assertNotNull(nRefInCondOfK)
-		nRefInCondOfK.assertScope(eref, "δt, t, a, b1, b2, X, c1, c2, n, k")
+		nRefInCondOfK.assertScope(eref, "delta_t, t, a, b1, b2, X, c1, c2, n, k")
 
 		val aDeclaration = module.getVarByName("a").eContainer as SimpleVarDeclaration
-		aDeclaration.assertScope(eref, "δt, t")
+		aDeclaration.assertScope(eref, "delta_t, t")
 
 		val b1Declaration = module.getVarByName("b1").eContainer as SimpleVarDeclaration
-		b1Declaration.assertScope(eref, "δt, t, a")
+		b1Declaration.assertScope(eref, "delta_t, t, a")
 
 		val b2Declaration = module.getVarByName("b2").eContainer as SimpleVarDeclaration
-		b2Declaration.assertScope(eref, "δt, t, a, b1")
+		b2Declaration.assertScope(eref, "delta_t, t, a, b1")
 		
 		val j1 = module.getJobByName("j1")
 		val affectationc1 = j1.getVarAffectationByName("c1")
-		affectationc1.assertScope(eref, "δt, t, a, b1, b2, X, c1, c2, n, k")
+		affectationc1.assertScope(eref, "delta_t, t, a, b1, b2, X, c1, c2, n, k")
 
 		val affectationc2 = j1.getVarAffectationByName("c2")
-		affectationc2.assertScope(eref, "d, " + "δt, t, a, b1, b2, X, c1, c2, n, k")
+		affectationc2.assertScope(eref, "d, " + "delta_t, t, a, b1, b2, X, c1, c2, n, k")
 
 		val affectationf = j1.getVarAffectationByName("f")
-		affectationf.assertScope(eref, "e, f, countr, d, " + "δt, t, a, b1, b2, X, c1, c2, n, k")
+		affectationf.assertScope(eref, "e, f, countr, d, " + "delta_t, t, a, b1, b2, X, c1, c2, n, k")
 
 		val j2 = module.getJobByName("j2")
 		val affectationn = j2.getVarAffectationByName("o")
-		affectationn.assertScope(eref, "i, o, p, " + "δt, t, a, b1, b2, X, c1, c2, n, k")
+		affectationn.assertScope(eref, "i, o, p, " + "delta_t, t, a, b1, b2, X, c1, c2, n, k")
 
 		val affectationm = j2.getVarAffectationByName("p")
-		affectationm.assertScope(eref, "j, i, o, p, " + "δt, t, a, b1, b2, X, c1, c2, n, k")
+		affectationm.assertScope(eref, "j, i, o, p, " + "delta_t, t, a, b1, b2, X, c1, c2, n, k")
 
 		val j3 = module.getJobByName("j3")
 		val j3_xvarref = j3.instruction.eAllContents.filter(ArgOrVarRef).findFirst[x | x.target.name == 'X']
-		j3_xvarref.assertScope(eref, "i, " + "δt, t, a, b1, b2, X, c1, c2, n, k")
+		j3_xvarref.assertScope(eref, "i, " + "delta_t, t, a, b1, b2, X, c1, c2, n, k")
 	}
 
 	@Test
@@ -321,7 +321,7 @@ class NablaScopeProviderTest
 		val model =
 		'''
 		«emptyTestModule»
-		def reduceMin, ℝ.MaxValue: ℝ, (a, b) → return min(a, b);
+		red real reduceMin(real.MaxValue) (a, b) : return min(a, b);
 		'''
 		val module = parseHelper.parse(model)
 		Assert.assertNotNull(module)
@@ -339,20 +339,20 @@ class NablaScopeProviderTest
 		val model =
 		'''
 		«emptyTestModule»
-		def f: x,y | ℝ[x] × ℝ[y] → ℝ[x+y], (a, b) →
+		def <x,y> real[x+y] f(real[x] a, real[y] b) 
 		{
-			let ℝ c = 2.0;
+			let real c = 2.0;
 			c = a * 2.0;
 			return c + 4.0;
 		}
-		def g: → ℝ, () →
+		def real g()
 		{
-			ℝ[4] n;
-			ℝ[4, 2] m;
-			∀ i∈[0;4[, 
+			real[4] n;
+			real[4, 2] m;
+			forall  i in [0;4[, 
 			{
 				n[i] = 4.0;
-				∀ j∈[0;2[, m[i,j] = 3.0;
+				forall  j in [0;2[, m[i,j] = 3.0;
 			}
 			return 4.0;
 		}
@@ -389,25 +389,25 @@ class NablaScopeProviderTest
 		val model =
 		'''
 		«testModule»
-		ℝ[2] X{nodes};
-		ℝ c1 {cells};
+		real[2] X{nodes};
+		real c1 {cells};
 
-		j1: ∀ j∈cells(), {
+		j1: forall  j in cells(), {
 			c1{j} = 2.0;
 		}
 
 		j2: {
-			ℝ[4] n;
-			ℝ[4, 2] m;
-			∀ i∈[0;4[, 
+			real[4] n;
+			real[4, 2] m;
+			forall  i in [0;4[, 
 			{
 				n[i] = 4.0;
-				∀ j∈[0;2[, m[i,j] = 3.0;
+				forall  j in [0;2[, m[i,j] = 3.0;
 			}
 		}
 
 		j3: {
-			let ℝ z = ∑{j∈cells()}(∑{r∈nodesOfCell(j)}(∑{k∈[0;1[}(X{r}[k+1])));
+			let real z = sum{j in cells()}(sum{r in nodesOfCell(j)}(sum{k in [0;1[}(X{r}[k+1])));
 			z = z + 1;
 		}
 		'''
@@ -418,28 +418,28 @@ class NablaScopeProviderTest
 		val eref = NablaPackage::eINSTANCE.argOrVarRef_Target
 
 		val d1Decl = module.declarations.get(1)
-		d1Decl.assertScope(eref, "δt")
+		d1Decl.assertScope(eref, "delta_t")
 
 		val d2Decl = module.declarations.get(2)
-		d2Decl.assertScope(eref, "δt, t")
+		d2Decl.assertScope(eref, "delta_t, t")
 
 		val d3Decl = module.declarations.get(3)
-		d3Decl.assertScope(eref, "δt, t, X")
+		d3Decl.assertScope(eref, "delta_t, t, X")
 
 		val j1 = module.getJobByName("j1")
 		val affectationc1 = j1.getVarAffectationByName("c1")
-		affectationc1.assertScope(eref, "δt, t, X, c1")
+		affectationc1.assertScope(eref, "delta_t, t, X, c1")
 
 		val j2 = module.getJobByName("j2")
 		val affectationn = j2.getVarAffectationByName("n")
-		affectationn.left.assertScope(eref, "i, n, m, " + "δt, t, X, c1")
+		affectationn.left.assertScope(eref, "i, n, m, " + "delta_t, t, X, c1")
 
 		val affectationm = j2.getVarAffectationByName("m")
-		affectationm.left.assertScope(eref, "j, i, n, m, " + "δt, t, X, c1")
+		affectationm.left.assertScope(eref, "j, i, n, m, " + "delta_t, t, X, c1")
 
 		val j3 = module.getJobByName("j3")
 		val j3_xvarref = j3.instruction.eAllContents.filter(ArgOrVarRef).findFirst[x | x.target.name == 'X']
-		j3_xvarref.assertScope(eref, "k, " + "δt, t, X, c1")
+		j3_xvarref.assertScope(eref, "k, " + "delta_t, t, X, c1")
 	}
 
 	@Test
@@ -448,19 +448,19 @@ class NablaScopeProviderTest
 		val model =
 		'''
 		«emptyTestModule»
-		def f: x,y | ℝ[x] × ℝ[y] → ℝ[x+y], (a, b) →
+		def <x,y> real[x+y] f(real[x] a, real[y] b)
 		{
-			ℝ[x,y] c;
+			real[x,y] c;
 			return c;
 		}
-		def g: → ℝ, () →
+		def real g()
 		{
-			ℝ[4] n;
-			ℝ[4, 2] m;
-			∀ i∈[0;4[, 
+			real[4] n;
+			real[4, 2] m;
+			forall  i in [0;4[, 
 			{
 				n[i] = 4.0;
-				∀ j∈[0;2[, m[i,j] = 3.0;
+				forall  j in [0;2[, m[i,j] = 3.0;
 			}
 			return 4.0;
 		}

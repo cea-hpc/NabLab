@@ -13,49 +13,49 @@ with Math.*;
 with CartesianMesh2D.*;
 
 // Simulation options
-ℝ stopTime;
-ℕ maxIterations;
+real stopTime;
+int maxIterations;
 
-let ℝ u0 = 1.0;
-let ℝ[2] vectOne = ℝ[2](1.0);
-let ℝ δt = 0.001;
-ℝ t;
-ℝ[2] X{nodes}, Xc{cells}; // Position of nodes and cells center of gravity 
-ℝ u{cells}; // Temperature
-ℝ V{cells}; // Volume of cells
-ℝ D{cells}; // Cell centered conductivity
-ℝ faceLength{faces}, faceConductivity{faces};
-ℝ α{cells, cells};
+let real u0 = 1.0;
+let real[2] vectOne = real[2](1.0);
+let real delta_t = 0.001;
+real t;
+real[2] X{nodes}, Xc{cells}; // Position of nodes and cells center of gravity 
+real u{cells}; // Temperature
+real V{cells}; // Volume of cells
+real D{cells}; // Cell centered conductivity
+real faceLength{faces}, faceConductivity{faces};
+real alpha{cells, cells};
 
 iterate n while (t^{n+1} < stopTime && n+1 < maxIterations);
 
 InitTime: t^{n=0} = 0.0;
 
-InitXc: ∀c∈cells(), Xc{c} = 0.25 * ∑{p∈nodesOfCell(c)}(X{p});  // Only valid on parallelograms
+InitXc: forall c in cells(), Xc{c} = 0.25 * sum{p in nodesOfCell(c)}(X{p});  // Only valid on parallelograms
 
-InitU: ∀c∈cells(),
+InitU: forall c in cells(),
 	if (norm(Xc{c} - vectOne) < 0.5)
 		u^{n}{c} = u0;
 	else 
 		u^{n}{c} = 0.0; // Initial circle in the center with value u0
 
-InitD: ∀c∈cells(), D{c} = 1.0;
+InitD: forall c in cells(), D{c} = 1.0;
 
-ComputeDeltaTn: δt = Min{c∈cells()}(V{c}/D{c}) * 0.24;
-ComputeV: ∀c∈cells(), V{c} = 0.5 * ∑{p∈nodesOfCell(c)}(det(X{p}, X{p+1}));
-ComputeFaceLength: ∀f∈faces(), faceLength{f} = 0.5 * ∑{p∈nodesOfFace(f)}(norm(X{p} - X{p+1}));
-ComputeFaceConductivity: ∀f∈faces(), faceConductivity{f} = 2.0 * ∏{c1∈cellsOfFace(f)}(D{c1}) / ∑{c2∈cellsOfFace(f)}(D{c2});
+ComputeDeltaTn: delta_t = Min{c in cells()}(V{c}/D{c}) * 0.24;
+ComputeV: forall c in cells(), V{c} = 0.5 * sum{p in nodesOfCell(c)}(det(X{p}, X{p+1}));
+ComputeFaceLength: forall f in faces(), faceLength{f} = 0.5 * sum{p in nodesOfFace(f)}(norm(X{p} - X{p+1}));
+ComputeFaceConductivity: forall f in faces(), faceConductivity{f} = 2.0 * prod{c1 in cellsOfFace(f)}(D{c1}) / sum{c2 in cellsOfFace(f)}(D{c2});
 
 // Assembling of the diffusion matrix
-ComputeAlphaCoeff: ∀c∈cells(), {
-	let ℝ αDiag = 0.0;
-	∀d∈neighbourCells(c), ∀f∈commonFace(c,d), {
-		let ℝ αExtraDiag = δt / V{c} * (faceLength{f} *  faceConductivity{f}) / norm(Xc{c} - Xc{d});
-		α{c, d} = αExtraDiag;
-		αDiag = αDiag + αExtraDiag;
+ComputeAlphaCoeff: forall c in cells(), {
+	let real alpha_Diag = 0.0;
+	forall d in neighbourCells(c), forall f in commonFace(c,d), {
+		let real alpha_ExtraDiag = delta_t / V{c} * (faceLength{f} *  faceConductivity{f}) / norm(Xc{c} - Xc{d});
+		alpha{c, d} = alpha_ExtraDiag;
+		alpha_Diag = alpha_Diag + alpha_ExtraDiag;
 	}
-	α{c, c} = 1 - αDiag;
+	alpha{c, c} = 1 - alpha_Diag;
 }
 
-UpdateU: ∀c∈cells(), u^{n+1}{c} = α{c, c} * u^{n}{c} + ∑{d∈neighbourCells(c)} (α{c, d} * u^{n}{d});
-ComputeTn: t^{n+1} = t^{n} + δt;
+UpdateU: forall c in cells(), u^{n+1}{c} = alpha{c, c} * u^{n}{c} + sum{d in neighbourCells(c)} (alpha{c, d} * u^{n}{d});
+ComputeTn: t^{n+1} = t^{n} + delta_t;

@@ -101,7 +101,7 @@ class GitCommitMessageTest
 	@Test
 	def void testTitle()
 	{
-		Assume.assumeTrue(testUtils.runningOnCI())
+		Assume.assumeTrue(testUtils.isPush())
 		val lines = this.runCommand()
 		Assertions.assertThat(lines.size()).isGreaterThan(5)
 
@@ -131,7 +131,7 @@ class GitCommitMessageTest
 	@Test
 	def void testSignedOffBy()
 	{
-		Assume.assumeTrue(testUtils.runningOnCI())
+		Assume.assumeTrue(testUtils.isPush())
 		val lines = this.runCommand()
 		Assertions.assertThat(lines).filteredOn(line | line.trim().startsWith(SIGNED_OFF_BY_PREFIX)).isNotEmpty()
 	}

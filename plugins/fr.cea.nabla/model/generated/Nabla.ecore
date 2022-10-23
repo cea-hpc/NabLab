@@ -41,11 +41,11 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Connectivity">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="multiple" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="returnType" eType="#//ItemType"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="inTypes" unique="false"
         upperBound="-1" eType="#//ItemType"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="multiple" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="returnType" eType="#//ItemType"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Job">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -176,29 +176,33 @@
         upperBound="-1" eType="#//Connectivity"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FunctionOrReduction">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="variables" upperBound="-1"
         eType="#//SimpleVar" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="inArgs" upperBound="-1"
         eType="#//Arg" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="body" eType="#//Instruction"
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Function" eSuperTypes="#//FunctionOrReduction">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="typeDeclaration" eType="#//FunctionTypeDeclaration"
-        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="returnTypeDeclaration"
+        eType="#//FunctionReturnTypeDeclaration" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="intypesDeclaration" upperBound="-1"
+        eType="#//FunctionInTypeDeclaration" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="external" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Reduction" eSuperTypes="#//FunctionOrReduction">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="seed" eType="#//Expression"
-        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="typeDeclaration" eType="#//ReductionTypeDeclaration"
         containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="seed" eType="#//Expression"
+        containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FunctionTypeDeclaration">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="inTypes" upperBound="-1"
-        eType="#//BaseType" containment="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FunctionReturnTypeDeclaration">
     <eStructuralFeatures xsi:type="ecore:EReference" name="returnType" eType="#//BaseType"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FunctionInTypeDeclaration">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="inTypes" eType="#//BaseType"
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ReductionTypeDeclaration">
@@ -225,9 +229,9 @@
         eType="#//Expression" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="PrimitiveType">
-    <eLiterals name="Int" literal="ℕ"/>
-    <eLiterals name="Real" value="1" literal="ℝ"/>
-    <eLiterals name="Bool" value="2" literal="ℾ"/>
+    <eLiterals name="Int" literal="int"/>
+    <eLiterals name="Real" value="1" literal="real"/>
+    <eLiterals name="Bool" value="2" literal="bool"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="BaseType">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="primitive" eType="#//PrimitiveType"/>

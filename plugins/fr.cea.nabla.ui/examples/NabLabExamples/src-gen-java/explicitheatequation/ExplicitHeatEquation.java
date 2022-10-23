@@ -29,7 +29,7 @@ public final class ExplicitHeatEquation
 	int maxIterations;
 	static final double u0 = 1.0;
 	static final double[] vectOne = new double[] {1.0, 1.0};
-	double deltat;
+	double delta_t;
 	double t_n;
 	double t_nplus1;
 	double t_n0;
@@ -74,7 +74,7 @@ public final class ExplicitHeatEquation
 		final JsonElement valueof_maxIterations = options.get("maxIterations");
 		assert(valueof_maxIterations.isJsonPrimitive());
 		maxIterations = valueof_maxIterations.getAsJsonPrimitive().getAsInt();
-		deltat = 0.001;
+		delta_t = 0.001;
 		X = new double[nbNodes][2];
 		Xc = new double[nbCells][2];
 		u_n = new double[nbCells];
@@ -123,12 +123,12 @@ public final class ExplicitHeatEquation
 
 	/**
 	 * Job computeTn called @1.0 in executeTimeLoopN method.
-	 * In variables: deltat, t_n
+	 * In variables: delta_t, t_n
 	 * Out variables: t_nplus1
 	 */
 	protected void computeTn()
 	{
-		t_nplus1 = t_n + deltat;
+		t_nplus1 = t_n + delta_t;
 	}
 
 	/**
@@ -234,7 +234,7 @@ public final class ExplicitHeatEquation
 	/**
 	 * Job computeDeltaTn called @2.0 in simulate method.
 	 * In variables: D, V
-	 * Out variables: deltat
+	 * Out variables: delta_t
 	 */
 	protected void computeDeltaTn()
 	{
@@ -248,7 +248,7 @@ public final class ExplicitHeatEquation
 			},
 			(r1, r2) -> minR0(r1, r2)
 		);
-		deltat = reduction0 * 0.24;
+		delta_t = reduction0 * 0.24;
 	}
 
 	/**
@@ -315,7 +315,7 @@ public final class ExplicitHeatEquation
 
 	/**
 	 * Job computeAlphaCoeff called @3.0 in simulate method.
-	 * In variables: V, Xc, deltat, faceConductivity, faceLength
+	 * In variables: V, Xc, delta_t, faceConductivity, faceLength
 	 * Out variables: alpha
 	 */
 	protected void computeAlphaCoeff()
@@ -323,7 +323,7 @@ public final class ExplicitHeatEquation
 		IntStream.range(0, nbCells).parallel().forEach(cCells ->
 		{
 			final int cId = cCells;
-			double alphaDiag = 0.0;
+			double alpha_Diag = 0.0;
 			{
 				final int[] neighbourCellsC = mesh.getNeighbourCells(cId);
 				final int nbNeighbourCellsC = neighbourCellsC.length;
@@ -333,12 +333,12 @@ public final class ExplicitHeatEquation
 					final int dCells = dId;
 					final int fId = mesh.getCommonFace(cId, dId);
 					final int fFaces = fId;
-					final double alphaExtraDiag = deltat / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / norm(operatorSub(Xc[cCells], Xc[dCells]));
-					alpha[cCells][dCells] = alphaExtraDiag;
-					alphaDiag = alphaDiag + alphaExtraDiag;
+					final double alpha_ExtraDiag = delta_t / V[cCells] * (faceLength[fFaces] * faceConductivity[fFaces]) / norm(operatorSub(Xc[cCells], Xc[dCells]));
+					alpha[cCells][dCells] = alpha_ExtraDiag;
+					alpha_Diag = alpha_Diag + alpha_ExtraDiag;
 				}
 			}
-			alpha[cCells][cCells] = 1 - alphaDiag;
+			alpha[cCells][cCells] = 1 - alpha_Diag;
 		});
 	}
 
@@ -354,7 +354,7 @@ public final class ExplicitHeatEquation
 		do
 		{
 			n++;
-			System.out.printf("START ITERATION n: %5d - t: %5.5f - deltat: %5.5f\n", n, t_n, deltat);
+			System.out.printf("START ITERATION n: %5d - t: %5.5f - delta_t: %5.5f\n", n, t_n, delta_t);
 			if (n >= lastDump + outputPeriod)
 				dumpVariables(n);
 		
@@ -371,7 +371,7 @@ public final class ExplicitHeatEquation
 			});
 		} while (continueLoop);
 		
-		System.out.printf("FINAL TIME: %5.5f - deltat: %5.5f\n", t_n, deltat);
+		System.out.printf("FINAL TIME: %5.5f - delta_t: %5.5f\n", t_n, delta_t);
 		dumpVariables(n+1);
 	}
 

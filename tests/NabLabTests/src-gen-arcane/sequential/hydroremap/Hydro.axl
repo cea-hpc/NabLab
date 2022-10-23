@@ -84,7 +84,7 @@
 		<simple name="max-time" type="real" minOccurs="1" maxOccurs="1">
 			<description/>
 		</simple>
-		<simple name="deltat" type="real" minOccurs="1" maxOccurs="1">
+		<simple name="delta-t" type="real" minOccurs="1" maxOccurs="1">
 			<description/>
 		</simple>
 		<service-instance name="r1" type="IRemap">

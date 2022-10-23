@@ -50,14 +50,14 @@ class BasicValidatorTest
 
 			itemtypes { node }
 
-			connectivity nodes: → {node};
+			connectivity {node} nodes();
 			''', rs)
 
 		val moduleKo = parseHelper.parse(
 			'''
 			module Test;
-			ℝ a{CartesianMesh2D.nodes};
-			ℝ b{BidonMesh.nodes};
+			real a{CartesianMesh2D.nodes};
+			real b{BidonMesh.nodes};
 			''', rs)
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.nablaRoot,
@@ -70,8 +70,8 @@ class BasicValidatorTest
 			'''
 			module Test;
 			with CartesianMesh2D.*;
-			ℝ a{nodes};
-			ℝ b{nodes};
+			real a{nodes};
+			real b{nodes};
 			''', rs)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -85,10 +85,10 @@ class BasicValidatorTest
 		val moduleKo = parseHelper.parse(
 			'''
 			extension Test;
-			def g: → ℝ, () →
+			def real g() 
 			{
-				ℝ[4] n;
-				∀ i∈[1;3[, n[i] = 0.0;
+				real[4] n;
+				forall  i in [1;3[, n[i] = 0.0;
 				return 4.0;
 			}
 			''')
@@ -99,10 +99,10 @@ class BasicValidatorTest
 		val moduleOk = parseHelper.parse(
 			'''
 			extension Test;
-			def g: → ℝ, () →
+			def real g() 
 			{
-				ℝ[4] n;
-				∀ i∈[0;3[, n[i] = 0.0;
+				real[4] n;
+				forall  i in [0;3[, n[i] = 0.0;
 				return 4.0;
 			}
 			''')
@@ -116,40 +116,40 @@ class BasicValidatorTest
 		val moduleKo1 = parseHelper.parse(
 			'''
 			extension Test;
-			def g: → ℝ, () →
+			def real g() 
 			{
-				ℝ[4] n;
-				∀ i∈[0;3.2[, n[i] = 0.0;
+				real[4] n;
+				forall  i in [0;3.2[, n[i] = 0.0;
 				return 4.0;
 			}
 			''')
 		moduleKo1.assertError(NablaPackage.eINSTANCE.interval,
 			BasicValidator::TYPE_EXPRESSION_TYPE,
-			getTypeMsg("ℝ", "ℕ"))
+			getTypeMsg("real", "int"))
 
 		val moduleKo2 = parseHelper.parse(
 			'''
 			extension Test;
-			def g: → ℝ, () →
+			def real g() 
 			{
-				let ℝ x = 6.7;
-				ℝ[4] n;
-				∀ i∈[0;x[, n[i] = 0.0;
+				let real x = 6.7;
+				real[4] n;
+				forall  i in [0;x[, n[i] = 0.0;
 				return 4.0;
 			}
 			''')
 
 		moduleKo2.assertError(NablaPackage.eINSTANCE.interval,
 			BasicValidator::TYPE_EXPRESSION_TYPE,
-			getTypeMsg("ℝ", "ℕ"))
+			getTypeMsg("real", "int"))
 
 		val moduleOk = parseHelper.parse(
 			'''
 			extension Test;
-			def g: → ℝ, () →
+			def real g() 
 			{
-				ℝ[4] n;
-				∀ i∈[0;4[, n[i] = 0.0;
+				real[4] n;
+				forall  i in [0;4[, n[i] = 0.0;
 				return 4.0;
 			}
 			''')
@@ -165,7 +165,7 @@ class BasicValidatorTest
 		val moduleKo = parseHelper.parse(
 			'''
 			module test;
-			ℝ u;
+			real u;
 			iterate n while(true);
 			ComputeUinit: u^{n=0} = 0.0;
 			''')
@@ -176,7 +176,7 @@ class BasicValidatorTest
 		val moduleOk = parseHelper.parse(
 			'''
 			module Test;
-			ℝ u;
+			real u;
 			iterate n while(true);
 			ComputeUinit: u^{n=0} = 0.0;
 			''')
@@ -199,7 +199,7 @@ class BasicValidatorTest
 		val moduleKo = parseHelper.parse(
 			'''
 			module Test;
-			ℝ u;
+			real u;
 			iterate n while(true);
 			computeUinit: u^{n=0} = 0.0;
 			''')
@@ -211,7 +211,7 @@ class BasicValidatorTest
 		val moduleOk = parseHelper.parse(
 			'''
 			module Test;
-			ℝ u;
+			real u;
 			iterate n while(true);
 			ComputeUinit: u^{n=0} = 0.0;
 			''')
@@ -225,11 +225,11 @@ class BasicValidatorTest
 		val moduleKo = parseHelper.parse(
 			'''
 			extension Test;
-			def ∑, 0.0: ℝ, (a, b) → return a + b;
-			def G: → ℝ, () →
+			red real sum(0.0) (a, b) : return a + b;
+			def real G() 
 			{
-				ℝ[4] n;
-				∀ i∈[0;3[, n[i] = 0.0;
+				real[4] n;
+				forall  i in [0;3[, n[i] = 0.0;
 				return 4.0;
 			}
 			''')
@@ -241,11 +241,11 @@ class BasicValidatorTest
 		val moduleOk = parseHelper.parse(
 			'''
 			extension Test;
-			def ∑, 0.0: ℝ, (a, b) → return a + b;
-			def g: → ℝ, () →
+			red real sum(0.0) (a, b) : return a + b;
+			def real g() 
 			{
-				ℝ[4] n;
-				∀ i∈[0;3[, n[i] = 0.0;
+				real[4] n;
+				forall  i in [0;3[, n[i] = 0.0;
 				return 4.0;
 			}
 			''')
@@ -261,7 +261,7 @@ class BasicValidatorTest
 		val moduleKo = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			ℝ u, v;
+			real u, v;
 			iterate n while(true);
 			ComputeUinit: u^{n=1} = 0.0;
 			ComputeU: u^{n+1} = u^{n} + 6.0;
@@ -275,7 +275,7 @@ class BasicValidatorTest
 		val moduleOk = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			ℝ u, v;
+			real u, v;
 			iterate n while(true);
 			ComputeUinit: u^{n=0} = 0.0;
 			ComputeU: u^{n+1} = u^{n} + 6.0;
@@ -290,8 +290,8 @@ class BasicValidatorTest
 		val moduleKo = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			ℝ u, v;
-			ℕ ni;
+			real u, v;
+			int ni;
 			iterate n counter ni while(true);
 			ComputeU: u^{n+2} = u^{n} + 6.0;
 			''')
@@ -304,7 +304,7 @@ class BasicValidatorTest
 		val moduleOk = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			ℝ u, v;
+			real u, v;
 			iterate n while(true);
 			ComputeU: u^{n+1} = u^{n} + 6.0;
 			''')
@@ -318,8 +318,8 @@ class BasicValidatorTest
 		val moduleKo1 = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			ℝ[3] x;
-			iterate n while(∑{x∈[0;3[}(x[i]]));
+			real[3] x;
+			iterate n while(sum{x in [0;3[}(x[i]]));
 			''')
 		Assert.assertNotNull(moduleKo1)
 		moduleKo1.assertError(NablaPackage.eINSTANCE.timeIterator,
@@ -329,18 +329,18 @@ class BasicValidatorTest
 		val moduleKo2 = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			ℝ[3] x;
+			real[3] x;
 			iterate n while(x[0]);
 			''')
 		Assert.assertNotNull(moduleKo2)
 		moduleKo2.assertError(NablaPackage.eINSTANCE.timeIterator,
 			BasicValidator::CONDITION_BOOL,
-			getTypeMsg("ℝ", "ℾ"))
+			getTypeMsg("real", "bool"))
 
 		val moduleOk = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			ℝ[3] x;
+			real[3] x;
 			iterate n while(x[0] > 0.0);
 			''')
 		Assert.assertNotNull(moduleOk)
@@ -353,7 +353,7 @@ class BasicValidatorTest
 		val moduleKo1 = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			ℝ u;
+			real u;
 			iterate n while(true),
 			{
 				k while (true);
@@ -369,7 +369,7 @@ class BasicValidatorTest
 		val moduleKo2 = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			ℝ u;
+			real u;
 			iterate n while(true),
 			{
 				k while (true);
@@ -385,7 +385,7 @@ class BasicValidatorTest
 		val moduleKo3 = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			ℝ u;
+			real u;
 			iterate n while(true),
 			{
 				k while (true);
@@ -401,7 +401,7 @@ class BasicValidatorTest
 		val moduleOk = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			ℝ u;
+			real u;
 			iterate n while(true),
 			{
 				k while (true);
@@ -421,7 +421,7 @@ class BasicValidatorTest
 		val moduleKo = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			ℝ[1, 2, 3] a;
+			real[1, 2, 3] a;
 			''')
 
 		Assert.assertNotNull(moduleKo)
@@ -432,7 +432,7 @@ class BasicValidatorTest
 		val moduleOk = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			ℝ[1, 2] a;
+			real[1, 2] a;
 			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -444,26 +444,26 @@ class BasicValidatorTest
 		val moduleKo = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			let ℝ x = 2.2;
-			ℝ[1.1] a;
-			ℕ[x] b;
+			let real x = 2.2;
+			real[1.1] a;
+			int[x] b;
 			''')
 		Assert.assertNotNull(moduleKo)
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.baseType,
 			BasicValidator::TYPE_EXPRESSION_TYPE,
-			getTypeMsg("ℝ", "ℕ"))
+			getTypeMsg("real", "int"))
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.baseType,
 			BasicValidator::TYPE_EXPRESSION_TYPE,
-			getTypeMsg("ℝ", "ℕ"))
+			getTypeMsg("real", "int"))
 
 		val moduleOk = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			let ℕ x = 2;
-			ℝ[2] a;
-			ℕ[x] b;
+			let int x = 2;
+			real[2] a;
+			int[x] b;
 			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -481,9 +481,9 @@ class BasicValidatorTest
 			'''
 			«testModule»
 			let orig = [0.0 , 0.0] ;
-			ℝ[2] X{nodes};
-			IniX1: ∀j∈cells(), ∀r∈nodes(j), X{r} = orig;
-			IniX2: ∀r∈nodes(), ∀j∈nodesOfCell(r), X{r} = orig;
+			real[2] X{nodes};
+			IniX1: forall j in cells(), forall r in nodes(j), X{r} = orig;
+			IniX2: forall r in nodes(), forall j in nodesOfCell(r), X{r} = orig;
 			''', rs) as NablaModule
 		Assert.assertNotNull(moduleKo)
 
@@ -498,10 +498,10 @@ class BasicValidatorTest
 		val moduleOk =  parseHelper.parse(
 			'''
 			«testModule»
-			let ℝ[2] orig = [0.0 , 0.0];
-			ℝ[2] X{nodes};
-			IniX1: ∀j∈cells(), ∀r∈nodes(), X{r} = orig; 
-			IniX2: ∀j∈cells(), ∀r∈nodesOfCell(j), X{r} = orig; 
+			let real[2] orig = [0.0 , 0.0];
+			real[2] X{nodes};
+			IniX1: forall j in cells(), forall r in nodes(), X{r} = orig; 
+			IniX2: forall j in cells(), forall r in nodesOfCell(j), X{r} = orig; 
 			''', rs)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -515,7 +515,7 @@ class BasicValidatorTest
 		val moduleKo =  parseHelper.parse(
 			'''
 			«testModule»
-			ℝ[2] X{nodesOfCell};
+			real[2] X{nodesOfCell};
 			''', rs)
 		Assert.assertNotNull(moduleKo)
 		moduleKo.assertError(NablaPackage.eINSTANCE.connectivityVar,
@@ -525,7 +525,7 @@ class BasicValidatorTest
 		val moduleOk =  parseHelper.parse(
 			'''
 			«testModule»
-			ℝ[2] X{nodes};
+			real[2] X{nodes};
 			''', rs)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -539,8 +539,8 @@ class BasicValidatorTest
 		val moduleKo =  parseHelper.parse(
 			'''
 			«testModule»
-			ℝ[2] X{nodesOfCell};
-			ℕ toto{cells, nodesOfCell, nodes};
+			real[2] X{nodesOfCell};
+			int toto{cells, nodesOfCell, nodes};
 			''', rs)
 		Assert.assertNotNull(moduleKo)
 		moduleKo.assertError(NablaPackage.eINSTANCE.connectivityVar,
@@ -550,8 +550,8 @@ class BasicValidatorTest
 		val moduleOk =  parseHelper.parse(
 			'''
 			«testModule»
-			ℝ[2] X{nodes};
-			ℕ toto{cells, nodes, nodesOfCell};
+			real[2] X{nodes};
+			int toto{cells, nodes, nodesOfCell};
 			''', rs)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -567,8 +567,8 @@ class BasicValidatorTest
 		val moduleKo = parseHelper.parse(
 			'''
 			«testModule»
-			ℝ[2] X{cells};
-			UpdateX: ∀j1∈cells(), ∀j2∈leftCell(j1), X{j2} = X{j2-1} - 1;
+			real[2] X{cells};
+			UpdateX: forall j1 in cells(), forall j2 in leftCell(j1), X{j2} = X{j2-1} - 1;
 			''', rs)
 		Assert.assertNotNull(moduleKo)
 
@@ -579,8 +579,8 @@ class BasicValidatorTest
 		val moduleOk =  parseHelper.parse(
 			'''
 			«testModule»
-			ℝ[2] X{cells};
-			UpdateX: ∀j1∈cells(), ∀j2∈leftCell(j1), X{j2} = X{j1-1} - 1;
+			real[2] X{cells};
+			UpdateX: forall j1 in cells(), forall j2 in leftCell(j1), X{j2} = X{j1-1} - 1;
 			''', rs)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors

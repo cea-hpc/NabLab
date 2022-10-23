@@ -257,8 +257,8 @@ class BasicValidator extends UnusedValidator
 
 	/**
 	  * Order in connectivities, connectivities with their max size unknown at generation time should be first.
-	  * - Accepted variable: `ℕ toto{cells, nodes, nodesOfCell};`
-	  * - Rejected variable: `ℕ toto{cells, nodesOfCell, nodes};`
+	  * - Accepted variable: `int toto{cells, nodes, nodesOfCell};`
+	  * - Rejected variable: `int toto{cells, nodesOfCell, nodes};`
 	  */
 	@Check(CheckType.NORMAL)
 	def checkDimensionsArgOrder(ConnectivityVar it)

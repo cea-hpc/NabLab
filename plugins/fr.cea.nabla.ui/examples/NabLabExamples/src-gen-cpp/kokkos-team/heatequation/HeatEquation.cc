@@ -162,7 +162,7 @@ const std::pair<size_t, size_t> HeatEquation::computeTeamWorkRange(const member_
 
 /**
  * Job computeOutgoingFlux called @1.0 in executeTimeLoopN method.
- * In variables: V, center, deltat, surface, u_n
+ * In variables: V, center, delta_t, surface, u_n
  * Out variables: outgoingFlux
  */
 void HeatEquation::computeOutgoingFlux(const member_type& teamMember) noexcept
@@ -190,7 +190,7 @@ void HeatEquation::computeOutgoingFlux(const member_type& teamMember) noexcept
 					reduction0 = heatequationfreefuncs::sumR0(reduction0, reduction1);
 				}
 			}
-			outgoingFlux(j1Cells) = deltat / V(j1Cells) * reduction0;
+			outgoingFlux(j1Cells) = delta_t / V(j1Cells) * reduction0;
 		});
 	}
 }
@@ -231,12 +231,12 @@ void HeatEquation::computeSurface(const member_type& teamMember) noexcept
 
 /**
  * Job computeTn called @1.0 in executeTimeLoopN method.
- * In variables: deltat, t_n
+ * In variables: delta_t, t_n
  * Out variables: t_nplus1
  */
 void HeatEquation::computeTn() noexcept
 {
-	t_nplus1 = t_n + deltat;
+	t_nplus1 = t_n + delta_t;
 }
 
 /**
@@ -337,7 +337,7 @@ void HeatEquation::iniTime() noexcept
 
 /**
  * Job computeUn called @2.0 in executeTimeLoopN method.
- * In variables: deltat, f, outgoingFlux, u_n
+ * In variables: delta_t, f, outgoingFlux, u_n
  * Out variables: u_nplus1
  */
 void HeatEquation::computeUn(const member_type& teamMember) noexcept
@@ -350,7 +350,7 @@ void HeatEquation::computeUn(const member_type& teamMember) noexcept
 		Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, teamWork.second), KOKKOS_LAMBDA(const size_t& jCellsTeam)
 		{
 			int jCells(jCellsTeam + teamWork.first);
-			u_nplus1(jCells) = f(jCells) * deltat + u_n(jCells) + outgoingFlux(jCells);
+			u_nplus1(jCells) = f(jCells) * delta_t + u_n(jCells) + outgoingFlux(jCells);
 		});
 	}
 }
@@ -445,7 +445,7 @@ void HeatEquation::executeTimeLoopN() noexcept
 		// Progress
 		std::cout << progress_bar(n, maxIterations, t_n, stopTime, 25);
 		std::cout << __BOLD__ << __CYAN__ << Timer::print(
-			eta(n, maxIterations, t_n, stopTime, deltat, globalTimer), true)
+			eta(n, maxIterations, t_n, stopTime, delta_t, globalTimer), true)
 			<< __RESET__ << "\r";
 		std::cout.flush();
 	

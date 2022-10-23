@@ -62,7 +62,7 @@ private:
 	Int32 m_n;
 	static constexpr Real m_PI = 3.1415926;
 	static constexpr Real m_alpha = 1.0;
-	static constexpr Real m_deltat = 0.001;
+	static constexpr Real m_delta_t = 0.001;
 	Real m_t_n;
 	Real m_t_nplus1;
 	Real m_t_n0;

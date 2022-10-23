@@ -26,9 +26,11 @@ import fr.cea.nabla.nabla.Exit
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
-import fr.cea.nabla.nabla.FunctionTypeDeclaration
+import fr.cea.nabla.nabla.FunctionInTypeDeclaration
+import fr.cea.nabla.nabla.FunctionReturnTypeDeclaration
 import fr.cea.nabla.nabla.If
 import fr.cea.nabla.nabla.InitTimeIteratorRef
+import fr.cea.nabla.nabla.Instruction
 import fr.cea.nabla.nabla.InstructionBlock
 import fr.cea.nabla.nabla.IntConstant
 import fr.cea.nabla.nabla.Interval
@@ -46,6 +48,7 @@ import fr.cea.nabla.nabla.Not
 import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
+import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.nabla.RealConstant
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
@@ -60,14 +63,17 @@ import fr.cea.nabla.nabla.VarGroupDeclaration
 import fr.cea.nabla.nabla.VectorConstant
 import java.util.List
 import org.eclipse.emf.ecore.EObject
-import fr.cea.nabla.nabla.Instruction
 
 class LatexLabelServices
 {
+	public static val String[] GreekLetter = #['Alpha', 'Beta', 'Gamma', 'Delta', 'Epsilon', 'Zeta', 'Eta', 'Theta',
+		'Iota', 'Kappa', 'Lambda', 'Mu', 'Nu', 'Xi', 'Omicron', 'Pi', 'Rho', 'Sigma', 'Tau', 'Upsilon', 'Phi', 'Chi',
+		'Psi', 'Omega', 'alpha', 'beta', 'gamma', 'delta', 'epsilon', 'zeta', 'eta', 'theta', 'iota', 'kappa', 'lambda',
+		'mu', 'nu', 'xi', 'omicron', 'pi', 'rho', 'sigma', 'tau', 'upsilon', 'phi', 'chi', 'psi', 'omega']
 	/* JOBS & INSTRUCTIONS ***********************************/
-	static def dispatch String getLatex(Job it) { '\\texttt{' + name.pu + '} : '+ instruction?.latex }
-	static def dispatch String getLatex(SimpleVarDeclaration it) { if (value === null) variable?.name.pu else variable?.name.pu + '=' + value.latex }
-	static def dispatch String getLatex(VarGroupDeclaration it) { type.latex + '~' + variables.map[x|x.name.pu].join(', ') }
+	static def dispatch String getLatex(Job it) { '\\texttt{' + name.transformString + '} : '+ instruction?.latex }
+	static def dispatch String getLatex(SimpleVarDeclaration it) { if (value === null) variable?.name.transformString else variable?.name.transformString + '=' + value.latex }
+	static def dispatch String getLatex(VarGroupDeclaration it) { type.latex + '~' + variables.map[x|x.name.transformString].join(', ') }
 	static def dispatch String getLatex(InstructionBlock it) { '\\{ ... \\}' }
 	static def dispatch String getLatex(Loop it) { '\\forall{' + iterationBlock?.latex + '}, \\ ' + body.latex }
 	static def dispatch String getLatex(Affectation it) { left?.latex + ' = ' + right?.latex }
@@ -82,46 +88,49 @@ class LatexLabelServices
 	static def dispatch String getLatex(Exit it) { 'exit~' + message }
 
 	/* ITERATEURS ********************************************/
-	static def dispatch String getLatex(SpaceIterator it) { name.pu + '\\in ' + container?.latex }
+	static def dispatch String getLatex(SpaceIterator it) { name.transformString + '\\in ' + container?.latex }
 	static def dispatch String getLatex(Interval it) { index?.name + '\\in ' + nbElems.latex }
 	static def dispatch String getLatex(ItemSetRef it) { target?.name }
 	static def dispatch String getLatex(ConnectivityCall it)
 	{
 		if (group === null)
 			if (args.empty)
-				connectivity?.name.pu
+				connectivity?.name.transformString
 			else
-				connectivity?.name.pu + '(' + args.map[latex].join(',') + ')'
+				connectivity?.name.transformString + '(' + args.map[latex].join(',') + ')'
 		else
 			group.pu
 	}
 	static def dispatch String getLatex(SpaceIteratorRef it) 
 	{ 
-		if (inc > 0) target.name.pu + '+' + inc
-		else if (dec > 0) target.name.pu + '-' + dec
-		else target.name.pu
+		if (inc > 0) target.name.transformString + '+' + inc
+		else if (dec > 0) target.name.transformString + '-' + dec
+		else target.name.transformString
 	}
 
-	static def dispatch String getLatex(CurrentTimeIteratorRef it) { target?.name.pu }
-	static def dispatch String getLatex(InitTimeIteratorRef it) { target?.name.pu + '=' + value }
-	static def dispatch String getLatex(NextTimeIteratorRef it) { target?.name.pu + '+' + value }
+	static def dispatch String getLatex(CurrentTimeIteratorRef it) { target?.name.transformString }
+	static def dispatch String getLatex(InitTimeIteratorRef it) { target?.name.transformString + '=' + value }
+	static def dispatch String getLatex(NextTimeIteratorRef it) { target?.name.transformString + '+' + value }
 
 	/* FONCTIONS / REDUCTIONS ********************************/
-	static def dispatch String getLatex(Function it) { 'def ' + name.pu + '~:~' + getLatex(variables, typeDeclaration) }
-	static def dispatch String getLatex(Reduction it) { 'def ' + name.pu + ',~' + seed?.latex + '~:~' + getLatex(variables, typeDeclaration) }
+	static def dispatch String getLatex(Function it) { 'def~ ' + name.transformString + '~:~' + getLatex(variables, it.intypesDeclaration, it.returnTypeDeclaration) }
+	static def dispatch String getLatex(Reduction it) { 'red~ ' + name.transformString + ',~' + seed?.latex + '~:~' + getLatex(variables, typeDeclaration) }
 
-	private static def String getLatex(List<SimpleVar> vars, FunctionTypeDeclaration td)
+	private static def String getLatex(List<SimpleVar> vars, List<FunctionInTypeDeclaration> itd, FunctionReturnTypeDeclaration rtd)
 	{
 		var ret = ''
 		if (vars !== null)
 		{
-			ret += vars.map[name.pu].join(', ')
+			ret += vars.map[name.transformString].join(', ')
 			if (!vars.empty) ret += '~|~'
 		}
-		if (td !== null)
+		if (itd !== null && itd.size > 0)
 		{
-			ret += td.inTypes?.map[latex].join(' \u00D7 ')
-			ret += ' \u2192 ' + td.returnType?.latex
+			ret += itd.map[inTypes.latex].join(' \\times ')
+		}
+		if (rtd !== null)
+		{
+			ret += ' \\rightarrow ' + rtd.returnType?.latex
 		}
 		return ret
 	}
@@ -131,7 +140,7 @@ class LatexLabelServices
 		var ret = ''
 		if (vars !== null)
 		{
-			ret += vars.map[name.pu].join(', ')
+			ret += vars.map[name.transformString].join(', ')
 			if (!vars.empty) ret += '~|~'
 		}
 		if (td !== null)
@@ -156,24 +165,26 @@ class LatexLabelServices
 	static def dispatch String getLatex(IntConstant it) { value.toString }
 	static def dispatch String getLatex(RealConstant it) { value.toString }
 	static def dispatch String getLatex(BoolConstant it) { value.toString }
-	static def dispatch String getLatex(MinConstant it) { '-\u221E' }
-	static def dispatch String getLatex(MaxConstant it) { '\u221E' }
+	static def dispatch String getLatex(MinConstant it) { '-\\infty' }
+	static def dispatch String getLatex(MaxConstant it) { '\\infty' }
 
 	static def dispatch String getLatex(FunctionCall it) 
 	{ 
-		if (function.name == 'norm')
-			'\\|' + args.map[latex].join(',') + '\\|'
-		else
-			function.name.pu + '\\left(' + args.map[latex].join(',') + '\\right)' 
+		switch (function.name)
+		{
+			case 'norm': { '\\|' + args.map[latex].join(',') + '\\|' }
+			case 'sqrt': { '\\sqrt{' + args.map[latex].join(',') + '}' }
+			default: function.name.transformString + '\\left(' + args.map[latex].join(',') + '\\right)'
+		}
 	}
 
 	static def dispatch String getLatex(ReductionCall it) 
 	{ 
 		switch (reduction.name)
 		{
-			case '\u2211': { '\\sum_{' + iterationBlock.latex + '}' + arg.latexArg }
-			case '\u220F': { '\\prod_{' + iterationBlock.latex + '}' + arg.latexArg }
-			default: reduction.name.pu + '_{' + iterationBlock.latex + '}' + arg.latexArg
+			case 'sum': { '\\sum_{' + iterationBlock.latex + '}' + arg.latexArg }
+			case 'prod': { '\\prod_{' + iterationBlock.latex + '}' + arg.latexArg }
+			default: reduction.name.transformString + '_{' + iterationBlock.latex + '}' + arg.latexArg
 		}
 	}
 
@@ -183,7 +194,7 @@ class LatexLabelServices
 
 	static def dispatch String getLatex(ArgOrVarRef it)
 	{
-		var label = target.name.pu
+		var label = target.name.transformString
 		if (!timeIterators.empty) label += '^{' + timeIterators.map[x | x.latex].join(', ') + '}'
 		if (!spaceIterators.empty) label += '_{' + spaceIterators.map[x | x.latex].join('') + '}'
 		if (!indices.empty) label += '\\left[' + indices.map[x | x.latex].join(',') + '\\right]'
@@ -191,12 +202,23 @@ class LatexLabelServices
 	}
 
 	/* TYPES *************************************************/
+	static def dispatch String getLatex(PrimitiveType it)
+	{
+		switch it
+		{ 
+			case REAL : '\u211D'
+			case INT : '\u2115'
+			case BOOL : '\u213E'
+		} 
+	}
+	
 	static def dispatch String getLatex(BaseType it) 
 	{ 
+		var primUnicode = getLatex(primitive)
 		if (sizes.empty)
-			primitive.literal
+			primUnicode
 		else
-			primitive.literal + '^{' + sizes.map[x | x.latex].join(' \\times ') + '}'
+			primUnicode + '^{' + sizes.map[x | x.latex].join(' \\times ') + '}'
 	}
 
 	private static def getLatexArg(Expression it)
@@ -207,11 +229,34 @@ class LatexLabelServices
 			'\\left(' + latex + '\\right)'
 	}
 
+	private static def String transformString(String it)
+	{
+		var ret = if (!nullOrEmpty) it.convertToUnicode.pu else ''
+		return ret
+	}
+
 	// PRESERVE UNDERSCORES
 	private static def String pu(String it)
 	{
-		val ret = if (!nullOrEmpty) replaceAll('_', '\\\\_') else ''
-		return ret.replace('\u03B4', '\\delta ')
+		it.replaceAll('_', '\\\\_')
+	}
+	
+	private static def String convertToUnicode(String it)
+	{
+		var String[] splitIt = it.split("((?<=_)|(?>=_))")
+		var List<String> splitRet = newArrayList
+		val ite = splitIt.iterator
+		while(ite.hasNext)
+		{
+			val subString = ite.next
+			if (GreekLetter.contains(substring(0, subString.length()-1)) && subString.substring(subString.length() -1) == '_' && ite.hasNext)
+				splitRet.add('\\'+ subString.substring(0, subString.length()-1) + ' ')
+			else if(GreekLetter.contains(subString)) 
+				splitRet.add('\\'+ subString)
+			else
+				splitRet.add(subString)
+		}
+		return splitRet.join
 	}
 
 	/** Return the highest displayable object, Job, Instruction or Expression */

@@ -51,11 +51,11 @@ class ExpressionValidatorTest
 		val moduleKo = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			let ℝ[2] one = [1.0, 1.0];
-			let ℕ int = ℕ(1.2);
-			let ℾ bool = ℾ(1);
-			let ℝ real = ℝ(true);
-			let ℝ[2] realOne = ℝ[2](one);
+			let real[2] one = [1.0, 1.0];
+			let int int_ = int(1.2);
+			let bool bool_ = bool(1);
+			let real real_ = real(true);
+			let real[2] realOne = real[2](one);
 			''')
 		Assert.assertNotNull(moduleKo)
 		Assert.assertEquals(4, moduleKo.validate.filter(i | i.severity == Severity.ERROR).size)
@@ -75,15 +75,15 @@ class ExpressionValidatorTest
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.baseTypeConstant,
 			ExpressionValidator::BASE_TYPE_CONSTANT_VALUE,
-			getTypeMsg("ℝ²", PrimitiveType::REAL.literal))
+			getTypeMsg("real²", PrimitiveType::REAL.literal))
 
 		val moduleOk = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			let ℕ int = ℕ(1);
-			let ℾ bool = ℾ(true);
-			let ℝ real = ℝ(1.2);
-			let ℝ[2] realOne = ℝ[2](1.0);
+			let int int_ = int(1);
+			let bool bool_ = bool(true);
+			let real real_ = real(1.2);
+			let real[2] realOne = real[2](1.0);
 			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -98,15 +98,15 @@ class ExpressionValidatorTest
 			'''
 			«emptyTestModule»
 			with CartesianMesh2D.*;
-			def test: ℾ × ℝ × ℝ[2] → ℝ, (a, b, c) → return b;
-			let ℝ[2] opt = [0., 1.];
-			let ℕ count = 1;
-			ℝ alpha{cells};
+			def real test(bool a, real b, real[2] c) return b;
+			let real[2] opt = [0., 1.];
+			let int count = 1;
+			real alpha{cells};
 			'''
 		val moduleKo = parseHelper.parse(
 			'''
 			«model»
-			J1: let ℝ x = test(true, 0, opt);
+			J1: let real x = test(true, 0, opt);
 			''', rs)
 		Assert.assertNotNull(moduleKo)
 		Assert.assertEquals(1, moduleKo.validate.filter(i | i.severity == Severity.ERROR).size)
@@ -122,7 +122,7 @@ class ExpressionValidatorTest
 		val moduleOk = parseHelper.parse(
 			'''
 			«model»
-			J1: let ℝ x = test(true, 0., opt);
+			J1: let real x = test(true, 0., opt);
 			''', rs)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -137,11 +137,11 @@ class ExpressionValidatorTest
 			'''
 			«emptyTestModule»
 			with CartesianMesh2D.*;
-			def sum, 0.0: ℝ, (a, b) → return a + b;
-			ℝ D{cells}; 
-			ℝ[2] E{cells}; 
-			ComputeU: let ℝ u = sum{c∈cells()}(D);
-			ComputeV: let ℝ[2] v = sum{c∈cells()}(E{c});
+			red real sum(0.0) (a, b) : return a + b;
+			real D{cells}; 
+			real[2] E{cells}; 
+			ComputeU: let real u = sum{c in cells()}(D);
+			ComputeV: let real[2] v = sum{c in cells()}(E{c});
 			''', rs)
 		Assert.assertNotNull(moduleKo)
 		Assert.assertEquals(2, moduleKo.validate.filter(i | i.severity == Severity.ERROR).size)
@@ -158,12 +158,12 @@ class ExpressionValidatorTest
 			'''
 			«emptyTestModule»
 			with CartesianMesh2D.*;
-			def sum, 0.0: ℝ, (a,b) → return a + b;
-			def sum, 0.0: x | ℝ[x], (a,b) → return a + b;
-			ℝ D{cells};
-			ℝ[2] E{cells};
-			ComputeU: let ℝ u = sum{c∈cells()}(D{c});
-			ComputeV: let ℝ[2] v = sum{c∈cells()}(E{c});
+			red real sum(0.0) (a,b) : return a + b;
+			red <x> real[x] sum(0.0) (a,b) : return a + b;
+			real D{cells};
+			real[2] E{cells};
+			ComputeU: let real u = sum{c in cells()}(D{c});
+			ComputeV: let real[2] v = sum{c in cells()}(E{c});
 			''', rs)
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -175,10 +175,10 @@ class ExpressionValidatorTest
 		val moduleKo = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			let ℝ cond = 0.0;
-			let ℝ U = 1.1;
-			let ℕ V = 2;
-			let ℝ W = (cond ? U : V);
+			let real cond = 0.0;
+			let real U = 1.1;
+			let int V = 2;
+			let real W = (cond ? U : V);
 			''') as NablaModule
 		Assert.assertNotNull(moduleKo)
 		Assert.assertEquals(2, moduleKo.validate.filter(i | i.severity == Severity.ERROR).size)
@@ -189,7 +189,7 @@ class ExpressionValidatorTest
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.contractedIf,
 			ExpressionValidator::CONTRACTED_IF_CONDITION_TYPE,
-			getTypeMsg(cond.typeFor.label, "ℾ"))
+			getTypeMsg(cond.typeFor.label, "bool"))
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.contractedIf,
 			ExpressionValidator::CONTRACTED_IF_ELSE_TYPE,
@@ -198,10 +198,10 @@ class ExpressionValidatorTest
 		val moduleOk = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			let ℾ cond = true;
-			let ℝ U = 0.0;
-			let ℝ V = 1.1;
-			let ℝ W = (cond ? U : V);
+			let bool cond = true;
+			let real U = 0.0;
+			let real V = 1.1;
+			let real W = (cond ? U : V);
 			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -213,8 +213,8 @@ class ExpressionValidatorTest
 		val moduleKo = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			let ℝ cond = 0.0;
-			let ℾ ok = !cond; 
+			let real cond = 0.0;
+			let bool ok = !cond; 
 			''') as NablaModule
 		Assert.assertNotNull(moduleKo)
 		Assert.assertEquals(1, moduleKo.validate.filter(i | i.severity == Severity.ERROR).size)
@@ -223,13 +223,13 @@ class ExpressionValidatorTest
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.not,
 			ExpressionValidator::NOT_EXPRESSION_TYPE,
-			getTypeMsg(cond.typeFor.label, "ℾ"))
+			getTypeMsg(cond.typeFor.label, "bool"))
 
 		val moduleOk = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			let ℾ cond = true;
-			let ℾ ok = !cond; 
+			let bool cond = true;
+			let bool ok = !cond; 
 			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -241,9 +241,9 @@ class ExpressionValidatorTest
 		val moduleKo = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			let ℾ  a = true; 
-			let ℝ b = 0.0;
-			let ℝ c = a * b;
+			let bool  a = true; 
+			let real b = 0.0;
+			let real c = a * b;
 			''')
 		Assert.assertNotNull(moduleKo)
 		Assert.assertEquals(1, moduleKo.validate.filter(i | i.severity == Severity.ERROR).size)
@@ -258,9 +258,9 @@ class ExpressionValidatorTest
 		val moduleOk = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			let ℝ a = 1.1;
-			let ℝ b = 0.0;
-			let ℝ c = a * b;
+			let real a = 1.1;
+			let real b = 0.0;
+			let real c = a * b;
 			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -272,9 +272,9 @@ class ExpressionValidatorTest
 		val moduleKo = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			let ℾ a = true; 
-			let ℝ b = 0.0;
-			let ℝ c = a / b;
+			let bool a = true; 
+			let real b = 0.0;
+			let real c = a / b;
 			''')
 		Assert.assertNotNull(moduleKo)
 		Assert.assertEquals(1, moduleKo.validate.filter(i | i.severity == Severity.ERROR).size)
@@ -289,9 +289,9 @@ class ExpressionValidatorTest
 		val moduleOk = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			let ℝ a = 1.1;
-			let ℝ b = 0.0;
-			let ℝ c = a / b;
+			let real a = 1.1;
+			let real b = 0.0;
+			let real c = a / b;
 			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -303,9 +303,9 @@ class ExpressionValidatorTest
 		val moduleKo = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			let ℾ a = true; 
-			let ℕ b = 0;
-			let ℝ c = a + b;
+			let bool a = true; 
+			let int b = 0;
+			let real c = a + b;
 			''')
 		Assert.assertNotNull(moduleKo)
 		Assert.assertEquals(1, moduleKo.validate.filter(i | i.severity == Severity.ERROR).size)
@@ -320,9 +320,9 @@ class ExpressionValidatorTest
 		val moduleOk = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			let ℝ a = 1.1;
-			let ℕ b = 0;
-			let ℝ c = a + b;
+			let real a = 1.1;
+			let int b = 0;
+			let real c = a + b;
 			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -334,9 +334,9 @@ class ExpressionValidatorTest
 		val moduleKo = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			let ℝ[2] a = ℝ[2](0.0);
-			let ℝ[3] b = ℝ[3](0.0);
-			let ℝ[2] c = a - b;
+			let real[2] a = real[2](0.0);
+			let real[3] b = real[3](0.0);
+			let real[2] c = a - b;
 			''')
 		Assert.assertNotNull(moduleKo)
 		Assert.assertEquals(1, moduleKo.validate.filter(i | i.severity == Severity.ERROR).size)
@@ -352,9 +352,9 @@ class ExpressionValidatorTest
 		val moduleOk = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			let ℝ[2] a = ℝ[2](0.0);
-			let ℝ[2] b = ℝ[2](1.1);
-			let ℝ[2] c = a - b;
+			let real[2] a = real[2](0.0);
+			let real[2] b = real[2](1.1);
+			let real[2] c = a - b;
 			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -366,9 +366,9 @@ class ExpressionValidatorTest
 		val moduleKo = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			let ℝ a = 0.0;
-			let ℝ[2] b = ℝ[2](1.1);
-			let ℾ c = a > b;
+			let real a = 0.0;
+			let real[2] b = real[2](1.1);
+			let bool c = a > b;
 			''')
 		Assert.assertNotNull(moduleKo)
 		Assert.assertEquals(1, moduleKo.validate.filter(i | i.severity == Severity.ERROR).size)
@@ -383,9 +383,9 @@ class ExpressionValidatorTest
 		val moduleOk = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			let ℝ a = 0.0;
-			let ℝ b = 1.1;
-			let ℾ c = a > b;
+			let real a = 0.0;
+			let real b = 1.1;
+			let bool c = a > b;
 			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -397,9 +397,9 @@ class ExpressionValidatorTest
 		val moduleKo = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			let ℝ a = 0.0;
-			let ℝ[2] b = ℝ[2](1.1);
-			let ℾ c = a == b;
+			let real a = 0.0;
+			let real[2] b = real[2](1.1);
+			let bool c = a == b;
 			''')
 		Assert.assertNotNull(moduleKo)
 		Assert.assertEquals(1, moduleKo.validate.filter(i | i.severity == Severity.ERROR).size)
@@ -414,9 +414,9 @@ class ExpressionValidatorTest
 		val moduleOk = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			let ℝ a = 0.0; 
-			let ℝ b = 1.1;
-			let ℾ c = a == b;
+			let real a = 0.0; 
+			let real b = 1.1;
+			let bool c = a == b;
 			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -428,27 +428,27 @@ class ExpressionValidatorTest
 		val moduleKo = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			let ℝ a = 0.0;
-			let ℝ[2] b = ℝ[2](1.1);
-			let ℕ c = a % b;
+			let real a = 0.0;
+			let real[2] b = real[2](1.1);
+			let int c = a % b;
 			''')
 		Assert.assertNotNull(moduleKo)
 		Assert.assertEquals(2, moduleKo.validate.filter(i | i.severity == Severity.ERROR).size)
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.modulo,
 			ExpressionValidator::MODULO_TYPE,
-			getTypeMsg(PrimitiveType::REAL.literal, "ℕ"))
+			getTypeMsg(PrimitiveType::REAL.literal, "int"))
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.modulo,
 			ExpressionValidator::MODULO_TYPE,
-			getTypeMsg(new NSTRealArray1D(createIntConstant(2), 2).label, "ℕ"))
+			getTypeMsg(new NSTRealArray1D(createIntConstant(2), 2).label, "int"))
 
 		val moduleOk = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			let ℕ a = 0;
-			let ℕ b = 1;
-			let ℕ c = a % b;
+			let int a = 0;
+			let int b = 1;
+			let int c = a % b;
 			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -460,27 +460,27 @@ class ExpressionValidatorTest
 		val moduleKo = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			let ℕ a = 0;
-			let ℝ b = 1.1; 
-			let ℾ c = a && b;
+			let int a = 0;
+			let real b = 1.1; 
+			let bool c = a && b;
 			''')
 		Assert.assertNotNull(moduleKo)
 		Assert.assertEquals(2, moduleKo.validate.filter(i | i.severity == Severity.ERROR).size)
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.and,
 			ExpressionValidator::AND_TYPE,
-			getTypeMsg(PrimitiveType::REAL.literal, "ℾ"))
+			getTypeMsg(PrimitiveType::REAL.literal, "bool"))
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.and,
 			ExpressionValidator::AND_TYPE,
-			getTypeMsg(PrimitiveType::INT.literal, "ℾ"))
+			getTypeMsg(PrimitiveType::INT.literal, "bool"))
 
 		val moduleOk = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			let ℾ a = true;
-			let ℾ b = false; 
-			let ℾ c = a && b;
+			let bool a = true;
+			let bool b = false; 
+			let bool c = a && b;
 			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -492,27 +492,27 @@ class ExpressionValidatorTest
 		val moduleKo = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			let ℕ a = 0;
-			let ℝ b = 1.1;
-			let ℾ c = a || b;
+			let int a = 0;
+			let real b = 1.1;
+			let bool c = a || b;
 			''')
 		Assert.assertNotNull(moduleKo)
 		Assert.assertEquals(2, moduleKo.validate.filter(i | i.severity == Severity.ERROR).size)
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.or,
 			ExpressionValidator::OR_TYPE,
-			getTypeMsg(PrimitiveType::REAL.literal, "ℾ"))
+			getTypeMsg(PrimitiveType::REAL.literal, "bool"))
 
 		moduleKo.assertError(NablaPackage.eINSTANCE.or,
 			ExpressionValidator::OR_TYPE,
-			getTypeMsg(PrimitiveType::INT.literal, "ℾ"))
+			getTypeMsg(PrimitiveType::INT.literal, "bool"))
 
 		val moduleOk = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			let ℾ a = true;
-			let ℾ b = false;
-			let ℾ c = a || b;
+			let bool a = true;
+			let bool b = false;
+			let bool c = a || b;
 			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -524,7 +524,7 @@ class ExpressionValidatorTest
 		val moduleKo = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			let ℕ[1] V = [0];
+			let int[1] V = [0];
 			''')
 		Assert.assertNotNull(moduleKo)
 		Assert.assertEquals(1, moduleKo.validate.filter(i | i.severity == Severity.ERROR).size)
@@ -536,7 +536,7 @@ class ExpressionValidatorTest
 		val moduleOk = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			letℕ[2] V = [0, 1];
+			letint[2] V = [0, 1];
 			''')
 		Assert.assertNotNull(moduleOk)
 	}
@@ -547,7 +547,7 @@ class ExpressionValidatorTest
 		val moduleKo = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			let ℕ[2] V = [0, 3.4];
+			let int[2] V = [0, 3.4];
 			''')
 		Assert.assertNotNull(moduleKo)
 		Assert.assertEquals(1, moduleKo.validate.filter(i | i.severity == Severity.ERROR).size)
@@ -559,7 +559,7 @@ class ExpressionValidatorTest
 		val moduleOk = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			let ℕ[2] V = [0, 3];
+			let int[2] V = [0, 3];
 			''')
 		Assert.assertNotNull(moduleOk)
 	}
@@ -570,11 +570,11 @@ class ExpressionValidatorTest
 		val extensionKo = parseHelper.parse(
 			'''
 			extension Test;
-			def f: → ℝ;
-			def g: → ℝ, () →
+			def real f();
+			def real g() 
 			{
-				ℝ[4] n;
-				∀ i∈[0;4[, n[i] = 0.0;
+				real[4] n;
+				forall  i in [0;4[, n[i] = 0.0;
 				return f();
 			}
 			''')
@@ -588,11 +588,11 @@ class ExpressionValidatorTest
 		val extensionOk = parseHelper.parse(
 			'''
 			extension Test;
-			def f: → ℝ;
-			def g: → ℝ, () →
+			def real f();
+			def real g() 
 			{
-				ℝ[4] n;
-				∀ i∈[0;4[, n[i] = 0.0;
+				real[4] n;
+				forall  i in [0;4[, n[i] = 0.0;
 				return 4.0;
 			}
 			''')

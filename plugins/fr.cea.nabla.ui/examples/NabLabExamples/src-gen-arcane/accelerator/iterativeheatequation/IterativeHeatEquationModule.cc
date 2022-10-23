@@ -110,7 +110,7 @@ void IterativeHeatEquationModule::init()
 	m_lastDump = numeric_limits<int>::min();
 	m_n = 0;
 	m_k = 0;
-	m_deltat = 0.001;
+	m_delta_t = 0.001;
 	m_alpha.resize(nbCell());
 
 	// calling jobs
@@ -158,12 +158,12 @@ void IterativeHeatEquationModule::computeFaceLength()
 
 /**
  * Job computeTn called @1.0 in executeTimeLoopN method.
- * In variables: deltat, t_n
+ * In variables: delta_t, t_n
  * Out variables: t_nplus1
  */
 void IterativeHeatEquationModule::computeTn()
 {
-	m_t_nplus1 = m_t_n + m_deltat;
+	m_t_nplus1 = m_t_n + m_delta_t;
 }
 
 /**
@@ -298,7 +298,7 @@ void IterativeHeatEquationModule::updateU()
 /**
  * Job computeDeltaTn called @2.0 in simulate method.
  * In variables: D, V
- * Out variables: deltat
+ * Out variables: delta_t
  */
 void IterativeHeatEquationModule::computeDeltaTn()
 {
@@ -314,8 +314,8 @@ void IterativeHeatEquationModule::computeDeltaTn()
 		};
 		reduction0 = reducer.reduce();
 	}
-	m_deltat = reduction0 * 0.1;
-	m_global_deltat = m_deltat;
+	m_delta_t = reduction0 * 0.1;
+	m_global_deltat = m_delta_t;
 }
 
 /**
@@ -441,13 +441,13 @@ void IterativeHeatEquationModule::setUpTimeLoopN()
 
 /**
  * Job computeAlphaCoeff called @3.0 in simulate method.
- * In variables: V, Xc, deltat, faceConductivity, faceLength
+ * In variables: V, Xc, delta_t, faceConductivity, faceLength
  * Out variables: alpha
  */
 void IterativeHeatEquationModule::computeAlphaCoeff()
 {
 	auto command = makeCommand(m_default_queue);
-	auto in_deltat = m_deltat;
+	auto in_delta_t = m_delta_t;
 	auto in_V = ax::viewIn(command, m_V);
 	auto in_faceLength = ax::viewIn(command, m_faceLength);
 	auto in_faceConductivity = ax::viewIn(command, m_faceConductivity);
@@ -456,7 +456,7 @@ void IterativeHeatEquationModule::computeAlphaCoeff()
 	command << RUNCOMMAND_ENUMERATE(Cell, cCells, allCells())
 	{
 		const auto cId(cCells);
-		Real alphaDiag(0.0);
+		Real alpha_Diag(0.0);
 		{
 			const auto neighbourCellsC(m_mesh->getNeighbourCells(cId));
 			const Int32 nbNeighbourCellsC(neighbourCellsC.size());
@@ -466,12 +466,12 @@ void IterativeHeatEquationModule::computeAlphaCoeff()
 				const auto dCells(dId);
 				const auto fId(m_mesh->getCommonFace(cId, dId));
 				const auto fFaces(fId);
-				const Real alphaExtraDiag(in_deltat / in_V[cCells] * (in_faceLength[fFaces] * in_faceConductivity[fFaces]) / iterativeheatequationfreefuncs::norm(iterativeheatequationfreefuncs::operatorSub(in_Xc[cCells], in_Xc[dCells])));
-				out_alpha[cCells][dCells] = alphaExtraDiag;
-				alphaDiag = alphaDiag + alphaExtraDiag;
+				const Real alpha_ExtraDiag(in_delta_t / in_V[cCells] * (in_faceLength[fFaces] * in_faceConductivity[fFaces]) / iterativeheatequationfreefuncs::norm(iterativeheatequationfreefuncs::operatorSub(in_Xc[cCells], in_Xc[dCells])));
+				out_alpha[cCells][dCells] = alpha_ExtraDiag;
+				alpha_Diag = alpha_Diag + alpha_ExtraDiag;
 			}
 		}
-		out_alpha[cCells][cCells] = -alphaDiag;
+		out_alpha[cCells][cCells] = -alpha_Diag;
 	};
 }
 

@@ -54,16 +54,16 @@ class DeclarationProviderTest
 		'''
 		extension MyLibOfFunctions;
 
-		def f: → ℕ;
-		def f: ℕ → ℕ;
-		def f: ℝ → ℝ;
-		def f: ℝ[2] → ℝ[2];
+		def int f();
+		def int f(int a);
+		def real f(real a);
+		def real[2] f(real[2] a);
 
-		def g: a | ℝ[a] → ℝ[a];
-		def g: a, b | ℝ[a, b] → ℝ[a*b];
-		def g: a, b | ℝ[a] × ℝ[b] → ℝ[a+b];
+		def <a> real[a] g(real[a] x);
+		def <a, b> real[a*b] g(real[a, b] x);
+		def <a, b> real[a+b] g(real[a] x, real[b] y);
 
-		def h: a | ℝ[a] × ℝ[a] → ℝ[a];
+		def <a> real[a] h(real[a] x, real[a] y);
 		'''
 
 		val nablaModel =
@@ -73,47 +73,47 @@ class DeclarationProviderTest
 		with MyLibOfFunctions.*;
 		with CartesianMesh2D.*;
 
-		ℝ[card(cells())] a;
-		ℝ x{cells};
-		ℝ[2] x2{cells};
-		ℝ[3] t;
+		real[card(cells())] a;
+		real x{cells};
+		real[2] x2{cells};
+		real[3] t;
 
-		let ℕ constexprDim = 2;
-		let ℝ[constexprDim] constexprVec = [1.1, 1.1];
+		let int constexprDim = 2;
+		let real[constexprDim] constexprVec = [1.1, 1.1];
 
 		// --- TEST DE F ---
-		J0: { let ℕ y = f(); }
-		J1: { let ℕ y = f(2); }
-		J2: { let ℝ y = f(3.0); }
+		J0: { let int y = f(); }
+		J1: { let int y = f(2); }
+		J2: { let real y = f(3.0); }
 		J3: {
-				let ℝ[2] b = [1.1, 2.2];
-				let ℝ[2] y = f(b);
+				let real[2] b = [1.1, 2.2];
+				let real[2] y = f(b);
 				y = f(constexprVec);
 		}
-		J4: { let ℝ y = f(3.0, true); } // Wrong arguments : ℝ, ℾ
+		J4: { let real y = f(3.0, true); } // Wrong arguments : real, bool
 
 		// --- TEST DE G ---
 		J5: {
-				let ℝ[2] b = [1.1, 2.2];
-				let ℝ[2] y = g(b);
+				let real[2] b = [1.1, 2.2];
+				let real[2] y = g(b);
 		}
 		J6: {
-				let ℝ[2,3] b = [[1.1, 2.2, 3.3], [4.4, 5.5, 6.6]];
-				let ℝ[6] y = g(b);
+				let real[2,3] b = [[1.1, 2.2, 3.3], [4.4, 5.5, 6.6]];
+				let real[6] y = g(b);
 		}
 		J7: {
-				let ℝ[2] b = [1.1, 2.2];
-				let ℝ[3] c = [3.3, 4.4, 5.5];
-				let ℝ[5] y = g(b, c);
+				let real[2] b = [1.1, 2.2];
+				let real[3] c = [3.3, 4.4, 5.5];
+				let real[5] y = g(b, c);
 		}
-		J8: { let ℝ[3] gt = g(t); }
-		J9: { a = g(x, x); } // Wrong arguments : ℝ{cells}, ℝ{cells}
-		J10: { a = g(x2); } // Wrong arguments : ℝ²{cells}
+		J8: { let real[3] gt = g(t); }
+		J9: { a = g(x, x); } // Wrong arguments : real{cells}, real{cells}
+		J10: { a = g(x2); } // Wrong arguments : real²{cells}
 
 		// --- TEST DE H ---
 		J11: {
-			let ℝ[2] b = [1.1, 2.2];
-			let ℝ[2] y = h(b, constexprVec);
+			let real[2] b = [1.1, 2.2];
+			let real[2] y = h(b, constexprVec);
 		}
 		'''
 
@@ -177,21 +177,21 @@ class DeclarationProviderTest
 		'''
 		extension Test;
 
-		def f: ℝ → ℝ, (a) → return a;
-		def f: ℝ[2] → ℝ[2], (a) → return a;
-		def g: x | ℝ[x] → ℝ[x], (a) → return a;
+		def real f(real a) return a;
+		def real[2] f(real[2] a) return a;
+		def <x> real[x] g(real[x] a) return a;
 
-		def h: ℝ[2] → ℝ[2], (a) → {
+		def real[2] h(real[2] a) {
 			return f(a) + g(a);
 		}
 
-		def i: a | ℝ[a] → ℝ[a], (x) → {
-			return f(x); // Wrong f only on ℝ[2]
+		def <a> real[a] i(real[a] x) {
+			return f(x); // Wrong f only on real[2]
 		}
 
-		def j: a | ℝ[a] → ℝ[a], (x) → {
-			let ℝ[a] y = g(x);
-			∀i∈[0;a[, y[i] = f(x[i]);
+		def <a> real[a] j(real[a] x) {
+			let real[a] y = g(x);
+			forall i in [0;a[, y[i] = f(x[i]);
 			return y;
 		}
 		'''
@@ -199,7 +199,7 @@ class DeclarationProviderTest
 		val ext = parseHelper.parse(model) as DefaultExtension
 		Assert.assertNotNull(ext)
 		Assert.assertEquals(1, ext.validate.filter(i | i.severity == Severity.ERROR).size)
-		ext.assertError(NablaPackage.eINSTANCE.functionCall, ExpressionValidator::FUNCTION_CALL_ARGS, ExpressionValidator::getFunctionCallArgsMsg(#["ℝ[a]"]))
+		ext.assertError(NablaPackage.eINSTANCE.functionCall, ExpressionValidator::FUNCTION_CALL_ARGS, ExpressionValidator::getFunctionCallArgsMsg(#["real[a]"]))
 
 		val functions = ext.functions
 		val h = functions.findFirst[name == 'h']
@@ -224,17 +224,17 @@ class DeclarationProviderTest
 
 		with CartesianMesh2D.*;
 
-		def f, 0.0: ℝ, (a , b) → return a;
-		def f, 0.0: x | ℝ[x], (a , b) → return a;
+		red real f(0.0) (a , b) : return a;
+		red <x> real[x] f(0.0) (a , b) : return a;
 
-		ℝ u{cells};
-		ℝ[2] u2{cells};
-		ℕ bidon{cells};
+		real u{cells};
+		real[2] u2{cells};
+		int bidon{cells};
 
 		// --- TEST DE F ---
-		J0: { let ℝ x = f{j ∈ cells()}(u{j}); }
-		J1: { let ℝ[2] x = f{j ∈ cells()}(u2{j}); }
-		J2: { let ℝ x = f{j ∈ cells()}(bidon{j}); } // Wrong arguments : ℕ
+		J0: { let real x = f{j in cells()}(u{j}); }
+		J1: { let real[2] x = f{j in cells()}(u2{j}); }
+		J2: { let real x = f{j in cells()}(bidon{j}); } // Wrong arguments : int
 		'''
 
 		val rs = resourceSetProvider.get

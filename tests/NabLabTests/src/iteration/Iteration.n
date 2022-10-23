@@ -12,17 +12,17 @@ module Iteration;
 with CartesianMesh2D.*;
 with Assert.*;
 
-let ℝ maxTime = 0.1;
-let ℝ δt = 1.0;
+let real maxTime = 0.1;
+let real delta_t = 1.0;
 
-ℝ t;
-ℝ[2] X{nodes};
+real t;
+real[2] X{nodes};
 
-let ℕ maxIterN = 10;
-let ℕ maxIterK = 6;
-let ℕ maxIterL = 7;
+let int maxIterN = 10;
+let int maxIterK = 6;
+let int maxIterL = 7;
 
-ℝ vn{cells}, vk{cells}, vl{cells};
+real vn{cells}, vk{cells}, vl{cells};
 
 iterate n while (n < maxIterN), { 
 			k while (k < maxIterK);
@@ -31,17 +31,17 @@ iterate n while (n < maxIterN), {
 
 IniTime: t^{n=0} = 0.0;
 
-IniVn: ∀j∈cells(), vn^{n=0}{j} = 0.0;
-UpdateVn: ∀j∈cells(), vn^{n+1}{j} = vn^{n}{j} + vl^{n+1}{j} * 2;
+IniVn: forall j in cells(), vn^{n=0}{j} = 0.0;
+UpdateVn: forall j in cells(), vn^{n+1}{j} = vn^{n}{j} + vl^{n+1}{j} * 2;
 
-IniVk: ∀j∈cells(), vk^{n+1, k=0}{j} = 0.0;
-UpdateVk: ∀j∈cells(), vk^{n+1, k+1}{j} = vk^{n+1, k}{j} + 2;
-OracleVk: ∀j∈cells(), let ℾ testVk = assertEquals(12.0, vk^{n+1}{j});
+IniVk: forall j in cells(), vk^{n+1, k=0}{j} = 0.0;
+UpdateVk: forall j in cells(), vk^{n+1, k+1}{j} = vk^{n+1, k}{j} + 2;
+OracleVk: forall j in cells(), let bool testVk = assertEquals(12.0, vk^{n+1}{j});
 
-IniVl: ∀j∈cells(), vl^{n+1, l=0}{j} = vk^{n+1}{j} + 8;
-UpdateVl: ∀j∈cells(), vl^{n+1, l+1}{j} = vl^{n+1, l}{j} + 1;
-OracleVl: ∀j∈cells(), let ℾ testVl = assertEquals(27.0, vl^{n+1}{j});
+IniVl: forall j in cells(), vl^{n+1, l=0}{j} = vk^{n+1}{j} + 8;
+UpdateVl: forall j in cells(), vl^{n+1, l+1}{j} = vl^{n+1, l}{j} + 1;
+OracleVl: forall j in cells(), let bool testVl = assertEquals(27.0, vl^{n+1}{j});
 
-OracleVn: ∀j∈cells(), let ℾ testVn = assertEquals(54.0*n, vn^{n+1}{j});
+OracleVn: forall j in cells(), let bool testVn = assertEquals(54.0*n, vn^{n+1}{j});
 
-ComputeTn: t^{n+1} = t^{n} + δt;
+ComputeTn: t^{n+1} = t^{n} + delta_t;

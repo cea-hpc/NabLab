@@ -40,7 +40,7 @@ class UniqueNameValidatorTest
 		val rootKo = parseHelper.parse(
 			'''
 			extension Test;
-			def f: ℕ × ℕ → ℕ, (a, a) → { return a; }
+			def int f(int a, int a) { return a; }
 			''')
 		Assert.assertNotNull(rootKo)
 		rootKo.assertError(NablaPackage.eINSTANCE.arg,
@@ -50,7 +50,7 @@ class UniqueNameValidatorTest
 		val rootOk = parseHelper.parse(
 			'''
 			extension Test;
-			def f: ℕ × ℕ → ℕ, (a, b) → { return a; }
+			def int f(int a, int b) { return a; }
 			''')
 		Assert.assertNotNull(rootOk)
 		rootOk.assertNoErrors
@@ -62,7 +62,7 @@ class UniqueNameValidatorTest
 		val rootKo = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			ℝ a, a;
+			real a, a;
 			''')
 		Assert.assertNotNull(rootKo)
 		rootKo.assertError(NablaPackage.eINSTANCE.^var,
@@ -72,7 +72,7 @@ class UniqueNameValidatorTest
 		val rootOk = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			ℝ a;
+			real a;
 			''')
 		Assert.assertNotNull(rootOk)
 		rootOk.assertNoErrors
@@ -84,8 +84,8 @@ class UniqueNameValidatorTest
 		val rootKo = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			ℝ a;
-			ℝ a;
+			real a;
+			real a;
 			''')
 		Assert.assertNotNull(rootKo)
 		rootKo.assertError(NablaPackage.eINSTANCE.argOrVar,
@@ -95,7 +95,7 @@ class UniqueNameValidatorTest
 		val rootOk = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			ℝ a;
+			real a;
 			''')
 		Assert.assertNotNull(rootOk)
 		rootOk.assertNoErrors
@@ -107,14 +107,14 @@ class UniqueNameValidatorTest
 		val model = 
 			'''
 			«testModule»
-			ℝ XXX{nodes, nodes};
+			real XXX{nodes, nodes};
 			'''
 		val rs = resourceSetProvider.get
 		parseHelper.parse(readFileAsString(TestUtils.CartesianMesh2DPath), rs)
 		val rootKo1 = parseHelper.parse(
 			'''
 			«model»
-			J1: ∀r∈nodes(), ∀r∈nodes(), let d = XXX{r, r} * 2.0;
+			J1: forall r in nodes(), forall r in nodes(), let d = XXX{r, r} * 2.0;
 			''', rs)
 		Assert.assertNotNull(rootKo1)
 		rootKo1.assertError(NablaPackage.eINSTANCE.spaceIterator,
@@ -124,7 +124,7 @@ class UniqueNameValidatorTest
 		val rootOk = parseHelper.parse(
 			'''
 			«model»
-			J1: ∀r1∈nodes(), ∀r2∈nodes(), let ℝ d = XXX{r1, r2} * 2.0;
+			J1: forall r1 in nodes(), forall r2 in nodes(), let real d = XXX{r1, r2} * 2.0;
 			''', rs)
 		Assert.assertNotNull(rootOk)
 		rootOk.assertNoErrors
@@ -151,10 +151,10 @@ class UniqueNameValidatorTest
 		val rootOk = parseHelper.parse(
 			'''
 			«testModule»
-			ℝ X{nodes, nodes};
+			real X{nodes, nodes};
 			J1: {
 				set myNodes = nodes();
-				∀r1∈myNodes, ∀r2∈myNodes, let ℝ d = X{r1, r2} * 2.0;
+				forall r1 in myNodes, forall r2 in myNodes, let real d = X{r1, r2} * 2.0;
 			}
 			''', rs)
 		Assert.assertNotNull(rootOk)
@@ -168,7 +168,7 @@ class UniqueNameValidatorTest
 			'''
 			mesh extension Test;
 			itemtypes { node, node }
-			connectivity nodes: → {node};
+			connectivity {node} nodes();
 			''')
 		Assert.assertNotNull(rootKo)
 		rootKo.assertError(NablaPackage.eINSTANCE.itemType,
@@ -179,7 +179,7 @@ class UniqueNameValidatorTest
 			'''
 			mesh extension Test;
 			itemtypes { node }
-			connectivity nodes: → {node};
+			connectivity {node} nodes();
 			''')
 		Assert.assertNotNull(rootOk)
 		rootOk.assertNoErrors
@@ -192,8 +192,8 @@ class UniqueNameValidatorTest
 			'''
 			mesh extension Test;
 			itemtypes { node }
-			connectivity nodes: → {node};
-			connectivity nodes: → {node};
+			connectivity {node} nodes();
+			connectivity {node} nodes();
 			''')
 		Assert.assertNotNull(rootKo)
 		rootKo.assertError(NablaPackage.eINSTANCE.connectivity,
@@ -204,7 +204,7 @@ class UniqueNameValidatorTest
 			'''
 			mesh extension Test;
 			itemtypes { node }
-			connectivity nodes: → {node};
+			connectivity {node} nodes();
 			''')
 		Assert.assertNotNull(rootOk)
 		rootOk.assertNoErrors
@@ -216,7 +216,7 @@ class UniqueNameValidatorTest
 		val rootKo = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			ℝ a;
+			real a;
 			IncrA: a = a + 1;
 			IncrA: a = a + 1;
 			''')
@@ -228,7 +228,7 @@ class UniqueNameValidatorTest
 		val rootOk = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			ℝ a;
+			real a;
 			IncrA: a = a + 1;
 			''')
 		Assert.assertNotNull(rootOk)
@@ -252,7 +252,7 @@ class UniqueNameValidatorTest
 		val rootKo2 = parseHelper.parse(
 			'''
 			«emptyTestModule»
-			ℕ n;
+			int n;
 			iterate n while (true), m while (true);
 			''')
 		Assert.assertNotNull(rootKo2)

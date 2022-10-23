@@ -95,7 +95,7 @@ public:
 	int maxIterations;
 	static constexpr double u0 = 1.0;
 	static constexpr RealArray1D<2> vectOne = {1.0, 1.0};
-	double deltat;
+	double delta_t;
 	double t_n;
 	double t_nplus1;
 	double t_n0;

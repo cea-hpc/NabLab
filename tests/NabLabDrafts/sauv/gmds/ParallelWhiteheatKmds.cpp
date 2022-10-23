@@ -53,7 +53,7 @@ private:
 	int nbNodes, nbCells, nbFaces;
 
 	// Global Variables
-	double t, deltat, t_n_plus_1;
+	double t, delta_t, t_n_plus_1;
 
 	// Node Variables
 	kmds::Variable<Real2>* X;
@@ -120,13 +120,13 @@ public:
 
 private:
 	/**
-	 * Job Init_δt @-1.0
+	 * Job Init_deltat @-1.0
 	 * In variables:
-	 * Out variables: δt
+	 * Out variables: delta_t
 	 */
 	void init_deltat()
 	{
-		deltat = 0.001;
+		delta_t = 0.001;
 	}
 
 	/**
@@ -144,7 +144,7 @@ private:
 		});
 	}
 	
-	// δt = 1/4 * ∑{j∈cells()}(V{j})
+	// delta_t = 1/4 * ∑{j in cells()}(V{j})
 	void bidonVolume()
 	{
 	    // kmds::GrowingView<kmds::TCellID> cells("CELLS", mesh.getNbFaces());
@@ -157,7 +157,7 @@ private:
 		double bidon = 1/4 * sum;
 	}
 
-	// ∀j∈cells(),∀r∈nodesOfCell(j), C_ic{j,r} = 0.5 * norm(X{r});
+	// forall j in cells(),forall r in nodesOfCell(j), C_ic{j,r} = 0.5 * norm(X{r});
 	void bidonDoubleBoucle()
 	{
 	    // kmds::GrowingView<kmds::TCellID> cells("CELLS", mesh.getNbFaces());
@@ -279,7 +279,7 @@ private:
 
 	/**
 	 * Job ComputeTmp @1.0
-	 * In variables: δt, V, u, center, surface
+	 * In variables: delta_t, V, u, center, surface
 	 * Out variables: tmp
 	 */
 	void computeTmp()
@@ -298,14 +298,14 @@ private:
 				int j2Cells = j2Id; // int j2Cells = cells.indexOf(j2Id);
 				sum1 += (((*u)[j2Cells] - (*u)[j1Cells]) / (norm((*center)[j2Cells] -(*center)[j1Cells])) * (*surface)[mesh.getCommonFace(j1Id, j2Id)]);
 			}
-			(*tmp)[j1Cells] = deltat / (*V)[j1Cells] * sum1;
+			(*tmp)[j1Cells] = delta_t / (*V)[j1Cells] * sum1;
 		});
 	}
 
 
 	/**
 	 * Job Compute_ComputeUnPlus1 @2.0
-	 * In variables: f, δt, u, tmp
+	 * In variables: f, delta_t, u, tmp
 	 * Out variables: u_n_plus_1
 	 */
 	void compute_ComputeUn()
@@ -314,7 +314,7 @@ private:
 	    // mesh.getFaceIDs(&cells);
 		Kokkos::parallel_for(mesh.getNbCells(), KOKKOS_LAMBDA(const int jCells)
 		{
-			(*u_n_plus_1)[jCells] = (*f)[jCells] * deltat + (*u)[jCells] + (*tmp)[jCells];
+			(*u_n_plus_1)[jCells] = (*f)[jCells] * delta_t + (*u)[jCells] + (*tmp)[jCells];
 		});
 	}
 
@@ -332,12 +332,12 @@ private:
 
 	/**
 	 * Job Compute_ComputeTn @1.0
-	 * In variables: t, δt
+	 * In variables: t, delta_t
 	 * Out variables: t_n_plus_1
 	 */
 	void compute_ComputeTn()
 	{
-		t_n_plus_1 = t + deltat;
+		t_n_plus_1 = t + delta_t;
 	}
 
 	/**
@@ -357,7 +357,7 @@ public:
 	void simulate()
 	{
 		std::cout << "Début de l'exécution du module whiteheat" << std::endl;
-		init_deltat(); // @-1.0
+		init_delta_t(); // @-1.0
 		iniF(); // @-1.0
 		iniCenter(); // @-1.0
 		computeV(); // @-1.0

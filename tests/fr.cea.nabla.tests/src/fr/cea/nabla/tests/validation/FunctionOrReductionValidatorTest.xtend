@@ -45,7 +45,7 @@ class FunctionOrReductionValidatorTest
 		'''
 		module Test;
 
-		def f: ℝ → ℝ;
+		def real f(real a);
 		''')
 		Assert.assertNotNull(moduleKo)
 		moduleKo.assertError(NablaPackage.eINSTANCE.functionOrReduction,
@@ -56,7 +56,7 @@ class FunctionOrReductionValidatorTest
 		'''
 		module Test;
 
-		def f: ℝ → ℝ, (a) → { return 1.0; }
+		def real f(real a) { return 1.0; }
 		''')
 		Assert.assertNotNull(moduleOk)
 	}
@@ -69,9 +69,9 @@ class FunctionOrReductionValidatorTest
 		val moduleKo = parseHelper.parse(
 			'''
 			«testModule»
-			ℕ U{cells};
-			ComputeU: ∀ j∈cells(), {
-					let ℕ e = 1;
+			int U{cells};
+			ComputeU: forall  j in cells(), {
+					let int e = 1;
 					U{j} = e * 4;
 					return e;
 			}
@@ -84,9 +84,9 @@ class FunctionOrReductionValidatorTest
 		val moduleOk = parseHelper.parse(
 			'''
 			«testModule»
-			ℕ U{cells};
-			ComputeU: ∀ j∈cells(), {
-					let ℕ e = 1;
+			int U{cells};
+			ComputeU: forall  j in cells(), {
+					let int e = 1;
 					U{j} = e * 4;
 			}
 			''', rs)
@@ -101,7 +101,7 @@ class FunctionOrReductionValidatorTest
 		'''
 		module Test;
 
-		def f: ℝ → ℝ, (a) → { let x = 1; }
+		def real f(real a) { let x = 1; }
 		''')
 		Assert.assertNotNull(moduleKo)
 		moduleKo.assertError(NablaPackage.eINSTANCE.functionOrReduction,
@@ -112,7 +112,7 @@ class FunctionOrReductionValidatorTest
 		'''
 		module Test;
 
-		def f: ℝ → ℝ, (a) → { return 1.0; }
+		def real f(real a) { return 1.0; }
 		''')
 		Assert.assertNotNull(moduleOk)
 	}
@@ -124,10 +124,10 @@ class FunctionOrReductionValidatorTest
 		'''
 		module Test;
 
-		def f: ℝ → ℝ, (a) → 
+		def real f(real a)
 		{
 			return 1.0;
-			let ℕ x = 1;
+			let int x = 1;
 		}
 		''')
 		Assert.assertNotNull(moduleKo)
@@ -139,7 +139,7 @@ class FunctionOrReductionValidatorTest
 		'''
 		module Test;
 
-		def f: ℝ → ℝ, (a) → 
+		def real f(real a)
 		{ 
 			return 1.0;
 		}
@@ -153,7 +153,7 @@ class FunctionOrReductionValidatorTest
 		val modulekO = parseHelper.parse(
 		'''
 		extension Test;
-		def f: x | ℝ[x+1] → ℝ[x];
+		def <x> real[x] f(real[x+1] a);
 		''')
 		Assert.assertNotNull(modulekO)
 
@@ -164,7 +164,7 @@ class FunctionOrReductionValidatorTest
 		val moduleOk = parseHelper.parse(
 		'''
 		extension Test;
-		def f: x | ℝ[x] → ℝ[x+1];
+		def <x> real[x+1] f(real[x] a);
 		''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -176,7 +176,7 @@ class FunctionOrReductionValidatorTest
 		val modulekO = parseHelper.parse(
 		'''
 		extension Test;
-		def sum, 0.0: x,y | ℝ[x+y], (a,b) → return a + b;
+		red <x,y> real[x+y] sum(0.0) (a,b) : return a + b;
 		''')
 		Assert.assertNotNull(modulekO)
 
@@ -187,39 +187,10 @@ class FunctionOrReductionValidatorTest
 		val moduleOk = parseHelper.parse(
 		'''
 		extension Test;
-		def sum, 0.0: x | ℝ[x], (a,b) → return a + b;
+		red <x> real[x] sum(0.0) (a,b) : return a + b;
 		''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
-	}
-
-	@Test
-	def void testCheckFunctionInvalidArgNumber()
-	{
-		val moduleKo = parseHelper.parse(
-		'''
-		module Test;
-
-		def f: ℝ → ℝ, (a, b) → 
-		{
-			return 1.0;
-		}
-		''')
-		Assert.assertNotNull(moduleKo)
-		moduleKo.assertError(NablaPackage.eINSTANCE.functionOrReduction,
-			FunctionOrReductionValidator::FUNCTION_INVALID_ARG_NUMBER,
-			FunctionOrReductionValidator::getFunctionInvalidArgNumberMsg())
-
-		val moduleOk = parseHelper.parse(
-		'''
-		module Test;
-
-		def f: ℝ → ℝ, (a) → 
-		{ 
-			return 1.0;
-		}
-		''')
-		Assert.assertNotNull(moduleOk)
 	}
 
 	@Test
@@ -228,8 +199,8 @@ class FunctionOrReductionValidatorTest
 		val modulekO = parseHelper.parse(
 			'''
 			extension Test;
-			def g: ℝ[2] → ℝ;
-			def g: x | ℝ[x] → ℝ;
+			def real g(real[2] a);
+			def <x> real g(real[x] a);
 			''')
 		Assert.assertNotNull(modulekO)
 
@@ -240,48 +211,48 @@ class FunctionOrReductionValidatorTest
 		val moduleOk = parseHelper.parse(
 			'''
 			extension Test;
-			def g: ℝ → ℝ;
-			def g: x | ℝ[x] → ℝ;
+			def real g(real a);
+			def <x> real g(real[x] a);
 			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
 	}
 
 	@Test
-	def void testFunctionReturnType()
+	def void testFunctionReturnTypeDeclaration()
 	{
 		val model = '''
 		extension Test;
-		def f: ℝ → ℝ, (a) → { return 1; }
-		def g: ℝ → ℝ, (a) → { return 1.0; }
+		def real f(real a) { return 1; }
+		def real g(real a) { return 1.0; }
 		'''
 		val module = parseHelper.parse(model)
 		Assert.assertNotNull(module)
 		Assert.assertEquals(1, module.validate.filter(i | i.severity == Severity.ERROR).size)
-		module.assertError(NablaPackage.eINSTANCE.functionTypeDeclaration, FunctionOrReductionValidator::FUNCTION_RETURN_TYPE, getTypeMsg("ℕ", "ℝ"))
+		module.assertError(NablaPackage.eINSTANCE.functionReturnTypeDeclaration, FunctionOrReductionValidator::FUNCTION_RETURN_TYPE, getTypeMsg("int", "real"))
 	}
 
 	@Test
-	def void testCheckFunctionReturnTypeVar() 
+	def void testCheckFunctionReturnTypeDeclarationVar() 
 	{
 		val modulekO = parseHelper.parse(
 			'''
 			extension Test;
-			def f: x | ℝ → ℝ[x];
+			def <x> real[x] f(real a);
 			''')
 		Assert.assertNotNull(modulekO)
-		modulekO.assertError(NablaPackage.eINSTANCE.functionTypeDeclaration, 
+		modulekO.assertError(NablaPackage.eINSTANCE.functionReturnTypeDeclaration, 
 			FunctionOrReductionValidator::FUNCTION_RETURN_TYPE_VAR, 
-			FunctionOrReductionValidator::getFunctionReturnTypeVarMsg("x"))
+			FunctionOrReductionValidator::getFunctionReturnTypeDeclarationVarMsg("x"))
 
 		val moduleOk = parseHelper.parse(
 			'''
 			extension Test;
-			def f: x | ℝ[x] → ℝ[x];
-			def g: y | ℝ[y] → ℝ[x, y];
+			def <x> real[x] f(real[x] a);
+			def <y> real[x, y] g(real[y] a);
 			''')
 		Assert.assertNotNull(moduleOk)
-		moduleOk.assertNoErrors(NablaPackage.eINSTANCE.functionTypeDeclaration, FunctionOrReductionValidator::FUNCTION_RETURN_TYPE_VAR)
+		moduleOk.assertNoErrors(NablaPackage.eINSTANCE.functionReturnTypeDeclaration, FunctionOrReductionValidator::FUNCTION_RETURN_TYPE_VAR)
 	}
 
 	@Test
@@ -290,8 +261,8 @@ class FunctionOrReductionValidatorTest
 		val modulekO = parseHelper.parse(
 			'''
 			extension Test;
-			def g, 0.0: ℝ[2], (a, b) → return a;
-			def g, 0.0: x | ℝ[x], (a, b) → return a;
+			red real[2] g(0.0) (a, b) : return a;
+			red <x> real[x] g(0.0) (a, b) : return a;
 			''')
 		Assert.assertNotNull(modulekO)
 		modulekO.assertError(NablaPackage.eINSTANCE.reduction,
@@ -301,8 +272,8 @@ class FunctionOrReductionValidatorTest
 		val moduleOk = parseHelper.parse(
 			'''
 			extension Test;
-			def g, 0.0: ℝ, (a, b) → return a;
-			def g, 0.0: x | ℝ[x], (a, b) → return a;
+			red real g(0.0) (a, b) : return a;
+			red <x> real[x] g(0.0) (a, b) :  return a;
 			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors
@@ -314,8 +285,8 @@ class FunctionOrReductionValidatorTest
 		val moduleKo = parseHelper.parse(
 			'''
 			extension Test;
-			def sum1, [0.0, 0.0]: ℝ[2], (a, b) → return a + b;
-			def sum1, 0.0: ℕ, (a, b) → return a + b;
+			red real[2] sum1([0.0, 0.0]) (a, b) : return a + b;
+			red int sum1(0.0) (a, b) : return a + b;
 			''')
 		Assert.assertNotNull(moduleKo)
 
@@ -330,8 +301,8 @@ class FunctionOrReductionValidatorTest
 		val moduleOk = parseHelper.parse(
 			'''
 			extension Test;
-			def sum1, 0.0: ℝ[2], (a, b) → return a + b;
-			def sum1, 0: ℕ, (a, b) → return a + b;
+			red real[2] sum1(0.0) (a, b) : return a + b;
+			red int sum1(0) (a, b) : return a + b;
 			''')
 		Assert.assertNotNull(moduleOk)
 		moduleOk.assertNoErrors

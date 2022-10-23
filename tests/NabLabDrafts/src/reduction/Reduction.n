@@ -13,24 +13,24 @@ with Math.*;
 
 with CartesianMesh2D.*;
 
-def nodeVelocityBoundaryConditionCorner: ℕ × ℝ[2] × ℕ × ℝ[2] × ℝ[2,2] × ℝ[2] × ℝ[2] → ℝ[2], (BC1, BCValue1, BC2, BCValue2, Mp, Gp, lp_np)→ {
+def real[2] nodeVelocityBoundaryConditionCorner(int BC1, real[2] BCValue1, int BC2, real[2] BCValue2, real[2,2] Mp, real[2] Gp, real[2] lp_np) {
 	return [0., 0.];
 }
 
 // Simulation options
-let ℝ maxTime = 0.1;
-let ℕ maxIter = 500;
-let ℝ δt = 0.01;
+let real maxTime = 0.1;
+let int maxIter = 500;
+let real delta_t = 0.01;
 
-ℝ t;
-ℝ[2] X{nodes};
-ℝ[2] Vnode{nodes};
-ℝ[2] lpc_n{nodes, cellsOfNode}; // Corner normal --> "lpc npc" 
+real t;
+real[2] X{nodes};
+real[2] Vnode{nodes};
+real[2] lpc_n{nodes, cellsOfNode}; // Corner normal --> "lpc npc" 
 
 iterate n while (n <= 2);
 
-ComputeGeometry: ∀c∈cells(), ∀p∈nodesOfCell(c), lpc_n{p,c}  = [1.0, 1.0];
+ComputeGeometry: forall c in cells(), forall p in nodesOfCell(c), lpc_n{p,c}  = [1.0, 1.0];
 
-ComputeBoundaryNodeVelocities: ∀p∈nodes("TopLeftNode"), Vnode^{n+1}{p} = nodeVelocityBoundaryConditionCorner(1, [0., 0.], 1, [0., 0.], [[1., 1.],[1., 1.]], [1., 1.], ∑{c∈cellsOfNode(p)}(lpc_n{p,c}));
+ComputeBoundaryNodeVelocities: forall p in nodes("TopLeftNode"), Vnode^{n+1}{p} = nodeVelocityBoundaryConditionCorner(1, [0., 0.], 1, [0., 0.], [[1., 1.],[1., 1.]], [1., 1.], sum{c in cellsOfNode(p)}(lpc_n{p,c}));
 
-UpdateTime: t^{n+1} = t^{n}+δt;
+UpdateTime: t^{n+1} = t^{n}+delta_t;

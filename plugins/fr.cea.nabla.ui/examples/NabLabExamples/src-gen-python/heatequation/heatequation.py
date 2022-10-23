@@ -11,7 +11,7 @@ from pvdfilewriter2d import PvdFileWriter2D
 class HeatEquation:
 	PI = 3.1415926
 	alpha = 1.0
-	deltat = 0.001
+	delta_t = 0.001
 
 	def __init__(self, mesh):
 		self.__mesh = mesh
@@ -43,7 +43,7 @@ class HeatEquation:
 
 	"""
 	 Job computeOutgoingFlux called @1.0 in executeTimeLoopN method.
-	 In variables: V, center, deltat, surface, u_n
+	 In variables: V, center, delta_t, surface, u_n
 	 Out variables: outgoingFlux
 	"""
 	def _computeOutgoingFlux(self):
@@ -59,7 +59,7 @@ class HeatEquation:
 				cfFaces = cfId
 				reduction1 = (self.u_n[j2Cells] - self.u_n[j1Cells]) / self.__norm(self.__operatorSub(self.center[j2Cells], self.center[j1Cells])) * self.surface[cfFaces]
 				reduction0 = self.__sumR0(reduction0, reduction1)
-			self.outgoingFlux[j1Cells] = self.deltat / self.V[j1Cells] * reduction0
+			self.outgoingFlux[j1Cells] = self.delta_t / self.V[j1Cells] * reduction0
 
 	"""
 	 Job computeSurface called @1.0 in simulate method.
@@ -82,11 +82,11 @@ class HeatEquation:
 
 	"""
 	 Job computeTn called @1.0 in executeTimeLoopN method.
-	 In variables: deltat, t_n
+	 In variables: delta_t, t_n
 	 Out variables: t_nplus1
 	"""
 	def _computeTn(self):
-		self.t_nplus1 = self.t_n + self.deltat
+		self.t_nplus1 = self.t_n + self.delta_t
 
 	"""
 	 Job computeV called @1.0 in simulate method.
@@ -143,12 +143,12 @@ class HeatEquation:
 
 	"""
 	 Job computeUn called @2.0 in executeTimeLoopN method.
-	 In variables: deltat, f, outgoingFlux, u_n
+	 In variables: delta_t, f, outgoingFlux, u_n
 	 Out variables: u_nplus1
 	"""
 	def _computeUn(self):
 		for jCells in range(self.__nbCells):
-			self.u_nplus1[jCells] = self.f[jCells] * self.deltat + self.u_n[jCells] + self.outgoingFlux[jCells]
+			self.u_nplus1[jCells] = self.f[jCells] * self.delta_t + self.u_n[jCells] + self.outgoingFlux[jCells]
 
 	"""
 	 Job iniUn called @2.0 in simulate method.
@@ -178,7 +178,7 @@ class HeatEquation:
 		continueLoop = True
 		while continueLoop:
 			self.n += 1
-			print("START ITERATION n: %5d - t: %5.5f - deltat: %5.5f\n" % (self.n, self.t_n, self.deltat))
+			print("START ITERATION n: %5d - t: %5.5f - delta_t: %5.5f\n" % (self.n, self.t_n, self.delta_t))
 			if (self.n >= self.lastDump + self.outputPeriod):
 				self.__dumpVariables(self.n)
 		
@@ -193,7 +193,7 @@ class HeatEquation:
 			for i1Cells in range(self.__nbCells):
 				self.u_n[i1Cells] = self.u_nplus1[i1Cells]
 		
-		print("FINAL TIME: %5.5f - deltat: %5.5f\n" % (self.t_n, self.deltat))
+		print("FINAL TIME: %5.5f - delta_t: %5.5f\n" % (self.t_n, self.delta_t))
 		self.__dumpVariables(self.n+1);
 
 	def __det(self, a, b):

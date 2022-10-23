@@ -38,7 +38,7 @@ private:
 	int nbNodes, nbCells, nbFaces, nbNodesOfCell;
 
 	// Global Variables
-	double t, deltat, t_n_plus_1;
+	double t, delta_t, t_n_plus_1;
 
 	// Array Variables
 	Kokkos::View<Real2*> X;
@@ -91,7 +91,7 @@ private:
 		});
 	}
 	
-	// δt = 1/4 * ∑{j∈cells()}(V{j})
+	// delta_t = 1/4 * ∑{j in cells()}(V{j})
 	void bidonVolume()
 	{
 		double sum = 0.0;
@@ -102,7 +102,7 @@ private:
 		double bidon = 1/4 * sum;
 	}
 
-	// ∀j∈cells(),∀r∈nodesOfCell(j), C_ic{j,r} = 0.5 * norm(X{r});
+	// forall j in cells(),forall r in nodesOfCell(j), C_ic{j,r} = 0.5 * norm(X{r});
 	void bidonDoubleBoucle()
 	{
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int jCells)
@@ -215,16 +215,16 @@ private:
 	/**
 	 * Job Init_deltat @-1.0
 	 * In variables: 
-	 * Out variables: deltat
+	 * Out variables: delta_t
 	 */
 	void init_deltat()
 	{
-		deltat = 0.001;
+		delta_t = 0.001;
 	}
 
 	/**
 	 * Job ComputeTmp @1.0
-	 * In variables: u, center, surface, deltat, V
+	 * In variables: u, center, surface, delta_t, V
 	 * Out variables: tmp
 	 */
 	void computeTmp()
@@ -240,18 +240,18 @@ private:
 				int j2Cells = j2Id;
 				sum1 += ((u(j2Cells) - u(j1Cells)) / (MathFunctions::norm(center(j2Cells) - center(j1Cells))) * surface(mesh->getCommonFace(j1Id, j2Id)));
 			}
-			tmp(j1Cells) = deltat / V(j1Cells) * sum1;
+			tmp(j1Cells) = delta_t / V(j1Cells) * sum1;
 		});
 	}
 	
 	/**
 	 * Job Compute_ComputeTn @1.0
-	 * In variables: t, deltat
+	 * In variables: t, delta_t
 	 * Out variables: t_n_plus_1
 	 */
 	void compute_ComputeTn()
 	{
-		t_n_plus_1 = t + deltat;
+		t_n_plus_1 = t + delta_t;
 	}
 	
 	/**
@@ -268,14 +268,14 @@ private:
 	
 	/**
 	 * Job Compute_ComputeUn @2.0
-	 * In variables: f, deltat, u, tmp
+	 * In variables: f, delta_t, u, tmp
 	 * Out variables: u_n_plus_1
 	 */
 	void compute_ComputeUn()
 	{
 		Kokkos::parallel_for(nbCells, KOKKOS_LAMBDA(const int jCells)
 		{
-			u_n_plus_1(jCells) = f(jCells) * deltat + u(jCells) + tmp(jCells);
+			u_n_plus_1(jCells) = f(jCells) * delta_t + u(jCells) + tmp(jCells);
 		});
 	}
 	

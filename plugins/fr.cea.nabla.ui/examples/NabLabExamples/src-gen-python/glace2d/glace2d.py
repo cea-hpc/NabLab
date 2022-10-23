@@ -11,9 +11,9 @@ from pvdfilewriter2d import PvdFileWriter2D
 class Glace2d:
 	gamma = 1.4
 	xInterface = 0.5
-	deltatCfl = 0.4
-	rhoIniZg = 1.0
-	rhoIniZd = 0.125
+	delta_tCfl = 0.4
+	rho_IniZg = 1.0
+	rho_IniZd = 0.125
 	pIniZg = 1.0
 	pIniZd = 0.1
 
@@ -51,7 +51,7 @@ class Glace2d:
 		self.E_n = np.empty((self.__nbCells), dtype=np.double)
 		self.E_nplus1 = np.empty((self.__nbCells), dtype=np.double)
 		self.V = np.empty((self.__nbCells), dtype=np.double)
-		self.deltatj = np.empty((self.__nbCells), dtype=np.double)
+		self.delta_tj = np.empty((self.__nbCells), dtype=np.double)
 		self.uj_n = np.empty((self.__nbCells, 2), dtype=np.double)
 		self.uj_nplus1 = np.empty((self.__nbCells, 2), dtype=np.double)
 		self.l = np.empty((self.__nbCells, 4), dtype=np.double)
@@ -148,7 +148,7 @@ class Glace2d:
 
 	"""
 	 Job initialize called @2.0 in simulate method.
-	 In variables: Cjr_ic, X_n0, gamma, pIniZd, pIniZg, rhoIniZd, rhoIniZg, xInterface
+	 In variables: Cjr_ic, X_n0, gamma, pIniZd, pIniZg, rho_IniZd, rho_IniZg, xInterface
 	 Out variables: E_n, m, p, rho, uj_n
 	"""
 	def _initialize(self):
@@ -163,10 +163,10 @@ class Glace2d:
 				reduction0 = self.__sumR1(reduction0, self.X_n0[rNodes])
 			center = self.__operatorMult(0.25, reduction0)
 			if center[0] < self.xInterface:
-				rho_ic = self.rhoIniZg
+				rho_ic = self.rho_IniZg
 				p_ic = self.pIniZg
 			else:
-				rho_ic = self.rhoIniZd
+				rho_ic = self.rho_IniZd
 				p_ic = self.pIniZd
 			reduction1 = 0.0
 			nodesOfCellJ = mesh.getNodesOfCell(jId)
@@ -210,11 +210,11 @@ class Glace2d:
 	def _executeTimeLoopN(self):
 		self.n = 0
 		self.t_n = 0.0
-		self.deltat = 0.0
+		self.delta_t = 0.0
 		continueLoop = True
 		while continueLoop:
 			self.n += 1
-			print("START ITERATION n: %5d - t: %5.5f - deltat: %5.5f\n" % (self.n, self.t_n, self.deltat))
+			print("START ITERATION n: %5d - t: %5.5f - delta_t: %5.5f\n" % (self.n, self.t_n, self.delta_t))
 			if (self.n >= self.lastDump + self.outputPeriod):
 				self.__dumpVariables(self.n)
 		
@@ -253,7 +253,7 @@ class Glace2d:
 				for i1 in range(2):
 					self.uj_n[i1Cells, i1] = self.uj_nplus1[i1Cells, i1]
 		
-		print("FINAL TIME: %5.5f - deltat: %5.5f\n" % (self.t_n, self.deltat))
+		print("FINAL TIME: %5.5f - delta_t: %5.5f\n" % (self.t_n, self.delta_t))
 		self.__dumpVariables(self.n+1);
 
 	"""
@@ -290,7 +290,7 @@ class Glace2d:
 	"""
 	 Job computedeltatj called @6.0 in executeTimeLoopN method.
 	 In variables: V, c, l
-	 Out variables: deltatj
+	 Out variables: delta_tj
 	"""
 	def _computedeltatj(self):
 		for jCells in range(self.__nbCells):
@@ -300,7 +300,7 @@ class Glace2d:
 			nbNodesOfCellJ = len(nodesOfCellJ)
 			for rNodesOfCellJ in range(nbNodesOfCellJ):
 				reduction0 = self.__sumR0(reduction0, self.l[jCells, rNodesOfCellJ])
-			self.deltatj[jCells] = 2.0 * self.V[jCells] / (self.c[jCells] * reduction0)
+			self.delta_tj[jCells] = 2.0 * self.V[jCells] / (self.c[jCells] * reduction0)
 
 	"""
 	 Job computeAr called @7.0 in executeTimeLoopN method.
@@ -343,14 +343,14 @@ class Glace2d:
 
 	"""
 	 Job computeDt called @7.0 in executeTimeLoopN method.
-	 In variables: deltatCfl, deltatj, stopTime, t_n
-	 Out variables: deltat
+	 In variables: delta_tCfl, delta_tj, stopTime, t_n
+	 Out variables: delta_t
 	"""
 	def _computeDt(self):
 		reduction0 = sys.float_info.max
 		for jCells in range(self.__nbCells):
-			reduction0 = self.__minR0(reduction0, self.deltatj[jCells])
-		self.deltat = min((self.deltatCfl * reduction0), (self.stopTime - self.t_n))
+			reduction0 = self.__minR0(reduction0, self.delta_tj[jCells])
+		self.delta_t = min((self.delta_tCfl * reduction0), (self.stopTime - self.t_n))
 
 	"""
 	 Job computeBoundaryConditions called @8.0 in executeTimeLoopN method.
@@ -423,11 +423,11 @@ class Glace2d:
 
 	"""
 	 Job computeTn called @8.0 in executeTimeLoopN method.
-	 In variables: deltat, t_n
+	 In variables: delta_t, t_n
 	 Out variables: t_nplus1
 	"""
 	def _computeTn(self):
-		self.t_nplus1 = self.t_n + self.deltat
+		self.t_nplus1 = self.t_n + self.delta_t
 
 	"""
 	 Job computeU called @9.0 in executeTimeLoopN method.
@@ -455,16 +455,16 @@ class Glace2d:
 
 	"""
 	 Job computeXn called @10.0 in executeTimeLoopN method.
-	 In variables: X_n, deltat, ur
+	 In variables: X_n, delta_t, ur
 	 Out variables: X_nplus1
 	"""
 	def _computeXn(self):
 		for rNodes in range(self.__nbNodes):
-			self.X_nplus1[rNodes] = self.__operatorAdd(self.X_n[rNodes], self.__operatorMult(self.deltat, self.ur[rNodes]))
+			self.X_nplus1[rNodes] = self.__operatorAdd(self.X_n[rNodes], self.__operatorMult(self.delta_t, self.ur[rNodes]))
 
 	"""
 	 Job computeEn called @11.0 in executeTimeLoopN method.
-	 In variables: E_n, F, deltat, m, ur
+	 In variables: E_n, F, delta_t, m, ur
 	 Out variables: E_nplus1
 	"""
 	def _computeEn(self):
@@ -477,11 +477,11 @@ class Glace2d:
 				rId = nodesOfCellJ[rNodesOfCellJ]
 				rNodes = rId
 				reduction0 = self.__sumR0(reduction0, self.__dot(self.F[jCells, rNodesOfCellJ], self.ur[rNodes]))
-			self.E_nplus1[jCells] = self.E_n[jCells] - (self.deltat / self.m[jCells]) * reduction0
+			self.E_nplus1[jCells] = self.E_n[jCells] - (self.delta_t / self.m[jCells]) * reduction0
 
 	"""
 	 Job computeUn called @11.0 in executeTimeLoopN method.
-	 In variables: F, deltat, m, uj_n
+	 In variables: F, delta_t, m, uj_n
 	 Out variables: uj_nplus1
 	"""
 	def _computeUn(self):
@@ -492,7 +492,7 @@ class Glace2d:
 			nbNodesOfCellJ = len(nodesOfCellJ)
 			for rNodesOfCellJ in range(nbNodesOfCellJ):
 				reduction0 = self.__sumR1(reduction0, self.F[jCells, rNodesOfCellJ])
-			self.uj_nplus1[jCells] = self.__operatorSub(self.uj_n[jCells], self.__operatorMult((self.deltat / self.m[jCells]), reduction0))
+			self.uj_nplus1[jCells] = self.__operatorSub(self.uj_n[jCells], self.__operatorMult((self.delta_t / self.m[jCells]), reduction0))
 
 	def __det1(self, a):
 		return a[0, 0] * a[1, 1] - a[0, 1] * a[1, 0]

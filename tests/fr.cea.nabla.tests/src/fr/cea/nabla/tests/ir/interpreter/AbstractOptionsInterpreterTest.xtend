@@ -25,20 +25,20 @@ abstract class AbstractOptionsInterpreterTest
 
 	with CartesianMesh2D.*;
 
-	ℕ A;
-	let ℕ B = A / 2 + 4;
-	ℝ C;
-	ℝ[3] D;
-	ℝ[2, 3] M;
+	int A;
+	let int B = A / 2 + 4;
+	real C;
+	real[3] D;
+	real[2, 3] M;
 
-	ℕ max_time_iterations;
-	ℝ final_time;
+	int max_time_iterations;
+	real final_time;
 
-	let ℝ t = 0.0;
-	let ℝ δt = 0.001;
+	let real t = 0.0;
+	let real delta_t = 0.001;
 
-	ℝ[2] X{nodes};
-	J: let ℝ s = 3.33;
+	real[2] X{nodes};
+	J: let real s = 3.33;
 	'''
 
 	@Test

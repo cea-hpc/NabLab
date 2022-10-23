@@ -365,7 +365,7 @@ void Glace2dModule::computeV()
 
 /**
  * Job initialize called @2.0 in simulate method.
- * In variables: Cjr_ic, X_n0, gamma, pIniZd, pIniZg, rhoIniZd, rhoIniZg, xInterface
+ * In variables: Cjr_ic, X_n0, gamma, pIniZd, pIniZg, rho_IniZd, rho_IniZg, xInterface
  * Out variables: E_n, m, p, rho, uj_n
  */
 void Glace2dModule::initialize()
@@ -391,12 +391,12 @@ void Glace2dModule::initialize()
 			const Real2 center(glace2dfreefuncs::operatorMult(0.25, reduction0));
 			if (center[0] < m_xInterface) 
 			{
-				rho_ic = m_rhoIniZg;
+				rho_ic = m_rho_IniZg;
 				p_ic = m_pIniZg;
 			}
 			else
 			{
-				rho_ic = m_rhoIniZd;
+				rho_ic = m_rho_IniZd;
 				p_ic = m_pIniZd;
 			}
 			Real reduction1(0.0);
@@ -581,7 +581,7 @@ void Glace2dModule::computeAjr()
 /**
  * Job computedeltatj called @6.0 in executeTimeLoopN method.
  * In variables: V, c, l
- * Out variables: deltatj
+ * Out variables: delta_tj
  */
 void Glace2dModule::computedeltatj()
 {
@@ -599,7 +599,7 @@ void Glace2dModule::computedeltatj()
 					reduction0 = glace2dfreefuncs::sumR0(reduction0, m_l[jCells][rNodesOfCellJ]);
 				}
 			}
-			m_deltatj[jCells] = 2.0 * m_V[jCells] / (m_c[jCells] * reduction0);
+			m_delta_tj[jCells] = 2.0 * m_V[jCells] / (m_c[jCells] * reduction0);
 		}
 	});
 }
@@ -673,18 +673,18 @@ void Glace2dModule::computeBr()
 
 /**
  * Job computeDt called @7.0 in executeTimeLoopN method.
- * In variables: deltatCfl, deltatj, stopTime, t_n
- * Out variables: deltat
+ * In variables: delta_tCfl, delta_tj, stopTime, t_n
+ * Out variables: delta_t
  */
 void Glace2dModule::computeDt()
 {
 	Real reduction0(numeric_limits<double>::max());
 	ENUMERATE_CELL(jCells, allCells())
 	{
-		reduction0 = glace2dfreefuncs::minR0(reduction0, m_deltatj[jCells]);
+		reduction0 = glace2dfreefuncs::minR0(reduction0, m_delta_tj[jCells]);
 	}
-	m_deltat = std::min((m_deltatCfl * reduction0), (options()->stopTime() - m_t_n));
-	m_global_deltat = m_deltat;
+	m_delta_t = std::min((m_delta_tCfl * reduction0), (options()->stopTime() - m_t_n));
+	m_global_deltat = m_delta_t;
 }
 
 /**
@@ -802,12 +802,12 @@ void Glace2dModule::computeMt()
 
 /**
  * Job computeTn called @8.0 in executeTimeLoopN method.
- * In variables: deltat, t_n
+ * In variables: delta_t, t_n
  * Out variables: t_nplus1
  */
 void Glace2dModule::computeTn()
 {
-	m_t_nplus1 = m_t_n + m_deltat;
+	m_t_nplus1 = m_t_n + m_delta_t;
 }
 
 /**
@@ -854,7 +854,7 @@ void Glace2dModule::computeFjr()
 
 /**
  * Job computeXn called @10.0 in executeTimeLoopN method.
- * In variables: X_n, deltat, ur
+ * In variables: X_n, delta_t, ur
  * Out variables: X_nplus1
  */
 void Glace2dModule::computeXn()
@@ -863,14 +863,14 @@ void Glace2dModule::computeXn()
 	{
 		ENUMERATE_NODE(rNodes, view)
 		{
-			m_X_nplus1[rNodes] = glace2dfreefuncs::operatorAdd(m_X_n[rNodes], glace2dfreefuncs::operatorMult(m_deltat, m_ur[rNodes]));
+			m_X_nplus1[rNodes] = glace2dfreefuncs::operatorAdd(m_X_n[rNodes], glace2dfreefuncs::operatorMult(m_delta_t, m_ur[rNodes]));
 		}
 	});
 }
 
 /**
  * Job computeEn called @11.0 in executeTimeLoopN method.
- * In variables: E_n, F, deltat, m, ur
+ * In variables: E_n, F, delta_t, m, ur
  * Out variables: E_nplus1
  */
 void Glace2dModule::computeEn()
@@ -891,14 +891,14 @@ void Glace2dModule::computeEn()
 					reduction0 = glace2dfreefuncs::sumR0(reduction0, glace2dfreefuncs::dot(m_F[jCells][rNodesOfCellJ], m_ur[rNodes]));
 				}
 			}
-			m_E_nplus1[jCells] = m_E_n[jCells] - (m_deltat / m_m[jCells]) * reduction0;
+			m_E_nplus1[jCells] = m_E_n[jCells] - (m_delta_t / m_m[jCells]) * reduction0;
 		}
 	});
 }
 
 /**
  * Job computeUn called @11.0 in executeTimeLoopN method.
- * In variables: F, deltat, m, uj_n
+ * In variables: F, delta_t, m, uj_n
  * Out variables: uj_nplus1
  */
 void Glace2dModule::computeUn()
@@ -917,7 +917,7 @@ void Glace2dModule::computeUn()
 					reduction0 = glace2dfreefuncs::sumR1(reduction0, m_F[jCells][rNodesOfCellJ]);
 				}
 			}
-			m_uj_nplus1[jCells] = glace2dfreefuncs::operatorSub(m_uj_n[jCells], glace2dfreefuncs::operatorMult((m_deltat / m_m[jCells]), reduction0));
+			m_uj_nplus1[jCells] = glace2dfreefuncs::operatorSub(m_uj_n[jCells], glace2dfreefuncs::operatorMult((m_delta_t / m_m[jCells]), reduction0));
 		}
 	});
 }

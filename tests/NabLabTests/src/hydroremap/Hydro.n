@@ -12,23 +12,23 @@ module Hydro;
 with CartesianMesh2D.*;
 with Assert.*;
 
-ℕ maxIter;
-ℝ maxTime, δt;
-let ℝ t = 0.0;
-ℝ[2] X{nodes};
-ℝ hv1{cells}, hv2{cells}, hv3{cells}, hv4{cells}, hv5{cells}, hv6{cells}, hv7{cells};
+int maxIter;
+real maxTime, delta_t;
+let real t = 0.0;
+real[2] X{nodes};
+real hv1{cells}, hv2{cells}, hv3{cells}, hv4{cells}, hv5{cells}, hv6{cells}, hv7{cells};
 
-IniHv1: ∀c∈cells(), hv1{c} = 2.0;
-IniHv2: ∀c∈cells(), hv2{c} = 0.0;
+IniHv1: forall c in cells(), hv1{c} = 2.0;
+IniHv2: forall c in cells(), hv2{c} = 0.0;
 
-Hj1: ∀c∈cells(), hv3{c} = hv2{c} + 1.0;
-Hj2: ∀c∈cells(), hv5{c} = hv3{c} + 2.0;
-Hj3: ∀c∈cells(), hv7{c} = hv4{c} + hv5{c} + hv6{c};
+Hj1: forall c in cells(), hv3{c} = hv2{c} + 1.0;
+Hj2: forall c in cells(), hv5{c} = hv3{c} + 2.0;
+Hj3: forall c in cells(), hv7{c} = hv4{c} + hv5{c} + hv6{c};
 
-OracleHv1: ∀c∈cells(), let ℾ testHv1 = assertEquals(2.0, hv1{c});
-OracleHv2: ∀c∈cells(), let ℾ testHv2 = assertEquals(0.0, hv2{c});
-OracleHv3: ∀c∈cells(), let ℾ testHv3 = assertEquals(1.0, hv3{c});
-OracleHv4: ∀c∈cells(), let ℾ testHv4 = assertEquals(4.0, hv4{c});
-OracleHv5: ∀c∈cells(), let ℾ testHv5 = assertEquals(3.0, hv5{c});
-OracleHv6: ∀c∈cells(), let ℾ testHv6 = assertEquals(6.0, hv6{c});
-OracleHv7: ∀c∈cells(), let ℾ testHv7 = assertEquals(13.0, hv7{c});
+OracleHv1: forall c in cells(), let bool testHv1 = assertEquals(2.0, hv1{c});
+OracleHv2: forall c in cells(), let bool testHv2 = assertEquals(0.0, hv2{c});
+OracleHv3: forall c in cells(), let bool testHv3 = assertEquals(1.0, hv3{c});
+OracleHv4: forall c in cells(), let bool testHv4 = assertEquals(4.0, hv4{c});
+OracleHv5: forall c in cells(), let bool testHv5 = assertEquals(3.0, hv5{c});
+OracleHv6: forall c in cells(), let bool testHv6 = assertEquals(6.0, hv6{c});
+OracleHv7: forall c in cells(), let bool testHv7 = assertEquals(13.0, hv7{c});

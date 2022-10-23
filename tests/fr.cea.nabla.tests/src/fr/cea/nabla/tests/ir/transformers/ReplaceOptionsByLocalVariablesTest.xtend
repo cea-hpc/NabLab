@@ -41,14 +41,14 @@ class ReplaceOptionsByLocalVariablesTest
 		val model =
 		'''
 		«testModule»
-		ℝ[2] X{nodes};
-		ℝ my_opt;
-		ℝ u{cells};
+		real[2] X{nodes};
+		real my_opt;
+		real u{cells};
 
 		iterate n while (n < 2);
 
 		// A job with a loop and an option
-		J1: ∀j∈cells(), u^{n+1}{j} = u^{n}{j} + my_opt;
+		J1: forall j in cells(), u^{n+1}{j} = u^{n}{j} + my_opt;
 		'''
 
 		val ir = compilationHelper.getRawIr(model, testGenModel)

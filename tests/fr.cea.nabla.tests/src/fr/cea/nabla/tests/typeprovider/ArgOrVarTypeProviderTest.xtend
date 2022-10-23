@@ -42,6 +42,7 @@ import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.eclipse.xtext.validation.Issue
 
 /**
  * Test ArgOrVarTypeProvider class.
@@ -66,7 +67,7 @@ class ArgOrVarTypeProviderTest
 		'''
 		linearalgebra extension LinearAlgebra;
 
-		def solveLinearSystem: x | ℝ[x, x] × ℝ[x] → ℝ[x], (a, b) → return b;
+		def <x> real[x] solveLinearSystem(real[x, x] a, real[x] b) return b;
 		'''
 
 		val nablaModel =
@@ -76,76 +77,76 @@ class ArgOrVarTypeProviderTest
 		with LinearAlgebra.*;
 		with CartesianMesh2D.*;
 
-		def norm: x | ℝ[x] → ℝ, (a) → return 1.0;
+		def <x> real norm(real[x] a) return 1.0;
 
 		// bool scalar
-		ℾ b;
-		let ℾ optb = false;
+		bool b;
+		let bool optb = false;
 
 		// int scalar
-		ℕ i;
-		let ℕ opti = 3;
+		int i;
+		let int opti = 3;
 
 		// real scalar
-		ℝ r;
-		let ℝ optr = 3.3;
+		real r;
+		let real optr = 3.3;
 
 		// bool array 1D
-		ℾ[2] tabb;
-		let ℾ[3] opttabb = [ true, false, true ];
+		bool[2] tabb;
+		let bool[3] opttabb = [ true, false, true ];
 
 		// int array 1D
-		ℕ[2] tabi;
-		let ℕ[3] opttabi = [ 3, 4, 5 ];
+		int[2] tabi;
+		let int[3] opttabi = [ 3, 4, 5 ];
 
 		// real array 1D
-		ℝ[2] tabr;
-		let ℝ[3] opttabr = [ 1.1, 2.2, 3.3 ];
+		real[2] tabr;
+		let real[3] opttabr = [ 1.1, 2.2, 3.3 ];
 
 		// bool array 2D
-		ℾ[2, 3] tab2b;
-		let ℾ[3, 2] opttab2b = [ [true, false], [true, false], [true, false] ];
+		bool[2, 3] tab2b;
+		let bool[3, 2] opttab2b = [ [true, false], [true, false], [true, false] ];
 
 		// int array 2D
-		ℕ[2, 3] tab2i;
-		let ℕ[3, 2] opttab2i = [ [1, 2], [3, 4], [5, 6] ];
+		int[2, 3] tab2i;
+		let int[3, 2] opttab2i = [ [1, 2], [3, 4], [5, 6] ];
 
 		// real array 2D
-		ℝ[2, 3] tab2r;
-		let ℝ[3, 2] opttab2r = [ [1.1, 2.2], [3.3, 4.4], [5.5, 6.6] ];
+		real[2, 3] tab2r;
+		let real[3, 2] opttab2r = [ [1.1, 2.2], [3.3, 4.4], [5.5, 6.6] ];
 
 		// array with size from a const
-		let ℕ dim = 6;
-		ℝ[dim] dimtab;
+		let int dim = 6;
+		real[dim] dimtab;
 
 		// dynamic array not allowed on global variables
 		// except with options
-		ℕ dyndimopt;
-		ℝ[dyndimopt] dyndimtabopt;
+		int dyndimopt;
+		real[dyndimopt] dyndimtabopt;
 
 		// connectivity variables
-		ℝ[2] X{nodes};
-		ℝ pressure{cells};
-		ℝ Cjr{cells, nodesOfCell};
-		ℝ[2] w{cells, nodesOfCell};
+		real[2] X{nodes};
+		real pressure{cells};
+		real Cjr{cells, nodesOfCell};
+		real[2] w{cells, nodesOfCell};
 
 		// linear algebra
-		ℝ u{cells};
-		ℝ α{cells, cells};
+		real u{cells};
+		real alpha{cells, cells};
 
 		iterate n while (true);
 
-		UpdateU: u^{n+1} = solveLinearSystem(α, u^{n});
+		UpdateU: u^{n+1} = solveLinearSystem(alpha, u^{n});
 
 		// local variable
-		ComputeX: ∀ j∈cells(), {
-			let ℝ ee = 1.0;
+		ComputeX: forall  j in cells(), {
+			let real ee = 1.0;
 			u^{n}{j} = ee * 4;
-			∀r∈nodesOfCell(j), Cjr{j,r} = norm(w{j,r});
+			forall r in nodesOfCell(j), Cjr{j,r} = norm(w{j,r});
 		}
 
-		TestSpaceIteratorIndex: ∀r, spaceIteratorIndex ∈ nodes(), X{r}[spaceIteratorIndex] = 0.0;
-		TestIntervalIndex: ∀r∈nodes(), ∀intervalIndex∈[0;2[, X{r}[intervalIndex] = 0.0;
+		TestSpaceIteratorIndex: forall r, spaceIteratorIndex in nodes(), X{r}[spaceIteratorIndex] = 0.0;
+		TestIntervalIndex: forall r in nodes(), forall intervalIndex in [0;2[, X{r}[intervalIndex] = 0.0;
 		'''
 
 		val rs = resourceSetProvider.get
@@ -153,6 +154,12 @@ class ArgOrVarTypeProviderTest
 		val linearAlgebraExt = parseHelper.parse(lightLinearAlgebraModel, rs) as DefaultExtension
 		val module = parseHelper.parse(nablaModel, rs) as NablaModule
 		Assert.assertNotNull(module)
+		for(Issue iss : module.validate){
+			if(iss.severity == Severity.ERROR)
+				println(
+					iss.toString
+				)
+		}
 		Assert.assertEquals(0, module.validate.filter(i | i.severity == Severity.ERROR).size)
 
 		// bool scalar
@@ -215,7 +222,7 @@ class ArgOrVarTypeProviderTest
 		Assert.assertEquals(new NablaConnectivityType(#[cells, nodesOfCell], new NSTRealArray1D(createIntConstant(2), 2)), module.getVarByName("w").typeFor)
 
 		// linear algebra
-		Assert.assertEquals(new NLATMatrix(linearAlgebraExt, createCardExpression(cells), createCardExpression(cells), -1, -1), module.getVarByName("α").typeFor)
+		Assert.assertEquals(new NLATMatrix(linearAlgebraExt, createCardExpression(cells), createCardExpression(cells), -1, -1), module.getVarByName("alpha").typeFor)
 		Assert.assertEquals(new NLATVector(linearAlgebraExt, createCardExpression(cells), -1), module.getVarByName("u").typeFor)
 
 		// local variable

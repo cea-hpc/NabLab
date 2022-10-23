@@ -11,7 +11,7 @@ module Remap;
 
 with CartesianMesh2D.*;
 
-ℝ rv1{cells}, rv2{cells}, rv3{cells};
+real rv1{cells}, rv2{cells}, rv3{cells};
 
-Rj1: ∀c∈cells(), rv2{c} = rv1{c} * 2.0;
-Rj2: ∀c∈cells(), rv3{c} = rv2{c} * 3.0;
+Rj1: forall c in cells(), rv2{c} = rv1{c} * 2.0;
+Rj2: forall c in cells(), rv3{c} = rv2{c} * 3.0;

@@ -81,7 +81,7 @@ public:
 	int k;
 	int l;
 	static constexpr double maxTime = 0.1;
-	static constexpr double deltat = 1.0;
+	static constexpr double delta_t = 1.0;
 	double t_n;
 	double t_nplus1;
 	double t_n0;

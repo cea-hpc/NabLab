@@ -27,7 +27,8 @@ import fr.cea.nabla.nabla.Exit
 import fr.cea.nabla.nabla.Expression
 import fr.cea.nabla.nabla.Function
 import fr.cea.nabla.nabla.FunctionCall
-import fr.cea.nabla.nabla.FunctionTypeDeclaration
+import fr.cea.nabla.nabla.FunctionInTypeDeclaration
+import fr.cea.nabla.nabla.FunctionReturnTypeDeclaration
 import fr.cea.nabla.nabla.If
 import fr.cea.nabla.nabla.InitTimeIteratorRef
 import fr.cea.nabla.nabla.InstructionBlock
@@ -47,6 +48,7 @@ import fr.cea.nabla.nabla.Not
 import fr.cea.nabla.nabla.Or
 import fr.cea.nabla.nabla.Parenthesis
 import fr.cea.nabla.nabla.Plus
+import fr.cea.nabla.nabla.PrimitiveType
 import fr.cea.nabla.nabla.RealConstant
 import fr.cea.nabla.nabla.Reduction
 import fr.cea.nabla.nabla.ReductionCall
@@ -68,7 +70,7 @@ class LabelServices
 	static def dispatch String getLabel(SimpleVarDeclaration it) { if (value === null) variable?.name else variable?.name + '=' + value.label }
 	static def dispatch String getLabel(VarGroupDeclaration it) { type?.label + ' ' + variables?.map[x|x?.name].join(', ') }
 	static def dispatch String getLabel(InstructionBlock it) { '{ ... }' }
-	static def dispatch String getLabel(Loop it) { '\u2200 ' + iterationBlock?.label + ', ' + body?.label }
+	static def dispatch String getLabel(Loop it) { 'forall ' + iterationBlock?.label + ', ' + body?.label }
 	static def dispatch String getLabel(Affectation it) { left?.label + ' = ' + right?.label }
 	static def dispatch String getLabel(If it)
 	{
@@ -81,8 +83,8 @@ class LabelServices
 	static def dispatch String getLabel(Exit it) { 'Exit "' + message + '"'}
 
 	/* ITERATEURS ********************************************/
-	static def dispatch String getLabel(SpaceIterator it) { name + '\u2208 ' + container?.label }
-	static def dispatch String getLabel(Interval it) { index?.name + '\u2208' + nbElems?.label }
+	static def dispatch String getLabel(SpaceIterator it) { name + 'in' + container?.label }
+	static def dispatch String getLabel(Interval it) { index?.name + 'in' + nbElems?.label }
 	static def dispatch String getLabel(ItemSetRef it) { target?.name }
 	static def dispatch String getLabel(ConnectivityCall it)
 	{
@@ -106,10 +108,10 @@ class LabelServices
 	static def dispatch String getLabel(NextTimeIteratorRef it) { target?.name + '+' + value }
 
 	/* FONCTIONS / REDUCTIONS ********************************/
-	static def dispatch String getLabel(Function it) { 'def ' + name + ' : ' + getLabel(variables, typeDeclaration) }
-	static def dispatch String getLabel(Reduction it) { 'def ' + name + ', ' + seed?.label + ' : ' + getLabel(variables, typeDeclaration) }
+	static def dispatch String getLabel(Function it) { 'def ' + name + ' : ' + getLabel(variables, it.intypesDeclaration, it.returnTypeDeclaration) }
+	static def dispatch String getLabel(Reduction it) { 'red ' + name + ', ' + seed?.label + ' : ' + getLabel(variables, typeDeclaration) }
 
-	private static def String getLabel(List<SimpleVar> vars, FunctionTypeDeclaration td)
+	private static def String getLabel(List<SimpleVar> vars, List<FunctionInTypeDeclaration> itd, FunctionReturnTypeDeclaration rtd)
 	{
 		var ret = ''
 		if (vars !== null)
@@ -117,10 +119,13 @@ class LabelServices
 			ret += vars.map[name].join(', ')
 			if (!vars.empty) ret += ' | '
 		}
-		if (td !== null)
+		if (itd !== null && itd.size > 0)
 		{
-			ret += td.inTypes?.map[label].join(' \u00D7 ')
-			ret += ' \u2192 ' + td.returnType?.label
+			ret += itd.map[inTypes.label].join(' \u00D7 ')
+		}
+		if (rtd !== null)
+		{
+			ret += ' \u2192 ' + rtd.returnType?.label
 		}
 		return ret
 	}
@@ -156,7 +161,7 @@ class LabelServices
 	static def dispatch String getLabel(RealConstant it) { value.toString }
 	static def dispatch String getLabel(BoolConstant it) { value.toString }
 	static def dispatch String getLabel(MinConstant it) { '-\u221E' }
-	static def dispatch String getLabel(MaxConstant it) { '-\u221E' }
+	static def dispatch String getLabel(MaxConstant it) { '\u221E' }
 	static def dispatch String getLabel(FunctionCall it) { function.name + '(' + args.map[label].join(',') + ')' }
 	static def dispatch String getLabel(ReductionCall it) { reduction.name + '{' + iterationBlock?.label + '}(' + arg?.label + ')' }
 	static def dispatch String getLabel(BaseTypeConstant it) { type?.label + '(' + value?.label + ')' }
@@ -177,13 +182,24 @@ class LabelServices
 	}
 
 	/* TYPES *************************************************/
+	
+	static def dispatch String getLabel(PrimitiveType it)
+	{
+		switch it
+		{ 
+			case REAL : '\u211D'
+			case INT : '\u2115'
+			case BOOL : '\u213E'
+		} 
+	}
+	
 	static def dispatch String getLabel(BaseType it) 
 	{ 
 		if (sizes.empty) 
-			primitive.literal
+			primitive.label
 		else if (sizes.forall[x | x instanceof IntConstant])
-			primitive.literal + sizes.map[x | IrUtils.getUtfExponent((x as IntConstant).value)].join('\u02E3')
+			primitive.label + sizes.map[x | IrUtils.getUtfExponent((x as IntConstant).value)].join('\u02E3')
 		else
-			primitive.literal + '[' + sizes.map[label].join(',') + ']'
+			primitive.label + '[' + sizes.map[label].join(',') + ']'
 	}
 }

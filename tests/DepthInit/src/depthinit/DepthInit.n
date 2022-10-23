@@ -12,13 +12,13 @@ module DepthInit;
 with BathyLib.*;
 with CartesianMesh2D.*;
 
-def two: → ℝ, () → return 2.0;
+def real two() return 2.0;
 
-let ℝ t = 0.0;
-ℕ maxIter;
-ℝ maxTime, δt;
+let real t = 0.0;
+int maxIter;
+real maxTime, delta_t;
 
-ℝ[2] X{nodes};
-ℝ η{cells};
+real[2] X{nodes};
+real nu{cells};
 
-InitFromFile: ∀j∈cells(), η{j} = two() * nextWaveHeight();
+InitFromFile: forall j in cells(), nu{j} = two() * nextWaveHeight();

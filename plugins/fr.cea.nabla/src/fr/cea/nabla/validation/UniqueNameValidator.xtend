@@ -62,7 +62,7 @@ class UniqueNameValidator extends AbstractNablaValidator
 			if (duplicate !== null)
 				error(getDuplicateNameMsg(NablaPackage.Literals.VAR, duplicate.name), NablaPackage.Literals.ARG_OR_VAR__NAME, DUPLICATE_NAME);
 		}
-		else if (eContainer instanceof FunctionOrReduction)
+		else if (eContainer instanceof FunctionOrReduction || eContainer instanceof Function)
 		{
 			val variables = (eContainer as FunctionOrReduction).variables
 			val duplicate = variables.findFirst[x | x.name == name && x != it]
@@ -72,6 +72,7 @@ class UniqueNameValidator extends AbstractNablaValidator
 
 		val scope = scopeProvider.getScope(it, NablaPackage.Literals.ARG_OR_VAR_REF__TARGET)
 		val duplicated = scope.allElements.exists[x | x.name.lastSegment == name]
+		scope.getAllElements()
 		if (duplicated)
 		{
 			error(getDuplicateNameMsg(NablaPackage.Literals.ARG_OR_VAR, name), NablaPackage.Literals.ARG_OR_VAR__NAME, DUPLICATE_NAME);

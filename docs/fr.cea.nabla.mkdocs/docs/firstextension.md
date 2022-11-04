@@ -9,14 +9,14 @@ Let us imagine the NabLab *Swan* module simulating the effects of the propagatio
 
 ```
 // wave initialization 
-InitH: ∀ic∈innerCells(), H{ic} = nextWaveHeight();
+InitH: forall ic in innerCells(), H{ic} = nextWaveHeight();
 
 // depth initialization
 InitD:
 	if (DConst)
-		∀ic∈innerCells(), D{ic} = Dini;
+		forall ic in innerCells(), D{ic} = Dini;
 	else
-		∀ic∈innerCells(), D{ic} = nextDepth();
+		forall ic in innerCells(), D{ic} = nextDepth();
 ```
 
 The `nextWaveHeight` and `nextDepth` functions have to access shared scientific data provided by [NetCDF](https://www.unidata.ucar.edu/software/netcdf/) in a C language library. 
@@ -48,8 +48,8 @@ Double-click on the *src/bathylib/BathyLib.n* file to open it and declare the `n
 ```
 extension BathyLib;
 
-def nextWaveHeight: → ℝ;
-def nextDepth: → ℝ;
+def real nextWaveHeight();
+def real nextDepth();
 ```
 
 The Swan module containing the `InitH` and `InitD` jobs need to import the extension. At first the *swan* project must add the *BathyLib* project to its dependencies: double-click on the */swan/META-INF/MANIFEST.mf* file in the explorer on the left of the window, select the *Dependencies* tab and click on *Add...* button in the middle of the panel. 

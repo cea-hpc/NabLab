@@ -25,7 +25,7 @@ MainModule Glace2d glace2d
 {
 	nodeCoord = X;
 	time = t;
-	timeStep = δt;
+	timeStep = delta_t;
 	iterationMax = maxIterations;
 	timeMax = stopTime;
 }

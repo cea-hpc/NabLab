@@ -1,9 +1,7 @@
 {
   "name": "nablagen",
   "scopeName": "text.ngen",
-    "fileTypes": [
-        "ngen"
-    ],
+  "fileTypes": ["ngen"],
   "repository": {
     "general": {
       "patterns": [
@@ -33,7 +31,7 @@
     },
     "keyword": {
       "name": "keyword.control.nablagen",
-      "match": "\\b(Provider|target|compatibleTargets|outputPath|Application|MainModule|nodeCoord|time|timeStep|iterationMax|timeMax|AdditionalModule|VtkOutput|periodReferenceVariable|outputVariables|LevelDB|Interpreter|extension|providedBy|Java|CppSequential|StlThread|OpenMP|Kokkos|KokkosTeamThread|Arcane)\\b|\u2115|\u211D|\u213E|\u2200|\u2208|\u2192"
+      "match": "\\b(Provider|target|compatibleTargets|outputPath|Application|MainModule|nodeCoord|time|timeStep|iterationMax|timeMax|AdditionalModule|VtkOutput|periodReferenceVariable|outputVariables|LevelDB|Interpreter|extension|providedBy|Java|CppSequential|StlThread|OpenMP|Kokkos|KokkosTeamThread|Arcane|ArcaneSequential|ArcaneThread|ArcaneAccelerator|Python|as|int|real|bool|forall|in)\\b"
     },
     "strings": {
       "name": "string.quoted.double.nabla",

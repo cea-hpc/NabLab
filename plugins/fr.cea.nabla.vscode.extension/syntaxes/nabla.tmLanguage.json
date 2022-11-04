@@ -1,9 +1,7 @@
 {
   "name": "nabla",
   "scopeName": "text.n",
-    "fileTypes": [
-        "n"
-    ],
+  "fileTypes": ["n"],
   "repository": {
     "general": {
       "patterns": [
@@ -33,7 +31,7 @@
     },
     "keyword": {
       "name": "keyword.control.nabla",
-      "match": "\\b(connectivity|def|if|else|exit|extension|iterate|let|module|option|return|set|while|with)\\b|\u2115|\u211D|\u213E|\u2200|\u2208|\u2192"
+      "match": "\\b(connectivity|def|red|if|else|exit|extension|iterate|let|module|option|return|set|while|with|int|real|bool|forall|in)\\b"
     },
     "strings": {
       "name": "string.quoted.double.nabla",

@@ -68,7 +68,7 @@ The module starts with the import of the extensions: Math and CartesianMesh2D.
 Extension files describe services implemented in external libraries called providers. For more details see the extension section in the [reference documentation](../nablablanguage).
 The NabLab product includes three extensions, CartesianMash2D, Math and LinearAlgebra, and their implementations in Java and C++.
 
-[Math](https://github.com/cea-hpc/NabLab/blob/master/plugins/fr.cea.nabla/nablalib/Math.n) contains the ∑, ∏, Min and Max reductions and the usual mathematical functions (sin, cos, √...).
+[Math](https://github.com/cea-hpc/NabLab/blob/master/plugins/fr.cea.nabla/nablalib/Math.n) contains the sum(∑), prod(∏, Min and Max reductions and the usual mathematical functions (sin, cos, sqrt(√)...).
 
 [CartesianMesh2D](https://github.com/cea-hpc/NabLab/tree/master/plugins/fr.cea.nabla/nablalib/CartesianMesh2D.n) contains a 2D cartesian mesh extension as well as the corresponding Java and C++ [providers](https://github.com/cea-hpc/NabLab/tree/master/plugins/fr.cea.nabla/nablalib/CartesianMesh2D.ngen).
 
@@ -85,7 +85,7 @@ For the heat equation module, the NabLab variables are:
 
 - *stopTime* and *maxIterations* representing the maximum time and number of iterations of the simulation,
 - *PI* and *α* representing two constants,
-- *δt* and *t* representing respectively the time step and time of the simulation. Time step is initialized with a default value. It will be constant during the simulation,
+- *alpha_t* and *t* representing respectively the time step and time of the simulation. Time step is initialized with a default value. It will be constant during the simulation,
 - *X* and center representing respectively coordinates of nodes and center of cells,
 - *u*, *V* and *f* representing the cells' variables presented in the above equation,
 - *outgoingFlux* representing the $\frac{\Delta t}{V_M} \sum{K_{MM'} \frac{u_{M'}^n - u_{M}^n}{MM'}}$ part of the equation,
@@ -95,15 +95,15 @@ The *stopTime* and *maxIterations* variables have no default value and will not 
 Consequently, during the generation process, they will be considered as user's options: their value has to be set by the final user in a [Json](https://www.json.org) data file.
 
 ```
-ℝ stopTime;
-ℕ maxIterations;
+real stopTime;
+int maxIterations;
 
-let ℝ PI = 3.1415926;
-let ℝ α = 1.0;
-let ℝ δt = 0.001;
-ℝ t;
-ℝ[2] X{nodes}, center{cells};
-ℝ u{cells}, V{cells}, f{cells}, outgoingFlux{cells}, surface{faces};
+let real PI = 3.1415926;
+let real alpha = 1.0;
+let real alpha_t = 0.001;
+real t;
+real[2] X{nodes}, center{cells};
+real u{cells}, V{cells}, f{cells}, outgoingFlux{cells}, surface{faces};
 ```
 
 ### Time iterators
@@ -124,9 +124,9 @@ At first, four jobs for initializing the values of *t*, *f*, *center* and *u* va
 
 ```
 IniTime: t^{n=0} = 0.0;
-IniF: ∀j∈cells(), f{j} = 0.0;
-IniCenter: ∀j∈cells(), center{j} = 0.25 * ∑{r∈nodesOfCell(j)}(X{r});
-IniUn: ∀j∈cells(), u^{n}{j} = cos(2 * PI * α * center{j}[0]);
+IniF: forall j in cells(), f{j} = 0.0;
+IniCenter: forall j in cells(), center{j} = 0.25 * sum{r in nodesOfCell(j)}(X{r});
+IniUn: forall j in cells(), u^{n}{j} = cos(2 * PI * alpha * center{j}[0]);
 ```
 
 To compute the center of cells, we use the $\sum$ reduction defined in the *Math* extension of the NabLab language. Thus, the following instruction must be added at the beginning of the file after the module definition: 
@@ -138,8 +138,8 @@ with Math.*;
 Then two jobs are needed to compute the volume and surface of cells:
 
 ```
-ComputeV: ∀j∈cells(), V{j} = 0.5 * ∑{r∈nodesOfCell(j)}(det(X{r}, X{r+1}));
-ComputeSurface: ∀f∈faces(), surface{f} = 0.5 * ∑{r∈nodesOfFace(f)}(norm(X{r}-X{r+1}));
+ComputeV: forall j in cells(), V{j} = 0.5 * sum{r in nodesOfCell(j)}(det(X{r}, X{r+1}));
+ComputeSurface: forall f in faces(), surface{f} = 0.5 * sum{r in nodesOfFace(f)}(norm(X{r}-X{r+1}));
 ```
 
 The `det` and `norm` functions are also defined in the *Math* library. To see the full content of the library, press `F3` on one of its functions, for example `det`. It will open the *Math.n* provided by NabLab.
@@ -147,8 +147,8 @@ The `det` and `norm` functions are also defined in the *Math* library. To see th
 Now, it is time to code the above formula. It can be done in a single job but we have divided it into two parts: the compute of the outgoing flux representing the $\frac{\Delta t}{V_M} \sum{K_{MM'} \frac{u_{M'}^n - u_{M}^n}{MM'}}$ part of the equation and the compute of the $u^{n+1}$ value:
 
 ```
-ComputeOutgoingFlux: ∀j1∈cells(), outgoingFlux{j1} = δt/V{j1} * ∑{j2∈neighbourCells(j1)}(∑{cf∈commonFace(j1,j2)}( (u^{n}{j2}-u^{n}{j1}) / norm(center{j2}-center{j1}) * surface{cf}));
-ComputeUn: ∀j∈cells(), u^{n+1}{j} = f{j} * δt + u^{n}{j} + outgoingFlux{j};
+ComputeOutgoingFlux: forall j1 in cells(), outgoingFlux{j1} = delta_t/V{j1} * sum{j2 in neighbourCells(j1)}(sum{cf in commonFace(j1,j2)}( (u^{n}{j2}-u^{n}{j1}) / norm(center{j2}-center{j1}) * surface{cf}));
+ComputeUn: forall j in cells(), u^{n+1}{j} = f{j} * delta_t + u^{n}{j} + outgoingFlux{j};
 ```
 
 In the *ComputeOutgoingFlux* job, the face is accessed through a $\sum$. In NabLab, all connectivities are handled in the same way even if they return a singleton like the *commonFace* connectivity which returns a single face.
@@ -160,7 +160,7 @@ The LaTeX view below the editor displays the job content equation and facilitate
 Finally, just update the global time in a last job.
 
 ```
-ComputeTn: t^{n+1} = t^{n} + δt;
+ComputeTn: t^{n+1} = t^{n} + delta_t;
 ```
 
 The algorithm representing the problem to solve is now complete. the last task consists in defining the global application.
@@ -190,7 +190,7 @@ MainModule HeatEquation heatEquation
 {
 	nodeCoord = X;
 	time = t;
-	timeStep = δt;
+	timeStep = delta_t;
 	iterationMax = maxIterations;
 	timeMax = stopTime;
 }

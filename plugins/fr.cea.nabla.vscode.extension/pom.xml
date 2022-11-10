@@ -15,12 +15,12 @@
 	<parent>
 		<groupId>fr.cea.nabla</groupId>
 		<artifactId>parent</artifactId>
-		<version>0.5.3-SNAPSHOT</version>
+		<version>0.6.0-SNAPSHOT</version>
 		<relativePath>../../</relativePath>
 	</parent>
 	<artifactId>fr.cea.nabla.vscode.extension</artifactId>
 	<name>fr.cea.nabla.vscode.extension</name>
-	<version>0.5.3-SNAPSHOT</version>
+	<version>0.6.0-SNAPSHOT</version>
 	<description>CEA NabLab VSCode Extension</description>
 
 	<build>

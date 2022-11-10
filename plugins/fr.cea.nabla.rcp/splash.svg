@@ -4,7 +4,7 @@
    inkscape:export-xdpi="96"
    inkscape:export-filename="/home/lelandaisb/workspaces/NabLab/plugins/fr.cea.nabla.rcp/splash.png"
    sodipodi:docname="splash.svg"
-   inkscape:version="1.1.1 (c3084ef, 2021-09-22)"
+   inkscape:version="1.2.1 (9c6d41e4, 2022-07-14)"
    id="svg8"
    version="1.1"
    viewBox="0 0 121.44375 91.810419"
@@ -29,18 +29,18 @@
     </linearGradient>
   </defs>
   <sodipodi:namedview
-     inkscape:window-maximized="1"
+     inkscape:window-maximized="0"
      inkscape:window-y="25"
      inkscape:window-x="0"
-     inkscape:window-height="1067"
-     inkscape:window-width="1792"
+     inkscape:window-height="456"
+     inkscape:window-width="1463"
      units="px"
      showgrid="false"
      inkscape:document-rotation="0"
      inkscape:current-layer="layer1"
      inkscape:document-units="px"
-     inkscape:cy="202.74407"
-     inkscape:cx="83.297952"
+     inkscape:cy="202.22018"
+     inkscape:cx="84.345725"
      inkscape:zoom="0.95440522"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
@@ -48,7 +48,9 @@
      bordercolor="#666666"
      pagecolor="#ffffff"
      id="base"
-     inkscape:pagecheckerboard="0" />
+     inkscape:pagecheckerboard="0"
+     inkscape:showpageshadow="2"
+     inkscape:deskcolor="#d1d1d1" />
   <metadata
      id="metadata5">
     <rdf:RDF>
@@ -156,6 +158,6 @@
          y="59.057201"
          x="87.662521"
          id="tspan2875"
-         sodipodi:role="line">v0.5.3</tspan></text>
+         sodipodi:role="line">v0.6.0</tspan></text>
   </g>
 </svg>

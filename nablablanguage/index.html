@@ -9,14 +9,13 @@
         <meta name="description" content="This is the documentation website of NabLab project">
       
       
-      
         <meta name="author" content="Benoit Lelandais">
       
       
         <link rel="canonical" href="https://cea-hpc.github.io/NabLab/nablablanguage/">
       
       <link rel="icon" href="../img/logo_512.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.3.3">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.10">
     
     
       
@@ -24,32 +23,35 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.5143246d.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.472b142f.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.3f5d1f46.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.08040f6c.min.css">
         
           
           
           <meta name="theme-color" content="#4051b5">
         
       
+      
+
     
     
     
       
         
+        
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
-        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
     
-    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
-
+    
     
     
   </head>
@@ -63,7 +65,6 @@
     <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="orange">
   
     
-    <script>function __prefix(e){return new URL("..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
@@ -80,6 +81,11 @@
       
     </div>
     
+      <div data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
       
 
 <header class="md-header" data-md-component="header">
@@ -90,7 +96,7 @@
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
     </label>
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
@@ -112,22 +118,21 @@
     
     
       <label class="md-header__button md-icon" for="__search">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
       </label>
-      
-<div class="md-search" data-md-component="search" role="dialog">
+      <div class="md-search" data-md-component="search" role="dialog">
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" name="search">
       <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
       <label class="md-search__icon md-icon" for="__search">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
       </label>
       <nav class="md-search__options" aria-label="Search">
         
-        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
         </button>
       </nav>
       
@@ -297,6 +302,7 @@
       </a>
       
         
+
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
@@ -559,6 +565,7 @@
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
                     
+
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
@@ -764,12 +771,14 @@
               </div>
             
           
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset">
-              
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
                 
-                
-                <h1 id="nablab-language">NabLab language</h1>
+                  
+
+
+<h1 id="nablab-language">NabLab language</h1>
 <h2 id="module-and-extensions">Module and extensions</h2>
 <p>A NabLab file, extension <code>n</code>, defines a <code>module</code> or an <code>extension</code>.</p>
 <h3 id="module">Module</h3>
@@ -803,13 +812,13 @@ To link NabLab function declaration to its native definition, providers have to 
 <p>The extension and extension provider mechanisms are the way to call legacy libraries from NabLab applications.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>NabLab library provides a <a href="https://github.com/cea-hpc/NabLab/blob/master/plugins/fr.cea.nabla/nablalib/Math.n">mathematical extension</a> containing the ∑, ∏, Min and Max reductions and the usual mathematical functions (sin, cos, √...).</p>
+<p>NabLab library provides a <a href="https://github.com/cea-hpc/NabLab/blob/master/plugins/fr.cea.nabla/nablalib/Math.n">mathematical extension</a> containing the sum(∑), prod(∏), Min and Max reductions and the usual mathematical functions (sin, cos, √...).</p>
 </div>
 <h4 id="linear-algebra-extension">Linear algebra extension</h4>
 <div class="highlight"><pre><span></span><code>linearalgebra extension LinearAlgebra;
 </code></pre></div>
 <p>A linear algebra extension is an extension with no reductions, only functions.
-Moreover, functions' arguments of type ℝ[x] and ℝ[x, x] will be respectively interpreted as vector and matrix.</p>
+Moreover, functions' arguments of type real[x] and real[x, x] will be respectively interpreted as vector and matrix.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>NabLab library provides a <a href="https://github.com/cea-hpc/NabLab/blob/master/plugins/fr.cea.nabla/nablalib/LinearAlgebra.n">linear algebra extension</a> containing some <em>Ax=B</em> functions to solve linear systems.</p>
@@ -846,31 +855,32 @@ with LinearAlgebra.*;
 <p>Sets are surrounded by curly brackets and separated by a comma.</p>
 </div>
 <p>A connectivity declaration id defined by a name, its inputs items and an output item or a set of output items.</p>
-<div class="highlight"><pre><span></span><code>connectivity nodes: → {node};                 // mesh nodes
-connectivity cells: → {cell};                 // mesh cells
-connectivity faces: → {face};                 // mesh faces
-connectivity neighborCells: cell → {cell};    // neighbor cells of a cell
-connectivity nodesOfFace: face → {node};      // nodes of a face
-connectivity nodesOfCell: cell → {node};      // nodes of a cell
-connectivity commonFace: cell × cell → face;  // common face of two cells
+<div class="highlight"><pre><span></span><code>connectivity {node} nodes();                 // mesh nodes
+connectivity {cell} cells();                 // mesh cells
+connectivity {face} faces();                 // mesh faces
+connectivity {cell} neighbourCells(cell);    // neighbor cells of a cell
+connectivity {node} nodesOfFace(face);       // nodes of a face
+connectivity {node} nodesOfCell(cell);       // nodes of a cell
+connectivity face commonFace(cell , cell);   // common face of two cells
 </code></pre></div>
 <p>NabLab provides Java and C++ mesh libraries. They implement the above connectivities. You can also use yous own library. A documentation will be available shortly. </p>
 <h2 id="reductions-and-functions">Reductions and functions</h2>
 <h3 id="reductions">Reductions</h3>
 <p>Reductions are defined by their name, neutral element (seed of the reduction) and type corresponding to the type of their arguments and also their return type. They can be overloaded: it is possible to create multiple reductions with same name and different type.</p>
-<div class="highlight"><pre><span></span><code>def ∑, 0.0: ℝ, (a, b) → return a + b;
-def ∑, 0.0: x | ℝ[x], (a, b) → return a + b;
+<div class="highlight"><pre><span></span><code>red real prod(1.0) (a, b) : return a * b;
+red &lt;x&gt; real[x] prod(1.0) (a, b) : return a * b;
 </code></pre></div>
 <h3 id="functions">Functions</h3>
 <p>Functions are defined by their name, input arguments, return type and body. They can be overloaded: it is possible to create multiple functions with same name and different input arguments. Function's body is a unique instruction or a block of instructions. It cannot refer to global variables. That is the reason why functions are declared before variables.</p>
-<div class="highlight"><pre><span></span><code>def one: → ℕ, () → return 1;         // function with no in arg
+<div class="highlight"><pre><span></span><code>def int one() : return 1;         // function with no in arg
 
-def inc: ℕ → ℕ, (a) → return a+1;    // overloaded function inc on ℕ
-def inc: ℝ → ℝ, (a) → return a+1.0;  // overloaded function inc on ℝ
+def int inc(int a) : return a+1;       // overloaded function inc on int
+def real inc(real a) : return a+1.0;  // overloaded function inc on real
 
-def dot: x | ℝ[x] × ℝ[x] → ℝ, (a , b) → {
-    let ℝ result = 0.0;
-    ∀ i ∈ [0;x[,
+def &lt;x&gt; real dot(real[x] a, real[x] b)
+{
+    let real result = 0.0;
+    forall i in [0;x[,
         result = result + a[i]*b[i];
     return result;
 }
@@ -884,36 +894,36 @@ def dot: x | ℝ[x] × ℝ[x] → ℝ, (a , b) → {
 <p>Global variables are defined by their type, name and eventually one or several supports representing the connectivity on which the variable lives.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>UTF-8 characters for variable names are supported to fit domain scientists classical notations, for example δt, ρ...</p>
+<p>UTF-8 characters for variable names are not supported (for example δt, rho...).</p>
 </div>
-<p>The type of the variable is one of the 3 NabLab base types: boolean <code>ℾ</code>, integer <code>ℕ</code> or real <code>ℝ</code>. It can be scalar or array. Arrays are defined by giving a comma separated list of sizes between brackets.</p>
+<p>The type of the variable is one of the 3 NabLab base types: boolean, integer or real. It can be scalar or array. Arrays are defined by giving a comma separated list of sizes between brackets.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>NabLab text editor offers a contextual code completion and interactive ASCII template sequences to enter UTF-8 keywords.</p>
+<p>NabLab text editor offers a contextual code completion.</p>
 </div>
-<div class="highlight"><pre><span></span><code>ℾ is_ok;                            // boolean
-ℕ i, j;                             // integers
-ℝ t, δt;                            // reals
-ℝ[2] x;                             // 1 dimension real array
-ℝ[2, 2] xx;                         // 2 dimensions real array
-ℝ[2] X{nodes};                      // array of 2 reals on each node
-ℝ[2, 2] Ajr{cells, nodesOfCell};    // 2x2 matrix on each node of each cell
+<div class="highlight"><pre><span></span><code>bool is_ok;                            // boolean
+int i, j;                              // integers
+real t, δt;                            // reals
+real[2] x;                             // 1 dimension real array
+real[2, 2] xx;                         // 2 dimensions real array
+real[2] X{nodes};                      // array of 2 reals on each node
+real[2, 2] Ajr{cells, nodesOfCell};    // 2x2 matrix on each node of each cell
 </code></pre></div>
 <p>Multiple variables can be declared in the same instruction into a comma separated list.</p>
-<div class="highlight"><pre><span></span><code>ℝ t, δt;
-ℝ c{cells}, m{cells}, p{cells};
+<div class="highlight"><pre><span></span><code>real t, delta_t;
+real c{cells}, m{cells}, p{cells};
 </code></pre></div>
 <p>A variable initialized with a default value is preceded by the <code>let</code> keyword. It is not possible to assign several variables in one definition.
 A variable with no default value and not set in the module is considered as a user's option: its value has to be set by the final user in a <a href="https://www.json.org">Json</a> data file.</p>
-<div class="highlight"><pre><span></span><code>let ℝ γ = 3.0;                      // real scalar
-let ℝ[2] N = [0.0, 1.0];            // 1 dimension real array
-let ℝ[2, 2] N = [ [0.0, 1.0], N ];  // 2 dimensions real array
-let ℕ[2,2] I = [ [1, 0], [0, 1] ];  // 2 dimensions int array
+<div class="highlight"><pre><span></span><code>let real gamma = 3.0;                  // real scalar
+let real[2] N = [0.0, 1.0];            // 1 dimension real array
+let real[2, 2] N = [ [0.0, 1.0], N ];  // 2 dimensions real array
+let int[2,2] I = [ [1, 0], [0, 1] ];   // 2 dimensions int array
 </code></pre></div>
 <h2 id="time-iterators">Time iterators</h2>
 <p>The <code>iterate</code> section is used to define time iterators and the stop conditions of their time loop.</p>
 <div class="highlight"><pre><span></span><code>// definition of time iterator n
-iterate n while (residual &gt; ε);
+iterate n while (residual &gt; epsilon);
 </code></pre></div>
 <p>Variables can be referenced with defined iterators. In the above example defining a <code>n</code> time iterator, a variable can be referenced at <code>n=0</code>, <code>n</code> and <code>n+1</code>. A variable named <code>t</code> can be referenced like this: <code>t^{n=0}</code>, <code>t^{n}</code> and <code>t^{n+1}</code>.</p>
 <div class="admonition note">
@@ -923,7 +933,7 @@ iterate n while (residual &gt; ε);
 <p>It is possible to define several time iterators into a comma separated list: the iterator of index <em>k+1</em> is then nested into the iterator of index <em>k</em>.</p>
 <div class="highlight"><pre><span></span><code>// definition of time iterators n and k.
 iterate n while (t^{n+1} &lt; stopTime &amp;&amp; n+1 &lt; maxIterations),
-        k while (residual &gt; ε &amp;&amp; check(k+1 &lt; maxIterationsK));
+        k while (residual &gt; epsilon &amp;&amp; check(k+1 &lt; maxIterationsK));
 </code></pre></div>
 <p>In case of several iterators, variables can be referenced by a list of defined time iterators, respecting the order of inclusion.
 In the above example defining n and k inside n, a variable can be referenced by <code>n=0</code>, <code>n</code>, <code>n+1</code>, <code>n+1, k=0</code>, <code>n+1, n</code>, and <code>n+1, k+1</code>. Variable named <code>t</code> can be referenced like this: <code>t^{n=0}</code>, <code>t^{n}</code>, <code>t^{n+1}</code>, <code>t^{n+1, k=0}</code>, <code>t^{n+1, k}</code>, <code>t^{n+1, k+1}</code>.</p>
@@ -942,7 +952,7 @@ In the above example defining n and k inside n, a variable can be referenced by 
 <p>Jobs are identified by a name, starting with an upper case. They are composed of an instruction, or a block of instructions.</p>
 <div class="highlight"><pre><span></span><code>Ini: j = 0;
 IniTime: t^{n=0} = 0.0;
-ComputeDensity: ∀j∈cells(), ρ{j} = m{j} / V{j};
+ComputeDensity: forall j in cells(), rho{j} = m{j} / V{j};
 </code></pre></div>
 <p>The execution of a NabLab program does not start at its beginning and jobs execution order does not correspond to their position in the file. During the compilation phase, the data flow graph of the program is computed according to input and output variables of each job. Jobs are annotated with an <em>at</em> statement corresponding to its hierarchical logical time (HLT). The <em>HLT</em> concept is explicitly expressed to go beyond the classical single-program-multiple-data or bulk-synchronous-parallel programming models. The <em>at</em> logical timestamp explicitly declares the task-based parallelism of jobs.</p>
 <p>However, this way to schedule jobs imposes to have a dedicated tool to visualize the graph representing the program execution. This feature has been developed and integrated into the NabLab environment (see <a href="../gettingstarted">getting started</a> documentation  for details).</p>
@@ -956,7 +966,7 @@ An instruction ends with the <code>;</code> character except blocks surrounded b
 </code></pre></div></p>
 <h3 id="affectations">Affectations</h3>
 <p>An affectation is composed of a variable reference, the <code>=</code> character and an expression.</p>
-<div class="highlight"><pre><span></span><code>ρ_ic = ρIniZg;
+<div class="highlight"><pre><span></span><code>rho_ic = rhoIniZg;
 t^{n=0} = 0.0;
 N = [0.0, 1.0];
 Cjr_ic{j,r} = 0.5 * perp(X^{n=0}{r+1} - X^{n=0}{r-1});
@@ -964,59 +974,59 @@ Cjr_ic{j,r} = 0.5 * perp(X^{n=0}{r+1} - X^{n=0}{r-1});
 <h3 id="blocks">Blocks</h3>
 <p>A block is a list of instructions. It follows the <a href="https://en.wikipedia.org/wiki/Composite_pattern">Composite Design Pattern</a>: The block is an instruction and contains itself a list of instructions. The block is surrounded with curly brackets.</p>
 <div class="highlight"><pre><span></span><code>{
-    ρ_ic = ρIniZd;
+    rho_ic = rhoIniZd;
     p_ic = pIniZd;
 }
 </code></pre></div>
 <h3 id="loops">Loops</h3>
-<p>NabLab provides two instructions for loops: <code>while</code> and <code>∀</code>.</p>
+<p>NabLab provides two instructions for loops: <code>while</code> and <code>forall</code>.</p>
 <p>The <code>while</code> is composed of a condition, which is an expression, and an instruction that can be a block.</p>
 <div class="highlight"><pre><span></span><code>while (t^{n} &lt; 5.0) x = 0;
-while (residual &gt; ε) {
+while (residual &gt; epsilon) {
     alpha = 1.0 / det(a);
     I = [ [1.0, 0.0], [0.0, 1.0] ];
 }
 </code></pre></div>
-<p>The <code>∀</code> loop provides two kinds of iteration blocks: interval and space iterators.</p>
+<p>The <code>forall</code> loop provides two kinds of iteration blocks: interval and space iterators.</p>
 <p>Interval are going from 0 to n-1 with n an integer result of an expression.</p>
-<div class="highlight"><pre><span></span><code>∀i∈[0;5[, x = 0;
-∀i∈[0;x+4[, {
+<div class="highlight"><pre><span></span><code>forall i in [0;5[, x = 0;
+forall i in [0;x+4[, {
     beta = i * a;
     A = [i, 0];
 }
 </code></pre></div>
 <p>Space iterators allows to loop on connectivity sets. </p>
 <div class="highlight"><pre><span></span><code>// loop on cells
-∀j∈cells(),
-    ρ{j} = m{j} / V{j};
+forall j in cells(),
+    rho{j} = m{j} / V{j};
 
 // loop on topNodes
-∀r∈topNodes(), {
-    let ℝ[2] N = [0.0, 1.0];
-    let ℝ[2,2] NxN = tensProduct(N,N);
-    let ℝ[2,2] IcP = I - NxN;
+forall r in topNodes(), {
+    let real[2] N = [0.0, 1.0];
+    let real[2,2] NxN = tensProduct(N,N);
+    let real[2,2] IcP = I - NxN;
     bt{r} = matVectProduct(IcP, b{r});
 }
 
 // loop on cells with a reduction on nodesOfCell
-∀j∈cells(),
-    V{j} = 0.5 * ∑{r∈nodesOfCell(j)}(dot(C{j,r}, X^{n}{r}));
+forall j in cells(),
+    V{j} = 0.5 * sum{r in nodesOfCell(j)}(dot(C{j,r}, X^{n}{r}));
 
 // loop on cells and inner loop on nodesOfCell
-∀j∈cells(), ∀r∈nodesOfCell(j),
-    Ajr{j,r} = ((ρ{j} * c{j}) / l{j,r}) * tensProduct(C{j,r}, C{j,r});
+forall j in cells(), forall r in nodesOfCell(j),
+    Ajr{j,r} = ((rho{j} * c{j}) / l{j,r}) * tensProduct(C{j,r}, C{j,r});
 </code></pre></div>
 <p>It is possible to define a loop iterator counter viewed as an integer local variable.
-<div class="highlight"><pre><span></span><code>∀j, ij ∈cells(),
-    ρ{j} = V{j} * ij;
+<div class="highlight"><pre><span></span><code>forall j, ij  in cells(),
+    rho{j} = V{j} * ij;
 </code></pre></div></p>
 <h3 id="conditionals">Conditionals</h3>
 <p>Conditionals are defined with the classical <code>if</code>, <code>else</code> sequence. The condition in the <code>if</code> instruction is an expression, like for the <code>while</code> instruction. The <code>else</code> clause is optional.</p>
 <div class="highlight"><pre><span></span><code>if (center[0] &lt; xInterface) {
-    ρ_ic = ρIniZg;
+    rho_ic = rhoIniZg;
     p_ic = pIniZg;
 } else {
-    ρ_ic = ρIniZd;
+    rho_ic = rhoIniZd;
     p_ic = pIniZd;
 }
 </code></pre></div>
@@ -1028,8 +1038,8 @@ while (residual &gt; ε) {
 <li>Comparison operators greater than <code>&gt;</code>, greater than or equal <code>&gt;=</code>, less than <code>&lt;</code>, less than or equal <code>&lt;=</code>, equal <code>==</code>, not equal <code>!=</code></li>
 <li>Boolean operators and <code>&amp;&amp;</code> and or <code>||</code></li>
 <li>Contracted if operator <code>(condition) ? true : false</code></li>
-<li>Min and max constants for integer and real base types: <code>ℕ.MinValue</code>, <code>ℕ.MaxValue</code>, <code>ℝ.MinValue</code>, <code>ℝ.MaxValue</code></li>
-<li>Array initializations by comma separated list of expressions between brackets, for example <code>[1, 2+3, -5]</code> for <code>ℕ[3]</code>, <code>[ [1.1, 1.2], [2.1, 2.2], [3.1, 3.2] ]</code> for <code>ℝ[3,2]</code></li>
+<li>Min and max constants for integer and real base types: <code>int.MinValue</code>, <code>int.MaxValue</code>, <code>real.MinValue</code>, <code>real.MaxValue</code></li>
+<li>Array initializations by comma separated list of expressions between brackets, for example <code>[1, 2+3, -5]</code> for <code>int[3]</code>, <code>[ [1.1, 1.2], [2.1, 2.2], [3.1, 3.2] ]</code> for <code>real[3,2]</code></li>
 <li>Argument/variable references and reduction/function calls detailed below.</li>
 </ul>
 <h3 id="arguments-and-variable-references">Arguments and variable references</h3>
@@ -1041,33 +1051,34 @@ while (residual &gt; ε) {
 </ul>
 <h3 id="reduction-and-function-calls">Reduction and function calls</h3>
 <p>A reduction call includes an iteration on a set or interval, like for a space iterator loop, and an expression of the type of the reduction. For example, to compute the sum of a real variable P defined on cells, the call includes the cells set iterator and the variable reference <code>P{j}</code>:
-<div class="highlight"><pre><span></span><code>let ℝ sum = ∑{j∈cells()}(P{j});
+<div class="highlight"><pre><span></span><code>let real sum = sum{j in cells()}(P{j});
 </code></pre></div></p>
 <p>A function call is defined by the name of the function and the right number and type of input arguments as expressions:
-<div class="highlight"><pre><span></span><code>let ℝ my_cos = cos(3.14 + 3.14);
+<div class="highlight"><pre><span></span><code>let real my_cos = cos(3.14 + 3.14);
 </code></pre></div></p>
-                
-              
-              
-                
 
 
-              
-            </article>
-          </div>
+
+
+
+                
+              </article>
+            </div>
+          
+          
         </div>
         
       </main>
       
-        
-<footer class="md-footer">
+        <footer class="md-footer">
   
-    <nav class="md-footer__inner md-grid" aria-label="Footer">
+    
+    <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
         <a href="../debug/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Monitoring and debugging" rel="prev">
           <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
           <div class="md-footer__title">
             <div class="md-ellipsis">
@@ -1091,7 +1102,7 @@ while (residual &gt; ε) {
             </div>
           </div>
           <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
           </div>
         </a>
       
@@ -1099,34 +1110,33 @@ while (residual &gt; ε) {
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
-      <div class="md-footer-copyright">
-        
-          <div class="md-footer-copyright__highlight">
-            Copyright &copy; 2022 CEA
-          </div>
-        
-        
-          Made with
-          <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
-            Material for MkDocs
-          </a>
-        
-        
-      </div>
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2022 CEA
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
       
-  <div class="md-footer-social">
+        <div class="md-social">
+  
+    
     
       
       
-        
-        
-      
-      <a href="https://github.com/cea-hpc/NabLab" target="_blank" rel="noopener" title="github.com" class="md-footer-social__link">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
-      </a>
     
-  </div>
-
+    <a href="https://github.com/cea-hpc/NabLab" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+    </a>
+  
+</div>
+      
     </div>
   </div>
 </footer>
@@ -1135,10 +1145,11 @@ while (residual &gt; ε) {
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.8397ff9e.min.js", "version": "0.4.0"}</script>
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant"], "search": "../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": "0.4.0"}</script>
     
     
-      <script src="../assets/javascripts/bundle.f89c2efe.min.js"></script>
+      <script src="../assets/javascripts/bundle.d6c3db9e.min.js"></script>
       
         <script src="../javascripts/config.js"></script>
       

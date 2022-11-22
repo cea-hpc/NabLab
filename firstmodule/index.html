@@ -9,14 +9,13 @@
         <meta name="description" content="This is the documentation website of NabLab project">
       
       
-      
         <meta name="author" content="Benoit Lelandais">
       
       
         <link rel="canonical" href="https://cea-hpc.github.io/NabLab/firstmodule/">
       
       <link rel="icon" href="../img/logo_512.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.3.3">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.10">
     
     
       
@@ -24,32 +23,35 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.5143246d.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.472b142f.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.3f5d1f46.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.08040f6c.min.css">
         
           
           
           <meta name="theme-color" content="#4051b5">
         
       
+      
+
     
     
     
       
         
+        
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
-        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
     
-    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
-
+    
     
     
   </head>
@@ -63,7 +65,6 @@
     <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="orange">
   
     
-    <script>function __prefix(e){return new URL("..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
@@ -80,6 +81,11 @@
       
     </div>
     
+      <div data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
       
 
 <header class="md-header" data-md-component="header">
@@ -90,7 +96,7 @@
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
     </label>
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
@@ -112,22 +118,21 @@
     
     
       <label class="md-header__button md-icon" for="__search">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
       </label>
-      
-<div class="md-search" data-md-component="search" role="dialog">
+      <div class="md-search" data-md-component="search" role="dialog">
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" name="search">
       <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
       <label class="md-search__icon md-icon" for="__search">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
       </label>
       <nav class="md-search__options" aria-label="Search">
         
-        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
         </button>
       </nav>
       
@@ -237,6 +242,7 @@
       </a>
       
         
+
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
@@ -499,6 +505,7 @@
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
                     
+
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
@@ -644,12 +651,14 @@
               </div>
             
           
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset">
-              
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
                 
-                
-                <h1 id="my-first-module">My first module</h1>
+                  
+
+
+<h1 id="my-first-module">My first module</h1>
 <h2 id="presentation-of-the-problem">Presentation of the problem</h2>
 <p>The aim of this tutorial is to implement a simple equation of diffusion in NabLab on a 2D cartesian mesh:</p>
 <div class="arithmatex">\[
@@ -694,7 +703,7 @@ u_M^{n+1} &amp;= \Delta t f_M + u_M^n + \frac{\Delta t}{V_M} \sum_{M' \text{ nei
 <p>The module starts with the import of the extensions: Math and CartesianMesh2D.</p>
 <p>Extension files describe services implemented in external libraries called providers. For more details see the extension section in the <a href="../nablablanguage">reference documentation</a>.
 The NabLab product includes three extensions, CartesianMash2D, Math and LinearAlgebra, and their implementations in Java and C++.</p>
-<p><a href="https://github.com/cea-hpc/NabLab/blob/master/plugins/fr.cea.nabla/nablalib/Math.n">Math</a> contains the ∑, ∏, Min and Max reductions and the usual mathematical functions (sin, cos, √...).</p>
+<p><a href="https://github.com/cea-hpc/NabLab/blob/master/plugins/fr.cea.nabla/nablalib/Math.n">Math</a> contains the sum(∑), prod(∏, Min and Max reductions and the usual mathematical functions (sin, cos, sqrt(√)...).</p>
 <p><a href="https://github.com/cea-hpc/NabLab/tree/master/plugins/fr.cea.nabla/nablalib/CartesianMesh2D.n">CartesianMesh2D</a> contains a 2D cartesian mesh extension as well as the corresponding Java and C++ <a href="https://github.com/cea-hpc/NabLab/tree/master/plugins/fr.cea.nabla/nablalib/CartesianMesh2D.ngen">providers</a>.</p>
 <div class="highlight"><pre><span></span><code>module HeatEquation;
 
@@ -706,7 +715,7 @@ with CartesianMesh2D.*;
 <ul>
 <li><em>stopTime</em> and <em>maxIterations</em> representing the maximum time and number of iterations of the simulation,</li>
 <li><em>PI</em> and <em>α</em> representing two constants,</li>
-<li><em>δt</em> and <em>t</em> representing respectively the time step and time of the simulation. Time step is initialized with a default value. It will be constant during the simulation,</li>
+<li><em>alpha_t</em> and <em>t</em> representing respectively the time step and time of the simulation. Time step is initialized with a default value. It will be constant during the simulation,</li>
 <li><em>X</em> and center representing respectively coordinates of nodes and center of cells,</li>
 <li><em>u</em>, <em>V</em> and <em>f</em> representing the cells' variables presented in the above equation,</li>
 <li><em>outgoingFlux</em> representing the <span class="arithmatex">\(\frac{\Delta t}{V_M} \sum{K_{MM'} \frac{u_{M'}^n - u_{M}^n}{MM'}}\)</span> part of the equation,</li>
@@ -714,15 +723,15 @@ with CartesianMesh2D.*;
 </ul>
 <p>The <em>stopTime</em> and <em>maxIterations</em> variables have no default value and will not be set in the module.
 Consequently, during the generation process, they will be considered as user's options: their value has to be set by the final user in a <a href="https://www.json.org">Json</a> data file.</p>
-<div class="highlight"><pre><span></span><code>ℝ stopTime;
-ℕ maxIterations;
+<div class="highlight"><pre><span></span><code>real stopTime;
+int maxIterations;
 
-let ℝ PI = 3.1415926;
-let ℝ α = 1.0;
-let ℝ δt = 0.001;
-ℝ t;
-ℝ[2] X{nodes}, center{cells};
-ℝ u{cells}, V{cells}, f{cells}, outgoingFlux{cells}, surface{faces};
+let real PI = 3.1415926;
+let real alpha = 1.0;
+let real alpha_t = 0.001;
+real t;
+real[2] X{nodes}, center{cells};
+real u{cells}, V{cells}, f{cells}, outgoingFlux{cells}, surface{faces};
 </code></pre></div>
 <h3 id="time-iterators">Time iterators</h3>
 <p>The next part of the file defines the time loop iterators, a single one named <em>n</em> for this example, and the stop condition of the time loop.</p>
@@ -733,27 +742,27 @@ let ℝ δt = 0.001;
 <p>The order of jobs in the editor does not matter for execution. NabLab will build the data flow graph of jobs to determine their execution rank.</p>
 <p>At first, four jobs for initializing the values of <em>t</em>, <em>f</em>, <em>center</em> and <em>u</em> variables are defined. Fell free to change the initialization of <span class="arithmatex">\(u^{n}_{j}\)</span>!</p>
 <div class="highlight"><pre><span></span><code>IniTime: t^{n=0} = 0.0;
-IniF: ∀j∈cells(), f{j} = 0.0;
-IniCenter: ∀j∈cells(), center{j} = 0.25 * ∑{r∈nodesOfCell(j)}(X{r});
-IniUn: ∀j∈cells(), u^{n}{j} = cos(2 * PI * α * center{j}[0]);
+IniF: forall j in cells(), f{j} = 0.0;
+IniCenter: forall j in cells(), center{j} = 0.25 * sum{r in nodesOfCell(j)}(X{r});
+IniUn: forall j in cells(), u^{n}{j} = cos(2 * PI * alpha * center{j}[0]);
 </code></pre></div>
 <p>To compute the center of cells, we use the <span class="arithmatex">\(\sum\)</span> reduction defined in the <em>Math</em> extension of the NabLab language. Thus, the following instruction must be added at the beginning of the file after the module definition: </p>
 <div class="highlight"><pre><span></span><code>with Math.*;
 </code></pre></div>
 <p>Then two jobs are needed to compute the volume and surface of cells:</p>
-<div class="highlight"><pre><span></span><code>ComputeV: ∀j∈cells(), V{j} = 0.5 * ∑{r∈nodesOfCell(j)}(det(X{r}, X{r+1}));
-ComputeSurface: ∀f∈faces(), surface{f} = 0.5 * ∑{r∈nodesOfFace(f)}(norm(X{r}-X{r+1}));
+<div class="highlight"><pre><span></span><code>ComputeV: forall j in cells(), V{j} = 0.5 * sum{r in nodesOfCell(j)}(det(X{r}, X{r+1}));
+ComputeSurface: forall f in faces(), surface{f} = 0.5 * sum{r in nodesOfFace(f)}(norm(X{r}-X{r+1}));
 </code></pre></div>
 <p>The <code>det</code> and <code>norm</code> functions are also defined in the <em>Math</em> library. To see the full content of the library, press <code>F3</code> on one of its functions, for example <code>det</code>. It will open the <em>Math.n</em> provided by NabLab.</p>
 <p>Now, it is time to code the above formula. It can be done in a single job but we have divided it into two parts: the compute of the outgoing flux representing the <span class="arithmatex">\(\frac{\Delta t}{V_M} \sum{K_{MM'} \frac{u_{M'}^n - u_{M}^n}{MM'}}\)</span> part of the equation and the compute of the <span class="arithmatex">\(u^{n+1}\)</span> value:</p>
-<div class="highlight"><pre><span></span><code>ComputeOutgoingFlux: ∀j1∈cells(), outgoingFlux{j1} = δt/V{j1} * ∑{j2∈neighbourCells(j1)}(∑{cf∈commonFace(j1,j2)}( (u^{n}{j2}-u^{n}{j1}) / norm(center{j2}-center{j1}) * surface{cf}));
-ComputeUn: ∀j∈cells(), u^{n+1}{j} = f{j} * δt + u^{n}{j} + outgoingFlux{j};
+<div class="highlight"><pre><span></span><code>ComputeOutgoingFlux: forall j1 in cells(), outgoingFlux{j1} = delta_t/V{j1} * sum{j2 in neighbourCells(j1)}(sum{cf in commonFace(j1,j2)}( (u^{n}{j2}-u^{n}{j1}) / norm(center{j2}-center{j1}) * surface{cf}));
+ComputeUn: forall j in cells(), u^{n+1}{j} = f{j} * delta_t + u^{n}{j} + outgoingFlux{j};
 </code></pre></div>
 <p>In the <em>ComputeOutgoingFlux</em> job, the face is accessed through a <span class="arithmatex">\(\sum\)</span>. In NabLab, all connectivities are handled in the same way even if they return a singleton like the <em>commonFace</em> connectivity which returns a single face.</p>
 <p>The LaTeX view below the editor displays the job content equation and facilitates the verification of its correctness. Just place your cursor on the job of your choice in the editor to see the LaTeX view changed. </p>
 <p><img src="img/NabLab_compute_un_latex.png" alt="NabLab LaTeX view" title="NabLab LaTeX view" width="80%" height="80%" /></p>
 <p>Finally, just update the global time in a last job.</p>
-<div class="highlight"><pre><span></span><code>ComputeTn: t^{n+1} = t^{n} + δt;
+<div class="highlight"><pre><span></span><code>ComputeTn: t^{n+1} = t^{n} + delta_t;
 </code></pre></div>
 <p>The algorithm representing the problem to solve is now complete. the last task consists in defining the global application.</p>
 <h2 id="defining-the-application">Defining the application</h2>
@@ -774,7 +783,7 @@ ComputeUn: ∀j∈cells(), u^{n+1}{j} = f{j} * δt + u^{n}{j} + outgoingFlux{j};
 {
     nodeCoord = X;
     time = t;
-    timeStep = δt;
+    timeStep = delta_t;
     iterationMax = maxIterations;
     timeMax = stopTime;
 }
@@ -833,25 +842,25 @@ After the compilation of the application, a <em>heatequation</em> executable is 
 Copy this file, paste it in the <em>src</em> directory, rename it <em>HeatEquation.json</em> (select the file in the explorer and press <code>F2</code> key) and double-click on it in the explorer to open the json editor.</p>
 <p>You can observe that stopTime and maxIterations variables have been detected as user options and generated in the <em>json</em> template.</p>
 <p>Remove the comment line, the file is no more generated, and add a mesh block as follows:</p>
-<div class="highlight"><pre><span></span><code><span class="p">{</span>
-    <span class="nt">&quot;heatEquation&quot;</span><span class="p">:</span>
-    <span class="p">{</span>
-        <span class="nt">&quot;_outputPath_comment&quot;</span><span class="p">:</span><span class="s2">&quot;empty outputPath to disable output&quot;</span><span class="p">,</span>
-        <span class="nt">&quot;outputPath&quot;</span><span class="p">:</span><span class="s2">&quot;output&quot;</span><span class="p">,</span>
-        <span class="nt">&quot;outputPeriod&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span>
-        <span class="nt">&quot;stopTime&quot;</span><span class="p">:</span><span class="mf">0.1</span><span class="p">,</span>
-        <span class="nt">&quot;maxIterations&quot;</span><span class="p">:</span><span class="mi">500</span><span class="p">,</span>
-        <span class="nt">&quot;_nonRegression_comment&quot;</span><span class="p">:</span><span class="s2">&quot;empty value to disable, CreateReference or CompareToReference to take action&quot;</span><span class="p">,</span>
-        <span class="nt">&quot;nonRegression&quot;</span><span class="p">:</span><span class="s2">&quot;&quot;</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;mesh&quot;</span><span class="p">:</span>
-    <span class="p">{</span>
-        <span class="nt">&quot;nbXQuads&quot;</span><span class="p">:</span><span class="mi">20</span><span class="p">,</span>
-        <span class="nt">&quot;nbYQuads&quot;</span><span class="p">:</span><span class="mi">20</span><span class="p">,</span>
-        <span class="nt">&quot;xSize&quot;</span><span class="p">:</span><span class="mf">0.1</span><span class="p">,</span>
-        <span class="nt">&quot;ySize&quot;</span><span class="p">:</span><span class="mf">0.1</span>
-    <span class="p">}</span>
-<span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;heatEquation&quot;</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;_outputPath_comment&quot;</span><span class="p">:</span><span class="s2">&quot;empty outputPath to disable output&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;outputPath&quot;</span><span class="p">:</span><span class="s2">&quot;output&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;outputPeriod&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;stopTime&quot;</span><span class="p">:</span><span class="mf">0.1</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;maxIterations&quot;</span><span class="p">:</span><span class="mi">500</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;_nonRegression_comment&quot;</span><span class="p">:</span><span class="s2">&quot;empty value to disable, CreateReference or CompareToReference to take action&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;nonRegression&quot;</span><span class="p">:</span><span class="s2">&quot;&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;mesh&quot;</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;nbXQuads&quot;</span><span class="p">:</span><span class="mi">20</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;nbYQuads&quot;</span><span class="p">:</span><span class="mi">20</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;xSize&quot;</span><span class="p">:</span><span class="mf">0.1</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;ySize&quot;</span><span class="p">:</span><span class="mf">0.1</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </code></pre></div>
 <p>The application can then be executed. In the <em>build</em> directory, enter the following command:</p>
 <div class="highlight"><pre><span></span><code>./heatequation ../../../../src/heatequation/HeatEquation.json
@@ -861,28 +870,29 @@ Copy this file, paste it in the <em>src</em> directory, rename it <em>HeatEquati
 <div class="highlight"><pre><span></span><code>paraview output/HeatEquation.pvd
 </code></pre></div>
 <p><img src="img/NabLab_paraview.png" alt="NabLab Paraview" title="NabLab Paraview" width="100%" height="100%" /></p>
-                
-              
-              
-                
 
 
-              
-            </article>
-          </div>
+
+
+
+                
+              </article>
+            </div>
+          
+          
         </div>
         
       </main>
       
-        
-<footer class="md-footer">
+        <footer class="md-footer">
   
-    <nav class="md-footer__inner md-grid" aria-label="Footer">
+    
+    <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
         <a href="../gettingstarted/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Getting started" rel="prev">
           <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
           <div class="md-footer__title">
             <div class="md-ellipsis">
@@ -906,7 +916,7 @@ Copy this file, paste it in the <em>src</em> directory, rename it <em>HeatEquati
             </div>
           </div>
           <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
           </div>
         </a>
       
@@ -914,34 +924,33 @@ Copy this file, paste it in the <em>src</em> directory, rename it <em>HeatEquati
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
-      <div class="md-footer-copyright">
-        
-          <div class="md-footer-copyright__highlight">
-            Copyright &copy; 2022 CEA
-          </div>
-        
-        
-          Made with
-          <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
-            Material for MkDocs
-          </a>
-        
-        
-      </div>
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2022 CEA
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
       
-  <div class="md-footer-social">
+        <div class="md-social">
+  
+    
     
       
       
-        
-        
-      
-      <a href="https://github.com/cea-hpc/NabLab" target="_blank" rel="noopener" title="github.com" class="md-footer-social__link">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
-      </a>
     
-  </div>
-
+    <a href="https://github.com/cea-hpc/NabLab" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+    </a>
+  
+</div>
+      
     </div>
   </div>
 </footer>
@@ -950,10 +959,11 @@ Copy this file, paste it in the <em>src</em> directory, rename it <em>HeatEquati
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.8397ff9e.min.js", "version": "0.4.0"}</script>
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant"], "search": "../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": "0.4.0"}</script>
     
     
-      <script src="../assets/javascripts/bundle.f89c2efe.min.js"></script>
+      <script src="../assets/javascripts/bundle.d6c3db9e.min.js"></script>
       
         <script src="../javascripts/config.js"></script>
       

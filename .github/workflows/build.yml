@@ -152,5 +152,7 @@ jobs:
             ./plugins/fr.cea.nabla.vscode.extension/*.vsix
           draft: true
         env:
+          USERNAME: ${{ github.actor }}
+          PASSWORD: ${{ github.token }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         

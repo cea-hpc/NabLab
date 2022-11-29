@@ -29,17 +29,23 @@ In NabLab, the example will be implemented like this:
 ```
 module Example1;
 
-itemtypes { node }
+with CartesianMesh2D.*;
 
-connectivity nodes: → {node};
+def real f(real a, real b) {
+	return 0.0;
+}
 
-def f: ℝ × ℝ → ℝ, (a, b) → return 0.0;
-def g: ℝ → ℝ, (a) → return 0.0;
-def h: ℝ → ℝ, (a) → return 0.0;
+def real g(real a) {
+	return 0.0;
+}
 
-ℝ[2] X{nodes};
-ℝ t, δt;
-ℝ x, y, z;
+def real h(real a) {
+	return 0.0;
+}
+
+real[2] X{nodes};
+real t, delta_t;
+real x, y, z;
 
 iterate n while (true);
 
@@ -47,9 +53,9 @@ IniX: x = 0.0;
 IniT: t^{n=0} = 0.0;
 
 ComputeY: y = f(x, t^{n});
-ComputeDeltaT: δt = g(y);
+ComputeDeltaT: delta_t = g(y);
 ComputeZ: z = h(y);
-ComputeT: t^{n+1} = t^{n} + δt;
+ComputeT: t^{n+1} = t^{n} + delta_t;
 ```
 
 The above example will give the following job graph for the initialzation:

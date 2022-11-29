@@ -29,15 +29,15 @@ module Hydro;
 
 with CartesianMesh2D.*;
 
-ℕ maxIter;
-ℝ maxTime, δt;
-let ℝ t = 0.0;
-ℝ[2] X{nodes};
-ℝ hv1{cells}, hv2{cells}, hv3{cells}, hv4{cells}, hv5{cells};
+int maxIter;
+real maxTime, delta_t;
+let real t = 0.0;
+real[2] X{nodes};
+real hv1{cells}, hv2{cells}, hv3{cells}, hv4{cells}, hv5{cells};
 
-Hj1: ∀c∈cells(), hv2{c} = hv1{c};
-Hj2: ∀c∈cells(), hv3{c} = hv2{c};
-Hj3: ∀c∈cells(), hv5{c} = hv3{c} + hv4{c};
+Hj1: forall c in cells(), hv2{c} = hv1{c};
+Hj2: forall c in cells(), hv3{c} = hv2{c};
+Hj3: forall c in cells(), hv5{c} = hv3{c} + hv4{c};
 ```
 
 The algorithm is stupid: the goal is just to introduce dependencies between variables and jobs.
@@ -58,7 +58,7 @@ MainModule Hydro hydro
 {
 	nodeCoord = X;
 	time = t;
-	timeStep = δt;
+	timeStep = delta_t;
 	iterationMax = maxIter;
 	timeMax = maxTime;
 }
@@ -101,10 +101,10 @@ module Remap;
 
 with CartesianMesh2D.*;
 
-ℝ rv1{cells}, rv2{cells}, rv3{cells};
+real rv1{cells}, rv2{cells}, rv3{cells};
 
-Rj1: ∀c∈cells(), rv2{c} = rv1{c};
-Rj2: ∀c∈cells(), rv3{c} = rv2{c};
+Rj1: forall c in cells(), rv2{c} = rv1{c};
+Rj2: forall c in cells(), rv3{c} = rv2{c};
 ```
 
 The algorithm is as stupid as the Hydro one: the goal is just to introduce dependencies between variables and jobs.
@@ -178,15 +178,15 @@ module Hydro;
 
 with CartesianMesh2D.*;
 
-ℕ maxIter;
-ℝ maxTime, δt;
-let ℝ t = 0.0;
-ℝ[2] X{nodes};
-ℝ hv1{cells}, hv2{cells}, hv3{cells}, hv4{cells}, hv5{cells}, hv6{cells}, hv7{cells};
+int maxIter;
+real maxTime, delta_t;
+let real t = 0.0;
+real[2] X{nodes};
+real hv1{cells}, hv2{cells}, hv3{cells}, hv4{cells}, hv5{cells}, hv6{cells}, hv7{cells};
 
-Hj1: ∀c∈cells(), hv3{c} = hv2{c};
-Hj2: ∀c∈cells(), hv5{c} = hv3{c};
-Hj3: ∀c∈cells(), hv7{c} = hv4{c} + hv5{c} + hv6{c};
+Hj1: forall c in cells(), hv3{c} = hv2{c};
+Hj2: forall c in cells(), hv5{c} = hv3{c};
+Hj3: forall c in cells(), hv7{c} = hv4{c} + hv5{c} + hv6{c};
 ```
 
 The *Remap* module does not change while the content of the *HydroRemap.ngen* file integrates two additional modules instead of the previous *remap* one:

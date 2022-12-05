@@ -66,10 +66,11 @@ import org.eclipse.emf.ecore.EObject
 
 class LatexLabelServices
 {
-	public static val String[] GreekLetter = #['Alpha', 'Beta', 'Gamma', 'Delta', 'Epsilon', 'Zeta', 'Eta', 'Theta',
+	static val String[] GreekLetters = #['Alpha', 'Beta', 'Gamma', 'Delta', 'Epsilon', 'Zeta', 'Eta', 'Theta',
 		'Iota', 'Kappa', 'Lambda', 'Mu', 'Nu', 'Xi', 'Omicron', 'Pi', 'Rho', 'Sigma', 'Tau', 'Upsilon', 'Phi', 'Chi',
 		'Psi', 'Omega', 'alpha', 'beta', 'gamma', 'delta', 'epsilon', 'zeta', 'eta', 'theta', 'iota', 'kappa', 'lambda',
 		'mu', 'nu', 'xi', 'omicron', 'pi', 'rho', 'sigma', 'tau', 'upsilon', 'phi', 'chi', 'psi', 'omega']
+
 	/* JOBS & INSTRUCTIONS ***********************************/
 	static def dispatch String getLatex(Job it) { '\\texttt{' + name.transformString + '} : '+ instruction?.latex }
 	static def dispatch String getLatex(SimpleVarDeclaration it) { if (value === null) variable?.name.transformString else variable?.name.transformString + '=' + value.latex }
@@ -240,7 +241,7 @@ class LatexLabelServices
 	{
 		it.replaceAll('_', '\\\\_')
 	}
-	
+
 	private static def String convertToUnicode(String it)
 	{
 		var String[] splitIt = it.split("((?<=_)|(?>=_))")
@@ -249,9 +250,9 @@ class LatexLabelServices
 		while(ite.hasNext)
 		{
 			val subString = ite.next
-			if (GreekLetter.contains(substring(0, subString.length()-1)) && subString.substring(subString.length() -1) == '_' && ite.hasNext)
+			if (GreekLetters.contains(substring(0, subString.length()-1)) && subString.substring(subString.length() -1) == '_' && ite.hasNext)
 				splitRet.add('\\'+ subString.substring(0, subString.length()-1) + ' ')
-			else if(GreekLetter.contains(subString)) 
+			else if(GreekLetters.contains(subString))
 				splitRet.add('\\'+ subString)
 			else
 				splitRet.add(subString)

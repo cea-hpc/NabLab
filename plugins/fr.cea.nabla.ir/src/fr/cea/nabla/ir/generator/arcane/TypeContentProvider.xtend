@@ -42,7 +42,7 @@ class TypeContentProvider
 				if (dimension == 0)
 					t.key
 				else
-					"NumArray<" + t.key + "," + dimension + ">"
+					"NumArray<" + t.key + ",MDDim" + dimension + ">"
 			}
 			ConnectivityType: getVariableTypeName(it)
 			LinearAlgebraType: getLinearAlgebraClass(it)
@@ -96,12 +96,12 @@ class TypeContentProvider
 				val t = typeNameAndDimension
 				val type = t.key
 				val dimension = t.value
-				// Real2, Real3, NumArray<Real, 1> -> RealArrayVariant
+				// Real2, Real3, NumArray<Real, MDDim1> -> RealArrayVariant
 				if ((type == 'Real2' && dimension == 0)
 					|| (type == 'Real3' && dimension == 0)
 					|| (type == 'Real' && dimension == 1))
 					'''RealArrayVariant'''
-				// Real2x2, Real3x3, NumArray<Real, 2> -> RealArray2Variant
+				// Real2x2, Real3x3, NumArray<Real, MDDim2> -> RealArray2Variant
 				else if ((type == 'Real2x2' && dimension == 0)
 					|| (type == 'Real3x3' && dimension == 0)
 					|| (type == 'Real' && dimension == 2))
@@ -109,7 +109,7 @@ class TypeContentProvider
 				else switch dimension
 				{
 					case 0: '''«type»'''
-					default: '''NumArray<«type»,«dimension»>'''
+					default: '''NumArray<«type»,MDDim«dimension»>'''
 				}
 			}
 			LinearAlgebraType: IrTypeExtensions.getLinearAlgebraClass(it)

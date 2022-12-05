@@ -60,7 +60,7 @@ private:
 	static constexpr Real2 m_constexprVec = Real2{1.1, 1.1};
 	Real2 m_varVec;
 	Int32 m_checkDynamicDim;
-	NumArray<Real,1> m_dynamicVec;
+	NumArray<Real,MDDim1> m_dynamicVec;
 
 	// accelerator queue
 	ax::RunQueue* m_default_queue = nullptr;

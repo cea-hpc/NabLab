@@ -7,6 +7,6 @@
 # Numpy and plyvel modules must be installed.
 # To reproduce results, use runvenv.sh.
 #
-export N_WS_PATH=$HOME/WorkspaceDev/NabLab/plugins/fr.cea.nabla.ui/examples
+export N_WS_PATH=$HOME/workspaces/NabLab/plugins/fr.cea.nabla.ui/examples
 export PYTHONPATH=$N_WS_PATH/.nablab/mesh/cartesianmesh2dnumpy:$N_WS_PATH/.nablab/linearalgebra/linearalgebranumpy
 python3 glace2d.py $*

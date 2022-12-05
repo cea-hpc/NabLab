@@ -43,7 +43,7 @@ class TypeContentProvider
 				if (dimension == 0)
 					t.key
 				else
-					"NumArray<" + t.key + "," + dimension + ">"
+					"NumArray<" + t.key + ",MDDim" + dimension + ">"
 			}
 			ConnectivityType: getVariableTypeName(it)
 			LinearAlgebraType: getLinearAlgebraClass(it)

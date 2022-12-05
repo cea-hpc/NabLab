@@ -36,7 +36,7 @@ namespace glace2dfreefuncs
 	
 	RealArray2Variant tensProduct(RealArrayVariant a, RealArrayVariant b)
 	{
-		NumArray<Real,2> result(a.size(), a.size());
+		NumArray<Real,MDDim2> result(a.size(), a.size());
 		for (Int32 ia=0; ia<a.size(); ia++)
 		{
 			for (Int32 ib=0; ib<a.size(); ib++)
@@ -49,10 +49,10 @@ namespace glace2dfreefuncs
 	
 	RealArrayVariant matVectProduct(RealArray2Variant a, RealArrayVariant b)
 	{
-		NumArray<Real,1> result(a.dim1Size());
+		NumArray<Real,MDDim1> result(a.dim1Size());
 		for (Int32 ix=0; ix<a.dim1Size(); ix++)
 		{
-			NumArray<Real,1> tmp(a.dim2Size());
+			NumArray<Real,MDDim1> tmp(a.dim2Size());
 			for (Int32 iy=0; iy<a.dim2Size(); iy++)
 			{
 				tmp.s(iy) = a(ix, iy);
@@ -100,7 +100,7 @@ namespace glace2dfreefuncs
 	
 	RealArrayVariant operatorAdd(RealArrayVariant a, RealArrayVariant b)
 	{
-		NumArray<Real,1> result(a.size());
+		NumArray<Real,MDDim1> result(a.size());
 		for (Int32 ix0=0; ix0<a.size(); ix0++)
 		{
 			result.s(ix0) = a(ix0) + b(ix0);
@@ -110,7 +110,7 @@ namespace glace2dfreefuncs
 	
 	RealArray2Variant operatorAdd(RealArray2Variant a, RealArray2Variant b)
 	{
-		NumArray<Real,2> result(a.dim1Size(), a.dim2Size());
+		NumArray<Real,MDDim2> result(a.dim1Size(), a.dim2Size());
 		for (Int32 ix0=0; ix0<a.dim1Size(); ix0++)
 		{
 			for (Int32 ix1=0; ix1<a.dim2Size(); ix1++)
@@ -123,7 +123,7 @@ namespace glace2dfreefuncs
 	
 	RealArrayVariant operatorMult(const Real a, RealArrayVariant b)
 	{
-		NumArray<Real,1> result(b.size());
+		NumArray<Real,MDDim1> result(b.size());
 		for (Int32 ix0=0; ix0<b.size(); ix0++)
 		{
 			result.s(ix0) = a * b(ix0);
@@ -133,7 +133,7 @@ namespace glace2dfreefuncs
 	
 	RealArrayVariant operatorSub(RealArrayVariant a, RealArrayVariant b)
 	{
-		NumArray<Real,1> result(a.size());
+		NumArray<Real,MDDim1> result(a.size());
 		for (Int32 ix0=0; ix0<a.size(); ix0++)
 		{
 			result.s(ix0) = a(ix0) - b(ix0);
@@ -143,7 +143,7 @@ namespace glace2dfreefuncs
 	
 	RealArray2Variant operatorMult(const Real a, RealArray2Variant b)
 	{
-		NumArray<Real,2> result(b.dim1Size(), b.dim2Size());
+		NumArray<Real,MDDim2> result(b.dim1Size(), b.dim2Size());
 		for (Int32 ix0=0; ix0<b.dim1Size(); ix0++)
 		{
 			for (Int32 ix1=0; ix1<b.dim2Size(); ix1++)
@@ -156,7 +156,7 @@ namespace glace2dfreefuncs
 	
 	RealArray2Variant operatorSub(RealArray2Variant a, RealArray2Variant b)
 	{
-		NumArray<Real,2> result(a.dim1Size(), a.dim2Size());
+		NumArray<Real,MDDim2> result(a.dim1Size(), a.dim2Size());
 		for (Int32 ix0=0; ix0<a.dim1Size(); ix0++)
 		{
 			for (Int32 ix1=0; ix1<a.dim2Size(); ix1++)
@@ -169,7 +169,7 @@ namespace glace2dfreefuncs
 	
 	RealArray2Variant operatorMult(RealArray2Variant a, RealArray2Variant b)
 	{
-		NumArray<Real,2> result(a.dim1Size(), a.dim2Size());
+		NumArray<Real,MDDim2> result(a.dim1Size(), a.dim2Size());
 		for (Int32 ix0=0; ix0<a.dim1Size(); ix0++)
 		{
 			for (Int32 ix1=0; ix1<a.dim2Size(); ix1++)
@@ -182,7 +182,7 @@ namespace glace2dfreefuncs
 	
 	RealArray2Variant operatorMult(RealArray2Variant a, const Real b)
 	{
-		NumArray<Real,2> result(a.dim1Size(), a.dim2Size());
+		NumArray<Real,MDDim2> result(a.dim1Size(), a.dim2Size());
 		for (Int32 ix0=0; ix0<a.dim1Size(); ix0++)
 		{
 			for (Int32 ix1=0; ix1<a.dim2Size(); ix1++)

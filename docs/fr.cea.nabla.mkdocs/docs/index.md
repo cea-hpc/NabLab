@@ -2,7 +2,7 @@
 
 ## Presentation of the project
 
-NabLab is a open-source research project led by [HPC initiative of the CEA](http://www-hpc.cea.fr/index-en.htm).
+NabLab is a open-source research project led by [HPC initiative of the CEA](http://www-hpc.cea.fr/index-en.html).
 It aims is to provide a productive development way for exascale HPC technologies, flexible enough to be competitive in terms of performances.
 It is composed of:
 
